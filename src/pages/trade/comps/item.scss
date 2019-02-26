@@ -3,6 +3,7 @@
 .trade-item {
   background: #fff;
   border-radius: $item-border-radius;
+  margin: 0 0 $edge-margin;
   &__hd {
     padding: 28px $edge-size;
     line-height: 1;
@@ -14,5 +15,16 @@
       font-size: small;
       text-align: right;
     }
+  }
+
+  &__total {
+    padding: 0 $edge-size floor($edge-size/2);
+    text-align: right;
+  }
+
+  &__ft {
+    display: flex;
+    justify-content: flex-end;
+    padding: floor($edge-size/2) $edge-size;
   }
 }

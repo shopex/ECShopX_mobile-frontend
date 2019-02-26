@@ -2,7 +2,7 @@ export default function withPager (Component) {
   return class WithPagerComponent extends Component {
     constructor (props) {
       super(props)
-      const { pageSize = 10, pageNo = 1, pageTotal = 0 } = props
+      const { pageSize = 10, pageNo = 0, pageTotal = 0 } = props || {}
 
       const page = {
         hasNext: true,

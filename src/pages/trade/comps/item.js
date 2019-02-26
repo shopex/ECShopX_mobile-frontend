@@ -1,5 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
+import { Price } from '@/components'
+import { OrderItem } from './order-item'
 
 import './item.scss'
 
@@ -9,48 +12,85 @@ export default class TradeItem extends Component {
   }
 
   static defaultProps = {
-    customHeader: false
+    customHeader: false,
+    customFooter: false,
+    customRender: false,
+    onClickBtn: () => {},
+    onClick: () => {}
+  }
+
+  handleClickBtn (type) {
+    const { info } = this.props
+    this.props.onClickBtn && this.props.onClickBtn(type, info)
   }
 
   render () {
-    const { customHeader, info } = this.props
+    const { customHeader, customFooter, onClick, info } = this.props
 
     return (
       <View className='trade-item'>
         {
           customHeader
-            ? <View className='trade-item__hd'>
-                <Text className='trade-item__shop'>丰收蟹旗舰店</Text><Text className='more'>待付款</Text><Text calssName='more'>{info.status_desc}</Text>
+            ? <View className='trade-item__hd'>{this.props.renderHeader}</View>
+            : <View className='trade-item__hd'>
+                <Text className='trade-item__shop'>{info.shopname}</Text><Text className='more'>{info.status_desc}</Text>
               </View>
-            : this.props.renderHeader
         }
-        <View className='trade-item__bd'>
+        <View
+          className='trade-item__bd'
+          onClick={onClick}
+        >
           {
-            info.order.map((item, idx) => {
-              return (
-                <View
-                  key={idx}
-                  className='goods-item'
-                >
-                  <View className='goods-item__hd'>
-                    <Image
-                      mode='aspectFill'
-                      className='goods-item__img'
-                      src={item.pic_path}
-                    />
-                  </View>
-                  <View className='goods-item__bd'>
-                    <Text className='goods-item__title'>{item.title}</Text>
-                    <Text className='goods-item__desc'>{item.goods_props}</Text>
-                  </View>
-                  <View className='goods-item__ft'>
-                    <price className='goods-item__price' value={item.image_default_id}></price>
-                  </View>
+            info.order.map((item, idx) =>
+              <OrderItem
+                key={idx}
+                info={item}
+              />
+            )
+          }
+          {
+            this.props.customRender
+              ? this.props.customRender
+              : <View className="trade-item__total">
+                  共{info.totalItem}件商品 合计:<Price value={info.payment} />
                 </View>
-              )
-            })
           }
         </View>
+        {customFooter && <View className='trade-item__ft'>{this.props.renderFooter}</View>}
+        {!customFooter && info.status === 'WAIT_BUYER_PAY' && <View className='trade-item__ft'>
+          <AtButton
+            circle
+            size='small'
+            onClick={this.handleClickBtn.bind(this, 'cancel')}
+          >取消订单</AtButton>
+          <AtButton
+            circle
+            type='secondary'
+            size='small'
+            onClick={this.handleClickBtn.bind(this, 'pay')}
+          >立即支付</AtButton>
+        </View>}
+        {!customFooter && info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-item__ft'>
+          <AtButton
+            circle
+            size='small'
+            onClick={this.handleClickBtn.bind(this, 'express')}
+          >查看物流</AtButton>
+          <AtButton
+            circle
+            type='secondary'
+            size='small'
+            onClick={this.handleClickBtn.bind(this, 'confirm')}
+          >确认收货</AtButton>
+        </View>}
+        {!customFooter && info.status === 'WAIT_RATE' && <View className='trade-item__ft'>
+          <AtButton
+            circle
+            type='secondary'
+            size='small'
+            onClick={this.handleClickBtn.bind(this, 'rate')}
+          >评价</AtButton>
+        </View>}
       </View>
     )
   }

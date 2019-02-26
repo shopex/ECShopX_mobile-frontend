@@ -1,0 +1,39 @@
+@import "../../../style/imports";
+
+.order-item {
+  display: flex;
+  align-items: flex-start;
+  padding: $edge-size;
+  &__img {
+    width: 160px;
+    height: 160px;
+    margin-right: 18px
+  }
+  &__hd {
+  }
+  &__bd {
+    width: 50%;
+  }
+  &__ft {
+    flex: 1;
+    text-align: right;
+    font-size: $font-size-small;
+  }
+  &__title {
+    font-size: floor(0.95 * $font-size);
+    @include mult-ellipsis(2);
+    line-height: 1.4;
+    margin: 0 0 4px;
+  }
+  &__desc {
+    color: $color-gray;
+    font-size: $font-size-small;
+  }
+  &__price {
+    color: $color-primary-text;
+  }
+  &__num {
+    display: block;
+    color: $color-gray;
+  }
+}
