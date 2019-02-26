@@ -1,0 +1,9 @@
+@import '../../style/imports';
+
+.address-edit {
+  &__form {
+    background: #fff;
+    padding: $edge-size;
+    margin: 0 0 $edge-margin;
+  }
+}

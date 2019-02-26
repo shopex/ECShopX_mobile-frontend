@@ -1,0 +1,50 @@
+@import './variables';
+
+.at-modal {
+  &__overlay {
+    background-color: rgba(#000, 0.8);
+  }
+  &__container {
+    width: 86%;
+  }
+  &__header {
+    &:after {
+      border: none !important;
+    }
+  }
+}
+
+.at-form {
+  padding-left: 0;
+  background-color: transparent;
+  &:after {
+    border: none !important;
+  }
+}
+
+.at-input {
+  padding: 16px 0;
+  margin: 0 0 $edge-size;
+  &__title {
+    font-size: $font-size;
+  }
+  &:after {
+    border-color: rgba($color-brand-primary, 0.5);
+  }
+  input {
+    font-size: $font-size;
+  }
+}
+
+.at-button--primary {
+  font-size: $font-size;
+  box-shadow: 0 5px 5px rgba(darken($color-brand-primary, 20%), 0.2);
+}
+
+.at-nav-bar__title {
+  font-size: $font-size-large;
+}
+
+.at-tab-bar__item--active {
+  color: $color-brand-primary;
+}

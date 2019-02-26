@@ -1,0 +1,102 @@
+@import "./style/variables.scss";
+@import "./style/icon.scss";
+
+$font-size-base: $font-size;
+$hd: 2 !default; // 基本单位
+$color-brand: $color-brand-primary;
+$color-brand-light: $color-brand-accent;
+$color-brand-dark: $color-brand-accent-light;
+$at-button-border-color-secondary: $color-border-gray;
+$border-radius-sm: 2px * $hd !default;
+$border-radius-md: 3px * $hd !default;
+$border-radius-lg: 4px * $hd !default;
+$at-button-height: 80px !default;
+
+@import "~taro-ui/dist/style/index.scss";
+@import "./style/taro-ui-mod.scss";
+
+body, view {
+  font-family: $font-family;
+  font-size: $font-size;
+}
+
+page, body {
+  background: $color-bg-gray;
+  color: $color-primary-text;
+}
+
+.lnk {
+  color: $color-link;
+}
+
+.lock-screen {
+  height: 100%;
+  position: fixed;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.sec {
+  background: #fff;
+  margin: 0 0 $edge-margin;
+  &-hd {
+    display: flex;
+    line-height: 1;
+    align-items: center;
+    padding: $edge-size;
+    .more {
+      color: $color-link;
+      font-size: $font-size-small;
+      margin-right: floor(-$edge-size / 4);
+    }
+    .at-icon {
+      font-size: $font-size-large;
+    }
+  }
+  &-title {
+    flex: 1;
+  }
+  &-ft {
+    color: $color-gray-light;
+    margin-right: floor(-$edge-size / 4);
+    .at-font {
+      font-size: $font-size-large;
+    }
+  }
+}
+
+.btns {
+  button, .at-button {
+    margin: 0 0 $edge-margin;
+  }
+  padding: $edge-margin $edge-size;
+}
+
+.toolbar {
+  background: #fff;
+  display: flex;
+  height: $toolbar-height;
+  box-shadow: $toolbar-shadow;
+  box-sizing: border-box;
+  padding: $edge-margin $edge-size;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  align-items: center;
+  align-content: center;
+  justify-content: space-between;
+  z-index: $z-index-toolbar;
+  &-hd {}
+  &-ft {
+    max-width: 120px;
+  }
+}
+
+switch, .weui-switch {
+  transform: scale(0.6);
+  transform-origin: center right;
+}

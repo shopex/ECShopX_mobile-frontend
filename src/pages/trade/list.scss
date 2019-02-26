@@ -1,0 +1,7 @@
+@import "../../style/imports";
+
+.trade-list {
+  &__scroll {
+    padding-top: $tabbar-height $edge-size $edge-margin;
+  }
+}

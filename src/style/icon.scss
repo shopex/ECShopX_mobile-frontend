@@ -1,0 +1,22 @@
+@import "./variables";
+
+@font-face {
+  font-family: "sp-iconfont";
+  src: url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAMwAAsAAAAABuQAAALiAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCCcAqBcIFzATYCJAMICwYABCAFhG0HMBsZBhHVk49kX0JONtQRZdv6nn5JqeaVP3BrvADFjsPuQNuDU5AAAAAAAEFEa2X1LDwwu9MPBBIBhKIQy7BLJLKLiiXdnDiVaTSmgaU+1PCt6R5b5LRBmC7ZQ8/pOiHfsfNhSSwSHr6d7+pf0nmSYYBBkkYJDHDEU13+Lw5M3QzXoOePwmVZYToWt0UW/nkDNI3wRxx4AfA/l9MbBRTI/EC5zDH5qBdgHFCAY26yAjoAbhi7ieABbocAW4HEIyMzvxzSgX4C5LY218JCgE530taE2TA1kJdknVbVMwTb/PfyYwtBMTKgqrgpowH95GFWM/+fRxGEy9kAZxZoIB7QIbMxUQiIQ9PYJkIoHKtc8JOHmpCj/nlIAZTaA/DXBc8kxKJHJVMB0IEJCjHaJ70RzCa0izjD6x6UZhgn84tNUnXytLvXFchYhi7MnK9dnL1UTvg5ZWefdoSk6F5Umt1/FTXK7WyNnXz5saPTZ899Dyr5qqs7qjsxuT0OrCfLE7trfws/e8uWxEiH6dbt0OfpyqRLhPvQ336rfTSRSSP/iY4LufpRjYzeJknwjL9glTX2YwDldYGz27sA0ywKQQonQEj71Pf/TA4H+hX6TpOfrzoAr3f5w3W6YS6B9d04BX9VOLBGj8XAqCIUNsqUqam7ldvGbv4Djysfp2o8XiEjrHm8iMtKQAYaa+GoTo0Hgx0LmKwlga04smbbcaMPkLABYlnUQDhzDRRH90HjzHNUp34Agye/wOQsAFuV0lvSTqRQqRYRhox3iD6Q3upKIjNrovyI8aMIKS/m9CuSSsNg6WY5PcMKaYkR6hnbzBIk1SVMtd2wKGpoqM7wxnrC3DiGIZs+pN/qUmgcYch4h+gD6a2uJG3MWuX7R4wfRUgdhBHnFUmlrYOlmwPQmaIaRHiUW9QztpklSKpLmGo2LGCihqa5U4Y31pMJscYxjHpyqELfXlX+3SbAFqBVAtvBahjTd1oJAQAA') format('woff2'),
+  url('/assets/fonts/iconfont.woff') format('woff'),
+  url('/assets/fonts/iconfont.ttf') format('truetype');
+}
+
+.sp-icon {
+  font-family: "sp-iconfont" !important;
+  font-size: $font-size;
+  font-style: normal;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sp-icon-weixin:before {
+  content: "\e608";
+}

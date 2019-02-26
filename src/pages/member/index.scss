@@ -1,0 +1,107 @@
+@import '../../style/imports';
+
+.page-member-index {
+  padding-bottom: $tabbar-height;
+}
+
+.member-index {
+  &__hd {
+    background: #FA3515;
+    background: linear-gradient(180deg,rgba(250,148,97,1) 0%,rgba(250,53,21,1) 100%);
+    height: 280px;
+  }
+  &__bd {
+    position: relative;
+    margin-top: -30px;
+  }
+}
+
+.member {
+  &-sec {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 30px 30px;
+    .sec-hd {
+      @include hairline($color-border-gray, bottom);
+      padding: $edge-margin $edge-size;
+      line-height: 1;
+      .more {
+        color: $color-gray;
+      }
+    }
+    .sec-title {
+      font-size: $font-size-large;
+    }
+  }
+  &-info {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0 0;
+    &__status {
+      padding: $edge-margin 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  &-status {
+    &__item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: $color-brand-primary;
+      &-val {
+        white-space: nowrap;
+        line-height: 1;
+        margin: 0 0 10px;
+      }
+      &-title {
+        white-space: nowrap;
+        font-size: $font-size-small;
+      }
+    }
+  }
+
+  &-avatar {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 30px;
+  }
+  &-name {
+    color: #fff;
+    font-size: floor($font-size * 1.28);
+    line-height: 1;
+    font-weight: bold;
+    white-space: nowrap;
+    @include text-overflow();
+  }
+}
+
+.member-trades {
+  &__menus {
+    padding: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.member-tools {
+  &__menus {
+    padding: 45px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__item {
+    width: 25%;
+    margin: 0 0 64px;
+  }
+}

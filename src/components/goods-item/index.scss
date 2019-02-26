@@ -1,0 +1,38 @@
+@import '../../style/imports';
+
+.goods-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: $edge-margin $edge-size;
+  margin-bottom: $edge-margin;
+  &__hd {
+  }
+  &__bd {
+    display: flex;
+  }
+  &__cont{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  &__img {
+    width: 180px;
+    height: 180px;
+    margin-right: $edge-size;
+  }
+  &__title {
+    @include mult-ellipsis(2);
+    line-height: 1.4;
+    color: #111;
+    margin: 0 0 16px;
+  }
+  &__desc {
+    color: $color-gray;
+    font-size: $font-size-small;
+  }
+  &__prices {
+  }
+}

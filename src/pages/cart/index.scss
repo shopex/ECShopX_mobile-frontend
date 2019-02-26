@@ -1,0 +1,57 @@
+@import "../../style/imports";
+
+.page-cart-index {
+  .cart-list {
+    padding: $edge-size;
+    &__wrap {
+      box-sizing: border-box;
+      height: 100vh;
+      padding-bottom: $toolbar-height;
+    }
+    &__actions {
+      display: flex;
+      justify-content: flex-end;
+      padding: $edge-margin $edge-size 0;
+    }
+    .goods-item {
+      position: relative;
+    }
+    .sp-checkbox {
+      margin-right: 24px;
+      margin-left: -8px;
+    }
+    .at-input-number {
+      transform: scale(0.8);
+      position: absolute;
+      right: 0;
+      bottom: 16px;
+    }
+  }
+}
+
+.cart-toolbar {
+  &__hd {
+  }
+  &__bd {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .cart-total {
+    font-size: $font-size-large;
+    &__hint {
+      color: $color-gray-light;
+      font-size: $font-size-small;
+      margin-right: 12px;
+    }
+  }
+  .btn-checkout {
+    width: 200px;
+    margin: 0 0 0 24px;
+    font-weight: bold;
+    &:before, &:after {
+      border: none;
+    }
+  }
+}

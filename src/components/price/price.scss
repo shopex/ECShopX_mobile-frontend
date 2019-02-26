@@ -1,0 +1,17 @@
+@import '../../style/imports';
+
+.price {
+  font-weight: bold;
+  &__primary {
+    color: $color-brand-primary;
+  }
+  &__symbol {
+    margin-right: 4px;
+    font-weight: normal;
+  }
+  &__int {
+  }
+  &__decimal {
+    font-size: 0.9em;
+  }
+}

@@ -1,0 +1,18 @@
+@import "../../style/imports";
+
+.trade-item {
+  background: #fff;
+  border-radius: $item-border-radius;
+  &__hd {
+    padding: 28px $edge-size;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .more {
+      color: $color-link;
+      font-size: small;
+      text-align: right;
+    }
+  }
+}

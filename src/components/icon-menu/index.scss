@@ -1,0 +1,19 @@
+@import '../../style/imports';
+
+.sp-icon-menu {
+  text-align: center;
+  &__icon {
+    margin: 0 0 28px;
+    line-height: 1;
+  }
+  &__img {
+    width: 100px;
+    height: 100px;
+  }
+  &__title {
+    line-height: 1;
+    display: block;
+    text-align: center;
+    font-size: $font-size-small;
+  }
+}
