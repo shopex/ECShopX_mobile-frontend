@@ -71,11 +71,15 @@ export default class TradeDetail extends Component {
     return (
       <View className={classNames('trade-detail', `trade-detail__status-${info.status}`)}>
         <View className='trade-detail__status'>
-          <Text className='trade-detail__status-text'>等待付款</Text>
+          <Text className='trade-detail__status-text'>{info.status_desc}</Text>
+          <Image
+            mode='aspectFill'
+            className='trade-detail__status-ico'
+            src={`/assets/imgs/trade/ico_${info.status.toLowerCase()}.png`}
+          />
         </View>
         <View className='trade-detail__addr'>
           <SpCell
-            isLink
             icon='map-pin'
           >
             {

@@ -8,9 +8,16 @@
     height: 160px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 80px;
     &-text {
       color: #fff;
+      font-size: $font-size-large;
+    }
+    &-ico {
+      width: 130px;
+      height: 110px;
+      margin-right: -6px;
     }
   }
 
@@ -69,7 +76,7 @@
     }
     &__ft {
       .at-button {
-        transform: scale(0.8);
+        transform: scale(0.9);
         transform-origin: center right;
       }
     }

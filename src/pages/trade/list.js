@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import { Loading } from '@/components'
+import { Loading, SpNote } from '@/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
 import { TradeItem } from './comps/item'
@@ -38,6 +38,7 @@ export default class TradeList extends Component {
     const { list, total_count: total } = await api.trade.list({ status: curTabIdx, ...params })
 
     const nList = this.state.list.concat(list)
+
     this.setState({
       list: nList,
       isLoading: false
@@ -116,6 +117,10 @@ export default class TradeList extends Component {
           }
           {
             page.isLoading && <Loading>正在加载...</Loading>
+          }
+          {
+            !page.isLoading && !page.hasNext && !list.length
+              && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
           }
         </ScrollView>
       </View>
