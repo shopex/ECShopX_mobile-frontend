@@ -54,3 +54,8 @@
     font-size: 44px;
   }
 }
+
+.at-search-bar__action {
+  background-color: $color-search-cancel-bg;
+  color: $color-primary-text;
+}

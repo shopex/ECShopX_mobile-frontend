@@ -8,6 +8,8 @@ export { default as GoodsItem } from './goods-item'
 export { default as AddressPicker } from './address/picker'
 export { default as TabBar } from './tab-bar'
 
+export { default as SearchPanel } from './search'
+
 export { default as SpCheckbox } from './checkbox'
 export { default as SpCell } from './cell'
 export { default as SpToast } from './toast'
