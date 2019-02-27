@@ -1,6 +1,6 @@
 {
-  "name": "mshop-taro",
-  "app_name": "我的商铺",
+  "name": "espier-taro-fenxiao",
+  "app_name": "源源客h5",
   "version": "1.0.0",
   "private": true,
   "description": "taro app for bbc",
@@ -34,6 +34,7 @@
     "@tarojs/taro-weapp": "1.2.13",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
+    "copy-to-clipboard": "^3.0.8",
     "lodash-es": "^4.17.11",
     "memoize-one": "^5.0.0",
     "moment": "^2.24.0",

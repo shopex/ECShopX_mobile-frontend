@@ -27,7 +27,9 @@ class App extends Component {
 
       'pages/member/index',
       'pages/member/favorite',
-      'pages/trade/list'
+      'pages/trade/list',
+      'pages/trade/detail',
+      'pages/trade/rate'
     ],
     window: {
       backgroundTextStyle: 'light',

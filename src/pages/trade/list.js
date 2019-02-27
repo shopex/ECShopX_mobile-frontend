@@ -1,14 +1,18 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
+import { Loading, SpNote } from '@/components'
 import api from '@/api'
+import { withPager } from '@/hocs'
 import { TradeItem } from './comps/item'
 
 import './list.scss'
 
+@withPager
 export default class TradeList extends Component {
   constructor (props) {
     super(props)
+
     this.state = {
       ...this.state,
       curTabIdx: 0,
@@ -19,41 +23,68 @@ export default class TradeList extends Component {
         {title: '待收货'},
         {title: '待评价'}
       ],
-      initedTabs: {},
-      lists: []
+      list: [],
+      isLoading: false
     }
   }
 
   componentDidMount () {
-    this.fetch({ tab: 0 })
+    this.nextPage()
   }
 
   async fetch (params) {
-    const { tab } = params
-    const { list } = await api.trade.list({ status: tab })
-    this.setState({ list })
+    this.setState({ isLoading: true })
+    const { curTabIdx } = this.state
+    const { list, total_count: total } = await api.trade.list({ status: curTabIdx, ...params })
+
+    const nList = this.state.list.concat(list)
+
+    this.setState({
+      list: nList,
+      isLoading: false
+    })
+
+    return { total }
   }
 
-  onClickTab = (idx) => {
+  handleClickTab = (idx) => {
+    if (this.state.isLoading || this.state.page.isLoading) return
+
+    if (idx !== this.state.curTabIdx) {
+      this.resetPage()
+      this.setState({
+        list: []
+      })
+    }
+
     this.setState({
       curTabIdx: idx
+    }, () => {
+      this.nextPage()
     })
-    console.log(idx)
-    if (this.state.lists[idx] === undefined) {
-      this.fetch({ tab: idx })
-    }
+  }
+
+  handleClickItem (trade) {
+    const { tid } = trade
+    Taro.navigateTo({
+      url: `/pages/trade/detail?id=${tid}`
+    })
+  }
+
+  handleClickItemBtn = (type, trade) => {
+    console.log(type, trade)
   }
 
   render () {
-    const { curTabIdx, tabList, lists } = this.state
-    const list = lists[curTabIdx]
+    const { curTabIdx, tabList, list, page } = this.state
 
     return (
       <View className='trade-list'>
         <AtTabs
+          className='trade-list__tabs'
           current={curTabIdx}
           tabList={tabList}
-          onClick={this.onClickTab}
+          onClick={this.handleClickTab}
         >
           {
             tabList.map((panes, pIdx) =>
@@ -62,22 +93,36 @@ export default class TradeList extends Component {
                 key={pIdx}
                 index={pIdx}
               >
-                <View
-                  className='trade-list__scroll'
-                >
-                  {list.map((item, idx) => {
-                    return (
-                      <TradeItem
-                        key={idx}
-                        info={item}
-                      ></TradeItem>
-                    )
-                  })}
-                </View>
               </AtTabsPane>)
             )
           }
         </AtTabs>
+
+        <ScrollView
+          scrollY
+          className='trade-list__scroll'
+          onScrollToLower={this.nextPage}
+        >
+          {
+            list.map((item, idx) => {
+              return (
+                <TradeItem
+                  key={idx}
+                  info={item}
+                  onClick={this.handleClickItem}
+                  onClickBtn={this.handleClickItemBtn}
+                />
+              )
+            })
+          }
+          {
+            page.isLoading && <Loading>正在加载...</Loading>
+          }
+          {
+            !page.isLoading && !page.hasNext && !list.length
+              && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
+          }
+        </ScrollView>
       </View>
     )
   }

@@ -189,9 +189,9 @@ export default class AddressPicker extends Component {
 
                 {
                   list.length === 0 && (
-                    <Note
-                      img='address_empty@2x.png'
-                    >赶快添加新地址吧~</Note>
+                    <SpNote
+                      img='address_empty.png'
+                    >赶快添加新地址吧~</SpNote>
                   )
                 }
               </View>

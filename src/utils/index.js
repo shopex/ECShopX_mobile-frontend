@@ -3,6 +3,7 @@ import styleNames from 'stylenames'
 import Taro from '@tarojs/taro'
 import qs from 'qs'
 import moment from 'moment'
+import copy from 'copy-to-clipboard'
 
 export { default as log } from './log'
 
@@ -65,6 +66,19 @@ export function resolvePath (baseUrl, params = {}) {
 
 export function formatTime (time, formatter = 'YYYY-MM-DD') {
   return moment(time).format(formatter)
+}
+
+export function copyText (text) {
+  return new Promise((resolve, reject) => {
+    if (Taro.getEnv() === Taro.ENV_TYPE.WEAPP) {
+      Taro.setClipboardData({
+        data: text,
+        success: resolve
+      })
+    } else if (copy(Text)) {
+      resolve(text)
+    }
+  })
 }
 
 export {
