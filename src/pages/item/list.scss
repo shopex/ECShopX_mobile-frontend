@@ -1,9 +1,6 @@
 @import "../../style/imports";
 
 .page-goods-list {
-  .search-input {
-    position: static;
-  }
   .goods-list {
     padding: $edge-size 0;
     &__toolbar {

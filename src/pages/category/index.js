@@ -52,7 +52,7 @@ export default class CartIndex extends Component {
     return (
       <View className='page-category-index'>
         <SearchBar
-          mode='category'
+          isFixed
         />
         <View className='category-list'>
           <ScrollView
