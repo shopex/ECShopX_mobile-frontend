@@ -26,9 +26,11 @@ class App extends Component {
       'pages/category/index',
       'pages/auth/login',
       'pages/auth/reg',
+      'pages/auth/forgotpwd',
 
       'pages/member/index',
       'pages/member/favorite',
+      'pages/member/integral',
       'pages/trade/list',
       'pages/trade/detail',
       'pages/trade/rate'

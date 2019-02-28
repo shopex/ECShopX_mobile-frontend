@@ -12,6 +12,9 @@
     background: #fff;
     padding: $edge-size;
     margin: 0 0 $edge-margin;
+    .icon-pwd {
+      line-height: 40px;
+    }
     .forgotPwd{
       font-size: 28px;
     }
