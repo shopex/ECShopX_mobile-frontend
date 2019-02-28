@@ -142,6 +142,7 @@ export default class List extends Component {
               : null
           }
         </ScrollView>
+
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}
