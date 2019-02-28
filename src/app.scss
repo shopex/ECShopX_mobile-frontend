@@ -77,6 +77,7 @@ page, body {
 
 .toolbar {
   background: #fff;
+  font-size: $font-size;
   display: flex;
   height: $toolbar-height;
   box-shadow: $toolbar-shadow;
@@ -90,6 +91,9 @@ page, body {
   align-content: center;
   justify-content: space-between;
   z-index: $z-index-toolbar;
+  .at-button {
+    font-size: $font-size;
+  }
   &-hd {}
   &-ft {
     max-width: 120px;

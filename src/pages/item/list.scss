@@ -2,7 +2,9 @@
 
 .page-goods-list {
   .goods-list {
-    height: 100vh;
+    &__scroll {
+      height: 100vh;
+    }
   }
   .goods-item {
     margin: $edge-size;

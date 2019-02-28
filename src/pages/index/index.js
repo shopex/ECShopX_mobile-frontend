@@ -3,15 +3,16 @@ import { View, Text } from '@tarojs/components'
 import './index.scss'
 
 export default class Index extends Component {
-
   config = {
     navigationBarTitleText: '首页'
   }
 
   componentWillMount () {
-    Taro.redirectTo({
-      url: `/pages/trade/list`
-    })
+    if (process.env.NODE_ENV === 'development') {
+      Taro.redirectTo({
+        url: '/pages/item/list?cateId=20'
+      })
+    }
   }
 
   componentDidMount () { }
