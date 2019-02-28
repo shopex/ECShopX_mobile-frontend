@@ -19,9 +19,9 @@
   -webkit-line-clamp: $line;
 }
 
-@mixin arrow ($size:4px) {
-  content: "";
-  border: $size / 2 solid $color-border-gray;
+@mixin arrow ($size:4px, $color: $color-border-gray) {
+  content: '';
+  border: $size solid $color;
   display: block;
   width: $size;
   height: $size;
