@@ -14,12 +14,11 @@ export default class Reg extends Component {
     this.state = {
       info: {},
       timerMsg: '获取验证码',
-      isForgot: false,
+      isForgot: false
     }
   }
 
   componentDidMount () {
-    this.fetch()
   }
 
   async fetch () {
@@ -60,29 +59,21 @@ export default class Reg extends Component {
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
-    console.log(info)
   }
 
   handleErrorToastClose = () => {
     S.closeToast()
   }
 
-  handleSendCode = async () => {
+  handleTimerStart = (resolve) => {
+    if (this.state.isTimerStart) return
     const { mobile } = this.state.info
 
     if (!/1\d{10}/.test(mobile)) {
-      S.toast('请输入正确的手机号')
-      return false
+      return S.toast('请输入正确的手机号')
     }
 
-    // try {
-    //   await api.sendMobileCode(mobile)
-    // } catch (e) {
-    //   console.log(e)
-    // }
-
-    // return true
-
+    resolve()
   }
 
   handleUpdateTimer = (val) => {
@@ -90,7 +81,6 @@ export default class Reg extends Component {
     this.setState({
       timerMsg
     })
-
   }
 
   handleTimerStop = () => {
@@ -131,12 +121,11 @@ export default class Reg extends Component {
               onChange={this.handleChange.bind(this, 'code')}
             >
               <Timer
-                onStart={this.handleSendCode}
+                onStart={this.handleTimerStart}
                 onUpdateTimer={this.handleUpdateTimer}
                 onStop={this.handleTimerStop}
                 timerMsg={timerMsg}
-              >
-              </Timer>
+              />
             </AtInput>
             <AtInput
               title='密码'
@@ -167,6 +156,7 @@ export default class Reg extends Component {
           }
 
         </AtForm>
+
         <SpToast />
       </View>
     )

@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { Text } from '@tarojs/components'
 import { classNames } from '@/utils'
+
 import './index.scss'
 
 export default class Timer extends Component {
@@ -9,23 +10,18 @@ export default class Timer extends Component {
   }
 
   static defaultProps = {
-    duration: 60,
+    duration: 10,
     defaultMsg: '发送验证码',
-    msg: '重新发送',
-    onStart: () => {},
-    onStop: () => {},
-    onUpdateTimer: () => {}
+    msg: '重新发送'
   }
 
   constructor (props) {
     super(props)
+
     this.state = {
       countDur: props.duration,
       sent: false
     }
-  }
-
-  componentDidMount () {
   }
 
   componentWillUnmount () {
@@ -43,8 +39,9 @@ export default class Timer extends Component {
     })
   }
 
-  start () {
+  start = () => {
     this.stop()
+
     const next = () => {
       this.timer = setTimeout(() => {
         const countDur = this.state.countDur - 1
@@ -63,12 +60,10 @@ export default class Timer extends Component {
         }
       }, 1000)
     }
-console.info(this.props.onStart, this.props)
-    debugger
 
-    if (this.props.onStart(this.state.countDur) !== false) {
-      next()
-    }
+    this.props.onStart((start) => {
+      if (start !== false) next()
+    }, this.state.countDur)
   }
 
   stop () {
@@ -82,6 +77,7 @@ console.info(this.props.onStart, this.props)
     const { timer } = this
     const { countDur, sent } = this.state
     const { timerMsg, className } = this.props
+
     const msg = timerMsg || (timer
       ? `${countDur}s`
       : sent
