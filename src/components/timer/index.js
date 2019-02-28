@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { Text } from '@tarojs/components'
 import { classNames } from '@/utils'
 
 import './index.scss'
@@ -9,22 +9,26 @@ export default class Timer extends Component {
     addGlobalClass: true
   }
 
+  static defaultProps = {
+    duration: 10,
+    defaultMsg: '发送验证码',
+    msg: '重新发送'
+  }
+
   constructor (props) {
     super(props)
+
     this.state = {
       countDur: props.duration,
       sent: false
     }
   }
 
-  componentDidMount () {
-  }
-
   componentWillUnmount () {
     this.stop()
   }
 
-  handleClickTimer (e) {
+  handleClick = () => {
     if (this.timer) return
 
     if (!this.timer) {
@@ -35,7 +39,7 @@ export default class Timer extends Component {
     })
   }
 
-  start () {
+  start = () => {
     this.stop()
 
     const next = () => {
@@ -57,10 +61,9 @@ export default class Timer extends Component {
       }, 1000)
     }
 
-    console.log(this.props)
-    debugger
-    const shouldStart = this.props.onStartTick && (this.props.onStartTick(this.state.countDur) !== false)
-    if (shouldStart) next()
+    this.props.onStart((start) => {
+      if (start !== false) next()
+    }, this.state.countDur)
   }
 
   stop () {
@@ -82,18 +85,12 @@ export default class Timer extends Component {
         : this.props.defaultMsg)
 
     return (
-      <View
+      <Text
         className={classNames('mobile-timer', { 'mobile-timer__counting': timer }, className)}
-        onClick={this.start.bind(this)}
+        onClick={this.handleClick}
       >
         {msg}
-      </View>
+      </Text>
     )
   }
-}
-
-Timer.defaultProps = {
-  duration: 60,
-  defaultMsg: '发送验证码',
-  msg: '重新发送'
 }
