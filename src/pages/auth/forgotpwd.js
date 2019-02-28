@@ -1,27 +1,21 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { SpToast, SpIconMenu } from '@/components'
-
+import { SpToast, Timer } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 
-import './login.scss'
+import './forgotpwd.scss'
 
-export default class Login extends Component {
+export default class Forgotpwd extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
       info: {},
+      timerMsg: '获取验证码',
       isVisible: false
     }
-  }
-
-  handleClickReg= () => {
-    Taro.navigateTo({
-      url: `/pages/auth/reg`
-    })
   }
 
   handleSubmit = async (e) => {
@@ -34,10 +28,17 @@ export default class Login extends Component {
       return S.toast('请输入正确的手机号')
     }
 
+    if (!data.code) {
+      return S.toast('请选择验证码')
+    }
+
     if (!data.password) {
       return S.toast('请输入密码')
     }
     console.log(data, 19)
+    // if(this.state.isForgot){
+    //
+    // }
     // const { UserInfo } = await api.user.reg(data)
     // console.log(UserInfo)
   }
@@ -45,7 +46,6 @@ export default class Login extends Component {
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
-    console.log(info)
   }
 
   handleClickIconpwd = () => {
@@ -59,22 +59,39 @@ export default class Login extends Component {
     S.closeToast()
   }
 
-  handleClickForgtPwd = () => {
-    Taro.navigateTo({
-      url: `/pages/auth/forgotpwd`
+  handleTimerStart = (resolve) => {
+    if (this.state.isTimerStart) return
+    const { mobile } = this.state.info
+
+    if (!/1\d{10}/.test(mobile)) {
+      return S.toast('请输入正确的手机号')
+    }
+
+    resolve()
+  }
+
+  handleUpdateTimer = (val) => {
+    const timerMsg = `${val}s`
+    this.setState({
+      timerMsg
+    })
+  }
+
+  handleTimerStop = () => {
+    this.setState({
+      timerMsg: '重新获取'
     })
   }
 
   render () {
-    const { info, isVisible } = this.state
+    const { info, timerMsg, isVisible } = this.state
 
     return (
-      <View className='auth-login'>
-        <View className='auth-login__reg' onClick={this.handleClickReg}>快速注册</View>
+      <View className='auth-forgotpwd'>
         <AtForm
           onSubmit={this.handleSubmit}
         >
-          <View className='sec auth-login__form'>
+          <View className='sec auth-forgotpwd__form'>
             <AtInput
               title='手机号码'
               name='mobile'
@@ -84,6 +101,21 @@ export default class Login extends Component {
               onFocus={this.handleErrorToastClose}
               onChange={this.handleChange.bind(this, 'mobile')}
             />
+            <AtInput
+              title='验证码'
+              name='code'
+              value={info.code}
+              placeholder='请输入验证码'
+              onFocus={this.handleErrorToastClose}
+              onChange={this.handleChange.bind(this, 'code')}
+            >
+              <Timer
+                onStart={this.handleTimerStart}
+                onUpdateTimer={this.handleUpdateTimer}
+                onStop={this.handleTimerStop}
+                timerMsg={timerMsg}
+              />
+            </AtInput>
             <AtInput
               title='密码'
               name='password'
@@ -98,14 +130,13 @@ export default class Login extends Component {
                   ? <View className='sp-icon sp-icon-yanjing icon-pwd' onClick={this.handleClickIconpwd}> </View>
                   : <View className='sp-icon sp-icon-icon6 icon-pwd' onClick={this.handleClickIconpwd}> </View>
               }
-              <Text className='forgotPwd' onClick={this.handleClickForgtPwd}>忘记密码</Text>
             </AtInput>
           </View>
-
           <View className='btns'>
-            <AtButton type='primary' formType='submit'>登录</AtButton>
+            <AtButton type='primary' formType='submit'>确认</AtButton>
           </View>
         </AtForm>
+
         <SpToast />
       </View>
     )

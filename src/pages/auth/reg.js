@@ -14,20 +14,7 @@ export default class Reg extends Component {
     this.state = {
       info: {},
       timerMsg: '获取验证码',
-      isForgot: false
-    }
-  }
-
-  componentDidMount () {
-  }
-
-  async fetch () {
-    const { forgot } = this.$router.params
-    console.log(forgot)
-    if(forgot){
-      this.setState({
-        isForgot: true,
-      });
+      isVisible: false
     }
   }
 
@@ -59,6 +46,13 @@ export default class Reg extends Component {
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
+  }
+
+  handleClickIconpwd = () => {
+    const { isVisible } = this.state
+    this.setState({
+      isVisible: !isVisible,
+    });
   }
 
   handleErrorToastClose = () => {
@@ -95,7 +89,7 @@ export default class Reg extends Component {
   }
 
   render () {
-    const { info, timerMsg, isForgot } = this.state
+    const { info, timerMsg, isVisible } = this.state
 
     return (
       <View className='auth-reg'>
@@ -130,31 +124,31 @@ export default class Reg extends Component {
             <AtInput
               title='密码'
               name='password'
+              type={isVisible ? 'text' : 'password'}
               value={info.password}
               placeholder='请输入密码'
               onFocus={this.handleErrorToastClose}
               onChange={this.handleChange.bind(this, 'password')}
-            />
+            >
+              {
+                isVisible
+                  ? <View className='sp-icon sp-icon-yanjing icon-pwd' onClick={this.handleClickIconpwd}> </View>
+                  : <View className='sp-icon sp-icon-icon6 icon-pwd' onClick={this.handleClickIconpwd}> </View>
+              }
+            </AtInput>
           </View>
-          {
-            isForgot
-              ? <View className='btns'>
-                  <AtButton type='primary' formType='submit'>确认</AtButton>
-                </View>
-              : <View className='btns'>
-                <AtButton type='primary' formType='submit'>同意协议并注册</AtButton>
-                  <View className='accountAgreement'>
-                    已阅读并同意
-                    <Text
-                      className='accountAgreement__text'
-                      onClick={this.handleClickAgreement.bind(this)}
-                    >
-                      《用户协议》
-                    </Text>
-                  </View>
-                </View>
-          }
-
+          <View className='btns'>
+            <AtButton type='primary' formType='submit'>同意协议并注册</AtButton>
+            <View className='accountAgreement'>
+              已阅读并同意
+              <Text
+                className='accountAgreement__text'
+                onClick={this.handleClickAgreement.bind(this)}
+              >
+                《用户协议》
+              </Text>
+            </View>
+          </View>
         </AtForm>
 
         <SpToast />
