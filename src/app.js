@@ -24,9 +24,12 @@ class App extends Component {
       'pages/cart/checkout',
 
       'pages/category/index',
+
       'pages/auth/login',
       'pages/auth/reg',
       'pages/auth/forgotpwd',
+
+      'pages/cashier/index',
 
       'pages/member/index',
       'pages/member/favorite',
