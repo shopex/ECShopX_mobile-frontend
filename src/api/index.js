@@ -1,21 +1,23 @@
+import * as article from './article'
 import * as cart from './cart'
+import * as cashier from './cashier'
+import * as category from './category'
 import * as item from './item'
+import * as member from './member'
 import * as region from './region'
 import * as trade from './trade'
 import * as user from './user'
 import * as wx from './wx'
-import * as member from './member'
-import * as category from './category'
-import * as cashier from './cashier'
 
 export default {
+  article,
   cart,
+  cashier,
+  category,
   item,
+  member,
   region,
   trade,
   user,
-  member,
-  wx,
-  category,
-  cashier
+  wx
 }
