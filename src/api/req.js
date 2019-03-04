@@ -2,9 +2,9 @@ import Taro from '@tarojs/taro'
 import S from '@/spx'
 import qs from 'qs'
 
-function addQuery (url, query) {
-  return url + (url.indexOf('?') >= 0 ? '&' : '?') + query
-}
+// function addQuery (url, query) {
+//   return url + (url.indexOf('?') >= 0 ? '&' : '?') + query
+// }
 
 class API {
   constructor (options = {}) {
@@ -12,6 +12,8 @@ class API {
     if (!/\/$/.test(baseURL)) {
       baseURL = baseURL + '/'
     }
+
+    this.options = options
     this.baseURL = baseURL
     this.genMethods(['get', 'post', 'delete', 'put'])
   }
@@ -33,32 +35,35 @@ class API {
 
     let reqUrl = /^http/.test(url) ? url : `${this.baseURL}${url.replace(/^\//, '')}`
     const query = (!data || typeof data === 'string')
-      ? data
-      : qs.stringify(data)
+      ? qs.parse(data)
+      : data
 
-    if (methodIsGet) {
-      if (query)
-        reqUrl = addQuery(reqUrl, query)
-    } else {
+    if (!methodIsGet) {
       header['content-type'] = header['content-type'] || 'application/x-www-form-urlencoded'
     }
     header['Authorization'] = `Bearer ${S.getAuthToken()}`
 
     const options = {
+      ...config,
       url: reqUrl,
       data: query,
       method: method.toUpperCase(),
       header: header
     }
 
-    if (methodIsGet) {
-      delete options.data
-    }
-
     if (showLoading) {
       Taro.showLoading({
         mask: true
       })
+    }
+
+    // TODO: update taro version
+    // if (this.options.interceptor && Taro.addInterceptor) {
+    //   Taro.addInterceptor(this.options.interceptor)
+    // }
+    options.data = {
+      ...(options.data || {}),
+      company_id: 1
     }
 
     return Taro.request(options)
@@ -108,7 +113,14 @@ class API {
 }
 
 export default new API({
-  baseURL: TARO_APP.BASE_URL
+  baseURL: TARO_APP.BASE_URL,
+
+  // interceptor (chain) {
+  //   const { requestParams } = chain
+  //   requestParams.company_id = '1'
+
+  //   return chain.proceed(requestParams)
+  // }
 })
 
 export { API }

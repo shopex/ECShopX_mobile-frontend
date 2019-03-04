@@ -4,6 +4,10 @@ body, page {
   background: #fff;
 }
 
+.page-index {
+  padding-bottom: $tabbar-height;
+}
+
 .wgts-wrap {
   &__fixed {
     padding-top: $searchbar-height + $edge-margin;

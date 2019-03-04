@@ -21,10 +21,10 @@ export default class TabBar extends Component {
     this.state = {
       current: 0,
       tabList: [
-        { title: '首页', iconType: 'shop', iconPrefixClass: 'sp-icon' },
-        { title: '分类', iconType: 'menu', iconPrefixClass: 'sp-icon' },
-        { title: '购物车', iconType: 'cart', text: this.props.cartTotalCount || '', max: '99', iconPrefixClass: 'sp-icon' },
-        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon' }
+        { title: '首页', iconType: 'shop', iconPrefixClass: 'sp-icon', url: '/pages/home/index' },
+        { title: '分类', iconType: 'menu', iconPrefixClass: 'sp-icon', url: '/pages/category/index' },
+        { title: '购物车', iconType: 'cart', text: this.props.cartTotalCount || '', max: '99', iconPrefixClass: 'sp-icon', url: '/pages/cart/index' },
+        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon', url: '/pages/member/index', urlRedirect: true }
       ]
     }
   }
@@ -58,14 +58,17 @@ export default class TabBar extends Component {
   }
 
   handleClick = (current) => {
+    const cur = this.state.current
     this.setState({
       current
     })
 
-    if (current === 2) {
-      Taro.navigateTo({
-        url: '/pages/cart/index'
-      })
+    if (cur !== current) {
+      const curTab = this.state.tabList[current]
+      const { url } = curTab
+      if (url) {
+        Taro[curTab.urlRedirect ? 'redirectTo' : 'navigateTo']({ url })
+      }
     }
   }
 

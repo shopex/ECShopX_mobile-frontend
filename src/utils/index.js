@@ -79,6 +79,12 @@ export function pickBy (arr, keyMaps = {}) {
   return arr.map(picker)
 }
 
+export function navigateTo (url, isRedirect) {
+  return Taro[!isRedirect ? 'navigateTo' : 'redirectTo']({
+    url
+  })
+}
+
 export function resolvePath (baseUrl, params = {}) {
   const queryStr = typeof params === 'string'
     ? params
