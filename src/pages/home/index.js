@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { SearchBar } from '@/components'
+import { SearchBar, TabBar } from '@/components'
 import req from '@/api/req'
 import { WgtSlider, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase } from './wgts'
 
@@ -55,6 +55,7 @@ export default class HomeIndex extends Component {
             })
           }
         </View>
+        <TabBar></TabBar>
       </View>
     )
   }
