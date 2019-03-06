@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Picker } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { SpToast, Timer } from '@/components'
-import { classNames } from '@/utils'
+import { classNames, isString } from '@/utils'
 import S from '@/spx'
 import api from '@/api'
 
@@ -17,18 +17,19 @@ export default class Reg extends Component {
       timerMsg: '获取验证码',
       isVisible: false,
       list: [],
-      selectorChecked: {},
+      // dateSel: '2018-04-22'
     }
   }
 
   componentDidMount () {
+    console.log(Taro.getEnv())
     if (Taro.getEnv() === 'WEAPP') {
       this.setState({
         info: {
           user_type: 'wechat'
         }
       })
-    }else if (Taro.getEnv() === 'H5') {
+    }else if (Taro.getEnv() === 'WEB') {
       this.setState({
         info: {
           user_type: 'local'
@@ -38,7 +39,11 @@ export default class Reg extends Component {
     this.fetch()
   }
 
-
+  // onDateChange = e => {
+  //   this.setState({
+  //     dateSel: e.detail.value
+  //   })
+  // }
   async fetch () {
     let arr  = []
     let res = await api.user.regParam()
@@ -46,6 +51,9 @@ export default class Reg extends Component {
       if(res[key].is_open) {
         if(key === 'sex'){
           res[key].items = ['男', '女']
+        }
+        if(key === 'birthday'){
+          res[key].items = []
         }
         arr.push({
           key: key,
@@ -82,6 +90,7 @@ export default class Reg extends Component {
     this.state.list.map(item=>{
       return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
     })
+    console.log(data)
 
     const { UserInfo } = await api.user.reg(data)
     console.log(UserInfo)
@@ -90,13 +99,19 @@ export default class Reg extends Component {
   handleChange = (name, val) => {
     const { info, list } = this.state
     info[name] = val
-    if(val.currentTarget){
-      if(val.currentTarget.dataset.item) {
-        info[name] = val.currentTarget.dataset.item.items[val.detail.value]
-        list.map(item => {
-          item.key === name ? item.value = val.currentTarget.dataset.item.items[val.detail.value] : null
-        })
-      }
+    if(!isString(val)) {
+      list.map(item => {
+        item.key === name ? info[name] = val.detail.value : null
+        if(name === 'birthday') {
+          item.key === name ? item.value = val.detail.value : null
+        } else {
+          item.key === name ? (item.items ? item.value = item.items[val.detail.value] : item.value = val.detail.value) : null
+        }
+      })
+    } else {
+      list.map(item => {
+        item.key === name ? item.value = val : null
+      })
     }
     this.setState({ list });
     if(name === 'sex') {
@@ -203,27 +218,34 @@ export default class Reg extends Component {
                     {
                       item.items
                         ? <View className='page-section'>
-                            <View>
-                              <Picker
-                                mode='selector'
-                                range={item.items}
-                                data-item={item}
-                                onChange={this.handleChange.bind(this, `${item.key}`)}
-                              >
-                                <View className='picker'>
-                                  <View className='picker__title'>{item.name}</View>
-                                  <Text
-                                    className={classNames(item.value ? 'pick-value' : 'pick-value-null')}
-                                  >{item.value ? item.value : `请选择${item.name}`}</Text>
-                                </View>
-                              </Picker>
+                            <View key={index}>
+                              {
+                                item.key === 'birthday'
+                                  ? <Picker mode='date' onChange={this.handleChange.bind(this, `${item.key}`)}>
+                                      <View className='picker'>
+                                        <View className='picker__title'>{item.name}</View>
+                                        <Text
+                                          className={classNames(item.value ? 'pick-value' : 'pick-value-null')}
+                                        >{item.value ? item.value : `请选择${item.name}`}</Text>
+                                      </View>
+                                    </Picker>
+                                  : <Picker mode='selector' range={item.items} key={index} data-item={item} onChange={this.handleChange.bind(this, `${item.key}`)}>
+                                      <View className='picker'>
+                                        <View className='picker__title'>{item.name}</View>
+                                        <Text
+                                          className={classNames(item.value ? 'pick-value' : 'pick-value-null')}
+                                        >{item.value ? item.value : `请选择${item.name}`}</Text>
+                                      </View>
+                                    </Picker>
+                              }
                             </View>
                           </View>
-                        : <View>
+                        : <View key={index}>
                             <AtInput
-                              title={item.name}
-                              name='text'
+                              key={index}
+                              title={item.name} name={`${item.key}`}
                               placeholder={`请输入${item.name}`}
+                              value={item.value}
                               onFocus={this.handleErrorToastClose}
                               onChange={this.handleChange.bind(this, `${item.key}`)}
                             />

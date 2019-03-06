@@ -21,6 +21,7 @@ class App extends Component {
       'pages/home/index',
       'pages/item/list',
       'pages/item/detail',
+      'pages/item/point-list',
 
       'pages/cart/index',
       'pages/cart/checkout',
@@ -35,7 +36,7 @@ class App extends Component {
 
       'pages/member/index',
       'pages/member/favorite',
-      'pages/member/integral',
+      'pages/member/point',
       'pages/member/pay',
       'pages/member/recharge',
       'pages/member/recommend',
