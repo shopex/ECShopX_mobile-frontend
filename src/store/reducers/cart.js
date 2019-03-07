@@ -1,8 +1,9 @@
 import { createReducer } from 'redux-create-reducer'
+import { pickBy } from '@/utils'
 
 const initState = {
   list: [],
-  checkoutItem: null
+  fastbuy: null
 }
 
 const cart = createReducer(initState, {
@@ -21,6 +22,25 @@ const cart = createReducer(initState, {
     return {
       ...state,
       checkoutItem
+    }
+  },
+
+  ['cart/fastbuy'](state, action) {
+    const { item , num = 1 } = action.payload
+
+    return {
+      ...state,
+      fastbuy: {
+        ...item,
+        num
+      }
+    }
+  },
+
+  ['cart/clearFastbuy'](state) {
+    return {
+      ...state,
+      fastbuy: null
     }
   }
 })

@@ -25,7 +25,7 @@ class App extends Component {
       'pages/item/point-detail',
 
       'pages/cart/index',
-      'pages/cart/checkout',
+      'pages/cart/espier-checkout',
       'pages/article/index',
 
       'pages/category/index',
