@@ -2,9 +2,11 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtBadge, AtIcon, AtAvatar } from 'taro-ui'
 import { SpIconMenu, TabBar } from '@/components'
+import { withLogin } from '@/hocs'
 
 import './index.scss'
 
+@withLogin()
 export default class MemberIndex extends Component {
   navigateTo (url) {
     Taro.navigateTo({ url })

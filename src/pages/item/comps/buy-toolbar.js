@@ -16,9 +16,7 @@ export default class GoodsBuyToolbar extends Component {
     onClickFastBuy: () => {}
   }
 
-  navigateTo (url) {
-    console.log(url)
-  }
+  navigateTo = navigateTo
 
   render () {
     const { onClickAddCart, onClickFastBuy, type } = this.props
@@ -54,7 +52,7 @@ export default class GoodsBuyToolbar extends Component {
         </View>
         <View
           className='goods-buy-toolbar__btns'
-          style={process.env.TARO_ENV === 'weapp' ? 'width: 56%;': null}
+          style={process.env.TARO_ENV === 'weapp' ? 'width: 59%;': null}
         >
           {type === 'normal' && (
             <Button

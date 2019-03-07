@@ -3,6 +3,7 @@ import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
 import api from '@/api'
+import { navigateTo, getCurrentRoute } from '@/utils'
 
 @connect(({ cart }) => ({
   cart,
@@ -24,7 +25,7 @@ export default class TabBar extends Component {
         { title: '首页', iconType: 'shop', iconPrefixClass: 'sp-icon', url: '/pages/home/index' },
         { title: '分类', iconType: 'menu', iconPrefixClass: 'sp-icon', url: '/pages/category/index' },
         { title: '购物车', iconType: 'cart', text: this.props.cartTotalCount || '', max: '99', iconPrefixClass: 'sp-icon', url: '/pages/cart/index' },
-        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon', url: '/pages/member/index', urlRedirect: true }
+        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon', url: '/pages/member/index' }
       ]
     }
   }
@@ -65,9 +66,11 @@ export default class TabBar extends Component {
 
     if (cur !== current) {
       const curTab = this.state.tabList[current]
-      const { url } = curTab
-      if (url) {
-        Taro[curTab.urlRedirect ? 'redirectTo' : 'navigateTo']({ url })
+      const { url, urlRedirect } = curTab
+      const { fullPath } = getCurrentRoute(this.$router)
+
+      if (url && fullPath !== url) {
+        navigateTo(url, urlRedirect)
       }
     }
   }

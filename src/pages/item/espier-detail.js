@@ -109,7 +109,7 @@ export default class Detail extends Component {
 
   handleBuyClick = async (type) => {
     const { marketing, info } = this.state
-    let url = `/pages/cart/checkout?id=${info.item_id}`
+    let url = `/pages/cart/checkout`
 
     const hasToken = !!S.getAuthToken()
     if (!hasToken) {
@@ -117,6 +117,7 @@ export default class Detail extends Component {
     }
 
     if (type === 'cart') {
+      await api.cart.add(info)
       return Taro.navigateTo({
         url
       })
