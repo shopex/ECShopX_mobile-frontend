@@ -113,8 +113,8 @@ class Spx {
       log.debug('[auth failed] redirect to login page: ', e)
 
       const { fullPath } = getCurrentRoute(ctx.$router)
-      const authUrl = appEnv === Taro.ENV_TYPE.WEAPP
-        ? `/pages/auth/authorize?redirect=${fullPath}`
+      const authUrl = process.env.TARO_ENV === 'weapp'
+        ? `/pages/auth/login?redirect=${fullPath}`
         : `/pages/auth/login?redirect=${fullPath}`
 
       Taro.redirectTo({

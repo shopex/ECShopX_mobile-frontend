@@ -13,14 +13,16 @@ export default class Price extends Component {
     className: null,
     value: null,
     primary: false,
-    noSymbol: false
+    noSymbol: false,
+    unit: 'default'
   }
 
   static externalClasses = ['classes']
 
   render () {
-    const { value, noSymbol, primary, className } = this.props
-    const [int, decimal] = (value || '').split('.')
+    const { value = '', noSymbol, primary, className, unit } = this.props
+    const priceVal = unit === 'cent' ? (value / 100).toFixed(2) : value
+    const [int, decimal] = (priceVal || '').split('.')
     const minus = value < 0
     const symbol = this.props.symbol || '¥'
 

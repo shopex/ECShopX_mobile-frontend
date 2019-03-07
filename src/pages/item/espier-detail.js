@@ -1,10 +1,11 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image } from '@tarojs/components'
-import { AtDivider } from 'taro-ui'
-import { Loading, Price, BackToTop, GoodsBuyToolbar, SpHtmlContent } from '@/components'
+import { AtDivider, AtCountdown } from 'taro-ui'
+import { Loading, Price, BackToTop, SpHtmlContent } from '@/components'
 import api from '@/api'
 import { withBackToTop } from '@/hocs'
 import { styleNames, log } from '@/utils'
+import GoodsBuyToolbar from './comps/buy-toolbar'
 
 import './espier-detail.scss'
 
@@ -18,16 +19,37 @@ export default class Detail extends Component {
     super(props)
 
     this.state = {
+      marketing: 'normal',
       info: null,
       desc: null,
       windowWidth: 320,
-      curImgIdx: 0
+      curImgIdx: 0,
+      isPromoter: false,
+      timer: null
     }
   }
 
   componentDidMount () {
     this.handleResize()
     this.fetch()
+  }
+
+  calcTimer (totalSec) {
+    let remainingSec = totalSec
+    const dd = Math.floor(totalSec / 24 / 3600)
+    remainingSec -= dd * 3600 * 24
+    const hh = Math.floor(remainingSec / 3600)
+    remainingSec -= hh * 3600
+    const mm = Math.floor(remainingSec / 60)
+    remainingSec -= mm * 60
+    const ss = Math.floor(remainingSec)
+
+    return {
+      dd,
+      hh,
+      mm,
+      ss
+    }
   }
 
   handleResize () {
@@ -39,10 +61,41 @@ export default class Detail extends Component {
 
   async fetch () {
     const { id } = this.$router.params
-    const info = await api.item.detail(id)
+    const info = await api.item.detail(id, { distributor_id: 16 })
     const { intro: desc } = info
 
-    this.setState({ info, desc })
+    let marketing = 'normal'
+    let timer = null
+    if (info.group_activity) {
+      //团购
+      marketing = 'group'
+      timer = this.calcTimer(info.group_activity.remaining_time)
+    } else if (info.seckill_activity) {
+      //秒杀
+      marketing = 'seckill'
+    }
+
+    Taro.setNavigationBarTitle({
+      title: info.item_name
+    })
+
+    if (marketing === 'group' || marketing === 'seckill') {
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#FF482B',
+        animation: {
+          duration: 400,
+          timingFunc: 'easeIn'
+        }
+      })
+    }
+
+    this.setState({
+      info,
+      desc,
+      marketing,
+      timer
+    })
     log.debug('fetch: done', info)
   }
 
@@ -53,11 +106,31 @@ export default class Detail extends Component {
     })
   }
 
-  handleClickAction = () => {
+  handleBuyClick = (type) => {
+    const { marketing } = this.state
+    let url = `/pages/cart/checkout`
+
+    if (type === 'cart') {
+      return Taro.navigateTo({
+        url
+      })
+    }
+
+    if (type === 'fastbuy') {
+      if (marketing === 'group') {
+        url = `/pages/cart/checkout?type=${marketing}&group_id=${this.state.info.group_activity.groups_activity_id}`
+      } else if (marketing === 'seckill') {
+        url = `/pages/cart/checkout?type=${marketing}&seckill_id=${this.state.info.seckill_activity.seckill_id}`
+      }
+      return Taro.navigateTo({
+        url
+      })
+    }
   }
 
   render () {
     const { info, windowWidth, curImgIdx, desc, scrollTop, showBackToTop } = this.state
+    const { marketing, timer, isPromoter } = this.state
 
     if (!info) {
       return (
@@ -98,32 +171,111 @@ export default class Detail extends Component {
             </Swiper>
             {
               imgs.length > 1
-                && <Text className='goods-imgs__text'>{curImgIdx + 1} / images.length}</Text>
+                && <Text className='goods-imgs__text'>{curImgIdx + 1} / {imgs.length}</Text>
             }
           </View>
 
-          <View className='goods-hd'>
-            <View className='goods-prices'>
-              <Price primary value={info.price}></Price>
-
-              <View className='goods-prices__market'>
-                <Price
-                  symbol={info.cur.symbol}
-                  value={info.mkt_price}
+          {timer && (
+            <View className='goods-timer'>
+              <View className='goods-timer__hd'>
+                <View className='goods-prices'>
+                  <Price
+                    unit='cent'
+                    symbol={info.cur.symbol}
+                    value={info.price}
+                  />
+                  <View className='goods-prices__ft'>
+                    <Text className='goods-prices__type'>团购</Text>
+                    <Price
+                      unit='cent'
+                      className='goods-prices__market'
+                      symbol={info.cur.symbol}
+                      value={info.mkt_price}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View className='goods-timer__bd'>
+                <Text className='goods-timer__label'>距结束还剩</Text>
+                <AtCountdown
+                  isShowDay
+                  day={timer.dd}
+                  hours={timer.hh}
+                  minutes={timer.mm}
+                  seconds={timer.ss}
                 />
               </View>
             </View>
+          )}
 
+          <View className='goods-hd'>
             <View className='goods-title__wrap'>
-              <Text className='goods-title'>{info.item.title}</Text>
-              <View className='goods-fav'>
+              <Text className='goods-title'>{info.item_name}</Text>
+              <Text className='goods-title__desc'>{info.brief}</Text>
+              {/*<View className='goods-fav'>
                 <View className='at-icon at-icon-star'></View>
                 <Text className='goods-fav__text'>收藏</Text>
+              </View>*/}
+            </View>
+
+            {marketing === 'normal' && (
+              <View className='goods-prices__wrap'>
+                <View className='goods-prices'>
+                  <Price
+                    primary
+                    unit='cent'
+                    value={info.price}
+                  />
+
+                  {info.approve_status !== 'only_show' && (
+                    <View className='goods-prices__market'>
+                      <Price
+                        unit='cent'
+                        symbol={info.cur.symbol}
+                        value={info.mkt_price}
+                      />
+                    </View>
+                  )}
+                </View>
+
+                {info.approve_status !== 'only_show' && (<Text className='goods-sold'>{info.sales || 0}人已购</Text>)}
+              </View>
+            )}
+          </View>
+          {isPromoter && (
+            <View className='goods-income'>
+              <View className='sp-icon sp-icon-jifen'></View>
+              <Text>预计收益：{(info.promoter_price/100).toFixed(2)}</Text>
+            </View>
+          )}
+
+          <View className='sec goods-sec-props'>
+            <View className='sec-hd'>
+              <Text className='sec-title'>商品参数</Text>
+            </View>
+            <View className='sec-bd'>
+              <View className='goods-props__wrap'>
+                <View className='prop-item'>
+                  <Text className='prop-item__label'>品牌：</Text>
+                  <Text className='prop-item__cont'>{info.goods_brand || '--'}</Text>
+                </View>
+                <View className='prop-item'>
+                  <Text className='prop-item__label'>颜色：</Text>
+                  <Text className='prop-item__cont'>{info.goods_color || '--'}</Text>
+                </View>
+                <View className='prop-item'>
+                  <Text className='prop-item__label'>功能：</Text>
+                  <Text className='prop-item__cont'>{info.goods_function || '--'}</Text>
+                </View>
+                <View className='prop-item'>
+                  <Text className='prop-item__label'>材质：</Text>
+                  <Text className='prop-item__cont'>{info.goods_series || '--'}</Text>
+                </View>
               </View>
             </View>
           </View>
 
-          <View
+          {/*<View
             className='sec goods-sec-action'
             onClick={this.handleClickAction}
           >
@@ -134,13 +286,13 @@ export default class Detail extends Component {
             <View className='sec-ft'>
               <View className='at-icon at-icon-chevron-right'></View>
             </View>
-          </View>
+          </View>*/}
 
           <View className='goods-sec-detail'>
             <AtDivider content='宝贝详情'></AtDivider>
             <SpHtmlContent
               className='goods-detail__content'
-              content={desc.wap_desc}
+              content={desc}
             />
           </View>
         </ScrollView>
@@ -152,8 +304,9 @@ export default class Detail extends Component {
         />
 
         <GoodsBuyToolbar
-          onClickAddCart={this.onClickAddCart}
-          onClickFastBuy={this.onClickFastBuy}
+          type={marketing}
+          onClickAddCart={this.handleBuyClick.bind(this, 'cart')}
+          onClickFastBuy={this.handleBuyClick.bind(this, 'fastbuy')}
         />
       </View>
     )

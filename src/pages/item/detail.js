@@ -1,14 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image } from '@tarojs/components'
 import { AtDivider } from 'taro-ui'
-import { Loading, Price, BackToTop, GoodsBuyToolbar, GoodsBuyPanel, <SpHtmlContent
-              className='goods-detail__content'
-              content={desc.wap_desc}
-            /> } from '@/components'
+import { Loading, Price, BackToTop, GoodsBuyToolbar, SpHtmlContent } from '@/components'
 import api from '@/api'
 import { withBackToTop } from '@/hocs'
 import { styleNames, log } from '@/utils'
 import RateItem from './comps/rate-item'
+import GoodsBuyPanel from './comps/buy-toolbar'
 
 import './detail.scss'
 
