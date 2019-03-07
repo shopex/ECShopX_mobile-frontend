@@ -24,7 +24,8 @@ export default class Login extends Component {
     })
   }
   componentDidMount() {
-    console.log(Taro.getCurrentPages(), 44)
+    const { redirect } = this.$router.params
+    console.log(this.$router, this.$router.params, redirect, 44)
   }
 
   handleSubmit = async (e) => {
@@ -44,15 +45,15 @@ export default class Login extends Component {
     await api.user.login(data).then(res => {
       S.setAuthToken(res.token)
       console.log(res, 43)
-      if (Taro.getCurrentPages().length > 1) {
-        Taro.navigateBack({
-          delta: 1
-        });
-      } else {
-        Taro.redirectTo({
-          url: "/pages/home/index"
-        })
-      }
+      // if (Taro.getCurrentPages().length > 1) {
+      //   Taro.navigateBack({
+      //     delta: 1
+      //   });
+      // } else {
+      //   Taro.redirectTo({
+      //     url: "/pages/home/index"
+      //   })
+      // }
       // Taro.navigateBack()
       // let currentPages = Taro.getCurrentPages()
       // Taro.navigateBack({ delta: Taro.getCurrentPages().length - 1 })
