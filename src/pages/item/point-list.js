@@ -1,7 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView } from '@tarojs/components'
+import { View, ScrollView, Text } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem } from '@/components'
+import { AtDivider,AtIcon } from 'taro-ui'
 import api from '@/api'
 import { pickBy } from '@/utils'
 
@@ -16,14 +17,9 @@ export default class List extends Component {
     this.state = {
       ...this.state,
       curFilterIdx: 0,
-      filterList: [
-        { title: '综合' },
-        { title: '销量' },
-        { title: '价格', sort: -1 }
-      ],
       query: null,
       list: [],
-      listType: ''
+      listType: 'grid'
     }
   }
 
@@ -69,41 +65,6 @@ export default class List extends Component {
     }
   }
 
-  handleFilterChange = (data) => {
-    const { current, sort } = data
-
-    const query = {
-      ...this.state.query,
-      goodsSort: current === 0
-        ? null
-        : current === 1
-          ? 1
-          : (sort > 0 ? 3 : 2)
-    }
-
-    if (current !== this.state.curFilterIdx || (current === this.state.curFilterIdx && query.goodsSort !== this.state.query.goodsSort)) {
-      this.resetPage()
-      this.setState({
-        list: []
-      })
-    }
-
-    this.setState({
-      curFilterIdx: current,
-      query
-    }, () => {
-      this.nextPage()
-    })
-  }
-
-  handleListTypeChange = () => {
-    const listType = this.state.listType === 'grid' ? 'default' : 'grid'
-
-    this.setState({
-      listType
-    })
-  }
-
   handleClickItem = (item) => {
     const url = `/pages/item/detail?id=${item.item_id}`
     Taro.navigateTo({
@@ -112,24 +73,19 @@ export default class List extends Component {
   }
 
   render () {
-    const { list, listType, curFilterIdx, filterList, showBackToTop, scrollTop, page } = this.state
+    const { list, listType, showBackToTop, scrollTop, page } = this.state
 
     return (
       <View className='page-goods-list'>
         <View className='goods-list__toolbar'>
-          <SearchBar />
-
-          <FilterBar
-            className='goods-list__tabs'
-            current={curFilterIdx}
-            list={filterList}
-            onChange={this.handleFilterChange}
-          >
-            <View
-              className='at-icon at-icon-bullet-list'
-              onClick={this.handleListTypeChange}
-            ></View>
-          </FilterBar>
+          <View className='goods-list__toolbar-title'>
+            <AtDivider fontColor='#FF482B' lineColor='#FF482B'>
+              <View>
+                <AtIcon value='check-circle'></AtIcon>
+                <Text>全部商品</Text>
+              </View>
+            </AtDivider>
+          </View>
         </View>
 
         <ScrollView
