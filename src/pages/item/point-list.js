@@ -66,7 +66,7 @@ export default class List extends Component {
   }
 
   handleClickItem = (item) => {
-    const url = `/pages/item/detail?id=${item.item_id}`
+    const url = `/pages/item/espier-detail?id=${item.item_id}`
     Taro.navigateTo({
       url
     })

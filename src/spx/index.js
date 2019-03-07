@@ -44,7 +44,7 @@ class Spx {
     let userInfo = this.get('userInfo')
     const token = this.getAuthToken()
     if (!userInfo && token) {
-      userInfo = await api.getUserInfo()
+      userInfo = await api.user.info()
       this.set('userInfo', userInfo)
     }
 
@@ -94,13 +94,11 @@ class Spx {
   }
 
   async autoLogin (ctx, next) {
-    const appEnv = Taro.getEnv()
-
     try {
       await this.trigger('autoLogin', ctx)
-      if (appEnv === Taro.ENV_TYPE.WEAPP) {
-        await Taro.checkSession()
-      }
+      // if (process.env.NODE_ENV === 'weapp') {
+      //   await Taro.checkSession()
+      // }
       if (!this.getAuthToken()) {
         throw new Error('auth token not found')
       }
@@ -112,7 +110,7 @@ class Spx {
     } catch (e) {
       log.debug('[auth failed] redirect to login page: ', e)
 
-      this.goLogin(ctx)
+      this.login(ctx)
     }
   }
 

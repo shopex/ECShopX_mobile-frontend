@@ -42,7 +42,7 @@ export default class WgtGoodsGrid extends Component {
               <View
                 key={idx}
                 className='grid-item'
-                onClick={this.navigateTo.bind(this, `/pages/item/detail?id=${item.goodsId}`)}
+                onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}`)}
               >
                 <View className='goods-wrap'>
                   <View className='thumbnail'>

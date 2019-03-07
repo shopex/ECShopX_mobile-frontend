@@ -80,7 +80,9 @@ export function pickBy (arr, keyMaps = {}) {
 }
 
 export function navigateTo (url, isRedirect) {
-  debugger
+  if (isObject(isRedirect)) {
+    isRedirect = false
+  }
   return Taro[!isRedirect ? 'navigateTo' : 'redirectTo']({
     url
   })
