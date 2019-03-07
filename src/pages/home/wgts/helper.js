@@ -5,13 +5,13 @@ export function linkPage (type, id) {
 
   switch (type) {
     case 'goods':
-      url = 'goodsdetail?id=' + id
+      url = '/pages/item/index?id=' + id
       break;
     case 'category':
-      url = 'goods_list?catId=' + id
+      url = '/pages/item/list?cat_id=' + id
       break;
     case 'article':
-      url = 'article?id=' + id
+      url = '/pages/article/index?id=' + id
       break;
     case 'link':
       url = id

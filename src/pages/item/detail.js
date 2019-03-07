@@ -1,11 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image } from '@tarojs/components'
 import { AtDivider } from 'taro-ui'
-import { Loading, Price, BackToTop, GoodsBuyToolbar, GoodsBuyPanel } from '@/components'
+import { Loading, Price, BackToTop, GoodsBuyToolbar, SpHtmlContent } from '@/components'
 import api from '@/api'
 import { withBackToTop } from '@/hocs'
 import { styleNames, log } from '@/utils'
 import RateItem from './comps/rate-item'
+import GoodsBuyPanel from './comps/buy-toolbar'
 
 import './detail.scss'
 
@@ -164,9 +165,10 @@ export default class Detail extends Component {
 
           <View className='goods-sec-detail'>
             <AtDivider content='宝贝详情'></AtDivider>
-            <View className='goods-detail__content'>
-              {desc.wap_desc}
-            </View>
+            <SpHtmlContent
+              className='goods-detail__content'
+              content={desc.wap_desc}
+            />
           </View>
         </ScrollView>
 

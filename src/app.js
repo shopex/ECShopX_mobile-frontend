@@ -20,12 +20,13 @@ class App extends Component {
       'pages/index/index',
       'pages/home/index',
       'pages/item/list',
-      'pages/item/detail',
+      'pages/item/espier-detail',
       'pages/item/point-list',
       'pages/item/point-detail',
 
       'pages/cart/index',
       'pages/cart/checkout',
+      'pages/article/index',
 
       'pages/category/index',
 

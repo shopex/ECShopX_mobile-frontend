@@ -1,4 +1,4 @@
-@import '../../style/imports';
+@import '../../../style/imports';
 
 .goods-buy-toolbar {
   background: #fff;
@@ -26,11 +26,21 @@
     align-items: center;
     font-size: $font-size-small;
     color: #555;
-    padding-top: 4px;
+    padding: 4px 0 0;
+    margin: 0;
     line-height: 1;
-    .at-icon {
+    background: none;
+    border: none;
+    &:before, &:after {
+      border: none;
+    }
+    .sp-icon {
       font-size: 42px;
       margin: 0 0 8px;
+    }
+    &-text {
+      font-size: $font-size-small;
+      color: #555;
     }
   }
   &__btns {
