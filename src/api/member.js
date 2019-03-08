@@ -9,7 +9,7 @@ export function couponList (params = {}) {
 }
 
 export function addressList () {
-  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/getAddressList')
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/addresslist')
 }
 
 export function addressCreate (params = {}) {

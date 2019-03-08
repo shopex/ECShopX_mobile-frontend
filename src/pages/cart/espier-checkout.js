@@ -13,6 +13,7 @@ import CheckoutItems from './checkout-items'
 import './espier-checkout.scss'
 
 @connect(({ cart }) => ({
+  coupon: cart.coupon,
   fastbuy: cart.fastbuy
 }), (dispatch) => ({
   onClearFastbuy: () => dispatch({ type: 'cart/clearFastbuy' })
@@ -42,12 +43,6 @@ export default class CartCheckout extends Component {
   }
 
   componentDidMount () {
-    this.fetch()
-  }
-
-  async fetch () {
-    // const { point_total: { point_count: pointTotal } } = await api.member.pointDetail()
-    // const { cartInfo: info, total, default_address: address } = await api.cart.checkout()
     const { cart_type } = this.$router.params
     let info = null
 
@@ -95,6 +90,16 @@ export default class CartCheckout extends Component {
     })
   }
 
+  componentDidShow () {
+    if (!this.params) return
+    this.calcOrder()
+  }
+
+  async fetch () {
+    // const { point_total: { point_count: pointTotal } } = await api.member.pointDetail()
+    // const { cartInfo: info, total, default_address: address } = await api.cart.checkout()
+  }
+
   getParams () {
     const receiver = pickBy(this.state.address, {
       receiver_name: 'name',
@@ -105,10 +110,22 @@ export default class CartCheckout extends Component {
       receiver_address: 'address',
       receiver_zip: 'zip'
     })
+    const { coupon } = this.props
+
     const params = {
       ...this.params,
-      ...receiver
+      ...receiver,
+      coupon_discount: 0,
+      member_discount: 0
     }
+    if (coupon) {
+      if (coupon.type === 'coupon' && coupon.value.code) {
+        params.coupon_discount = coupon.value.code
+      } else if (coupon.type === 'member') {
+        params.member_discount = coupon.value ? 1 : 0
+      }
+    }
+    this.params = params
 
     return params
   }
@@ -139,14 +156,14 @@ export default class CartCheckout extends Component {
 
   handleAddressChange = (address) => {
     address = pickBy(address, {
-      state: 'provinceName',
-      city: 'cityName',
-      district: 'countyName',
+      state: 'province',
+      city: 'city',
+      district: 'county',
       addr_id: 'address_id',
       mobile: 'telephone',
       name: 'username',
       zip: 'postalCode',
-      address: 'detailInfo',
+      address: 'adrdetail',
       area: 'area'
     })
 
@@ -208,7 +225,7 @@ export default class CartCheckout extends Component {
 
     const data = await api.trade.create(this.params)
     console.log(data)
-    const url = `/pages/member/pay`
+    const url = `/pages/cashier/index`
     Taro.navigateTo({ url })
   }
 
@@ -219,11 +236,18 @@ export default class CartCheckout extends Component {
   }
 
   render () {
-    const { info, address, total, showShippingPicker, showAddressPicker, showCheckoutItems, curCheckoutItems, showCoupons } = this.state
+    const { coupon } = this.props
+    const { info, address, total, showShippingPicker, showAddressPicker, showCheckoutItems, curCheckoutItems } = this.state
 
     if (!info) {
       return <Loading />
     }
+
+    const couponText = !coupon
+      ? ''
+      : coupon.type === 'member'
+        ? '会员折扣'
+        : ((coupon.value && coupon.value.title) || '')
 
     return (
       <View className='page-checkout'>
@@ -246,7 +270,7 @@ export default class CartCheckout extends Component {
                         收货人：{address.name} {address.mobile}
                       </Text>
                       <Text className='address-info__addr'>
-                        收货地址：{address.area}{address.address}
+                        收货地址：{address.province}{address.state}{address.district}{address.address}
                       </Text>
                     </View>
                   : <View className='address-info__bd'>请选择收货地址</View>
@@ -308,6 +332,7 @@ export default class CartCheckout extends Component {
             className='coupons-list'
             title='选择优惠券'
             onClick={this.handleCouponsClick}
+            value={couponText}
           >
           </SpCell>
 

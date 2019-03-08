@@ -45,5 +45,5 @@ export function total (params) {
 }
 
 export function coupons (params) {
-  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/getCardList', params)
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/user/newGetCardList', params)
 }

@@ -21,7 +21,7 @@ export default class Price extends Component {
 
   render () {
     const { value = '', noSymbol, primary, className, unit } = this.props
-    let priceVal = (unit === 'cent') ? value / 100 : value
+    let priceVal = (unit === 'cent') ? (+value) / 100 : value
     if (isNumber(priceVal)) {
       priceVal = priceVal.toFixed(2)
     }
