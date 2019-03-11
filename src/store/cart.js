@@ -33,7 +33,7 @@ const cart = createReducer(initState, {
     let list
 
     if (idx >= 0) {
-      list = dotProp.set(state.list, `${idx}`, { ...item, num: state.list[idx].num + num })
+      list = dotProp.set(state.list, `${idx}`, { ...item, num: (+state.list[idx].num) + num })
     } else {
       list = [...state.list, { ...item, num }]
     }
@@ -88,3 +88,7 @@ const cart = createReducer(initState, {
 })
 
 export default cart
+
+export function getTotalCount (state) {
+  return state.list.reduce((acc, item) => (+item.num) + acc, 0)
+}

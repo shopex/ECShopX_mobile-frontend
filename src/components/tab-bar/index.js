@@ -5,10 +5,11 @@ import { AtTabBar } from 'taro-ui'
 import api from '@/api'
 import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
+import { getTotalCount } from '@/store/cart'
 
 @connect(({ cart }) => ({
   cart,
-  cartTotalCount: cart.list.reduce((acc, item) => item.quantity + acc, 0)
+  cartTotalCount: getTotalCount(cart)
 }), (dispatch) => ({
   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: { list } })
 }))
@@ -53,12 +54,13 @@ export default class TabBar extends Component {
   async fetchCart () {
     if (!S.getAuthToken()) return
 
-    try {
-      const { list } = await api.cart.getBasic()
-      this.props.onUpdateCart(list)
-    } catch (e) {
-      console.error(e)
-    }
+    // try {
+    //   const { list } = await api.cart.getBasic()
+    //   this.props.onUpdateCart(list)
+    // } catch (e) {
+    //   console.error(e)
+    // }
+
   }
 
   handleClick = (current) => {

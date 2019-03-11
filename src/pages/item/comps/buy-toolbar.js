@@ -1,10 +1,15 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { AtBadge } from 'taro-ui'
 import { navigateTo } from '@/utils'
+import { getTotalCount } from '@/store/cart'
 
 import './buy-toolbar.scss'
 
+@connect(({ cart }) => ({
+  cartTotalCount: getTotalCount(cart)
+}))
 export default class GoodsBuyToolbar extends Component {
   static options = {
     addGlobalClass: true
@@ -19,7 +24,7 @@ export default class GoodsBuyToolbar extends Component {
   navigateTo = navigateTo
 
   render () {
-    const { onClickAddCart, onClickFastBuy, type } = this.props
+    const { onClickAddCart, onClickFastBuy, cartTotalCount, type } = this.props
     const fastBuyText = '立即购买'
 
     return (
@@ -37,7 +42,7 @@ export default class GoodsBuyToolbar extends Component {
             onClick={this.navigateTo.bind(this, '/pages/cart/espier-index')}
           >
             <AtBadge
-              value={2}
+              value={cartTotalCount || null}
             >
               <View className='sp-icon sp-icon-cart'></View>
             </AtBadge>
