@@ -22,6 +22,7 @@ export default class GoodsItem extends Component {
 
     const price = isObject(info.price) ? info.price.total_price : info.price
     const img = info.img || info.image_default_id
+    console.log(info, 19)
 
     return (
       <View className={classNames('goods-item', className)}>
@@ -39,21 +40,29 @@ export default class GoodsItem extends Component {
           <View className='goods-item__cont'>
             <Text className='goods-item__title'>{info.title}</Text>
             <Text className='goods-item__desc'>{info.desc}</Text>
-            <View className='goods-item__prices'>
-              <Price
-                primary
-                classes='goods-item__price'
-                className='goods-item__price'
-                symbol={info.curSymbol}
-                value={price}
-              />
-              <Price
-                symbol={info.curSymbol}
-                classes='goods-item__price-market'
-                className='goods-item__price-market'
-                value={info.market_price}
-              />
-            </View>
+            {
+              info.price_text
+                ? <View className='goods-item__prices'>
+                    <View classes='goods-item__price' className='goods-item__price goods-item__point'>
+                      {price}<Text>{info.price_text}</Text>
+                    </View>
+                  </View>
+                : <View className='goods-item__prices'>
+                    <Price
+                      primary
+                      classes='goods-item__price'
+                      className='goods-item__price'
+                      symbol={info.curSymbol}
+                      value={price}
+                    />
+                    <Price
+                      symbol={info.curSymbol}
+                      classes='goods-item__price-market'
+                      className='goods-item__price-market'
+                      value={info.market_price}
+                    />
+                  </View>
+            }
           </View>
         </View>
         <View className='goods-item__ft'>
