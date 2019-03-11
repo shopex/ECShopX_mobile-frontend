@@ -7,7 +7,9 @@ import './index.scss'
 
 export default class GoodsItem extends Component {
   static defaultProps = {
-    onClickImg: () => {}
+    onClickImg: () => {},
+    showMarketPrice: true,
+    noCurSymbol: false
   }
 
   static options = {
@@ -15,7 +17,7 @@ export default class GoodsItem extends Component {
   }
 
   render () {
-    const { info, onClickImg, className } = this.props
+    const { info, showMarketPrice, noCurSymbol, onClickImg, className } = this.props
     if (!info) {
       return null
     }
@@ -45,14 +47,18 @@ export default class GoodsItem extends Component {
                 classes='goods-item__price'
                 className='goods-item__price'
                 symbol={info.curSymbol}
+                noSymbol={noCurSymbol}
                 value={price}
               />
-              <Price
-                symbol={info.curSymbol}
-                classes='goods-item__price-market'
-                className='goods-item__price-market'
-                value={info.market_price}
-              />
+              {showMarketPrice && (
+                <Price
+                  symbol={info.curSymbol}
+                  noSymbol={noCurSymbol}
+                  classes='goods-item__price-market'
+                  className='goods-item__price-market'
+                  value={info.market_price}
+                />
+              )}
             </View>
           </View>
         </View>
