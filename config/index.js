@@ -1,6 +1,9 @@
 const path = require('path')
 const pkg = require('../package.json')
 
+const [TARO_CMD, TARO_ENV] = process.env.npm_lifecycle_event.split(':')
+const DIST_PATH = TARO_ENV === 'h5' ? 'h5_dist' : 'dist'
+
 const config = {
   projectName: pkg.name,
   date: '2019-2-18',
@@ -11,7 +14,7 @@ const config = {
     '828': 1.81 / 2
   },
   sourceRoot: 'src',
-  outputRoot: process.env.TARO_ENV === 'weapp' ? 'dist' : 'h5_dist',
+  outputRoot: DIST_PATH,
   plugins: {
     babel: {
       sourceMap: true,
@@ -39,7 +42,7 @@ const config = {
   },
   copy: {
     patterns: [
-      { from: 'src/assets', to: 'dist/assets' }
+      { from: 'src/assets', to: `${DIST_PATH}/assets` }
     ],
     options: {
     }

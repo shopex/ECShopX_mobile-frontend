@@ -81,8 +81,8 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatewrbBZ",
-    value: function funPrivatewrbBZ() {
+    key: "funPrivateKTVoo",
+    value: function funPrivateKTVoo() {
       this.__triggerPropsFn("onClickImg", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -117,7 +117,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivatewrbBZ"], _class.defaultProps = {
+}, _class.$$events = ["funPrivateKTVoo"], _class.defaultProps = {
   onClickImg: function onClickImg() {},
   showMarketPrice: true,
   noCurSymbol: false

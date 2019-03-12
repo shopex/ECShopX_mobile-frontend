@@ -50,7 +50,7 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       _index2.default.redirectTo({
-        url: '/pages/member/index'
+        url: '/pages/home/index'
         // url: '/pages/item/espier-detail?id=268'
       });
     }
