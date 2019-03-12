@@ -6,7 +6,7 @@ import reducers from './reducers'
 
 let storage
 if (process.env.TARO_ENV === 'weapp') {
-  storage = require('redux-persist-weapp-storage').default
+  storage = require('redux-persist-weapp-storage')
 } else {
   storage = require('redux-persist/lib/storage').default
 }
