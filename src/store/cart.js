@@ -101,7 +101,11 @@ export function getTotalCount (state) {
   return state.list.reduce((acc, item) => (+item.num) + acc, 0)
 }
 
+export function getTotalPrice (state) {
+  const total = state.list.reduce((acc, item) => (+item.price) * (+item.num) + acc, 0)
+  return (total / 100).toFixed(2)
+}
+
 export function getSelectedCart (state) {
-  console.log(state.selection)
   return state.list.filter(item => state.selection.includes(item.item_id))
 }
