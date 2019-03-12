@@ -18,7 +18,6 @@ export default class AddressEdit extends Component {
 
     this.state = {
       info: { ...this.props.value },
-      list: [],
       areaList: [],
       multiIndex: [],
     }
@@ -34,34 +33,30 @@ export default class AddressEdit extends Component {
       label: 'label',
       children: 'children',
     })
-    let arr_label = []
-    let s_arr_label = []
-    let th_arr_label = []
-    let arr = []
-    let s_arr = []
-    let th_arr = []
-    let all_arr =[]
-    res.map(item => {
-      arr_label.push(item.label)
-      arr.push({label:item.label,children:item.children})
+    this.nList = nList
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    nList.map((item, index) => {
+      arrProvice.push(item.label)
+      if(index === 0) {
+        item.children.map((c_item, c_index) => {
+          arrCity.push(c_item.label)
+          if(c_index === 0) {
+            c_item.children.map(cny_item => {
+              arrCounty.push(cny_item.label)
+            })
+          }
+        })
+      }
     })
-    arr[0].children.map(item => {
-      s_arr_label.push(item.label)
-      s_arr.push({label:item.label,children:item.children})
-    })
-    s_arr[0].children.map(item => {
-      th_arr_label.push(item.label)
-      th_arr.push({label:item.label,children:item.children})
-    })
-    all_arr[0] = arr_label
-    all_arr[1] = s_arr_label
-    all_arr[2] = th_arr_label
     this.setState({
-      areaList: all_arr,
-      list: nList,
-      multiIndex: [0, 0, 0]
+      areaList: [arrProvice, arrCity, arrCounty],
+    }, ()=>{
+      this.setState({
+        multiIndex: [0, 0, 0],
+      })
     })
-    console.log(all_arr, arr, s_arr, th_arr, 31)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -74,9 +69,9 @@ export default class AddressEdit extends Component {
 
   // 选定开户地区
   bindMultiPickerChange = async (e) => {
-    console.log('picker发送选择改变，携带值为', e.detail.value)
-    const { list, info } = this.state
-    list.map((item, index) => {
+    // console.log('picker发送选择改变，携带值为', e.detail.value)
+    const { info } = this.state
+    this.nList.map((item, index) => {
       if(index === e.detail.value[0]) {
         info.province = item.label
         item.children.map((s_item,sIndex) => {
@@ -91,58 +86,49 @@ export default class AddressEdit extends Component {
         })
       }
     })
-    this.setState({
-      info
-    })
+    this.setState({ info })
   }
 
-  bindMultiPickerColumnChange = async (e) => {
-    const { list, areaList, multiIndex } = this.state
-    console.log('修改的列为', e.detail.column, '，值为', e.detail.value)
+  bindMultiPickerColumnChange = (e) => {
+    const { areaList, multiIndex } = this.state
+    // console.log('修改的列为', e.detail.column, '，值为', e.detail.value, this.nList)
     if(e.detail.column === 0) {
       this.setState({
         multiIndex: [e.detail.value, 0, 0]
       })
-      list.map(item=> {
-        if (item.label === areaList[0][e.detail.value]) {
-          let s_arr = []
-          let th_arr = []
-          item.children.map((s_item, s_index) => {
-            s_arr.push(s_item.label)
-            if(s_index === 0) {
-              s_item.children.map(th_item => {
-                th_arr.push(th_item.label)
+      this.nList.map((item, index) => {
+        if(index === e.detail.value) {
+          let arrCity = []
+          let arrCounty = []
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
               })
             }
           })
-          areaList[1] = s_arr
-          areaList[2] = th_arr
-          this.setState({areaList})
+          areaList[1] = arrCity
+          areaList[2] = arrCounty
+          this.setState({ areaList })
         }
       })
-    }else if (e.detail.column === 1) {
-      let indexSarr = multiIndex
-      indexSarr[1] = e.detail.value
-      this.setState({
-        multiIndex: indexSarr
-      })
-      console.log(multiIndex, list[multiIndex[0]])
-      let th_arr = []
-      list[multiIndex[0]].children.map(item => {
-        if (item.label === areaList[1][e.detail.value]) {
-          item.children.map(th_item => {
-            th_arr.push(th_item.label)
+    } else if (e.detail.column === 1) {
+      multiIndex[1] = e.detail.value
+      this.setState({ multiIndex })
+      this.nList[multiIndex[0]].children.map((c_item, c_index) => {
+        if(c_index === e.detail.value) {
+          let arrCounty = []
+          c_item.children.map(cny_item => {
+            arrCounty.push(cny_item.label)
           })
+          areaList[2] = arrCounty
+          this.setState({ areaList })
         }
       })
-      areaList[2] = th_arr
-      this.setState({areaList})
-    }else {
-      let indexTharr = multiIndex
-      indexTharr[2] = e.detail.value
-      this.setState({
-        multiIndex: indexTharr
-      })
+    } else {
+      multiIndex[2] = e.detail.value
+      this.setState({ multiIndex })
     }
   }
 
@@ -165,14 +151,13 @@ export default class AddressEdit extends Component {
       return S.toast('请输入正确的手机号')
     }
 
-    if (!data.area) {
+    if (!data.province) {
       return S.toast('请选择所在区域')
     }
 
     if (!data.adrdetail) {
       return S.toast('请输入详细地址')
     }
-    // console.log(data, 182)
     // return false
     this.props.onChange && this.props.onChange(data)
     this.props.onClose && this.props.onClose()
@@ -181,7 +166,7 @@ export default class AddressEdit extends Component {
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
-    console.log(info)
+    // console.log(info)
   }
 
   handleDefChange = (val) => {
@@ -204,10 +189,11 @@ export default class AddressEdit extends Component {
 
   render () {
     const { info, areaList, multiIndex } = this.state
+    // console.log(areaList, multiIndex, 225)
     if (!info) {
       return null
     }
-
+    //
     return (
       <View className='address-edit'>
         <AtForm
@@ -231,13 +217,23 @@ export default class AddressEdit extends Component {
             <Picker
               mode='multiSelector'
               onChange={this.bindMultiPickerChange}
-              onColumnchange={this.bindMultiPickerColumnChange}
+              onColumnChange={this.bindMultiPickerColumnChange}
               value={multiIndex}
               range={areaList}
             >
               <View className='picker'>
                 <View className='picker__title'>所在区域</View>
-                <Text>{areaList[0][multiIndex[0]]}{areaList[1][multiIndex[1]]}{areaList[2][multiIndex[2]]}</Text>
+                {
+                  info.address_id
+                    ? `${info.province}${info.city}${info.county}`
+                    : <View>
+                        {
+                          areaList.length > 0
+                            ? <Text>{areaList[0][multiIndex[0]]}{areaList[1][multiIndex[1]]}{areaList[2][multiIndex[2]]}</Text>
+                            : null
+                        }
+                      </View>
+                }
               </View>
             </Picker>
 
