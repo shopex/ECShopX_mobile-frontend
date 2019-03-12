@@ -31,8 +31,8 @@
 			"list": [
 				{
 					"id": -1,
-					"name": "积分列表",
-					"pathName": "pages/item/point-list",
+					"name": "login",
+					"pathName": "pages/index/index",
 					"scene": null
 				}
 			]

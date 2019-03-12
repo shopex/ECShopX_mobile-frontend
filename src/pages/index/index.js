@@ -9,8 +9,8 @@ export default class Index extends Component {
 
   componentWillMount () {
     Taro.redirectTo({
-      url: '/pages/item/point-list'
-      // url: '/pages/item/espier-detail?id=268'
+      // url: '/pages/auth/login'
+      url: '/pages/item/espier-detail?id=268'
     })
   }
 
