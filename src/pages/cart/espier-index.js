@@ -6,12 +6,14 @@ import { GoodsItem, SpCheckbox, SpNote, Loading, Price } from '@/components'
 import { log, navigateTo, pickBy } from '@/utils'
 // import api from '@/api'
 import { withLogin } from '@/hocs'
+import { getTotalPrice } from '@/store/cart'
 
 import './index.scss'
 
 @connect(({ cart }) => ({
   list: cart.list,
-  defaultAllSelect: true
+  defaultAllSelect: true,
+  totalPrice: getTotalPrice(cart)
 }), (dispatch) => ({
   onCartUpdate: (item, num) => dispatch({ type: 'cart/update', payload: { item, num } }),
   onCartDel: (item) => dispatch({ type: 'cart/delete', payload: item }),
@@ -19,12 +21,16 @@ import './index.scss'
 }))
 @withLogin()
 export default class CartIndex extends Component {
+  static defaultProps = {
+    totalPrice: '0.00',
+    list: null
+  }
+
   constructor (props) {
     super(props)
 
     this.state = {
       selection: new Set(),
-      totalPrice: '0.00',
       cartMode: 'default'
     }
   }
@@ -78,7 +84,7 @@ export default class CartIndex extends Component {
 
   handleQuantityChange (idx, quantity) {
     const item = this.props.list[idx]
-    this.props.onCartUpdate(item, quantity)
+    this.props.onCartUpdate(item, +quantity)
   }
 
   handleAllSelect = (checked) => {
@@ -134,7 +140,8 @@ export default class CartIndex extends Component {
 
   render () {
     const { list } = this.props
-    const { selection, totalPrice, cartMode } = this.state
+    const { selection, cartMode } = this.state
+    const { totalPrice } = this.props
 
     if (!list) {
       return <Loading />
