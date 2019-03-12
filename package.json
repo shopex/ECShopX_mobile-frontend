@@ -24,7 +24,7 @@
 		"@tarojs/async-await": "1.2.15",
 		"@tarojs/components": "1.2.15",
 		"@tarojs/redux": "1.2.15",
-		"@tarojs/redux-h5": "1.2.15",
+		"@tarojs/redux-h5": "^1.2.15",
 		"@tarojs/router": "1.2.15",
 		"@tarojs/taro": "1.2.15",
 		"@tarojs/taro-alipay": "1.2.15",

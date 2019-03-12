@@ -118,7 +118,11 @@ export default class Login extends Component {
           </View>
 
           <View className='btns'>
-            <AtButton type='primary' formType='submit'>登录</AtButton>
+            <AtButton
+              type='primary'
+              formType='submit'
+              onClick={this.handleSubmit}
+            >登录</AtButton>
           </View>
         </AtForm>
         <SpToast />
