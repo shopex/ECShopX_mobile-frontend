@@ -17,14 +17,13 @@ export default class GoodsItem extends Component {
   }
 
   render () {
-    const { info, showMarketPrice, noCurSymbol, onClickImg, className } = this.props
+    const { info, showMarketPrice, noCurSymbol, onClickImg, appendText, className } = this.props
     if (!info) {
       return null
     }
 
     const price = isObject(info.price) ? info.price.total_price : info.price
     const img = info.img || info.image_default_id
-    console.log(info, 19)
 
     return (
       <View className={classNames('goods-item', className)}>
@@ -49,6 +48,7 @@ export default class GoodsItem extends Component {
                 className='goods-item__price'
                 symbol={info.curSymbol}
                 noSymbol={noCurSymbol}
+                appendText={appendText}
                 value={price}
               />
               {showMarketPrice && (

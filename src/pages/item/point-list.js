@@ -63,7 +63,7 @@ export default class PointList extends Component {
     nList.map(item => {
       item.price_text = '积分'
     })
-    console.log(nList, 64)
+
     this.setState({
       list: [...this.state.list, ...nList],
       query
@@ -110,7 +110,6 @@ export default class PointList extends Component {
   }
 
   handleClickItem = (item) => {
-    console.log(item.item_id, 109)
     const url = `/pages/item/point-detail?id=${item.item_id}`
     Taro.navigateTo({
       url
@@ -150,6 +149,7 @@ export default class PointList extends Component {
                     info={item}
                     noCurSymbol
                     showMarketPrice={false}
+                    appendText='积分'
                     onClick={this.handleClickItem.bind(this, item)}
                   />
                 )

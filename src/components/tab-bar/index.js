@@ -36,6 +36,9 @@ export default class TabBar extends Component {
     this.fetchCart()
   }
 
+  componentDidShow () {
+  }
+
   componentWillReceiveProps (nextProps) {
     const { tabList } = this.state
 
