@@ -1,13 +1,15 @@
 @import '../../style/imports';
 
+$item-img-size: 240px !default;
+
 .goods-item {
+  $self: &;
   display: flex;
   align-items: center;
   background: #fff;
-  border-radius: 20px;
+  border-radius: $item-border-radius;
   overflow: hidden;
-  padding: $edge-margin $edge-size;
-  margin-bottom: $edge-margin;
+  margin: 0 0 $edge-margin;
   &__hd {
   }
   &__bd {
@@ -17,22 +19,40 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: $edge-margin $edge-size;
   }
   &__img {
-    width: 180px;
-    height: 180px;
-    margin-right: $edge-size;
+    width: $item-img-size;
+    height: $item-img-size;
+    &-wrap {
+      width: $item-img-size;
+      height: $item-img-size;
+      display: block;
+      text-align: center;
+    }
   }
   &__title {
-    @include mult-ellipsis(2);
+    @include multi-ellipsis(2);
     line-height: 1.4;
     color: #111;
     margin: 0 0 16px;
   }
   &__desc {
+    @include multi-ellipsis(2);
+    line-height: 1.4;
     color: $color-gray;
     font-size: $font-size-small;
   }
-  &__prices {
+  &__price {
+    font-size: floor(1.28 * $font-size);
+    margin-right: 24px;
+  }
+  &__point {
+    color: $color-brand-primary;
+  }
+  &__price-market {
+    font-size: $font-size-small;
+    color: $color-gray;
+    text-decoration: line-through;
   }
 }

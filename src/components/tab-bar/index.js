@@ -3,10 +3,13 @@ import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
 import api from '@/api'
+import { navigateTo, getCurrentRoute } from '@/utils'
+import S from '@/spx'
+import { getTotalCount } from '@/store/cart'
 
 @connect(({ cart }) => ({
   cart,
-  cartTotalCount: cart.list.reduce((acc, item) => item.quantity + acc, 0)
+  cartTotalCount: getTotalCount(cart)
 }), (dispatch) => ({
   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: { list } })
 }))
@@ -21,10 +24,10 @@ export default class TabBar extends Component {
     this.state = {
       current: 0,
       tabList: [
-        { title: '首页', iconType: 'shop', iconPrefixClass: 'sp-icon' },
-        { title: '分类', iconType: 'menu', iconPrefixClass: 'sp-icon' },
-        { title: '购物车', iconType: 'cart', text: this.props.cartTotalCount || '', max: '99', iconPrefixClass: 'sp-icon' },
-        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon' }
+        { title: '首页', iconType: 'shop', iconPrefixClass: 'sp-icon', url: '/pages/home/index' },
+        { title: '分类', iconType: 'menu', iconPrefixClass: 'sp-icon', url: '/pages/category/index' },
+        { title: '购物车', iconType: 'cart', text: this.props.cartTotalCount || '', max: '99', iconPrefixClass: 'sp-icon', url: '/pages/cart/espier-index' },
+        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon', url: '/pages/member/index' }
       ]
     }
   }
@@ -49,23 +52,31 @@ export default class TabBar extends Component {
   }
 
   async fetchCart () {
-    try {
-      const { list } = await api.cart.getBasic()
-      this.props.onUpdateCart(list)
-    } catch (e) {
-      console.error(e)
-    }
+    if (!S.getAuthToken()) return
+
+    // try {
+    //   const { list } = await api.cart.getBasic()
+    //   this.props.onUpdateCart(list)
+    // } catch (e) {
+    //   console.error(e)
+    // }
+
   }
 
   handleClick = (current) => {
+    const cur = this.state.current
     this.setState({
       current
     })
 
-    if (current === 2) {
-      Taro.navigateTo({
-        url: '/pages/cart/index'
-      })
+    if (cur !== current) {
+      const curTab = this.state.tabList[current]
+      const { url, urlRedirect } = curTab
+      const { fullPath } = getCurrentRoute(this.$router)
+
+      if (url && fullPath !== url) {
+        navigateTo(url, urlRedirect)
+      }
     }
   }
 

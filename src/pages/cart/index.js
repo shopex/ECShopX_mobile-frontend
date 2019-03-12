@@ -2,8 +2,9 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtInputNumber, AtButton } from 'taro-ui'
 import { GoodsItem, SpCheckbox, SpNote, Address, Loading, Price } from '@/components'
-import { log } from '@/utils'
+import { log, navigateTo } from '@/utils'
 import api from '@/api'
+import { withLogin } from '@/hocs'
 
 import './index.scss'
 
@@ -37,6 +38,7 @@ function normalizeItems (list) {
 }
 
 // TODO: redux cart compute
+@withLogin()
 export default class CartIndex extends Component {
   constructor (props) {
     super(props)
@@ -126,6 +128,8 @@ export default class CartIndex extends Component {
     })
   }
 
+  navigateTo = navigateTo
+
   // TODO: 对接api
   render () {
     const { list, selection, totalPrice, cartMode } = this.state
@@ -201,11 +205,11 @@ export default class CartIndex extends Component {
             {
               !list.length && (
                 <View>
-                  <SpNote customStyle={'margin-bottom: 20px'} img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>
+                  <SpNote customStyle='margin-bottom: 20px' img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>
                   <AtButton
                     circle
                     type='primary'
-                    onClick={() => Taro.navigateTo({ url: '/pages/items/list' })}
+                    onClick={this.navigateTo.bind(this, '/pages/home/index', true)}
                   >随便逛逛</AtButton>
                 </View>
               )

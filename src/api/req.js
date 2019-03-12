@@ -12,6 +12,8 @@ class API {
     if (!/\/$/.test(baseURL)) {
       baseURL = baseURL + '/'
     }
+
+    this.options = options
     this.baseURL = baseURL
     this.genMethods(['get', 'post', 'delete', 'put'])
   }
@@ -33,32 +35,42 @@ class API {
 
     let reqUrl = /^http/.test(url) ? url : `${this.baseURL}${url.replace(/^\//, '')}`
     const query = (!data || typeof data === 'string')
-      ? data
-      : qs.stringify(data)
+      ? qs.parse(data)
+      : data
 
-    if (methodIsGet) {
-      if (query)
-        reqUrl = addQuery(reqUrl, query)
-    } else {
+    if (!methodIsGet) {
       header['content-type'] = header['content-type'] || 'application/x-www-form-urlencoded'
     }
     header['Authorization'] = `Bearer ${S.getAuthToken()}`
 
     const options = {
+      ...config,
       url: reqUrl,
       data: query,
       method: method.toUpperCase(),
       header: header
     }
 
-    if (methodIsGet) {
-      delete options.data
-    }
-
     if (showLoading) {
       Taro.showLoading({
         mask: true
       })
+    }
+
+    // TODO: update taro version
+    // if (this.options.interceptor && Taro.addInterceptor) {
+    //   Taro.addInterceptor(this.options.interceptor)
+    // }
+    options.data = {
+      ...(options.data || {}),
+      company_id: 1
+    }
+    if (options.method === 'GET') {
+      options.url = addQuery(options.url, qs.stringify(options.data))
+      delete options.data
+    } else {
+      // nest data
+      options.data = qs.stringify(options.data)
     }
 
     return Taro.request(options)
@@ -70,8 +82,8 @@ class API {
         }
 
         if (statusCode >= 200 && statusCode < 300) {
-          if (data.code === '200') {
-            return data
+          if (data.data !== undefined) {
+            return data.data
           } else {
             const errMsg = data.msg || data.err_msg || '操作失败，请稍后重试'
             if (showError) {
@@ -108,7 +120,14 @@ class API {
 }
 
 export default new API({
-  baseURL: TARO_APP.BASE_URL
+  baseURL: TARO_APP.BASE_URL,
+
+  // interceptor (chain) {
+  //   const { requestParams } = chain
+  //   requestParams.company_id = '1'
+
+  //   return chain.proceed(requestParams)
+  // }
 })
 
 export { API }

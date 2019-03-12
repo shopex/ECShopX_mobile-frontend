@@ -64,22 +64,22 @@ export default class CartCheckout extends Component {
     this.toggleCheckoutItems()
   }
 
-  toggleAddressPicker (isOpend) {
-    if (isOpend === undefined) {
-      isOpend = !this.state.showAddressPicker
+  toggleAddressPicker (isOpened) {
+    if (isOpened === undefined) {
+      isOpened = !this.state.showAddressPicker
     }
 
-    lockScreen(isOpend)
-    this.setState({ showAddressPicker: isOpend })
+    lockScreen(isOpened)
+    this.setState({ showAddressPicker: isOpened })
   }
 
-  toggleCheckoutItems (isOpend) {
-    if (isOpend === undefined) {
-      isOpend = !this.state.showCheckoutItems
+  toggleCheckoutItems (isOpened) {
+    if (isOpened === undefined) {
+      isOpened = !this.state.showCheckoutItems
     }
 
-    lockScreen(isOpend)
-    this.setState({ showCheckoutItems: isOpend })
+    lockScreen(isOpened)
+    this.setState({ showCheckoutItems: isOpened })
   }
 
   render () {
@@ -108,10 +108,10 @@ export default class CartCheckout extends Component {
                 address
                   ? <View className='address-info__bd'>
                       <Text className='address-info__receiver'>
-                        收货人：{address.name} {address.mobile}
+                        收货人：{address.name} {address.telephone}
                       </Text>
                       <Text className='address-info__addr'>
-                        收货地址：{address.addrdetail}
+                        收货地址：{address.province}{address.city}{address.county}{address.adrdetail}
                       </Text>
                     </View>
                   : <View className='address-info__bd'>请选择收货地址</View>
@@ -231,20 +231,20 @@ export default class CartCheckout extends Component {
         </ScrollView>
 
         <AddressPicker
-          isOpend={showAddressPicker}
+          isOpened={showAddressPicker}
           value={address}
           onChange={this.handleAddressChange}
           onClickBack={this.toggleAddressPicker.bind(this, false)}
         />
 
         <CheckoutItems
-          isOpend={showCheckoutItems}
+          isOpened={showCheckoutItems}
           list={curCheckoutItems}
           onClickBack={this.toggleCheckoutItems.bind(this, false)}
         />
 
         <AtActionSheet
-          isOpend={showShippingPicker}
+          isOpened={showShippingPicker}
           onClose={() => this.setState({ showShippingPicker: false })}
         >
           <AtActionSheetItem onClick={this.handleShippingChange}>顺丰</AtActionSheetItem>

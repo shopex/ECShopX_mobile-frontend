@@ -1,0 +1,17 @@
+.navigation {
+  display: flex;
+  align-items: center;
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    .nav-img {
+      width: 80%;
+    }
+    .nav-name {
+      font-style: 24px;
+    }
+  }
+}

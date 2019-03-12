@@ -3,7 +3,8 @@ import api from '@/api'
 import { getCurrentRoute, log } from '@/utils'
 
 const globalData = {}
-const TOKEN_IDENTIFIER = 'authToken'
+const TOKEN_IDENTIFIER = 'auth_token'
+const TOKEN_TIMESTAMP = 'refresh_token_time'
 
 function remove (arr, item) {
   const idx = arr.indexOf(item)
@@ -23,8 +24,16 @@ function isAsync (func) {
 }
 
 class Spx {
-  constructor () {
+  constructor (options = {}) {
     this.hooks = []
+    this.options = {
+      autoRefreshToken: true,
+      ...options
+    }
+
+    if (this.options.autoRefreshToken) {
+      this.startRefreshToken()
+    }
   }
 
   getAuthToken () {
@@ -38,13 +47,32 @@ class Spx {
   setAuthToken (token) {
     this.set(TOKEN_IDENTIFIER, token)
     Taro.setStorageSync(TOKEN_IDENTIFIER, token)
+    Taro.setStorageSync(TOKEN_TIMESTAMP, Date.now() + 55 * 60 * 1000)
+  }
+
+  startRefreshToken () {
+    if (this._refreshTokenTimer) {
+      clearTimeout(this._refreshTokenTimer)
+    }
+    const checkAndRefresh = async () => {
+      const expired = Taro.getStorageSync(TOKEN_TIMESTAMP)
+      if (!expired) return
+      const delta = expired - Date.now()
+      if (delta > 0 && delta <= 5 * 60 * 1000) {
+        const { token } = await api.user.refreshToken()
+        clearTimeout(this._refreshTokenTimer)
+        this.setAuthToken(token)
+      }
+    }
+
+    setInterval(checkAndRefresh, 5 * 60 * 1000)
   }
 
   async getUserInfo () {
     let userInfo = this.get('userInfo')
     const token = this.getAuthToken()
     if (!userInfo && token) {
-      userInfo = await api.getUserInfo()
+      userInfo = await api.user.info()
       this.set('userInfo', userInfo)
     }
 
@@ -94,13 +122,11 @@ class Spx {
   }
 
   async autoLogin (ctx, next) {
-    const appEnv = Taro.getEnv()
-
     try {
       await this.trigger('autoLogin', ctx)
-      if (appEnv === Taro.ENV_TYPE.WEAPP) {
-        await Taro.checkSession()
-      }
+      // if (process.env.NODE_ENV === 'weapp') {
+      //   await Taro.checkSession()
+      // }
       if (!this.getAuthToken()) {
         throw new Error('auth token not found')
       }
@@ -112,15 +138,20 @@ class Spx {
     } catch (e) {
       log.debug('[auth failed] redirect to login page: ', e)
 
-      const { fullPath } = getCurrentRoute(ctx.$router)
-      const authUrl = appEnv === Taro.ENV_TYPE.WEAPP
-        ? `/pages/auth/authorize?redirect=${fullPath}`
-        : `/pages/auth/login?redirect=${fullPath}`
-
-      Taro.redirectTo({
-        url: authUrl
-      })
+      this.login(ctx)
     }
+  }
+
+  login (ctx, isRedirect = true) {
+    const { fullPath } = getCurrentRoute(ctx.$router)
+
+    const authUrl = process.env.TARO_ENV === 'weapp'
+      ? `/pages/auth/login?redirect=${fullPath}`
+      : `/pages/auth/login?redirect=${fullPath}`
+
+    Taro[isRedirect ? 'redirectTo' : 'navigateTo']({
+      url: authUrl
+    })
   }
 
   logout () {

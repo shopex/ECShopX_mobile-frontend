@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import '@tarojs/async-await'
+import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from '@tarojs/redux'
 import configStore from '@/store'
 import Index from './pages/index'
@@ -12,25 +13,41 @@ import './app.scss'
 //   require('nerv-devtools')
 // }
 
-const store = configStore()
+const { store, persistor } = configStore()
 
 class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/item/list',
-      'pages/item/detail',
-      'pages/cart/index',
-      'pages/cart/checkout',
-
+      'pages/home/index',
       'pages/category/index',
-      'pages/auth/login',
+      'pages/item/list',
+      'pages/item/espier-detail',
+      'pages/item/point-list',
+      'pages/item/point-detail',
+
+      'pages/cart/espier-index',
+      'pages/cart/espier-checkout',
+      'pages/cart/coupon-picker',
+      'pages/article/index',
+
       'pages/auth/reg',
+      'pages/auth/login',
       'pages/auth/forgotpwd',
+
+      'pages/cashier/index',
+      'pages/cashier/cashier-result',
 
       'pages/member/index',
       'pages/member/favorite',
-      'pages/member/integral',
+      'pages/member/point',
+      'pages/member/pay',
+      'pages/member/recharge',
+      'pages/member/recommend',
+      'pages/member/recommend-member',
+      'pages/member/coupon',
+      'pages/member/address',
+
       'pages/trade/list',
       'pages/trade/detail',
       'pages/trade/rate'
@@ -56,7 +73,9 @@ class App extends Component {
   render () {
     return (
       <Provider store={store}>
-        <Index />
+        <PersistGate persistor={persistor}>
+          <Index />
+        </PersistGate>
       </Provider>
     )
   }

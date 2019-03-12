@@ -26,7 +26,7 @@ export default class FilterBar extends Component {
   }
 
   handleClickItem (idx) {
-    const item = this.state.list[idx]
+    const item = this.props.list[idx]
     let sortOrder = null
 
     if (item.sort) {
@@ -45,26 +45,29 @@ export default class FilterBar extends Component {
   }
 
   render () {
-    const { list } = this.props
+    const { list, className } = this.props
     const { sortOrder, curIdx } = this.state
 
     return (
-      <View className='filter-bar'>
-        {
-          list.map((item, idx) => {
-            const isCurrent = curIdx === idx
+      <View className={classNames('filter-bar', className)}>
+        <View className='filter-bar__bd'>
+          {
+            list.map((item, idx) => {
+              const isCurrent = curIdx === idx
 
-            return (
-              <View
-                className={classNames('filter-bar__item', isCurrent && 'filter-bar__item-active', item.key && `filter-bar__item-${item.key}`, item.sort ? `filter-bar__item-sort filter-bar__item-sort-${sortOrder > 0 ? 'asc' : 'desc'}` : null)}
-                onClick={this.handleClickItem.bind(this, idx)}
-                key={idx}
-              >
-                <Text className='filter-bar__item-text'>{item.title}</Text>
-              </View>
-            )
-          })
-        }
+              return (
+                <View
+                  className={classNames('filter-bar__item', isCurrent && 'filter-bar__item-active', item.key && `filter-bar__item-${item.key}`, item.sort ? `filter-bar__item-sort filter-bar__item-sort-${sortOrder > 0 ? 'asc' : 'desc'}` : null)}
+                  onClick={this.handleClickItem.bind(this, idx)}
+                  key={idx}
+                >
+                  <Text className='filter-bar__item-text'>{item.title}</Text>
+                </View>
+              )
+            })
+          }
+        </View>
+        <View className='filter-bar__ft'>{this.props.children}</View>
       </View>
     )
   }

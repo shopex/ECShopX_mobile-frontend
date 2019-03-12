@@ -35,8 +35,7 @@ const config = {
     })
   },
   alias: {
-    '@': path.join(__dirname, '..', '/src'),
-    'lodash$': 'lodash-es'
+    '@': path.join(__dirname, '..', '/src')
   },
   copy: {
     patterns: [
@@ -104,7 +103,20 @@ const config = {
         }
       }
     },
-    esnextModules: ['taro-ui']
+    esnextModules: ['taro-ui'],
+    webpackChain (chain) {
+      chain.merge({
+        output: {
+          path: path.resolve(__dirname, '../h5_dist')
+        },
+        resolve: {
+          alias: {
+            'react': 'nervjs',
+            'react-dom': 'nervjs'
+          }
+        }
+      })
+    }
   }
 }
 

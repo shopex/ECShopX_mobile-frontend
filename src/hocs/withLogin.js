@@ -20,34 +20,34 @@ export default function withLogin (next, lifeCycle = LIFE_CYCLE_TYPES.WILL_MOUNT
       }
 
       async componentWillMount () {
-        if (super.componentWillMount) {
-          if (lifeCycle === LIFE_CYCLE_TYPES.WILL_MOUNT) {
-            const res = await this.__autoLogin()
-            if (!res) return
-          }
+        if (lifeCycle === LIFE_CYCLE_TYPES.WILL_MOUNT) {
+          const res = await this.__autoLogin()
+          if (!res) return
+        }
 
+        if (super.componentWillMount) {
           super.componentWillMount()
         }
       }
 
       async componentDidMount () {
-        if (super.componentDidMount) {
-          if (lifeCycle === LIFE_CYCLE_TYPES.DID_MOUNT) {
-            const res = await this.__autoLogin()
-            if (!res) return
-          }
+        if (lifeCycle === LIFE_CYCLE_TYPES.DID_MOUNT) {
+          const res = await this.__autoLogin()
+          if (!res) return
+        }
 
+        if (super.componentDidMount) {
           super.componentDidMount()
         }
       }
 
       async componentDidShow () {
-        if (super.componentDidShow) {
-          if (lifeCycle === LIFE_CYCLE_TYPES.DID_SHOW) {
-            const res = await this.__autoLogin()
-            if (!res) return
-          }
+        if (lifeCycle === LIFE_CYCLE_TYPES.DID_SHOW) {
+          const res = await this.__autoLogin()
+          if (!res) return
+        }
 
+        if (super.componentDidShow) {
           super.componentDidShow()
         }
       }

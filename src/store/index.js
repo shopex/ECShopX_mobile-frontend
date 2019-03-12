@@ -1,16 +1,38 @@
 import { createStore, applyMiddleware } from 'redux'
+import { persistStore, persistReducer } from 'redux-persist'
 import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import reducers from './reducers'
+
+let storage
+if (process.env.TARO_ENV === 'weapp') {
+  storage = require('redux-persist-weapp-storage')
+} else {
+  storage = require('redux-persist/lib/storage').default
+}
 
 const middlewares = [
   thunkMiddleware,
   createLogger()
 ]
 
+const reducer = persistReducer({
+  key: 'root',
+  storage
+}, reducers)
+
+let store, persistor
+
 export default function configStore () {
-  const store = createStore(reducers, applyMiddleware(...middlewares))
-  return store
+  if (!store) {
+    store = createStore(reducer, applyMiddleware(...middlewares))
+    persistor = persistStore(store)
+  }
+
+  return {
+    store,
+    persistor
+  }
 }
 
 

@@ -1,9 +1,9 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, FilterBar } from '@/components'
+import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem } from '@/components'
 import api from '@/api'
-import GoodsItem from './comps/item'
+import { pickBy } from '@/utils'
 
 import './list.scss'
 
@@ -22,7 +22,8 @@ export default class List extends Component {
         { title: '价格', sort: -1 }
       ],
       query: null,
-      list: []
+      list: [],
+      listType: ''
     }
   }
 
@@ -33,7 +34,7 @@ export default class List extends Component {
         distributor_id: 16,
         item_type: 'normal',
         approve_status: 'onsale,only_show',
-        category: this.$router.params.cateId
+        category: this.$router.params.cat_id
       }
     }, () => {
       this.nextPage()
@@ -49,10 +50,18 @@ export default class List extends Component {
     }
 
     const { list, total_count: total } = await api.item.search(query)
-    const nList = this.state.list.concat(list)
+
+    const nList = pickBy(list, {
+      img: 'pics[0]',
+      item_id: 'item_id',
+      title: 'itemName',
+      desc: 'brief',
+      price: ({ price }) => (price/100).toFixed(2),
+      market_price: ({ market_price }) => (market_price/100).toFixed(2)
+    })
 
     this.setState({
-      list: nList,
+      list: [...this.state.list, ...nList],
       query
     })
 
@@ -63,41 +72,66 @@ export default class List extends Component {
 
   handleFilterChange = (data) => {
     const { current, sort } = data
+
     const query = {
       ...this.state.query,
       goodsSort: current === 0
           ? null
           : current === 1
             ? 1
-            : (sort > 0 ? 2 : 3)
+            : (sort > 0 ? 3 : 2)
+    }
+
+    if (current !== this.state.curFilterIdx || (current === this.state.curFilterIdx && query.goodsSort !== this.state.query.goodsSort)) {
+      this.resetPage()
+      this.setState({
+        list: []
+      })
     }
 
     this.setState({
-      current,
+      curFilterIdx: current,
       query
     }, () => {
       this.nextPage()
     })
   }
 
+  handleListTypeChange = () => {
+    const listType = this.state.listType === 'grid' ? 'default' : 'grid'
+
+    this.setState({
+      listType
+    })
+  }
+
   handleClickItem = (item) => {
-    const url = `/pages/item/detail?id=${item.item_id}`
+    const url = `/pages/item/espier-detail?id=${item.item_id}`
     Taro.navigateTo({
       url
     })
   }
 
   render () {
-    const { list, curFilterIdx, filterList, showBackToTop, scrollTop, page } = this.state
+    const { list, listType, curFilterIdx, filterList, showBackToTop, scrollTop, page } = this.state
 
     return (
       <View className='page-goods-list'>
-        <FilterBar
-          className='goods-list__tabs'
-          current={curFilterIdx}
-          list={filterList}
-          onChange={this.handleFilterChange}
-        ></FilterBar>
+        <View className='goods-list__toolbar'>
+          <SearchBar />
+
+          <FilterBar
+            className='goods-list__tabs'
+            current={curFilterIdx}
+            list={filterList}
+            onChange={this.handleFilterChange}
+          >
+            <View
+              className='at-icon at-icon-bullet-list'
+              onClick={this.handleListTypeChange}
+            ></View>
+          </FilterBar>
+        </View>
 
         <ScrollView
           className='goods-list__scroll'
@@ -107,23 +141,26 @@ export default class List extends Component {
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
         >
-          {
-            list.map(item => {
-              return (
-                <GoodsItem
-                  key={item.item_id}
-                  info={item}
-                  onClick={() => this.handleClickItem(item)}
-                />
-              )
-            })
-          }
+          <View className={`goods-list goods-list__type-${listType}`}>
+            {
+              list.map(item => {
+                return (
+                  <GoodsItem
+                    key={item.item_id}
+                    info={item}
+                    onClick={() => this.handleClickItem(item)}
+                  />
+                )
+              })
+            }
+          </View>
           {
             page.isLoading
               ? <Loading>正在加载...</Loading>
               : null
           }
         </ScrollView>
+
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}

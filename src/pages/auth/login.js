@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { SpToast, SpIconMenu } from '@/components'
+import { SpToast } from '@/components'
 
 import S from '@/spx'
 import api from '@/api'
@@ -14,7 +14,8 @@ export default class Login extends Component {
 
     this.state = {
       info: {},
-      isVisible: false
+      isVisible: false,
+      urlBack: ''
     }
   }
 
@@ -23,6 +24,13 @@ export default class Login extends Component {
       url: `/pages/auth/reg`
     })
   }
+  componentDidMount() {
+    const { redirect } = this.$router.params
+    this.setState({
+      urlBack: redirect
+    })
+    console.log(this.$router, this.$router.params, redirect, 44)
+  }
 
   handleSubmit = async (e) => {
     const { value } = e.detail
@@ -30,7 +38,8 @@ export default class Login extends Component {
       ...this.state.info,
       ...value
     }
-    if (!data.mobile || !/1\d{10}/.test(data.mobile)) {
+
+    if (!data.username || !/1\d{10}/.test(data.username)) {
       return S.toast('请输入正确的手机号')
     }
 
@@ -38,8 +47,14 @@ export default class Login extends Component {
       return S.toast('请输入密码')
     }
     console.log(data, 19)
-    // const { UserInfo } = await api.user.reg(data)
-    // console.log(UserInfo)
+    await api.user.login(data).then(res => {
+      const { urlBack } = this.state
+      S.setAuthToken(res.token)
+      console.log(res, 43)
+      Taro.redirectTo({
+        url: urlBack
+      })
+    })
   }
 
   handleChange = (name, val) => {
@@ -77,12 +92,12 @@ export default class Login extends Component {
           <View className='sec auth-login__form'>
             <AtInput
               title='手机号码'
-              name='mobile'
+              name='username'
               maxLength={11}
               value={info.mobile}
               placeholder='请输入手机号码'
               onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, 'mobile')}
+              onChange={this.handleChange.bind(this, 'username')}
             />
             <AtInput
               title='密码'
@@ -103,7 +118,16 @@ export default class Login extends Component {
           </View>
 
           <View className='btns'>
-            <AtButton type='primary' formType='submit'>登录</AtButton>
+            {
+              Taro.getEnv() === 'WEAPP'
+                ? <AtButton type='primary' formType='submit'>登录</AtButton>
+                : null
+            }
+            {
+              Taro.getEnv() === 'WEB'
+                ? <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>登录</AtButton>
+                : null
+            }
           </View>
         </AtForm>
         <SpToast />

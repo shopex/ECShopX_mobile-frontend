@@ -8,11 +8,10 @@ export default class Index extends Component {
   }
 
   componentWillMount () {
-    if (process.env.NODE_ENV === 'development') {
-      Taro.redirectTo({
-        url: '/pages/item/list?cateId=20'
-      })
-    }
+    Taro.redirectTo({
+      url: '/pages/member/index'
+      // url: '/pages/item/espier-detail?id=268'
+    })
   }
 
   componentDidMount () { }
