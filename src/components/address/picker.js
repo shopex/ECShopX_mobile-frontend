@@ -6,6 +6,7 @@ import { classNames, log } from '@/utils'
 import api from '@/api'
 import find from 'lodash/find'
 import AddressEdit from './edit'
+import S from '@/spx'
 
 
 import './picker.scss'
@@ -82,14 +83,29 @@ export default class AddressPicker extends Component {
   }
 
   handleSaveAddress = async (address) => {
-    await api.member.addressCreateOrUpdate(address)
-    await this.fetch(() => {
-      // update current address
-      const params = this.props.value ? { ...this.props.value } : null
-      this.changeSelection(params)
-    })
+    try {
+      await api.member.addressCreateOrUpdate(address)
+        .then(() => {
+          if(address.address_id) {
+            S.toast('修改成功')
+          } else {
+            S.toast('创建成功')
+          }
+        })
 
-    this.exitEdit()
+      await this.fetch(() => {
+        // update current address
+        const params = this.props.value ? { ...this.props.value } : null
+        this.changeSelection(params)
+      })
+
+      this.exitEdit()
+    } catch (error) {
+      S.toast(`${error.res.data.error.message}`)
+      return false
+    }
+
+
   }
 
   handleDelAddress = async (address) => {

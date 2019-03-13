@@ -22,11 +22,18 @@ export function regImg (params = {}) {
   return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/image/code', params)
 }
 
+export function regSmsCode (params = {}) {
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/sms/code', params)
+}
+
 export function regParam () {
-  // return req.post('http://pjj.aixue7.com/index.php/api/weapp/deposit/rechargeruleshttp://api.espier.local/index.php/api/h5app/wxapp/member', data)
   return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/setting')
 }
 
 export function info () {
   return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/setting')
+}
+
+export function forgotPwd (params = {}) {
+  return req.post('http://pjj.aixue7.com/index.php/api/h5app/wxapp/member/reset/password', params)
 }

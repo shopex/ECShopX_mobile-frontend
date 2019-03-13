@@ -76,3 +76,7 @@ export function recommendMember (params = {}) {
 export function recommendOrder (params = {}) {
   return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/promoter/brokerages', params)
 }
+
+export function depositToPoint (params = {}) {
+  return req.post('http://pjj.aixue7.com/index.php/api/h5app/weapp/deposit/to/point', params)
+}

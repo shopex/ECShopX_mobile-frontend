@@ -116,7 +116,12 @@
     }
   }
   .otherNumber {
-    width: 200px;
-    height: 0;
+    margin: 30px;
   }
+}
+
+.at-modal__content {
+  text-align: center;
+  display:flex;
+  align-items:center;
 }
