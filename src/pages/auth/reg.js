@@ -18,7 +18,7 @@ export default class Reg extends Component {
       isVisible: false,
       list: [],
       imgVisible: false,
-      imgUrl: ''
+      imgInfo: {}
       // dateSel: '2018-04-22'
     }
   }
@@ -41,11 +41,18 @@ export default class Reg extends Component {
     this.fetch()
   }
 
-  // onDateChange = e => {
-  //   this.setState({
-  //     dateSel: e.detail.value
-  //   })
-  // }
+  handleClickImgcode = async () => {
+    const query = {
+      type: 'sign'
+    }
+    await api.user.regImg(query)
+      .then(img_res => {
+        this.setState({
+          imgInfo: img_res
+        })
+      })
+  }
+
   async fetch () {
     let arr  = []
     let res = await api.user.regParam()
@@ -63,18 +70,14 @@ export default class Reg extends Component {
           is_required: res[key].is_required,
           items: res[key].items ? res[key].items : null
         })
-
       }
     })
-    const query = {
-      type: 'sign'
-    }
-    let resImg = await api.user.regImg(query)
-    console.log(resImg)
-    // imgUrl
+
+    this.handleClickImgcode()
     this.setState({
       list: arr,
     });
+    this.count = 0
   }
 
   handleSubmit = async (e) => {
@@ -87,9 +90,9 @@ export default class Reg extends Component {
       return S.toast('请输入正确的手机号')
     }
 
-    // if (!data.code) {
-    //   return S.toast('请选择验证码')
-    // }
+    if (!data.vcode) {
+      return S.toast('请输入验证码')
+    }
 
     if (!data.password) {
       return S.toast('请输入密码')
@@ -98,16 +101,34 @@ export default class Reg extends Component {
       return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
     })
     console.log(data)
+    try {
+      await api.user.reg(data)
+        .then(res => {
+          S.setAuthToken(res.token.data.token)
+          Taro.showToast({
+            title: '注册成功',
+            icon: 'none',
+          }).then(() => {
+            setTimeout(()=>{
+              Taro.redirectTo({
+                url: '/pages/member/index'
+              })
+            }, 1500)
 
-    const { UserInfo } = await api.user.reg(data)
-    console.log(UserInfo)
+          })
+        })
+    } catch (error) {
+      S.toast(`${error.res.data.error.message}`)
+      return false
+    }
   }
 
   handleChange = (name, val) => {
     const { info, list } = this.state
     info[name] = val
     if(name === 'mobile') {
-      if(val.length === 11) {
+      if(val.length === 11 && this.count === 0) {
+        this.count = 1
         this.setState({
           imgVisible: true
         })
@@ -148,16 +169,35 @@ export default class Reg extends Component {
     S.closeToast()
   }
 
-  handleTimerStart = (resolve) => {
+  handleTimerStart = async (resolve) => {
     if (this.state.isTimerStart) return
-    const { mobile } = this.state.info
-
+    const { mobile, yzm } = this.state.info
+    const { imgInfo } = this.state
     if (!/1\d{10}/.test(mobile)) {
       return S.toast('请输入正确的手机号')
     }
-    console.log(222)
+    if(!(mobile.length === 11 && yzm)) {
+      return S.toast('请输入手机号和图形验证码')
+    }
 
-    return false
+    const query = {
+      type: 'sign',
+      mobile: mobile,
+      yzm: yzm,
+      token: imgInfo.imageToken
+    }
+
+    try {
+      await api.user.regSmsCode(query)
+        .then(() => {
+          S.toast('发送成功')
+          // 补token
+        })
+    } catch (error) {
+      S.toast(`${error.res.data.error.message}`)
+      return false
+    }
+
     resolve()
   }
 
@@ -183,8 +223,8 @@ export default class Reg extends Component {
   }
 
   render () {
-    const { info, timerMsg, isVisible, list, imgVisible } = this.state
-
+    const { info, timerMsg, isVisible, list, imgVisible, imgInfo } = this.state
+    // console.log(this.state.imgInfo)
     return (
       <View className='auth-reg'>
         <AtForm
@@ -203,17 +243,17 @@ export default class Reg extends Component {
             {
               imgVisible
                 ? <AtInput title='图片验证码' name='yzm' value={info.yzm} placeholder='请输入图片验证码' onFocus={this.handleErrorToastClose} onChange={this.handleChange.bind(this, 'yzm')}>
-                    <Image />
+                    <Image src={`${imgInfo.imageData}`} onClick={this.handleClickImgcode} />
                   </AtInput>
                 : null
             }
             <AtInput
               title='验证码'
-              name='code'
-              value={info.code}
+              name='vcode'
+              value={info.vcode}
               placeholder='请输入验证码'
               onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, 'code')}
+              onChange={this.handleChange.bind(this, 'vcode')}
             >
               <Timer
                 onStart={this.handleTimerStart}

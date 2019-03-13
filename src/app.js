@@ -42,6 +42,7 @@ class App extends Component {
       'pages/member/favorite',
       'pages/member/point',
       'pages/member/pay',
+      'pages/member/money-to-point',
       'pages/member/recharge',
       'pages/member/recommend',
       'pages/member/recommend-member',

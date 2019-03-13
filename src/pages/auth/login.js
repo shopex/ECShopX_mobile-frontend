@@ -47,20 +47,24 @@ export default class Login extends Component {
       return S.toast('请输入密码')
     }
     console.log(data, 19)
-    await api.user.login(data).then(res => {
-      const { urlBack } = this.state
-      S.setAuthToken(res.token)
-      console.log(res, 43)
-      Taro.redirectTo({
-        url: urlBack
-      })
-    })
+    try {
+      await api.user.login(data)
+        .then(res => {
+          const { urlBack } = this.state
+          S.setAuthToken(res.token)
+          console.log(res, 43)
+          Taro.redirectTo({
+            url: urlBack
+          })
+        })
+    } catch (error) {
+      S.toast(`${error.res.data.error.message}`)
+    }
   }
 
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
-    console.log(info)
   }
 
   handleClickIconpwd = () => {

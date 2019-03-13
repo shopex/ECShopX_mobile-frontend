@@ -28,6 +28,7 @@ export default class AddressEdit extends Component {
   }
 
   async fetch () {
+    const { info } = this.state
     let res = await api.member.areaList()
     const nList = pickBy(res, {
       label: 'label',
@@ -50,11 +51,15 @@ export default class AddressEdit extends Component {
         })
       }
     })
+    info.province = arrProvice[0]
+    info.city = arrCity[0]
+    info.county = arrCounty[0]
     this.setState({
       areaList: [arrProvice, arrCity, arrCounty],
     }, ()=>{
       this.setState({
         multiIndex: [0, 0, 0],
+        info
       })
     })
   }

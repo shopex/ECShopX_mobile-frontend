@@ -77,7 +77,7 @@ export default class CartIndex extends Component {
                 list.map((item, index) =>
                   <View
                     className={classNames('category-nav__content', currentIndex === index ? 'category-nav__content-checked' : null)}
-    key={index}
+                    key={index}
                     onClick={this.handleClickCategoryNav.bind(this, index)}
                   >
                     {item.category_name}

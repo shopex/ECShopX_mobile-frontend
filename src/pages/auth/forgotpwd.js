@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import {View, Image} from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { SpToast, Timer } from '@/components'
 import S from '@/spx'
@@ -14,8 +14,30 @@ export default class Forgotpwd extends Component {
     this.state = {
       info: {},
       timerMsg: '获取验证码',
-      isVisible: false
+      isVisible: false,
+      imgVisible: false,
+      imgInfo: {}
     }
+  }
+  componentDidMount () {
+    this.fetch()
+  }
+
+  handleClickImgcode = async () => {
+    const query = {
+      type: 'forgot_password'
+    }
+    await api.user.regImg(query)
+      .then(img_res => {
+        this.setState({
+          imgInfo: img_res
+        })
+      })
+  }
+
+  async fetch () {
+    this.handleClickImgcode()
+    this.count = 0
   }
 
   handleSubmit = async (e) => {
@@ -28,7 +50,7 @@ export default class Forgotpwd extends Component {
       return S.toast('请输入正确的手机号')
     }
 
-    if (!data.code) {
+    if (!data.vcode) {
       return S.toast('请选择验证码')
     }
 
@@ -36,16 +58,38 @@ export default class Forgotpwd extends Component {
       return S.toast('请输入密码')
     }
     console.log(data, 19)
-    // if(this.state.isForgot){
-    //
-    // }
-    // const { UserInfo } = await api.user.reg(data)
-    // console.log(UserInfo)
+    try {
+      await api.user.forgotPwd(data)
+        .then(() => {
+          Taro.showToast({
+            title: '修改成功',
+            icon: 'none',
+          }).then(() => {
+            setTimeout(()=>{
+              Taro.redirectTo({
+                url: '/pages/auth/login'
+              })
+            }, 1500)
+
+          })
+        })
+    } catch (error) {
+      S.toast(`${error.res.data.error.message}`)
+      return false
+    }
   }
 
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
+    if(name === 'mobile') {
+      if(val.length === 11 && this.count === 0) {
+        this.count = 1
+        this.setState({
+          imgVisible: true
+        })
+      }
+    }
   }
 
   handleClickIconpwd = () => {
@@ -59,12 +103,34 @@ export default class Forgotpwd extends Component {
     S.closeToast()
   }
 
-  handleTimerStart = (resolve) => {
+  handleTimerStart = async (resolve) => {
     if (this.state.isTimerStart) return
-    const { mobile } = this.state.info
+    const { mobile, yzm } = this.state.info
+    const { imgInfo } = this.state
 
     if (!/1\d{10}/.test(mobile)) {
       return S.toast('请输入正确的手机号')
+    }
+
+    if(!(mobile.length === 11 && yzm)) {
+      return S.toast('请输入手机号和图形验证码')
+    }
+
+    const query = {
+      type: 'forgot_password',
+      mobile: mobile,
+      yzm: yzm,
+      token: imgInfo.imageToken
+    }
+
+    try {
+      await api.user.regSmsCode(query)
+        .then(() => {
+          S.toast('发送成功')
+        })
+    } catch (error) {
+      S.toast(`${error.res.data.error.message}`)
+      return false
     }
 
     resolve()
@@ -84,7 +150,7 @@ export default class Forgotpwd extends Component {
   }
 
   render () {
-    const { info, timerMsg, isVisible } = this.state
+    const { info, timerMsg, isVisible, imgVisible, imgInfo } = this.state
 
     return (
       <View className='auth-forgotpwd'>
@@ -101,13 +167,20 @@ export default class Forgotpwd extends Component {
               onFocus={this.handleErrorToastClose}
               onChange={this.handleChange.bind(this, 'mobile')}
             />
+            {
+              imgVisible
+                ? <AtInput title='图片验证码' name='yzm' value={info.yzm} placeholder='请输入图片验证码' onFocus={this.handleErrorToastClose} onChange={this.handleChange.bind(this, 'yzm')}>
+                  <Image src={`${imgInfo.imageData}`} onClick={this.handleClickImgcode} />
+                </AtInput>
+                : null
+            }
             <AtInput
               title='验证码'
-              name='code'
-              value={info.code}
+              name='vcode'
+              value={info.vcode}
               placeholder='请输入验证码'
               onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, 'code')}
+              onChange={this.handleChange.bind(this, 'vcode')}
             >
               <Timer
                 onStart={this.handleTimerStart}
