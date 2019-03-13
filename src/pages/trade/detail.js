@@ -81,7 +81,11 @@ export default class TradeDetail extends Component {
   }
 
   async handleClickBtn (type) {
-    console.log(type)
+    if (type === 'pay') {
+      Taro.navigateTo({
+        url: `/pages/cashier/index?order_id=${trade.tid}`
+      })
+    }
   }
 
   render () {

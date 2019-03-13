@@ -110,6 +110,11 @@ export default class TradeList extends Component {
   }
 
   handleClickItemBtn = (type, trade) => {
+    if (type === 'pay') {
+      Taro.navigateTo({
+        url: `/pages/cashier/index?order_id=${trade.tid}`
+      })
+    }
     console.log(type, trade)
   }
 
