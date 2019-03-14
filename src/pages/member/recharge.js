@@ -93,7 +93,10 @@ export default class Recharge extends Component {
       <View className='page-member-integral'>
         <View className='member-integral__hd'>
           <View className='integral-info'>
-            <View className='integral-number'>图标<Text className='integral-number__text'>{totalDeposit}</Text></View>
+            <View className='integral-number'>
+              <Text className='sp-icon sp-icon-zijin icon-point'> </Text>
+              <Text className='integral-number__text'>{totalDeposit}</Text>
+            </View>
             <View className='integral-text'>账户可用余额</View>
           </View>
         </View>

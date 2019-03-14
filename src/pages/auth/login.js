@@ -114,14 +114,9 @@ export default class Login extends Component {
 
           <View className='btns'>
             {
-              Taro.getEnv() === 'WEAPP'
+              process.env.TARO_ENV === 'weapp'
                 ? <AtButton type='primary' formType='submit'>登录</AtButton>
-                : null
-            }
-            {
-              Taro.getEnv() === 'WEB'
-                ? <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>登录</AtButton>
-                : null
+                : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>登录</AtButton>
             }
           </View>
         </AtForm>

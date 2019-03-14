@@ -153,9 +153,16 @@ export default class Coupon extends Component {
                     <View className='coupon-item__content'>
                       <View className='coupon-item___description'>
                         <Text>{item.title}</Text>
-                        {
-                          item.tagClass === 'used' ? <View className='coupon-item___used'>已使用</View> : null
-                        }
+                        <View className='coupon-item___used'>
+                          <Text className='sp-icon sp-icon-yishiyong icon-used'></Text>
+                        </View>
+                        {/*{*/}
+                          {/*item.tagClass === 'used' */}
+                            {/*? <View className='coupon-item___used'>*/}
+                                {/*<Text className='sp-icon sp-icon-yishiyong'></Text>*/}
+                              {/*</View> */}
+                            {/*: null*/}
+                        {/*}*/}
                       </View>
                       <View className='coupon-item___time'>使用期限 <Text>{item.begin_date} ~ {item.end_date}</Text></View>
                     </View>

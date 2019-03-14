@@ -1,6 +1,8 @@
 @import '../../style/imports';
 @import './index';
-
+.sp-icon-dingdan, .sp-icon-dingdan1 {
+  @include iconfont-gradient(linear-gradient(90deg, #FAA761, #FA3515));
+}
 
 .member-info {
   &_top {

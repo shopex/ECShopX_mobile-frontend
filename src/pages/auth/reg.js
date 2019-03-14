@@ -27,14 +27,14 @@ export default class Reg extends Component {
   }
 
   componentDidMount () {
-    console.log(Taro.getEnv(),this.props.land_params)
-    if (Taro.getEnv() === 'WEAPP') {
+    // console.log(Taro.getEnv(),this.props.land_params)
+    if ( process.env.TARO_ENV === 'weapp') {
       this.setState({
         info: {
           user_type: 'wechat'
         }
       })
-    }else if (Taro.getEnv() === 'WEB') {
+    }else {
       this.setState({
         info: {
           user_type: 'local',
@@ -192,7 +192,6 @@ export default class Reg extends Component {
       yzm: yzm,
       token: imgInfo.imageToken
     }
-
     await api.user.regSmsCode(query)
       .then(() => {
         S.toast('发送成功')
@@ -330,14 +329,9 @@ export default class Reg extends Component {
           </View>
           <View className='btns'>
             {
-              Taro.getEnv() === 'WEAPP'
+              process.env.TARO_ENV === 'weapp'
                 ? <AtButton type='primary' formType='submit'>同意协议并注册</AtButton>
-                : null
-            }
-            {
-              Taro.getEnv() === 'WEB'
-                ? <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>同意协议并注册</AtButton>
-                : null
+                : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>同意协议并注册</AtButton>
             }
             <View className='accountAgreement'>
               已阅读并同意

@@ -2,23 +2,11 @@
 
 .page-member-integral {
   padding-bottom: $tabbar-height;
-  .sp-icon-pay, .sp-icon-clock, .sp-icon-baoguo, .sp-icon-comment {
+  .sp-icon-laba{
     @include iconfont-gradient(linear-gradient(90deg, #FAA761, #FA3515));
   }
-  .sp-icon-star, .sp-icon-thumb {
-    @include iconfont-gradient(linear-gradient(270deg, #AF6FF7, #CD3AE3));
-  }
-  .sp-icon-money, .sp-icon-hongbao {
-    @include iconfont-gradient(linear-gradient(90deg, #FAD346, #F7B11C));
-  }
-  .sp-icon-setting, .sp-icon-help {
-    @include iconfont-gradient(linear-gradient(103deg, #7FD5FA, #2580FC));
-  }
-  .sp-icon-location {
-    @include iconfont-gradient(linear-gradient(270deg, #2757C5, #7298FD));
-  }
-  .sp-icon-qrcode {
-    @include iconfont-gradient(linear-gradient(90deg, #B4EC51, #429321));
+  .sp-icon-jifen1 {
+    @include iconfont-gradient(linear-gradient(180deg, #FFE070, #F7B11C));
   }
 }
 
@@ -63,13 +51,19 @@
       justify-content: space-around;
     }
   }
-  &-number{
-    &__text{
+  &-number {
+    display: flex;
+    align-items: center;
+    &__text {
       font-weight: bold;
       font-size: 60px;
     }
+    .icon-point {
+      font-size: 54px;
+      margin-right: 4px;
+    }
   }
-  &-text{
+  &-text {
     margin-top: 30px;
     font-weight: bold;
     font-size: 36px;

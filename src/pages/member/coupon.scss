@@ -61,11 +61,7 @@
     }
     &___info {
       font-size: 24px;
-      //width: 100px;
       margin: 0 auto;
-      //border: 1px solid #fff;
-      //border-radius: 8px;
-      //padding: 2px 14px;
     }
     &__content {
       background: #fff;
@@ -83,16 +79,20 @@
       font-size: 24px;
       display: flex;
       justify-content: space-between;
+      position: relative;
     }
     &___time {
       font-size: 24px;
       color: $color-gray-light;
     }
     &___used {
-      width: 180px;
-      //position: absolute;
-      //right: 20px;
-      //top: 30px;
+      text-align: right;
+      .icon-used {
+        position: absolute;
+        top: -20px;
+        right: 30px;
+        font-size: 80px;
+      }
     }
   }
 }

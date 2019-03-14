@@ -261,14 +261,9 @@ export default class AddressEdit extends Component {
 
           <View className='btns'>
             {
-              Taro.getEnv() === 'WEAPP'
+              process.env.TARO_ENV === 'weapp'
                 ? <AtButton type='primary' formType='submit'>提交</AtButton>
-                : null
-            }
-            {
-              Taro.getEnv() === 'WEB'
-                ? <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>提交</AtButton>
-                : null
+                : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>提交</AtButton>
             }
             {
               info.address_id && (<AtButton onClick={this.handleDelete}>删除</AtButton>)

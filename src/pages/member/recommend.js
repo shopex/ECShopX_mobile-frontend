@@ -127,7 +127,7 @@ export default class Recommend extends Component {
                   value={detail.promoter_order_count}
                 >
                   <SpIconMenu
-                    icon='pay'
+                    icon='dingdan1'
                     title='提成订单'
                     to='/pages/member/recommend-order?brokerage_source=order'
                   />
@@ -136,7 +136,7 @@ export default class Recommend extends Component {
                   value={detail.promoter_grade_order_count}
                 >
                   <SpIconMenu
-                    icon='comment'
+                    icon='dingdan1'
                     title='津贴订单'
                     to='/pages/member/recommend-order?brokerage_source=order_team'
                   />

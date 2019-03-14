@@ -87,7 +87,7 @@ export default class PointList extends Component {
           <View className='goods-list__toolbar-title'>
             <AtDivider fontColor='#FF482B' lineColor='#FF482B'>
               <View>
-                <AtIcon value='check-circle'></AtIcon>
+                <Text className='sp-icon sp-icon-lifangtilitiduomiantifangkuai2 icon-allgoods'> </Text>
                 <Text>全部商品</Text>
               </View>
             </AtDivider>

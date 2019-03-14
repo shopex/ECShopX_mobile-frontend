@@ -100,7 +100,10 @@ export default class Integral extends Component {
       <View className='page-member-integral'>
         <View className='member-integral__hd'>
           <View className='integral-info'>
-            <View className='integral-number'>图标<Text className='integral-number__text'>{totalPoint}</Text></View>
+            <View className='integral-number'>
+              <Text className='sp-icon sp-icon-jifen1 icon-point'> </Text>
+              <Text className='integral-number__text'>{totalPoint}</Text>
+            </View>
             <View className='integral-text'>当前可用积分</View>
           </View>
         </View>
