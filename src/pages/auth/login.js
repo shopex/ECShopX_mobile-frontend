@@ -14,8 +14,7 @@ export default class Login extends Component {
 
     this.state = {
       info: {},
-      isVisible: false,
-      urlBack: ''
+      isVisible: false
     }
   }
 
@@ -25,11 +24,6 @@ export default class Login extends Component {
     })
   }
   componentDidMount() {
-    const { redirect } = this.$router.params
-    this.setState({
-      urlBack: redirect
-    })
-    console.log(this.$router, this.$router.params, redirect, 44)
   }
 
   handleSubmit = async (e) => {
@@ -46,19 +40,16 @@ export default class Login extends Component {
     if (!data.password) {
       return S.toast('请输入密码')
     }
-    console.log(data, 19)
+
     try {
-      await api.user.login(data)
-        .then(res => {
-          const { urlBack } = this.state
-          S.setAuthToken(res.token)
-          console.log(res, 43)
-          Taro.redirectTo({
-            url: urlBack
-          })
-        })
+      const { token } = await api.user.login(data)
+      S.setAuthToken(token)
+      const redirect = decodeURIComponent(this.$router.params.redirect || '/pages/home/index')
+      Taro.redirectTo({
+        url: redirect
+      })
     } catch (error) {
-      S.toast(`${error.res.data.error.message}`)
+      S.toast(error)
     }
   }
 

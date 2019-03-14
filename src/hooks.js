@@ -3,6 +3,8 @@ import S from '@/spx'
 
 export default function useHooks () {
   S.bind('logout', () => {
-    Taro.navigateTo('/pages/auth/login')
+    Taro.navigateTo({
+      url: '/pages/auth/login'
+    })
   })
 }

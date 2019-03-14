@@ -85,9 +85,7 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
-    router: {
-      mode: 'browser' // 或者是 'browser'
-    },
+    mode: 'browser',
     module: {
       postcss: {
         autoprefixer: {
@@ -108,6 +106,9 @@ const config = {
           }
         }
       }
+    },
+    devServer: {
+      host: '0.0.0.0'
     },
     esnextModules: ['taro-ui'],
     webpackChain (chain) {

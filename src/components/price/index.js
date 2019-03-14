@@ -14,6 +14,7 @@ export default class Price extends Component {
     value: null,
     primary: false,
     noSymbol: false,
+    noDecimal: false,
     unit: 'default',
     appendText: ''
   }
@@ -21,7 +22,7 @@ export default class Price extends Component {
   static externalClasses = ['classes']
 
   render () {
-    const { value = '', noSymbol, primary, className, unit, appendText } = this.props
+    const { value = '', noSymbol, primary, noDecimal, className, unit, appendText } = this.props
     let priceVal = (unit === 'cent') ? (+value) / 100 : value
     if (isNumber(priceVal)) {
       priceVal = priceVal.toFixed(2)
@@ -35,7 +36,7 @@ export default class Price extends Component {
         {minus && (<Text>-</Text>)}
         {noSymbol ? null : <Text className='price__symbol'>{symbol}</Text>}
         <Text className='price__int'>{int.indexOf('-') === 0 ? int.slice(1) : int}</Text>
-        {decimal !== undefined && (
+        {decimal !== undefined && !noDecimal && (
           <Text className='price__decimal'>.{decimal}</Text>
         )}
         {appendText && (<Text className='price__append'>{appendText}</Text>)}

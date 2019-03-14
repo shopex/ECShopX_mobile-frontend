@@ -144,10 +144,8 @@ class Spx {
 
   login (ctx, isRedirect = true) {
     const { fullPath } = getCurrentRoute(ctx.$router)
-
-    const authUrl = process.env.TARO_ENV === 'weapp'
-      ? `/pages/auth/login?redirect=${fullPath}`
-      : `/pages/auth/login?redirect=${fullPath}`
+    const encodedRedirect = encodeURIComponent(fullPath)
+    const authUrl = `/pages/auth/login?redirect=${encodedRedirect}`
 
     Taro[isRedirect ? 'redirectTo' : 'navigateTo']({
       url: authUrl
