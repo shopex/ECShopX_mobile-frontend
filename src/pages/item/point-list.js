@@ -110,7 +110,7 @@ export default class PointList extends Component {
   // }
 
   handleClickItem = (item) => {
-    const url = `/pages/item/point-detail?id=${item.item_id}`
+    const url = `/pages/item/point-detail?id=${item.item_id}&is_point=true`
     Taro.navigateTo({
       url
     })

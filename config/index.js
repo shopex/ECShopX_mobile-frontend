@@ -85,6 +85,9 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    router: {
+      mode: 'browser' // 或者是 'browser'
+    },
     module: {
       postcss: {
         autoprefixer: {
