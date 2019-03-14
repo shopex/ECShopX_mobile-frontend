@@ -18,3 +18,7 @@ export function create (data) {
 export function confirm (tid) {
   return req.get('/trade.confirm', { tid })
 }
+
+export function getCount (params = { order_type: 'normal' }) {
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/orderscount', params)
+}

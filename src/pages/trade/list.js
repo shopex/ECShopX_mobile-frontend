@@ -58,8 +58,8 @@ export default class TradeList extends Component {
       return key
     })
 
-    const { list, pager: { counter: total } } = await api.trade.list(params)
-    const nList = this.state.list.concat(pickBy(list, {
+    const { list, pager: { count: total } } = await api.trade.list(params)
+    let nList = pickBy(list, {
       tid: 'order_id',
       status_desc: 'order_status_msg',
       status: ({ order_status }) => resolveOrderStatus(order_status),
@@ -73,12 +73,12 @@ export default class TradeList extends Component {
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         num: 'num'
       })
-    }))
+    })
 
     log.debug('[trade list] list fetched and processed: ', nList)
 
     this.setState({
-      list: nList
+      list: [...this.state.list, ...nList]
     })
 
     return { total }

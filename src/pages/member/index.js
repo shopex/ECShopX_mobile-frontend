@@ -3,19 +3,38 @@ import { View, Text } from '@tarojs/components'
 import { AtBadge, AtIcon, AtAvatar } from 'taro-ui'
 import { SpIconMenu, TabBar } from '@/components'
 import { withLogin } from '@/hocs'
+import api from '@/api'
 
 import './index.scss'
 
 @withLogin()
 export default class MemberIndex extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      ordersCount: {
+        normal_payed_delivered: '',
+        normal_payed_notdelivery: ''
+      }
+    }
+  }
+
   navigateTo (url) {
     Taro.navigateTo({ url })
   }
 
   componentDidShow () {
+    api.trade.getCount()
+      .then((ordersCount) => {
+        this.setState({
+          ordersCount
+        })
+      })
   }
 
   render () {
+    const { ordersCount } = this.state
+
     return (
       <View className='page-member-index'>
         <View className='member-index__hd'>
@@ -60,32 +79,32 @@ export default class MemberIndex extends Component {
             </View>
             <View className='sec-bd'>
               <View className='member-trades__menus'>
-                <AtBadge value={3}>
+                <AtBadge>
                   <SpIconMenu
                     icon='pay'
-                    title='待付款'
-                    to='/pages/trade/list?status=WAIT_BUYER_PAY'
+                    title='全部'
+                    to='/pages/trade/list?status=0'
                   />
                 </AtBadge>
-                <AtBadge value={13}>
+                <AtBadge value={ordersCount.normal_payed_notdelivery}>
                   <SpIconMenu
                     icon='clock'
                     title='待发货'
-                    to='/pages/trade/list?status=WAIT_SELLER_SEND_GOODS'
+                    to='/pages/trade/list?status=1'
                   />
                 </AtBadge>
-                <AtBadge value={13}>
+                <AtBadge value={ordersCount.normal_payed_delivered}>
                   <SpIconMenu
                     icon='baoguo'
                     title='待收货'
-                    to='/pages/trade/list?status=WAIT_BUYER_CONFIRM_GOODS'
+                    to='/pages/trade/list?status=2'
                   />
                 </AtBadge>
                 <AtBadge>
                   <SpIconMenu
                     icon='comment'
-                    title='待评论'
-                    to='/pages/trade/list?status=WAIT_RATE'
+                    title='已完成'
+                    to='/pages/trade/list?status=3'
                   />
                 </AtBadge>
               </View>

@@ -8,6 +8,7 @@ import S from '@/spx'
 import { STATUS_TYPES_MAP } from '@/consts'
 import _get from 'lodash/get'
 import _findKey from 'lodash/findKey'
+import _pickBy from 'lodash/pickBy'
 import log from './log'
 
 const isPrimitiveType = (val, type) => Object.prototype.toString.call(val) === type
@@ -37,8 +38,15 @@ export function normalizeArray (...args) {
 }
 
 export function getCurrentRoute (router) {
-  const { params, path } = router
-  const fullPath = `${path}${params ? '?' + qs.stringify(params) : ''}`
+  if (process.env.TARO_ENV === 'weapp') {
+    // eslint-disable-next-line
+    const page = getCurrentPages().pop()
+    router = page.$component.$router
+  }
+  const { path, params: origParams } = router
+  const params = _pickBy(origParams, val => val !== '')
+
+  const fullPath = `${path}${Object.keys(params).length > 0 ? '?' + qs.stringify(params) : ''}`
 
   return {
     path,
