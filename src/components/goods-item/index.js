@@ -7,7 +7,7 @@ import './index.scss'
 
 export default class GoodsItem extends Component {
   static defaultProps = {
-    onClickImg: () => {},
+    onClick: () => {},
     showMarketPrice: true,
     noCurSymbol: false
   }
@@ -17,7 +17,7 @@ export default class GoodsItem extends Component {
   }
 
   render () {
-    const { info, showMarketPrice, noCurSymbol, onClickImg, appendText, className } = this.props
+    const { info, showMarketPrice, noCurSymbol, onClick, appendText, className } = this.props
     if (!info) {
       return null
     }
@@ -33,7 +33,7 @@ export default class GoodsItem extends Component {
         <View className='goods-item__bd'>
           <View className='goods-item__img-wrap'>
             <Image className='goods-item__img'
-              onClick={onClickImg}
+              onClick={onClick}
               mode='aspectFill'
               src={img}
             />

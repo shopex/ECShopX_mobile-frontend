@@ -1,10 +1,11 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, ScrollView, Switch } from '@tarojs/components'
+import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtButton, AtInput, AtActionSheet, AtActionSheetItem } from 'taro-ui'
 import { Loading, Price, SpCell, AddressPicker, SpToast } from '@/components'
 import api from '@/api'
 import S from '@/spx'
+import { withLogin } from '@/hocs'
 import { pickBy } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import { getSelectedCart } from '@/store/cart'
@@ -21,6 +22,7 @@ import './espier-checkout.scss'
   onClearFastbuy: () => dispatch({ type: 'cart/clearFastbuy' }),
   onClearCart: () => dispatch({ type: 'cart/clear' })
 }))
+@withLogin()
 export default class CartCheckout extends Component {
   static defaultProps = {
     list: [],
@@ -45,13 +47,15 @@ export default class CartCheckout extends Component {
         item_fee: '',
         freight_fee: '',
         member_discount: '',
-        coupon_discount: ''
-      }
+        coupon_discount: '',
+        point: ''
+      },
+      payType: ''
     }
   }
 
   componentDidMount () {
-    const { cart_type } = this.$router.params
+    const { cart_type, pay_type: payType } = this.$router.params
     let info = null
 
     if (cart_type === 'fastbuy') {
@@ -63,6 +67,8 @@ export default class CartCheckout extends Component {
         }]
       }
     } else {
+      // 积分购买不在此种情况
+
       this.props.onClearFastbuy()
       const { list } = this.props
       info = {
@@ -74,7 +80,8 @@ export default class CartCheckout extends Component {
     }
 
     this.setState({
-      info
+      info,
+      payType
     })
 
     let total_fee = 0
@@ -95,7 +102,7 @@ export default class CartCheckout extends Component {
       order_type: 'normal',
       promotion: 'normal',
       member_discount: false,
-      pay_type: 'deposit'
+      pay_type: payType || 'deposit'
     }
 
     this.setState({
@@ -166,13 +173,14 @@ export default class CartCheckout extends Component {
     const params = this.getParams()
     const data = await api.cart.total(params)
 
-    const { item_fee, member_discount = 0, coupon_discount = 0, freight_fee = 0, total_fee } = data
+    const { item_fee, member_discount = 0, coupon_discount = 0, freight_fee = 0, point = 0, total_fee } = data
     const total = {
       ...this.state.total,
       item_fee,
       member_discount: -1 * member_discount,
       coupon_discount: -1 * coupon_discount,
       freight_fee,
+      point,
       total_fee
     }
     Taro.hideLoading()
@@ -279,7 +287,7 @@ export default class CartCheckout extends Component {
 
   render () {
     const { coupon } = this.props
-    const { info, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems } = this.state
+    const { info, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType } = this.state
 
     if (!info) {
       return <Loading />
@@ -369,14 +377,15 @@ export default class CartCheckout extends Component {
             }
           </View>
 
-          <SpCell
-            is-link
-            className='coupons-list'
-            title='选择优惠券'
-            onClick={this.handleCouponsClick}
-            value={couponText}
-          >
-          </SpCell>
+          {payType !== 'point' && (
+            <SpCell
+              is-link
+              className='coupons-list'
+              title='选择优惠券'
+              onClick={this.handleCouponsClick}
+              value={couponText}
+            />
+          )}
 
           {/*<View className='sec trade-point'>
             <SpCell
@@ -409,44 +418,70 @@ export default class CartCheckout extends Component {
             />
           </SpCell>*/}
 
-          <View className='sec trade-sub-total'>
-            <SpCell
-              className='trade-sub-total__item'
-              title='商品金额'
-            >
-              <Price
-                unit='cent'
-                value={total.item_fee}
-              />
-            </SpCell>
-            <SpCell
-              className='trade-sub-total__item'
-              title='会员折扣金额'
-            >
-              <Price
-                unit='cent'
-                value={total.member_discount}
-              />
-            </SpCell>
-            <SpCell
-              className='trade-sub-total__item'
-              title='优惠券'
-            >
-              <Price
-                unit='cent'
-                value={total.coupon_discount}
-              />
-            </SpCell>
-            <SpCell
-              className='trade-sub-total__item'
-              title='运费'
-            >
-              <Price
-                unit='cent'
-                value={total.freight_fee}
-              />
-            </SpCell>
-          </View>
+          {payType === 'point' && (
+            <View className='sec trade-sub-total'>
+              <SpCell
+                className='trade-sub-total__item'
+                title='积分'
+              >
+                <Price
+                  noSymbol
+                  noDecimal
+                  value={String(total.point)}
+                />
+              </SpCell>
+              <SpCell
+                className='trade-sub-total__item'
+                title='运费'
+              >
+                <Price
+                  unit='cent'
+                  value={total.freight_fee}
+                />
+              </SpCell>
+            </View>
+          )}
+
+          {payType !== 'point' && (
+            <View className='sec trade-sub-total'>
+              <SpCell
+                className='trade-sub-total__item'
+                title='商品金额'
+              >
+                <Price
+                  unit='cent'
+                  value={total.item_fee}
+                />
+              </SpCell>
+              <SpCell
+                className='trade-sub-total__item'
+                title='会员折扣金额'
+              >
+                <Price
+                  unit='cent'
+                  value={total.member_discount}
+                />
+              </SpCell>
+              <SpCell
+                className='trade-sub-total__item'
+                title='优惠券'
+              >
+                <Price
+                  unit='cent'
+                  value={total.coupon_discount}
+                />
+              </SpCell>
+              <SpCell
+                className='trade-sub-total__item'
+                title='运费'
+              >
+                <Price
+                  unit='cent'
+                  value={total.freight_fee}
+                />
+              </SpCell>
+            </View>
+          )}
         </ScrollView>
 
         <AddressPicker

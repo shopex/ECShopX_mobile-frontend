@@ -103,11 +103,12 @@ class API {
         }
 
         if (statusCode === 401) {
-          Taro.showToast({
-            icon: 'none',
-            title: data.msg || data.err_msg || '授权过期请重新授权'
-          })
-          return S.logout()
+          S.logout()
+          if (showError) {
+            data.err_msg = data.err_msg || '授权过期请重新授权'
+            this.errorToast(data)
+          }
+          return Promise.reject(this.reqError(res))
         }
 
         if (statusCode >= 400) {

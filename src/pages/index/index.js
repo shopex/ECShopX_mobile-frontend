@@ -11,7 +11,7 @@ export default class Index extends Component {
     Taro.redirectTo({
       // url: '/pages/member/recommend'
       // url: '/pages/auth/reg'
-      url: '/pages/member/index'
+      url: '/pages/item/point-detail?id=560'
     })
   }
 
