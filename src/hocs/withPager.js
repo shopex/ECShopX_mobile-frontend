@@ -34,7 +34,7 @@ export default function withPager (Component) {
         page_size
       })
 
-      if (!total || curPage >= Math.ceil(total / page_size)) {
+      if (!total || curPage >= Math.ceil(+total / page_size)) {
         page.hasNext = false
       }
 
