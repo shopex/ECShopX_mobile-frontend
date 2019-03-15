@@ -117,6 +117,10 @@ export default class PointDetail extends Component {
           url: `/pages/cashier/index?order_id=${res.luckydraw_trade_id}`
         })
       })
+      .catch(error => {
+        Taro.hideLoading()
+        S.toast(`${error.res.data.error.message}`)
+      })
   }
 
   render () {
@@ -170,8 +174,8 @@ export default class PointDetail extends Component {
             <View className='goods-timer'>
               <View className='goods-timer__hd'>
                 <View className='goods-prices'>
-                  <View>已筹集500积分</View>
-                  <AtProgress percent={50} status='progress' color='#13CE66' />
+                  <View className='goods-prices-point'>已筹集{info.luckydraw_point*info.sales_num}积分</View>
+                  <AtProgress percent={info.sales_num/info.luckydraw_store} status='progress' color='#13CE66' />
                 </View>
               </View>
               <View className='goods-timer__bd'>
@@ -204,7 +208,7 @@ export default class PointDetail extends Component {
                 />
               </View>
 
-              <Text className='goods-sold'>积分池：{info.sales || 0}</Text>
+              <Text className='goods-sold'>积分池：{info.luckydraw_point*info.luckydraw_store || 0}</Text>
             </View>
           </View>
 

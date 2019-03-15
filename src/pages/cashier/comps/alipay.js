@@ -24,12 +24,15 @@ export default class AlipayBtn extends Component {
       order_type: this.props.orderType,
     }
     await api.cashier.getPaymentWeapp(query)
-      .then(()=> {
-        Taro.redirectTo({
-          url: `/pages/cashier/cashier-result?payStatus=success&order_id=${this.props.orderID}`
-        })
+      .then(res=> {
+        console.log(res, 28)
+        // Taro.redirectTo({
+        //   url: `/pages/cashier/cashier-result?payStatus=success&order_id=${this.props.orderID}`
+        // })
       })
-      .catch(() => {
+      .catch(error => {
+        console.log(error, 34)
+
         Taro.redirectTo({
           url: `/pages/cashier/cashier-result?payStatus=fail&order_id=${this.props.orderID}`
         })
