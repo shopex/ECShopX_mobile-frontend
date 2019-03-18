@@ -42,8 +42,8 @@ export default class CartIndex extends Component {
   }
 
   handleClickItem (item) {
-    const { cat_id } = item
-    const url = `/pages/item/list?cat_id=${cat_id}`
+    const { category_id } = item
+    const url = `/pages/item/list?cat_id=${category_id}`
 
     Taro.navigateTo({
       url
