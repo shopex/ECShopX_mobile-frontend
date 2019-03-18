@@ -49,7 +49,7 @@ export default class Login extends Component {
         url: redirect
       })
     } catch (error) {
-      S.toast(error)
+      console.log(error)
     }
   }
 

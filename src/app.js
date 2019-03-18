@@ -58,7 +58,11 @@ class App extends Component {
 
       'pages/trade/list',
       'pages/trade/detail',
-      'pages/trade/rate'
+      'pages/trade/rate',
+      'pages/trade/cancel',
+      'pages/trade/refund',
+      'pages/trade/after-sale',
+      'pages/trade/refund-detail'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -68,10 +72,8 @@ class App extends Component {
     }
   }
   componentWillMount (params) {
-    console.log(params, 70)
   }
   componentDidMount (params) {
-    console.log(params, 73)
   }
 
   componentDidShow () {}

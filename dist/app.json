@@ -33,7 +33,11 @@
     "pages/member/address",
     "pages/trade/list",
     "pages/trade/detail",
-    "pages/trade/rate"
+    "pages/trade/rate",
+    "pages/trade/cancel",
+    "pages/trade/refund",
+    "pages/trade/after-sale",
+    "pages/trade/refund-detail"
   ],
   "window": {
     "backgroundTextStyle": "light",

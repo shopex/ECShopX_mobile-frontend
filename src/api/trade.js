@@ -19,6 +19,18 @@ export function confirm (tid) {
   return req.get('/trade.confirm', { tid })
 }
 
+export function cancel (data) {
+  return req.post('http://pjj.aixue7.com/index.php/api/h5app/wxapp/order/cancel', data)
+}
+
 export function getCount (params = { order_type: 'normal' }) {
   return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/orderscount', params)
+}
+
+export function afterSaleList (params) {
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/aftersales', params)
+}
+
+export function afterSaleInfo (params) {
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/aftersales/info', params)
 }

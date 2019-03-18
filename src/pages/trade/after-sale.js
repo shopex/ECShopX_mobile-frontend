@@ -1,18 +1,19 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import _mapKeys from 'lodash/mapKeys'
 import { Loading, SpNote } from '@/components'
+import { withLogin, withPager } from '@/hocs'
+import { pickBy, log } from '@/utils'
 import api from '@/api'
-import { withPager, withLogin } from '@/hocs'
-import { log, pickBy, resolveOrderStatus } from '@/utils'
+import { AFTER_SALE_STATUS } from '@/consts'
+import _mapKeys from 'lodash/mapKeys'
 import TradeItem from './comps/item'
 
 import './list.scss'
 
 @withPager
 @withLogin()
-export default class TradeList extends Component {
+export default class AfterSale extends Component {
   constructor (props) {
     super(props)
 
@@ -20,10 +21,11 @@ export default class TradeList extends Component {
       ...this.state,
       curTabIdx: 0,
       tabList: [
-        {title: '全部', status: '0'},
-        {title: '待发货', status: '6'},
-        {title: '待收货', status: '2'},
-        {title: '已完成', status: '3'}
+        { title: '全部', status: '0' },
+        { title: '处理中', status: '1' },
+        { title: '已处理', status: '2' },
+        { title: '已驳回', status: '3' },
+        { title: '已关闭', status: '4' }
       ],
       list: []
     }
@@ -49,8 +51,7 @@ export default class TradeList extends Component {
 
     params = _mapKeys({
       ...params,
-      order_type: 'normal',
-      status: tabList[curTabIdx].status
+      aftersales_status: tabList[curTabIdx].status
     }, function (val, key) {
       if (key === 'page_no') return 'page'
       if (key === 'page_size') return 'pageSize'
@@ -58,21 +59,20 @@ export default class TradeList extends Component {
       return key
     })
 
-    const { list, pager: { count: total } } = await api.trade.list(params)
+    const { list, total_count: total } = await api.trade.afterSaleList(params)
     let nList = pickBy(list, {
-      tid: 'order_id',
-      status_desc: 'order_status_msg',
-      status: ({ order_status }) => resolveOrderStatus(order_status),
-      totalItems: ({ items }) => items.reduce((acc, item) => (+item.num) + acc, 0),
-      payment: ({ total_fee }) => (total_fee / 100).toFixed(2),
-      order: ({ items }) => pickBy(items, {
+      id: 'aftersales_bn',
+      status_desc: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
+      totalItems: 'num',
+      payment: ({ item }) => (item.refunded_fee / 100).toFixed(2),
+      order: ({ item }) => [pickBy(item, {
         order_id: 'order_id',
         item_id: 'item_id',
         pic_path: 'pic',
         title: 'item_name',
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         num: 'num'
-      })
+      })]
     })
 
     log.debug('[trade list] list fetched and processed: ', nList)
@@ -105,33 +105,15 @@ export default class TradeList extends Component {
     const { tid } = trade
 
     Taro.navigateTo({
-      url: `/pages/trade/detail?id=${tid}`
+      url: `/pages/trade/after-sale-detail?id=${tid}`
     })
-  }
-
-  handleClickItemBtn = (type, trade) => {
-    console.log(type, trade)
-
-    switch(type) {
-      case 'pay':
-        Taro.navigateTo({
-          url: `/pages/cashier/index?order_id=${trade.tid}`
-        })
-        break
-      case 'cancel':
-        Taro.navigateTo({
-          url: `/pages/trade/cancel?order_id=${trade.tid}`
-        })
-        break
-      default:
-    }
   }
 
   render () {
     const { curTabIdx, tabList, list, page } = this.state
 
     return (
-      <View className='trade-list'>
+      <View className='page-after-sale trade-list'>
         <AtTabs
           className='trade-list__tabs'
           current={curTabIdx}
@@ -159,28 +141,26 @@ export default class TradeList extends Component {
             list.map((item, idx) => {
               return (
                 <TradeItem
+                  key={idx}
                   customHeader
                   renderHeader={
                     <View className='trade-item__hd-cont'>
-                      <Text className='trade-item__shop'>订单号：{item.tid}</Text>
+                      <Text className='trade-item__shop'>订单号：{item.id}</Text>
                       <Text className='more'>{item.status_desc}</Text>
                     </View>
                   }
-                  key={idx}
+                  customFooter
+                  renderFooter={
+                    <View></View>
+                  }
                   info={item}
                   onClick={this.handleClickItem.bind(this, item)}
-                  onClickBtn={this.handleClickItemBtn}
-                />
+                ></TradeItem>
               )
             })
           }
-          {
-            page.isLoading && <Loading>正在加载...</Loading>
-          }
-          {
-            !page.isLoading && !page.hasNext && !list.length
-              && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
-          }
+          {page.isLoading && (<Loading>正在加载...</Loading>)}
+          {!page.isLoading && !page.hasNext && !list.length && (<SpNote img='trades_empty.png'>暂无数据</SpNote>)}
         </ScrollView>
       </View>
     )

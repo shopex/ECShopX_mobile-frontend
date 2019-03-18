@@ -68,12 +68,14 @@ export default class TradeItem extends Component {
             onClick={this.handleClickBtn.bind(this, 'pay')}
           >立即支付</AtButton>
         </View>}
-        {!customFooter && info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-item__ft'>
+        {!customFooter && info.status === 'WAIT_SELLER_SEND_GOODS' && (<View className='trade-item__ft'>
           <AtButton
             circle
             size='small'
-            onClick={this.handleClickBtn.bind(this, 'express')}
-          >查看物流</AtButton>
+            onClick={this.handleClickBtn.bind(this, 'cancel')}
+          >取消订单</AtButton>
+        </View>)}
+        {!customFooter && info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-item__ft'>
           <AtButton
             circle
             type='secondary'

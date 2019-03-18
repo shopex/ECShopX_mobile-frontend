@@ -1,0 +1,22 @@
+@import "../../style/imports";
+
+.trade-refund-status {
+  .refund-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    margin: 0 0 $edge-margin;
+    padding: $edge-margin 0 0;
+    height: 210px;
+  }
+  .trade-bn {
+  }
+
+  .sp-cell {
+    align-items: space-between;
+    &__bd {
+      text-align: right;
+    }
+  }
+}

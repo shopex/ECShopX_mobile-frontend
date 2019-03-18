@@ -77,6 +77,11 @@ page, body {
 }
 
 .toolbar {
+  &.toolbar-inline {
+    .at-button, at-button {
+      width: 100%;
+    }
+  }
   background: #fff;
   font-size: $font-size;
   display: flex;

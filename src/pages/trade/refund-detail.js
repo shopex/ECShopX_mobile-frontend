@@ -1,0 +1,115 @@
+import Taro, { Component } from '@tarojs/taro'
+import { View, Text, Icon } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
+import { REFUND_STATUS } from '@/consts'
+import { SpCell, Price, Loading } from '@/components'
+import api from '@/api'
+
+import './refund-detail.scss'
+
+export default class TradeRefundDetail extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      info: null,
+      progress: 0
+    }
+  }
+
+  componentDidMount () {
+    this.fetch()
+  }
+
+  async fetch () {
+    const { aftersales_bn } = this.$router.params
+    const { aftersales: info, orderInfo } = await api.trade.afterSaleInfo({
+      aftersales_bn
+    })
+    const progress = +info.progress
+    info.status_str = REFUND_STATUS[String(progress)]
+    console.log(progress, REFUND_STATUS);
+
+    this.setState({
+      orderInfo,
+      info,
+      progress
+    })
+  }
+
+  handleBtnClick = async (type) => {
+    Taro.showLoading({
+      mask: true
+    })
+    const { aftersales_bn } = this.$router.params
+    try {
+      await api.trade.afterSaleClose({ aftersales_bn })
+      this.fetch()
+    } catch (e) {}
+
+    Taro.hideLoading()
+  }
+
+  render () {
+    const { info, orderInfo, progress } = this.state
+
+    if (!info) {
+      return <Loading />
+    }
+
+    return (
+      <View className='trade-refund-status'>
+        <View className='refund-status'>
+          {
+            (progress == 0 || progress == 1 || progress == 3 || progress == 5)
+              ? <Icon size='50' type='waiting'></Icon>
+              : (progress == 2 || progress == 4)
+                ? <Icon size='50' type='cancel'></Icon>
+                : <Icon size='50' type='success'></Icon>
+          }
+          <View class='refund-reason'>{info.status_str}</View>
+          <View class='trade-bn'>退款编号：{info.aftersales_bn}</View>
+        </View>
+
+        <View className='refund-detail'>
+          <SpCell title='退款金额'>
+            <Price value={orderInfo.item_fee} unit='cent'></Price>
+          </SpCell>
+          <SpCell title='退款类型'>
+            <Text>{info.aftersales_type === 'ONLY_REFUND' ? '仅退款' : '退款退货'}</Text>
+          </SpCell>
+          <SpCell title='退款理由'>
+            <Text>{info.reason}</Text>
+          </SpCell>
+          {(progress == 3 || progress == 5) && (
+            <SpCell title='驳回原因'>
+              <Text>{info.refuse_reason}</Text>
+            </SpCell>
+          )}
+          <SpCell title='问题描述'>
+            <Text>{info.description}</Text>
+          </SpCell>
+        </View>
+
+        {progress == 0 && (
+          <View className='toolbar'>
+            <AtButton circle onClick={this.handleBtnClick.bind(this, 'cancel')}>撤销申请</AtButton>
+            <AtButton circle onClick={this.handleBtnClick.bind(this, 'edit')}>修改申请</AtButton>
+          </View>
+        )}
+        {(progress == 3 || progress == 5) && (
+          <View className='toolbar'>
+            <AtButton circle onClick={this.handleBtnClick.bind(this, 'cancel')}>撤销申请</AtButton>
+            <AtButton circle onClick={this.handleBtnClick.bind(this, 'refund')}>再次申请</AtButton>
+          </View>
+        )}
+        {progress == 1 && (
+          <View className='toolbar'>
+            <AtButton circle onClick={this.handleBtnClick.bind(this, 'cancel')}>撤销申请</AtButton>
+            <AtButton circle onClick={this.handleBtnClick.bind(this, 'refund_send')}>填写物流信息</AtButton>
+          </View>
+        )}
+      </View>
+    )
+  }
+}
