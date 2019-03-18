@@ -58,6 +58,14 @@ export default class Login extends Component {
     info[name] = val
   }
 
+  handleBlurMobile = (val) => {
+    this.setState({
+      info: {
+        username: val
+      }
+    });
+  }
+
   handleClickIconpwd = () => {
     const { isVisible } = this.state
     this.setState({
@@ -89,10 +97,12 @@ export default class Login extends Component {
               title='手机号码'
               name='username'
               maxLength={11}
-              value={info.mobile}
+              type='number'
+              value={info.username}
               placeholder='请输入手机号码'
               onFocus={this.handleErrorToastClose}
               onChange={this.handleChange.bind(this, 'username')}
+              onBlur={this.handleBlurMobile.bind(this)}
             />
             <AtInput
               title='密码'
