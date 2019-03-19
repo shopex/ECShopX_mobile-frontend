@@ -1,9 +1,10 @@
 @import "../../style/imports";
 .page-category-index {
   height: 100%;
+  background: $color-bg-gray;
   .category-list {
     box-sizing: border-box;
-    padding-top: 84px;
+    padding-top: $searchbar-height;
     height: 100vh;
     display: flex;
     align-items: flex-start;

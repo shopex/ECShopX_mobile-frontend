@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, ScrollView, Text, Image} from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, Price } from '@/components'
+import { BackToTop, Loading, Price, NavBar } from '@/components'
 import { AtDivider } from 'taro-ui'
 import api from '@/api'
 import { pickBy } from '@/utils'
@@ -85,6 +85,11 @@ export default class PointDraw extends Component {
 
     return (
       <View className='page-goods-list'>
+        <NavBar
+          title='抽奖信息'
+          leftIconType='chevron-left'
+          fixed='true'
+        />
         <View className='goods-list__toolbar'>
           <View className='goods-list__toolbar-title'>
             <AtDivider fontColor='#C40000' lineColor='#C40000'>

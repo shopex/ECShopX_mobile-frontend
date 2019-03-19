@@ -97,10 +97,10 @@ export default class SearchBar extends Component {
     const { isFixed, className, isAuth } = this.props
     const { showSearchDailog, historyList, isShowAction, searchValue } = this.state
     return (
-      <View className={classNames('search-input', showSearchDailog ? 'search-input__focus' : null, isFixed ? 'search-input-fixed' : null)}>
-        <Form className={classNames('search-input__form', className, className ? 'login-width': '')} onSubmit={this.handleConfirm.bind(this)}>
+      <View className={classNames('search-input', className === 'category-top' ? className : '', showSearchDailog ? 'search-input__focus' : null, isFixed ? 'search-input-fixed' : null)}>
+        <Form className={classNames('search-input__form', className === 'home-index-search' ? `${className} login-width` : '')} onSubmit={this.handleConfirm.bind(this)}>
           <AtSearchBar
-            className={classNames('search-input__bar', className)}
+            className={classNames('search-input__bar', className === 'home-index-search' ? className : '')}
             value={searchValue}
             actionName='取消'
             showActionButton={isShowAction}
@@ -110,9 +110,8 @@ export default class SearchBar extends Component {
             onActionClick={this.handleClickCancel.bind(this, false)}
           />
           {
-            className && isAuth ? <View className='home-login' onClick={this.handleClickLogin}>登录</View> : null
+            className === 'home-index-search' && isAuth ? <View className='home-login' onClick={this.handleClickLogin}>登录</View> : null
           }
-
         </Form>
         <View className={classNames(showSearchDailog ? 'search-input__history' : 'search-input__history-none')}>
           <View className='search-input__history-title'>
