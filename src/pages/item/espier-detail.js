@@ -90,7 +90,7 @@ export default class Detail extends Component {
     if (marketing === 'group' || marketing === 'seckill') {
       Taro.setNavigationBarColor({
         frontColor: '#ffffff',
-        backgroundColor: '#FF482B',
+        backgroundColor: '#C40000',
         animation: {
           duration: 400,
           timingFunc: 'easeIn'
@@ -172,6 +172,7 @@ export default class Detail extends Component {
             <Swiper
               className='goods-imgs__swiper'
               style={`height: ${windowWidth}px`}
+              current={curImgIdx}
               onChange={this.handleSwiperChange}
             >
               {

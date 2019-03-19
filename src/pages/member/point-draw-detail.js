@@ -81,7 +81,7 @@ export default class PointDetail extends Component {
     })
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: '#FF482B',
+      backgroundColor: '#C40000',
       animation: {
         duration: 400,
         timingFunc: 'easeIn'
@@ -147,6 +147,7 @@ export default class PointDetail extends Component {
             <Swiper
               className='goods-imgs__swiper'
               style={`height: ${windowWidth}px`}
+              current={curImgIdx}
               onChange={this.handleSwiperChange}
             >
               {

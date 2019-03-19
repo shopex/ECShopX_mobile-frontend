@@ -25,9 +25,9 @@
       border-bottom: 1px solid #E6E6E6;
     }
     &__content-checked {
-      color: #FF482B;
+      color: $color-brand-primary;
       background: #fff;
-      border-left:6px solid #FF482B;
+      border-left:6px solid $color-brand-primary;
       box-sizing: border-box;
     }
   }

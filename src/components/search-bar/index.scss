@@ -7,9 +7,24 @@
   border-bottom: 1px solid $color-border-gray;
   box-shadow: 0px -1px 0px 0px rgba(221, 221, 221, 1);
   box-sizing: border-box;
-  &__bar {
-
+  &__form {
+    display: flex;
+    justify-content: space-between;
+    .home-login{
+      padding-right: 20px;
+      line-height: $searchbar-height;
+      color: #fff;
+    }
   }
+  .login-width {
+    .at-search-bar__action {
+      color: #fff;
+    }
+  }
+  &__bar {
+    flex: 1;
+  }
+
   &__history {
     background: #fff;
     height: 100%;

@@ -87,7 +87,7 @@ export default class PointDraw extends Component {
       <View className='page-goods-list'>
         <View className='goods-list__toolbar'>
           <View className='goods-list__toolbar-title'>
-            <AtDivider fontColor='#FF482B' lineColor='#FF482B'>
+            <AtDivider fontColor='#C40000' lineColor='#C40000'>
               <View>
                 <Text className='sp-icon sp-icon-lifangtilitiduomiantifangkuai2 icon-allgoods'> </Text>
                 <Text>抽奖信息</Text>

@@ -6,6 +6,9 @@ body, page {
 
 .page-index {
   padding-bottom: $tabbar-height;
+  .home-index-search {
+    background: $color-brand-primary;
+  }
 }
 
 .wgts-wrap {
