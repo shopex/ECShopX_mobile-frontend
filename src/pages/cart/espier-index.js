@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtInputNumber, AtButton } from 'taro-ui'
-import { GoodsItem, SpCheckbox, SpNote, Loading, Price } from '@/components'
+import { GoodsItem, SpCheckbox, SpNote, Loading, Price, NavBar } from '@/components'
 import { log, navigateTo, pickBy } from '@/utils'
 // import api from '@/api'
 import { withLogin } from '@/hocs'
@@ -155,6 +155,12 @@ export default class CartIndex extends Component {
 
     return (
       <View className='page-cart-index'>
+        <NavBar
+          title='购物车'
+          leftIconType='chevron-left'
+          fixed='true'
+        />
+
         <ScrollView
           className='cart-list__wrap'
           scrollY

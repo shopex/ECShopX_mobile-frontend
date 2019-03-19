@@ -1,6 +1,7 @@
 @import "../../style/imports";
 
 .page-goods-list {
+  background: $color-bg-gray;
   .goods-list {
     padding: $edge-size 0;
     &__toolbar {

@@ -33,6 +33,19 @@ export default class TabBar extends Component {
   }
 
   componentDidMount () {
+    // this.fetchCart()
+    // const { tabList, current } = this.state
+    // const { fullPath } = getCurrentRoute(this.$router)
+    // const { url } = tabList[current]
+    // if (url && url !== fullPath) {
+    //   const nCurrent = tabList.findIndex((t) => t.url === fullPath) || 0
+    //   this.setState({
+    //     current: nCurrent
+    //   })
+    // }
+  }
+
+  componentDidShow () {
     this.fetchCart()
     const { tabList, current } = this.state
     const { fullPath } = getCurrentRoute(this.$router)
@@ -43,9 +56,6 @@ export default class TabBar extends Component {
         current: nCurrent
       })
     }
-  }
-
-  componentDidShow () {
   }
 
   componentWillReceiveProps (nextProps) {
