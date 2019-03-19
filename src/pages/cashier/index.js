@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
-import {  AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
+import {  AtNavBar, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 import AlipayBtn from './comps/alipay'
 import WeappBtn from './comps/weapp'
 import PointDepositBtn from './comps/point-deposit'
@@ -41,12 +41,24 @@ export default class Cashier extends Component {
 
   }
 
+  handleClickBack = (url) => {
+    Taro.redirectTo({
+      url: url
+    })
+  }
+
 
   render () {
     const { info } = this.state
 
     return (
       <View className='page-cashier-index'>
+        <AtNavBar
+          onClickLeftIcon={info.order_type === 'recharge' ? this.handleClickBack.bind(this, '/pages/member/pay') : this.handleClickBack.bind(this, '/pages/trade/list')}
+          color='#000'
+          title='NavBar 导航栏示例'
+          leftIconType='chevron-left'
+        />
         <View className='cashier-money'>
           {
             info.order_type !== 'recharge'

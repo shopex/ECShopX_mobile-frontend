@@ -38,7 +38,7 @@ export function favoriteItems () {
 }
 
 export function getRechargeNumber () {
-  return req.get('http://pjj.aixue7.com/index.php/api/h5app/weapp/deposit/rechargerules')
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/deposit/rechargerules')
 }
 
 export function qrcodeData () {
@@ -58,15 +58,15 @@ export function pointTotal () {
 }
 
 export function depositList (params = {}) {
-  return req.get('http://pjj.aixue7.com/index.php/api/h5app/weapp/deposit/list', params)
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/deposit/list', params)
 }
 
 export function depositTotal () {
-  return req.get('http://pjj.aixue7.com/index.php/api/h5app/weapp/deposit/info')
+  return req.get('http://pjj.aixue7.com/index.php/api/h5app/wxapp/deposit/info')
 }
 
 export function depositPay (params = {}) {
-  return req.post('http://pjj.aixue7.com/index.php/api/h5app/weapp/deposit/recharge_new', params)
+  return req.post('http://pjj.aixue7.com/index.php/api/h5app/wxapp/deposit/recharge_new', params)
 }
 
 export function recommendUserInfo () {
@@ -86,7 +86,7 @@ export function recommendOrder (params = {}) {
 }
 
 export function depositToPoint (params = {}) {
-  return req.post('http://pjj.aixue7.com/index.php/api/h5app/weapp/deposit/to/point', params)
+  return req.post('http://pjj.aixue7.com/index.php/api/h5app/wxapp/deposit/to/point', params)
 }
 
 export function pointDraw (params = {}) {
