@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import {View, Form, Text} from '@tarojs/components'
+import {View, Form, Text, Image} from '@tarojs/components'
 import { AtSearchBar } from 'taro-ui'
 import { classNames } from '@/utils'
 import { toggleTouchMove } from '@/utils/dom'
@@ -109,6 +109,10 @@ export default class SearchBar extends Component {
         ref='container'
       >
         <Form className={classNames('search-input__form', className === 'home-index-search' ? `${className} login-width` : '')} onSubmit={this.handleConfirm.bind(this)}>
+          {/*<Image className='search'/>*/}
+          {
+            showSearchDailog === false && className === 'home-index-search' ? <View className='search-logo'>PJJ</View> : null
+          }
           <AtSearchBar
             className={classNames('search-input__bar', className === 'home-index-search' ? className : '')}
             value={searchValue}
