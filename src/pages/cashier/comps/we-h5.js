@@ -18,6 +18,13 @@ export default class WeappBtn extends Component {
   }
 
   componentDidMount () {
+    const refMeta = document.querySelector('meta[name="referrer"]')
+    refMeta.setAttribute('content', 'always')
+  }
+
+  componentWillUnmount () {
+    const refMeta = document.querySelector('meta[name="referrer"]')
+    refMeta.setAttribute('content', 'never')
   }
 
   handleClickPay = async () => {
@@ -30,8 +37,20 @@ export default class WeappBtn extends Component {
     const res = await api.cashier.getPayment(params)
     // eslint-disable-next-line
     const loc = location
-    const redirect_url = encodeURIComponent(`${loc.procotol}://${loc.host}/trade/list`)
-    window.open(`${res.payment.mweb_url}`)
+    const redirect_url = encodeURIComponent(`${loc.protocol}://${loc.host}/pages/trade/list`)
+    const form = document.createElement('form')
+    const [action, search] = res.payment.mweb_url.split('?')
+    const queryPair = search.split('&')
+
+    form.setAttribute('method', 'get')
+    form.setAttribute('action', action)
+    form.innerHTML = queryPair.map(p => {
+      const [name, value] = p.split('=')
+      return `<input type="hidden" name="${name}" value="${value}" />`
+    }).join('')
+    document.body.appendChild(form)
+
+    form.submit()
   }
 
   render () {
