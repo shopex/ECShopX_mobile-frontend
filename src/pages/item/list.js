@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem, NavBar } from '@/components'
+import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem, NavBar, SpNote } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
 
@@ -163,6 +163,10 @@ export default class List extends Component {
             page.isLoading
               ? <Loading>正在加载...</Loading>
               : null
+          }
+          {
+            !page.isLoading && !page.hasNext && !list.length
+              && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
 

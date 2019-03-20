@@ -11,21 +11,16 @@ export default class NavBar extends Component {
     title: ''
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-    }
-  }
-
   static options = {
     addGlobalClass: true
   }
 
   handleClickLeftIcon = () => {
-    this.props.onClickLeftIcon
-      ? this.props.onClickLeftIcon()
-      : Taro.navigateBack()
+    if (this.props.onClickLeftIcon) return this.props.onClickLeftIcon()
+
+    return Taro.navigateBack({
+      delta: 1
+    })
   }
 
   render () {
@@ -38,7 +33,7 @@ export default class NavBar extends Component {
           color='#000'
           title={title}
           leftIconType={leftIconType}
-          onClickLeftIcon={this.handleClickLeftIcon}
+          onClickLeftIcon={this.handleClickLeftIcon.bind(this)}
         />
       </View>
     )

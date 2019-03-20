@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
 import api from '@/api'
 
 import './weapp.scss'

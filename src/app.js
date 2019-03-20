@@ -10,24 +10,26 @@ import './app.scss'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
-// if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
-//   require('nerv-devtools')
-// }
+if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
+  require('nerv-devtools')
+}
 
 const { store, persistor } = configStore()
 useHooks()
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.addEventListener('touchmove', (e) => {
-    e.preventDefault()
-  }, { passive: false })
+if (process.env.TARO_ENV === 'h5') {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('touchmove', (e) => {
+      e.preventDefault()
+    }, { passive: false })
 
-  const $app = document.getElementById('app')
+    const $app = document.getElementById('app')
 
-  $app.addEventListener('touchmove', (e) => {
-    e.stopPropagation()
-  }, false)
-}, false);
+    $app.addEventListener('touchmove', (e) => {
+      e.stopPropagation()
+    }, false)
+  }, false);
+}
 
 class App extends Component {
   config = {

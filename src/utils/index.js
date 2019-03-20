@@ -1,6 +1,6 @@
+import Taro from '@tarojs/taro'
 import classNames from 'classnames'
 import styleNames from 'stylenames'
-import Taro from '@tarojs/taro'
 import qs from 'qs'
 import moment from 'moment'
 import copy from 'copy-to-clipboard'
@@ -97,9 +97,14 @@ export function navigateTo (url, isRedirect) {
   if (isObject(isRedirect)) {
     isRedirect = false
   }
-  return Taro[!isRedirect ? 'navigateTo' : 'redirectTo']({
-    url
-  })
+
+  if (isRedirect) {
+    Taro.navigateTo({ url })
+  } else {
+    Taro.redirectTo({ url })
+  }
+
+  return
 }
 
 export function resolvePath (baseUrl, params = {}) {

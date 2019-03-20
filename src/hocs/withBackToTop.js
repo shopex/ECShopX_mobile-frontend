@@ -1,4 +1,5 @@
 import { log } from '@/utils'
+import throttle from 'lodash/throttle'
 
 export default function withBackToTop (Component) {
   return class WithBackToTopComponent extends Component {
@@ -15,17 +16,23 @@ export default function withBackToTop (Component) {
     scrollBackToTop = () => {
       // workaround
       this.setState({
-        scrollTop: 0
+        scrollTop: 1
       }, () => {
-        this.setState({
-          scrollTop: null
-        })
+        // this.setState({
+        //   scrollTop: null
+        // })
       })
     }
 
-    handleScroll = (e) => {
+    handleScroll = throttle((e) => {
       const { scrollTop, scrollHeight } = e.detail
       const offset = 300
+
+      console.log(scrollTop)
+
+      this.setState({
+        scrollTop
+      })
 
       if (scrollHeight < 600) return
       if (scrollTop > offset && !this.state.showBackToTop) {
@@ -39,6 +46,6 @@ export default function withBackToTop (Component) {
           showBackToTop: false
         })
       }
-    }
+    }, 70)
   }
 }

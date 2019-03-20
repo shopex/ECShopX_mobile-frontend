@@ -17,7 +17,7 @@ module.exports = {
           filename: 'css/[name].[hash:8].css',
           chunkFilename: 'css/[id].[hash:8].css'
         },
-        webpackChain (chain, webpack) {
+        webpackChain (chain) {
           const pkg = require(path.resolve(__dirname, '../package.json'))
           const { publicPath, bucket: CDNBucket, path: CDNPath } = pkg.cdn
 

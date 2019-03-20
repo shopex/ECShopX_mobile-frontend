@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
-import api from '@/api'
+// import api from '@/api'
 import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
 import { getTotalCount } from '@/store/cart'
@@ -93,6 +93,9 @@ export default class TabBar extends Component {
       const { fullPath } = getCurrentRoute(this.$router)
 
       if (url && fullPath !== url) {
+        // Taro[!urlRedirect ? 'navigateTo' : 'redirectTo']({
+        //   url
+        // })
         navigateTo(url, urlRedirect)
       }
     }

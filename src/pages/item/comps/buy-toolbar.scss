@@ -62,7 +62,6 @@
     border: none;
     border-radius: 0;
     font-weight: bold;
-
     &:before, &:after {
       display: none;
     }
@@ -71,6 +70,7 @@
     background: linear-gradient(90deg, #FFBE1C, #FA7815);
   }
   .btn-fast-buy {
+    margin-left: -1px;
     background: linear-gradient(90deg, $color-brand-primary, $color-brand-primary);
   }
 }

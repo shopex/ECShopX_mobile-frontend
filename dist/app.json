@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/home/index",
     "pages/home/landing",
     "pages/category/index",
@@ -31,6 +30,7 @@
     "pages/member/recommend-order",
     "pages/member/coupon",
     "pages/member/address",
+    "pages/member/setting",
     "pages/trade/list",
     "pages/trade/detail",
     "pages/trade/rate",

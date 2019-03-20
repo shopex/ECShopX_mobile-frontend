@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import Nerv from 'nervjs'
 
 export function isElement (o) {
   return o instanceof Element

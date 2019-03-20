@@ -54,7 +54,7 @@ export default class Login extends Component {
     }
   }
 
-  handleChange = (name, val) => {
+  handleChange (name, val) {
     const { info } = this.state
     info[name] = val
   }
@@ -75,7 +75,7 @@ export default class Login extends Component {
   }
 
   handleErrorToastClose = () => {
-    S.closeToast()
+    // S.closeToast()
   }
 
   handleClickForgtPwd = () => {
@@ -136,6 +136,7 @@ export default class Login extends Component {
             }
           </View>
         </AtForm>
+
         <SpToast />
       </View>
     )

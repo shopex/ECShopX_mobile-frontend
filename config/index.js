@@ -35,10 +35,12 @@ const config = {
   defineConstants: {
     APP_NAME: `'${pkg.app_name}'`,
     APP_VERSION: `'${pkg.version}'`,
-    APP_BASE_URL: "'//pjj.aixue7.com/index.php/api/h5app/wxapp'"
+    APP_BASE_URL: TARO_ENV === 'h5'
+      ? "'//pjj.aixue7.com/index.php/api/h5app/wxapp'"
+      : "'https://pjj.aixue7.com/index.php/api/h5app/wxapp'"
   },
   alias: {
-    '@': path.join(__dirname, '..', '/src')
+    '@': path.join(__dirname, '../src'),
   },
   copy: {
     patterns: [
@@ -85,9 +87,9 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
-    router: {
-      mode: 'browser',
-    },
+    // router: {
+    //   mode: 'browser',
+    // },
     module: {
       postcss: {
         autoprefixer: {
