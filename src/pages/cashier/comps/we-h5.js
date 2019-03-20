@@ -40,7 +40,7 @@ export default class WeappBtn extends Component {
     const redirect_url = encodeURIComponent(`${loc.protocol}://${loc.host}/pages/trade/list`)
     const form = document.createElement('form')
     const [action, search] = res.payment.mweb_url.split('?')
-    const queryPair = `${search}&redirect_url=${redirect_url}`.split('&')
+    const queryPair = search.split('&')
 
     form.setAttribute('method', 'get')
     form.setAttribute('action', action)
