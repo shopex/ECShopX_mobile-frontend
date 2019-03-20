@@ -108,6 +108,9 @@ class API {
             data.err_msg = data.err_msg || '授权过期请重新授权'
             this.errorToast(data)
           }
+          Taro.redirectTo({
+            url: '/pages/auth/login'
+          })
           return Promise.reject(this.reqError(res))
         }
 
@@ -132,7 +135,7 @@ class API {
 }
 
 export default new API({
-  baseURL: TARO_APP.BASE_URL,
+  baseURL: APP_BASE_URL,
 
   // interceptor (chain) {
   //   const { requestParams } = chain

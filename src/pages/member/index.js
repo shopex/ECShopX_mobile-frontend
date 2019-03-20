@@ -38,7 +38,10 @@ export default class MemberIndex extends Component {
     return (
       <View className='page-member-index'>
         <View className='member-index__hd'>
-          <View className='member-info'>
+          <View
+            className='member-info'
+            onClick={this.navigateTo.bind(this, '/pages/member/setting')}
+          >
             <AtAvatar
               className='member-avatar'
               title='鲜果优格果冻妹'

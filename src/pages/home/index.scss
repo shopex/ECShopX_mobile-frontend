@@ -7,7 +7,10 @@
 
 .wgts-wrap {
   &__fixed {
-    padding-top: $searchbar-height + $edge-margin;
+    height: 100vh;
+    box-sizing: border-box;
+    padding-top: $searchbar-height ;
+    padding-bottom: $tabbar-height + $edge-margin;
   }
   &__is-distributor {
   }

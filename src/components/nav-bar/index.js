@@ -6,6 +6,9 @@ import './index.scss'
 
 export default class NavBar extends Component {
   static defaultProps = {
+    leftIconType: 'chevron-left',
+    fixed: true,
+    title: ''
   }
 
   constructor (props) {

@@ -54,20 +54,22 @@ export default class HomeIndex extends Component {
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
         >
-          {
-            wgts.map((item, idx) => {
-              return (
-                <View className='wgt-wrap' key={idx}>
-                  {item.name === 'slider' && <WgtSlider info={item} />}
-                  {item.name === 'navigation' && <WgtNavigation info={item} />}
-                  {item.name === 'coupon' && <WgtCoupon info={item} />}
-                  {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} />}
-                  {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} />}
-                  {item.name === 'showcase' && <WgtShowcase info={item} />}
-                </View>
-              )
-            })
-          }
+          <View>
+            {
+              wgts.map((item, idx) => {
+                return (
+                  <View className='wgt-wrap' key={idx}>
+                    {item.name === 'slider' && <WgtSlider info={item} />}
+                    {item.name === 'navigation' && <WgtNavigation info={item} />}
+                    {item.name === 'coupon' && <WgtCoupon info={item} />}
+                    {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} />}
+                    {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} />}
+                    {item.name === 'showcase' && <WgtShowcase info={item} />}
+                  </View>
+                )
+              })
+            }
+          </View>
         </ScrollView>
         <TabBar></TabBar>
       </View>

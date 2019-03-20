@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import {View, Form, Text} from '@tarojs/components'
 import { AtSearchBar } from 'taro-ui'
 import { classNames } from '@/utils'
+import { toggleTouchMove } from '@/utils/dom'
 
 import './index.scss'
 
@@ -23,6 +24,12 @@ export default class SearchBar extends Component {
 
   static options = {
     addGlobalClass: true
+  }
+
+  componentDidMount () {
+    if (process.env.TARO_ENV === 'h5') {
+      toggleTouchMove(this.refs.container)
+    }
   }
 
   handleFocusSearchHistory = (isOpened) => {
@@ -97,7 +104,10 @@ export default class SearchBar extends Component {
     const { isFixed, className, isAuth } = this.props
     const { showSearchDailog, historyList, isShowAction, searchValue } = this.state
     return (
-      <View className={classNames('search-input', className === 'category-top' ? className : '', showSearchDailog ? 'search-input__focus' : null, isFixed ? 'search-input-fixed' : null)}>
+      <View
+        className={classNames('search-input', className === 'category-top' ? className : '', showSearchDailog ? 'search-input__focus' : null, isFixed ? 'search-input-fixed' : null)}
+        ref='container'
+      >
         <Form className={classNames('search-input__form', className === 'home-index-search' ? `${className} login-width` : '')} onSubmit={this.handleConfirm.bind(this)}>
           <AtSearchBar
             className={classNames('search-input__bar', className === 'home-index-search' ? className : '')}

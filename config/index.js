@@ -33,11 +33,9 @@ const config = {
     }
   },
   defineConstants: {
-    TARO_APP: JSON.stringify({
-      APP_NAME: pkg.app_name,
-      APP_VERSION: pkg.version,
-      BASE_URL: '//pjj.aixue7.com/index.php/api/h5app/wxapp'
-    })
+    APP_NAME: `'${pkg.app_name}'`,
+    APP_VERSION: `'${pkg.version}'`,
+    APP_BASE_URL: "'//pjj.aixue7.com/index.php/api/h5app/wxapp'"
   },
   alias: {
     '@': path.join(__dirname, '..', '/src')

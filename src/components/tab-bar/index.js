@@ -38,6 +38,7 @@ export default class TabBar extends Component {
 
   componentDidShow () {
     this.updateCurTab()
+    console.info(1111)
   }
 
   componentWillReceiveProps (nextProps) {

@@ -19,7 +19,6 @@ useHooks()
 
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', (e) => {
-    console.log(1)
     e.preventDefault()
   }, { passive: false })
 
@@ -68,6 +67,7 @@ class App extends Component {
       'pages/member/recommend-order',
       'pages/member/coupon',
       'pages/member/address',
+      'pages/member/setting',
 
       'pages/trade/list',
       'pages/trade/detail',
