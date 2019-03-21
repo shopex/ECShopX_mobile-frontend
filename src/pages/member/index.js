@@ -105,7 +105,7 @@ export default class MemberIndex extends Component {
                   <SpIconMenu
                     icon='clock'
                     title='待发货'
-                    to='/pages/trade/list?status=1'
+                    to='/pages/trade/list?status=6'
                   />
                 </AtBadge>
                 <AtBadge value={ordersCount.normal_payed_delivered}>
