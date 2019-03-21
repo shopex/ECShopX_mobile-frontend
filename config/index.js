@@ -124,7 +124,8 @@ const config = {
           }
         }
       })
-    }
+    },
+    enableDll: false
   }
 }
 
