@@ -22,12 +22,14 @@ export default class TradeRefundDetail extends Component {
   }
 
   async fetch () {
-    const { aftersales_bn } = this.$router.params
+    const { aftersales_bn, item_id, order_id } = this.$router.params
     const { aftersales: info, orderInfo } = await api.aftersales.info({
-      aftersales_bn
+      aftersales_bn,
+      item_id,
+      order_id
     })
-    // const progress = +info.progress
-    const progress = 0
+
+    const progress = +info.progress
     info.status_str = REFUND_STATUS[String(progress)]
 
     this.setState({

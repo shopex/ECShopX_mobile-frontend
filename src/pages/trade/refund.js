@@ -4,7 +4,7 @@ import { AtSegmentedControl, AtImagePicker, AtTag, AtButton, AtTextarea } from '
 import { SpCell, SpToast } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
-import { log } from '@/utils'
+import { log, pickBy } from '@/utils'
 import S from '@/spx'
 import * as qiniu from 'qiniu-js'
 
@@ -31,6 +31,29 @@ export default class TradeRefund extends Component {
   }
 
   componentDidMount () {
+    this.fetch()
+  }
+
+  async fetch () {
+    Taro.showLoading({
+      mask: true
+    })
+    const { aftersales_bn, item_id, order_id } = this.$router.params
+    const res = await api.aftersales.info({
+      aftersales_bn,
+      item_id,
+      order_id
+    })
+    Taro.hideLoading()
+
+    const params = pickBy(res.aftersales, {
+      curSegIdx: ({ aftersales_type }) => this.state.segTypes.indexOf(aftersales_type) || 0,
+      curReasonIdx: ({ reason }) => this.state.reason.indexOf(reason) || 0,
+      description: 'description',
+      imgs: ({ evidence_pic }) => evidence_pic.map(url => ({ url }))
+    })
+
+    this.setState(params)
   }
 
   handleChangeType = (idx) => {
@@ -56,7 +79,7 @@ export default class TradeRefund extends Component {
     })
   }
 
-  handleImageChange = async (data, type, index) => {
+  handleImageChange = async (data, type) => {
     if (type === 'remove') {
       this.setState({
         imgs: data
@@ -138,10 +161,14 @@ export default class TradeRefund extends Component {
     }
 
     const method = aftersales_bn ? 'modify' : 'apply'
-    const res = await api.aftersales[method](data)
-    Taro.redirectTo({
-      url: '/pages/trade/after-sale'
-    })
+    await api.aftersales[method](data)
+
+    S.toast('操作成功')
+    setTimeout(() => {
+      Taro.redirectTo({
+        url: '/pages/trade/after-sale'
+      })
+    }, 700)
   }
 
   render () {
