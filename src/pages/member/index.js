@@ -66,7 +66,7 @@ export default class MemberIndex extends Component {
 
         <View className='member-index__bd'>
           <View className='member-sec member-info__status'>
-            <View className='member-status__item' onClick={this.navigateTo.bind(this, '/pages/member/favorite')}>
+            <View className='member-status__item' onClick={this.navigateTo.bind(this, '/pages/member/recharge')}>
               <Text className='member-status__item-val'>{info.deposit}</Text>
               <Text className='member-status__item-title'>余额</Text>
             </View>
@@ -135,13 +135,6 @@ export default class MemberIndex extends Component {
             <View className='member-tools__menus'>
               <View className='member-tools__item'>
                 <SpIconMenu
-                  icon='star'
-                  title='我的收藏'
-                  to='/pages/member/favorite'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
                   icon='thumb'
                   title='推广管理'
                   to='/pages/member/recommend'
@@ -177,18 +170,13 @@ export default class MemberIndex extends Component {
               </View>
               <View className='member-tools__item'>
                 <SpIconMenu
-                  icon='money'
-                  title='我的资金'
-                  to='/pages/member/recharge'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
                   icon='help'
                   title='积分抽奖'
                   to='/pages/member/point-draw'
                 />
               </View>
+              <View className='member-tools__item'> </View>
+              <View className='member-tools__item'> </View>
             </View>
           </View>
         </View>
