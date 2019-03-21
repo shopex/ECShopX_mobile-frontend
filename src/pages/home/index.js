@@ -25,6 +25,8 @@ export default class HomeIndex extends Component {
     this.fetch()
   }
 
+  componentDidShow () {}
+
   async fetch () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
     const info = await req.get(url)
@@ -71,7 +73,7 @@ export default class HomeIndex extends Component {
             }
           </View>
         </ScrollView>
-        <TabBar></TabBar>
+        <TabBar />
       </View>
     )
   }

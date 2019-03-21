@@ -66,9 +66,9 @@ export default class AfterSale extends Component {
       status_desc: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
       totalItems: 'num',
       payment: ({ item }) => (item.refunded_fee / 100).toFixed(2),
-      pay_type: 'item.pay_type',
-      point: 'item.point',
-      order: ({ item }) => [pickBy(item, {
+      pay_type: 'orderInfo.pay_type',
+      point: 'orderInfo.point',
+      order: ({ orderInfo }) => pickBy(orderInfo.items, {
         order_id: 'order_id',
         item_id: 'item_id',
         pic_path: 'pic',
@@ -76,7 +76,7 @@ export default class AfterSale extends Component {
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         point: 'item_point',
         num: 'num'
-      })]
+      })
     })
 
     log.debug('[trade list] list fetched and processed: ', nList)
@@ -165,7 +165,7 @@ export default class AfterSale extends Component {
                   }
                   info={item}
                   onClick={this.handleClickItem.bind(this, item)}
-                ></TradeItem>
+                />
               )
             })
           }

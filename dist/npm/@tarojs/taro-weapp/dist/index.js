@@ -4350,16 +4350,6 @@ function canIUseWebp() {
   return false;
 }
 
-function wxCloud(taro) {
-  var wxC = wx.cloud;
-  var wxcloud = {};
-  var apiList = ['init', 'database', 'uploadFile', 'downloadFile', 'getTempFileURL', 'deleteFile', 'callFunction'];
-  apiList.forEach(function (v) {
-    wxcloud[v] = wxC[v];
-  });
-  taro.cloud = wxcloud;
-}
-
 function initNativeApi(taro) {
   processApis(taro);
   taro.request = link.request.bind(link);
@@ -4370,7 +4360,6 @@ function initNativeApi(taro) {
   taro.initPxTransform = initPxTransform.bind(taro);
   taro.pxTransform = pxTransform.bind(taro);
   taro.canIUseWebp = canIUseWebp;
-  wxCloud(taro);
 }
 
 /* eslint-disable camelcase */
