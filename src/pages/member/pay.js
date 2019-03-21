@@ -2,10 +2,11 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, Text } from '@tarojs/components'
 import {AtButton, AtTag, AtInput} from 'taro-ui'
-import { NavBar } from '@/components'
+import { NavBar, SpToast } from '@/components'
 import { withPager } from '@/hocs'
 import api from '@/api'
 import { pickBy, classNames } from '@/utils'
+import S from '@/spx'
 
 import './pay.scss'
 
@@ -55,6 +56,9 @@ export default class Pay extends Component {
   handleClickPay = async () => {
     const query = {
       total_fee: this.state.isActiveName,
+    }
+    if(!query.total_fee) {
+      return S.toast('请选择充值数额')
     }
     Taro.showLoading({
       title: '生成订单中',
@@ -131,6 +135,7 @@ export default class Pay extends Component {
             </View>
           </View>
         </View>
+        <SpToast />
       </View>
     )
   }
