@@ -5,6 +5,9 @@ const [TARO_CMD, TARO_ENV] = process.env.npm_lifecycle_event.split(':')
 const DIST_PATH = TARO_ENV === 'h5'
   ? (process.env.NODE_ENV === 'production' ? 'h5_dist' : '.h5_dev_dist' )
   : 'dist'
+const API_HOST = process.env.RELEASE === 'h5'
+  ? 'b.pjinjin.com'
+  : 'pjj.aixue7.com'
 
 const config = {
   projectName: pkg.name,
@@ -36,8 +39,8 @@ const config = {
     APP_NAME: `'${pkg.app_name}'`,
     APP_VERSION: `'${pkg.version}'`,
     APP_BASE_URL: TARO_ENV === 'h5'
-      ? "'//pjj.aixue7.com/index.php/api/h5app/wxapp'"
-      : 'https://pjj.aixue7.com/index.php/api/h5app/wxapp'
+      ? `'//${API_HOST}/api/h5app/wxapp'`
+      : `'https://${API_HOST}/api/h5app/wxapp'`
   },
   alias: {
     '@': path.join(__dirname, '../src'),
