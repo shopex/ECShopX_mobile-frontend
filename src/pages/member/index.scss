@@ -102,9 +102,12 @@
   }
 
   &-avatar {
-    margin-top: 50px;
+    width: 100px;
+    height: 100px;
     margin-bottom: 30px;
+    line-height: 100px;
   }
+
   &-name {
     color: #fff;
     font-size: floor($font-size * 1.28);
