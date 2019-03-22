@@ -50,8 +50,10 @@ export default class PointDraw extends Component {
     nList.map(item => {
       if(item.payment_status === 'unpay') {
         item.payment_status = '未支付'
-      } else if(item.payment_status === 'unpay'){
+      } else if(item.payment_status === 'payed'){
         item.payment_status = '已支付'
+      }else if(item.payment_status === 'readyrefund'){
+        item.payment_status = '等待退款'
       } else {
         item.payment_status = '已退款'
       }

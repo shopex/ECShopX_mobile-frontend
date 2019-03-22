@@ -1,9 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtBadge, AtIcon, AtAvatar } from 'taro-ui'
-import { SpIconMenu, TabBar } from '@/components'
+import { SpIconMenu, TabBar, SpToast } from '@/components'
 import { withLogin } from '@/hocs'
 import api from '@/api'
+import S from '@/spx'
 
 import './index.scss'
 
@@ -34,6 +35,8 @@ export default class MemberIndex extends Component {
             point: res.point,
             coupon: res.coupon,
             luckdraw: res.luckdraw,
+            is_promoter: res.is_promoter,
+            is_open_popularize: res.is_open_popularize,
             user_card_code: res.memberInfo.user_card_code,
             username: res.memberInfo.username,
           }
@@ -47,6 +50,17 @@ export default class MemberIndex extends Component {
           ordersCount
         })
       })
+  }
+
+  handleClickRecommend = () => {
+    const { info } = this.state
+    if(info.is_open_popularize && info.is_promoter) {
+      Taro.navigateTo({
+        url: '/pages/member/recommend'
+      })
+    } else {
+      S.toast('请先成为推广员')
+    }
   }
 
   render () {
@@ -66,7 +80,6 @@ export default class MemberIndex extends Component {
               text={info.username}
               circle
             />
-            {/*<View className='member-name member-avatar'>{info.user_card_code}</View>*/}
             <View className='member-name'>{info.username}</View>
           </View>
         </View>
@@ -140,11 +153,14 @@ export default class MemberIndex extends Component {
           </View>
           <View className='sec-bd'>
             <View className='member-tools__menus'>
-              <View className='member-tools__item'>
+              <View
+                className='member-tools__item'
+                onClick={this.handleClickRecommend}
+              >
                 <SpIconMenu
                   icon='thumb'
                   title='推广管理'
-                  to='/pages/member/recommend'
+                  // to={`${info.is_open_popularize && info.is_promoter} ? '/pages/member/recommend' : '`}
                 />
               </View>
               <View className='member-tools__item'>
@@ -187,6 +203,7 @@ export default class MemberIndex extends Component {
             </View>
           </View>
         </View>
+        <SpToast />
 
         <TabBar
           current={3}

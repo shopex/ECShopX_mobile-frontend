@@ -73,6 +73,10 @@ export function depositPay (params = {}) {
   return req.post('/deposit/recharge_new', params)
 }
 
+export function depositPayRule () {
+  return req.get('/deposit/recharge/agreement')
+}
+
 export function recommendUserInfo () {
   return req.get('/promoter/info')
 }
