@@ -133,7 +133,7 @@ export default class AddressPicker extends Component {
     }
     this.setState({
       mode: 'edit',
-      curAddress: address
+      curAddress: address,
     })
   }
 
