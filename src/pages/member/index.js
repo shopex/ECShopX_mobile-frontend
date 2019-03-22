@@ -17,7 +17,13 @@ export default class MemberIndex extends Component {
         normal_payed_delivered: '',
         normal_payed_notdelivery: ''
       },
-      info: {}
+      info: {
+        deposit: '',
+        point: '',
+        coupon: '',
+        luckdraw: '',
+        username: '',
+      }
     }
   }
 
