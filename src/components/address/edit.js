@@ -149,10 +149,12 @@ export default class AddressEdit extends Component {
     }
 
     if (!data.is_def) {
-      data.is_def = 0
+      data.is_def = '0'
+    } else {
+      data.is_def = '1'
     }
     if(this.state.listLength === 0) {
-      data.is_def = 1
+      data.is_def = '1'
     }
 
     if (!data.username) {
@@ -170,7 +172,7 @@ export default class AddressEdit extends Component {
     if (!data.adrdetail) {
       return S.toast('请输入详细地址')
     }
-    // return false
+    console.log(data)
     this.props.onChange && this.props.onChange(data)
     this.props.onClose && this.props.onClose()
   }
@@ -180,10 +182,11 @@ export default class AddressEdit extends Component {
     info[name] = val
   }
 
-  handleDefChange = (val) => {
+  handleDefChange = (e) => {
+    console.log(e.detail.value)
     const info = {
       ...this.state.info,
-      is_def: val ? 1 : 0
+      is_def: e.detail.value ? 1 : 0
     }
 
     this.setState({
@@ -263,7 +266,7 @@ export default class AddressEdit extends Component {
             >
               <Switch
                 checked={info.is_def}
-                onChange={this.handleDefChange}
+                onChange={this.handleDefChange.bind(this)}
               />
             </SpCell>
           </View>
@@ -275,7 +278,7 @@ export default class AddressEdit extends Component {
                 : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>提交</AtButton>
             }
             {
-              info.address_id && (<AtButton onClick={this.handleDelete}>删除</AtButton>)
+              info.address_id && (<AtButton onClick={this.handleDelete.bind(this)}>删除</AtButton>)
             }
           </View>
         </AtForm>
