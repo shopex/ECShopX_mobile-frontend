@@ -7,10 +7,14 @@ export default class AddressIndex extends Component {
     return Taro.navigateBack()
   }
 
+  handleAddressChange = () => {
+  }
+
   render () {
     return (
       <AddressPicker
         isOpened
+        onChange={this.handleAddressChange.bind(this)}
         onClickBack={this.handleClickBack.bind(this)}
       />
     )
