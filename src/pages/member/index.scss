@@ -1,7 +1,7 @@
 @import '../../style/imports';
 
 .page-member-index {
-  padding-bottom: $tabbar-height + 50px;
+  padding-bottom: $tabbar-height + $edge-margin;
   background: $color-bg-gray;
   .sp-icon-pay, .sp-icon-clock, .sp-icon-baoguo, .sp-icon-comment {
     @include iconfont-gradient(linear-gradient(90deg, #FAA761, #FA3515));

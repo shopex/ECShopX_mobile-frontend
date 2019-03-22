@@ -12,9 +12,8 @@
     }
   }
   &__scroll {
-    height: 100vh;
-    padding: 20px 0 $edge-margin;
     box-sizing: border-box;
+    @include page-scroll($navigate-height + $tabs-height, $edge-margin)
   }
   &__tabs {
   }
