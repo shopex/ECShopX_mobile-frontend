@@ -17,26 +17,10 @@ export default class WgtCoupon extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {
-      hasAuth: false
-    }
-  }
-
-  handleGetUserInfo = () => {
-    if (this.state.hasAuth) return
-
-    Taro.redirectTo({
-      url: '/pages/auth/login'
-    })
   }
 
   handleGetCard = (cardId) => {
-    let data = {}
-    try {
-      data = req.get('http://pjj.aixue7.com/index.php/api//wxapp/user/receiveCard', { card_id: cardId })
-    } catch (e) {
-      S.showToast('优惠券领取失败')
-    }
+    const data = req.get('/user/receiveCard', { card_id: cardId })
 
     if (data.status) {
       S.showToast('优惠券领取成功')
@@ -48,7 +32,6 @@ export default class WgtCoupon extends Component {
   }
 
   render () {
-    const { hasAuth } = this.state
     const { info } = this.props
     if (!info) {
       return null
@@ -97,19 +80,10 @@ export default class WgtCoupon extends Component {
                     <Text className='coupon-desc'>{item.desc}</Text>
                   </View>
                 </View>
-                {!hasAuth && (
-                  <Button
-                    className='coupon-getted-btn'
-                    openType='getUserInfo'
-                    onClick={this.handleGetUserInfo}
-                  >领取</Button>
-                )}
-                {hasAuth && (
-                  <Button
-                    className='coupon-getted-btn'
-                    onClick={this.handleGetCard.bind(this, item.id)}
-                  >领取</Button>
-                )}
+                <Button
+                  className='coupon-getted-btn'
+                  onClick={this.handleGetCard.bind(this, item.id)}
+                >领取</Button>
               </View>
             )
           })}

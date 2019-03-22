@@ -115,8 +115,8 @@
   position: absolute;
   left: 0;
   width: 100%;
-  top: $searchbar-height;
-  bottom: $tabbar-height + $edge-margin;
+  top: $padding-top;
+  bottom: $padding-bottom;
   overflow-y: auto;
   overflow-x: hidden;
   transform: translate3d(0,0,0);

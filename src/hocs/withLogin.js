@@ -21,14 +21,14 @@ export default function withLogin (next, lifeCycle = LIFE_CYCLE_TYPES.WILL_MOUNT
 
       async componentWillMount () {
         if (lifeCycle === LIFE_CYCLE_TYPES.WILL_MOUNT) {
-          const res = await this.__autoLogin()
+          const res = await this.$__autoLogin()
           if (!res) return
 
           if (super.componentWillMount) {
             super.componentWillMount()
           }
         } else {
-          const done = await this.__autoLoginDone()
+          const done = await this.$__autoLoginDone()
           if (super.componentWillMount && done) {
             super.componentWillMount()
           }
@@ -37,14 +37,14 @@ export default function withLogin (next, lifeCycle = LIFE_CYCLE_TYPES.WILL_MOUNT
 
       async componentDidMount () {
         if (lifeCycle === LIFE_CYCLE_TYPES.DID_MOUNT) {
-          const res = await this.__autoLogin()
+          const res = await this.$__autoLogin()
           if (!res) return
 
           if (super.componentDidMount) {
             super.componentDidMount()
           }
         } else {
-          const done = await this.__autoLoginDone()
+          const done = await this.$__autoLoginDone()
           if (super.componentDidMount && done) {
             super.componentDidMount()
           }
@@ -53,21 +53,21 @@ export default function withLogin (next, lifeCycle = LIFE_CYCLE_TYPES.WILL_MOUNT
 
       async componentDidShow () {
         if (lifeCycle === LIFE_CYCLE_TYPES.DID_SHOW) {
-          const res = await this.__autoLogin()
+          const res = await this.$__autoLogin()
           if (!res) return
 
           if (super.componentDidShow) {
             super.componentDidShow()
           }
         } else {
-          const done = await this.__autoLoginDone()
+          const done = await this.$__autoLoginDone()
           if (super.componentDidShow && done) {
             super.componentDidShow()
           }
         }
       }
 
-      async __autoLogin () {
+      async $__autoLogin () {
         this.$__autoLogin_state = 'pending'
         let res
         try {
@@ -80,26 +80,21 @@ export default function withLogin (next, lifeCycle = LIFE_CYCLE_TYPES.WILL_MOUNT
         return res
       }
 
-      __autoLoginDone = (function () {
-        let timer = null
-        return function () {
-          if (this.$__autoLogin_state === 'success') return Promise.resolve(true)
-          if (this.$__autoLogin_state === 'fail') return Promise.resolve(false)
-          const self = this
+      $__autoLoginDone () {
+        if (this.$__autoLogin_state === 'success') return Promise.resolve(true)
+        if (this.$__autoLogin_state === 'fail') return Promise.resolve(false)
 
-          return new Promise(resolve => {
-            if (timer) clearInterval(timer)
-            timer = setInterval(() => {
-              const state = self.$__autoLogin_state
-              if (state === 'success' || state === 'fail') {
-                clearInterval(timer)
-                timer = null
-                resolve(state === 'success' ? true : false)
-              }
-            }, 100)
-          })
-        }
-      })()
+        return new Promise((resolve) => {
+          let timer = setInterval(() => {
+            const state = this.$__autoLogin_state
+            if (state === 'success' || state === 'fail') {
+              clearInterval(timer)
+              timer = null
+              resolve(state === 'success' ? 'aaaaa' : false)
+            }
+          }, 100)
+        })
+      }
     }
   }
 }

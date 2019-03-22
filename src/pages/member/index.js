@@ -28,7 +28,6 @@ export default class MemberIndex extends Component {
   componentDidMount () {
     api.member.memberInfo()
       .then(res => {
-        console.log(res, 29)
         this.setState({
           info: {
             deposit: (res.deposit/100).toFixed(2),
@@ -43,6 +42,7 @@ export default class MemberIndex extends Component {
         })
       })
   }
+
   componentDidShow () {
     api.trade.getCount()
       .then((ordersCount) => {

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { SearchBar, TabBar, Loading } from '@/components'
+import { SearchBar, SpToast, TabBar, Loading } from '@/components'
 import req from '@/api/req'
 import S from "@/spx";
 import { WgtSlider, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase } from './wgts'
@@ -74,6 +74,7 @@ export default class HomeIndex extends Component {
             }
           </View>
         </ScrollView>
+        <SpToast />
         <TabBar />
       </View>
     )
