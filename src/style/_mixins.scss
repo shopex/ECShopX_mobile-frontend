@@ -111,6 +111,21 @@
   }
 }
 
+@mixin page-scroll ($padding-top: 0, $padding-bottom: 0, $z-index: 1) {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: $searchbar-height;
+  bottom: $tabbar-height + $edge-margin;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transform: translate3d(0,0,0);
+  z-index: 1;
+  > div {
+    transform: translate3d(0,0,0);
+  }
+}
+
 @mixin iconfont-gradient ($background) {
   &:before {
     background: $background;

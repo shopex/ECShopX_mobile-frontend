@@ -3,14 +3,12 @@
 .page-index {
   padding-bottom: $tabbar-height;
   background: #fff;
+  height: 100vh;
 }
 
 .wgts-wrap {
   &__fixed {
-    height: 100vh;
-    box-sizing: border-box;
-    padding-top: $searchbar-height ;
-    padding-bottom: $tabbar-height + $edge-margin;
+    @include page-scroll($searchbar-height, $tabbar-height + $edge-margin);
   }
   &__is-distributor {
   }

@@ -17,20 +17,6 @@ import './app.scss'
 const { store, persistor } = configStore()
 useHooks()
 
-if (process.env.TARO_ENV === 'h5') {
-  document.addEventListener('DOMContentLoaded', () => {
-    document.addEventListener('touchmove', (e) => {
-      e.preventDefault()
-    }, { passive: false })
-
-    const $app = document.getElementById('app')
-
-    $app.addEventListener('touchmove', (e) => {
-      e.stopPropagation()
-    }, false)
-  }, false);
-}
-
 class App extends Component {
   config = {
     pages: [

@@ -57,7 +57,7 @@ export default class HomeIndex extends Component {
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
         >
-          <View>
+          <View className='wgts-wrap__cont'>
             {
               wgts.map((item, idx) => {
                 return (
