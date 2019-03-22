@@ -63,3 +63,6 @@
   background-color: $color-search-cancel-bg;
   color: $color-primary-text;
 }
+.at-search-bar::after {
+  border: 0;
+}
