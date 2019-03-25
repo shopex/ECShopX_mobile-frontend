@@ -44,7 +44,6 @@ export default class CashierResult extends Component {
       Taro.navigateTo({
         url: `/pages/member/point-draw-order`
       })
-
     }
   }
 
