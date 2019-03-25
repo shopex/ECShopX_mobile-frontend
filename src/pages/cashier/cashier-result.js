@@ -29,7 +29,6 @@ export default class CashierResult extends Component {
     })
 
     // let info = Object.assign(infoOrder, infoTrade, this.$router.params)
-    // console.log(info, 33)
     this.setState({
       info: info
     })
