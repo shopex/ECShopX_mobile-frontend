@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { AtTabs, AtTabsPane } from 'taro-ui'
 import { Loading, SpNote, NavBar } from '@/components'
 import api from '@/api'
 import { withPager } from '@/hocs'

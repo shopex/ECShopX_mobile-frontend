@@ -10,10 +10,12 @@ export default class CashierResult extends Component {
     super(props)
 
     this.state = {
-      info: {}
+      info: {
+        payStatus: 'success'
+      }
     }
   }
-  componentDidShow () {
+  componentDidMount () {
     this.fetch()
   }
 
@@ -28,7 +30,6 @@ export default class CashierResult extends Component {
       payStatus: 'payStatus'
     })
 
-    // let info = Object.assign(infoOrder, infoTrade, this.$router.params)
     this.setState({
       info: info
     })

@@ -68,7 +68,6 @@ export default class PointDrawDetail extends Component {
     const { luckydraw_id, item_id } = this.$router.params
     const luckuser = await api.member.pointDrawLuck(item_id)
     const info = await api.member.pointDrawDetail(luckydraw_id)
-    console.log(this.$router.params)
 
     let timer
     timer = this.calcTimer(info.remaining_time)
