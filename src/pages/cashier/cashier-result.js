@@ -13,7 +13,7 @@ export default class CashierResult extends Component {
       info: {}
     }
   }
-  componentDidShow () {
+  componentDidMount () {
     this.fetch()
   }
 
@@ -27,9 +27,6 @@ export default class CashierResult extends Component {
       tradeId: 'tradeId',
       payStatus: 'payStatus'
     })
-
-    // let info = Object.assign(infoOrder, infoTrade, this.$router.params)
-    // console.log(info, 33)
     this.setState({
       info: info
     })

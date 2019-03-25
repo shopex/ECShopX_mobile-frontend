@@ -21,7 +21,11 @@
   }
   .category-nav {
     &__content {
+      width: 180px;
       height: 80px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       line-height: 80px;
       border-bottom: 1px solid #E6E6E6;
     }
