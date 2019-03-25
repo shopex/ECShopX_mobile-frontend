@@ -39,13 +39,13 @@ export default class PointOrderDetail extends Component {
       address_id: 'address_id'
     })
     if(info.status_desc === 'lucky') {
-      info.status_desc = '中奖'
+      info.status_desc_name = '中奖'
       info.status_img = 'ico_wait_buyer_confirm_goods.png'
     }else if(info.status_desc === 'unlukcy'){
-      info.status_desc = '未中奖'
+      info.status_desc_name = '未中奖'
       info.status_img = 'ico_wait_rate.png'
     } else {
-      info.status_desc = '尚未开奖'
+      info.status_desc_name = '尚未开奖'
       info.status_img = 'ico_wait_seller_send_goods.png'
     }
 
@@ -169,35 +169,39 @@ export default class PointOrderDetail extends Component {
           fixed='true'
         />
         <View className='trade-detail__status'>
-          <Text className='trade-detail__status-text'>{info.status_desc}</Text>
+          <Text className='trade-detail__status-text'>{info.status_desc_name}</Text>
           <Image
             mode='aspectFill'
             className='trade-detail__status-ico'
             src={`/assets/imgs/trade/${info.status_img}`}
           />
         </View>
-        <View className='trade-detail__addr' onClick={this.toggleAddressPicker.bind(this, true)}>
-          <SpCell
-            icon='map-pin'
-          >
-            {
-              info.address_id
-                ? <View className='address-info__bd'>
-                    <Text className='address-info__receiver'>
-                      收货人：{info.receiver_name} {info.receiver_mobile}
-                    </Text>
-                    <Text className='address-info__addr'>
-                      收货地址：{info.receiver_state}{info.receiver_city}{info.receiver_district}{info.receiver_address}
-                    </Text>
-                  </View>
-                : <View className='address-info__bd'>
-                    <Text className='address-info__null'>
-                      请选择收货地址
-                    </Text>
-                  </View>
-            }
-          </SpCell>
-        </View>
+        {
+          info.status_desc === 'lucky'
+            ? <View className='trade-detail__addr' onClick={this.toggleAddressPicker.bind(this, true)}>
+                <SpCell
+                  icon='map-pin'
+                >
+                  {
+                    info.address_id
+                      ? <View className='address-info__bd'>
+                        <Text className='address-info__receiver'>
+                          收货人：{info.receiver_name} {info.receiver_mobile}
+                        </Text>
+                        <Text className='address-info__addr'>
+                          收货地址：{info.receiver_state}{info.receiver_city}{info.receiver_district}{info.receiver_address}
+                        </Text>
+                      </View>
+                      : <View className='address-info__bd'>
+                        <Text className='address-info__null'>
+                          请选择收货地址
+                        </Text>
+                      </View>
+                  }
+                </SpCell>
+              </View>
+            : null
+        }
 
         <View className='sec sec-orders'>
           {info.shop_name && (

@@ -137,7 +137,9 @@ export default class TradeDetail extends Component {
   }
 
   handleClickDelivery = () => {
-
+    Taro.navigateTo({
+      url: '/pages/trade/delivery-info'
+    })
   }
 
   render () {
@@ -258,7 +260,7 @@ export default class TradeDetail extends Component {
                   <Text>物流单号：{info.delivery_code}</Text>
                 </View>
                 <View className='trade-extra__ft'>
-                  <AtButton size='small' onClick={this.handleClickDelivery}>查看</AtButton>
+                  <AtButton size='small' onClick={this.handleClickDelivery.bind(this)}>查看</AtButton>
                 </View>
               </View>
             : null
