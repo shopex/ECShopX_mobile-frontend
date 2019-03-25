@@ -149,7 +149,7 @@ export default class Reg extends Component {
     }
     this.setState({ list });
     if(name === 'sex') {
-      if(info[name] === '男') {
+      if(val.detail.value === 0) {
         info[name] = 1
       } else {
         info[name] = 2
