@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, ScrollView, Text, Image} from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, Price, NavBar } from '@/components'
+import { BackToTop, Loading, Price, NavBar, SpNote } from '@/components'
 import { AtDivider } from 'taro-ui'
 import api from '@/api'
 import { pickBy } from '@/utils'
@@ -146,6 +146,10 @@ export default class PointDraw extends Component {
             page.isLoading
               ? <Loading>正在加载...</Loading>
               : null
+          }
+          {
+            !page.isLoading && !page.hasNext && !list.length
+            && (<SpNote img='trades_empty.png'>赶快去参与抽奖吧~</SpNote>)
           }
         </ScrollView>
 

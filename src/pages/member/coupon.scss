@@ -14,7 +14,9 @@
   }
   &__tabs {
     position: fixed;
+    z-index: $z-index-toolbar;
     left: 0;
+    height: 100PX;
     top: 0;
     width: 100%;
   }
