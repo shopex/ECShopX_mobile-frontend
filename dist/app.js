@@ -32,6 +32,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
+// if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
+//   require('nerv-devtools')
+// }
+
 var _configStore = (0, _index5.default)(),
     store = _configStore.store,
     persistor = _configStore.persistor;
@@ -56,7 +60,7 @@ var _App = function (_BaseComponent) {
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = _App.__proto__ || Object.getPrototypeOf(_App)).call.apply(_ref, [this].concat(args))), _this), _this.config = {
       pages: [
       // 'pages/index/index',
-      'pages/home/index', 'pages/home/landing', 'pages/category/index', 'pages/item/list', 'pages/item/espier-detail', 'pages/item/point-list', 'pages/item/point-detail', 'pages/cart/espier-index', 'pages/cart/espier-checkout', 'pages/cart/coupon-picker', 'pages/article/index', 'pages/auth/reg', 'pages/auth/login', 'pages/auth/forgotpwd', 'pages/cashier/index', 'pages/cashier/cashier-result', 'pages/member/index', 'pages/member/favorite', 'pages/member/point', 'pages/member/point-draw', 'pages/member/point-draw-detail', 'pages/member/point-draw-order', 'pages/member/pay', 'pages/member/money-to-point', 'pages/member/recharge', 'pages/member/recommend', 'pages/member/recommend-member', 'pages/member/recommend-order', 'pages/member/coupon', 'pages/member/address', 'pages/member/setting', 'pages/trade/list', 'pages/trade/detail', 'pages/trade/rate', 'pages/trade/cancel', 'pages/trade/after-sale', 'pages/trade/refund', 'pages/trade/refund-detail', 'pages/trade/refund-sendback'],
+      'pages/home/index', 'pages/home/landing', 'pages/category/index', 'pages/item/list', 'pages/item/espier-detail', 'pages/item/point-list', 'pages/item/point-detail', 'pages/cart/espier-index', 'pages/cart/espier-checkout', 'pages/cart/coupon-picker', 'pages/article/index', 'pages/auth/reg', 'pages/auth/login', 'pages/auth/forgotpwd', 'pages/cashier/index', 'pages/cashier/cashier-result', 'pages/member/index', 'pages/member/favorite', 'pages/member/point', 'pages/member/point-draw', 'pages/member/point-draw-detail', 'pages/member/point-draw-order', 'pages/member/pay', 'pages/member/pay-rule', 'pages/member/money-to-point', 'pages/member/recharge', 'pages/member/recommend', 'pages/member/recommend-member', 'pages/member/recommend-order', 'pages/member/coupon', 'pages/member/address', 'pages/member/setting', 'pages/trade/list', 'pages/trade/detail', 'pages/trade/rate', 'pages/trade/cancel', 'pages/trade/after-sale', 'pages/trade/refund', 'pages/trade/refund-detail', 'pages/trade/refund-sendback'],
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#fff',

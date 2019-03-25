@@ -1468,6 +1468,107 @@ Events.eventSplitter = /\s+/;
 
 function render() {}
 
+var Chain =
+/*#__PURE__*/
+function () {
+  function Chain(requestParams) {
+    var interceptors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+    _classCallCheck(this, Chain);
+
+    this.index = index;
+    this.requestParams = requestParams;
+    this.interceptors = interceptors;
+  }
+
+  _createClass(Chain, [{
+    key: "proceed",
+    value: function proceed(requestParams) {
+      this.requestParams = requestParams;
+
+      if (this.index >= this.interceptors.length) {
+        throw new Error('chain 参数错误, 请勿直接修改 request.chain');
+      }
+
+      var nextInterceptor = this._getNextInterceptor();
+
+      var nextChain = this._getNextChain();
+
+      return nextInterceptor(nextChain);
+    }
+  }, {
+    key: "_getNextInterceptor",
+    value: function _getNextInterceptor() {
+      return this.interceptors[this.index];
+    }
+  }, {
+    key: "_getNextChain",
+    value: function _getNextChain() {
+      return new Chain(this.requestParams, this.interceptors, this.index + 1);
+    }
+  }]);
+
+  return Chain;
+}();
+
+var Link =
+/*#__PURE__*/
+function () {
+  function Link(interceptor) {
+    _classCallCheck(this, Link);
+
+    this.taroInterceptor = interceptor;
+    this.chain = new Chain();
+  }
+
+  _createClass(Link, [{
+    key: "request",
+    value: function request(requestParams) {
+      this.chain.interceptors.push(this.taroInterceptor);
+      return this.chain.proceed(_objectSpread({}, requestParams));
+    }
+  }, {
+    key: "addInterceptor",
+    value: function addInterceptor(interceptor) {
+      this.chain.interceptors.push(interceptor);
+    }
+  }]);
+
+  return Link;
+}();
+
+function timeoutInterceptor(chain) {
+  var requestParams = chain.requestParams;
+  return new Promise(function (resolve, reject) {
+    var timeout = setTimeout(function () {
+      timeout = null;
+      reject(new Error('网络链接超时,请稍后再试！'));
+    }, requestParams && requestParams.timeout || 60000);
+    chain.proceed(requestParams).then(function (res) {
+      if (!timeout) return;
+      clearTimeout(timeout);
+      resolve(res);
+    });
+  });
+}
+function logInterceptor(chain) {
+  var requestParams = chain.requestParams;
+  var method = requestParams.method,
+      data = requestParams.data,
+      url = requestParams.url;
+  console.log("http ".concat(method || 'GET', " --> ").concat(url, " data: "), data);
+  return chain.proceed(requestParams).then(function (res) {
+    console.log("http <-- ".concat(url, " result:"), res);
+    return res;
+  });
+}
+
+var interceptors = /*#__PURE__*/Object.freeze({
+  timeoutInterceptor: timeoutInterceptor,
+  logInterceptor: logInterceptor
+});
+
 var onAndSyncApis = {
   onSocketOpen: true,
   onSocketError: true,
@@ -2939,10 +3040,11 @@ function diffArrToPath(to, from) {
         if (arrTo !== arrFrom) {
           res[targetKey] = toItem;
         } else if (arrTo && arrFrom) {
-          if (toItem.length === fromItem.length) {
-            diffArrToPath(toItem, fromItem, res, "".concat(targetKey));
-          } else {
+          if (toItem.length < fromItem.length) {
             res[targetKey] = toItem;
+          } else {
+            // 数组
+            diffArrToPath(toItem, fromItem, res, "".concat(targetKey));
           }
         } else {
           if (!toItem || !fromItem || keyList(toItem).length < keyList(fromItem).length) {
@@ -3006,10 +3108,11 @@ function diffObjToPath(to, from) {
         if (arrTo !== arrFrom) {
           res[targetKey] = toItem;
         } else if (arrTo && arrFrom) {
-          if (toItem.length === fromItem.length) {
-            diffArrToPath(toItem, fromItem, res, "".concat(targetKey));
-          } else {
+          if (toItem.length < fromItem.length) {
             res[targetKey] = toItem;
+          } else {
+            // 数组
+            diffArrToPath(toItem, fromItem, res, "".concat(targetKey));
           }
         } else {
           // null
@@ -4039,6 +4142,12 @@ var RequestQueue = {
   }
 };
 
+function taroInterceptor(chain) {
+  return request(chain.requestParams);
+}
+
+var link = new Link(taroInterceptor);
+
 function request(options) {
   options = options || {};
 
@@ -4243,7 +4352,8 @@ function canIUseWebp() {
 
 function initNativeApi(taro) {
   processApis(taro);
-  taro.request = request;
+  taro.request = link.request.bind(link);
+  taro.addInterceptor = link.addInterceptor.bind(link);
   taro.getCurrentPages = getCurrentPages;
   taro.getApp = getApp;
   taro.requirePlugin = requirePlugin;
@@ -4268,7 +4378,8 @@ var Taro = {
   internal_inline_style: inlineStyle,
   createComponent: createComponent,
   internal_get_original: getOriginal,
-  getElementById: getElementById
+  getElementById: getElementById,
+  interceptors: interceptors
 };
 initNativeApi(Taro);
 
