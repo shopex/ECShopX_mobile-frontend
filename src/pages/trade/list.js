@@ -126,8 +126,10 @@ export default class TradeList extends Component {
         break
       case 'confirm':
         await api.trade.confirm(trade.tid)
+        // eslint-disable-nextline
+        const { fullPath } = getCurrentRoute(this.$router)
         Taro.redirectTo({
-          url: getCurrentRoute(this.$router)
+          url: fullPath
         })
         break
       default:

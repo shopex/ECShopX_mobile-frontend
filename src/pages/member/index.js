@@ -14,8 +14,8 @@ export default class MemberIndex extends Component {
     super(props)
     this.state = {
       ordersCount: {
-        normal_payed_delivered: '',
-        normal_payed_notdelivery: ''
+        normal_payed_daifahuo: '',
+        normal_payed_daishouhuo: ''
       },
       info: {
         deposit: '',
@@ -127,14 +127,14 @@ export default class MemberIndex extends Component {
                     to='/pages/trade/list?status=0'
                   />
                 </AtBadge>
-                <AtBadge value={ordersCount.normal_payed_notdelivery || ''}>
+                <AtBadge value={ordersCount.normal_payed_daifahuo || ''}>
                   <SpIconMenu
                     icon='clock'
                     title='待发货'
                     to='/pages/trade/list?status=6'
                   />
                 </AtBadge>
-                <AtBadge value={ordersCount.normal_payed_delivered || ''}>
+                <AtBadge value={ordersCount.normal_payed_daishouhuo || ''}>
                   <SpIconMenu
                     icon='baoguo'
                     title='待收货'

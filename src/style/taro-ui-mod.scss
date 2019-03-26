@@ -73,3 +73,8 @@
     font-size: $font-size !important;
   }
 }
+
+.swiper-container {
+  height: auto !important;
+  min-height: 80px;
+}
