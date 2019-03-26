@@ -22,6 +22,7 @@ class App extends Component {
       // 'pages/index/index',
       'pages/home/index',
       'pages/home/landing',
+      'pages/home/coupon-home',
       'pages/category/index',
       'pages/item/list',
       'pages/item/espier-detail',
