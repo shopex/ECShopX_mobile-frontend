@@ -12,6 +12,14 @@ export function couponList (params = {}) {
   return req.get('/user/newGetCardList', params)
 }
 
+export function homeCouponList (params = {}) {
+  return req.get('/getCardList', params)
+}
+
+export function homeCouponGet (params = {}) {
+  return req.get('/user/receiveCard', params)
+}
+
 export function addressList () {
   return req.get('/member/addresslist')
 }
