@@ -44,7 +44,8 @@ export default class WeappBtn extends Component {
     form.setAttribute('method', 'get')
     form.setAttribute('action', action)
     form.innerHTML = queryPair.map(p => {
-      const [name, value] = p.split('=')
+      const idx = p.indexOf('=')
+      const [name, value] = [p.slice(0, idx), p.slice(idx+1)]
       return `<input type="hidden" name="${name}" value="${value}" />`
     }).join('')
     document.body.appendChild(form)
