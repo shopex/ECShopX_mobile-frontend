@@ -81,7 +81,7 @@ export default class CartIndex extends Component {
     })
     this.props.onCartSelection([...selection])
 
-    log.debug(`[cart change] item: ${item_id}, selection: ${selection}`)
+    log.debug(`[cart change] item: ${item_id}, selection:`, selection)
   }
 
   handleQuantityChange (idx, quantity) {

@@ -102,7 +102,13 @@ export function getTotalCount (state) {
 }
 
 export function getTotalPrice (state) {
-  const total = state.list.reduce((acc, item) => (+item.price) * (+item.num) + acc, 0)
+  const total = state.list.reduce((acc, item) => {
+    if (!state.selection.includes(item.item_id)) {
+      return acc
+    }
+
+    return (+item.price) * (+item.num) + acc
+  }, 0)
   return (total / 100).toFixed(2)
 }
 
