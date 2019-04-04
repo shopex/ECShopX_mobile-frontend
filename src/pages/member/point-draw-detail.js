@@ -72,6 +72,7 @@ export default class PointDrawDetail extends Component {
   }
 
   async fetch () {
+    Taro.showLoading()
     const { luckydraw_id, item_id } = this.$router.params
     const info = await api.member.pointDrawDetail(luckydraw_id)
     const { intro } = await api.member.pointDrawIntro(item_id)
@@ -129,6 +130,8 @@ export default class PointDrawDetail extends Component {
       intro,
       // luckName: luckuser.str_lucky || '',
     })
+    Taro.hideLoading()
+
     log.debug('fetch: done', info)
   }
 
@@ -140,11 +143,10 @@ export default class PointDrawDetail extends Component {
   }
 
   handleBuyClick = async () => {
-
-    // Taro.showLoading({
-    //   title: '生成订单中',
-    //   mask: true
-    // });
+    Taro.showLoading({
+      title: '支付中',
+      icon: 'none'
+    });
     try {
       const res = await api.member.pointDrawPay(this.$router.params)
       const orderInfo = await api.cashier.getOrderDetail(res.luckydraw_trade_id)
@@ -154,10 +156,18 @@ export default class PointDrawDetail extends Component {
         order_type: orderInfo.order_type,
       }
       try {
+        Taro.hideLoading()
         await api.cashier.getPayment(query)
-        Taro.redirectTo({
-          url: `/pages/cashier/cashier-result?payStatus=success&order_id=${orderInfo.order_id}`
-        })
+        Taro.showToast({
+          title: '支付成功',
+          icon: 'none'
+        });
+        setTimeout(() => {
+          this.fetch();
+        }, 700);
+        // Taro.redirectTo({
+        //   url: `/pages/cashier/cashier-result?payStatus=success&order_id=${orderInfo.order_id}`
+        // })
       } catch(e) {
         console.log(e,49)
       }
