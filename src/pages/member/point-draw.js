@@ -60,7 +60,7 @@ export default class PointDraw extends Component {
       rate: ({ sales_num, luckydraw_store }) => Math.round((sales_num / luckydraw_store) * 100)
     })
     const imgs = await api.member.pointDrawSwiper()
-    console.log(imgs, 60)
+    // console.log(imgs, 60)
     log.debug(`[point draw picked]`, nList)
     this.setState({
       list: [...this.state.list, ...nList],

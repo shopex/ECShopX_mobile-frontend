@@ -141,16 +141,31 @@ export default class PointDrawDetail extends Component {
 
   handleBuyClick = async () => {
 
-    Taro.showLoading({
-      title: '生成订单中',
-      mask: true
-    });
+    // Taro.showLoading({
+    //   title: '生成订单中',
+    //   mask: true
+    // });
     try {
       const res = await api.member.pointDrawPay(this.$router.params)
-      Taro.hideLoading()
-      Taro.navigateTo({
-        url: `/pages/cashier/index?order_id=${res.luckydraw_trade_id}`
-      })
+      const orderInfo = await api.cashier.getOrderDetail(res.luckydraw_trade_id)
+      const query = {
+        order_id: orderInfo.order_id,
+        pay_type: orderInfo.pay_type,
+        order_type: orderInfo.order_type,
+      }
+      try {
+        await api.cashier.getPayment(query)
+        Taro.redirectTo({
+          url: `/pages/cashier/cashier-result?payStatus=success&order_id=${orderInfo.order_id}`
+        })
+      } catch(e) {
+        console.log(e,49)
+      }
+      // Taro.hideLoading()
+
+      // Taro.navigateTo({
+      //   url: `/pages/cashier/index?order_id=${res.luckydraw_trade_id}`
+      // })
     } catch (error) {
       Taro.hideLoading()
       console.log(error)
