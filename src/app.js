@@ -27,6 +27,7 @@ class App extends Component {
       'pages/item/espier-detail',
       'pages/item/point-list',
       'pages/item/point-detail',
+      'pages/item/group-list',
       'pages/home/coupon-home',
 
       'pages/cart/espier-index',

@@ -25,7 +25,6 @@ export default class PointDrawCompute extends Component {
 
   async fetch () {
     const data = await api.member.pointComputeResult(this.$router.params.luckydraw_id)
-    console.log(data, 81)
     this.setState({
       info: data,
     })
@@ -38,7 +37,7 @@ export default class PointDrawCompute extends Component {
       <Loading />
       return
     }
-    console.log(info, 37)
+
     return (
       <View className='page-point-list'>
         <NavBar

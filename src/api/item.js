@@ -21,3 +21,7 @@ export function rateList (item_id) {
 export function category () {
   return req.get('/category.itemCategory')
 }
+
+export function groupList (params) {
+  return req.get('/promotions/groups', params)
+}
