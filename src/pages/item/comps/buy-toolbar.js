@@ -25,7 +25,10 @@ export default class GoodsBuyToolbar extends Component {
 
   render () {
     const { onClickAddCart, onClickFastBuy, cartTotalCount, type } = this.props
-    const fastBuyText = '立即购买'
+    const fastBuyText = type === 'normal'
+      ? '立即购买'
+      : type === 'seckill'
+        ? '立即抢购' : '我要开团'
 
     return (
       <View className='goods-buy-toolbar'>
@@ -55,21 +58,26 @@ export default class GoodsBuyToolbar extends Component {
             </Button>
           )}
         </View>
-        <View
-          className='goods-buy-toolbar__btns'
-          style={process.env.TARO_ENV === 'weapp' ? 'width: 59%;': null}
-        >
-          {type === 'normal' && (
-            <Button
-              className='goods-buy-toolbar__btn btn-add-cart'
-              onClick={onClickAddCart}
-            >加入购物车</Button>
-          )}
-          <Button
-            className='goods-buy-toolbar__btn btn-fast-buy'
-            onClick={onClickFastBuy}
-          >{fastBuyText}</Button>
-        </View>
+        {this.props.customRender
+          ? this.props.children
+          : (
+              <View
+                className='goods-buy-toolbar__btns'
+                style={process.env.TARO_ENV === 'weapp' ? 'width: 59%;': null}
+              >
+                {type === 'normal' && (
+                  <Button
+                    className='goods-buy-toolbar__btn btn-add-cart'
+                    onClick={onClickAddCart}
+                  >加入购物车</Button>
+                )}
+                <Button
+                  className='goods-buy-toolbar__btn btn-fast-buy'
+                  onClick={onClickFastBuy}
+                >{fastBuyText}</Button>
+              </View>
+            )
+        }
       </View>
     )
   }

@@ -52,20 +52,23 @@
     .price {
       font-size: floor(1.6 * $font-size);
     }
-    &__type {
+    &__type, &__rule {
       font-size: floor($font-size-small * 0.9);
       display: inline-block;
       padding: 0 10px;
       border: 1px solid #fff;
-      margin-right: 2px;
-    }
-    &__market {
-      color: #fff;
+      margin-right: 5px;
+      border-radius: 10PX;
+      overflow: hidden;
     }
     &__ft {
       .price {
         font-size: floor(0.8 * $font-size);
       }
+    }
+    .goods-prices__market {
+      color: #fff;
+      font-size: floor(0.8 * $font-size);
     }
   }
   .at-countdown__time-box {

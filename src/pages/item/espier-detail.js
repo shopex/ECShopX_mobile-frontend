@@ -33,7 +33,9 @@ export default class Detail extends Component {
       windowWidth: 320,
       curImgIdx: 0,
       isPromoter: false,
-      timer: null
+      timer: null,
+      startSecKill: true,
+      hasStock: true
     }
   }
 
@@ -56,13 +58,20 @@ export default class Detail extends Component {
 
     let marketing = 'normal'
     let timer = null
+    let hasStock = info.store && info.store > 0
+    let startSecKill = true
+
     if (info.group_activity) {
       //团购
       marketing = 'group'
       timer = calcTimer(info.group_activity.remaining_time)
+      hasStock = info.group_activity.store && info.group_activity.store > 0
     } else if (info.seckill_activity) {
       //秒杀
       marketing = 'seckill'
+      timer = calcTimer(info.seckill_activity.last_seconds)
+      hasStock = info.seckill_activity.activity_store && info.seckill_activity.activity_store > 0
+      startSecKill = info.seckill_activity.status === 'in_sale'
     }
 
     Taro.setNavigationBarTitle({
@@ -131,7 +140,7 @@ export default class Detail extends Component {
 
   render () {
     const { info, windowWidth, curImgIdx, desc, scrollTop, showBackToTop } = this.state
-    const { marketing, timer, isPromoter } = this.state
+    const { marketing, timer, isPromoter, startSecKill, hasStock } = this.state
 
     if (!info) {
       return (
@@ -192,14 +201,15 @@ export default class Detail extends Component {
                     symbol={info.cur.symbol}
                     value={info.price}
                   />
+                  <Price
+                    unit='cent'
+                    className='goods-prices__market'
+                    symbol={info.cur.symbol}
+                    value={info.mkt_price}
+                  />
                   <View className='goods-prices__ft'>
                     <Text className='goods-prices__type'>团购</Text>
-                    <Price
-                      unit='cent'
-                      className='goods-prices__market'
-                      symbol={info.cur.symbol}
-                      value={info.mkt_price}
-                    />
+                    <Text className='goods-prices__rule'>{info.group_activity.person_num}人团</Text>
                   </View>
                 </View>
               </View>
@@ -311,11 +321,30 @@ export default class Detail extends Component {
           onClick={this.scrollBackToTop}
         />
 
-        <GoodsBuyToolbar
-          type={marketing}
-          onClickAddCart={this.handleBuyClick.bind(this, 'cart')}
-          onClickFastBuy={this.handleBuyClick.bind(this, 'fastbuy')}
-        />
+        {(!info.distributor_sale_status && hasStock && startSecKill)
+          ?
+            (<GoodsBuyToolbar
+              type={marketing}
+              onClickAddCart={this.handleBuyClick.bind(this, 'cart')}
+              onClickFastBuy={this.handleBuyClick.bind(this, 'fastbuy')}
+            />)
+          :
+            (<GoodsBuyToolbar
+              customRender
+              type={marketing}
+            >
+              <View
+                className='goods-buy-toolbar__btns'
+                style='width: 40%; text-align: center;'
+              >
+                {
+                  !startSecKill
+                    ? <Text>活动即将开始</Text>
+                    : <Text>当前店铺无货</Text>
+                }
+              </View>
+            </GoodsBuyToolbar>)
+        }
 
         <SpToast />
       </View>
