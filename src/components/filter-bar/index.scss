@@ -44,7 +44,7 @@
     &-sort {
       .filter-bar__item-text {
         &:before, &:after {
-          @include arrow(5px);
+          @include arrow(4px);
           position: absolute;
           right: 50%;
           top: 50%;
