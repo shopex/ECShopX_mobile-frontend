@@ -54,8 +54,11 @@
 }
 
 .at-tab-bar {
-  .sp-icon {
-    font-size: 44px;
+  box-sizing: border-box;
+  height: $tabbar-height;
+  &__item {
+    padding: 0 12px;
+    line-height: 1;
   }
 }
 

@@ -10,6 +10,10 @@ import './index.scss'
 
 @withLogin()
 export default class MemberIndex extends Component {
+  static config = {
+    title: '会员中心'
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -79,7 +83,8 @@ export default class MemberIndex extends Component {
 
     return (
       <View className='page-member-index'>
-        <View className='member-index__hd'>
+        <View className='member-card'>
+          <View className='member-welcome'><View className='in-icon in-icon-check' /><Text>Welcome</Text></View>
           <View
             className='member-info'
             onClick={this.navigateTo.bind(this, '/pages/member/setting')}
@@ -89,151 +94,106 @@ export default class MemberIndex extends Component {
               title={info.username}
               image={isAvatatImg ? info.avatar : ''}
               text={isAvatatImg ? '' : info.username}
-
               size='large'
-
               circle
             />
             <View className='member-name'>{info.username}</View>
           </View>
+          <View className='member-btns'>
+            <View className='member-btn__item'>
+              <View className='in-icon in-icon-trade' />
+              <Text>我的订单</Text>
+            </View>
+            <View className='member-btn__item'>
+              <View className='in-icon in-icon-coin' />
+              <Text>我的积分</Text>
+            </View>
+          </View>
         </View>
 
         <View className='member-index__bd'>
-          <View className='member-sec member-info__status'>
-            {/*<View className='member-status__item' onClick={this.navigateTo.bind(this, '/pages/member/recharge')}>*/}
-              {/*<Text className='member-status__item-val'>{info.deposit}</Text>*/}
-              {/*<Text className='member-status__item-title'>余额</Text>*/}
-            {/*</View>*/}
-            <View className='member-status__item' onClick={this.navigateTo.bind(this, '/pages/member/point')}>
-              <Text className='member-status__item-val'>{info.point}</Text>
-              <Text className='member-status__item-title'>积分</Text>
-            </View>
-            <View className='member-status__item' onClick={this.navigateTo.bind(this, '/pages/member/coupon')}>
-              <Text className='member-status__item-val'>{info.coupon}</Text>
-              <Text className='member-status__item-title'>优惠券</Text>
-            </View>
-            <View className='member-status__item' onClick={this.navigateTo.bind(this, '/pages/member/point-draw-order')}>
-              <Text className='member-status__item-val'>{info.luckdraw}</Text>
-              <Text className='member-status__item-title'>抽奖列表</Text>
-            </View>
+          <View className='member-menu__item'>
+            <SpIconMenu
+              size='24'
+              icon='fav'
+              iconPrefixClass='in-icon'
+              title='我的收藏'
+              to='/pages/member/fav-list'
+            />
           </View>
-
-          <View className='member-sec member-trades'>
-            <View className='sec-hd'>
-              <Text className='sec-title'>我的订单</Text>
-              <View
-                className='more'
-                onClick={this.navigateTo.bind(this, '/pages/trade/list')}
-              >查看全部订单<AtIcon value='chevron-right'></AtIcon></View>
-            </View>
-            <View className='sec-bd'>
-              <View className='member-trades__menus'>
-                <AtBadge>
-                  <SpIconMenu
-                    icon='pay'
-                    title='全部'
-                    to='/pages/trade/list?status=0'
-                  />
-                </AtBadge>
-                <AtBadge value={ordersCount.normal_payed_daifahuo || ''}>
-                  <SpIconMenu
-                    icon='clock'
-                    title='待发货'
-                    to='/pages/trade/list?status=6'
-                  />
-                </AtBadge>
-                <AtBadge value={ordersCount.normal_payed_daishouhuo || ''}>
-                  <SpIconMenu
-                    icon='baoguo'
-                    title='待收货'
-                    to='/pages/trade/list?status=2'
-                  />
-                </AtBadge>
-                <AtBadge value={ordersCount.aftersales || ''}>
-                  <SpIconMenu
-                    icon='comment'
-                    title='售后'
-                    to='/pages/trade/after-sale'
-                  />
-                </AtBadge>
-              </View>
-            </View>
+          <View className='member-menu__item'>
+            <SpIconMenu
+              size='24'
+              icon='order'
+              iconPrefixClass='in-icon'
+              title='我的订单'
+              to='/pages/trade/list'
+            />
           </View>
-        </View>
-
-        <View className='member-sec member-tools'>
-          <View className='sec-hd'>
-            <Text className='sec-title'>必备工具 </Text>
+          <View className='member-menu__item none-br'>
+            <SpIconMenu
+              size='24'
+              icon='clock'
+              iconPrefixClass='in-icon'
+              title='浏览记录'
+              to='/pages/item/history'
+            />
           </View>
-          <View className='sec-bd'>
-            <View className='member-tools__menus'>
-              <View
-                className='member-tools__item'
-                onClick={this.handleClickRecommend}
-              >
-                <SpIconMenu
-                  icon='thumb'
-                  title='推广管理'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='hongbao'
-                  title='充值'
-                  to='/pages/member/pay'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='money'
-                  title='积分充值'
-                  to='/pages/member/money-to-point'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='location'
-                  title='收货地址'
-                  to='/pages/member/address'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='qrcode'
-                  title='积分商城'
-                  to='/pages/item/point-list'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='help'
-                  title='积分抽奖'
-                  to='/pages/member/point-draw'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='qrcode'
-                  title='秒杀'
-                  to='/pages/item/seckill-list'
-                />
-              </View>
-              <View className='member-tools__item'>
-                <SpIconMenu
-                  icon='help'
-                  title='积分抽奖'
-                  to='/pages/member/point-draw'
-                />
-              </View>
-              <View className='member-tools__item'> </View>
-              <View className='member-tools__item'> </View>
-            </View>
+          <View className='member-menu__item'>
+            <SpIconMenu
+              size='24'
+              icon='coupon'
+              iconPrefixClass='in-icon'
+              title='优惠券'
+              to='/pages/member/coupon'
+            />
+          </View>
+          <View className='member-menu__item'>
+            <SpIconMenu
+              size='24'
+              icon='share'
+              iconPrefixClass='in-icon'
+              title='我的分享'
+            />
+          </View>
+          <View className='member-menu__item none-br'>
+            <SpIconMenu
+              size='24'
+              icon='gift'
+              iconPrefixClass='in-icon'
+              title='我要送礼'
+            />
+          </View>
+          <View className='member-menu__item none-bb'>
+            <SpIconMenu
+              size='24'
+              icon='guess'
+              iconPrefixClass='in-icon'
+              title='猜你喜欢'
+              to='/pages/item/guess'
+            />
+          </View>
+          <View className='member-menu__item none-bb'>
+            <SpIconMenu
+              size='24'
+              icon='address'
+              iconPrefixClass='in-icon'
+              title='我的地址'
+              to='/pages/member/address'
+            />
+          </View>
+          <View className='member-menu__item none-bb none-br'>
+            <SpIconMenu
+              size='24'
+              icon='kefu'
+              iconPrefixClass='in-icon'
+              title='联系客服'
+            />
           </View>
         </View>
-        <SpToast />
 
         <TabBar
-          current={3}
+          current={4}
         />
       </View>
     )

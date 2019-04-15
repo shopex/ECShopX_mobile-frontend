@@ -63,7 +63,7 @@ var _App = function (_BaseComponent) {
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: 'WeChat',
+        navigationBarTitleText: 'innisfree悦诗风吟',
         navigationBarTextStyle: 'black'
       }
     }, _temp), _possibleConstructorReturn(_this, _ret);

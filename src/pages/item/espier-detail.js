@@ -166,7 +166,12 @@ export default class Detail extends Component {
           onScroll={this.handleScroll}
         >
           <View className='goods-imgs__wrap'>
-            <Swiper
+            <Image
+              src={imgs[0]}
+              mode='aspectFill'
+              style={styleNames({ width: windowWidth + 'px', height: windowWidth + 'px' })}
+            />
+            {/*<Swiper
               className='goods-imgs__swiper'
               style={`height: ${windowWidth}px`}
               current={curImgIdx}
@@ -189,7 +194,7 @@ export default class Detail extends Component {
             {
               imgs.length > 1
                 && <Text className='goods-imgs__text'>{curImgIdx + 1} / {imgs.length}</Text>
-            }
+            }*/}
           </View>
 
           {timer && (

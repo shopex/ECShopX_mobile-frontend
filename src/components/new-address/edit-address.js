@@ -34,8 +34,6 @@ export default class EditAddress extends Component {
       listLength: list.length
     })
 
-
-    console.log(this.props.address, 36)
     // debugger
     list.map(a_item => {
       if(a_item.address_id === this.props.addressID) {
@@ -242,7 +240,6 @@ export default class EditAddress extends Component {
 
   render () {
     const { info, areaList, multiIndex } = this.state
-    console.log(areaList, 42)
 
     if (!info) {
       return null

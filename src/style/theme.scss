@@ -1,0 +1,24 @@
+$color-bg-gray: #fafafa;
+$color-brand-primary      : #0b4137 !default;
+$color-brand-accent       : #6d8d87 !default;
+$color-brand-accent-light : #787878 !default;
+$color-brand-primary-text : #ffffff !default;
+$color-brand-accent-text  : #ffffff !default;
+
+$tabbar-height      : 100px !default;
+
+$at-tab-bar-color: #818181 !default;
+$at-tab-bar-color-active: $color-brand-primary !default;
+$at-tab-bar-font-size: 22px !default;
+$at-tab-bar-icon-font-size: 42px !default;
+$at-button-height: 80px !default;
+
+.at-tab-bar {
+  box-shadow: -20px 5px 15px rgba(#000, .1);
+  .in-icon {
+    font-size: $at-tab-bar-icon-font-size;
+  }
+  &__title {
+    margin-top: -4px;
+  }
+}

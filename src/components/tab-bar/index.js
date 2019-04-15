@@ -24,10 +24,11 @@ export default class TabBar extends Component {
     this.state = {
       current: 0,
       tabList: [
-        { title: '首页', iconType: 'shop', iconPrefixClass: 'sp-icon', url: '/pages/home/index', urlRedirect: true },
-        { title: '分类', iconType: 'menu', iconPrefixClass: 'sp-icon', url: '/pages/category/index', urlRedirect: true },
-        { title: '购物车', iconType: 'cart', text: this.props.cartTotalCount || '', max: '99', iconPrefixClass: 'sp-icon', url: '/pages/cart/espier-index' },
-        { title: '会员', iconType: 'user', iconPrefixClass: 'sp-icon', url: '/pages/member/index', urlRedirect: true }
+        { title: '首页', iconType: 'home', iconPrefixClass: 'in-icon', url: '/pages/home/index', urlRedirect: true },
+        { title: '分类', iconType: 'menu', iconPrefixClass: 'in-icon', url: '/pages/category/index', urlRedirect: true },
+        { title: '种草', iconType: 'grass', iconPrefixClass: 'in-icon', url: '/pages/recommend/list', urlRedirect: true },
+        { title: '购物车', iconType: 'cart', iconPrefixClass: 'in-icon', url: '/pages/cart/espier-index', text: this.props.cartTotalCount || '', max: '99' },
+        { title: '个人中心', iconType: 'user', iconPrefixClass: 'in-icon', url: '/pages/member/index', urlRedirect: true }
       ]
     }
   }
@@ -39,8 +40,9 @@ export default class TabBar extends Component {
   componentWillReceiveProps (nextProps) {
     const { tabList } = this.state
 
-    if (nextProps.cartTotalCount != this.state.tabList[2].text) {
-      tabList[2].text = nextProps.cartTotalCount
+    const cartTabIdx = 3
+    if (nextProps.cartTotalCount != this.state.tabList[cartTabIdx].text) {
+      tabList[cartTabIdx].text = nextProps.cartTotalCount
       this.setState({
         tabList
       })
@@ -102,7 +104,7 @@ export default class TabBar extends Component {
         tabList={tabList}
         onClick={this.handleClick}
         current={current}
-      ></AtTabBar>
+      />
     )
   }
 }
