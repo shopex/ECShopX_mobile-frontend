@@ -42,7 +42,7 @@ $item-img-size: 240px !default;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: $edge-margin $edge-size;
+    padding: $edge-margin 20px;
     flex: 1;
   }
   &__img {
@@ -62,10 +62,11 @@ $item-img-size: 240px !default;
     margin: 0 0 16px;
   }
   &__desc {
-    @include multi-ellipsis(2);
     line-height: 1.4;
+    @include multi-ellipsis(2);
     color: $color-gray;
     font-size: $font-size-small;
+    margin: 0 0 20px;
   }
   &__price {
     font-size: floor(1.28 * $font-size);
@@ -78,5 +79,42 @@ $item-img-size: 240px !default;
     font-size: $font-size-small;
     color: $color-gray;
     text-decoration: line-through;
+  }
+
+  &__extra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__author {
+    font-size: $font-size-small;
+    color: #000;
+    &-avatar {
+      background: $color-bg-gray;
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
+      margin-right: 12px;
+      display: inline-block;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    &-name {
+      width: 140px;
+      display: inline-block;
+      vertical-align: middle;
+      @include text-overflow();
+    }
+  }
+  &__actions {
+    color: #d0d0d0;
+    font-size: $font-size-small;
+    .in-icon {
+      color: #d0d0d0;
+      font-size: $font-size-small;
+      &:before {
+        margin-right: 8px;
+      }
+    }
   }
 }

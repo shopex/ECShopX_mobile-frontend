@@ -3,7 +3,7 @@
 .page-goods-list {
   background: $color-bg-gray;
   .goods-list {
-    padding: $edge-size 0;
+    padding: ($edge-margin / 2) 0;
     &__toolbar {
       position: fixed;
       top: 0;
@@ -24,11 +24,23 @@
       }
     }
     &__tabs {
+      display: flex;
+      .filter-bar__bd {
+        flex: 3;
+      }
+      .filter-bar__ft {
+        flex: 1;
+      }
+      .filter-bar__item {
+        text-align: center;
+        color: #666666;
+      }
+      .filter-bar__item-active {
+        color: $color-brand-primary;
+      }
     }
     &__scroll {
-      height: 100vh;
-      box-sizing: border-box;
-      padding: ($tabbar-height + $searchbar-height + $navigate-height) 0 0;
+      @include page-scroll($tabbar-height + $searchbar-height + $navigate-height, 0);
     }
     &__type-grid {
       @include clearfix();

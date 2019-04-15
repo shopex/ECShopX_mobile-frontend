@@ -1,21 +1,23 @@
-$color-bg-gray            : #fafafa;
-$color-gray               : #818181;
-$color-brand-primary      : #0b4137 !default;
-$color-brand-accent       : #6d8d87 !default;
-$color-brand-accent-light : #787878 !default;
-$color-brand-primary-text : #ffffff !default;
-$color-brand-accent-text  : #ffffff !default;
+$color-bg-gray             : #fafafa;
+$color-gray                : #818181;
+$color-brand-primary       : #0b4137 !default;
+$color-brand-accent        : #6d8d87 !default;
+$color-brand-accent-light  : #787878 !default;
+$color-brand-primary-text  : #ffffff !default;
+$color-brand-accent-text   : #ffffff !default;
 
-$tabbar-height      : 100px !default;
-$searchbar-height   : 75px !default;
-$tabnavbar-height      : 65px !default;
-$toolbar-height           : 100px !default;
+$item-border-radius        : 8px;
+$tabbar-height             : 80px !default;
+$searchbar-height          : 75px !default;
+$tabnavbar-height          : 65px !default;
+$toolbar-height            : 100px !default;
+$navigate-height           : 0 !default;
 
-$at-tab-bar-color: #818181 !default;
-$at-tab-bar-color-active: $color-brand-primary !default;
-$at-tab-bar-font-size: 22px !default;
-$at-tab-bar-icon-font-size: 42px !default;
-$at-button-height: 80px !default;
+$at-tab-bar-color          : #818181 !default;
+$at-tab-bar-color-active   : $color-brand-primary !default;
+$at-tab-bar-font-size      : 22px !default;
+$at-tab-bar-icon-font-size : 42px !default;
+$at-button-height          : 80px !default;
 
 .at-tab-bar {
   box-shadow: -20px 5px 15px rgba(#000, .1);

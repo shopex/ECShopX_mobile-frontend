@@ -14,7 +14,6 @@
     justify-content: center;
   }
   &__ft {
-    padding: 0 10px;
     &:empty {
       padding: 0;
     }
@@ -45,10 +44,11 @@
     &-sort {
       .filter-bar__item-text {
         &:before, &:after {
-          @include arrow(6px);
+          @include arrow(5px);
           position: absolute;
-          right: 20px;
+          right: 50%;
           top: 50%;
+          margin-right: -2em;
         }
         &:before {
           // up
@@ -64,7 +64,7 @@
       color: $color-link;
       &:after {
         opacity: 1;
-        width: 90%;
+        width: 30%;
       }
       &#{$self}__item-sort {
         &-asc {

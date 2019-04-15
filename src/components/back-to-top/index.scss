@@ -1,12 +1,12 @@
 @import '../../style/imports';
 
 .back-to-top {
-  background: #fff;
-  border: 1px solid #AAAAAA;
-  position: fixed;
-  border-radius: 80px;
-  width: 80px;
-  height: 80px;
+  background: rgba(#fff, 0.8);
+  color: $color-brand-primary;
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  border-radius: 64px;
   position: fixed;
   bottom: $edge-size * 2;
   right: $edge-size;
@@ -14,13 +14,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid rgba($color-brand-primary, 0.1);
   box-shadow: 0 0 5px rgba(#000, 0.15);
   box-sizing: border-box;
-  padding: 10px;
   transition: all .2s;
   opacity: 0;
   &.is-show {
     opacity: 0.8;
+  }
+  .in-icon {
+    font-size: 42px;
   }
   &__text {
     font-size: floor(0.7 * $font-size);

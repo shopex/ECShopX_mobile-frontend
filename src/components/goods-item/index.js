@@ -43,20 +43,22 @@ export default class GoodsItem extends Component {
           <View className='goods-item__cont'>
             <Text className='goods-item__title'>{info.title}</Text>
             <Text className='goods-item__desc'>{info.desc}</Text>
-            {
-              isPointDraw
-                ? <View className='draw-item__ft-inner'>
-                    <Text>已筹集</Text>
-                    <Progress
-                      strokeWidth={6}
-                      percent={info.rate}
-                      showInfo
-                      activeColor='#C40000'
-                    />
-                  </View>
-                : null
-            }
-            <View className='goods-item__prices'>
+            <View className='goods-item__extra'>
+              <View className='goods-item__author'>
+                <Image className='goods-item__author-avatar'
+                  src={img}
+                  mode='aspectFill'
+                />
+                <Text className='goods-item__author-name'>{info.title}</Text>
+              </View>
+              <View className='goods-item__actions'>
+                <View
+                  className='in-icon in-icon-like'
+                  onClick={this.handleLikeClick}
+                ><Text>666</Text></View>
+              </View>
+            </View>
+            {/*<View className='goods-item__prices'>
               <Price
                 primary
                 classes='goods-item__price'
@@ -77,7 +79,7 @@ export default class GoodsItem extends Component {
                   noDecimal={noCurDecimal}
                 />
               )}
-            </View>
+            </View>*/}
           </View>
         </View>
         <View className='goods-item__ft'>

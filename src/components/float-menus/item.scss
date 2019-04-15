@@ -10,13 +10,15 @@
     height: 64px;
     overflow: hidden;
     line-height: 64px;
-    border-radius: 64px;
+    border-radius: 100%;
     font-size: $font-size;
+    display: block;
     text-align: center;
-    transition: all .2s;
     opacity: 1;
     min-width: auto;
     width: auto;
+    border: 1px solid rgba($color-brand-primary, 0.1);
+    transition: all .2s;
     &:before, &:after {
       border: none;
     }
