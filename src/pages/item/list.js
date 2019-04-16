@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
+import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem, NavBar, SpNote } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
@@ -23,7 +24,8 @@ export default class List extends Component {
       ],
       query: null,
       list: [],
-      listType: 'grid'
+      listType: 'grid',
+      showDrawer: true
     }
   }
 
@@ -112,8 +114,14 @@ export default class List extends Component {
     })
   }
 
+  handleClickFilter = () => {
+    this.setState({
+      showDrawer: true
+    })
+  }
+
   render () {
-    const { list, listType, curFilterIdx, filterList, showBackToTop, scrollTop, page } = this.state
+    const { list, listType, curFilterIdx, filterList, showBackToTop, scrollTop, page, showDrawer } = this.state
 
     return (
       <View className='page-goods-list'>
@@ -131,12 +139,56 @@ export default class List extends Component {
             list={filterList}
             onChange={this.handleFilterChange}
           >
-            <View className='filter-bar__item'>
+            <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
               <View className='in-icon in-icon-filter'></View>
               <Text className='filter-bar__text'>筛选</Text>
             </View>
           </FilterBar>
         </View>
+
+        <AtDrawer
+          show={showDrawer}
+          right
+          mask
+          width={`${Taro.pxTransform(570)}`}
+        >
+          <View className='drawer-item'>
+            <View className='drawer-item__title'>
+              <Text>系列</Text>
+              <View className='at-icon at-icon-chevron-down'> </View>
+            </View>
+            <View className='drawer-item__options'>
+              <View className='drawer-item__options__item'>全部</View>
+              <View className='drawer-item__options__item'>茶籽精萃</View>
+              <View className='drawer-item__options__item'>橄榄</View>
+              <View className='drawer-item__options__item'>火山岩泥</View>
+              <View className='drawer-item__options__item'>生机展颜</View>
+              <View className='drawer-item__options__none'> </View>
+              <View className='drawer-item__options__none'> </View>
+              <View className='drawer-item__options__none'> </View>
+            </View>
+          </View>
+          <View className='drawer-item'>
+            <View className='drawer-item__title'>
+              <Text>系列</Text>
+              <View className='at-icon at-icon-chevron-down'> </View>
+            </View>
+            <View className='drawer-item__options'>
+              <View className='drawer-item__options__item'>全部</View>
+              <View className='drawer-item__options__item'>茶籽精萃</View>
+              <View className='drawer-item__options__item'>橄榄</View>
+              <View className='drawer-item__options__item'>火山岩泥</View>
+              <View className='drawer-item__options__item'>生机展颜</View>
+              <View className='drawer-item__options__none'> </View>
+              <View className='drawer-item__options__none'> </View>
+              <View className='drawer-item__options__none'> </View>
+            </View>
+          </View>
+          <View className='drawer-footer'>
+            <Text className='drawer-footer__btn'>重置</Text>
+            <Text className='drawer-footer__btn drawer-footer__btn_active'>确定</Text>
+          </View>
+        </AtDrawer>
 
         <ScrollView
           className='goods-list__scroll'
