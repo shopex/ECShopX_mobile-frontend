@@ -1,4 +1,4 @@
-@import './variables';
+@import './imports';
 
 .at-modal {
   &__overlay {
@@ -38,19 +38,18 @@
 
 .at-button {
   margin: 0;
+  &--primary {
+    font-size: $font-size;
+  }
 }
 
-.at-button--primary {
-  font-size: $font-size;
-  box-shadow: 0 5px 5px rgba(darken($color-brand-primary, 20%), 0.2);
-}
-
-.at-nav-bar__title {
-  font-size: $font-size-large;
-}
-
-.at-tab-bar__item--active {
-  color: $color-brand-primary;
+.at-nav-bar {
+  &__title {
+    font-size: $font-size-large;
+  }
+  &__item--active {
+    color: $color-brand-primary;
+  }
 }
 
 .at-tab-bar {
@@ -160,3 +159,24 @@
     padding: 0 30PX;
   }
 }
+
+.at-button {
+  &--secondary {
+    border: 1PX solid #c1c1c1;
+    color: #fff;
+    background: #c1c1c1;
+  }
+  &--small {
+    height: 42px;
+    line-height: 38px;
+    padding: 0 22px;
+    font-size: 22px;
+    .at-button__text {
+      font-size: 22px;
+    }
+    &.at-button--circle {
+      border-radius: 8px;
+    }
+  }
+}
+

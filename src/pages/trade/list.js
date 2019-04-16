@@ -20,12 +20,13 @@ export default class TradeList extends Component {
       ...this.state,
       curTabIdx: 0,
       tabList: [
-        {title: '全部', status: '0'},
-        {title: '待发货', status: '6'},
-        {title: '待收货', status: '2'},
-        {title: '已完成', status: '3'}
+        {title: '全部订单', status: '0'},
+        {title: '待支付', status: '5'},
+        {title: '待收货', status: '1'},
+        {title: '待评价', status: '3'}
       ],
-      list: []
+      list: [],
+      curItemActionsId: null
     }
   }
 
@@ -42,6 +43,10 @@ export default class TradeList extends Component {
     } else {
       this.nextPage()
     }
+  }
+
+  componentWillUnmount () {
+    this.hideLayer()
   }
 
   async fetch (params) {
@@ -67,6 +72,7 @@ export default class TradeList extends Component {
       payment: ({ total_fee }) => (total_fee / 100).toFixed(2),
       pay_type: 'pay_type',
       point: 'point',
+      create_date: 'create_date',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'item_id',
@@ -88,6 +94,7 @@ export default class TradeList extends Component {
   }
 
   handleClickTab = (idx) => {
+    this.hideLayer()
     if (this.state.page.isLoading) return
 
     if (idx !== this.state.curTabIdx) {
@@ -136,8 +143,26 @@ export default class TradeList extends Component {
     }
   }
 
+  handleActionClick = (type, item) => {
+    console.log(type, item)
+    this.hideLayer()
+  }
+
+  handleActionBtnClick = (item) => {
+    console.log(item)
+    this.setState({
+      curItemActionsId: item.tid
+    })
+  }
+
+  hideLayer = () => {
+    this.setState({
+      curItemActionsId: null
+    })
+  }
+
   render () {
-    const { curTabIdx, tabList, list, page } = this.state
+    const { curTabIdx, curItemActionsId, tabList, list, page } = this.state
 
     return (
       <View className='trade-list'>
@@ -170,21 +195,17 @@ export default class TradeList extends Component {
           onScrollToLower={this.nextPage}
         >
           {
-            list.map((item, idx) => {
+            list.map((item) => {
               return (
                 <TradeItem
                   payType={item.pay_type}
-                  customHeader
-                  renderHeader={
-                    <View className='trade-item__hd-cont'>
-                      <Text className='trade-item__shop'>订单号：{item.tid}</Text>
-                      <Text className='more'>{item.status_desc}</Text>
-                    </View>
-                  }
-                  key={idx}
+                  key={item.tid}
                   info={item}
+                  showActions={curItemActionsId === item.tid}
                   onClick={this.handleClickItem.bind(this, item)}
                   onClickBtn={this.handleClickItemBtn}
+                  onActionBtnClick={this.handleActionBtnClick.bind(this, item)}
+                  onActionClick={this.handleActionClick.bind(this, item)}
                 />
               )
             })
@@ -196,6 +217,10 @@ export default class TradeList extends Component {
             !page.isLoading && !page.hasNext && !list.length
               && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
           }
+          {!!curItemActionsId && <View
+            className='layer'
+            onClick={this.hideLayer}
+          />}
         </ScrollView>
       </View>
     )

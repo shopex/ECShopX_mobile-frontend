@@ -6,9 +6,58 @@
 		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
-		"minified": false
+		"minified": false,
+		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.6.5",
-	"condition": {}
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": 3,
+			"list": [
+				{
+					"id": -1,
+					"name": "会员中心",
+					"pathName": "pages/member/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "商品详情",
+					"pathName": "pages/item/espier-detail",
+					"query": "id=123",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "商品列表",
+					"pathName": "pages/item/list",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 3,
+					"name": "订单列表",
+					"pathName": "pages/trade/list",
+					"query": "status=1",
+					"scene": null
+				}
+			]
+		}
+	}
 }
