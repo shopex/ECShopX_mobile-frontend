@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem, NavBar, SpNote } from '@/components'
 import api from '@/api'
@@ -23,7 +23,7 @@ export default class List extends Component {
       ],
       query: null,
       list: [],
-      listType: ''
+      listType: 'grid'
     }
   }
 
@@ -131,10 +131,10 @@ export default class List extends Component {
             list={filterList}
             onChange={this.handleFilterChange}
           >
-            <View
-              className='at-icon at-icon-bullet-list'
-              onClick={this.handleListTypeChange}
-            ></View>
+            <View className='filter-bar__item'>
+              <View className='in-icon in-icon-filter'></View>
+              <Text className='filter-bar__text'>筛选</Text>
+            </View>
           </FilterBar>
         </View>
 

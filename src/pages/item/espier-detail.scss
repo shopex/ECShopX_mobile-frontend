@@ -131,9 +131,11 @@
   line-height: 1.2;
   margin: 0 60px 14px;
   &__desc {
+    display: block;
+    text-align: center;
     font-size: 18px;
     display: block;
-    line-height: 1;
+    line-height: 1.4;
     color: $color-gray;
     font-size: $font-size-small;
     margin-bottom: 28px;
