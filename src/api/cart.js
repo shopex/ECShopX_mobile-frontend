@@ -9,7 +9,6 @@ export function get (params) {
 }
 
 export function getBasic (params) {
-  // return req.get('/cart.get.basic')
   return req.get('/cart', {
     shop_type: 'distributor',
     ...params

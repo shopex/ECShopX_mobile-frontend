@@ -3,9 +3,10 @@ const pkg = require('../package.json')
 
 const [TARO_CMD, TARO_ENV] = process.env.npm_lifecycle_event.split(':')
 const DIST_PATH = 'dist'
-const API_HOST = process.env.NODE_ENV === 'production'
-  ? 'b.pjinjin.com'
-  : 'pjj.aixue7.com'
+const API_HOST = 'bbc54.shopex123.com'
+// const API_HOST = process.env.NODE_ENV === 'production'
+//   ? 'b.pjinjin.com'
+//   : 'pjj.aixue7.com'
 
 const config = {
   projectName: pkg.name,
@@ -37,8 +38,8 @@ const config = {
     APP_NAME: `'${pkg.app_name}'`,
     APP_VERSION: `'${pkg.version}'`,
     APP_BASE_URL: TARO_ENV === 'h5'
-      ? `'//${API_HOST}/api/h5app/wxapp'`
-      : `https://${API_HOST}/api/h5app/wxapp`,
+      ? `'//${API_HOST}/index.php/api/h5app/wxapp'`
+      : `https://${API_HOST}/index.php/api/h5app/wxapp`,
     APP_COMPANY_ID: process.env.RELEASE === 'h5'
       ? '2'
       : '1'

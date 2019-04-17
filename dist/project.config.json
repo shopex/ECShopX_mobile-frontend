@@ -54,7 +54,14 @@
 					"id": 3,
 					"name": "订单列表",
 					"pathName": "pages/trade/list",
-					"query": "status=1",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "购物车",
+					"pathName": "pages/cart/espier-index",
+					"query": "",
 					"scene": null
 				}
 			]

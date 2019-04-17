@@ -27,8 +27,8 @@ export default class TabBar extends Component {
         { title: '首页', iconType: 'home', iconPrefixClass: 'in-icon', url: '/pages/home/index', urlRedirect: true },
         { title: '分类', iconType: 'menu', iconPrefixClass: 'in-icon', url: '/pages/category/index', urlRedirect: true },
         { title: '种草', iconType: 'grass', iconPrefixClass: 'in-icon', url: '/pages/recommend/list', urlRedirect: true },
-        { title: '购物车', iconType: 'cart', iconPrefixClass: 'in-icon', url: '/pages/cart/espier-index', text: this.props.cartTotalCount || '', max: '99' },
-        { title: '个人中心', iconType: 'user', iconPrefixClass: 'in-icon', url: '/pages/member/index', urlRedirect: true }
+        { title: '购物车', iconType: 'cart', iconPrefixClass: 'in-icon', url: '/pages/cart/espier-index', text: this.props.cartTotalCount || '', max: '99', withLogin: true },
+        { title: '个人中心', iconType: 'user', iconPrefixClass: 'in-icon', url: '/pages/member/index', urlRedirect: true, withLogin: true }
       ]
     }
   }
@@ -83,8 +83,14 @@ export default class TabBar extends Component {
 
     if (cur !== current) {
       const curTab = this.state.tabList[current]
-      const { url, urlRedirect } = curTab
+      const { url, urlRedirect, withLogin } = curTab
       const { fullPath } = getCurrentRoute(this.$router)
+
+      if (withLogin && !S.getAuthToken()) {
+        return Taro.redirectTo({
+          url: '/pages/auth/login'
+        })
+      }
 
       if (url && fullPath !== url) {
         if (!urlRedirect || (url === '/pages/member/index' && !S.getAuthToken())) {

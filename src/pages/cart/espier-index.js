@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux'
 import { AtInputNumber, AtButton } from 'taro-ui'
 import { GoodsItem, SpCheckbox, SpNote, Loading, Price, NavBar } from '@/components'
 import { log, navigateTo, pickBy } from '@/utils'
-// import api from '@/api'
+import api from '@/api'
 import { withLogin } from '@/hocs'
 import { getTotalPrice } from '@/store/cart'
 
@@ -36,20 +36,22 @@ export default class CartIndex extends Component {
   }
 
   componentDidMount () {
+    this.fetch()
+
     if (this.props.defaultAllSelect) {
       this.handleAllSelect(true)
     }
-
-    console.info(this)
   }
 
   async fetch () {
-    // const { cartlist } = await api.cart.get()
-    // // const list = resolveCartItems(cartlist)
-    // // const items = normalizeItems(list)
+    const cart = await api.cart.get()
+    console.log(cart)
 
-    // const list = []
-    // const items = []
+    // const list = resolveCartItems(cartlist)
+    // const items = normalizeItems(list)
+
+    const list = []
+    const items = []
 
     // this.setState({
     //   list,
