@@ -165,7 +165,7 @@ export default class TradeList extends Component {
     const { curTabIdx, curItemActionsId, tabList, list, page } = this.state
 
     return (
-      <View className='trade-list'>
+      <View className='page-trade-list'>
         <NavBar
           title='订单列表'
           leftIconType='chevron-left'

@@ -68,6 +68,9 @@ class App extends Component {
       'pages/member/edit-address',
       'pages/member/setting',
       'pages/member/userinfo',
+      'pages/member/item-history',
+      'pages/member/item-fav',
+      'pages/member/item-guess',
 
       'pages/trade/list',
       'pages/trade/detail',
@@ -78,6 +81,7 @@ class App extends Component {
       'pages/trade/refund',
       'pages/trade/refund-detail',
       'pages/trade/refund-sendback',
+      'pages/trade/invoice-list',
 
       'pages/protocol/privacy'
     ],

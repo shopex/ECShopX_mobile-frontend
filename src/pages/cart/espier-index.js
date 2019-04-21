@@ -1,22 +1,24 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtInputNumber, AtButton } from 'taro-ui'
-import { GoodsItem, SpCheckbox, SpNote, Loading, Price, NavBar } from '@/components'
+import { AtButton } from 'taro-ui'
+import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar } from '@/components'
 import { log, navigateTo, pickBy } from '@/utils'
-// import api from '@/api'
+import debounce from 'lodash/debounce'
+import api from '@/api'
 import { withLogin } from '@/hocs'
 import { getTotalPrice } from '@/store/cart'
+import CartItem from './comps/cart-item'
 
-import './index.scss'
+import './espier-index.scss'
 
 @connect(({ cart }) => ({
   list: cart.list,
+  cartIds: cart.cartIds,
   defaultAllSelect: true,
   totalPrice: getTotalPrice(cart)
 }), (dispatch) => ({
-  onCartUpdate: (item, num) => dispatch({ type: 'cart/update', payload: { item, num } }),
-  onCartDel: (item) => dispatch({ type: 'cart/delete', payload: item }),
+  onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
   onCartSelection: (selection) => dispatch({ type: 'cart/selection', payload: selection })
 }))
 @withLogin()
@@ -36,29 +38,35 @@ export default class CartIndex extends Component {
   }
 
   componentDidMount () {
-    if (this.props.defaultAllSelect) {
-      this.handleAllSelect(true)
-    }
-
-    console.info(this)
+    this.fetch(() => {
+      if (this.props.defaultAllSelect) {
+        this.handleAllSelect(true)
+      }
+    })
   }
 
-  async fetch () {
-    // const { cartlist } = await api.cart.get()
-    // // const list = resolveCartItems(cartlist)
-    // // const items = normalizeItems(list)
+  async fetch (cb) {
+    const { valid_cart } = await api.cart.get()
 
-    // const list = []
-    // const items = []
+    const list = valid_cart.map(shopCart => {
+      const tList = this.transformCartList(shopCart.list)
+      return {
+        ...shopCart,
+        list: tList
+      }
+    })
 
-    // this.setState({
-    //   list,
-    //   items
-    // })
+    log.debug('[cart fetch]', list)
+    this.props.onUpdateCart(list)
+    cb && cb(list)
   }
+
+  updateCart = debounce(() => {
+    this.fetch()
+  }, 500)
 
   get isTotalChecked () {
-    return this.props.list.length === this.state.selection.size
+    return this.props.cartIds.length === this.state.selection.size
   }
 
   navigateBack = () => {
@@ -72,8 +80,8 @@ export default class CartIndex extends Component {
     })
   }
 
-  handleSelectionChange (item_id, checked) {
-    this.state.selection[checked ? 'add' : 'delete'](item_id)
+  handleSelectionChange (cart_id, checked) {
+    this.state.selection[checked ? 'add' : 'delete'](cart_id)
     const selection = new Set(this.state.selection)
 
     this.setState({
@@ -81,21 +89,33 @@ export default class CartIndex extends Component {
     })
     this.props.onCartSelection([...selection])
 
-    log.debug(`[cart change] item: ${item_id}, selection:`, selection)
+    log.debug(`[cart change] item: ${cart_id}, selection:`, selection)
   }
 
-  handleQuantityChange (idx, quantity) {
-    const item = this.props.list[idx]
-    this.props.onCartUpdate(item, +quantity)
+  handleDelect = async (cart_id) => {
+    await api.cart.del({ cart_id })
+    const cartIds = this.state.cartIds.filter(t => t !== cart_id)
+
+    this.setState({
+      cartIds
+    })
+    this.updateCart()
+  }
+
+  handleQuantityChange = async (cart_id, num) => {
+    await api.cart.updateNum({ cart_id, num })
+    this.updateCart()
   }
 
   handleAllSelect = (checked) => {
     const { selection } = this.state
-    const { list } = this.props
+    const { list } = this.state
 
     if (checked) {
-      list.forEach((item) => {
-        selection.add(item.item_id)
+      list.forEach(shopCart => {
+        shopCart.list.forEach(item => {
+          selection.add(item.cart_id)
+        })
       })
     } else {
       selection.clear()
@@ -107,20 +127,20 @@ export default class CartIndex extends Component {
     this.props.onCartSelection([...selection])
   }
 
-  handleDelect = () => {
-    const { list } = this.props
-    this.state.selection.forEach(item_id => {
-      this.props.onCartDel({ item_id })
-    })
-    const selection = list.filter(item => !this.state.selection.has(item.item_id))
-      .map(({ item_id }) => item_id)
+  // handleDelect = () => {
+  //   const { list } = this.props
+  //   this.state.selection.forEach(item_id => {
+  //     this.props.onCartDel({ item_id })
+  //   })
+  //   const selection = list.filter(item => !this.state.selection.has(item.item_id))
+  //     .map(({ item_id }) => item_id)
 
-    this.setState({
-      selection: new Set(selection)
-    })
-    this.props.onCartSelection(selection)
-    this.toggleCartMode()
-  }
+  //   this.setState({
+  //     selection: new Set(selection)
+  //   })
+  //   this.props.onCartSelection(selection)
+  //   this.toggleCartMode()
+  // }
 
   handleCheckout = () => {
     Taro.navigateTo({
@@ -131,10 +151,11 @@ export default class CartIndex extends Component {
   transformCartList (list) {
     return pickBy(list, {
       item_id: 'item_id',
+      cart_id: 'cart_id',
       title: 'item_name',
       desc: 'brief',
       curSymbol: 'cur.symbol',
-      img: ({ pics }) => pics[0],
+      img: ({ pics }) => pics,
       price: ({ price }) => (+price / 100).toFixed(2),
       market_price: ({ market_price }) => (+market_price / 100).toFixed(2),
       quantity: 'num'
@@ -146,9 +167,8 @@ export default class CartIndex extends Component {
   }
 
   render () {
-    const { list } = this.props
     const { selection, cartMode } = this.state
-    const { totalPrice } = this.props
+    const { totalPrice, list } = this.props
 
     if (!list) {
       return <Loading />
@@ -157,8 +177,6 @@ export default class CartIndex extends Component {
     const totalSelection = selection.size
     const totalItems = totalSelection
     const isEmpty = !list.length
-
-    const cartList = this.transformCartList(list)
 
     return (
       <View className='page-cart-index'>
@@ -173,50 +191,59 @@ export default class CartIndex extends Component {
           scrollY
         >
           {
-            !isEmpty && (
-              <View className='cart-list__actions'>
-                <Text
-                  clasName='btn-cart-mode'
-                  onClick={this.toggleCartMode}
-                >{cartMode === 'edit' ? '完成' : '编辑'}</Text>
-              </View>
-            )
+            // !isEmpty && (
+            //   <View className='cart-list__actions'>
+            //     <Text
+            //       clasName='btn-cart-mode'
+            //       onClick={this.toggleCartMode}
+            //     >{cartMode === 'edit' ? '完成' : '编辑'}</Text>
+            //   </View>
+            // )
           }
           <View className='cart-list'>
-            <View className='cart-group__shop'>
-              {
-                cartList.map((item, idx) => {
-                  return (
-                    <GoodsItem
-                      key={item.item_id}
-                      info={item}
-                      renderFooter={
-                        <block>
-                          <AtInputNumber
-                            min={1}
-                            max={999999}
-                            value={item.quantity}
-                            onChange={this.handleQuantityChange.bind(this, idx)}
-                          />
-                        </block>
-                      }
-                    >
-                      <SpCheckbox
-                        key={item.item_id}
-                        checked={selection.has(item.item_id)}
-                        onChange={this.handleSelectionChange.bind(this, item.item_id)}
-                      />
-                    </GoodsItem>
-                  )
-                })
-              }
-            </View>
+            {
+              list.map((shopCart) => {
+                return (
+                  <View
+                    className='cart-group__shop'
+                    key={shopCart.shop_id}
+                  >
+                    {
+                      shopCart.list.map((item) => {
+                        return (
+                          <CartItem
+                            key={item.cart_id}
+                            info={item}
+                            onNumChange={this.handleQuantityChange.bind(this, item.cart_id)}
+                          >
+                            <View className='cart-item__act'>
+                              <SpCheckbox
+                                key={item.item_id}
+                                checked={selection.has(item.cart_id)}
+                                onChange={this.handleSelectionChange.bind(this, item.cart_id)}
+                              />
+                              <View
+                                className='in-icon in-icon-close'
+                                onClick={this.handleDelect.bind(this, item.cart_id)}
+                              />
+                            </View>
+                          </CartItem>
+                        )
+                      })
+                    }
+                  </View>
+                )
+              })
+            }
+
             {
               !list.length && (
                 <View>
-                  <SpNote customStyle='margin-bottom: 20px' img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>
+                  <View style='margin-bottom: 20px'>
+                    <SpNote img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>
+                  </View>
                   <AtButton
-                    circle
+                    className='btn-rand'
                     type='primary'
                     onClick={this.navigateTo.bind(this, '/pages/home/index', true)}
                   >随便逛逛</AtButton>
@@ -238,24 +265,22 @@ export default class CartIndex extends Component {
           {
             cartMode !== 'edit'
               ? <View className='cart-toolbar__bd'>
-                  <Text className='cart-total__hint'>不含运费</Text>
                   <View className='cart-total'>
+                    <Text className='cart-total__hint'>总计：</Text>
                     <Price
                       primary
                       value={totalPrice}
                     />
                   </View>
                   <AtButton
-                    circle
                     type='primary'
                     className='btn-checkout'
                     disabled={totalItems <= 0}
                     onClick={this.handleCheckout}
-                  >结算({totalItems})</AtButton>
+                  >结算</AtButton>
                 </View>
               : <View className='cart-toolbar__bd'>
                     <AtButton
-                      circle
                       type='primary'
                       className='btn-checkout'
                       onClick={this.handleDelect}
@@ -263,6 +288,10 @@ export default class CartIndex extends Component {
                   </View>
           }
         </View>
+
+        <TabBar
+          current={3}
+        />
       </View>
     )
   }

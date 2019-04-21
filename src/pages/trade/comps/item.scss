@@ -23,12 +23,6 @@
     text-align: right;
   }
 
-  &__ft {
-    display: flex;
-    justify-content: flex-end;
-    padding: floor($edge-size/2) floor($edge-size * 3 / 5);
-  }
-
   &__hd {
     padding: 0;
     height: 44px;
