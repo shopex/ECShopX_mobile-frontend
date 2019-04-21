@@ -51,12 +51,6 @@
       position: relative;
       z-index: 10;
     }
-    &-cont {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
   }
   &__status {
     font-size: $font-size-small;

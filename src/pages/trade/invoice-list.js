@@ -8,7 +8,7 @@ import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus } from '@/utils'
 import TradeItem from './comps/item'
 
-import './list.scss'
+import './invoice-list.scss'
 
 @withPager
 @withLogin()
@@ -119,7 +119,7 @@ export default class InvoiceList extends Component {
                   onClick={this.handleClickItem.bind(this, item)}
                   onClickBtn={this.handleClickItemBtn}
                   renderFooter={
-                    <View>
+                    <View className='trade-item__ft'>
                       <Text className='trade-item__status'>已开票</Text>
                       <AtButton
                         circle
