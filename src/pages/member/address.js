@@ -1,6 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 // import AddressList from '@/components/new-address/address'
+import { SpToast } from '@/components'
+import S from '@/spx'
 import api from '@/api'
 
 import './address.scss'
@@ -11,6 +13,7 @@ export default class AddressIndex extends Component {
 
     this.state = {
       list: [],
+      isChoose: false,
       isItemChecked: false,
       ItemIndex: null,
       isDefaultChecked: true,
@@ -26,6 +29,11 @@ export default class AddressIndex extends Component {
   }
 
   async fetch () {
+    if(this.$router.params.isPicker) {
+      this.setState({
+        isChoose: true
+      })
+    }
     Taro.showLoading({
       mask: true
     })
@@ -45,25 +53,38 @@ export default class AddressIndex extends Component {
   }
 
   handleChangeDefault = async (item) => {
-    /*try {
-      await api.member.addressCreateOrUpdate(item.address_id)
-      if(data.address_id) {
+    item.is_def = 1
+    try {
+      await api.member.addressCreateOrUpdate(item)
+      if(item.address_id) {
         S.toast('修改成功')
-      } else {
-        S.toast('创建成功')
       }
-      setTimeout(()=>{
-        Taro.navigateBack()
+      setTimeout(() => {
+        this.fetch()
       }, 700)
     } catch (error) {
       return false
-    }*/
+    }
   }
 
   handleClickToEdit = (item) => {
-    Taro.navigateTo({
-      url: `/pages/member/edit-address?address_id=${item.address_id}`
-    })
+    if (item.address_id) {
+      Taro.navigateTo({
+        url: `/pages/member/edit-address?address_id=${item.address_id}`
+      })
+    } else {
+      Taro.navigateTo({
+        url: '/pages/member/edit-address'
+      })
+    }
+  }
+
+  handleDelete = async (item) => {
+    await api.member.addressDelete(item.address_id)
+    S.toast('删除成功')
+    setTimeout(() => {
+      this.fetch()
+    }, 700)
   }
 
   render () {
@@ -79,13 +100,16 @@ export default class AddressIndex extends Component {
             list.map((item, index) => {
               return (
                 <View key={index} className='address-item'>
-                  <View className='address-item__check' onClick={this.handleClickChecked.bind(this, index)}>
-                    {
-                      index === ItemIndex && isItemChecked
-                        ? <Text className='in-icon in-icon-check-copy address-item__checked'> </Text>
-                        : <Text className='address-item__unchecked'> </Text>
-                    }
-                  </View>
+                  {
+                    isChoose && <View className='address-item__check' onClick={this.handleClickChecked.bind(this, index)}>
+                      {
+                        index === ItemIndex && isItemChecked
+                          ? <Text className='in-icon in-icon-check-copy address-item__checked'> </Text>
+                          : <Text className='address-item__unchecked'> </Text>
+                      }
+                    </View>
+                  }
+
                   <View className='address-item__content'>
                     <View className='address-item__title'>
                       <Text className='address-item__info'>{item.username}</Text>
@@ -95,7 +119,7 @@ export default class AddressIndex extends Component {
                     <View className='address-item__footer'>
                       <View className='address-item__footer_default' onClick={this.handleChangeDefault.bind(this, item)}>
                         {
-                          isDefaultChecked
+                          item.is_def
                             ? <Text className='in-icon in-icon-check default__icon default__checked'> </Text>
                             : <Text className='in-icon in-icon-check default__icon'> </Text>
                         }
@@ -106,7 +130,7 @@ export default class AddressIndex extends Component {
                           <Text className='in-icon in-icon-edit footer-icon'> </Text>
                           <Text>编辑</Text>
                         </View>
-                        <View className='footer-text'>
+                        <View className='footer-text' onClick={this.handleDelete.bind(this, item)}>
                           <Text className='in-icon in-icon-trash footer-icon'> </Text>
                           <Text>删除</Text>
                         </View>
@@ -118,9 +142,10 @@ export default class AddressIndex extends Component {
             })
           }
         </View>
-        <View className='member-address-add'>添加新地址</View>
-      </View>
+        <View className='member-address-add' onClick={this.handleClickToEdit.bind(this)}>添加新地址</View>
 
+        <SpToast />
+      </View>
     )
   }
 }

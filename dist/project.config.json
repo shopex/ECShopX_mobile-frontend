@@ -77,6 +77,13 @@
 					"pathName": "pages/cart/espier-checkout",
 					"query": "cart_type=cart",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "地址",
+					"pathName": "pages/member/address",
+					"query": "",
+					"scene": null
 				}
 			]
 		}

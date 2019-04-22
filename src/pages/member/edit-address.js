@@ -33,7 +33,7 @@ export default class AddressIndex extends Component {
 
     // debugger
     list.map(a_item => {
-      if(a_item.address_id === this.props.addressID) {
+      if(a_item.address_id === this.$router.params.address_id) {
         this.setState({
           info: a_item
         })
@@ -65,9 +65,9 @@ export default class AddressIndex extends Component {
     this.setState({
       areaList: [arrProvice, arrCity, arrCounty],
     },()=>{
-      this.setState({
-        multiIndex: [0, 0, 0]
-      })
+      // this.setState({
+      //   multiIndex: [0, 0, 0]
+      // })
     })
 
     if (this.props.address === 'wx'){
@@ -89,8 +89,13 @@ export default class AddressIndex extends Component {
   }
 
   // 选定开户地区
+  handleClickPicker = () => {
+    this.setState({
+      multiIndex: [0, 0, 0]
+    })
+  }
+
   bindMultiPickerChange = async (e) => {
-    console.log(222)
     const { info } = this.state
     this.nList.map((item, index) => {
       if(index === e.detail.value[0]) {
@@ -226,15 +231,6 @@ export default class AddressIndex extends Component {
     }
   }
 
-  // handleDelete = async (address_id) => {
-  //   await api.member.addressDelete(address_id)
-  //   S.toast('删除成功')
-  //   setTimeout(()=>{
-  //     Taro.navigateBack()
-  //   }, 700)
-  // }
-
-
   render () {
     return (
       <View className='page-address-edit'>
@@ -261,6 +257,7 @@ export default class AddressIndex extends Component {
             />
             <Picker
               mode='multiSelector'
+              onClick={this.handleClickPicker}
               onChange={this.bindMultiPickerChange}
               onColumnChange={this.bindMultiPickerColumnChange}
               value={multiIndex}
@@ -312,9 +309,6 @@ export default class AddressIndex extends Component {
               process.env.TARO_ENV === 'weapp'
                 ? <AtButton type='primary' formType='submit'>提交</AtButton>
                 : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>提交</AtButton>
-            }
-            {
-              info.address_id && (<AtButton onClick={this.handleDelete.bind(this, info.address_id)}>删除</AtButton>)
             }
           </View>
         </AtForm>
