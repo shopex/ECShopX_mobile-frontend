@@ -13,4 +13,9 @@
     border-bottom: 1PX solid #ececec;
     padding: 0 38px 17px 27px;
   }
+  .order-item {
+    display: flex;
+    align-items: flex-start;
+    padding: $edge-size;
+  }
 }

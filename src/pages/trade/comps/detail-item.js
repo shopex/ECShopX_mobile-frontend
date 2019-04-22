@@ -28,9 +28,17 @@ export default class DetailItem extends Component {
   //   this.props.onClickBtn && this.props.onClickBtn(type, info)
   // }
 
+  handleClickAfterSale= () => {
+    const { info: { tid: order_id } } = this.props
+    console.log(order_id, 33)
+    Taro.navigateTo({
+      url: `/pages/trade/refund?order_id=${order_id}`
+    })
+  }
+
   render () {
     const { customHeader, customFooter, noHeader, onClick, info, showActions } = this.props
-
+    console.log(info, 40)
     return (
       <View className='detail-item'>
 
@@ -42,6 +50,16 @@ export default class DetailItem extends Component {
                 key={idx}
                 info={item}
               />
+              {!customFooter && info.status === 'WAIT_RATE' && <View className='order-item__ft'>
+                <View className='trade-item__ft-bd'>
+                  <AtButton
+                    circle
+                    type='primary'
+                    size='small'
+                    onClick={this.handleClickAfterSale.bind(this, item)}
+                  >申请售后</AtButton>
+                </View>
+              </View>}
             </View>
 
           )
