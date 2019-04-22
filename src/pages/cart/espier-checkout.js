@@ -1,19 +1,31 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtButton, AtInput, AtActionSheet, AtActionSheetItem } from 'taro-ui'
+import { AtButton, AtInput } from 'taro-ui'
 import { Loading, Price, SpCell, AddressChoose, SpToast, NavBar } from '@/components'
 import api from '@/api'
 import S from '@/spx'
 import { withLogin } from '@/hocs'
 import { pickBy, log } from '@/utils'
 import { lockScreen } from '@/utils/dom'
-import { getSelectedCart } from '@/store/cart'
+import find from 'lodash/find'
 import CheckoutItems from './checkout-items'
-
+import OrderItem from '../trade/comps/order-item'
 
 import './espier-checkout.scss'
-import find from "lodash/find";
+
+const transformCartList = (list) => {
+  return pickBy(list, {
+    item_id: 'item_id',
+    cart_id: 'cart_id',
+    title: 'item_name',
+    curSymbol: 'fee_symbol',
+    pics: 'pic',
+    price: ({ price }) => (+price / 100).toFixed(2),
+    num: 'num'
+  })
+}
+
 
 @connect(({ cart }) => ({
   coupon: cart.coupon,
@@ -38,8 +50,8 @@ export default class CartCheckout extends Component {
     super(props)
 
     this.state = {
-      address_list: [],
       info: null,
+      address_list: [],
       address: null,
       showShippingPicker: false,
       showAddressPicker: false,
@@ -74,17 +86,11 @@ export default class CartCheckout extends Component {
           cart_total_num: fastBuyItem.num
         }]
       }
-    } else {
+    } else if (cart_type === 'cart') {
       // 积分购买不在此种情况
 
       this.props.onClearFastbuy()
-      const { list } = this.props
-      info = {
-        cart: [{
-          list,
-          cart_total_num: list.reduce((acc, item) => (+item.num) + acc, 0)
-        }]
-      }
+      info = null
     }
 
     this.setState({
@@ -94,7 +100,7 @@ export default class CartCheckout extends Component {
 
     let total_fee = 0
     let items_count = 0
-    const items = info.cart ? info.cart[0].list.map((item) => {
+    const items = (info && info.cart) ? info.cart[0].list.map((item) => {
       const { item_id, num } = item
       total_fee += +(item.price)
       items_count += +(item.num)
@@ -120,25 +126,11 @@ export default class CartCheckout extends Component {
   }
 
   componentDidShow () {
-    console.log( 123)
     if(this.state.address_list < 2) {
       this.fetch(() => this.changeSelection())
     }
-    // this.fetch(() => this.changeSelection())
-    if (!this.props.list.length && !this.props.fastbuy) {
-      Taro.showToast({
-        title: '购物车中无商品',
-        icon: 'none'
-      }).then(() => {
-        Taro.navigateTo({
-          url: '/pages/home/index'
-        })
-      })
+    if (!this.params || !this.state.address) return
 
-      return
-    }
-    if (!this.params) return
-    if (!this.state.address) return
     this.calcOrder()
     this.setState({
       address: this.props.defaultAddress
@@ -200,6 +192,9 @@ export default class CartCheckout extends Component {
       member_discount: 0,
       coupon_discount: 0,
     }
+
+    log.debug('[checkout] params: ', params)
+
     if (coupon) {
       if (coupon.type === 'coupon' && coupon.value.code) {
         params.coupon_discount = coupon.value.code
@@ -221,7 +216,7 @@ export default class CartCheckout extends Component {
     const params = this.getParams()
     const data = await api.cart.total(params)
 
-    const { item_fee, member_discount = 0, coupon_discount = 0, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
+    const { items, item_fee, member_discount = 0, coupon_discount = 0, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
     const total = {
       ...this.state.total,
       item_fee,
@@ -232,10 +227,24 @@ export default class CartCheckout extends Component {
       point,
       freight_point
     }
+
+    let info = this.state.info
+    if (items && !this.state.info) {
+      // 从后端获取订单item
+      info = {
+        cart: [{
+          list: transformCartList(items),
+          cart_total_num: items.reduce((acc, item) => (+item.num) + acc, 0)
+        }]
+      }
+      this.params.items = items
+    }
+
     Taro.hideLoading()
 
     this.setState({
-      total
+      total,
+      info
     })
   }
 
@@ -374,28 +383,16 @@ export default class CartCheckout extends Component {
           <AddressChoose
             isAddress={address}
           />
-          {/*<View*/}
-            {/*className='address-info'*/}
-            {/*onClick={this.toggleAddressPicker.bind(this, true)}*/}
-          {/*>*/}
-            {/*<SpCell*/}
-              {/*isLink*/}
-              {/*icon='map-pin'*/}
-            {/*>*/}
-              {/*{*/}
-                {/*address*/}
-                  {/*? <View className='address-info__bd'>*/}
-                      {/*<Text className='address-info__receiver'>*/}
-                        {/*收货人：{address.name} {address.mobile}*/}
-                      {/*</Text>*/}
-                      {/*<Text className='address-info__addr'>*/}
-                        {/*收货地址：{address.province}{address.state}{address.district}{address.address}*/}
-                      {/*</Text>*/}
-                    {/*</View>*/}
-                  {/*: <View className='address-info__bd'>请选择收货地址</View>*/}
-              {/*}*/}
-            {/*</SpCell>*/}
-          {/*</View>*/}
+
+          {payType !== 'point' && (
+            <SpCell
+              is-link
+              className='coupons-list'
+              title='选择优惠券'
+              onClick={this.handleCouponsClick}
+              value={couponText}
+            />
+          )}
 
           <View className='cart-list'>
             {
@@ -405,31 +402,36 @@ export default class CartCheckout extends Component {
                     className='cart-group'
                     key={cart.shop_id}
                   >
+                    <View className='sec cart-group__cont'>
+                      {
+                        cart.list.map((item, idx) => {
+                          return (
+                            <View
+                              className='order-item__wrap'
+                              key={item.item_id}
+                            >
+                              <View className='order-item__idx'><Text>第{idx + 1}件商品</Text></View>
+                              <OrderItem
+                                info={item}
+                                showExtra={false}
+                                customFooter
+                                renderFooter={
+                                  <View className='order-item__ft'>
+                                    {payType === 'point'
+                                      ? <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={item.point}></Price>
+                                      : <Price className='order-item__price' value={item.price}></Price>
+                                    }
+                                    <Text className='order-item__num'>x {item.num}</Text>
+                                  </View>
+                                }
+                              />
+                            </View>
+                          )
+                        })
+                      }
+                    </View>
                     {/*<View className='cart-group__shop'>{cart.shop_name}</View>*/}
                     <View className='sec cart-group__cont'>
-                      <SpCell
-                        className='trade-items'
-                        value={`共${cart.cart_total_num}件商品`}
-                        // onClick={this.handleClickItems.bind(this, cart.items)}
-                      >
-                        <View className='trade-items__bd'>
-                          {
-                            cart.list.map((item, idx) => {
-                              return (
-                                <Image
-                                  key={idx}
-                                  className='trade-item__img'
-                                  mode='aspectFill'
-                                  src={Array.isArray(item.pics) ? item.pics[0] : item.pics}
-                                />
-                              )
-                            })
-                          }
-                          {cart.list.length === 1 && (
-                            <Text className='trade-item__title'>{cart.list[0].item_name}</Text>
-                          )}
-                        </View>
-                      </SpCell>
                       <SpCell
                         className='sec trade-remark'
                         border={false}
@@ -446,46 +448,20 @@ export default class CartCheckout extends Component {
             }
           </View>
 
-          {payType !== 'point' && (
-            <SpCell
-              is-link
-              className='coupons-list'
-              title='选择优惠券'
-              onClick={this.handleCouponsClick}
-              value={couponText}
-            />
-          )}
-
-          {/*<View className='sec trade-point'>
-            <SpCell
-              title='积分'
-              border={false}
-            >
-              <View className='trade-point__wrap'>
-                <Text className='trade-point__hint'>可用1000积分(每1积分抵扣1元)可抵扣 <Price value={pointPrice} /></Text>
-                <Switch
-                  checked
-                  value={usePoint}
-                  onChange={this.handlePointChange}
-                />
-              </View>
-            </SpCell>
-            <AtInput
-              className='trade-point__input'
-              type='text'
-              value={point}
-              placeholder='全部抵扣或在此输入积分数'
-            />
-          </View>
+          <SpCell
+            isLink
+            className='trade-invoice'
+            title='开发票'
+          >
+            <Text>否</Text>
+          </SpCell>
 
           <SpCell
-            className='trade-invoice'
-            title='申请发票'
+            className='trade-shipping'
+            title='配送方式'
+            value='[快递免邮]'
           >
-            <Switch
-              checked
-            />
-          </SpCell>*/}
+          </SpCell>
 
           {payType === 'point' && (
             <View className='sec trade-sub-total'>
@@ -518,7 +494,7 @@ export default class CartCheckout extends Component {
             <View className='sec trade-sub-total'>
               <SpCell
                 className='trade-sub-total__item'
-                title='商品金额'
+                title='商品金额：'
               >
                 <Price
                   unit='cent'
@@ -527,7 +503,7 @@ export default class CartCheckout extends Component {
               </SpCell>
               <SpCell
                 className='trade-sub-total__item'
-                title='会员折扣金额'
+                title='会员折扣：'
               >
                 <Price
                   unit='cent'
@@ -536,7 +512,7 @@ export default class CartCheckout extends Component {
               </SpCell>
               <SpCell
                 className='trade-sub-total__item'
-                title='优惠券'
+                title='优惠券：'
               >
                 <Price
                   unit='cent'
@@ -545,7 +521,7 @@ export default class CartCheckout extends Component {
               </SpCell>
               <SpCell
                 className='trade-sub-total__item'
-                title='运费'
+                title='运费：'
               >
                 <Price
                   unit='cent'
@@ -556,18 +532,6 @@ export default class CartCheckout extends Component {
           )}
         </ScrollView>
 
-        {/*<AddressPicker*/}
-          {/*isOpened={showAddressPicker}*/}
-          {/*value={address}*/}
-          {/*onChange={this.handleAddressChange}*/}
-          {/*onClickBack={this.toggleState.bind(this, 'showAddressPicker', false)}*/}
-        {/*/>*/}
-        {/*<AddressList*/}
-          {/*onClickTo={this.clickTo.bind(this)}*/}
-          {/*onChange={this.handleAddressChange.bind(this)}*/}
-          {/*onClickBack={this.handleClickBack.bind(this)}*/}
-        {/*/>*/}
-
         <CheckoutItems
           isOpened={showCheckoutItems}
           list={curCheckoutItems}
@@ -576,7 +540,7 @@ export default class CartCheckout extends Component {
 
         <View className='toolbar checkout-toolbar'>
           <View className='checkout__total'>
-            共<Text className='total-items'>{total.items_count}</Text>件，合计:
+            <Text>共 <Text className='total-items'>{total.items_count}</Text> 件商品　　总计:　</Text>
             {
               payType !== 'point'
                 ? <Price primary unit='cent' value={total.total_fee} />
@@ -584,7 +548,6 @@ export default class CartCheckout extends Component {
             }
           </View>
           <AtButton
-            circle
             type='primary'
             className='btn-confirm-order'
             disabled={isBtnDisabled}
