@@ -19,8 +19,9 @@ export default class GoodsItem extends Component {
   }
 
   handleFavClick = async () => {
-    const { item_id, is_collect } = this.props.info
-    await api.item.collect(item_id)
+    const { item_id, is_fav } = this.props.info
+    console.log(is_fav, item_id)
+    // await api.item.collect(item_id)
   }
 
   render () {
@@ -61,7 +62,7 @@ export default class GoodsItem extends Component {
               <View className='goods-item__actions'>
                 {type === 'item' && (
                   <View
-                    className='in-icon in-icon-fav'
+                    className={`in-icon ${info.is_fav ? 'in-icon-fav-f' : 'in-icon-fav'}`}
                     onClick={this.handleFavClick}
                   />
                 )}

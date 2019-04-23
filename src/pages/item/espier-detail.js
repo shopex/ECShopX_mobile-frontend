@@ -12,9 +12,9 @@ import ItemImg from './comps/item-img'
 
 import './espier-detail.scss'
 
-@connect(({ cart, favs }) => ({
+@connect(({ cart, member }) => ({
   cart,
-  favs
+  favs: member.favs
 }), (dispatch) => ({
   onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
   onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
@@ -107,8 +107,7 @@ export default class Detail extends Component {
       })
     }
 
-    const isFav = this.props.favs.indexOf(info.item_id) >= 0
-    info.isFav = isFav
+    info.is_fav = Boolean(this.props.favs[info.item_id])
 
     this.setState({
       info,
@@ -121,15 +120,30 @@ export default class Detail extends Component {
 
   handleMenuClick = async (type) => {
     const { info } = this.state
+    const isAuth = S.getAuthToken()
 
     if (type === 'fav') {
-      if (!info.isFav) {
+      if (!isAuth) {
+        Taro.showToast({
+          title: '请登录后再收藏',
+          icon: 'none'
+        })
+        return
+      }
+
+
+      if (!info.is_fav) {
         await api.member.addFav(info.item_id)
         this.props.onAddFav(info)
       } else {
         await api.member.delFav(info.item_id)
         this.props.onDelFav(info)
       }
+
+      info.is_fav = !info.is_fav
+      this.setState({
+        info
+      })
     }
   }
 

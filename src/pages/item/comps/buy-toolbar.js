@@ -39,7 +39,7 @@ export default class GoodsBuyToolbar extends Component {
             className='goods-buy-toolbar__menu-item'
             onClick={this.props.onFavItem}
           >
-            <View className='in-icon in-icon-fav'>{info.isFav ? 'fav' : ''}</View>
+            <View className={`in-icon ${info.is_fav ? 'in-icon-fav-f' : 'in-icon-fav'}`} />
           </View>
           {process.env.TARO_ENV === 'weapp' && (
             <Button className='goods-buy-toolbar__menu-item' openType='contact'>

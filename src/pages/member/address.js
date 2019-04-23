@@ -104,7 +104,7 @@ export default class AddressIndex extends Component {
                     isChoose && <View className='address-item__check' onClick={this.handleClickChecked.bind(this, index)}>
                       {
                         index === ItemIndex && isItemChecked
-                          ? <Text className='in-icon in-icon-check-copy address-item__checked'> </Text>
+                          ? <Text className='in-icon in-icon-check address-item__checked'> </Text>
                           : <Text className='address-item__unchecked'> </Text>
                       }
                     </View>

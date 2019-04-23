@@ -1,13 +1,20 @@
 import { createReducer } from 'redux-create-reducer'
-import dotProp from 'dot-prop-immutable'
+// import dotProp from 'dot-prop-immutable'
 
 const initState = {
-  favs: []
+  favs: {}
 }
 
 const member = createReducer(initState, {
   ['member/favs'](state, action) {
-    const favs = action.payload
+    const favsList = action.payload
+    const favs = {}
+    favsList.forEach(({ item_id, fav_id }) => {
+      favs[item_id] = {
+        item_id,
+        fav_id
+      }
+    })
 
     return {
       ...state,
@@ -16,18 +23,27 @@ const member = createReducer(initState, {
   },
   ['member/addFav'](state, action) {
     const { item_id } = action.payload
+    const favs = {
+      ...state.favs,
+      item_id
+    }
 
-    return dotProp.set(state, 'favs', favs => [...favs, item_id])
+    return {
+      ...state,
+      favs
+    }
   },
   ['member/delFav'](state, action) {
     const { item_id } = action.payload
-
-    const idx = state.favs.indexOf(item_id)
-    if (idx >= 0) {
-      dotProp.delete(state, `favs.${idx}`)
+    const favs = {
+      ...state.favs
     }
+    delete favs[item_id]
 
-    return state
+    return {
+      ...state,
+      favs
+    }
   }
 })
 

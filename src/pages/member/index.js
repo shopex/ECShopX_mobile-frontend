@@ -11,7 +11,7 @@ import './index.scss'
 
 @connect(() => ({
 }), (dispatch) => ({
-  onFetchFavs: (favs) => dispatch({ type: '/user/favs', payload: favs })
+  onFetchFavs: (favs) => dispatch({ type: 'member/favs', payload: favs })
 }))
 @withLogin()
 export default class MemberIndex extends Component {

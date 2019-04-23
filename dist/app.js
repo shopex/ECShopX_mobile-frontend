@@ -22,6 +22,14 @@ var _hooks = require("./hooks.js");
 
 var _hooks2 = _interopRequireDefault(_hooks);
 
+var _index6 = require("./api/index.js");
+
+var _index7 = _interopRequireDefault(_index6);
+
+var _index8 = require("./spx/index.js");
+
+var _index9 = _interopRequireDefault(_index8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -77,7 +85,20 @@ var _App = function (_BaseComponent) {
     value: function componentDidMount() {}
   }, {
     key: "componentDidShow",
-    value: function componentDidShow() {}
+    value: function componentDidShow() {
+      try {
+        if (_index9.default.getAuthToken()) {
+          _index7.default.member.favsList().then(function (_ref2) {
+            var list = _ref2.list;
+
+            store.dispatch({
+              type: 'member/favs',
+              payload: list
+            });
+          });
+        }
+      } catch (e) {}
+    }
   }, {
     key: "componentDidHide",
     value: function componentDidHide() {}
