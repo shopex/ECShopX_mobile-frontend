@@ -3,10 +3,8 @@
 .page-cart-index {
   .cart-list {
     padding: $edge-size;
-    &__wrap {
-      box-sizing: border-box;
-      height: 100vh;
-      padding-bottom: $toolbar-height;
+    &__scroll {
+      @include page-scroll($navigate-height, $toolbar-height + $tabbar-height);
     }
     &__actions {
       display: flex;

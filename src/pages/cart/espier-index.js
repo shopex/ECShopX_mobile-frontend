@@ -69,15 +69,8 @@ export default class CartIndex extends Component {
   }
 
   updateCart = debounce(async () => {
-    // Taro.showLoading({
-    //   mask: true,
-    //   title: '正在加载...'
-    // })
     await this.fetch()
-    // Taro.hideLoading()
-  }, 500, {
-    leading: true
-  })
+  }, 600)
 
   get isTotalChecked () {
     return this.props.cartIds.length === this.state.selection.size
@@ -209,7 +202,7 @@ export default class CartIndex extends Component {
         />
 
         <ScrollView
-          className='cart-list__wrap'
+          className='cart-list__scroll'
           scrollY
         >
           {

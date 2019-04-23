@@ -20,10 +20,11 @@ export function addFav (item_id) {
   return req.post(`/member/collect/item/${item_id}`)
 }
 
-export function delFav (item_ids) {
+export function delFav (item_ids, { is_empty = false }) {
   item_ids = Array.isArray(item_ids) ? item_ids : [item_ids]
   return req.delete('/member/collect/item', {
-    item_ids: item_ids
+    item_ids,
+    is_empty
   })
 }
 
