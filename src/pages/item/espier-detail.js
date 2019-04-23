@@ -12,11 +12,14 @@ import ItemImg from './comps/item-img'
 
 import './espier-detail.scss'
 
-@connect(({ cart }) => ({
-  cart
+@connect(({ cart, member }) => ({
+  cart,
+  favs: member.favs
 }), (dispatch) => ({
   onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
-  onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } })
+  onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
+  onAddFav: ({ item_id }) => dispatch({ type: 'member/addFav', payload: { item_id } }),
+  onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
 }))
 @withBackToTop
 export default class Detail extends Component {
@@ -104,6 +107,8 @@ export default class Detail extends Component {
       })
     }
 
+    info.is_fav = Boolean(this.props.favs[info.item_id])
+
     this.setState({
       info,
       desc,
@@ -111,6 +116,35 @@ export default class Detail extends Component {
       timer
     })
     log.debug('fetch: done', info)
+  }
+
+  handleMenuClick = async (type) => {
+    const { info } = this.state
+    const isAuth = S.getAuthToken()
+
+    if (type === 'fav') {
+      if (!isAuth) {
+        Taro.showToast({
+          title: '请登录后再收藏',
+          icon: 'none'
+        })
+        return
+      }
+
+
+      if (!info.is_fav) {
+        await api.member.addFav(info.item_id)
+        this.props.onAddFav(info)
+      } else {
+        await api.member.delFav(info.item_id)
+        this.props.onDelFav(info)
+      }
+
+      info.is_fav = !info.is_fav
+      this.setState({
+        info
+      })
+    }
   }
 
   handleBuyClick = async (type) => {
@@ -324,12 +358,15 @@ export default class Detail extends Component {
         {(!info.distributor_sale_status && hasStock && startSecKill)
           ?
             (<GoodsBuyToolbar
+              info={info}
               type={marketing}
+              onFavItem={this.handleMenuClick.bind(this, 'fav')}
               onClickAddCart={this.handleBuyClick.bind(this, 'cart')}
               onClickFastBuy={this.handleBuyClick.bind(this, 'fastbuy')}
             />)
           :
             (<GoodsBuyToolbar
+              info={info}
               customRender
               type={marketing}
             >

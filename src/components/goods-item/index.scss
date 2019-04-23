@@ -111,10 +111,13 @@ $item-img-size: 240px !default;
     font-size: $font-size-small;
     .in-icon {
       color: #d0d0d0;
-      font-size: $font-size-small;
+      font-size: 28px;
       &:before {
         margin-right: 8px;
       }
+    }
+    .in-icon-fav-f, .in-icon-like-f {
+      color: $color-brand-primary;
     }
   }
 }

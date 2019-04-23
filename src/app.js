@@ -3,6 +3,8 @@ import '@tarojs/async-await'
 import { Provider } from '@tarojs/redux'
 import configStore from '@/store'
 import useHooks from '@/hooks'
+import api from '@/api'
+import S from '@/spx'
 import Index from './pages/index'
 
 import './app.scss'
@@ -98,7 +100,20 @@ class App extends Component {
   componentDidMount () {
   }
 
-  componentDidShow () {}
+  componentDidShow () {
+    try {
+      if (S.getAuthToken()) {
+        api.member.favsList()
+          .then(({ list }) => {
+            store.dispatch({
+              type: 'member/favs',
+              payload: list
+            })
+          })
+      }
+    } catch (e) {
+    }
+  }
 
   componentDidHide () {}
 

@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, FilterBar, SearchBar, GoodsItem, NavBar, SpNote } from '@/components'
@@ -8,6 +9,11 @@ import { pickBy } from '@/utils'
 
 import './list.scss'
 
+@connect(({
+  member
+}) => ({
+  favs: member.favs
+}))
 @withPager
 @withBackToTop
 export default class List extends Component {
@@ -52,6 +58,7 @@ export default class List extends Component {
     }
 
     const { list, total_count: total } = await api.item.search(query)
+    const { favs } = this.props
 
     const nList = pickBy(list, {
       img: 'pics[0]',
@@ -59,7 +66,8 @@ export default class List extends Component {
       title: 'itemName',
       desc: 'brief',
       price: ({ price }) => (price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2)
+      market_price: ({ market_price }) => (market_price/100).toFixed(2),
+      is_fav: ({ item_id }) => Boolean(favs[item_id])
     })
 
     this.setState({

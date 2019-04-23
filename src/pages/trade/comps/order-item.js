@@ -8,7 +8,8 @@ export default class OrderItem extends Component {
   static defaultProps = {
     onClick: () => {},
     payType: '',
-    showExtra: true
+    showExtra: true,
+    info: null
   }
 
   static options = {
@@ -17,6 +18,8 @@ export default class OrderItem extends Component {
 
   render () {
     const { info, onClick, payType, showExtra, customFooter } = this.props
+    if (!info) return null
+
     const img = info.pic_path
       ? info.pic_path
       : Array.isArray(info.pics)
