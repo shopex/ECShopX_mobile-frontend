@@ -114,6 +114,8 @@ export default class TradeRefund extends Component {
           })
 
           let observable
+          // console.log(item, 117)
+          // debugger
           try {
             const blobImg = await resolveBlobFromFile(item.url, item.file.type)
             observable = qiniu.upload(blobImg, key, token, {}, {
@@ -153,14 +155,14 @@ export default class TradeRefund extends Component {
   handleSubmit = async () => {
     const { segTypes, curSegIdx, curReasonIdx, description } = this.state
     const reason = this.state.reason[curReasonIdx]
-    const aftersales_type = segTypes[curSegIdx].key
+    // const aftersales_type = segTypes[curSegIdx].key
     const evidence_pic = this.state.imgs.map(({ url }) => url)
     const { item_id, order_id, aftersales_bn } = this.$router.params
     const data = {
       item_id,
       order_id,
       aftersales_bn,
-      aftersales_type,
+      // aftersales_type,
       reason,
       description,
       evidence_pic
@@ -170,11 +172,11 @@ export default class TradeRefund extends Component {
     await api.aftersales[method](data)
 
     S.toast('操作成功')
-    setTimeout(() => {
-      Taro.redirectTo({
-        url: '/pages/trade/after-sale'
-      })
-    }, 700)
+    // setTimeout(() => {
+    //   Taro.redirectTo({
+    //     url: '/pages/trade/after-sale'
+    //   })
+    // }, 700)
   }
 
   handleClickReason = () => {
@@ -262,7 +264,7 @@ export default class TradeRefund extends Component {
             </View>
           </View>
         </View>
-        <View className='refund-btn'>提交</View>
+        <View className='refund-btn' onClick={this.handleSubmit}>提交</View>
         {/*<SpCell border={false}>
           <AtSegmentedControl
             onClick={this.handleChangeType}

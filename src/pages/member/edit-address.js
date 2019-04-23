@@ -26,6 +26,7 @@ export default class AddressIndex extends Component {
   }
 
   async fetch () {
+    Taro.showLoading()
     const { list } = await api.member.addressList()
     this.setState({
       listLength: list.length
@@ -64,10 +65,6 @@ export default class AddressIndex extends Component {
     })
     this.setState({
       areaList: [arrProvice, arrCity, arrCounty],
-    },()=>{
-      // this.setState({
-      //   multiIndex: [0, 0, 0]
-      // })
     })
 
     if (this.props.address === 'wx'){
@@ -86,6 +83,7 @@ export default class AddressIndex extends Component {
         info: query
       })
     }
+    Taro.hideLoading()
   }
 
   // 选定开户地区
