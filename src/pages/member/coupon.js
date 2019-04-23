@@ -132,16 +132,18 @@ export default class Coupon extends Component {
               list.map((item, idx) => {
                 return (
                   <View className='coupon-item' key={idx}>
-                    <View className={classNames('coupon-item__name')}>
-                      <View className='coupon-item___number'>￥<Text className='coupon-item___number_text'>{item.reduce_cost/100}</Text></View>
-                      <View className='radius-view radius-left-top'> </View>
-                      <View className='radius-view radius-left-bottom'> </View>
-                    </View>
-                    {/*{
+                    {/*<View className={classNames('coupon-item__name')}>*/}
+                      {/*<View className='coupon-item___number'>￥<Text className='coupon-item___number_text'>{item.reduce_cost/100}</Text></View>*/}
+                      {/*<View className='radius-view radius-left-top'> </View>*/}
+                      {/*<View className='radius-view radius-left-bottom'> </View>*/}
+                    {/*</View>*/}
+                    {
                       item.card_type === 'cash'
                         ? <View className={classNames('coupon-item__name', item.status === '2' ? 'coupon-item__name-not' : null)}>
                             <View className='coupon-item___number'>￥<Text className='coupon-item___number_text'>{item.reduce_cost/100}</Text></View>
                             <View className='coupon-item___info'>满{item.least_cost > 0 ? item.least_cost/100 : 0.01}可用</View>
+                            <View className='radius-view radius-left-top'> </View>
+                            <View className='radius-view radius-left-bottom'> </View>
                           </View>
                         : null
                     }
@@ -149,6 +151,8 @@ export default class Coupon extends Component {
                       item.card_type === 'gift'
                         ? <View className={classNames('coupon-item__name', item.status === '2' ? 'coupon-item__name-not' : null)}>
                             <View className='coupon-item___number'>兑换券</View>
+                            <View className='radius-view radius-left-top'> </View>
+                            <View className='radius-view radius-left-bottom'> </View>
                           </View>
                         : null
                     }
@@ -157,9 +161,11 @@ export default class Coupon extends Component {
                         ? <View className={classNames('coupon-item__name', item.status === '2' ? 'coupon-item__name-not' : null)}>
                             <View className='coupon-item___number'><Text className='coupon-item___number_text'>{(100-item.discount)/10}</Text>折</View>
                             <View className='coupon-item___info'>满{item.least_cost > 0 ? item.least_cost/100 : 0.01}可用</View>
+                            <View className='radius-view radius-left-top'> </View>
+                            <View className='radius-view radius-left-bottom'> </View>
                           </View>
                         : null
-                    }*/}
+                    }
                     <View className='coupon-item__content'>
                       <View className='coupon-item___description'>
                         <Text>{item.title}</Text>

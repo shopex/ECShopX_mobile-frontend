@@ -80,9 +80,17 @@
 				},
 				{
 					"id": -1,
+
 					"name": "地址",
 					"pathName": "pages/member/address",
 					"query": "",
+					"scene": null
+				},
+				{
+					"id": 7,
+					"name": "订单详情",
+					"pathName": "pages/trade/detail",
+					"query": "id=2668532000128945",
 					"scene": null
 				}
 			]

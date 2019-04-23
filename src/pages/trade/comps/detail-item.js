@@ -14,7 +14,7 @@ export default class DetailItem extends Component {
 
   static defaultProps = {
     // customHeader: false,
-    // customFooter: false,
+    customFooter: false,
     // customRender: false,
     // noHeader: false,
     // showActions: false,
@@ -28,12 +28,19 @@ export default class DetailItem extends Component {
   //   this.props.onClickBtn && this.props.onClickBtn(type, info)
   // }
 
+  handleClickAfterSale= (item) => {
+    const { info: { tid: order_id } } = this.props
+    console.log(item, order_id, 33)
+    Taro.navigateTo({
+      url: `/pages/trade/refund?order_id=${order_id}&item_id=${item.item_id}`
+    })
+  }
+
   render () {
     const { customHeader, customFooter, noHeader, onClick, info, showActions } = this.props
-
+    console.log(info, 40)
     return (
       <View className='detail-item'>
-
         {
           info.orders.map((item, idx) =>
             <View className='detail-item-good' key={idx}>
@@ -42,6 +49,14 @@ export default class DetailItem extends Component {
                 key={idx}
                 info={item}
               />
+              {!customFooter && info.status === 'TRADE_SUCCESS' && <View className='order-item__ft'>
+                <AtButton
+                  circle
+                  type='primary'
+                  size='small'
+                  onClick={this.handleClickAfterSale.bind(this, item)}
+                >申请售后</AtButton>
+              </View>}
             </View>
 
           )
