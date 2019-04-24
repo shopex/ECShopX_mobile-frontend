@@ -46,10 +46,17 @@ export default class AddressIndex extends Component {
   }
 
   handleClickChecked = (index) => {
-    this.setState({
-      isItemChecked: !this.state.isItemChecked,
-      ItemIndex: index
-    })
+    if(index === this.state.ItemIndex) {
+      this.setState({
+        isItemChecked: !this.state.isItemChecked,
+        ItemIndex: index
+      })
+    } else {
+      this.setState({
+        isItemChecked: true,
+        ItemIndex: index
+      })
+    }
   }
 
   handleChangeDefault = async (item) => {
@@ -88,8 +95,7 @@ export default class AddressIndex extends Component {
   }
 
   render () {
-    const { ItemIndex, isItemChecked } = this.state
-
+    const { ItemIndex, isItemChecked, isChoose } = this.state
     return (
       <View className='page-address-index'>
         {/*<AddressList*/}
