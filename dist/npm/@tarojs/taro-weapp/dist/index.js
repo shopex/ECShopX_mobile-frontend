@@ -189,14 +189,14 @@ var INFINITY = Infinity;
 /** `Object#toString` result references. */
 
 var funcTag = '[object Function]',
-  genTag = '[object GeneratorFunction]',
-  symbolTag = '[object Symbol]';
+    genTag = '[object GeneratorFunction]',
+    symbolTag = '[object Symbol]';
 /** Used to match property names within property paths. */
 
 var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-  reIsPlainProp = /^\w*$/,
-  reLeadingDot = /^\./,
-  rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+    reIsPlainProp = /^\w*$/,
+    reLeadingDot = /^\./,
+    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 /**
  * Used to match `RegExp`
  * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
@@ -260,8 +260,8 @@ function isHostObject(value) {
 /** Used for built-in method references. */
 
 var arrayProto = Array.prototype,
-  funcProto = Function.prototype,
-  objectProto = Object.prototype;
+    funcProto = Function.prototype,
+    objectProto = Object.prototype;
 /** Used to detect overreaching core-js shims. */
 
 var coreJsData = root['__core-js_shared__'];
@@ -290,15 +290,15 @@ var reIsNative = RegExp('^' + funcToString.call(hasOwnProperty).replace(reRegExp
 /** Built-in value references. */
 
 var _Symbol = root.Symbol,
-  splice = arrayProto.splice;
+    splice = arrayProto.splice;
 /* Built-in method references that are verified to be native. */
 
 var Map$1 = getNative(root, 'Map'),
-  nativeCreate = getNative(Object, 'create');
+    nativeCreate = getNative(Object, 'create');
 /** Used to convert symbols to primitives and strings. */
 
 var symbolProto = _Symbol ? _Symbol.prototype : undefined,
-  symbolToString = symbolProto ? symbolProto.toString : undefined;
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
 /**
  * Creates a hash object.
  *
@@ -309,7 +309,7 @@ var symbolProto = _Symbol ? _Symbol.prototype : undefined,
 
 function Hash(entries) {
   var index = -1,
-    length = entries ? entries.length : 0;
+      length = entries ? entries.length : 0;
   this.clear();
 
   while (++index < length) {
@@ -409,7 +409,7 @@ Hash.prototype.set = hashSet;
 
 function ListCache(entries) {
   var index = -1,
-    length = entries ? entries.length : 0;
+      length = entries ? entries.length : 0;
   this.clear();
 
   while (++index < length) {
@@ -440,7 +440,7 @@ function listCacheClear() {
 
 function listCacheDelete(key) {
   var data = this.__data__,
-    index = assocIndexOf(data, key);
+      index = assocIndexOf(data, key);
 
   if (index < 0) {
     return false;
@@ -468,7 +468,7 @@ function listCacheDelete(key) {
 
 function listCacheGet(key) {
   var data = this.__data__,
-    index = assocIndexOf(data, key);
+      index = assocIndexOf(data, key);
   return index < 0 ? undefined : data[index][1];
 }
 /**
@@ -497,7 +497,7 @@ function listCacheHas(key) {
 
 function listCacheSet(key, value) {
   var data = this.__data__,
-    index = assocIndexOf(data, key);
+      index = assocIndexOf(data, key);
 
   if (index < 0) {
     data.push([key, value]);
@@ -524,7 +524,7 @@ ListCache.prototype.set = listCacheSet;
 
 function MapCache(entries) {
   var index = -1,
-    length = entries ? entries.length : 0;
+      length = entries ? entries.length : 0;
   this.clear();
 
   while (++index < length) {
@@ -640,7 +640,7 @@ function assocIndexOf(array, key) {
 function baseGet(object, path) {
   path = isKey(path, object) ? [path] : castPath(path);
   var index = 0,
-    length = path.length;
+      length = path.length;
 
   while (object != null && index < length) {
     object = object[toKey(path[index++])];
@@ -880,8 +880,8 @@ function memoize(func, resolver) {
 
   var memoized = function memoized() {
     var args = arguments,
-      key = resolver ? resolver.apply(this, args) : args[0],
-      cache = memoized.cache;
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
 
     if (cache.has(key)) {
       return cache.get(key);
@@ -1341,204 +1341,202 @@ function getOriginal(item) {
 }
 
 var Events =
-  /*#__PURE__*/
-  function () {
-    function Events(opts) {
-      _classCallCheck(this, Events);
+/*#__PURE__*/
+function () {
+  function Events(opts) {
+    _classCallCheck(this, Events);
 
-      if (typeof opts !== 'undefined' && opts.callbacks) {
-        this.callbacks = opts.callbacks;
-      } else {
-        this.callbacks = {};
-      }
+    if (typeof opts !== 'undefined' && opts.callbacks) {
+      this.callbacks = opts.callbacks;
+    } else {
+      this.callbacks = {};
     }
+  }
 
-    _createClass(Events, [{
-      key: "on",
-      value: function on(events, callback, context) {
-        var calls, event, node, tail, list;
+  _createClass(Events, [{
+    key: "on",
+    value: function on(events, callback, context) {
+      var calls, event, node, tail, list;
 
-        if (!callback) {
-          return this;
-        }
-
-        events = events.split(Events.eventSplitter);
-        calls = this.callbacks;
-
-        while (event = events.shift()) {
-          list = calls[event];
-          node = list ? list.tail : {};
-          node.next = tail = {};
-          node.context = context;
-          node.callback = callback;
-          calls[event] = {
-            tail: tail,
-            next: list ? list.next : node
-          };
-        }
-
+      if (!callback) {
         return this;
       }
-    }, {
-      key: "once",
-      value: function once(events, callback, context) {
-        var _this = this;
 
-        var wrapper = function wrapper() {
-          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-          }
+      events = events.split(Events.eventSplitter);
+      calls = this.callbacks;
 
-          callback.apply(_this, args);
-
-          _this.off(events, wrapper, context);
+      while (event = events.shift()) {
+        list = calls[event];
+        node = list ? list.tail : {};
+        node.next = tail = {};
+        node.context = context;
+        node.callback = callback;
+        calls[event] = {
+          tail: tail,
+          next: list ? list.next : node
         };
+      }
 
-        this.on(events, wrapper, context);
+      return this;
+    }
+  }, {
+    key: "once",
+    value: function once(events, callback, context) {
+      var _this = this;
+
+      var wrapper = function wrapper() {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        callback.apply(_this, args);
+
+        _this.off(events, wrapper, context);
+      };
+
+      this.on(events, wrapper, context);
+      return this;
+    }
+  }, {
+    key: "off",
+    value: function off(events, callback, context) {
+      var event, calls, node, tail, cb, ctx;
+
+      if (!(calls = this.callbacks)) {
         return this;
       }
-    }, {
-      key: "off",
-      value: function off(events, callback, context) {
-        var event, calls, node, tail, cb, ctx;
 
-        if (!(calls = this.callbacks)) {
-          return this;
+      if (!(events || callback || context)) {
+        delete this.callbacks;
+        return this;
+      }
+
+      events = events ? events.split(Events.eventSplitter) : Object.keys(calls);
+
+      while (event = events.shift()) {
+        node = calls[event];
+        delete calls[event];
+
+        if (!node || !(callback || context)) {
+          continue;
         }
 
-        if (!(events || callback || context)) {
-          delete this.callbacks;
-          return this;
-        }
+        tail = node.tail;
 
-        events = events ? events.split(Events.eventSplitter) : Object.keys(calls);
+        while ((node = node.next) !== tail) {
+          cb = node.callback;
+          ctx = node.context;
 
-        while (event = events.shift()) {
-          node = calls[event];
-          delete calls[event];
-
-          if (!node || !(callback || context)) {
-            continue;
+          if (callback && cb !== callback || context && ctx !== context) {
+            this.on(event, cb, ctx);
           }
+        }
+      }
 
+      return this;
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(events) {
+      var event, node, calls, tail, rest;
+
+      if (!(calls = this.callbacks)) {
+        return this;
+      }
+
+      events = events.split(Events.eventSplitter);
+      rest = [].slice.call(arguments, 1);
+
+      while (event = events.shift()) {
+        if (node = calls[event]) {
           tail = node.tail;
 
           while ((node = node.next) !== tail) {
-            cb = node.callback;
-            ctx = node.context;
-
-            if (callback && cb !== callback || context && ctx !== context) {
-              this.on(event, cb, ctx);
-            }
+            node.callback.apply(node.context || this, rest);
           }
         }
-
-        return this;
       }
-    }, {
-      key: "trigger",
-      value: function trigger(events) {
-        var event, node, calls, tail, rest;
 
-        if (!(calls = this.callbacks)) {
-          return this;
-        }
+      return this;
+    }
+  }]);
 
-        events = events.split(Events.eventSplitter);
-        rest = [].slice.call(arguments, 1);
-
-        while (event = events.shift()) {
-          if (node = calls[event]) {
-            tail = node.tail;
-
-            while ((node = node.next) !== tail) {
-              node.callback.apply(node.context || this, rest);
-            }
-          }
-        }
-
-        return this;
-      }
-    }]);
-
-    return Events;
-  }();
+  return Events;
+}();
 
 Events.eventSplitter = /\s+/;
 
 function render() {}
 
 var Chain =
-  /*#__PURE__*/
-  function () {
-    function Chain(requestParams) {
-      var interceptors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-      var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+/*#__PURE__*/
+function () {
+  function Chain(requestParams) {
+    var interceptors = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
-      _classCallCheck(this, Chain);
+    _classCallCheck(this, Chain);
 
-      this.index = index;
+    this.index = index;
+    this.requestParams = requestParams;
+    this.interceptors = interceptors;
+  }
+
+  _createClass(Chain, [{
+    key: "proceed",
+    value: function proceed(requestParams) {
       this.requestParams = requestParams;
-      this.interceptors = interceptors;
+
+      if (this.index >= this.interceptors.length) {
+        throw new Error('chain 参数错误, 请勿直接修改 request.chain');
+      }
+
+      var nextInterceptor = this._getNextInterceptor();
+
+      var nextChain = this._getNextChain();
+
+      return nextInterceptor(nextChain);
     }
+  }, {
+    key: "_getNextInterceptor",
+    value: function _getNextInterceptor() {
+      return this.interceptors[this.index];
+    }
+  }, {
+    key: "_getNextChain",
+    value: function _getNextChain() {
+      return new Chain(this.requestParams, this.interceptors, this.index + 1);
+    }
+  }]);
 
-    _createClass(Chain, [{
-      key: "proceed",
-      value: function proceed(requestParams) {
-        this.requestParams = requestParams;
-
-        if (this.index >= this.interceptors.length) {
-          throw new Error('chain 参数错误, 请勿直接修改 request.chain');
-        }
-
-        var nextInterceptor = this._getNextInterceptor();
-
-        var nextChain = this._getNextChain();
-
-        return nextInterceptor(nextChain).catch(function (err) {
-          return Promise.reject(err);
-        });
-      }
-    }, {
-      key: "_getNextInterceptor",
-      value: function _getNextInterceptor() {
-        return this.interceptors[this.index];
-      }
-    }, {
-      key: "_getNextChain",
-      value: function _getNextChain() {
-        return new Chain(this.requestParams, this.interceptors, this.index + 1);
-      }
-    }]);
-
-    return Chain;
-  }();
+  return Chain;
+}();
 
 var Link =
-  /*#__PURE__*/
-  function () {
-    function Link(interceptor) {
-      _classCallCheck(this, Link);
+/*#__PURE__*/
+function () {
+  function Link(interceptor) {
+    _classCallCheck(this, Link);
 
-      this.taroInterceptor = interceptor;
-      this.chain = new Chain();
+    this.taroInterceptor = interceptor;
+    this.chain = new Chain();
+  }
+
+  _createClass(Link, [{
+    key: "request",
+    value: function request(requestParams) {
+      this.chain.interceptors.push(this.taroInterceptor);
+      return this.chain.proceed(_objectSpread({}, requestParams));
     }
+  }, {
+    key: "addInterceptor",
+    value: function addInterceptor(interceptor) {
+      this.chain.interceptors.push(interceptor);
+    }
+  }]);
 
-    _createClass(Link, [{
-      key: "request",
-      value: function request(requestParams) {
-        this.chain.interceptors.push(this.taroInterceptor);
-        return this.chain.proceed(_objectSpread({}, requestParams));
-      }
-    }, {
-      key: "addInterceptor",
-      value: function addInterceptor(interceptor) {
-        this.chain.interceptors.push(interceptor);
-      }
-    }]);
-
-    return Link;
-  }();
+  return Link;
+}();
 
 function timeoutInterceptor(chain) {
   var requestParams = chain.requestParams;
@@ -1551,17 +1549,14 @@ function timeoutInterceptor(chain) {
       if (!timeout) return;
       clearTimeout(timeout);
       resolve(res);
-    }).catch(function (err) {
-      timeout && clearTimeout(timeout);
-      reject(err);
     });
   });
 }
 function logInterceptor(chain) {
   var requestParams = chain.requestParams;
   var method = requestParams.method,
-    data = requestParams.data,
-    url = requestParams.url;
+      data = requestParams.data,
+      url = requestParams.url;
   console.log("http ".concat(method || 'GET', " --> ").concat(url, " data: "), data);
   return chain.proceed(requestParams).then(function (res) {
     console.log("http <-- ".concat(url, " result:"), res);
@@ -1832,13 +1827,13 @@ var otherApis = {
 
 function initPxTransform(config) {
   var _config$designWidth = config.designWidth,
-    designWidth = _config$designWidth === undefined ? 700 : _config$designWidth,
-    _config$deviceRatio = config.deviceRatio,
-    deviceRatio = _config$deviceRatio === undefined ? {
-      '640': 1.17,
-      '750': 1,
-      '828': 0.905
-    } : _config$deviceRatio;
+      designWidth = _config$designWidth === undefined ? 700 : _config$designWidth,
+      _config$deviceRatio = config.deviceRatio,
+      deviceRatio = _config$deviceRatio === undefined ? {
+    '640': 1.17,
+    '750': 1,
+    '828': 0.905
+  } : _config$deviceRatio;
   this.config = this.config || {};
   this.config.designWidth = designWidth;
   this.config.deviceRatio = deviceRatio;
@@ -2219,7 +2214,7 @@ var factoryWithTypeCheckers = function factoryWithTypeCheckers(isValidElement, t
           var cacheKey = componentName + ':' + propName;
 
           if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
-            manualPropTypeWarningCount < 3) {
+          manualPropTypeWarningCount < 3) {
             printWarning$1("You are manually calling a React.PropTypes validation function for the `" + propFullName + '` prop on `' + componentName + '`. This is deprecated ' + 'and will throw in the standalone `prop-types` package. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.');
             manualPropTypeCallCache[cacheKey] = true;
             manualPropTypeWarningCount++;
@@ -2789,7 +2784,7 @@ var symToStringTag = _Symbol$1 ? _Symbol$1.toStringTag : undefined;
 
 function getRawTag(value) {
   var isOwn = hasOwnProperty$2.call(value, symToStringTag),
-    tag = value[symToStringTag];
+      tag = value[symToStringTag];
 
   try {
     value[symToStringTag] = undefined;
@@ -2837,7 +2832,7 @@ var _objectToString = objectToString$1;
 /** `Object#toString` result references. */
 
 var nullTag = '[object Null]',
-  undefinedTag = '[object Undefined]';
+    undefinedTag = '[object Undefined]';
 /** Built-in value references. */
 
 var symToStringTag$1 = _Symbol$1 ? _Symbol$1.toStringTag : undefined;
@@ -2916,7 +2911,7 @@ var objectTag = '[object Object]';
 /** Used for built-in method references. */
 
 var funcProto$1 = Function.prototype,
-  objectProto$3 = Object.prototype;
+    objectProto$3 = Object.prototype;
 /** Used to resolve the decompiled source of functions. */
 
 var funcToString$1 = funcProto$1.toString;
@@ -3712,7 +3707,7 @@ var isDEV = typeof process === 'undefined' || !process.env || true;
 var privatePropKeyName = '_triggerObserer';
 function updateComponent(component) {
   var props = component.props,
-    __propTypes = component.__propTypes;
+      __propTypes = component.__propTypes;
 
   if (isDEV && __propTypes) {
     var componentName = component.constructor.name || component.constructor.toString().match(/^function\s*([^\s(]+)/)[1];
@@ -3765,14 +3760,14 @@ function updateComponent(component) {
 
 function doUpdate(component, prevProps, prevState) {
   var state = component.state,
-    _component$props = component.props,
-    props = _component$props === undefined ? {} : _component$props;
+      _component$props = component.props,
+      props = _component$props === undefined ? {} : _component$props;
   var data = state || {};
 
   if (component._createData) {
     // 返回null或undefined则保持不变
-    var isRunLoopRef = !component.__mounted;
-    data = component._createData(state, props, isRunLoopRef) || data;
+    var runLoopRef = !component.__mounted;
+    data = component._createData(state, props, runLoopRef) || data;
   }
 
   var privatePropKeyVal = component.$scope.data[privatePropKeyName] || false;
@@ -3875,198 +3870,198 @@ function rerender() {
 var PRELOAD_DATA_KEY$1 = 'preload';
 
 var BaseComponent =
-  /*#__PURE__*/
-  function () {
-    // _createData的时候生成，小程序中通过data.__createData访问
-    // this.props,小程序中通过data.__props访问
-    // 会在componentDidMount后置为true
-    function BaseComponent() {
-      var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var isPage = arguments.length > 1 ? arguments[1] : undefined;
+/*#__PURE__*/
+function () {
+  // _createData的时候生成，小程序中通过data.__createData访问
+  // this.props,小程序中通过data.__props访问
+  // 会在componentDidMount后置为true
+  function BaseComponent() {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var isPage = arguments.length > 1 ? arguments[1] : undefined;
 
-      _classCallCheck(this, BaseComponent);
+    _classCallCheck(this, BaseComponent);
 
-      _defineProperty(this, "__computed", {});
+    _defineProperty(this, "__computed", {});
 
-      _defineProperty(this, "__props", {});
+    _defineProperty(this, "__props", {});
 
-      _defineProperty(this, "__isReady", false);
+    _defineProperty(this, "__isReady", false);
 
-      _defineProperty(this, "__mounted", false);
+    _defineProperty(this, "__mounted", false);
 
-      _defineProperty(this, "nextProps", {});
+    _defineProperty(this, "nextProps", {});
 
-      _defineProperty(this, "_dirty", true);
+    _defineProperty(this, "_dirty", true);
 
-      _defineProperty(this, "_disable", true);
+    _defineProperty(this, "_disable", true);
 
-      _defineProperty(this, "_isForceUpdate", false);
+    _defineProperty(this, "_isForceUpdate", false);
 
-      _defineProperty(this, "_pendingStates", []);
+    _defineProperty(this, "_pendingStates", []);
 
-      _defineProperty(this, "_pendingCallbacks", []);
+    _defineProperty(this, "_pendingCallbacks", []);
 
-      _defineProperty(this, "$componentType", '');
+    _defineProperty(this, "$componentType", '');
 
-      _defineProperty(this, "$router", {
-        params: {},
-        path: ''
-      });
+    _defineProperty(this, "$router", {
+      params: {},
+      path: ''
+    });
 
-      this.state = {};
-      this.props = props;
-      this.$componentType = isPage ? 'PAGE' : 'COMPONENT';
-      this.isTaroComponent = this.$componentType && this.$router && this._pendingStates;
+    this.state = {};
+    this.props = props;
+    this.$componentType = isPage ? 'PAGE' : 'COMPONENT';
+    this.isTaroComponent = this.$componentType && this.$router && this._pendingStates;
+  }
+
+  _createClass(BaseComponent, [{
+    key: "_constructor",
+    value: function _constructor(props) {
+      this.props = props || {};
     }
-
-    _createClass(BaseComponent, [{
-      key: "_constructor",
-      value: function _constructor(props) {
-        this.props = props || {};
+  }, {
+    key: "_init",
+    value: function _init(scope) {
+      this.$scope = scope;
+    }
+  }, {
+    key: "setState",
+    value: function setState(state, callback) {
+      if (state) {
+        (this._pendingStates = this._pendingStates || []).push(state);
       }
-    }, {
-      key: "_init",
-      value: function _init(scope) {
-        this.$scope = scope;
+
+      if (isFunction$1(callback)) {
+        (this._pendingCallbacks = this._pendingCallbacks || []).push(callback);
       }
-    }, {
-      key: "setState",
-      value: function setState(state, callback) {
-        if (state) {
-          (this._pendingStates = this._pendingStates || []).push(state);
-        }
 
-        if (isFunction$1(callback)) {
-          (this._pendingCallbacks = this._pendingCallbacks || []).push(callback);
-        }
-
-        if (!this._disable) {
-          enqueueRender(this);
-        }
+      if (!this._disable) {
+        enqueueRender(this);
       }
-    }, {
-      key: "getState",
-      value: function getState() {
-        var _this = this;
+    }
+  }, {
+    key: "getState",
+    value: function getState() {
+      var _this = this;
 
-        var _pendingStates = this._pendingStates,
+      var _pendingStates = this._pendingStates,
           state = this.state,
           props = this.props;
-        var stateClone = Object.assign({}, state);
-        delete stateClone.__data;
+      var stateClone = Object.assign({}, state);
+      delete stateClone.__data;
 
-        if (!_pendingStates.length) {
-          return stateClone;
-        }
-
-        var queue = _pendingStates.concat();
-
-        this._pendingStates.length = 0;
-        queue.forEach(function (nextState) {
-          if (isFunction$1(nextState)) {
-            nextState = nextState.call(_this, stateClone, props);
-          }
-
-          Object.assign(stateClone, nextState);
-        });
+      if (!_pendingStates.length) {
         return stateClone;
       }
-    }, {
-      key: "forceUpdate",
-      value: function forceUpdate(callback) {
-        if (isFunction$1(callback)) {
-          (this._pendingCallbacks = this._pendingCallbacks || []).push(callback);
+
+      var queue = _pendingStates.concat();
+
+      this._pendingStates.length = 0;
+      queue.forEach(function (nextState) {
+        if (isFunction$1(nextState)) {
+          nextState = nextState.call(_this, stateClone, props);
         }
 
-        this._isForceUpdate = true;
-        updateComponent(this);
+        Object.assign(stateClone, nextState);
+      });
+      return stateClone;
+    }
+  }, {
+    key: "forceUpdate",
+    value: function forceUpdate(callback) {
+      if (isFunction$1(callback)) {
+        (this._pendingCallbacks = this._pendingCallbacks || []).push(callback);
       }
-    }, {
-      key: "$preload",
-      value: function $preload(key, value) {
-        var preloadData = cacheDataGet(PRELOAD_DATA_KEY$1) || {};
 
-        if (_typeof(key) === 'object') {
-          for (var k in key) {
-            preloadData[k] = key[k];
-          }
-        } else {
-          preloadData[key] = value;
+      this._isForceUpdate = true;
+      updateComponent(this);
+    }
+  }, {
+    key: "$preload",
+    value: function $preload(key, value) {
+      var preloadData = cacheDataGet(PRELOAD_DATA_KEY$1) || {};
+
+      if (_typeof(key) === 'object') {
+        for (var k in key) {
+          preloadData[k] = key[k];
         }
-
-        cacheDataSet(PRELOAD_DATA_KEY$1, preloadData);
-      } // 会被匿名函数调用
-
-    }, {
-      key: "__triggerPropsFn",
-      value: function __triggerPropsFn(key, args) {
-        var keyChain = key.split('.');
-        var reduxFnPrefix = '__event_';
-        var reduxFnName = reduxFnPrefix + keyChain.shift(); // redux标识过的方法，直接调用
-
-        if (reduxFnName in this) {
-          var scope = args.shift();
-          var fn;
-
-          if (keyChain.length > 0) {
-            fn = get(this[reduxFnName], keyChain.join('.'));
-          } else {
-            fn = this[reduxFnName];
-          }
-
-          fn.apply(scope, args);
-        } else {
-          // 普通的
-          var keyLower = key.toLocaleLowerCase();
-          var detail = {
-            __isCustomEvt: true,
-            __arguments: args
-          };
-
-          if (args.length > 0) {
-            detail.value = args.slice(1);
-          }
-
-          this.$scope.triggerEvent(keyLower, detail);
-        }
+      } else {
+        preloadData[key] = value;
       }
-    }]);
 
-    return BaseComponent;
-  }();
+      cacheDataSet(PRELOAD_DATA_KEY$1, preloadData);
+    } // 会被匿名函数调用
+
+  }, {
+    key: "__triggerPropsFn",
+    value: function __triggerPropsFn(key, args) {
+      var keyChain = key.split('.');
+      var reduxFnPrefix = '__event_';
+      var reduxFnName = reduxFnPrefix + keyChain.shift(); // redux标识过的方法，直接调用
+
+      if (reduxFnName in this) {
+        var scope = args.shift();
+        var fn;
+
+        if (keyChain.length > 0) {
+          fn = get(this[reduxFnName], keyChain.join('.'));
+        } else {
+          fn = this[reduxFnName];
+        }
+
+        fn.apply(scope, args);
+      } else {
+        // 普通的
+        var keyLower = key.toLocaleLowerCase();
+        var detail = {
+          __isCustomEvt: true,
+          __arguments: args
+        };
+
+        if (args.length > 0) {
+          detail.value = args.slice(1);
+        }
+
+        this.$scope.triggerEvent(keyLower, detail);
+      }
+    }
+  }]);
+
+  return BaseComponent;
+}();
 
 var PureComponent =
-  /*#__PURE__*/
-  function (_Component) {
-    _inherits(PureComponent, _Component);
+/*#__PURE__*/
+function (_Component) {
+  _inherits(PureComponent, _Component);
 
-    function PureComponent() {
-      var _getPrototypeOf2;
+  function PureComponent() {
+    var _getPrototypeOf2;
 
-      var _this;
+    var _this;
 
-      _classCallCheck(this, PureComponent);
+    _classCallCheck(this, PureComponent);
 
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(PureComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));
-
-      _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "isPureComponent", true);
-
-      return _this;
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
     }
 
-    _createClass(PureComponent, [{
-      key: "shouldComponentUpdate",
-      value: function shouldComponentUpdate(nextProps, nextState) {
-        return !shallowEqual(this.props, nextProps) || !shallowEqual(this.state, nextState);
-      }
-    }]);
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(PureComponent)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
-    return PureComponent;
-  }(BaseComponent);
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "isPureComponent", true);
+
+    return _this;
+  }
+
+  _createClass(PureComponent, [{
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      return !shallowEqual(this.props, nextProps) || !shallowEqual(this.state, nextState);
+    }
+  }]);
+
+  return PureComponent;
+}(BaseComponent);
 
 function createApp(AppClass) {
   var app = new AppClass();
@@ -4333,8 +4328,8 @@ function processApis(taro) {
 
 function pxTransform(size) {
   var _this$config = this.config,
-    designWidth = _this$config.designWidth,
-    deviceRatio = _this$config.deviceRatio;
+      designWidth = _this$config.designWidth,
+      deviceRatio = _this$config.deviceRatio;
 
   if (!(designWidth in deviceRatio)) {
     throw new Error("deviceRatio \u914D\u7F6E\u4E2D\u4E0D\u5B58\u5728 ".concat(designWidth, " \u7684\u8BBE\u7F6E\uFF01"));
@@ -4345,7 +4340,7 @@ function pxTransform(size) {
 
 function canIUseWebp() {
   var _wx$getSystemInfoSync = wx.getSystemInfoSync(),
-    platform = _wx$getSystemInfoSync.platform;
+      platform = _wx$getSystemInfoSync.platform;
 
   var platformLower = platform.toLowerCase();
 

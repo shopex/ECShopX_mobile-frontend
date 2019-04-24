@@ -7,6 +7,7 @@ import req from '@/api/req'
 import { log, pickBy } from '@/utils'
 import S from '@/spx'
 import * as qiniu from 'qiniu-js'
+import qiniuUploader from '@/utils/qiniuUploader'
 
 import './refund.scss'
 import DetailItem from "./detail";
@@ -35,7 +36,7 @@ export default class TradeRefund extends Component {
   }
 
   componentDidMount () {
-    this.fetch()
+    // this.fetch()
   }
 
   async fetch () {
@@ -86,8 +87,45 @@ export default class TradeRefund extends Component {
     })
   }
 
+  /*getUploadToken = (cb) => {
+    http.action(api.imageUpload.token, JSON.parse(JSON.stringify(this.tokenParams))).then(res => {
+      if(res.data.data) {
+        this.qiniuOptions = {
+          region: res.data.data.region, // 华东区
+          uptoken: res.data.data.token,
+          domain: res.data.data.domain,
+          key: res.data.data.key,
+          shouldUseQiniuFileName: false,
+        };
+        qiniuUploader.init(this.qiniuOptions);
+        cb&&cb();
+      } else {
+        wx.showModal({
+          content: res.data.error.message ,
+          showCancel: false
+        })
+        return
+      }
+      this.$apply()
+    })
+  }*/
+
   handleImageChange = async (data, type) => {
+
+    /*Taro.chooseImage({
+      count: 3,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['album', 'camera'],
+      success(res) {
+        // tempFilePath可以作为img标签的src属性显示图片
+        const tempFilePaths = res.tempFilePaths
+        // data.url = tempFilePaths
+        console.log(data, tempFilePaths, 99)
+      }
+    })*/
+
     if (type === 'remove') {
+      console.log(222)
       this.setState({
         imgs: data
       })
@@ -99,6 +137,45 @@ export default class TradeRefund extends Component {
       S.toast('最多上传3张图片')
     }
     const imgFiles = data.slice(0, 3)
+    /*let promises = []
+
+    for (let item of imgFiles) {
+      console.log(item, 143)
+      const promise = new Promise(async (resolve, reject) => {
+        if (!item.file) {
+          resolve(item)
+        } else {
+          const filename = item.url.split('//tmp')[1]
+          const { region, token, key, domain } = await req.get('/espier/image_upload_token', {
+            filesystem: 'qiniu',
+            filetype: 'aftersales',
+            filename
+          })
+
+          const query = {
+            region, // 华东区
+            uptoken: token,
+            domain,
+            key,
+            shouldUseQiniuFileName: false,
+          }
+
+          qiniuUploader.upload(item.url, (res) => {
+            resolve({
+              url: res.imageURL
+            })
+          }, '', query)
+        }
+      })
+      promises.push(promise)
+    }
+    const results = await Promise.all(promises)
+    log.debug('[qiniu uploaded] results: ', promises, results)
+
+    this.setState({
+      imgs: results
+    })*/
+
     let promises = []
 
     for (let item of imgFiles) {
@@ -112,30 +189,47 @@ export default class TradeRefund extends Component {
             filetype: 'aftersales',
             filename
           })
+          if (process.env.TARO_ENV === 'weapp') {
+            const query = {
+              region,
+              uptoken: token,
+              domain,
+              key,
+              shouldUseQiniuFileName: false,
+            }
+            try {
+              qiniuUploader.upload(item.url, (res) => {
+                resolve({
+                  url: res.imageURL
+                })
+              }, '', query)
+            } catch (e) {
+              console.log(e)
+            }
+          } else {
+            let observable
+            try {
+              const blobImg = await resolveBlobFromFile(item.url, item.file.type)
+              observable = qiniu.upload(blobImg, key, token, {}, {
+                region: qiniu.region[region]
+              })
+            } catch (e) {
+              console.log(e)
+            }
 
-          let observable
-          // console.log(item, 117)
-          // debugger
-          try {
-            const blobImg = await resolveBlobFromFile(item.url, item.file.type)
-            observable = qiniu.upload(blobImg, key, token, {}, {
-              region: qiniu.region[region]
+            observable.subscribe({
+              next (res) {},
+              error (err) {
+                reject(err)
+              },
+              complete (res) {
+                resolve({
+                  url: `${domain}/${res.key}`
+                })
+              }
             })
-          } catch (e) {
-            console.log(e)
           }
 
-          observable.subscribe({
-            next (res) {},
-            error (err) {
-              reject(err)
-            },
-            complete (res) {
-              resolve({
-                url: `${domain}/${res.key}`
-              })
-            }
-          })
         }
       })
       promises.push(promise)
@@ -196,7 +290,7 @@ export default class TradeRefund extends Component {
   render () {
     const { reason, curSegIdx, curReasonIdx, segTypes, description, imgs, isRefundReason, refundReasonIndex, isSameReason } = this.state
     // const segTypeVals = segTypes.map(t => t.value)
-
+    console.log(imgs, 319)
     return (
       <View className='page-trade-refund'>
         {/*<View className='trade-detail-goods'>
