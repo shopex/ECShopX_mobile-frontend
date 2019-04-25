@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 // import AddressList from '@/components/new-address/address'
 import { connect } from "@tarojs/redux";
-import { SpToast } from '@/components'
+import { SpToast, SpCell } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 
@@ -103,6 +103,12 @@ export default class AddressIndex extends Component {
     }, 700)
   }
 
+  wxAddress = () => {
+    Taro.navigateTo({
+      url: `/pages/member/edit-address?isWechatAddress=true`
+    })
+  }
+
   render () {
     const { ItemIndex, isItemChecked, isChoose } = this.state
     return (
@@ -110,6 +116,17 @@ export default class AddressIndex extends Component {
         {/*<AddressList*/}
           {/*paths={this.$router.params.paths}*/}
         {/*/>*/}
+        {
+          process.env.TARO_ENV === 'weapp'
+            ? <SpCell
+                isLink
+                iconPrefix='sp-icon'
+                icon='weixin'
+                title='获取微信收货地址'
+                onClick={this.wxAddress.bind(this)}
+              />
+            : null
+        }
         <View className='member-address-list'>
           {
             list.map((item, index) => {

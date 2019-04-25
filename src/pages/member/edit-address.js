@@ -67,7 +67,7 @@ export default class AddressIndex extends Component {
       areaList: [arrProvice, arrCity, arrCounty],
     })
 
-    if (this.props.address === 'wx'){
+    if (this.$router.params.isWechatAddress){
       const res = await Taro.chooseAddress()
       const query = {
         province: res.provinceName,
@@ -264,7 +264,7 @@ export default class AddressIndex extends Component {
               <View className='picker'>
                 <View className='picker__title'>所在区域</View>
                 {
-                  info.address_id
+                  info.address_id || (this.$router.params.isWechatAddress && info.province)
                     ? `${info.province}${info.city}${info.county}`
                     : <View>
                       {

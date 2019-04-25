@@ -95,15 +95,15 @@ export default class Coupon extends Component {
     })
   }
 
-  handleClickChecked = (id) => {
+  /*handleClickChecked = (id) => {
     this.setState({
       curId: id
     })
-  }
+  }*/
 
 
   render () {
-    const { curTabIdx, tabList, list, page, curId } = this.state
+    const { curTabIdx, tabList, list, page } = this.state
 
     return (
       <View className='coupon-list'>
