@@ -40,7 +40,6 @@ export default class TradeRefundSendback extends Component {
   }
 
   handleChange = (name, val) => {
-    console.log(name, val)
     this.setState({
       [name]: val
     })
@@ -78,7 +77,6 @@ export default class TradeRefundSendback extends Component {
 
   render () {
     const { express, logi_no, curExpressIdx } = this.state
-    console.log(logi_no)
 
     return (
       <View className='page-refund-sendback'>

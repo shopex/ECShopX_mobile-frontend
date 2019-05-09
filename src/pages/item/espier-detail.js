@@ -43,6 +43,8 @@ export default class Detail extends Component {
       cartCount: '',
       showBuyPanel: false,
       buyPanelType: null,
+      specImgsDict: {},
+      curSku: null,
       detailTabs: [
         { title: '商品详情' },
         { title: '商品参数' },
@@ -125,6 +127,7 @@ export default class Detail extends Component {
     }
 
     info.is_fav = Boolean(this.props.favs[info.item_id])
+    const specImgsDict = this.resolveSpecImgs(info.item_spec_desc)
 
     this.setState({
       info,
@@ -132,9 +135,25 @@ export default class Detail extends Component {
       marketing,
       timer,
       hasStock,
-      startSecKill
+      startSecKill,
+      specImgsDict
     })
     log.debug('fetch: done', info)
+  }
+
+  resolveSpecImgs (specs) {
+    const ret = {}
+
+    //只有一个图片类型规格
+    specs.some(item => {
+      if (item.is_image) {
+        item.spec_values.forEach(v => {
+          ret[v.spec_value_id] = v.spec_image_url
+        })
+      }
+    })
+
+    return ret
   }
 
   handleMenuClick = async (type) => {
@@ -173,6 +192,12 @@ export default class Detail extends Component {
     }
   }
 
+  handleSkuChange = (curSku) => {
+    this.setState({
+      curSku
+    })
+  }
+
   handleBuyBarClick = (type) => {
     if (!S.getAuthToken()) {
       Taro.showToast({
@@ -195,7 +220,7 @@ export default class Detail extends Component {
 
   handleBuyClick = async (type, skuInfo, num) => {
     const { marketing, info } = this.state
-    const { item_id } = info
+    const { item_id } = skuInfo
     let url = `/pages/cart/espier-checkout`
 
     this.setState({
@@ -205,7 +230,10 @@ export default class Detail extends Component {
     if (type === 'cart') {
       url = `/pages/cart/espier-index`
 
-      await api.cart.add(skuInfo, num, true)
+      await api.cart.add({
+        item_id,
+        num
+      })
       Taro.showToast({
         title: '成功加入购物车',
         icon: 'success'
@@ -224,8 +252,11 @@ export default class Detail extends Component {
         url += `&type=${marketing}&seckill_id=${seckill_id}&ticket=${ticket}`
       }
 
-      // TODO: fastbuy 修改到线上购物车
-      this.props.onFastbuy(info)
+      await api.cart.fastBuy({
+        item_id,
+        num
+      })
+
       Taro.navigateTo({
         url
       })
@@ -239,11 +270,10 @@ export default class Detail extends Component {
   }
 
   handleShare () {
-
   }
 
   render () {
-    const { info, windowWidth, desc, cartCount, scrollTop, showBackToTop } = this.state
+    const { info, windowWidth, desc, cartCount, scrollTop, showBackToTop, curSku } = this.state
     const { marketing, timer, isPromoter, startSecKill, hasStock, detailTabs, curTabIdx, showBuyPanel, buyPanelType } = this.state
 
     if (!info) {
@@ -350,7 +380,40 @@ export default class Detail extends Component {
             </View>
           )}
 
-          <View className='goods-sec-tabs'>
+          <View className='goods-sec-specs'>
+            <View className='specs-title'>
+              <Text>规格</Text>
+              {curSku && (
+                <Text className='specs-selected'>已选 {curSku.propsText}</Text>
+              )}
+            </View>
+            <ScrollView
+              className='specs-scroller'
+              scrollX
+            >
+              <View className='specs-imgs'>
+                {Object.keys(this.state.specImgsDict).map((specValueId) => {
+                  const img = this.state.specImgsDict[specValueId]
+                  return (
+                    <Image
+                      class='specs-imgs__item'
+                      src={img}
+                      key={img}
+                      mode='aspectFill'
+                      onClick={this.handleBuyBarClick.bind(this, buyPanelType)}
+                    />
+                  )
+                })}
+              </View>
+            </ScrollView>
+          </View>
+
+          <SpHtmlContent
+            className='goods-detail__content'
+            content={desc}
+          />
+
+          {/*<View className='goods-sec-tabs'>
             <View className='sec-tabs'>
               {detailTabs.map((tab, idx) => {
                 return (
@@ -390,15 +453,13 @@ export default class Detail extends Component {
                 </View>
               </View>
             </View>
-          </View>
+          </View>*/}
         </ScrollView>
 
         <FloatMenus>
           <FloatMenuItem
             iconPrefixClass='in-icon'
-            icon='back-top'
-            hide={!showBackToTop}
-            onClick={this.scrollBackToTop}
+            icon='float-gift'
           />
           <FloatMenuItem
             iconPrefixClass='in-icon'
@@ -408,7 +469,9 @@ export default class Detail extends Component {
           />
           <FloatMenuItem
             iconPrefixClass='in-icon'
-            icon='float-gift'
+            icon='back-top'
+            hide={!showBackToTop}
+            onClick={this.scrollBackToTop}
           />
         </FloatMenus>
 
@@ -447,6 +510,7 @@ export default class Detail extends Component {
             isOpened={showBuyPanel}
             cartCount={cartCount}
             onClose={() => this.setState({ showBuyPanel: false })}
+            onChange={this.handleSkuChange}
             onClickAddCart={this.handleBuyClick.bind(this, 'cart')}
             onClickFastBuy={this.handleBuyClick.bind(this, 'fastbuy')}
           />
