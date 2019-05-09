@@ -18,6 +18,7 @@ export default class GoodsBuyPanel extends Component {
     type: 'fastbuy',
     fastBuyText: '立即购买',
     onClose: () => {},
+    onChange: () => {},
     onClickAddCart: () => {},
     onClickFastBuy: () => {}
   }
@@ -28,6 +29,7 @@ export default class GoodsBuyPanel extends Component {
     this.state = {
       selection: [],
       curSku: null,
+      curImg: null,
       quantity: 1,
       isActive: props.isOpened
     }
@@ -111,7 +113,21 @@ export default class GoodsBuyPanel extends Component {
     }
 
     this.disabledSet = disabledSet
-    console.log(disabledSet)
+  }
+
+  getCurSkuImg (sku) {
+    let img = this.props.info.pics[0]
+    if (!sku) {
+      return img
+    }
+
+    sku.item_spec.some(s => {
+      if (s.spec_image_url) {
+        img = s.spec_image_url
+        return true
+      }
+    })
+    return img
   }
 
   updateCurSku (selection) {
@@ -119,17 +135,21 @@ export default class GoodsBuyPanel extends Component {
     this.calcDisabled(selection)
     if (selection.some(s => !s)) {
       this.setState({
-        curSku: null
+        curSku: null,
+        curImg: null
       })
-
+      this.props.onChange(null)
       return
     }
 
     const curSku = this.skuDict[selection.join('_')]
+    const curImg = this.getCurSkuImg(curSku)
     this.setState({
-      curSku
+      curSku,
+      curImg
     })
 
+    this.props.onChange(curSku)
     log.debug('[goods-buy-panel] updateCurSku: ', curSku)
   }
 
@@ -167,13 +187,13 @@ export default class GoodsBuyPanel extends Component {
 
   render () {
     const { info, type, fastBuyText } = this.props
-    const { curSku, quantity, selection, isActive } = this.state
+    const { curSku, curImg, quantity, selection, isActive } = this.state
 
     if (!info) {
       return null
     }
 
-    const maxStore = curSku ? curSku.store : (info.store || 99999)
+    const maxStore = +(curSku ? curSku.store : (info.store || 99999))
     const hasStore = curSku ? curSku.store > 0 : true
 
     return (
@@ -190,7 +210,7 @@ export default class GoodsBuyPanel extends Component {
               <Image
                 className='goods-img'
                 mode='aspectFill'
-                src={curSku ? curSku.spec_image_url : info.pics[0]}
+                src={curImg || info.pics[0]}
               />
             </View>
             <Price

@@ -37,6 +37,10 @@ export default class CouponItem extends Component {
     const { info, isShowCheckout, isChoosed } = this.props
     const { isItemChecked } = this.state
 
+    if (!info) {
+      return null
+    }
+
     return (
       <View className='coupon-item-index'>
         {
