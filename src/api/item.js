@@ -6,11 +6,11 @@ export function search (params = {}) {
 }
 
 export function detail (item_id, params = {}) {
-  if (params.demo) {
-    return req.get(`https://yapi.ishopex.cn/mock/464/goods/items/${item_id}`, params)
-  } else {
-    return req.get(`/goods/items/${item_id}`, params)
-  }
+  return req.get(`/goods/items/${item_id}`, params, {
+    header: {
+      'Accept': 'application/vnd.espier.v2+json'
+    }
+  })
 }
 
 export function desc (item_id) {

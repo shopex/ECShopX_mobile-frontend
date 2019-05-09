@@ -1,1 +1,567 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var _dec,_dec2,_class,_class2,_temp2,_extends=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var r=arguments[t];for(var n in r)Object.prototype.hasOwnProperty.call(r,n)&&(e[n]=r[n])}return e},_createClass=function(){function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),e}}(),_get=function e(t,r,n){null===t&&(t=Function.prototype);var s=Object.getOwnPropertyDescriptor(t,r);if(void 0===s){var i=Object.getPrototypeOf(t);return null===i?void 0:e(i,r,n)}if("value"in s)return s.value;var o=s.get;return void 0!==o?o.call(n):void 0},_index=require("../../npm/@tarojs/taro-weapp/index.js"),_index2=_interopRequireDefault(_index),_index3=require("../../npm/@tarojs/redux/index.js"),_index4=require("../../api/index.js"),_index5=_interopRequireDefault(_index4),_index6=require("../../spx/index.js"),_index7=_interopRequireDefault(_index6),_index8=require("../../hocs/index.js"),_index9=require("../../utils/index.js"),_dom=require("../../utils/dom.js"),_find=require("../../npm/lodash/find.js"),_find2=_interopRequireDefault(_find);function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}function _defineProperty(e,t,r){return t in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e}function _asyncToGenerator(e){return function(){var a=e.apply(this,arguments);return new Promise(function(i,o){return function t(e,r){try{var n=a[e](r),s=n.value}catch(e){return void o(e)}if(!n.done)return Promise.resolve(s).then(function(e){t("next",e)},function(e){t("throw",e)});i(s)}("next")})}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}var transformCartList=function(e){return(0,_index9.pickBy)(e,{item_id:"item_id",cart_id:"cart_id",title:"item_name",curSymbol:"fee_symbol",pics:"pic",price:function(e){return(+e.price/100).toFixed(2)},num:"num"})},CartCheckout=(_dec=(0,_index3.connect)(function(e){var t=e.address,r=e.cart;return{defaultAddress:t.defaultAddress,coupon:r.coupon}},function(t){return{onClearFastbuy:function(){return t({type:"cart/clearFastbuy"})},onClearCart:function(){return t({type:"cart/clear"})},onAddressChoose:function(e){return t({type:"address/choose",payload:e})}}}))(_class=(_dec2=(0,_index8.withLogin)())((_temp2=_class2=function(e){function a(){var e,t,s,i=this;_classCallCheck(this,a);for(var r=arguments.length,n=Array(r),o=0;o<r;o++)n[o]=arguments[o];return(t=s=_possibleConstructorReturn(this,(e=a.__proto__||Object.getPrototypeOf(a)).call.apply(e,[this].concat(n)))).$usedState=["info","showAddressPicker","address","payType","couponText","total","showCheckoutItems","curCheckoutItems","isBtnDisabled","address_list","showShippingPicker","showCoupons","coupons","__fn_onClearFastbuy","defaultAddress","__fn_onAddressChoose","coupon","__fn_onClearCart"],s.handleAddressChange=function(e){e&&(e=(0,_index9.pickBy)(e,{state:"province",city:"city",district:"county",addr_id:"address_id",mobile:"telephone",name:"username",zip:"postalCode",address:"adrdetail",area:"area"}),s.setState({address:e},function(){s.calcOrder()}),e||s.setState({showAddressPicker:!0}))},s.handleShippingChange=function(e){console.log(e)},s.handlePay=_asyncToGenerator(regeneratorRuntime.mark(function e(){var t,r,n;return regeneratorRuntime.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:if(s.state.address){e.next=2;break}return e.abrupt("return",_index7.default.toast("请选择地址"));case 2:return _index2.default.showLoading({title:"正在提交",mask:!0}),t=void 0,e.prev=4,e.next=7,_index5.default.trade.create(s.params);case 7:r=e.sent,t=r.order_id,e.next=14;break;case 11:e.prev=11,e.t0=e.catch(4),_index2.default.showToast({title:e.t0.message,icon:!1});case 14:if(_index2.default.hideLoading(),t){e.next=17;break}return e.abrupt("return");case 17:n="/pages/cashier/index?order_id="+t,s.__triggerPropsFn("onClearCart",[null].concat([])),_index2.default.navigateTo({url:n});case 20:case"end":return e.stop()}},e,i,[[4,11]])})),s.handleCouponsClick=function(){_index2.default.navigateTo({url:"/pages/cart/coupon-picker?items="+JSON.stringify(s.params.items)})},s.$$refs=[],_possibleConstructorReturn(s,t)}var t,r;return _inherits(a,_index.Component),_createClass(a,[{key:"_constructor",value:function(e){_get(a.prototype.__proto__||Object.getPrototypeOf(a.prototype),"_constructor",this).call(this,e),this.state={info:null,address_list:[],address:null,showShippingPicker:!1,showAddressPicker:!1,showCheckoutItems:!1,showCoupons:!1,curCheckoutItems:[],coupons:[],total:{items_count:"",total_fee:"0.00",item_fee:"",freight_fee:"",member_discount:"",coupon_discount:"",point:""},payType:""}}},{key:"componentDidMount",value:function(){var e=this;this.fetch(function(){return e.changeSelection()});var t=this.$router.params,r=t.cart_type,n=t.pay_type,s=null;"fastbuy"===r?(this.__triggerPropsFn("onClearFastbuy",[null].concat([])),s=null):"cart"===r&&(this.__triggerPropsFn("onClearFastbuy",[null].concat([])),s=null),this.setState({info:s,payType:n});var i=0,o=0,a=s&&s.cart?s.cart[0].list.map(function(e){var t=e.item_id,r=e.num;return i+=+e.price,o+=+e.num,{item_id:t,num:r}}):[];this.params={cart_type:r,items:a,pay_type:n||"deposit"},this.setState({total:{items_count:o,total_fee:i.toFixed(2)}}),this.handleAddressChange(this.props.defaultAddress)}},{key:"componentDidShow",value:function(){var e=this;this.state.address_list<2&&this.fetch(function(){return e.changeSelection()}),this.params&&this.state.address&&(this.calcOrder(),this.setState({address:this.props.defaultAddress},function(){e.handleAddressChange(e.state.address)}))}},{key:"fetch",value:(r=_asyncToGenerator(regeneratorRuntime.mark(function e(t){var r,n;return regeneratorRuntime.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return _index2.default.showLoading({mask:!0}),e.next=3,_index5.default.member.addressList();case 3:r=e.sent,n=r.list,_index2.default.hideLoading(),this.setState({address_list:n},function(){t&&t(n)});case 7:case"end":return e.stop()}},e,this)})),function(e){return r.apply(this,arguments)})},{key:"changeSelection",value:function(){var e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:{},t=this.state.address_list;if(0!==t.length){var r=e.address_id,n=(0,_find2.default)(t,function(e){return r?r===e.address_id:0<e.is_def})||t[0]||null;_index9.log.debug("[address picker] change selection: ",n),this.__triggerPropsFn("onAddressChoose",[null].concat([n])),this.handleAddressChange(n)}else _index2.default.navigateTo({url:"/pages/member/edit-address"})}},{key:"getParams",value:function(){var e=(0,_index9.pickBy)(this.state.address,{receiver_name:"name",receiver_mobile:"mobile",receiver_state:"state",receiver_city:"city",receiver_district:"district",receiver_address:"address",receiver_zip:"zip"}),t=this.props.coupon,r=_extends({},this.params,e,{receipt_type:"logistics",order_type:"normal",promotion:"normal",member_discount:0,coupon_discount:0});return _index9.log.debug("[checkout] params: ",r),t&&("coupon"===t.type&&t.value.code?r.coupon_discount=t.value.code:"member"===t.type&&(r.member_discount=t.value?1:0)),this.params=r}},{key:"calcOrder",value:(t=_asyncToGenerator(regeneratorRuntime.mark(function e(){var t,r,n,s,i,o,a,u,c,d,l,p,_,f,h,m,y;return regeneratorRuntime.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return _index2.default.showLoading({title:"加载中",mask:!0}),t=this.getParams(),e.next=4,_index5.default.cart.total(t);case 4:r=e.sent,n=r.items,s=r.item_fee,i=r.member_discount,o=void 0===i?0:i,a=r.coupon_discount,u=void 0===a?0:a,c=r.freight_fee,d=void 0===c?0:c,l=r.freight_point,p=void 0===l?0:l,_=r.point,f=void 0===_?0:_,h=r.total_fee,m=_extends({},this.state.total,{item_fee:s,member_discount:-1*o,coupon_discount:-1*u,freight_fee:d,total_fee:h,point:f,freight_point:p}),y=this.state.info,n&&!this.state.info&&(y={cart:[{list:transformCartList(n),cart_total_num:n.reduce(function(e,t){return+t.num+e},0)}]},this.params.items=n),_index2.default.hideLoading(),this.setState({total:m,info:y});case 11:case"end":return e.stop()}},e,this)})),function(){return t.apply(this,arguments)})},{key:"handleClickItems",value:function(e){this.setState({curCheckoutItems:e}),this.toggleCheckoutItems()}},{key:"toggleCheckoutItems",value:function(e){void 0===e&&(e=!this.state.showCheckoutItems),(0,_dom.lockScreen)(e),this.setState({showCheckoutItems:e})}},{key:"toggleState",value:function(e,t){void 0===t&&(t=!this.state[e]),this.setState(_defineProperty({},e,t))}},{key:"_createData",value:function(){this.__state=arguments[0]||this.state||{},this.__props=arguments[1]||this.props||{};arguments[2];var e=this.__props.coupon,t=this.__state,r=t.info,n=t.address;t.total,t.showAddressPicker,t.showCheckoutItems,t.curCheckoutItems,t.payType;if(!r)return null;var s=e?"member"===e.type?"会员折扣":e.value&&e.value.title||"":"",i=!n||!n.addr_id;return Object.assign(this.__state,{couponText:s,isBtnDisabled:i}),this.__state}}]),a}(),_class2.properties={__fn_onClearFastbuy:{type:null,value:null},defaultAddress:{type:null,value:null},__fn_onAddressChoose:{type:null,value:null},coupon:{type:null,value:null},__fn_onClearCart:{type:null,value:null}},_class2.$$events=["handleCouponsClick","toggleCheckoutItems","handlePay"],_class2.defaultProps={list:[]},_class=_temp2))||_class)||_class;exports.default=CartCheckout,Component(require("../../npm/@tarojs/taro-weapp/index.js").default.createComponent(CartCheckout,!0));
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _dec, _dec2, _class, _class2, _temp2;
+
+var _index = require("../../npm/@tarojs/taro-weapp/index.js");
+
+var _index2 = _interopRequireDefault(_index);
+
+var _index3 = require("../../npm/@tarojs/redux/index.js");
+
+var _index4 = require("../../api/index.js");
+
+var _index5 = _interopRequireDefault(_index4);
+
+var _index6 = require("../../spx/index.js");
+
+var _index7 = _interopRequireDefault(_index6);
+
+var _index8 = require("../../hocs/index.js");
+
+var _index9 = require("../../utils/index.js");
+
+var _dom = require("../../utils/dom.js");
+
+var _find = require("../../npm/lodash/find.js");
+
+var _find2 = _interopRequireDefault(_find);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var transformCartList = function transformCartList(list) {
+  return (0, _index9.pickBy)(list, {
+    item_id: 'item_id',
+    cart_id: 'cart_id',
+    title: 'item_name',
+    curSymbol: 'fee_symbol',
+    pics: 'pic',
+    price: function price(_ref) {
+      var _price = _ref.price;
+      return (+_price / 100).toFixed(2);
+    },
+    num: 'num'
+  });
+};
+
+var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
+  var address = _ref2.address,
+      cart = _ref2.cart;
+  return {
+    defaultAddress: address.defaultAddress,
+    coupon: cart.coupon
+  };
+}, function (dispatch) {
+  return {
+    onClearFastbuy: function onClearFastbuy() {
+      return dispatch({ type: 'cart/clearFastbuy' });
+    },
+    onClearCart: function onClearCart() {
+      return dispatch({ type: 'cart/clear' });
+    },
+    onAddressChoose: function onAddressChoose(defaultAddress) {
+      return dispatch({ type: 'address/choose', payload: defaultAddress });
+    }
+  };
+}), _dec2 = (0, _index8.withLogin)(), _dec(_class = _dec2(_class = (_temp2 = _class2 = function (_BaseComponent) {
+  _inherits(CartCheckout, _BaseComponent);
+
+  function CartCheckout() {
+    var _ref3,
+        _this2 = this;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, CartCheckout);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "total", "showCheckoutItems", "curCheckoutItems", "isBtnDisabled", "address_list", "showShippingPicker", "showCoupons", "coupons", "__fn_onClearFastbuy", "defaultAddress", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
+      if (!address) {
+        return;
+      }
+      address = (0, _index9.pickBy)(address, {
+        state: 'province',
+        city: 'city',
+        district: 'county',
+        addr_id: 'address_id',
+        mobile: 'telephone',
+        name: 'username',
+        zip: 'postalCode',
+        address: 'adrdetail',
+        area: 'area'
+      });
+
+      _this.setState({
+        address: address
+      }, function () {
+        _this.calcOrder();
+      });
+      if (!address) {
+        _this.setState({
+          showAddressPicker: true
+        });
+      }
+    }, _this.handleShippingChange = function (type) {
+      console.log(type);
+    }, _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var order_id, res, url;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (_this.state.address) {
+                _context.next = 2;
+                break;
+              }
+
+              return _context.abrupt("return", _index7.default.toast('请选择地址'));
+
+            case 2:
+
+              _index2.default.showLoading({
+                title: '正在提交',
+                mask: true
+              });
+
+              order_id = void 0;
+              _context.prev = 4;
+              _context.next = 7;
+              return _index5.default.trade.create(_this.params);
+
+            case 7:
+              res = _context.sent;
+
+              order_id = res.order_id;
+              _context.next = 14;
+              break;
+
+            case 11:
+              _context.prev = 11;
+              _context.t0 = _context["catch"](4);
+
+              _index2.default.showToast({
+                title: _context.t0.message,
+                icon: false
+              });
+
+            case 14:
+              _index2.default.hideLoading();
+
+              if (order_id) {
+                _context.next = 17;
+                break;
+              }
+
+              return _context.abrupt("return");
+
+            case 17:
+              url = "/pages/cashier/index?order_id=" + order_id;
+
+              _this.__triggerPropsFn("onClearCart", [null].concat([]));
+              _index2.default.navigateTo({ url: url });
+
+            case 20:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, _this2, [[4, 11]]);
+    })), _this.handleCouponsClick = function () {
+      _index2.default.navigateTo({
+        url: "/pages/cart/coupon-picker?items=" + JSON.stringify(_this.params.items)
+      });
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(CartCheckout, [{
+    key: "_constructor",
+    value: function _constructor(props) {
+      _get(CartCheckout.prototype.__proto__ || Object.getPrototypeOf(CartCheckout.prototype), "_constructor", this).call(this, props);
+
+      this.state = {
+        info: null,
+        address_list: [],
+        address: null,
+        showShippingPicker: false,
+        showAddressPicker: false,
+        showCheckoutItems: false,
+        showCoupons: false,
+        curCheckoutItems: [],
+        coupons: [],
+        total: {
+          items_count: '',
+          total_fee: '0.00',
+          item_fee: '',
+          freight_fee: '',
+          member_discount: '',
+          coupon_discount: '',
+          point: ''
+        },
+        payType: ''
+      };
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      this.fetch(function () {
+        return _this3.changeSelection();
+      });
+
+      var _$router$params = this.$router.params,
+          cart_type = _$router$params.cart_type,
+          payType = _$router$params.pay_type;
+
+      var info = null;
+
+      if (cart_type === 'fastbuy') {
+        this.__triggerPropsFn("onClearFastbuy", [null].concat([]));
+        info = null;
+      } else if (cart_type === 'cart') {
+        // 积分购买不在此种情况
+
+        this.__triggerPropsFn("onClearFastbuy", [null].concat([]));
+        info = null;
+      }
+
+      this.setState({
+        info: info,
+        payType: payType
+      });
+
+      var total_fee = 0;
+      var items_count = 0;
+      var items = info && info.cart ? info.cart[0].list.map(function (item) {
+        var item_id = item.item_id,
+            num = item.num;
+
+        total_fee += +item.price;
+        items_count += +item.num;
+        return {
+          item_id: item_id,
+          num: num
+        };
+      }) : [];
+
+      this.params = {
+        cart_type: cart_type,
+        items: items,
+        pay_type: payType || 'deposit'
+      };
+
+      this.setState({
+        total: {
+          items_count: items_count,
+          total_fee: total_fee.toFixed(2)
+        }
+      });
+      this.handleAddressChange(this.props.defaultAddress);
+    }
+  }, {
+    key: "componentDidShow",
+    value: function componentDidShow() {
+      var _this4 = this;
+
+      if (this.state.address_list < 2) {
+        this.fetch(function () {
+          return _this4.changeSelection();
+        });
+      }
+      if (!this.params || !this.state.address) {
+        return;
+      }this.calcOrder();
+      this.setState({
+        address: this.props.defaultAddress
+      }, function () {
+        _this4.handleAddressChange(_this4.state.address);
+      });
+    }
+  }, {
+    key: "fetch",
+    value: function () {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(cb) {
+        var _ref6, list;
+
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _index2.default.showLoading({
+                  mask: true
+                });
+                _context2.next = 3;
+                return _index5.default.member.addressList();
+
+              case 3:
+                _ref6 = _context2.sent;
+                list = _ref6.list;
+
+                _index2.default.hideLoading();
+
+                this.setState({
+                  address_list: list
+                }, function () {
+                  cb && cb(list);
+                });
+
+              case 7:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function fetch(_x) {
+        return _ref5.apply(this, arguments);
+      }
+
+      return fetch;
+    }()
+  }, {
+    key: "changeSelection",
+    value: function changeSelection() {
+      var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var address_list = this.state.address_list;
+
+      if (address_list.length === 0) {
+        _index2.default.navigateTo({
+          url: '/pages/member/edit-address'
+        });
+        return;
+      }
+      var address_id = params.address_id;
+
+      var address = (0, _find2.default)(address_list, function (addr) {
+        return address_id ? address_id === addr.address_id : addr.is_def > 0;
+      }) || address_list[0] || null;
+
+      _index9.log.debug('[address picker] change selection: ', address);
+      this.__triggerPropsFn("onAddressChoose", [null].concat([address]));
+      this.handleAddressChange(address);
+      // this.props.onChange(address)
+    }
+  }, {
+    key: "getParams",
+    value: function getParams() {
+      var receiver = (0, _index9.pickBy)(this.state.address, {
+        receiver_name: 'name',
+        receiver_mobile: 'mobile',
+        receiver_state: 'state',
+        receiver_city: 'city',
+        receiver_district: 'district',
+        receiver_address: 'address',
+        receiver_zip: 'zip'
+      });
+      var coupon = this.props.coupon;
+
+
+      var params = _extends({}, this.params, receiver, {
+        receipt_type: 'logistics',
+        order_type: 'normal',
+        promotion: 'normal',
+        member_discount: 0,
+        coupon_discount: 0
+      });
+
+      _index9.log.debug('[checkout] params: ', params);
+
+      if (coupon) {
+        if (coupon.type === 'coupon' && coupon.value.code) {
+          params.coupon_discount = coupon.value.code;
+        } else if (coupon.type === 'member') {
+          params.member_discount = coupon.value ? 1 : 0;
+        }
+      }
+
+      this.params = params;
+
+      return params;
+    }
+  }, {
+    key: "calcOrder",
+    value: function () {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var params, data, items, item_fee, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, total, info;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _index2.default.showLoading({
+                  title: '加载中',
+                  mask: true
+                });
+                params = this.getParams();
+                _context3.next = 4;
+                return _index5.default.cart.total(params);
+
+              case 4:
+                data = _context3.sent;
+                items = data.items, item_fee = data.item_fee, _data$member_discount = data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, _data$freight_fee = data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = data.total_fee;
+                total = _extends({}, this.state.total, {
+                  item_fee: item_fee,
+                  member_discount: -1 * member_discount,
+                  coupon_discount: -1 * coupon_discount,
+                  freight_fee: freight_fee,
+                  total_fee: total_fee,
+                  point: point,
+                  freight_point: freight_point
+                });
+                info = this.state.info;
+
+                if (items && !this.state.info) {
+                  // 从后端获取订单item
+                  info = {
+                    cart: [{
+                      list: transformCartList(items),
+                      cart_total_num: items.reduce(function (acc, item) {
+                        return +item.num + acc;
+                      }, 0)
+                    }]
+                  };
+                  this.params.items = items;
+                }
+
+                _index2.default.hideLoading();
+
+                this.setState({
+                  total: total,
+                  info: info
+                });
+
+              case 11:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function calcOrder() {
+        return _ref7.apply(this, arguments);
+      }
+
+      return calcOrder;
+    }()
+  }, {
+    key: "handleClickItems",
+    value: function handleClickItems(items) {
+      this.setState({
+        curCheckoutItems: items
+      });
+      this.toggleCheckoutItems();
+    }
+
+    // toggleAddressPicker (isOpened) {
+    //   if (isOpened === undefined) {
+    //     isOpened = !this.state.showAddressPicker
+    //   }
+    //
+    //   lockScreen(isOpened)
+    //   this.setState({ showAddressPicker: isOpened })
+    // }
+
+  }, {
+    key: "toggleCheckoutItems",
+    value: function toggleCheckoutItems(isOpened) {
+      if (isOpened === undefined) {
+        isOpened = !this.state.showCheckoutItems;
+      }
+
+      (0, _dom.lockScreen)(isOpened);
+      this.setState({ showCheckoutItems: isOpened });
+    }
+  }, {
+    key: "toggleState",
+    value: function toggleState(key, val) {
+      if (val === undefined) {
+        val = !this.state[key];
+      }
+
+      this.setState(_defineProperty({}, key, val));
+    }
+  }, {
+    key: "_createData",
+    value: function _createData() {
+      this.__state = arguments[0] || this.state || {};
+      this.__props = arguments[1] || this.props || {};
+      var __isRunloopRef = arguments[2];
+      ;
+
+      var coupon = this.__props.coupon;
+      var _state = this.__state,
+          info = _state.info,
+          address = _state.address,
+          total = _state.total,
+          showAddressPicker = _state.showAddressPicker,
+          showCheckoutItems = _state.showCheckoutItems,
+          curCheckoutItems = _state.curCheckoutItems,
+          payType = _state.payType;
+
+      if (!info) {
+        return null;
+      }
+
+      var couponText = !coupon ? '' : coupon.type === 'member' ? '会员折扣' : coupon.value && coupon.value.title || '';
+      var isBtnDisabled = !address || !address.addr_id;
+
+      Object.assign(this.__state, {
+        couponText: couponText,
+        isBtnDisabled: isBtnDisabled
+      });
+      return this.__state;
+    }
+  }]);
+
+  return CartCheckout;
+}(_index.Component), _class2.properties = {
+  "__fn_onClearFastbuy": {
+    "type": null,
+    "value": null
+  },
+  "defaultAddress": {
+    "type": null,
+    "value": null
+  },
+  "__fn_onAddressChoose": {
+    "type": null,
+    "value": null
+  },
+  "coupon": {
+    "type": null,
+    "value": null
+  },
+  "__fn_onClearCart": {
+    "type": null,
+    "value": null
+  }
+}, _class2.$$events = ["handleCouponsClick", "toggleCheckoutItems", "handlePay"], _class2.defaultProps = {
+  list: []
+}, _temp2)) || _class) || _class);
+exports.default = CartCheckout;
+
+Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(CartCheckout, true));

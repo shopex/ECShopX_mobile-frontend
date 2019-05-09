@@ -22,11 +22,15 @@ export default class ItemImg extends Component {
           mode='aspectFill'
           src={info.img}
         />
-        <Image
-          src={info.img}
-          mode='aspectFill'
-          className='item-img__blured'
-        />
+        <View
+          className='item-img__blured-wrap'
+        >
+          <Image
+            src={info.img}
+            mode='aspectFill'
+            className='item-img__blured'
+          />
+        </View>
       </View>
     )
   }

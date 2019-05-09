@@ -54,6 +54,7 @@ class API {
     }
     header['Authorization'] = `Bearer ${S.getAuthToken()}`
 
+
     const options = {
       ...config,
       url: reqUrl,

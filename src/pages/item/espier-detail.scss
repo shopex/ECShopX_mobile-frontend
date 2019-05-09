@@ -232,6 +232,7 @@
         border: 1px solid $color-border-gray;
         width: 80px;
         height: 80px;
+        box-sizing: border-box;
         display: inline-block;
         vertical-align: middle;
         margin-right: 20px;

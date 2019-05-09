@@ -1,7 +1,6 @@
 @import "../../../style/imports";
 
 .item-img {
-  position: relative;
   overflow: hidden;
   &__img {
     position: relative;
@@ -15,6 +14,11 @@
     box-shadow: 0 0 20px rgba(#000, 0.1);
   }
   &__blured {
+    &-wrap {
+      position: relative;
+      height: 390px;
+      overflow: hidden;
+    }
     position: absolute;
     mask-image: linear-gradient(#000 0%, #000 70%, transparent 100%);
     top: 0;
