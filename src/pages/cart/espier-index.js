@@ -15,7 +15,7 @@ import './espier-index.scss'
 @connect(({ cart }) => ({
   list: cart.list,
   cartIds: cart.cartIds,
-  defaultAllSelect: true,
+  defaultAllSelect: false,
   totalPrice: getTotalPrice(cart)
 }), (dispatch) => ({
   onUpdateCartNum: (cart_id, num) => dispatch({ type: 'cart/updateNum', payload: { cart_id, num } }),
@@ -37,7 +37,8 @@ export default class CartIndex extends Component {
       selection: new Set(),
       cartMode: 'default',
       curPromotions: null,
-      groups: []
+      groups: [],
+      invalidList: []
     }
 
     this.updating = false
@@ -50,6 +51,15 @@ export default class CartIndex extends Component {
         this.handleAllSelect(true)
       }
       const groups = this.resolveActivityGroup(list)
+      let selection = []
+      list.forEach(shopCart => {
+        const checkedIds = shopCart.list
+          .filter(t => t.is_checked)
+          .map(t => t.cart_id)
+
+        selection = [...selection, ...checkedIds]
+      })
+      this.updateSelection(selection)
 
       // this.props.list 此时为空数组
       setTimeout(() => {
@@ -104,15 +114,27 @@ export default class CartIndex extends Component {
   }
 
   async fetch (cb) {
-    const { valid_cart } = await api.cart.get()
+    const { valid_cart, invalid_cart } = await api.cart.get()
 
     const list = valid_cart.map(shopCart => {
+      const tList = this.transformCartList(shopCart.list)
+      return {
+        ...shopCart,
+        list: tList
+      }
+    })
+
+    const invalidList = invalid_cart.map(shopCart => {
       const tList = this.transformCartList(shopCart.list)
 
       return {
         ...shopCart,
         list: tList
       }
+    })
+
+    this.setState({
+      invalidList
     })
 
     log.debug('[cart fetch]', list)
@@ -141,14 +163,19 @@ export default class CartIndex extends Component {
     })
   }
 
-  async handleSelectionChange (cart_id, checked) {
-    this.state.selection[checked ? 'add' : 'delete'](cart_id)
-    const selection = new Set(this.state.selection)
-
+  updateSelection (selection = []) {
     this.setState({
-      selection
+      selection: new Set(selection)
     })
-    this.props.onCartSelection([...selection])
+
+    this.props.onCartSelection(selection)
+  }
+
+  async handleSelectionChange (cart_id, checked) {
+    const selection = this.state.selection
+    selection[checked ? 'add' : 'delete'](cart_id)
+    this.updateSelection([...selection])
+
     await api.cart.select({
       cart_id,
       is_checked: checked
@@ -171,11 +198,8 @@ export default class CartIndex extends Component {
     await api.cart.del({ cart_id })
 
     const cartIds = this.props.cartIds.filter(t => t !== cart_id)
-    const selection = new Set(cartIds)
-    this.setState({
-      selection
-    })
-    this.props.onCartSelection(cartIds)
+
+    this.updateSelection(cartIds)
     this.updateCart()
   }
 
@@ -212,10 +236,7 @@ export default class CartIndex extends Component {
       selection.clear()
     }
 
-    this.setState({
-      selection: new Set(selection)
-    })
-    this.props.onCartSelection([...selection])
+    this.updateSelection([...selection])
   }
 
   handleClickPromotion = (cart_id) => {
@@ -276,6 +297,7 @@ export default class CartIndex extends Component {
       activity_id: 'activity_id',
       title: 'item_name',
       desc: 'brief',
+      is_checked: 'is_checked',
       curSymbol: 'cur.symbol',
       promotions: ({ promotions = [], cart_id }) => promotions.map(p => {
         p.cart_id = cart_id

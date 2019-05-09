@@ -63,15 +63,23 @@ export default class TabBar extends Component {
   async fetchCart () {
     if (!S.getAuthToken()) return
     const cartTabIdx = 3
-
-    try {
-      const { item_count } = await api.cart.count()
-
+    const updateCartCount = (count) => {
       const { tabList } = this.state
-      tabList[cartTabIdx].text = item_count
+      tabList[cartTabIdx].text = count
       this.setState({
         tabList
       })
+    }
+
+    const { path } = getCurrentRoute(this.$router)
+    if (path === this.state.tabList[cartTabIdx].url) {
+      updateCartCount('')
+      return
+    }
+
+    try {
+      const { item_count } = await api.cart.count()
+      updateCartCount(item_count)
     } catch (e) {
       console.error(e)
     }

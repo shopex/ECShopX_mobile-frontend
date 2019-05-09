@@ -58,6 +58,7 @@ $item-img-size: 240px !default;
   &__title {
     @include multi-ellipsis(2);
     line-height: 1.4;
+    height: 1.4 * 2em;
     color: #111;
     margin: 0 0 16px;
   }
