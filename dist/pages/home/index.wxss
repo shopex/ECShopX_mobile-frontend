@@ -21,7 +21,7 @@
   position: absolute;
   left: 0;
   width: 100%;
-  top: 65rpx;
+  top: 0;
   bottom: 106rpx;
   overflow-y: auto;
   overflow-x: hidden;
@@ -33,6 +33,10 @@
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
 }
+.slider-search {
+  position: relative;
+}
+
 .wgt__padded {
   padding: 20rpx 0;
 }

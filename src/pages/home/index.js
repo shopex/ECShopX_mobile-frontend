@@ -41,6 +41,7 @@ export default class HomeIndex extends Component {
 
   render () {
     const { wgts, authStatus } = this.state
+    console.log(wgts, 44)
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -48,12 +49,12 @@ export default class HomeIndex extends Component {
 
     return (
       <View className='page-index'>
-        <WgtSearchHome />
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
           scrollY
         >
           <View className='wgts-wrap__cont'>
+            <WgtSearchHome />
             {
               wgts.map((item, idx) => {
                 return (

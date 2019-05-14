@@ -13,22 +13,14 @@
                 </view>
             </view>
         </block>
-        <view class="wgt-body with-padding">
-            <view class="coupon-wgt" wx:key="idx" wx:for="{{data}}" wx:for-item="item" wx:for-index="idx">
-                <view class="coupon-brand">
-                    <image class="brand-img" mode="aspectFill" src="{{item.imgUrl}}"></image>
-                </view>
-                <view class="coupon-caption">
-                    <view class="coupon-amount"><text>{{item.amount}}</text>
-                        <block wx:if="{{item.type === 'cash'}}"><text class="amount-cur">RMB</text>
-                        </block>
-                        <block wx:if="{{item.type === 'discount'}}"><text class="amount-cur">折</text>
-                        </block>
-                    </view>
-                    <view class="coupon-content"><text class="brand-name">{{item.title}}</text><text class="coupon-desc">{{item.desc}}</text>
+        <view class="wgt-body with-padding coupon-body">
+            <image src="/assets/imgs/coupon.png" class="coupon_bg"></image>
+            <view class="coupon-content">
+                <view class="coupon-content__type"><text class="coupon-content__amount">200</text><text class="coupon-content__amount-cur">元</text>
+                    <view class="coupon-content__typename"><text class="coupon-content__typetext">商品体验券</text>
                     </view>
                 </view>
-                <button class="coupon-getted-btn" bindtap="handleGetCard" data-e-tap-so="this" data-e-tap-a-a="{{item.id}}">领取</button>
+                <view class="coupon-content__tips">体验券领取与使用规则，点击详见领券页面</view>
             </view>
         </view>
     </view>

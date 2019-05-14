@@ -55,7 +55,20 @@ export default class WgtCoupon extends Component {
             </View>
           </View>
         )}
-        <View className='wgt-body with-padding'>
+        <View className='wgt-body with-padding coupon-body'>
+          <Image src='/assets/imgs/coupon.png' className='coupon_bg'/>
+          <View className='coupon-content'>
+            <View className='coupon-content__type'>
+              <Text className='coupon-content__amount'>200</Text>
+              <Text className='coupon-content__amount-cur'>元</Text>
+              <View className='coupon-content__typename'>
+                <Text className='coupon-content__typetext'>商品体验券</Text>
+              </View>
+            </View>
+            <View className='coupon-content__tips'>体验券领取与使用规则，点击详见领券页面</View>
+          </View>
+        </View>
+        {/*<View className='wgt-body with-padding'>
           {data.map((item, idx) => {
             return (
               <View
@@ -87,7 +100,7 @@ export default class WgtCoupon extends Component {
               </View>
             )
           })}
-        </View>
+        </View>*/}
       </View>
     )
   }

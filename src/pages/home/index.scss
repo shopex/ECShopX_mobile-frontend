@@ -8,10 +8,14 @@
 
 .wgts-wrap {
   &__fixed {
-    @include page-scroll($searchbar-height, $tabbar-height + $edge-margin);
+    @include page-scroll(0, $tabbar-height + $edge-margin);
   }
   &__is-distributor {
   }
+}
+
+.slider-search {
+  position: relative;
 }
 
 .wgt {
@@ -67,3 +71,5 @@
     font-size: 26px;
   }
 }
+
+

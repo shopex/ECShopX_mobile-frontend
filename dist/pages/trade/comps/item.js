@@ -58,7 +58,7 @@ var TradeItem = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _props = this.__props,
@@ -88,18 +88,18 @@ var TradeItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateGocaJ",
-    value: function funPrivateGocaJ() {
+    key: "funPrivateHBdGa",
+    value: function funPrivateHBdGa() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateqcdzW",
-    value: function funPrivateqcdzW() {
+    key: "funPrivateTzbTl",
+    value: function funPrivateTzbTl() {
       this.__triggerPropsFn("onActionBtnClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivategaSsj",
-    value: function funPrivategaSsj() {
+    key: "funPrivateSNxRY",
+    value: function funPrivateSNxRY() {
       this.__triggerPropsFn("onActionClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -166,7 +166,7 @@ var TradeItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateGocaJ", "handleClickBtn", "funPrivateqcdzW", "funPrivategaSsj"], _class.options = {
+}, _class.$$events = ["funPrivateHBdGa", "handleClickBtn", "funPrivateTzbTl", "funPrivateSNxRY"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   customHeader: false,

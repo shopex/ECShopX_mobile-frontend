@@ -49,7 +49,7 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _props = this.__props,
@@ -73,8 +73,8 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateUTRUx",
-    value: function funPrivateUTRUx() {
+    key: "funPrivategjCTf",
+    value: function funPrivategjCTf() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -105,7 +105,7 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateUTRUx"], _class.defaultProps = {
+}, _class.$$events = ["funPrivategjCTf"], _class.defaultProps = {
   onClick: function onClick() {},
   payType: '',
   showExtra: true,

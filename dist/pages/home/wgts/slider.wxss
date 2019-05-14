@@ -1,4 +1,16 @@
 
+/*==============================
+=            colors            =
+==============================*/
+/*===============================
+=            z-index            =
+===============================*/
+/*==============================
+=            colors            =
+==============================*/
+/*===============================
+=            z-index            =
+===============================*/
 .slider-wrap {
   position: relative;
   background: #ffffff;
@@ -67,7 +79,7 @@
   right: 20rpx;
 }
 .slider-dot.dark .dot {
-  background: rgba(0, 0, 0, 0.4);
+  background: #ffffff;
 }
 .slider-dot.light .dot {
   background: rgba(255, 255, 255, 0.7);
@@ -78,14 +90,15 @@
   border-radius: 100%;
 }
 .slider-dot.rectangle .dot {
-  width: 20rpx;
-  height: 8rpx;
+  width: 34rpx;
+  height: 4rpx;
+  margin-right: 4rpx;
 }
 .slider-dot .dot {
   margin: 0 6rpx;
 }
 .slider-dot .dot.active {
-  background: #f13200;
+  background: #0b4137;
 }
 .slider-dot.dot-size-switch.circle .dot {
   border-radius: 20rpx;

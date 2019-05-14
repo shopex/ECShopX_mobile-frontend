@@ -1,3 +1,65 @@
+@import "../../../style/imports";
+
+.coupon-body {
+  width: 100%;
+  padding: 0 15px 0 33px;
+  box-sizing: border-box;
+  position: relative;
+  .coupon_bg {
+    height: 180px;
+    width: 100%;
+    position: relative;
+  }
+  .coupon-content {
+    position: absolute;
+    top: 32px;
+    //bottom: 36px;
+    left: 73px;
+    &__type {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      height: 76px;
+    }
+    &__amount {
+      display: block;
+      font-size: 99px;
+      height: 76px;
+      line-height: 76px;
+      color: #ffffff;
+      margin-right: 12px;
+    }
+    &__amount-cur {
+      display: block;
+      font-size: 31px;
+      margin: 28px 35px 0 0;
+      color: #ffffff;
+    }
+    &__typename {
+      width: 151px;
+      height: 39px;
+      background-color: #ffffff;
+      transform: skew(-30deg);
+      border-radius: 10px;
+      margin-top: 18px;
+      text-align: center;
+    }
+    &__typetext {
+      display: block;
+      font-size: 22px;
+      transform: skew(30deg);
+      color: $color-brand-primary;
+    }
+    &__tips {
+      margin-top: 18px;
+      color: #ffffff;
+      font-size: 19px;
+    }
+  }
+}
+
+
+/*
 .coupon-wgt {
   display: flex;
   align-items: center;
@@ -84,4 +146,4 @@
     font-size: 26px;
     background: #fff;
   }
-}
+}*/

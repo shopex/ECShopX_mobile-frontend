@@ -6376,10 +6376,6 @@
   color: #CCC;
 }
 
-.at-input__input::-moz-placeholder {
-  color: #CCC;
-}
-
 .at-input__input::-ms-input-placeholder {
   color: #CCC;
 }
@@ -11955,10 +11951,6 @@
   color: #CCC;
 }
 
-.at-textarea__textarea::-moz-placeholder {
-  color: #CCC;
-}
-
 .at-textarea__textarea::-ms-input-placeholder {
   color: #CCC;
 }
@@ -12620,11 +12612,11 @@
 }
 
 .home-search__bar.at-search-bar {
-  position: fixed;
-  top: 28rpx;
+  position: absolute;
+  top: 44rpx;
   left: 0;
   right: 0;
-  padding: 0 20rpx !important;
+  padding: 20rpx 0 20rpx 20rpx !important;
   height: 54rpx;
   z-index: 99;
   background: transparent !important;
@@ -12632,7 +12624,6 @@
 .home-search__bar.at-search-bar .at-search-bar__input-cnt {
   height: 54rpx;
   line-height: 54rpx;
-  background: yellow;
 }
 .home-search__bar.at-search-bar .at-search-bar__placeholder-wrap {
   -webkit-box-pack: start;

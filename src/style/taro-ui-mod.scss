@@ -138,19 +138,17 @@
 }
 
 .home-search__bar.at-search-bar {
-  position: fixed;
-  top: 28px;
+  position: absolute;
+  top: 44px;
   left: 0;
   right: 0;
-  padding: 0 20px !important;
+  padding: 20px 0 20px 20px !important;
   height: 54px;
   z-index: 99;
   background: transparent !important;
   .at-search-bar__input-cnt {
     height: 54px;
     line-height: 54px;
-    //background: rgba(255, 255, 255, 0.8);
-    background: yellow;
   }
   .at-search-bar__placeholder-wrap {
     justify-content: flex-start;

@@ -1,3 +1,5 @@
+@import "../../../style/imports";
+
 .slider-wrap {
   position: relative;
   background: #ffffff;
@@ -54,7 +56,7 @@
   }
   &.dark {
     .dot {
-      background: rgba(0,0,0,0.4);
+      background: #ffffff;
     }
   }
   &.light {
@@ -71,14 +73,15 @@
   }
   &.rectangle {
     .dot {
-      width: 20px;
-      height: 8px;
+      width: 34px;
+      height: 4px;
+      margin-right: 4px;
     }
   }
   .dot {
     margin: 0 6px;
     &.active {
-      background: rgba(241,50,0,1);
+      background: $color-brand-primary;
     }
   }
   &.dot-size-switch {
