@@ -10,11 +10,13 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _class, _temp2;
 
-var _index = require("../../npm/@tarojs/taro-weapp/index.js");
+var _index = require("../../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = require("../../utils/index.js");
+var _index3 = require("../../../utils/index.js");
+
+var _helper = require("./helper.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,41 +26,37 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CouponItem = (_temp2 = _class = function (_BaseComponent) {
-  _inherits(CouponItem, _BaseComponent);
+var WgtLimittimeSlider = (_temp2 = _class = function (_BaseComponent) {
+  _inherits(WgtLimittimeSlider, _BaseComponent);
 
-  function CouponItem() {
+  function WgtLimittimeSlider() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, CouponItem);
+    _classCallCheck(this, WgtLimittimeSlider);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CouponItem.__proto__ || Object.getPrototypeOf(CouponItem)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "anonymousState__temp4", "info", "isShowCheckout", "isChoosed", "isItemChecked", "curKey", "__fn_onClickBtn", "children"], _this.handleClickChecked = function (index) {
-      if (_this.props.curKey === index) {
-        _this.setState({
-          isItemChecked: !_this.state.isItemChecked
-        });
-      } else {
-        _this.setState({
-          isItemChecked: true
-        });
-      }
-      _this.__triggerPropsFn("onClickBtn", [null].concat([index]));
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtLimittimeSlider.__proto__ || Object.getPrototypeOf(WgtLimittimeSlider)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp7", "loopArray0", "loopArray1", "info", "base", "config", "curIdx", "data", "curContent"], _this.handleClickItem = _helper.linkPage, _this.handleSwiperChange = function (e) {
+      var current = e.detail.current;
+
+
+      _this.setState({
+        curIdx: current
+      });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(CouponItem, [{
+  _createClass(WgtLimittimeSlider, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(CouponItem.prototype.__proto__ || Object.getPrototypeOf(CouponItem.prototype), "_constructor", this).call(this, props);
+      _get(WgtLimittimeSlider.prototype.__proto__ || Object.getPrototypeOf(WgtLimittimeSlider.prototype), "_constructor", this).call(this, props);
 
       this.state = {
-        isItemChecked: false
+        curIdx: 0
       };
     }
   }, {
@@ -69,77 +67,70 @@ var CouponItem = (_temp2 = _class = function (_BaseComponent) {
       var __runloopRef = arguments[2];
       ;
 
-      var _props = this.__props,
-          info = _props.info,
-          isShowCheckout = _props.isShowCheckout,
-          isChoosed = _props.isChoosed,
-          onClick = _props.onClick;
-      var isItemChecked = this.__state.isItemChecked;
+      var info = this.__props.info;
+      var curIdx = this.__state.curIdx;
 
 
       if (!info) {
         return null;
       }
 
-      var anonymousState__temp = info.card_type === 'cash' ? (0, _index3.classNames)('coupon-item__name', info.status === '2' ? 'coupon-item__name-not' : null) : null;
-      var anonymousState__temp2 = info.card_type === 'gift' ? (0, _index3.classNames)('coupon-item__name', info.status === '2' ? 'coupon-item__name-not' : null) : null;
-      var anonymousState__temp3 = info.card_type === 'discount' ? (0, _index3.classNames)('coupon-item__name', info.status === '2' ? 'coupon-item__name-not' : null) : null;
-      var anonymousState__temp4 = info.card_type === 'member' ? (0, _index3.classNames)('coupon-item__name', info.status === '2' ? 'coupon-item__name-not' : null) : null;
+      var config = info.config,
+          base = info.base,
+          data = info.data;
+
+      var curContent = (data[curIdx] || {}).content;
+
+      var anonymousState__temp = "height: " + _index2.default.pxTransform(config.height * 2);
+      var anonymousState__temp4 = data.length > 1 && config.dot ? (0, _index3.classNames)('slider-dot', { 'dot-size-switch': config.animation }, config.dotLocation, config.dotCover ? 'cover' : 'no-cover', config.dotColor, config.shape) : null;
+      var anonymousState__temp7 = data.length > 1 && !config.dot ? (0, _index3.classNames)('slider-count', config.dotLocation, config.shape, config.dotColor) : null;
+      var loopArray0 = data.map(function (item, idx) {
+        item = {
+          $original: (0, _index.internal_get_original)(item)
+        };
+        var $loopState__temp3 = "padding: 0 " + _index2.default.pxTransform(config.sliderSpace || 0);
+        return {
+          $loopState__temp3: $loopState__temp3,
+          $original: item.$original
+        };
+      });
+      var loopArray1 = data.length > 1 && config.dot ? data.map(function (dot, dotIdx) {
+        dot = {
+          $original: (0, _index.internal_get_original)(dot)
+        };
+        var $loopState__temp6 = data.length > 1 && config.dot ? (0, _index3.classNames)('dot', { active: curIdx === dotIdx }) : null;
+        return {
+          $loopState__temp6: $loopState__temp6,
+          $original: dot.$original
+        };
+      }) : [];
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
-        anonymousState__temp2: anonymousState__temp2,
-        anonymousState__temp3: anonymousState__temp3,
         anonymousState__temp4: anonymousState__temp4,
+        anonymousState__temp7: anonymousState__temp7,
+        loopArray0: loopArray0,
+        loopArray1: loopArray1,
         info: info,
-        isShowCheckout: isShowCheckout,
-        isChoosed: isChoosed
+        base: base,
+        config: config,
+        data: data,
+        curContent: curContent
       });
       return this.__state;
     }
-  }, {
-    key: "funPrivateKplTF",
-    value: function funPrivateKplTF() {
-      this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
-    }
   }]);
 
-  return CouponItem;
+  return WgtLimittimeSlider;
 }(_index.Component), _class.properties = {
-  "curKey": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickBtn": {
-    "type": null,
-    "value": null
-  },
   "info": {
     "type": null,
     "value": null
-  },
-  "isShowCheckout": {
-    "type": null,
-    "value": null
-  },
-  "isChoosed": {
-    "type": null,
-    "value": null
-  },
-  "onClick": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClick": {
-    "type": null,
-    "value": null
   }
-}, _class.$$events = ["funPrivateKplTF", "handleClickChecked"], _class.options = {
+}, _class.$$events = ["handleSwiperChange", "handleClickItem"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
-  onClick: function onClick() {},
-  info: null,
-  isShowCheckout: false
+  info: null
 }, _temp2);
-exports.default = CouponItem;
+exports.default = WgtLimittimeSlider;
 
-Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(CouponItem));
+Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(WgtLimittimeSlider));

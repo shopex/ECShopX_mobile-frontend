@@ -394,15 +394,9 @@ var Reg = (_dec = (0, _index3.connect)(function (_ref) {
         var $loopState__temp4 = (0, _index4.classNames)(item.$original.value ? 'pick-value' : 'pick-value-null');
         var $loopState__temp6 = "" + item.$original.key;
         var $loopState__temp8 = "\u8BF7\u8F93\u5165" + item.$original.name;
-<<<<<<< HEAD
-        var $loopState__temp10 = "HXDGT" + index;
+        var $loopState__temp10 = "VCxzF" + index;
 
-        var __ref = __scope && __runloopRef && (0, _index.getElementById)(__scope, "#" + ("HXDGT" + index), "component");
-=======
-        var $loopState__temp10 = "fIXxI" + index;
-
-        var __ref = __scope && __isRunloopRef && (0, _index.getElementById)(__scope, "#" + ("fIXxI" + index), "component");
->>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
+        var __ref = __scope && __runloopRef && (0, _index.getElementById)(__scope, "#" + ("VCxzF" + index), "component");
 
         __ref && function (input) {
           _this3.textInput = input;

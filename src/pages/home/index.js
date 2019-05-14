@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, Loading } from '@/components'
 import req from '@/api/req'
 import S from "@/spx";
-import { WgtSearchHome, WgtSlider, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './wgts'
+import { WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './wgts'
 
 import './index.scss'
 
@@ -55,12 +55,14 @@ export default class HomeIndex extends Component {
         >
           <View className='wgts-wrap__cont'>
             <WgtSearchHome />
+            {/*<WgtLimittimeSlider />*/}
             {
               wgts.map((item, idx) => {
                 return (
                   <View className='wgt-wrap' key={idx}>
                     {item.name === 'slider' && <WgtSlider info={item} />}
                     {item.name === 'navigation' && <WgtNavigation info={item} />}
+                    {item.name === 'slider' && <WgtLimittimeSlider info={item} />}
                     {item.name === 'coupon' && <WgtCoupon info={item} />}
                     {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} />}
                     {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} />}

@@ -288,23 +288,13 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       ;
     }
   }, {
-<<<<<<< HEAD
-    key: "funPrivatesnIXe",
-    value: function funPrivatesnIXe() {
+    key: "funPrivateEMNdR",
+    value: function funPrivateEMNdR() {
       this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatejWoEJ",
-    value: function funPrivatejWoEJ() {
-=======
-    key: "funPrivateJapPf",
-    value: function funPrivateJapPf() {
-      this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivatelYTCq",
-    value: function funPrivatelYTCq() {
->>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
+    key: "funPrivateqbUmC",
+    value: function funPrivateqbUmC() {
       this.__triggerPropsFn("onClickFastBuy", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -359,11 +349,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-<<<<<<< HEAD
-}, _class.$$events = ["anonymousFunc0", "handleSelectSku", "handleQuantityChange", "funPrivatesnIXe", "funPrivatejWoEJ"], _class.options = {
-=======
-}, _class.$$events = ["anonymousFunc0", "handleSelectSku", "handleQuantityChange", "funPrivateJapPf", "funPrivatelYTCq"], _class.options = {
->>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
+}, _class.$$events = ["anonymousFunc0", "handleSelectSku", "handleQuantityChange", "funPrivateEMNdR", "funPrivateqbUmC"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   info: null,

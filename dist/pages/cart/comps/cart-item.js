@@ -91,33 +91,18 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-<<<<<<< HEAD
-    key: "funPrivateCUCOX",
-    value: function funPrivateCUCOX() {
+    key: "funPrivatevAkXD",
+    value: function funPrivatevAkXD() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateLtiLB",
-    value: function funPrivateLtiLB() {
+    key: "funPrivateQGEqy",
+    value: function funPrivateQGEqy() {
       this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateUufcf",
-    value: function funPrivateUufcf() {
-=======
-    key: "funPrivateWJZPG",
-    value: function funPrivateWJZPG() {
-      this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivategfuJE",
-    value: function funPrivategfuJE() {
-      this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivatedyHOh",
-    value: function funPrivatedyHOh() {
->>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
+    key: "funPrivatefDtEk",
+    value: function funPrivatefDtEk() {
       this.__triggerPropsFn("onNumChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -184,11 +169,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-<<<<<<< HEAD
-}, _class.$$events = ["funPrivateCUCOX", "funPrivateLtiLB", "funPrivateUufcf"], _class.defaultProps = {
-=======
-}, _class.$$events = ["funPrivateWJZPG", "funPrivategfuJE", "funPrivatedyHOh"], _class.defaultProps = {
->>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
+}, _class.$$events = ["funPrivatevAkXD", "funPrivateQGEqy", "funPrivatefDtEk"], _class.defaultProps = {
   onClick: function onClick() {},
   onClickPromotion: function onClickPromotion() {},
   showMarketPrice: false,
