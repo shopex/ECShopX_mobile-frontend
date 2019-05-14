@@ -32,10 +32,17 @@
             <view class="goods-buy-panel__ft">
                 <view class="goods-buy-panel__btns">
                     <block wx:if="{{type === 'cart' || type === 'all' && hasStore}}">
+<<<<<<< HEAD
                         <button class="{{anonymousState__temp4}}" bindtap="funPrivatesnIXe" disabled="{{!curSku}}" data-e-tap-so="this" data-e-tap-a-a="{{curSku}}" data-e-tap-a-b="{{quantity}}">添加至购物车</button>
                     </block>
                     <block wx:if="{{type === 'fastbuy' || type === 'all' && hasStore}}">
                         <button class="{{anonymousState__temp5}}" bindtap="funPrivatejWoEJ" disabled="{{!curSku}}" data-e-tap-so="this" data-e-tap-a-a="{{curSku}}" data-e-tap-a-b="{{quantity}}">{{fastBuyText}}</button>
+=======
+                        <button class="{{anonymousState__temp4}}" bindtap="funPrivateJapPf" disabled="{{!curSku}}" data-e-tap-so="this" data-e-tap-a-a="{{curSku}}" data-e-tap-a-b="{{quantity}}">添加至购物车</button>
+                    </block>
+                    <block wx:if="{{type === 'fastbuy' || type === 'all' && hasStore}}">
+                        <button class="{{anonymousState__temp5}}" bindtap="funPrivatelYTCq" disabled="{{!curSku}}" data-e-tap-so="this" data-e-tap-a-a="{{curSku}}" data-e-tap-a-b="{{quantity}}">{{fastBuyText}}</button>
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
                     </block>
                     <block wx:if="{{!hasStore}}"><text>当前店铺无货</text>
                     </block>

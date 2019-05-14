@@ -78,8 +78,13 @@ var SpCell = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
+<<<<<<< HEAD
     key: "funPrivateLKgxH",
     value: function funPrivateLKgxH() {
+=======
+    key: "funPrivateQZQiS",
+    value: function funPrivateQZQiS() {
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -126,7 +131,11 @@ var SpCell = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
+<<<<<<< HEAD
 }, _class.$$events = ["funPrivateLKgxH"], _class.options = {
+=======
+}, _class.$$events = ["funPrivateQZQiS"], _class.options = {
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
   addGlobalClass: true
 }, _class.defaultProps = {
   isLink: false,

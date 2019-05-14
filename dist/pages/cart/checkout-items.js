@@ -70,8 +70,13 @@ var CheckoutItems = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
+<<<<<<< HEAD
     key: "funPrivateEamwp",
     value: function funPrivateEamwp() {
+=======
+    key: "funPrivateuKoiD",
+    value: function funPrivateuKoiD() {
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
       this.__triggerPropsFn("onClickBack", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -98,7 +103,11 @@ var CheckoutItems = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
+<<<<<<< HEAD
 }, _class.$$events = ["funPrivateEamwp"], _class.defaultProps = {
+=======
+}, _class.$$events = ["funPrivateuKoiD"], _class.defaultProps = {
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
   isOpened: false,
   list: [],
   onClickBack: function onClickBack() {}

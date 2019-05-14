@@ -6,7 +6,11 @@
         <view class="goods-item__hd">
             <slot></slot>
         </view>
+<<<<<<< HEAD
         <view class="goods-item__bd" bindtap="funPrivateEZNfb">
+=======
+        <view class="goods-item__bd" bindtap="funPrivateAMaKO">
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
             <view class="goods-item__img-wrap">
                 <image class="goods-item__img" mode="aspectFill" src="{{img}}"></image>
             </view>

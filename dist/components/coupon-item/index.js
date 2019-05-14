@@ -97,8 +97,13 @@ var CouponItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
+<<<<<<< HEAD
     key: "funPrivatekLqxT",
     value: function funPrivatekLqxT() {
+=======
+    key: "funPrivateaUQYM",
+    value: function funPrivateaUQYM() {
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -133,7 +138,11 @@ var CouponItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
+<<<<<<< HEAD
 }, _class.$$events = ["funPrivatekLqxT", "handleClickChecked"], _class.options = {
+=======
+}, _class.$$events = ["funPrivateaUQYM", "handleClickChecked"], _class.options = {
+>>>>>>> e5c1a9af4742e991705dab2142a9948d3cf46f3c
   addGlobalClass: true
 }, _class.defaultProps = {
   onClick: function onClick() {},

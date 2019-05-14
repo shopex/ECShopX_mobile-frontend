@@ -36,7 +36,7 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = OrderItem.__proto__ || Object.getPrototypeOf(OrderItem)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "img", "showExtra", "customFooter", "payType", "renderFooter"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = OrderItem.__proto__ || Object.getPrototypeOf(OrderItem)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "img", "showExtra", "customFooter", "payType", "renderDesc", "renderFooter"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(OrderItem, [{
@@ -73,8 +73,8 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivategjCTf",
-    value: function funPrivategjCTf() {
+    key: "funPrivateSxUcl",
+    value: function funPrivateSxUcl() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -105,7 +105,7 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivategjCTf"], _class.defaultProps = {
+}, _class.$$events = ["funPrivateSxUcl"], _class.defaultProps = {
   onClick: function onClick() {},
   payType: '',
   showExtra: true,
