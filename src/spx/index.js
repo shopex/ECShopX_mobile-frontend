@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro'
+import '@tarojs/async-await'
 import api from '@/api'
 import { getCurrentRoute, log } from '@/utils'
 

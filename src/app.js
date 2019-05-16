@@ -1,10 +1,9 @@
 import Taro, { Component } from '@tarojs/taro'
-import '@tarojs/async-await'
+import S from '@/spx'
 import { Provider } from '@tarojs/redux'
 import configStore from '@/store'
 import useHooks from '@/hooks'
 import api from '@/api'
-import S from '@/spx'
 import { FormIds } from '@/service'
 import Index from './pages/index'
 

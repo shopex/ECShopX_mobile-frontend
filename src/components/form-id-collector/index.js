@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Form, Button } from '@tarojs/components'
+import { Form, Button } from '@tarojs/components'
 import { classNames } from '@/utils'
 import { FormIds } from '@/service'
 

@@ -71,6 +71,8 @@
 		"eslint-plugin-import": "^2.12.0",
 		"eslint-plugin-react": "^7.8.2",
 		"eslint-plugin-taro": "1.2.26",
+		"fs-extra": "^8.0.1",
+		"glob": "^7.1.4",
 		"qn-webpack": "^2.0.3"
 	}
 }
