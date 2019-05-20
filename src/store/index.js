@@ -20,7 +20,7 @@ const middlewares = [
 const reducer = persistReducer({
   key: 'root',
   storage,
-  blacklist: ['cart', 'member']
+  blacklist: ['cart', 'member', 'address']
 }, reducers)
 
 let store, persistor

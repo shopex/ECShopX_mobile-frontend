@@ -71,7 +71,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   var address = _ref2.address,
       cart = _ref2.cart;
   return {
-    defaultAddress: address.defaultAddress,
+    address: address.current,
     coupon: cart.coupon
   };
 }, function (dispatch) {
@@ -82,8 +82,8 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     onClearCart: function onClearCart() {
       return dispatch({ type: 'cart/clear' });
     },
-    onAddressChoose: function onAddressChoose(defaultAddress) {
-      return dispatch({ type: 'address/choose', payload: defaultAddress });
+    onAddressChoose: function onAddressChoose(address) {
+      return dispatch({ type: 'address/choose', payload: address });
     }
   };
 }), _dec2 = (0, _index8.withLogin)(), _dec(_class = _dec2(_class = (_temp2 = _class2 = function (_BaseComponent) {
@@ -109,7 +109,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         state: 'province',
         city: 'city',
         district: 'county',
-        addr_id: 'address_id',
+        address_id: 'address_id',
         mobile: 'telephone',
         name: 'username',
         zip: 'postalCode',
@@ -259,7 +259,6 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       this.state = {
         info: null,
         address_list: [],
-        address: null,
         showShippingPicker: false,
         showAddressPicker: false,
         showCheckoutItems: false,
@@ -336,25 +335,17 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "componentDidShow",
     value: function componentDidShow() {
-      var _this3 = this;
-
-      if (this.state.address_list < 2) {
-        this.fetchAddress();
-      }
-      if (!this.params || !this.state.address) {
+      if (!this.params || !this.props.address) {
         return;
-      }this.calcOrder();
-      this.setState({
-        address: this.props.defaultAddress
-      }, function () {
-        _this3.handleAddressChange(_this3.state.address);
-      });
+      }var address_id = this.props.address.address_id;
+
+      this.changeSelection({ address_id: address_id });
     }
   }, {
     key: "fetchAddress",
     value: function () {
       var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(cb) {
-        var _this4 = this;
+        var _this3 = this;
 
         var _ref7, list;
 
@@ -377,7 +368,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 this.setState({
                   address_list: list
                 }, function () {
-                  _this4.changeSelection();
+                  _this3.changeSelection();
                   cb && cb(list);
                 });
 
@@ -407,16 +398,19 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         });
         return;
       }
-      var address_id = params.address_id;
 
-      var address = (0, _find2.default)(address_list, function (addr) {
-        return address_id ? address_id === addr.address_id : addr.is_def > 0;
-      }) || address_list[0] || null;
+      var address = this.props.address;
+      if (!address) {
+        var address_id = params.address_id;
 
-      _index9.log.debug('[address picker] change selection: ', address);
+        address = (0, _find2.default)(address_list, function (addr) {
+          return address_id ? address_id === addr.address_id : addr.is_def > 0;
+        }) || address_list[0] || null;
+      }
+
+      _index9.log.debug('[address picker] selection: ', address);
       this.__triggerPropsFn("onAddressChoose", [null].concat([address]));
       this.handleAddressChange(address);
-      // this.props.onChange(address)
     }
   }, {
     key: "getParams",
@@ -571,9 +565,10 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       }
 
       var couponText = !coupon ? '' : coupon.type === 'member' ? '会员折扣' : coupon.value && coupon.value.title || '';
-      var isBtnDisabled = !address || !address.addr_id;
+      var isBtnDisabled = !address;
 
       Object.assign(this.__state, {
+        address: address,
         couponText: couponText,
         isBtnDisabled: isBtnDisabled
       });
@@ -588,6 +583,10 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     "value": null
   },
   "defaultAddress": {
+    "type": null,
+    "value": null
+  },
+  "address": {
     "type": null,
     "value": null
   },

@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import {View, Text, ScrollView} from '@tarojs/components'
-import { AtNavBar } from 'taro-ui'
+import { View, Text } from '@tarojs/components'
 import { SpCell, SpToast, SpNote } from '@/components'
 import { pickBy, log } from '@/utils'
 import { connect } from '@tarojs/redux'
@@ -12,9 +11,9 @@ import S from '@/spx'
 
 import './address.scss'
 @connect(( { address } ) => ({
-  defaultAddress: address.defaultAddress,
+  address: address.current,
 }), (dispatch) => ({
-  onAddressChoose: (defaultAddress) => dispatch({ type: 'address/choose', payload: defaultAddress }),
+  onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
 }))
 export default class AddressChoose extends Component {
   static options = {

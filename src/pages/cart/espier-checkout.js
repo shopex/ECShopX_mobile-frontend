@@ -29,12 +29,12 @@ const transformCartList = (list) => {
 }
 
 @connect(({ address, cart }) => ({
-  defaultAddress: address.defaultAddress,
+  address: address.current,
   coupon: cart.coupon
 }), (dispatch) => ({
   onClearFastbuy: () => dispatch({ type: 'cart/clearFastbuy' }),
   onClearCart: () => dispatch({ type: 'cart/clear' }),
-  onAddressChoose: (defaultAddress) => dispatch({ type: 'address/choose', payload: defaultAddress })
+  onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
 }))
 @withLogin()
 export default class CartCheckout extends Component {
@@ -48,7 +48,6 @@ export default class CartCheckout extends Component {
     this.state = {
       info: null,
       address_list: [],
-      address: null,
       showShippingPicker: false,
       showAddressPicker: false,
       showCheckoutItems: false,
@@ -119,17 +118,10 @@ export default class CartCheckout extends Component {
   }
 
   componentDidShow () {
-    if(this.state.address_list < 2) {
-      this.fetchAddress()
-    }
-    if (!this.params || !this.state.address) return
+    if (!this.params || !this.props.address) return
 
-    this.calcOrder()
-    this.setState({
-      address: this.props.defaultAddress
-    },()=>{
-      this.handleAddressChange(this.state.address)
-    })
+    const { address_id } = this.props.address
+    this.changeSelection({ address_id })
   }
 
   async fetchAddress (cb) {
@@ -155,15 +147,17 @@ export default class CartCheckout extends Component {
       })
       return
     }
-    const { address_id } = params
-    let address = find(address_list, addr => address_id ? address_id === addr.address_id : addr.is_def > 0) || address_list[0] || null
 
-    log.debug('[address picker] change selection: ', address)
+    let address = this.props.address
+    if (!address) {
+      const { address_id } = params
+      address = find(address_list, addr => address_id ? address_id === addr.address_id : addr.is_def > 0) || address_list[0] || null
+    }
+
+    log.debug('[address picker] selection: ', address)
     this.props.onAddressChoose(address)
     this.handleAddressChange(address)
-    // this.props.onChange(address)
   }
-
 
   getParams () {
     const receiver = pickBy(this.state.address, {
@@ -250,7 +244,7 @@ export default class CartCheckout extends Component {
       state: 'province',
       city: 'city',
       district: 'county',
-      addr_id: 'address_id',
+      address_id: 'address_id',
       mobile: 'telephone',
       name: 'username',
       zip: 'postalCode',
@@ -382,7 +376,7 @@ export default class CartCheckout extends Component {
       : coupon.type === 'member'
         ? '会员折扣'
         : ((coupon.value && coupon.value.title) || '')
-    const isBtnDisabled = !address || !address.addr_id
+    const isBtnDisabled = !address
 
     return (
       <View className='page-checkout'>

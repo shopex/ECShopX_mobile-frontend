@@ -1,8 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { AtNavBar } from 'taro-ui'
 import api from '@/api'
-import { Loading } from '@/components'
+import { Loading, NavBar } from '@/components'
 import { pickBy } from '@/utils'
 import { withLogin } from '@/hocs'
 import { AlipayPay, WeH5Pay, PointDepositPay } from './comps'
@@ -34,8 +33,7 @@ export default class Cashier extends Component {
       title: 'title',
       total_fee: ({ total_fee }) => (total_fee/100).toFixed(2)
     })
-    // const list = resolveCartItems(cartlist)
-    // const items = normalizeItems(list)
+
     this.setState({
       info: info
     })
@@ -62,11 +60,9 @@ export default class Cashier extends Component {
 
     return (
       <View className='page-cashier-index'>
-        <AtNavBar
-          onClickLeftIcon={this.handleClickBack}
-          color='#000'
+        <NavBar
           title='收银台'
-          leftIconType='chevron-left'
+          handleClickBack={this.handleClickBack}
         />
         <View className='cashier-money'>
           {

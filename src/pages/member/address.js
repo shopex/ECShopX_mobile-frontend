@@ -7,10 +7,13 @@ import S from '@/spx'
 import api from '@/api'
 
 import './address.scss'
+
+const ADDRESS_ID = 'address_id'
+
 @connect(( { address } ) => ({
-  defaultAddress: address.defaultAddress,
+  address: address.current,
 }), (dispatch) => ({
-  onAddressChoose: (defaultAddress) => dispatch({ type: 'address/choose', payload: defaultAddress }),
+  onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
 }))
 export default class AddressIndex extends Component {
   constructor (props) {
@@ -18,15 +21,13 @@ export default class AddressIndex extends Component {
 
     this.state = {
       list: [],
-      isChoose: false,
-      isItemChecked: false,
-      ItemIndex: null,
-      isDefaultChecked: true,
+      isPicker: false,
+      selectedId: null
     }
   }
 
   componentDidMount () {
-    this.fetch()
+    // this.fetch()
   }
 
   componentDidShow() {
@@ -36,7 +37,7 @@ export default class AddressIndex extends Component {
   async fetch () {
     if(this.$router.params.isPicker) {
       this.setState({
-        isChoose: true
+        isPicker: true
       })
     }
     Taro.showLoading({
@@ -45,23 +46,24 @@ export default class AddressIndex extends Component {
     const { list } = await api.member.addressList()
     Taro.hideLoading()
 
+    let selectedId = null
+    if (this.props.address) {
+      selectedId = this.props.address[ADDRESS_ID]
+    } else {
+      selectedId = list.find(addr => addr.is_def > 0) || null
+    }
+
     this.setState({
-      list
+      list,
+      selectedId
     })
   }
 
-  handleClickChecked = (index, item) => {
-    if(index === this.state.ItemIndex) {
-      this.setState({
-        isItemChecked: !this.state.isItemChecked,
-        ItemIndex: index
-      })
-    } else {
-      this.setState({
-        isItemChecked: true,
-        ItemIndex: index
-      })
-    }
+  handleClickChecked = (item) => {
+    this.setState({
+      selectedId: item[ADDRESS_ID]
+    })
+
     this.props.onAddressChoose(item)
     setTimeout(()=>{
       Taro.navigateBack()
@@ -110,12 +112,9 @@ export default class AddressIndex extends Component {
   }
 
   render () {
-    const { ItemIndex, isItemChecked, isChoose, list } = this.state
+    const { selectedId, isItemChecked, isPicker, list } = this.state
     return (
       <View className='page-address-index'>
-        {/*<AddressList*/}
-          {/*paths={this.$router.params.paths}*/}
-        {/*/>*/}
         {
           process.env.TARO_ENV === 'weapp'
             ? <SpCell
@@ -131,12 +130,12 @@ export default class AddressIndex extends Component {
           {
             list.map((item, index) => {
               return (
-                <View key={index} className='address-item'>
+                <View key={item[ADDRESS_ID]} className='address-item'>
                   {
-                    isChoose && <View className='address-item__check' onClick={this.handleClickChecked.bind(this, index, item)}>
+                    isPicker && <View className='address-item__check' onClick={this.handleClickChecked.bind(this, item)}>
                       {
-                        index === ItemIndex && isItemChecked
-                          ? <Text className='in-icon in-icon-check address-item__checked'> </Text>
+                        item[ADDRESS_ID] === selectedId
+                          ? <Text className='in-icon in-icon-check address-item__checked'></Text>
                           : <Text className='address-item__unchecked'> </Text>
                       }
                     </View>

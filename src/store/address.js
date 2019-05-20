@@ -1,20 +1,19 @@
 import { createReducer } from 'redux-create-reducer'
 
 const initState = {
-  defaultAddress: null,
+  current: null,
 }
 
 const address = createReducer(initState, {
   ['address/choose'](state, action) {
-    const defaultAddress = action.payload
+    const current = action.payload
 
     return {
       ...state,
-      defaultAddress
+      current
     }
   }
 
 })
 
 export default address
-
