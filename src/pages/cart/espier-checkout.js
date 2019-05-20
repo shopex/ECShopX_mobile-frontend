@@ -117,11 +117,10 @@ export default class CartCheckout extends Component {
     this.handleAddressChange(this.props.defaultAddress)
   }
 
-  componentDidShow () {
-    if (!this.params || !this.props.address) return
-
-    const { address_id } = this.props.address
-    this.changeSelection({ address_id })
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.address !== this.props.address) {
+      this.fetchAddress()
+    }
   }
 
   async fetchAddress (cb) {
@@ -142,6 +141,7 @@ export default class CartCheckout extends Component {
   changeSelection (params = {}) {
     const { address_list } = this.state
     if (address_list.length === 0) {
+      this.calcOrder()
       Taro.navigateTo({
         url: '/pages/member/edit-address'
       })

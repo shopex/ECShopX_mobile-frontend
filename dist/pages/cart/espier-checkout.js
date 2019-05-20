@@ -333,13 +333,11 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       this.handleAddressChange(this.props.defaultAddress);
     }
   }, {
-    key: "componentDidShow",
-    value: function componentDidShow() {
-      if (!this.params || !this.props.address) {
-        return;
-      }var address_id = this.props.address.address_id;
-
-      this.changeSelection({ address_id: address_id });
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.address !== this.props.address) {
+        this.fetchAddress();
+      }
     }
   }, {
     key: "fetchAddress",
@@ -393,6 +391,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       var address_list = this.state.address_list;
 
       if (address_list.length === 0) {
+        this.calcOrder();
         _index2.default.navigateTo({
           url: '/pages/member/edit-address'
         });
@@ -546,7 +545,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var coupon = this.__props.coupon;
