@@ -172,103 +172,22 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         showBuyPanel: true,
         buyPanelType: type
       });
-    }, _this.handleBuyClick = function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(type, skuInfo, num) {
-        var _this$state, marketing, info, item_id, url, groups_activity_id, seckill_id, _ref7, ticket;
+    }, _this.handleBuyAction = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _this.setState({
+                showBuyPanel: false
+              });
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _this$state = _this.state, marketing = _this$state.marketing, info = _this$state.info;
-                item_id = skuInfo.item_id;
-                url = "/pages/cart/espier-checkout";
-
-
-                _this.setState({
-                  showBuyPanel: false
-                });
-
-                if (!(type === 'cart')) {
-                  _context2.next = 10;
-                  break;
-                }
-
-                url = "/pages/cart/espier-index";
-
-                _context2.next = 8;
-                return _index5.default.cart.add({
-                  item_id: item_id,
-                  num: num
-                });
-
-              case 8:
-                _index2.default.showToast({
-                  title: '成功加入购物车',
-                  icon: 'success'
-                });
-                return _context2.abrupt("return");
-
-              case 10:
-                if (!(type === 'fastbuy')) {
-                  _context2.next = 27;
-                  break;
-                }
-
-                url += '?cart_type=fastbuy';
-
-                if (!(marketing === 'group')) {
-                  _context2.next = 17;
-                  break;
-                }
-
-                groups_activity_id = info.group_activity.groups_activity_id;
-
-                url += "&type=" + marketing + "&group_id=" + groups_activity_id;
-                _context2.next = 24;
-                break;
-
-              case 17:
-                if (!(marketing === 'seckill')) {
-                  _context2.next = 24;
-                  break;
-                }
-
-                seckill_id = info.seckill_activity.seckill_id;
-                _context2.next = 21;
-                return _index5.default.item.seckillCheck({ item_id: item_id, seckill_id: seckill_id, num: num });
-
-              case 21:
-                _ref7 = _context2.sent;
-                ticket = _ref7.ticket;
-
-                url += "&type=" + marketing + "&seckill_id=" + seckill_id + "&ticket=" + ticket;
-
-              case 24:
-                _context2.next = 26;
-                return _index5.default.cart.fastBuy({
-                  item_id: item_id,
-                  num: num
-                });
-
-              case 26:
-
-                _index2.default.navigateTo({
-                  url: url
-                });
-
-              case 27:
-              case "end":
-                return _context2.stop();
-            }
+            case 1:
+            case "end":
+              return _context2.stop();
           }
-        }, _callee2, _this2);
-      }));
-
-      return function (_x2, _x3, _x4) {
-        return _ref6.apply(this, arguments);
-      };
-    }(), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+        }
+      }, _callee2, _this2);
+    })), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Detail, [{
@@ -327,7 +246,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
   }, {
     key: "fetchCartCount",
     value: function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
         var res;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -360,7 +279,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       }));
 
       function fetchCartCount() {
-        return _ref8.apply(this, arguments);
+        return _ref7.apply(this, arguments);
       }
 
       return fetchCartCount;
@@ -368,7 +287,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
   }, {
     key: "fetch",
     value: function () {
-      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
         var id, info, desc, marketing, timer, hasStock, startSecKill, specImgsDict;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
@@ -439,7 +358,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       }));
 
       function fetch() {
-        return _ref9.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       }
 
       return fetch;
@@ -550,7 +469,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleScroll", "handleBuyBarClick", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyClick"], _class2.options = {
+}, _class2.$$events = ["handleScroll", "handleBuyBarClick", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
   addGlobalClass: true
 }, _temp2)) || _class) || _class);
 exports.default = Detail;

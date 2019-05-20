@@ -11,14 +11,14 @@ var _index = require("../npm/redux-create-reducer/index.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var initState = {
-  defaultAddress: null
+  current: null
 };
 
 var address = (0, _index.createReducer)(initState, _defineProperty({}, 'address/choose', function addressChoose(state, action) {
-  var defaultAddress = action.payload;
+  var current = action.payload;
 
   return _extends({}, state, {
-    defaultAddress: defaultAddress
+    current: current
   });
 }));
 

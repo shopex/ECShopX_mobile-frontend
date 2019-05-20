@@ -57,6 +57,7 @@ function fastBuy(params) {
       num = _params$num2 === undefined ? 1 : _params$num2;
 
   return _req2.default.post('/cart', {
+    cart_type: 'fastbuy',
     item_id: item_id,
     num: num,
     isAccumulate: false,

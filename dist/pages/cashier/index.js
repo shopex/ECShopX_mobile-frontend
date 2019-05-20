@@ -99,8 +99,7 @@ var Cashier = (_dec = (0, _index6.withLogin)(), _dec(_class = (_temp2 = _class2 
                     return (_total_fee / 100).toFixed(2);
                   }
                 });
-                // const list = resolveCartItems(cartlist)
-                // const items = normalizeItems(list)
+
 
                 this.setState({
                   info: info
@@ -140,7 +139,7 @@ var Cashier = (_dec = (0, _index6.withLogin)(), _dec(_class = (_temp2 = _class2 
   }]);
 
   return Cashier;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickBack"], _temp2)) || _class);
+}(_index.Component), _class2.properties = {}, _class2.$$events = [], _temp2)) || _class);
 exports.default = Cashier;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(Cashier, true));

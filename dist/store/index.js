@@ -37,7 +37,7 @@ var middlewares = [_index2.default, (0, _reduxLogger.createLogger)()];
 var reducer = (0, _persistReducer2.default)({
   key: 'root',
   storage: storage,
-  blacklist: ['cart', 'member']
+  blacklist: ['cart', 'member', 'address']
 }, _reducers2.default);
 
 var store = void 0,

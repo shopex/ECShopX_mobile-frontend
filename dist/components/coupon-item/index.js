@@ -97,8 +97,8 @@ var CouponItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateEsUjK",
-    value: function funPrivateEsUjK() {
+    key: "funPrivateIReZO",
+    value: function funPrivateIReZO() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -133,7 +133,7 @@ var CouponItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateEsUjK", "handleClickChecked"], _class.options = {
+}, _class.$$events = ["funPrivateIReZO", "handleClickChecked"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   onClick: function onClick() {},

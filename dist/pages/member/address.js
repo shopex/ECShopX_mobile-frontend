@@ -37,15 +37,17 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var ADDRESS_ID = 'address_id';
+
 var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
   var address = _ref.address;
   return {
-    defaultAddress: address.defaultAddress
+    address: address.current
   };
 }, function (dispatch) {
   return {
-    onAddressChoose: function onAddressChoose(defaultAddress) {
-      return dispatch({ type: 'address/choose', payload: defaultAddress });
+    onAddressChoose: function onAddressChoose(address) {
+      return dispatch({ type: 'address/choose', payload: address });
     }
   };
 }), _dec(_class = (_temp2 = _class2 = function (_BaseComponent) {
@@ -63,18 +65,11 @@ var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = AddressIndex.__proto__ || Object.getPrototypeOf(AddressIndex)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["list", "isChoose", "ItemIndex", "isItemChecked", "isDefaultChecked", "__fn_onAddressChoose"], _this.handleClickChecked = function (index, item) {
-      if (index === _this.state.ItemIndex) {
-        _this.setState({
-          isItemChecked: !_this.state.isItemChecked,
-          ItemIndex: index
-        });
-      } else {
-        _this.setState({
-          isItemChecked: true,
-          ItemIndex: index
-        });
-      }
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = AddressIndex.__proto__ || Object.getPrototypeOf(AddressIndex)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["list", "isPicker", "selectedId", "ADDRESS_ID", "address", "__fn_onAddressChoose"], _this.handleClickChecked = function (item) {
+      _this.setState({
+        selectedId: item[ADDRESS_ID]
+      });
+
       _this.__triggerPropsFn("onAddressChoose", [null].concat([item]));
       setTimeout(function () {
         _index2.default.navigateBack();
@@ -166,16 +161,14 @@ var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
       this.state = {
         list: [],
-        isChoose: false,
-        isItemChecked: false,
-        ItemIndex: null,
-        isDefaultChecked: true
+        isPicker: false,
+        selectedId: null
       };
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.fetch();
+      // this.fetch()
     }
   }, {
     key: "componentDidShow",
@@ -186,7 +179,7 @@ var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetch",
     value: function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        var _ref6, list;
+        var _ref6, list, selectedId;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -194,7 +187,7 @@ var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
               case 0:
                 if (this.$router.params.isPicker) {
                   this.setState({
-                    isChoose: true
+                    isPicker: true
                   });
                 }
                 _index2.default.showLoading({
@@ -209,11 +202,22 @@ var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
                 _index2.default.hideLoading();
 
+                selectedId = null;
+
+                if (this.props.address) {
+                  selectedId = this.props.address[ADDRESS_ID];
+                } else {
+                  selectedId = list.find(function (addr) {
+                    return addr.is_def > 0;
+                  }) || null;
+                }
+
                 this.setState({
-                  list: list
+                  list: list,
+                  selectedId: selectedId
                 });
 
-              case 8:
+              case 10:
               case "end":
                 return _context3.stop();
             }
@@ -236,18 +240,24 @@ var AddressIndex = (_dec = (0, _index3.connect)(function (_ref) {
       ;
 
       var _state = this.__state,
-          ItemIndex = _state.ItemIndex,
+          selectedId = _state.selectedId,
           isItemChecked = _state.isItemChecked,
-          isChoose = _state.isChoose,
+          isPicker = _state.isPicker,
           list = _state.list;
 
-      Object.assign(this.__state, {});
+      Object.assign(this.__state, {
+        ADDRESS_ID: ADDRESS_ID
+      });
       return this.__state;
     }
   }]);
 
   return AddressIndex;
 }(_index.Component), _class2.properties = {
+  "address": {
+    "type": null,
+    "value": null
+  },
   "__fn_onAddressChoose": {
     "type": null,
     "value": null

@@ -69,8 +69,8 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateZmdXp",
-    value: function funPrivateZmdXp() {
+    key: "funPrivateHMKAT",
+    value: function funPrivateHMKAT() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -101,7 +101,7 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateZmdXp"], _class.options = {
+}, _class.$$events = ["funPrivateHMKAT"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   onClick: null,

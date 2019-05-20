@@ -17,7 +17,13 @@ var _index2 = _interopRequireDefault(_index);
 
 var _index3 = require("../../utils/index.js");
 
+var _index4 = require("../../api/index.js");
+
+var _index5 = _interopRequireDefault(_index4);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -29,7 +35,8 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
   _inherits(GoodsBuyPanel, _BaseComponent);
 
   function GoodsBuyPanel() {
-    var _ref;
+    var _ref,
+        _this2 = this;
 
     var _temp, _this, _ret;
 
@@ -39,7 +46,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyPanel.__proto__ || Object.getPrototypeOf(GoodsBuyPanel)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp5", "info", "loopArray0", "curImg", "curSku", "maxStore", "quantity", "type", "hasStore", "fastBuyText", "selection", "isActive", "__fn_onChange", "__fn_onClick", "isOpened", "onClickAddCart", "onClickFastBuy"], _this.getSkuProps = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyPanel.__proto__ || Object.getPrototypeOf(GoodsBuyPanel)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp5", "info", "loopArray0", "curImg", "curSku", "maxStore", "quantity", "type", "hasStore", "busy", "fastBuyText", "marketing", "selection", "isActive", "__fn_onChange", "__fn_onAddCart", "__fn_onFastbuy", "isOpened"], _this.getSkuProps = function () {
       var info = _this.props.info;
 
       if (!info) {
@@ -70,7 +77,6 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
         selection[idx] = item.spec_value_id;
       }
 
-      console.log(selection);
       _this.updateCurSku(selection);
       _this.setState({
         selection: selection
@@ -82,7 +88,131 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
 
       _this.setState({ isActive: isActive });
       _this.props.onClose && _this.__triggerPropsFn("onClose", [null].concat([]));
-    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    }, _this.handleBuyClick = function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type, skuInfo, num) {
+        var _this$state, marketing, info, item_id, url, groups_activity_id, seckill_id, _ref3, ticket;
+
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this$state = _this.state, marketing = _this$state.marketing, info = _this$state.info;
+                item_id = skuInfo.item_id;
+                url = "/pages/cart/espier-checkout";
+
+                if (!(type === 'cart')) {
+                  _context.next = 16;
+                  break;
+                }
+
+                url = "/pages/cart/espier-index";
+
+                _context.prev = 5;
+                _context.next = 8;
+                return _index5.default.cart.add({
+                  item_id: item_id,
+                  num: num
+                });
+
+              case 8:
+                _context.next = 13;
+                break;
+
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](5);
+
+                console.log(_context.t0);
+
+              case 13:
+
+                _index2.default.showToast({
+                  title: '成功加入购物车',
+                  icon: 'success'
+                });
+
+                _this.setState({
+                  busy: false
+                });
+
+                _this.__triggerPropsFn("onAddCart", [null].concat([item_id, num]));
+
+              case 16:
+                if (!(type === 'fastbuy')) {
+                  _context.next = 41;
+                  break;
+                }
+
+                url += '?cart_type=fastbuy';
+
+                if (!(marketing === 'group')) {
+                  _context.next = 23;
+                  break;
+                }
+
+                groups_activity_id = info.group_activity.groups_activity_id;
+
+                url += "&type=" + marketing + "&group_id=" + groups_activity_id;
+                _context.next = 30;
+                break;
+
+              case 23:
+                if (!(marketing === 'seckill')) {
+                  _context.next = 30;
+                  break;
+                }
+
+                seckill_id = info.seckill_activity.seckill_id;
+                _context.next = 27;
+                return _index5.default.item.seckillCheck({ item_id: item_id, seckill_id: seckill_id, num: num });
+
+              case 27:
+                _ref3 = _context.sent;
+                ticket = _ref3.ticket;
+
+                url += "&type=" + marketing + "&seckill_id=" + seckill_id + "&ticket=" + ticket;
+
+              case 30:
+                _context.prev = 30;
+                _context.next = 33;
+                return _index5.default.cart.fastBuy({
+                  item_id: item_id,
+                  num: num
+                });
+
+              case 33:
+                _context.next = 38;
+                break;
+
+              case 35:
+                _context.prev = 35;
+                _context.t1 = _context["catch"](30);
+
+                console.log(_context.t1);
+
+              case 38:
+
+                _this.setState({
+                  busy: false
+                });
+
+                _this.__triggerPropsFn("onFastbuy", [null].concat([item_id, num]));
+                _index2.default.navigateTo({
+                  url: url
+                });
+
+              case 41:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2, [[5, 10], [30, 35]]);
+      }));
+
+      return function (_x, _x2, _x3) {
+        return _ref2.apply(this, arguments);
+      };
+    }(), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(GoodsBuyPanel, [{
@@ -91,6 +221,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       _get(GoodsBuyPanel.prototype.__proto__ || Object.getPrototypeOf(GoodsBuyPanel.prototype), "_constructor", this).call(this, props);
 
       this.state = {
+        marketing: 'normal',
         selection: [],
         curSku: null,
         curImg: null,
@@ -105,6 +236,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
     value: function componentDidMount() {
       var info = this.props.info;
 
+      var marketing = info.group_activity ? 'group' : info.seckill_activity ? 'seckill' : 'normal';
       var skuDict = {};
 
       info.spec_items.forEach(function (t) {
@@ -120,6 +252,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       var selection = Array(info.item_spec_desc.length).fill(null);
       this.skuDict = skuDict;
       this.setState({
+        marketing: marketing,
         selection: selection
       });
     }
@@ -216,7 +349,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
   }, {
     key: "_createData",
     value: function _createData() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
@@ -232,7 +365,8 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
           curImg = _state.curImg,
           quantity = _state.quantity,
           selection = _state.selection,
-          isActive = _state.isActive;
+          isActive = _state.isActive,
+          busy = _state.busy;
 
 
       if (!info) {
@@ -245,7 +379,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       var anonymousState__temp = (0, _index3.classNames)('goods-buy-panel', isActive ? 'goods-buy-panel__active' : null);
 
       this.anonymousFunc0 = function () {
-        return _this2.toggleShow(false);
+        return _this3.toggleShow(false);
       };
 
       var anonymousState__temp4 = type === 'cart' || type === 'all' && hasStore ? (0, _index3.classNames)('goods-buy-panel__btn btn-add-cart', { 'is-disabled': !curSku }) : null;
@@ -258,7 +392,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
           sku = {
             $original: (0, _index.internal_get_original)(sku)
           };
-          var $loopState__temp3 = (0, _index3.classNames)('sku-item', { 'is-active': sku.$original.spec_value_id === selection[idx], 'is-disabled': _this2.disabledSet.has(sku.$original.spec_value_id) });
+          var $loopState__temp3 = (0, _index3.classNames)('sku-item', { 'is-active': sku.$original.spec_value_id === selection[idx], 'is-disabled': _this3.disabledSet.has(sku.$original.spec_value_id) });
           return {
             $loopState__temp3: $loopState__temp3,
             $original: sku.$original
@@ -278,6 +412,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
         maxStore: maxStore,
         type: type,
         hasStore: hasStore,
+        busy: busy,
         fastBuyText: fastBuyText
       });
       return this.__state;
@@ -286,16 +421,6 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
     key: "anonymousFunc0",
     value: function anonymousFunc0(e) {
       ;
-    }
-  }, {
-    key: "funPrivatetvRWW",
-    value: function funPrivatetvRWW() {
-      this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivateEQlkZ",
-    value: function funPrivateEQlkZ() {
-      this.__triggerPropsFn("onClickFastBuy", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
 
@@ -317,6 +442,14 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   },
+  "__fn_onAddCart": {
+    "type": null,
+    "value": null
+  },
+  "__fn_onFastbuy": {
+    "type": null,
+    "value": null
+  },
   "type": {
     "type": null,
     "value": null
@@ -325,37 +458,18 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   },
-  "onClickAddCart": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClick": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickAddCart": {
-    "type": null,
-    "value": null
-  },
-  "onClickFastBuy": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickFastBuy": {
-    "type": null,
-    "value": null
-  },
   "isOpened": {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["anonymousFunc0", "handleSelectSku", "handleQuantityChange", "funPrivatetvRWW", "funPrivateEQlkZ"], _class.options = {
+}, _class.$$events = ["anonymousFunc0", "handleSelectSku", "handleQuantityChange", "handleBuyClick"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   info: null,
   isOpened: false,
   type: 'fastbuy',
   fastBuyText: '立即购买',
+  busy: false,
   onClose: function onClose() {},
   onChange: function onChange() {},
   onClickAddCart: function onClickAddCart() {},

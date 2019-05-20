@@ -4,7 +4,7 @@ export { default as Price } from './price'
 export { default as BackToTop } from './back-to-top'
 export { default as GoodsBuyPanel } from './goods-buy-panel'
 export { default as GoodsItem } from './goods-item'
-export { default as AddressPicker } from './address/picker'
+// export { default as AddressPicker } from './address/picker'
 export { default as TabBar } from './tab-bar'
 export { default as FilterBar } from './filter-bar'
 export { default as FloatMenus } from './float-menus'
@@ -22,10 +22,7 @@ export { default as SpIconMenu } from './icon-menu'
 export { default as SpNote } from './note'
 export { default as SpHtmlContent } from './html-content'
 
-export { default as AddressList } from './new-address/address'
-export { default as EditAddress } from './new-address/edit-address'
-export { default as AddressChoose } from './new-address/choose-address'
-
+export { default as AddressChoose } from './address/choose-address'
 export { default as CouponItem } from './coupon-item'
 
 export default {}

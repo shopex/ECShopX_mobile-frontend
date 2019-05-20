@@ -27,6 +27,7 @@ export function add (params) {
 export function fastBuy (params) {
   const { item_id, num = 1 } = params
   return req.post('/cart', {
+    cart_type: 'fastbuy',
     item_id,
     num,
     isAccumulate: false,

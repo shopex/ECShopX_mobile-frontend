@@ -212,49 +212,10 @@ export default class Detail extends Component {
     })
   }
 
-  handleBuyClick = async (type, skuInfo, num) => {
-    const { marketing, info } = this.state
-    const { item_id } = skuInfo
-    let url = `/pages/cart/espier-checkout`
-
+  handleBuyAction = async () => {
     this.setState({
       showBuyPanel: false
     })
-
-    if (type === 'cart') {
-      url = `/pages/cart/espier-index`
-
-      await api.cart.add({
-        item_id,
-        num
-      })
-      Taro.showToast({
-        title: '成功加入购物车',
-        icon: 'success'
-      })
-      return
-    }
-
-    if (type === 'fastbuy') {
-      url += '?cart_type=fastbuy'
-      if (marketing === 'group') {
-        const { groups_activity_id } = info.group_activity
-        url += `&type=${marketing}&group_id=${groups_activity_id}`
-      } else if (marketing === 'seckill') {
-        const { seckill_id } = info.seckill_activity
-        const { ticket } = await api.item.seckillCheck({ item_id, seckill_id, num })
-        url += `&type=${marketing}&seckill_id=${seckill_id}&ticket=${ticket}`
-      }
-
-      await api.cart.fastBuy({
-        item_id,
-        num
-      })
-
-      Taro.navigateTo({
-        url
-      })
-    }
   }
 
   handleShare () {
@@ -499,8 +460,8 @@ export default class Detail extends Component {
             cartCount={cartCount}
             onClose={() => this.setState({ showBuyPanel: false })}
             onChange={this.handleSkuChange}
-            onClickAddCart={this.handleBuyClick.bind(this, 'cart')}
-            onClickFastBuy={this.handleBuyClick.bind(this, 'fastbuy')}
+            onAddCart={this.handleBuyAction.bind(this, 'cart')}
+            onFastbuy={this.handleBuyAction.bind(this, 'fastbuy')}
           />
         }
 

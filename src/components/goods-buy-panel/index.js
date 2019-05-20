@@ -4,6 +4,7 @@ import { AtInputNumber } from 'taro-ui'
 // import find from 'lodash/find'
 import { Price } from '@/components'
 import { classNames, log } from '@/utils'
+import api from '@/api'
 
 import './index.scss'
 
@@ -17,6 +18,7 @@ export default class GoodsBuyPanel extends Component {
     isOpened: false,
     type: 'fastbuy',
     fastBuyText: '立即购买',
+    busy: false,
     onClose: () => {},
     onChange: () => {},
     onClickAddCart: () => {},
@@ -27,6 +29,7 @@ export default class GoodsBuyPanel extends Component {
     super(props)
 
     this.state = {
+      marketing: 'normal',
       selection: [],
       curSku: null,
       curImg: null,
@@ -39,6 +42,11 @@ export default class GoodsBuyPanel extends Component {
 
   componentDidMount () {
     const { info } = this.props
+    const marketing = info.group_activity
+      ? 'group'
+      : info.seckill_activity
+        ? 'seckill'
+        : 'normal'
     const skuDict = {}
 
     info.spec_items.forEach(t => {
@@ -50,6 +58,7 @@ export default class GoodsBuyPanel extends Component {
     const selection = Array(info.item_spec_desc.length).fill(null)
     this.skuDict = skuDict
     this.setState({
+      marketing,
       selection
     })
   }
@@ -168,7 +177,6 @@ export default class GoodsBuyPanel extends Component {
       selection[idx] = item.spec_value_id
     }
 
-    console.log(selection)
     this.updateCurSku(selection)
     this.setState({
       selection
@@ -184,9 +192,70 @@ export default class GoodsBuyPanel extends Component {
     this.props.onClose && this.props.onClose()
   }
 
+  handleBuyClick = async (type, skuInfo, num) => {
+    const { marketing, info } = this.state
+    const { item_id } = skuInfo
+    let url = `/pages/cart/espier-checkout`
+
+    if (type === 'cart') {
+      url = `/pages/cart/espier-index`
+
+      try {
+        await api.cart.add({
+          item_id,
+          num
+        })
+      } catch (e) {
+        console.log(e)
+      }
+
+      Taro.showToast({
+        title: '成功加入购物车',
+        icon: 'success'
+      })
+
+      this.setState({
+        busy: false
+      })
+
+      this.props.onAddCart(item_id, num)
+    }
+
+
+    if (type === 'fastbuy') {
+      url += '?cart_type=fastbuy'
+      if (marketing === 'group') {
+        const { groups_activity_id } = info.group_activity
+        url += `&type=${marketing}&group_id=${groups_activity_id}`
+      } else if (marketing === 'seckill') {
+        const { seckill_id } = info.seckill_activity
+        const { ticket } = await api.item.seckillCheck({ item_id, seckill_id, num })
+        url += `&type=${marketing}&seckill_id=${seckill_id}&ticket=${ticket}`
+      }
+
+      try {
+        await api.cart.fastBuy({
+          item_id,
+          num
+        })
+      } catch (e) {
+        console.log(e)
+      }
+
+      this.setState({
+        busy: false
+      })
+
+      this.props.onFastbuy(item_id, num)
+      Taro.navigateTo({
+        url
+      })
+    }
+  }
+
   render () {
     const { info, type, fastBuyText } = this.props
-    const { curSku, curImg, quantity, selection, isActive } = this.state
+    const { curSku, curImg, quantity, selection, isActive, busy } = this.state
 
     if (!info) {
       return null
@@ -271,15 +340,17 @@ export default class GoodsBuyPanel extends Component {
             <View className='goods-buy-panel__btns'>
               {(type === 'cart' || type === 'all' && hasStore) && (
                 <Button
+                  loading={busy}
                   className={classNames('goods-buy-panel__btn btn-add-cart', { 'is-disabled': !curSku })}
-                  onClick={this.props.onClickAddCart.bind(this, curSku, quantity)}
+                  onClick={this.handleBuyClick.bind(this, 'cart', curSku, quantity)}
                   disabled={!curSku}
                 >添加至购物车</Button>
               )}
               {(type === 'fastbuy' || type === 'all' && hasStore) && (
                 <Button
+                  loading={busy}
                   className={classNames('goods-buy-panel__btn btn-fast-buy', { 'is-disabled': !curSku })}
-                  onClick={this.props.onClickFastBuy.bind(this, curSku, quantity)}
+                  onClick={this.handleBuyClick.bind(this, 'fastbuy', curSku, quantity)}
                   disabled={!curSku}
                 >{fastBuyText}</Button>
               )}
