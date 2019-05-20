@@ -193,7 +193,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetch",
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
-        var page, pageSize, selectParams, query, _ref4, list, total, item_params_list, favs, nList;
+        var page, pageSize, selectParams, query, _ref4, list, total, _ref4$item_params_lis, item_params_list, favs, nList;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -213,7 +213,8 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                 _ref4 = _context.sent;
                 list = _ref4.list;
                 total = _ref4.total_count;
-                item_params_list = _ref4.item_params_list;
+                _ref4$item_params_lis = _ref4.item_params_list;
+                item_params_list = _ref4$item_params_lis === undefined ? [] : _ref4$item_params_lis;
                 favs = this.props.favs;
 
 
@@ -265,7 +266,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   total: total
                 });
 
-              case 15:
+              case 16:
               case "end":
                 return _context.stop();
             }

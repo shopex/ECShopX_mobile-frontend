@@ -14,6 +14,10 @@ var _index = require("../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
+var _index3 = require("../../utils/index.js");
+
+var _index4 = require("../../service/index.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -36,10 +40,11 @@ var FormIdCollector = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FormIdCollector.__proto__ || Object.getPrototypeOf(FormIdCollector)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = [], _this.handleSubmit = function (e) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FormIdCollector.__proto__ || Object.getPrototypeOf(FormIdCollector)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "sync", "children"], _this.handleSubmit = function (e) {
       var formId = e.detail.formId;
+      var sync = _this.props.sync;
 
-      console.log(formId, e.detail);
+      _index4.FormIds.collectFormIds(formId, sync);
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -55,15 +60,50 @@ var FormIdCollector = (_temp2 = _class = function (_BaseComponent) {
       this.__props = arguments[1] || this.props || {};
       var __runloopRef = arguments[2];
       ;
-      Object.assign(this.__state, {});
+
+      if (_index2.default.getEnv() === _index2.default.ENV_TYPE.WEAPP) {
+        var children = this.__props.children;
+
+        return { children: children };
+      }
+
+      var anonymousState__temp = (0, _index3.classNames)('form-id-collector', 'classes');
+      Object.assign(this.__state, {
+        anonymousState__temp: anonymousState__temp
+      });
       return this.__state;
+    }
+  }, {
+    key: "funPrivatemWoqn",
+    value: function funPrivatemWoqn() {
+      this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
 
   return FormIdCollector;
-}(_index.Component), _class.properties = {}, _class.$$events = ["handleSubmit"], _class.options = {
+}(_index.Component), _class.properties = {
+  "sync": {
+    "type": null,
+    "value": null
+  },
+  "children": {
+    "type": null,
+    "value": null
+  },
+  "onClick": {
+    "type": null,
+    "value": null
+  },
+  "__fn_onClick": {
+    "type": null,
+    "value": null
+  }
+}, _class.$$events = ["handleSubmit", "funPrivatemWoqn"], _class.options = {
   addGlobalClass: true
-}, _temp2);
+}, _class.defaultProps = {
+  sync: false,
+  onClick: function onClick() {}
+}, _class.externalClasses = ['classes'], _temp2);
 exports.default = FormIdCollector;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(FormIdCollector));

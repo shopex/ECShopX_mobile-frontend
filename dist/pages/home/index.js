@@ -122,7 +122,6 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
           wgts = _state.wgts,
           authStatus = _state.authStatus;
 
-      console.log(wgts, 44);
 
       if (!wgts || !this.__props.store) {
         return null;

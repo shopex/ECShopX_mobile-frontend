@@ -1,5 +1,6 @@
 .temp/
 .rn_temp/
+dist_iwa/
 node_modules/
 .DS_Store
 .idea/

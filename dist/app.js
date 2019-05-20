@@ -10,25 +10,25 @@ var _index = require("./npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
-require("./npm/@tarojs/async-await/index.js");
+var _index3 = require("./spx/index.js");
 
-var _index3 = require("./npm/@tarojs/redux/index.js");
+var _index4 = _interopRequireDefault(_index3);
 
-var _index4 = require("./store/index.js");
+var _index5 = require("./npm/@tarojs/redux/index.js");
 
-var _index5 = _interopRequireDefault(_index4);
+var _index6 = require("./store/index.js");
+
+var _index7 = _interopRequireDefault(_index6);
 
 var _hooks = require("./hooks.js");
 
 var _hooks2 = _interopRequireDefault(_hooks);
 
-var _index6 = require("./api/index.js");
-
-var _index7 = _interopRequireDefault(_index6);
-
-var _index8 = require("./spx/index.js");
+var _index8 = require("./api/index.js");
 
 var _index9 = _interopRequireDefault(_index8);
+
+var _index10 = require("./service/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44,10 +44,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 //   require('nerv-devtools')
 // }
 
-var _configStore = (0, _index5.default)(),
+var _configStore = (0, _index7.default)(),
     store = _configStore.store;
 
-(0, _index3.setStore)(store);
+(0, _index5.setStore)(store);
 (0, _hooks2.default)();
 
 var _App = function (_BaseComponent) {
@@ -86,9 +86,10 @@ var _App = function (_BaseComponent) {
   }, {
     key: "componentDidShow",
     value: function componentDidShow() {
+      _index10.FormIds.startCollectingFormIds();
       try {
-        if (_index9.default.getAuthToken()) {
-          _index7.default.member.favsList().then(function (_ref2) {
+        if (_index4.default.getAuthToken()) {
+          _index9.default.member.favsList().then(function (_ref2) {
             var list = _ref2.list;
 
             store.dispatch({
@@ -97,11 +98,15 @@ var _App = function (_BaseComponent) {
             });
           });
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     }
   }, {
     key: "componentDidHide",
-    value: function componentDidHide() {}
+    value: function componentDidHide() {
+      _index10.FormIds.stop();
+    }
   }, {
     key: "componentDidCatchError",
     value: function componentDidCatchError() {}

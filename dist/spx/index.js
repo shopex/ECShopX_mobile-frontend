@@ -12,6 +12,8 @@ var _index = require("../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
+require("../npm/@tarojs/async-await/index.js");
+
 var _index3 = require("../api/index.js");
 
 var _index4 = _interopRequireDefault(_index3);

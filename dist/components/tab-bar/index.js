@@ -218,6 +218,8 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
           tabList = _state2.tabList,
           current = _state2.current;
 
+      // eslint-disable-next-line
+
       Object.assign(this.__state, {});
       return this.__state;
     }

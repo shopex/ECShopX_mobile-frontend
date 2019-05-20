@@ -111,6 +111,12 @@ export default class TabBar extends Component {
 
   render () {
     const { tabList, current } = this.state
+
+    // eslint-disable-next-line
+    if (APP_INTEGRATION) {
+      return <View></View>
+    }
+
     return (
       <AtTabBar
         fixed
