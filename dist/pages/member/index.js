@@ -98,7 +98,9 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
           }
         }
       }, _callee, _this2);
-    })), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    })), _this.handleClickApp = function () {
+      console.log('跳转统合小程序');
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(MemberIndex, [{
@@ -206,7 +208,7 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["navigateTo"], _temp2)) || _class) || _class);
+}, _class2.$$events = ["navigateTo", "handleClickApp"], _temp2)) || _class) || _class);
 exports.default = MemberIndex;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(MemberIndex, true));

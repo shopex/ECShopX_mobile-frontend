@@ -73,6 +73,10 @@ export default class MemberIndex extends Component {
     })
   }
 
+  handleClickApp = () => {
+    console.log('跳转统合小程序')
+  }
+
   render () {
     const { ordersCount, info } = this.state
     let isAvatatImg
@@ -105,7 +109,12 @@ export default class MemberIndex extends Component {
               <View className='in-icon in-icon-check' />
               <Text>Welcome</Text>
             </View>
-            <View className='member-btn__item' />
+            <View className='member-btn__item'>
+              <View
+                className='in-icon in-icon-home-th'
+                onClick={this.handleClickApp}
+              ></View>
+            </View>
             <View className='member-btn__item'>
               <View className='in-icon in-icon-coin' />
               <Text>我的积分</Text>
