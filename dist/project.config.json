@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 8,
+			"current": 2,
 			"list": [
 				{
 					"id": -1,
@@ -46,9 +46,9 @@
 				},
 				{
 					"id": 2,
-					"name": "商品详情-简单",
+					"name": "商品详情-无规格",
 					"pathName": "pages/item/espier-detail",
-					"query": "id=605",
+					"query": "id=1191",
 					"scene": null
 				},
 				{
