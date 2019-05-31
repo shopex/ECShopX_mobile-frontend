@@ -145,6 +145,7 @@ export default class TradeDetail extends Component {
     let payErr
     try {
       const payRes = await Taro.requestPayment(config)
+      log.debug(`[order pay]: `, payRes)
     } catch (e) {
       payErr = e
       if (e.errMsg.indexOf('cancel') < 0) {
@@ -156,6 +157,17 @@ export default class TradeDetail extends Component {
     }
 
     if (!payErr) {
+      try {
+        api.trade.tradeQuery(config.trade_info.trade_id)
+      } catch (e) {
+        console.info(e)
+      }
+
+      await Taro.showToast({
+        title: '支付成功',
+        icon: 'success'
+      })
+
       const { fullPath } = getCurrentRoute(this.$router)
       Taro.redirectTo({
         url: fullPath
