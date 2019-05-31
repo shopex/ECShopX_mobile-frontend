@@ -241,69 +241,71 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 submitLoading: false
               });
 
-              _context2.prev = 23;
-              _context2.next = 26;
-              return _index5.default.trade.tradeQuery(config.trade_info.trade_id);
-
-            case 26:
-              _context2.next = 31;
-              break;
-
-            case 28:
-              _context2.prev = 28;
-              _context2.t1 = _context2["catch"](23);
-
-              console.info(_context2.t1);
-
-            case 31:
               payErr = void 0;
-              _context2.prev = 32;
-              _context2.next = 35;
+              _context2.prev = 24;
+              _context2.next = 27;
               return _index2.default.requestPayment(config);
 
-            case 35:
+            case 27:
               payRes = _context2.sent;
 
               _index9.log.debug("[order pay]: ", payRes);
-              _context2.next = 39;
-              return _index5.default.trade.tradeQuery(orderInfo.trade_info.trade_id);
-
-            case 39:
-              _context2.next = 45;
+              _context2.next = 35;
               break;
 
-            case 41:
-              _context2.prev = 41;
-              _context2.t2 = _context2["catch"](32);
+            case 31:
+              _context2.prev = 31;
+              _context2.t1 = _context2["catch"](24);
 
-              payErr = _context2.t2;
+              payErr = _context2.t1;
               _index2.default.showToast({
-                title: _context2.t2.err_desc || _context2.t2.errMsg || '支付失败',
+                title: _context2.t1.err_desc || _context2.t1.errMsg || '支付失败',
                 icon: 'none'
               });
 
-            case 45:
+            case 35:
+              if (payErr) {
+                _context2.next = 43;
+                break;
+              }
 
-              if (!payErr) {
-                _this.__triggerPropsFn("onClearCart", [null].concat([]));
+              try {
+                _index5.default.trade.tradeQuery(config.trade_info.trade_id);
+              } catch (e) {
+                console.info(e);
+              }
+
+              _context2.next = 39;
+              return _index2.default.showToast({
+                title: '支付成功',
+                icon: 'success'
+              });
+
+            case 39:
+
+              _this.__triggerPropsFn("onClearCart", [null].concat([]));
+              _index2.default.redirectTo({
+                url: "/pages/trade/detail?id=" + order_id
+              });
+              _context2.next = 44;
+              break;
+
+            case 43:
+              if (payErr.errMsg.indexOf('fail cancel') >= 0) {
                 _index2.default.redirectTo({
                   url: "/pages/trade/detail?id=" + order_id
                 });
-              } else {
-                if (payErr.errMsg.indexOf('fail cancel') >= 0) {
-                  _index2.default.redirectTo({
-                    url: "/pages/trade/detail?id=" + order_id
-                  });
-                }
               }
+
+            case 44:
               return _context2.abrupt("return");
 
-            case 47:
+            case 45:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, _this2, [[5, 12], [23, 28], [32, 41]]);
+      }, _callee2, _this2, [[5, 12], [24, 31]]);
     })), _this.handleCouponsClick = function () {
       var items = _this.params.items.filter(function (item) {
         return item.order_item_type !== 'gift';

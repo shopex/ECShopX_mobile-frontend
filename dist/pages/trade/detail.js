@@ -270,11 +270,13 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
               case 12:
                 payRes = _context3.sent;
-                _context3.next = 19;
+
+                _index3.log.debug("[order pay]: ", payRes);
+                _context3.next = 20;
                 break;
 
-              case 15:
-                _context3.prev = 15;
+              case 16:
+                _context3.prev = 16;
                 _context3.t0 = _context3["catch"](9);
 
                 payErr = _context3.t0;
@@ -285,22 +287,37 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
                   });
                 }
 
-              case 19:
-
-                if (!payErr) {
-                  _getCurrentRoute = (0, _index3.getCurrentRoute)(this.$router), fullPath = _getCurrentRoute.fullPath;
-
-                  _index2.default.redirectTo({
-                    url: fullPath
-                  });
+              case 20:
+                if (payErr) {
+                  _context3.next = 26;
+                  break;
                 }
 
-              case 20:
+                try {
+                  _index5.default.trade.tradeQuery(config.trade_info.trade_id);
+                } catch (e) {
+                  console.info(e);
+                }
+
+                _context3.next = 24;
+                return _index2.default.showToast({
+                  title: '支付成功',
+                  icon: 'success'
+                });
+
+              case 24:
+                _getCurrentRoute = (0, _index3.getCurrentRoute)(this.$router), fullPath = _getCurrentRoute.fullPath;
+
+                _index2.default.redirectTo({
+                  url: fullPath
+                });
+
+              case 26:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[9, 15]]);
+        }, _callee3, this, [[9, 16]]);
       }));
 
       function handlePay() {
