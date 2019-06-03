@@ -20,8 +20,16 @@ export function praiseCheck (id) {
   return req.get(`/article/praise/check/${id}`)
 }
 
+export function praiseNum (id) {
+  return req.get(`/article/praise/num/${id}`)
+}
+
 export function collectArticle (id) {
-  return req.get(`/member/collect/article/${id}`)
+  return req.post(`/member/collect/article/${id}`)
+}
+
+export function delCollectArticle (params={}) {
+  return req.delete('/member/collect/article',params)
 }
 
 export default {}

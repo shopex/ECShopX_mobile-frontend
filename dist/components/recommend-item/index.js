@@ -97,7 +97,6 @@ var RecommendItem = (_temp2 = _class = function (_BaseComponent) {
       }
 
       console.log(info, 34);
-      var price = (0, _index3.isObject)(info.price) ? info.price.total_price : info.price;
       var img = info.img || info.image_default_id;
 
       var anonymousState__temp = (0, _index3.classNames)('goods-item', className);
@@ -109,8 +108,8 @@ var RecommendItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateXPvlD",
-    value: function funPrivateXPvlD() {
+    key: "funPrivateOONJC",
+    value: function funPrivateOONJC() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -153,7 +152,7 @@ var RecommendItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateXPvlD", "handleLikeClick"], _class.defaultProps = {
+}, _class.$$events = ["funPrivateOONJC", "handleLikeClick"], _class.defaultProps = {
   onClick: function onClick() {},
   showMarketPrice: true,
   noCurSymbol: false,

@@ -2,9 +2,19 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Video, SwiperItem } from '@tarojs/components'
 import { classNames } from '@/utils'
 import { linkPage } from './helper'
+import { connect } from '@tarojs/redux'
+import api from '@/api'
 
 import './goods.scss'
-
+@connect(({ cart, member }) => ({
+  cart,
+  favs: member.favs
+}), (dispatch) => ({
+  onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
+  onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
+  onAddFav: ({ item_id }) => dispatch({ type: 'member/addFav', payload: { item_id } }),
+  onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
+}))
 export default class WgtGoods extends Component {
   static options = {
     addGlobalClass: true
@@ -32,6 +42,33 @@ export default class WgtGoods extends Component {
     })
   }
 
+  handleClickOperate = async (item_data, type) => {
+    /*console.log(item_data, this.props.favs, 37)
+    if(type === 'collect') {
+      let is_fav = Boolean(this.props.favs[item_data.item_id])
+      console.log(is_fav, 39)
+      if (!is_fav) {
+        await api.member.addFav(item_data.item_id)
+        // this.props.onAddFav(item_data)
+        Taro.showToast({
+          title: '已加入收藏',
+          icon: 'none'
+        })
+      } else {
+        await api.member.delFav(item_data.item_id)
+        // this.props.onDelFav(item_data)
+        Taro.showToast({
+          title: '已移出收藏',
+          icon: 'none'
+        })
+      }
+    }*/
+
+    if(type === 'buy') {
+
+    }
+  }
+
   render () {
     const { info } = this.props
     const { curIdx } = this.state
@@ -53,9 +90,9 @@ export default class WgtGoods extends Component {
         )}
         <View className='slider-wrap'>
           {
-            data.map((item, index) => {
+            data.map(item => {
               return (
-                <View className='goods-content' key={index}>
+                <View className='goods-content' key={item.item_id}>
                   <View className='goods-content__info'>
                     <View className='goods-content__info_img'>
                       <Image className='img-style' mode='aspectFill' src={item.img_url} />
@@ -70,9 +107,9 @@ export default class WgtGoods extends Component {
                     </View>
                   </View>
                   <View className='goods-content__operate'>
-                    <View className='goods-content__operate_btn'>加入心愿</View>
+                    <View className='goods-content__operate_btn' onClick={this.handleClickOperate.bind(this, item, 'collect')}>加入心愿</View>
                     <Text>|</Text>
-                    <View className='goods-content__operate_btn'>加入购买</View>
+                    <View className='goods-content__operate_btn' onClick={this.handleClickOperate.bind(this, item, 'buy')}>加入购买</View>
                   </View>
                 </View>
               )

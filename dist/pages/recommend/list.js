@@ -71,11 +71,12 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
     key: "componentDidMount",
     value: function componentDidMount() {
       this.nextPage();
+      // this.praiseNum()
     }
 
-    /*praiseCheck = async (id) => {
-      const { status } = await api.article.praiseCheck(id)
-      return status
+    /*praiseNum = async (id) => {
+      const res = await api.article.praiseNum()
+      console.log(res, 33)
     }*/
 
   }, {

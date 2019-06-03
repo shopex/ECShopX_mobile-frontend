@@ -64,5 +64,5 @@
           flex: 1;
   text-align: center;
   color: #0b4137;
-  margin-bottom: 10rpx;
+  margin-bottom: 20rpx;
 }

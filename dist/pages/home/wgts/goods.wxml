@@ -10,7 +10,7 @@
             </view>
         </block>
         <view class="slider-wrap">
-            <view class="goods-content" wx:key="index" wx:for="{{data}}" wx:for-item="item" wx:for-index="index">
+            <view class="goods-content" wx:key="item_id" wx:for="{{data}}" wx:for-item="item" wx:for-index="_anonIdx">
                 <view class="goods-content__info">
                     <view class="goods-content__info_img">
                         <image class="img-style" mode="aspectFill" src="{{item.img_url}}"></image>
@@ -21,8 +21,8 @@
                     </view>
                 </view>
                 <view class="goods-content__operate">
-                    <view class="goods-content__operate_btn">加入心愿</view><text>|</text>
-                    <view class="goods-content__operate_btn">加入购买</view>
+                    <view class="goods-content__operate_btn" bindtap="handleClickOperate" data-e-tap-so="this" data-e-tap-a-a="{{item}}" data-e-tap-a-b="collect">加入心愿</view><text>|</text>
+                    <view class="goods-content__operate_btn" bindtap="handleClickOperate" data-e-tap-so="this" data-e-tap-a-a="{{item}}" data-e-tap-a-b="buy">加入购买</view>
                 </view>
             </view>
         </view>

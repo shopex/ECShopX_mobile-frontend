@@ -25,11 +25,12 @@ export default class RecommendList extends Component {
 
   componentDidMount () {
     this.nextPage()
+    // this.praiseNum()
   }
 
-  /*praiseCheck = async (id) => {
-    const { status } = await api.article.praiseCheck(id)
-    return status
+  /*praiseNum = async (id) => {
+    const res = await api.article.praiseNum()
+    console.log(res, 33)
   }*/
 
   async fetch (params) {

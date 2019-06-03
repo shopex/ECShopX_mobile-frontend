@@ -33,7 +33,6 @@ export default class RecommendItem extends Component {
     }
 
     console.log(info, 34)
-    const price = isObject(info.price) ? info.price.total_price : info.price
     const img = info.img || info.image_default_id
 
     return (
@@ -68,7 +67,7 @@ export default class RecommendItem extends Component {
                 <View
                   className={`in-icon in-icon-like ${info.is_like ? '' : ''}`}
                   onClick={this.handleLikeClick}
-                ><Text>{info.status}{info.articlePraiseNum}</Text></View>
+                ><Text>{info.articlePraiseNum}</Text></View>
               </View>
             </View>
           </View>

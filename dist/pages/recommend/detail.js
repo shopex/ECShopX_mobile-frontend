@@ -45,45 +45,117 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = recommendDetail.__proto__ || Object.getPrototypeOf(recommendDetail)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info"], _this.handleClickBar = function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
-        var id, resPraise;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = recommendDetail.__proto__ || Object.getPrototypeOf(recommendDetail)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "praiseCheckStatus", "collectArticleStatus"], _this.praiseCheck = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var id, _ref3, status;
+
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              id = _this.$router.params.id;
+              _context.next = 3;
+              return _index4.default.article.praiseCheck(id);
+
+            case 3:
+              _ref3 = _context.sent;
+              status = _ref3.status;
+
+              _this.setState({
+                praiseCheckStatus: status
+              });
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, _this2);
+    })), _this.handleClickBar = function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(type) {
+        var id, resPraise, resCollectArticle, query;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 id = _this.$router.params.id;
 
                 if (!(type === 'like')) {
-                  _context.next = 6;
+                  _context2.next = 8;
                   break;
                 }
 
-                _context.next = 4;
-                return _index4.default.article.praise(id);
+                if (!(_this.state.praiseCheckStatus === true)) {
+                  _context2.next = 4;
+                  break;
+                }
+
+                return _context2.abrupt("return", false);
 
               case 4:
-                resPraise = _context.sent;
-
-                console.log(48);
+                _context2.next = 6;
+                return _index4.default.article.praise(id);
 
               case 6:
+                resPraise = _context2.sent;
 
-                // if (type === 'mark') {
-                //   const resCollectArticle = await api.article.collectArticle(id)
-                // }
-                console.log(type);
+                console.log(resPraise, 48);
 
-              case 7:
+              case 8:
+                if (!(type === 'mark')) {
+                  _context2.next = 23;
+                  break;
+                }
+
+                _context2.next = 11;
+                return _index4.default.article.collectArticle(id);
+
+              case 11:
+                resCollectArticle = _context2.sent;
+
+                if (!(resCollectArticle.fav_id && _this.state.collectArticleStatus === false)) {
+                  _context2.next = 17;
+                  break;
+                }
+
+                _this.setState({
+                  collectArticleStatus: true
+                });
+                _index2.default.showToast({
+                  title: '已加入心愿单',
+                  icon: 'none'
+                });
+                _context2.next = 22;
+                break;
+
+              case 17:
+                query = {
+                  article_id: id
+                };
+                _context2.next = 20;
+                return _index4.default.article.delCollectArticle(query);
+
+              case 20:
+                _this.setState({
+                  collectArticleStatus: false
+                });
+                _index2.default.showToast({
+                  title: '已移出心愿单',
+                  icon: 'none'
+                });
+
+              case 22:
+                console.log(resCollectArticle, 62);
+
+              case 23:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, _this2);
+        }, _callee2, _this2);
       }));
 
       return function (_x) {
-        return _ref2.apply(this, arguments);
+        return _ref4.apply(this, arguments);
       };
     }(), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -94,13 +166,16 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
       _get(recommendDetail.prototype.__proto__ || Object.getPrototypeOf(recommendDetail.prototype), "_constructor", this).call(this, props);
 
       this.state = {
-        info: null
+        info: null,
+        praiseCheckStatus: false,
+        collectArticleStatus: false
       };
     }
   }, {
     key: "componentDidShow",
     value: function componentDidShow() {
       this.fetch();
+      this.praiseCheck();
     }
   }, {
     key: "componentDidMount",
@@ -108,29 +183,29 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
   }, {
     key: "fetch",
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
         var id, resFocus, info;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 id = this.$router.params.id;
-                _context2.next = 3;
+                _context3.next = 3;
                 return _index4.default.article.focus(id);
 
               case 3:
-                resFocus = _context2.sent;
+                resFocus = _context3.sent;
 
                 if (!resFocus) {
-                  _context2.next = 11;
+                  _context3.next = 11;
                   break;
                 }
 
-                _context2.next = 7;
+                _context3.next = 7;
                 return _index4.default.article.detail(id);
 
               case 7:
-                info = _context2.sent;
+                info = _context3.sent;
 
 
                 console.log(info, 27);
@@ -142,14 +217,14 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
 
               case 11:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
       function fetch() {
-        return _ref3.apply(this, arguments);
+        return _ref5.apply(this, arguments);
       }
 
       return fetch;
@@ -162,7 +237,10 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
       var __runloopRef = arguments[2];
       ;
 
-      var info = this.__state.info;
+      var _state = this.__state,
+          info = _state.info,
+          praiseCheckStatus = _state.praiseCheckStatus,
+          collectArticleStatus = _state.collectArticleStatus;
 
 
       if (!info) {

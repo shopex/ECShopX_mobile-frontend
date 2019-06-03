@@ -12,13 +12,15 @@ export default class recommendDetail extends Component {
     super(props)
 
     this.state = {
-      info: null
+      info: null,
+      praiseCheckStatus: false,
+      collectArticleStatus: false
     }
   }
 
   componentDidShow () {
     this.fetch()
-
+    this.praiseCheck()
   }
 
   componentDidMount () {
@@ -41,21 +43,53 @@ export default class recommendDetail extends Component {
 
   }
 
+  praiseCheck = async () => {
+    const { id } = this.$router.params
+    const { status } = await api.article.praiseCheck(id)
+    this.setState({
+      praiseCheckStatus: status
+    })
+  }
+
   handleClickBar = async (type) => {
     const { id } = this.$router.params
     if (type === 'like') {
+      if(this.state.praiseCheckStatus === true){
+        return false
+      }
       const resPraise = await api.article.praise(id)
-      console.log( 48)
+      console.log(resPraise, 48)
     }
 
-    // if (type === 'mark') {
-    //   const resCollectArticle = await api.article.collectArticle(id)
-    // }
-    console.log(type)
+    if (type === 'mark') {
+      const resCollectArticle = await api.article.collectArticle(id)
+      if(resCollectArticle.fav_id && (this.state.collectArticleStatus === false)){
+        this.setState({
+          collectArticleStatus: true
+        })
+        Taro.showToast({
+          title: '已加入心愿单',
+          icon: 'none'
+        })
+      } else {
+        const query = {
+          article_id: id
+        }
+        await api.article.delCollectArticle(query)
+        this.setState({
+          collectArticleStatus: false
+        })
+        Taro.showToast({
+          title: '已移出心愿单',
+          icon: 'none'
+        })
+      }
+      console.log(resCollectArticle, 62)
+    }
   }
 
   render () {
-    const { info } = this.state
+    const { info, praiseCheckStatus, collectArticleStatus } = this.state
 
     if (!info) {
       return null
@@ -65,7 +99,7 @@ export default class recommendDetail extends Component {
 
     return (
       <View className='page-recommend-detail'>
-        <View className='recommend-detail__title'>最in的5月</View>
+        <View className='recommend-detail__title'>{info.title}</View>
         <View className='recommend-detail-info'>
           <View className='recommend-detail-info__time'>
             <Text className={`in-icon in-icon-shijian ${info.is_like ? '' : ''}`}> </Text>
@@ -98,11 +132,11 @@ export default class recommendDetail extends Component {
         <View className='recommend-detail__bar'>
           <View className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'like')}>
             <Text className={`in-icon in-icon-like ${info.is_like ? '' : ''}`}> </Text>
-            <Text>点赞·{info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
+            <Text className={`${praiseCheckStatus ? 'check-true': ''}`}>{praiseCheckStatus ? '已赞' : '点赞'} · {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
           </View>
           <View className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'mark')}>
             <Text className={`in-icon in-icon-jiarushoucang ${info.is_like ? '' : ''}`}> </Text>
-            <Text>加入心愿</Text>
+            <Text className={`${collectArticleStatus ? 'check-true': ''}`}>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
           </View>
           <View className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'share')}>
             <Text className={`in-icon in-icon-fenxiang ${info.is_like ? '' : ''}`}> </Text>
