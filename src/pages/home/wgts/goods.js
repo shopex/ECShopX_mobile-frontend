@@ -28,7 +28,9 @@ export default class WgtGoods extends Component {
     super(props)
 
     this.state = {
-      curIdx: 0
+      curIdx: 0,
+      is_fav: false,
+      count: 0
     }
   }
 
@@ -43,35 +45,56 @@ export default class WgtGoods extends Component {
   }
 
   handleClickOperate = async (item_data, type) => {
-    /*console.log(item_data, this.props.favs, 37)
     if(type === 'collect') {
-      let is_fav = Boolean(this.props.favs[item_data.item_id])
-      console.log(is_fav, 39)
-      if (!is_fav) {
+      if(this.state.count === 0) {
+        let is_fav = Boolean(this.props.favs[item_data.item_id])
+        this.setState({
+          count: 1,
+          is_fav
+        })
+      }
+      if(!this.state.is_fav) {
         await api.member.addFav(item_data.item_id)
-        // this.props.onAddFav(item_data)
+        this.props.onAddFav(item_data)
+        console.log(this.props.favs,this.props.favs[1192], 51,'addafter')
         Taro.showToast({
           title: '已加入收藏',
           icon: 'none'
         })
       } else {
         await api.member.delFav(item_data.item_id)
-        // this.props.onDelFav(item_data)
+        this.props.onDelFav(item_data)
+        console.log(this.props.favs, 51,'delafter')
         Taro.showToast({
           title: '已移出收藏',
           icon: 'none'
         })
       }
-    }*/
+      this.setState({
+        is_fav: !this.state.is_fav
+      })
+    }
 
     if(type === 'buy') {
+      try {
+        await api.cart.add({
+          item_id:item_data.item_id,
+          num: 1
+        })
+      } catch (e) {
+        console.log(e)
+      }
 
+      Taro.showToast({
+        title: '成功加入购物车',
+        icon: 'success'
+      })
     }
   }
 
   render () {
     const { info } = this.props
-    const { curIdx } = this.state
+    const { curIdx, is_fav } = this.state
 
     if (!info) {
       return null
@@ -107,7 +130,7 @@ export default class WgtGoods extends Component {
                     </View>
                   </View>
                   <View className='goods-content__operate'>
-                    <View className='goods-content__operate_btn' onClick={this.handleClickOperate.bind(this, item, 'collect')}>加入心愿</View>
+                    <View className='goods-content__operate_btn' onClick={this.handleClickOperate.bind(this, item, 'collect')}>{is_fav ? '移除心愿' : '加入心愿'}</View>
                     <Text>|</Text>
                     <View className='goods-content__operate_btn' onClick={this.handleClickOperate.bind(this, item, 'buy')}>加入购买</View>
                   </View>

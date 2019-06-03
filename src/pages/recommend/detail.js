@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import {View, Text, Image, ScrollView} from '@tarojs/components'
+import {View, Text, Button, ScrollView} from '@tarojs/components'
 import api from '@/api'
 import { SpHtmlContent } from '@/components'
 import { formatTime } from '@/utils'
@@ -130,18 +130,18 @@ export default class recommendDetail extends Component {
           </View>
         </View>
         <View className='recommend-detail__bar'>
-          <View className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'like')}>
+          <View className={`recommend-detail__bar-item ${praiseCheckStatus ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'like')}>
             <Text className={`in-icon in-icon-like ${info.is_like ? '' : ''}`}> </Text>
-            <Text className={`${praiseCheckStatus ? 'check-true': ''}`}>{praiseCheckStatus ? '已赞' : '点赞'} · {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
+            <Text>{praiseCheckStatus ? '已赞' : '点赞'} · {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
           </View>
-          <View className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'mark')}>
+          <View className={`recommend-detail__bar-item ${collectArticleStatus ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'mark')}>
             <Text className={`in-icon in-icon-jiarushoucang ${info.is_like ? '' : ''}`}> </Text>
-            <Text className={`${collectArticleStatus ? 'check-true': ''}`}>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
+            <Text>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
           </View>
-          <View className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'share')}>
+          <Button  openType='share' className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'share')}>
             <Text className={`in-icon in-icon-fenxiang ${info.is_like ? '' : ''}`}> </Text>
             <Text>分享</Text>
-          </View>
+          </Button>
         </View>
       </View>
     )

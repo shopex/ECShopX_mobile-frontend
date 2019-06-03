@@ -27,12 +27,12 @@
             </view>
         </view>
         <view class="recommend-detail__bar">
-            <view class="recommend-detail__bar-item" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="like"><text class="{{'in-icon in-icon-like ' + (info.is_like ? '' : '')}}"></text><text class="{{'' + (praiseCheckStatus ? 'check-true' : '')}}">{{praiseCheckStatus ? '已赞' : '点赞'}}· {{info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}}</text>
+            <view class="{{'recommend-detail__bar-item ' + (praiseCheckStatus ? 'check-true' : '')}}" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="like"><text class="{{'in-icon in-icon-like ' + (info.is_like ? '' : '')}}"></text><text>{{praiseCheckStatus ? '已赞' : '点赞'}}· {{info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}}</text>
             </view>
-            <view class="recommend-detail__bar-item" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="mark"><text class="{{'in-icon in-icon-jiarushoucang ' + (info.is_like ? '' : '')}}"></text><text class="{{'' + (collectArticleStatus ? 'check-true' : '')}}">{{collectArticleStatus ? '已加入' : '加入心愿'}}</text>
+            <view class="{{'recommend-detail__bar-item ' + (collectArticleStatus ? 'check-true' : '')}}" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="mark"><text class="{{'in-icon in-icon-jiarushoucang ' + (info.is_like ? '' : '')}}"></text><text>{{collectArticleStatus ? '已加入' : '加入心愿'}}</text>
             </view>
-            <view class="recommend-detail__bar-item" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="share"><text class="{{'in-icon in-icon-fenxiang ' + (info.is_like ? '' : '')}}"></text><text>分享</text>
-            </view>
+            <button open-type="share" class="recommend-detail__bar-item" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="share"><text class="{{'in-icon in-icon-fenxiang ' + (info.is_like ? '' : '')}}"></text><text>分享</text>
+            </button>
         </view>
     </view>
 </block>
