@@ -5,7 +5,6 @@ const fs = require('fs-extra')
 const SRC_PATH = path.resolve(__dirname, '../dist')
 const DIST_PATH = path.resolve(__dirname, '../dist_iwa')
 const pagesToCopy = [
-  'iwp/article-index',
   'iwp/item-list',
   'iwp/item-detail',
   'iwp/recommend-list',

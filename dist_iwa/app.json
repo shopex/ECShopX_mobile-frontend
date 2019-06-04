@@ -3,8 +3,7 @@
     "pages/iwp/item-list",
     "pages/iwp/item-detail",
     "pages/iwp/recommend-list",
-    "pages/iwp/recommend-detail",
-    "pages/iwp/article-index"
+    "pages/iwp/recommend-detail"
   ],
   "navigateToMiniProgramAppIdList":[
     "wx4721629519a8f25b"
