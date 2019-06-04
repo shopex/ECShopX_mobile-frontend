@@ -1,3 +1,4 @@
+var regeneratorRuntime = require('./npm/regenerator-runtime/runtime.js')
 var _index = require("./npm/@tarojs/taro-weapp/index.js");
 var _index2 = _interopRequireDefault(_index);
 var _index5 = require("./npm/@tarojs/redux/index.js");
@@ -17,3 +18,7 @@ _index2.default.initPxTransform({
     "828": 0.905
   }
 });
+
+App({
+  regeneratorRuntime
+})

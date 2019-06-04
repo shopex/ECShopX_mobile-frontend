@@ -49,23 +49,40 @@ function copyFile (file) {
 }
 
 async function resolveAsyncGenerator () {
-  const spxIndexFile = path.resolve(DIST_PATH, 'spx/index.js')
+//   const spxIndexFile = path.resolve(DIST_PATH, 'spx/index.js')
 
-  let data = await fs.readFile(spxIndexFile, 'utf8')
-  data = `
-Object.defineProperty(Object.prototype, '__root', {
-  get() {
-    if (this && this.App === App) {
-      return this
+//   let data = await fs.readFile(spxIndexFile, 'utf8')
+//   data = `
+// Object.defineProperty(Object.prototype, '__root', {
+//   get() {
+//     if (this && this.App === App) {
+//       return this
+//     }
+//   },
+//   configurable: false,
+//   enumerable: false
+// })
+// __root.regeneratorRuntime = require("../npm/regenerator-runtime/runtime.js")
+// ` + data
+
+//   await fs.outputFile(spxIndexFile, data)
+  const files = glob.sync('**/*', {
+    cwd: DIST_PATH,
+    nodir: true,
+    ignore: [
+      'npm/**/*'
+    ]
+  })
+
+  files.forEach(file => {
+    const f = path.resolve(DIST_PATH, file)
+    let data = fs.readFileSync(f, 'utf8')
+    if (data.indexOf('regeneratorRuntime.') >= 0) {
+      console.log(f)
+      data = data.replace(/regeneratorRuntime\./g, 'getApp().regeneratorRuntime.')
+      fs.outputFileSync(f, data)
     }
-  },
-  configurable: false,
-  enumerable: false
-})
-__root.regeneratorRuntime = require("../npm/regenerator-runtime/runtime.js")
-` + data
-
-  await fs.outputFile(spxIndexFile, data)
+  })
 }
 
 async function resolveNpmLodashNow () {

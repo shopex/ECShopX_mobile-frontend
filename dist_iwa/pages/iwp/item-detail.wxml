@@ -52,30 +52,38 @@
             </view>
             <sp-html-content className="goods-detail__content" __triggerObserer="{{ _triggerObserer }}" content="{{desc}}"></sp-html-content>
         </scroll-view>
-        <float-menus __triggerObserer="{{ _triggerObserer }}">
-            <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="float-gift"></float-menu-item>
-            <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="float-share" openType="share" bindonclick="handleShare" __fn_onClick="{{true}}"></float-menu-item>
-            <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="back-top" hide="{{anonymousState__temp2}}"></float-menu-item>
-        </float-menus>
+        <navigator target="miniProgram" app-id="wxf91925e702efe3e3" path="{{'pages/item/espier-detail?' + _id}}" open-type="navigate">
+            <float-menus __triggerObserer="{{ _triggerObserer }}">
+                <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="float-gift"></float-menu-item>
+                <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="float-share" openType="share" bindonclick="handleShare" __fn_onClick="{{true}}"></float-menu-item>
+                <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="back-top" hide="{{anonymousState__temp2}}" bindonclick="scrollBackToTop" __fn_onClick="{{true}}"></float-menu-item>
+            </float-menus>
+        </navigator>
         <block>
             <block wx:if="{{info.distributor_sale_status && hasStock && startSecKill}}">
-                <goods-buy-toolbar info="{{info}}" __triggerObserer="{{ _triggerObserer }}" type="{{marketing}}"></goods-buy-toolbar>
+                <navigator target="miniProgram" app-id="wxf91925e702efe3e3" path="{{'pages/item/espier-detail?' + _id2}}" open-type="navigate">
+                    <goods-buy-toolbar info="{{info}}" __triggerObserer="{{ _triggerObserer }}" type="{{marketing}}"></goods-buy-toolbar>
+                </navigator>
             </block>
             <block wx:else>
-                <goods-buy-toolbar info="{{info}}" __triggerObserer="{{ _triggerObserer }}" customRender="{{true}}" type="{{marketing}}">
-                    <view class="goods-buy-toolbar__btns" style="width: 60%; text-align: center">
-                        <block>
-                            <block wx:if="{{!startSecKill}}"><text>活动即将开始</text>
+                <navigator target="miniProgram" app-id="wxf91925e702efe3e3" path="{{'pages/item/espier-detail?' + _id3}}" open-type="navigate">
+                    <goods-buy-toolbar info="{{info}}" __triggerObserer="{{ _triggerObserer }}" customRender="{{true}}" type="{{marketing}}">
+                        <view class="goods-buy-toolbar__btns" style="width: 60%; text-align: center">
+                            <block>
+                                <block wx:if="{{!startSecKill}}"><text>活动即将开始</text>
+                                </block>
+                                <block wx:else><text>当前店铺无货</text>
+                                </block>
                             </block>
-                            <block wx:else><text>当前店铺无货</text>
-                            </block>
-                        </block>
-                    </view>
-                </goods-buy-toolbar>
+                        </view>
+                    </goods-buy-toolbar>
+                </navigator>
             </block>
         </block>
         <block wx:if="{{info}}">
-            <goods-buy-panel info="{{info}}" __triggerObserer="{{ _triggerObserer }}" type="{{buyPanelType}}" isOpened="{{showBuyPanel}}" cartCount="{{cartCount}}" bindonclose="anonymousFunc0" __fn_onClose="{{true}}"></goods-buy-panel>
+            <navigator target="miniProgram" app-id="wxf91925e702efe3e3" path="{{'pages/item/espier-detail?' + _id4}}" open-type="navigate">
+                <goods-buy-panel info="{{info}}" __triggerObserer="{{ _triggerObserer }}" type="{{buyPanelType}}" isOpened="{{showBuyPanel}}" cartCount="{{cartCount}}" bindonclose="anonymousFunc0" bindonchange="handleClickToMiniProgram" bindonaddcart="handleClickToMiniProgram" bindonfastbuy="handleClickToMiniProgram" __fn_onClose="{{true}}" __fn_onChange="{{true}}" data-e-onchange-so="this" __fn_onAddCart="{{true}}" data-e-onaddcart-so="this" __fn_onFastbuy="{{true}}" data-e-onfastbuy-so="this"></goods-buy-panel>
+            </navigator>
         </block>
         <sp-toast __triggerObserer="{{ _triggerObserer }}"></sp-toast>
     </view>
