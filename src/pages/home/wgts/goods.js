@@ -34,7 +34,11 @@ export default class WgtGoods extends Component {
     }
   }
 
-  handleClickItem = linkPage
+  handleClickItem = (id) => {
+    Taro.navigateTo({
+      url: `/pages/iwp/item-detail?id=${id}`
+    })
+  }
 
   handleSwiperChange = (e) => {
     const { current  } = e.detail
@@ -44,7 +48,8 @@ export default class WgtGoods extends Component {
     })
   }
 
-  handleClickOperate = async (item_data, type) => {
+  /*handleClickOperate = async (item_data, type, e) => {
+    e.stopPropagation()
     if(type === 'collect') {
       if(this.state.count === 0) {
         let is_fav = Boolean(this.props.favs[item_data.item_id])
@@ -90,6 +95,17 @@ export default class WgtGoods extends Component {
         icon: 'success'
       })
     }
+  }*/
+
+  handleClickOperate = (item) => {
+    Taro.navigateToMiniProgram({
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+      path: `pages/recommend/detail?id=${item.item_id}`, // 跳转的目标页面
+      success(res) {
+        // 打开成功
+        console.log(res)
+      }
+    })
   }
 
   render () {
@@ -115,7 +131,7 @@ export default class WgtGoods extends Component {
           {
             data.map(item => {
               return (
-                <View className='goods-content' key={item.item_id}>
+                <View className='goods-content' key={item.item_id} onClick={this.handleClickItem.bind(this, item.item_id)}>
                   <View className='goods-content__info'>
                     <View className='goods-content__info_img'>
                       <Image className='img-style' mode='aspectFill' src={item.img_url} />
@@ -124,7 +140,7 @@ export default class WgtGoods extends Component {
                       <Text>{item.item_name}</Text>
                       <Text>点击查看产品详情</Text>
                       <View>
-                        <Text>dd</Text>
+                        <Text className='in-icon in-icon-yuangong'></Text>
                         <Text>{item.sales}</Text>
                       </View>
                     </View>

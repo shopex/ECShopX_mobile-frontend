@@ -106,7 +106,7 @@ export default class CartCheckout extends Component {
     this.params = {
       cart_type,
       items,
-      pay_type: payType || 'deposit'
+      pay_type: payType || 'amorepay'
     }
 
     this.setState({

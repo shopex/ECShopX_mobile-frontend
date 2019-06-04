@@ -21,7 +21,6 @@ useHooks()
 class App extends Component {
   config = {
     pages: [
-      // 'pages/index/index',
       'pages/home/index',
       'pages/home/landing',
       'pages/category/index',
@@ -88,7 +87,19 @@ class App extends Component {
       'pages/trade/refund-sendback',
       'pages/trade/invoice-list',
 
-      'pages/protocol/privacy'
+      'pages/protocol/privacy',
+
+      // 集成用，勿删
+      /*'pages/iwp/item-list',
+      'pages/iwp/item-detail',
+      'pages/iwp/recommend-list',
+      'pages/iwp/recommend-detail'*/
+      // 'pages/iwp/coupon-home',
+      // 'pages/iwp/article-index'
+    ],
+    navigateToMiniProgramAppIdList: [
+      'wx4721629519a8f25b',
+      'wxf91925e702efe3e3'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -101,7 +112,6 @@ class App extends Component {
   }
   componentDidMount () {
   }
-
   componentDidShow () {
     if (process.env.TARO_ENV === 'weapp') {
       FormIds.startCollectingFormIds()
@@ -118,6 +128,11 @@ class App extends Component {
       } catch (e) {
         console.log(e)
       }
+    }
+
+    const { referrerInfo } = options || {}
+    if (referrerInfo) {
+      console.log(referrerInfo)
     }
   }
 

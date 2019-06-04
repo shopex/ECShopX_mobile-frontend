@@ -129,6 +129,12 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                 });
 
 
+                nList.map(function (item) {
+                  if (!item.articlePraiseNum) {
+                    item.articlePraiseNum = 0;
+                  }
+                });
+
                 this.setState({
                   list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList))
                 });
@@ -137,7 +143,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   total: total
                 });
 
-              case 17:
+              case 18:
               case "end":
                 return _context.stop();
             }

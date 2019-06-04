@@ -56,11 +56,19 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              if (_index7.default.getAuthToken()) {
+                _context.next = 2;
+                break;
+              }
+
+              return _context.abrupt("return", false);
+
+            case 2:
               id = _this.$router.params.id;
-              _context.next = 3;
+              _context.next = 5;
               return _index4.default.article.praiseCheck(id);
 
-            case 3:
+            case 5:
               _ref3 = _context.sent;
               status = _ref3.status;
 
@@ -68,7 +76,7 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
                 praiseCheckStatus: status
               });
 
-            case 6:
+            case 8:
             case "end":
               return _context.stop();
           }
@@ -199,10 +207,16 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
 
               case 3:
                 resFocus = _context3.sent;
-                _context3.next = 6;
+
+                if (!_index7.default.getAuthToken()) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                _context3.next = 7;
                 return _index4.default.article.delCollectArticleInfo({ article_id: id });
 
-              case 6:
+              case 7:
                 res = _context3.sent;
 
                 if (res.length === 0) {
@@ -215,32 +229,33 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
                   });
                 }
 
+              case 9:
                 if (!resFocus) {
-                  _context3.next = 21;
+                  _context3.next = 22;
                   break;
                 }
 
                 if (!_index7.default.getAuthToken()) {
-                  _context3.next = 15;
+                  _context3.next = 16;
                   break;
                 }
 
-                _context3.next = 12;
+                _context3.next = 13;
                 return _index4.default.article.authDetail(id);
 
-              case 12:
+              case 13:
                 _context3.t0 = _context3.sent;
-                _context3.next = 18;
+                _context3.next = 19;
                 break;
 
-              case 15:
-                _context3.next = 17;
+              case 16:
+                _context3.next = 18;
                 return _index4.default.article.detail(id);
 
-              case 17:
+              case 18:
                 _context3.t0 = _context3.sent;
 
-              case 18:
+              case 19:
                 info = _context3.t0;
 
 
@@ -249,7 +264,7 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
                   info: info
                 });
 
-              case 21:
+              case 22:
               case "end":
                 return _context3.stop();
             }

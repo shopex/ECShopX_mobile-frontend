@@ -396,7 +396,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       this.params = {
         cart_type: cart_type,
         items: items,
-        pay_type: payType || 'deposit'
+        pay_type: payType || 'amorepay'
       };
 
       this.setState({
