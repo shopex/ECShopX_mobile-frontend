@@ -5,9 +5,16 @@ const fs = require('fs-extra')
 const SRC_PATH = path.resolve(__dirname, '../dist')
 const DIST_PATH = path.resolve(__dirname, '../dist_iwa')
 const pagesToCopy = [
-  'article/index',
-  'recommend/list',
-  'item/list'
+  'iwp/article-index',
+  'iwp/item-list',
+  'iwp/item-detail',
+  'iwp/recommend-list',
+  'iwp/recommend-detail'
+]
+
+const componentsToCopy = [
+  'item/comps',
+  'home/wgts'
 ]
 
 const files = glob.sync('**/*', {
@@ -29,6 +36,11 @@ const pages = glob.sync('pages/**/*.*', {
     cwd: SRC_PATH
   })
   .filter(include(pagesToCopy))
+
+const components = glob.sync('pages/**/*', {
+    cwd: SRC_PATH
+  })
+  .filter(include(componentsToCopy))
 
 function copyFile (file) {
   const from = path.resolve(SRC_PATH, file)
@@ -66,7 +78,7 @@ async function resolveNpmLodashNow () {
 
 async function start () {
   await fs.emptyDir(DIST_PATH)
-  const filesToCopy = [...files, ...pages]
+  const filesToCopy = [...files, ...pages, ...components]
   filesToCopy.forEach(copyFile)
 
   await fs.copy(path.resolve(__dirname, 'template'), DIST_PATH, err => {
