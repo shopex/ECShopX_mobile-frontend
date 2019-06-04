@@ -99,7 +99,7 @@ export default class WgtGoods extends Component {
 
   handleClickOperate = (item) => {
     Taro.navigateToMiniProgram({
-      appId: 'wxf91925e702efe3e3', // 要跳转的小程序的appid
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
       path: `pages/recommend/detail?id=${item.item_id}`, // 跳转的目标页面
       success(res) {
         // 打开成功
@@ -131,7 +131,7 @@ export default class WgtGoods extends Component {
           {
             data.map(item => {
               return (
-                <View className='goods-content' key={item.item_id} onClick={this.handleClickItem.bind(this, item.item_id)}>
+                <View className='goods-content' key={item.item_id} onClick={this.handleClickOperate.bind(this, item)}>
                   <View className='goods-content__info'>
                     <View className='goods-content__info_img'>
                       <Image className='img-style' mode='aspectFill' src={item.img_url} />

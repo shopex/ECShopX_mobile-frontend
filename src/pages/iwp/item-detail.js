@@ -160,8 +160,22 @@ export default class Detail extends Component {
     return ret
   }
 
-  handleClickToMiniProgram = () => {
-
+  handleClickToMiniProgram = (item) => {
+    Taro.navigateToMiniProgram({
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+      path: `pages/item/espier-detail?id=${item.item_id}`, // 跳转的目标页面
+      extraData: {
+        id: item.item_id
+      },
+      envVersion: 'trial',
+      /*extarData: {
+        open: 'auth'
+      },*/
+      success(res) {
+        // 打开成功
+        console.log(res)
+      }
+    })
   }
 
   /*handleMenuClick = async (type) => {
@@ -419,72 +433,64 @@ export default class Detail extends Component {
           </View>*/}
         </ScrollView>
 
-        <Navigator target='miniProgram' app-id='wxf91925e702efe3e3' path={`pages/item/espier-detail?${this.$router.params.id}`} open-type='navigate'>
-          <FloatMenus>
-            <FloatMenuItem
-              iconPrefixClass='in-icon'
-              icon='float-gift'
-            />
-            <FloatMenuItem
-              iconPrefixClass='in-icon'
-              icon='float-share'
-              openType='share'
-              onClick={this.handleShare}
-            />
-            <FloatMenuItem
-              iconPrefixClass='in-icon'
-              icon='back-top'
-              hide={!showBackToTop}
-              onClick={this.scrollBackToTop}
-            />
-          </FloatMenus>
-        </Navigator>
+        <FloatMenus>
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='float-gift'
+          />
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='float-share'
+            openType='share'
+            onClick={this.handleShare}
+          />
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='back-top'
+            hide={!showBackToTop}
+            onClick={this.scrollBackToTop}
+          />
+        </FloatMenus>
 
         {(info.distributor_sale_status && hasStock && startSecKill)
           ?
-            (<Navigator target='miniProgram' app-id='wxf91925e702efe3e3' path={`pages/item/espier-detail?${this.$router.params.id}`} open-type='navigate'>
-              <GoodsBuyToolbar
-                info={info}
-                type={marketing}
-                // onFavItem={this.handleClickToMiniProgram.bind(this)}
-                // onClickAddCart={this.handleClickToMiniProgram.bind(this)}
-                // onClickFastBuy={this.handleClickToMiniProgram.bind(this)}
-              />
-            </Navigator>)
-          :
-          (<Navigator target='miniProgram' app-id='wxf91925e702efe3e3' path={`pages/item/espier-detail?${this.$router.params.id}`} open-type='navigate'>
-            <GoodsBuyToolbar
+            (<GoodsBuyToolbar
               info={info}
-              customRender
               type={marketing}
+              onFavItem={this.handleClickToMiniProgram.bind(this)}
+              onClickAddCart={this.handleClickToMiniProgram.bind(this)}
+              onClickFastBuy={this.handleClickToMiniProgram.bind(this)}
+            />)
+          :
+          (<GoodsBuyToolbar
+            info={info}
+            customRender
+            type={marketing}
+          >
+            <View
+              className='goods-buy-toolbar__btns'
+              style='width: 60%; text-align: center'
             >
-              <View
-                className='goods-buy-toolbar__btns'
-                style='width: 60%; text-align: center'
-              >
-                {
-                  !startSecKill
-                    ? <Text>活动即将开始</Text>
-                    : <Text>当前店铺无货</Text>
-                }
-              </View>
-            </GoodsBuyToolbar>
-          </Navigator>)
+              {
+                !startSecKill
+                  ? <Text>活动即将开始</Text>
+                  : <Text>当前店铺无货</Text>
+              }
+            </View>
+          </GoodsBuyToolbar>)
         }
 
         {
-          info && (<Navigator target='miniProgram' app-id='wxf91925e702efe3e3' path={`pages/item/espier-detail?${this.$router.params.id}`} open-type='navigate'>
-            <GoodsBuyPanel
-              info={info}
-              type={buyPanelType}
-              isOpened={showBuyPanel}
-              cartCount={cartCount}
-              onClose={() => this.setState({ showBuyPanel: false })}
-              onChange={this.handleClickToMiniProgram.bind(this)}
-              onAddCart={this.handleClickToMiniProgram.bind(this)}
-              onFastbuy={this.handleClickToMiniProgram.bind(this)}
-            />
-          </Navigator>)
+          info && (<GoodsBuyPanel
+            info={info}
+            type={buyPanelType}
+            isOpened={showBuyPanel}
+            cartCount={cartCount}
+            onClose={() => this.setState({ showBuyPanel: false })}
+            onChange={this.handleClickToMiniProgram.bind(this)}
+            onAddCart={this.handleClickToMiniProgram.bind(this)}
+            onFastbuy={this.handleClickToMiniProgram.bind(this)}
+          />)
         }
 
         <SpToast />

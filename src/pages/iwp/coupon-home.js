@@ -61,8 +61,20 @@ export default class CouponHome extends Component {
     return { total }
   }
 
-  handleGetCard = async (cardId, idx) => {
-    const { list } = this.state
+  handleGetCard = (cardId) => {
+    Taro.navigateToMiniProgram({
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+      path: `pages/recommend/detail?id=${cardId}`, // 跳转的目标页面
+      extraData: {
+        id: cardId
+      },
+      envVersion: 'trial',
+      success(res) {
+        // 打开成功
+        console.log(res)
+      }
+    })
+    /*const { list } = this.state
     const query = {
       card_id: cardId
     }
@@ -82,7 +94,7 @@ export default class CouponHome extends Component {
       }
     } catch (e) {
 
-    }
+    }*/
 
   }
 
@@ -109,6 +121,7 @@ export default class CouponHome extends Component {
                   <CouponItem
                     info={item}
                     key={item.id}
+                    onClickBtn={this.handleGetCard.bind(this)}
                   />
                 )
               })

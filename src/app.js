@@ -90,12 +90,16 @@ class App extends Component {
 
         // 集成用，勿删
         'pages/iwp/item-list',
-        'pages/iwp/coupon-home',
+        // 'pages/iwp/coupon-home',
         'pages/iwp/item-detail',
         'pages/iwp/recommend-list',
         'pages/iwp/recommend-detail'
         // 'pages/iwp/article-index'
       ],
+    navigateToMiniProgramAppIdList: [
+      'wx4721629519a8f25b',
+      'wxf91925e702efe3e3'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
