@@ -64,8 +64,12 @@ export default class recommendDetail extends Component {
 
   handleClickBar = (article_id) => {
     Taro.navigateToMiniProgram({
-      appId: 'wxf91925e702efe3e3', // 要跳转的小程序的appid
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
       path: `pages/recommend/detail?id=${article_id}`, // 跳转的目标页面
+      extraData: {
+        id: article_id
+      },
+      envVersion: 'trial',
       success(res) {
         // 打开成功
         console.log(res)

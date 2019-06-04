@@ -3,7 +3,7 @@
         <nav-bar title="优惠券列表" __triggerObserer="{{ _triggerObserer }}" leftIconType="chevron-left" fixed="true"></nav-bar>
         <scroll-view scroll-y="{{true}}" class="home_coupon-list__scroll" bindscrolltolower="nextPage">
             <view class="coupon-list-ticket">
-                <coupon-item info="{{item}}" __triggerObserer="{{ _triggerObserer }}" wx:key="id" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx"></coupon-item>
+                <coupon-item info="{{item}}" __triggerObserer="{{ _triggerObserer }}" wx:key="id" bindonclickbtn="handleGetCard" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx" __fn_onClickBtn="{{true}}" data-e-onclickbtn-so="this"></coupon-item>
                 <block wx:if="{{page.isLoading}}">
                     <loading __triggerObserer="{{ _triggerObserer }}">正在加载...</loading>
                 </block>

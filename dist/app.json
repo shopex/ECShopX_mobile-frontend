@@ -6,6 +6,10 @@
     "pages/iwp/recommend-list",
     "pages/iwp/recommend-detail"
   ],
+  "navigateToMiniProgramAppIdList": [
+    "wx4721629519a8f25b",
+    "wxf91925e702efe3e3"
+  ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",

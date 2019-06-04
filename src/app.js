@@ -96,6 +96,10 @@ class App extends Component {
         'pages/iwp/recommend-detail'
         // 'pages/iwp/article-index'
       ],
+    navigateToMiniProgramAppIdList: [
+      'wx4721629519a8f25b',
+      'wxf91925e702efe3e3'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
