@@ -35,7 +35,7 @@ export default class RecommendList extends Component {
       page,
       pageSize
     }
-    const { list, total_count: total } = S.getAuthToken() ? await api.article.authList(article_query) : await api.article.list(article_query)
+    const { list, total_count: total } = await api.article.list(article_query)
 
     const nList = pickBy(list, {
       img: 'image_url',
@@ -45,6 +45,12 @@ export default class RecommendList extends Component {
       head_portrait: 'head_portrait',
       isPraise: 'isPraise',
       articlePraiseNum: 'articlePraiseNum.count',
+    })
+
+    nList.map(item => {
+      if(!item.articlePraiseNum) {
+        item.articlePraiseNum = 0
+      }
     })
 
     this.setState({
@@ -57,11 +63,11 @@ export default class RecommendList extends Component {
   }
 
   handleClickItem = (item) => {
-    /*const url = `/pages/recommend/detail?id=${item.item_id}`
+    const url = `/pages/iwp/recommend-detail?id=${item.item_id}`
     Taro.navigateTo({
       url
-    })*/
-    Taro.navigateToMiniProgram({
+    })
+    /*Taro.navigateToMiniProgram({
       appId: 'wxf91925e702efe3e3', // 要跳转的小程序的appid
       path: `/pages/recommend/detail`, // 跳转的目标页面
       extarData: {
@@ -71,7 +77,7 @@ export default class RecommendList extends Component {
         // 打开成功
         console.log(res)
       }
-    })
+    })*/
   }
 
   render () {
