@@ -4,7 +4,7 @@ import { Provider } from '@tarojs/redux'
 import configStore from '@/store'
 import useHooks from '@/hooks'
 import api from '@/api'
-import { FormIds } from '@/service'
+import { FormIds, WxAuth } from '@/service'
 import Index from './pages/index'
 
 import './app.scss'
@@ -46,6 +46,7 @@ class App extends Component {
       'pages/auth/reg-rule',
       'pages/auth/login',
       'pages/auth/forgotpwd',
+      'pages/auth/wxauth',
 
       'pages/cashier/index',
       'pages/cashier/cashier-result',
@@ -102,19 +103,21 @@ class App extends Component {
   }
 
   componentDidShow () {
-    FormIds.startCollectingFormIds()
-    try {
-      if (S.getAuthToken()) {
-        api.member.favsList()
-          .then(({ list }) => {
-            store.dispatch({
-              type: 'member/favs',
-              payload: list
+    if (process.env.TARO_ENV === 'weapp') {
+      FormIds.startCollectingFormIds()
+      try {
+        if (S.getAuthToken()) {
+          api.member.favsList()
+            .then(({ list }) => {
+              store.dispatch({
+                type: 'member/favs',
+                payload: list
+              })
             })
-          })
+        }
+      } catch (e) {
+        console.log(e)
       }
-    } catch (e) {
-      console.log(e)
     }
   }
 

@@ -1,0 +1,13 @@
+@import "../../style/imports";
+
+.page-wxauth {
+  padding: 60px 0 0;
+  text-align: center;
+  .sec-auth {
+    padding: 100px 100px 0;
+  }
+  .auth-hint {
+    margin: 0 0 20px;
+    display: block;
+  }
+}
