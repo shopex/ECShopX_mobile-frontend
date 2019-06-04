@@ -86,7 +86,7 @@ var _App = function (_BaseComponent) {
     value: function componentDidMount() {}
   }, {
     key: "componentDidShow",
-    value: function componentDidShow() {
+    value: function componentDidShow(options) {
       {
         _index10.FormIds.startCollectingFormIds();
         try {

@@ -112,7 +112,7 @@ class App extends Component {
   }
   componentDidMount () {
   }
-  componentDidShow () {
+  componentDidShow (options) {
     if (process.env.TARO_ENV === 'weapp') {
       FormIds.startCollectingFormIds()
       try {
