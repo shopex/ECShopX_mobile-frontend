@@ -59,9 +59,6 @@
     "pages/trade/invoice-list",
     "pages/protocol/privacy"
   ],
-  "navigateToMiniProgramAppIdList": [
-    "wxf91925e702efe3e3"
-  ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",

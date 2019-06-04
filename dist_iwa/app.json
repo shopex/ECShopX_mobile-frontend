@@ -6,5 +6,7 @@
     "pages/iwp/recommend-detail",
     "pages/iwp/article-index"
   ],
-  "sitemapLocation": "sitemap.json"
+  "navigateToMiniProgramAppIdList":[
+    "wx4721629519a8f25b"
+  ]
 }

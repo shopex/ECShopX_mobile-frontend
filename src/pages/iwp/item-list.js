@@ -147,11 +147,12 @@ export default class List extends Component {
       url
     })*/
     Taro.navigateToMiniProgram({
-      appId: 'wxf91925e702efe3e3', // 要跳转的小程序的appid
-      path: `/pages/item/espier-detail`, // 跳转的目标页面
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+      path: `pages/item/espier-detail?id=${item.item_id}`, // 跳转的目标页面
       extraData: {
         id: item.item_id
       },
+      envVersion: 'trial',
       /*extarData: {
         open: 'auth'
       },*/

@@ -5,5 +5,8 @@
     "pages/iwp/recommend-list",
     "pages/iwp/recommend-detail",
     "pages/iwp/article-index"
+  ],
+  "navigateToMiniProgramAppIdList":[
+    "wx4721629519a8f25b"
   ]
 }
