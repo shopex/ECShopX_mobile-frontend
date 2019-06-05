@@ -117,14 +117,9 @@
       display: block;
     }
     .delivery_code_copy {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
       .info-text {
-        flex: 1;
-      }
-      .info-text:last-child {
-        text-align: right;
+        display: flex;
+        justify-content: space-between;
       }
     }
   }

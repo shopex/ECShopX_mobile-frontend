@@ -58,6 +58,15 @@
                     </view>
                 </view>
             </block>
+            <block wx:if="{{likeList.length}}">
+                <view class="cart-list cart-list__disabled">
+                    <view class="cart-list__hd like__hd"><text class="cart-list__title">猜你喜欢</text>
+                    </view>
+                    <view class="goods-list goods-list__type-grid">
+                        <goods-item wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" info="{{item.$original}}" bindonclick="anonymousFunc0" wx:for="{{loopArray1}}" wx:for-item="item" wx:for-index="__index0" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{__index0}}"></goods-item>
+                    </view>
+                </view>
+            </block>
         </scroll-view>
         <view class="{{'toolbar cart-toolbar ' + (isEmpty && 'hidden')}}">
             <view class="cart-toolbar__hd">

@@ -63,3 +63,7 @@ export function total (params) {
 export function coupons (params) {
   return req.get('/user/newGetCardList', params)
 }
+
+export function likeList (params) {
+  return req.get('/promotions/recommendlike', params)
+}

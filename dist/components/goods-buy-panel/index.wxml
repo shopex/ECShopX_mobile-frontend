@@ -10,7 +10,10 @@
                 <view class="goods-img__wrap">
                     <image class="goods-img" mode="aspectFill" src="{{curImg || info.pics[0]}}"></image>
                 </view>
-                <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" noSymbol="{{true}}" appendText="元" value="{{curSku ? curSku.price : info.price}}"></price>
+                <view class="goods-sku__price">
+                    <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" unit="cent" noSymbol="{{true}}" appendText="元" value="{{curSku ? curSku.price : info.price}}"></price>
+                    <price className="price-market" __triggerObserer="{{ _triggerObserer }}" symbol="¥" unit="cent" value="{{curSku ? curSku.market_price : info.market_price}}"></price>
+                </view>
                 <view class="goods-sku__info">
                     <block>
                         <block wx:if="{{noSpecs}}"><text class="goods-sku__props">{{info.item_name}}</text>

@@ -123,7 +123,7 @@ export default class Reg extends Component {
   }
 
   handleChange = (name, val) => {
-    console.log(name, val, 126)
+    // console.log(name, val, 126)
     const { info, list } = this.state
     info[name] = val
     if(name === 'mobile') {

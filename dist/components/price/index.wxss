@@ -13,6 +13,7 @@
 ===============================*/
 .price__primary {
   color: #0b4137;
+  font-size: 26rpx;
 }
 .price__symbol {
   margin-right: 5rpx;
@@ -20,4 +21,11 @@
 }
 .price__decimal {
   font-size: 1em;
+}
+
+.price-market {
+  color: #787878;
+  margin-left: 8rpx;
+  text-decoration: line-through;
+  font-size: 22rpx;
 }

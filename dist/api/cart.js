@@ -17,6 +17,7 @@ exports.updatePromotion = updatePromotion;
 exports.checkout = checkout;
 exports.total = total;
 exports.coupons = coupons;
+exports.likeList = likeList;
 
 var _req = require('./req.js');
 
@@ -103,4 +104,8 @@ function total(params) {
 
 function coupons(params) {
   return _req2.default.get('/user/newGetCardList', params);
+}
+
+function likeList(params) {
+  return _req2.default.get('/promotions/recommendlike', params);
 }

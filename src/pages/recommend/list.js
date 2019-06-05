@@ -24,7 +24,7 @@ export default class RecommendList extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidShow () {
     this.nextPage()
     // this.praiseNum()
   }

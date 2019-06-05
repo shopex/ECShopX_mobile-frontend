@@ -289,12 +289,21 @@ export default class GoodsBuyPanel extends Component {
                 src={curImg || info.pics[0]}
               />
             </View>
-            <Price
-              primary
-              noSymbol
-              appendText='元'
-              value={curSku ? curSku.price : info.price}
-            />
+            <View className='goods-sku__price'>
+              <Price
+                primary
+                unit='cent'
+                noSymbol
+                appendText='元'
+                value={curSku ? curSku.price : info.price}
+              />
+              <Price
+                className='price-market'
+                symbol='¥'
+                unit='cent'
+                value={curSku ? curSku.market_price : info.market_price}
+              />
+            </View>
             <View className='goods-sku__info'>
               {
                 // curSku && <Text className='goods-sku__stock'>库存{curSku.store}{info.unit}</Text>

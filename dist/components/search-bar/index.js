@@ -112,7 +112,7 @@ var SearchBar = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var isFixed = this.__props.isFixed;
@@ -138,7 +138,7 @@ var SearchBar = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleFocusSearchHistory", "handleChangeSearch", "handleConfirm", "handleClickCancel", "handleClickDelete", "handleClickTag", "handleClickHotItem"], _class.defaultProps = {
+}, _class.$$events = ["handleFocusSearchHistory", "handleChangeSearch", "handleConfirm", "handleClickCancel", "handleClickDelete", "handleClickTag"], _class.defaultProps = {
   isOpened: false
 }, _class.options = {
   addGlobalClass: true

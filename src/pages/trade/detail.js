@@ -4,6 +4,7 @@ import { AtButton, AtCountdown} from 'taro-ui'
 import { Loading, SpCell, SpToast, Price, NavBar } from '@/components'
 import { classNames, log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute } from '@/utils'
 import api from '@/api'
+import S from '@/spx'
 import { AFTER_SALE_STATUS } from '@/consts'
 import DetailItem from './comps/detail-item'
 
@@ -228,9 +229,9 @@ export default class TradeDetail extends Component {
   }
 
   handleClickDelivery = () => {
-    Taro.navigateTo({
+    /*Taro.navigateTo({
       url: '/pages/trade/delivery-info?order_id='+this.state.info.tid
-    })
+    })*/
   }
 
   // handleClickAfterSale= () => {
@@ -242,6 +243,11 @@ export default class TradeDetail extends Component {
 
   handleClickToDelivery = () => {
 
+  }
+
+  handleClickCopy = (val) => {
+    copyText(val)
+    S.toast('复制成功')
   }
 
   render () {
@@ -287,9 +293,9 @@ export default class TradeDetail extends Component {
                     { info.status === 'TRADE_SUCCESS' ? `物流单号：${info.delivery_code}` : null }
                   </Text>
                 </View>
-                {
+                {/*{
                   info.status !== 'TRADE_SUCCESS' ? <Text className='delivery-infos__text'>2019-04-30 11:30:21</Text> : null
-                }
+                }*/}
               </View>
             </View>
           </View>
@@ -322,6 +328,14 @@ export default class TradeDetail extends Component {
           <Text className='info-text'>免运费：-￥{info.freight_fee}</Text>
           <Text className='info-text'>优惠：-￥{info.coupon_discount}</Text>
           <Text className='info-text'>支付：{info.payment}（微信支付）</Text>
+          {
+            info.delivery_code
+              ? <View className='delivery_code_copy'>
+                  <Text className='info-text'>物流单号：{info.delivery_code}</Text>
+                  <Text className='info-text' onClick={this.handleClickCopy.bind(this, info.delivery_code)}>复制</Text>
+                </View>
+              : null
+          }
         </View>
         {
           info.status === 'WAIT_BUYER_PAY' && <View className='trade-detail__footer'>

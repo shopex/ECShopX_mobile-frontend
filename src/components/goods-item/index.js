@@ -53,11 +53,11 @@ export default class GoodsItem extends Component {
             <Text className='goods-item__desc'>{info.desc}</Text>
             <View className='goods-item__extra'>
               <View className='goods-item__author'>
-                <Image className='goods-item__author-avatar'
-                  src={img}
+                {/*<Image className='goods-item__author-avatar'
+                  src=''
                   mode='aspectFill'
-                />
-                <Text className='goods-item__author-name'>{info.title}</Text>
+                />*/}
+                <Text className='goods-item__author-name'> </Text>
               </View>
               <View className='goods-item__actions'>
                 {type === 'item' && (

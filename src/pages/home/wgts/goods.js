@@ -35,9 +35,16 @@ export default class WgtGoods extends Component {
   }
 
   handleClickItem = (id) => {
-    Taro.navigateTo({
-      url: `/pages/iwp/item-detail?id=${id}`
-    })
+    try {
+      Taro.navigateTo({
+        url: `/pages/iwp/item-detail?id=${id}`
+      })
+    } catch {
+      Taro.navigateTo({
+        url: `/pages/item/espier-detail?id=${id}`
+      })
+    }
+
   }
 
   handleSwiperChange = (e) => {
@@ -48,56 +55,68 @@ export default class WgtGoods extends Component {
     })
   }
 
-  /*handleClickOperate = async (item_data, type, e) => {
+  handleClickOperate = async (item_data, type, e) => {
     e.stopPropagation()
-    if(type === 'collect') {
-      if(this.state.count === 0) {
-        let is_fav = Boolean(this.props.favs[item_data.item_id])
+    try {
+      if(type === 'collect') {
+        if(this.state.count === 0) {
+          let is_fav = Boolean(this.props.favs[item_data.item_id])
+          this.setState({
+            count: 1,
+            is_fav
+          })
+        }
+        if(!this.state.is_fav) {
+          await api.member.addFav(item_data.item_id)
+          this.props.onAddFav(item_data)
+          console.log(this.props.favs,this.props.favs[1192], 51,'addafter')
+          Taro.showToast({
+            title: '已加入收藏',
+            icon: 'none'
+          })
+        } else {
+          await api.member.delFav(item_data.item_id)
+          this.props.onDelFav(item_data)
+          console.log(this.props.favs, 51,'delafter')
+          Taro.showToast({
+            title: '已移出收藏',
+            icon: 'none'
+          })
+        }
         this.setState({
-          count: 1,
-          is_fav
+          is_fav: !this.state.is_fav
         })
       }
-      if(!this.state.is_fav) {
-        await api.member.addFav(item_data.item_id)
-        this.props.onAddFav(item_data)
-        console.log(this.props.favs,this.props.favs[1192], 51,'addafter')
+
+      if(type === 'buy') {
+        try {
+          await api.cart.add({
+            item_id:item_data.item_id,
+            num: 1
+          })
+        } catch (error) {
+          console.log(error)
+        }
+
         Taro.showToast({
-          title: '已加入收藏',
-          icon: 'none'
-        })
-      } else {
-        await api.member.delFav(item_data.item_id)
-        this.props.onDelFav(item_data)
-        console.log(this.props.favs, 51,'delafter')
-        Taro.showToast({
-          title: '已移出收藏',
-          icon: 'none'
+          title: '成功加入购物车',
+          icon: 'success'
         })
       }
-      this.setState({
-        is_fav: !this.state.is_fav
+    } catch {
+      Taro.navigateToMiniProgram({
+        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+        path: `pages/recommend/detail?id=${item_data.item_id}`, // 跳转的目标页面
+        success(res) {
+          // 打开成功
+          console.log(res)
+        }
       })
     }
 
-    if(type === 'buy') {
-      try {
-        await api.cart.add({
-          item_id:item_data.item_id,
-          num: 1
-        })
-      } catch (e) {
-        console.log(e)
-      }
+  }
 
-      Taro.showToast({
-        title: '成功加入购物车',
-        icon: 'success'
-      })
-    }
-  }*/
-
-  handleClickOperate = (item) => {
+  /*handleClickOperate = (item) => {
     Taro.navigateToMiniProgram({
       appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
       path: `pages/recommend/detail?id=${item.item_id}`, // 跳转的目标页面
@@ -106,7 +125,7 @@ export default class WgtGoods extends Component {
         console.log(res)
       }
     })
-  }
+  }*/
 
   render () {
     const { info } = this.props

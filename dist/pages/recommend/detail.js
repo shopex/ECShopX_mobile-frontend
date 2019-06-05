@@ -84,7 +84,8 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
       }, _callee, _this2);
     })), _this.handleClickBar = function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(type) {
-        var id, resPraise, resCollectArticle, query;
+        var id, _ref5, count, resCollectArticle, query;
+
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -96,21 +97,15 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
                   break;
                 }
 
-                if (!(_this.state.praiseCheckStatus === true)) {
-                  _context2.next = 4;
-                  break;
-                }
-
-                return _context2.abrupt("return", false);
-
-              case 4:
-                _context2.next = 6;
+                _context2.next = 4;
                 return _index4.default.article.praise(id);
 
-              case 6:
-                resPraise = _context2.sent;
+              case 4:
+                _ref5 = _context2.sent;
+                count = _ref5.count;
 
-                console.log(resPraise, 48);
+                _this.praiseCheck();
+                _this.fetch();
 
               case 8:
                 if (!(type === 'mark')) {
@@ -195,7 +190,7 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
   }, {
     key: "fetch",
     value: function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
         var id, resFocus, res, info;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -273,7 +268,7 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
       }));
 
       function fetch() {
-        return _ref5.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       }
 
       return fetch;
@@ -283,7 +278,7 @@ var recommendDetail = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _state = this.__state,

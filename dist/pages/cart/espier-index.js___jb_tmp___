@@ -2,11 +2,11 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtButton, AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem } from '@/components'
+import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar } from '@/components'
 import { log, navigateTo, pickBy } from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
-import { withLogin, withPager } from '@/hocs'
+import { withLogin } from '@/hocs'
 import { getTotalPrice, getTotalCount } from '@/store/cart'
 import CartItem from './comps/cart-item'
 
@@ -24,25 +24,23 @@ import './espier-index.scss'
   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
   onCartSelection: (selection) => dispatch({ type: 'cart/selection', payload: selection })
 }))
-@withPager
 @withLogin()
 export default class CartIndex extends Component {
   static defaultProps = {
     totalPrice: '0.00',
     list: null,
+    likeList: []
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      ...this.state,
       loading: true,
       selection: new Set(),
       cartMode: 'default',
       curPromotions: null,
       groups: [],
-      likeList: [],
       invalidList: []
     }
 
@@ -51,7 +49,8 @@ export default class CartIndex extends Component {
   }
 
   componentDidMount () {
-    this.fetchCart((list) => {
+    this.getLikeList()
+    this.fetch((list) => {
       if (this.props.defaultAllSelect) {
         this.handleAllSelect(true)
       }
@@ -74,9 +73,6 @@ export default class CartIndex extends Component {
         })
       }, 40)
     })
-
-    this.nextPage()
-
   }
 
   componentDidShow () {
@@ -93,28 +89,42 @@ export default class CartIndex extends Component {
     }
   }
 
-  async fetch (params) {
+  getLikeList = async (params) => {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
       pageSize
     }
-    const { list, total_count: total } = await api.cart.likeList(query)
+    const res = await api.cart.likeList(query)
+    console.log(res, 94)
 
-    const nList = pickBy(list, {
+    /*const nList = pickBy(list, {
       img: 'pics[0]',
       item_id: 'item_id',
       title: 'itemName',
       desc: 'brief',
+      price: ({ price }) => (price/100).toFixed(2),
+      market_price: ({ market_price }) => (market_price/100).toFixed(2),
+      is_fav: ({ item_id }) => Boolean(favs[item_id])
     })
 
     this.setState({
-      likeList: [...this.state.likeList, ...nList],
+      list: [...this.state.list, ...nList],
+      showDrawer: false,
+      query
     })
+
+    if (this.firstStatus) {
+      this.setState({
+        paramsList: item_params_list,
+        selectParams
+      })
+      this.firstStatus = false
+    }
 
     return {
       total
-    }
+    }*/
   }
 
   // 活动分组
@@ -152,7 +162,7 @@ export default class CartIndex extends Component {
     return groups
   }
 
-  async fetchCart (cb) {
+  async fetch (cb) {
     const { valid_cart, invalid_cart } = await api.cart.get()
 
     const list = valid_cart.map(shopCart => {
@@ -168,7 +178,7 @@ export default class CartIndex extends Component {
       invalidList
     })
 
-    log.debug('[cart fetchCart]', list)
+    log.debug('[cart fetch]', list)
     this.props.onUpdateCart(list)
     cb && cb(list)
   }
@@ -176,7 +186,7 @@ export default class CartIndex extends Component {
   updateCart = debounce(async () => {
     this.updating = true
     try {
-      await this.fetchCart()
+      await this.fetch()
     } catch (e) {
       console.log(e)
     }
@@ -307,7 +317,7 @@ export default class CartIndex extends Component {
       activity_id,
       cart_id
     })
-    await this.fetchCart()
+    await this.fetch()
     Taro.hideLoading()
   }
 
@@ -356,7 +366,7 @@ export default class CartIndex extends Component {
   }
 
   render () {
-    const { selection, groups, invalidList, cartMode, loading, curPromotions, likeList } = this.state
+    const { selection, groups, invalidList, cartMode, loading, curPromotions } = this.state
     const { totalPrice, list } = this.props
 
     if (loading) {
@@ -512,27 +522,6 @@ export default class CartIndex extends Component {
               </View>
             </View>
           )}
-
-          {
-            likeList.length
-              ? <View className='cart-list cart-list__disabled'>
-                <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
-                <View className='goods-list goods-list__type-grid'>
-                  {
-                    likeList.map(item => {
-                      return (
-                        <GoodsItem
-                          key={item.item_id}
-                          info={item}
-                          onClick={() => this.handleClickItem(item)}
-                        />
-                      )
-                    })
-                  }
-                </View>
-              </View>
-              : null
-          }
         </ScrollView>
 
         <View

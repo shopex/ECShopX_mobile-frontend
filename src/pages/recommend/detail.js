@@ -46,8 +46,6 @@ export default class recommendDetail extends Component {
     if(resFocus) {
       const info = S.getAuthToken() ? await api.article.authDetail(id): await api.article.detail(id)
 
-
-
       info.updated_str = formatTime(info.updated * 1000, 'YYYY-MM-DD')
       this.setState({
         info
@@ -70,11 +68,12 @@ export default class recommendDetail extends Component {
   handleClickBar = async (type) => {
     const { id } = this.$router.params
     if (type === 'like') {
-      if(this.state.praiseCheckStatus === true){
+      /*if(this.state.praiseCheckStatus === true){
         return false
-      }
-      const resPraise = await api.article.praise(id)
-      console.log(resPraise, 48)
+      }*/
+      const { count } = await api.article.praise(id)
+      this.praiseCheck()
+      this.fetch()
     }
 
     if (type === 'mark') {

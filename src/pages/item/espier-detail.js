@@ -9,6 +9,7 @@ import { log, calcTimer } from '@/utils'
 import S from '@/spx'
 import GoodsBuyToolbar from './comps/buy-toolbar'
 import ItemImg from './comps/item-img'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods } from '../home/wgts'
 
 import './espier-detail.scss'
 
@@ -367,10 +368,25 @@ export default class Detail extends Component {
             </ScrollView>
           </View>
 
-          <SpHtmlContent
+          <View className='wgts-wrap__cont'>
+            {
+              desc.map((item, idx) => {
+                return (
+                  <View className='wgt-wrap' key={idx}>
+                    {item.name === 'film' && <WgtFilm info={item} />}
+                    {item.name === 'slider' && <WgtSlider info={item} />}
+                    {item.name === 'writing' && <WgtWriting info={item} />}
+                    {item.name === 'goods' && <WgtGoods info={item} />}
+                  </View>
+                )
+              })
+            }
+          </View>
+
+          {/*<SpHtmlContent
             className='goods-detail__content'
             content={desc}
-          />
+          />*/}
 
           {/*<View className='goods-sec-tabs'>
             <View className='sec-tabs'>

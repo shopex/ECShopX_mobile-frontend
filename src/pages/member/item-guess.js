@@ -33,15 +33,13 @@ export default class ItemGuess extends Component {
       pageSize
     }
 
-    const { list, total_count: total } = await api.item.search(query)
+    const { list, total_count: total } = await api.cart.likeList(query)
 
     const nList = pickBy(list, {
       img: 'pics[0]',
       item_id: 'item_id',
       title: 'itemName',
       desc: 'brief',
-      price: ({ price }) => (price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2)
     })
 
     this.setState({

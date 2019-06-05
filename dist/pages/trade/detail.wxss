@@ -163,6 +163,26 @@
 .trade-detail-info .info-text {
   display: block;
 }
+.trade-detail-info .delivery_code_copy {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+}
+.trade-detail-info .delivery_code_copy .info-text {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+.trade-detail-info .delivery_code_copy .info-text:last-child {
+  text-align: right;
+}
 .trade-detail__footer {
   position: fixed;
   left: 0;

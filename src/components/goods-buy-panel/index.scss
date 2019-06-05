@@ -124,6 +124,10 @@
       margin: 0 0 15px -2px;
       font-size: $font-size-large;
     }
+    &__price {
+      display: flex;
+      margin-bottom: 10px;
+    }
     &__stock {
       display: block;
     }
