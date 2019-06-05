@@ -66,22 +66,9 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       propsText = curSku.propsText;
       return "\u5DF2\u9009 \u201C" + propsText + "\u201D";
     }, _this.handleQuantityChange = function (val) {
-      if (/\d/.test(val)) {
-        console.log(22);
-      } else {
-        console.log(23);
-      }
-      // console.log(val, 173)
-      // let valueNumber =val.replace(/[^\d]/g,'')
-      /*if(isNumber(val)) {
-        this.setState({
-          quantity: val
-        })
-      } else {
-        this.setState({
-          quantity: 1
-        })
-      }*/
+      _this.setState({
+        quantity: val
+      });
     }, _this.handleSelectSku = function (item, idx) {
       if (_this.props.info.spec_items.length <= 1 || _this.disabledSet.has(item.spec_value_id)) {
         return;
