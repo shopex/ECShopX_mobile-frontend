@@ -1,31 +1,38 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { SpToast, TabBar, Loading } from '@/components'
+import { SpToast, TabBar, Loading, SpNote } from '@/components'
 import req from '@/api/req'
+import api from '@/api'
+import { pickBy } from '@/utils'
+import { withPager } from '@/hocs'
 import S from "@/spx";
-import { WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './wgts'
+import { WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtGoodsFaverite, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './wgts'
 
 import './index.scss'
 
 @connect(store => ({
   store
 }))
+@withPager
 export default class HomeIndex extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
+      ...this.state,
       wgts: null,
-      authStatus: false
+      authStatus: false,
+      likeList: [],
+      isFaverite_open: false
     }
   }
 
   componentDidMount () {
-    this.fetch()
+    this.fetchInfo()
   }
 
-  async fetch () {
+  async fetchInfo () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
     const info = await req.get(url)
 
@@ -36,12 +43,49 @@ export default class HomeIndex extends Component {
     }
     this.setState({
       wgts: info.config
+    },()=>{
+      if(info.config) {
+        info.config.map(item => {
+          console.log(item)
+          if(item.name === 'faverite_type' && item.config.isOpen === true) {
+            this.setState({
+              isFaverite_open: true
+            })
+            this.nextPage()
+          }
+        })
+      }
     })
   }
 
-  render () {
-    const { wgts, authStatus } = this.state
+  async fetch (params) {
+    const { page_no: page, page_size: pageSize } = params
+    const query = {
+      page,
+      pageSize
+    }
+    const { list, total_count: total } = await api.cart.likeList(query)
 
+    const nList = pickBy(list, {
+      img: 'pics[0]',
+      item_id: 'item_id',
+      title: 'itemName',
+      desc: 'brief',
+    })
+
+    this.setState({
+      likeList: [...this.state.likeList, ...nList],
+    })
+
+    return {
+      total
+    }
+  }
+
+  render () {
+    const { wgts, authStatus, page, likeList, isFaverite_open } = this.state
+
+    console.log(likeList, isFaverite_open, 84)
     if (!wgts || !this.props.store) {
       return <Loading />
     }
@@ -50,6 +94,7 @@ export default class HomeIndex extends Component {
       <View className='page-index'>
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
+          onScrollToLower={this.nextPage}
           scrollY
         >
           <View className='wgts-wrap__cont'>
@@ -66,6 +111,23 @@ export default class HomeIndex extends Component {
                     {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} />}
                     {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} />}
                     {item.name === 'showcase' && <WgtShowcase info={item} />}
+                    {item.name === 'faverite_type' && item.config.isOpen === true
+                      ? (
+                         <View>
+                           <WgtGoodsFaverite info={likeList} />
+                           {
+                             page.isLoading
+                               ? <Loading>正在加载...</Loading>
+                               : null
+                           }
+                           {
+                             !page.isLoading && !page.hasNext && !likeList.length
+                             && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
+                           }
+                         </View>
+                      )
+                      : null
+                    }
                     {idx === 1 && (
                       <WgtPointLuck />
                     )}
@@ -73,6 +135,7 @@ export default class HomeIndex extends Component {
                 )
               })
             }
+
           </View>
         </ScrollView>
         <SpToast />

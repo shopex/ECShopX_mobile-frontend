@@ -1,28 +1,33 @@
-@import "../../../style/imports";
 
-
-.wgt-grid {
-  &__header {
-    display: block !important;
-    text-align: center;
-    margin-bottom: 44px;
-  }
-  &__title {
-    font-size: 32px;
-    line-height: 40px;
-    padding-bottom: 5px;
-    border-bottom: 1PX solid $color-brand-primary;
-    color: $color-brand-primary;
-  }
+/*==============================
+=            colors            =
+==============================*/
+/*===============================
+=            z-index            =
+===============================*/
+/*==============================
+=            colors            =
+==============================*/
+/*===============================
+=            z-index            =
+===============================*/
+.wgt-grid__header {
+  display: block !important;
+  text-align: center;
+  margin-bottom: 44rpx;
+}
+.wgt-grid__title {
+  font-size: 32rpx;
+  line-height: 40rpx;
+  padding-bottom: 5rpx;
+  border-bottom: 1PX solid #0b4137;
+  color: #0b4137;
 }
 
 .grid-goods {
-  display: flex;
-  flex-wrap: wrap;
-  &.out-padding {
-    margin: 0 -6px;
-  }
-  .grid-item {
+  /*display: flex;
+  flex-wrap: wrap;*/
+  /*.grid-item {
     width: 50%;
     padding: 6px;
     box-sizing: border-box;
@@ -69,5 +74,8 @@
         }
       }
     }
-  }
+  }*/
+}
+.grid-goods.out-padding {
+  margin: 0 -6rpx;
 }

@@ -17,12 +17,12 @@
 }
 
 .grid-goods {
-  display: flex;
-  flex-wrap: wrap;
+  /*display: flex;
+  flex-wrap: wrap;*/
   &.out-padding {
     margin: 0 -6px;
   }
-  .grid-item {
+  /*.grid-item {
     width: 50%;
     padding: 6px;
     box-sizing: border-box;
@@ -69,5 +69,5 @@
         }
       }
     }
-  }
+  }*/
 }

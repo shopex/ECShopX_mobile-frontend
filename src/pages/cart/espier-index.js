@@ -356,7 +356,7 @@ export default class CartIndex extends Component {
   }
 
   render () {
-    const { selection, groups, invalidList, cartMode, loading, curPromotions, likeList } = this.state
+    const { selection, groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
     const { totalPrice, list } = this.props
 
     if (loading) {
@@ -532,6 +532,15 @@ export default class CartIndex extends Component {
                 </View>
               </View>
               : null
+          }
+          {
+            page.isLoading
+              ? <Loading>正在加载...</Loading>
+              : null
+          }
+          {
+            !page.isLoading && !page.hasNext && !likeList.length
+            && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
 

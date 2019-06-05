@@ -427,7 +427,8 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
           cartMode = _state.cartMode,
           loading = _state.loading,
           curPromotions = _state.curPromotions,
-          likeList = _state.likeList;
+          likeList = _state.likeList,
+          page = _state.page;
       var _props = this.__props,
           totalPrice = _props.totalPrice,
           list = _props.list;
@@ -498,6 +499,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         loopArray0: loopArray0,
         loopArray1: loopArray1,
         list: list,
+        page: page,
         isEmpty: isEmpty,
         totalPrice: totalPrice,
         isTotalChecked: this.isTotalChecked
@@ -553,7 +555,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 }, _initialiseProps = function _initialiseProps() {
   var _this5 = this;
 
-  this.$usedState = ["anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "loopArray0", "loopArray1", "loading", "groups", "list", "invalidList", "likeList", "isEmpty", "cartMode", "totalPrice", "curPromotions", "selection", "defaultAllSelect", "__fn_onUpdateCart", "cartIds", "__fn_onCartSelection", "__fn_onUpdateCartNum", "isTotalChecked"];
+  this.$usedState = ["anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "loopArray0", "loopArray1", "loading", "groups", "list", "invalidList", "likeList", "page", "isEmpty", "cartMode", "totalPrice", "curPromotions", "selection", "defaultAllSelect", "__fn_onUpdateCart", "cartIds", "__fn_onCartSelection", "__fn_onUpdateCartNum", "isTotalChecked"];
   this.updateCart = (0, _debounce2.default)(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {

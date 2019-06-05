@@ -9,6 +9,8 @@
     "wgt-goods-scroll": "./wgts/goods-scroll",
     "wgt-goods-grid": "./wgts/goods-grid",
     "wgt-showcase": "./wgts/showcase",
+    "wgt-goods-faverite": "./wgts/goods-faverite",
+    "sp-note": "../../components/note/index",
     "wgt-point-luck": "./wgts/point-luck",
     "sp-toast": "../../components/toast/index",
     "tab-bar": "../../components/tab-bar/index"

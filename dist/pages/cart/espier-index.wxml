@@ -67,6 +67,12 @@
                     </view>
                 </view>
             </block>
+            <block wx:if="{{page.isLoading}}">
+                <loading __triggerObserer="{{ _triggerObserer }}">正在加载...</loading>
+            </block>
+            <block wx:if="{{!page.isLoading && !page.hasNext && !likeList.length}}">
+                <sp-note img="trades_empty.png" __triggerObserer="{{ _triggerObserer }}">暂无数据~</sp-note>
+            </block>
         </scroll-view>
         <view class="{{'toolbar cart-toolbar ' + (isEmpty && 'hidden')}}">
             <view class="cart-toolbar__hd">

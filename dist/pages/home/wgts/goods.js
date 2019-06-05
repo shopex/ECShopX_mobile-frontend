@@ -70,9 +70,16 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = WgtGoods.__proto__ || Object.getPrototypeOf(WgtGoods)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["info", "base", "data", "is_fav", "curIdx", "count", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleClickItem = function (id) {
-      _index2.default.navigateTo({
-        url: "/pages/iwp/item-detail?id=" + id
-      });
+      try {
+        _index2.default.navigateTo({
+          url: "/pages/iwp/item-detail?id=" + id
+        });
+      } catch (error) {
+        console.log(error);
+        _index2.default.navigateTo({
+          url: "/pages/item/espier-detail?id=" + id
+        });
+      }
     }, _this.handleSwiperChange = function (e) {
       var current = e.detail.current;
 
@@ -88,9 +95,10 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
             switch (_context.prev = _context.next) {
               case 0:
                 e.stopPropagation();
+                _context.prev = 1;
 
                 if (!(type === 'collect')) {
-                  _context.next = 17;
+                  _context.next = 18;
                   break;
                 }
 
@@ -104,28 +112,28 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
                 }
 
                 if (_this.state.is_fav) {
-                  _context.next = 11;
+                  _context.next = 12;
                   break;
                 }
 
-                _context.next = 6;
+                _context.next = 7;
                 return _index5.default.member.addFav(item_data.item_id);
 
-              case 6:
+              case 7:
                 _this.__triggerPropsFn("onAddFav", [null].concat([item_data]));
                 console.log(_this.props.favs, _this.props.favs[1192], 51, 'addafter');
                 _index2.default.showToast({
                   title: '已加入收藏',
                   icon: 'none'
                 });
-                _context.next = 16;
+                _context.next = 17;
                 break;
 
-              case 11:
-                _context.next = 13;
+              case 12:
+                _context.next = 14;
                 return _index5.default.member.delFav(item_data.item_id);
 
-              case 13:
+              case 14:
                 _this.__triggerPropsFn("onDelFav", [null].concat([item_data]));
                 console.log(_this.props.favs, 51, 'delafter');
                 _index2.default.showToast({
@@ -133,47 +141,65 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
                   icon: 'none'
                 });
 
-              case 16:
+              case 17:
                 _this.setState({
                   is_fav: !_this.state.is_fav
                 });
 
-              case 17:
+              case 18:
                 if (!(type === 'buy')) {
-                  _context.next = 27;
+                  _context.next = 28;
                   break;
                 }
 
-                _context.prev = 18;
-                _context.next = 21;
+                _context.prev = 19;
+                _context.next = 22;
                 return _index5.default.cart.add({
                   item_id: item_data.item_id,
                   num: 1
                 });
 
-              case 21:
-                _context.next = 26;
+              case 22:
+                _context.next = 27;
                 break;
 
-              case 23:
-                _context.prev = 23;
-                _context.t0 = _context["catch"](18);
+              case 24:
+                _context.prev = 24;
+                _context.t0 = _context["catch"](19);
 
                 console.log(_context.t0);
 
-              case 26:
+              case 27:
 
                 _index2.default.showToast({
                   title: '成功加入购物车',
                   icon: 'success'
                 });
 
-              case 27:
+              case 28:
+                _context.next = 34;
+                break;
+
+              case 30:
+                _context.prev = 30;
+                _context.t1 = _context["catch"](1);
+
+                console.log(_context.t1);
+                _index2.default.navigateToMiniProgram({
+                  appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+                  path: "pages/recommend/detail?id=" + item_data.item_id, // 跳转的目标页面
+                  success: function success(res) {
+                    // 打开成功
+                    console.log(res);
+                  }
+                });
+
+              case 34:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, _this2, [[18, 23]]);
+        }, _callee, _this2, [[1, 30], [19, 24]]);
       }));
 
       return function (_x, _x2, _x3) {

@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -20,11 +22,21 @@ var _req = require("../../api/req.js");
 
 var _req2 = _interopRequireDefault(_req);
 
-var _index4 = require("../../spx/index.js");
+var _index4 = require("../../api/index.js");
 
 var _index5 = _interopRequireDefault(_index4);
 
+var _index6 = require("../../utils/index.js");
+
+var _index7 = require("../../hocs/index.js");
+
+var _index8 = require("../../spx/index.js");
+
+var _index9 = _interopRequireDefault(_index8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -38,7 +50,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
   return {
     store: store
   };
-}), _dec(_class = (_temp2 = _class2 = function (_BaseComponent) {
+}), _dec(_class = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_BaseComponent) {
   _inherits(HomeIndex, _BaseComponent);
 
   function HomeIndex() {
@@ -52,7 +64,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "authStatus", "store"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "likeList", "page", "authStatus", "isFaverite_open", "store"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(HomeIndex, [{
@@ -60,20 +72,24 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     value: function _constructor(props) {
       _get(HomeIndex.prototype.__proto__ || Object.getPrototypeOf(HomeIndex.prototype), "_constructor", this).call(this, props);
 
-      this.state = {
+      this.state = _extends({}, this.state, {
         wgts: null,
-        authStatus: false
-      };
+        authStatus: false,
+        likeList: [],
+        isFaverite_open: false
+      });
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.fetch();
+      this.fetchInfo();
     }
   }, {
-    key: "fetch",
+    key: "fetchInfo",
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var _this2 = this;
+
         var url, info;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -87,13 +103,25 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
                 info = _context.sent;
 
 
-                if (!_index5.default.getAuthToken()) {
+                if (!_index9.default.getAuthToken()) {
                   this.setState({
                     authStatus: true
                   });
                 }
                 this.setState({
                   wgts: info.config
+                }, function () {
+                  if (info.config) {
+                    info.config.map(function (item) {
+                      console.log(item);
+                      if (item.name === 'faverite_type' && item.config.isOpen === true) {
+                        _this2.setState({
+                          isFaverite_open: true
+                        });
+                        _this2.nextPage();
+                      }
+                    });
+                  }
                 });
 
               case 6:
@@ -104,8 +132,60 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
         }, _callee, this);
       }));
 
-      function fetch() {
+      function fetchInfo() {
         return _ref2.apply(this, arguments);
+      }
+
+      return fetchInfo;
+    }()
+  }, {
+    key: "fetch",
+    value: function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
+        var page, pageSize, query, _ref4, list, total, nList;
+
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                page = params.page_no, pageSize = params.page_size;
+                query = {
+                  page: page,
+                  pageSize: pageSize
+                };
+                _context2.next = 4;
+                return _index5.default.cart.likeList(query);
+
+              case 4:
+                _ref4 = _context2.sent;
+                list = _ref4.list;
+                total = _ref4.total_count;
+                nList = (0, _index6.pickBy)(list, {
+                  img: 'pics[0]',
+                  item_id: 'item_id',
+                  title: 'itemName',
+                  desc: 'brief'
+                });
+
+
+                this.setState({
+                  likeList: [].concat(_toConsumableArray(this.state.likeList), _toConsumableArray(nList))
+                });
+
+                return _context2.abrupt("return", {
+                  total: total
+                });
+
+              case 10:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function fetch(_x) {
+        return _ref3.apply(this, arguments);
       }
 
       return fetch;
@@ -120,14 +200,20 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
 
       var _state = this.__state,
           wgts = _state.wgts,
-          authStatus = _state.authStatus;
+          authStatus = _state.authStatus,
+          page = _state.page,
+          likeList = _state.likeList,
+          isFaverite_open = _state.isFaverite_open;
 
 
+      console.log(likeList, isFaverite_open, 84);
       if (!wgts || !this.__props.store) {
         return null;
       }
 
-      Object.assign(this.__state, {});
+      Object.assign(this.__state, {
+        page: page
+      });
       return this.__state;
     }
   }]);
@@ -138,7 +224,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = [], _temp2)) || _class);
+}, _class2.$$events = ["nextPage"], _temp2)) || _class) || _class);
 exports.default = HomeIndex;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(HomeIndex, true));

@@ -10,11 +10,9 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _class, _temp2;
 
-var _index = require("../../npm/@tarojs/taro-weapp/index.js");
+var _index = require("../../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
-
-var _index3 = require("../../utils/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,87 +22,90 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CheckoutItems = (_temp2 = _class = function (_BaseComponent) {
-  _inherits(CheckoutItems, _BaseComponent);
+var WgtGoodsFaverite = (_temp2 = _class = function (_BaseComponent) {
+  _inherits(WgtGoodsFaverite, _BaseComponent);
 
-  function CheckoutItems() {
+  function WgtGoodsFaverite() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, CheckoutItems);
+    _classCallCheck(this, WgtGoodsFaverite);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CheckoutItems.__proto__ || Object.getPrototypeOf(CheckoutItems)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "list", "isOpened", "__fn_onClickLeftIcon"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtGoodsFaverite.__proto__ || Object.getPrototypeOf(WgtGoodsFaverite)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loopArray0", "info"], _this.handleClickItem = function (item) {
+      var url = "/pages/item/espier-detail?id=" + item.item_id;
+      _index2.default.navigateTo({
+        url: url
+      });
+    }, _this.anonymousFunc0Array = [], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(CheckoutItems, [{
+  _createClass(WgtGoodsFaverite, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(CheckoutItems.prototype.__proto__ || Object.getPrototypeOf(CheckoutItems.prototype), "_constructor", this).call(this, props);
+      _get(WgtGoodsFaverite.prototype.__proto__ || Object.getPrototypeOf(WgtGoodsFaverite.prototype), "_constructor", this).call(this, props);
+    }
+  }, {
+    key: "navigateTo",
+    value: function navigateTo(url) {
+      _index2.default.navigateTo({ url: url });
     }
   }, {
     key: "_createData",
     value: function _createData() {
+      var _this2 = this;
+
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
       var __runloopRef = arguments[2];
       ;
 
-      var _props = this.__props,
-          isOpened = _props.isOpened,
-          list = _props.list,
-          onClickBack = _props.onClickBack;
+      var info = this.__props.info;
 
+      if (!info) {
+        return null;
+      }
 
-      var anonymousState__temp = (0, _index3.classNames)('checkout-items', isOpened ? 'checkout-items__active' : null);
-      var anonymousState__temp2 = "\u5546\u54C1\u6E05\u5355(" + list.length + ")\u4EF6";
+      var loopArray0 = info.map(function (item, __index0) {
+        item = {
+          $original: (0, _index.internal_get_original)(item)
+        };
+
+        _this2.anonymousFunc0Array[__index0] = function () {
+          return _this2.handleClickItem(item.$original);
+        };
+
+        return {
+          $original: item.$original
+        };
+      });
       Object.assign(this.__state, {
-        anonymousState__temp: anonymousState__temp,
-        anonymousState__temp2: anonymousState__temp2,
-        list: list
+        loopArray0: loopArray0,
+        info: info
       });
       return this.__state;
     }
   }, {
-    key: "funPrivatechNtm",
-    value: function funPrivatechNtm() {
-      this.__triggerPropsFn("onClickBack", [].concat(Array.prototype.slice.call(arguments)));
+    key: "anonymousFunc0",
+    value: function anonymousFunc0(__index0, e) {
+      ;
+      this.anonymousFunc0Array[__index0] && this.anonymousFunc0Array[__index0](e);
     }
   }]);
 
-  return CheckoutItems;
+  return WgtGoodsFaverite;
 }(_index.Component), _class.properties = {
-  "isOpened": {
-    "type": null,
-    "value": null
-  },
-  "list": {
-    "type": null,
-    "value": null
-  },
-  "onClickBack": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickLeftIcon": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickBack": {
+  "info": {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivatechNtm"], _class.defaultProps = {
-  isOpened: false,
-  list: [],
-  onClickBack: function onClickBack() {}
-}, _class.options = {
+}, _class.$$events = ["anonymousFunc0"], _class.options = {
   addGlobalClass: true
 }, _temp2);
-exports.default = CheckoutItems;
+exports.default = WgtGoodsFaverite;
 
-Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(CheckoutItems));
+Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(WgtGoodsFaverite));
