@@ -11,7 +11,7 @@ exports.code = code;
 exports.userInfo = userInfo;
 exports.login = login;
 exports.prelogin = prelogin;
-exports.decryptPhoneInfo = decryptPhoneInfo;
+exports.decryptPhone = decryptPhone;
 
 var _index = require("../npm/@tarojs/taro-weapp/index.js");
 
@@ -23,8 +23,12 @@ var _req2 = _interopRequireDefault(_req);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _ref = wx.getExtConfigSync ? wx.getExtConfigSync() : {},
-    appid = _ref.appid;
+var getAppId = function getAppId() {
+  var _ref = wx.getExtConfigSync ? wx.getExtConfigSync() : {},
+      appid = _ref.appid;
+
+  return appid;
+};
 
 function info(data) {
   return _req2.default.post('/wx.info', data);
@@ -39,6 +43,7 @@ function userInfo() {
 }
 
 function login(params) {
+  var appid = getAppId();
   return _req2.default.post('/login', _extends({}, params, {
     appid: appid,
     auth_type: 'wxapp'
@@ -46,17 +51,16 @@ function login(params) {
 }
 
 function prelogin(params) {
+  var appid = getAppId();
   return _req2.default.post('/prelogin', _extends({}, params, {
     appid: appid,
     auth_type: 'wxapp'
   }));
 }
 
-function decryptPhoneInfo(params) {
-  var config = {
-    header: {
-      'Accept': 'application/vnd.espier.v2+json'
-    }
-  };
-  return _req2.default.get("https://bbc54.shopex123.com/index.php/api/wxapp/member/decryptPhoneInfo", params, config);
+function decryptPhone(params) {
+  var appid = getAppId();
+  return _req2.default.get('/member/decryptPhone', _extends({}, params, {
+    appid: appid
+  }));
 }

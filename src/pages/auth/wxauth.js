@@ -69,7 +69,7 @@ export default class WxAuth extends Component {
     })
 
     try {
-      const { token } = await api.wx.prelogin({
+      const { token, open_id, union_id } = await api.wx.prelogin({
         code,
         iv,
         encryptedData,
@@ -78,7 +78,10 @@ export default class WxAuth extends Component {
       })
 
       S.setAuthToken(token)
-      this.redirect()
+      // 跳转注册绑定
+      Taro.redirectTo({
+        url: `/pages/auth/reg?open_id=${open_id}&union_id=${union_id}`
+      })
     } catch (e) {
       console.info(e)
       Taro.showToast({
@@ -89,20 +92,6 @@ export default class WxAuth extends Component {
 
     Taro.hideLoading()
   }
-
-  // handleGetPhoneNumber = async (e) => {
-  //   // TODO: handle phone
-  //   const { iv, encryptedData, errMsg } = e.detail
-  //   const { code } = await Taro.login()
-  //   const res = await api.wx.decryptPhoneInfo({
-  //     code,
-  //     iv,
-  //     encryptedData
-  //   })
-
-  //   console.info(res)
-  //   debugger
-  // }
 
   render () {
     const { isAuthShow } = this.state

@@ -13,7 +13,7 @@ export function pointDetail () {
 }
 
 export function favsList () {
-  return req.get('/member/collect/item')
+  return req.get('/member/collect/item', null, { showError: false })
 }
 
 export function addFav (item_id) {

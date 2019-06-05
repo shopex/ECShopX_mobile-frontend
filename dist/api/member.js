@@ -75,7 +75,7 @@ function pointDetail() {
 }
 
 function favsList() {
-  return _req2.default.get('/member/collect/item');
+  return _req2.default.get('/member/collect/item', null, { showError: false });
 }
 
 function addFav(item_id) {

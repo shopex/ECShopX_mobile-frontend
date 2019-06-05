@@ -1,7 +1,10 @@
 import Taro from '@tarojs/taro'
 import req from './req'
 
-const { appid } = wx.getExtConfigSync? wx.getExtConfigSync(): {}
+const getAppId = () => {
+  const { appid } = wx.getExtConfigSync? wx.getExtConfigSync(): {}
+  return appid
+}
 
 export function info (data) {
   return req.post('/wx.info', data)
@@ -16,6 +19,7 @@ export function userInfo () {
 }
 
 export function login (params) {
+  const appid = getAppId()
   return req.post('/login', {
     ...params,
     appid,
@@ -24,6 +28,7 @@ export function login (params) {
 }
 
 export function prelogin (params) {
+  const appid = getAppId()
   return req.post('/prelogin', {
     ...params,
     appid,
@@ -31,11 +36,10 @@ export function prelogin (params) {
   })
 }
 
-export function decryptPhoneInfo (params) {
-  const config = {
-    header: {
-      'Accept': 'application/vnd.espier.v2+json'
-    }
-  }
-  return req.get(`https://bbc54.shopex123.com/index.php/api/wxapp/member/decryptPhoneInfo`, params, config)
+export function decryptPhone (params) {
+  const appid = getAppId()
+  return req.get('/member/decryptPhone', {
+    ...params,
+    appid
+  })
 }

@@ -51,7 +51,7 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
       isAuthShow: false
     }, _this.handleGetUserInfo = function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(res) {
-        var loginParams, iv, encryptedData, rawData, signature, _ref3, code, _ref4, token;
+        var loginParams, iv, encryptedData, rawData, signature, _ref3, code, _ref4, token, open_id, union_id;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -101,15 +101,20 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
               case 13:
                 _ref4 = _context.sent;
                 token = _ref4.token;
+                open_id = _ref4.open_id;
+                union_id = _ref4.union_id;
 
 
                 _index6.default.setAuthToken(token);
-                _this.redirect();
-                _context.next = 23;
+                // 跳转注册绑定
+                _index2.default.redirectTo({
+                  url: "/pages/auth/reg?open_id=" + open_id + "&union_id=" + union_id
+                });
+                _context.next = 25;
                 break;
 
-              case 19:
-                _context.prev = 19;
+              case 21:
+                _context.prev = 21;
                 _context.t0 = _context["catch"](10);
 
                 console.info(_context.t0);
@@ -118,16 +123,16 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
                   icon: 'none'
                 });
 
-              case 23:
+              case 25:
 
                 _index2.default.hideLoading();
 
-              case 24:
+              case 26:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, _this2, [[10, 19]]);
+        }, _callee, _this2, [[10, 21]]);
       }));
 
       return function (_x) {
@@ -230,22 +235,6 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
     }
   }, {
     key: "_createData",
-
-
-    // handleGetPhoneNumber = async (e) => {
-    //   // TODO: handle phone
-    //   const { iv, encryptedData, errMsg } = e.detail
-    //   const { code } = await Taro.login()
-    //   const res = await api.wx.decryptPhoneInfo({
-    //     code,
-    //     iv,
-    //     encryptedData
-    //   })
-
-    //   console.info(res)
-    //   debugger
-    // }
-
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
