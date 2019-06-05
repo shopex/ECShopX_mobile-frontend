@@ -1,6 +1,8 @@
 import Taro from '@tarojs/taro'
 import req from './req'
 
+const { appid } = wx.getExtConfigSync? wx.getExtConfigSync(): {}
+
 export function info (data) {
   return req.post('/wx.info', data)
 }
@@ -13,13 +15,19 @@ export function userInfo () {
   return req.get('/wx.user.info')
 }
 
-export function login (data) {
-  return Taro.request({
-    url: 'https://bbc54.shopex123.com/index.php/api/wxapp/login',
-    method: 'post',
-    data
-  }).then(res => {
-    return res.data
+export function login (params) {
+  return req.post('/login', {
+    ...params,
+    appid,
+    auth_type: 'wxapp'
+  }, { showError: false })
+}
+
+export function prelogin (params) {
+  return req.post('/prelogin', {
+    ...params,
+    appid,
+    auth_type: 'wxapp'
   })
 }
 
