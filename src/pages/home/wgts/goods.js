@@ -104,7 +104,8 @@ export default class WgtGoods extends Component {
           icon: 'success'
         })
       }
-    } catch {
+    } catch (e) {
+      console.log(e)
       Taro.navigateToMiniProgram({
         appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
         path: `pages/recommend/detail?id=${item_data.item_id}`, // 跳转的目标页面
