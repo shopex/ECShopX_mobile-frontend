@@ -396,7 +396,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       this.params = {
         cart_type: cart_type,
         items: items,
-        pay_type: payType || 'deposit'
+        pay_type: payType || 'amorepay'
       };
 
       this.setState({
@@ -620,7 +620,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var coupon = this.__props.coupon;

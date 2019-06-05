@@ -21,6 +21,7 @@
     "pages/auth/reg-rule",
     "pages/auth/login",
     "pages/auth/forgotpwd",
+    "pages/auth/wxauth",
     "pages/cashier/index",
     "pages/cashier/cashier-result",
     "pages/member/index",

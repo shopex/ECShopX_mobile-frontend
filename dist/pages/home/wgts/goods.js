@@ -128,7 +128,7 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
           is_fav: !this.state.is_fav
         })
       }
-        if(type === 'buy') {
+       if(type === 'buy') {
         try {
           await api.cart.add({
             item_id:item_data.item_id,
@@ -137,7 +137,7 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
         } catch (e) {
           console.log(e)
         }
-          Taro.showToast({
+         Taro.showToast({
           title: '成功加入购物车',
           icon: 'success'
         })
@@ -149,7 +149,7 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var info = this.__props.info;

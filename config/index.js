@@ -37,6 +37,7 @@ const config = {
   defineConstants: {
     APP_NAME: `'${pkg.app_name}'`,
     APP_VERSION: `'${pkg.version}'`,
+    API_HOST: `'${API_HOST}'`,
     APP_BASE_URL: TARO_ENV === 'h5'
       ? `'//${API_HOST}/index.php/api/h5app/wxapp'`
       : `https://${API_HOST}/index.php/api/h5app/wxapp`,
@@ -48,7 +49,8 @@ const config = {
   },
   copy: {
     patterns: [
-      { from: 'src/assets', to: `${DIST_PATH}/assets` }
+      { from: 'src/assets', to: `${DIST_PATH}/assets` },
+      { from: 'src/ext.json', to: `${DIST_PATH}/ext.json` }
     ],
     options: {
     }
