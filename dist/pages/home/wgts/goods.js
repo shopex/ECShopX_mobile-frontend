@@ -73,22 +73,27 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
       var info = _this.props.info;
 
 
-      e.stopPropagation();
       if (info.data) {
+        var onsale = true;
         info.data.map(function (item) {
-          if (id === item.item_id && item.isOnsale) {
-            return false;
+          if (id === item.item_id) {
+            if (!item.isOnsale) {
+              onsale = false;
+            }
           }
         });
+        if (!onsale) {
+          return false;
+        }
       }
       try {
         _index2.default.navigateTo({
-          url: "/pages/iwp/item-detail?id=" + id
+          url: "/pages/item/espier-detail?id=" + id
         });
       } catch (error) {
         console.log(error);
         _index2.default.navigateTo({
-          url: "/pages/item/espier-detail?id=" + id
+          url: "/pages/iwp/item-detail?id=" + id
         });
       }
     }, _this.handleSwiperChange = function (e) {
@@ -280,7 +285,6 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
       var _state = this.__state,
           curIdx = _state.curIdx,
           is_fav = _state.is_fav;
-
 
       if (!info) {
         return null;

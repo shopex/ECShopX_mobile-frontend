@@ -221,6 +221,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
                 list = _ref7.list;
                 total = _ref7.total_count;
 
+
                 list.map(function (item) {
                   if (item.approve_status === 'onsale') {
                     _this3.state.info.content.map(function (info_item) {
@@ -237,12 +238,13 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
                     });
                   }
                 });
+                _index2.default.hideLoading();
 
                 return _context3.abrupt("return", {
                   total: total
                 });
 
-              case 9:
+              case 10:
               case "end":
                 return _context3.stop();
             }
@@ -329,6 +331,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
                 this.setState({
                   info: info
                 }, function () {
+                  _index2.default.showLoading();
                   var item_id_List = [];
                   if (info.content) {
                     info.content.map(function (item) {
@@ -341,7 +344,10 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
                     _this4.setState({
                       item_id_List: item_id_List
                     }, function () {
-                      _this4.nextPage();
+                      _this4.resetPage();
+                      setTimeout(function () {
+                        _this4.nextPage();
+                      }, 200);
                     });
                   }
                 });

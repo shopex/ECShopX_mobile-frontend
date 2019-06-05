@@ -37,22 +37,27 @@ export default class WgtGoods extends Component {
   handleClickItem = (id) => {
     const { info } = this.props
 
-    e.stopPropagation()
     if(info.data) {
+      let onsale = true
       info.data.map(item => {
-        if(id === item.item_id && item.isOnsale){
-          return false
+        if(id === item.item_id){
+          if(!item.isOnsale){
+            onsale = false
+          }
         }
       })
+      if(!onsale){
+        return false
+      }
     }
     try {
       Taro.navigateTo({
-        url: `/pages/iwp/item-detail?id=${id}`
+        url: `/pages/item/espier-detail?id=${id}`
       })
     } catch (error) {
       console.log(error)
       Taro.navigateTo({
-        url: `/pages/item/espier-detail?id=${id}`
+        url: `/pages/iwp/item-detail?id=${id}`
       })
     }
 
@@ -156,7 +161,6 @@ export default class WgtGoods extends Component {
   render () {
     const { info } = this.props
     const { curIdx, is_fav } = this.state
-
     if (!info) {
       return null
     }
@@ -183,8 +187,8 @@ export default class WgtGoods extends Component {
                     </View>
                     <View className='goods-content__info_text'>
                       <Text>{item.item_name}</Text>
-                      <Text>{item.isOnsale === true ? '点击查看产品详情' : '该商品已下架'}</Text>
-                    
+                      <Text>{item.isOnsale ? '点击查看产品详情' : '该商品已下架'}</Text>
+
                     </View>
                   </View>
                   <View className='goods-content__operate'>
