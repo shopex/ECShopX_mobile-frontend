@@ -128,7 +128,7 @@ var Forgotpwd = (_temp2 = _class = function (_BaseComponent) {
                 });
                 setTimeout(function () {
                   _index2.default.redirectTo({
-                    url: "/pages/auth/login"
+                    url: "/pages/auth/wxauth"
                   });
                 }, 700);
                 _context2.next = 20;
@@ -300,7 +300,7 @@ var Forgotpwd = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _state = this.__state,

@@ -48,7 +48,7 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WxAuth.__proto__ || Object.getPrototypeOf(WxAuth)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["isAuthShow"], _this.state = {
-      isAuthShow: false
+      isAuthShow: true
     }, _this.handleGetUserInfo = function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(res) {
         var loginParams, iv, encryptedData, rawData, signature, _ref3, code, _ref4, token, open_id, union_id;
@@ -238,7 +238,7 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var isAuthShow = this.__state.isAuthShow;

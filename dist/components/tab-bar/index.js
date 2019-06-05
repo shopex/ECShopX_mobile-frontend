@@ -68,7 +68,7 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
 
         if (withLogin && !_index7.default.getAuthToken()) {
           return _index2.default.redirectTo({
-            url: "/pages/auth/login"
+            url: "/pages/auth/wxauth"
           });
         }
 
@@ -211,7 +211,7 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _state2 = this.__state,

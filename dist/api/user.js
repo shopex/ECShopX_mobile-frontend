@@ -3,6 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.login = login;
 exports.logout = logout;
 exports.refreshToken = refreshToken;
@@ -21,6 +24,13 @@ var _req2 = _interopRequireDefault(_req);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var getAppId = function getAppId() {
+  var _ref = wx.getExtConfigSync ? wx.getExtConfigSync() : {},
+      appid = _ref.appid;
+
+  return appid;
+};
+
 function login(data) {
   return _req2.default.post('/login', data);
 }
@@ -33,8 +43,11 @@ function refreshToken() {
   return _req2.default.get('/token/refresh');
 }
 
-function reg(data) {
-  return _req2.default.post('/member', data);
+function reg(params) {
+  var appid = getAppId();
+  return _req2.default.post('/member', _extends({}, params, {
+    appid: appid
+  }));
 }
 
 function regRule() {
