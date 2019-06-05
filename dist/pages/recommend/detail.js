@@ -333,7 +333,6 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
                   if (info.content) {
                     info.content.map(function (item) {
                       if (item.name === 'goods') {
-                        console.log(item, 57);
                         item.data.map(function (id_item) {
                           item_id_List.push(id_item.item_id);
                         });
@@ -366,7 +365,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _state = this.__state,
@@ -378,8 +377,6 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
       if (!info) {
         return null;
       }
-
-      console.log(info.content, 44);
 
       Object.assign(this.__state, {});
       return this.__state;

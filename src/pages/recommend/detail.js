@@ -90,7 +90,6 @@ export default class recommendDetail extends Component {
         if(info.content){
           info.content.map(item => {
             if(item.name === 'goods') {
-              console.log(item,57)
               item.data.map(id_item => {
                 item_id_List.push(id_item.item_id)
               })
@@ -161,8 +160,6 @@ export default class recommendDetail extends Component {
     if (!info) {
       return null
     }
-
-    console.log(info.content, 44)
 
     return (
       <View className='page-recommend-detail'>
