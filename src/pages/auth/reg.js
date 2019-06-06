@@ -106,9 +106,9 @@ export default class Reg extends Component {
         return S.toast('请输入验证码')
       }
 
-    if (!data.password) {
+    /*if (!data.password) {
       return S.toast('请输入密码')
-    }
+    }*/
     this.state.list.map(item=>{
       return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
     })
@@ -123,7 +123,7 @@ export default class Reg extends Component {
           union_id,
           open_id
         })
-        
+
         const { code } = await Taro.login()
         const { token } = await api.wx.login({ code })
         S.setAuthToken(token)
@@ -248,7 +248,7 @@ export default class Reg extends Component {
     if (errMsg.indexOf('fail') >= 0) {
       return
     }
-    params.code = code    
+    params.code = code
     const { phoneNumber } = await api.wx.decryptPhone(params)
     this.handleChange('mobile', phoneNumber)
   }
@@ -316,7 +316,7 @@ export default class Reg extends Component {
                 </AtInput>
               </View>
             )}
-            <AtInput
+            {/*<AtInput
               title='密码'
               name='password'
               type={isVisible ? 'text' : 'password'}
@@ -331,7 +331,7 @@ export default class Reg extends Component {
                   ? <View className='sp-icon sp-icon-yanjing icon-pwd' onClick={this.handleClickIconpwd}> </View>
                   : <View className='sp-icon sp-icon-icon6 icon-pwd' onClick={this.handleClickIconpwd}> </View>
               }
-            </AtInput>
+            </AtInput>*/}
             {
               list.map((item, index) => {
                 return (

@@ -19,16 +19,6 @@
                         </at-input>
                     </view>
                 </block>
-                <at-input title="密码" __triggerObserer="{{ _triggerObserer }}" name="password" type="{{isVisible ? 'text' : 'password'}}" value="{{info.password}}" placeholder="请输入密码" autocomplete="new-password" bindonfocus="handleErrorToastClose" bindonchange="handleChange" __fn_onFocus="{{true}}" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="password">
-                    <block>
-                        <block wx:if="{{isVisible}}">
-                            <view class="sp-icon sp-icon-yanjing icon-pwd" bindtap="handleClickIconpwd"></view>
-                        </block>
-                        <block wx:else>
-                            <view class="sp-icon sp-icon-icon6 icon-pwd" bindtap="handleClickIconpwd"></view>
-                        </block>
-                    </block>
-                </at-input>
                 <view wx:key="index" wx:for="{{loopArray0}}" wx:for-item="item" wx:for-index="index">
                     <block>
                         <block wx:if="{{item.$original.items}}">
