@@ -34,7 +34,7 @@ export default class TradeDetail extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidShow () {
     this.fetch()
   }
 

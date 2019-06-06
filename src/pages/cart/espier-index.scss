@@ -45,7 +45,7 @@
   .cart-list {
     padding: $edge-size;
     &__scroll {
-      @include page-scroll($navigate-height, $toolbar-height);
+      @include page-scroll($navigate-height, $toolbar-height + $tabbar-height);
     }
     &__actions {
       display: flex;
