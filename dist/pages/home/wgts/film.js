@@ -38,7 +38,7 @@ var WgtFilm = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtFilm.__proto__ || Object.getPrototypeOf(WgtFilm)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "curIdx"], _this.handleClickItem = _helper.linkPage, _this.handleSwiperChange = function (e) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtFilm.__proto__ || Object.getPrototypeOf(WgtFilm)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "data", "curIdx"], _this.handleClickItem = _helper.linkPage, _this.handleSwiperChange = function (e) {
       var current = e.detail.current;
 
 
@@ -82,7 +82,8 @@ var WgtFilm = (_temp2 = _class = function (_BaseComponent) {
       Object.assign(this.__state, {
         info: info,
         base: base,
-        config: config
+        config: config,
+        data: data
       });
       return this.__state;
     }
