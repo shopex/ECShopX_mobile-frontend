@@ -496,7 +496,7 @@ export default class CartIndex extends Component {
             }
           </View>
 
-          {list.length && (
+          {invalidList.length && (
             <View className='cart-list cart-list__disabled'>
               <View className='cart-list__hd'><Text>已失效</Text></View>
               <View className='cart-list__bd'>

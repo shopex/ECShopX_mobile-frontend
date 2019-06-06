@@ -467,9 +467,9 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
       if (address_list.length === 0) {
         this.calcOrder();
-        _index2.default.navigateTo({
+        /*Taro.navigateTo({
           url: '/pages/member/edit-address'
-        });
+        })*/
         return;
       }
 

@@ -143,9 +143,9 @@ export default class CartCheckout extends Component {
     const { address_list } = this.state
     if (address_list.length === 0) {
       this.calcOrder()
-      Taro.navigateTo({
+      /*Taro.navigateTo({
         url: '/pages/member/edit-address'
-      })
+      })*/
       return
     }
 

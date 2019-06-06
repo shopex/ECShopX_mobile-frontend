@@ -44,7 +44,7 @@
                     </view>
                 </block>
             </view>
-            <block wx:if="{{list.length}}">
+            <block wx:if="{{invalidList.length}}">
                 <view class="cart-list cart-list__disabled">
                     <view class="cart-list__hd"><text>已失效</text>
                     </view>
