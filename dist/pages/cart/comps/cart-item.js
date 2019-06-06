@@ -91,33 +91,18 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-<<<<<<< HEAD
-    key: "funPrivateVxYmg",
-    value: function funPrivateVxYmg() {
+    key: "funPrivateNHFgj",
+    value: function funPrivateNHFgj() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatejEucj",
-    value: function funPrivatejEucj() {
+    key: "funPrivateHWRwB",
+    value: function funPrivateHWRwB() {
       this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatekWTPr",
-    value: function funPrivatekWTPr() {
-=======
-    key: "funPrivateZdyYo",
-    value: function funPrivateZdyYo() {
-      this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivateiuXhX",
-    value: function funPrivateiuXhX() {
-      this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivateVZhpw",
-    value: function funPrivateVZhpw() {
->>>>>>> c429d07664a87b16d2eb63f4d20d642ed4c2ed27
+    key: "funPrivatefRNXN",
+    value: function funPrivatefRNXN() {
       this.__triggerPropsFn("onNumChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -184,11 +169,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-<<<<<<< HEAD
-}, _class.$$events = ["funPrivateVxYmg", "funPrivatejEucj", "funPrivatekWTPr"], _class.defaultProps = {
-=======
-}, _class.$$events = ["funPrivateZdyYo", "funPrivateiuXhX", "funPrivateVZhpw"], _class.defaultProps = {
->>>>>>> c429d07664a87b16d2eb63f4d20d642ed4c2ed27
+}, _class.$$events = ["funPrivateNHFgj", "funPrivateHWRwB", "funPrivatefRNXN"], _class.defaultProps = {
   onClick: function onClick() {},
   onClickPromotion: function onClickPromotion() {},
   showMarketPrice: false,

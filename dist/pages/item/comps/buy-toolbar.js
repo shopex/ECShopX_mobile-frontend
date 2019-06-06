@@ -90,33 +90,18 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-<<<<<<< HEAD
-    key: "funPrivatewfXEe",
-    value: function funPrivatewfXEe() {
+    key: "funPrivaterdkDh",
+    value: function funPrivaterdkDh() {
       this.__triggerPropsFn("onFavItem", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateoSRhq",
-    value: function funPrivateoSRhq() {
+    key: "funPrivateApAPv",
+    value: function funPrivateApAPv() {
       this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateSaaug",
-    value: function funPrivateSaaug() {
-=======
-    key: "funPrivateWriVc",
-    value: function funPrivateWriVc() {
-      this.__triggerPropsFn("onFavItem", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivatevNNZE",
-    value: function funPrivatevNNZE() {
-      this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivatejzatv",
-    value: function funPrivatejzatv() {
->>>>>>> c429d07664a87b16d2eb63f4d20d642ed4c2ed27
+    key: "funPrivateoCkkx",
+    value: function funPrivateoCkkx() {
       this.__triggerPropsFn("onClickFastBuy", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -167,11 +152,7 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-<<<<<<< HEAD
-}, _class.$$events = ["funPrivatewfXEe", "handleClickMiniProgram", "funPrivateoSRhq", "funPrivateSaaug"], _class.options = {
-=======
-}, _class.$$events = ["funPrivateWriVc", "handleClickMiniProgram", "funPrivatevNNZE", "funPrivatejzatv"], _class.options = {
->>>>>>> c429d07664a87b16d2eb63f4d20d642ed4c2ed27
+}, _class.$$events = ["funPrivaterdkDh", "handleClickMiniProgram", "funPrivateApAPv", "funPrivateoCkkx"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   type: 'normal',
