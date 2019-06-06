@@ -33,7 +33,7 @@ export default class HomeIndex extends Component {
   }
 
   async fetchInfo () {
-    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
+    const url = '/pageparams/setting?template_name=yykweishopamore&version=v1.0.1&page_name=index'
     const info = await req.get(url)
 
     if (!S.getAuthToken()) {
