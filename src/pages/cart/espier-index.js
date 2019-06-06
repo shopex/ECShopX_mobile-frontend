@@ -384,6 +384,7 @@ export default class CartIndex extends Component {
 
         <ScrollView
           className='cart-list__scroll'
+          onScrollToLower={this.nextPage}
           scrollY
         >
           {
