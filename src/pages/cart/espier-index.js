@@ -93,6 +93,13 @@ export default class CartIndex extends Component {
     }
   }
 
+  handleClickItem = (item) => {
+    const url = `/pages/item/espier-detail?id=${item.item_id}`
+    Taro.navigateTo({
+      url
+    })
+  }
+
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
