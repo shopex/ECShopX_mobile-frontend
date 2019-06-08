@@ -311,6 +311,14 @@
 }
 .goods-sec-specs .specs-imgs {
   white-space: nowrap;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 .goods-sec-specs .specs-imgs__item {
   border: 1rpx solid #d9d9d9;

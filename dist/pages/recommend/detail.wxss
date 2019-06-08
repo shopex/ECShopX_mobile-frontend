@@ -80,6 +80,9 @@
   margin-top: 20rpx;
   padding-bottom: 100rpx;
 }
+.recommend-detail__content .wgts-wrap__cont {
+  background: #ffffff;
+}
 .recommend-detail__bar {
   position: fixed;
   bottom: 0;

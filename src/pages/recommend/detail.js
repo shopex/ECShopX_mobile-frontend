@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import {View, Text, Button, ScrollView} from '@tarojs/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
-import { SpHtmlContent } from '@/components'
+import { FloatMenus, FloatMenuItem } from '@/components'
 import { formatTime } from '@/utils'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods } from '../home/wgts'
 import S from '@/spx'
@@ -162,8 +162,11 @@ export default class recommendDetail extends Component {
     }
   }
 
+  handleShare () {
+  }
+
   render () {
-    const { info, praiseCheckStatus, collectArticleStatus } = this.state
+    const { info, praiseCheckStatus, collectArticleStatus, showBackToTop } = this.state
 
     if (!info) {
       return null
@@ -201,6 +204,24 @@ export default class recommendDetail extends Component {
             }
           </View>
         </View>
+        <FloatMenus>
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='float-gift'
+          />
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='float-share'
+            openType='share'
+            onClick={this.handleShare}
+          />
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='back-top'
+            hide={!showBackToTop}
+            onClick={this.scrollBackToTop}
+          />
+        </FloatMenus>
         <View className='recommend-detail__bar'>
           <View className={`recommend-detail__bar-item ${praiseCheckStatus ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'like')}>
             <Text className={`in-icon in-icon-like ${info.is_like ? '' : ''}`}> </Text>

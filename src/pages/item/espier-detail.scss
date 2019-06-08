@@ -240,6 +240,8 @@
     }
     &-imgs {
       white-space: nowrap;
+      display: flex;
+      justify-content: center;
       &__item {
         border: 1px solid $color-border-gray;
         width: 80px;

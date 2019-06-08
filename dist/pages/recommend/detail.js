@@ -53,7 +53,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = recommendDetail.__proto__ || Object.getPrototypeOf(recommendDetail)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "praiseCheckStatus", "collectArticleStatus", "item_id_List"], _this.praiseCheck = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = recommendDetail.__proto__ || Object.getPrototypeOf(recommendDetail)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "info", "praiseCheckStatus", "collectArticleStatus", "item_id_List"], _this.praiseCheck = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var id, _ref3, status;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -367,6 +367,9 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
       return fetchContent;
     }()
   }, {
+    key: "handleShare",
+    value: function handleShare() {}
+  }, {
     key: "_createData",
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
@@ -377,20 +380,24 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
       var _state = this.__state,
           info = _state.info,
           praiseCheckStatus = _state.praiseCheckStatus,
-          collectArticleStatus = _state.collectArticleStatus;
+          collectArticleStatus = _state.collectArticleStatus,
+          showBackToTop = _state.showBackToTop;
 
 
       if (!info) {
         return null;
       }
 
-      Object.assign(this.__state, {});
+      var anonymousState__temp = !showBackToTop;
+      Object.assign(this.__state, {
+        anonymousState__temp: anonymousState__temp
+      });
       return this.__state;
     }
   }]);
 
   return recommendDetail;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickBar"], _temp2)) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleShare", "scrollBackToTop", "handleClickBar"], _temp2)) || _class;
 
 exports.default = recommendDetail;
 

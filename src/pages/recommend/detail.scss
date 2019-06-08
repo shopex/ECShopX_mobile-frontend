@@ -4,6 +4,7 @@
   background: #fff;
   height: 100vh;
 }
+
 .wgt {
   &__padded {
     padding: 20px 0;
@@ -55,6 +56,9 @@
   &__content {
     margin-top: 20px;
     padding-bottom: 100px;
+    .wgts-wrap__cont {
+      background: #ffffff;
+    }
   }
   &__bar {
     position: fixed;
