@@ -251,7 +251,8 @@ export default class CartIndex extends Component {
     await this.changeCartNum(cart_id, num)
   }, 400)
 
-  handleQuantityChange = async (cart_id, num) => {
+  handleQuantityChange = async (cart_id, num, e) => {
+    e.stopPropagation()
     this.updating = true
     this.props.onUpdateCartNum(cart_id, num)
     this.updateCart.cancel()
@@ -287,7 +288,8 @@ export default class CartIndex extends Component {
     this.updateSelection([...selection])
   }
 
-  handleClickPromotion = (cart_id) => {
+  handleClickPromotion = (cart_id, e) => {
+    this.isTodetail = 0
     let promotions
     this.props.list.some((cart) => {
       cart.list.some(item => {
@@ -299,6 +301,18 @@ export default class CartIndex extends Component {
 
     this.setState({
       curPromotions: promotions
+    },() =>{
+      this.isTodetail = 1
+    })
+  }
+
+  handleClickToDetail = (item_id) => {
+    if(this.isTodetail === 0){
+      return false
+    }
+    this.isTodetail = 1
+    Taro.navigateTo({
+      url: `/pages/item/espier-detail?id=${item_id}`
     })
   }
 
@@ -337,6 +351,8 @@ export default class CartIndex extends Component {
       url: '/pages/cart/espier-checkout?cart_type=cart'
     })
   }
+
+
 
   transformCartList (list) {
     return pickBy(list, {
@@ -432,6 +448,7 @@ export default class CartIndex extends Component {
                                     info={item}
                                     onNumChange={this.handleQuantityChange.bind(this, item.cart_id)}
                                     onClickPromotion={this.handleClickPromotion.bind(this, item.cart_id)}
+                                    onClick={this.handleClickToDetail.bind(this, item.item_id)}
                                   >
                                     <View className='cart-item__act'>
                                       <SpCheckbox

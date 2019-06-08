@@ -97,14 +97,17 @@ var Category = (_dec = (0, _index3.connect)(function (store) {
                 res = _context.sent;
                 nList = (0, _index4.pickBy)(res, {
                   category_name: 'category_name',
+                  image_url: 'image_url',
                   children: 'children'
                 });
+
+                console.log(nList, 42);
 
                 this.setState({
                   list: nList
                 });
 
-              case 5:
+              case 6:
               case "end":
                 return _context.stop();
             }

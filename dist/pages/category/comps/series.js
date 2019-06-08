@@ -94,6 +94,7 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
         items = info[currentIndex].children;
         itemsImg = info[currentIndex].image_url;
       }
+      console.log(info, 48);
       if (!info) {
         return null;
       }

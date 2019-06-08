@@ -549,7 +549,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["nextPage", "handleQuantityChange", "handleClickPromotion", "handleSelectionChange", "handleDelect", "navigateTo", "anonymousFunc0", "handleAllSelect", "handleCheckout", "handleClosePromotions", "handleSelectPromotion"], _class2.defaultProps = {
+}, _class2.$$events = ["nextPage", "handleQuantityChange", "handleClickPromotion", "handleClickToDetail", "handleSelectionChange", "handleDelect", "navigateTo", "anonymousFunc0", "handleAllSelect", "handleCheckout", "handleClosePromotions", "handleSelectPromotion"], _class2.defaultProps = {
   totalPrice: '0.00',
   list: null
 }, _initialiseProps = function _initialiseProps() {
@@ -677,33 +677,34 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   }(), 400);
 
   this.handleQuantityChange = function () {
-    var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(cart_id, num) {
+    var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(cart_id, num, e) {
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
           switch (_context8.prev = _context8.next) {
             case 0:
+              e.stopPropagation();
               _this5.updating = true;
               _this5.__triggerPropsFn("onUpdateCartNum", [null].concat([cart_id, num]));
               _this5.updateCart.cancel();
 
               if (!(_this5.lastCartId === cart_id || _this5.lastCartId === undefined)) {
-                _context8.next = 8;
+                _context8.next = 9;
                 break;
               }
 
-              _context8.next = 6;
+              _context8.next = 7;
               return _this5.debounceChangeCartNum(cart_id, num);
 
-            case 6:
-              _context8.next = 11;
+            case 7:
+              _context8.next = 12;
               break;
 
-            case 8:
+            case 9:
               _this5.lastCartId = cart_id;
-              _context8.next = 11;
+              _context8.next = 12;
               return _this5.changeCartNum(cart_id, num);
 
-            case 11:
+            case 12:
             case "end":
               return _context8.stop();
           }
@@ -711,7 +712,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }, _callee8, _this5);
     }));
 
-    return function (_x11, _x12) {
+    return function (_x11, _x12, _x13) {
       return _ref16.apply(this, arguments);
     };
   }();
@@ -765,12 +766,13 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }, _callee9, _this5, [[4, 9]]);
     }));
 
-    return function (_x13) {
+    return function (_x14) {
       return _ref17.apply(this, arguments);
     };
   }();
 
-  this.handleClickPromotion = function (cart_id) {
+  this.handleClickPromotion = function (cart_id, e) {
+    _this5.isTodetail = 0;
     var promotions = void 0;
     _this5.props.list.some(function (cart) {
       cart.list.some(function (item) {
@@ -782,6 +784,18 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
     _this5.setState({
       curPromotions: promotions
+    }, function () {
+      _this5.isTodetail = 1;
+    });
+  };
+
+  this.handleClickToDetail = function (item_id) {
+    if (_this5.isTodetail === 0) {
+      return false;
+    }
+    _this5.isTodetail = 1;
+    _index2.default.navigateTo({
+      url: "/pages/item/espier-detail?id=" + item_id
     });
   };
 
@@ -821,7 +835,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }, _callee10, _this5);
     }));
 
-    return function (_x14) {
+    return function (_x15) {
       return _ref18.apply(this, arguments);
     };
   }();
