@@ -201,21 +201,18 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
                 });
 
               case 26:
-                _context.next = 31;
-                break;
-
-              case 28:
-                _context.prev = 28;
-                _context.t0 = _context["catch"](23);
-
-                console.log(_context.t0);
-
-              case 31:
-
                 _index2.default.showToast({
                   title: '成功加入购物车',
                   icon: 'success'
                 });
+                _context.next = 32;
+                break;
+
+              case 29:
+                _context.prev = 29;
+                _context.t0 = _context["catch"](23);
+
+                console.log(_context.t0);
 
               case 32:
                 _context.next = 38;
@@ -240,7 +237,7 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
                 return _context.stop();
             }
           }
-        }, _callee, _this2, [[7, 34], [23, 28]]);
+        }, _callee, _this2, [[7, 34], [23, 29]]);
       }));
 
       return function (_x, _x2, _x3) {

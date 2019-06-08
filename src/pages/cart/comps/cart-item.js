@@ -86,7 +86,7 @@ export default class GoodsItem extends Component {
           {!isDisabled && (
             <AtInputNumber
               min={1}
-              max={999999}
+              max={info.store}
               value={info.num}
               onChange={this.props.onNumChange}
             />

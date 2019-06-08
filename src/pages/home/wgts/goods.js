@@ -124,14 +124,15 @@ export default class WgtGoods extends Component {
             item_id:item_data.item_id,
             num: 1
           })
+          Taro.showToast({
+            title: '成功加入购物车',
+            icon: 'success'
+          })
         } catch (error) {
           console.log(error)
         }
 
-        Taro.showToast({
-          title: '成功加入购物车',
-          icon: 'success'
-        })
+
       }
     } catch (e) {
       console.log(e)
