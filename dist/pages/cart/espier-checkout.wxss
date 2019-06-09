@@ -148,7 +148,7 @@
   padding: 2rpx 8rpx;
   margin-right: 8rpx;
 }
-.page-checkout .trade-shipping, .page-checkout .trade-invoice, .page-checkout .trade-remark, .page-checkout .trade-point, .page-checkout .trade-sub-total {
+.page-checkout .trade-shipping, .page-checkout .trade-invoice, .page-checkout .trade-remark, .page-checkout .trade-point, .page-checkout .trade-sub-total, .page-checkout .trade-payment {
   margin: 0 0 16rpx;
 }
 .page-checkout .trade-point {
@@ -198,7 +198,7 @@
 .page-checkout .trade-point .at-input input {
   padding-left: 30rpx;
 }
-.page-checkout .trade-invoice .sp-cell__bd {
+.page-checkout .trade-invoice .sp-cell__bd, .page-checkout .trade-payment .sp-cell__bd {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -207,6 +207,14 @@
   -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
+}
+.page-checkout .trade-payment {
+  background: #fff;
+}
+.page-checkout .trade-payment__hint {
+  padding: 0 30rpx 10rpx;
+  margin-top: -5rpx;
+  color: #ffa726;
 }
 .page-checkout .trade-remark {
   padding: 16rpx 30rpx;

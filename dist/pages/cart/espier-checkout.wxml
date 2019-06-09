@@ -9,7 +9,7 @@
         <scroll-view scroll-y="{{true}}" class="checkout__wrap">
             <address-choose isAddress="{{address}}" __triggerObserer="{{ _triggerObserer }}"></address-choose>
             <block wx:if="{{payType !== 'point'}}">
-                <sp-cell is-link="{{true}}" __triggerObserer="{{ _triggerObserer }}" className="coupons-list" title="选择优惠券" bindonclick="handleCouponsClick" value="{{couponText}}" __fn_onClick="{{true}}"></sp-cell>
+                <sp-cell is-link="{{true}}" __triggerObserer="{{ _triggerObserer }}" className="coupons-list" title="选择优惠券" bindonclick="handleCouponsClick" value="{{couponText || ''}}" __fn_onClick="{{true}}"></sp-cell>
             </block>
             <view class="cart-list">
                 <view class="cart-group" wx:key="shop_id" wx:for="{{info.cart}}" wx:for-item="cart" wx:for-index="_anonIdx2">
@@ -52,6 +52,12 @@
             </view>
             <sp-cell isLink="{{true}}" __triggerObserer="{{ _triggerObserer }}" className="trade-invoice" title="开发票" bindonclick="handleInvoiceClick" __fn_onClick="{{true}}"><text>{{invoiceTitle || '否'}}</text>
             </sp-cell>
+            <view class="trade-payment">
+                <sp-cell isLink="{{true}}" __triggerObserer="{{ _triggerObserer }}" border="{{false}}" title="支付方式" bindonclick="handlePaymentShow" __fn_onClick="{{true}}"><text>{{payType === 'dhpoint' ? '积分支付' : '微信支付'}}</text>
+                </sp-cell>
+                <view class="trade-payment__hint">可用[1200]积分，抵扣(包含运费
+                    <price unit="cent" __triggerObserer="{{ _triggerObserer }}" value="{{total.freight_fee}}"></price>)</view>
+            </view>
             <block wx:if="{{payType === 'point'}}">
                 <view class="sec trade-sub-total">
                     <sp-cell className="trade-sub-total__item" __triggerObserer="{{ _triggerObserer }}" title="运费">
@@ -67,8 +73,8 @@
                     <sp-cell className="trade-sub-total__item" __triggerObserer="{{ _triggerObserer }}" title="商品金额：">
                         <price unit="cent" __triggerObserer="{{ _triggerObserer }}" value="{{total.item_fee}}"></price>
                     </sp-cell>
-                    <sp-cell className="trade-sub-total__item" __triggerObserer="{{ _triggerObserer }}" title="优惠券：">
-                        <price unit="cent" __triggerObserer="{{ _triggerObserer }}" value="{{total.coupon_discount}}"></price>
+                    <sp-cell className="trade-sub-total__item" __triggerObserer="{{ _triggerObserer }}" title="优惠金额：">
+                        <price unit="cent" __triggerObserer="{{ _triggerObserer }}" value="{{total.discount_fee}}"></price>
                     </sp-cell>
                     <sp-cell className="trade-sub-total__item" __triggerObserer="{{ _triggerObserer }}" title="运费：">
                         <price unit="cent" __triggerObserer="{{ _triggerObserer }}" value="{{total.freight_fee}}"></price>
@@ -90,9 +96,9 @@
                     </block>
                 </block>
             </view>
-            <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-confirm-order" disabled="{{isBtnDisabled}}" bindonclick="handleClickPay" __fn_onClick="{{true}}">提交订单</at-button>
+            <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-confirm-order" loading="{{submitLoading}}" disabled="{{isBtnDisabled}}" bindonclick="handlePay" __fn_onClick="{{true}}">提交订单</at-button>
         </view>
-        <payment-picker isOpened="{{isPaymentOpend}}" __triggerObserer="{{ _triggerObserer }}" type="{{payType}}" loading="{{submitLoading}}" disabledPayment="{{disabledPayment}}" bindonclose="handlePaymentClose" bindonchange="handlePaymentChange" bindonconfirm="handlePay" __fn_onClose="{{true}}" __fn_onChange="{{true}}" __fn_onConfirm="{{true}}"></payment-picker>
+        <payment-picker isOpened="{{isPaymentOpend}}" __triggerObserer="{{ _triggerObserer }}" type="{{payType}}" disabledPayment="{{disabledPayment}}" bindonclose="handlePaymentClose" bindonchange="handlePaymentChange" __fn_onClose="{{true}}" __fn_onChange="{{true}}"></payment-picker>
         <sp-toast __triggerObserer="{{ _triggerObserer }}"></sp-toast>
     </view>
 </block>

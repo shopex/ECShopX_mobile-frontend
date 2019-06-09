@@ -104,7 +104,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "total", "showCheckoutItems", "curCheckoutItems", "isBtnDisabled", "isPaymentOpend", "submitLoading", "disabledPayment", "invoiceTitle", "address_list", "showShippingPicker", "showCoupons", "coupons", "__fn_onClearFastbuy", "defaultAddress", "__fn_onClearCoupon", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "total", "showCheckoutItems", "curCheckoutItems", "submitLoading", "isBtnDisabled", "isPaymentOpend", "disabledPayment", "invoiceTitle", "address_list", "showShippingPicker", "showCoupons", "coupons", "__fn_onClearFastbuy", "defaultAddress", "__fn_onClearCoupon", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
       if (!address) {
         return;
       }
@@ -172,27 +172,16 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           }
         }
       }, _callee, _this2);
-    })), _this.handleClickPay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    })), _this.handlePaymentShow = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              if (_this.state.address) {
-                _context2.next = 2;
-                break;
-              }
-
-              return _context2.abrupt("return", _index7.default.toast('请选择地址'));
-
-            case 2:
-
               _this.setState({
                 isPaymentOpend: true
               });
 
-              // await this.handlePay()
-
-            case 3:
+            case 1:
             case "end":
               return _context2.stop();
           }
@@ -214,6 +203,33 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
             case 2:
               payType = _this.state.payType;
 
+              if (!(payType === 'dhpoint')) {
+                _context3.next = 13;
+                break;
+              }
+
+              _context3.prev = 4;
+              _context3.next = 7;
+              return _index2.default.showModal({
+                title: '积分支付',
+                content: "\u786E\u8BA4\u4F7F\u7528\u79EF\u5206\u5168\u989D\u62B5\u6263\u5546\u54C1\u603B\u4EF7\u5417",
+                confirmColor: '#0b4137',
+                confirmText: '确认使用',
+                cancelText: '取消'
+              });
+
+            case 7:
+              _context3.next = 13;
+              break;
+
+            case 9:
+              _context3.prev = 9;
+              _context3.t0 = _context3["catch"](4);
+
+              console.log(_context3.t0);
+              return _context3.abrupt("return");
+
+            case 13:
 
               _index2.default.showLoading({
                 title: '正在提交',
@@ -224,31 +240,33 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 submitLoading: true
               });
 
+              debugger;
+
               order_id = void 0, orderInfo = void 0;
-              _context3.prev = 6;
+              _context3.prev = 17;
               params = _this.getParams();
-              _context3.next = 10;
+              _context3.next = 21;
               return _index5.default.trade.create(params);
 
-            case 10:
+            case 21:
               orderInfo = _context3.sent;
 
               order_id = orderInfo.order_id;
-              _context3.next = 18;
+              _context3.next = 29;
               break;
 
-            case 14:
-              _context3.prev = 14;
-              _context3.t0 = _context3["catch"](6);
+            case 25:
+              _context3.prev = 25;
+              _context3.t1 = _context3["catch"](17);
 
               _index2.default.showToast({
-                title: _context3.t0.message,
+                title: _context3.t1.message,
                 icon: 'none'
               });
 
               // dhpoint 判断
               if (payType === 'dhpoint') {
-                message = _context3.t0.message === '当前积分不足以支付本次订单费用' ? _context3.t0.message : '积分获取失败';
+                message = _context3.t1.message === '当前积分不足以支付本次订单费用' ? _context3.t1.message : '积分获取失败';
 
 
                 _this.setState({
@@ -258,28 +276,28 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 });
               }
 
-            case 18:
+            case 29:
 
               _index2.default.hideLoading();
 
               if (order_id) {
-                _context3.next = 21;
+                _context3.next = 32;
                 break;
               }
 
               return _context3.abrupt("return");
 
-            case 21:
+            case 32:
               // 爱茉pay流程
               paymentParams = {
                 order_id: order_id,
                 pay_type: _this.state.payType,
                 order_type: orderInfo.order_type
               };
-              _context3.next = 24;
+              _context3.next = 35;
               return _index5.default.cashier.getPayment(paymentParams);
 
-            case 24:
+            case 35:
               config = _context3.sent;
 
               _this.setState({
@@ -289,7 +307,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               // 积分流程
 
               if (!(payType === 'dhpoint')) {
-                _context3.next = 30;
+                _context3.next = 41;
                 break;
               }
 
@@ -300,32 +318,32 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               return _context3.abrupt("return");
 
-            case 30:
+            case 41:
               payErr = void 0;
-              _context3.prev = 31;
-              _context3.next = 34;
+              _context3.prev = 42;
+              _context3.next = 45;
               return _index2.default.requestPayment(config);
 
-            case 34:
+            case 45:
               payRes = _context3.sent;
 
               _index9.log.debug("[order pay]: ", payRes);
-              _context3.next = 42;
+              _context3.next = 53;
               break;
 
-            case 38:
-              _context3.prev = 38;
-              _context3.t1 = _context3["catch"](31);
+            case 49:
+              _context3.prev = 49;
+              _context3.t2 = _context3["catch"](42);
 
-              payErr = _context3.t1;
+              payErr = _context3.t2;
               _index2.default.showToast({
-                title: _context3.t1.err_desc || _context3.t1.errMsg || '支付失败',
+                title: _context3.t2.err_desc || _context3.t2.errMsg || '支付失败',
                 icon: 'none'
               });
 
-            case 42:
+            case 53:
               if (payErr) {
-                _context3.next = 50;
+                _context3.next = 61;
                 break;
               }
 
@@ -335,38 +353,42 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 console.info(e);
               }
 
-              _context3.next = 46;
+              _context3.next = 57;
               return _index2.default.showToast({
                 title: '支付成功',
                 icon: 'success'
               });
 
-            case 46:
+            case 57:
 
               _this.__triggerPropsFn("onClearCart", [null].concat([]));
               _index2.default.redirectTo({
                 url: "/pages/trade/detail?id=" + order_id
               });
-              _context3.next = 51;
+              _context3.next = 62;
               break;
 
-            case 50:
+            case 61:
               if (payErr.errMsg.indexOf('fail cancel') >= 0) {
                 _index2.default.redirectTo({
                   url: "/pages/trade/detail?id=" + order_id
                 });
               }
 
-            case 51:
+            case 62:
               return _context3.abrupt("return");
 
-            case 52:
+            case 63:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, _this2, [[6, 14], [31, 38]]);
+      }, _callee3, _this2, [[4, 9], [17, 25], [42, 49]]);
     })), _this.handleCouponsClick = function () {
+      if (_this.state.payType === 'dhpoint') {
+        return;
+      }
+
       var items = _this.params.items.filter(function (item) {
         return item.order_item_type !== 'gift';
       }).map(function (item) {
@@ -388,11 +410,17 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
+                if (payType === 'dhpoint') {
+                  _this.__triggerPropsFn("onClearCoupon", [null].concat([]));
+                }
                 _this.setState({
-                  payType: payType
+                  payType: payType,
+                  isPaymentOpend: false
+                }, function () {
+                  _this.calcOrder();
                 });
 
-              case 1:
+              case 2:
               case "end":
                 return _context4.stop();
             }
@@ -637,7 +665,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     key: "calcOrder",
     value: function () {
       var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-        var params, data, items, item_fee, totalItemNum, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, total, info;
+        var params, data, items, item_fee, totalItemNum, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, discount_fee, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, total, info;
 
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
@@ -653,13 +681,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               case 4:
                 data = _context6.sent;
-                items = data.items, item_fee = data.item_fee, totalItemNum = data.totalItemNum, _data$member_discount = data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, _data$freight_fee = data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = data.total_fee;
+                items = data.items, item_fee = data.item_fee, totalItemNum = data.totalItemNum, _data$member_discount = data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, discount_fee = data.discount_fee, _data$freight_fee = data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = data.total_fee;
                 total = _extends({}, this.state.total, {
                   item_fee: item_fee,
+                  discount_fee: -1 * discount_fee,
                   member_discount: -1 * member_discount,
                   coupon_discount: -1 * coupon_discount,
                   freight_fee: freight_fee,
-                  total_fee: total_fee,
+                  total_fee: params.pay_type === 'dhpoint' ? 0 : total_fee,
                   items_count: totalItemNum,
                   point: point,
                   freight_point: freight_point
@@ -684,8 +713,9 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                   total: total,
                   info: info
                 });
+                console.log(total);
 
-              case 11:
+              case 12:
               case "end":
                 return _context6.stop();
             }
@@ -794,7 +824,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleCouponsClick", "handleInvoiceClick", "toggleCheckoutItems", "handleClickPay", "handlePaymentClose", "handlePaymentChange", "handlePay"], _class2.defaultProps = {
+}, _class2.$$events = ["handleCouponsClick", "handleInvoiceClick", "handlePaymentShow", "toggleCheckoutItems", "handlePay", "handlePaymentClose", "handlePaymentChange"], _class2.defaultProps = {
   list: []
 }, _temp2)) || _class) || _class);
 exports.default = CartCheckout;

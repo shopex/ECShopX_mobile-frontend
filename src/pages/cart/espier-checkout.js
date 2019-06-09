@@ -230,14 +230,15 @@ export default class CartCheckout extends Component {
     const params = this.getParams()
     const data = await api.cart.total(params)
 
-    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
+    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
     const total = {
       ...this.state.total,
       item_fee,
+      discount_fee: -1 * discount_fee,
       member_discount: -1 * member_discount,
       coupon_discount: -1 * coupon_discount,
       freight_fee,
-      total_fee,
+      total_fee: params.pay_type === 'dhpoint' ? 0 : total_fee,
       items_count: totalItemNum,
       point,
       freight_point
@@ -260,6 +261,7 @@ export default class CartCheckout extends Component {
       total,
       info
     })
+    console.log(total)
   }
 
 
@@ -346,16 +348,10 @@ export default class CartCheckout extends Component {
     })
   }
 
-  handleClickPay = async () => {
-    if (!this.state.address) {
-      return S.toast('请选择地址')
-    }
-
+  handlePaymentShow = async () => {
     this.setState({
       isPaymentOpend: true
     })
-
-    // await this.handlePay()
   }
 
   handlePay = async () => {
@@ -365,6 +361,21 @@ export default class CartCheckout extends Component {
 
     const { payType } = this.state
 
+    if (payType === 'dhpoint') {
+      try {
+        await Taro.showModal({
+          title: '积分支付',
+          content: `确认使用积分全额抵扣商品总价吗`,
+          confirmColor: '#0b4137',
+          confirmText: '确认使用',
+          cancelText: '取消'
+        })
+      } catch (e) {
+        console.log(e)
+        return
+      }
+    }
+
     Taro.showLoading({
       title: '正在提交',
       mask: true
@@ -373,6 +384,8 @@ export default class CartCheckout extends Component {
     this.setState({
       submitLoading: true
     })
+
+    debugger
 
     let order_id, orderInfo
     try {
@@ -467,6 +480,10 @@ export default class CartCheckout extends Component {
   }
 
   handleCouponsClick = () => {
+    if (this.state.payType === 'dhpoint') {
+      return
+    }
+
     const items = this.params.items
       .filter(item => item.order_item_type !== 'gift')
       .map(item => {
@@ -483,8 +500,14 @@ export default class CartCheckout extends Component {
   }
 
   handlePaymentChange = async (payType) => {
+    if (payType === 'dhpoint') {
+      this.props.onClearCoupon()
+    }
     this.setState({
-      payType
+      payType,
+      isPaymentOpend: false
+    }, () => {
+      this.calcOrder()
     })
   }
 
@@ -533,7 +556,7 @@ export default class CartCheckout extends Component {
               className='coupons-list'
               title='选择优惠券'
               onClick={this.handleCouponsClick}
-              value={couponText}
+              value={couponText || ''}
             />
           )}
 
@@ -621,6 +644,20 @@ export default class CartCheckout extends Component {
           >
           </SpCell>*/}
 
+          <View className='trade-payment'>
+            <SpCell
+              isLink
+              border={false}
+              title='支付方式'
+              onClick={this.handlePaymentShow}
+            >
+              <Text>{payType === 'dhpoint' ? '积分支付' : '微信支付'}</Text>
+            </SpCell>
+            <View className='trade-payment__hint'>
+              可用[1200]积分，抵扣(包含运费 <Price unit='cent' value={total.freight_fee}></Price>)
+            </View>
+          </View>
+
           {payType === 'point' && (
             <View className='sec trade-sub-total'>
               <SpCell
@@ -670,11 +707,11 @@ export default class CartCheckout extends Component {
               </SpCell>*/}
               <SpCell
                 className='trade-sub-total__item'
-                title='优惠券：'
+                title='优惠金额：'
               >
                 <Price
                   unit='cent'
-                  value={total.coupon_discount}
+                  value={total.discount_fee}
                 />
               </SpCell>
               <SpCell
@@ -708,19 +745,18 @@ export default class CartCheckout extends Component {
           <AtButton
             type='primary'
             className='btn-confirm-order'
+            loading={submitLoading}
             disabled={isBtnDisabled}
-            onClick={this.handleClickPay}
+            onClick={this.handlePay}
           >提交订单</AtButton>
         </View>
 
         <PaymentPicker
           isOpened={isPaymentOpend}
           type={payType}
-          loading={submitLoading}
           disabledPayment={disabledPayment}
           onClose={this.handlePaymentClose}
           onChange={this.handlePaymentChange}
-          onConfirm={this.handlePay}
         ></PaymentPicker>
 
         <SpToast />

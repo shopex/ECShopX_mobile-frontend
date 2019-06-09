@@ -58,14 +58,12 @@
 }
 .page-address-index .address-item__title {
   color: #010101;
-  font-size: 24rpx;
   margin-bottom: 23rpx;
 }
 .page-address-index .address-item__info {
   margin-right: 20rpx;
 }
 .page-address-index .address-item__detail {
-  font-size: 22rpx;
   color: #0d0d0d;
   padding-bottom: 14rpx;
   border-bottom: 1Px solid #e6e6e6;

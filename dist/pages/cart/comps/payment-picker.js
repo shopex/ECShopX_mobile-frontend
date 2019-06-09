@@ -36,12 +36,25 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PaymentPicker.__proto__ || Object.getPrototypeOf(PaymentPicker)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "isOpened", "loading", "disabledPayment", "__fn_onChange", "type", "__fn_onClick"], _this.handlePaymentChange = function (type) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PaymentPicker.__proto__ || Object.getPrototypeOf(PaymentPicker)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "isOpened", "loading", "localType", "disabledPayment", "type", "__fn_onClose", "__fn_onClick"], _this.componentWillReceiveProps = function (nextProps) {
+      if (nextProps.type !== _this.props.type) {
+        _this.setState({
+          localType: nextProps.type
+        });
+      }
+    }, _this.handleCancel = function () {
+      _this.setState({
+        localType: _this.props.type
+      });
+      _this.__triggerPropsFn("onClose", [null].concat([]));
+    }, _this.handlePaymentChange = function (type) {
       var disabledPayment = _this.props.disabledPayment;
 
       if (disabledPayment && disabledPayment.name === type) {
         return;
-      }_this.__triggerPropsFn("onChange", [null].concat([type]));
+      }_this.setState({
+        localType: type
+      });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -49,6 +62,10 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     key: "_constructor",
     value: function _constructor(props) {
       _get(PaymentPicker.prototype.__proto__ || Object.getPrototypeOf(PaymentPicker.prototype), "_constructor", this).call(this, props);
+
+      this.state = {
+        localType: props.type
+      };
     }
   }, {
     key: "_createData",
@@ -61,13 +78,13 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       var _props = this.__props,
           isOpened = _props.isOpened,
           loading = _props.loading,
-          disabledPayment = _props.disabledPayment,
-          type = _props.type;
+          disabledPayment = _props.disabledPayment;
+      var localType = this.__state.localType;
 
 
       var anonymousState__temp = !!disabledPayment;
-      var anonymousState__temp2 = type === 'dhpoint';
-      var anonymousState__temp3 = type === 'amorepay';
+      var anonymousState__temp2 = localType === 'dhpoint';
+      var anonymousState__temp3 = localType === 'amorepay';
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
         anonymousState__temp2: anonymousState__temp2,
@@ -79,24 +96,23 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatevjjeB",
-    value: function funPrivatevjjeB() {
-      this.__triggerPropsFn("onClose", [].concat(Array.prototype.slice.call(arguments)));
-    }
-  }, {
-    key: "funPrivateFabgK",
-    value: function funPrivateFabgK() {
-      this.__triggerPropsFn("onConfirm", [].concat(Array.prototype.slice.call(arguments)));
+    key: "funPrivatezWWfO",
+    value: function funPrivatezWWfO() {
+      this.__triggerPropsFn("onChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
 
   return PaymentPicker;
 }(_index.Component), _class.properties = {
-  "disabledPayment": {
+  "type": {
     "type": null,
     "value": null
   },
-  "__fn_onChange": {
+  "__fn_onClose": {
+    "type": null,
+    "value": null
+  },
+  "disabledPayment": {
     "type": null,
     "value": null
   },
@@ -108,11 +124,7 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   },
-  "type": {
-    "type": null,
-    "value": null
-  },
-  "onClose": {
+  "onChange": {
     "type": null,
     "value": null
   },
@@ -120,19 +132,11 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   },
-  "__fn_onClose": {
-    "type": null,
-    "value": null
-  },
-  "onConfirm": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onConfirm": {
+  "__fn_onChange": {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivatevjjeB", "handlePaymentChange", "funPrivateFabgK"], _class.defaultProps = {
+}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivatezWWfO"], _class.defaultProps = {
   isOpened: false,
   type: 'amorepay',
   disabledPayment: null
