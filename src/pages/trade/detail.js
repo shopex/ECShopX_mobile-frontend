@@ -67,6 +67,7 @@ export default class TradeDetail extends Component {
       receiver_name: 'receiver_name',
       receiver_mobile: 'receiver_mobile',
       receiver_state: 'receiver_state',
+      discount_fee: ({ discount_fee }) => (+discount_fee / 100).toFixed(2),
       receiver_city: 'receiver_city',
       receiver_district: 'receiver_district',
       receiver_address: 'receiver_address',
@@ -77,9 +78,10 @@ export default class TradeDetail extends Component {
       order_status_msg: 'order_status_msg',
       item_fee: ({ item_fee }) => (+item_fee / 100).toFixed(2),
       coupon_discount: ({ coupon_discount }) => (+coupon_discount / 100).toFixed(2),
-      post_fee: ({ freight_fee }) => (+freight_fee / 100).toFixed(2),
+      freight_fee: ({ freight_fee }) => (+freight_fee / 100).toFixed(2),
       payment: ({ total_fee }) => (+total_fee / 100).toFixed(2),
       pay_type: 'pay_type',
+      invoice_content: 'invoice.content',
       point: 'point',
       status: ({ order_status }) => resolveOrderStatus(order_status),
       orders: ({ items }) => pickBy(items, {
@@ -270,9 +272,11 @@ export default class TradeDetail extends Component {
           info.status === 'WAIT_BUYER_PAY' && <View className={classNames('trade-detail-header', `trade-detail-header__waitpay`)}>
             <View>该订单将为您保留
               <AtCountdown
-                format={{ minutes: ':', seconds: '' }}
+                format={{ hours: ':', minutes: ':', seconds: '' }}
+                hours={timer.hh}
                 minutes={timer.mm}
                 seconds={timer.ss}
+                onTimeUp={this.fetch.bind(this)}
               />
               分钟
             </View>
@@ -322,12 +326,17 @@ export default class TradeDetail extends Component {
         <View className='trade-detail-info'>
           <Text className='info-text'>订单号：{info.tid}</Text>
           <Text className='info-text'>下单时间：{info.created_time_str}</Text>
-          <Text className='info-text'>发票信息：上海xxx有限公司上海xx有</Text>
+          {
+            info.invoice_content
+              ? <Text className='info-text'>发票信息：{info.invoice_content}</Text>
+              : null
+          }
+
           <Text className='info-text'>商品金额：￥{info.item_fee}</Text>
           {/*<Text className='info-text'>积分抵扣：-￥XX</Text>*/}
-          <Text className='info-text'>免运费：-￥{info.freight_fee}</Text>
-          <Text className='info-text'>优惠：-￥{info.coupon_discount}</Text>
-          <Text className='info-text'>支付：{info.payment}（微信支付）</Text>
+          <Text className='info-text'>运费：-￥{info.freight_fee}</Text>
+          <Text className='info-text'>优惠：-￥{info.discount_fee}</Text>
+          <Text className='info-text'>支付：￥{info.payment}（微信支付）</Text>
           {
             info.delivery_code
               ? <View className='delivery_code_copy'>

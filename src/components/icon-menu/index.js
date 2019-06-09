@@ -35,6 +35,10 @@ export default class IconMenu extends Component {
             console.log(res)
           }
         })
+      } else if (to === 'makephone'){
+       Taro.makePhoneCall({
+          phoneNumber: '1340000'
+        })
       } else {
         Taro.navigateTo({
           url: to
