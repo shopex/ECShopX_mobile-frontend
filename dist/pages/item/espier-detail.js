@@ -462,7 +462,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
           showBuyPanel = _state2.showBuyPanel,
           buyPanelType = _state2.buyPanelType;
 
-      console.log((0, _index7.isArray)(desc), 255);
+
       if (!info) {
         return null;
       }
@@ -490,6 +490,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         };
 
         var img = _this3.__state.specImgsDict[specValueId.$original];
+
         return {
           $original: specValueId.$original
         };

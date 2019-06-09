@@ -263,7 +263,7 @@ export default class Detail extends Component {
   render () {
     const { info, windowWidth, curImgIdx, desc, cartCount, scrollTop, showBackToTop, curSku, promotion_activity } = this.state
     const { marketing, timer, isPromoter, startSecKill, hasStock, showBuyPanel, buyPanelType } = this.state
-    console.log(isArray(desc), 255)
+
     if (!info) {
       return (
         <Loading />
@@ -428,6 +428,7 @@ export default class Detail extends Component {
                   <View className='specs-imgs'>
                     {Object.keys(this.state.specImgsDict).map((specValueId) => {
                       const img = this.state.specImgsDict[specValueId]
+
                       return (
                         <Image
                           class='specs-imgs__item'

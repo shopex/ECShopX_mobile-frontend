@@ -135,7 +135,9 @@ var CouponPicker = (_dec = (0, _index3.connect)(function (_ref) {
       var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'coupon';
       var value = arguments[1];
 
-      var payload = value ? { type: type, value: value } : null;
+      if (!value.valid) {
+        return;
+      }var payload = value ? { type: type, value: value } : null;
       this.__triggerPropsFn("onChangeCoupon", [null].concat([payload]));
       setTimeout(function () {
         _index2.default.navigateBack();

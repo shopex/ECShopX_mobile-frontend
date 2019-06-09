@@ -97,6 +97,7 @@ export default class PaymentPicker extends Component {
 
             <AtButton
               type='primary'
+              size='large'
               loading={loading}
               onClick={this.props.onChange.bind(this, localType)}
             >确定</AtButton>

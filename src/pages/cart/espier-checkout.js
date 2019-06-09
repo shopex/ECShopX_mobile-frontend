@@ -142,7 +142,6 @@ export default class CartCheckout extends Component {
       mask: true
     })
     const { list } = await api.member.addressList()
-    console.log(list, 141)
     Taro.hideLoading()
 
     this.setState({
@@ -156,7 +155,6 @@ export default class CartCheckout extends Component {
   changeSelection (params = {}) {
     const { address_list } = this.state
     if (address_list.length === 0) {
-      console.log(address_list, 154)
       // this.props.address = {
       //   current: null
       // }
@@ -230,7 +228,7 @@ export default class CartCheckout extends Component {
     const params = this.getParams()
     const data = await api.cart.total(params)
 
-    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
+    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction } = data
     const total = {
       ...this.state.total,
       item_fee,
@@ -241,7 +239,9 @@ export default class CartCheckout extends Component {
       total_fee: params.pay_type === 'dhpoint' ? 0 : total_fee,
       items_count: totalItemNum,
       point,
-      freight_point
+      freight_point,
+      remainpt, // 总积分
+      deduction // 抵扣
     }
 
     let info = this.state.info
@@ -261,7 +261,6 @@ export default class CartCheckout extends Component {
       total,
       info
     })
-    console.log(total)
   }
 
 
@@ -359,17 +358,18 @@ export default class CartCheckout extends Component {
       return S.toast('请选择地址')
     }
 
-    const { payType } = this.state
+    const { payType, total } = this.state
 
     if (payType === 'dhpoint') {
       try {
-        await Taro.showModal({
+        const { confirm } = await Taro.showModal({
           title: '积分支付',
-          content: `确认使用积分全额抵扣商品总价吗`,
+          content: `确认使用${total.remainpt}积分全额抵扣商品总价吗`,
           confirmColor: '#0b4137',
           confirmText: '确认使用',
           cancelText: '取消'
         })
+        if (!confirm) return
       } catch (e) {
         console.log(e)
         return
@@ -550,9 +550,9 @@ export default class CartCheckout extends Component {
             isAddress={address}
           />
 
-          {payType !== 'point' && (
+          {(payType !== 'point' && payType !== 'dhpoint') && (
             <SpCell
-              is-link
+              isLink
               className='coupons-list'
               title='选择优惠券'
               onClick={this.handleCouponsClick}
@@ -653,9 +653,11 @@ export default class CartCheckout extends Component {
             >
               <Text>{payType === 'dhpoint' ? '积分支付' : '微信支付'}</Text>
             </SpCell>
-            <View className='trade-payment__hint'>
-              可用[1200]积分，抵扣(包含运费 <Price unit='cent' value={total.freight_fee}></Price>)
-            </View>
+            {total.deduction && (
+              <View className='trade-payment__hint'>
+                可用{total.remainpt}积分，抵扣 <Price unit='cent' value={total.deduction} /> (包含运费 <Price unit='cent' value={total.freight_fee}></Price>)
+              </View>
+            )}
           </View>
 
           {payType === 'point' && (

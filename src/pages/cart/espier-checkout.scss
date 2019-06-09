@@ -250,6 +250,7 @@
       left: 0;
       width: 100%;
       z-index: 99;
+      height: $at-button-height + 10px;
       &:before {
         border-radius: 0;
         border: none;
