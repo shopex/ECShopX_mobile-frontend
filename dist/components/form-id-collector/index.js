@@ -74,8 +74,8 @@ var FormIdCollector = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatemBZfo",
-    value: function funPrivatemBZfo() {
+    key: "funPrivateuoVUC",
+    value: function funPrivateuoVUC() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -98,7 +98,7 @@ var FormIdCollector = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleSubmit", "funPrivatemBZfo"], _class.options = {
+}, _class.$$events = ["handleSubmit", "funPrivateuoVUC"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   sync: false,

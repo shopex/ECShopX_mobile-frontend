@@ -48,7 +48,6 @@
       display: flex;
       justify-content: flex-start;
       color: #555555;
-      font-size: 22px;
       margin-right: 9px;
     }
     .info-trade {
@@ -57,11 +56,9 @@
     .user-info-trade {
       display: flex;
       justify-content: space-between;
-      font-size: 22px;
       line-height: 36px;
     }
     .address-detail {
-      font-size: 22px;
       color: #999999;
     }
   }
@@ -69,7 +66,6 @@
     background: #ffffff;
     border-top: 1PX solid #ececec;
     padding: 28px 30px 21px;
-    font-size: 24px;
     color: #555555;
     .icon-add {
       color: #555555;

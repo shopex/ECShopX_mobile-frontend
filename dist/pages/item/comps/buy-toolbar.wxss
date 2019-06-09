@@ -81,6 +81,9 @@
   margin: 0 0 8rpx;
   color: #9d9d9d;
 }
+.goods-buy-toolbar__menu-item .in-icon-fav-f {
+  color: #0b4137;
+}
 .goods-buy-toolbar__menu-item-text {
   font-size: 25rpx;
   color: #555;

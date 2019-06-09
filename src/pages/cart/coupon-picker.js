@@ -54,6 +54,8 @@ export default class CouponPicker extends Component {
   }
 
   handleCouponSelect (type = 'coupon', value) {
+    if (!value.valid) return
+
     const payload = value
       ? { type, value }
       : null

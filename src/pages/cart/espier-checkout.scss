@@ -128,7 +128,7 @@
     }
   }
 
-  .trade-shipping, .trade-invoice, .trade-remark, .trade-point, .trade-sub-total {
+  .trade-shipping, .trade-invoice, .trade-remark, .trade-point, .trade-sub-total, .trade-payment {
     margin: 0 0 $edge-margin;
   }
 
@@ -171,10 +171,19 @@
     }
   }
 
-  .trade-invoice {
+  .trade-invoice, .trade-payment {
     .sp-cell__bd {
       display: flex;
       justify-content: flex-end;
+    }
+  }
+
+  .trade-payment {
+    background: #fff;
+    &__hint {
+      padding: 0 $edge-size 10px;
+      margin-top: -5px;
+      color: $color-orange;
     }
   }
 
@@ -241,6 +250,7 @@
       left: 0;
       width: 100%;
       z-index: 99;
+      height: $at-button-height + 10px;
       &:before {
         border-radius: 0;
         border: none;

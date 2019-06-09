@@ -16,14 +16,41 @@ export default class PaymentPicker extends Component {
     addGlobalClass: true
   }
 
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      localType: props.type
+    }
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.type !== this.props.type) {
+      this.setState({
+        localType: nextProps.type
+      })
+    }
+  }
+
+  handleCancel = () => {
+    this.setState({
+      localType: this.props.type
+    })
+    this.props.onClose()
+  }
+
   handlePaymentChange = (type) => {
     const { disabledPayment } = this.props
     if (disabledPayment && disabledPayment.name === type) return
-    this.props.onChange(type)
+
+    this.setState({
+      localType: type
+    })
   }
 
   render () {
-    const { isOpened, loading, disabledPayment, type } = this.props
+    const { isOpened, loading, disabledPayment } = this.props
+    const { localType } = this.state
 
     return (
       <AtFloatLayout
@@ -34,7 +61,7 @@ export default class PaymentPicker extends Component {
             <Text>支付方式</Text>
             <View
               className='at-icon at-icon-close'
-              onClick={this.props.onClose}
+              onClick={this.handleCancel}
             ></View>
           </View>
           <View className='payment-picker__bd'>
@@ -49,7 +76,7 @@ export default class PaymentPicker extends Component {
               <View className='payment-item__ft'>
                 <SpCheckbox
                   disabled={!!disabledPayment}
-                  checked={type === 'dhpoint'}
+                  checked={localType === 'dhpoint'}
                 ></SpCheckbox>
               </View>
             </View>
@@ -63,15 +90,16 @@ export default class PaymentPicker extends Component {
               </View>
               <View className='payment-item__ft'>
                 <SpCheckbox
-                  checked={type === 'amorepay'}
+                  checked={localType === 'amorepay'}
                 ></SpCheckbox>
               </View>
             </View>
 
             <AtButton
               type='primary'
+              size='large'
               loading={loading}
-              onClick={this.props.onConfirm}
+              onClick={this.props.onChange.bind(this, localType)}
             >确定</AtButton>
           </View>
         </View>

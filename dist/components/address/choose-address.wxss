@@ -116,7 +116,6 @@
       -ms-flex-pack: start;
           justify-content: flex-start;
   color: #555555;
-  font-size: 22rpx;
   margin-right: 9rpx;
 }
 .address-picker__bd .info-trade {
@@ -134,18 +133,15 @@
   -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  font-size: 22rpx;
   line-height: 36rpx;
 }
 .address-picker__bd .address-detail {
-  font-size: 22rpx;
   color: #999999;
 }
 .address-picker .other-address {
   background: #ffffff;
   border-top: 1PX solid #ececec;
   padding: 28rpx 30rpx 21rpx;
-  font-size: 24rpx;
   color: #555555;
 }
 .address-picker .other-address .icon-add {
