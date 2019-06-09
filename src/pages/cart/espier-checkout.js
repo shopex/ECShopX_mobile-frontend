@@ -400,15 +400,15 @@ export default class CartCheckout extends Component {
 
       // dhpoint 判断
       if (payType === 'dhpoint') {
-        const message = e.message === '当前积分不足以支付本次订单费用'
-          ? e.message
-          : '积分获取失败'
+        const message = e.message
 
         this.setState({
           disabledPayment: { name: 'dhpoint', message },
           payType: 'amorepay',
           submitLoading: false
         })
+        Taro.hideLoading()
+        return
       }
     }
 

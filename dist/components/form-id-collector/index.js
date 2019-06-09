@@ -74,8 +74,8 @@ var FormIdCollector = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatefMLdb",
-    value: function funPrivatefMLdb() {
+    key: "funPrivatekFipk",
+    value: function funPrivatekFipk() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -98,7 +98,7 @@ var FormIdCollector = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleSubmit", "funPrivatefMLdb"], _class.options = {
+}, _class.$$events = ["handleSubmit", "funPrivatekFipk"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   sync: false,
