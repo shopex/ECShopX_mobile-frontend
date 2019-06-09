@@ -4,7 +4,7 @@
     </block>
     <view class="page-cart-index" wx:else>
         <nav-bar title="购物车" __triggerObserer="{{ _triggerObserer }}" leftIconType="chevron-left" fixed="true"></nav-bar>
-        <scroll-view class="cart-list__scroll" scroll-y="{{true}}">
+        <scroll-view class="cart-list__scroll" bindscrolltolower="nextPage" scroll-y="{{true}}">
             <view class="cart-list">
                 <view class="cart-list__shop" wx:key="idx" wx:for="{{loopArray0}}" wx:for-item="activityGroup" wx:for-index="idx">
                     <block wx:if="{{shopCart.$original.list.length > 0}}" wx:for="{{activityGroup.$anonymousCallee__1}}" wx:for-item="shopCart" wx:for-index="_anonIdx3" wx:key="$original.shop_id">
@@ -15,7 +15,7 @@
                                     </view>
                                 </view>
                             </block>
-                            <cart-item wx:key="$original.cart_id" __triggerObserer="{{ _triggerObserer }}" info="{{item.$original}}" bindonnumchange="handleQuantityChange" bindonclickpromotion="handleClickPromotion" wx:for="{{shopCart.$anonymousCallee__0}}" wx:for-item="item" wx:for-index="_anonIdx" __fn_onNumChange="{{true}}" data-e-onnumchange-so="this" data-e-onnumchange-a-a="{{item.$original.cart_id}}" __fn_onClickPromotion="{{true}}" data-e-onclickpromotion-so="this" data-e-onclickpromotion-a-a="{{item.$original.cart_id}}">
+                            <cart-item wx:key="$original.cart_id" __triggerObserer="{{ _triggerObserer }}" info="{{item.$original}}" bindonnumchange="handleQuantityChange" bindonclickpromotion="handleClickPromotion" bindonclick="handleClickToDetail" wx:for="{{shopCart.$anonymousCallee__0}}" wx:for-item="item" wx:for-index="_anonIdx" __fn_onNumChange="{{true}}" data-e-onnumchange-so="this" data-e-onnumchange-a-a="{{item.$original.cart_id}}" __fn_onClickPromotion="{{true}}" data-e-onclickpromotion-so="this" data-e-onclickpromotion-a-a="{{item.$original.cart_id}}" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{item.$original.item_id}}">
                                 <view class="cart-item__act">
                                     <sp-checkbox wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" checked="{{item.$loopState__temp2}}" bindonchange="handleSelectionChange" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{item.$original.cart_id}}"></sp-checkbox>
                                     <view class="in-icon in-icon-close" bindtap="handleDelect" data-e-tap-so="this" data-e-tap-a-a="{{item.$original.cart_id}}"></view>
@@ -40,11 +40,11 @@
                         <view style="margin-bottom: 20px">
                             <sp-note img="cart_empty.png" __triggerObserer="{{ _triggerObserer }}">快去给我挑点宝贝吧~</sp-note>
                         </view>
-                        <at-button className="btn-rand" __triggerObserer="{{ _triggerObserer }}" type="primary" bindonclick="navigateTo" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="/pages/home/index" data-e-onclick-a-b="{{true}}">随便逛逛</at-button>
+                        <at-button className="btn-rand" __triggerObserer="{{ _triggerObserer }}" type="primary" bindonclick="navigateTo" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="/pages/index" data-e-onclick-a-b="{{true}}">随便逛逛</at-button>
                     </view>
                 </block>
             </view>
-            <block wx:if="{{list.length}}">
+            <block wx:if="{{invalidList.length}}">
                 <view class="cart-list cart-list__disabled">
                     <view class="cart-list__hd"><text>已失效</text>
                     </view>
@@ -57,6 +57,21 @@
                         </cart-item>
                     </view>
                 </view>
+            </block>
+            <block wx:if="{{likeList.length}}">
+                <view class="cart-list cart-list__disabled">
+                    <view class="cart-list__hd like__hd"><text class="cart-list__title">猜你喜欢</text>
+                    </view>
+                    <view class="goods-list goods-list__type-grid">
+                        <goods-item wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" info="{{item.$original}}" bindonclick="anonymousFunc0" wx:for="{{loopArray1}}" wx:for-item="item" wx:for-index="__index0" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{__index0}}"></goods-item>
+                    </view>
+                </view>
+            </block>
+            <block wx:if="{{page.isLoading}}">
+                <loading __triggerObserer="{{ _triggerObserer }}">正在加载...</loading>
+            </block>
+            <block wx:if="{{!page.isLoading && !page.hasNext && !likeList.length}}">
+                <sp-note img="trades_empty.png" __triggerObserer="{{ _triggerObserer }}">暂无数据~</sp-note>
             </block>
         </scroll-view>
         <view class="{{'toolbar cart-toolbar ' + (isEmpty && 'hidden')}}">

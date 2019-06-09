@@ -48,14 +48,14 @@ export default class WgtWriting extends Component {
     }
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View className={`wgt  ${base.padded ? 'wgt__padded' : null}`}>
         {base.title && (
           <View className='wgt__header'>
             <View className='wgt__title'>{base.title}</View>
             <View className='wgt__subtitle'>{base.subtitle}</View>
           </View>
         )}
-        <View className={`slider-wrap ${config.padded ? 'padded' : ''}`}>
+        <View className={`slider-wra wgt-writing ${config.padded ? 'padded' : ''}`}>
           {
             contentArr.map((item, index) => {
               return (

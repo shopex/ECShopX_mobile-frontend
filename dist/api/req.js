@@ -42,6 +42,15 @@ var API = function () {
       baseURL = baseURL + '/';
     }
 
+    options.company_id = 1;
+    {
+      var extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
+      options.appid = extConfig.appid;
+      if (extConfig.company_id) {
+        options.company_id = extConfig.company_id;
+      }
+    }
+
     this.options = options;
     this.baseURL = baseURL;
     this.genMethods(['get', 'post', 'delete', 'put']);
@@ -98,10 +107,14 @@ var API = function () {
         header['content-type'] = header['content-type'] || 'application/x-www-form-urlencoded';
       }
       header['Authorization'] = "Bearer " + _index4.default.getAuthToken();
+
+      var _options = this.options,
+          company_id = _options.company_id,
+          appid = _options.appid;
+
       {
-        var extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
-        if (extConfig.appid) {
-          header['authorizer-appid'] = extConfig.appid;
+        if (appid) {
+          header['authorizer-appid'] = appid;
         }
       }
 
@@ -123,7 +136,7 @@ var API = function () {
       //   Taro.addInterceptor(this.options.interceptor)
       // }
       options.data = _extends({}, options.data || {}, {
-        company_id: 1
+        company_id: company_id
       });
       if (options.method === 'GET') {
         options.url = addQuery(options.url, _index6.default.stringify(options.data));
@@ -164,7 +177,7 @@ var API = function () {
             _this2.errorToast(data);
           }
           _index2.default.redirectTo({
-            url: '/pages/auth/login'
+            url: "/pages/auth/wxauth"
           });
           return Promise.reject(_this2.reqError(res));
         }

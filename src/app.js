@@ -4,7 +4,7 @@ import { Provider } from '@tarojs/redux'
 import configStore from '@/store'
 import useHooks from '@/hooks'
 import api from '@/api'
-import { FormIds } from '@/service'
+import { FormIds, WxAuth } from '@/service'
 import Index from './pages/index'
 
 import './app.scss'
@@ -21,8 +21,7 @@ useHooks()
 class App extends Component {
   config = {
     pages: [
-      // 'pages/index/index',
-      'pages/home/index',
+      'pages/index',
       'pages/home/landing',
       'pages/category/index',
       'pages/item/list',
@@ -46,6 +45,7 @@ class App extends Component {
       'pages/auth/reg-rule',
       'pages/auth/login',
       'pages/auth/forgotpwd',
+      'pages/auth/wxauth',
 
       'pages/cashier/index',
       'pages/cashier/cashier-result',
@@ -87,7 +87,19 @@ class App extends Component {
       'pages/trade/refund-sendback',
       'pages/trade/invoice-list',
 
-      'pages/protocol/privacy'
+      'pages/protocol/privacy',
+
+      // 集成用，勿删
+      /*'pages/iwp/item-list',
+      'pages/iwp/item-detail',
+      'pages/iwp/recommend-list',
+      'pages/iwp/recommend-detail'*/
+      // 'pages/iwp/coupon-home',
+      // 'pages/iwp/article-index'
+    ],
+    navigateToMiniProgramAppIdList: [
+      'wx4721629519a8f25b',
+      'wxf91925e702efe3e3'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -100,21 +112,27 @@ class App extends Component {
   }
   componentDidMount () {
   }
-
-  componentDidShow () {
-    FormIds.startCollectingFormIds()
-    try {
+  componentDidShow (options) {
+    if (process.env.TARO_ENV === 'weapp') {
+      FormIds.startCollectingFormIds()
       if (S.getAuthToken()) {
         api.member.favsList()
           .then(({ list }) => {
+            if (!list) return
             store.dispatch({
               type: 'member/favs',
               payload: list
             })
           })
+          .catch(e => {
+            console.info(e)
+          })
       }
-    } catch (e) {
-      console.log(e)
+    }
+
+    const { referrerInfo } = options || {}
+    if (referrerInfo) {
+      console.log(referrerInfo)
     }
   }
 

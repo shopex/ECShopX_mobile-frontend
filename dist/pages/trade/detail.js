@@ -20,7 +20,11 @@ var _index4 = require("../../api/index.js");
 
 var _index5 = _interopRequireDefault(_index4);
 
-var _index6 = require("../../consts/index.js");
+var _index6 = require("../../spx/index.js");
+
+var _index7 = _interopRequireDefault(_index6);
+
+var _index8 = require("../../consts/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77,11 +81,22 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
           }
         }
       }, _callee, _this2);
-    })), _this.handleClickDelivery = function () {
-      _index2.default.navigateTo({
-        url: '/pages/trade/delivery-info?order_id=' + _this.state.info.tid
-      });
-    }, _this.handleClickToDelivery = function () {}, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    })), _this.handleClickDelivery = function () {}
+    /*Taro.navigateTo({
+      url: '/pages/trade/delivery-info?order_id='+this.state.info.tid
+    })*/
+
+    // handleClickAfterSale= () => {
+    //   const { info: { tid: order_id } } = this.state
+    //   Taro.navigateTo({
+    //     url: `/pages/trade/refund?order_id=${order_id}`
+    //   })
+    // }
+
+    , _this.handleClickToDelivery = function () {}, _this.handleClickCopy = function (val) {
+      (0, _index3.copyText)(val);
+      _index7.default.toast('复制成功');
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(TradeDetail, [{
@@ -96,8 +111,8 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
       };
     }
   }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
+    key: "componentDidShow",
+    value: function componentDidShow() {
       this.fetch();
     }
   }, {
@@ -181,7 +196,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
                       item_id: 'item_id',
                       aftersales_status: function aftersales_status(_ref11) {
                         var _aftersales_status = _ref11.aftersales_status;
-                        return _index6.AFTER_SALE_STATUS[_aftersales_status];
+                        return _index8.AFTER_SALE_STATUS[_aftersales_status];
                       },
                       pic_path: 'pic',
                       title: 'item_name',
@@ -270,11 +285,13 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
               case 12:
                 payRes = _context3.sent;
-                _context3.next = 19;
+
+                _index3.log.debug("[order pay]: ", payRes);
+                _context3.next = 20;
                 break;
 
-              case 15:
-                _context3.prev = 15;
+              case 16:
+                _context3.prev = 16;
                 _context3.t0 = _context3["catch"](9);
 
                 payErr = _context3.t0;
@@ -285,22 +302,37 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
                   });
                 }
 
-              case 19:
-
-                if (!payErr) {
-                  _getCurrentRoute = (0, _index3.getCurrentRoute)(this.$router), fullPath = _getCurrentRoute.fullPath;
-
-                  _index2.default.redirectTo({
-                    url: fullPath
-                  });
+              case 20:
+                if (payErr) {
+                  _context3.next = 26;
+                  break;
                 }
 
-              case 20:
+                try {
+                  _index5.default.trade.tradeQuery(config.trade_info.trade_id);
+                } catch (e) {
+                  console.info(e);
+                }
+
+                _context3.next = 24;
+                return _index2.default.showToast({
+                  title: '支付成功',
+                  icon: 'success'
+                });
+
+              case 24:
+                _getCurrentRoute = (0, _index3.getCurrentRoute)(this.$router), fullPath = _getCurrentRoute.fullPath;
+
+                _index2.default.redirectTo({
+                  url: fullPath
+                });
+
+              case 26:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[9, 15]]);
+        }, _callee3, this, [[9, 16]]);
       }));
 
       function handlePay() {
@@ -327,7 +359,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
                 }
 
                 _index2.default.redirectTo({
-                  url: '/pages/home/index'
+                  url: "/pages/index"
                 });
                 return _context4.abrupt("return");
 
@@ -438,14 +470,6 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
       return handleClickRefund;
     }()
-
-    // handleClickAfterSale= () => {
-    //   const { info: { tid: order_id } } = this.state
-    //   Taro.navigateTo({
-    //     url: `/pages/trade/refund?order_id=${order_id}`
-    //   })
-    // }
-
   }, {
     key: "_createData",
     value: function _createData() {
@@ -479,7 +503,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
   }]);
 
   return TradeDetail;
-}(_index.Component), _class.properties = {}, _class.$$events = ["handleClickDelivery", "handleClickBtn"], _temp2);
+}(_index.Component), _class.properties = {}, _class.$$events = ["handleClickDelivery", "handleClickCopy", "handleClickBtn"], _temp2);
 exports.default = TradeDetail;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(TradeDetail, true));

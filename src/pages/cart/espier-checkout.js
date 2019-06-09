@@ -69,8 +69,12 @@ export default class CartCheckout extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidShow () {
     this.fetchAddress()
+  }
+
+  componentDidMount () {
+    // this.fetchAddress()
 
     const { cart_type, pay_type: payType } = this.$router.params
     let info = null
@@ -106,7 +110,7 @@ export default class CartCheckout extends Component {
     this.params = {
       cart_type,
       items,
-      pay_type: payType || 'deposit'
+      pay_type: payType || 'amorepay'
     }
 
     this.setState({
@@ -119,6 +123,7 @@ export default class CartCheckout extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log(nextProps, 122)
     if (nextProps.address !== this.props.address) {
       this.fetchAddress()
     }
@@ -129,6 +134,7 @@ export default class CartCheckout extends Component {
       mask: true
     })
     const { list } = await api.member.addressList()
+    console.log(list, 141)
     Taro.hideLoading()
 
     this.setState({
@@ -142,13 +148,23 @@ export default class CartCheckout extends Component {
   changeSelection (params = {}) {
     const { address_list } = this.state
     if (address_list.length === 0) {
-      this.calcOrder()
-      Taro.navigateTo({
-        url: '/pages/member/edit-address'
+      console.log(address_list, 154)
+      // this.props.address = {
+      //   current: null
+      // }
+      this.props.onAddressChoose(null)
+      this.setState({
+        address: null
       })
+      // this.handleAddressChange()
+      this.calcOrder()
+      /*Taro.navigateTo({
+        url: '/pages/member/edit-address'
+      })*/
       return
     }
 
+    console.log(444,163)
     let address = this.props.address
     if (!address) {
       const { address_id } = params
@@ -205,7 +221,7 @@ export default class CartCheckout extends Component {
     const params = this.getParams()
     const data = await api.cart.total(params)
 
-    const { items, item_fee, member_discount = 0, coupon_discount = 0, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
+    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, freight_fee = 0, freight_point = 0, point = 0, total_fee } = data
     const total = {
       ...this.state.total,
       item_fee,
@@ -213,6 +229,7 @@ export default class CartCheckout extends Component {
       coupon_discount: -1 * coupon_discount,
       freight_fee,
       total_fee,
+      items_count: totalItemNum,
       point,
       freight_point
     }
@@ -359,17 +376,10 @@ export default class CartCheckout extends Component {
       submitLoading: false
     })
 
-    try {
-      await api.trade.tradeQuery(config.trade_info.trade_id)
-    } catch (e) {
-      console.info(e)
-    }
-
     let payErr
     try {
       const payRes = await Taro.requestPayment(config)
       log.debug(`[order pay]: `, payRes)
-      await api.trade.tradeQuery(orderInfo.trade_info.trade_id)
     } catch (e) {
       payErr = e
       Taro.showToast({
@@ -379,6 +389,17 @@ export default class CartCheckout extends Component {
     }
 
     if (!payErr) {
+      try {
+        api.trade.tradeQuery(config.trade_info.trade_id)
+      } catch (e) {
+        console.info(e)
+      }
+
+      await Taro.showToast({
+        title: '支付成功',
+        icon: 'success'
+      })
+
       this.props.onClearCart()
       Taro.redirectTo({
         url: `/pages/trade/detail?id=${order_id}`
@@ -578,7 +599,7 @@ export default class CartCheckout extends Component {
                   value={total.item_fee}
                 />
               </SpCell>
-              <SpCell
+              {/*<SpCell
                 className='trade-sub-total__item'
                 title='会员折扣：'
               >
@@ -586,7 +607,7 @@ export default class CartCheckout extends Component {
                   unit='cent'
                   value={total.member_discount}
                 />
-              </SpCell>
+              </SpCell>*/}
               <SpCell
                 className='trade-sub-total__item'
                 title='优惠券：'

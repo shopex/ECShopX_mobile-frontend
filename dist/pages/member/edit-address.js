@@ -53,9 +53,28 @@ var AddressIndex = (_temp2 = _class = function (_BaseComponent) {
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AddressIndex.__proto__ || Object.getPrototypeOf(AddressIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "multiIndex", "areaList", "_isWechatAddress", "listLength"], _this.handleClickPicker = function () {
-      _this.setState({
-        multiIndex: [0, 0, 0]
-      });
+      var arrProvice = [];
+      var arrCity = [];
+      var arrCounty = [];
+      if (_this.nList) {
+        _this.nList.map(function (item, index) {
+          arrProvice.push(item.label);
+          if (index === 0) {
+            item.children.map(function (c_item, c_index) {
+              arrCity.push(c_item.label);
+              if (c_index === 0) {
+                c_item.children.map(function (cny_item) {
+                  arrCounty.push(cny_item.label);
+                });
+              }
+            });
+          }
+        });
+        _this.setState({
+          areaList: [arrProvice, arrCity, arrCounty],
+          multiIndex: [0, 0, 0]
+        });
+      }
     }, _this.bindMultiPickerChange = function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
         var info;
@@ -323,6 +342,7 @@ var AddressIndex = (_temp2 = _class = function (_BaseComponent) {
                 });
                 this.setState({
                   areaList: [arrProvice, arrCity, arrCounty]
+                  // areaList: [['北京'], ['北京'], ['东城']],
                 });
 
                 if (!this.$router.params.isWechatAddress) {

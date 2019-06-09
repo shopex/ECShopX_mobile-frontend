@@ -64,6 +64,7 @@ export default class AddressIndex extends Component {
     })
     this.setState({
       areaList: [arrProvice, arrCity, arrCounty],
+      // areaList: [['北京'], ['北京'], ['东城']],
     })
 
     if (this.$router.params.isWechatAddress){
@@ -87,9 +88,29 @@ export default class AddressIndex extends Component {
 
   // 选定开户地区
   handleClickPicker = () => {
-    this.setState({
-      multiIndex: [0, 0, 0]
-    })
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    if(this.nList){
+      this.nList.map((item, index) => {
+        arrProvice.push(item.label)
+        if(index === 0) {
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
+              })
+            }
+          })
+        }
+      })
+      this.setState({
+        areaList: [arrProvice, arrCity, arrCounty],
+        multiIndex: [0, 0, 0]
+      })
+    }
+
   }
 
   bindMultiPickerChange = async (e) => {

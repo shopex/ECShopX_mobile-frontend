@@ -1,6 +1,5 @@
 @import "../../../style/imports";
 
-$img-size: 390px;
 $offset-Bottom: 30px;
 .item-img {
   background: #fff;
@@ -8,8 +7,8 @@ $offset-Bottom: 30px;
   padding-bottom: $offset-Bottom;
   &__img {
     position: relative;
-    width: 650px;
-    height: $img-size;
+    width: 500px;
+    height: 500px;
     z-index: 10;
     display: block;
     border-radius: 10PX;
@@ -23,7 +22,7 @@ $offset-Bottom: 30px;
       top: 0;
       left: 0;
       width: 100%;
-      height: $img-size;
+      height: 500px;
       overflow: hidden;
     }
     position: absolute;
@@ -31,7 +30,7 @@ $offset-Bottom: 30px;
     top: 0;
     left: -8px;
     right: -8px;
-    height: $img-size;
+    height: 500px;
     width: 110%;
     z-index: 2;
     overflow: hidden;

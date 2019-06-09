@@ -77,7 +77,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "loopArray0", "info", "scrollTop", "imgInfo", "timer", "marketing", "isPromoter", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "showBuyPanel", "cartCount", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "loopArray0", "info", "scrollTop", "imgInfo", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "showBuyPanel", "cartCount", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
         var info, isAuth;
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -208,7 +208,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         showBuyPanel: false,
         buyPanelType: null,
         specImgsDict: {},
-        curSku: null
+        curSku: null,
+        promotion_activity: []
       };
     }
   }, {
@@ -299,7 +300,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetch",
     value: function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var id, info, desc, marketing, timer, hasStock, startSecKill, specImgsDict;
+        var id, info, desc, promotion_activity, marketing, timer, hasStock, startSecKill, specImgsDict;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -310,7 +311,9 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
 
               case 3:
                 info = _context4.sent;
-                desc = info.intro;
+                desc = info.intro, promotion_activity = info.promotion_activity;
+
+                console.log(promotion_activity, 100);
                 marketing = 'normal';
                 timer = null;
                 hasStock = info.store && info.store > 0;
@@ -356,11 +359,12 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                   timer: timer,
                   hasStock: hasStock,
                   startSecKill: startSecKill,
-                  specImgsDict: specImgsDict
+                  specImgsDict: specImgsDict,
+                  promotion_activity: promotion_activity
                 });
                 _index7.log.debug('fetch: done', info);
 
-              case 16:
+              case 17:
               case "end":
                 return _context4.stop();
             }
@@ -410,7 +414,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
           cartCount = _state.cartCount,
           scrollTop = _state.scrollTop,
           showBackToTop = _state.showBackToTop,
-          curSku = _state.curSku;
+          curSku = _state.curSku,
+          promotion_activity = _state.promotion_activity;
       var _state2 = this.__state,
           marketing = _state2.marketing,
           timer = _state2.timer,
@@ -437,8 +442,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         return _this3.setState({ showBuyPanel: false });
       };
 
-      var $anonymousCallee__0 = Object.keys(this.__state.specImgsDict);
-      var loopArray0 = Object.keys(this.__state.specImgsDict).map(function (specValueId) {
+      var $anonymousCallee__0 = info.nospec !== true ? Object.keys(this.__state.specImgsDict) : [];
+      var loopArray0 = info.nospec !== true ? Object.keys(this.__state.specImgsDict).map(function (specValueId) {
         specValueId = {
           $original: (0, _index.internal_get_original)(specValueId)
         };
@@ -448,7 +453,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
           img: img,
           $original: specValueId.$original
         };
-      });
+      }) : [];
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
         anonymousState__temp2: anonymousState__temp2,

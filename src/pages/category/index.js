@@ -36,8 +36,11 @@ export default class Category extends Component {
     const res = await api.category.get()
     const nList = pickBy(res, {
       category_name: 'category_name',
+      image_url: 'image_url',
       children: 'children'
     })
+    console.log(nList, 42)
+
     this.setState({
       list: nList
     })

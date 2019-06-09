@@ -11,12 +11,13 @@ export default class RecommendItem extends Component {
     onClick: () => {},
     showMarketPrice: true,
     noCurSymbol: false,
-    type: 'item'
+    type: 'item',
   }
 
   static options = {
     addGlobalClass: true
   }
+
 
   handleLikeClick = async (e) => {
     e.stopPropagation()
@@ -26,13 +27,13 @@ export default class RecommendItem extends Component {
   }
 
   render () {
-    const { info, showMarketPrice, noCurSymbol, noCurDecimal, onClick, appendText, className, isPointDraw, type } = this.props
+    const { info, noCurSymbol, noCurDecimal, onClick, appendText, className, isPointDraw, type } = this.props
     if (!info) {
       return null
     }
 
-    const price = isObject(info.price) ? info.price.total_price : info.price
     const img = info.img || info.image_default_id
+    const img_head = info.head_portrait || info.image_default_id
 
     return (
       <View className={classNames('goods-item', className)}>
@@ -44,9 +45,10 @@ export default class RecommendItem extends Component {
           onClick={onClick}
         >
           <View className='goods-item__img-wrap'>
-            <Image className='goods-item__img'
-                   mode='aspectFill'
-                   src={img}
+            <Image
+              className='goods-item__img'
+              mode='aspectFill'
+              src={img}
             />
           </View>
           <View className='goods-item__cont'>
@@ -54,17 +56,17 @@ export default class RecommendItem extends Component {
             <Text className='goods-item__desc'>{info.desc}</Text>
             <View className='goods-item__extra'>
               <View className='goods-item__author'>
-                <Image className='goods-item__author-avatar'
-                       src={img}
-                       mode='aspectFill'
+                <Image
+                  className='goods-item__author-avatar'
+                  src={img_head}
+                  mode='aspectFill'
                 />
                 <Text className='goods-item__author-name'>{info.author}</Text>
               </View>
-              <View className='goods-item__actions'>
+              <View className={`goods-item__actions ${info.isPraise ? 'is_like__active' : ''}`}>
                 <View
-                  className={`in-icon in-icon-like ${info.is_like ? '' : ''}`}
-                  onClick={this.handleLikeClick}
-                ><Text>666</Text></View>
+                  className='in-icon in-icon-like'
+                ><Text>{info.articlePraiseNum}</Text></View>
               </View>
             </View>
           </View>

@@ -9,13 +9,6 @@
             <view class="search-input__history-list">
                 <view class="search-input__history-list__btn" wx:key="index" bindtap="handleClickTag" wx:for="{{historyList}}" wx:for-item="item" wx:for-index="index" data-e-tap-so="this" data-e-tap-a-a="{{item}}">{{item}}</view>
             </view>
-            <view class="search-input__history-title hot-title"><text>热门搜索</text>
-            </view>
-            <view class="hot-list">
-                <view class="hot-list__item" bindtap="handleClickHotItem" data-e-tap-so="this"><text>#绿茶籽小绿瓶#</text>
-                    <view class="at-icon at-icon-chevron-right"></view>
-                </view>
-            </view>
         </view>
     </view>
 </block>

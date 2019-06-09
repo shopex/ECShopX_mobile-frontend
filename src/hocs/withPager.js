@@ -20,6 +20,7 @@ export default function withPager (Component) {
 
     nextPage = async () => {
       const { page } = this.state
+
       if (!page.hasNext || page.isLoading) return
 
       page.isLoading = true
@@ -56,6 +57,7 @@ export default function withPager (Component) {
         isLoading: false,
         hasNext: true
       }
+
       this.setState({ page }, cb)
     }
   }

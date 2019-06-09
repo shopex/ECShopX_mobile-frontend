@@ -241,69 +241,71 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 submitLoading: false
               });
 
-              _context2.prev = 23;
-              _context2.next = 26;
-              return _index5.default.trade.tradeQuery(config.trade_info.trade_id);
-
-            case 26:
-              _context2.next = 31;
-              break;
-
-            case 28:
-              _context2.prev = 28;
-              _context2.t1 = _context2["catch"](23);
-
-              console.info(_context2.t1);
-
-            case 31:
               payErr = void 0;
-              _context2.prev = 32;
-              _context2.next = 35;
+              _context2.prev = 24;
+              _context2.next = 27;
               return _index2.default.requestPayment(config);
 
-            case 35:
+            case 27:
               payRes = _context2.sent;
 
               _index9.log.debug("[order pay]: ", payRes);
-              _context2.next = 39;
-              return _index5.default.trade.tradeQuery(orderInfo.trade_info.trade_id);
-
-            case 39:
-              _context2.next = 45;
+              _context2.next = 35;
               break;
 
-            case 41:
-              _context2.prev = 41;
-              _context2.t2 = _context2["catch"](32);
+            case 31:
+              _context2.prev = 31;
+              _context2.t1 = _context2["catch"](24);
 
-              payErr = _context2.t2;
+              payErr = _context2.t1;
               _index2.default.showToast({
-                title: _context2.t2.err_desc || _context2.t2.errMsg || '支付失败',
+                title: _context2.t1.err_desc || _context2.t1.errMsg || '支付失败',
                 icon: 'none'
               });
 
-            case 45:
+            case 35:
+              if (payErr) {
+                _context2.next = 43;
+                break;
+              }
 
-              if (!payErr) {
-                _this.__triggerPropsFn("onClearCart", [null].concat([]));
+              try {
+                _index5.default.trade.tradeQuery(config.trade_info.trade_id);
+              } catch (e) {
+                console.info(e);
+              }
+
+              _context2.next = 39;
+              return _index2.default.showToast({
+                title: '支付成功',
+                icon: 'success'
+              });
+
+            case 39:
+
+              _this.__triggerPropsFn("onClearCart", [null].concat([]));
+              _index2.default.redirectTo({
+                url: "/pages/trade/detail?id=" + order_id
+              });
+              _context2.next = 44;
+              break;
+
+            case 43:
+              if (payErr.errMsg.indexOf('fail cancel') >= 0) {
                 _index2.default.redirectTo({
                   url: "/pages/trade/detail?id=" + order_id
                 });
-              } else {
-                if (payErr.errMsg.indexOf('fail cancel') >= 0) {
-                  _index2.default.redirectTo({
-                    url: "/pages/trade/detail?id=" + order_id
-                  });
-                }
               }
+
+            case 44:
               return _context2.abrupt("return");
 
-            case 47:
+            case 45:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, _this2, [[5, 12], [23, 28], [32, 41]]);
+      }, _callee2, _this2, [[5, 12], [24, 31]]);
     })), _this.handleCouponsClick = function () {
       var items = _this.params.items.filter(function (item) {
         return item.order_item_type !== 'gift';
@@ -352,9 +354,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       };
     }
   }, {
+    key: "componentDidShow",
+    value: function componentDidShow() {
+      this.fetchAddress();
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.fetchAddress();
+      // this.fetchAddress()
 
       var _$router$params = this.$router.params,
           cart_type = _$router$params.cart_type,
@@ -394,7 +401,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       this.params = {
         cart_type: cart_type,
         items: items,
-        pay_type: payType || 'deposit'
+        pay_type: payType || 'amorepay'
       };
 
       this.setState({
@@ -408,6 +415,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
+      console.log(nextProps, 122);
       if (nextProps.address !== this.props.address) {
         this.fetchAddress();
       }
@@ -434,6 +442,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 _ref7 = _context3.sent;
                 list = _ref7.list;
 
+                console.log(list, 141);
                 _index2.default.hideLoading();
 
                 this.setState({
@@ -443,7 +452,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                   cb && cb(list);
                 });
 
-              case 7:
+              case 8:
               case "end":
                 return _context3.stop();
             }
@@ -464,13 +473,23 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       var address_list = this.state.address_list;
 
       if (address_list.length === 0) {
-        this.calcOrder();
-        _index2.default.navigateTo({
-          url: '/pages/member/edit-address'
+        console.log(address_list, 154);
+        // this.props.address = {
+        //   current: null
+        // }
+        this.__triggerPropsFn("onAddressChoose", [null].concat([null]));
+        this.setState({
+          address: null
         });
+        // this.handleAddressChange()
+        this.calcOrder();
+        /*Taro.navigateTo({
+          url: '/pages/member/edit-address'
+        })*/
         return;
       }
 
+      console.log(444, 163);
       var address = this.props.address;
       if (!address) {
         var address_id = params.address_id;
@@ -525,7 +544,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     key: "calcOrder",
     value: function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var params, data, items, item_fee, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, total, info;
+        var params, data, items, item_fee, totalItemNum, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, total, info;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
@@ -541,13 +560,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               case 4:
                 data = _context4.sent;
-                items = data.items, item_fee = data.item_fee, _data$member_discount = data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, _data$freight_fee = data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = data.total_fee;
+                items = data.items, item_fee = data.item_fee, totalItemNum = data.totalItemNum, _data$member_discount = data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, _data$freight_fee = data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = data.total_fee;
                 total = _extends({}, this.state.total, {
                   item_fee: item_fee,
                   member_discount: -1 * member_discount,
                   coupon_discount: -1 * coupon_discount,
                   freight_fee: freight_fee,
                   total_fee: total_fee,
+                  items_count: totalItemNum,
                   point: point,
                   freight_point: freight_point
                 });

@@ -31,8 +31,11 @@
       flex: 1;
       text-align: center;
       color: $color-brand-primary;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
+  }
+  .disabled__operate {
+    color: $color-brand-accent-light;
   }
 }

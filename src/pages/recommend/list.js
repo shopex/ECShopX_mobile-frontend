@@ -4,6 +4,7 @@ import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
+import S from '@/spx'
 
 import './list.scss'
 
@@ -23,8 +24,9 @@ export default class RecommendList extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidShow () {
     this.nextPage()
+    // this.praiseNum()
   }
 
   async fetch (params) {
@@ -34,14 +36,22 @@ export default class RecommendList extends Component {
       page,
       pageSize
     }
-
-    const { list, total_count: total } = await api.article.list(article_query)
+    const { list, total_count: total } = S.getAuthToken() ? await api.article.authList(article_query) : await api.article.list(article_query)
 
     const nList = pickBy(list, {
       img: 'image_url',
       item_id: 'article_id',
       title: 'title',
       author: 'author',
+      head_portrait: 'head_portrait',
+      isPraise: 'isPraise',
+      articlePraiseNum: 'articlePraiseNum.count',
+    })
+
+    nList.map(item =>{
+      if(!item.articlePraiseNum) {
+        item.articlePraiseNum = 0
+      }
     })
 
     this.setState({
@@ -109,7 +119,7 @@ export default class RecommendList extends Component {
           onClick={this.scrollBackToTop}
         />
 
-      <TabBar current={2}/>
+      <TabBar current={2} />
       </View>
     )
   }

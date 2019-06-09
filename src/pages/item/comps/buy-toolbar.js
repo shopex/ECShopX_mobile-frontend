@@ -20,6 +20,28 @@ export default class GoodsBuyToolbar extends Component {
     info: null
   }
 
+  handleClickMiniProgram = (id) => {
+    try {
+      Taro.navigateTo({
+        url: '/pages/cart/espier-index'
+      })
+    } catch (e) {
+      Taro.navigateToMiniProgram({
+        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+        path: `pages/recommend/detail?id=${id}`, // 跳转的目标页面
+        extraData: {
+          id: id
+        },
+        envVersion: 'trial',
+        success(res) {
+          // 打开成功
+          console.log(res)
+        }
+      })
+    }
+
+  }
+
   render () {
     const { onClickAddCart, onClickFastBuy, cartCount, type, info } = this.props
 
@@ -37,14 +59,15 @@ export default class GoodsBuyToolbar extends Component {
           >
             <View className={`in-icon ${info.is_fav ? 'in-icon-fav-f' : 'in-icon-fav'}`} />
           </View>
-          {process.env.TARO_ENV === 'weapp' && (
+          {/*{process.env.TARO_ENV === 'weapp' && (
             <Button className='goods-buy-toolbar__menu-item' openType='contact'>
               <View className='in-icon in-icon-kefu'></View>
             </Button>
-          )}
+          )}*/}
           <View
             className='goods-buy-toolbar__menu-item'
-            onClick={navigateTo.bind(this, '/pages/cart/espier-index')}
+            // onClick={navigateTo.bind(this, '/pages/cart/espier-index')}
+            onClick={this.handleClickMiniProgram.bind(this, info.item_id)}
           >
             <AtBadge
               value={cartCount || null}

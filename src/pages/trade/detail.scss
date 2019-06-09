@@ -116,6 +116,17 @@
     .info-text {
       display: block;
     }
+    .delivery_code_copy {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      .info-text {
+        flex: 1;
+      }
+      .info-text:last-child {
+        text-align: right;
+      }
+    }
   }
   &__footer {
     position: fixed;
@@ -131,6 +142,7 @@
       line-height: 87px;
       text-align: center;
       background-color: #fafafa;
+      font-size: 26px;
       border-radius: 0;
       &:before {
         border: none;

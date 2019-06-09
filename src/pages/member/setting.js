@@ -19,9 +19,11 @@ export default class MemberSetting extends Component {
     S.logout()
     if (process.env.TARO_ENV === 'h5') {
       // eslint-disable-next-line
-      goToPage('/pages/home/index')
+      goToPage(APP_HOME_PAGE)
     } else {
-      Taro.redirectTo('/pages/home/index')
+      Taro.redirectTo({
+        url: APP_HOME_PAGE
+      })
     }
   }
 
@@ -33,7 +35,7 @@ export default class MemberSetting extends Component {
         />
 
         <View className='sec'>
-          <SpCell title='用户设置' isLink onClick={this.handleClickSetting}> </SpCell>
+          {/*<SpCell title='用户设置' isLink onClick={this.handleClickSetting}> </SpCell>*/}
           <SpCell title='版本' value={APP_VERSION}> </SpCell>
         </View>
 
@@ -41,7 +43,6 @@ export default class MemberSetting extends Component {
           <AtButton
             type='primary'
             onClick={this.handleClickLogout}
-            size='large'
           >退出登录</AtButton>
         </View>
       </View>

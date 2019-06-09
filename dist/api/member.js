@@ -75,7 +75,9 @@ function pointDetail() {
 }
 
 function favsList() {
-  return _req2.default.get('/member/collect/item');
+  var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  return _req2.default.get('/member/collect/item', params, null, { showError: false });
 }
 
 function addFav(item_id) {
@@ -131,8 +133,12 @@ function addressDelete(address_id) {
   return _req2.default.delete('/member/address/' + address_id);
 }
 
+/*export function areaList () {
+  return req.get('/member/addressarea')
+}*/
+
 function areaList() {
-  return _req2.default.get('/member/addressarea');
+  return _req2.default.get('/espier/address');
 }
 
 function addressCreateOrUpdate(data) {

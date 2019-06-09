@@ -9,6 +9,7 @@ import { log, calcTimer } from '@/utils'
 import S from '@/spx'
 import GoodsBuyToolbar from './comps/buy-toolbar'
 import ItemImg from './comps/item-img'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods } from '../home/wgts'
 
 import './espier-detail.scss'
 
@@ -43,7 +44,8 @@ export default class Detail extends Component {
       showBuyPanel: false,
       buyPanelType: null,
       specImgsDict: {},
-      curSku: null
+      curSku: null,
+      promotion_activity: []
     }
   }
 
@@ -95,8 +97,8 @@ export default class Detail extends Component {
     const { id } = this.$router.params
     const info = await api.item.detail(id)
 
-    const { intro: desc } = info
-
+    const { intro: desc, promotion_activity: promotion_activity } = info
+    console.log(promotion_activity, 100)
     let marketing = 'normal'
     let timer = null
     let hasStock = info.store && info.store > 0
@@ -140,7 +142,8 @@ export default class Detail extends Component {
       timer,
       hasStock,
       startSecKill,
-      specImgsDict
+      specImgsDict,
+      promotion_activity
     })
     log.debug('fetch: done', info)
   }
@@ -232,7 +235,7 @@ export default class Detail extends Component {
   }
 
   render () {
-    const { info, windowWidth, desc, cartCount, scrollTop, showBackToTop, curSku } = this.state
+    const { info, windowWidth, desc, cartCount, scrollTop, showBackToTop, curSku, promotion_activity } = this.state
     const { marketing, timer, isPromoter, startSecKill, hasStock, showBuyPanel, buyPanelType } = this.state
 
     if (!info) {
@@ -339,38 +342,82 @@ export default class Detail extends Component {
             </View>
           )}
 
-          <View className='goods-sec-specs'>
-            <View className='specs-title'>
-              <Text>规格</Text>
-              {curSku && (
-                <Text className='specs-selected'>已选 {curSku.propsText}</Text>
-              )}
-            </View>
-            <ScrollView
-              className='specs-scroller'
-              scrollX
-            >
-              <View className='specs-imgs'>
-                {Object.keys(this.state.specImgsDict).map((specValueId) => {
-                  const img = this.state.specImgsDict[specValueId]
-                  return (
-                    <Image
-                      class='specs-imgs__item'
-                      src={img}
-                      key={img}
-                      mode='aspectFill'
-                      onClick={this.handleBuyBarClick.bind(this, buyPanelType)}
-                    />
-                  )
-                })}
+
+          {
+            promotion_activity && promotion_activity.length > 0
+              ? <View className='goods-sec-specs'>
+                <View className='goods-sec-specs__activity'>
+                  {
+                    promotion_activity.map(item =>{
+                      return (
+                        <View
+                          key={item.marketing_id}
+                          className='goods-sec-specs__activity-item'
+                        >
+                          <Text className='goods-sec-specs__activity-label'>{item.promotion_tag}</Text>
+                          <Text>{item.condition_rules}</Text>
+                        </View>
+                      )
+                    })
+                  }
+                </View>
               </View>
-            </ScrollView>
+              : null
+          }
+
+
+          {
+            info.nospec !== true
+              ? <View className='goods-sec-specs'>
+                <View className='specs-title'>
+                  <Text>规格</Text>
+                  {curSku && (
+                    <Text className='specs-selected'>已选 {curSku.propsText}</Text>
+                  )}
+                </View>
+                <ScrollView
+                  className='specs-scroller'
+                  scrollX
+                >
+                  <View className='specs-imgs'>
+                    {Object.keys(this.state.specImgsDict).map((specValueId) => {
+                      const img = this.state.specImgsDict[specValueId]
+                      return (
+                        <Image
+                          class='specs-imgs__item'
+                          src={img}
+                          key={img}
+                          mode='aspectFill'
+                          onClick={this.handleBuyBarClick.bind(this, buyPanelType)}
+                        />
+                      )
+                    })}
+                  </View>
+                </ScrollView>
+              </View>
+              : null
+          }
+
+
+          <View className='wgts-wrap__cont'>
+            {
+              desc.map((item, idx) => {
+                return (
+                  <View className='wgt-wrap' key={idx}>
+                    {item.name === 'film' && <WgtFilm info={item} />}
+                    {item.name === 'slider' && <WgtSlider info={item} />}
+                    {item.name === 'writing' && <WgtWriting info={item} />}
+                    {item.name === 'goods' && <WgtGoods info={item} />}
+                  </View>
+                )
+              })
+            }
           </View>
 
-          <SpHtmlContent
+          {/*<SpHtmlContent
             className='goods-detail__content'
             content={desc}
-          />
+          />*/}
 
           {/*<View className='goods-sec-tabs'>
             <View className='sec-tabs'>

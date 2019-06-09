@@ -1,8 +1,9 @@
 .temp/
 .rn_temp/
-dist_iwa/
 node_modules/
 .DS_Store
 .idea/
 .h5_dev_dist
 release.*
+dist_iwa.zip
+sitemap.json

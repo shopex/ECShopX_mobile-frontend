@@ -52,7 +52,7 @@ export default class WgtFilm extends Component {
           </View>
         )}
         <View className={`slider-wrap ${config.padded ? 'padded' : ''}`}>
-          <Video className='flim-video' src='http://203.205.158.71/vweixinp.tc.qq.com/1007_396b434523f5498d93000bfb4f0b32cb.f10.mp4?vkey=6E6CB22ED61074178C8266B72ADDF22F61B81FE687BDA1CBF0F9C5785817756B4C1A7A234F4143871A5CAA374F64855BF580A30F560E49A08D4979C713C6AE73E3059E6F44C54A072A8BFD5A158BC4394B66EF249B71A01F&sha=0&save=1'   controls ></Video>
+          <Video className='flim-video' src={data[0].url} controls ></Video>
         </View>
       </View>
     )

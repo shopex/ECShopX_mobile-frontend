@@ -86,7 +86,7 @@
           transform: translate3d(0, 0, 0);
   z-index: 1;
 }
-.page-goods-list .goods-list__scroll > div {
+.page-goods-list .goods-list__scroll > div, .page-goods-list .goods-list__scroll > view {
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
 }
@@ -221,7 +221,7 @@
   position: absolute;
   left: 0;
   width: 100%;
-  top: 0;
+  top: 85rpx;
   bottom: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -229,7 +229,7 @@
           transform: translate3d(0, 0, 0);
   z-index: 1;
 }
-.page-goods-fav .goods-list__scroll > div {
+.page-goods-fav .goods-list__scroll > div, .page-goods-fav .goods-list__scroll > view {
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
 }

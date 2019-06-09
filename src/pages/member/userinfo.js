@@ -6,7 +6,8 @@ import api from '@/api'
 import req from '@/api/req'
 import { withLogin } from '@/hocs'
 import S from '@/spx'
-import * as qiniu from "qiniu-js";
+import qiniuUploader from '@/utils/qiniu'
+
 
 import './userinfo.scss'
 
@@ -61,56 +62,12 @@ export default class UserInfo extends Component {
       S.toast('最多上传1张图片')
     }
     const imgFiles = data.slice(0, 1)
-    let promises = []
-
-    for (let item of imgFiles) {
-      const promise = new Promise(async (resolve, reject) => {
-        if (!item.file) {
-          resolve(item)
-        } else {
-          const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-          const { region, token, key, domain } = await req.get('/espier/image_upload_token', {
-            filesystem: 'qiniu',
-            filetype: 'avatar',
-            filename
-          })
-
-          let observable
-          try {
-            const blobImg = await resolveBlobFromFile(item.url, item.file.type)
-            observable = qiniu.upload(blobImg, key, token, {}, {
-              region: qiniu.region[region]
-            })
-          } catch (e) {
-            console.log(e)
-          }
-
-          observable.subscribe({
-            next (res) {},
-            error (err) {
-              reject(err)
-            },
-            complete (res) {
-              resolve({
-                url: `${domain}/${res.key}`
-              })
-            }
-          })
-        }
+    qiniuUploader.uploadImageFn(imgFiles, '/espier/image_upload_token', 'qiniu', 'aftersales')
+      .then(res => {
+        this.setState({
+          imgs: res
+        })
       })
-      promises.push(promise)
-    }
-
-    const results = await Promise.all(promises)
-    console.log(results, 98)
-
-    this.setState({
-      imgs: results,
-      info: {
-        ...this.state.info,
-        avatar: results[0].url
-      }
-    })
   }
 
   handleImageClick = () => {

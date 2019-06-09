@@ -3,6 +3,7 @@
 .price {
   &__primary {
     color: $color-brand-primary;
+    font-size: 26px;
   }
   &__symbol {
     margin-right: 5px;
@@ -13,4 +14,10 @@
   &__decimal {
     font-size: 1em;
   }
+}
+.price-market {
+  color: $color-brand-accent-light;
+  margin-left: 8px;
+  text-decoration: line-through;
+  font-size: 22px;
 }

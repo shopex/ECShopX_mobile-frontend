@@ -10,5 +10,6 @@ export { default as WgtSearchHome } from './search-home'
 export { default as WgtFilm } from './film'
 export { default as WgtWriting } from './writing'
 export { default as WgtGoods } from './goods'
+export { default as WgtGoodsFaverite } from './goods-faverite'
 
 export default {}

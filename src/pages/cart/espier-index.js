@@ -2,11 +2,11 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtButton, AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar } from '@/components'
+import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem } from '@/components'
 import { log, navigateTo, pickBy } from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
-import { withLogin } from '@/hocs'
+import { withLogin, withPager } from '@/hocs'
 import { getTotalPrice, getTotalCount } from '@/store/cart'
 import CartItem from './comps/cart-item'
 
@@ -24,22 +24,25 @@ import './espier-index.scss'
   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
   onCartSelection: (selection) => dispatch({ type: 'cart/selection', payload: selection })
 }))
+@withPager
 @withLogin()
 export default class CartIndex extends Component {
   static defaultProps = {
     totalPrice: '0.00',
-    list: null
+    list: null,
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
+      ...this.state,
       loading: true,
       selection: new Set(),
       cartMode: 'default',
       curPromotions: null,
       groups: [],
+      likeList: [],
       invalidList: []
     }
 
@@ -48,7 +51,7 @@ export default class CartIndex extends Component {
   }
 
   componentDidMount () {
-    this.fetch((list) => {
+    this.fetchCart((list) => {
       if (this.props.defaultAllSelect) {
         this.handleAllSelect(true)
       }
@@ -71,6 +74,9 @@ export default class CartIndex extends Component {
         })
       }, 40)
     })
+
+    this.nextPage()
+
   }
 
   componentDidShow () {
@@ -84,6 +90,37 @@ export default class CartIndex extends Component {
       this.setState({
         groups
       })
+    }
+  }
+
+  handleClickItem = (item) => {
+    const url = `/pages/item/espier-detail?id=${item.item_id}`
+    Taro.navigateTo({
+      url
+    })
+  }
+
+  async fetch (params) {
+    const { page_no: page, page_size: pageSize } = params
+    const query = {
+      page,
+      pageSize
+    }
+    const { list, total_count: total } = await api.cart.likeList(query)
+
+    const nList = pickBy(list, {
+      img: 'pics[0]',
+      item_id: 'item_id',
+      title: 'itemName',
+      desc: 'brief',
+    })
+
+    this.setState({
+      likeList: [...this.state.likeList, ...nList],
+    })
+
+    return {
+      total
     }
   }
 
@@ -122,7 +159,7 @@ export default class CartIndex extends Component {
     return groups
   }
 
-  async fetch (cb) {
+  async fetchCart (cb) {
     const { valid_cart, invalid_cart } = await api.cart.get()
 
     const list = valid_cart.map(shopCart => {
@@ -138,7 +175,7 @@ export default class CartIndex extends Component {
       invalidList
     })
 
-    log.debug('[cart fetch]', list)
+    log.debug('[cart fetchCart]', list)
     this.props.onUpdateCart(list)
     cb && cb(list)
   }
@@ -146,7 +183,7 @@ export default class CartIndex extends Component {
   updateCart = debounce(async () => {
     this.updating = true
     try {
-      await this.fetch()
+      await this.fetchCart()
     } catch (e) {
       console.log(e)
     }
@@ -214,7 +251,8 @@ export default class CartIndex extends Component {
     await this.changeCartNum(cart_id, num)
   }, 400)
 
-  handleQuantityChange = async (cart_id, num) => {
+  handleQuantityChange = async (cart_id, num, e) => {
+    e.stopPropagation()
     this.updating = true
     this.props.onUpdateCartNum(cart_id, num)
     this.updateCart.cancel()
@@ -250,7 +288,8 @@ export default class CartIndex extends Component {
     this.updateSelection([...selection])
   }
 
-  handleClickPromotion = (cart_id) => {
+  handleClickPromotion = (cart_id, e) => {
+    this.isTodetail = 0
     let promotions
     this.props.list.some((cart) => {
       cart.list.some(item => {
@@ -262,6 +301,18 @@ export default class CartIndex extends Component {
 
     this.setState({
       curPromotions: promotions
+    },() =>{
+      this.isTodetail = 1
+    })
+  }
+
+  handleClickToDetail = (item_id) => {
+    if(this.isTodetail === 0){
+      return false
+    }
+    this.isTodetail = 1
+    Taro.navigateTo({
+      url: `/pages/item/espier-detail?id=${item_id}`
     })
   }
 
@@ -277,7 +328,7 @@ export default class CartIndex extends Component {
       activity_id,
       cart_id
     })
-    await this.fetch()
+    await this.fetchCart()
     Taro.hideLoading()
   }
 
@@ -300,6 +351,8 @@ export default class CartIndex extends Component {
       url: '/pages/cart/espier-checkout?cart_type=cart'
     })
   }
+
+
 
   transformCartList (list) {
     return pickBy(list, {
@@ -326,7 +379,7 @@ export default class CartIndex extends Component {
   }
 
   render () {
-    const { selection, groups, invalidList, cartMode, loading, curPromotions } = this.state
+    const { selection, groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
     const { totalPrice, list } = this.props
 
     if (loading) {
@@ -347,6 +400,7 @@ export default class CartIndex extends Component {
 
         <ScrollView
           className='cart-list__scroll'
+          onScrollToLower={this.nextPage}
           scrollY
         >
           {
@@ -394,6 +448,7 @@ export default class CartIndex extends Component {
                                     info={item}
                                     onNumChange={this.handleQuantityChange.bind(this, item.cart_id)}
                                     onClickPromotion={this.handleClickPromotion.bind(this, item.cart_id)}
+                                    onClick={this.handleClickToDetail.bind(this, item.item_id)}
                                   >
                                     <View className='cart-item__act'>
                                       <SpCheckbox
@@ -451,14 +506,14 @@ export default class CartIndex extends Component {
                   <AtButton
                     className='btn-rand'
                     type='primary'
-                    onClick={this.navigateTo.bind(this, '/pages/home/index', true)}
+                    onClick={this.navigateTo.bind(this, APP_HOME_PAGE, true)}
                   >随便逛逛</AtButton>
                 </View>
               )
             }
           </View>
 
-          {list.length && (
+          {invalidList.length && (
             <View className='cart-list cart-list__disabled'>
               <View className='cart-list__hd'><Text>已失效</Text></View>
               <View className='cart-list__bd'>
@@ -482,6 +537,36 @@ export default class CartIndex extends Component {
               </View>
             </View>
           )}
+
+          {
+            likeList.length
+              ? <View className='cart-list cart-list__disabled'>
+                <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
+                <View className='goods-list goods-list__type-grid'>
+                  {
+                    likeList.map(item => {
+                      return (
+                        <GoodsItem
+                          key={item.item_id}
+                          info={item}
+                          onClick={() => this.handleClickItem(item)}
+                        />
+                      )
+                    })
+                  }
+                </View>
+              </View>
+              : null
+          }
+          {
+            page.isLoading
+              ? <Loading>正在加载...</Loading>
+              : null
+          }
+          {
+            !page.isLoading && !page.hasNext && !likeList.length
+            && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
+          }
         </ScrollView>
 
         <View

@@ -20,21 +20,15 @@ var _index3 = require("../../api/index.js");
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _req = require("../../api/req.js");
-
-var _req2 = _interopRequireDefault(_req);
-
 var _index5 = require("../../hocs/index.js");
 
 var _index6 = require("../../spx/index.js");
 
 var _index7 = _interopRequireDefault(_index6);
 
-var _qiniuMin = require("../../npm/qiniu-js/dist/qiniu.min.js");
+var _qiniu = require("../../utils/qiniu.js");
 
-var qiniu = _interopRequireWildcard(_qiniuMin);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var _qiniu2 = _interopRequireDefault(_qiniu);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -70,15 +64,14 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = UserInfo.__proto__ || Object.getPrototypeOf(UserInfo)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["isHasAvator", "imgs", "info"], _this.handleImageChange = function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(data, type) {
-        var imgFiles, promises, _loop, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, item, results;
-
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(data, type) {
+        var imgFiles;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context.prev = _context.next) {
               case 0:
                 if (!(type === 'remove')) {
-                  _context2.next = 3;
+                  _context.next = 3;
                   break;
                 }
 
@@ -86,7 +79,7 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
                   imgs: data
                 });
 
-                return _context2.abrupt("return");
+                return _context.abrupt("return");
 
               case 3:
 
@@ -94,157 +87,19 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
                   _index7.default.toast('最多上传1张图片');
                 }
                 imgFiles = data.slice(0, 1);
-                promises = [];
 
-                _loop = function _loop(item) {
-                  var promise = new Promise(function () {
-                    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(resolve, reject) {
-                      var filename, _ref4, region, token, key, domain, observable, blobImg;
-
-                      return regeneratorRuntime.wrap(function _callee$(_context) {
-                        while (1) {
-                          switch (_context.prev = _context.next) {
-                            case 0:
-                              if (item.file) {
-                                _context.next = 4;
-                                break;
-                              }
-
-                              resolve(item);
-                              _context.next = 24;
-                              break;
-
-                            case 4:
-                              filename = item.url.slice(item.url.lastIndexOf('/') + 1);
-                              _context.next = 7;
-                              return _req2.default.get('/espier/image_upload_token', {
-                                filesystem: 'qiniu',
-                                filetype: 'avatar',
-                                filename: filename
-                              });
-
-                            case 7:
-                              _ref4 = _context.sent;
-                              region = _ref4.region;
-                              token = _ref4.token;
-                              key = _ref4.key;
-                              domain = _ref4.domain;
-                              observable = void 0;
-                              _context.prev = 13;
-                              _context.next = 16;
-                              return resolveBlobFromFile(item.url, item.file.type);
-
-                            case 16:
-                              blobImg = _context.sent;
-
-                              observable = qiniu.upload(blobImg, key, token, {}, {
-                                region: qiniu.region[region]
-                              });
-                              _context.next = 23;
-                              break;
-
-                            case 20:
-                              _context.prev = 20;
-                              _context.t0 = _context["catch"](13);
-
-                              console.log(_context.t0);
-
-                            case 23:
-
-                              observable.subscribe({
-                                next: function next(res) {},
-                                error: function error(err) {
-                                  reject(err);
-                                },
-                                complete: function complete(res) {
-                                  resolve({
-                                    url: domain + "/" + res.key
-                                  });
-                                }
-                              });
-
-                            case 24:
-                            case "end":
-                              return _context.stop();
-                          }
-                        }
-                      }, _callee, _this2, [[13, 20]]);
-                    }));
-
-                    return function (_x3, _x4) {
-                      return _ref3.apply(this, arguments);
-                    };
-                  }());
-                  promises.push(promise);
-                };
-
-                _iteratorNormalCompletion = true;
-                _didIteratorError = false;
-                _iteratorError = undefined;
-                _context2.prev = 10;
-
-
-                for (_iterator = imgFiles[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                  item = _step.value;
-
-                  _loop(item);
-                }
-
-                _context2.next = 18;
-                break;
-
-              case 14:
-                _context2.prev = 14;
-                _context2.t0 = _context2["catch"](10);
-                _didIteratorError = true;
-                _iteratorError = _context2.t0;
-
-              case 18:
-                _context2.prev = 18;
-                _context2.prev = 19;
-
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                  _iterator.return();
-                }
-
-              case 21:
-                _context2.prev = 21;
-
-                if (!_didIteratorError) {
-                  _context2.next = 24;
-                  break;
-                }
-
-                throw _iteratorError;
-
-              case 24:
-                return _context2.finish(21);
-
-              case 25:
-                return _context2.finish(18);
-
-              case 26:
-                _context2.next = 28;
-                return Promise.all(promises);
-
-              case 28:
-                results = _context2.sent;
-
-                console.log(results, 98);
-
-                _this.setState({
-                  imgs: results,
-                  info: _extends({}, _this.state.info, {
-                    avatar: results[0].url
-                  })
+                _qiniu2.default.uploadImageFn(imgFiles, '/espier/image_upload_token', 'qiniu', 'aftersales').then(function (res) {
+                  _this.setState({
+                    imgs: res
+                  });
                 });
 
-              case 31:
+              case 6:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, _this2, [[10, 14, 18, 26], [19,, 21, 25]]);
+        }, _callee, _this2);
       }));
 
       return function (_x, _x2) {
@@ -255,16 +110,16 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
 
       info[name] = val;
     }, _this.handleSubmit = function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
         var value, data;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 value = e.detail.value;
                 data = _extends({}, _this.state.info, value);
-                _context3.prev = 2;
-                _context3.next = 5;
+                _context2.prev = 2;
+                _context2.next = 5;
                 return _index4.default.member.setMemberInfo(data);
 
               case 5:
@@ -274,25 +129,25 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
                     url: '/pages/member/index'
                   });
                 }, 500);
-                _context3.next = 12;
+                _context2.next = 12;
                 break;
 
               case 9:
-                _context3.prev = 9;
-                _context3.t0 = _context3["catch"](2);
+                _context2.prev = 9;
+                _context2.t0 = _context2["catch"](2);
 
-                console.log(_context3.t0);
+                console.log(_context2.t0);
 
               case 12:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3, _this2, [[2, 9]]);
+        }, _callee2, _this2, [[2, 9]]);
       }));
 
-      return function (_x5) {
-        return _ref5.apply(this, arguments);
+      return function (_x3) {
+        return _ref3.apply(this, arguments);
       };
     }(), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -316,19 +171,19 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
   }, {
     key: "fetch",
     value: function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var _ref7, memberInfo, avatarArr;
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var _ref5, memberInfo, avatarArr;
 
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context4.next = 2;
+                _context3.next = 2;
                 return _index4.default.member.memberInfo();
 
               case 2:
-                _ref7 = _context4.sent;
-                memberInfo = _ref7.memberInfo;
+                _ref5 = _context3.sent;
+                memberInfo = _ref5.memberInfo;
                 avatarArr = [];
 
                 if (memberInfo.avatar) {
@@ -345,14 +200,14 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
 
               case 8:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee3, this);
       }));
 
       function fetch() {
-        return _ref6.apply(this, arguments);
+        return _ref4.apply(this, arguments);
       }
 
       return fetch;

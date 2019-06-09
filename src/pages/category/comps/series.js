@@ -45,6 +45,7 @@ export default class Series extends Component {
       items = info[currentIndex].children
       itemsImg = info[currentIndex].image_url
     }
+    console.log(info, 48)
     if (!info) {
       return <Loading />
     }

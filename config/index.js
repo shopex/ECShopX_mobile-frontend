@@ -37,18 +37,26 @@ const config = {
   defineConstants: {
     APP_NAME: `'${pkg.app_name}'`,
     APP_VERSION: `'${pkg.version}'`,
+    API_HOST: `'${API_HOST}'`,
     APP_BASE_URL: TARO_ENV === 'h5'
       ? `'//${API_HOST}/index.php/api/h5app/wxapp'`
       : `https://${API_HOST}/index.php/api/h5app/wxapp`,
     APP_COMPANY_ID: '1',
-    APP_INTEGRATION: process.env.INTEGRATION_APP
+    APP_INTEGRATION: process.env.INTEGRATION_APP,
+
+    APP_HOME_PAGE: '/pages/index',
+    // APP_AUTH_PAGE: '/pages/auth/login',
+    APP_AUTH_PAGE: TARO_ENV === 'weapp'
+      ? '/pages/auth/wxauth'
+      : '/pages/auth/login'
   },
   alias: {
     '@': path.join(__dirname, '../src')
   },
   copy: {
     patterns: [
-      { from: 'src/assets', to: `${DIST_PATH}/assets` }
+      { from: 'src/assets', to: `${DIST_PATH}/assets` },
+      { from: 'src/ext.json', to: `${DIST_PATH}/ext.json` }
     ],
     options: {
     }

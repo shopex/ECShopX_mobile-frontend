@@ -164,6 +164,13 @@
   margin: 0 0 15rpx -2rpx;
   font-size: 31rpx;
 }
+.goods-buy-panel .goods-sku__price {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 10rpx;
+}
 .goods-buy-panel .goods-sku__stock {
   display: block;
 }

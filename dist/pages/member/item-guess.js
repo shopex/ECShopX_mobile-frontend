@@ -91,7 +91,7 @@ var ItemGuess = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_clas
                   pageSize: pageSize
                 };
                 _context.next = 4;
-                return _index5.default.item.search(query);
+                return _index5.default.cart.likeList(query);
 
               case 4:
                 _ref3 = _context.sent;
@@ -101,15 +101,7 @@ var ItemGuess = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_clas
                   img: 'pics[0]',
                   item_id: 'item_id',
                   title: 'itemName',
-                  desc: 'brief',
-                  price: function price(_ref4) {
-                    var _price = _ref4.price;
-                    return (_price / 100).toFixed(2);
-                  },
-                  market_price: function market_price(_ref5) {
-                    var _market_price = _ref5.market_price;
-                    return (_market_price / 100).toFixed(2);
-                  }
+                  desc: 'brief'
                 });
 
 

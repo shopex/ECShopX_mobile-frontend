@@ -12,8 +12,8 @@ export function pointDetail () {
   return req.get('/member.point.detail')
 }
 
-export function favsList () {
-  return req.get('/member/collect/item')
+export function favsList (params = {}) {
+  return req.get('/member/collect/item', params,null, { showError: false })
 }
 
 export function addFav (item_id) {
@@ -57,8 +57,12 @@ export function addressDelete (address_id) {
   return req.delete(`/member/address/${address_id}`)
 }
 
-export function areaList () {
+/*export function areaList () {
   return req.get('/member/addressarea')
+}*/
+
+export function areaList () {
+  return req.get('/espier/address')
 }
 
 export function addressCreateOrUpdate (data) {

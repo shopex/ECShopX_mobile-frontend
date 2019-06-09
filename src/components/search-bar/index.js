@@ -156,7 +156,7 @@ export default class SearchBar extends Component {
             onChange={this.handleChangeSearch.bind(this)}
             onConfirm={this.handleConfirm.bind(this)}
             onActionClick={this.handleClickCancel.bind(this, false)}
-            />
+          />
         </Form>
         <View className={classNames(showSearchDailog ? 'search-input__history' : 'search-input__history-none')}>
           <View className='search-input__history-title'>
@@ -168,7 +168,7 @@ export default class SearchBar extends Component {
               historyList.map((item, index) => <View className='search-input__history-list__btn' key={index} onClick={this.handleClickTag.bind(this, item)}>{item}</View> )
            }
           </View>
-          <View className='search-input__history-title hot-title'>
+          {/*<View className='search-input__history-title hot-title'>
             <Text>热门搜索</Text>
           </View>
           <View className='hot-list'>
@@ -176,7 +176,7 @@ export default class SearchBar extends Component {
               <Text>#绿茶籽小绿瓶#</Text>
               <View className='at-icon at-icon-chevron-right'></View>
             </View>
-          </View>
+          </View>*/}
         </View>
       </View>
     )

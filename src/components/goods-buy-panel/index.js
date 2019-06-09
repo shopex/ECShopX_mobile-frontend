@@ -3,7 +3,7 @@ import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
 import { AtInputNumber } from 'taro-ui'
 // import find from 'lodash/find'
 import { Price } from '@/components'
-import { classNames, log } from '@/utils'
+import { classNames, log, isNumber } from '@/utils'
 import api from '@/api'
 
 import './index.scss'
@@ -201,9 +201,15 @@ export default class GoodsBuyPanel extends Component {
   }
 
   handleBuyClick = async (type, skuInfo, num) => {
+    if (this.state.busy) return
+
     const { marketing, info } = this.state
     const { item_id } = this.noSpecs ? info : skuInfo
     let url = `/pages/cart/espier-checkout`
+
+    this.setState({
+      busy: true
+    })
 
     if (type === 'cart') {
       url = `/pages/cart/espier-index`
@@ -289,12 +295,21 @@ export default class GoodsBuyPanel extends Component {
                 src={curImg || info.pics[0]}
               />
             </View>
-            <Price
-              primary
-              noSymbol
-              appendText='元'
-              value={curSku ? curSku.price : info.price}
-            />
+            <View className='goods-sku__price'>
+              <Price
+                primary
+                unit='cent'
+                noSymbol
+                appendText='元'
+                value={curSku ? curSku.price : info.price}
+              />
+              <Price
+                className='price-market'
+                symbol='¥'
+                unit='cent'
+                value={curSku ? curSku.market_price : info.market_price}
+              />
+            </View>
             <View className='goods-sku__info'>
               {
                 // curSku && <Text className='goods-sku__stock'>库存{curSku.store}{info.unit}</Text>
@@ -345,7 +360,7 @@ export default class GoodsBuyPanel extends Component {
                   min={1}
                   max={maxStore}
                   value={quantity}
-                  onChange={this.handleQuantityChange}
+                  onChange={this.handleQuantityChange.bind(this)}
                 />
               </View>
             </View>

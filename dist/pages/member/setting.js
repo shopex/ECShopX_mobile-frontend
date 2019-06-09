@@ -56,7 +56,9 @@ var MemberSetting = (_dec = (0, _index3.withLogin)(), _dec(_class = (_temp2 = _c
             case 0:
               _index5.default.logout();
 
-              _index2.default.redirectTo('/pages/home/index');
+              _index2.default.redirectTo({
+                url: "/pages/index"
+              });
 
             case 2:
             case "end":
@@ -85,7 +87,7 @@ var MemberSetting = (_dec = (0, _index3.withLogin)(), _dec(_class = (_temp2 = _c
   }]);
 
   return MemberSetting;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickSetting", "handleClickLogout"], _temp2)) || _class);
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickLogout"], _temp2)) || _class);
 exports.default = MemberSetting;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(MemberSetting, true));

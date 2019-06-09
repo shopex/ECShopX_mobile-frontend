@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/home/index",
+    "pages/index",
     "pages/home/landing",
     "pages/category/index",
     "pages/item/list",
@@ -21,6 +21,7 @@
     "pages/auth/reg-rule",
     "pages/auth/login",
     "pages/auth/forgotpwd",
+    "pages/auth/wxauth",
     "pages/cashier/index",
     "pages/cashier/cashier-result",
     "pages/member/index",
@@ -58,6 +59,10 @@
     "pages/trade/refund-sendback",
     "pages/trade/invoice-list",
     "pages/protocol/privacy"
+  ],
+  "navigateToMiniProgramAppIdList": [
+    "wx4721629519a8f25b",
+    "wxf91925e702efe3e3"
   ],
   "window": {
     "backgroundTextStyle": "light",

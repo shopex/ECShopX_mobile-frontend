@@ -13,6 +13,15 @@ class API {
       baseURL = baseURL + '/'
     }
 
+    options.company_id = APP_COMPANY_ID
+    if (process.env.TARO_ENV === 'weapp') {
+      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+      options.appid = extConfig.appid
+      if (extConfig.company_id) {
+        options.company_id = extConfig.company_id
+      }
+    }
+
     this.options = options
     this.baseURL = baseURL
     this.genMethods(['get', 'post', 'delete', 'put'])
@@ -52,10 +61,11 @@ class API {
       header['content-type'] = header['content-type'] || 'application/x-www-form-urlencoded'
     }
     header['Authorization'] = `Bearer ${S.getAuthToken()}`
+
+    const { company_id, appid } = this.options
     if (process.env.TARO_ENV === 'weapp') {
-      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
-      if (extConfig.appid) {
-        header['authorizer-appid'] = extConfig.appid
+      if (appid) {
+        header['authorizer-appid'] = appid
       }
     }
 
@@ -79,7 +89,7 @@ class API {
     // }
     options.data = {
       ...(options.data || {}),
-      company_id: APP_COMPANY_ID
+      company_id
     }
     if (options.method === 'GET') {
       options.url = addQuery(options.url, qs.stringify(options.data))
@@ -118,7 +128,7 @@ class API {
             this.errorToast(data)
           }
           Taro.redirectTo({
-            url: '/pages/auth/login'
+            url: APP_AUTH_PAGE
           })
           return Promise.reject(this.reqError(res))
         }

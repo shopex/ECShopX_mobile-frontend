@@ -1,9 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text, Button } from '@tarojs/components'
 import { AtButton, AtCountdown} from 'taro-ui'
 import { Loading, SpCell, SpToast, Price, NavBar } from '@/components'
 import { classNames, log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute } from '@/utils'
 import api from '@/api'
+import S from '@/spx'
 import { AFTER_SALE_STATUS } from '@/consts'
 import DetailItem from './comps/detail-item'
 
@@ -33,7 +34,7 @@ export default class TradeDetail extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidShow () {
     this.fetch()
   }
 
@@ -145,6 +146,7 @@ export default class TradeDetail extends Component {
     let payErr
     try {
       const payRes = await Taro.requestPayment(config)
+      log.debug(`[order pay]: `, payRes)
     } catch (e) {
       payErr = e
       if (e.errMsg.indexOf('cancel') < 0) {
@@ -156,6 +158,17 @@ export default class TradeDetail extends Component {
     }
 
     if (!payErr) {
+      try {
+        api.trade.tradeQuery(config.trade_info.trade_id)
+      } catch (e) {
+        console.info(e)
+      }
+
+      await Taro.showToast({
+        title: '支付成功',
+        icon: 'success'
+      })
+
       const { fullPath } = getCurrentRoute(this.$router)
       Taro.redirectTo({
         url: fullPath
@@ -168,7 +181,7 @@ export default class TradeDetail extends Component {
 
     if (type === 'home') {
       Taro.redirectTo({
-        url: '/pages/home/index'
+        url: APP_HOME_PAGE
       })
       return
     }
@@ -216,9 +229,9 @@ export default class TradeDetail extends Component {
   }
 
   handleClickDelivery = () => {
-    Taro.navigateTo({
+    /*Taro.navigateTo({
       url: '/pages/trade/delivery-info?order_id='+this.state.info.tid
-    })
+    })*/
   }
 
   // handleClickAfterSale= () => {
@@ -230,6 +243,11 @@ export default class TradeDetail extends Component {
 
   handleClickToDelivery = () => {
 
+  }
+
+  handleClickCopy = (val) => {
+    copyText(val)
+    S.toast('复制成功')
   }
 
   render () {
@@ -275,9 +293,9 @@ export default class TradeDetail extends Component {
                     { info.status === 'TRADE_SUCCESS' ? `物流单号：${info.delivery_code}` : null }
                   </Text>
                 </View>
-                {
+                {/*{
                   info.status !== 'TRADE_SUCCESS' ? <Text className='delivery-infos__text'>2019-04-30 11:30:21</Text> : null
-                }
+                }*/}
               </View>
             </View>
           </View>
@@ -310,6 +328,14 @@ export default class TradeDetail extends Component {
           <Text className='info-text'>免运费：-￥{info.freight_fee}</Text>
           <Text className='info-text'>优惠：-￥{info.coupon_discount}</Text>
           <Text className='info-text'>支付：{info.payment}（微信支付）</Text>
+          {
+            info.delivery_code
+              ? <View className='delivery_code_copy'>
+                  <Text className='info-text'>物流单号：{info.delivery_code}</Text>
+                  <Text className='info-text' onClick={this.handleClickCopy.bind(this, info.delivery_code)}>复制</Text>
+                </View>
+              : null
+          }
         </View>
         {
           info.status === 'WAIT_BUYER_PAY' && <View className='trade-detail__footer'>
@@ -325,13 +351,14 @@ export default class TradeDetail extends Component {
         }
         {
           info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn'>联系客服</Text>
+            <Button openType='contact' className='trade-detail__footer__btn'>联系客服</Button>
+            {/*<Text className='trade-detail__footer__btn'>联系客服</Text>*/}
             <Text className='trade-detail__footer__btn trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'confirm')}>确认收货</Text>
           </View>
         }
         {
           info.status === 'TRADE_SUCCESS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'>联系客服</Text>
+            <Button openType='contact' className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'>联系客服</Button>
           </View>
         }
 

@@ -57,6 +57,7 @@ var HtmlContent = (_temp2 = _class = function (_BaseComponent) {
       {
         var content = this.props.content;
 
+        console.log(content, 24);
         wxParse.wxParse('content', 'html', content, this.$scope);
       }
     }
@@ -65,7 +66,7 @@ var HtmlContent = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var className = this.__props.className;
