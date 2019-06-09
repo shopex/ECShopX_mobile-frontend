@@ -9,6 +9,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 var _class, _temp2;
+// import { AtInputNumber } from 'taro-ui'
 
 var _index = require("../../../npm/@tarojs/taro-weapp/index.js");
 
@@ -51,7 +52,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _props = this.__props,
@@ -70,7 +71,6 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       }
 
       var price = (0, _index3.isObject)(info.price) ? info.price.total_price : info.price;
-      console.log(info.store, 29);
       var img = info.img || info.image_default_id;
       var curPromotion = info.promotions && info.activity_id && info.promotions.find(function (p) {
         return p.marketing_id === info.activity_id;
@@ -92,18 +92,23 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateVkrcr",
-    value: function funPrivateVkrcr() {
+    key: "funPrivateCqkNh",
+    value: function funPrivateCqkNh() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateASIym",
-    value: function funPrivateASIym() {
+    key: "funPrivateNNhdZ",
+    value: function funPrivateNNhdZ() {
+      this.__triggerPropsFn("onClickImgAndTitle", [].concat(Array.prototype.slice.call(arguments)));
+    }
+  }, {
+    key: "funPrivateYERdi",
+    value: function funPrivateYERdi() {
       this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatejlxFD",
-    value: function funPrivatejlxFD() {
+    key: "funPrivatePIjds",
+    value: function funPrivatePIjds() {
       this.__triggerPropsFn("onNumChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -150,6 +155,14 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   },
+  "onClickImgAndTitle": {
+    "type": null,
+    "value": null
+  },
+  "__fn_onClickImgAndTitle": {
+    "type": null,
+    "value": null
+  },
   "onClickPromotion": {
     "type": null,
     "value": null
@@ -170,9 +183,10 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateVkrcr", "funPrivateASIym", "funPrivatejlxFD"], _class.defaultProps = {
+}, _class.$$events = ["funPrivateCqkNh", "funPrivateNNhdZ", "funPrivateYERdi", "funPrivatePIjds"], _class.defaultProps = {
   onClick: function onClick() {},
   onClickPromotion: function onClickPromotion() {},
+  onClickImgAndTitle: function onClickImgAndTitle() {},
   showMarketPrice: false,
   noCurSymbol: false,
   isDisabled: false

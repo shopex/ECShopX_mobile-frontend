@@ -164,7 +164,6 @@ export default class CartCheckout extends Component {
       return
     }
 
-    console.log(444,163)
     let address = this.props.address
     if (!address) {
       const { address_id } = params
