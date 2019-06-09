@@ -19,7 +19,7 @@
   line-height: 64rpx;
   border-radius: 64rpx;
   position: fixed;
-  bottom: 105rpx;
+  bottom: 125rpx;
   right: 30rpx;
   z-index: 300;
   display: -webkit-box;
@@ -52,5 +52,5 @@
   font-size: 42rpx;
 }
 .back-to-top__text {
-  font-size: 18rpx;
+  font-size: 19rpx;
 }

@@ -36,7 +36,7 @@
 .page-checkout .address-info__receiver {
   color: #111;
   display: block;
-  font-size: 31rpx;
+  font-size: 33rpx;
   margin: 0 0 16rpx;
   line-height: 1;
 }
@@ -126,7 +126,7 @@
           justify-content: space-between;
 }
 .page-checkout .order-item__num {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #333333;
 }
 .page-checkout .order-item__price {
@@ -134,7 +134,7 @@
   font-size: 28rpx;
 }
 .page-checkout .order-item__price .price__symbol {
-  font-size: 23rpx;
+  font-size: 25rpx;
 }
 .page-checkout .order-item__desc {
   margin: 0 0 10rpx;
@@ -142,7 +142,7 @@
 .page-checkout .order-item__discount {
   background: #0b4137;
   color: #fff;
-  font-size: 23rpx;
+  font-size: 25rpx;
   display: inline-block;
   vertical-align: middle;
   padding: 2rpx 8rpx;
@@ -174,7 +174,7 @@
 }
 .page-checkout .trade-point__hint {
   color: #0b4137;
-  font-size: 23rpx;
+  font-size: 25rpx;
 }
 .page-checkout .trade-point__input {
   background: #f5f5f5;
@@ -183,7 +183,7 @@
   line-height: 80rpx;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  font-size: 26rpx;
+  font-size: 28rpx;
   border: none;
   -webkit-box-shadow: none;
           box-shadow: none;
@@ -231,7 +231,7 @@
   border: none;
 }
 .page-checkout .trade-sub-total .sp-cell__hd {
-  width: 130rpx;
+  width: 140rpx;
   text-align: right;
 }
 .page-checkout .trade-sub-total .sp-cell__bd {
@@ -268,6 +268,24 @@
   width: 30%;
   color: #818181;
 }
+.page-checkout .at-float-layout__container {
+  min-height: auto;
+}
+.page-checkout .at-float-layout .layout-body {
+  padding: 0;
+}
+.page-checkout .at-float-layout .at-button {
+  position: fixed;
+  bottom: 0;
+  border-radius: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+}
+.page-checkout .at-float-layout .at-button:before {
+  border-radius: 0;
+  border: none;
+}
 .page-checkout .checkout-toolbar {
   padding-left: 34rpx;
   padding-right: 0;
@@ -289,7 +307,7 @@
   font-weight: bold;
 }
 .page-checkout .checkout-toolbar .price .price__symbol {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .page-checkout .btn-confirm-order {
   width: 256rpx;
@@ -299,7 +317,7 @@
   border: none;
   border-radius: 0;
   font-weight: bold;
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .page-checkout .btn-confirm-order:before, .page-checkout .btn-confirm-order:after {
   border: none;

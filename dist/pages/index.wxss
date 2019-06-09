@@ -12,7 +12,7 @@
 =            z-index            =
 ===============================*/
 .page-index {
-  padding-bottom: 90rpx;
+  padding-bottom: 110rpx;
   background: #fff;
   height: 100vh;
   -webkit-box-sizing: border-box;
@@ -25,7 +25,7 @@
   left: 0;
   width: 100%;
   top: 0;
-  bottom: 106rpx;
+  bottom: 126rpx;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-transform: translate3d(0, 0, 0);

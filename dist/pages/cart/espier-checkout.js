@@ -104,7 +104,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "total", "showCheckoutItems", "curCheckoutItems", "submitLoading", "isBtnDisabled", "invoiceTitle", "address_list", "showShippingPicker", "showCoupons", "coupons", "__fn_onClearFastbuy", "defaultAddress", "__fn_onClearCoupon", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "total", "showCheckoutItems", "curCheckoutItems", "isBtnDisabled", "isPaymentOpend", "submitLoading", "disabledPayment", "invoiceTitle", "address_list", "showShippingPicker", "showCoupons", "coupons", "__fn_onClearFastbuy", "defaultAddress", "__fn_onClearCoupon", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
       if (!address) {
         return;
       }
@@ -172,8 +172,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           }
         }
       }, _callee, _this2);
-    })), _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var order_id, orderInfo, paymentParams, config, payErr, payRes;
+    })), _this.handleClickPay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -187,6 +186,35 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
             case 2:
 
+              _this.setState({
+                isPaymentOpend: true
+              });
+
+              // await this.handlePay()
+
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, _this2);
+    })), _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var payType, order_id, orderInfo, params, message, paymentParams, config, payErr, payRes;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              if (_this.state.address) {
+                _context3.next = 2;
+                break;
+              }
+
+              return _context3.abrupt("return", _index7.default.toast('请选择地址'));
+
+            case 2:
+              payType = _this.state.payType;
+
+
               _index2.default.showLoading({
                 title: '正在提交',
                 mask: true
@@ -197,78 +225,107 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               });
 
               order_id = void 0, orderInfo = void 0;
-              _context2.prev = 5;
-              _context2.next = 8;
-              return _index5.default.trade.create(_this.params);
+              _context3.prev = 6;
+              params = _this.getParams();
+              _context3.next = 10;
+              return _index5.default.trade.create(params);
 
-            case 8:
-              orderInfo = _context2.sent;
+            case 10:
+              orderInfo = _context3.sent;
 
               order_id = orderInfo.order_id;
-              _context2.next = 15;
+              _context3.next = 18;
               break;
 
-            case 12:
-              _context2.prev = 12;
-              _context2.t0 = _context2["catch"](5);
+            case 14:
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](6);
 
               _index2.default.showToast({
-                title: _context2.t0.message,
+                title: _context3.t0.message,
                 icon: 'none'
               });
 
-            case 15:
+              // dhpoint 判断
+              if (payType === 'dhpoint') {
+                message = _context3.t0.message === '当前积分不足以支付本次订单费用' ? _context3.t0.message : '积分获取失败';
+
+
+                _this.setState({
+                  disabledPayment: { name: 'dhpoint', message: message },
+                  payType: 'amorepay',
+                  submitLoading: false
+                });
+              }
+
+            case 18:
+
               _index2.default.hideLoading();
 
               if (order_id) {
-                _context2.next = 18;
+                _context3.next = 21;
                 break;
               }
 
-              return _context2.abrupt("return");
+              return _context3.abrupt("return");
 
-            case 18:
+            case 21:
               // 爱茉pay流程
               paymentParams = {
                 order_id: order_id,
-                pay_type: 'amorepay',
+                pay_type: _this.state.payType,
                 order_type: orderInfo.order_type
               };
-              _context2.next = 21;
+              _context3.next = 24;
               return _index5.default.cashier.getPayment(paymentParams);
 
-            case 21:
-              config = _context2.sent;
+            case 24:
+              config = _context3.sent;
 
               _this.setState({
                 submitLoading: false
               });
 
+              // 积分流程
+
+              if (!(payType === 'dhpoint')) {
+                _context3.next = 30;
+                break;
+              }
+
+              _this.__triggerPropsFn("onClearCart", [null].concat([]));
+              _index2.default.redirectTo({
+                url: "/pages/trade/detail?id=" + order_id
+              });
+
+              return _context3.abrupt("return");
+
+            case 30:
               payErr = void 0;
-              _context2.prev = 24;
-              _context2.next = 27;
+              _context3.prev = 31;
+              _context3.next = 34;
               return _index2.default.requestPayment(config);
 
-            case 27:
-              payRes = _context2.sent;
+            case 34:
+              payRes = _context3.sent;
 
               _index9.log.debug("[order pay]: ", payRes);
-              _context2.next = 35;
+              _context3.next = 42;
               break;
 
-            case 31:
-              _context2.prev = 31;
-              _context2.t1 = _context2["catch"](24);
+            case 38:
+              _context3.prev = 38;
+              _context3.t1 = _context3["catch"](31);
 
-              payErr = _context2.t1;
+              payErr = _context3.t1;
               _index2.default.showToast({
-                title: _context2.t1.err_desc || _context2.t1.errMsg || '支付失败',
+                title: _context3.t1.err_desc || _context3.t1.errMsg || '支付失败',
                 icon: 'none'
               });
 
-            case 35:
+            case 42:
               if (payErr) {
-                _context2.next = 43;
+                _context3.next = 50;
                 break;
               }
 
@@ -278,37 +335,37 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 console.info(e);
               }
 
-              _context2.next = 39;
+              _context3.next = 46;
               return _index2.default.showToast({
                 title: '支付成功',
                 icon: 'success'
               });
 
-            case 39:
+            case 46:
 
               _this.__triggerPropsFn("onClearCart", [null].concat([]));
               _index2.default.redirectTo({
                 url: "/pages/trade/detail?id=" + order_id
               });
-              _context2.next = 44;
+              _context3.next = 51;
               break;
 
-            case 43:
+            case 50:
               if (payErr.errMsg.indexOf('fail cancel') >= 0) {
                 _index2.default.redirectTo({
                   url: "/pages/trade/detail?id=" + order_id
                 });
               }
 
-            case 44:
-              return _context2.abrupt("return");
+            case 51:
+              return _context3.abrupt("return");
 
-            case 45:
+            case 52:
             case "end":
-              return _context2.stop();
+              return _context3.stop();
           }
         }
-      }, _callee2, _this2, [[5, 12], [24, 31]]);
+      }, _callee3, _this2, [[6, 14], [31, 38]]);
     })), _this.handleCouponsClick = function () {
       var items = _this.params.items.filter(function (item) {
         return item.order_item_type !== 'gift';
@@ -324,6 +381,31 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
       _index2.default.navigateTo({
         url: "/pages/cart/coupon-picker?items=" + JSON.stringify(items)
+      });
+    }, _this.handlePaymentChange = function () {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(payType) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _this.setState({
+                  payType: payType
+                });
+
+              case 1:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, _this2);
+      }));
+
+      return function (_x) {
+        return _ref7.apply(this, arguments);
+      };
+    }(), _this.handlePaymentClose = function () {
+      _this.setState({
+        isPaymentOpend: false
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -352,7 +434,9 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           coupon_discount: '',
           point: ''
         },
-        payType: '',
+        payType: 'amorepay',
+        disabledPayment: null,
+        isPaymentOpend: false,
         invoiceTitle: ''
       };
     }
@@ -384,7 +468,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
       this.setState({
         info: info,
-        payType: payType
+        payType: payType || this.state.payType
       });
 
       var total_fee = 0;
@@ -431,24 +515,24 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "fetchAddress",
     value: function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(cb) {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(cb) {
         var _this3 = this;
 
-        var _ref7, list;
+        var _ref9, list;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 _index2.default.showLoading({
                   mask: true
                 });
-                _context3.next = 3;
+                _context5.next = 3;
                 return _index5.default.member.addressList();
 
               case 3:
-                _ref7 = _context3.sent;
-                list = _ref7.list;
+                _ref9 = _context5.sent;
+                list = _ref9.list;
 
                 console.log(list, 141);
                 _index2.default.hideLoading();
@@ -462,14 +546,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               case 8:
               case "end":
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee5, this);
       }));
 
-      function fetchAddress(_x) {
-        return _ref6.apply(this, arguments);
+      function fetchAddress(_x2) {
+        return _ref8.apply(this, arguments);
       }
 
       return fetchAddress;
@@ -522,6 +606,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         receiver_address: 'address',
         receiver_zip: 'zip'
       });
+      var payType = this.state.payType;
       var coupon = this.props.coupon;
 
 
@@ -530,7 +615,8 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         order_type: 'normal',
         promotion: 'normal',
         member_discount: 0,
-        coupon_discount: 0
+        coupon_discount: 0,
+        pay_type: payType
       });
 
       _index9.log.debug('[checkout] params: ', params);
@@ -550,23 +636,23 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "calcOrder",
     value: function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
         var params, data, items, item_fee, totalItemNum, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, total, info;
 
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 _index2.default.showLoading({
                   title: '加载中',
                   mask: true
                 });
                 params = this.getParams();
-                _context4.next = 4;
+                _context6.next = 4;
                 return _index5.default.cart.total(params);
 
               case 4:
-                data = _context4.sent;
+                data = _context6.sent;
                 items = data.items, item_fee = data.item_fee, totalItemNum = data.totalItemNum, _data$member_discount = data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, _data$freight_fee = data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = data.total_fee;
                 total = _extends({}, this.state.total, {
                   item_fee: item_fee,
@@ -601,14 +687,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               case 11:
               case "end":
-                return _context4.stop();
+                return _context6.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee6, this);
       }));
 
       function calcOrder() {
-        return _ref8.apply(this, arguments);
+        return _ref10.apply(this, arguments);
       }
 
       return calcOrder;
@@ -658,7 +744,9 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           curCheckoutItems = _state.curCheckoutItems,
           payType = _state.payType,
           invoiceTitle = _state.invoiceTitle,
-          submitLoading = _state.submitLoading;
+          submitLoading = _state.submitLoading,
+          disabledPayment = _state.disabledPayment,
+          isPaymentOpend = _state.isPaymentOpend;
 
       if (!info) {
         return null;
@@ -706,7 +794,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleCouponsClick", "handleInvoiceClick", "toggleCheckoutItems", "handlePay"], _class2.defaultProps = {
+}, _class2.$$events = ["handleCouponsClick", "handleInvoiceClick", "toggleCheckoutItems", "handleClickPay", "handlePaymentClose", "handlePaymentChange", "handlePay"], _class2.defaultProps = {
   list: []
 }, _temp2)) || _class) || _class);
 exports.default = CartCheckout;

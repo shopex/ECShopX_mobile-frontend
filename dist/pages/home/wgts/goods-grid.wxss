@@ -122,6 +122,6 @@
   /* autoprefixer: ignore next */
   -webkit-box-orient: vertical;
   color: #818181;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin: 0 0 20rpx;
 }

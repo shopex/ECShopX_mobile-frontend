@@ -115,7 +115,7 @@
 }
 .goods-buy-panel__btn {
   background: #0b4137;
-  font-size: 26rpx;
+  font-size: 28rpx;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;
@@ -158,11 +158,11 @@
 }
 .goods-buy-panel .goods-sku__info {
   color: #818181;
-  font-size: 23rpx;
+  font-size: 25rpx;
 }
 .goods-buy-panel .goods-sku .price {
   margin: 0 0 15rpx -2rpx;
-  font-size: 31rpx;
+  font-size: 33rpx;
 }
 .goods-buy-panel .goods-sku__price {
   display: -webkit-box;
@@ -188,7 +188,7 @@
   height: 60rpx;
   line-height: 60rpx;
   white-space: nowrap;
-  font-size: 23rpx;
+  font-size: 25rpx;
   border: 1PX solid #eeeeee;
   padding: 0 30rpx;
   margin: 0 15rpx 15rpx 0;
@@ -210,14 +210,14 @@
   line-height: 1;
   margin: 0 0 30rpx;
   display: block;
-  font-size: 23rpx;
+  font-size: 25rpx;
 }
 .goods-buy-panel .goods-quantity__wrap {
   padding: 30rpx 0;
 }
 .goods-buy-panel .goods-quantity__hd {
   line-height: 1;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin: 0 0 30rpx;
   display: block;
 }

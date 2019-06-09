@@ -23,7 +23,7 @@
   padding: 15rpx 0;
 }
 .article-index .article-title {
-  font-size: 41rpx;
+  font-size: 44rpx;
   padding: 0 15rpx;
   display: block;
 }

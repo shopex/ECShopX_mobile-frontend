@@ -62,7 +62,7 @@
           transform: translate3d(0, 0, 0);
 }
 .page-trade-list .trade-item .at-button {
-  font-size: 23rpx;
+  font-size: 25rpx;
   padding-left: 26rpx;
   padding-right: 26rpx;
   margin-left: 20rpx;

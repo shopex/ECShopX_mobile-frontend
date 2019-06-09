@@ -71,7 +71,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
         quantity: val
       });
     }, _this.handleSelectSku = function (item, idx) {
-      if (_this.props.info.spec_items.length <= 1 || _this.disabledSet.has(item.spec_value_id)) {
+      if (_this.disabledSet.has(item.spec_value_id)) {
         return;
       }var selection = _this.state.selection;
 

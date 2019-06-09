@@ -35,7 +35,7 @@
   -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
 }
 .draw-item__ft-inner .weui-progress {
@@ -123,18 +123,18 @@
   /* autoprefixer: ignore next */
   -webkit-box-orient: vertical;
   color: #818181;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin: 0 0 20rpx;
 }
 .goods-item__price {
-  font-size: 33rpx;
+  font-size: 35rpx;
   margin-right: 24rpx;
 }
 .goods-item__point {
   color: #0b4137;
 }
 .goods-item__price-market {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
   text-decoration: line-through;
 }
@@ -153,7 +153,7 @@
           justify-content: space-between;
 }
 .goods-item__author {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #000;
 }
 .goods-item__author-avatar {
@@ -177,7 +177,7 @@
 }
 .goods-item__actions {
   color: #d0d0d0;
-  font-size: 23rpx;
+  font-size: 25rpx;
 }
 .goods-item__actions .in-icon {
   color: #d0d0d0;

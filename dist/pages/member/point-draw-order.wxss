@@ -134,7 +134,7 @@
   font-size: 24rpx;
 }
 .goods-item__price {
-  font-size: 33rpx;
+  font-size: 35rpx;
   margin-right: 24rpx;
 }
 .goods-item__point {
@@ -151,7 +151,7 @@
           justify-content: space-between;
 }
 .goods-item__prices .lucky-info {
-  font-size: 33rpx;
+  font-size: 35rpx;
   color: #0b4137;
 }
 .goods-item__prices_ing {

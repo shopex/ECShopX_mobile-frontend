@@ -40,7 +40,7 @@
 }
 .loading-text {
   margin-left: 10rpx;
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
 }
 .loading .spiner {

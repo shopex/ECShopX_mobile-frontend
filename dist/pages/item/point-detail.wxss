@@ -85,10 +85,10 @@
   display: block;
 }
 .goods-timer .goods-prices .price {
-  font-size: 41rpx;
+  font-size: 44rpx;
 }
 .goods-timer .goods-prices__type {
-  font-size: 20rpx;
+  font-size: 22rpx;
   display: inline-block;
   padding: 0 10rpx;
   border: 1rpx solid #fff;
@@ -98,7 +98,7 @@
   color: #fff;
 }
 .goods-timer .goods-prices__ft .price {
-  font-size: 20rpx;
+  font-size: 22rpx;
 }
 .goods-timer .at-countdown__time-box {
   background: #fff;
@@ -117,11 +117,11 @@
   -webkit-align-items: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
-  font-size: 52rpx;
+  font-size: 56rpx;
   margin: 0 0 12rpx;
 }
 .goods-prices .price__symbol {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .goods-prices__wrap {
   display: -webkit-box;
@@ -138,7 +138,7 @@
           align-items: baseline;
 }
 .goods-prices__market {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
   text-decoration: line-through;
   font-weight: normal;
@@ -146,7 +146,7 @@
 }
 
 .goods-sold {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
 }
 
@@ -165,7 +165,7 @@
 }
 
 .goods-title {
-  font-size: 31rpx;
+  font-size: 33rpx;
   display: block;
   color: #000;
   overflow: hidden;
@@ -181,7 +181,7 @@
 .goods-title__desc {
   display: block;
   color: #818181;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin-bottom: 16rpx;
 }
 
@@ -218,7 +218,7 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  font-size: 23rpx;
+  font-size: 25rpx;
   line-height: 1;
   padding: 30rpx;
 }
@@ -369,7 +369,7 @@
 }
 .goods-buy-toolbar__btn {
   background: #0b4137;
-  font-size: 26rpx;
+  font-size: 28rpx;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;

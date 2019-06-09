@@ -36,7 +36,7 @@ var ItemImg = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ItemImg.__proto__ || Object.getPrototypeOf(ItemImg)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ItemImg.__proto__ || Object.getPrototypeOf(ItemImg)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["src"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(ItemImg, [{
@@ -52,11 +52,11 @@ var ItemImg = (_temp2 = _class = function (_BaseComponent) {
       var __isRunloopRef = arguments[2];
       ;
 
-      var info = this.__props.info;
+      var src = this.__props.src;
 
 
       Object.assign(this.__state, {
-        info: info
+        src: src
       });
       return this.__state;
     }
@@ -64,14 +64,14 @@ var ItemImg = (_temp2 = _class = function (_BaseComponent) {
 
   return ItemImg;
 }(_index.Component), _class.properties = {
-  "info": {
+  "src": {
     "type": null,
     "value": null
   }
 }, _class.$$events = [], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
-  info: null
+  src: null
 }, _temp2);
 exports.default = ItemImg;
 

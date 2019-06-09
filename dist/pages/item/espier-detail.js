@@ -78,7 +78,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "loopArray0", "info", "scrollTop", "imgInfo", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "loopArray0", "info", "scrollTop", "curImgIdx", "imgs", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
         var info, isAuth, favRes;
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -175,22 +175,37 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         showBuyPanel: true,
         buyPanelType: type
       });
-    }, _this.handleBuyAction = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _this.setState({
-                showBuyPanel: false
-              });
+    }, _this.handleSwiperChange = function (e) {
+      var current = e.detail.current;
 
-            case 1:
-            case "end":
-              return _context2.stop();
+      _this.setState({
+        curImgIdx: current
+      });
+    }, _this.handleBuyAction = function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(type) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (type === 'cart') {
+                  _this.fetchCartCount();
+                }
+                _this.setState({
+                  showBuyPanel: false
+                });
+
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
           }
-        }
-      }, _callee2, _this2);
-    })), _this.handleToGiftMiniProgram = function () {
+        }, _callee2, _this2);
+      }));
+
+      return function (_x2) {
+        return _ref6.apply(this, arguments);
+      };
+    }(), _this.handleToGiftMiniProgram = function () {
       _index2.default.navigateToMiniProgram({
         appId: 'wx2fb97cb696f68d22', // 要跳转的小程序的appid
         path: '/pages/index/index', // 跳转的目标页面
@@ -212,6 +227,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         marketing: 'normal',
         info: null,
         desc: null,
+        curImgIdx: 0,
         windowWidth: 320,
         isPromoter: false,
         timer: null,
@@ -430,6 +446,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       var _state = this.__state,
           info = _state.info,
           windowWidth = _state.windowWidth,
+          curImgIdx = _state.curImgIdx,
           desc = _state.desc,
           cartCount = _state.cartCount,
           scrollTop = _state.scrollTop,
@@ -450,10 +467,13 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         return null;
       }
 
-      var imgInfo = {
-        img: info.pics[0],
-        width: windowWidth + 'px'
-      };
+      // const imgInfo = {
+      //   img: info.pics[0],
+      //   width: windowWidth + 'px'
+      // }
+
+      var imgs = info.pics;
+
 
       var anonymousState__temp = isPromoter ? (info.promoter_price / 100).toFixed(2) : null;
       var anonymousState__temp2 = !showBackToTop;
@@ -471,7 +491,6 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
 
         var img = _this3.__state.specImgsDict[specValueId.$original];
         return {
-          img: img,
           $original: specValueId.$original
         };
       }) : [];
@@ -481,7 +500,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         anonymousState__temp3: anonymousState__temp3,
         loopArray0: loopArray0,
         scrollTop: scrollTop,
-        imgInfo: imgInfo,
+        imgs: imgs,
         $anonymousCallee__0: $anonymousCallee__0
       });
       return this.__state;
@@ -507,7 +526,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleScroll", "handleBuyBarClick", "handleToGiftMiniProgram", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
+}, _class2.$$events = ["handleScroll", "handleSwiperChange", "handleBuyBarClick", "handleToGiftMiniProgram", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
   addGlobalClass: true
 }, _temp2)) || _class) || _class);
 exports.default = Detail;

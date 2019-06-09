@@ -13,7 +13,7 @@
 ===============================*/
 .mobile-timer {
   color: #0b4137 !important;
-  font-size: 23rpx !important;
+  font-size: 25rpx !important;
   background-color: #F4F4F4;
   border-radius: 32rpx;
   padding: 12rpx 26rpx !important;

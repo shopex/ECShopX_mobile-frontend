@@ -1893,7 +1893,7 @@
 .at-action-sheet__header {
   padding: 24rpx 24rpx;
   color: #B2B2B2;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   line-height: 1.5;
   position: relative;
@@ -2152,7 +2152,7 @@
 .at-article__info {
   margin: 0 30rpx;
   color: #CCC;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 42rpx;
 }
 .at-article__h2 {
@@ -2167,7 +2167,7 @@
 .at-article__p {
   margin: 25rpx 30rpx 0;
   color: #666;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 42rpx;
 }
 .at-article__img {
@@ -2814,7 +2814,7 @@
   min-width: 100rpx;
   max-width: 710rpx;
   height: 60rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 58rpx;
 }
 .at-button--small.at-button--circle {
@@ -3402,14 +3402,14 @@
   max-width: 200rpx;
   margin-left: 24rpx;
   color: #2C405A;
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .at-card__content {
   padding: 24rpx 24rpx;
 }
 .at-card__content-info {
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .at-card__content-note {
   margin-top: 18rpx;
@@ -3928,7 +3928,7 @@
   display: -ms-inline-flexbox;
   display: inline-flex;
   padding: 0 6rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: justify;
   -webkit-box-align: center;
   -webkit-align-items: center;
@@ -4409,7 +4409,7 @@
   position: relative;
   width: 100%;
   height: 112rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   /* elements */
 }
@@ -4909,7 +4909,7 @@
           transform: translate3d(-50%, -50%, 0) rotate(-45deg);
 }
 .at-float-layout .layout-body {
-  font-size: 26rpx;
+  font-size: 28rpx;
   padding: 18rpx;
   max-height: 828rpx;
   min-height: 514rpx;
@@ -6090,7 +6090,7 @@
   border-bottom: 1PX #d6e4ef solid;
   border-right: 1PX #d6e4ef solid;
   border-left: 1PX #d6e4ef solid;
-  font-size: 26rpx;
+  font-size: 28rpx;
   border-radius: 8rpx;
   background-color: #FFF;
   overflow: hidden;
@@ -6135,7 +6135,7 @@
   height: auto;
   border-radius: 0;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   line-height: 1.5;
   border-left: 1PX #d6e4ef solid;
@@ -6763,7 +6763,7 @@
 }
 .at-list__item .item-content__info-note {
   color: #999;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 1.5;
 }
 .at-list__item .item-extra {
@@ -7402,7 +7402,7 @@
   width: 100%;
   padding: 12rpx 10rpx;
   color: #FFF;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   line-height: 1.5;
   background: #78A4FA;
@@ -7675,7 +7675,7 @@
   min-height: 180rpx;
   max-height: 840rpx;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
@@ -7722,7 +7722,7 @@
   min-width: 160rpx;
   height: 88rpx;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 86rpx;
   outline: 0;
   border: 0;
@@ -8576,7 +8576,7 @@
       -ms-flex: 1;
           flex: 1;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   overflow: hidden;
 }
@@ -10039,7 +10039,7 @@
   padding: 6rpx 10rpx;
   min-width: 120rpx;
   color: #0b4137;
-  font-size: 26rpx;
+  font-size: 28rpx;
   white-space: nowrap;
   -o-text-overflow: ellipsis;
      text-overflow: ellipsis;
@@ -10240,7 +10240,7 @@
 .at-slider__text {
   width: 80rpx;
   color: #999;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
 }
 .at-slider--disabled .at-slider__inner {
@@ -10718,7 +10718,7 @@
   padding: 0 32rpx;
   height: 100%;
   color: #FFF;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   background-color: #999;
 }
@@ -10946,7 +10946,7 @@
       -ms-flex: 6;
           flex: 6;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .at-switch__container {
   display: -webkit-box;
@@ -11410,7 +11410,7 @@
           flex: 1;
   padding: 24rpx 24rpx;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
   -o-text-overflow: ellipsis;
      text-overflow: ellipsis;
   overflow: hidden;
@@ -11742,7 +11742,7 @@
   padding: 0 32rpx;
   height: 60rpx;
   color: #666;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: center;
   line-height: 58rpx;
   vertical-align: middle;
@@ -11994,7 +11994,7 @@
   padding-top: 12rpx;
   width: 100%;
   color: #C9C9C9;
-  font-size: 26rpx;
+  font-size: 28rpx;
   text-align: right;
   line-height: 1;
 }
@@ -12174,7 +12174,7 @@
   margin-left: 40rpx;
   min-height: 56rpx;
   color: #333;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 1.5;
   text-align: left;
 }
@@ -12479,7 +12479,7 @@
 .at-toast .toast-body-content__info {
   margin-top: 18rpx;
   color: #FFF;
-  font-size: 26rpx;
+  font-size: 28rpx;
   line-height: 1.5;
   text-align: center;
 }
@@ -12492,7 +12492,7 @@
   margin-top: 0;
 }
 .at-toast .toast-body.at-toast__body--custom-image, .at-toast .toast-body.at-toast__body--success, .at-toast .toast-body.at-toast__body--error, .at-toast .toast-body.at-toast__body--loading {
-  padding-bottom: 17.5rpx;
+  padding-bottom: 17rpx;
 }
 
 /*==============================
@@ -12530,24 +12530,24 @@
   margin: 0 0 30rpx;
 }
 .at-input__title {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .at-input:after {
   border-color: rgba(11, 65, 55, 0.5);
 }
 .at-input input {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 .at-button {
   margin: 0;
 }
 .at-button--primary {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 .at-nav-bar__title {
-  font-size: 31rpx;
+  font-size: 33rpx;
 }
 .at-nav-bar__item--active {
   color: #0b4137;
@@ -12572,10 +12572,10 @@
 }
 
 .taro__toast {
-  font-size: 26rpx !important;
+  font-size: 28rpx !important;
 }
 .taro__toast p {
-  font-size: 26rpx !important;
+  font-size: 28rpx !important;
 }
 
 .swiper-container {
@@ -12587,7 +12587,7 @@
 .at-tab-bar {
   -webkit-box-shadow: -20rpx 5rpx 15rpx rgba(0, 0, 0, 0.1);
           box-shadow: -20rpx 5rpx 15rpx rgba(0, 0, 0, 0.1);
-  height: 90rpx;
+  height: 110rpx;
 }
 .at-tab-bar .in-icon {
   font-size: 42rpx;
@@ -12696,12 +12696,12 @@
 }
 
 .at-action-sheet__item {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 body, view {
   font-family: "Hiragino Sans GB", "微软雅黑", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 page, body {
@@ -12742,11 +12742,11 @@ page, body {
 }
 .sec-hd .more {
   color: #0b4137;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin-right: -8rpx;
 }
 .sec-hd .at-icon {
-  font-size: 31rpx;
+  font-size: 33rpx;
 }
 .sec-title {
   -webkit-box-flex: 1;
@@ -12759,7 +12759,7 @@ page, body {
   margin-right: -8rpx;
 }
 .sec-ft .at-font {
-  font-size: 31rpx;
+  font-size: 33rpx;
 }
 
 .btns {
@@ -12771,7 +12771,7 @@ page, body {
 
 .toolbar {
   background: #fff;
-  font-size: 26rpx;
+  font-size: 28rpx;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -12803,7 +12803,7 @@ page, body {
   width: 100%;
 }
 .toolbar .at-button {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 .toolbar-ft {
   max-width: 120rpx;

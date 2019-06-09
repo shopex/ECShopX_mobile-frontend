@@ -85,7 +85,7 @@
           flex: 1;
 }
 .sp-cell__ft {
-  color: 23rpx;
+  color: 25rpx;
   color: #aaa;
 }
 .sp-cell__ft-icon {

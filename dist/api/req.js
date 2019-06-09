@@ -197,8 +197,8 @@ var API = function () {
     value: function reqError(res) {
       var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
-      var data = res.data || {};
-      var errMsg = data.msg || data.err_msg || msg;
+      var data = res.data.error || res.data;
+      var errMsg = data.message || data.err_msg || msg;
       var err = new Error(errMsg);
       err.res = res;
       return err;

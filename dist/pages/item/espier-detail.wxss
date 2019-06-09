@@ -27,6 +27,10 @@
 
 .goods-imgs__wrap {
   position: relative;
+  height: 580rpx;
+}
+.goods-imgs__swiper {
+  height: 580rpx;
 }
 .goods-imgs__text {
   background: rgba(0, 0, 0, 0.5);
@@ -92,10 +96,10 @@
   display: block;
 }
 .goods-timer .goods-prices .price {
-  font-size: 41rpx;
+  font-size: 44rpx;
 }
 .goods-timer .goods-prices__type, .goods-timer .goods-prices__rule {
-  font-size: 20rpx;
+  font-size: 22rpx;
   display: inline-block;
   padding: 0 10rpx;
   border: 1rpx solid #fff;
@@ -104,11 +108,11 @@
   overflow: hidden;
 }
 .goods-timer .goods-prices__ft .price {
-  font-size: 20rpx;
+  font-size: 22rpx;
 }
 .goods-timer .goods-prices .goods-prices__market {
   color: #fff;
-  font-size: 20rpx;
+  font-size: 22rpx;
 }
 .goods-timer .at-countdown__time-box {
   background: #fff;
@@ -127,7 +131,7 @@
   -webkit-align-items: baseline;
       -ms-flex-align: baseline;
           align-items: baseline;
-  font-size: 52rpx;
+  font-size: 56rpx;
   margin: 0 0 12rpx;
 }
 .goods-prices .price {
@@ -151,7 +155,7 @@
           align-items: baseline;
 }
 .goods-prices__market {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
   text-decoration: line-through;
   font-weight: normal;
@@ -159,7 +163,7 @@
 }
 
 .goods-sold {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #818181;
 }
 
@@ -199,7 +203,7 @@
   display: block;
   line-height: 1.4;
   color: #818181;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin-bottom: 28rpx;
 }
 
@@ -236,7 +240,7 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  font-size: 23rpx;
+  font-size: 25rpx;
   line-height: 1;
   padding: 30rpx;
 }
@@ -299,15 +303,16 @@
   margin-right: 8rpx;
 }
 .goods-sec-specs .specs-title {
-  font-size: 31rpx;
+  font-size: 33rpx;
   color: #000;
   text-align: center;
   margin: 0 0 26rpx;
   line-height: 1;
+  text-align: center;
 }
 .goods-sec-specs .specs-selected {
   color: #333;
-  font-size: 23rpx;
+  font-size: 25rpx;
   margin-left: 18rpx;
 }
 .goods-sec-specs .specs-scroller {
@@ -333,7 +338,7 @@
           box-sizing: border-box;
   display: inline-block;
   vertical-align: middle;
-  margin-right: 20rpx;
+  margin: 0 10rpx;
   overflow: hidden;
 }
 
@@ -355,7 +360,7 @@
   padding: 0 10%;
 }
 .goods-sec-tabs .sec-tab__item {
-  font-size: 26rpx;
+  font-size: 28rpx;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;

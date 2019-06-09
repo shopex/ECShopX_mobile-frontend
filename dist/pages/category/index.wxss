@@ -28,7 +28,7 @@
   left: 0;
   width: 100%;
   top: 150rpx;
-  bottom: 90rpx;
+  bottom: 110rpx;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-transform: translate3d(0, 0, 0);
@@ -47,7 +47,7 @@
   left: 0;
   width: 100%;
   top: 75rpx;
-  bottom: 90rpx;
+  bottom: 110rpx;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-transform: translate3d(0, 0, 0);

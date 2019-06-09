@@ -74,7 +74,7 @@
           transform: translate3d(0, 0, 0);
 }
 .page-trade-list .trade-item .at-button {
-  font-size: 23rpx;
+  font-size: 25rpx;
   padding-left: 26rpx;
   padding-right: 26rpx;
   margin-left: 20rpx;
@@ -138,7 +138,7 @@
           justify-content: flex-end;
 }
 .page-invoice-list .trade-item__status {
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #c1c1c1;
   line-height: 40rpx;
 }

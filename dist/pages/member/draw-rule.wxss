@@ -12,7 +12,7 @@
 =            z-index            =
 ===============================*/
 .page-member-integral {
-  padding-bottom: 90rpx;
+  padding-bottom: 110rpx;
 }
 .page-member-integral .sp-icon-zijin:before {
   background: -webkit-gradient(linear, left top, left bottom, from(#FFE070), to(#F7B11C));

@@ -82,7 +82,7 @@
 }
 .address-picker .address-item__name {
   font-weight: bold;
-  font-size: 31rpx;
+  font-size: 33rpx;
   margin-right: 20rpx;
 }
 .address-picker .address-item__mobile {
@@ -97,7 +97,7 @@
   color: #aaa;
   padding-left: 30rpx;
   margin-left: 30rpx;
-  font-size: 23rpx;
+  font-size: 25rpx;
   white-space: nowrap;
   text-align: center;
 }

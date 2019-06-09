@@ -30,7 +30,7 @@
   border-bottom: 1PX solid rgba(11, 65, 55, 0.2);
 }
 .page-address-edit .picker__title {
-  font-size: 26rpx;
+  font-size: 28rpx;
   margin-right: 16rpx;
   width: 172rpx;
 }
