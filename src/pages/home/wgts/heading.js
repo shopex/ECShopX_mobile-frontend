@@ -5,7 +5,7 @@ import { linkPage } from './helper'
 
 import './writing.scss'
 
-export default class WgtWriting extends Component {
+export default class WgtHeading extends Component {
   static options = {
     addGlobalClass: true
   }
@@ -42,9 +42,20 @@ export default class WgtWriting extends Component {
 
     const { config, base, data } = info
     const curContent = (data[curIdx] || {}).content
-    let contentArr = []
-    if(curContent) {
-      contentArr = curContent.split('\n')
+    let stringStyle = ''
+    if(config) {
+      if(config.align) {
+        stringStyle = `text-align: ${config.align};`
+      }
+      if(config.italic === true) {
+        stringStyle = stringStyle.concat('font-style: italic;')
+      }
+      if(config.bold === true) {
+        stringStyle = stringStyle.concat('font-weight: 700;')
+      }
+      if(config.size) {
+        stringStyle = stringStyle.concat(`font-size: ${Taro.pxTransform(config.size * 2)};`)
+      }
     }
 
     return (
@@ -56,16 +67,10 @@ export default class WgtWriting extends Component {
           </View>
         )}
         <View
-          className={`slider-wra wgt-writing ${config.padded ? 'padded' : ''}`}
-          style={`${config.align ? `text-align:${config.align}` : ''}`}
+          className={`slider-wra ${config.padded ? 'padded' : ''}`}
+          style={stringStyle}
         >
-          {
-            contentArr.map((item, index) => {
-              return (
-                <View className='writing-view' key={index}>{item}</View>
-              )
-            })
-          }
+          <View className='writing-view'>{curContent}</View>
         </View>
       </View>
     )
