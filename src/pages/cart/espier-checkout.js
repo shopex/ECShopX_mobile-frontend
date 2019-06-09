@@ -129,7 +129,6 @@ export default class CartCheckout extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps, 122)
     if (nextProps.address !== this.props.address) {
       this.fetchAddress()
     }

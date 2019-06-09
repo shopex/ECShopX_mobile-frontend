@@ -87,10 +87,14 @@ export default class Detail extends Component {
   async fetchCartCount () {
     if (!S.getAuthToken()) return
 
-    const res = await api.cart.count()
-    this.setState({
-      cartCount: res.item_count
-    })
+    try {
+      const res = await api.cart.count()
+      this.setState({
+        cartCount: res.item_count || ''
+      })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   async fetch () {
@@ -98,7 +102,6 @@ export default class Detail extends Component {
     const info = await api.item.detail(id)
 
     const { intro: desc, promotion_activity: promotion_activity } = info
-    console.log(promotion_activity, 100)
     let marketing = 'normal'
     let timer = null
     let hasStock = info.store && info.store > 0
@@ -486,6 +489,7 @@ export default class Detail extends Component {
             (<GoodsBuyToolbar
               info={info}
               type={marketing}
+              cartCount={cartCount}
               onFavItem={this.handleMenuClick.bind(this, 'fav')}
               onClickAddCart={this.handleBuyBarClick.bind(this, 'cart')}
               onClickFastBuy={this.handleBuyBarClick.bind(this, 'fastbuy')}
@@ -494,6 +498,7 @@ export default class Detail extends Component {
             (<GoodsBuyToolbar
               info={info}
               customRender
+              cartCount={cartCount}
               type={marketing}
             >
               <View
@@ -514,7 +519,6 @@ export default class Detail extends Component {
             info={info}
             type={buyPanelType}
             isOpened={showBuyPanel}
-            cartCount={cartCount}
             onClose={() => this.setState({ showBuyPanel: false })}
             onChange={this.handleSkuChange}
             onAddCart={this.handleBuyAction.bind(this, 'cart')}

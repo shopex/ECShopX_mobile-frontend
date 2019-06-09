@@ -77,7 +77,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "loopArray0", "info", "scrollTop", "imgInfo", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "showBuyPanel", "cartCount", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "loopArray0", "info", "scrollTop", "imgInfo", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
         var info, isAuth;
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -272,22 +272,31 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                 return _context3.abrupt("return");
 
               case 2:
-                _context3.next = 4;
+                _context3.prev = 2;
+                _context3.next = 5;
                 return _index5.default.cart.count();
 
-              case 4:
+              case 5:
                 res = _context3.sent;
 
                 this.setState({
-                  cartCount: res.item_count
+                  cartCount: res.item_count || ''
                 });
+                _context3.next = 12;
+                break;
 
-              case 6:
+              case 9:
+                _context3.prev = 9;
+                _context3.t0 = _context3["catch"](2);
+
+                console.log(_context3.t0);
+
+              case 12:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee3, this, [[2, 9]]);
       }));
 
       function fetchCartCount() {
@@ -312,8 +321,6 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
               case 3:
                 info = _context4.sent;
                 desc = info.intro, promotion_activity = info.promotion_activity;
-
-                console.log(promotion_activity, 100);
                 marketing = 'normal';
                 timer = null;
                 hasStock = info.store && info.store > 0;
@@ -364,7 +371,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                 });
                 _index7.log.debug('fetch: done', info);
 
-              case 17:
+              case 16:
               case "end":
                 return _context4.stop();
             }

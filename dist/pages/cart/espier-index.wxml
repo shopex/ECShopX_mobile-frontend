@@ -35,7 +35,7 @@
                         </view>
                     </block>
                 </view>
-                <block wx:if="{{!list.length}}">
+                <block wx:if="{{!list.length || error}}">
                     <view>
                         <view style="margin-bottom: 20px">
                             <sp-note img="cart_empty.png" __triggerObserer="{{ _triggerObserer }}">快去给我挑点宝贝吧~</sp-note>

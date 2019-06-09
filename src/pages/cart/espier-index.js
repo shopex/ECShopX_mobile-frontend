@@ -43,7 +43,8 @@ export default class CartIndex extends Component {
       curPromotions: null,
       groups: [],
       likeList: [],
-      invalidList: []
+      invalidList: [],
+      error: null
     }
 
     this.updating = false
@@ -160,7 +161,17 @@ export default class CartIndex extends Component {
   }
 
   async fetchCart (cb) {
-    const { valid_cart, invalid_cart } = await api.cart.get()
+    let valid_cart = [], invalid_cart = []
+
+    try {
+      const res = await api.cart.get()
+      valid_cart = res.valid_cart || valid_cart
+      invalid_cart = res.invalid_cart || invalid_cart
+    } catch (e) {
+      this.setState({
+        error: e
+      })
+    }
 
     const list = valid_cart.map(shopCart => {
       const tList = this.transformCartList(shopCart.list)
@@ -180,7 +191,10 @@ export default class CartIndex extends Component {
     cb && cb(list)
   }
 
-  updateCart = debounce(async () => {
+  updateCart = async () => {
+    Taro.showLoading({
+      mask: true
+    })
     this.updating = true
     try {
       await this.fetchCart()
@@ -188,7 +202,12 @@ export default class CartIndex extends Component {
       console.log(e)
     }
     this.updating = false
-  }, 600)
+    Taro.hideLoading()
+  }
+
+  asyncUpdateCart = debounce(async () => {
+    await this.updateCart()
+  }, 300)
 
   get isTotalChecked () {
     return this.props.cartIds.length === this.state.selection.size
@@ -242,27 +261,29 @@ export default class CartIndex extends Component {
   }
 
   async changeCartNum (cart_id, num) {
-    this.updateCart.cancel()
+    // this.updateCart.cancel()
     await api.cart.updateNum({ cart_id, num })
     this.updateCart()
   }
 
   debounceChangeCartNum = debounce(async (cart_id, num) => {
     await this.changeCartNum(cart_id, num)
-  }, 400)
+  }, 200)
 
   handleQuantityChange = async (cart_id, num, e) => {
     e.stopPropagation()
     this.updating = true
     this.props.onUpdateCartNum(cart_id, num)
-    this.updateCart.cancel()
+    // this.updateCart.cancel()
 
-    if (this.lastCartId === cart_id || this.lastCartId === undefined) {
-      await this.debounceChangeCartNum(cart_id, num)
-    } else {
-      this.lastCartId = cart_id
-      await this.changeCartNum(cart_id, num)
-    }
+    await this.changeCartNum(cart_id, num)
+
+    // if (this.lastCartId === cart_id || this.lastCartId === undefined) {
+    //   await this.debounceChangeCartNum(cart_id, num)
+    // } else {
+    //   this.lastCartId = cart_id
+    //   await this.changeCartNum(cart_id, num)
+    // }
   }
 
   handleAllSelect = async (checked) => {
@@ -499,7 +520,7 @@ export default class CartIndex extends Component {
             }
 
             {
-              !list.length && (
+              (!list.length || this.state.error) && (
                 <View>
                   <View style='margin-bottom: 20px'>
                     <SpNote img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>

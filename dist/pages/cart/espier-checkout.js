@@ -424,7 +424,6 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
-      console.log(nextProps, 122);
       if (nextProps.address !== this.props.address) {
         this.fetchAddress();
       }
