@@ -19,11 +19,7 @@
   line-height: 64rpx;
   border-radius: 64rpx;
   position: fixed;
-<<<<<<< HEAD
   bottom: 125rpx;
-=======
-  bottom: 105rpx;
->>>>>>> c3596d3b774cfddb0ff8ac4932cdd3ff600f8048
   right: 30rpx;
   z-index: 300;
   display: -webkit-box;
@@ -56,9 +52,5 @@
   font-size: 42rpx;
 }
 .back-to-top__text {
-<<<<<<< HEAD
   font-size: 19rpx;
-=======
-  font-size: 18rpx;
->>>>>>> c3596d3b774cfddb0ff8ac4932cdd3ff600f8048
 }
