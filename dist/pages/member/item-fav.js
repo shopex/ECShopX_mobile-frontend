@@ -171,7 +171,7 @@ var ItemFav = (_dec = (0, _index3.connect)(function (_ref) {
                     fav_id: 'fav_id',
                     item_id: 'article_id',
                     title: 'title',
-                    desc: 'summary',
+                    summary: 'summary',
                     head_portrait: 'head_portrait',
                     author: 'author'
                   });

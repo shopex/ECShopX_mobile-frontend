@@ -67,7 +67,7 @@ export default class ItemFav extends Component {
         fav_id: 'fav_id',
         item_id: 'article_id',
         title: 'title',
-        desc: 'summary',
+        summary: 'summary',
         head_portrait: 'head_portrait',
         author: 'author',
       })
