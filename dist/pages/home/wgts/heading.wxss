@@ -1,10 +1,1 @@
-
-.wgt-writing {
-  background: #ffffff;
-}
-
-.writing-view {
-  font-size: 30rpx;
-  line-height: 44rpx;
-  padding: 0 20rpx;
-}
+.wgt-writing{background:#fff}.writing-view{font-size:30rpx;line-height:44rpx;padding:0 20rpx}
