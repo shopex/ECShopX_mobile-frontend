@@ -99,6 +99,18 @@ export default class TradeItem extends Component {
             >订单详情</AtButton>
           </View>
         </View>)}
+        {!customFooter && info.status === 'TRADE_CLOSED' && (<View className='trade-item__ft'>
+          <View className='trade-item__ft-actions'></View>
+          <View className='trade-item__ft-bd'>
+            <Text className='trade-item__status'>{info.status_desc}</Text>
+            <AtButton
+              circle
+              type='primary'
+              size='small'
+              onClick={this.handleClickBtn.bind(this, 'detail')}
+            >订单详情</AtButton>
+          </View>
+        </View>)}
         {!customFooter && info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-item__ft'>
           <View className='trade-item__ft-actions'>
             <Text

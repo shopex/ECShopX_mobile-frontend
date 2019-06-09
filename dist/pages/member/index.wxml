@@ -43,7 +43,7 @@
                 <sp-icon-menu size="28" __triggerObserer="{{ _triggerObserer }}" icon="guess" iconPrefixClass="in-icon" title="猜你喜欢" to="/pages/member/item-guess"></sp-icon-menu>
             </view>
             <view class="member-menu__item none-bb none-br">
-                <sp-icon-menu size="28" __triggerObserer="{{ _triggerObserer }}" icon="kefu" iconPrefixClass="in-icon" openType="contact" title="联系客服"></sp-icon-menu>
+                <sp-icon-menu size="28" __triggerObserer="{{ _triggerObserer }}" icon="kefu" iconPrefixClass="in-icon" to="makephone" title="联系客服"></sp-icon-menu>
             </view>
         </view>
         <tab-bar current="{{4}}" __triggerObserer="{{ _triggerObserer }}"></tab-bar>

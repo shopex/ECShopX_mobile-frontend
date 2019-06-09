@@ -211,7 +211,7 @@ export default class MemberIndex extends Component {
               size='28'
               icon='kefu'
               iconPrefixClass='in-icon'
-              openType='contact'
+              to='makephone'
               title='联系客服'
             />
           </View>

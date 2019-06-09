@@ -38,10 +38,16 @@ export default class TradeList extends Component {
       this.setState({
         curTabIdx: tabIdx
       }, () => {
-        this.nextPage()
+        this.resetPage()
+        setTimeout(()=>{
+          this.nextPage()
+        },500)
       })
     } else {
-      this.nextPage()
+      this.resetPage()
+      setTimeout(()=>{
+        this.nextPage()
+      },500)
     }
 
   }
