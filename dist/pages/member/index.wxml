@@ -12,7 +12,7 @@
                 <view class="member-btn__item">
                     <view class="in-icon in-icon-home-th" bindtap="handleClickApp"></view>
                 </view>
-                <view class="member-btn__item">
+                <view class="member-btn__item" bindtap="navigateTo" data-e-tap-so="this" data-e-tap-a-a="/pages/member/point">
                     <view class="in-icon in-icon-coin"></view><text>我的积分</text>
                 </view>
             </view>

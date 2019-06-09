@@ -79,13 +79,13 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatefCIVD",
-    value: function funPrivatefCIVD() {
+    key: "funPrivatepSsxz",
+    value: function funPrivatepSsxz() {
       this.__triggerPropsFn("onClose", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatexknIO",
-    value: function funPrivatexknIO() {
+    key: "funPrivateTEove",
+    value: function funPrivateTEove() {
       this.__triggerPropsFn("onConfirm", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -132,7 +132,7 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivatefCIVD", "handlePaymentChange", "funPrivatexknIO"], _class.defaultProps = {
+}, _class.$$events = ["funPrivatepSsxz", "handlePaymentChange", "funPrivateTEove"], _class.defaultProps = {
   isOpened: false,
   type: 'amorepay',
   disabledPayment: null

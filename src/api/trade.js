@@ -34,3 +34,7 @@ export function deliveryInfo (order_id) {
 export function tradeQuery (trade_id) {
   return req.get(`/tradequery`, { trade_id })
 }
+
+export function imgUpload (params = {}) {
+  return req.get(`/espier/upload`, params)
+}

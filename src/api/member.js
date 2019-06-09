@@ -95,7 +95,7 @@ export function h5_qrcodeData () {
 }
 
 export function pointList (params = {}) {
-  return req.get('/point/member', params)
+  return req.get('/member/dh/point/history', params)
 }
 
 export function pointTotal () {

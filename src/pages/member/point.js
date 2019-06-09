@@ -1,7 +1,7 @@
 
 import Taro, { Component } from '@tarojs/taro'
 import {View, Text, ScrollView} from '@tarojs/components'
-import {AtButton, AtTabs, AtTabsPane} from 'taro-ui'
+import {AtButton, AtDivider} from 'taro-ui'
 import { Loading, SpNote, NavBar } from '@/components'
 import { withPager } from '@/hocs'
 import { pickBy, formatDataTime } from '@/utils'
@@ -19,12 +19,6 @@ export default class Integral extends Component {
 
     this.state = {
       ...this.state,
-      curTabIdx: 0,
-      tabList: [
-        {title: '全部', status: ''},
-        {title: '收入', status: 'income'},
-        {title: '支出', status: 'outcome'}
-      ],
       list: [],
       isLoading: false,
       totalPoint: 0
@@ -32,32 +26,25 @@ export default class Integral extends Component {
   }
 
   componentDidMount () {
-    const status = ''
-    const tabIdx = this.state.tabList.findIndex(tab => tab.status === status)
+    this.nextPage()
 
-    if (tabIdx >= 0) {
-      this.setState({
-        curTabIdx: tabIdx
-      }, () => {
-        this.nextPage()
-      })
-    } else {
-      this.nextPage()
-    }
   }
 
 
   async fetch (params) {
+    const { page_no: page, page_size: size } = params
+
     this.setState({ isLoading: true })
-    const { tabList, curTabIdx } = this.state
     params = {
-      ...params,
-      outin_type: tabList[curTabIdx].status
+      page,
+      size,
+      accfl: 1
     }
     const { point } = await api.member.pointTotal()
-    const { list, total_count: total } = await api.member.pointList(params)
-    const nList = pickBy(list, {
-      outin_type: 'outin_type',
+    const { data , total_count: total} = await api.member.pointList(params)
+    console.log(data, 58)
+    const nList = pickBy(data, {
+      chngdate: ({ chngdate }) => chngdate.substring(0, 3)+ '-',
       point: 'point',
       point_desc: 'point_desc',
       created: ({ created }) => (formatDataTime(created * 1000)),
@@ -72,29 +59,12 @@ export default class Integral extends Component {
     }
   }
 
-  handleClickTab = (idx) => {
-    if (this.state.page.isLoading) return
-
-    if (idx !== this.state.curTabIdx) {
-      this.resetPage()
-      this.setState({
-        list: []
-      })
-    }
-
-    this.setState({
-      curTabIdx: idx
-    }, () => {
-      this.nextPage()
-    })
-  }
-
   handleClickRoam = () => {
 
   }
 
   render () {
-    const { curTabIdx, tabList, list, page, totalPoint } = this.state
+    const { list, page, totalPoint } = this.state
 
     return (
       <View className='page-member-integral'>
@@ -102,7 +72,51 @@ export default class Integral extends Component {
           title='积分'
           leftIconType='chevron-left'
         />
-        <View className='member-integral__hd'>
+        <View className='member-point__hd'>
+          <View className='member-point__hd_content'>
+            <Text className='member-point__num'>666</Text>
+            <Text>积分</Text>
+          </View>
+        </View>
+        <View className='member-point__content'>
+          <ScrollView
+            scrollY
+            className='member-point__scroll'
+            onScrollToLower={this.nextPage}
+          >
+            <AtDivider fontColor='#787878' lineColor='#EFEFEF' content='积分详情' />
+            {
+              list.map((item, idx) => {
+                return (
+                  <View key={idx}>
+                    <View className='point-item'>
+                      <View className='point-item__title'>
+                        <Text className='point-item__title-name'>{item.point_desc}</Text>
+                        <Text className={`point-item__title-${item.outin_type}`}>{item.outin_type === 'in' ? '+' : '-'}{item.point}</Text>
+                      </View>
+                      <View className='point-item__data'>{item.chngdate}</View>
+                    </View>
+                  </View>
+                )
+              })
+            }
+            {
+              page.isLoading && <Loading>正在加载...</Loading>
+            }
+            {
+              !page.isLoading && !page.hasNext && !list.length
+              && (
+                <View>
+                  <SpNote className='integral_empty' img='integral_empty.png'>赶快赚积分吧~</SpNote>
+                  <View className='btns'>
+                    <AtButton type='primary' onClick={this.handleClickRoam}>随便逛逛</AtButton>
+                  </View>
+                </View>
+              )
+            }
+          </ScrollView>
+        </View>
+        {/*<View className='member-integral__hd'>
           <View className='integral-info'>
             <View className='integral-number'>
               <Text className='sp-icon sp-icon-jifen1 icon-point'> </Text>
@@ -110,15 +124,9 @@ export default class Integral extends Component {
             </View>
             <View className='integral-text'>当前可用积分</View>
           </View>
-        </View>
+        </View>*/}
 
-        <View className='member-integral__bd'>
-          <View className='integral-sec integral-info__status'>
-            <View className='integral-sec__horn'>
-              <Text className='sp-icon sp-icon-laba laba_horn'> </Text>
-            </View>
-            <Text className='integral-sec__share'>分享推荐可获取积分呦，赶紧行动吧~</Text>
-          </View>
+       {/* <View className='member-integral__bd'>
 
           <View className='integral-sec member-integral'>
             <AtTabs
@@ -177,7 +185,7 @@ export default class Integral extends Component {
               }
             </ScrollView>
           </View>
-        </View>
+        </View>*/}
       </View>
     )
   }

@@ -11,6 +11,7 @@ exports.cancel = cancel;
 exports.getCount = getCount;
 exports.deliveryInfo = deliveryInfo;
 exports.tradeQuery = tradeQuery;
+exports.imgUpload = imgUpload;
 
 var _req = require('./req.js');
 
@@ -53,4 +54,10 @@ function deliveryInfo(order_id) {
 
 function tradeQuery(trade_id) {
   return _req2.default.get('/tradequery', { trade_id: trade_id });
+}
+
+function imgUpload() {
+  var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  return _req2.default.get('/espier/upload', params);
 }

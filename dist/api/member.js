@@ -173,7 +173,7 @@ function h5_qrcodeData() {
 function pointList() {
   var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  return _req2.default.get('/point/member', params);
+  return _req2.default.get('/member/dh/point/history', params);
 }
 
 function pointTotal() {

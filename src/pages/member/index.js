@@ -125,7 +125,7 @@ export default class MemberIndex extends Component {
                 onClick={this.handleClickApp}
               ></View>
             </View>
-            <View className='member-btn__item'>
+            <View className='member-btn__item' onClick={this.navigateTo.bind(this,'/pages/member/point')}>
               <View className='in-icon in-icon-coin' />
               <Text>我的积分</Text>
             </View>

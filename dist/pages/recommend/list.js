@@ -74,7 +74,18 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }, {
     key: "componentDidShow",
     value: function componentDidShow() {
-      this.nextPage();
+      var _this2 = this;
+
+      _index2.default.showLoading();
+      this.resetPage();
+      this.setState({
+        list: []
+      });
+      setTimeout(function () {
+        _this2.nextPage();
+        _index2.default.hideLoading();
+      }, 200);
+
       // this.praiseNum()
     }
   }, {
@@ -161,7 +172,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }, {
     key: "_createData",
     value: function _createData() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
@@ -180,8 +191,8 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
           $original: (0, _index.internal_get_original)(item)
         };
 
-        _this2.anonymousFunc0Array[__index0] = function () {
-          return _this2.handleClickItem(item.$original);
+        _this3.anonymousFunc0Array[__index0] = function () {
+          return _this3.handleClickItem(item.$original);
         };
 
         return {

@@ -2,7 +2,7 @@
     <at-float-layout isOpened="{{isOpened}}" __triggerObserer="{{ _triggerObserer }}">
         <view class="payment-picker">
             <view class="payment-picker__hd"><text>支付方式</text>
-                <view class="at-icon at-icon-close" bindtap="funPrivatefCIVD"></view>
+                <view class="at-icon at-icon-close" bindtap="funPrivatepSsxz"></view>
             </view>
             <view class="payment-picker__bd">
                 <view class="payment-item" bindtap="handlePaymentChange" data-e-tap-so="this" data-e-tap-a-a="dhpoint">
@@ -19,7 +19,7 @@
                         <sp-checkbox checked="{{anonymousState__temp3}}" __triggerObserer="{{ _triggerObserer }}"></sp-checkbox>
                     </view>
                 </view>
-                <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" loading="{{loading}}" bindonclick="funPrivatexknIO" __fn_onClick="{{true}}">确定</at-button>
+                <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" loading="{{loading}}" bindonclick="funPrivateTEove" __fn_onClick="{{true}}">确定</at-button>
             </view>
         </view>
     </at-float-layout>

@@ -57,8 +57,13 @@ var TradeList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_class 
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TradeList.__proto__ || Object.getPrototypeOf(TradeList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loopArray0", "curTabIdx", "tabList", "list", "page", "curItemActionsId"], _this.onPullDownRefresh = function () {
       // debugger
+      _index2.default.showLoading({
+        title: '加载中',
+        icon: 'none'
+      });
       _this.resetPage(function () {
         _this.nextPage();
+        _index2.default.hideLoading();
       });
     }, _this.handleClickTab = function (idx) {
       _this.hideLayer();

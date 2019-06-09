@@ -25,7 +25,16 @@ export default class RecommendList extends Component {
   }
 
   componentDidShow () {
-    this.nextPage()
+    Taro.showLoading()
+    this.resetPage()
+    this.setState({
+      list: [],
+    })
+    setTimeout(()=>{
+      this.nextPage()
+      Taro.hideLoading()
+    }, 200)
+
     // this.praiseNum()
   }
 

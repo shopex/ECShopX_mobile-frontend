@@ -50,22 +50,7 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Integral.__proto__ || Object.getPrototypeOf(Integral)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["curTabIdx", "tabList", "list", "page", "totalPoint", "isLoading"], _this.handleClickTab = function (idx) {
-      if (_this.state.page.isLoading) {
-        return;
-      }if (idx !== _this.state.curTabIdx) {
-        _this.resetPage();
-        _this.setState({
-          list: []
-        });
-      }
-
-      _this.setState({
-        curTabIdx: idx
-      }, function () {
-        _this.nextPage();
-      });
-    }, _this.handleClickRoam = function () {}, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Integral.__proto__ || Object.getPrototypeOf(Integral)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["list", "page", "isLoading", "totalPoint"], _this.handleClickRoam = function () {}, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Integral, [{
@@ -74,8 +59,6 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
       _get(Integral.prototype.__proto__ || Object.getPrototypeOf(Integral.prototype), "_constructor", this).call(this, props);
 
       this.state = _extends({}, this.state, {
-        curTabIdx: 0,
-        tabList: [{ title: '全部', status: '' }, { title: '收入', status: 'income' }, { title: '支出', status: 'outcome' }],
         list: [],
         isLoading: false,
         totalPoint: 0
@@ -84,39 +67,27 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
-
-      var status = '';
-      var tabIdx = this.state.tabList.findIndex(function (tab) {
-        return tab.status === status;
-      });
-
-      if (tabIdx >= 0) {
-        this.setState({
-          curTabIdx: tabIdx
-        }, function () {
-          _this2.nextPage();
-        });
-      } else {
-        this.nextPage();
-      }
+      this.nextPage();
     }
   }, {
     key: "fetch",
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
-        var _state, tabList, curTabIdx, _ref3, point, _ref4, list, total, nList;
+        var _params, page, size, _ref3, point, _ref4, data, total, nList;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                this.setState({ isLoading: true });
-                _state = this.state, tabList = _state.tabList, curTabIdx = _state.curTabIdx;
+                _params = params, page = _params.page_no, size = _params.page_size;
 
-                params = _extends({}, params, {
-                  outin_type: tabList[curTabIdx].status
-                });
+
+                this.setState({ isLoading: true });
+                params = {
+                  page: page,
+                  size: size,
+                  accfl: 1
+                };
                 _context.next = 5;
                 return _index6.default.member.pointTotal();
 
@@ -128,14 +99,19 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
 
               case 9:
                 _ref4 = _context.sent;
-                list = _ref4.list;
+                data = _ref4.data;
                 total = _ref4.total_count;
-                nList = (0, _index4.pickBy)(list, {
-                  outin_type: 'outin_type',
+
+                console.log(data, 58);
+                nList = (0, _index4.pickBy)(data, {
+                  chngdate: function chngdate(_ref5) {
+                    var _chngdate = _ref5.chngdate;
+                    return _chngdate.substring(0, 3) + '-';
+                  },
                   point: 'point',
                   point_desc: 'point_desc',
-                  created: function created(_ref5) {
-                    var _created = _ref5.created;
+                  created: function created(_ref6) {
+                    var _created = _ref6.created;
                     return (0, _index4.formatDataTime)(_created * 1000);
                   }
                 });
@@ -149,7 +125,7 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
                   total: total
                 });
 
-              case 15:
+              case 16:
               case "end":
                 return _context.stop();
             }
@@ -171,12 +147,10 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
       var __isRunloopRef = arguments[2];
       ;
 
-      var _state2 = this.__state,
-          curTabIdx = _state2.curTabIdx,
-          tabList = _state2.tabList,
-          list = _state2.list,
-          page = _state2.page,
-          totalPoint = _state2.totalPoint;
+      var _state = this.__state,
+          list = _state.list,
+          page = _state.page,
+          totalPoint = _state.totalPoint;
 
 
       Object.assign(this.__state, {
@@ -187,7 +161,7 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
   }]);
 
   return Integral;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickTab", "nextPage", "handleClickRoam"], _class2.defaultProps = {}, _temp2)) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["nextPage", "handleClickRoam"], _class2.defaultProps = {}, _temp2)) || _class;
 
 exports.default = Integral;
 
