@@ -26,9 +26,9 @@ var _index6 = require("../../spx/index.js");
 
 var _index7 = _interopRequireDefault(_index6);
 
-var _qiniu = require("../../utils/qiniu.js");
+var _azureWry = require("../../utils/azure-wry.js");
 
-var _qiniu2 = _interopRequireDefault(_qiniu);
+var _azureWry2 = _interopRequireDefault(_azureWry);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39,6 +39,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// import AzureStorage from 'azure-storage/browser/azure-storage.blob.export'
 
 function resolveBlobFromFile(url, type) {
   return fetch(url).then(function (res) {
@@ -88,7 +90,7 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
                 }
                 imgFiles = data.slice(0, 1);
 
-                _qiniu2.default.uploadImageFn(imgFiles, '/espier/image_upload_token', 'qiniu', 'aftersales').then(function (res) {
+                _azureWry2.default.uploadImageFn(imgFiles, '/espier/image_upload_token', 'qiniu', 'aftersales').then(function (res) {
                   _this.setState({
                     imgs: res
                   });
@@ -217,7 +219,7 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _state = this.__state,
