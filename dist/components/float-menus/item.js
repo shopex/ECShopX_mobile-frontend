@@ -69,8 +69,8 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateEoShZ",
-    value: function funPrivateEoShZ() {
+    key: "funPrivatejfQCV",
+    value: function funPrivatejfQCV() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -101,7 +101,7 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateEoShZ"], _class.options = {
+}, _class.$$events = ["funPrivatejfQCV"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   onClick: null,

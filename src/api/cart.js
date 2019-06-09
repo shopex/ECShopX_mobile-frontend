@@ -43,8 +43,15 @@ export function select ({ cart_id, is_checked }) {
   return req.put('/cartupdate/checkstatus', { cart_id, is_checked })
 }
 
-export function updateNum ({ cart_id, num }) {
-  return req.put('/cartupdate/num', { cart_id, num })
+export function updateNum (item_id, num) {
+  return req.post(`/cart`, {
+    item_id,
+    num,
+    isAccumulate: false,
+    shop_type: 'distributor'
+  })
+
+  // return req.put('/cartupdate/num', { cart_id, num })
 }
 
 export function updatePromotion ({ cart_id, activity_id }) {
