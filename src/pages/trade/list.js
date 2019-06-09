@@ -54,8 +54,13 @@ export default class TradeList extends Component {
 
   onPullDownRefresh = () =>{
     // debugger
+    Taro.showLoading({
+      title: '加载中',
+      icon: 'none',
+    })
     this.resetPage(() => {
       this.nextPage()
+      Taro.hideLoading()
     })
   }
 
