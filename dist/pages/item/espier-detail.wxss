@@ -19,6 +19,10 @@
 }
 .goods-detail__content {
   background: #fff;
+  font-size: 30rpx;
+}
+.goods-detail__content .wxParse-inline {
+  font-size: 30rpx;
 }
 
 .goods-imgs__wrap {
