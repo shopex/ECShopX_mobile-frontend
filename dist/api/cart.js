@@ -79,16 +79,20 @@ function select(_ref2) {
   return _req2.default.put('/cartupdate/checkstatus', { cart_id: cart_id, is_checked: is_checked });
 }
 
-function updateNum(_ref3) {
-  var cart_id = _ref3.cart_id,
-      num = _ref3.num;
+function updateNum(item_id, num) {
+  return _req2.default.post('/cart', {
+    item_id: item_id,
+    num: num,
+    isAccumulate: false,
+    shop_type: 'distributor'
+  });
 
-  return _req2.default.put('/cartupdate/num', { cart_id: cart_id, num: num });
+  // return req.put('/cartupdate/num', { cart_id, num })
 }
 
-function updatePromotion(_ref4) {
-  var cart_id = _ref4.cart_id,
-      activity_id = _ref4.activity_id;
+function updatePromotion(_ref3) {
+  var cart_id = _ref3.cart_id,
+      activity_id = _ref3.activity_id;
 
   return _req2.default.put('/cartupdate/promotion', { cart_id: cart_id, activity_id: activity_id });
 }

@@ -248,12 +248,37 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       return groups;
     }
   }, {
+    key: "processCart",
+    value: function processCart(_ref5) {
+      var _this3 = this;
+
+      var _ref5$valid_cart = _ref5.valid_cart,
+          valid_cart = _ref5$valid_cart === undefined ? [] : _ref5$valid_cart,
+          _ref5$invalid_cart = _ref5.invalid_cart,
+          invalid_cart = _ref5$invalid_cart === undefined ? [] : _ref5$invalid_cart;
+
+      var list = valid_cart.map(function (shopCart) {
+        var tList = _this3.transformCartList(shopCart.list);
+        return _extends({}, shopCart, {
+          list: tList
+        });
+      });
+
+      var invalidList = this.transformCartList(invalid_cart);
+      this.setState({
+        invalidList: invalidList
+      });
+
+      _index4.log.debug('[cart fetchCart]', list);
+      this.__triggerPropsFn("onUpdateCart", [null].concat([list]));
+
+      return list;
+    }
+  }, {
     key: "fetchCart",
     value: function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(cb) {
-        var _this3 = this;
-
-        var valid_cart, invalid_cart, res, list, invalidList;
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(cb) {
+        var valid_cart, invalid_cart, res, list;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -280,23 +305,15 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
                 });
 
               case 12:
-                list = valid_cart.map(function (shopCart) {
-                  var tList = _this3.transformCartList(shopCart.list);
-                  return _extends({}, shopCart, {
-                    list: tList
-                  });
-                });
-                invalidList = this.transformCartList(invalid_cart);
-
-                this.setState({
-                  invalidList: invalidList
+                list = this.processCart({
+                  valid_cart: valid_cart,
+                  invalid_cart: invalid_cart
                 });
 
-                _index4.log.debug('[cart fetchCart]', list);
-                this.__triggerPropsFn("onUpdateCart", [null].concat([list]));
+
                 cb && cb(list);
 
-              case 18:
+              case 14:
               case "end":
                 return _context2.stop();
             }
@@ -305,7 +322,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }));
 
       function fetchCart(_x2) {
-        return _ref5.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       }
 
       return fetchCart;
@@ -324,7 +341,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   }, {
     key: "handleSelectionChange",
     value: function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(cart_id, checked) {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(cart_id, checked) {
         var selection;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -355,7 +372,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }));
 
       function handleSelectionChange(_x4, _x5) {
-        return _ref6.apply(this, arguments);
+        return _ref7.apply(this, arguments);
       }
 
       return handleSelectionChange;
@@ -363,18 +380,22 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   }, {
     key: "changeCartNum",
     value: function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(cart_id, num) {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(item_id, num) {
+        var res;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return _index6.default.cart.updateNum({ cart_id: cart_id, num: num });
+                return _index6.default.cart.updateNum(item_id, num);
 
               case 2:
-                this.updateCart();
+                res = _context4.sent;
 
-              case 3:
+                this.processCart(res);
+                // this.updateCart()
+
+              case 4:
               case "end":
                 return _context4.stop();
             }
@@ -383,7 +404,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }));
 
       function changeCartNum(_x6, _x7) {
-        return _ref7.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       }
 
       return changeCartNum;
@@ -400,26 +421,26 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         is_checked: 'is_checked',
         store: 'store',
         curSymbol: 'cur.symbol',
-        promotions: function promotions(_ref8) {
-          var _ref8$promotions = _ref8.promotions,
-              _promotions = _ref8$promotions === undefined ? [] : _ref8$promotions,
-              cart_id = _ref8.cart_id;
+        promotions: function promotions(_ref9) {
+          var _ref9$promotions = _ref9.promotions,
+              _promotions = _ref9$promotions === undefined ? [] : _ref9$promotions,
+              cart_id = _ref9.cart_id;
 
           return _promotions.map(function (p) {
             p.cart_id = cart_id;
             return p;
           });
         },
-        img: function img(_ref9) {
-          var pics = _ref9.pics;
+        img: function img(_ref10) {
+          var pics = _ref10.pics;
           return pics;
         },
-        price: function price(_ref10) {
-          var _price = _ref10.price;
+        price: function price(_ref11) {
+          var _price = _ref11.price;
           return (+_price / 100).toFixed(2);
         },
-        market_price: function market_price(_ref11) {
-          var _market_price = _ref11.market_price;
+        market_price: function market_price(_ref12) {
+          var _market_price = _ref12.market_price;
           return (+_market_price / 100).toFixed(2);
         },
         num: 'num'
@@ -467,6 +488,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
             $original: (0, _index.internal_get_original)(shopCart)
           };
 
+          console.log(shopCart.$original);
           var activity = shopCart.$original.activity;
 
 
@@ -615,7 +637,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   };
 
   this.handleDelect = function () {
-    var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(cart_id) {
+    var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(cart_id) {
       var res, cartIds;
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
@@ -662,20 +684,42 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
     }));
 
     return function (_x8) {
-      return _ref14.apply(this, arguments);
+      return _ref15.apply(this, arguments);
     };
   }();
 
-  this.debounceChangeCartNum = (0, _debounce2.default)(function () {
-    var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(cart_id, num) {
+  this.handleQuantityChange = function () {
+    var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(item, num, e) {
+      var item_id, cart_id;
       return regeneratorRuntime.wrap(function _callee8$(_context8) {
         while (1) {
           switch (_context8.prev = _context8.next) {
             case 0:
-              _context8.next = 2;
-              return _this4.changeCartNum(cart_id, num);
+              e.stopPropagation();
 
-            case 2:
+              item_id = item.item_id, cart_id = item.cart_id;
+
+              _this4.updating = true;
+              _index2.default.showLoading({
+                mask: true
+              });
+
+              _this4.__triggerPropsFn("onUpdateCartNum", [null].concat([cart_id, num]));
+              _context8.next = 7;
+              return _this4.changeCartNum(item_id, num);
+
+            case 7:
+              _index2.default.hideLoading();
+              // this.updateCart.cancel()
+
+              // if (this.lastCartId === cart_id || this.lastCartId === undefined) {
+              //   await this.debounceChangeCartNum(cart_id, num)
+              // } else {
+              //   this.lastCartId = cart_id
+              //   await this.changeCartNum(cart_id, num)
+              // }
+
+            case 8:
             case "end":
               return _context8.stop();
           }
@@ -683,44 +727,17 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       }, _callee8, _this4);
     }));
 
-    return function (_x9, _x10) {
-      return _ref15.apply(this, arguments);
-    };
-  }(), 200);
-
-  this.handleQuantityChange = function () {
-    var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(cart_id, num, e) {
-      return regeneratorRuntime.wrap(function _callee9$(_context9) {
-        while (1) {
-          switch (_context9.prev = _context9.next) {
-            case 0:
-              e.stopPropagation();
-              _this4.updating = true;
-              _this4.__triggerPropsFn("onUpdateCartNum", [null].concat([cart_id, num]));
-              // this.updateCart.cancel()
-
-              _context9.next = 5;
-              return _this4.changeCartNum(cart_id, num);
-
-            case 5:
-            case "end":
-              return _context9.stop();
-          }
-        }
-      }, _callee9, _this4);
-    }));
-
-    return function (_x11, _x12, _x13) {
+    return function (_x9, _x10, _x11) {
       return _ref16.apply(this, arguments);
     };
   }();
 
   this.handleAllSelect = function () {
-    var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(checked) {
+    var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(checked) {
       var selection, cartIds;
-      return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context9.prev = _context9.next) {
             case 0:
               selection = _this4.state.selection;
               cartIds = _this4.props.cartIds;
@@ -735,22 +752,22 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
               }
 
               _index2.default.showLoading();
-              _context10.prev = 4;
-              _context10.next = 7;
+              _context9.prev = 4;
+              _context9.next = 7;
               return _index6.default.cart.select({
                 cart_id: cartIds,
                 is_checked: checked
               });
 
             case 7:
-              _context10.next = 12;
+              _context9.next = 12;
               break;
 
             case 9:
-              _context10.prev = 9;
-              _context10.t0 = _context10["catch"](4);
+              _context9.prev = 9;
+              _context9.t0 = _context9["catch"](4);
 
-              console.log(_context10.t0);
+              console.log(_context9.t0);
 
             case 12:
               _index2.default.hideLoading();
@@ -758,13 +775,13 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
             case 14:
             case "end":
-              return _context10.stop();
+              return _context9.stop();
           }
         }
-      }, _callee10, _this4, [[4, 9]]);
+      }, _callee9, _this4, [[4, 9]]);
     }));
 
-    return function (_x14) {
+    return function (_x12) {
       return _ref17.apply(this, arguments);
     };
   }();
@@ -798,11 +815,11 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   };
 
   this.handleSelectPromotion = function () {
-    var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(item) {
+    var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(item) {
       var activity_id, cart_id;
-      return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      return regeneratorRuntime.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
               activity_id = item.marketing_id, cart_id = item.cart_id;
 
@@ -812,14 +829,14 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
               _this4.setState({
                 curPromotions: null
               });
-              _context11.next = 5;
+              _context10.next = 5;
               return _index6.default.cart.updatePromotion({
                 activity_id: activity_id,
                 cart_id: cart_id
               });
 
             case 5:
-              _context11.next = 7;
+              _context10.next = 7;
               return _this4.fetchCart();
 
             case 7:
@@ -827,13 +844,13 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
             case 8:
             case "end":
-              return _context11.stop();
+              return _context10.stop();
           }
         }
-      }, _callee11, _this4);
+      }, _callee10, _this4);
     }));
 
-    return function (_x15) {
+    return function (_x13) {
       return _ref18.apply(this, arguments);
     };
   }();

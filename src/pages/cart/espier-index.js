@@ -160,19 +160,7 @@ export default class CartIndex extends Component {
     return groups
   }
 
-  async fetchCart (cb) {
-    let valid_cart = [], invalid_cart = []
-
-    try {
-      const res = await api.cart.get()
-      valid_cart = res.valid_cart || valid_cart
-      invalid_cart = res.invalid_cart || invalid_cart
-    } catch (e) {
-      this.setState({
-        error: e
-      })
-    }
-
+  processCart ({ valid_cart = [], invalid_cart = [] }) {
     const list = valid_cart.map(shopCart => {
       const tList = this.transformCartList(shopCart.list)
       return {
@@ -188,6 +176,28 @@ export default class CartIndex extends Component {
 
     log.debug('[cart fetchCart]', list)
     this.props.onUpdateCart(list)
+
+    return list
+  }
+
+  async fetchCart (cb) {
+    let valid_cart = [], invalid_cart = []
+
+    try {
+      const res = await api.cart.get()
+      valid_cart = res.valid_cart || valid_cart
+      invalid_cart = res.invalid_cart || invalid_cart
+    } catch (e) {
+      this.setState({
+        error: e
+      })
+    }
+
+    const list = this.processCart({
+      valid_cart,
+      invalid_cart
+    })
+
     cb && cb(list)
   }
 
@@ -260,23 +270,26 @@ export default class CartIndex extends Component {
     this.updateCart()
   }
 
-  async changeCartNum (cart_id, num) {
+  async changeCartNum (item_id, num) {
     // this.updateCart.cancel()
-    await api.cart.updateNum({ cart_id, num })
-    this.updateCart()
+    const res = await api.cart.updateNum(item_id, num)
+    this.processCart(res)
+    // this.updateCart()
   }
 
-  debounceChangeCartNum = debounce(async (cart_id, num) => {
-    await this.changeCartNum(cart_id, num)
-  }, 200)
-
-  handleQuantityChange = async (cart_id, num, e) => {
+  handleQuantityChange = async (item, num, e) => {
     e.stopPropagation()
-    this.updating = true
-    this.props.onUpdateCartNum(cart_id, num)
-    // this.updateCart.cancel()
 
-    await this.changeCartNum(cart_id, num)
+    const { item_id, cart_id } = item
+    this.updating = true
+    Taro.showLoading({
+      mask: true
+    })
+
+    this.props.onUpdateCartNum(cart_id, num)
+    await this.changeCartNum(item_id, num)
+    Taro.hideLoading()
+    // this.updateCart.cancel()
 
     // if (this.lastCartId === cart_id || this.lastCartId === undefined) {
     //   await this.debounceChangeCartNum(cart_id, num)
@@ -445,6 +458,7 @@ export default class CartIndex extends Component {
                   >
                     {
                       activityGroup.map(shopCart => {
+                        console.log(shopCart)
                         const { activity } = shopCart
 
                         return shopCart.list.length > 0 && (
@@ -468,7 +482,7 @@ export default class CartIndex extends Component {
                                   <CartItem
                                     key={item.cart_id}
                                     info={item}
-                                    onNumChange={this.handleQuantityChange.bind(this, item.cart_id)}
+                                    onNumChange={this.handleQuantityChange.bind(this, item)}
                                     onClickPromotion={this.handleClickPromotion.bind(this, item.cart_id)}
                                     onClickImgAndTitle={this.handleClickToDetail.bind(this, item.item_id)}
                                   >
