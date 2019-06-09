@@ -422,7 +422,13 @@ export default class CartCheckout extends Component {
       order_type: orderInfo.order_type
     }
 
-    const config = await api.cashier.getPayment(paymentParams)
+    let config
+    try {
+      config = await api.cashier.getPayment(paymentParams)
+    } catch (e) {
+      console.log(e)
+    }
+
     this.setState({
       submitLoading: false
     })
