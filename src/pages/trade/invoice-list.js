@@ -5,7 +5,7 @@ import _mapKeys from 'lodash/mapKeys'
 import { Loading, SpNote, NavBar } from '@/components'
 import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
-import { log, pickBy, resolveOrderStatus } from '@/utils'
+import { log, pickBy, resolveOrderStatus, authSetting } from '@/utils'
 import TradeItem from './comps/item'
 
 import './invoice-list.scss'
@@ -92,8 +92,36 @@ export default class InvoiceList extends Component {
     }
   }
 
-  handleClickBtn = (type) => {
+  handleClickBtn = async (type) => {
     if(type === 'add-card') {
+      const showErr = (title = '下载失败') => {
+        return Taro.showToast({
+          icon: 'none',
+          title
+        })
+      }
+      authSetting('writePhotosAlbum', async () => {
+        const { tempFilePath } = await Taro.downloadFile({
+          url: 'http://mmbiz.qpic.cn/mmbiz_png/1nDJByqmW2drJSibeWL0bEib2rj4OxG6ep2Y8VggMzP2pSSHVGNW3eIEy9BUiaMfxD4MrWUQ2oVaNEZs4VfQg8tSw/0?wx_fmt=png'
+        })
+
+        try {
+          await Taro.saveImageToPhotosAlbum({
+            filePath: tempFilePath
+          })
+          Taro.showToast({
+            icon: 'success',
+            title: '成功保存照片'
+          })
+        } catch (e) {
+          console.log(e)
+        }
+
+        // this.handleClickLayer()
+
+      }, () => {
+        showErr()
+      })
     }
   }
 
@@ -131,7 +159,7 @@ export default class InvoiceList extends Component {
                         type='primary'
                         size='small'
                         onClick={this.handleClickBtn.bind(this, 'add-card')}
-                      >放入卡包</AtButton>
+                      >下载</AtButton>
                     </View>
                   }
                 />

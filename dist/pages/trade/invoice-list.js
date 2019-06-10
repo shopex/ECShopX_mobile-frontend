@@ -101,9 +101,81 @@ var InvoiceList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_clas
       return function (_x, _x2) {
         return _ref2.apply(this, arguments);
       };
-    }(), _this.handleClickBtn = function (type) {
-      if (type === 'add-card') {}
-    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    }(), _this.handleClickBtn = function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(type) {
+        var showErr;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (type === 'add-card') {
+                  showErr = function showErr() {
+                    var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '下载失败';
+
+                    return _index2.default.showToast({
+                      icon: 'none',
+                      title: title
+                    });
+                  };
+
+                  (0, _index6.authSetting)('writePhotosAlbum', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                    var _ref5, tempFilePath;
+
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            _context2.next = 2;
+                            return _index2.default.downloadFile({
+                              url: 'http://mmbiz.qpic.cn/mmbiz_png/1nDJByqmW2drJSibeWL0bEib2rj4OxG6ep2Y8VggMzP2pSSHVGNW3eIEy9BUiaMfxD4MrWUQ2oVaNEZs4VfQg8tSw/0?wx_fmt=png'
+                            });
+
+                          case 2:
+                            _ref5 = _context2.sent;
+                            tempFilePath = _ref5.tempFilePath;
+                            _context2.prev = 4;
+                            _context2.next = 7;
+                            return _index2.default.saveImageToPhotosAlbum({
+                              filePath: tempFilePath
+                            });
+
+                          case 7:
+                            _index2.default.showToast({
+                              icon: 'success',
+                              title: '成功保存照片'
+                            });
+                            _context2.next = 13;
+                            break;
+
+                          case 10:
+                            _context2.prev = 10;
+                            _context2.t0 = _context2["catch"](4);
+
+                            console.log(_context2.t0);
+
+                          case 13:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, _this2, [[4, 10]]);
+                  })), function () {
+                    showErr();
+                  });
+                }
+
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, _this2);
+      }));
+
+      return function (_x3) {
+        return _ref3.apply(this, arguments);
+      };
+    }(), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(InvoiceList, [{
@@ -126,12 +198,12 @@ var InvoiceList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_clas
   }, {
     key: "fetch",
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
-        var _ref4, list, total, nList;
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(params) {
+        var _ref7, list, total, nList;
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 params = (0, _mapKeys3.default)(_extends({}, params, {
                   order_type: 'normal',
@@ -144,42 +216,42 @@ var InvoiceList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_clas
                   }return key;
                 });
 
-                _context2.next = 3;
+                _context4.next = 3;
                 return _index4.default.trade.list(params);
 
               case 3:
-                _ref4 = _context2.sent;
-                list = _ref4.list;
-                total = _ref4.pager.count;
+                _ref7 = _context4.sent;
+                list = _ref7.list;
+                total = _ref7.pager.count;
                 nList = (0, _index6.pickBy)(list, {
                   tid: 'order_id',
                   status_desc: 'order_status_msg',
-                  status: function status(_ref5) {
-                    var order_status = _ref5.order_status;
+                  status: function status(_ref8) {
+                    var order_status = _ref8.order_status;
                     return (0, _index6.resolveOrderStatus)(order_status);
                   },
-                  totalItems: function totalItems(_ref6) {
-                    var items = _ref6.items;
+                  totalItems: function totalItems(_ref9) {
+                    var items = _ref9.items;
                     return items.reduce(function (acc, item) {
                       return +item.num + acc;
                     }, 0);
                   },
-                  payment: function payment(_ref7) {
-                    var total_fee = _ref7.total_fee;
+                  payment: function payment(_ref10) {
+                    var total_fee = _ref10.total_fee;
                     return (total_fee / 100).toFixed(2);
                   },
                   pay_type: 'pay_type',
                   point: 'point',
                   create_date: 'create_date',
-                  order: function order(_ref8) {
-                    var items = _ref8.items;
+                  order: function order(_ref11) {
+                    var items = _ref11.items;
                     return (0, _index6.pickBy)(items, {
                       order_id: 'order_id',
                       item_id: 'item_id',
                       pic_path: 'pic',
                       title: 'item_name',
-                      price: function price(_ref9) {
-                        var item_fee = _ref9.item_fee;
+                      price: function price(_ref12) {
+                        var item_fee = _ref12.item_fee;
                         return (+item_fee / 100).toFixed(2);
                       },
                       point: 'item_point',
@@ -195,18 +267,18 @@ var InvoiceList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_clas
                   list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList))
                 });
 
-                return _context2.abrupt("return", { total: total });
+                return _context4.abrupt("return", { total: total });
 
               case 10:
               case "end":
-                return _context2.stop();
+                return _context4.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee4, this);
       }));
 
-      function fetch(_x3) {
-        return _ref3.apply(this, arguments);
+      function fetch(_x5) {
+        return _ref6.apply(this, arguments);
       }
 
       return fetch;
