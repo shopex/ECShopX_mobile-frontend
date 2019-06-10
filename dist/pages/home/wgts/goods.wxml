@@ -15,12 +15,12 @@
                     <view class="goods-content__info_img">
                         <image class="img-style" mode="aspectFill" src="{{item.img_url}}"></image>
                     </view>
-                    <view class="goods-content__info_text"><text>{{item.item_name}}</text><text>{{item.isOnsale ? '点击查看产品详情' : '该商品已下架'}}</text>
+                    <view class="goods-content__info_text"><text>{{item.item_name}}</text><text>{{item.itemStatus ? '点击查看产品详情' : '该商品已下架'}}</text>
                     </view>
                 </view>
                 <view class="goods-content__operate">
-                    <view class="{{'goods-content__operate_btn ' + (item.isOnsale ? '' : 'disabled__operate')}}" catchtap="handleClickOperate" data-e-tap-so="this" data-e-tap-a-a="{{item}}" data-e-tap-a-b="collect">{{is_fav ? '移除心愿' : '加入心愿'}}</view><text>|</text>
-                    <view class="{{'goods-content__operate_btn ' + (item.isOnsale ? '' : 'disabled__operate')}}" catchtap="handleClickOperate" data-e-tap-so="this" data-e-tap-a-a="{{item}}" data-e-tap-a-b="buy">加入购买</view>
+                    <view class="{{'goods-content__operate_btn ' + (item.itemStatus ? '' : 'disabled__operate')}}" catchtap="handleClickOperate" data-e-tap-so="this" data-e-tap-a-a="{{item}}" data-e-tap-a-b="collect">{{item.favStatus ? '移除心愿' : '加入心愿'}}</view><text>|</text>
+                    <view class="{{'goods-content__operate_btn ' + (item.itemStatus ? '' : 'disabled__operate')}}" catchtap="handleClickOperate" data-e-tap-so="this" data-e-tap-a-a="{{item}}" data-e-tap-a-b="buy">加入购买</view>
                 </view>
             </view>
         </view>

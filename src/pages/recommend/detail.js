@@ -27,13 +27,13 @@ export default class recommendDetail extends Component {
 
   componentDidShow () {
     this.fetchContent()
-    this.praiseCheck()
+    // this.praiseCheck()
   }
 
   componentDidMount () {
   }
 
-  async fetch (params) {
+  /*async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -65,13 +65,13 @@ export default class recommendDetail extends Component {
     return {
       total
     }
-  }
-  async fetchContent () {
+  }*/
 
+  // 确认本人文章是否已收藏
+  confirmCollectArticle = async () => {
     const { id } = this.$router.params
-    const resFocus = await api.article.focus(id)
     if( S.getAuthToken()){
-      const res = await api.article.delCollectArticleInfo({article_id: id})
+      const res = await api.article.collectArticleInfo({article_id: id})
       if(res.length === 0) {
         this.setState({
           collectArticleStatus: false
@@ -80,40 +80,59 @@ export default class recommendDetail extends Component {
         this.setState({
           collectArticleStatus: true
         })
-      } }
-
-    if(resFocus) {
-      const info = S.getAuthToken() ? await api.article.authDetail(id): await api.article.detail(id)
-
-      info.updated_str = formatTime(info.updated * 1000, 'YYYY-MM-DD')
-      this.setState({
-        info
-      }, ()=>{
-        Taro.showLoading()
-        let item_id_List = []
-        if(info.content){
-          info.content.map(item => {
-            if(item.name === 'goods') {
-              item.data.map(id_item => {
-                item_id_List.push(id_item.item_id)
-              })
-            }
-          })
-          this.setState({
-            item_id_List
-          },()=>{
-            this.resetPage()
-            setTimeout(()=>{
-              this.nextPage()
-            }, 200)
-          })
-
-        }
-      })
+      }
     }
   }
 
-  praiseCheck = async () => {
+  // 拉取详情
+  detailInfo = async (id) => {
+    const info = S.getAuthToken() ? await api.article.detailAuth(id) : await api.article.detail(id)
+
+    info.updated_str = formatTime(info.updated * 1000, 'YYYY-MM-DD')
+
+    this.setState({
+      info
+    })
+  }
+
+  async fetchContent () {
+    const { id } = this.$router.params
+
+    // 关注数加1
+    const resFocus = await api.article.focus(id)
+
+    this.confirmCollectArticle()
+
+    if(resFocus) {
+      this.detailInfo(id)
+      /*, ()=>{
+      //         Taro.showLoading()
+      //         let item_id_List = []
+      //         if(info.content){
+      //           info.content.map(item => {
+      //             if(item.name === 'goods') {
+      //               item.data.map(id_item => {
+      //                 item_id_List.push(id_item.item_id)
+      //               })
+      //             }
+      //           })
+      //           this.setState({
+      //             item_id_List
+      //           },()=>{
+      //             this.resetPage()
+      //             setTimeout(()=>{
+      //               this.nextPage()
+      //             }, 200)
+      //           })
+      //
+      //         }
+      //       }*/
+    }
+  }
+
+
+
+  /*praiseCheck = async () => {
     if(!S.getAuthToken()){
       return false
     }
@@ -122,17 +141,19 @@ export default class recommendDetail extends Component {
     this.setState({
       praiseCheckStatus: status
     })
-  }
+  }*/
 
   handleClickBar = async (type) => {
     const { id } = this.$router.params
     if (type === 'like') {
+      const { count } = await api.article.praise(id)
+      this.detailInfo(id)
       /*if(this.state.praiseCheckStatus === true){
         return false
       }*/
-      const { count } = await api.article.praise(id)
+      /*const { count } = await api.article.praise(id)
       this.praiseCheck()
-      this.fetchContent()
+      this.fetchContent()*/
     }
 
     if (type === 'mark') {
@@ -158,11 +179,15 @@ export default class recommendDetail extends Component {
           icon: 'none'
         })
       }
-      console.log(resCollectArticle, 62)
     }
   }
 
   handleShare () {
+  }
+
+  handleClickGoods = () => {
+    const { id } = this.$router.params
+    this.detailInfo(id)
   }
 
   handleToGiftMiniProgram = () => {
@@ -209,7 +234,7 @@ export default class recommendDetail extends Component {
                     {item.name === 'slider' && <WgtSlider info={item} />}
                     {item.name === 'writing' && <WgtWriting info={item} />}
                     {item.name === 'heading' && <WgtHeading info={item} />}
-                    {item.name === 'goods' && <WgtGoods info={item} />}
+                    {item.name === 'goods' && <WgtGoods onClick={this.handleClickGoods.bind('goods')} info={item} />}
                   </View>
                 )
               })
@@ -236,16 +261,16 @@ export default class recommendDetail extends Component {
           />
         </FloatMenus>
         <View className='recommend-detail__bar'>
-          <View className={`recommend-detail__bar-item ${praiseCheckStatus ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'like')}>
-            <Text className={`in-icon in-icon-like ${info.is_like ? '' : ''}`}> </Text>
-            <Text>{praiseCheckStatus ? '已赞' : '点赞'} · {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
+          <View className={`recommend-detail__bar-item ${info.isPraise ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'like')}>
+            <Text className='in-icon in-icon-like'> </Text>
+            <Text>{info.isPraise ? '已赞' : '点赞'} · {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
           </View>
           <View className={`recommend-detail__bar-item ${collectArticleStatus ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'mark')}>
-            <Text className={`in-icon in-icon-jiarushoucang ${info.is_like ? '' : ''}`}> </Text>
+            <Text className='in-icon in-icon-jiarushoucang'> </Text>
             <Text>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
           </View>
           <Button  openType='share' className='recommend-detail__bar-item' onClick={this.handleClickBar.bind(this, 'share')}>
-            <Text className={`in-icon in-icon-fenxiang ${info.is_like ? '' : ''}`}> </Text>
+            <Text className='in-icon in-icon-fenxiang'> </Text>
             <Text>分享</Text>
           </Button>
         </View>

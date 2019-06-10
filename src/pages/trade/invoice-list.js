@@ -158,8 +158,8 @@ export default class InvoiceList extends Component {
                         circle
                         type='primary'
                         size='small'
-                        onClick={this.handleClickBtn.bind(this, 'add-card')}
-                      >下载</AtButton>
+                        // onClick={this.handleClickBtn.bind(this, 'add-card')}
+                      />
                     </View>
                   }
                 />

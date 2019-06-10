@@ -24,7 +24,7 @@
                         <wgt-heading info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-heading>
                     </block>
                     <block wx:if="{{item.name === 'goods'}}">
-                        <wgt-goods info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-goods>
+                        <wgt-goods bindonclick="handleClickGoods" __triggerObserer="{{ _triggerObserer }}" info="{{item}}" __fn_onClick="{{true}}" data-e-onclick-so="'goods'"></wgt-goods>
                     </block>
                 </view>
             </view>
@@ -35,11 +35,11 @@
             <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="back-top" hide="{{anonymousState__temp}}" bindonclick="scrollBackToTop" __fn_onClick="{{true}}"></float-menu-item>
         </float-menus>
         <view class="recommend-detail__bar">
-            <view class="{{'recommend-detail__bar-item ' + (praiseCheckStatus ? 'check-true' : '')}}" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="like"><text class="{{'in-icon in-icon-like ' + (info.is_like ? '' : '')}}"></text><text>{{praiseCheckStatus ? '已赞' : '点赞'}}· {{info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}}</text>
+            <view class="{{'recommend-detail__bar-item ' + (info.isPraise ? 'check-true' : '')}}" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="like"><text class="in-icon in-icon-like"></text><text>{{info.isPraise ? '已赞' : '点赞'}}· {{info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}}</text>
             </view>
-            <view class="{{'recommend-detail__bar-item ' + (collectArticleStatus ? 'check-true' : '')}}" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="mark"><text class="{{'in-icon in-icon-jiarushoucang ' + (info.is_like ? '' : '')}}"></text><text>{{collectArticleStatus ? '已加入' : '加入心愿'}}</text>
+            <view class="{{'recommend-detail__bar-item ' + (collectArticleStatus ? 'check-true' : '')}}" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="mark"><text class="in-icon in-icon-jiarushoucang"></text><text>{{collectArticleStatus ? '已加入' : '加入心愿'}}</text>
             </view>
-            <button open-type="share" class="recommend-detail__bar-item" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="share"><text class="{{'in-icon in-icon-fenxiang ' + (info.is_like ? '' : '')}}"></text><text>分享</text>
+            <button open-type="share" class="recommend-detail__bar-item" bindtap="handleClickBar" data-e-tap-so="this" data-e-tap-a-a="share"><text class="in-icon in-icon-fenxiang"></text><text>分享</text>
             </button>
         </view>
     </view>

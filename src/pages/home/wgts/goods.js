@@ -76,7 +76,7 @@ export default class WgtGoods extends Component {
 
     e.stopPropagation()
 
-    if(info.data) {
+    /*if(info.data) {
       let onsale = true
       info.data.map(item => {
         if(item_data.item_id === item.item_id){
@@ -88,10 +88,10 @@ export default class WgtGoods extends Component {
       if(!onsale){
         return false
       }
-    }
+    }*/
     try {
       if(type === 'collect') {
-        if(this.state.count === 0) {
+        /*if(this.state.count === 0) {
           let is_fav = Boolean(this.props.favs[item_data.item_id])
           this.setState({
             count: 1,
@@ -115,7 +115,24 @@ export default class WgtGoods extends Component {
         }
         this.setState({
           is_fav: !this.state.is_fav
-        })
+        })*/
+        if(!item_data.favStatus) {
+          await api.member.addFav(item_data.item_id)
+          this.props.onAddFav(item_data)
+          Taro.showToast({
+            title: '已加入收藏',
+            icon: 'none'
+          })
+        } else {
+          await api.member.delFav(item_data.item_id)
+          this.props.onDelFav(item_data)
+          Taro.showToast({
+            title: '已移出收藏',
+            icon: 'none'
+          })
+        }
+        this.props.onClick()
+
       }
 
       if(type === 'buy') {
@@ -188,14 +205,13 @@ export default class WgtGoods extends Component {
                     </View>
                     <View className='goods-content__info_text'>
                       <Text>{item.item_name}</Text>
-                      <Text>{item.isOnsale ? '点击查看产品详情' : '该商品已下架'}</Text>
-
+                      <Text>{item.itemStatus ? '点击查看产品详情' : '该商品已下架'}</Text>
                     </View>
                   </View>
                   <View className='goods-content__operate'>
-                    <View className={`goods-content__operate_btn ${item.isOnsale ? '' : 'disabled__operate'}`} onClick={this.handleClickOperate.bind(this, item, 'collect')}>{is_fav ? '移除心愿' : '加入心愿'}</View>
+                    <View className={`goods-content__operate_btn ${item.itemStatus ? '' : 'disabled__operate'}`} onClick={this.handleClickOperate.bind(this, item, 'collect')}>{item.favStatus ? '移除心愿' : '加入心愿'}</View>
                     <Text>|</Text>
-                    <View className={`goods-content__operate_btn ${item.isOnsale ? '' : 'disabled__operate'}`} onClick={this.handleClickOperate.bind(this, item, 'buy')}>加入购买</View>
+                    <View className={`goods-content__operate_btn ${item.itemStatus ? '' : 'disabled__operate'}`} onClick={this.handleClickOperate.bind(this, item, 'buy')}>加入购买</View>
                   </View>
                 </View>
               )
