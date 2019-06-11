@@ -38,3 +38,7 @@ export function tradeQuery (trade_id) {
 export function imgUpload (params = {}) {
   return req.get(`/espier/upload`, params)
 }
+
+export function involiceList (params = {}) {
+  return req.get(`/orders/invoice`, params)
+}

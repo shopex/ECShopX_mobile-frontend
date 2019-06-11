@@ -32,16 +32,13 @@ export default class InvoiceList extends Component {
   async fetch (params) {
     params = _mapKeys({
       ...params,
-      order_type: 'normal',
-      status: 1
     }, function (val, key) {
       if (key === 'page_no') return 'page'
       if (key === 'page_size') return 'pageSize'
-
       return key
     })
 
-    const { list, pager: { count: total } } = await api.trade.list(params)
+    const { list, total_count: total } = await api.trade.involiceList(params)
     let nList = pickBy(list, {
       tid: 'order_id',
       status_desc: 'order_status_msg',
