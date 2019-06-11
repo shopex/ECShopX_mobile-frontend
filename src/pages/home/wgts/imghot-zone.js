@@ -24,19 +24,7 @@ export default class WgtImgHotZone extends Component {
 
   handleClickItem = linkPage
 
-  handleSwiperChange = (e) => {
-    const { current  } = e.detail
 
-    this.setState({
-      curIdx: current
-    })
-  }
-
-  handleClickToDetail = (to_url, id) => {
-    Taro.navigateTo({
-      url: ''
-    })
-  }
 
   render () {
     const { info } = this.props
@@ -67,7 +55,7 @@ export default class WgtImgHotZone extends Component {
                   key={index}
                   className='img-hotzone_zone'
                   style={`width: ${item.widthPer*100}%; height: ${item.heightPer*100}%; top: ${item.topPer*100}%; left: ${item.leftPer*100}%`}
-                  onClick={this.handleClickToDetail.bind(this, item.linkPage, item.id)}
+                  onClick={this.handleClickItem.bind(this, item.linkPage, item.id)}
                 >
                 </View>
               )
