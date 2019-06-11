@@ -79,9 +79,6 @@ export default class WxAuth extends Component {
 
       // 绑定过，跳转会员中心
       if (user_id) {
-        Taro.redirectTo({
-          url: '/pages/member/index'
-        })
         await this.autoLogin()
         return
       }
