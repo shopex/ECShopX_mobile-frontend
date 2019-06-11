@@ -89,7 +89,7 @@ export default class HomeIndex extends Component {
   }
 
   render () {
-    const { wgts, authStatus, page, likeList, showBackToTop } = this.state
+    const { wgts, authStatus, page, likeList, showBackToTop, scrollTop } = this.state
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -101,6 +101,7 @@ export default class HomeIndex extends Component {
           className='wgts-wrap wgts-wrap__fixed'
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
+          scrollTop={scrollTop}
           scrollY
         >
           <View className='wgts-wrap__cont'>

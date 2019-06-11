@@ -64,7 +64,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "likeList", "page", "showBackToTop", "authStatus", "isFaverite_open", "store"], _this.handleClickLicense = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "likeList", "page", "showBackToTop", "authStatus", "isFaverite_open", "store"], _this.handleClickLicense = function () {
       _index2.default.navigateTo({
         url: '/pages/home/license'
       });
@@ -206,7 +206,8 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
           authStatus = _state.authStatus,
           page = _state.page,
           likeList = _state.likeList,
-          showBackToTop = _state.showBackToTop;
+          showBackToTop = _state.showBackToTop,
+          scrollTop = _state.scrollTop;
 
 
       if (!wgts || !this.__props.store) {
@@ -214,6 +215,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       }
 
       Object.assign(this.__state, {
+        scrollTop: scrollTop,
         page: page,
         showBackToTop: showBackToTop
       });
