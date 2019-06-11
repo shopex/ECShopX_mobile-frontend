@@ -58,7 +58,7 @@ export default class TradeRefundDetail extends Component {
 
     if(type === 'contact') {
       Taro.makePhoneCall({
-        phoneNumber: '1340000'
+        phoneNumber: '021-61255625'
       })
     }
 

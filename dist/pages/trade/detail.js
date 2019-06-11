@@ -370,7 +370,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
                 if (type === 'contact') {
                   _index2.default.makePhoneCall({
-                    phoneNumber: '1340000'
+                    phoneNumber: '021-61255625'
                   });
                 }
 

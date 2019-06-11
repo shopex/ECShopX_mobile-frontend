@@ -64,7 +64,11 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "likeList", "page", "authStatus", "isFaverite_open", "store"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "likeList", "page", "authStatus", "isFaverite_open", "store"], _this.handleClickLicense = function () {
+      _index2.default.navigateTo({
+        url: '/pages/home/license'
+      });
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(HomeIndex, [{
@@ -221,7 +225,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["nextPage"], _temp2)) || _class) || _class);
+}, _class2.$$events = ["nextPage", "handleClickLicense"], _temp2)) || _class) || _class);
 exports.default = HomeIndex;
 
 Component(require('../npm/@tarojs/taro-weapp/index.js').default.createComponent(HomeIndex, true));

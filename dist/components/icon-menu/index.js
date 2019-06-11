@@ -55,7 +55,7 @@ var IconMenu = (_temp2 = _class = function (_BaseComponent) {
           });
         } else if (to === 'makephone') {
           _index2.default.makePhoneCall({
-            phoneNumber: '1340000'
+            phoneNumber: '021-61255625'
           });
         } else {
           _index2.default.navigateTo({

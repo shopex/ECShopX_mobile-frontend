@@ -205,10 +205,7 @@ var InvoiceList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_clas
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                params = (0, _mapKeys3.default)(_extends({}, params, {
-                  order_type: 'normal',
-                  status: 1
-                }), function (val, key) {
+                params = (0, _mapKeys3.default)(_extends({}, params), function (val, key) {
                   if (key === 'page_no') {
                     return 'page';
                   }if (key === 'page_size') {
@@ -217,12 +214,12 @@ var InvoiceList = (_dec = (0, _index5.withLogin)(), (0, _index5.withPager)(_clas
                 });
 
                 _context4.next = 3;
-                return _index4.default.trade.list(params);
+                return _index4.default.trade.involiceList(params);
 
               case 3:
                 _ref7 = _context4.sent;
                 list = _ref7.list;
-                total = _ref7.pager.count;
+                total = _ref7.total_count;
                 nList = (0, _index6.pickBy)(list, {
                   tid: 'order_id',
                   status_desc: 'order_status_msg',

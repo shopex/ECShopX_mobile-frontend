@@ -6,13 +6,13 @@ export function linkPage (type, id) {
 
   switch (type) {
     case 'goods':
-      url = '/pages/item/index?id=' + id
+      url = '/pages/item/espier-detail?id=' + id
       break;
     case 'category':
       url = '/pages/item/list?cat_id=' + id
       break;
     case 'article':
-      url = '/pages/article/index?id=' + id
+      url = '/pages/recommend/detail?id=' + id
       break;
     case 'link':
       url = id

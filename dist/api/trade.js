@@ -12,6 +12,7 @@ exports.getCount = getCount;
 exports.deliveryInfo = deliveryInfo;
 exports.tradeQuery = tradeQuery;
 exports.imgUpload = imgUpload;
+exports.involiceList = involiceList;
 
 var _req = require('./req.js');
 
@@ -60,4 +61,10 @@ function imgUpload() {
   var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   return _req2.default.get('/espier/upload', params);
+}
+
+function involiceList() {
+  var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  return _req2.default.get('/orders/invoice', params);
 }
