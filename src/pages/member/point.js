@@ -47,7 +47,6 @@ export default class Integral extends Component {
       chngpt: 'chngpt',
       rsnnm: 'rsnnm',
     })
-    console.log(nList, 58)
 
     this.setState({
       list: [...this.state.list, ...nList],

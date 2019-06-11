@@ -70,7 +70,6 @@ export default class CouponHome extends Component {
       const data = await api.member.homeCouponGet(query)
       S.toast('优惠券领取成功')
       if (data.status) {
-        console.log(74 ,222)
         if (data.status.total_lastget_num <= 0 ) {
           list[idx].getted = 2
         } else if (data.status.lastget_num <= 0 ) {

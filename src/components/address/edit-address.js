@@ -92,7 +92,6 @@ export default class EditAddress extends Component {
 
   // 选定开户地区
   bindMultiPickerChange = async (e) => {
-    console.log(222)
     const { info } = this.state
     this.nList.map((item, index) => {
       if(index === e.detail.value[0]) {

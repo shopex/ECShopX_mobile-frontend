@@ -18,6 +18,50 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
+.page-index .add_tip {
+  background: #ffffff;
+  z-index: 600;
+  width: 70%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 20rpx;
+  position: fixed;
+  border-radius: 10rpx;
+  -webkit-box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
+          box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
+  top: 30rpx;
+  right: 60rpx;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: space-between;
+      -ms-flex-line-pack: justify;
+          align-content: space-between;
+}
+.page-index .add_tip .icon-view {
+  width: 30rpx;
+  height: 30rpx;
+  line-height: 34rpx;
+  padding: 2rpx 5rpx;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  marign-left: 10rpx;
+  font-size: 24rpx;
+  color: #fff;
+}
+.page-index .add_tip:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  border: 20rpx solid transparent;
+  border-bottom-color: #ffffff;
+  top: -40rpx;
+  left: 80%;
+  margin-left: -10rpx;
+  width: 0;
+  height: 0;
+}
 
 .wgts-wrap__fixed {
   background: #fff;

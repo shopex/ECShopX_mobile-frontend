@@ -51,7 +51,6 @@ var PointDrawOrder = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PointDrawOrder.__proto__ || Object.getPrototypeOf(PointDrawOrder)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["curTabIdx", "tabList", "scrollTop", "listType", "list", "page", "showBackToTop"], _this.handleClickItem = function (item) {
-      console.log(item.luckydraw_trade_id);
       var url = "/pages/member/point-draw-detail?luckydraw_id=" + item.luckydraw_id + "&item_id=" + item.item_id;
       _index2.default.navigateTo({
         url: url

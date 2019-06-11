@@ -106,7 +106,6 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
                   rsnnm: 'rsnnm'
                 });
 
-                console.log(nList, 58);
 
                 this.setState({
                   list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList)),
@@ -117,7 +116,7 @@ var Integral = (0, _index3.withPager)(_class = (_temp2 = _class2 = function (_Ba
                   total: total
                 });
 
-              case 13:
+              case 12:
               case "end":
                 return _context.stop();
             }

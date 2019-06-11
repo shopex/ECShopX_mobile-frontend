@@ -56,7 +56,7 @@ export default class UserInfo extends Component {
     const imgFiles = data.slice(0, 1)
     azureUploader.uploadImagesFn(imgFiles)
       .then(res => {
-        console.log(res, 67)
+        console.log(res)
         this.setState({
           imgs: res
         })

@@ -33,7 +33,6 @@ export default class PointDepositBtn extends Component {
   }
   handleConfirmPay = async () => {
     const {  pay_pay_type } = this.state
-    console.log(pay_pay_type,this.props.orderID, this.props.orderType)
 
     const query = {
       order_id: this.props.orderID,
@@ -46,7 +45,7 @@ export default class PointDepositBtn extends Component {
         url: `/pages/cashier/cashier-result?payStatus=success&order_id=${this.props.orderID}`
       })
     } catch(e) {
-      console.log(e,49)
+      console.log(e)
       this.setState({
         isOpened: false
       })

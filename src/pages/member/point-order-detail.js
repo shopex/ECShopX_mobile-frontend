@@ -114,7 +114,6 @@ export default class PointOrderDetail extends Component {
   }
 
   toggleState = (key, val) => {
-    console.log(key, val, 96)
     if (val === undefined) {
       val = !this.state[key]
     }
@@ -180,7 +179,7 @@ export default class PointOrderDetail extends Component {
 
   handleAddressClick = () => {
     const { info }  = this.state
-    console.log(info,111)
+
     if (info.ship_status === 'waitaddress') {
       this.toggleAddressPicker(true)
     }

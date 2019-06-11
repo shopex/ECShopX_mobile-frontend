@@ -18,8 +18,6 @@ export default class Landing extends Component {
   }
   componentDidMount () {
     const query = normalizeQuerys(this.$router.params)
-    console.log(query, 24)
-    console.log(this.$router.params)
 
     this.props.onUserLanding(query)
 

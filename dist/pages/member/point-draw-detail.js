@@ -131,7 +131,7 @@ var PointDrawDetail = (_dec = (0, _index3.connect)(function (_ref) {
               _context.prev = 18;
               _context.t0 = _context["catch"](10);
 
-              console.log(_context.t0, 49);
+              console.log(_context.t0);
 
             case 21:
               _context.next = 27;

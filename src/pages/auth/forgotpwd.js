@@ -60,7 +60,7 @@ export default class Forgotpwd extends Component {
     if (!data.password) {
       return S.toast('请输入密码')
     }
-    console.log(data, 19)
+
     try {
       await api.user.forgotPwd(data)
       Taro.showToast({

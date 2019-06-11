@@ -188,7 +188,6 @@ export default class Reg extends Component {
   }
 
   handleErrorToastClose = () => {
-    console.log(this.textInput.value)
     S.closeToast()
   }
 

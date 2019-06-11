@@ -64,9 +64,23 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "likeList", "page", "showBackToTop", "authStatus", "isFaverite_open", "store"], _this.handleClickLicense = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "likeList", "page", "showBackToTop", "isShowAddTip", "authStatus", "isFaverite_open", "store"], _this.componentDidShow = function () {
+      _index2.default.getStorage({ key: 'addTipIsShow' }).then(function (res) {
+        console.log(res, 37);
+      }).catch(function (error) {
+        _this.setState({
+          isShowAddTip: true
+        });
+        console.log(error, 40);
+      });
+    }, _this.handleClickLicense = function () {
       _index2.default.navigateTo({
         url: '/pages/home/license'
+      });
+    }, _this.handleClickCloseAddTip = function () {
+      _index2.default.setStorage({ key: 'addTipIsShow', data: { isShowAddTip: false } });
+      _this.setState({
+        isShowAddTip: false
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -80,7 +94,8 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
         wgts: null,
         authStatus: false,
         likeList: [],
-        isFaverite_open: false
+        isFaverite_open: false,
+        isShowAddTip: false
       });
     }
   }, {
@@ -117,7 +132,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
                 }, function () {
                   if (info.config) {
                     info.config.map(function (item) {
-                      if (item.name === 'faverite_type' && item.config.isOpen === true) {
+                      if (item.name === 'faverite_type' && item.config.isOpen === false) {
                         _this2.setState({
                           isFaverite_open: true
                         });
@@ -207,7 +222,8 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
           page = _state.page,
           likeList = _state.likeList,
           showBackToTop = _state.showBackToTop,
-          scrollTop = _state.scrollTop;
+          scrollTop = _state.scrollTop,
+          isShowAddTip = _state.isShowAddTip;
 
 
       if (!wgts || !this.__props.store) {
@@ -229,7 +245,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleScroll", "nextPage", "handleClickLicense", "scrollBackToTop"], _temp2)) || _class) || _class) || _class);
+}, _class2.$$events = ["handleScroll", "nextPage", "handleClickLicense", "scrollBackToTop", "handleClickCloseAddTip"], _temp2)) || _class) || _class) || _class);
 exports.default = HomeIndex;
 
 Component(require('../npm/@tarojs/taro-weapp/index.js').default.createComponent(HomeIndex, true));

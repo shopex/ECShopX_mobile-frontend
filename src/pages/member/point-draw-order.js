@@ -93,7 +93,6 @@ export default class PointDrawOrder extends Component {
   }
 
   handleClickItem = (item) => {
-    console.log(item.luckydraw_trade_id)
     const url = `/pages/member/point-draw-detail?luckydraw_id=${item.luckydraw_id}&item_id=${item.item_id}`
     Taro.navigateTo({
       url

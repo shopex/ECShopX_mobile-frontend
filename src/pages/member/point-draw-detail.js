@@ -178,7 +178,7 @@ export default class PointDrawDetail extends Component {
         //   url: `/pages/cashier/cashier-result?payStatus=success&order_id=${orderInfo.order_id}`
         // })
       } catch(e) {
-        console.log(e,49)
+        console.log(e)
       }
       // Taro.hideLoading()
 

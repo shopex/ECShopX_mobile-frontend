@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, ScrollView } from '@tarojs/components'
+import { View, Image, ScrollView, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, Loading, SpNote, BackToTop } from '@/components'
 import req from '@/api/req'
@@ -10,6 +10,7 @@ import S from "@/spx";
 import { WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtImgHotZone, WgtGoodsFaverite, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './home/wgts'
 
 import './home/index.scss'
+import PointDrawCompute from "./member/point-draw-compute";
 
 @connect(store => ({
   store
@@ -25,8 +26,20 @@ export default class HomeIndex extends Component {
       wgts: null,
       authStatus: false,
       likeList: [],
-      isFaverite_open: false
+      isFaverite_open: false,
+      isShowAddTip: false
     }
+  }
+
+  componentDidShow = () => {
+    Taro.getStorage({ key: 'addTipIsShow' })
+      .then(() => {})
+      .catch((error) => {
+        console.log(error)
+        this.setState({
+          isShowAddTip: true
+        })
+      })
   }
 
   componentDidMount () {
@@ -47,7 +60,7 @@ export default class HomeIndex extends Component {
     },()=>{
       if(info.config) {
         info.config.map(item => {
-          if(item.name === 'faverite_type' && item.config.isOpen === true) {
+          if(item.name === 'faverite_type' && item.config.isOpen === false) {
             this.setState({
               isFaverite_open: true
             })
@@ -88,8 +101,15 @@ export default class HomeIndex extends Component {
     })
   }
 
+  handleClickCloseAddTip = () => {
+    Taro.setStorage({ key: 'addTipIsShow', data: {isShowAddTip: false} })
+    this.setState({
+      isShowAddTip: false
+    })
+  }
+
   render () {
-    const { wgts, authStatus, page, likeList, showBackToTop, scrollTop } = this.state
+    const { wgts, authStatus, page, likeList, showBackToTop, scrollTop, isShowAddTip } = this.state
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -102,7 +122,6 @@ export default class HomeIndex extends Component {
           scrollTop={scrollTop}
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
-          scrollTop={scrollTop}
           scrollY
         >
           <View className='wgts-wrap__cont'>
@@ -166,6 +185,13 @@ export default class HomeIndex extends Component {
           show={showBackToTop}
           onClick={this.scrollBackToTop}
         />
+        {
+          isShowAddTip ? <View className='add_tip'>
+            <View>点击“•●•”添加到我的小程序，微信首页下拉即可快速访问店铺</View>
+            <View className='in-icon in-icon-close icon-view' onClick={this.handleClickCloseAddTip.bind(this)}> </View>
+          </View> : null
+        }
+
         <SpToast />
         <TabBar />
       </View>

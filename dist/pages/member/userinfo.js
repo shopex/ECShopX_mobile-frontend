@@ -81,7 +81,7 @@ var UserInfo = (_dec = (0, _index5.withLogin)(), _dec(_class = (_temp2 = _class2
                 imgFiles = data.slice(0, 1);
 
                 _azureWry2.default.uploadImagesFn(imgFiles).then(function (res) {
-                  console.log(res, 67);
+                  console.log(res);
                   _this.setState({
                     imgs: res
                   });
