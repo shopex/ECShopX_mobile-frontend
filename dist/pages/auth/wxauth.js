@@ -112,30 +112,27 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
                 // 绑定过，跳转会员中心
 
                 if (!user_id) {
-                  _context.next = 24;
+                  _context.next = 23;
                   break;
                 }
 
-                _index2.default.redirectTo({
-                  url: '/pages/member/index'
-                });
-                _context.next = 23;
+                _context.next = 22;
                 return _this.autoLogin();
 
-              case 23:
+              case 22:
                 return _context.abrupt("return");
 
-              case 24:
+              case 23:
 
                 // 跳转注册绑定
                 _index2.default.redirectTo({
                   url: "/pages/auth/reg?code=" + code + "&open_id=" + open_id + "&union_id=" + union_id
                 });
-                _context.next = 31;
+                _context.next = 30;
                 break;
 
-              case 27:
-                _context.prev = 27;
+              case 26:
+                _context.prev = 26;
                 _context.t0 = _context["catch"](10);
 
                 console.info(_context.t0);
@@ -144,16 +141,16 @@ var WxAuth = (_temp2 = _class = function (_BaseComponent) {
                   icon: 'none'
                 });
 
-              case 31:
+              case 30:
 
                 _index2.default.hideLoading();
 
-              case 32:
+              case 31:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, _this2, [[10, 27]]);
+        }, _callee, _this2, [[10, 26]]);
       }));
 
       return function (_x) {
