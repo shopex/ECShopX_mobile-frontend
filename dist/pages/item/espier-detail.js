@@ -78,7 +78,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "loopArray0", "info", "scrollTop", "curImgIdx", "imgs", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "desc", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "loopArray0", "info", "scrollTop", "curImgIdx", "imgs", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "isGreaterSix", "desc", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "sixSpecImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
         var info, isAuth, favRes;
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -236,6 +236,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         showBuyPanel: false,
         buyPanelType: null,
         specImgsDict: {},
+        isGreaterSix: false,
+        sixSpecImgsDict: {},
         curSku: null,
         promotion_activity: []
       };
@@ -337,7 +339,9 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetch",
     value: function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var id, info, desc, promotion_activity, marketing, timer, hasStock, startSecKill, specImgsDict;
+        var _this3 = this;
+
+        var id, info, desc, promotion_activity, marketing, timer, hasStock, startSecKill, specImgsDict, spectImg, sixSpecImgsDict;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -385,7 +389,19 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
 
                 info.is_fav = Boolean(this.props.favs[info.item_id]);
                 specImgsDict = this.resolveSpecImgs(info.item_spec_desc);
+                spectImg = this.resolveSpecImgs(info.item_spec_desc);
+                sixSpecImgsDict = {};
 
+                Object.keys(spectImg).map(function (item, index) {
+                  if (index > 6) {
+                    _this3.setState({
+                      isGreaterSix: true
+                    });
+                  }
+                  if (index < 6) {
+                    sixSpecImgsDict[item] = spectImg[item];
+                  }
+                });
 
                 this.setState({
                   info: info,
@@ -395,11 +411,12 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                   hasStock: hasStock,
                   startSecKill: startSecKill,
                   specImgsDict: specImgsDict,
+                  sixSpecImgsDict: sixSpecImgsDict,
                   promotion_activity: promotion_activity
                 });
                 _index7.log.debug('fetch: done', info);
 
-              case 16:
+              case 19:
               case "end":
                 return _context4.stop();
             }
@@ -435,7 +452,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
   }, {
     key: "_createData",
     value: function _createData() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
@@ -445,6 +462,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       var _state = this.__state,
           info = _state.info,
           windowWidth = _state.windowWidth,
+          isGreaterSix = _state.isGreaterSix,
+          sixSpecImgsDict = _state.sixSpecImgsDict,
           curImgIdx = _state.curImgIdx,
           desc = _state.desc,
           cartCount = _state.cartCount,
@@ -478,17 +497,17 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       var anonymousState__temp2 = !showBackToTop;
 
       this.anonymousFunc0 = function () {
-        return _this3.setState({ showBuyPanel: false });
+        return _this4.setState({ showBuyPanel: false });
       };
 
-      var $anonymousCallee__0 = info.nospec !== true ? Object.keys(this.__state.specImgsDict) : [];
+      var $anonymousCallee__0 = info.nospec !== true ? Object.keys(sixSpecImgsDict) : [];
       var anonymousState__temp3 = (0, _index7.isArray)(desc);
-      var loopArray0 = info.nospec !== true ? Object.keys(this.__state.specImgsDict).map(function (specValueId) {
+      var loopArray0 = info.nospec !== true ? Object.keys(sixSpecImgsDict).map(function (specValueId) {
         specValueId = {
           $original: (0, _index.internal_get_original)(specValueId)
         };
 
-        var url = _this3.__state.specImgsDict[specValueId.$original];
+        var url = sixSpecImgsDict[specValueId.$original];
 
         return {
           url: url,

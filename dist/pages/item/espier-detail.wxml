@@ -69,6 +69,8 @@
                     <scroll-view class="specs-scroller" scroll-x="{{true}}">
                         <view class="specs-imgs">
                             <image class="specs-imgs__item" src="{{specValueId.url}}" wx:key="$original" mode="aspectFill" bindtap="handleBuyBarClick" wx:for="{{loopArray0}}" wx:for-item="specValueId" wx:for-index="_anonIdx3" data-e-tap-so="this" data-e-tap-a-a="{{buyPanelType}}"></image>
+                            <block wx:if="{{isGreaterSix}}"><text class="specs-imgs__item specs-text__item" mode="aspectFill" bindtap="handleBuyBarClick" data-e-tap-so="this" data-e-tap-a-a="{{buyPanelType}}">更多</text>
+                            </block>
                         </view>
                     </scroll-view>
                 </view>

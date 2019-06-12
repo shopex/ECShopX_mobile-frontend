@@ -21,7 +21,7 @@
                         <view class="coupon-content__typename"><text class="coupon-content__typetext">{{item.title}}</text>
                         </view>
                     </view>
-                    <view class="coupon-content__tips">体验券领取与使用规则，点击详见领券页面</view>
+                    <view class="coupon-content__tips">{{item.desc}}</view>
                 </view>
             </view>
         </view>

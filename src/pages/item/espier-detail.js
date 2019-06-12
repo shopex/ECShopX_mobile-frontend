@@ -45,6 +45,8 @@ export default class Detail extends Component {
       showBuyPanel: false,
       buyPanelType: null,
       specImgsDict: {},
+      isGreaterSix: false,
+      sixSpecImgsDict: {},
       curSku: null,
       promotion_activity: []
     }
@@ -138,6 +140,19 @@ export default class Detail extends Component {
 
     info.is_fav = Boolean(this.props.favs[info.item_id])
     const specImgsDict = this.resolveSpecImgs(info.item_spec_desc)
+    let spectImg = this.resolveSpecImgs(info.item_spec_desc)
+
+    let sixSpecImgsDict = {}
+    Object.keys(spectImg).map((item, index) => {
+      if(index > 6) {
+        this.setState({
+          isGreaterSix: true
+        })
+      }
+      if(index < 6) {
+        sixSpecImgsDict[item] = spectImg[item]
+      }
+    })
 
     this.setState({
       info,
@@ -147,6 +162,7 @@ export default class Detail extends Component {
       hasStock,
       startSecKill,
       specImgsDict,
+      sixSpecImgsDict,
       promotion_activity
     })
     log.debug('fetch: done', info)
@@ -260,7 +276,7 @@ export default class Detail extends Component {
   }
 
   render () {
-    const { info, windowWidth, curImgIdx, desc, cartCount, scrollTop, showBackToTop, curSku, promotion_activity } = this.state
+    const { info, windowWidth, isGreaterSix, sixSpecImgsDict, curImgIdx, desc, cartCount, scrollTop, showBackToTop, curSku, promotion_activity } = this.state
     const { marketing, timer, isPromoter, startSecKill, hasStock, showBuyPanel, buyPanelType } = this.state
 
     if (!info) {
@@ -445,8 +461,8 @@ export default class Detail extends Component {
                   scrollX
                 >
                   <View className='specs-imgs'>
-                    {Object.keys(this.state.specImgsDict).map((specValueId) => {
-                      const url = this.state.specImgsDict[specValueId]
+                    {Object.keys(sixSpecImgsDict).map((specValueId) => {
+                      const url = sixSpecImgsDict[specValueId]
 
                       return (
                         <Image
@@ -458,6 +474,15 @@ export default class Detail extends Component {
                         />
                       )
                     })}
+                    {
+                      isGreaterSix ?
+                        <Text
+                          class='specs-imgs__item specs-text__item'
+                          mode='aspectFill'
+                          onClick={this.handleBuyBarClick.bind(this, buyPanelType)}
+                        >更多</Text>
+                      : null
+                    }
                   </View>
                 </ScrollView>
               </View>

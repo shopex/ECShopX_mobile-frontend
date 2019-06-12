@@ -72,6 +72,7 @@
 .coupon-body .coupon-content__typetext {
   display: block;
   font-size: 22rpx;
+  line-height: 39rpx;
   -webkit-transform: skew(20deg);
       -ms-transform: skew(20deg);
           transform: skew(20deg);

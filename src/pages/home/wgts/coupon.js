@@ -72,7 +72,7 @@ export default class WgtCoupon extends Component {
                       <Text className='coupon-content__typetext'>{item.title}</Text>
                     </View>
                   </View>
-                  <View className='coupon-content__tips'>体验券领取与使用规则，点击详见领券页面</View>
+                  <View className='coupon-content__tips'>{item.desc}</View>
                 </View>
                 {/*<View className='coupon-brand'>
                   <Image

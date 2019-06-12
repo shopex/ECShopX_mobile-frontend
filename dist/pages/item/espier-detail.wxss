@@ -365,6 +365,12 @@
   margin: 0 10rpx;
   overflow: hidden;
 }
+.goods-sec-specs .specs-text__item {
+  line-height: 80rpx;
+  text-align: center;
+  width: 80rpx;
+  font-size: 24rpx;
+}
 
 .goods-sec-tabs .sec-tabs {
   height: 110rpx;
