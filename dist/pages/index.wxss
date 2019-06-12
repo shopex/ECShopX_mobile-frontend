@@ -91,7 +91,7 @@
 }
 
 .wgt__padded {
-  padding: 20rpx 0;
+  padding: 40rpx 0;
 }
 .wgt__header {
   display: -webkit-box;

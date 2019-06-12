@@ -94,6 +94,8 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
     , _this.handleClickToDelivery = function () {}, _this.handleClickCopy = function (val) {
       (0, _index3.copyText)(val);
       _index7.default.toast('复制成功');
+    }, _this.countDownEnd = function () {
+      _this.fetch();
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -224,6 +226,9 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
                 infoStatus = (info.status || '').toLowerCase();
 
+                if (info.auto_cancel_seconds <= 0 && info.order_status_des === 'NOTPAY') {
+                  info.status = 'TRADE_CLOSED';
+                }
                 info.status_img = "ico_" + (infoStatus === 'trade_success' ? 'wait_rate' : infoStatus) + ".png";
 
                 _index3.log.debug('[trade info] info: ', info);
@@ -232,7 +237,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
                   info: info
                 });
 
-              case 11:
+              case 12:
               case "end":
                 return _context2.stop();
             }
@@ -516,7 +521,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
   }]);
 
   return TradeDetail;
-}(_index.Component), _class.properties = {}, _class.$$events = ["fetch", "handleClickDelivery", "handleClickCopy", "handleClickBtn"], _temp2);
+}(_index.Component), _class.properties = {}, _class.$$events = ["countDownEnd", "handleClickDelivery", "handleClickCopy", "handleClickBtn"], _temp2);
 exports.default = TradeDetail;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(TradeDetail, true));

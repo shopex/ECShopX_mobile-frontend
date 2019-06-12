@@ -201,7 +201,7 @@ export default class WgtGoods extends Component {
                 <View className='goods-content' key={item.item_id} onClick={this.handleClickItem.bind(this, item.item_id)}>
                   <View className='goods-content__info'>
                     <View className='goods-content__info_img'>
-                      <Image className='img-style' mode='aspectFill' src={item.img_url} />
+                      <Image className='img-style' mode='widthFix' src={item.img_url} />
                     </View>
                     <View className='goods-content__info_text'>
                       <Text>{item.item_name}</Text>

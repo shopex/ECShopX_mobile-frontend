@@ -192,7 +192,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         }
       }, _callee2, _this2);
     })), _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var _this$state, payType, total, _ref7, confirm, order_id, orderInfo, params, paymentParams, config, payErr, payRes;
+      var _this$state, payType, total, _ref7, confirm, order_id, orderInfo, params, paymentParams, config, payErr, payRes, res;
 
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
@@ -318,17 +318,19 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
             case 42:
               config = _context3.sent;
-              _context3.next = 49;
+
+              console.log(config, 449);
+              _context3.next = 50;
               break;
 
-            case 45:
-              _context3.prev = 45;
+            case 46:
+              _context3.prev = 46;
               _context3.t2 = _context3["catch"](39);
 
               payErr = _context3.t2;
               console.log(_context3.t2);
 
-            case 49:
+            case 50:
 
               _this.setState({
                 submitLoading: false
@@ -337,7 +339,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               // 积分流程
 
               if (!(payType === 'dhpoint')) {
-                _context3.next = 53;
+                _context3.next = 54;
                 break;
               }
 
@@ -355,23 +357,23 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               return _context3.abrupt("return");
 
-            case 53:
+            case 54:
 
               payErr = null;
-              _context3.prev = 54;
-              _context3.next = 57;
+              _context3.prev = 55;
+              _context3.next = 58;
               return _index2.default.requestPayment(config);
 
-            case 57:
+            case 58:
               payRes = _context3.sent;
 
               _index9.log.debug("[order pay]: ", payRes);
-              _context3.next = 65;
+              _context3.next = 66;
               break;
 
-            case 61:
-              _context3.prev = 61;
-              _context3.t3 = _context3["catch"](54);
+            case 62:
+              _context3.prev = 62;
+              _context3.t3 = _context3["catch"](55);
 
               payErr = _context3.t3;
               _index2.default.showToast({
@@ -379,58 +381,68 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 icon: 'none'
               });
 
-            case 65:
+            case 66:
               if (payErr) {
-                _context3.next = 80;
+                _context3.next = 84;
                 break;
               }
 
-              _context3.next = 68;
+              _context3.next = 69;
               return _index2.default.showToast({
                 title: '支付成功',
                 icon: 'success'
               });
 
-            case 68:
-              _context3.prev = 68;
-              _context3.next = 71;
+            case 69:
+              _context3.prev = 69;
+
+              _index2.default.showLoading();
+              _context3.next = 73;
               return _index5.default.trade.tradeQuery(config.trade_info.trade_id);
 
-            case 71:
-              _context3.next = 76;
+            case 73:
+              res = _context3.sent;
+
+              if (res) {
+                _index2.default.hideLoading();
+                _this.__triggerPropsFn("onClearCart", [null].concat([]));
+                _index2.default.redirectTo({
+                  url: "/pages/trade/detail?id=" + order_id
+                });
+              }
+              _context3.next = 82;
               break;
 
-            case 73:
-              _context3.prev = 73;
-              _context3.t4 = _context3["catch"](68);
+            case 77:
+              _context3.prev = 77;
+              _context3.t4 = _context3["catch"](69);
 
               console.info(_context3.t4);
-
-            case 76:
-
               _this.__triggerPropsFn("onClearCart", [null].concat([]));
               _index2.default.redirectTo({
                 url: "/pages/trade/detail?id=" + order_id
               });
-              _context3.next = 81;
+
+            case 82:
+              _context3.next = 85;
               break;
 
-            case 80:
+            case 84:
               if (payErr.errMsg.indexOf('fail cancel') >= 0) {
                 _index2.default.redirectTo({
                   url: "/pages/trade/detail?id=" + order_id
                 });
               }
 
-            case 81:
+            case 85:
               return _context3.abrupt("return");
 
-            case 82:
+            case 86:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, _this2, [[4, 13], [20, 29], [39, 45], [54, 61], [68, 73]]);
+      }, _callee3, _this2, [[4, 13], [20, 29], [39, 46], [55, 62], [69, 77]]);
     })), _this.handleCouponsClick = function () {
       if (_this.state.payType === 'dhpoint') {
         return;

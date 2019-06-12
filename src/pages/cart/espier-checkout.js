@@ -446,6 +446,7 @@ export default class CartCheckout extends Component {
     let config, payErr
     try {
       config = await api.cashier.getPayment(paymentParams)
+      console.log(config, 449)
     } catch (e) {
       payErr = e
       console.log(e)
@@ -492,15 +493,27 @@ export default class CartCheckout extends Component {
       })
 
       try {
-        await api.trade.tradeQuery(config.trade_info.trade_id)
+        Taro.showLoading()
+        const res = await api.trade.tradeQuery(config.trade_info.trade_id)
+        if(res){
+          Taro.hideLoading()
+          this.props.onClearCart()
+          Taro.redirectTo({
+            url: `/pages/trade/detail?id=${order_id}`
+          })
+        }
       } catch (e) {
         console.info(e)
+        this.props.onClearCart()
+        Taro.redirectTo({
+          url: `/pages/trade/detail?id=${order_id}`
+        })
       }
 
-      this.props.onClearCart()
+      /*this.props.onClearCart()
       Taro.redirectTo({
         url: `/pages/trade/detail?id=${order_id}`
-      })
+      })*/
     } else {
       if (payErr.errMsg.indexOf('fail cancel') >= 0) {
         Taro.redirectTo({

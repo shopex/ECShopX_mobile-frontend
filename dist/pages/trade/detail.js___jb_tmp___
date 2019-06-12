@@ -108,8 +108,8 @@ export default class TradeDetail extends Component {
     }
 
     const infoStatus = (info.status || '').toLowerCase()
-    if(info.auto_cancel_seconds <= 0 && info.order_status_des === 'NOTPAY') {
-      info.status = 'TRADE_CLOSED'
+    if(info.auto_cancel_seconds === 0 || info.order_status_des === 'NOTPAY') {
+      info.status = 'WAIT_BUYER_PAY'
     }
     info.status_img = `ico_${infoStatus === 'trade_success' ? 'wait_rate' : infoStatus}.png`
 
@@ -265,6 +265,10 @@ export default class TradeDetail extends Component {
 
   countDownEnd = () => {
     this.fetch()
+    /*const { info } = this.state
+    if(info.auto_cancel_seconds === 0 || info.order_status_des === 'NOTPAY') {
+
+    }*/
   }
 
   render () {

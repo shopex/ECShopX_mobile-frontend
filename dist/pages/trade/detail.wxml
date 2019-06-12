@@ -7,7 +7,7 @@
         <block wx:if="{{info.status === 'WAIT_BUYER_PAY'}}">
             <view class="{{anonymousState__temp}}">
                 <view>该订单将为您保留
-                    <at-countdown format="{{anonymousState__temp2}}" __triggerObserer="{{ _triggerObserer }}" hours="{{timer.hh}}" minutes="{{timer.mm}}" seconds="{{timer.ss}}" bindontimeup="fetch" __fn_onTimeUp="{{true}}" data-e-ontimeup-so="this"></at-countdown>分钟</view>
+                    <at-countdown format="{{anonymousState__temp2}}" __triggerObserer="{{ _triggerObserer }}" hours="{{timer.hh}}" minutes="{{timer.mm}}" seconds="{{timer.ss}}" bindontimeup="countDownEnd" __fn_onTimeUp="{{true}}" data-e-ontimeup-so="this"></at-countdown>分钟</view>
             </view>
         </block>
         <block wx:if="{{info.status !== 'WAIT_BUYER_PAY'}}">

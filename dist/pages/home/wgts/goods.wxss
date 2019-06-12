@@ -35,6 +35,10 @@
   border-radius: 8rpx;
   overflow: hidden;
 }
+.goods-content__info_img .img-style {
+  width: 100%;
+  height: 100%;
+}
 .goods-content__info_text {
   margin-left: 20rpx;
   display: -webkit-box;

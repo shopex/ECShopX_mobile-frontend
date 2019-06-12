@@ -13,7 +13,7 @@
             <view class="goods-content" wx:key="item_id" bindtap="handleClickItem" wx:for="{{data}}" wx:for-item="item" wx:for-index="_anonIdx" data-e-tap-so="this" data-e-tap-a-a="{{item.item_id}}">
                 <view class="goods-content__info">
                     <view class="goods-content__info_img">
-                        <image class="img-style" mode="aspectFill" src="{{item.img_url}}"></image>
+                        <image class="img-style" mode="widthFix" src="{{item.img_url}}"></image>
                     </view>
                     <view class="goods-content__info_text"><text>{{item.item_name}}</text><text>{{item.itemStatus ? '点击查看产品详情' : '该商品已下架'}}</text>
                     </view>
