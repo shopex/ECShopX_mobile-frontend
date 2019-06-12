@@ -46,6 +46,7 @@ export default class WgtSearchHome extends Component {
   }
 
   handleChangeSearch = (value) => {
+    value = value.replace(/\s+/g,'');
     this.setState({
       searchValue: value,
     })

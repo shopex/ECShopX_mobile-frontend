@@ -47,6 +47,7 @@ export default class SearchBar extends Component {
   }
 
   handleChangeSearch = (value) => {
+    value = value.replace(/\s+/g,'');
     this.setState({
       searchValue: value,
     })
