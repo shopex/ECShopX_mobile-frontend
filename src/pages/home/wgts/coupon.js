@@ -21,9 +21,11 @@ export default class WgtCoupon extends Component {
 
   handleGetCard = (cardId) => {
     const data = req.get('/user/receiveCard', { card_id: cardId })
-
-    if (data.status) {
-      S.showToast('优惠券领取成功')
+    if(data) {
+      Taro.showToast({
+        title: '优惠券领取成功',
+        icon: 'success'
+      })
     }
   }
 

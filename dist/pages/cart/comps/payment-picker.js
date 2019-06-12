@@ -96,8 +96,8 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateZnSQw",
-    value: function funPrivateZnSQw() {
+    key: "funPrivateJxVXc",
+    value: function funPrivateJxVXc() {
       this.__triggerPropsFn("onChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -136,7 +136,7 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivateZnSQw"], _class.defaultProps = {
+}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivateJxVXc"], _class.defaultProps = {
   isOpened: false,
   type: 'amorepay',
   disabledPayment: null
