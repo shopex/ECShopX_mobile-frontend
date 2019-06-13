@@ -37,7 +37,6 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyToolbar.__proto__ || Object.getPrototypeOf(GoodsBuyToolbar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "cartCount", "type", "fastBuyText", "__fn_onClick", "customRender", "children", "onClickAddCart", "onClickFastBuy"], _this.handleClickCart = function (id) {
-
       _index2.default.navigateTo({
         url: '/pages/cart/espier-index'
       });
@@ -76,18 +75,18 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateqfaIj",
-    value: function funPrivateqfaIj() {
+    key: "funPrivatecbhHg",
+    value: function funPrivatecbhHg() {
       this.__triggerPropsFn("onFavItem", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateeismY",
-    value: function funPrivateeismY() {
+    key: "funPrivateVSwnt",
+    value: function funPrivateVSwnt() {
       this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateNpNam",
-    value: function funPrivateNpNam() {
+    key: "funPrivateSnNRG",
+    value: function funPrivateSnNRG() {
       this.__triggerPropsFn("onClickFastBuy", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -138,7 +137,7 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateqfaIj", "handleClickCart", "funPrivateeismY", "funPrivateNpNam"], _class.options = {
+}, _class.$$events = ["funPrivatecbhHg", "handleClickCart", "funPrivateVSwnt", "funPrivateSnNRG"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   type: 'normal',

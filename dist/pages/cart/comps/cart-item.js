@@ -92,23 +92,23 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateGJYNj",
-    value: function funPrivateGJYNj() {
+    key: "funPrivateXILTD",
+    value: function funPrivateXILTD() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatesjhWk",
-    value: function funPrivatesjhWk() {
+    key: "funPrivateopemp",
+    value: function funPrivateopemp() {
       this.__triggerPropsFn("onClickImgAndTitle", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivaterVYpC",
-    value: function funPrivaterVYpC() {
+    key: "funPrivateHEqNM",
+    value: function funPrivateHEqNM() {
       this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatettSLg",
-    value: function funPrivatettSLg() {
+    key: "funPrivateZrGnT",
+    value: function funPrivateZrGnT() {
       this.__triggerPropsFn("onNumChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -183,7 +183,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateGJYNj", "funPrivatesjhWk", "funPrivaterVYpC", "funPrivatettSLg"], _class.defaultProps = {
+}, _class.$$events = ["funPrivateXILTD", "funPrivateopemp", "funPrivateHEqNM", "funPrivateZrGnT"], _class.defaultProps = {
   onClick: function onClick() {},
   onClickPromotion: function onClickPromotion() {},
   onClickImgAndTitle: function onClickImgAndTitle() {},

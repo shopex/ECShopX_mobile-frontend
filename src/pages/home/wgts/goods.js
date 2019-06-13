@@ -75,19 +75,6 @@ export default class WgtGoods extends Component {
     const { info } = this.props
     e.stopPropagation()
 
-    if (APP_INTEGRATION) {
-      Taro.navigateToMiniProgram({
-        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
-        path: `pages/recommend/detail?id=${item_data.item_id}`, // 跳转的目标页面
-        success(res) {
-          // 打开成功
-          console.log(res)
-        }
-      })
-
-      return
-    }
-
     /*if(info.data) {
       let onsale = true
       info.data.map(item => {
