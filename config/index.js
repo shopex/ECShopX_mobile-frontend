@@ -5,7 +5,7 @@ const [TARO_CMD, TARO_ENV] = process.env.npm_lifecycle_event.split(':')
 const DIST_PATH = 'dist'
 const API_HOST = 'bbc54.shopex123.com'
 // const API_HOST = process.env.NODE_ENV === 'production'
-//   ? 'b.pjinjin.com'
+//   ? 'api-wmp.amorepacific.com.cn'
 //   : 'pjj.aixue7.com'
 
 const config = {
