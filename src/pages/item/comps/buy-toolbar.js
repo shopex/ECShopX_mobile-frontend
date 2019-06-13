@@ -20,26 +20,23 @@ export default class GoodsBuyToolbar extends Component {
     info: null
   }
 
-  handleClickMiniProgram = (id) => {
-    try {
-      Taro.navigateTo({
-        url: '/pages/cart/espier-index'
-      })
-    } catch (e) {
+  handleClickCart = (id) => {
+    if (APP_INTEGRATION) {
       Taro.navigateToMiniProgram({
         appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
         path: `pages/recommend/detail?id=${id}`, // 跳转的目标页面
         extraData: {
           id: id
         },
-        envVersion: 'trial',
-        success(res) {
-          // 打开成功
-          console.log(res)
-        }
+        envVersion: 'trial'
       })
+
+      return
     }
 
+    Taro.navigateTo({
+      url: '/pages/cart/espier-index'
+    })
   }
 
   render () {
@@ -66,8 +63,7 @@ export default class GoodsBuyToolbar extends Component {
           )}*/}
           <View
             className='goods-buy-toolbar__menu-item'
-            // onClick={navigateTo.bind(this, '/pages/cart/espier-index')}
-            onClick={this.handleClickMiniProgram.bind(this, info.item_id)}
+            onClick={this.handleClickCart.bind(this, info.item_id)}
           >
             <AtBadge
               value={cartCount || null}

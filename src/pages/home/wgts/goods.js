@@ -73,8 +73,20 @@ export default class WgtGoods extends Component {
 
   handleClickOperate = async (item_data, type, e) => {
     const { info } = this.props
-
     e.stopPropagation()
+
+    if (APP_INTEGRATION) {
+      Taro.navigateToMiniProgram({
+        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+        path: `pages/recommend/detail?id=${item_data.item_id}`, // 跳转的目标页面
+        success(res) {
+          // 打开成功
+          console.log(res)
+        }
+      })
+
+      return
+    }
 
     /*if(info.data) {
       let onsale = true
@@ -89,92 +101,66 @@ export default class WgtGoods extends Component {
         return false
       }
     }*/
-    try {
-      if(type === 'collect') {
-        /*if(this.state.count === 0) {
-          let is_fav = Boolean(this.props.favs[item_data.item_id])
-          this.setState({
-            count: 1,
-            is_fav
-          })
-        }
-        if(!this.state.is_fav) {
-          await api.member.addFav(item_data.item_id)
-          this.props.onAddFav(item_data)
-          Taro.showToast({
-            title: '已加入收藏',
-            icon: 'none'
-          })
-        } else {
-          await api.member.delFav(item_data.item_id)
-          this.props.onDelFav(item_data)
-          Taro.showToast({
-            title: '已移出收藏',
-            icon: 'none'
-          })
-        }
+    if(type === 'collect') {
+      /*if(this.state.count === 0) {
+        let is_fav = Boolean(this.props.favs[item_data.item_id])
         this.setState({
-          is_fav: !this.state.is_fav
-        })*/
-        if(!item_data.favStatus) {
-          await api.member.addFav(item_data.item_id)
-          this.props.onAddFav(item_data)
-          Taro.showToast({
-            title: '已加入收藏',
-            icon: 'none'
-          })
-        } else {
-          await api.member.delFav(item_data.item_id)
-          this.props.onDelFav(item_data)
-          Taro.showToast({
-            title: '已移出收藏',
-            icon: 'none'
-          })
-        }
-        this.props.onClick()
-
+          count: 1,
+          is_fav
+        })
       }
-
-      if(type === 'buy') {
-        try {
-          await api.cart.add({
-            item_id:item_data.item_id,
-            num: 1
-          })
-          Taro.showToast({
-            title: '成功加入购物车',
-            icon: 'success'
-          })
-        } catch (error) {
-          console.log(error)
-        }
-
-
+      if(!this.state.is_fav) {
+        await api.member.addFav(item_data.item_id)
+        this.props.onAddFav(item_data)
+        Taro.showToast({
+          title: '已加入收藏',
+          icon: 'none'
+        })
+      } else {
+        await api.member.delFav(item_data.item_id)
+        this.props.onDelFav(item_data)
+        Taro.showToast({
+          title: '已移出收藏',
+          icon: 'none'
+        })
       }
-    } catch (e) {
-      console.log(e)
-      Taro.navigateToMiniProgram({
-        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
-        path: `pages/recommend/detail?id=${item_data.item_id}`, // 跳转的目标页面
-        success(res) {
-          // 打开成功
-          console.log(res)
-        }
-      })
+      this.setState({
+        is_fav: !this.state.is_fav
+      })*/
+      if(!item_data.favStatus) {
+        await api.member.addFav(item_data.item_id)
+        this.props.onAddFav(item_data)
+        Taro.showToast({
+          title: '已加入收藏',
+          icon: 'none'
+        })
+      } else {
+        await api.member.delFav(item_data.item_id)
+        this.props.onDelFav(item_data)
+        Taro.showToast({
+          title: '已移出收藏',
+          icon: 'none'
+        })
+      }
+      this.props.onClick()
+    }
+
+    if(type === 'buy') {
+      try {
+        await api.cart.add({
+          item_id:item_data.item_id,
+          num: 1
+        })
+        Taro.showToast({
+          title: '成功加入购物车',
+          icon: 'success'
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
 
   }
-
-  /*handleClickOperate = (item) => {
-    Taro.navigateToMiniProgram({
-      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
-      path: `pages/recommend/detail?id=${item.item_id}`, // 跳转的目标页面
-      success(res) {
-        // 打开成功
-        console.log(res)
-      }
-    })
-  }*/
 
   render () {
     const { info } = this.props

@@ -111,7 +111,6 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
               case 0:
                 info = _this.props.info;
 
-
                 e.stopPropagation();
 
                 /*if(info.data) {
@@ -127,95 +126,76 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
                     return false
                   }
                 }*/
-                _context.prev = 2;
 
                 if (!(type === 'collect')) {
-                  _context.next = 16;
+                  _context.next = 15;
                   break;
                 }
 
                 if (item_data.favStatus) {
-                  _context.next = 11;
+                  _context.next = 10;
                   break;
                 }
 
-                _context.next = 7;
+                _context.next = 6;
                 return _index5.default.member.addFav(item_data.item_id);
 
-              case 7:
+              case 6:
                 _this.__triggerPropsFn("onAddFav", [null].concat([item_data]));
                 _index2.default.showToast({
                   title: '已加入收藏',
                   icon: 'none'
                 });
-                _context.next = 15;
+                _context.next = 14;
                 break;
 
-              case 11:
-                _context.next = 13;
+              case 10:
+                _context.next = 12;
                 return _index5.default.member.delFav(item_data.item_id);
 
-              case 13:
+              case 12:
                 _this.__triggerPropsFn("onDelFav", [null].concat([item_data]));
                 _index2.default.showToast({
                   title: '已移出收藏',
                   icon: 'none'
                 });
 
-              case 15:
+              case 14:
                 _this.__triggerPropsFn("onClick", [null].concat([]));
 
-              case 16:
+              case 15:
                 if (!(type === 'buy')) {
-                  _context.next = 26;
+                  _context.next = 25;
                   break;
                 }
 
-                _context.prev = 17;
-                _context.next = 20;
+                _context.prev = 16;
+                _context.next = 19;
                 return _index5.default.cart.add({
                   item_id: item_data.item_id,
                   num: 1
                 });
 
-              case 20:
+              case 19:
                 _index2.default.showToast({
                   title: '成功加入购物车',
                   icon: 'success'
                 });
-                _context.next = 26;
+                _context.next = 25;
                 break;
 
-              case 23:
-                _context.prev = 23;
-                _context.t0 = _context["catch"](17);
+              case 22:
+                _context.prev = 22;
+                _context.t0 = _context["catch"](16);
 
                 console.log(_context.t0);
 
-              case 26:
-                _context.next = 32;
-                break;
-
-              case 28:
-                _context.prev = 28;
-                _context.t1 = _context["catch"](2);
-
-                console.log(_context.t1);
-                _index2.default.navigateToMiniProgram({
-                  appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
-                  path: "pages/recommend/detail?id=" + item_data.item_id, // 跳转的目标页面
-                  success: function success(res) {
-                    // 打开成功
-                    console.log(res);
-                  }
-                });
-
-              case 32:
+              case 25:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, _this2, [[2, 28], [17, 23]]);
+        }, _callee, _this2, [[16, 22]]);
       }));
 
       return function (_x, _x2, _x3) {
@@ -237,19 +217,6 @@ var WgtGoods = (_dec = (0, _index3.connect)(function (_ref) {
     }
   }, {
     key: "_createData",
-
-
-    /*handleClickOperate = (item) => {
-      Taro.navigateToMiniProgram({
-        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
-        path: `pages/recommend/detail?id=${item.item_id}`, // 跳转的目标页面
-        success(res) {
-          // 打开成功
-          console.log(res)
-        }
-      })
-    }*/
-
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};

@@ -36,25 +36,11 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyToolbar.__proto__ || Object.getPrototypeOf(GoodsBuyToolbar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "cartCount", "type", "fastBuyText", "__fn_onClick", "customRender", "children", "onClickAddCart", "onClickFastBuy"], _this.handleClickMiniProgram = function (id) {
-      try {
-        _index2.default.navigateTo({
-          url: '/pages/cart/espier-index'
-        });
-      } catch (e) {
-        _index2.default.navigateToMiniProgram({
-          appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
-          path: "pages/recommend/detail?id=" + id, // 跳转的目标页面
-          extraData: {
-            id: id
-          },
-          envVersion: 'trial',
-          success: function success(res) {
-            // 打开成功
-            console.log(res);
-          }
-        });
-      }
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyToolbar.__proto__ || Object.getPrototypeOf(GoodsBuyToolbar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "cartCount", "type", "fastBuyText", "__fn_onClick", "customRender", "children", "onClickAddCart", "onClickFastBuy"], _this.handleClickCart = function (id) {
+
+      _index2.default.navigateTo({
+        url: '/pages/cart/espier-index'
+      });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -90,18 +76,18 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateEVcVT",
-    value: function funPrivateEVcVT() {
+    key: "funPrivateqfaIj",
+    value: function funPrivateqfaIj() {
       this.__triggerPropsFn("onFavItem", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatencWSE",
-    value: function funPrivatencWSE() {
+    key: "funPrivateeismY",
+    value: function funPrivateeismY() {
       this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatedAHPM",
-    value: function funPrivatedAHPM() {
+    key: "funPrivateNpNam",
+    value: function funPrivateNpNam() {
       this.__triggerPropsFn("onClickFastBuy", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -152,7 +138,7 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateEVcVT", "handleClickMiniProgram", "funPrivatencWSE", "funPrivatedAHPM"], _class.options = {
+}, _class.$$events = ["funPrivateqfaIj", "handleClickCart", "funPrivateeismY", "funPrivateNpNam"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   type: 'normal',
