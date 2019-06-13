@@ -226,7 +226,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
       _this.detailInfo(id);
     }, _this.handleToGiftMiniProgram = function () {
       _index2.default.navigateToMiniProgram({
-        appId: 'wx2fb97cb696f68d22', // 要跳转的小程序的appid
+        appId: "wx2fb97cb696f68d22", // 要跳转的小程序的appid
         path: '/pages/index/index', // 跳转的目标页面
         success: function success(res) {
           // 打开成功
@@ -268,8 +268,8 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
         item_type: 'normal',
         item_id: this.state.item_id_List
       }
-        const { list, total_count: total } = await api.item.search(query)
-        list.map(item => {
+       const { list, total_count: total } = await api.item.search(query)
+       list.map(item => {
         if(item.approve_status === 'onsale') {
           this.state.info.content.map(info_item => {
             if(info_item.name === 'goods') {
@@ -286,7 +286,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
         }
       })
       Taro.hideLoading()
-        return {
+       return {
         total
       }
     }*/

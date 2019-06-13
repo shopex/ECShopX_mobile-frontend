@@ -88,6 +88,19 @@ export default class MemberIndex extends Component {
     console.log('跳转统合小程序')
   }
 
+  handleClickGiftApp = () => {
+    Taro.navigateToMiniProgram({
+      appId: APP_GIFT_APPID,
+      path: '/pages/index/index'
+    })
+  }
+
+  handleClickPhone = () => {
+    Taro.makePhoneCall({
+      phoneNumber: '021-61255625'
+    })
+  }
+
   render () {
     const { ordersCount, info } = this.state
     let isAvatatImg
@@ -148,7 +161,7 @@ export default class MemberIndex extends Component {
               icon='gift'
               iconPrefixClass='in-icon'
               title='我要送礼'
-              to='new-mini'
+              onClick={this.handleClickGiftApp}
             />
           </View>
           <View className='member-menu__item none-br'>
@@ -210,8 +223,8 @@ export default class MemberIndex extends Component {
               size='28'
               icon='kefu'
               iconPrefixClass='in-icon'
-              to='makephone'
               title='联系客服'
+              onClick={this.handleClickPhone}
             />
           </View>
         </View>

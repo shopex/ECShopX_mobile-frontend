@@ -172,10 +172,10 @@ var API = function () {
 
         if (statusCode === 401) {
           _index4.default.logout();
-          if (showError) {
-            data.err_msg = data.err_msg || '登录过期正在重新登录';
-            _this2.errorToast(data);
-          }
+          // if (showError) {
+          //   data.err_msg = data.err_msg || '登录过期正在重新登录'
+          //   this.errorToast(data)
+          // }
           _index2.default.redirectTo({
             url: "/pages/auth/wxauth"
           });

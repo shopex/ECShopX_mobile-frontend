@@ -44,24 +44,9 @@ var IconMenu = (_temp2 = _class = function (_BaseComponent) {
           onClick = _this$props.onClick;
 
       if (to) {
-        if (to === 'new-mini') {
-          _index2.default.navigateToMiniProgram({
-            appId: 'wx2fb97cb696f68d22', // 要跳转的小程序的appid
-            path: '/pages/index/index', // 跳转的目标页面
-            success: function success(res) {
-              // 打开成功
-              console.log(res);
-            }
-          });
-        } else if (to === 'makephone') {
-          _index2.default.makePhoneCall({
-            phoneNumber: '021-61255625'
-          });
-        } else {
-          _index2.default.navigateTo({
-            url: to
-          });
-        }
+        _index2.default.navigateTo({
+          url: to
+        });
       }
 
       _this.__triggerPropsFn("onClick", [null].concat([]));

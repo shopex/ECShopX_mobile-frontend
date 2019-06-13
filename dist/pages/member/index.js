@@ -100,6 +100,15 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
       }, _callee, _this2);
     })), _this.handleClickApp = function () {
       console.log('跳转统合小程序');
+    }, _this.handleClickGiftApp = function () {
+      _index2.default.navigateToMiniProgram({
+        appId: "wx2fb97cb696f68d22",
+        path: '/pages/index/index'
+      });
+    }, _this.handleClickPhone = function () {
+      _index2.default.makePhoneCall({
+        phoneNumber: '021-61255625'
+      });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -221,7 +230,7 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["navigateTo"], _temp2)) || _class) || _class);
+}, _class2.$$events = ["navigateTo", "handleClickGiftApp", "handleClickPhone"], _temp2)) || _class) || _class);
 exports.default = MemberIndex;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(MemberIndex, true));
