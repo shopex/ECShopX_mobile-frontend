@@ -3,7 +3,8 @@ const pkg = require('../package.json')
 
 const [TARO_CMD, TARO_ENV] = process.env.npm_lifecycle_event.split(':')
 const DIST_PATH = 'dist'
-const API_HOST = 'bbc54.shopex123.com'
+// const API_HOST = 'bbc54.shopex123.com'
+const API_HOST = 'api-wmp.amorepacific.com.cn'
 // const API_HOST = process.env.NODE_ENV === 'production'
 //   ? 'api-wmp.amorepacific.com.cn'
 //   : 'pjj.aixue7.com'
@@ -39,9 +40,12 @@ const config = {
     APP_VERSION: `'${pkg.version}'`,
     API_HOST: `'${API_HOST}'`,
     APP_BASE_URL: TARO_ENV === 'h5'
+      ? `'//${API_HOST}/api/h5app/wxapp'`
+      : `https://${API_HOST}/api/h5app/wxapp`,
+   /* APP_BASE_URL: TARO_ENV === 'h5'
       ? `'//${API_HOST}/index.php/api/h5app/wxapp'`
-      : `https://${API_HOST}/index.php/api/h5app/wxapp`,
-    APP_COMPANY_ID: '1',
+      : `https://${API_HOST}/index.php/api/h5app/wxapp`,*/
+    APP_COMPANY_ID: '2',
     APP_INTEGRATION: process.env.INTEGRATION_APP,
 
     APP_HOME_PAGE: '/pages/index',

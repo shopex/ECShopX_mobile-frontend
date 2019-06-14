@@ -30,7 +30,7 @@ var uploadImagesFn = function () {
                     },
                     formData: {
                       'file': item.url,
-                      'company_id': extConfig.company_id || 1
+                      'company_id': extConfig.company_id || 2
                     },
                     success: function success(res) {
                       var imgData = JSON.parse(res.data);

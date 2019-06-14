@@ -46,6 +46,16 @@ export default class HomeIndex extends Component {
     this.fetchInfo()
   }
 
+  onShareAppMessage (res) {
+    if (res.from === 'button') {
+      console.log(res.target)
+    }
+    return {
+      title: '首页',
+      path: '/pages/index'
+    }
+  }
+
   async fetchInfo () {
     const url = '/pageparams/setting?template_name=yykweishopamore&version=v1.0.1&page_name=index'
     const info = await req.get(url)

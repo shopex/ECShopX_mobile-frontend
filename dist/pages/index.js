@@ -102,6 +102,17 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       this.fetchInfo();
     }
   }, {
+    key: "onShareAppMessage",
+    value: function onShareAppMessage(res) {
+      if (res.from === 'button') {
+        console.log(res.target);
+      }
+      return {
+        title: '首页',
+        path: '/pages/index'
+      };
+    }
+  }, {
     key: "fetchInfo",
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
