@@ -2,7 +2,7 @@
     <block wx:if="{{!info}}">
         <view></view>
     </block>
-    <view class="{{'wgt  ' + (base.padded ? 'wgt__padded' : null)}}" wx:else>
+    <view class="{{'wgt ' + (base.padded ? 'wgt__padded' : null)}}" wx:else>
         <block wx:if="{{base.title}}">
             <view class="wgt__header">
                 <view class="wgt__title">{{base.title}}</view>

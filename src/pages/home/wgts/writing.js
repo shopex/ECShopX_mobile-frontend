@@ -48,7 +48,7 @@ export default class WgtWriting extends Component {
     }
 
     return (
-      <View className={`wgt  ${base.padded ? 'wgt__padded' : null}`}>
+      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
         {base.title && (
           <View className='wgt__header'>
             <View className='wgt__title'>{base.title}</View>
