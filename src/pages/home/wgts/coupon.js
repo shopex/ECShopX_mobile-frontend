@@ -20,13 +20,12 @@ export default class WgtCoupon extends Component {
   }
 
   handleGetCard = (cardId) => {
-    const { status } = req.get('/user/receiveCard', { card_id: cardId })
-    if(status) {
-      Taro.showToast({
-        title: '优惠券领取成功',
-        icon: 'success'
+    req.get('/user/receiveCard', { card_id: cardId })
+      .then(res => {
+        if(res.status) {
+          S.toast('该券已经领取成功，赶快购物吧！')
+        }
       })
-    }
   }
 
   navigateTo (url) {
