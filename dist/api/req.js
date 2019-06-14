@@ -42,7 +42,7 @@ var API = function () {
       baseURL = baseURL + '/';
     }
 
-    options.company_id = 2;
+    options.company_id = 1;
     {
       var extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
       options.appid = extConfig.appid;
@@ -209,7 +209,7 @@ var API = function () {
 }();
 
 exports.default = new API({
-  baseURL: "https://api-wmp.amorepacific.com.cn/api/h5app/wxapp"
+  baseURL: "https://bbc54.shopex123.com/index.php/api/h5app/wxapp"
 
   // interceptor (chain) {
   //   const { requestParams } = chain
