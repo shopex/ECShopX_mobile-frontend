@@ -52,7 +52,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _props = this.__props,
@@ -92,23 +92,23 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatebVzJY",
-    value: function funPrivatebVzJY() {
+    key: "funPrivategzYmI",
+    value: function funPrivategzYmI() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatenYApy",
-    value: function funPrivatenYApy() {
+    key: "funPrivateBUylF",
+    value: function funPrivateBUylF() {
       this.__triggerPropsFn("onClickImgAndTitle", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateWoDae",
-    value: function funPrivateWoDae() {
+    key: "funPrivateXiHtX",
+    value: function funPrivateXiHtX() {
       this.__triggerPropsFn("onClickPromotion", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateApcwc",
-    value: function funPrivateApcwc() {
+    key: "funPrivatetHpac",
+    value: function funPrivatetHpac() {
       this.__triggerPropsFn("onNumChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -183,7 +183,7 @@ var GoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivatebVzJY", "funPrivatenYApy", "funPrivateWoDae", "funPrivateApcwc"], _class.defaultProps = {
+}, _class.$$events = ["funPrivategzYmI", "funPrivateBUylF", "funPrivateXiHtX", "funPrivatetHpac"], _class.defaultProps = {
   onClick: function onClick() {},
   onClickPromotion: function onClickPromotion() {},
   onClickImgAndTitle: function onClickImgAndTitle() {},

@@ -88,7 +88,7 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _props = this.__props,

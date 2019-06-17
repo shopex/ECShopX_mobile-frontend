@@ -465,7 +465,7 @@ var Reg = (_dec = (0, _index3.connect)(function (_ref) {
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
       var __scope = this.$scope;
 
@@ -486,9 +486,9 @@ var Reg = (_dec = (0, _index3.connect)(function (_ref) {
         var $loopState__temp4 = (0, _index4.classNames)(item.$original.value ? 'pick-value' : 'pick-value-null');
         var $loopState__temp6 = "" + item.$original.key;
         var $loopState__temp8 = "\u8BF7\u8F93\u5165" + item.$original.name;
-        var $loopState__temp10 = "YEeas" + index;
+        var $loopState__temp10 = "tETja" + index;
 
-        var __ref = __scope && __isRunloopRef && (0, _index.getElementById)(__scope, "#" + ("YEeas" + index), "component");
+        var __ref = __scope && __runloopRef && (0, _index.getElementById)(__scope, "#" + ("tETja" + index), "component");
 
         __ref && function (input) {
           _this3.textInput = input;

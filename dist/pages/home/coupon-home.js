@@ -20,13 +20,9 @@ var _index3 = require("../../api/index.js");
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _index5 = require("../../spx/index.js");
+var _index5 = require("../../hocs/index.js");
 
-var _index6 = _interopRequireDefault(_index5);
-
-var _index7 = require("../../hocs/index.js");
-
-var _index8 = require("../../utils/index.js");
+var _index6 = require("../../utils/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40,12 +36,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CouponHome = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_BaseComponent) {
+var CouponHome = (0, _index5.withPager)(_class = (_temp2 = _class2 = function (_BaseComponent) {
   _inherits(CouponHome, _BaseComponent);
 
   function CouponHome() {
-    var _ref,
-        _this2 = this;
+    var _ref;
 
     var _temp, _this, _ret;
 
@@ -55,54 +50,40 @@ var CouponHome = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CouponHome.__proto__ || Object.getPrototypeOf(CouponHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loopArray0", "list", "page"], _this.handleGetCard = function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(cardId, idx) {
-        var list, query, data;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                list = _this.state.list;
-                query = {
-                  card_id: cardId
-                };
-                _context.prev = 2;
-                _context.next = 5;
-                return _index4.default.member.homeCouponGet(query);
-
-              case 5:
-                data = _context.sent;
-
-                _index6.default.toast('优惠券领取成功');
-                if (data.status) {
-                  if (data.status.total_lastget_num <= 0) {
-                    list[idx].getted = 2;
-                  } else if (data.status.lastget_num <= 0) {
-                    list[idx].getted = 1;
-                  }
-                  _this.setState({
-                    list: list
-                  });
-                }
-                _context.next = 12;
-                break;
-
-              case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](2);
-
-              case 12:
-              case "end":
-                return _context.stop();
-            }
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CouponHome.__proto__ || Object.getPrototypeOf(CouponHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["list", "page"], _this.handleGetCard = function (cardId) {
+      _index2.default.navigateToMiniProgram({
+        appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+        path: "pages/recommend/detail?id=" + cardId, // 跳转的目标页面
+        extraData: {
+          id: cardId
+        },
+        envVersion: 'trial',
+        success: function success(res) {
+          // 打开成功
+          console.log(res);
+        }
+      });
+      /*const { list } = this.state
+      const query = {
+        card_id: cardId
+      }
+      try {
+        const data = await api.member.homeCouponGet(query)
+        S.toast('优惠券领取成功')
+        if (data.status) {
+          console.log(74 ,222)
+          if (data.status.total_lastget_num <= 0 ) {
+            list[idx].getted = 2
+          } else if (data.status.lastget_num <= 0 ) {
+            list[idx].getted = 1
           }
-        }, _callee, _this2, [[2, 10]]);
-      }));
-
-      return function (_x, _x2) {
-        return _ref2.apply(this, arguments);
-      };
-    }(), _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+          this.setState({
+            list
+          })
+        }
+      } catch (e) {
+       }*/
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(CouponHome, [{
@@ -122,31 +103,31 @@ var CouponHome = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_
   }, {
     key: "fetch",
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
-        var _ref4, list, total, nList;
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
+        var _ref3, list, total, nList;
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context.prev = _context.next) {
               case 0:
                 params = _extends({}, params, {
                   end_date: 1
                 });
-                _context2.next = 3;
+                _context.next = 3;
                 return _index4.default.member.homeCouponList(params);
 
               case 3:
-                _ref4 = _context2.sent;
-                list = _ref4.list;
-                total = _ref4.pagers.total;
-                nList = (0, _index8.pickBy)(list, {
+                _ref3 = _context.sent;
+                list = _ref3.list;
+                total = _ref3.pagers.total;
+                nList = (0, _index6.pickBy)(list, {
                   status: 'status',
                   reduce_cost: 'reduce_cost',
                   least_cost: 'least_cost',
                   begin_date: 'begin_date',
-                  end_date: function end_date(_ref5) {
-                    var _end_date = _ref5.end_date;
-                    return (0, _index8.formatTime)(_end_date * 1000, 'YYYY-MM-DD HH:mm:ss');
+                  end_date: function end_date(_ref4) {
+                    var _end_date = _ref4.end_date;
+                    return (0, _index6.formatTime)(_end_date * 1000, 'YYYY-MM-DD HH:mm:ss');
                   },
                   fixed_term: 'fixed_term',
                   card_type: 'card_type',
@@ -172,18 +153,18 @@ var CouponHome = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_
                   list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList))
                 });
 
-                return _context2.abrupt("return", { total: total });
+                return _context.abrupt("return", { total: total });
 
               case 10:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee, this);
       }));
 
-      function fetch(_x3) {
-        return _ref3.apply(this, arguments);
+      function fetch(_x) {
+        return _ref2.apply(this, arguments);
       }
 
       return fetch;
@@ -193,7 +174,7 @@ var CouponHome = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __isRunloopRef = arguments[2];
+      var __runloopRef = arguments[2];
       ;
 
       var _state = this.__state,
@@ -201,22 +182,7 @@ var CouponHome = (0, _index7.withPager)(_class = (_temp2 = _class2 = function (_
           page = _state.page;
 
 
-      var loopArray0 = list.map(function (item, idx) {
-        item = {
-          $original: (0, _index.internal_get_original)(item)
-        };
-        var $loopState__temp2 = item.$original.card_type === 'cash' ? (0, _index8.classNames)('coupon-item__name', item.$original.status === '2' ? 'coupon-item__name-not' : null) : null;
-        var $loopState__temp4 = item.$original.card_type === 'gift' ? (0, _index8.classNames)('coupon-item__name', item.$original.status === '2' ? 'coupon-item__name-not' : null) : null;
-        var $loopState__temp6 = item.$original.card_type === 'discount' ? (0, _index8.classNames)('coupon-item__name', item.$original.status === '2' ? 'coupon-item__name-not' : null) : null;
-        return {
-          $loopState__temp2: $loopState__temp2,
-          $loopState__temp4: $loopState__temp4,
-          $loopState__temp6: $loopState__temp6,
-          $original: item.$original
-        };
-      });
       Object.assign(this.__state, {
-        loopArray0: loopArray0,
         page: page
       });
       return this.__state;

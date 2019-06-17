@@ -1,12 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { Loading, SpNote, NavBar, SpToast } from '@/components'
+import { Loading, SpNote, NavBar, SpToast, CouponItem } from '@/components'
 import api from '@/api'
 import S from '@/spx'
 import { withPager } from '@/hocs'
 import { classNames, pickBy, formatTime } from '@/utils'
 
-import './coupon-home.scss'
+import '../home/coupon-home.scss'
 
 @withPager
 export default class CouponHome extends Component {
@@ -61,8 +61,20 @@ export default class CouponHome extends Component {
     return { total }
   }
 
-  handleGetCard = async (cardId, idx) => {
-    const { list } = this.state
+  handleGetCard = (cardId) => {
+    Taro.navigateToMiniProgram({
+      appId: 'wx4721629519a8f25b', // 要跳转的小程序的appid
+      path: `pages/recommend/detail?id=${cardId}`, // 跳转的目标页面
+      extraData: {
+        id: cardId
+      },
+      envVersion: 'trial',
+      success(res) {
+        // 打开成功
+        console.log(res)
+      }
+    })
+    /*const { list } = this.state
     const query = {
       card_id: cardId
     }
@@ -70,6 +82,7 @@ export default class CouponHome extends Component {
       const data = await api.member.homeCouponGet(query)
       S.toast('优惠券领取成功')
       if (data.status) {
+        console.log(74 ,222)
         if (data.status.total_lastget_num <= 0 ) {
           list[idx].getted = 2
         } else if (data.status.lastget_num <= 0 ) {
@@ -81,7 +94,7 @@ export default class CouponHome extends Component {
       }
     } catch (e) {
 
-    }
+    }*/
 
   }
 
@@ -103,60 +116,13 @@ export default class CouponHome extends Component {
         >
           <View className='coupon-list-ticket'>
             {
-              list.map((item, idx) => {
+              list.map(item => {
                 return (
-                  <View className='coupon-item' key={idx}>
-                    {
-                      item.card_type === 'cash'
-                        ? <View className={classNames('coupon-item__name', item.status === '2' ? 'coupon-item__name-not' : null)}>
-                          <View className='coupon-item___number'>￥<Text className='coupon-item___number_text'>{item.reduce_cost/100}</Text></View>
-                          <View className='coupon-item___info'>满{item.least_cost > 0 ? item.least_cost/100 : 0.01}可用</View>
-                        </View>
-                        : null
-                    }
-                    {
-                      item.card_type === 'gift'
-                        ? <View className={classNames('coupon-item__name', item.status === '2' ? 'coupon-item__name-not' : null)}>
-                          <View className='coupon-item___number'>兑换券</View>
-                        </View>
-                        : null
-                    }
-                    {
-                      item.card_type === 'discount'
-                        ? <View className={classNames('coupon-item__name', item.status === '2' ? 'coupon-item__name-not' : null)}>
-                          <View className='coupon-item___number'><Text className='coupon-item___number_text'>{(100-item.discount)/10}</Text>折</View>
-                          <View className='coupon-item___info'>满{item.least_cost > 0 ? item.least_cost/100 : 0.01}可用</View>
-                        </View>
-                        : null
-                    }
-                    <View className='coupon-item__content'>
-                      <View className='coupon-item___description'>
-                        <Text>{item.title}</Text>
-                        <View className='coupon-item___used'>
-                          {
-                            item.getted !== 1 && item.getted !== 2
-                              ? <Text className='btn-receive' onClick={this.handleGetCard.bind(this, item.card_id, idx)}>立即领取</Text>
-                              : null
-                          }
-                          {
-                            item.getted === 1
-                              ? <Text>已领取</Text>
-                              : null
-                          }
-                          {
-                            item.getted === 2
-                              ? <Text>领完了</Text>
-                              : null
-                          }
-                        </View>
-                      </View>
-                      {
-                        item.end_date
-                          ? <View className='coupon-item___time'>有效期至 <Text> {item.end_date}</Text></View>
-                          : <View className='coupon-item___time'>有效期: 领取后<Text> {item.fixed_term}</Text>天有效 </View>
-                      }
-                    </View>
-                  </View>
+                  <CouponItem
+                    info={item}
+                    key={item.id}
+                    onClickBtn={this.handleGetCard.bind(this)}
+                  />
                 )
               })
             }

@@ -6404,10 +6404,6 @@
   color: #CCC;
 }
 
-.at-input__input::-moz-placeholder {
-  color: #CCC;
-}
-
 .at-input__input::-ms-input-placeholder {
   color: #CCC;
 }
@@ -11980,10 +11976,6 @@
 }
 
 .at-textarea__textarea::-webkit-input-placeholder {
-  color: #CCC;
-}
-
-.at-textarea__textarea::-moz-placeholder {
   color: #CCC;
 }
 
