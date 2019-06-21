@@ -122,10 +122,6 @@ export default class Category extends Component {
 
     return (
       <View className='page-category-index'>
-        <SearchBar
-          isFixed
-          onConfirm={this.handleConfirm}
-        />
         {
           tabList.length !== 0
             ? <AtTabs

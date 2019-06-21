@@ -74,6 +74,7 @@ var _App = function (_BaseComponent) {
         navigationBarBackgroundColor: '#fff',
         navigationBarTitleText: 'innisfree悦诗风吟',
         navigationBarTextStyle: 'black'
+        // navigationStyle: 'custom'
       }
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }

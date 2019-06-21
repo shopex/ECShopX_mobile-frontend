@@ -263,7 +263,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleScroll", "nextPage", "handleClickLicense", "scrollBackToTop", "handleClickCloseAddTip"], _temp2)) || _class) || _class) || _class);
+}, _class2.$$events = ["handleScroll", "nextPage", "scrollBackToTop", "handleClickCloseAddTip"], _temp2)) || _class) || _class) || _class);
 exports.default = HomeIndex;
 
 Component(require('../npm/@tarojs/taro-weapp/index.js').default.createComponent(HomeIndex, true));

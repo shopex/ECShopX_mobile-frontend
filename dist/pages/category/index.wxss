@@ -23,7 +23,7 @@
   background: #fff;
   position: fixed;
   padding-top: 10rpx;
-  top: 65rpx;
+  top: 0;
   height: 85rpx;
 }
 .page-category-index .category-comps {
@@ -33,7 +33,7 @@
   position: absolute;
   left: 0;
   width: 100%;
-  top: 150rpx;
+  top: 85rpx;
   bottom: 110rpx;
   overflow-y: auto;
   overflow-x: hidden;

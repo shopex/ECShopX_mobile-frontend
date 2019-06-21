@@ -12,7 +12,6 @@
 =            z-index            =
 ===============================*/
 .category-list {
-  padding-top: 25rpx;
   height: 100%;
   background: #ffffff;
   display: -webkit-box;
@@ -31,18 +30,16 @@
   height: 100%;
   text-align: center;
   background: #f5f5f5;
-  position: fixed;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  top: 25rpx;
 }
 .category-list__content {
-  width: 572rpx;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
   height: 100%;
   background: #fff;
-  position: fixed;
-  top: 25rpx;
-  left: 178rpx;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
@@ -83,30 +80,28 @@
 }
 
 .category-content {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
   -webkit-flex-wrap: wrap;
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
+  padding-top: 20rpx;
+  margin: 0 20rpx;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   text-align: center;
   color: #3e4044;
-  margin: 0 20rpx 0 35rpx;
 }
 .category-content .category__banner {
   display: block;
+  width: 100%;
   height: 183rpx;
   margin-bottom: 40rpx;
 }
 .category-content__img {
-  width: 140rpx;
+  width: 33.333%;
   height: 204rpx;
   margin-bottom: 36rpx;
   display: -webkit-box;

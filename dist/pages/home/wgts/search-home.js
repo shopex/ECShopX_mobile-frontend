@@ -36,48 +36,7 @@ var WgtSearchHome = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtSearchHome.__proto__ || Object.getPrototypeOf(WgtSearchHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["searchValue", "isShowAction", "historyList"], _this.handleFocusSearchHistory = function (isOpened) {
-      _this.setState({
-        showSearchDailog: isOpened,
-        isShowAction: true,
-        searchValue: ' '
-      });
-      _index2.default.getStorage({ key: 'searchHistory' }).then(function (res) {
-        var stringArr = res.data.split(',');
-        _this.setState({ historyList: stringArr });
-      }).catch(function () {});
-    }, _this.handleChangeSearch = function (value) {
-      value = value.replace(/\s+/g, '');
-      _this.setState({
-        searchValue: value
-      });
-    }, _this.handleConfirm = function () {
-      if (_this.state.searchValue) {
-        _index2.default.getStorage({ key: 'searchHistory' }).then(function (res) {
-          var stringArr = res.data.split(',');
-          var arr = [].concat(stringArr);
-          arr.unshift(_this.state.searchValue);
-          arr = Array.from(new Set(arr));
-          var arrString = arr.join(',');
-          _index2.default.setStorage({ key: 'searchHistory', data: arrString });
-          _this.setState({ searchValue: '' });
-        }).catch(function () {
-          var arr = [];
-          arr.push(_this.state.searchValue);
-          var arrString = arr.join(',');
-          _index2.default.setStorage({ key: 'searchHistory', data: arrString });
-        });
-        _index2.default.navigateTo({
-          url: "/pages/item/list?keywords=" + _this.state.searchValue
-        });
-      }
-    }, _this.handleClickCancel = function (isOpened) {
-      _this.setState({
-        showSearchDailog: isOpened,
-        searchValue: '',
-        isShowAction: false
-      });
-    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtSearchHome.__proto__ || Object.getPrototypeOf(WgtSearchHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "searchValue", "historyList", "isShowAction"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(WgtSearchHome, [{
@@ -102,18 +61,33 @@ var WgtSearchHome = (_temp2 = _class = function (_BaseComponent) {
       var __runloopRef = arguments[2];
       ;
 
-      var _state = this.__state,
-          isShowAction = _state.isShowAction,
-          searchValue = _state.searchValue;
+      var info = this.__props.info;
 
-      Object.assign(this.__state, {});
+      if (!info) {
+        return null;
+      }
+
+      var base = info.base,
+          config = info.config;
+
+
+      Object.assign(this.__state, {
+        info: info,
+        base: base,
+        config: config
+      });
       return this.__state;
     }
   }]);
 
   return WgtSearchHome;
-}(_index.Component), _class.properties = {}, _class.$$events = ["handleFocusSearchHistory", "handleChangeSearch", "handleConfirm", "handleClickCancel"], _class.defaultProps = {
-  isOpened: false
+}(_index.Component), _class.properties = {
+  "info": {
+    "type": null,
+    "value": null
+  }
+}, _class.$$events = ["searchTap"], _class.defaultProps = {
+  info: null
 }, _class.options = {
   addGlobalClass: true
 }, _temp2);

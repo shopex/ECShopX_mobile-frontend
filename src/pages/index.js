@@ -7,7 +7,7 @@ import api from '@/api'
 import { pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
-import { WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtImgHotZone, WgtGoodsFaverite, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './home/wgts'
+import { HeaderHome, WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtImgHotZone, WgtGoodsFaverite, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './home/wgts'
 
 import './home/index.scss'
 import PointDrawCompute from "./member/point-draw-compute";
@@ -134,6 +134,7 @@ export default class HomeIndex extends Component {
 
     return (
       <View className='page-index'>
+        <HeaderHome />
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
           scrollTop={scrollTop}
@@ -142,12 +143,12 @@ export default class HomeIndex extends Component {
           scrollY
         >
           <View className='wgts-wrap__cont'>
-            <WgtSearchHome />
             {/*<WgtLimittimeSlider />*/}
             {
               wgts.map((item, idx) => {
                 return (
                   <View className='wgt-wrap' key={idx}>
+                    {item.name === 'search' && <WgtSearchHome info={item} />}
                     {item.name === 'slider' && <WgtSlider info={item} width={screenWidth} />}
                     {item.name === 'navigation' && <WgtNavigation info={item} />}
                     {item.name === 'coupon' && <WgtCoupon info={item} />}
@@ -191,11 +192,6 @@ export default class HomeIndex extends Component {
               })
             }
           </View>
-          <Image
-            src='/assets/imgs/innisfree/license.png'
-            className='img-license'
-            onClick={this.handleClickLicense}
-          />
         </ScrollView>
 
         <BackToTop

@@ -10,11 +10,9 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _class, _temp2;
 
-var _index = require("../../npm/@tarojs/taro-weapp/index.js");
+var _index = require("../../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
-
-var _index3 = require("../../utils/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,28 +22,53 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CheckoutItems = (_temp2 = _class = function (_BaseComponent) {
-  _inherits(CheckoutItems, _BaseComponent);
+var HeaderHome = (_temp2 = _class = function (_BaseComponent) {
+  _inherits(HeaderHome, _BaseComponent);
 
-  function CheckoutItems() {
+  function HeaderHome() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, CheckoutItems);
+    _classCallCheck(this, HeaderHome);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = CheckoutItems.__proto__ || Object.getPrototypeOf(CheckoutItems)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "list", "isOpened", "__fn_onClickLeftIcon"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HeaderHome.__proto__ || Object.getPrototypeOf(HeaderHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["searchValue", "historyList", "isShowAction"], _this.handlePickStore = function () {
+      _index2.default.navigateTo({
+        url: 'shop_picker'
+      });
+    }, _this.handleScanCode = function () {
+      _index2.default.scanCode({
+        success: function success(res) {
+          var scene = decodeURIComponent(res.path);
+          var path = scene.replace('pages/', '');
+          path = path.replace('scene=', '');
+          //格式化二维码参数
+          _index2.default.navigateTo({
+            url: path
+          });
+        }
+      });
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(CheckoutItems, [{
+  _createClass(HeaderHome, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(CheckoutItems.prototype.__proto__ || Object.getPrototypeOf(CheckoutItems.prototype), "_constructor", this).call(this, props);
+      _get(HeaderHome.prototype.__proto__ || Object.getPrototypeOf(HeaderHome.prototype), "_constructor", this).call(this, props);
+
+      this.state = {
+        searchValue: '',
+        historyList: [],
+        isShowAction: false
+      };
     }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {}
   }, {
     key: "_createData",
     value: function _createData() {
@@ -53,58 +76,17 @@ var CheckoutItems = (_temp2 = _class = function (_BaseComponent) {
       this.__props = arguments[1] || this.props || {};
       var __runloopRef = arguments[2];
       ;
-
-      var _props = this.__props,
-          isOpened = _props.isOpened,
-          list = _props.list,
-          onClickBack = _props.onClickBack;
-
-
-      var anonymousState__temp = (0, _index3.classNames)('checkout-items', isOpened ? 'checkout-items__active' : null);
-      var anonymousState__temp2 = "\u5546\u54C1\u6E05\u5355(" + list.length + ")\u4EF6";
-      Object.assign(this.__state, {
-        anonymousState__temp: anonymousState__temp,
-        anonymousState__temp2: anonymousState__temp2,
-        list: list
-      });
+      Object.assign(this.__state, {});
       return this.__state;
-    }
-  }, {
-    key: "funPrivatenSIGc",
-    value: function funPrivatenSIGc() {
-      this.__triggerPropsFn("onClickBack", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
 
-  return CheckoutItems;
-}(_index.Component), _class.properties = {
-  "isOpened": {
-    "type": null,
-    "value": null
-  },
-  "list": {
-    "type": null,
-    "value": null
-  },
-  "onClickBack": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickLeftIcon": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClickBack": {
-    "type": null,
-    "value": null
-  }
-}, _class.$$events = ["funPrivatenSIGc"], _class.defaultProps = {
-  isOpened: false,
-  list: [],
-  onClickBack: function onClickBack() {}
+  return HeaderHome;
+}(_index.Component), _class.properties = {}, _class.$$events = ["handlePickStore", "handleScanCode"], _class.defaultProps = {
+  distributor_name: null
 }, _class.options = {
   addGlobalClass: true
 }, _temp2);
-exports.default = CheckoutItems;
+exports.default = HeaderHome;
 
-Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(CheckoutItems));
+Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(HeaderHome));

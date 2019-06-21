@@ -99,7 +99,8 @@ class App extends Component {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'innisfree悦诗风吟',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
+      // navigationStyle: 'custom'
     }
   }
   componentWillMount () {

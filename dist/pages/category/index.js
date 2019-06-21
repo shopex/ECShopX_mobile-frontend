@@ -224,7 +224,7 @@ var Category = (_dec = (0, _index3.connect)(function (store) {
   }]);
 
   return Category;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickTab"], _temp2)) || _class);
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickTab"], _temp2)) || _class);
 exports.default = Category;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(Category, true));

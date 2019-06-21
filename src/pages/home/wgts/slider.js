@@ -53,9 +53,15 @@ export default class WgtSlider extends Component {
         {
           config
             ? <View className={`slider-wrap ${config.padded ? 'padded' : ''}`}>
+                <Image
+                  mode='widthFix'
+                  className='slider-item__img'
+                  style='width: 100%; visibility: hidden; z-index: -1'
+                  src={data[0].imgUrl}
+                />
                 <Swiper
                   className='slider-img'
-                  style={`height: ${Taro.pxTransform(Math.round(width*(config.height/320)) * 2)}`}
+                  style={`position: absolute; left: 0; top: 0; width:100%; height: 100%; z-index: 10`}
                   circular
                   autoplay
                   current={curIdx}

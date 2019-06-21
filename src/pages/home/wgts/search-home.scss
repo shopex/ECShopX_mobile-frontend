@@ -1,2 +1,23 @@
-@import "../../../style/imports";
-
+.search {
+  background: #fff;
+  &.fixed {
+    position: fixed;
+    left: 0;
+    top: 92rpx;
+    right: 0;
+    z-index: 99;
+    box-shadow: 0 5rpx 5rpx rgba(0, 0, 0, 0.1);
+  }
+}
+.search {
+  &-box {
+    padding: 15rpx 0;
+    border-radius: 80rpx;
+    background-color: #efefef;
+    font-size: 28rpx;
+    color: #999;
+    .search-icon {
+      margin-right: 10rpx;
+    }
+  }
+}

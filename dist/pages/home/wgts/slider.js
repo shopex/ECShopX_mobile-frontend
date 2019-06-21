@@ -40,7 +40,7 @@ var WgtSlider = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtSlider.__proto__ || Object.getPrototypeOf(WgtSlider)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp7", "loopArray0", "loopArray1", "info", "base", "config", "curIdx", "data", "curContent", "width"], _this.handleClickItem = _helper.linkPage, _this.handleSwiperChange = function (e) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtSlider.__proto__ || Object.getPrototypeOf(WgtSlider)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp3", "anonymousState__temp6", "loopArray0", "loopArray1", "info", "base", "config", "data", "curIdx", "curContent", "width"], _this.handleClickItem = _helper.linkPage, _this.handleSwiperChange = function (e) {
       var current = e.detail.current;
 
 
@@ -82,16 +82,15 @@ var WgtSlider = (_temp2 = _class = function (_BaseComponent) {
 
       var curContent = (data[curIdx] || {}).content;
 
-      var anonymousState__temp = config ? "height: " + _index2.default.pxTransform(Math.round(width * (config.height / 320)) * 2) : null;
-      var anonymousState__temp4 = data.length > 1 && config.dot ? config ? (0, _index3.classNames)('slider-dot', { 'dot-size-switch': config.animation }, config.dotLocation, config.dotCover ? 'cover' : 'no-cover', config.dotColor, config.shape) : null : null;
-      var anonymousState__temp7 = data.length > 1 && !config.dot ? config ? (0, _index3.classNames)('slider-count', config.dotLocation, config.shape, config.dotColor) : null : null;
+      var anonymousState__temp3 = data.length > 1 && config.dot ? config ? (0, _index3.classNames)('slider-dot', { 'dot-size-switch': config.animation }, config.dotLocation, config.dotCover ? 'cover' : 'no-cover', config.dotColor, config.shape) : null : null;
+      var anonymousState__temp6 = data.length > 1 && !config.dot ? config ? (0, _index3.classNames)('slider-count', config.dotLocation, config.shape, config.dotColor) : null : null;
       var loopArray0 = config ? data.map(function (item, idx) {
         item = {
           $original: (0, _index.internal_get_original)(item)
         };
-        var $loopState__temp3 = config ? "padding: 0 " + (config.padded ? _index2.default.pxTransform(20) : 0) : null;
+        var $loopState__temp2 = config ? "padding: 0 " + (config.padded ? _index2.default.pxTransform(20) : 0) : null;
         return {
-          $loopState__temp3: $loopState__temp3,
+          $loopState__temp2: $loopState__temp2,
           $original: item.$original
         };
       }) : [];
@@ -99,16 +98,15 @@ var WgtSlider = (_temp2 = _class = function (_BaseComponent) {
         dot = {
           $original: (0, _index.internal_get_original)(dot)
         };
-        var $loopState__temp6 = data.length > 1 && config.dot ? config ? (0, _index3.classNames)('dot', { active: curIdx === dotIdx }) : null : null;
+        var $loopState__temp5 = data.length > 1 && config.dot ? config ? (0, _index3.classNames)('dot', { active: curIdx === dotIdx }) : null : null;
         return {
-          $loopState__temp6: $loopState__temp6,
+          $loopState__temp5: $loopState__temp5,
           $original: dot.$original
         };
       }) : [];
       Object.assign(this.__state, {
-        anonymousState__temp: anonymousState__temp,
-        anonymousState__temp4: anonymousState__temp4,
-        anonymousState__temp7: anonymousState__temp7,
+        anonymousState__temp3: anonymousState__temp3,
+        anonymousState__temp6: anonymousState__temp6,
         loopArray0: loopArray0,
         loopArray1: loopArray1,
         info: info,

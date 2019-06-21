@@ -45,13 +45,8 @@ export default class MemberIndex extends Component {
         background_pic_url: ''
       },
       orderCount: '',
-      loginCode: '',
-      animationCodeData: {},
-      cardInfo: {},
-      memberInfo: {},
       isOpenPopularize: false,
-      isPromoter: false,
-      cursymbol: '¥'
+      isPromoter: false
     }
   }
 
@@ -143,8 +138,11 @@ export default class MemberIndex extends Component {
     }
 
     return (
-      <View className="page-member-index">
-        <View className="main">
+      <View class="page-member-index">
+        <ScrollView
+          className="member__scroll"
+          scrollY
+        >
           <Navigator hover-className="none" className="user-info view-flex view-flex-middle view-flex-center" url="member_code">
             <View className="avatar">
               <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
@@ -298,7 +296,7 @@ export default class MemberIndex extends Component {
               </Navigator>
             </View>
           </View>
-        </View>
+        </ScrollView>
         <TabBar
           current={5}
         />

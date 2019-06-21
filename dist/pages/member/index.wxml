@@ -1,6 +1,6 @@
 <block>
     <view class="page-member-index">
-        <view class="main">
+        <scroll-view class="member__scroll" scroll-y="{{true}}">
             <navigator hover-className="none" class="user-info view-flex view-flex-middle view-flex-center" url="member_code">
                 <view class="avatar">
                     <image class="avatar-img" src="{{info.avatar}}" mode="aspectFill"></image>
@@ -138,7 +138,7 @@
                     </navigator>
                 </view>
             </view>
-        </view>
+        </scroll-view>
         <tab-bar current="{{5}}" __triggerObserer="{{ _triggerObserer }}"></tab-bar>
     </view>
 </block>

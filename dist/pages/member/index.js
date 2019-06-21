@@ -61,7 +61,7 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MemberIndex.__proto__ || Object.getPrototypeOf(MemberIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "vipgrade", "gradeInfo", "orderCount", "isOpenPopularize", "isPromoter", "ordersCount", "loginCode", "animationCodeData", "cardInfo", "memberInfo", "cursymbol", "__fn_onFetchFavs"], _this.handleClickRecommend = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MemberIndex.__proto__ || Object.getPrototypeOf(MemberIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "vipgrade", "gradeInfo", "orderCount", "isOpenPopularize", "isPromoter", "ordersCount", "__fn_onFetchFavs"], _this.handleClickRecommend = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var info;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -141,13 +141,8 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
           background_pic_url: ''
         },
         orderCount: '',
-        loginCode: '',
-        animationCodeData: {},
-        cardInfo: {},
-        memberInfo: {},
         isOpenPopularize: false,
-        isPromoter: false,
-        cursymbol: '¥'
+        isPromoter: false
       };
     }
   }, {
