@@ -26,7 +26,7 @@ export default class WgtNavigation extends Component {
 
     return (
       <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
-        <View className='wgt-body with-padding'>
+        <View className='wgt__body with-padding'>
           <View className='navigation'>
             {data.map((item, idx) => {
               return (

@@ -7,7 +7,7 @@ import api from '@/api'
 import { pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
-import { HeaderHome, WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtImgHotZone, WgtGoodsFaverite, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './home/wgts'
+import { HeaderHome, WgtSearchHome, WgtSlider, WgtLimittimeSlider, WgtImgHotZone, WgtGoodsFaverite, WgtMarquees, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from './home/wgts'
 
 import './home/index.scss'
 import PointDrawCompute from "./member/point-draw-compute";
@@ -140,6 +140,7 @@ export default class HomeIndex extends Component {
                   <View className='wgt-wrap' key={idx}>
                     {item.name === 'search' && <WgtSearchHome info={item} />}
                     {item.name === 'slider' && <WgtSlider info={item} width={screenWidth} />}
+                    {item.name === 'marqueess' && <WgtMarqueess info={item} />}
                     {item.name === 'navigation' && <WgtNavigation info={item} />}
                     {item.name === 'coupon' && <WgtCoupon info={item} />}
                     {item.name === 'imgHotzone' && <WgtImgHotZone info={item} />}

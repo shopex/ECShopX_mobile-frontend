@@ -34,7 +34,7 @@ export default class WgtGoodsFaverite extends Component {
             猜你喜欢
           </Text>
         </View>
-        <View className='wgt-body with-padding'>
+        <View className='wgt__body with-padding'>
           <View className='grid-goods out-padding grid-goods__type-grid'>
             {info.map(item => (
               <GoodsItem

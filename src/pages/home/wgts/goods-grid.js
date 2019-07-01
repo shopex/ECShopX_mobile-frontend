@@ -59,7 +59,7 @@ export default class WgtGoodsGrid extends Component {
             </View>
           </View>
         )}
-        <View className='wgt-body with-padding'>
+        <View className='wgt__body with-padding'>
           <View className='grid-goods out-padding grid-goods__type-grid'>
             {data.map((item, idx) => (
               <View

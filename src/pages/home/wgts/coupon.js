@@ -56,7 +56,7 @@ export default class WgtCoupon extends Component {
             </View>
           </View>
         )}
-        <View className='wgt-body with-padding'>
+        <View className='wgt__body with-padding'>
           {data.map((item, idx) => {
             return (
               <View

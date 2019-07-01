@@ -124,6 +124,9 @@
   font-size: 24rpx;
   color: #999;
 }
+.wgt__body.with-padding {
+  padding: 0 20rpx;
+}
 .wgt__goods__more {
   display: -webkit-box;
   display: -webkit-flex;

@@ -13,7 +13,7 @@
                 </view>
             </view>
         </block>
-        <view class="wgt-body with-padding">
+        <view class="wgt__body with-padding">
             <view class="coupon-wgt coupon-body" wx:key="idx" bindtap="handleGetCard" wx:for="{{data}}" wx:for-item="item" wx:for-index="idx" data-e-tap-so="this" data-e-tap-a-a="{{item.id}}">
                 <image src="/assets/imgs/coupon.png" class="coupon_bg"></image>
                 <view class="coupon-content">

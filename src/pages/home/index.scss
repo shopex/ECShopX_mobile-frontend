@@ -85,6 +85,11 @@
     font-size: 24px;
     color: #999;
   }
+  &__body {
+    &.with-padding {
+      padding: 0 20rpx;
+    }
+  }
   &__goods__more {
     display: flex;
     text-align: right;
