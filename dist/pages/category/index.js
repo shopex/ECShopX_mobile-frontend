@@ -157,12 +157,14 @@ var Category = (_dec = (0, _index3.connect)(function (store) {
                 tabList = [];
                 contentList = [];
 
-                seriesList.map(function (item) {
-                  if (item.content.length > 0) {
+                if (list[0].params.hasSeries) {
+                  seriesList.map(function (item) {
                     tabList.push({ title: item.title, status: item.name });
                     contentList.push(item.content);
-                  }
-                });
+                  });
+                } else {
+                  contentList.push(seriesList);
+                }
                 curIndexList = contentList[this.state.curTabIdx];
                 _nList = (0, _index4.pickBy)(curIndexList, {
                   name: 'name',

@@ -64,7 +64,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "screenWidth", "likeList", "page", "showBackToTop", "isShowAddTip", "authStatus", "store"], _this.componentDidShow = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "likeList", "page", "showBackToTop", "isShowAddTip", "authStatus", "store"], _this.componentDidShow = function () {
       _index2.default.getStorage({ key: 'addTipIsShow' }).then(function () {}).catch(function (error) {
         console.log(error);
         _this.setState({
@@ -92,8 +92,7 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
         wgts: null,
         authStatus: false,
         likeList: [],
-        isShowAddTip: false,
-        screenWidth: 0
+        isShowAddTip: false
       });
     }
   }, {
@@ -225,7 +224,6 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
       var _state = this.__state,
           wgts = _state.wgts,
           authStatus = _state.authStatus,
-          screenWidth = _state.screenWidth,
           page = _state.page,
           likeList = _state.likeList,
           showBackToTop = _state.showBackToTop,

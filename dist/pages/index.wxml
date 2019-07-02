@@ -11,10 +11,10 @@
                         <wgt-search-home info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-search-home>
                     </block>
                     <block wx:if="{{item.name === 'slider'}}">
-                        <wgt-slider info="{{item}}" __triggerObserer="{{ _triggerObserer }}" width="{{screenWidth}}"></wgt-slider>
+                        <wgt-slider info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-slider>
                     </block>
-                    <block wx:if="{{item.name === 'marqueess'}}">
-                        <wgt-marqueess info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-marqueess>
+                    <block wx:if="{{item.name === 'marquees'}}">
+                        <wgt-marquees info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-marquees>
                     </block>
                     <block wx:if="{{item.name === 'navigation'}}">
                         <wgt-navigation info="{{item}}" __triggerObserer="{{ _triggerObserer }}"></wgt-navigation>

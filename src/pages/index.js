@@ -26,8 +26,7 @@ export default class HomeIndex extends Component {
       wgts: null,
       authStatus: false,
       likeList: [],
-      isShowAddTip: false,
-      screenWidth: 0
+      isShowAddTip: false
     }
   }
 
@@ -116,7 +115,7 @@ export default class HomeIndex extends Component {
   }
 
   render () {
-    const { wgts, authStatus, screenWidth, page, likeList, showBackToTop, scrollTop, isShowAddTip } = this.state
+    const { wgts, authStatus, page, likeList, showBackToTop, scrollTop, isShowAddTip } = this.state
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -139,8 +138,8 @@ export default class HomeIndex extends Component {
                 return (
                   <View className='wgt-wrap' key={idx}>
                     {item.name === 'search' && <WgtSearchHome info={item} />}
-                    {item.name === 'slider' && <WgtSlider info={item} width={screenWidth} />}
-                    {item.name === 'marqueess' && <WgtMarqueess info={item} />}
+                    {item.name === 'slider' && <WgtSlider info={item} />}
+                    {item.name === 'marquees' && <WgtMarquees info={item} />}
                     {item.name === 'navigation' && <WgtNavigation info={item} />}
                     {item.name === 'coupon' && <WgtCoupon info={item} />}
                     {item.name === 'imgHotzone' && <WgtImgHotZone info={item} />}

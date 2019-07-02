@@ -1,9 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
 
-import './slider.scss'
+import './marquees.scss'
 
 export default class WgtMarquees extends Component {
   static options = {
@@ -18,7 +16,15 @@ export default class WgtMarquees extends Component {
     super(props)
   }
 
-  handleClickItem = linkPage
+  handleClickItem = (id) => {
+    try {
+      Taro.navigateTo({
+        url: `/pages/article/index?id=${id}`
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   render () {
     const { info } = this.props
@@ -32,59 +38,31 @@ export default class WgtMarquees extends Component {
       <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
         {
           config
-            ? <View className={`slider-wrap ${config.padded ? 'padded' : ''}`}>
-                <Swiper
-                  className='slider-img'
-                  circular
+            ? <Swiper
+                  className='marquees'
                   autoplay
-                  current={curIdx}
-                  interval={config.interval}
+                  circular
+                  interval={3000}
                   duration={300}
-                  onChange={this.handleSwiperChange}
+                  vertical={config.direction}
                 >
                   {data.map((item, idx) => {
                     return (
                       <SwiperItem
                         key={idx}
-                        className={`slider-item ${config.rounded ? 'rounded' : null}`}
+                        className='marquees-item'
                       >
                         <View
-                          style={`padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
-                          onClick={this.handleClickItem.bind(this, item.linkPage, item.id)}
+                          onClick={this.handleClickItem.bind(this, item.id)}
                         >
-                          <Image
-                            mode='widthFix'
-                            className='slider-item__img'
-                            src={item.imgUrl}
-                          />
+                          {item.title}
                         </View>
                       </SwiperItem>
                     )
                   })}
                 </Swiper>
-
-                {data.length > 1 && config.dot && (
-                  <View className={classNames('slider-dot', { 'dot-size-switch': config.animation}, config.dotLocation, config.dotCover ? 'cover' : 'no-cover', config.dotColor, config.shape)}>
-                    {data.map((dot, dotIdx) =>
-                      <View
-                        className={classNames('dot', { active: curIdx === dotIdx })}
-                        key={dotIdx}
-                      ></View>
-                    )}
-                  </View>
-                )}
-
-                {data.length > 1 && !config.dot && (
-                  <View className={classNames('slider-count', config.dotLocation, config.shape, config.dotColor)}>
-                    {curIdx + 1}/{data.length}
-                  </View>
-                )}
-              </View>
             : null
         }
-        {config.content && data.length > 0 && (
-          <Text className='slider-caption'>{curContent}</Text>
-        )}
       </View>
     )
   }

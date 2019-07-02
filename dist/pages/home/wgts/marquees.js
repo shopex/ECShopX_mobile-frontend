@@ -22,27 +22,35 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var OrderItem = (_temp2 = _class = function (_BaseComponent) {
-  _inherits(OrderItem, _BaseComponent);
+var WgtMarquees = (_temp2 = _class = function (_BaseComponent) {
+  _inherits(WgtMarquees, _BaseComponent);
 
-  function OrderItem() {
+  function WgtMarquees() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, OrderItem);
+    _classCallCheck(this, WgtMarquees);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = OrderItem.__proto__ || Object.getPrototypeOf(OrderItem)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "img", "showExtra", "customFooter", "payType", "renderDesc", "renderFooter"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtMarquees.__proto__ || Object.getPrototypeOf(WgtMarquees)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "data"], _this.handleClickItem = function (id) {
+      try {
+        _index2.default.navigateTo({
+          url: "/pages/article/index?id=" + id
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(OrderItem, [{
+  _createClass(WgtMarquees, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(OrderItem.prototype.__proto__ || Object.getPrototypeOf(OrderItem.prototype), "_constructor", this).call(this, props);
+      _get(WgtMarquees.prototype.__proto__ || Object.getPrototypeOf(WgtMarquees.prototype), "_constructor", this).call(this, props);
     }
   }, {
     key: "_createData",
@@ -52,67 +60,38 @@ var OrderItem = (_temp2 = _class = function (_BaseComponent) {
       var __runloopRef = arguments[2];
       ;
 
-      var _props = this.__props,
-          info = _props.info,
-          onClick = _props.onClick,
-          payType = _props.payType,
-          showExtra = _props.showExtra,
-          customFooter = _props.customFooter;
+      var info = this.__props.info;
+
 
       if (!info) {
         return null;
-      }var img = info.pic_path ? info.pic_path : Array.isArray(info.pics) ? info.pics[0] : info.pics;
+      }
+      var config = info.config,
+          base = info.base,
+          data = info.data;
+
 
       Object.assign(this.__state, {
         info: info,
-        img: img,
-        showExtra: showExtra,
-        customFooter: customFooter,
-        payType: payType
+        base: base,
+        config: config,
+        data: data
       });
       return this.__state;
     }
-  }, {
-    key: "funPrivateDFbzg",
-    value: function funPrivateDFbzg() {
-      this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
-    }
   }]);
 
-  return OrderItem;
+  return WgtMarquees;
 }(_index.Component), _class.properties = {
   "info": {
     "type": null,
     "value": null
-  },
-  "onClick": {
-    "type": null,
-    "value": null
-  },
-  "payType": {
-    "type": null,
-    "value": null
-  },
-  "showExtra": {
-    "type": null,
-    "value": null
-  },
-  "customFooter": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClick": {
-    "type": null,
-    "value": null
   }
-}, _class.$$events = ["funPrivateDFbzg"], _class.defaultProps = {
-  onClick: function onClick() {},
-  payType: '',
-  showExtra: true,
-  info: null
-}, _class.options = {
+}, _class.$$events = ["handleClickItem"], _class.options = {
   addGlobalClass: true
-}, _class.multipleSlots = true, _temp2);
-exports.default = OrderItem;
+}, _class.defaultProps = {
+  info: null
+}, _temp2);
+exports.default = WgtMarquees;
 
-Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(OrderItem));
+Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(WgtMarquees));
