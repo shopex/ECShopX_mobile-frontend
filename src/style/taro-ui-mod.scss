@@ -61,6 +61,7 @@
 }
 
 .at-search-bar__action {
+  margin-left: 10rpx;
   background-color: $color-search-cancel-bg;
   color: $color-primary-text;
 }
@@ -138,10 +139,7 @@
 }
 
 .home-search__bar.at-search-bar {
-  position: absolute;
-  top: 44px;
-  left: 0;
-  right: 0;
+  position: relative;
   padding: 20px 0 20px 20px !important;
   height: 54px;
   z-index: 99;

@@ -2,7 +2,8 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
-import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote, SearchBar } from '@/components'
+import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote } from '@/components'
+import ListSearch from './comps/list-search'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import S from '@/spx'
@@ -82,6 +83,12 @@ export default class RecommendList extends Component {
     })
   }
 
+  handleClickFilter = () => {
+    this.setState({
+      showDrawer: true
+    })
+  }
+
   render () {
     const { list, showBackToTop, scrollTop, page, showDrawer } = this.state
 
@@ -89,11 +96,14 @@ export default class RecommendList extends Component {
       <View className='page-goods-list page-recommend-list'>
         <View className='list-header'>
           <View class="search-bar">
-            <SearchBar
+            <ListSearch
               onConfirm={this.handleConfirm.bind(this)}
             />
           </View>
-          <View className="icon-list filter-icon"></View>
+          <View className="filter-icon" onClick={this.handleClickFilter.bind(this)}>
+            <Text class="icon-list" />
+            分类
+          </View>
         </View>
         <AtDrawer
           show={showDrawer}

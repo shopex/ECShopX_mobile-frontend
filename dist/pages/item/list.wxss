@@ -43,21 +43,18 @@
   display: -ms-flexbox;
   display: flex;
 }
-.page-goods-list .goods-list__tabs .filter-bar__bd {
-  -webkit-box-flex: 3;
-  -webkit-flex: 3;
-      -ms-flex: 3;
-          flex: 3;
-}
-.page-goods-list .goods-list__tabs .filter-bar__ft {
+.page-goods-list .goods-list__tabs .filter-bar__item {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;
           flex: 1;
-}
-.page-goods-list .goods-list__tabs .filter-bar__item {
   text-align: center;
   color: #666666;
+  font-size: 26rpx;
+}
+.page-goods-list .goods-list__tabs .filter-bar__item [class^=icon] {
+  color: #ccc;
+  display: inline-block;
 }
 .page-goods-list .goods-list__tabs .filter-bar__item-active {
   color: #0b4137;

@@ -22,51 +22,78 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
-  _inherits(PaymentPicker, _BaseComponent);
+var ListSearch = (_temp2 = _class = function (_BaseComponent) {
+  _inherits(ListSearch, _BaseComponent);
 
-  function PaymentPicker() {
+  function ListSearch() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, PaymentPicker);
+    _classCallCheck(this, ListSearch);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PaymentPicker.__proto__ || Object.getPrototypeOf(PaymentPicker)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "isOpened", "disabledPayment", "loading", "localType", "type", "__fn_onClose", "__fn_onClick"], _this.componentWillReceiveProps = function (nextProps) {
-      if (nextProps.type !== _this.props.type) {
-        _this.setState({
-          localType: nextProps.type
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ListSearch.__proto__ || Object.getPrototypeOf(ListSearch)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["searchValue", "isShowAction", "historyList"], _this.handleFocusSearchHistory = function (isOpened) {
+      _this.setState({
+        showSearchDailog: isOpened,
+        isShowAction: true,
+        searchValue: ' '
+      });
+      _index2.default.getStorage({ key: 'searchHistory' }).then(function (res) {
+        var stringArr = res.data.split(',');
+        _this.setState({ historyList: stringArr });
+      }).catch(function () {});
+    }, _this.handleChangeSearch = function (value) {
+      value = value.replace(/\s+/g, '');
+      _this.setState({
+        searchValue: value
+      });
+    }, _this.handleConfirm = function () {
+      if (_this.state.searchValue) {
+        _index2.default.getStorage({ key: 'searchHistory' }).then(function (res) {
+          var stringArr = res.data.split(',');
+          var arr = [].concat(stringArr);
+          arr.unshift(_this.state.searchValue);
+          arr = Array.from(new Set(arr));
+          var arrString = arr.join(',');
+          _index2.default.setStorage({ key: 'searchHistory', data: arrString });
+          _this.setState({ searchValue: '' });
+        }).catch(function () {
+          var arr = [];
+          arr.push(_this.state.searchValue);
+          var arrString = arr.join(',');
+          _index2.default.setStorage({ key: 'searchHistory', data: arrString });
+        });
+        _index2.default.navigateTo({
+          url: "/pages/item/list?keywords=" + _this.state.searchValue
         });
       }
-    }, _this.handleCancel = function () {
+    }, _this.handleClickCancel = function (isOpened) {
       _this.setState({
-        localType: _this.props.type
-      });
-      _this.__triggerPropsFn("onClose", [null].concat([]));
-    }, _this.handlePaymentChange = function (type) {
-      var disabledPayment = _this.props.disabledPayment;
-
-      if (disabledPayment && disabledPayment.name === type) {
-        return;
-      }_this.setState({
-        localType: type
+        showSearchDailog: isOpened,
+        searchValue: '',
+        isShowAction: false
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(PaymentPicker, [{
+  _createClass(ListSearch, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(PaymentPicker.prototype.__proto__ || Object.getPrototypeOf(PaymentPicker.prototype), "_constructor", this).call(this, props);
+      _get(ListSearch.prototype.__proto__ || Object.getPrototypeOf(ListSearch.prototype), "_constructor", this).call(this, props);
 
       this.state = {
-        localType: props.type
+        searchValue: '',
+        historyList: [],
+        isShowAction: false
       };
     }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {}
   }, {
     key: "_createData",
     value: function _createData() {
@@ -75,74 +102,21 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       var __runloopRef = arguments[2];
       ;
 
-      var _props = this.__props,
-          isOpened = _props.isOpened,
-          loading = _props.loading,
-          disabledPayment = _props.disabledPayment;
-      var localType = this.__state.localType;
+      var _state = this.__state,
+          isShowAction = _state.isShowAction,
+          searchValue = _state.searchValue;
 
-
-      var anonymousState__temp = !!disabledPayment;
-      var anonymousState__temp2 = localType === 'dhpoint';
-      var anonymousState__temp3 = localType === 'amorepay';
-      Object.assign(this.__state, {
-        anonymousState__temp: anonymousState__temp,
-        anonymousState__temp2: anonymousState__temp2,
-        anonymousState__temp3: anonymousState__temp3,
-        isOpened: isOpened,
-        disabledPayment: disabledPayment,
-        loading: loading
-      });
+      Object.assign(this.__state, {});
       return this.__state;
-    }
-  }, {
-    key: "funPrivateVmsbZ",
-    value: function funPrivateVmsbZ() {
-      this.__triggerPropsFn("onChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
 
-  return PaymentPicker;
-}(_index.Component), _class.properties = {
-  "type": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClose": {
-    "type": null,
-    "value": null
-  },
-  "disabledPayment": {
-    "type": null,
-    "value": null
-  },
-  "isOpened": {
-    "type": null,
-    "value": null
-  },
-  "loading": {
-    "type": null,
-    "value": null
-  },
-  "onChange": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClick": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onChange": {
-    "type": null,
-    "value": null
-  }
-}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivateVmsbZ"], _class.defaultProps = {
-  isOpened: false,
-  type: 'amorepay',
-  disabledPayment: null
+  return ListSearch;
+}(_index.Component), _class.properties = {}, _class.$$events = ["handleFocusSearchHistory", "handleChangeSearch", "handleConfirm", "handleClickCancel"], _class.defaultProps = {
+  isOpened: false
 }, _class.options = {
   addGlobalClass: true
 }, _temp2);
-exports.default = PaymentPicker;
+exports.default = ListSearch;
 
-Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(PaymentPicker));
+Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(ListSearch));

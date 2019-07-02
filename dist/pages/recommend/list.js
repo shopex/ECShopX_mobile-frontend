@@ -59,6 +59,10 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       _index2.default.navigateTo({
         url: url
       });
+    }, _this.handleClickFilter = function () {
+      _this.setState({
+        showDrawer: true
+      });
     }, _this.anonymousFunc0Array = [], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -220,7 +224,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }]);
 
   return RecommendList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickFilter", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
   navigationBarTitleText: '种草'
 }, _temp2)) || _class) || _class;
 

@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView, Picker } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
@@ -33,7 +33,10 @@ export default class List extends Component {
       paramsList: [],
       listType: 'grid',
       showDrawer: false,
-      selectParams: []
+      selectParams: [],
+      areaList: [],
+      multiIndex: [],
+      listLength: 0
     }
   }
 
@@ -63,6 +66,32 @@ export default class List extends Component {
     }
     const { list, total_count: total, item_params_list = [] } = await api.item.search(query)
     const { favs } = this.props
+
+    let res = await api.member.areaList()
+    const addList = pickBy(res, {
+      label: 'label',
+      children: 'children',
+    })
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    addList.map((item, index) => {
+      arrProvice.push(item.label)
+      if(index === 0) {
+        item.children.map((c_item, c_index) => {
+          arrCity.push(c_item.label)
+          if(c_index === 0) {
+            c_item.children.map(cny_item => {
+              arrCounty.push(cny_item.label)
+            })
+          }
+        })
+      }
+    })
+    this.setState({
+      areaList: [arrProvice, arrCity, arrCounty],
+      // areaList: [['北京'], ['北京'], ['东城']],
+    })
 
     item_params_list.map(item => {
       if(selectParams.length < 4){
@@ -210,6 +239,102 @@ export default class List extends Component {
     })
   }
 
+  // 选定开户地区
+  handleClickPicker = () => {
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    if(this.nList){
+      this.nList.map((item, index) => {
+        arrProvice.push(item.label)
+        if(index === 0) {
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
+              })
+            }
+          })
+        }
+      })
+      this.setState({
+        areaList: [arrProvice, arrCity, arrCounty],
+        multiIndex: [0, 0, 0]
+      })
+    }
+
+  }
+
+  bindMultiPickerChange = async (e) => {
+    const { info } = this.state
+    this.nList.map((item, index) => {
+      if(index === e.detail.value[0]) {
+        info.province = item.label
+        item.children.map((s_item,sIndex) => {
+          if(sIndex === e.detail.value[1]) {
+            info.city = s_item.label
+            s_item.children.map((th_item,thIndex) => {
+              if(thIndex === e.detail.value[2]) {
+                info.county = th_item.label
+              }
+            })
+          }
+        })
+      }
+    })
+    this.setState({ info })
+  }
+
+  bindMultiPickerColumnChange = (e) => {
+    const { areaList, multiIndex } = this.state
+    if(e.detail.column === 0) {
+      this.setState({
+        multiIndex: [e.detail.value,0,0]
+      })
+      this.nList.map((item, index) => {
+        if(index === e.detail.value) {
+          let arrCity = []
+          let arrCounty = []
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
+              })
+            }
+          })
+          areaList[1] = arrCity
+          areaList[2] = arrCounty
+          this.setState({ areaList })
+        }
+      })
+    } else if (e.detail.column === 1) {
+      multiIndex[1] = e.detail.value
+      multiIndex[2] = 0
+      this.setState({
+        multiIndex
+      },()=>{
+        this.nList[multiIndex[0]].children.map((c_item, c_index)  => {
+          if(c_index === e.detail.value) {
+            let arrCounty = []
+            c_item.children.map(cny_item => {
+              arrCounty.push(cny_item.label)
+            })
+            areaList[2] = arrCounty
+            this.setState({ areaList })
+          }
+        })
+      })
+
+    } else {
+      multiIndex[2] = e.detail.value
+      this.setState({
+        multiIndex
+      })
+    }
+  }
+
   handleConfirm = (val) => {
     this.setState({
       query: {
@@ -227,7 +352,20 @@ export default class List extends Component {
   }
 
   render () {
-    const { list, listType, curFilterIdx, filterList, showBackToTop, scrollTop, page, showDrawer, paramsList, selectParams } = this.state
+    const {
+      list,
+      listType,
+      curFilterIdx,
+      filterList,
+      showBackToTop,
+      scrollTop,
+      page,
+      showDrawer,
+      paramsList,
+      selectParams,
+      multiIndex,
+      areaList
+    } = this.state
 
     return (
       <View className='page-goods-list'>
@@ -248,8 +386,21 @@ export default class List extends Component {
             onChange={this.handleFilterChange}
           >
             <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
-              <View className='in-icon in-icon-filter'></View>
-              <Text className='filter-bar__text'>筛选</Text>
+              <View className='icon-filter'></View>
+              <Text>筛选</Text>
+            </View>
+            <View className='filter-bar__item'>
+              <Picker
+                mode='multiSelector'
+                onClick={this.handleClickPicker}
+                onChange={this.bindMultiPickerChange}
+                onColumnChange={this.bindMultiPickerColumnChange}
+                value={multiIndex}
+                range={areaList}
+              >
+                <View className='icon-periscope'></View>
+                <Text>区域</Text>
+              </Picker>
             </View>
           </FilterBar>
         </View>

@@ -5,7 +5,12 @@
             <search-bar bindonconfirm="handleConfirm" __triggerObserer="{{ _triggerObserer }}" __fn_onConfirm="{{true}}" data-e-onconfirm-so="this"></search-bar>
             <filter-bar className="goods-list__tabs" __triggerObserer="{{ _triggerObserer }}" current="{{curFilterIdx}}" list="{{filterList}}" bindonchange="handleFilterChange" __fn_onChange="{{true}}">
                 <view class="filter-bar__item" bindtap="handleClickFilter" data-e-tap-so="this">
-                    <view class="in-icon in-icon-filter"></view><text class="filter-bar__text">筛选</text>
+                    <view class="icon-filter"></view><text>筛选</text>
+                </view>
+                <view class="filter-bar__item">
+                    <picker mode="multiSelector" bindtap="handleClickPicker" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{areaList}}">
+                        <view class="icon-periscope"></view><text>区域</text>
+                    </picker>
                 </view>
             </filter-bar>
         </view>

@@ -4,9 +4,9 @@ import { AtSearchBar } from 'taro-ui'
 import { classNames } from '@/utils'
 import { toggleTouchMove } from '@/utils/dom'
 
-import './search-home.scss'
+import './list-search.scss'
 
-export default class WgtSearchHome extends Component {
+export default class ListSearch extends Component {
   static defaultProps = {
     isOpened: false
   }
@@ -94,7 +94,7 @@ export default class WgtSearchHome extends Component {
           <AtSearchBar
             className='home-search__bar'
             value={searchValue}
-            placeholder='护肤/彩妆/面膜/指甲油'
+            placeholder='文章标题'
             actionName='取消'
             showActionButton={isShowAction}
             onFocus={this.handleFocusSearchHistory.bind(this, true)}

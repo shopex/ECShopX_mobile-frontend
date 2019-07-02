@@ -25,15 +25,15 @@
     }
     &__tabs {
       display: flex;
-      .filter-bar__bd {
-        flex: 3;
-      }
-      .filter-bar__ft {
-        flex: 1;
-      }
       .filter-bar__item {
+        flex: 1;
         text-align: center;
         color: #666666;
+        font-size: 26rpx;
+        [class^=icon] {
+          color: #ccc;
+          display: inline-block;
+        }
       }
       .filter-bar__item-active {
         color: $color-brand-primary;

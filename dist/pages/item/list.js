@@ -47,7 +47,8 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
   _inherits(List, _BaseComponent);
 
   function List() {
-    var _ref2;
+    var _ref2,
+        _this2 = this;
 
     var _temp, _this, _ret;
 
@@ -57,7 +58,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "curFilterIdx", "filterList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "favs"], _this.handleFilterChange = function (data) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "listLength", "favs"], _this.handleFilterChange = function (data) {
       _this.setState({
         showDrawer: false
       });
@@ -155,6 +156,115 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       }, function () {
         _this.nextPage();
       });
+    }, _this.handleClickPicker = function () {
+      var arrProvice = [];
+      var arrCity = [];
+      var arrCounty = [];
+      if (_this.nList) {
+        _this.nList.map(function (item, index) {
+          arrProvice.push(item.label);
+          if (index === 0) {
+            item.children.map(function (c_item, c_index) {
+              arrCity.push(c_item.label);
+              if (c_index === 0) {
+                c_item.children.map(function (cny_item) {
+                  arrCounty.push(cny_item.label);
+                });
+              }
+            });
+          }
+        });
+        _this.setState({
+          areaList: [arrProvice, arrCity, arrCounty],
+          multiIndex: [0, 0, 0]
+        });
+      }
+    }, _this.bindMultiPickerChange = function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+        var info;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                info = _this.state.info;
+
+                _this.nList.map(function (item, index) {
+                  if (index === e.detail.value[0]) {
+                    info.province = item.label;
+                    item.children.map(function (s_item, sIndex) {
+                      if (sIndex === e.detail.value[1]) {
+                        info.city = s_item.label;
+                        s_item.children.map(function (th_item, thIndex) {
+                          if (thIndex === e.detail.value[2]) {
+                            info.county = th_item.label;
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+                _this.setState({ info: info });
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref3.apply(this, arguments);
+      };
+    }(), _this.bindMultiPickerColumnChange = function (e) {
+      var _this$state3 = _this.state,
+          areaList = _this$state3.areaList,
+          multiIndex = _this$state3.multiIndex;
+
+      if (e.detail.column === 0) {
+        _this.setState({
+          multiIndex: [e.detail.value, 0, 0]
+        });
+        _this.nList.map(function (item, index) {
+          if (index === e.detail.value) {
+            var arrCity = [];
+            var arrCounty = [];
+            item.children.map(function (c_item, c_index) {
+              arrCity.push(c_item.label);
+              if (c_index === 0) {
+                c_item.children.map(function (cny_item) {
+                  arrCounty.push(cny_item.label);
+                });
+              }
+            });
+            areaList[1] = arrCity;
+            areaList[2] = arrCounty;
+            _this.setState({ areaList: areaList });
+          }
+        });
+      } else if (e.detail.column === 1) {
+        multiIndex[1] = e.detail.value;
+        multiIndex[2] = 0;
+        _this.setState({
+          multiIndex: multiIndex
+        }, function () {
+          _this.nList[multiIndex[0]].children.map(function (c_item, c_index) {
+            if (c_index === e.detail.value) {
+              var arrCounty = [];
+              c_item.children.map(function (cny_item) {
+                arrCounty.push(cny_item.label);
+              });
+              areaList[2] = arrCounty;
+              _this.setState({ areaList: areaList });
+            }
+          });
+        });
+      } else {
+        multiIndex[2] = e.detail.value;
+        _this.setState({
+          multiIndex: multiIndex
+        });
+      }
     }, _this.handleConfirm = function (val) {
       _this.setState({
         query: _extends({}, _this.state.query, {
@@ -184,13 +294,16 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
         paramsList: [],
         listType: 'grid',
         showDrawer: false,
-        selectParams: []
+        selectParams: [],
+        areaList: [],
+        multiIndex: [],
+        listLength: 0
       });
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.firstStatus = true;
       this.setState({
@@ -202,18 +315,18 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
           category: this.$router.params.cat_id
         }
       }, function () {
-        _this2.nextPage();
+        _this3.nextPage();
       });
     }
   }, {
     key: "fetch",
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
-        var page, pageSize, selectParams, query, _ref4, list, total, _ref4$item_params_lis, item_params_list, favs, nList;
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
+        var page, pageSize, selectParams, query, _ref5, list, total, _ref5$item_params_lis, item_params_list, favs, res, addList, arrProvice, arrCity, arrCounty, nList;
 
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 page = params.page_no, pageSize = params.page_size;
                 selectParams = this.state.selectParams;
@@ -222,17 +335,46 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   page: page,
                   pageSize: pageSize
                 });
-                _context.next = 5;
+                _context2.next = 5;
                 return _index6.default.item.search(query);
 
               case 5:
-                _ref4 = _context.sent;
-                list = _ref4.list;
-                total = _ref4.total_count;
-                _ref4$item_params_lis = _ref4.item_params_list;
-                item_params_list = _ref4$item_params_lis === undefined ? [] : _ref4$item_params_lis;
+                _ref5 = _context2.sent;
+                list = _ref5.list;
+                total = _ref5.total_count;
+                _ref5$item_params_lis = _ref5.item_params_list;
+                item_params_list = _ref5$item_params_lis === undefined ? [] : _ref5$item_params_lis;
                 favs = this.props.favs;
+                _context2.next = 13;
+                return _index6.default.member.areaList();
 
+              case 13:
+                res = _context2.sent;
+                addList = (0, _index7.pickBy)(res, {
+                  label: 'label',
+                  children: 'children'
+                });
+                arrProvice = [];
+                arrCity = [];
+                arrCounty = [];
+
+                addList.map(function (item, index) {
+                  arrProvice.push(item.label);
+                  if (index === 0) {
+                    item.children.map(function (c_item, c_index) {
+                      arrCity.push(c_item.label);
+                      if (c_index === 0) {
+                        c_item.children.map(function (cny_item) {
+                          arrCounty.push(cny_item.label);
+                        });
+                      }
+                    });
+                  }
+                });
+                this.setState({
+                  areaList: [arrProvice, arrCity, arrCounty]
+                  // areaList: [['北京'], ['北京'], ['东城']],
+                });
 
                 item_params_list.map(function (item) {
                   if (selectParams.length < 4) {
@@ -249,16 +391,16 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   item_id: 'item_id',
                   title: 'itemName',
                   desc: 'brief',
-                  price: function price(_ref5) {
-                    var _price = _ref5.price;
+                  price: function price(_ref6) {
+                    var _price = _ref6.price;
                     return (_price / 100).toFixed(2);
                   },
-                  market_price: function market_price(_ref6) {
-                    var _market_price = _ref6.market_price;
+                  market_price: function market_price(_ref7) {
+                    var _market_price = _ref7.market_price;
                     return (_market_price / 100).toFixed(2);
                   },
-                  is_fav: function is_fav(_ref7) {
-                    var item_id = _ref7.item_id;
+                  is_fav: function is_fav(_ref8) {
+                    var item_id = _ref8.item_id;
                     return Boolean(favs[item_id]);
                   }
                 });
@@ -278,28 +420,31 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   this.firstStatus = false;
                 }
 
-                return _context.abrupt("return", {
+                return _context2.abrupt("return", {
                   total: total
                 });
 
-              case 16:
+              case 25:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this);
+        }, _callee2, this);
       }));
 
-      function fetch(_x) {
-        return _ref3.apply(this, arguments);
+      function fetch(_x2) {
+        return _ref4.apply(this, arguments);
       }
 
       return fetch;
     }()
+
+    // 选定开户地区
+
   }, {
     key: "_createData",
     value: function _createData() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
@@ -316,7 +461,9 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
           page = _state.page,
           showDrawer = _state.showDrawer,
           paramsList = _state.paramsList,
-          selectParams = _state.selectParams;
+          selectParams = _state.selectParams,
+          multiIndex = _state.multiIndex,
+          areaList = _state.areaList;
 
 
       var anonymousState__temp = "" + _index2.default.pxTransform(570);
@@ -344,8 +491,8 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
           $original: (0, _index.internal_get_original)(item)
         };
 
-        _this3.anonymousFunc0Array[__index0] = function () {
-          return _this3.handleClickItem(item.$original);
+        _this4.anonymousFunc0Array[__index0] = function () {
+          return _this4.handleClickItem(item.$original);
         };
 
         return {
@@ -376,7 +523,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleConfirm", "handleFilterChange", "handleClickFilter", "handleClickParmas", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _temp2)) || _class) || _class) || _class);
+}, _class2.$$events = ["handleConfirm", "handleFilterChange", "handleClickFilter", "handleClickPicker", "bindMultiPickerChange", "bindMultiPickerColumnChange", "handleClickParmas", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _temp2)) || _class) || _class) || _class);
 exports.default = List;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(List, true));

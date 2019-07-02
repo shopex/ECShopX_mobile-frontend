@@ -1,7 +1,7 @@
 {
 	"projectname": "mshop-taro",
 	"description": "taro app for bbc",
-	"appid": "wx32b438e5538d90ed",
+	"appid": "wx912913df9fef6ddd",
 	"setting": {
 		"urlCheck": false,
 		"es6": false,
@@ -9,35 +9,5 @@
 		"minified": false
 	},
 	"compileType": "miniprogram",
-	"simulatorType": "wechat",
-	"simulatorPluginLibVersion": {},
-	"condition": {
-		"search": {
-			"current": -1,
-			"list": []
-		},
-		"conversation": {
-			"current": -1,
-			"list": []
-		},
-		"plugin": {
-			"current": -1,
-			"list": []
-		},
-		"game": {
-			"list": []
-		},
-		"miniprogram": {
-			"current": 0,
-			"list": [
-				{
-					"id": -1,
-					"name": "test",
-					"pathName": "pages/recommend/list",
-					"query": "",
-					"scene": null
-				}
-			]
-		}
-	}
+	"condition": {}
 }

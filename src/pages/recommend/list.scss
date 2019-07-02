@@ -11,13 +11,21 @@
       flex: 1;
     }
     .filter-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       width: 100rpx;
-      font-size: 48rpx;
+      font-size: 20rpx;
+      .icon-list {
+        font-size: 55rpx;
+        line-height: 0.8;
+      }
     }
   }
   .goods-list {
     &__scroll {
-      @include page-scroll($navigate-height + $searchbar-height + 20, $tabbar-height + floor($edge-margin / 2));
+      @include page-scroll($navigate-height + $searchbar-height + 25, $tabbar-height + floor($edge-margin / 2));
     }
   }
   .goods-item__cont{

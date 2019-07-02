@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "search-bar": "../../components/search-bar/index",
+    "list-search": "./comps/list-search",
     "at-drawer": "../../npm/taro-ui/dist/weapp/components/drawer/index",
     "nav-bar": "../../components/nav-bar/index",
     "recommend-item": "../../components/recommend-item/index",

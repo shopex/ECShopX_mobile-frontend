@@ -894,8 +894,8 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 @font-face {
   font-family: "iconfont";
   /* project id 869421 */
-  src: url("//at.alicdn.com/t/font_869421_e866zllk1su.eot");
-  src: url("//at.alicdn.com/t/font_869421_e866zllk1su.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_869421_e866zllk1su.woff2") format("woff2"), url("//at.alicdn.com/t/font_869421_e866zllk1su.woff") format("woff"), url("//at.alicdn.com/t/font_869421_e866zllk1su.ttf") format("truetype"), url("//at.alicdn.com/t/font_869421_e866zllk1su.svg#iconfont") format("svg");
+  src: url("//at.alicdn.com/t/font_869421_u6zstt4fpjq.eot");
+  src: url("//at.alicdn.com/t/font_869421_u6zstt4fpjq.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_869421_u6zstt4fpjq.woff2") format("woff2"), url("//at.alicdn.com/t/font_869421_u6zstt4fpjq.woff") format("woff"), url("//at.alicdn.com/t/font_869421_u6zstt4fpjq.ttf") format("truetype"), url("//at.alicdn.com/t/font_869421_u6zstt4fpjq.svg#iconfont") format("svg");
 }
 [class^=icon-], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
@@ -909,6 +909,10 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-filter::before {
+  content: "";
 }
 
 .icon-arrowUp:before {
@@ -13500,6 +13504,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 }
 
 .at-search-bar__action {
+  margin-left: 10rpx;
   background-color: transparent;
   color: #333;
 }
@@ -13581,10 +13586,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 }
 
 .home-search__bar.at-search-bar {
-  position: absolute;
-  top: 44rpx;
-  left: 0;
-  right: 0;
+  position: relative;
   padding: 20rpx 0 20rpx 20rpx !important;
   height: 54rpx;
   z-index: 99;
