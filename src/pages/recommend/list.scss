@@ -2,9 +2,22 @@
 @import "../item/list";
 
 .page-recommend-list {
+  .list-header {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding-bottom: 20rpx;
+    .search-bar {
+      flex: 1;
+    }
+    .filter-icon {
+      width: 100rpx;
+      font-size: 48rpx;
+    }
+  }
   .goods-list {
     &__scroll {
-      @include page-scroll($navigate-height, $tabbar-height + floor($edge-margin / 2));
+      @include page-scroll($navigate-height + $searchbar-height + 20, $tabbar-height + floor($edge-margin / 2));
     }
   }
   .goods-item__cont{

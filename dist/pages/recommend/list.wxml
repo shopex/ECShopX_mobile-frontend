@@ -1,5 +1,15 @@
 <block>
     <view class="page-goods-list page-recommend-list">
+        <view class="list-header">
+            <view class="search-bar">
+                <search-bar bindonconfirm="handleConfirm" __triggerObserer="{{ _triggerObserer }}" __fn_onConfirm="{{true}}" data-e-onconfirm-so="this"></search-bar>
+            </view>
+            <view class="icon-list filter-icon"></view>
+        </view>
+        <at-drawer show="{{showDrawer}}" __triggerObserer="{{ _triggerObserer }}" right="{{true}}" mask="{{true}}" width="{{anonymousState__temp}}">
+            <view class="drawer-footer"><text class="drawer-footer__btn" bindtap="handleClickSearchParams" data-e-tap-so="this" data-e-tap-a-a="reset">重置</text><text class="drawer-footer__btn drawer-footer__btn_active" bindtap="handleClickSearchParams" data-e-tap-so="this" data-e-tap-a-a="submit">确定</text>
+            </view>
+        </at-drawer>
         <view class="goods-list__toolbar">
             <nav-bar leftIconType="chevron-left" __triggerObserer="{{ _triggerObserer }}" fixed="true"></nav-bar>
         </view>

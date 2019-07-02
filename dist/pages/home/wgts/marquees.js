@@ -39,7 +39,7 @@ var WgtMarquees = (_temp2 = _class = function (_BaseComponent) {
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtMarquees.__proto__ || Object.getPrototypeOf(WgtMarquees)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "data"], _this.handleClickItem = function (id) {
       try {
         _index2.default.navigateTo({
-          url: "/pages/article/index?id=" + id
+          url: "/pages/recommend/detail?id=" + id
         });
       } catch (error) {
         console.log(error);

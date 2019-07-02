@@ -6,7 +6,7 @@
         <nav-bar title="{{info.item_name}}" __triggerObserer="{{ _triggerObserer }}" leftIconType="chevron-left" fixed="true"></nav-bar>
         <scroll-view class="goods-detail__wrap" scroll-y="{{true}}" scroll-top="{{scrollTop}}" scroll-with-animation="{{true}}" bindscroll="handleScroll">
             <view class="goods-imgs__wrap">
-                <swiper class="goods-imgs__swiper" current="{{curImgIdx}}" bindchange="handleSwiperChange">
+                <swiper class="goods-imgs__swiper" indicator-dots="{{true}}" current="{{curImgIdx}}" bindchange="handleSwiperChange">
                     <swiper-item wx:key="idx" wx:for="{{imgs}}" wx:for-item="img" wx:for-index="idx">
                         <item-img src="{{img}}" __triggerObserer="{{ _triggerObserer }}"></item-img>
                     </swiper-item>

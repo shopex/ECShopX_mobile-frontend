@@ -318,6 +318,7 @@ export default class Detail extends Component {
           <View className='goods-imgs__wrap'>
             <Swiper
               className='goods-imgs__swiper'
+              indicator-dots
               current={curImgIdx}
               onChange={this.handleSwiperChange}
             >

@@ -54,7 +54,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loopArray0", "scrollTop", "list", "page", "showBackToTop"], _this.handleClickItem = function (item) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "showDrawer", "scrollTop", "list", "page", "showBackToTop"], _this.handleClickItem = function (item) {
       var url = "/pages/recommend/detail?id=" + item.item_id;
       _index2.default.navigateTo({
         url: url
@@ -68,7 +68,8 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       _get(RecommendList.prototype.__proto__ || Object.getPrototypeOf(RecommendList.prototype), "_constructor", this).call(this, props);
 
       this.state = _extends({}, this.state, {
-        list: []
+        list: [],
+        showDrawer: false
       });
     }
   }, {
@@ -183,9 +184,11 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
           list = _state.list,
           showBackToTop = _state.showBackToTop,
           scrollTop = _state.scrollTop,
-          page = _state.page;
+          page = _state.page,
+          showDrawer = _state.showDrawer;
 
 
+      var anonymousState__temp = "" + _index2.default.pxTransform(500);
       var loopArray0 = list.map(function (item, __index0) {
         item = {
           $original: (0, _index.internal_get_original)(item)
@@ -200,6 +203,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
         };
       });
       Object.assign(this.__state, {
+        anonymousState__temp: anonymousState__temp,
         loopArray0: loopArray0,
         scrollTop: scrollTop,
         page: page,
@@ -216,7 +220,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }]);
 
   return RecommendList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
   navigationBarTitleText: '种草'
 }, _temp2)) || _class) || _class;
 

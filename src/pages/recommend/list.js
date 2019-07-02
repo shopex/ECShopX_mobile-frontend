@@ -1,7 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote } from '@/components'
+import { AtDrawer } from 'taro-ui'
+import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote, SearchBar } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import S from '@/spx'
@@ -20,7 +21,8 @@ export default class RecommendList extends Component {
 
     this.state = {
       ...this.state,
-      list: []
+      list: [],
+      showDrawer: false
     }
   }
 
@@ -81,10 +83,94 @@ export default class RecommendList extends Component {
   }
 
   render () {
-    const { list, showBackToTop, scrollTop, page } = this.state
+    const { list, showBackToTop, scrollTop, page, showDrawer } = this.state
 
     return (
       <View className='page-goods-list page-recommend-list'>
+        <View className='list-header'>
+          <View class="search-bar">
+            <SearchBar
+              onConfirm={this.handleConfirm.bind(this)}
+            />
+          </View>
+          <View className="icon-list filter-icon"></View>
+        </View>
+        <AtDrawer
+          show={showDrawer}
+          right
+          mask
+          width={`${Taro.pxTransform(500)}`}
+        >
+          {
+            /* paramsList.map((item, index) => {
+              return (
+                <View className='drawer-item' key={index}>
+                  <View className='drawer-item__title'>
+                    <Text>{item.attribute_name}</Text>
+                    <View className='at-icon at-icon-chevron-down'> </View>
+                  </View>
+                  <View className='drawer-item__options'>
+                    {
+                      item.attribute_values.map((v_item, v_index) => {
+                        return (
+                          <View
+                            className={classNames('drawer-item__options__item' ,v_item.isChooseParams ? 'drawer-item__options__checked' : '')}
+                            // className='drawer-item__options__item'
+                            key={v_index}
+                            onClick={this.handleClickParmas.bind(this, item.attribute_id, v_item.attribute_value_id)}
+                          >
+                            {v_item.attribute_value_name}
+                          </View>
+                        )
+                      })
+                    }
+                    <View className='drawer-item__options__none'> </View>
+                    <View className='drawer-item__options__none'> </View>
+                    <View className='drawer-item__options__none'> </View>
+                  </View>
+                </View>
+              )
+            }) */
+          }
+          {
+            // <View className='drawer-item'>
+            //   <View className='drawer-item__title'>
+            //     <Text>系列</Text>
+            //     <View className='at-icon at-icon-chevron-down'> </View>
+            //   </View>
+            //   <View className='drawer-item__options'>
+            //     <View className='drawer-item__options__item'>全部</View>
+            //     <View className='drawer-item__options__item'>茶籽精萃</View>
+            //     <View className='drawer-item__options__item'>橄榄</View>
+            //     <View className='drawer-item__options__item'>火山岩泥</View>
+            //     <View className='drawer-item__options__item'>生机展颜</View>
+            //     <View className='drawer-item__options__none'> </View>
+            //     <View className='drawer-item__options__none'> </View>
+            //     <View className='drawer-item__options__none'> </View>
+            //   </View>
+            // </View>
+            // <View className='drawer-item'>
+            //   <View className='drawer-item__title'>
+            //     <Text>系列</Text>
+            //     <View className='at-icon at-icon-chevron-down'> </View>
+            //   </View>
+            //   <View className='drawer-item__options'>
+            //     <View className='drawer-item__options__item'>全部</View>
+            //     <View className='drawer-item__options__item'>茶籽精萃</View>
+            //     <View className='drawer-item__options__item'>橄榄</View>
+            //     <View className='drawer-item__options__item'>火山岩泥</View>
+            //     <View className='drawer-item__options__item'>生机展颜</View>
+            //     <View className='drawer-item__options__none'> </View>
+            //     <View className='drawer-item__options__none'> </View>
+            //     <View className='drawer-item__options__none'> </View>
+            //   </View>
+            // </View>
+          }
+          <View className='drawer-footer'>
+            <Text className='drawer-footer__btn' onClick={this.handleClickSearchParams.bind(this, 'reset')}>重置</Text>
+            <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定</Text>
+          </View>
+        </AtDrawer>
         <View className='goods-list__toolbar'>
           <NavBar
             leftIconType='chevron-left'

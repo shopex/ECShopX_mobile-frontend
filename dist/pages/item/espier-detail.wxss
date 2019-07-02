@@ -66,10 +66,10 @@
 
 .goods-imgs__wrap {
   position: relative;
-  height: 580rpx;
+  height: 100vw;
 }
 .goods-imgs__swiper {
-  height: 580rpx;
+  height: 100vw;
 }
 .goods-imgs__text {
   background: rgba(0, 0, 0, 0.5);
