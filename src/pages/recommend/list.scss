@@ -2,14 +2,14 @@
 @import "../item/list";
 
 .page-recommend-list {
-  .list-header {
-    display: flex;
-    align-items: center;
+  .recommend-list__toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: $z-index-toolbar;
     background: #fff;
-    padding-bottom: 20rpx;
-    .search-bar {
-      flex: 1;
-    }
+    box-shadow: $box-shadow;
     .filter-icon {
       display: flex;
       flex-direction: column;
@@ -25,7 +25,7 @@
   }
   .goods-list {
     &__scroll {
-      @include page-scroll($navigate-height + $searchbar-height + 25, $tabbar-height + floor($edge-margin / 2));
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height - 10, $tabbar-height + floor($edge-margin / 2));
     }
   }
   .goods-item__cont{

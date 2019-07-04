@@ -59,8 +59,8 @@
         <back-to-top show="{{showBackToTop}}" __triggerObserer="{{ _triggerObserer }}" bindonclick="scrollBackToTop" __fn_onClick="{{true}}"></back-to-top>
         <block wx:if="{{isShowAddTip}}">
             <view class="add_tip">
-                <view>点击“•●•”添加到我的小程序，微信首页下拉即可快速访问店铺</view>
-                <view class="in-icon in-icon-close icon-view" bindtap="handleClickCloseAddTip" data-e-tap-so="this"></view>
+                <view class="tip-text">点击“•●•”添加到我的小程序，微信首页下拉即可快速访问店铺</view>
+                <view class="icon-close icon-view" bindtap="handleClickCloseAddTip" data-e-tap-so="this"></view>
             </view>
         </block>
         <sp-toast __triggerObserer="{{ _triggerObserer }}"></sp-toast>

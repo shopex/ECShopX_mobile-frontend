@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
-import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote } from '@/components'
+import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote, FilterBar } from '@/components'
 import ListSearch from './comps/list-search'
 import api from '@/api'
 import { pickBy } from '@/utils'
@@ -23,7 +23,10 @@ export default class RecommendList extends Component {
     this.state = {
       ...this.state,
       list: [],
-      showDrawer: false
+      showDrawer: false,
+      info: {},
+      areaList: [],
+      multiIndex: []
     }
   }
 
@@ -48,6 +51,33 @@ export default class RecommendList extends Component {
       page,
       pageSize
     }
+
+    let res = await api.member.areaList()
+    const addList = pickBy(res, {
+      label: 'label',
+      children: 'children',
+    })
+    this.addList = addList
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    addList.map((item, index) => {
+      arrProvice.push(item.label)
+      if(index === 0) {
+        item.children.map((c_item, c_index) => {
+          arrCity.push(c_item.label)
+          if(c_index === 0) {
+            c_item.children.map(cny_item => {
+              arrCounty.push(cny_item.label)
+            })
+          }
+        })
+      }
+    })
+    this.setState({
+      areaList: [arrProvice, arrCity, arrCounty]
+    })
+
     const { list, total_count: total } = S.getAuthToken() ? await api.article.authList(article_query) : await api.article.list(article_query)
 
     const nList = pickBy(list, {
@@ -89,21 +119,134 @@ export default class RecommendList extends Component {
     })
   }
 
+  // 选定开户地区
+  handleClickPicker = () => {
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    if(this.addList){
+      this.addList.map((item, index) => {
+        arrProvice.push(item.label)
+        if(index === 0) {
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
+              })
+            }
+          })
+        }
+      })
+      this.setState({
+        areaList: [arrProvice, arrCity, arrCounty],
+        multiIndex: [0, 0, 0]
+      })
+    }
+
+  }
+
+  bindMultiPickerChange = async (e) => {
+    const { info } = this.state
+    this.addList.map((item, index) => {
+      if(index === e.detail.value[0]) {
+        info.province = item.label
+        item.children.map((s_item,sIndex) => {
+          if(sIndex === e.detail.value[1]) {
+            info.city = s_item.label
+            s_item.children.map((th_item,thIndex) => {
+              if(thIndex === e.detail.value[2]) {
+                info.county = th_item.label
+              }
+            })
+          }
+        })
+      }
+    })
+    this.setState({ info })
+  }
+
+  bindMultiPickerColumnChange = (e) => {
+    const { areaList, multiIndex } = this.state
+    if(e.detail.column === 0) {
+      this.setState({
+        multiIndex: [e.detail.value,0,0]
+      })
+      this.addList.map((item, index) => {
+        if(index === e.detail.value) {
+          let arrCity = []
+          let arrCounty = []
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
+              })
+            }
+          })
+          areaList[1] = arrCity
+          areaList[2] = arrCounty
+          this.setState({ areaList })
+        }
+      })
+    } else if (e.detail.column === 1) {
+      multiIndex[1] = e.detail.value
+      multiIndex[2] = 0
+      this.setState({
+        multiIndex
+      },()=>{
+        this.addList[multiIndex[0]].children.map((c_item, c_index)  => {
+          if(c_index === e.detail.value) {
+            let arrCounty = []
+            c_item.children.map(cny_item => {
+              arrCounty.push(cny_item.label)
+            })
+            areaList[2] = arrCounty
+            this.setState({ areaList })
+          }
+        })
+      })
+
+    } else {
+      multiIndex[2] = e.detail.value
+      this.setState({
+        multiIndex
+      })
+    }
+  }
+
   render () {
     const { list, showBackToTop, scrollTop, page, showDrawer } = this.state
 
     return (
       <View className='page-goods-list page-recommend-list'>
-        <View className='list-header'>
+        <View className='recommend-list__toolbar'>
           <View class="search-bar">
             <ListSearch
               onConfirm={this.handleConfirm.bind(this)}
             />
           </View>
-          <View className="filter-icon" onClick={this.handleClickFilter.bind(this)}>
-            <Text class="icon-list" />
-            分类
-          </View>
+          <FilterBar
+            className='goods-list__tabs'
+          >
+            <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
+              <View className='icon-filter'></View>
+              <Text>筛选</Text>
+            </View>
+            <View className='filter-bar__item'>
+              <Picker
+                mode='multiSelector'
+                onClick={this.handleClickPicker}
+                onChange={this.bindMultiPickerChange}
+                onColumnChange={this.bindMultiPickerColumnChange}
+                value={multiIndex}
+                range={areaList}
+              >
+                <View className='icon-periscope'></View>
+                <Text>{info.city || '产地'}</Text>
+              </Picker>
+            </View>
+          </FilterBar>
         </View>
         <AtDrawer
           show={showDrawer}
@@ -141,40 +284,6 @@ export default class RecommendList extends Component {
                 </View>
               )
             }) */
-          }
-          {
-            // <View className='drawer-item'>
-            //   <View className='drawer-item__title'>
-            //     <Text>系列</Text>
-            //     <View className='at-icon at-icon-chevron-down'> </View>
-            //   </View>
-            //   <View className='drawer-item__options'>
-            //     <View className='drawer-item__options__item'>全部</View>
-            //     <View className='drawer-item__options__item'>茶籽精萃</View>
-            //     <View className='drawer-item__options__item'>橄榄</View>
-            //     <View className='drawer-item__options__item'>火山岩泥</View>
-            //     <View className='drawer-item__options__item'>生机展颜</View>
-            //     <View className='drawer-item__options__none'> </View>
-            //     <View className='drawer-item__options__none'> </View>
-            //     <View className='drawer-item__options__none'> </View>
-            //   </View>
-            // </View>
-            // <View className='drawer-item'>
-            //   <View className='drawer-item__title'>
-            //     <Text>系列</Text>
-            //     <View className='at-icon at-icon-chevron-down'> </View>
-            //   </View>
-            //   <View className='drawer-item__options'>
-            //     <View className='drawer-item__options__item'>全部</View>
-            //     <View className='drawer-item__options__item'>茶籽精萃</View>
-            //     <View className='drawer-item__options__item'>橄榄</View>
-            //     <View className='drawer-item__options__item'>火山岩泥</View>
-            //     <View className='drawer-item__options__item'>生机展颜</View>
-            //     <View className='drawer-item__options__none'> </View>
-            //     <View className='drawer-item__options__none'> </View>
-            //     <View className='drawer-item__options__none'> </View>
-            //   </View>
-            // </View>
           }
           <View className='drawer-footer'>
             <Text className='drawer-footer__btn' onClick={this.handleClickSearchParams.bind(this, 'reset')}>重置</Text>

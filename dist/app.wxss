@@ -911,7 +911,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-filter::before {
+.icon-filter:before {
   content: "";
 }
 
@@ -13504,7 +13504,6 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 }
 
 .at-search-bar__action {
-  margin-left: 10rpx;
   background-color: transparent;
   color: #333;
 }

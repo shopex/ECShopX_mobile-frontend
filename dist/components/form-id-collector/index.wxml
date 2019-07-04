@@ -1,6 +1,6 @@
 <block>
     <form report-submit="{{true}}" bindsubmit="handleSubmit" class="{{anonymousState__temp}}">
-        <button plain="{{true}}" hover-class="none" class="form-id-collector__btn" form-type="submit" bindtap="funPrivateDXKrj">
+        <button plain="{{true}}" hover-class="none" class="form-id-collector__btn" form-type="submit" bindtap="funPrivateoFQvx">
             <slot></slot>
         </button>
     </form>

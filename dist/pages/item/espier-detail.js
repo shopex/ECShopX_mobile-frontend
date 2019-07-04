@@ -554,7 +554,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleScroll", "handleSwiperChange", "handleBuyBarClick", "handleToGiftMiniProgram", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
+}, _class2.$$events = ["handleScroll", "handleSwiperChange", "handleBuyBarClick", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
   addGlobalClass: true
 }, _temp2)) || _class) || _class);
 exports.default = Detail;

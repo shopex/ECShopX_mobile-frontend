@@ -248,12 +248,13 @@ export default class recommendDetail extends Component {
             }
           </View>
         </View>
+
+        {/* <FloatMenuItem
+          iconPrefixClass='in-icon'
+          icon='float-gift'
+          onClick={this.handleToGiftMiniProgram.bind(this)}
+        /> */}
         <FloatMenus>
-          <FloatMenuItem
-            iconPrefixClass='in-icon'
-            icon='float-gift'
-            onClick={this.handleToGiftMiniProgram.bind(this)}
-          />
           <FloatMenuItem
             iconPrefixClass='in-icon'
             icon='fenxiang1'

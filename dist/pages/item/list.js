@@ -58,7 +58,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "listLength", "favs"], _this.handleFilterChange = function (data) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "info", "favs"], _this.handleFilterChange = function (data) {
       _this.setState({
         showDrawer: false
       });
@@ -160,8 +160,8 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       var arrProvice = [];
       var arrCity = [];
       var arrCounty = [];
-      if (_this.nList) {
-        _this.nList.map(function (item, index) {
+      if (_this.addList) {
+        _this.addList.map(function (item, index) {
           arrProvice.push(item.label);
           if (index === 0) {
             item.children.map(function (c_item, c_index) {
@@ -188,7 +188,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
               case 0:
                 info = _this.state.info;
 
-                _this.nList.map(function (item, index) {
+                _this.addList.map(function (item, index) {
                   if (index === e.detail.value[0]) {
                     info.province = item.label;
                     item.children.map(function (s_item, sIndex) {
@@ -225,7 +225,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
         _this.setState({
           multiIndex: [e.detail.value, 0, 0]
         });
-        _this.nList.map(function (item, index) {
+        _this.addList.map(function (item, index) {
           if (index === e.detail.value) {
             var arrCity = [];
             var arrCounty = [];
@@ -248,7 +248,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
         _this.setState({
           multiIndex: multiIndex
         }, function () {
-          _this.nList[multiIndex[0]].children.map(function (c_item, c_index) {
+          _this.addList[multiIndex[0]].children.map(function (c_item, c_index) {
             if (c_index === e.detail.value) {
               var arrCounty = [];
               c_item.children.map(function (cny_item) {
@@ -295,9 +295,9 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
         listType: 'grid',
         showDrawer: false,
         selectParams: [],
+        info: {},
         areaList: [],
-        multiIndex: [],
-        listLength: 0
+        multiIndex: []
       });
     }
   }, {
@@ -354,6 +354,8 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   label: 'label',
                   children: 'children'
                 });
+
+                this.addList = addList;
                 arrProvice = [];
                 arrCity = [];
                 arrCounty = [];
@@ -373,7 +375,6 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                 });
                 this.setState({
                   areaList: [arrProvice, arrCity, arrCounty]
-                  // areaList: [['北京'], ['北京'], ['东城']],
                 });
 
                 item_params_list.map(function (item) {
@@ -424,7 +425,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   total: total
                 });
 
-              case 25:
+              case 26:
               case "end":
                 return _context2.stop();
             }

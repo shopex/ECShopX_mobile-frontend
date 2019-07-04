@@ -131,7 +131,7 @@
                         <view class="list-item-txt">我要分享</view>
                         <view class="icon-arrowRight item-icon-go"></view>
                     </view>
-                    <navigator class="list-item" url="address_list">
+                    <navigator class="list-item" url="/pages/member/address">
                         <view class="item-icon icon-periscope"></view>
                         <view class="list-item-txt">地址管理</view>
                         <view class="icon-arrowRight item-icon-go"></view>

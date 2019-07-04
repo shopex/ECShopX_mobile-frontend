@@ -44,7 +44,8 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   _inherits(RecommendList, _BaseComponent);
 
   function RecommendList() {
-    var _ref;
+    var _ref,
+        _this2 = this;
 
     var _temp, _this, _ret;
 
@@ -54,7 +55,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "showDrawer", "scrollTop", "list", "page", "showBackToTop"], _this.handleClickItem = function (item) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "multiIndex", "areaList", "showDrawer", "scrollTop", "list", "page", "showBackToTop", "info"], _this.handleClickItem = function (item) {
       var url = "/pages/recommend/detail?id=" + item.item_id;
       _index2.default.navigateTo({
         url: url
@@ -63,6 +64,115 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       _this.setState({
         showDrawer: true
       });
+    }, _this.handleClickPicker = function () {
+      var arrProvice = [];
+      var arrCity = [];
+      var arrCounty = [];
+      if (_this.addList) {
+        _this.addList.map(function (item, index) {
+          arrProvice.push(item.label);
+          if (index === 0) {
+            item.children.map(function (c_item, c_index) {
+              arrCity.push(c_item.label);
+              if (c_index === 0) {
+                c_item.children.map(function (cny_item) {
+                  arrCounty.push(cny_item.label);
+                });
+              }
+            });
+          }
+        });
+        _this.setState({
+          areaList: [arrProvice, arrCity, arrCounty],
+          multiIndex: [0, 0, 0]
+        });
+      }
+    }, _this.bindMultiPickerChange = function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+        var info;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                info = _this.state.info;
+
+                _this.addList.map(function (item, index) {
+                  if (index === e.detail.value[0]) {
+                    info.province = item.label;
+                    item.children.map(function (s_item, sIndex) {
+                      if (sIndex === e.detail.value[1]) {
+                        info.city = s_item.label;
+                        s_item.children.map(function (th_item, thIndex) {
+                          if (thIndex === e.detail.value[2]) {
+                            info.county = th_item.label;
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+                _this.setState({ info: info });
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref2.apply(this, arguments);
+      };
+    }(), _this.bindMultiPickerColumnChange = function (e) {
+      var _this$state = _this.state,
+          areaList = _this$state.areaList,
+          multiIndex = _this$state.multiIndex;
+
+      if (e.detail.column === 0) {
+        _this.setState({
+          multiIndex: [e.detail.value, 0, 0]
+        });
+        _this.addList.map(function (item, index) {
+          if (index === e.detail.value) {
+            var arrCity = [];
+            var arrCounty = [];
+            item.children.map(function (c_item, c_index) {
+              arrCity.push(c_item.label);
+              if (c_index === 0) {
+                c_item.children.map(function (cny_item) {
+                  arrCounty.push(cny_item.label);
+                });
+              }
+            });
+            areaList[1] = arrCity;
+            areaList[2] = arrCounty;
+            _this.setState({ areaList: areaList });
+          }
+        });
+      } else if (e.detail.column === 1) {
+        multiIndex[1] = e.detail.value;
+        multiIndex[2] = 0;
+        _this.setState({
+          multiIndex: multiIndex
+        }, function () {
+          _this.addList[multiIndex[0]].children.map(function (c_item, c_index) {
+            if (c_index === e.detail.value) {
+              var arrCounty = [];
+              c_item.children.map(function (cny_item) {
+                arrCounty.push(cny_item.label);
+              });
+              areaList[2] = arrCounty;
+              _this.setState({ areaList: areaList });
+            }
+          });
+        });
+      } else {
+        multiIndex[2] = e.detail.value;
+        _this.setState({
+          multiIndex: multiIndex
+        });
+      }
     }, _this.anonymousFunc0Array = [], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -73,13 +183,16 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
 
       this.state = _extends({}, this.state, {
         list: [],
-        showDrawer: false
+        showDrawer: false,
+        info: {},
+        areaList: [],
+        multiIndex: []
       });
     }
   }, {
     key: "componentDidShow",
     value: function componentDidShow() {
-      var _this2 = this;
+      var _this3 = this;
 
       _index2.default.showLoading();
       this.resetPage();
@@ -87,7 +200,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
         list: []
       });
       setTimeout(function () {
-        _this2.nextPage();
+        _this3.nextPage();
         _index2.default.hideLoading();
       }, 200);
 
@@ -96,12 +209,12 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }, {
     key: "fetch",
     value: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(params) {
-        var page, pageSize, article_query, _ref3, list, total, nList;
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
+        var page, pageSize, article_query, res, addList, arrProvice, arrCity, arrCounty, _ref4, list, total, nList;
 
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 page = params.page_no, pageSize = params.page_size;
                 article_query = {
@@ -109,31 +222,62 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   page: page,
                   pageSize: pageSize
                 };
+                _context2.next = 4;
+                return _index5.default.member.areaList();
+
+              case 4:
+                res = _context2.sent;
+                addList = (0, _index6.pickBy)(res, {
+                  label: 'label',
+                  children: 'children'
+                });
+
+                this.addList = addList;
+                arrProvice = [];
+                arrCity = [];
+                arrCounty = [];
+
+                addList.map(function (item, index) {
+                  arrProvice.push(item.label);
+                  if (index === 0) {
+                    item.children.map(function (c_item, c_index) {
+                      arrCity.push(c_item.label);
+                      if (c_index === 0) {
+                        c_item.children.map(function (cny_item) {
+                          arrCounty.push(cny_item.label);
+                        });
+                      }
+                    });
+                  }
+                });
+                this.setState({
+                  areaList: [arrProvice, arrCity, arrCounty]
+                });
 
                 if (!_index8.default.getAuthToken()) {
-                  _context.next = 8;
+                  _context2.next = 18;
                   break;
                 }
 
-                _context.next = 5;
+                _context2.next = 15;
                 return _index5.default.article.authList(article_query);
 
-              case 5:
-                _context.t0 = _context.sent;
-                _context.next = 11;
+              case 15:
+                _context2.t0 = _context2.sent;
+                _context2.next = 21;
                 break;
 
-              case 8:
-                _context.next = 10;
+              case 18:
+                _context2.next = 20;
                 return _index5.default.article.list(article_query);
 
-              case 10:
-                _context.t0 = _context.sent;
+              case 20:
+                _context2.t0 = _context2.sent;
 
-              case 11:
-                _ref3 = _context.t0;
-                list = _ref3.list;
-                total = _ref3.total_count;
+              case 21:
+                _ref4 = _context2.t0;
+                list = _ref4.list;
+                total = _ref4.total_count;
                 nList = (0, _index6.pickBy)(list, {
                   img: 'image_url',
                   item_id: 'article_id',
@@ -156,28 +300,31 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList))
                 });
 
-                return _context.abrupt("return", {
+                return _context2.abrupt("return", {
                   total: total
                 });
 
-              case 18:
+              case 28:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this);
+        }, _callee2, this);
       }));
 
-      function fetch(_x) {
-        return _ref2.apply(this, arguments);
+      function fetch(_x2) {
+        return _ref3.apply(this, arguments);
       }
 
       return fetch;
     }()
+
+    // 选定开户地区
+
   }, {
     key: "_createData",
     value: function _createData() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
@@ -198,8 +345,8 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
           $original: (0, _index.internal_get_original)(item)
         };
 
-        _this3.anonymousFunc0Array[__index0] = function () {
-          return _this3.handleClickItem(item.$original);
+        _this4.anonymousFunc0Array[__index0] = function () {
+          return _this4.handleClickItem(item.$original);
         };
 
         return {
@@ -224,7 +371,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }]);
 
   return RecommendList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickFilter", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickFilter", "handleClickPicker", "bindMultiPickerChange", "bindMultiPickerColumnChange", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
   navigationBarTitleText: '种草'
 }, _temp2)) || _class) || _class;
 

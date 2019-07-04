@@ -411,7 +411,7 @@ var recommendDetail = (0, _index5.withPager)(_class = (_temp2 = _class2 = functi
   }]);
 
   return recommendDetail;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickGoods", "handleToGiftMiniProgram", "handleShare", "scrollBackToTop", "handleClickBar"], _temp2)) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleClickGoods", "handleShare", "scrollBackToTop", "handleClickBar"], _temp2)) || _class;
 
 exports.default = recommendDetail;
 

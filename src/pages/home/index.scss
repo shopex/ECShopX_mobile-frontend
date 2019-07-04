@@ -9,27 +9,28 @@
 
   }
   .add_tip {
-    background: #ffffff;
-    z-index: $z-index-toast;
-    width: 70%;
-    box-sizing: border-box;
-    padding: 20px;
+    display: flex;
     position: fixed;
-    border-radius: 10px;
-    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 70%;
     top: 30px;
     right: 60px;
-    display: flex;
-    align-content: space-between;
+    z-index: $z-index-toast;
+    box-sizing: border-box;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    .tip-text {
+      flex: 1;
+    }
     .icon-view {
-      width: 30px;
-      height: 30px;
-      line-height: 34px;
-      padding: 2px 5px;
+      width: 30rpx;
+      height: 30rpx;
+      line-height: 30rpx;
+      text-align: center;
       background: rgba(0, 0, 0, 0.2);
       border-radius: 50%;
-      marign-left: 10px;
-      font-size: 24px;
+      font-size: 24rpx;
       color: #fff;
     }
 

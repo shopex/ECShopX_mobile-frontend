@@ -34,9 +34,9 @@ export default class List extends Component {
       listType: 'grid',
       showDrawer: false,
       selectParams: [],
+      info: {},
       areaList: [],
-      multiIndex: [],
-      listLength: 0
+      multiIndex: []
     }
   }
 
@@ -72,6 +72,7 @@ export default class List extends Component {
       label: 'label',
       children: 'children',
     })
+    this.addList = addList
     let arrProvice = []
     let arrCity = []
     let arrCounty = []
@@ -89,8 +90,7 @@ export default class List extends Component {
       }
     })
     this.setState({
-      areaList: [arrProvice, arrCity, arrCounty],
-      // areaList: [['北京'], ['北京'], ['东城']],
+      areaList: [arrProvice, arrCity, arrCounty]
     })
 
     item_params_list.map(item => {
@@ -244,8 +244,8 @@ export default class List extends Component {
     let arrProvice = []
     let arrCity = []
     let arrCounty = []
-    if(this.nList){
-      this.nList.map((item, index) => {
+    if(this.addList){
+      this.addList.map((item, index) => {
         arrProvice.push(item.label)
         if(index === 0) {
           item.children.map((c_item, c_index) => {
@@ -268,7 +268,7 @@ export default class List extends Component {
 
   bindMultiPickerChange = async (e) => {
     const { info } = this.state
-    this.nList.map((item, index) => {
+    this.addList.map((item, index) => {
       if(index === e.detail.value[0]) {
         info.province = item.label
         item.children.map((s_item,sIndex) => {
@@ -292,7 +292,7 @@ export default class List extends Component {
       this.setState({
         multiIndex: [e.detail.value,0,0]
       })
-      this.nList.map((item, index) => {
+      this.addList.map((item, index) => {
         if(index === e.detail.value) {
           let arrCity = []
           let arrCounty = []
@@ -315,7 +315,7 @@ export default class List extends Component {
       this.setState({
         multiIndex
       },()=>{
-        this.nList[multiIndex[0]].children.map((c_item, c_index)  => {
+        this.addList[multiIndex[0]].children.map((c_item, c_index)  => {
           if(c_index === e.detail.value) {
             let arrCounty = []
             c_item.children.map(cny_item => {
@@ -381,6 +381,7 @@ export default class List extends Component {
 
           <FilterBar
             className='goods-list__tabs'
+            custom
             current={curFilterIdx}
             list={filterList}
             onChange={this.handleFilterChange}
@@ -399,7 +400,7 @@ export default class List extends Component {
                 range={areaList}
               >
                 <View className='icon-periscope'></View>
-                <Text>区域</Text>
+                <Text>{info.city || '产地'}</Text>
               </Picker>
             </View>
           </FilterBar>

@@ -289,7 +289,7 @@ export default class MemberIndex extends Component {
                 <View className="list-item-txt">我要分享</View>
                 <View className="icon-arrowRight item-icon-go"></View>
               </View>
-              <Navigator className="list-item" url="address_list">
+              <Navigator className="list-item" url="/pages/member/address">
                 <View className="item-icon icon-periscope"></View>
                 <View className="list-item-txt">地址管理</View>
                 <View className="icon-arrowRight item-icon-go"></View>

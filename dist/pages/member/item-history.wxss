@@ -65,6 +65,7 @@
   font-size: 26rpx;
 }
 .page-goods-list .goods-list__tabs .filter-bar__item [class^=icon] {
+  color: #ccc;
   display: inline-block;
 }
 .page-goods-list .goods-list__tabs .filter-bar__item-active {

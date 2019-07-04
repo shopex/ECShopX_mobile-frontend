@@ -568,12 +568,12 @@ export default class Detail extends Component {
           </View>*/}
         </ScrollView>
 
+        {/* <FloatMenuItem
+          iconPrefixClass='in-icon'
+          icon='float-gift'
+          onClick={this.handleToGiftMiniProgram.bind(this)}
+        /> */}
         <FloatMenus>
-          <FloatMenuItem
-            iconPrefixClass='in-icon'
-            icon='float-gift'
-            onClick={this.handleToGiftMiniProgram.bind(this)}
-          />
           <FloatMenuItem
             iconPrefixClass='in-icon'
             icon='fenxiang1'

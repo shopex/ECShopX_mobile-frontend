@@ -38,7 +38,7 @@ var FilterBar = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FilterBar.__proto__ || Object.getPrototypeOf(FilterBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "list", "curIdx", "sortOrder", "__fn_onChange", "className", "children"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FilterBar.__proto__ || Object.getPrototypeOf(FilterBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "list", "custom", "curIdx", "sortOrder", "__fn_onChange", "className", "children"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(FilterBar, [{
@@ -83,31 +83,33 @@ var FilterBar = (_temp2 = _class = function (_BaseComponent) {
 
       var _props = this.__props,
           list = _props.list,
-          className = _props.className;
+          className = _props.className,
+          custom = _props.custom;
       var _state = this.__state,
           sortOrder = _state.sortOrder,
           curIdx = _state.curIdx;
 
 
       var anonymousState__temp = (0, _index3.classNames)('filter-bar', className);
-      var loopArray0 = list.map(function (item, idx) {
+      var loopArray0 = custom ? list.map(function (item, idx) {
         item = {
           $original: (0, _index.internal_get_original)(item)
         };
 
         var isCurrent = curIdx === idx;
 
-        var $loopState__temp3 = (0, _index3.classNames)('filter-bar__item', isCurrent && 'filter-bar__item-active', item.$original.key && "filter-bar__item-" + item.$original.key, item.$original.sort ? "filter-bar__item-sort filter-bar__item-sort-" + (sortOrder > 0 ? 'asc' : 'desc') : null);
+        var $loopState__temp3 = custom ? (0, _index3.classNames)('filter-bar__item', isCurrent && 'filter-bar__item-active', item.$original.key && "filter-bar__item-" + item.$original.key, item.$original.sort ? "filter-bar__item-sort filter-bar__item-sort-" + (sortOrder > 0 ? 'asc' : 'desc') : null) : null;
         return {
           isCurrent: isCurrent,
           $loopState__temp3: $loopState__temp3,
           $original: item.$original
         };
-      });
+      }) : [];
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
         loopArray0: loopArray0,
-        list: list
+        list: list,
+        custom: custom
       });
       return this.__state;
     }
@@ -124,6 +126,10 @@ var FilterBar = (_temp2 = _class = function (_BaseComponent) {
     "value": null
   },
   "className": {
+    "type": null,
+    "value": null
+  },
+  "custom": {
     "type": null,
     "value": null
   }

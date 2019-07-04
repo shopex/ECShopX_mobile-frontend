@@ -19,34 +19,36 @@
           box-sizing: border-box;
 }
 .page-index .add_tip {
-  background: #ffffff;
-  z-index: 600;
-  width: 70%;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 20rpx;
-  position: fixed;
-  border-radius: 10rpx;
-  -webkit-box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
-          box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
-  top: 30rpx;
-  right: 60rpx;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-align-content: space-between;
-      -ms-flex-line-pack: justify;
-          align-content: space-between;
+  position: fixed;
+  padding: 20rpx;
+  width: 70%;
+  top: 30rpx;
+  right: 60rpx;
+  z-index: 600;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 10rpx;
+  -webkit-box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
+          box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+}
+.page-index .add_tip .tip-text {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 .page-index .add_tip .icon-view {
   width: 30rpx;
   height: 30rpx;
-  line-height: 34rpx;
-  padding: 2rpx 5rpx;
+  line-height: 30rpx;
+  text-align: center;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 50%;
-  marign-left: 10rpx;
   font-size: 24rpx;
   color: #fff;
 }
