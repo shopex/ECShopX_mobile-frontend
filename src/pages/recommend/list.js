@@ -5,7 +5,7 @@ import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote, FilterBar } from '@/components'
 import ListSearch from './comps/list-search'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { classNames, pickBy } from '@/utils'
 import S from '@/spx'
 
 import './list.scss'
@@ -23,7 +23,10 @@ export default class RecommendList extends Component {
     this.state = {
       ...this.state,
       list: [],
+      query: null,
       showDrawer: false,
+      selectColumn: {},
+      columnList: [],
       info: {},
       areaList: [],
       multiIndex: []
@@ -46,37 +49,58 @@ export default class RecommendList extends Component {
 
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
+    const { columnList, areaList } = this.state
+    let { selectColumn } = this.state
     const article_query = {
+      ...this.state.query,
       article_type: 'bring',
       page,
-      pageSize
+      pageSize,
+      category_id: selectColumn.id
     }
 
-    let res = await api.member.areaList()
-    const addList = pickBy(res, {
-      label: 'label',
-      children: 'children',
-    })
-    this.addList = addList
-    let arrProvice = []
-    let arrCity = []
-    let arrCounty = []
-    addList.map((item, index) => {
-      arrProvice.push(item.label)
-      if(index === 0) {
-        item.children.map((c_item, c_index) => {
-          arrCity.push(c_item.label)
-          if(c_index === 0) {
-            c_item.children.map(cny_item => {
-              arrCounty.push(cny_item.label)
-            })
-          }
-        })
-      }
-    })
-    this.setState({
-      areaList: [arrProvice, arrCity, arrCounty]
-    })
+    if (areaList.length === 0) {
+      let res = await api.member.areaList()
+      const addList = pickBy(res, {
+        label: 'label',
+        children: 'children',
+      })
+      this.addList = addList
+      let arrProvice = []
+      let arrCity = []
+      let arrCounty = []
+
+      addList.map((item, index) => {
+        arrProvice.push(item.label)
+        if(index === 0) {
+          item.children.map((c_item, c_index) => {
+            arrCity.push(c_item.label)
+            if(c_index === 0) {
+              c_item.children.map(cny_item => {
+                arrCounty.push(cny_item.label)
+              })
+            }
+          })
+        }
+      })
+      this.setState({
+        areaList: [arrProvice, arrCity, arrCounty]
+      })
+    }
+
+    if (columnList.length === 0) {
+      const columns = await api.article.columnList()
+      let clist = pickBy(columns, {
+        name: 'category_name',
+        id: 'category_id'
+      })
+      let defaultItem = {id: 'all', name: '全部', isChooseColumn: true}
+      selectColumn = Object.assign({}, defaultItem)
+      clist.unshift(defaultItem)
+      this.setState({
+        columnList: clist
+      })
+    }
 
     const { list, total_count: total } = S.getAuthToken() ? await api.article.authList(article_query) : await api.article.list(article_query)
 
@@ -113,9 +137,105 @@ export default class RecommendList extends Component {
     })
   }
 
+  handleConfirm = (val) => {
+    this.setState({
+      query: {
+        ...this.state.query,
+        title: val,
+      }
+    }, () =>{
+      this.resetPage()
+      this.setState({
+        list: []
+      }, () => {
+        this.nextPage()
+      })
+    })
+  }
+
   handleClickFilter = () => {
     this.setState({
       showDrawer: true
+    })
+  }
+
+  handleClickParmas = (id) => {
+    let { columnList, selectColumn } = this.state
+    columnList.map(item => {
+      if(item.id === id) {
+        item.isChooseColumn = true
+        selectColumn = item
+      } else {
+        item.isChooseColumn = false
+      }
+    })
+    this.setState({
+      columnList,
+      selectColumn
+    })
+  }
+
+  handleClickSearchParams = (type) => {
+    this.setState({
+      showDrawer: false
+    })
+    if(type === 'reset') {
+      const { columnList } = this.state
+      this.state.paramsList.map(item => {
+        item.attribute_values.map(v_item => {
+          if(v_item.attribute_value_id === 'all') {
+            v_item.isChooseParams = true
+          } else {
+            v_item.isChooseParams = false
+          }
+        })
+      })
+      selectParams.map(item => {
+        item.attribute_value_id = 'all'
+      })
+      this.setState({
+        paramsList,
+        selectParams
+      })
+    }
+
+    this.resetPage()
+    this.setState({
+      list: []
+    }, () => {
+      this.nextPage()
+    })
+  }
+
+  handleClickSearchParams = (type) => {
+    this.setState({
+      showDrawer: false
+    })
+    if(type === 'reset') {
+      const { paramsList, selectParams } = this.state
+      this.state.paramsList.map(item => {
+        item.attribute_values.map(v_item => {
+          if(v_item.attribute_value_id === 'all') {
+            v_item.isChooseParams = true
+          } else {
+            v_item.isChooseParams = false
+          }
+        })
+      })
+      selectParams.map(item => {
+        item.attribute_value_id = 'all'
+      })
+      this.setState({
+        paramsList,
+        selectParams
+      })
+    }
+
+    this.resetPage()
+    this.setState({
+      list: []
+    }, () => {
+      this.nextPage()
     })
   }
 
@@ -139,6 +259,7 @@ export default class RecommendList extends Component {
         }
       })
       this.setState({
+        showDrawer: false,
         areaList: [arrProvice, arrCity, arrCounty],
         multiIndex: [0, 0, 0]
       })
@@ -163,6 +284,23 @@ export default class RecommendList extends Component {
         })
       }
     })
+
+    const { province, city, area } = info
+    this.setState({
+      query: {
+        ...this.state.query,
+        province,
+        city,
+        area
+      }
+    }, () => {
+      this.resetPage()
+      this.setState({
+        list: []
+      }, () => {
+        this.nextPage()
+      })
+    }
     this.setState({ info })
   }
 
@@ -216,7 +354,8 @@ export default class RecommendList extends Component {
   }
 
   render () {
-    const { list, showBackToTop, scrollTop, page, showDrawer } = this.state
+    const { list, showBackToTop, scrollTop, page, showDrawer, info, columnList } = this.state
+    let address = info.province + info.city
 
     return (
       <View className='page-goods-list page-recommend-list'>
@@ -230,8 +369,8 @@ export default class RecommendList extends Component {
             className='goods-list__tabs'
           >
             <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
-              <View className='icon-filter'></View>
-              <Text>筛选</Text>
+              <View className='icon-menu'></View>
+              <Text>{ selectColumn.name || '栏目' }</Text>
             </View>
             <View className='filter-bar__item'>
               <Picker
@@ -243,7 +382,7 @@ export default class RecommendList extends Component {
                 range={areaList}
               >
                 <View className='icon-periscope'></View>
-                <Text>{`${info.province}${info.city}` || '产地'}</Text>
+                <Text>{address || '产地'}</Text>
               </Picker>
             </View>
           </FilterBar>
@@ -252,39 +391,29 @@ export default class RecommendList extends Component {
           show={showDrawer}
           right
           mask
-          width={`${Taro.pxTransform(500)}`}
+          width={`${Taro.pxTransform(570)}`}
         >
-          {
-            /* paramsList.map((item, index) => {
-              return (
-                <View className='drawer-item' key={index}>
-                  <View className='drawer-item__title'>
-                    <Text>{item.attribute_name}</Text>
-                    <View className='at-icon at-icon-chevron-down'> </View>
-                  </View>
-                  <View className='drawer-item__options'>
-                    {
-                      item.attribute_values.map((v_item, v_index) => {
-                        return (
-                          <View
-                            className={classNames('drawer-item__options__item' ,v_item.isChooseParams ? 'drawer-item__options__checked' : '')}
-                            // className='drawer-item__options__item'
-                            key={v_index}
-                            onClick={this.handleClickParmas.bind(this, item.attribute_id, v_item.attribute_value_id)}
-                          >
-                            {v_item.attribute_value_name}
-                          </View>
-                        )
-                      })
-                    }
-                    <View className='drawer-item__options__none'> </View>
-                    <View className='drawer-item__options__none'> </View>
-                    <View className='drawer-item__options__none'> </View>
-                  </View>
-                </View>
-              )
-            }) */
-          }
+          <View className='drawer-item'>
+            <View className='drawer-item__options'>
+              {
+                columnList.map((item, index) => {
+                  return (
+                    <View
+                      className={classNames('drawer-item__options__item' ,item.isChooseColumn ? 'drawer-item__options__checked' : '')}
+                      // className='drawer-item__options__item'
+                      key={index}
+                      onClick={this.handleClickParmas.bind(this, item.id)}
+                    >
+                      {item.name}
+                    </View>
+                  )
+                })
+              }
+              <View className='drawer-item__options__none'> </View>
+              <View className='drawer-item__options__none'> </View>
+              <View className='drawer-item__options__none'> </View>
+            </View>
+          </View>
           <View className='drawer-footer'>
             <Text className='drawer-footer__btn' onClick={this.handleClickSearchParams.bind(this, 'reset')}>重置</Text>
             <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定</Text>

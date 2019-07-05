@@ -40,7 +40,10 @@
       }
     }
     &__scroll {
-      @include page-scroll($tabs-height + $searchbar-height + $tags-height + $navigate-height, 0);
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height, 0);
+      &.with-tag-bar {
+        @include page-scroll($tabs-height + $searchbar-height + $tags-height + $navigate-height, 0);
+      }
     }
     &__type-grid {
       @include clearfix();
@@ -107,7 +110,7 @@
         color: #555555;
         background-color: #f6f6f6;
         margin-bottom: 12px;
-        font-size: 20px;
+        font-size: 26rpx;
       }
       &__checked {
         background-color: $color-brand-primary;

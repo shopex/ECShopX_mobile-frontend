@@ -45,6 +45,7 @@ export default class WgtMarquees extends Component {
                   interval={3000}
                   duration={300}
                   vertical={config.direction}
+                  style={`background-color:${config.bgcolor}`}
                 >
                   {data.map((item, idx) => {
                     return (
@@ -54,6 +55,7 @@ export default class WgtMarquees extends Component {
                       >
                         <View
                           onClick={this.handleClickItem.bind(this, item.id)}
+                          style={`color:${config.fontcolor}`}
                         >
                           {item.title}
                         </View>

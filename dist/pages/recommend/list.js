@@ -55,14 +55,108 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "multiIndex", "areaList", "showDrawer", "scrollTop", "list", "page", "showBackToTop", "info"], _this.handleClickItem = function (item) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "multiIndex", "areaList", "showDrawer", "columnList", "scrollTop", "list", "page", "showBackToTop", "address", "query", "selectColumn", "info"], _this.handleClickItem = function (item) {
       var url = "/pages/recommend/detail?id=" + item.item_id;
       _index2.default.navigateTo({
         url: url
       });
+    }, _this.handleConfirm = function (val) {
+      _this.setState({
+        query: _extends({}, _this.state.query, {
+          title: val
+        })
+      }, function () {
+        _this.resetPage();
+        _this.setState({
+          list: []
+        }, function () {
+          _this.nextPage();
+        });
+      });
     }, _this.handleClickFilter = function () {
       _this.setState({
         showDrawer: true
+      });
+    }, _this.handleClickParmas = function (id) {
+      var _this$state = _this.state,
+          columnList = _this$state.columnList,
+          selectColumn = _this$state.selectColumn;
+
+      columnList.map(function (item) {
+        if (item.id === id) {
+          item.isChooseColumn = true;
+          selectColumn = item;
+        } else {
+          item.isChooseColumn = false;
+        }
+      });
+      _this.setState({
+        columnList: columnList,
+        selectColumn: selectColumn
+      });
+    }, _this.handleClickSearchParams = function (type) {
+      _this.setState({
+        showDrawer: false
+      });
+      if (type === 'reset') {
+        var columnList = _this.state.columnList;
+
+        _this.state.paramsList.map(function (item) {
+          item.attribute_values.map(function (v_item) {
+            if (v_item.attribute_value_id === 'all') {
+              v_item.isChooseParams = true;
+            } else {
+              v_item.isChooseParams = false;
+            }
+          });
+        });
+        selectParams.map(function (item) {
+          item.attribute_value_id = 'all';
+        });
+        _this.setState({
+          paramsList: paramsList,
+          selectParams: selectParams
+        });
+      }
+
+      _this.resetPage();
+      _this.setState({
+        list: []
+      }, function () {
+        _this.nextPage();
+      });
+    }, _this.handleClickSearchParams = function (type) {
+      _this.setState({
+        showDrawer: false
+      });
+      if (type === 'reset') {
+        var _this$state2 = _this.state,
+            _paramsList = _this$state2.paramsList,
+            _selectParams = _this$state2.selectParams;
+
+        _this.state.paramsList.map(function (item) {
+          item.attribute_values.map(function (v_item) {
+            if (v_item.attribute_value_id === 'all') {
+              v_item.isChooseParams = true;
+            } else {
+              v_item.isChooseParams = false;
+            }
+          });
+        });
+        _selectParams.map(function (item) {
+          item.attribute_value_id = 'all';
+        });
+        _this.setState({
+          paramsList: _paramsList,
+          selectParams: _selectParams
+        });
+      }
+
+      _this.resetPage();
+      _this.setState({
+        list: []
+      }, function () {
+        _this.nextPage();
       });
     }, _this.handleClickPicker = function () {
       var arrProvice = [];
@@ -83,18 +177,21 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
           }
         });
         _this.setState({
+          showDrawer: false,
           areaList: [arrProvice, arrCity, arrCounty],
           multiIndex: [0, 0, 0]
         });
       }
     }, _this.bindMultiPickerChange = function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-        var info;
+        var info, _this$state3, areaList, multiIndex, regions, province, city, county;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 info = _this.state.info;
+                _this$state3 = _this.state, areaList = _this$state3.areaList, multiIndex = _this$state3.multiIndex;
 
                 _this.addList.map(function (item, index) {
                   if (index === e.detail.value[0]) {
@@ -111,9 +208,27 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                     });
                   }
                 });
+
+                regions = [areaList[0][multiIndex[0]], areaList[1][multiIndex[1]], areaList[2][multiIndex[2]]];
+
+                console.log(111, regions);
+                province = info.province, city = info.city, county = info.county;
+
+                _this.setState({
+                  query: _extends({}, _this.state.query, {
+                    region_id: google
+                  })
+                }, function () {
+                  _this.resetPage();
+                  _this.setState({
+                    list: []
+                  }, function () {
+                    _this.nextPage();
+                  });
+                });
                 _this.setState({ info: info });
 
-              case 3:
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -125,9 +240,9 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
         return _ref2.apply(this, arguments);
       };
     }(), _this.bindMultiPickerColumnChange = function (e) {
-      var _this$state = _this.state,
-          areaList = _this$state.areaList,
-          multiIndex = _this$state.multiIndex;
+      var _this$state4 = _this.state,
+          areaList = _this$state4.areaList,
+          multiIndex = _this$state4.multiIndex;
 
       if (e.detail.column === 0) {
         _this.setState({
@@ -183,7 +298,10 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
 
       this.state = _extends({}, this.state, {
         list: [],
+        query: null,
         showDrawer: false,
+        selectColumn: {},
+        columnList: [],
         info: {},
         areaList: [],
         multiIndex: []
@@ -210,22 +328,31 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
     key: "fetch",
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
-        var page, pageSize, article_query, res, addList, arrProvice, arrCity, arrCounty, _ref4, list, total, nList;
+        var page, pageSize, _state, columnList, areaList, selectColumn, article_query, res, addList, arrProvice, arrCity, arrCounty, columns, clist, defaultItem, _ref4, list, total, nList;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 page = params.page_no, pageSize = params.page_size;
-                article_query = {
+                _state = this.state, columnList = _state.columnList, areaList = _state.areaList;
+                selectColumn = this.state.selectColumn;
+                article_query = _extends({}, this.state.query, {
                   article_type: 'bring',
                   page: page,
-                  pageSize: pageSize
-                };
-                _context2.next = 4;
+                  pageSize: pageSize,
+                  category_id: selectColumn.id
+                });
+
+                if (!(areaList.length === 0)) {
+                  _context2.next = 15;
+                  break;
+                }
+
+                _context2.next = 7;
                 return _index5.default.member.areaList();
 
-              case 4:
+              case 7:
                 res = _context2.sent;
                 addList = (0, _index6.pickBy)(res, {
                   label: 'label',
@@ -236,6 +363,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                 arrProvice = [];
                 arrCity = [];
                 arrCounty = [];
+
 
                 addList.map(function (item, index) {
                   arrProvice.push(item.label);
@@ -254,27 +382,51 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   areaList: [arrProvice, arrCity, arrCounty]
                 });
 
-                if (!_index8.default.getAuthToken()) {
-                  _context2.next = 18;
+              case 15:
+                if (!(columnList.length === 0)) {
+                  _context2.next = 24;
                   break;
                 }
 
-                _context2.next = 15;
-                return _index5.default.article.authList(article_query);
-
-              case 15:
-                _context2.t0 = _context2.sent;
-                _context2.next = 21;
-                break;
+                _context2.next = 18;
+                return _index5.default.article.columnList();
 
               case 18:
-                _context2.next = 20;
+                columns = _context2.sent;
+                clist = (0, _index6.pickBy)(columns, {
+                  name: 'category_name',
+                  id: 'category_id'
+                });
+                defaultItem = { id: 'all', name: '全部', isChooseColumn: true };
+
+                selectColumn = Object.assign({}, defaultItem);
+                clist.unshift(defaultItem);
+                this.setState({
+                  columnList: clist
+                });
+
+              case 24:
+                if (!_index8.default.getAuthToken()) {
+                  _context2.next = 30;
+                  break;
+                }
+
+                _context2.next = 27;
+                return _index5.default.article.authList(article_query);
+
+              case 27:
+                _context2.t0 = _context2.sent;
+                _context2.next = 33;
+                break;
+
+              case 30:
+                _context2.next = 32;
                 return _index5.default.article.list(article_query);
 
-              case 20:
+              case 32:
                 _context2.t0 = _context2.sent;
 
-              case 21:
+              case 33:
                 _ref4 = _context2.t0;
                 list = _ref4.list;
                 total = _ref4.total_count;
@@ -304,7 +456,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   total: total
                 });
 
-              case 28:
+              case 40:
               case "end":
                 return _context2.stop();
             }
@@ -331,16 +483,29 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       var __runloopRef = arguments[2];
       ;
 
-      var _state = this.__state,
-          list = _state.list,
-          showBackToTop = _state.showBackToTop,
-          scrollTop = _state.scrollTop,
-          page = _state.page,
-          showDrawer = _state.showDrawer;
+      var _state2 = this.__state,
+          list = _state2.list,
+          showBackToTop = _state2.showBackToTop,
+          scrollTop = _state2.scrollTop,
+          page = _state2.page,
+          showDrawer = _state2.showDrawer,
+          info = _state2.info,
+          columnList = _state2.columnList;
 
+      var address = info.province + info.city;
 
-      var anonymousState__temp = "" + _index2.default.pxTransform(500);
-      var loopArray0 = list.map(function (item, __index0) {
+      var anonymousState__temp = "" + _index2.default.pxTransform(570);
+      var loopArray0 = columnList.map(function (item, index) {
+        item = {
+          $original: (0, _index.internal_get_original)(item)
+        };
+        var $loopState__temp3 = (0, _index6.classNames)('drawer-item__options__item', item.$original.isChooseColumn ? 'drawer-item__options__checked' : '');
+        return {
+          $loopState__temp3: $loopState__temp3,
+          $original: item.$original
+        };
+      });
+      var loopArray1 = list.map(function (item, __index0) {
         item = {
           $original: (0, _index.internal_get_original)(item)
         };
@@ -356,9 +521,11 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
         loopArray0: loopArray0,
+        loopArray1: loopArray1,
         scrollTop: scrollTop,
         page: page,
-        showBackToTop: showBackToTop
+        showBackToTop: showBackToTop,
+        address: address
       });
       return this.__state;
     }
@@ -371,7 +538,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
   }]);
 
   return RecommendList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickFilter", "handleClickPicker", "bindMultiPickerChange", "bindMultiPickerColumnChange", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleClickFilter", "handleClickPicker", "bindMultiPickerChange", "bindMultiPickerColumnChange", "handleClickParmas", "handleClickSearchParams", "handleScroll", "nextPage", "anonymousFunc0", "scrollBackToTop"], _class2.config = {
   navigationBarTitleText: '种草'
 }, _temp2)) || _class) || _class;
 

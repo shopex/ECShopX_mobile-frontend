@@ -67,13 +67,21 @@ export default class List extends Component {
       page,
       pageSize
     }
-    const { list, total_count: total, item_params_list = [], select_tags_list = []} = await api.item.search(query)
+    const { list, total_count: total, item_params_list = [], select_tags_list = [], select_address_list = []} = await api.item.search(query)
     const { favs } = this.props
 
     if (areaList.length === 0) {
       let res = await api.member.areaList()
-      const addList = pickBy(res, {
+      let regions = []
+      select_address_list.map(item => {
+        let match = res.find(area => item == area.id)
+        if (match) {
+          regions.push(match)
+        }
+      })
+      const addList = pickBy(regions, {
         label: 'label',
+        id: 'id',
         children: 'children',
       })
       this.addList = addList
@@ -150,7 +158,7 @@ export default class List extends Component {
     this.setState({
       list: []
     })
-    
+
     this.setState({
       curTagId: current
     }, () => {
@@ -159,6 +167,7 @@ export default class List extends Component {
   }
 
   handleFilterChange = (data) => {
+    console.log(111)
     this.setState({
       showDrawer: false
     })
@@ -285,6 +294,7 @@ export default class List extends Component {
         }
       })
       this.setState({
+        showDrawer: false,
         areaList: [arrProvice, arrCity, arrCounty],
         multiIndex: [0, 0, 0]
       })
@@ -295,19 +305,49 @@ export default class List extends Component {
   bindMultiPickerChange = async (e) => {
     const { info } = this.state
     this.addList.map((item, index) => {
+      console.log(item)
       if(index === e.detail.value[0]) {
-        info.province = item.label
+        info.province = {
+          label: item.label,
+          id: item.id
+        }
         item.children.map((s_item,sIndex) => {
           if(sIndex === e.detail.value[1]) {
-            info.city = s_item.label
+            info.city = {
+              label: s_item.label,
+              id: s_item.id
+            }
             s_item.children.map((th_item,thIndex) => {
               if(thIndex === e.detail.value[2]) {
-                info.county = th_item.label
+                info.county = {
+                  label: th_item.label,
+                  id: th_item.id
+                }
               }
             })
           }
         })
       }
+    })
+
+    let regions = [
+      info.province.id,
+      info.city.id,
+      info.county.id
+    ]
+
+    this.setState({
+      query: {
+        ...this.state.query,
+        region_id: regions
+      }
+    }, () => {
+      this.resetPage()
+      this.setState({
+        list: []
+      }, () => {
+        this.nextPage()
+      })
     })
     this.setState({ info })
   }
@@ -432,7 +472,7 @@ export default class List extends Component {
                 range={areaList}
               >
                 <View className='icon-periscope'></View>
-                <Text>{info.city || '产地'}</Text>
+                <Text>{info.city.label || '产地'}</Text>
               </Picker>
             </View>
           </FilterBar>
@@ -475,38 +515,6 @@ export default class List extends Component {
               )
             })
           }
-          {/*<View className='drawer-item'>
-            <View className='drawer-item__title'>
-              <Text>系列</Text>
-              <View className='at-icon at-icon-chevron-down'> </View>
-            </View>
-            <View className='drawer-item__options'>
-              <View className='drawer-item__options__item'>全部</View>
-              <View className='drawer-item__options__item'>茶籽精萃</View>
-              <View className='drawer-item__options__item'>橄榄</View>
-              <View className='drawer-item__options__item'>火山岩泥</View>
-              <View className='drawer-item__options__item'>生机展颜</View>
-              <View className='drawer-item__options__none'> </View>
-              <View className='drawer-item__options__none'> </View>
-              <View className='drawer-item__options__none'> </View>
-            </View>
-          </View>
-          <View className='drawer-item'>
-            <View className='drawer-item__title'>
-              <Text>系列</Text>
-              <View className='at-icon at-icon-chevron-down'> </View>
-            </View>
-            <View className='drawer-item__options'>
-              <View className='drawer-item__options__item'>全部</View>
-              <View className='drawer-item__options__item'>茶籽精萃</View>
-              <View className='drawer-item__options__item'>橄榄</View>
-              <View className='drawer-item__options__item'>火山岩泥</View>
-              <View className='drawer-item__options__item'>生机展颜</View>
-              <View className='drawer-item__options__none'> </View>
-              <View className='drawer-item__options__none'> </View>
-              <View className='drawer-item__options__none'> </View>
-            </View>
-          </View>*/}
           <View className='drawer-footer'>
             <Text className='drawer-footer__btn' onClick={this.handleClickSearchParams.bind(this, 'reset')}>重置</Text>
             <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定</Text>
@@ -514,7 +522,7 @@ export default class List extends Component {
         </AtDrawer>
 
         <ScrollView
-          className='goods-list__scroll'
+          className={classNames('goods-list__scroll', tagsList.length > 0 && 'with-tag-bar')}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation

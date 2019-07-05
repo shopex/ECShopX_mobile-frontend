@@ -14,6 +14,7 @@
 .tags {
   width: 100%;
   background: #fff;
+  border-bottom: 1PX solid #efefef;
 }
 .tags .tag-item {
   display: inline-block;

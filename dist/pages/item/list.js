@@ -58,7 +58,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "curTagId", "tagsList", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "info", "favs"], _this.handleTagChange = function (data) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "loopArray0", "loopArray1", "curTagId", "tagsList", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "info", "favs"], _this.handleTagChange = function (data) {
       var current = data.current;
 
 
@@ -73,6 +73,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
         _this.nextPage();
       });
     }, _this.handleFilterChange = function (data) {
+      console.log(111);
       _this.setState({
         showDrawer: false
       });
@@ -189,13 +190,14 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
           }
         });
         _this.setState({
+          showDrawer: false,
           areaList: [arrProvice, arrCity, arrCounty],
           multiIndex: [0, 0, 0]
         });
       }
     }, _this.bindMultiPickerChange = function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-        var info;
+        var info, regions;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -203,23 +205,49 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                 info = _this.state.info;
 
                 _this.addList.map(function (item, index) {
+                  console.log(item);
                   if (index === e.detail.value[0]) {
-                    info.province = item.label;
+                    info.province = {
+                      label: item.label,
+                      id: item.id
+                    };
                     item.children.map(function (s_item, sIndex) {
                       if (sIndex === e.detail.value[1]) {
-                        info.city = s_item.label;
+                        info.city = {
+                          label: s_item.label,
+                          id: s_item.id
+                        };
                         s_item.children.map(function (th_item, thIndex) {
                           if (thIndex === e.detail.value[2]) {
-                            info.county = th_item.label;
+                            info.county = {
+                              label: th_item.label,
+                              id: th_item.id
+                            };
                           }
                         });
                       }
                     });
                   }
                 });
+
+                regions = [info.province.id, info.city.id, info.county.id];
+
+
+                _this.setState({
+                  query: _extends({}, _this.state.query, {
+                    region_id: regions
+                  })
+                }, function () {
+                  _this.resetPage();
+                  _this.setState({
+                    list: []
+                  }, function () {
+                    _this.nextPage();
+                  });
+                });
                 _this.setState({ info: info });
 
-              case 3:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -338,7 +366,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetch",
     value: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
-        var page, pageSize, _state, selectParams, areaList, tagsList, curTagId, query, _ref5, list, total, _ref5$item_params_lis, item_params_list, _ref5$select_tags_lis, select_tags_list, favs, res, addList, arrProvice, arrCity, arrCounty, nList;
+        var page, pageSize, _state, selectParams, areaList, tagsList, curTagId, query, _ref5, list, total, _ref5$item_params_lis, item_params_list, _ref5$select_tags_lis, select_tags_list, _ref5$select_address_, select_address_list, favs, res, regions, addList, arrProvice, arrCity, arrCounty, nList;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -363,20 +391,33 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                 item_params_list = _ref5$item_params_lis === undefined ? [] : _ref5$item_params_lis;
                 _ref5$select_tags_lis = _ref5.select_tags_list;
                 select_tags_list = _ref5$select_tags_lis === undefined ? [] : _ref5$select_tags_lis;
+                _ref5$select_address_ = _ref5.select_address_list;
+                select_address_list = _ref5$select_address_ === undefined ? [] : _ref5$select_address_;
                 favs = this.props.favs;
 
                 if (!(areaList.length === 0)) {
-                  _context2.next = 24;
+                  _context2.next = 28;
                   break;
                 }
 
-                _context2.next = 16;
+                _context2.next = 18;
                 return _index6.default.member.areaList();
 
-              case 16:
+              case 18:
                 res = _context2.sent;
-                addList = (0, _index7.pickBy)(res, {
+                regions = [];
+
+                select_address_list.map(function (item) {
+                  var match = res.find(function (area) {
+                    return item == area.id;
+                  });
+                  if (match) {
+                    regions.push(match);
+                  }
+                });
+                addList = (0, _index7.pickBy)(regions, {
                   label: 'label',
+                  id: 'id',
                   children: 'children'
                 });
 
@@ -402,7 +443,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   areaList: [arrProvice, arrCity, arrCounty]
                 });
 
-              case 24:
+              case 28:
 
                 item_params_list.map(function (item) {
                   if (selectParams.length < 4) {
@@ -458,7 +499,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
                   total: total
                 });
 
-              case 30:
+              case 34:
               case "end":
                 return _context2.stop();
             }
@@ -503,6 +544,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
 
 
       var anonymousState__temp = "" + _index2.default.pxTransform(570);
+      var anonymousState__temp4 = (0, _index7.classNames)('goods-list__scroll', tagsList.length > 0 && 'with-tag-bar');
       var loopArray0 = paramsList.map(function (item, index) {
         item = {
           $original: (0, _index.internal_get_original)(item)
@@ -537,6 +579,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       });
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
+        anonymousState__temp4: anonymousState__temp4,
         loopArray0: loopArray0,
         loopArray1: loopArray1,
         scrollTop: scrollTop,

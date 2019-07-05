@@ -46,34 +46,26 @@ export default class ListSearch extends Component {
   }
 
   handleChangeSearch = (value) => {
-    value = value.replace(/\s+/g,'');
+  }
+
+  handleBlur = (e) => {
+    let text = e.detail.value
+    text = text.replace(/\s+/g,'');
     this.setState({
-      searchValue: value,
+      searchValue: text
     })
   }
 
   handleConfirm = () => {
-    if (this.state.searchValue) {
-      Taro.getStorage({ key: 'searchHistory' })
-        .then(res => {
-          let stringArr = res.data.split(',')
-          let arr = [].concat(stringArr);
-          arr.unshift(this.state.searchValue)
-          arr = Array.from(new Set(arr))
-          let arrString = arr.join(',')
-          Taro.setStorage({ key: 'searchHistory', data: arrString })
-          this.setState({ searchValue: '' })
-        })
-        .catch(() => {
-          let arr = []
-          arr.push(this.state.searchValue)
-          let arrString = arr.join(',')
-          Taro.setStorage({ key: 'searchHistory', data: arrString })
-        })
-      Taro.navigateTo({
-        url: `/pages/item/list?keywords=${this.state.searchValue}`
-      })
-    }
+    setTimeout(() => {
+      if (this.state.searchValue) {
+        this.props.onConfirm(this.state.searchValue)
+      }
+    }, 300)
+  }
+
+  handleClear = () => {
+    this.props.onConfirm('')
   }
 
   handleClickCancel = (isOpened) => {
@@ -98,6 +90,8 @@ export default class ListSearch extends Component {
             actionName='取消'
             showActionButton={isShowAction}
             onFocus={this.handleFocusSearchHistory.bind(this, true)}
+            onClear={this.handleClear.bind(this)}
+            onBlur={this.handleBlur.bind(this)}
             onChange={this.handleChangeSearch.bind(this)}
             onConfirm={this.handleConfirm.bind(this)}
             onActionClick={this.handleClickCancel.bind(this, false)}

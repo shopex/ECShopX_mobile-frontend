@@ -47,4 +47,8 @@ export function collectArticleInfo (params={}) {
   return req.get('/member/collect/article/info',params)
 }
 
+export function columnList () {
+  return req.get('/article/category')
+}
+
 export default {}

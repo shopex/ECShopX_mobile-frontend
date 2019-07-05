@@ -15,6 +15,7 @@ exports.totalCollectArticle = totalCollectArticle;
 exports.collectArticle = collectArticle;
 exports.delCollectArticle = delCollectArticle;
 exports.collectArticleInfo = collectArticleInfo;
+exports.columnList = columnList;
 
 var _req = require('./req.js');
 
@@ -77,6 +78,10 @@ function collectArticleInfo() {
   var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   return _req2.default.get('/member/collect/article/info', params);
+}
+
+function columnList() {
+  return _req2.default.get('/article/category');
 }
 
 exports.default = {};
