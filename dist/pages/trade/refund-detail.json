@@ -1,5 +1,7 @@
 {
   "usingComponents": {
-    "loading": "../../components/loading/index"
+    "loading": "../../components/loading/index",
+    "float-menus": "../../components/float-menus/index",
+    "float-menu-item": "../../components/float-menus/item"
   }
 }

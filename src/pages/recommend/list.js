@@ -300,7 +300,7 @@ export default class RecommendList extends Component {
       }, () => {
         this.nextPage()
       })
-    }
+    })
     this.setState({ info })
   }
 

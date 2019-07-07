@@ -130,6 +130,18 @@ export default class MemberIndex extends Component {
     })
   }
 
+  viewOrder = (type) => {
+    Taro.navigateTo({
+      url: `/pages/trade/list?status=${type}`
+    })
+  }
+
+  viewAftersales = () => {
+    Taro.navigateTo({
+      url: `/pages/trade/after-sale`
+    })
+  }
+
   render () {
     const { ordersCount, info } = this.state
     let isAvatatImg
@@ -143,75 +155,80 @@ export default class MemberIndex extends Component {
           className="member__scroll"
           scrollY
         >
-          <Navigator hover-className="none" className="user-info view-flex view-flex-middle view-flex-center" url="member_code">
+          <View className="user-info view-flex view-flex-middle view-flex-center">
             <View className="avatar">
               <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
               {
-                (vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip')
-                && <Image className="icon-vip" src="/assets/imgs/svip.png" />
+                /* (vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip')
+                && <Image className="icon-vip" src="/assets/imgs/svip.png" /> */
               }
             </View>
             <View>
-              <View className="nickname">Hi, {info.username}<Text className="icon-qrcode"></Text></View>
+              <View className="nickname">Hi, {info.username} { /* <Text className="icon-qrcode"></Text> */ }</View>
               {
-                !vipgrade.is_vip
+                /* !vipgrade.is_vip
                 ? <View className="gradename">{gradeInfo.grade_name}</View>
-                : <View className="gradename">{vipgrade.grade_name}</View>
+                : <View className="gradename">{vipgrade.grade_name}</View> */
               }
             </View>
-            <View className="icon-arrowRight"></View>
-          </Navigator>
-          <View className="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">
-            {
-              vipgrade.is_open && !vipgrade.is_vip
-              && (
-                <Navigator url="vipgrades" className="vip-btn">
-                  <Text className="icon-crown"></Text> 开通VIP会员
-                </Navigator>
-              )
-            }
-            {
-              vipgrade.is_vip && (
-                <View className="view-flex grade-info">
-                  <View className="member-no">NO.{gradeInfo.user_card_code}</View>
-                  <View className="view-flex view-flex-middle content-v-padded">
-                    <View>{vipgrade.end_date} 到期</View>
-                    {
-                      vipgrade.is_open && <Navigator url="vipgrades" className="renewals-btn">续费</Navigator>
-                    }
-                  </View>
-                  <View className="view-flex view-flex-middle vip-sign">
-                    {
-                      vipgrade.vip_type === 'svip' && (<Text className="icon-s"></Text>)
-                    }
-                    <Text className="icon-v"></Text>
-                    <Text className="icon-i"></Text>
-                    <Text className="icon-p"></Text>
-                  </View>
-                </View>
-              )
-            }
-            {
-              vipgrade.is_vip && (<Image className="member-info-bg" src={vipgrade.background_pic_url} />)
-            }
-            {
-              vipgrade.is_open && !vipgrade.is_vip && (<Image className="member-info-bg" src={gradeInfo.background_pic_url} />)
-            }
+            { /*<View className="icon-arrowRight"></View>*/ }
           </View>
+          {
+            /* <View className="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">
+              {
+                vipgrade.is_open && !vipgrade.is_vip
+                && (
+                  <Navigator url="vipgrades" className="vip-btn">
+                    <Text className="icon-crown"></Text> 开通VIP会员
+                  </Navigator>
+                )
+              }
+              {
+                vipgrade.is_vip && (
+                  <View className="view-flex grade-info">
+                    <View className="member-no">NO.{gradeInfo.user_card_code}</View>
+                    <View className="view-flex view-flex-middle content-v-padded">
+                      <View>{vipgrade.end_date} 到期</View>
+                      {
+                        vipgrade.is_open && <Navigator url="vipgrades" className="renewals-btn">续费</Navigator>
+                      }
+                    </View>
+                    <View className="view-flex view-flex-middle vip-sign">
+                      {
+                        vipgrade.vip_type === 'svip' && (<Text className="icon-s"></Text>)
+                      }
+                      <Text className="icon-v"></Text>
+                      <Text className="icon-i"></Text>
+                      <Text className="icon-p"></Text>
+                    </View>
+                  </View>
+                )
+              }
+              {
+                vipgrade.is_vip && (<Image className="member-info-bg" src={vipgrade.background_pic_url} />)
+              }
+              {
+                vipgrade.is_open && !vipgrade.is_vip && (<Image className="member-info-bg" src={gradeInfo.background_pic_url} />)
+              }
+            </View> */
+          }
           <View className="section section-card order-box">
-            <View className="section-title no-foot-padded">
-              我的订单
+            <View className="section-title no-foot-padded view-flex view-flex-middle">
+              <View className="view-flex-item">我的订单</View>
+              <View class="section-more" onClick={this.viewOrder.bind(this)}>全部订单 <Text className="forward-icon icon-arrowRight"></Text></View>
             </View>
-            <View className="list">
-              <View className="list-item" onClick={this.viewOrder.bind(this, 4)}>
-                <View className="list-item-txt">
-                  <View>自提订单</View>
-                  <View className="text-muted">您有{orderCount.normal_payed_daiziti}个等待自提的订单</View>
+            {
+              /* <View className="list">
+                <View className="list-item" onClick={this.viewOrder.bind(this, 4)}>
+                  <View className="list-item-txt">
+                    <View>自提订单</View>
+                    <View className="text-muted">您有{orderCount.normal_payed_daiziti}个等待自提的订单</View>
+                  </View>
+                  <View className="icon-ziti"></View>
+                  <View className="icon-arrowRight item-icon-go"></View>
                 </View>
-                <View className="icon-ziti"></View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </View>
-            </View>
+              </View> */
+            }
             <View className="section-body">
               <View className="view-flex view-flex-justify">
                 <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.viewOrder.bind(this, 5)}>
@@ -249,46 +266,55 @@ export default class MemberIndex extends Component {
               </View>
             </View>
           </View>
-          <View className="important-box view-flex">
-            <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
-              <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
-              <View>买单</View>
-            </View>
-            <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="user_coupon">
-              <Image className="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
-              <View>优惠券</View>
-            </Navigator>
-            {
-              isOpenPopularize && !isPromoter
-              && (
-                <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.beDistributor.bind(this)}>
-                  <Image className="icon-img" src="/assets/imgs/store.png" mode="aspectFit" />
-                  <View>我要推广</View>
-                </Navigator>
-              )
-            }
-            {
-              isOpenPopularize && isPromoter
-              && (
-                <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="distribution/index">
-                  <Image className="icon-img" src="../assets/imgs/store.png" mode="aspectFit" />
-                  <View>推广管理</View>
-                </Navigator>
-              )
-            }
-            <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
-              <Image className="icon-img" src="/assets/imgs/group.png" mode="aspectFit" />
-              <View>我的拼团</View>
-            </Navigator>
-          </View>
+          {
+            /* <View className="important-box view-flex">
+              <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
+                <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
+                <View>买单</View>
+              </View>
+              <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="user_coupon">
+                <Image className="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
+                <View>优惠券</View>
+              </Navigator>
+              {
+                isOpenPopularize && !isPromoter
+                && (
+                  <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.beDistributor.bind(this)}>
+                    <Image className="icon-img" src="/assets/imgs/store.png" mode="aspectFit" />
+                    <View>我要推广</View>
+                  </Navigator>
+                )
+              }
+              {
+                isOpenPopularize && isPromoter
+                && (
+                  <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="distribution/index">
+                    <Image className="icon-img" src="../assets/imgs/store.png" mode="aspectFit" />
+                    <View>推广管理</View>
+                  </Navigator>
+                )
+              }
+              <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
+                <Image className="icon-img" src="/assets/imgs/group.png" mode="aspectFit" />
+                <View>我的拼团</View>
+              </Navigator>
+            </View> */
+          }
           <View className="section section-card">
             <View className="list">
-              <View open-type="share" className="list-item">
-                <Button className="btn-share" open-type="share"></Button>
-                <View className="item-icon icon-share"></View>
-                <View className="list-item-txt">我要分享</View>
+              <Navigator className="list-item" url="/pages/member/coupon">
+                <View className="item-icon icon-periscope"></View>
+                <View className="list-item-txt">优惠券</View>
                 <View className="icon-arrowRight item-icon-go"></View>
-              </View>
+              </Navigator>
+              {
+                /* <View open-type="share" className="list-item">
+                  <Button className="btn-share" open-type="share"></Button>
+                  <View className="item-icon icon-share"></View>
+                  <View className="list-item-txt">我要分享</View>
+                  <View className="icon-arrowRight item-icon-go"></View>
+                </View> */
+              }
               <Navigator className="list-item" url="/pages/member/address">
                 <View className="item-icon icon-periscope"></View>
                 <View className="list-item-txt">地址管理</View>

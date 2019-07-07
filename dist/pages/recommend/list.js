@@ -184,14 +184,12 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       }
     }, _this.bindMultiPickerChange = function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-        var info, _this$state3, areaList, multiIndex, regions, province, city, county;
-
+        var info, province, city, area;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 info = _this.state.info;
-                _this$state3 = _this.state, areaList = _this$state3.areaList, multiIndex = _this$state3.multiIndex;
 
                 _this.addList.map(function (item, index) {
                   if (index === e.detail.value[0]) {
@@ -209,14 +207,13 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   }
                 });
 
-                regions = [areaList[0][multiIndex[0]], areaList[1][multiIndex[1]], areaList[2][multiIndex[2]]];
-
-                console.log(111, regions);
-                province = info.province, city = info.city, county = info.county;
+                province = info.province, city = info.city, area = info.area;
 
                 _this.setState({
                   query: _extends({}, _this.state.query, {
-                    region_id: google
+                    province: province,
+                    city: city,
+                    area: area
                   })
                 }, function () {
                   _this.resetPage();
@@ -228,7 +225,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                 });
                 _this.setState({ info: info });
 
-              case 8:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -240,9 +237,9 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
         return _ref2.apply(this, arguments);
       };
     }(), _this.bindMultiPickerColumnChange = function (e) {
-      var _this$state4 = _this.state,
-          areaList = _this$state4.areaList,
-          multiIndex = _this$state4.multiIndex;
+      var _this$state3 = _this.state,
+          areaList = _this$state3.areaList,
+          multiIndex = _this$state3.multiIndex;
 
       if (e.detail.column === 0) {
         _this.setState({

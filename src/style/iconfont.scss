@@ -23,6 +23,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-coupon:before { content: "\e72b"; }
+
 .icon-menu:before { content: "\e709"; }
 
 .icon-filter:before { content: "\e619"; }

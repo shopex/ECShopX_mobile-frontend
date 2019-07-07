@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { AtButton, AtCountdown} from 'taro-ui'
-import { Loading, SpCell, SpToast, Price, NavBar } from '@/components'
+import { Loading, SpCell, SpToast, FloatMenus, FloatMenuItem, Price, NavBar } from '@/components'
 import { classNames, log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute } from '@/utils'
 import api from '@/api'
 import S from '@/spx'
@@ -396,7 +396,7 @@ export default class TradeDetail extends Component {
         }
         {
           info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn' onClick={this.handleClickBtn.bind(this, 'contact')}>联系客服</Text>
+            /* <Text className='trade-detail__footer__btn' onClick={this.handleClickBtn.bind(this, 'contact')}>联系客服</Text> */
             <Text className='trade-detail__footer__btn trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'confirm')}>确认收货</Text>
           </View>
         }
@@ -410,7 +410,13 @@ export default class TradeDetail extends Component {
             <Text className='trade-detail__footer__btn trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'home')}>继续购物</Text>
           </View>
         }*/}
-
+        <FloatMenus>
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='kefu'
+            openType='contact'
+          />
+        </FloatMenus>
         <SpToast></SpToast>
       </View>
     )

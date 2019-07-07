@@ -582,6 +582,11 @@ export default class Detail extends Component {
           />
           <FloatMenuItem
             iconPrefixClass='in-icon'
+            icon='kefu'
+            openType='contact'
+          />
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
             icon='back-top'
             hide={!showBackToTop}
             onClick={this.scrollBackToTop}

@@ -69,13 +69,16 @@
             </view>
         </block>
         <block wx:if="{{info.status === 'WAIT_BUYER_CONFIRM_GOODS'}}">
-            <view class="trade-detail__footer"><text class="trade-detail__footer__btn" bindtap="handleClickBtn" data-e-tap-so="this" data-e-tap-a-a="contact">联系客服</text><text class="trade-detail__footer__btn trade-detail__footer_active" bindtap="handleClickBtn" data-e-tap-so="this" data-e-tap-a-a="confirm">确认收货</text>
+            <view class="trade-detail__footer">/* <text class="trade-detail__footer__btn" bindtap="handleClickBtn" data-e-tap-so="this" data-e-tap-a-a="contact">联系客服</text>*/<text class="trade-detail__footer__btn trade-detail__footer_active" bindtap="handleClickBtn" data-e-tap-so="this" data-e-tap-a-a="confirm">确认收货</text>
             </view>
         </block>
         <block wx:if="{{info.status === 'TRADE_SUCCESS'}}">
             <view class="trade-detail__footer"><text class="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn" bindtap="handleClickBtn" data-e-tap-so="this" data-e-tap-a-a="contact">联系客服</text>
             </view>
         </block>
+        <float-menus __triggerObserer="{{ _triggerObserer }}">
+            <float-menu-item iconPrefixClass="in-icon" __triggerObserer="{{ _triggerObserer }}" icon="kefu" openType="contact"></float-menu-item>
+        </float-menus>
         <sp-toast __triggerObserer="{{ _triggerObserer }}"></sp-toast>
     </view>
 </block>

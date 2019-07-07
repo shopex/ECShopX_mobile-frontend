@@ -178,7 +178,7 @@ scroll-view, view, text {
 }
 
 .section-more {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #999;
 }
 
@@ -909,6 +909,10 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-coupon:before {
+  content: "";
 }
 
 .icon-menu:before {
@@ -7353,6 +7357,10 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   color: #CCC;
 }
 
+.at-input__input::-moz-placeholder {
+  color: #CCC;
+}
+
 .at-input__input::-ms-input-placeholder {
   color: #CCC;
 }
@@ -12925,6 +12933,10 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 }
 
 .at-textarea__textarea::-webkit-input-placeholder {
+  color: #CCC;
+}
+
+.at-textarea__textarea::-moz-placeholder {
   color: #CCC;
 }
 

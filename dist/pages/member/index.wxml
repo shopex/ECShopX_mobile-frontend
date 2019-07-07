@@ -1,63 +1,18 @@
 <block>
     <view class="page-member-index">
         <scroll-view class="member__scroll" scroll-y="{{true}}">
-            <navigator hover-className="none" class="user-info view-flex view-flex-middle view-flex-center" url="member_code">
+            <view class="user-info view-flex view-flex-middle view-flex-center">
                 <view class="avatar">
                     <image class="avatar-img" src="{{info.avatar}}" mode="aspectFill"></image>
-                    <block wx:if="{{vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip'}}">
-                        <image class="icon-vip" src="/assets/imgs/svip.png"></image>
-                    </block>
                 </view>
                 <view>
-                    <view class="nickname">Hi, {{info.username}}<text class="icon-qrcode"></text>
-                    </view>
-                    <block>
-                        <block wx:if="{{!vipgrade.is_vip}}">
-                            <view class="gradename">{{gradeInfo.grade_name}}</view>
-                        </block>
-                        <block wx:else>
-                            <view class="gradename">{{vipgrade.grade_name}}</view>
-                        </block>
-                    </block>
+                    <view class="nickname">Hi, {{info.username}}</view>
                 </view>
-                <view class="icon-arrowRight"></view>
-            </navigator>
-            <view class="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">
-                <block wx:if="{{vipgrade.is_open && !vipgrade.is_vip}}">
-                    <navigator url="vipgrades" class="vip-btn"><text class="icon-crown"></text>开通VIP会员</navigator>
-                </block>
-                <block wx:if="{{vipgrade.is_vip}}">
-                    <view class="view-flex grade-info">
-                        <view class="member-no">NO.{{gradeInfo.user_card_code}}</view>
-                        <view class="view-flex view-flex-middle content-v-padded">
-                            <view>{{vipgrade.end_date}}到期</view>
-                            <block wx:if="{{vipgrade.is_open}}">
-                                <navigator url="vipgrades" class="renewals-btn">续费</navigator>
-                            </block>
-                        </view>
-                        <view class="view-flex view-flex-middle vip-sign">
-                            <block wx:if="{{vipgrade.vip_type === 'svip'}}"><text class="icon-s"></text>
-                            </block><text class="icon-v"></text><text class="icon-i"></text><text class="icon-p"></text>
-                        </view>
-                    </view>
-                </block>
-                <block wx:if="{{vipgrade.is_vip}}">
-                    <image class="member-info-bg" src="{{vipgrade.background_pic_url}}"></image>
-                </block>
-                <block wx:if="{{vipgrade.is_open && !vipgrade.is_vip}}">
-                    <image class="member-info-bg" src="{{gradeInfo.background_pic_url}}"></image>
-                </block>
             </view>
             <view class="section section-card order-box">
-                <view class="section-title no-foot-padded">我的订单</view>
-                <view class="list">
-                    <view class="list-item" bindtap="viewOrder" data-e-tap-so="this" data-e-tap-a-a="{{4}}">
-                        <view class="list-item-txt">
-                            <view>自提订单</view>
-                            <view class="text-muted">您有{{orderCount.normal_payed_daiziti}}个等待自提的订单</view>
-                        </view>
-                        <view class="icon-ziti"></view>
-                        <view class="icon-arrowRight item-icon-go"></view>
+                <view class="section-title no-foot-padded view-flex view-flex-middle">
+                    <view class="view-flex-item">我的订单</view>
+                    <view class="section-more" bindtap="viewOrder" data-e-tap-so="this">全部订单 <text class="forward-icon icon-arrowRight"></text>
                     </view>
                 </view>
                 <view class="section-body">
@@ -97,40 +52,13 @@
                     </view>
                 </view>
             </view>
-            <view class="important-box view-flex">
-                <view class="view-flex-item view-flex view-flex-vertical view-flex-middle" bindtap="toPay" data-e-tap-so="this">
-                    <image class="icon-img" src="/assets/imgs/buy.png" mode="aspectFit"></image>
-                    <view>买单</view>
-                </view>
-                <navigator class="view-flex-item view-flex view-flex-vertical view-flex-middle" url="user_coupon">
-                    <image class="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit"></image>
-                    <view>优惠券</view>
-                </navigator>
-                <block wx:if="{{isOpenPopularize && !isPromoter}}">
-                    <navigator class="view-flex-item view-flex view-flex-vertical view-flex-middle" bindtap="beDistributor" data-e-tap-so="this">
-                        <image class="icon-img" src="/assets/imgs/store.png" mode="aspectFit"></image>
-                        <view>我要推广</view>
-                    </navigator>
-                </block>
-                <block wx:if="{{isOpenPopularize && isPromoter}}">
-                    <navigator class="view-flex-item view-flex view-flex-vertical view-flex-middle" url="distribution/index">
-                        <image class="icon-img" src="../assets/imgs/store.png" mode="aspectFit"></image>
-                        <view>推广管理</view>
-                    </navigator>
-                </block>
-                <navigator class="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
-                    <image class="icon-img" src="/assets/imgs/group.png" mode="aspectFit"></image>
-                    <view>我的拼团</view>
-                </navigator>
-            </view>
             <view class="section section-card">
                 <view class="list">
-                    <view open-type="share" class="list-item">
-                        <button class="btn-share" open-type="share"></button>
-                        <view class="item-icon icon-share"></view>
-                        <view class="list-item-txt">我要分享</view>
+                    <navigator class="list-item" url="/pages/member/coupon">
+                        <view class="item-icon icon-periscope"></view>
+                        <view class="list-item-txt">优惠券</view>
                         <view class="icon-arrowRight item-icon-go"></view>
-                    </view>
+                    </navigator>
                     <navigator class="list-item" url="/pages/member/address">
                         <view class="item-icon icon-periscope"></view>
                         <view class="list-item-txt">地址管理</view>

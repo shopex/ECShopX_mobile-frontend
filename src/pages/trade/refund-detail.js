@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { REFUND_STATUS } from '@/consts'
 import { formatTime } from '@/utils'
-import { SpCell, Price, Loading, NavBar } from '@/components'
+import { SpCell, Price, FloatMenus, FloatMenuItem, Loading, NavBar } from '@/components'
 import api from '@/api'
 
 import './refund-detail.scss'
@@ -148,8 +148,9 @@ export default class TradeRefundDetail extends Component {
           <View className='info-name'>申请时间：<Text className='info-value'>{info.creat_time_str}</Text></View>
           <View className='info-name'>退款编号：<Text className='info-value'>{info.aftersales_bn}</Text></View>
         </View>
-        <View onClick={this.handleBtnClick.bind(this, 'contact')} className='refund-detail-btn'>联系客服</View>
-        {/*<View className='refund-status'>
+        {/*
+          <View onClick={this.handleBtnClick.bind(this, 'contact')} className='refund-detail-btn'>联系客服</View>
+          <View className='refund-status'>
           {
             (progress == 0 || progress == 1 || progress == 3 || progress == 5)
               ? <Icon size='50' type='waiting'></Icon>
@@ -205,6 +206,13 @@ export default class TradeRefundDetail extends Component {
             <AtButton type='primary' circle onClick={this.handleBtnClick.bind(this, 'refund_send')}>填写物流信息</AtButton>
           </View>
         )}*/}
+        <FloatMenus>
+          <FloatMenuItem
+            iconPrefixClass='in-icon'
+            icon='kefu'
+            openType='contact'
+          />
+        </FloatMenus>
       </View>
     )
   }
