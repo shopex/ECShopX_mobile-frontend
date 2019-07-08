@@ -21,7 +21,7 @@ export default class WeappBtn extends Component {
     const { info } = this.props
     const { order_id, order_type } = info
     const params = {
-      pay_type: 'amorepay',
+      pay_type: 'wxpay',
       order_id,
       order_type
     }

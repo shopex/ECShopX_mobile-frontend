@@ -67,7 +67,7 @@ export default class CartCheckout extends Component {
         coupon_discount: '',
         point: ''
       },
-      payType: 'amorepay',
+      payType: 'wxpay',
       disabledPayment: null,
       isPaymentOpend: false,
       invoiceTitle: ''
@@ -115,7 +115,7 @@ export default class CartCheckout extends Component {
     this.params = {
       cart_type,
       items,
-      pay_type: payType || 'amorepay'
+      pay_type: payType || 'wxpay'
     }
 
     this.setState({
@@ -368,7 +368,7 @@ export default class CartCheckout extends Component {
       // let payTypeNeedsChange = ['当前积分不足以支付本次订单费用', '当月使用积分已达限额'].includes(e.message)
       this.setState({
         disabledPayment: { name: 'dhpoint', message: e.message },
-        payType: 'amorepay'
+        payType: 'wxpay'
       }, () => {
         this.calcOrder()
       })
@@ -416,7 +416,7 @@ export default class CartCheckout extends Component {
         delete params.invoice_content
       }
       orderInfo = await api.trade.create(params)
-      order_id = orderInfo.order_id
+      order_id = orderInfo.trade_info.order_id
     } catch (e) {
       Taro.showToast({
         title: e.message,
@@ -435,7 +435,6 @@ export default class CartCheckout extends Component {
 
     Taro.hideLoading()
     if (!order_id) return
-
     // 爱茉pay流程
     const paymentParams = {
       order_id,
@@ -455,7 +454,6 @@ export default class CartCheckout extends Component {
     this.setState({
       submitLoading: false
     })
-
     // 积分流程
     if (payType === 'dhpoint') {
       if (!payErr) {
@@ -492,23 +490,10 @@ export default class CartCheckout extends Component {
         icon: 'success'
       })
 
-      try {
-        Taro.showLoading()
-        const res = await api.trade.tradeQuery(config.trade_info.trade_id)
-        if(res){
-          Taro.hideLoading()
-          this.props.onClearCart()
-          Taro.redirectTo({
-            url: `/pages/trade/detail?id=${order_id}`
-          })
-        }
-      } catch (e) {
-        console.info(e)
-        this.props.onClearCart()
-        Taro.redirectTo({
-          url: `/pages/trade/detail?id=${order_id}`
-        })
-      }
+      this.props.onClearCart()
+      Taro.redirectTo({
+        url: `/pages/trade/detail?id=${order_id}`
+      })
 
       /*this.props.onClearCart()
       Taro.redirectTo({

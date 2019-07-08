@@ -13,7 +13,7 @@ var _req2 = _interopRequireDefault(_req);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function getOrderDetail(order_id) {
-  return _req2.default.get("/order_new/" + order_id);
+  return _req2.default.get("/order/" + order_id);
 }
 
 function getPayment() {

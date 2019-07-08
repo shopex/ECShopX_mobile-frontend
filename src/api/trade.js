@@ -12,7 +12,7 @@ export function detail (tid) {
 
 export function create (data) {
   // return req.post('/trade.create', data)
-  return req.post('/order_new', data)
+  return req.post('/order', data)
 }
 
 export function confirm (tid) {

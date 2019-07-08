@@ -192,7 +192,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         }
       }, _callee2, _this2);
     })), _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var _this$state, payType, total, _ref7, confirm, order_id, orderInfo, params, paymentParams, config, payErr, payRes, res;
+      var _this$state, payType, total, _ref7, confirm, order_id, orderInfo, params, paymentParams, config, payErr, payRes;
 
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
@@ -271,7 +271,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
             case 25:
               orderInfo = _context3.sent;
 
-              order_id = orderInfo.order_id;
+              order_id = orderInfo.trade_info.order_id;
               _context3.next = 34;
               break;
 
@@ -335,7 +335,6 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               _this.setState({
                 submitLoading: false
               });
-
               // 积分流程
 
               if (!(payType === 'dhpoint')) {
@@ -383,7 +382,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
             case 66:
               if (payErr) {
-                _context3.next = 84;
+                _context3.next = 73;
                 break;
               }
 
@@ -394,55 +393,35 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               });
 
             case 69:
-              _context3.prev = 69;
 
-              _index2.default.showLoading();
-              _context3.next = 73;
-              return _index5.default.trade.tradeQuery(config.trade_info.trade_id);
-
-            case 73:
-              res = _context3.sent;
-
-              if (res) {
-                _index2.default.hideLoading();
-                _this.__triggerPropsFn("onClearCart", [null].concat([]));
-                _index2.default.redirectTo({
-                  url: "/pages/trade/detail?id=" + order_id
-                });
-              }
-              _context3.next = 82;
-              break;
-
-            case 77:
-              _context3.prev = 77;
-              _context3.t4 = _context3["catch"](69);
-
-              console.info(_context3.t4);
               _this.__triggerPropsFn("onClearCart", [null].concat([]));
               _index2.default.redirectTo({
                 url: "/pages/trade/detail?id=" + order_id
               });
 
-            case 82:
-              _context3.next = 85;
+              /*this.props.onClearCart()
+              Taro.redirectTo({
+                url: `/pages/trade/detail?id=${order_id}`
+              })*/
+              _context3.next = 74;
               break;
 
-            case 84:
+            case 73:
               if (payErr.errMsg.indexOf('fail cancel') >= 0) {
                 _index2.default.redirectTo({
                   url: "/pages/trade/detail?id=" + order_id
                 });
               }
 
-            case 85:
+            case 74:
               return _context3.abrupt("return");
 
-            case 86:
+            case 75:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, _this2, [[4, 13], [20, 29], [39, 46], [55, 62], [69, 77]]);
+      }, _callee3, _this2, [[4, 13], [20, 29], [39, 46], [55, 62]]);
     })), _this.handleCouponsClick = function () {
       if (_this.state.payType === 'dhpoint') {
         return;
@@ -521,7 +500,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           coupon_discount: '',
           point: ''
         },
-        payType: 'amorepay',
+        payType: 'wxpay',
         disabledPayment: null,
         isPaymentOpend: false,
         invoiceTitle: ''
@@ -575,7 +554,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       this.params = {
         cart_type: cart_type,
         items: items,
-        pay_type: payType || 'amorepay'
+        pay_type: payType || 'wxpay'
       };
 
       this.setState({
@@ -845,7 +824,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         // let payTypeNeedsChange = ['当前积分不足以支付本次订单费用', '当月使用积分已达限额'].includes(e.message)
         this.setState({
           disabledPayment: { name: 'dhpoint', message: e.message },
-          payType: 'amorepay'
+          payType: 'wxpay'
         }, function () {
           _this4.calcOrder();
         });

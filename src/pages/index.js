@@ -123,7 +123,7 @@ export default class HomeIndex extends Component {
 
     return (
       <View className='page-index'>
-        <HeaderHome />
+        {/* <HeaderHome /> */}
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
           scrollTop={scrollTop}

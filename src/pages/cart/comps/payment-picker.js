@@ -8,7 +8,7 @@ import './payment-picker.scss'
 export default class PaymentPicker extends Component {
   static defaultProps = {
     isOpened: false,
-    type: 'amorepay',
+    type: 'wxpay',
     disabledPayment: null
   }
 
@@ -82,7 +82,7 @@ export default class PaymentPicker extends Component {
             </View>
             <View
               className='payment-item no-border'
-              onClick={this.handlePaymentChange.bind(this, 'amorepay')}
+              onClick={this.handlePaymentChange.bind(this, 'wxpay')}
             >
               <View className='payment-item__bd'>
                 <Text className='payment-item__title'>微信支付</Text>
@@ -90,7 +90,7 @@ export default class PaymentPicker extends Component {
               </View>
               <View className='payment-item__ft'>
                 <SpCheckbox
-                  checked={localType === 'amorepay'}
+                  checked={localType === 'wxpay'}
                 ></SpCheckbox>
               </View>
             </View>

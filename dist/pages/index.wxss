@@ -70,7 +70,7 @@
   position: absolute;
   left: 0;
   width: 100%;
-  top: 70rpx;
+  top: 0;
   bottom: 110rpx;
   overflow-y: auto;
   overflow-x: hidden;

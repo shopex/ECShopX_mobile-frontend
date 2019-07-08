@@ -84,7 +84,7 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
 
       var anonymousState__temp = !!disabledPayment;
       var anonymousState__temp2 = localType === 'dhpoint';
-      var anonymousState__temp3 = localType === 'amorepay';
+      var anonymousState__temp3 = localType === 'wxpay';
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
         anonymousState__temp2: anonymousState__temp2,
@@ -96,8 +96,8 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatecVuds",
-    value: function funPrivatecVuds() {
+    key: "funPrivatetzAcf",
+    value: function funPrivatetzAcf() {
       this.__triggerPropsFn("onChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -136,9 +136,9 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivatecVuds"], _class.defaultProps = {
+}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivatetzAcf"], _class.defaultProps = {
   isOpened: false,
-  type: 'amorepay',
+  type: 'wxpay',
   disabledPayment: null
 }, _class.options = {
   addGlobalClass: true

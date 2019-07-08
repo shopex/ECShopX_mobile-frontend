@@ -32,7 +32,7 @@ function detail(tid) {
 
 function create(data) {
   // return req.post('/trade.create', data)
-  return _req2.default.post('/order_new', data);
+  return _req2.default.post('/order', data);
 }
 
 function confirm(tid) {

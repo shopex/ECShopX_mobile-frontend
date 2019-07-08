@@ -272,7 +272,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
                 // 爱茉pay流程
                 order_id = info.tid, order_type = info.order_type;
                 paymentParams = {
-                  pay_type: 'amorepay',
+                  pay_type: 'wxpay',
                   order_id: order_id,
                   order_type: order_type
                 };
@@ -313,30 +313,24 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
               case 20:
                 if (payErr) {
-                  _context3.next = 26;
+                  _context3.next = 25;
                   break;
                 }
 
-                try {
-                  _index5.default.trade.tradeQuery(config.trade_info.trade_id);
-                } catch (e) {
-                  console.info(e);
-                }
-
-                _context3.next = 24;
+                _context3.next = 23;
                 return _index2.default.showToast({
                   title: '支付成功',
                   icon: 'success'
                 });
 
-              case 24:
+              case 23:
                 _getCurrentRoute = (0, _index3.getCurrentRoute)(this.$router), fullPath = _getCurrentRoute.fullPath;
 
                 _index2.default.redirectTo({
                   url: fullPath
                 });
 
-              case 26:
+              case 25:
               case "end":
                 return _context3.stop();
             }

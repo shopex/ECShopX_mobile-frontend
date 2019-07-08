@@ -12,14 +12,14 @@
                         <sp-checkbox disabled="{{anonymousState__temp}}" __triggerObserer="{{ _triggerObserer }}" checked="{{anonymousState__temp2}}"></sp-checkbox>
                     </view>
                 </view>
-                <view class="payment-item no-border" bindtap="handlePaymentChange" data-e-tap-so="this" data-e-tap-a-a="amorepay">
+                <view class="payment-item no-border" bindtap="handlePaymentChange" data-e-tap-so="this" data-e-tap-a-a="wxpay">
                     <view class="payment-item__bd"><text class="payment-item__title">微信支付</text><text class="payment-item__desc">微信支付可使用优惠券及享受运费优惠</text>
                     </view>
                     <view class="payment-item__ft">
                         <sp-checkbox checked="{{anonymousState__temp3}}" __triggerObserer="{{ _triggerObserer }}"></sp-checkbox>
                     </view>
                 </view>
-                <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" loading="{{loading}}" bindonclick="funPrivatecVuds" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{localType}}">确定</at-button>
+                <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" loading="{{loading}}" bindonclick="funPrivatetzAcf" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{localType}}">确定</at-button>
             </view>
         </view>
     </at-float-layout>

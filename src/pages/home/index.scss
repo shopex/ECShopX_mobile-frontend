@@ -52,7 +52,7 @@
 .wgts-wrap {
   &__fixed {
     background: #fff;
-    @include page-scroll($home-header-height, $tabbar-height);
+    @include page-scroll(0, $tabbar-height);
   }
   &__is-distributor {
   }

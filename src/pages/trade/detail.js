@@ -141,7 +141,7 @@ export default class TradeDetail extends Component {
     // 爱茉pay流程
     const { tid: order_id, order_type } = info
     const paymentParams = {
-      pay_type: 'amorepay',
+      pay_type: 'wxpay',
       order_id,
       order_type
     }
@@ -166,12 +166,6 @@ export default class TradeDetail extends Component {
     }
 
     if (!payErr) {
-      try {
-        api.trade.tradeQuery(config.trade_info.trade_id)
-      } catch (e) {
-        console.info(e)
-      }
-
       await Taro.showToast({
         title: '支付成功',
         icon: 'success'

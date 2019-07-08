@@ -31,6 +31,12 @@ export default class WgtSearchHome extends Component {
     }
   }
 
+  searchTap = () => {
+    Taro.navigateTo({
+      url: '/pages/item/list'
+    })
+  }
+
   render () {
     const { info } = this.props
     if (!info) {

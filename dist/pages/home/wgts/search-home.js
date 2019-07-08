@@ -36,7 +36,11 @@ var WgtSearchHome = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtSearchHome.__proto__ || Object.getPrototypeOf(WgtSearchHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "searchValue", "historyList", "isShowAction"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WgtSearchHome.__proto__ || Object.getPrototypeOf(WgtSearchHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "base", "config", "searchValue", "historyList", "isShowAction"], _this.searchTap = function () {
+      _index2.default.navigateTo({
+        url: '/pages/item/list'
+      });
+    }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(WgtSearchHome, [{
