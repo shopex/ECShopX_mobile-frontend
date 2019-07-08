@@ -235,7 +235,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
 
                 _this.setState({
                   query: _extends({}, _this.state.query, {
-                    region_id: regions
+                    regions_id: regions
                   })
                 }, function () {
                   _this.resetPage();

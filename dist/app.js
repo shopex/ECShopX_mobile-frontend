@@ -72,7 +72,7 @@ var _App = function (_BaseComponent) {
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: 'innisfree悦诗风吟',
+        navigationBarTitleText: 'ecshopX商城',
         navigationBarTextStyle: 'black'
         // navigationStyle: 'custom'
       }

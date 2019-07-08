@@ -339,7 +339,7 @@ export default class List extends Component {
     this.setState({
       query: {
         ...this.state.query,
-        region_id: regions
+        regions_id: regions
       }
     }, () => {
       this.resetPage()

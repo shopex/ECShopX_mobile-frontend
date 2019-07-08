@@ -55,8 +55,13 @@
             <view class="section section-card">
                 <view class="list">
                     <navigator class="list-item" url="/pages/member/coupon">
-                        <view class="item-icon icon-periscope"></view>
+                        <view class="item-icon icon-coupon"></view>
                         <view class="list-item-txt">优惠券</view>
+                        <view class="icon-arrowRight item-icon-go"></view>
+                    </navigator>
+                    <navigator class="list-item" url="/pages/member/item-fav">
+                        <view class="item-icon icon-faverite"></view>
+                        <view class="list-item-txt">我的收藏</view>
                         <view class="icon-arrowRight item-icon-go"></view>
                     </navigator>
                     <navigator class="list-item" url="/pages/member/address">
