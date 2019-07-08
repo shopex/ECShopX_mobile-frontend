@@ -382,7 +382,7 @@ export default class RecommendList extends Component {
                 range={areaList}
               >
                 <View className='icon-periscope'></View>
-                <Text>{address || '产地'}</Text>
+                <Text>{address || '地区'}</Text>
               </Picker>
             </View>
           </FilterBar>
