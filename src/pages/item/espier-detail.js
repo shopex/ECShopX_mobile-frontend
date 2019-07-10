@@ -49,7 +49,8 @@ export default class Detail extends Component {
       sixSpecImgsDict: {},
       curSku: null,
       promotion_activity: [],
-      screenWidth: 0
+      screenWidth: 0,
+      sessionFrom: ''
     }
   }
 
@@ -117,6 +118,7 @@ export default class Detail extends Component {
     let timer = null
     let hasStock = info.store && info.store > 0
     let startSecKill = true
+    let sessionFrom = ''
 
     if (info.group_activity) {
       //团购
@@ -162,6 +164,13 @@ export default class Detail extends Component {
       }
     })
 
+    sessionFrom += '{'
+    if(Taro.getStorageSync('userinfo')){
+      sessionFrom += `"nickName": "${Taro.getStorageSync('userinfo').username}", `
+    }
+    sessionFrom += `"商品": "${info.item_name}"`
+    sessionFrom += '}'
+
     this.setState({
       info,
       desc,
@@ -171,7 +180,8 @@ export default class Detail extends Component {
       startSecKill,
       specImgsDict,
       sixSpecImgsDict,
-      promotion_activity
+      promotion_activity,
+      sessionFrom
     })
     log.debug('fetch: done', info)
   }
@@ -584,6 +594,7 @@ export default class Detail extends Component {
             iconPrefixClass='in-icon'
             icon='kefu'
             openType='contact'
+            sessionFrom={sessionFrom}
           />
           <FloatMenuItem
             iconPrefixClass='in-icon'

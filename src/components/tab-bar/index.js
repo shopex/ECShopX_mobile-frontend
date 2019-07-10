@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
+import req from '@/api/req'
 import api from '@/api'
 import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
@@ -23,18 +24,15 @@ export default class TabBar extends Component {
 
     this.state = {
       current: 0,
-      tabList: [
-        { title: '首页', iconType: 'home', iconPrefixClass: 'in-icon', url: APP_HOME_PAGE, urlRedirect: true },
-        { title: '分类', iconType: 'menu', iconPrefixClass: 'in-icon', url: '/pages/category/index', urlRedirect: true },
-        { title: '种草', iconType: 'grass', iconPrefixClass: 'in-icon', url: '/pages/recommend/list', urlRedirect: true },
-        { title: '购物车', iconType: 'cart', iconPrefixClass: 'in-icon', url: '/pages/cart/espier-index', text: this.props.cartTotalCount || '', max: '99', withLogin: true, urlRedirect: true },
-        { title: '个人中心', iconType: 'user', iconPrefixClass: 'in-icon', url: '/pages/member/index', urlRedirect: true, withLogin: true }
-      ]
+      backgroundColor: '',
+      color: '',
+      selectedColor: '',
+      tabList: []
     }
   }
 
   componentDidMount () {
-    this.updateCurTab()
+    this.fetch()
   }
 
   componentDidShow () {
@@ -58,6 +56,41 @@ export default class TabBar extends Component {
         current: nCurrent
       })
     }
+  }
+
+  async fetch () {
+    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
+    const info = await req.get(url)
+    const { config, data } = info.list[0].params
+    const { backgroundColor, color, selectedColor } = config
+    this.setState({
+      backgroundColor,
+      color,
+      selectedColor
+    })
+    let list = []
+    data.map(item => {
+      let obj = {
+        title: item.text,
+        iconType: item.name,
+        iconPrefixClass: 'icon',
+        image: item.iconPath,
+        selectedImage: item.selectedIconPath,
+        url: item.pagePath,
+        urlRedirect: true
+      }
+      if (item.name === 'cart') {
+        Object.assign(obj, {withLogin: true})
+      }
+      if (item.name === 'member') {
+        Object.assign(obj, {withLogin: true, text: this.props.cartTotalCount || '', max: '99'})
+      }
+      list.push(obj)
+    })
+    this.setState({
+      tabList: list
+    })
+    this.updateCurTab()
   }
 
   async fetchCart () {
@@ -120,6 +153,9 @@ export default class TabBar extends Component {
     return (
       <AtTabBar
         fixed
+        color={color}
+        backgroundColor={backgroundColor}
+        selectedColor={selectedColor}
         tabList={tabList}
         onClick={this.handleClick}
         current={current}

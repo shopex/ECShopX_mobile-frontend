@@ -36,7 +36,7 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Index.__proto__ || Object.getPrototypeOf(Index)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["hide", "openType", "iconPrefixClass", "icon", "children"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Index.__proto__ || Object.getPrototypeOf(Index)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["hide", "openType", "sessionFrom", "iconPrefixClass", "icon", "children"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Index, [{
@@ -57,20 +57,22 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
           openType = _props.openType,
           iconPrefixClass = _props.iconPrefixClass,
           hide = _props.hide,
-          icon = _props.icon;
+          icon = _props.icon,
+          sessionFrom = _props.sessionFrom;
 
 
       Object.assign(this.__state, {
         hide: hide,
         openType: openType,
+        sessionFrom: sessionFrom,
         iconPrefixClass: iconPrefixClass,
         icon: icon
       });
       return this.__state;
     }
   }, {
-    key: "funPrivateVTPEh",
-    value: function funPrivateVTPEh() {
+    key: "funPrivateUHpHn",
+    value: function funPrivateUHpHn() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -97,11 +99,15 @@ var Index = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   },
+  "sessionFrom": {
+    "type": null,
+    "value": null
+  },
   "__fn_onClick": {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateVTPEh"], _class.options = {
+}, _class.$$events = ["funPrivateUHpHn"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   onClick: null,

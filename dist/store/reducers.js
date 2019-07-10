@@ -22,11 +22,16 @@ var _member = require("./member.js");
 
 var _member2 = _interopRequireDefault(_member);
 
+var _tabBar = require("./tab-bar.js");
+
+var _tabBar2 = _interopRequireDefault(_tabBar);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = (0, _redux.combineReducers)({
   cart: _cart2.default,
   user: _user2.default,
   address: _address2.default,
-  member: _member2.default
+  member: _member2.default,
+  tabBar: _tabBar2.default
 });

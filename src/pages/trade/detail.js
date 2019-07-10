@@ -30,7 +30,8 @@ export default class TradeDetail extends Component {
     this.state = {
       info: null,
       timer: null,
-      payLoading: false
+      payLoading: false,
+      sessionFrom: ''
     }
   }
 
@@ -59,6 +60,7 @@ export default class TradeDetail extends Component {
   async fetch () {
     const { id } = this.$router.params
     const data = await api.trade.detail(id)
+    let sessionFrom = ''
 
     const info = pickBy(data.orderInfo, {
       tid: 'order_id',
@@ -116,8 +118,17 @@ export default class TradeDetail extends Component {
 
     log.debug('[trade info] info: ', info)
 
+    sessionFrom += '{'
+    if(Taro.getStorageSync('userinfo')){
+      sessionFrom += `"nickName": "${Taro.getStorageSync('userinfo').username}", `
+    }
+    sessionFrom += `"商品": "${info.orders[0].title}"`
+    sessionFrom += `"订单号": "${info.orders[0].order_id}"`
+    sessionFrom += '}'
+
     this.setState({
-      info
+      info,
+      sessionFrom
     })
   }
 

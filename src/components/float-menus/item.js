@@ -17,13 +17,14 @@ export default class Index extends Component {
   }
 
   render () {
-    const{ onClick, openType, iconPrefixClass, hide, icon } = this.props
+    const{ onClick, openType, iconPrefixClass, hide, icon, sessionFrom } = this.props
 
     return (
       <Button
         className={`float-menu__item ${hide ? 'hidden' : ''}`}
         onClick={onClick}
         openType={openType}
+        sessionFrom={sessionFrom || ''}
       >
         <View className={`${iconPrefixClass} ${iconPrefixClass}-${icon}`}></View>
         {this.props.children}

@@ -718,8 +718,8 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 @font-face {
   font-family: "iconfont";
   /* project id 869421 */
-  src: url("//at.alicdn.com/t/font_869421_o1jx3h68x8j.eot");
-  src: url("//at.alicdn.com/t/font_869421_o1jx3h68x8j.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_869421_o1jx3h68x8j.woff2") format("woff2"), url("//at.alicdn.com/t/font_869421_o1jx3h68x8j.woff") format("woff"), url("//at.alicdn.com/t/font_869421_o1jx3h68x8j.ttf") format("truetype"), url("//at.alicdn.com/t/font_869421_o1jx3h68x8j.svg#iconfont") format("svg");
+  src: url("//at.alicdn.com/t/font_869421_eiumrfa4gjv.eot");
+  src: url("//at.alicdn.com/t/font_869421_eiumrfa4gjv.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_869421_eiumrfa4gjv.woff2") format("woff2"), url("//at.alicdn.com/t/font_869421_eiumrfa4gjv.woff") format("woff"), url("//at.alicdn.com/t/font_869421_eiumrfa4gjv.ttf") format("truetype"), url("//at.alicdn.com/t/font_869421_eiumrfa4gjv.svg#iconfont") format("svg");
 }
 [class^=icon-], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
@@ -735,16 +735,32 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-faverite:before {
-  content: "";
+.icon-home:before {
+  content: "";
+}
+
+.icon-category:before {
+  content: "";
+}
+
+.icon-article:before {
+  content: "";
+}
+
+.icon-cart:before {
+  content: "";
+}
+
+.icon-member:before {
+  content: "";
 }
 
 .icon-coupon:before {
   content: "";
 }
 
-.icon-menu:before {
-  content: "";
+.icon-faverite:before {
+  content: "";
 }
 
 .icon-filter:before {
@@ -863,10 +879,6 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   content: "";
 }
 
-.icon-home:before {
-  content: "";
-}
-
 .icon-crown:before {
   content: "";
 }
@@ -925,10 +937,6 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 
 .icon-shop-cart:before {
   content: "";
-}
-
-.icon-cart:before {
-  content: "";
 }
 
 .icon-share:before {
@@ -13507,8 +13515,11 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 }
 
 .at-tab-bar {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  padding: 0;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 .at-tab-bar__item {
   padding: 0 12rpx;

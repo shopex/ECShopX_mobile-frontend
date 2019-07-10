@@ -62,7 +62,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TradeDetail.__proto__ || Object.getPrototypeOf(TradeDetail)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "info", "timer", "isDhPoint", "payLoading"], _this.handleCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TradeDetail.__proto__ || Object.getPrototypeOf(TradeDetail)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "info", "timer", "isDhPoint", "payLoading", "sessionFrom"], _this.handleCopy = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var info, msg;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -107,7 +107,8 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
       this.state = {
         info: null,
         timer: null,
-        payLoading: false
+        payLoading: false,
+        sessionFrom: ''
       };
     }
   }, {
@@ -138,7 +139,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
     key: "fetch",
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var id, data, info, timer, infoStatus;
+        var id, data, sessionFrom, info, timer, infoStatus;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -149,6 +150,7 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
               case 3:
                 data = _context2.sent;
+                sessionFrom = '';
                 info = (0, _index3.pickBy)(data.orderInfo, {
                   tid: 'order_id',
                   created_time_str: function created_time_str(_ref4) {
@@ -234,11 +236,20 @@ var TradeDetail = (_temp2 = _class = function (_BaseComponent) {
 
                 _index3.log.debug('[trade info] info: ', info);
 
+                sessionFrom += '{';
+                if (_index2.default.getStorageSync('userinfo')) {
+                  sessionFrom += "\"nickName\": \"" + _index2.default.getStorageSync('userinfo').username + "\", ";
+                }
+                sessionFrom += "\"\u5546\u54C1\": \"" + info.orders[0].title + "\"";
+                sessionFrom += "\"\u8BA2\u5355\u53F7\": \"" + info.orders[0].order_id + "\"";
+                sessionFrom += '}';
+
                 this.setState({
-                  info: info
+                  info: info,
+                  sessionFrom: sessionFrom
                 });
 
-              case 12:
+              case 18:
               case "end":
                 return _context2.stop();
             }

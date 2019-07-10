@@ -14,6 +14,10 @@ var _index = require("../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
+var _req = require("../../api/req.js");
+
+var _req2 = _interopRequireDefault(_req);
+
 var _index3 = require("../../api/index.js");
 
 var _index4 = _interopRequireDefault(_index3);
@@ -54,7 +58,7 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TabBar.__proto__ || Object.getPrototypeOf(TabBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["tabList", "current", "cartTotalCount"], _this.handleClick = function (current) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TabBar.__proto__ || Object.getPrototypeOf(TabBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["color", "backgroundColor", "selectedColor", "tabList", "current", "cartTotalCount"], _this.handleClick = function (current) {
       var cur = _this.state.current;
 
       if (cur !== current) {
@@ -90,13 +94,16 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
 
       this.state = {
         current: 0,
-        tabList: [{ title: '首页', iconType: 'home', iconPrefixClass: 'in-icon', url: "/pages/index", urlRedirect: true }, { title: '分类', iconType: 'menu', iconPrefixClass: 'in-icon', url: '/pages/category/index', urlRedirect: true }, { title: '种草', iconType: 'grass', iconPrefixClass: 'in-icon', url: '/pages/recommend/list', urlRedirect: true }, { title: '购物车', iconType: 'cart', iconPrefixClass: 'in-icon', url: '/pages/cart/espier-index', text: this.props.cartTotalCount || '', max: '99', withLogin: true, urlRedirect: true }, { title: '个人中心', iconType: 'user', iconPrefixClass: 'in-icon', url: '/pages/member/index', urlRedirect: true, withLogin: true }]
+        backgroundColor: '',
+        color: '',
+        selectedColor: '',
+        tabList: []
       };
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.updateCurTab();
+      this.fetch();
     }
   }, {
     key: "componentDidShow",
@@ -133,32 +140,97 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
       }
     }
   }, {
-    key: "fetchCart",
+    key: "fetch",
     value: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var _this2 = this;
 
-        var cartTabIdx, updateCartCount, _getCurrentRoute3, path, _ref3, item_count;
+        var url, info, _info$list$0$params, config, data, backgroundColor, color, selectedColor, list;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs';
+                _context.next = 3;
+                return _req2.default.get(url);
+
+              case 3:
+                info = _context.sent;
+                _info$list$0$params = info.list[0].params, config = _info$list$0$params.config, data = _info$list$0$params.data;
+                backgroundColor = config.backgroundColor, color = config.color, selectedColor = config.selectedColor;
+
+                this.setState({
+                  backgroundColor: backgroundColor,
+                  color: color,
+                  selectedColor: selectedColor
+                });
+                list = [];
+
+                data.map(function (item) {
+                  var obj = {
+                    title: item.text,
+                    iconType: item.name,
+                    iconPrefixClass: 'icon',
+                    image: item.iconPath,
+                    selectedImage: item.selectedIconPath,
+                    url: item.pagePath,
+                    urlRedirect: true
+                  };
+                  if (item.name === 'cart') {
+                    Object.assign(obj, { withLogin: true });
+                  }
+                  if (item.name === 'member') {
+                    Object.assign(obj, { withLogin: true, text: _this2.props.cartTotalCount || '', max: '99' });
+                  }
+                  list.push(obj);
+                });
+                this.setState({
+                  tabList: list
+                });
+                this.updateCurTab();
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function fetch() {
+        return _ref2.apply(this, arguments);
+      }
+
+      return fetch;
+    }()
+  }, {
+    key: "fetchCart",
+    value: function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var _this3 = this;
+
+        var cartTabIdx, updateCartCount, _getCurrentRoute3, path, _ref4, item_count;
+
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
                 if (_index7.default.getAuthToken()) {
-                  _context.next = 2;
+                  _context2.next = 2;
                   break;
                 }
 
-                return _context.abrupt("return");
+                return _context2.abrupt("return");
 
               case 2:
                 cartTabIdx = 3;
 
                 updateCartCount = function updateCartCount(count) {
-                  var tabList = _this2.state.tabList;
+                  var tabList = _this3.state.tabList;
 
                   tabList[cartTabIdx].text = count || '';
-                  _this2.setState({
+                  _this3.setState({
                     tabList: tabList
                   });
                 };
@@ -166,42 +238,42 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
                 _getCurrentRoute3 = (0, _index5.getCurrentRoute)(this.$router), path = _getCurrentRoute3.path;
 
                 if (!(path === this.state.tabList[cartTabIdx].url)) {
-                  _context.next = 8;
+                  _context2.next = 8;
                   break;
                 }
 
                 updateCartCount('');
-                return _context.abrupt("return");
+                return _context2.abrupt("return");
 
               case 8:
-                _context.prev = 8;
-                _context.next = 11;
+                _context2.prev = 8;
+                _context2.next = 11;
                 return _index4.default.cart.count();
 
               case 11:
-                _ref3 = _context.sent;
-                item_count = _ref3.item_count;
+                _ref4 = _context2.sent;
+                item_count = _ref4.item_count;
 
                 updateCartCount(item_count);
-                _context.next = 19;
+                _context2.next = 19;
                 break;
 
               case 16:
-                _context.prev = 16;
-                _context.t0 = _context["catch"](8);
+                _context2.prev = 16;
+                _context2.t0 = _context2["catch"](8);
 
-                console.error(_context.t0);
+                console.error(_context2.t0);
 
               case 19:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this, [[8, 16]]);
+        }, _callee2, this, [[8, 16]]);
       }));
 
       function fetchCart() {
-        return _ref2.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       }
 
       return fetchCart;

@@ -78,7 +78,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "loopArray0", "info", "scrollTop", "curImgIdx", "imgs", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "isGreaterSix", "desc", "screenWidth", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "sixSpecImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref4 = Detail.__proto__ || Object.getPrototypeOf(Detail)).call.apply(_ref4, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "loopArray0", "info", "scrollTop", "curImgIdx", "imgs", "timer", "marketing", "isPromoter", "promotion_activity", "curSku", "buyPanelType", "$anonymousCallee__0", "isGreaterSix", "desc", "screenWidth", "sessionFrom", "hasStock", "startSecKill", "cartCount", "showBuyPanel", "windowWidth", "specImgsDict", "sixSpecImgsDict", "favs", "__fn_onAddFav", "__fn_onDelFav"], _this.handleMenuClick = function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(type) {
         var info, isAuth, favRes;
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -240,7 +240,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         sixSpecImgsDict: {},
         curSku: null,
         promotion_activity: [],
-        screenWidth: 0
+        screenWidth: 0,
+        sessionFrom: ''
       };
     }
   }, {
@@ -348,7 +349,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
         var _this4 = this;
 
-        var id, info, desc, promotion_activity, marketing, timer, hasStock, startSecKill, specImgsDict, spectImg, sixSpecImgsDict;
+        var id, info, desc, promotion_activity, marketing, timer, hasStock, startSecKill, sessionFrom, specImgsDict, spectImg, sixSpecImgsDict;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -364,6 +365,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                 timer = null;
                 hasStock = info.store && info.store > 0;
                 startSecKill = true;
+                sessionFrom = '';
 
 
                 if (info.group_activity) {
@@ -410,6 +412,13 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                   }
                 });
 
+                sessionFrom += '{';
+                if (_index2.default.getStorageSync('userinfo')) {
+                  sessionFrom += "\"nickName\": \"" + _index2.default.getStorageSync('userinfo').username + "\", ";
+                }
+                sessionFrom += "\"\u5546\u54C1\": \"" + info.item_name + "\"";
+                sessionFrom += '}';
+
                 this.setState({
                   info: info,
                   desc: desc,
@@ -419,11 +428,12 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                   startSecKill: startSecKill,
                   specImgsDict: specImgsDict,
                   sixSpecImgsDict: sixSpecImgsDict,
-                  promotion_activity: promotion_activity
+                  promotion_activity: promotion_activity,
+                  sessionFrom: sessionFrom
                 });
                 _index7.log.debug('fetch: done', info);
 
-              case 19:
+              case 24:
               case "end":
                 return _context4.stop();
             }

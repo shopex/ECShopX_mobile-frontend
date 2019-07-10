@@ -94,7 +94,7 @@ export default class RecommendList extends Component {
         name: 'category_name',
         id: 'category_id'
       })
-      let defaultItem = {id: 'all', name: '全部', isChooseColumn: true}
+      let defaultItem = {id: '', name: '全部', isChooseColumn: true}
       selectColumn = Object.assign({}, defaultItem)
       clist.unshift(defaultItem)
       this.setState({
@@ -180,42 +180,10 @@ export default class RecommendList extends Component {
       showDrawer: false
     })
     if(type === 'reset') {
-      const { columnList } = this.state
-      this.state.paramsList.map(item => {
-        item.attribute_values.map(v_item => {
-          if(v_item.attribute_value_id === 'all') {
-            v_item.isChooseParams = true
-          } else {
-            v_item.isChooseParams = false
-          }
-        })
-      })
-      selectParams.map(item => {
-        item.attribute_value_id = 'all'
-      })
-      this.setState({
-        paramsList,
-        selectParams
-      })
-    }
-
-    this.resetPage()
-    this.setState({
-      list: []
-    }, () => {
-      this.nextPage()
-    })
-  }
-
-  handleClickSearchParams = (type) => {
-    this.setState({
-      showDrawer: false
-    })
-    if(type === 'reset') {
       const { paramsList, selectParams } = this.state
       this.state.paramsList.map(item => {
         item.attribute_values.map(v_item => {
-          if(v_item.attribute_value_id === 'all') {
+          if(v_item.attribute_value_id === '') {
             v_item.isChooseParams = true
           } else {
             v_item.isChooseParams = false
@@ -223,7 +191,7 @@ export default class RecommendList extends Component {
         })
       })
       selectParams.map(item => {
-        item.attribute_value_id = 'all'
+        item.attribute_value_id = ''
       })
       this.setState({
         paramsList,

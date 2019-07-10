@@ -99,11 +99,13 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
         showDrawer: false
       });
       if (type === 'reset') {
-        var columnList = _this.state.columnList;
+        var _this$state2 = _this.state,
+            paramsList = _this$state2.paramsList,
+            selectParams = _this$state2.selectParams;
 
         _this.state.paramsList.map(function (item) {
           item.attribute_values.map(function (v_item) {
-            if (v_item.attribute_value_id === 'all') {
+            if (v_item.attribute_value_id === '') {
               v_item.isChooseParams = true;
             } else {
               v_item.isChooseParams = false;
@@ -111,44 +113,11 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
           });
         });
         selectParams.map(function (item) {
-          item.attribute_value_id = 'all';
+          item.attribute_value_id = '';
         });
         _this.setState({
           paramsList: paramsList,
           selectParams: selectParams
-        });
-      }
-
-      _this.resetPage();
-      _this.setState({
-        list: []
-      }, function () {
-        _this.nextPage();
-      });
-    }, _this.handleClickSearchParams = function (type) {
-      _this.setState({
-        showDrawer: false
-      });
-      if (type === 'reset') {
-        var _this$state2 = _this.state,
-            _paramsList = _this$state2.paramsList,
-            _selectParams = _this$state2.selectParams;
-
-        _this.state.paramsList.map(function (item) {
-          item.attribute_values.map(function (v_item) {
-            if (v_item.attribute_value_id === 'all') {
-              v_item.isChooseParams = true;
-            } else {
-              v_item.isChooseParams = false;
-            }
-          });
-        });
-        _selectParams.map(function (item) {
-          item.attribute_value_id = 'all';
-        });
-        _this.setState({
-          paramsList: _paramsList,
-          selectParams: _selectParams
         });
       }
 
@@ -394,7 +363,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
                   name: 'category_name',
                   id: 'category_id'
                 });
-                defaultItem = { id: 'all', name: '全部', isChooseColumn: true };
+                defaultItem = { id: '', name: '全部', isChooseColumn: true };
 
                 selectColumn = Object.assign({}, defaultItem);
                 clist.unshift(defaultItem);
