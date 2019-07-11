@@ -39,6 +39,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var ENV = _index2.default.getEnv();
+var MIN_DISTANCE = 100;
+var MAX_INTERVAL = 10;
 
 var AtTabs = (_temp2 = _class = function (_AtComponent) {
   _inherits(AtTabs, _AtComponent);
@@ -70,7 +72,7 @@ var AtTabs = (_temp2 = _class = function (_AtComponent) {
             {
               var index = Math.max(idx - 1, 0);
               var prevTabItem = _this.tabHeaderRef.childNodes[index];
-              _this.setState({
+              prevTabItem && _this.setState({
                 _scrollTop: prevTabItem.offsetTop,
                 _scrollLeft: prevTabItem.offsetLeft
               });
@@ -142,14 +144,14 @@ var AtTabs = (_temp2 = _class = function (_AtComponent) {
       var moveDistance = touchMove - this._touchDot;
       var maxIndex = tabList.length;
 
-      if (!this._isMoving && this._interval < 10) {
+      if (!this._isMoving && this._interval < MAX_INTERVAL && this._touchDot > 20) {
         // 向左滑动
-        if (current + 1 < maxIndex && moveDistance <= -40) {
+        if (current + 1 < maxIndex && moveDistance <= -100) {
           this._isMoving = true;
           this.handleClick(current + 1);
 
           // 向右滑动
-        } else if (current - 1 >= 0 && moveDistance >= 40) {
+        } else if (current - 1 >= 0 && moveDistance >= MIN_DISTANCE) {
           this._isMoving = true;
           this.handleClick(current - 1);
         }

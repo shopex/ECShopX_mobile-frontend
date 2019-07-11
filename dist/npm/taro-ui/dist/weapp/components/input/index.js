@@ -73,48 +73,22 @@ var AtInput = (_temp2 = _class = function (_AtComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtInput.__proto__ || Object.getPrototypeOf(AtInput)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "rootCls", "containerCls", "overlayCls", "title", "name", "type", "password", "placeholderStyle", "placeholderCls", "placeholder", "cursorSpacing", "maxLength", "autoFocus", "focus", "value", "confirmType", "cursor", "selectionStart", "selectionEnd", "adjustPosition", "clear", "error", "__fn_onChange", "__fn_onFocus", "__fn_onBlur", "__fn_onConfirm", "editable", "__fn_onClick", "__fn_onErrorClick", "className", "customStyle", "border", "placeholderClass", "children"], _this.onInput = function (e) {
-      for (var _len2 = arguments.length, arg = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        arg[_key2 - 1] = arguments[_key2];
-      }
-
-      return _this.__triggerPropsFn("onChange", [null].concat([e.target.value].concat(arg)));
-    }, _this.onFocus = function (e) {
-      for (var _len3 = arguments.length, arg = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-        arg[_key3 - 1] = arguments[_key3];
-      }
-
-      return _this.__triggerPropsFn("onFocus", [null].concat([e.target.value].concat(arg)));
-    }, _this.onBlur = function (e) {
-      for (var _len4 = arguments.length, arg = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-        arg[_key4 - 1] = arguments[_key4];
-      }
-
-      return _this.__triggerPropsFn("onBlur", [null].concat([e.target.value].concat(arg)));
-    }, _this.onConfirm = function (e) {
-      for (var _len5 = arguments.length, arg = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-        arg[_key5 - 1] = arguments[_key5];
-      }
-
-      return _this.__triggerPropsFn("onConfirm", [null].concat([e.target.value].concat(arg)));
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtInput.__proto__ || Object.getPrototypeOf(AtInput)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "rootCls", "containerCls", "overlayCls", "title", "name", "type", "password", "placeholderStyle", "placeholderCls", "placeholder", "cursorSpacing", "maxLength", "autoFocus", "focus", "value", "confirmType", "cursor", "selectionStart", "selectionEnd", "adjustPosition", "clear", "error", "__fn_onChange", "__fn_onFocus", "__fn_onBlur", "__fn_onConfirm", "editable", "__fn_onClick", "__fn_onErrorClick", "className", "customStyle", "border", "placeholderClass", "children"], _this.onInput = function (event) {
+      return _this.__triggerPropsFn("onChange", [null].concat([event.target.value, event]));
+    }, _this.onFocus = function (event) {
+      return _this.__triggerPropsFn("onFocus", [null].concat([event.target.value, event]));
+    }, _this.onBlur = function (event) {
+      _this.__triggerPropsFn("onBlur", [null].concat([event.target.value, event]));
+      // fix # 583 AtInput 不触发 onChange 的问题
+      _this.__triggerPropsFn("onChange", [null].concat([event.target.value, event]));
+    }, _this.onConfirm = function (event) {
+      return _this.__triggerPropsFn("onConfirm", [null].concat([event.target.value, event]));
     }, _this.onClick = function () {
-      for (var _len6 = arguments.length, arg = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-        arg[_key6] = arguments[_key6];
-      }
-
-      return !_this.props.editable && _this.__triggerPropsFn("onClick", [null].concat([].concat(arg)));
+      return !_this.props.editable && _this.__triggerPropsFn("onClick", [null].concat([]));
     }, _this.clearValue = function () {
-      for (var _len7 = arguments.length, arg = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-        arg[_key7] = arguments[_key7];
-      }
-
-      return _this.__triggerPropsFn("onChange", [null].concat([''].concat(arg)));
+      return _this.__triggerPropsFn("onChange", [null].concat(['']));
     }, _this.onErrorClick = function () {
-      for (var _len8 = arguments.length, arg = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
-        arg[_key8] = arguments[_key8];
-      }
-
-      return _this.__triggerPropsFn("onErrorClick", [null].concat([].concat(arg)));
+      return _this.__triggerPropsFn("onErrorClick", [null].concat([]));
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 

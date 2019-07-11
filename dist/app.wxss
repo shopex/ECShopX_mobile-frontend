@@ -1200,6 +1200,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -1781,6 +1782,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -2236,6 +2238,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -2441,6 +2444,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 .at-accordion__content--inactive {
   position: absolute;
   visibility: hidden;
+  height: 0;
   z-index: -10;
 }
 .at-accordion__arrow {
@@ -2511,6 +2515,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -2707,6 +2712,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -2993,6 +2999,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -3195,6 +3202,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -3391,6 +3399,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -3588,6 +3597,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -3790,7 +3800,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   border-radius: 30rpx;
 }
 .at-button--full {
-  width: 1000rpx;
+  width: 100%;
   max-width: 100%;
   border-radius: 0;
   border-left: none;
@@ -3846,6 +3856,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -4195,6 +4206,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -4441,6 +4453,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -4745,6 +4758,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -4977,6 +4991,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -5252,6 +5267,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -5450,6 +5466,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -5679,6 +5696,212 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
+/* Calendar */
+/* Card */
+/* Checkbox */
+/* Countdown */
+/* Curtain */
+/* Divider */
+/* Drawer */
+/* FloatLayout */
+/* Grid */
+/* ImagePicker */
+/* Indexes */
+/* InputNumber */
+/* Input */
+/* List */
+/* LoadMore */
+/* Loading */
+/* Message */
+/* Modal */
+/* NavBar */
+/* NoticeBar */
+/* Pagination */
+/* Progress */
+/* Radio */
+/* Range */
+/* Rate */
+/* SearchBar */
+/* SegmentedControl */
+/* Slider */
+/* Steps */
+/* SwipeAction */
+/* Switch */
+/* TabBar */
+/* Tabs */
+/* Tag */
+/* Textarea */
+/* Timeline */
+/**
+ * Mixins
+ */
+/* library */
+/**
+ * 元素居中定位
+ */
+/**
+ * @example scss
+ *
+ * .element {
+ *   @include clearfix;
+ * }
+ *
+ * // CSS Output
+ * .element::after {
+ *   clear: both;
+ *   content: '';
+ *   display: block;
+ * }
+ */
+/**
+ * 通用的遮罩
+ */
+/**
+ * Mixes a color with black. It's different from darken()
+ *
+ * @param {color} $color
+ * @param {number (percentage)} $percent [The amount of black to be mixed in]
+ * @return {color}
+ *
+ * @example
+ *   .element {
+ *     background-color: shade(#ffbb52, 60%);
+ *   }
+ *
+ *   // CSS Output
+ *   .element {
+ *     background-color: #664a20;
+ *   }
+ */
+/**
+ * Mixes a color with white. It's different from lighten()
+ *
+ * @param {color} $color
+ * @param {number (percentage)} $percent [The amout of white to be mixed in]
+ * @return {color}
+ *
+ * @example
+ *   .element {
+ *     background-color: tint(#6ecaa6 , 40%);
+ *   }
+ *
+ *   // CSS Output
+ *   .element {
+ *     background-color: #a8dfc9;
+ *   }
+ */
+/* Flex Item */
+/**
+ * 默认主题下 $color-border-light
+ */
+/**
+ * 点击态
+ */
+/**
+ * 禁止态
+ */
+/**
+ * 设置placeholder 颜色
+ */
+/**
+ * 默认主题下 $color-border-light
+ */
+.at-fab {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0;
+  width: 112rpx;
+  height: 112rpx;
+  color: #FFF;
+  font-size: 28rpx;
+  line-height: 1.5;
+  text-align: center;
+  border-radius: 50%;
+  background: #ff593d;
+  -webkit-box-shadow: 0 6rpx 10rpx -2rpx rgba(0, 0, 0, 0.2), 0 12rpx 20rpx 0 rgba(0, 0, 0, 0.14), 0 2rpx 36rpx 0 rgba(0, 0, 0, 0.12);
+          box-shadow: 0 6rpx 10rpx -2rpx rgba(0, 0, 0, 0.2), 0 12rpx 20rpx 0 rgba(0, 0, 0, 0.14), 0 2rpx 36rpx 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  /* elements */
+  /* modifiers */
+}
+.at-fab:active {
+  background: #787878;
+  -webkit-box-shadow: 0 14rpx 16rpx -8rpx rgba(0, 0, 0, 0.2), 0 24rpx 34rpx 4rpx rgba(0, 0, 0, 0.14), 0 10rpx 44rpx 8rpx rgba(0, 0, 0, 0.12);
+          box-shadow: 0 14rpx 16rpx -8rpx rgba(0, 0, 0, 0.2), 0 24rpx 34rpx 4rpx rgba(0, 0, 0, 0.14), 0 10rpx 44rpx 8rpx rgba(0, 0, 0, 0.12);
+}
+.at-fab__icon,
+.at-fab .at-icon {
+  width: 48rpx;
+  height: 48rpx;
+  font-size: 48rpx;
+}
+.at-fab--small {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+/**
+ * Default variables
+ */
+/**
+ * Mixes a color with white. It's different from lighten()
+ *
+ * @param {color} $color
+ * @param {number (percentage)} $percent [The amout of white to be mixed in]
+ * @return {color}
+ *
+ * @example
+ *   .element {
+ *     background-color: tint(#6ecaa6 , 40%);
+ *   }
+ *
+ *   // CSS Output
+ *   .element {
+ *     background-color: #a8dfc9;
+ *   }
+ */
+/* The Color of O2Team Brand */
+/* Color */
+/* Color Palette */
+/* Text Color */
+/* Link */
+/* 背景色 */
+/* 边框颜色 */
+/* 图标颜色 */
+/* Border Radius */
+/* 透明度 */
+/* Font */
+/* Line Height */
+/* 水平间距 */
+/* 垂直间距 */
+/* 图标尺寸 */
+/* z-index */
+/* timing function */
+/**
+* CSS cubic-bezier timing functions
+* http://bourbon.io/docs/#timing-functions
+*/
+/**
+ * 组件变量
+ */
+/* Accordion */
+/* Activity Indicator */
+/* Avatar */
+/* Badge */
+/* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -5947,6 +6170,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -6132,6 +6356,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -6435,6 +6660,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -6730,6 +6956,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -6940,6 +7167,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -7179,6 +7407,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -7379,9 +7608,8 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 .at-input input {
   color: #333;
   font-size: 32rpx;
+  height: 44.8rpx;
   line-height: 1.5;
-  height: auto !important;
-  min-height: auto !important;
 }
 .at-input__icon {
   display: -webkit-inline-box;
@@ -7515,6 +7743,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -7849,6 +8078,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -7980,6 +8210,12 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
+.at-load-more__cnt {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
 .at-load-more__tip {
   text-align: center;
   width: 100%;
@@ -8036,6 +8272,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -8249,6 +8486,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -8456,6 +8694,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -8787,6 +9026,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -9082,6 +9322,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -9402,6 +9643,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -9598,6 +9840,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -9855,6 +10098,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -10026,6 +10270,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   font-size: 32rpx;
   text-align: left;
   line-height: 1.5;
+  word-break: break-all;
 }
 .at-radio__icon {
   -webkit-box-flex: 1;
@@ -10051,6 +10296,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   text-align: left;
   line-height: 1.5;
   letter-spacing: 0;
+  word-break: break-all;
 }
 .at-radio__option {
   padding-left: 32rpx;
@@ -10140,6 +10386,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -10352,6 +10599,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -10550,6 +10798,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -10708,11 +10957,12 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   background-color: #F7F7F7;
   border-radius: 15PX;
   overflow: hidden;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 .at-search-bar__placeholder-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -10728,24 +10978,31 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding: 0 5PX;
-  width: 100%;
+  padding: 0 12PX;
   height: 30PX;
   line-height: 0;
   vertical-align: middle;
   opacity: 1;
-  -webkit-transition: width 0.3s;
-  -o-transition: width 0.3s;
-  transition: width 0.3s;
+  -webkit-transition: -webkit-box-flex 0.3s, -webkit-flex 0.3s;
+  transition: -webkit-box-flex 0.3s, -webkit-flex 0.3s;
+  -o-transition: flex 0.3s;
+  transition: flex 0.3s;
+  transition: flex 0.3s, -webkit-box-flex 0.3s, -webkit-flex 0.3s, -ms-flex 0.3s;
 }
 .at-search-bar__placeholder-wrap .at-icon {
   color: #999;
   font-size: 14PX;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
 }
 .at-search-bar__placeholder {
-  margin-left: 5PX;
+  margin-left: 12PX;
   color: #999;
   font-size: 14PX;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
 }
 .at-search-bar__input {
   position: absolute;
@@ -10754,7 +11011,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   left: 0;
   width: 100%;
   height: 30PX !important;
-  padding: 5PX 30PX;
+  padding: 0 37PX;
   color: #000;
   font-size: 14PX !important;
   text-align: left;
@@ -10780,7 +11037,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
       -ms-flex-pack: center;
           justify-content: center;
   top: 0;
-  right: 5PX;
+  right: 12PX;
   height: 30PX;
   width: 25PX;
   color: #999;
@@ -10864,6 +11121,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -11074,6 +11332,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -11261,6 +11520,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -11540,6 +11800,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -11755,6 +12016,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -12005,6 +12267,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -12177,6 +12440,13 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   font-size: 42rpx;
   line-height: 1;
 }
+.at-tab-bar__inner-img {
+  width: 50rpx;
+  height: 50rpx;
+}
+.at-tab-bar__inner-img--inactive {
+  display: none;
+}
 .at-tab-bar__title {
   display: block;
   padding: 6rpx 0;
@@ -12250,6 +12520,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -12528,6 +12799,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   width: 100%;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  white-space: initial;
   /* modifiers */
 }
 .at-tabs-pane--active {
@@ -12592,6 +12864,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -12800,6 +13073,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -13015,6 +13289,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */
@@ -13263,6 +13538,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 /* Avatar */
 /* Badge */
 /* Button */
+/* Float Button */
 /* Calendar */
 /* Card */
 /* Checkbox */

@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -21,6 +23,10 @@ var _index4 = _interopRequireDefault(_index3);
 var _index5 = require("../../../../../classnames/index.js");
 
 var _index6 = _interopRequireDefault(_index5);
+
+var _isObject = require("../../../../../lodash/isObject.js");
+
+var _isObject2 = _interopRequireDefault(_isObject);
 
 var _component = require("../../common/component.js");
 
@@ -50,13 +56,13 @@ var AtNavBar = (_temp2 = _class = function (_AtComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtNavBar.__proto__ || Object.getPrototypeOf(AtNavBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "anonymousState__temp6", "anonymousState__temp7", "leftIconType", "leftIconClass", "rightSecondIconType", "rightSecondIconClass", "rightFirstIconType", "rightFirstIconClass", "leftText", "title", "__fn_onClickLeftIcon", "__fn_onClickRgIconSt", "__fn_onClickRgIconNd", "customStyle", "className", "color", "fixed", "border"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtNavBar.__proto__ || Object.getPrototypeOf(AtNavBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "anonymousState__temp6", "anonymousState__temp7", "anonymousState__temp8", "anonymousState__temp9", "anonymousState__temp10", "leftIconType", "leftIconClass", "rightSecondIconType", "rightSecondIconClass", "rightFirstIconType", "rightFirstIconClass", "leftText", "title", "__fn_onClickLeftIcon", "__fn_onClickRgIconSt", "__fn_onClickRgIconNd", "customStyle", "className", "color", "fixed", "border"], _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(AtNavBar, [{
     key: "_constructor",
-    value: function _constructor(props) {
-      _get(AtNavBar.prototype.__proto__ || Object.getPrototypeOf(AtNavBar.prototype), "_constructor", this).call(this, props);
+    value: function _constructor() {
+      _get(AtNavBar.prototype.__proto__ || Object.getPrototypeOf(AtNavBar.prototype), "_constructor", this).apply(this, arguments);
     }
   }, {
     key: "handleClickLeftView",
@@ -95,9 +101,23 @@ var AtNavBar = (_temp2 = _class = function (_AtComponent) {
 
       var linkStyle = { color: color };
 
-      var leftIconClass = (0, _index6.default)('at-icon', _defineProperty({}, "at-icon-" + leftIconType, leftIconType));
-      var rightFirstIconClass = (0, _index6.default)('at-icon', _defineProperty({}, "at-icon-" + rightFirstIconType, rightFirstIconType));
-      var rightSecondIconClass = (0, _index6.default)('at-icon', _defineProperty({}, "at-icon-" + rightSecondIconType, rightSecondIconType));
+      var defaultIconInfo = {
+        customStyle: '',
+        className: '',
+        prefixClass: 'at-icon',
+        value: '',
+        color: '',
+        size: 24
+      };
+
+      var leftIconInfo = (0, _isObject2.default)(leftIconType) ? _extends({}, defaultIconInfo, leftIconType) : _extends({}, defaultIconInfo, { value: leftIconType });
+      var leftIconClass = (0, _index6.default)(leftIconInfo.prefixClass, _defineProperty({}, leftIconInfo.prefixClass + "-" + leftIconInfo.value, leftIconInfo.value), leftIconInfo.className);
+
+      var rightFirstIconInfo = (0, _isObject2.default)(rightFirstIconType) ? _extends({}, defaultIconInfo, rightFirstIconType) : _extends({}, defaultIconInfo, { value: rightFirstIconType });
+      var rightFirstIconClass = (0, _index6.default)(rightFirstIconInfo.prefixClass, _defineProperty({}, rightFirstIconInfo.prefixClass + "-" + rightFirstIconInfo.value, rightFirstIconInfo.value), rightFirstIconInfo.className);
+
+      var rightSecondIconInfo = (0, _isObject2.default)(rightSecondIconType) ? _extends({}, defaultIconInfo, rightSecondIconType) : _extends({}, defaultIconInfo, { value: rightSecondIconType });
+      var rightSecondIconClass = (0, _index6.default)(rightSecondIconInfo.prefixClass, _defineProperty({}, rightSecondIconInfo.prefixClass + "-" + rightSecondIconInfo.value, rightSecondIconInfo.value), rightSecondIconInfo.className);
 
       var anonymousState__temp = (0, _index6.default)({
         'at-nav-bar': true,
@@ -106,16 +126,28 @@ var AtNavBar = (_temp2 = _class = function (_AtComponent) {
       }, className);
       var anonymousState__temp2 = (0, _index.internal_inline_style)(customStyle);
       var anonymousState__temp3 = (0, _index.internal_inline_style)(linkStyle);
-      var anonymousState__temp4 = (0, _index6.default)({
+      var anonymousState__temp4 = leftIconType ? (0, _index.internal_inline_style)(this.mergeStyle({
+        color: leftIconInfo.color,
+        fontSize: "" + _index2.default.pxTransform(parseInt(leftIconInfo.size) * 2)
+      }, leftIconInfo.customStyle)) : null;
+      var anonymousState__temp5 = (0, _index6.default)({
         'at-nav-bar__container': true,
         'at-nav-bar__container--hide': !rightSecondIconType
       });
-      var anonymousState__temp5 = (0, _index.internal_inline_style)(linkStyle);
-      var anonymousState__temp6 = (0, _index6.default)({
+      var anonymousState__temp6 = (0, _index.internal_inline_style)(linkStyle);
+      var anonymousState__temp7 = rightSecondIconType ? (0, _index.internal_inline_style)(this.mergeStyle({
+        color: rightSecondIconInfo.color,
+        fontSize: "" + _index2.default.pxTransform(parseInt(rightSecondIconInfo.size) * 2)
+      }, rightSecondIconInfo.customStyle)) : null;
+      var anonymousState__temp8 = (0, _index6.default)({
         'at-nav-bar__container': true,
         'at-nav-bar__container--hide': !rightFirstIconType
       });
-      var anonymousState__temp7 = (0, _index.internal_inline_style)(linkStyle);
+      var anonymousState__temp9 = (0, _index.internal_inline_style)(linkStyle);
+      var anonymousState__temp10 = rightFirstIconType ? (0, _index.internal_inline_style)(this.mergeStyle({
+        color: rightFirstIconInfo.color,
+        fontSize: "" + _index2.default.pxTransform(parseInt(rightFirstIconInfo.size) * 2)
+      }, rightFirstIconInfo.customStyle)) : null;
       Object.assign(this.__state, {
         anonymousState__temp: anonymousState__temp,
         anonymousState__temp2: anonymousState__temp2,
@@ -124,6 +156,9 @@ var AtNavBar = (_temp2 = _class = function (_AtComponent) {
         anonymousState__temp5: anonymousState__temp5,
         anonymousState__temp6: anonymousState__temp6,
         anonymousState__temp7: anonymousState__temp7,
+        anonymousState__temp8: anonymousState__temp8,
+        anonymousState__temp9: anonymousState__temp9,
+        anonymousState__temp10: anonymousState__temp10,
         leftIconType: leftIconType,
         leftIconClass: leftIconClass,
         rightSecondIconType: rightSecondIconType,
@@ -216,11 +251,11 @@ AtNavBar.propTypes = {
   fixed: _index4.default.bool,
   border: _index4.default.bool,
   color: _index4.default.string,
-  leftIconType: _index4.default.string,
+  leftIconType: _index4.default.oneOfType([_index4.default.string, _index4.default.object]),
   leftText: _index4.default.string,
   title: _index4.default.string,
-  rightFirstIconType: _index4.default.string,
-  rightSecondIconType: _index4.default.string,
+  rightFirstIconType: _index4.default.oneOfType([_index4.default.string, _index4.default.object]),
+  rightSecondIconType: _index4.default.oneOfType([_index4.default.string, _index4.default.object]),
   onClickLeftIcon: _index4.default.func,
   onClickRgIconSt: _index4.default.func,
   onClickRgIconNd: _index4.default.func

@@ -303,7 +303,7 @@ export default class MemberIndex extends Component {
           <View className="section section-card">
             <View className="list">
               <Navigator className="list-item" url="/pages/member/coupon">
-                <View className="item-icon icon-coupon"></View>
+                <View className="item-icon icon-ticket"></View>
                 <View className="list-item-txt">优惠券</View>
                 <View className="icon-arrowRight item-icon-go"></View>
               </Navigator>

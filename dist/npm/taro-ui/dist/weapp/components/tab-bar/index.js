@@ -115,6 +115,10 @@ var AtTabBar = (_temp2 = _class = function (_AtComponent) {
       var rootStyle = {
         backgroundColor: backgroundColor || ''
       };
+      var imgStyle = {
+        width: iconSize + "px",
+        height: iconSize + "px"
+      };
 
       var anonymousState__temp = (0, _index6.default)({
         'at-tab-bar': true,
@@ -136,7 +140,16 @@ var AtTabBar = (_temp2 = _class = function (_AtComponent) {
           color: current === i ? selectedColor : color,
           fontSize: iconSize ? iconSize + "px" : ''
         }) : null;
-        var $loopState__temp14 = (0, _index.internal_inline_style)(titleStyle);
+        var $loopState__temp14 = item.$original.image ? !!item.$original.dot : null;
+        var $loopState__temp16 = item.$original.image ? (0, _index6.default)('at-tab-bar__inner-img', {
+          'at-tab-bar__inner-img--inactive': current !== i
+        }) : null;
+        var $loopState__temp18 = item.$original.image ? (0, _index.internal_inline_style)(imgStyle) : null;
+        var $loopState__temp20 = item.$original.image ? (0, _index6.default)('at-tab-bar__inner-img', {
+          'at-tab-bar__inner-img--inactive': current === i
+        }) : null;
+        var $loopState__temp22 = item.$original.image ? (0, _index.internal_inline_style)(imgStyle) : null;
+        var $loopState__temp24 = (0, _index.internal_inline_style)(titleStyle);
         return {
           $loopState__temp4: $loopState__temp4,
           $loopState__temp6: $loopState__temp6,
@@ -144,6 +157,11 @@ var AtTabBar = (_temp2 = _class = function (_AtComponent) {
           $loopState__temp10: $loopState__temp10,
           $loopState__temp12: $loopState__temp12,
           $loopState__temp14: $loopState__temp14,
+          $loopState__temp16: $loopState__temp16,
+          $loopState__temp18: $loopState__temp18,
+          $loopState__temp20: $loopState__temp20,
+          $loopState__temp22: $loopState__temp22,
+          $loopState__temp24: $loopState__temp24,
           $original: item.$original
         };
       });

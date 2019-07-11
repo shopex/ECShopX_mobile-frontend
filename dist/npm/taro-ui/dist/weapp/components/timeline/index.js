@@ -102,10 +102,14 @@ var AtTimeline = (_temp2 = _class = function (_AtComponent) {
         var itemRootClassName = ['at-timeline-item'];
         if (color) {
           itemRootClassName.push("at-timeline-item--" + color);
-        }var dotClass = ['at-timeline-item__dot'];
+        }var dotClass = [];
         if (icon) {
           dotClass.push('at-timeline-item__icon');
-        }var $loopState__temp2 = (0, _index6.default)(itemRootClassName);
+        } else {
+          dotClass.push('at-timeline-item__dot');
+        }
+
+        var $loopState__temp2 = (0, _index6.default)(itemRootClassName);
         var $loopState__temp4 = (0, _index6.default)(dotClass);
         return {
           color: color,

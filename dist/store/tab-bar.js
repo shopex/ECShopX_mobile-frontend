@@ -14,12 +14,11 @@ var initState = {
   current: null
 };
 
-var address = (0, _index.createReducer)(initState, _defineProperty({}, 'address/choose', function addressChoose(state, action) {
+var tabBar = (0, _index.createReducer)(initState, _defineProperty({}, 'tabBar', function tabBar(state, action) {
   var current = action.payload;
-
   return _extends({}, state, {
     current: current
   });
 }));
 
-exports.default = address;
+exports.default = tabBar;

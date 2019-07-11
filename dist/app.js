@@ -24,6 +24,10 @@ var _hooks = require("./hooks.js");
 
 var _hooks2 = _interopRequireDefault(_hooks);
 
+var _req = require("./api/req.js");
+
+var _req2 = _interopRequireDefault(_req);
+
 var _index8 = require("./api/index.js");
 
 var _index9 = _interopRequireDefault(_index8);
@@ -31,6 +35,8 @@ var _index9 = _interopRequireDefault(_index8);
 var _index10 = require("./service/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -84,7 +90,9 @@ var _App = function (_BaseComponent) {
     value: function componentWillMount() {}
   }, {
     key: "componentDidMount",
-    value: function componentDidMount() {}
+    value: function componentDidMount() {
+      this.fetchTabs();
+    }
   }, {
     key: "componentDidShow",
     value: function componentDidShow(options) {
@@ -118,6 +126,41 @@ var _App = function (_BaseComponent) {
     value: function componentDidHide() {
       _index10.FormIds.stop();
     }
+  }, {
+    key: "fetchTabs",
+    value: function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var url, info;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs';
+                _context.next = 3;
+                return _req2.default.get(url);
+
+              case 3:
+                info = _context.sent;
+
+                store.dispatch({
+                  type: 'tabBar',
+                  payload: info.list[0].params
+                });
+
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function fetchTabs() {
+        return _ref4.apply(this, arguments);
+      }
+
+      return fetchTabs;
+    }()
   }, {
     key: "componentDidCatchError",
     value: function componentDidCatchError() {}

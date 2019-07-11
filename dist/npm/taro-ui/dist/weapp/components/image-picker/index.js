@@ -79,16 +79,31 @@ var AtImagePicker = (_temp2 = _class = function (_AtComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtImagePicker.__proto__ || Object.getPrototypeOf(AtImagePicker)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "rootCls", "matrix", "mode", "files", "multiple", "__fn_onChange", "onFail", "__fn_onImageClick", "className", "customStyle", "length", "showAddBtn"], _this.chooseFile = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtImagePicker.__proto__ || Object.getPrototypeOf(AtImagePicker)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "rootCls", "matrix", "mode", "files", "multiple", "count", "sizeType", "sourceType", "__fn_onChange", "onFail", "__fn_onImageClick", "className", "customStyle", "length", "showAddBtn"], _this.chooseFile = function () {
       var _this$props = _this.props,
           _this$props$files = _this$props.files,
           files = _this$props$files === undefined ? [] : _this$props$files,
-          multiple = _this$props.multiple;
+          multiple = _this$props.multiple,
+          count = _this$props.count,
+          sizeType = _this$props.sizeType,
+          sourceType = _this$props.sourceType;
 
       var filePathName = ENV === _index2.default.ENV_TYPE.ALIPAY ? 'apFilePaths' : 'tempFiles';
-      var count = multiple ? 99 : 1;
-
-      _index2.default.chooseImage({ count: count }).then(function (res) {
+      // const count = multiple ? 99 : 1
+      var params = {};
+      if (multiple) {
+        params.count = 99;
+      }
+      if (count) {
+        params.count = count;
+      }
+      if (sizeType) {
+        params.sizeType = sizeType;
+      }
+      if (sourceType) {
+        params.sourceType = sourceType;
+      }
+      _index2.default.chooseImage(params).then(function (res) {
         var targetFiles = res.tempFilePaths.map(function (path, i) {
           return {
             url: path,
@@ -182,6 +197,18 @@ var AtImagePicker = (_temp2 = _class = function (_AtComponent) {
     "type": null,
     "value": null
   },
+  "count": {
+    "type": null,
+    "value": null
+  },
+  "sizeType": {
+    "type": null,
+    "value": null
+  },
+  "sourceType": {
+    "type": null,
+    "value": null
+  },
   "__fn_onChange": {
     "type": null,
     "value": null
@@ -242,7 +269,10 @@ AtImagePicker.propTypes = {
   length: _index4.default.number,
   onChange: _index4.default.func,
   onImageClick: _index4.default.func,
-  onFail: _index4.default.func
+  onFail: _index4.default.func,
+  count: _index4.default.number,
+  sizeType: _index4.default.array,
+  sourceType: _index4.default.array
 };
 exports.default = AtImagePicker;
 

@@ -4,10 +4,9 @@ const initState = {
   current: null,
 }
 
-const address = createReducer(initState, {
-  ['address/choose'](state, action) {
+const tabBar = createReducer(initState, {
+  ['tabBar'](state, action) {
     const current = action.payload
-
     return {
       ...state,
       current
@@ -16,4 +15,4 @@ const address = createReducer(initState, {
 
 })
 
-export default address
+export default tabBar

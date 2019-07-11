@@ -48,7 +48,7 @@ var AtSearchBar = (_temp2 = _class = function (_AtComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtSearchBar.__proto__ || Object.getPrototypeOf(AtSearchBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "rootCls", "value", "focus", "disabled", "maxLength", "placeholder", "actionName", "isFocus", "__fn_onFocus", "__fn_onBlur", "__fn_onChange", "__fn_onConfirm", "__fn_onActionClick", "fixed", "showActionButton", "className", "customStyle"], _this.handleFocus = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = AtSearchBar.__proto__ || Object.getPrototypeOf(AtSearchBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "rootCls", "value", "focus", "disabled", "maxLength", "isFocus", "placeholder", "actionName", "__fn_onFocus", "__fn_onBlur", "__fn_onChange", "__fn_onConfirm", "__fn_onActionClick", "fixed", "showActionButton", "className", "customStyle"], _this.handleFocus = function () {
       for (var _len2 = arguments.length, arg = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
         arg[_key2] = arguments[_key2];
       }
@@ -77,7 +77,11 @@ var AtSearchBar = (_temp2 = _class = function (_AtComponent) {
         arg[_key5] = arguments[_key5];
       }
 
-      return _this.__triggerPropsFn("onChange", [null].concat([''].concat(arg)));
+      if (_this.props.onClear) {
+        _this.__triggerPropsFn("onClear", [null].concat([]));
+      } else {
+        _this.__triggerPropsFn("onChange", [null].concat([''].concat(arg)));
+      }
     }, _this.handleConfirm = function () {
       for (var _len6 = arguments.length, arg = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
         arg[_key6] = arguments[_key6];
@@ -129,11 +133,11 @@ var AtSearchBar = (_temp2 = _class = function (_AtComponent) {
       var placeholderWrapStyle = {};
       var actionStyle = {};
       if (isFocus || !isFocus && value) {
-        placeholderWrapStyle.width = (placeholder.length + 2.5) * fontSize + "px";
         actionStyle.opacity = 1;
         actionStyle.marginRight = "0";
+        placeholderWrapStyle.flexGrow = 0;
       } else if (!isFocus && !value) {
-        placeholderWrapStyle.width = '100%';
+        placeholderWrapStyle.flexGrow = 1;
         actionStyle.opacity = 0;
         actionStyle.marginRight = "-" + ((actionName.length + 1) * fontSize + 7) + "px";
       }
@@ -183,6 +187,14 @@ var AtSearchBar = (_temp2 = _class = function (_AtComponent) {
     "value": null
   },
   "__fn_onChange": {
+    "type": null,
+    "value": null
+  },
+  "onClear": {
+    "type": null,
+    "value": null
+  },
+  "__fn_onClear": {
     "type": null,
     "value": null
   },
@@ -266,7 +278,8 @@ AtSearchBar.propTypes = {
   onFocus: _index6.default.func,
   onBlur: _index6.default.func,
   onConfirm: _index6.default.func,
-  onActionClick: _index6.default.func
+  onActionClick: _index6.default.func,
+  onClear: _index6.default.func
 };
 
 exports.default = AtSearchBar;

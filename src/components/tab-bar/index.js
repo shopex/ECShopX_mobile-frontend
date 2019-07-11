@@ -8,6 +8,9 @@ import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
 import { getTotalCount } from '@/store/cart'
 
+@connect(({ tabBar }) => ({
+  tabBar: tabBar.current
+}))
 // @connect(({ cart }) => ({
 //   cart,
 //   cartTotalCount: getTotalCount(cart)
@@ -32,36 +35,7 @@ export default class TabBar extends Component {
   }
 
   componentDidMount () {
-    this.fetch()
-  }
-
-  componentDidShow () {
-    this.fetchCart()
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.current !== undefined) {
-      this.setState({ current: nextProps.current })
-    }
-  }
-
-  updateCurTab () {
-    this.fetchCart()
-    const { tabList, current } = this.state
-    const { fullPath } = getCurrentRoute(this.$router)
-    const { url } = tabList[current]
-    if (url && url !== fullPath) {
-      const nCurrent = tabList.findIndex((t) => t.url === fullPath) || 0
-      this.setState({
-        current: nCurrent
-      })
-    }
-  }
-
-  async fetch () {
-    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
-    const info = await req.get(url)
-    const { config, data } = info.list[0].params
+    const { config, data } = this.props.tabBar
     const { backgroundColor, color, selectedColor } = config
     this.setState({
       backgroundColor,
@@ -72,7 +46,7 @@ export default class TabBar extends Component {
     data.map(item => {
       let obj = {
         title: item.text,
-        iconType: item.name,
+        iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
         iconPrefixClass: 'icon',
         image: item.iconPath,
         selectedImage: item.selectedIconPath,
@@ -89,8 +63,33 @@ export default class TabBar extends Component {
     })
     this.setState({
       tabList: list
+    }, () => {
+      this.updateCurTab()
     })
-    this.updateCurTab()
+  }
+
+  componentDidShow () {
+    this.fetchCart()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.current !== undefined) {
+      this.setState({ current: nextProps.current })
+    }
+  }
+
+  updateCurTab () {
+    this.fetchCart()
+    const { tabList, current } = this.state
+    console.log(tabList)
+    const { fullPath } = getCurrentRoute(this.$router)
+    const { url } = tabList[current]
+    if (url && url !== fullPath) {
+      const nCurrent = tabList.findIndex((t) => t.url === fullPath) || 0
+      this.setState({
+        current: nCurrent
+      })
+    }
   }
 
   async fetchCart () {

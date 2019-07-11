@@ -3,6 +3,7 @@ import S from '@/spx'
 import { Provider } from '@tarojs/redux'
 import configStore from '@/store'
 import useHooks from '@/hooks'
+import req from '@/api/req'
 import api from '@/api'
 import { FormIds, WxAuth } from '@/service'
 import Index from './pages/index'
@@ -106,6 +107,7 @@ class App extends Component {
   componentWillMount () {
   }
   componentDidMount () {
+    this.fetchTabs()
   }
   componentDidShow (options) {
     if (process.env.TARO_ENV === 'weapp') {
@@ -133,6 +135,15 @@ class App extends Component {
 
   componentDidHide () {
     FormIds.stop()
+  }
+
+  async fetchTabs () {
+    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
+    const info = await req.get(url)
+    store.dispatch({
+      type: 'tabBar',
+      payload: info.list[0].params
+    })
   }
 
   componentDidCatchError () {}

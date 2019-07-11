@@ -8,25 +8,23 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _class, _temp2;
+var _dec, _class, _class2, _temp2;
 
 var _index = require("../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
-var _req = require("../../api/req.js");
+var _index3 = require("../../npm/@tarojs/redux/index.js");
 
-var _req2 = _interopRequireDefault(_req);
+var _index4 = require("../../api/index.js");
 
-var _index3 = require("../../api/index.js");
+var _index5 = _interopRequireDefault(_index4);
 
-var _index4 = _interopRequireDefault(_index3);
+var _index6 = require("../../utils/index.js");
 
-var _index5 = require("../../utils/index.js");
+var _index7 = require("../../spx/index.js");
 
-var _index6 = require("../../spx/index.js");
-
-var _index7 = _interopRequireDefault(_index6);
+var _index8 = _interopRequireDefault(_index7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44,11 +42,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // }), (dispatch) => ({
 //   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: { list } })
 // }))
-var TabBar = (_temp2 = _class = function (_BaseComponent) {
+var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
+  var tabBar = _ref.tabBar;
+  return {
+    tabBar: tabBar.current
+  };
+}), _dec(_class = (_temp2 = _class2 = function (_BaseComponent) {
   _inherits(TabBar, _BaseComponent);
 
   function TabBar() {
-    var _ref;
+    var _ref2;
 
     var _temp, _this, _ret;
 
@@ -58,7 +61,7 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TabBar.__proto__ || Object.getPrototypeOf(TabBar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["color", "backgroundColor", "selectedColor", "tabList", "current", "cartTotalCount"], _this.handleClick = function (current) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = TabBar.__proto__ || Object.getPrototypeOf(TabBar)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["color", "backgroundColor", "selectedColor", "tabList", "current", "tabBar", "cartTotalCount"], _this.handleClick = function (current) {
       var cur = _this.state.current;
 
       if (cur !== current) {
@@ -67,17 +70,17 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
             urlRedirect = curTab.urlRedirect,
             withLogin = curTab.withLogin;
 
-        var _getCurrentRoute = (0, _index5.getCurrentRoute)(_this.$router),
+        var _getCurrentRoute = (0, _index6.getCurrentRoute)(_this.$router),
             fullPath = _getCurrentRoute.fullPath;
 
-        if (withLogin && !_index7.default.getAuthToken()) {
+        if (withLogin && !_index8.default.getAuthToken()) {
           return _index2.default.redirectTo({
             url: "/pages/auth/wxauth"
           });
         }
 
         if (url && fullPath !== url) {
-          if (!urlRedirect || url === '/pages/member/index' && !_index7.default.getAuthToken()) {
+          if (!urlRedirect || url === '/pages/member/index' && !_index8.default.getAuthToken()) {
             _index2.default.navigateTo({ url: url });
           } else {
             _index2.default.redirectTo({ url: url });
@@ -103,7 +106,44 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.fetch();
+      var _this2 = this;
+
+      var _props$tabBar = this.props.tabBar,
+          config = _props$tabBar.config,
+          data = _props$tabBar.data;
+      var backgroundColor = config.backgroundColor,
+          color = config.color,
+          selectedColor = config.selectedColor;
+
+      this.setState({
+        backgroundColor: backgroundColor,
+        color: color,
+        selectedColor: selectedColor
+      });
+      var list = [];
+      data.map(function (item) {
+        var obj = {
+          title: item.text,
+          iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
+          iconPrefixClass: 'icon',
+          image: item.iconPath,
+          selectedImage: item.selectedIconPath,
+          url: item.pagePath,
+          urlRedirect: true
+        };
+        if (item.name === 'cart') {
+          Object.assign(obj, { withLogin: true });
+        }
+        if (item.name === 'member') {
+          Object.assign(obj, { withLogin: true, text: _this2.props.cartTotalCount || '', max: '99' });
+        }
+        list.push(obj);
+      });
+      this.setState({
+        tabList: list
+      }, function () {
+        _this2.updateCurTab();
+      });
     }
   }, {
     key: "componentDidShow",
@@ -125,7 +165,9 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
           tabList = _state.tabList,
           current = _state.current;
 
-      var _getCurrentRoute2 = (0, _index5.getCurrentRoute)(this.$router),
+      console.log(tabList);
+
+      var _getCurrentRoute2 = (0, _index6.getCurrentRoute)(this.$router),
           fullPath = _getCurrentRoute2.fullPath;
 
       var url = tabList[current].url;
@@ -140,88 +182,23 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
       }
     }
   }, {
-    key: "fetch",
+    key: "fetchCart",
     value: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this2 = this;
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var _this3 = this;
 
-        var url, info, _info$list$0$params, config, data, backgroundColor, color, selectedColor, list;
+        var cartTabIdx, updateCartCount, _getCurrentRoute3, path, _ref4, item_count;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs';
-                _context.next = 3;
-                return _req2.default.get(url);
-
-              case 3:
-                info = _context.sent;
-                _info$list$0$params = info.list[0].params, config = _info$list$0$params.config, data = _info$list$0$params.data;
-                backgroundColor = config.backgroundColor, color = config.color, selectedColor = config.selectedColor;
-
-                this.setState({
-                  backgroundColor: backgroundColor,
-                  color: color,
-                  selectedColor: selectedColor
-                });
-                list = [];
-
-                data.map(function (item) {
-                  var obj = {
-                    title: item.text,
-                    iconType: item.name,
-                    iconPrefixClass: 'icon',
-                    image: item.iconPath,
-                    selectedImage: item.selectedIconPath,
-                    url: item.pagePath,
-                    urlRedirect: true
-                  };
-                  if (item.name === 'cart') {
-                    Object.assign(obj, { withLogin: true });
-                  }
-                  if (item.name === 'member') {
-                    Object.assign(obj, { withLogin: true, text: _this2.props.cartTotalCount || '', max: '99' });
-                  }
-                  list.push(obj);
-                });
-                this.setState({
-                  tabList: list
-                });
-                this.updateCurTab();
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function fetch() {
-        return _ref2.apply(this, arguments);
-      }
-
-      return fetch;
-    }()
-  }, {
-    key: "fetchCart",
-    value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var _this3 = this;
-
-        var cartTabIdx, updateCartCount, _getCurrentRoute3, path, _ref4, item_count;
-
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (_index7.default.getAuthToken()) {
-                  _context2.next = 2;
+                if (_index8.default.getAuthToken()) {
+                  _context.next = 2;
                   break;
                 }
 
-                return _context2.abrupt("return");
+                return _context.abrupt("return");
 
               case 2:
                 cartTabIdx = 3;
@@ -235,41 +212,41 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
                   });
                 };
 
-                _getCurrentRoute3 = (0, _index5.getCurrentRoute)(this.$router), path = _getCurrentRoute3.path;
+                _getCurrentRoute3 = (0, _index6.getCurrentRoute)(this.$router), path = _getCurrentRoute3.path;
 
                 if (!(path === this.state.tabList[cartTabIdx].url)) {
-                  _context2.next = 8;
+                  _context.next = 8;
                   break;
                 }
 
                 updateCartCount('');
-                return _context2.abrupt("return");
+                return _context.abrupt("return");
 
               case 8:
-                _context2.prev = 8;
-                _context2.next = 11;
-                return _index4.default.cart.count();
+                _context.prev = 8;
+                _context.next = 11;
+                return _index5.default.cart.count();
 
               case 11:
-                _ref4 = _context2.sent;
+                _ref4 = _context.sent;
                 item_count = _ref4.item_count;
 
                 updateCartCount(item_count);
-                _context2.next = 19;
+                _context.next = 19;
                 break;
 
               case 16:
-                _context2.prev = 16;
-                _context2.t0 = _context2["catch"](8);
+                _context.prev = 16;
+                _context.t0 = _context["catch"](8);
 
-                console.error(_context2.t0);
+                console.error(_context.t0);
 
               case 19:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, this, [[8, 16]]);
+        }, _callee, this, [[8, 16]]);
       }));
 
       function fetchCart() {
@@ -298,7 +275,11 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
   }]);
 
   return TabBar;
-}(_index.Component), _class.properties = {
+}(_index.Component), _class2.properties = {
+  "tabBar": {
+    "type": null,
+    "value": null
+  },
   "cartTotalCount": {
     "type": null,
     "value": null
@@ -307,9 +288,9 @@ var TabBar = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleClick"], _class.options = {
+}, _class2.$$events = ["handleClick"], _class2.options = {
   addGlobalClass: true
-}, _temp2);
+}, _temp2)) || _class);
 exports.default = TabBar;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(TabBar));
