@@ -51,7 +51,7 @@
 		"redux-thunk": "^2.3.0",
 		"regenerator": "^0.14.1",
 		"stylenames": "^1.1.6",
-		"taro-ui": "^2.0.1"
+		"taro-ui": "^2.2.1"
 	},
 	"devDependencies": {
 		"@tarojs/plugin-babel": "1.2.26",
