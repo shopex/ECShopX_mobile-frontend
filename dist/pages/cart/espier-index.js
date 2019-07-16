@@ -277,33 +277,36 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetchCart",
     value: function () {
       var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(cb) {
-        var valid_cart, invalid_cart, res, list;
+        var valid_cart, invalid_cart, _$router$params$type, type, params, res, list;
+
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 valid_cart = [], invalid_cart = [];
-                _context2.prev = 1;
-                _context2.next = 4;
-                return _index6.default.cart.get();
+                _$router$params$type = this.$router.params.type, type = _$router$params$type === undefined ? 'distributor' : _$router$params$type;
+                params = { shop_type: type };
+                _context2.prev = 3;
+                _context2.next = 6;
+                return _index6.default.cart.get(params);
 
-              case 4:
+              case 6:
                 res = _context2.sent;
 
                 valid_cart = res.valid_cart || valid_cart;
                 invalid_cart = res.invalid_cart || invalid_cart;
-                _context2.next = 12;
+                _context2.next = 14;
                 break;
 
-              case 9:
-                _context2.prev = 9;
-                _context2.t0 = _context2["catch"](1);
+              case 11:
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](3);
 
                 this.setState({
                   error: _context2.t0
                 });
 
-              case 12:
+              case 14:
                 list = this.processCart({
                   valid_cart: valid_cart,
                   invalid_cart: invalid_cart
@@ -312,12 +315,12 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
                 cb && cb(list);
 
-              case 14:
+              case 16:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[1, 9]]);
+        }, _callee2, this, [[3, 11]]);
       }));
 
       function fetchCart(_x2) {
@@ -380,21 +383,25 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
     key: "changeCartNum",
     value: function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(item_id, num) {
-        var res;
+        var _$router$params$type2, type, res;
+
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                _context4.next = 2;
-                return _index6.default.cart.updateNum(item_id, num);
+                _$router$params$type2 = this.$router.params.type, type = _$router$params$type2 === undefined ? 'distributor' : _$router$params$type2;
+                // this.updateCart.cancel()
 
-              case 2:
+                _context4.next = 3;
+                return _index6.default.cart.updateNum(item_id, num, type);
+
+              case 3:
                 res = _context4.sent;
 
                 this.processCart(res);
                 // this.updateCart()
 
-              case 4:
+              case 5:
               case "end":
                 return _context4.stop();
             }

@@ -26,14 +26,15 @@ var _req2 = _interopRequireDefault(_req);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function get(params) {
-  return _req2.default.get('/cart', _extends({
-    shop_type: 'distributor'
-  }, params));
+  return _req2.default.get('/cart', params);
 }
 
 function count(params) {
+  var _params$shop_type = params.shop_type,
+      shop_type = _params$shop_type === undefined ? 'distributor' : _params$shop_type;
+
   return _req2.default.get('/cartcount', _extends({
-    shop_type: 'distributor'
+    shop_type: shop_type
   }, params));
 }
 
@@ -42,13 +43,15 @@ function add(params) {
       _params$num = params.num,
       num = _params$num === undefined ? 1 : _params$num,
       _params$isAccumulate = params.isAccumulate,
-      isAccumulate = _params$isAccumulate === undefined ? false : _params$isAccumulate;
+      isAccumulate = _params$isAccumulate === undefined ? false : _params$isAccumulate,
+      _params$shop_type2 = params.shop_type,
+      shop_type = _params$shop_type2 === undefined ? 'distributor' : _params$shop_type2;
 
   return _req2.default.post('/cart', {
     item_id: item_id,
     num: num,
     isAccumulate: isAccumulate,
-    shop_type: 'distributor'
+    shop_type: shop_type
   });
 }
 
@@ -79,12 +82,12 @@ function select(_ref2) {
   return _req2.default.put('/cartupdate/checkstatus', { cart_id: cart_id, is_checked: is_checked });
 }
 
-function updateNum(item_id, num) {
+function updateNum(item_id, num, shop_type) {
   return _req2.default.post('/cart', {
     item_id: item_id,
     num: num,
     isAccumulate: false,
-    shop_type: 'distributor'
+    shop_type: shop_type
   });
 
   // return req.put('/cartupdate/num', { cart_id, num })

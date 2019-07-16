@@ -42,6 +42,7 @@ export default class GoodsBuyPanel extends Component {
   }
 
   componentDidMount () {
+    console.log(this.state)
     const { info } = this.props
     const { spec_items } = info
     const marketing = info.group_activity
@@ -205,6 +206,8 @@ export default class GoodsBuyPanel extends Component {
     if (this.state.busy) return
 
     const { marketing, info } = this.state
+    const { special_type } = info
+    const isDrug = special_type === 'drug'
     const { item_id } = this.noSpecs ? info : skuInfo
     let url = `/pages/cart/espier-checkout`
 
@@ -218,7 +221,8 @@ export default class GoodsBuyPanel extends Component {
       try {
         await api.cart.add({
           item_id,
-          num
+          num,
+          shop_type: isDrug ? 'drug' : 'distributor'
         })
       } catch (e) {
         console.log(e)
@@ -270,14 +274,16 @@ export default class GoodsBuyPanel extends Component {
 
   render () {
     const { info, type, fastBuyText } = this.props
-    const { curImg, quantity, selection, isActive, busy } = this.state
+    const { curImg, quantity, selection, isActive, busy, curSku } = this.state
     if (!info) {
       return null
     }
 
-    const curSku = this.noSpecs ? info : this.state.curSku
-    const maxStore = +(curSku ? curSku.store : (info.store || 99999))
-    const hasStore = curSku ? curSku.store > 0 : info.store > 0
+    const { special_type } = info
+    const isDrug = special_type === 'drug'
+    const curSkus = this.noSpecs ? info : curSku
+    const maxStore = +(curSkus ? curSkus.store : (info.store || 99999))
+    const hasStore = curSkus ? curSkus.store > 0 : info.store > 0
 
     return (
       <View className={classNames('goods-buy-panel', isActive ? 'goods-buy-panel__active' : null)}>
@@ -302,13 +308,13 @@ export default class GoodsBuyPanel extends Component {
                 unit='cent'
                 noSymbol
                 appendText='元'
-                value={curSku ? curSku.price : info.price}
+                value={curSkus ? curSkus.price : info.price}
               />
               <Price
                 className='price-market'
                 symbol='¥'
                 unit='cent'
-                value={curSku ? curSku.market_price : info.market_price}
+                value={curSkus ? curSkus.market_price : info.market_price}
               />
             </View>
             <View className='goods-sku__info'>
@@ -319,7 +325,7 @@ export default class GoodsBuyPanel extends Component {
                 ? (<Text className='goods-sku__props'>{info.item_name}</Text>)
                 :(<Text className='goods-sku__props'>
                     <Text className='goods-sku__props-label'>选择规格</Text>
-                    <Text>{curSku ? `已选择 ${curSku.propsText}` : '请选择'}</Text>
+                    <Text>{curSkus ? `已选择 ${curSkus.propsText}` : '请选择'}</Text>
                   </Text>)
               }
             </View>
@@ -371,17 +377,17 @@ export default class GoodsBuyPanel extends Component {
               {(type === 'cart' && hasStore) && (
                 <Button
                   loading={busy}
-                  className={classNames('goods-buy-panel__btn btn-add-cart', { 'is-disabled': !curSku })}
-                  onClick={this.handleBuyClick.bind(this, 'cart', curSku, quantity)}
-                  disabled={Boolean(!curSku)}
-                >添加至购物车</Button>
+                  className={classNames('goods-buy-panel__btn btn-add-cart', { 'is-disabled': !curSkus })}
+                  onClick={this.handleBuyClick.bind(this, 'cart', curSkus, quantity)}
+                  disabled={Boolean(!curSkus)}
+                >{isDrug ? '加入药品清单' : '加入购物车'}</Button>
               )}
               {(type === 'fastbuy' && hasStore) && (
                 <Button
                   loading={busy}
-                  className={classNames('goods-buy-panel__btn btn-fast-buy', { 'is-disabled': !curSku })}
-                  onClick={this.handleBuyClick.bind(this, 'fastbuy', curSku, quantity)}
-                  disabled={Boolean(!curSku)}
+                  className={classNames('goods-buy-panel__btn btn-fast-buy', { 'is-disabled': !curSkus })}
+                  onClick={this.handleBuyClick.bind(this, 'fastbuy', curSkus, quantity)}
+                  disabled={Boolean(!curSkus)}
                 >{fastBuyText}</Button>
               )}
               {!hasStore && (<Button disabled className='goods-buy-panel__btn btn-fast-buy'>当前商品无货</Button>)}

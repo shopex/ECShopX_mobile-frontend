@@ -111,9 +111,9 @@
   /* autoprefixer: ignore next */
   -webkit-box-orient: vertical;
   line-height: 1.4;
-  height: 2.8em;
+  max-height: 80rpx;
   color: #111;
-  margin: 0 0 16rpx;
+  margin: 0 0 10rpx;
 }
 .goods-item__desc {
   line-height: 1.4;
@@ -126,7 +126,6 @@
   -webkit-box-orient: vertical;
   color: #818181;
   font-size: 25rpx;
-  margin: 0 0 20rpx;
 }
 .goods-item__price {
   font-size: 35rpx;

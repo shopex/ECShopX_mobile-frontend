@@ -59,16 +59,15 @@ $item-img-size: 240px !default;
   &__title {
     @include multi-ellipsis(2);
     line-height: 1.4;
-    height: 1.4 * 2em;
+    max-height: 80px;
     color: #111;
-    margin: 0 0 16px;
+    margin: 0 0 10px;
   }
   &__desc {
     line-height: 1.4;
     @include multi-ellipsis(2);
     color: $color-gray;
     font-size: $font-size-small;
-    margin: 0 0 20px;
   }
   &__price {
     font-size: floor(1.28 * $font-size);

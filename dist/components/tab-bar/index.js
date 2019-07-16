@@ -187,7 +187,7 @@ var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var _this3 = this;
 
-        var tabList, cartTabIdx, updateCartCount, _getCurrentRoute3, path, _ref4, item_count;
+        var _$router$params$type, type, tabList, cartTabIdx, updateCartCount, _getCurrentRoute3, path, _ref4, item_count;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -201,6 +201,9 @@ var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
                 return _context.abrupt("return");
 
               case 2:
+                _$router$params$type = this.$router.params.type, type = _$router$params$type === undefined ? 'distributor' : _$router$params$type;
+
+                console.log(type);
                 tabList = this.state.tabList;
                 cartTabIdx = tabList.findIndex(function (item) {
                   return item.url.indexOf('cart') !== -1;
@@ -216,38 +219,38 @@ var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
                 _getCurrentRoute3 = (0, _index6.getCurrentRoute)(this.$router), path = _getCurrentRoute3.path;
 
                 if (!(path === this.state.tabList[cartTabIdx].url)) {
-                  _context.next = 9;
+                  _context.next = 11;
                   break;
                 }
 
                 updateCartCount('');
                 return _context.abrupt("return");
 
-              case 9:
-                _context.prev = 9;
-                _context.next = 12;
-                return _index5.default.cart.count();
+              case 11:
+                _context.prev = 11;
+                _context.next = 14;
+                return _index5.default.cart.count({ shop_type: type });
 
-              case 12:
+              case 14:
                 _ref4 = _context.sent;
                 item_count = _ref4.item_count;
 
                 updateCartCount(item_count);
-                _context.next = 20;
+                _context.next = 22;
                 break;
 
-              case 17:
-                _context.prev = 17;
-                _context.t0 = _context["catch"](9);
+              case 19:
+                _context.prev = 19;
+                _context.t0 = _context["catch"](11);
 
                 console.error(_context.t0);
 
-              case 20:
+              case 22:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this, [[9, 17]]);
+        }, _callee, this, [[11, 19]]);
       }));
 
       function fetchCart() {

@@ -1,26 +1,24 @@
 import req from './req'
 
 export function get (params) {
-  return req.get('/cart', {
-    shop_type: 'distributor',
-    ...params
-  })
+  return req.get('/cart', params)
 }
 
 export function count (params) {
+  const { shop_type = 'distributor' } = params
   return req.get('/cartcount', {
-    shop_type: 'distributor',
+    shop_type,
     ...params
   })
 }
 
 export function add (params) {
-  const { item_id, num = 1, isAccumulate = false } = params
+  const { item_id, num = 1, isAccumulate = false, shop_type = 'distributor' } = params
   return req.post(`/cart`, {
     item_id,
     num,
     isAccumulate,
-    shop_type: 'distributor'
+    shop_type
   })
 }
 
@@ -43,12 +41,12 @@ export function select ({ cart_id, is_checked }) {
   return req.put('/cartupdate/checkstatus', { cart_id, is_checked })
 }
 
-export function updateNum (item_id, num) {
+export function updateNum (item_id, num, shop_type) {
   return req.post(`/cart`, {
     item_id,
     num,
     isAccumulate: false,
-    shop_type: 'distributor'
+    shop_type
   })
 
   // return req.put('/cartupdate/num', { cart_id, num })

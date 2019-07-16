@@ -97,10 +97,13 @@ export default class Detail extends Component {
   }
 
   async fetchCartCount () {
-    if (!S.getAuthToken()) return
+    const { info } = this.state
+    if (!S.getAuthToken() || !info) return
+    const { special_type } = info
+    const isDrug = special_type === 'drug'
 
     try {
-      const res = await api.cart.count()
+      const res = await api.cart.count({shop_type: isDrug ? 'drug' : 'distributor'})
       this.setState({
         cartCount: res.item_count || ''
       })
@@ -182,7 +185,10 @@ export default class Detail extends Component {
       sixSpecImgsDict,
       promotion_activity,
       sessionFrom
+    }, () => {
+      this.fetchCartCount()
     })
+    
     log.debug('fetch: done', info)
   }
 

@@ -181,9 +181,10 @@ export default class CartIndex extends Component {
 
   async fetchCart (cb) {
     let valid_cart = [], invalid_cart = []
-
+    const { type = 'distributor' } = this.$router.params
+    const params = {shop_type: type}
     try {
-      const res = await api.cart.get()
+      const res = await api.cart.get(params)
       valid_cart = res.valid_cart || valid_cart
       invalid_cart = res.invalid_cart || invalid_cart
     } catch (e) {
@@ -270,8 +271,9 @@ export default class CartIndex extends Component {
   }
 
   async changeCartNum (item_id, num) {
+    const { type = 'distributor' } = this.$router.params
     // this.updateCart.cancel()
-    const res = await api.cart.updateNum(item_id, num)
+    const res = await api.cart.updateNum(item_id, num, type)
     this.processCart(res)
     // this.updateCart()
   }

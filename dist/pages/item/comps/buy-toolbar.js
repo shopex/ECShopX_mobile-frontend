@@ -36,9 +36,9 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyToolbar.__proto__ || Object.getPrototypeOf(GoodsBuyToolbar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "cartCount", "type", "fastBuyText", "__fn_onClick", "customRender", "children", "onClickAddCart", "onClickFastBuy"], _this.handleClickCart = function (id) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyToolbar.__proto__ || Object.getPrototypeOf(GoodsBuyToolbar)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "cartCount", "type", "isDrug", "fastBuyText", "__fn_onClick", "customRender", "children", "onClickAddCart", "onClickFastBuy"], _this.handleClickCart = function (id, type) {
       _index2.default.navigateTo({
-        url: '/pages/cart/espier-index'
+        url: "/pages/cart/espier-index?type=" + type
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -63,30 +63,35 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
           type = _props.type,
           info = _props.info;
 
-
+      var special_type = null;
+      if (info) {
+        special_type = info.special_type;
+      }
+      var isDrug = special_type === 'drug';
       var fastBuyText = type === 'normal' ? '立即购买' : type === 'seckill' ? '立即抢购' : '我要开团';
 
       Object.assign(this.__state, {
         info: info,
         cartCount: cartCount,
         type: type,
+        isDrug: isDrug,
         fastBuyText: fastBuyText
       });
       return this.__state;
     }
   }, {
-    key: "funPrivateAWOEJ",
-    value: function funPrivateAWOEJ() {
+    key: "funPrivateRiiLd",
+    value: function funPrivateRiiLd() {
       this.__triggerPropsFn("onFavItem", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateUZsms",
-    value: function funPrivateUZsms() {
+    key: "funPrivatetEVzf",
+    value: function funPrivatetEVzf() {
       this.__triggerPropsFn("onClickAddCart", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateioHuz",
-    value: function funPrivateioHuz() {
+    key: "funPrivateZJCqC",
+    value: function funPrivateZJCqC() {
       this.__triggerPropsFn("onClickFastBuy", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -137,7 +142,7 @@ var GoodsBuyToolbar = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateAWOEJ", "handleClickCart", "funPrivateUZsms", "funPrivateioHuz"], _class.options = {
+}, _class.$$events = ["funPrivateRiiLd", "handleClickCart", "funPrivatetEVzf", "funPrivateZJCqC"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   type: 'normal',

@@ -133,18 +133,18 @@ var AtFloatLayout = (_temp2 = _class = function (_AtComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatetYuNF",
-    value: function funPrivatetYuNF() {
+    key: "funPrivatehnMBb",
+    value: function funPrivatehnMBb() {
       this.__triggerPropsFn("onScroll", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivaterzEuB",
-    value: function funPrivaterzEuB() {
+    key: "funPrivatezwYCd",
+    value: function funPrivatezwYCd() {
       this.__triggerPropsFn("onScrollToLower", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivatexdKhm",
-    value: function funPrivatexdKhm() {
+    key: "funPrivateyrNjD",
+    value: function funPrivateyrNjD() {
       this.__triggerPropsFn("onScrollToUpper", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -223,7 +223,7 @@ var AtFloatLayout = (_temp2 = _class = function (_AtComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleTouchMove", "close", "funPrivatetYuNF", "funPrivaterzEuB", "funPrivatexdKhm"], _temp2);
+}, _class.$$events = ["handleTouchMove", "close", "funPrivatehnMBb", "funPrivatezwYCd", "funPrivateyrNjD"], _temp2);
 
 
 AtFloatLayout.defaultProps = {

@@ -297,44 +297,48 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     key: "fetchCartCount",
     value: function () {
       var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        var res;
+        var info, special_type, isDrug, res;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (_index9.default.getAuthToken()) {
-                  _context3.next = 2;
+                info = this.state.info;
+
+                if (!(!_index9.default.getAuthToken() || !info)) {
+                  _context3.next = 3;
                   break;
                 }
 
                 return _context3.abrupt("return");
 
-              case 2:
-                _context3.prev = 2;
-                _context3.next = 5;
-                return _index5.default.cart.count();
+              case 3:
+                special_type = info.special_type;
+                isDrug = special_type === 'drug';
+                _context3.prev = 5;
+                _context3.next = 8;
+                return _index5.default.cart.count({ shop_type: isDrug ? 'drug' : 'distributor' });
 
-              case 5:
+              case 8:
                 res = _context3.sent;
 
                 this.setState({
                   cartCount: res.item_count || ''
                 });
-                _context3.next = 12;
+                _context3.next = 15;
                 break;
 
-              case 9:
-                _context3.prev = 9;
-                _context3.t0 = _context3["catch"](2);
+              case 12:
+                _context3.prev = 12;
+                _context3.t0 = _context3["catch"](5);
 
                 console.log(_context3.t0);
 
-              case 12:
+              case 15:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[2, 9]]);
+        }, _callee3, this, [[5, 12]]);
       }));
 
       function fetchCartCount() {
@@ -430,7 +434,10 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
                   sixSpecImgsDict: sixSpecImgsDict,
                   promotion_activity: promotion_activity,
                   sessionFrom: sessionFrom
+                }, function () {
+                  _this4.fetchCartCount();
                 });
+
                 _index7.log.debug('fetch: done', info);
 
               case 24:

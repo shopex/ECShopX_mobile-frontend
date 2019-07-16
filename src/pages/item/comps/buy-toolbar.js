@@ -20,15 +20,19 @@ export default class GoodsBuyToolbar extends Component {
     info: null
   }
 
-  handleClickCart = (id) => {
+  handleClickCart = (id, type) => {
     Taro.navigateTo({
-      url: '/pages/cart/espier-index'
+      url: `/pages/cart/espier-index?type=${type}`
     })
   }
 
   render () {
     const { onClickAddCart, onClickFastBuy, cartCount, type, info } = this.props
-
+    let special_type = null
+    if (info) {
+      special_type = info.special_type
+    }
+    const isDrug = special_type === 'drug'
     const fastBuyText = type === 'normal'
       ? '立即购买'
       : type === 'seckill'
@@ -50,7 +54,7 @@ export default class GoodsBuyToolbar extends Component {
           )}*/}
           <View
             className='goods-buy-toolbar__menu-item'
-            onClick={this.handleClickCart.bind(this, info.item_id)}
+            onClick={this.handleClickCart.bind(this, info.item_id, isDrug ? 'drug' : 'distributor')}
           >
             <AtBadge
               value={cartCount || null}
@@ -67,15 +71,18 @@ export default class GoodsBuyToolbar extends Component {
                   sync
                   onClick={onClickAddCart}
                 >
-                  <View className='goods-buy-toolbar__btn btn-add-cart'>添加至购物车</View>
+                  <View className='goods-buy-toolbar__btn btn-add-cart'>
+                    {isDrug ? '加入药品清单' : '添加至购物车'}
+                  </View>
                 </FormIdCollector>
               )}
-              <FormIdCollector
-                sync
-                onClick={onClickFastBuy}
-              >
-                <View className='goods-buy-toolbar__btn btn-fast-buy'>{fastBuyText}</View>
-              </FormIdCollector>
+              {!isDrug && <FormIdCollector
+                  sync
+                  onClick={onClickFastBuy}
+                >
+                  <View className='goods-buy-toolbar__btn btn-fast-buy'>{fastBuyText}</View>
+                </FormIdCollector>
+              }
             </View>)
         }
       </View>
