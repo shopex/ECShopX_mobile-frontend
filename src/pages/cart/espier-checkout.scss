@@ -17,7 +17,17 @@
   }
 
   .address-info {
+    // padding: $edge-margin $edge-size $edge-size;
     margin: 0 0 $edge-margin;
+    background: #fff;
+    &__label {
+      padding-bottom: $edge-size;
+    }
+    &__icon {
+      margin-right: $edge-margin;
+      font-size: 52px;
+      color: #ccc;
+    }
     &__receiver {
       color: #111;
       display: block;
@@ -26,8 +36,10 @@
       line-height: 1;
     }
     &__addr {
-      color: #111;
+      margin: 0 0 10px;
+      color: #666;
       line-height: 1;
+      font-size: 26px;
       display: block;
     }
   }
@@ -87,18 +99,17 @@
       height: 36px;
       line-height: 36px;
       display: block;
-      border-bottom: 1px solid #ececec;
     }
     &__img {
-      width: 250px;
-      height: 206px;
+      width: 200px;
+      height: 200px;
       margin-right: 34px;
     }
     &__ft {
       position: absolute;
       bottom: 20px;
       right: 50px;
-      left: 330px;
+      left: 280px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -268,7 +279,6 @@
       margin-right: 0;
     }
     .price {
-      font-size: 35px;
       font-weight: bold;
       .price__symbol {
         font-size: $font-size;

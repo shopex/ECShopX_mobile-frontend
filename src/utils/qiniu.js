@@ -3,7 +3,7 @@ import req from '@/api/req'
 import * as qiniu from 'qiniu-js'
 import log from "./log";
 
-async function uploadImageFn (imgFiles, getUrl, curFilesystem, curFiletype) {
+async function uploadImageFn (imgFiles, getUrl, curFilesystem, curFiletype, region) {
   let promises = []
 
   for (let item of imgFiles) {
@@ -12,7 +12,7 @@ async function uploadImageFn (imgFiles, getUrl, curFilesystem, curFiletype) {
         resolve(item)
       } else {
         const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-        const { region, token, key, domain } = await req.get(getUrl, {
+        const {token, key, domain } = await req.get(getUrl, {
           filesystem: curFilesystem,
           filetype: curFiletype,
           filename
@@ -29,6 +29,7 @@ async function uploadImageFn (imgFiles, getUrl, curFilesystem, curFiletype) {
             },
             success: res => {
               let imgData = JSON.parse(res.data)
+              console.log(imgData)
               resolve({
                 url: `${domain}/${imgData.key}`
               })

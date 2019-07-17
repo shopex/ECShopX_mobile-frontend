@@ -20,7 +20,7 @@
   overflow: hidden;
   margin: 0 0 16rpx;
   position: relative;
-  padding: 0 0 56rpx;
+  padding: 0 0 30rpx;
 }
 .cart-item.is-disabled {
   background: #fafafa;
@@ -29,7 +29,7 @@
 .cart-item__ft {
   position: absolute;
   right: 20rpx;
-  bottom: 56rpx;
+  bottom: 30rpx;
 }
 .cart-item__hd {
   padding: 20rpx;
@@ -79,14 +79,14 @@
           flex: 1;
 }
 .cart-item__img {
-  width: 250rpx;
-  height: 206rpx;
+  width: 200rpx;
+  height: 200rpx;
   border-radius: 6rpx;
   overflow: hidden;
 }
 .cart-item__img-wrap {
-  width: 250rpx;
-  height: 206rpx;
+  width: 200rpx;
+  height: 200rpx;
   display: block;
   text-align: center;
 }

@@ -95,8 +95,6 @@ export default class TabBar extends Component {
 
   async fetchCart () {
     if (!S.getAuthToken()) return
-    const { type = 'distributor' } = this.$router.params
-    console.log(type)
     const { tabList } = this.state
     const cartTabIdx = tabList.findIndex(item => item.url.indexOf('cart') !== -1)
     const updateCartCount = (count) => {
@@ -113,7 +111,7 @@ export default class TabBar extends Component {
     }
 
     try {
-      const { item_count } = await api.cart.count({shop_type: type})
+      const { item_count } = await api.cart.count({shop_type: 'distributor'})
       updateCartCount(item_count)
     } catch (e) {
       console.error(e)

@@ -47,7 +47,6 @@
     &__scroll {
       @include page-scroll($navigate-height, $toolbar-height + $tabbar-height);
     }
-
     &__actions {
       display: flex;
       justify-content: flex-end;
@@ -200,6 +199,14 @@
   }
   .at-action-sheet__container {
     z-index: $z-index-modal;
+  }
+  &.is-drug {
+    .cart-list__scroll {
+      @include page-scroll($navigate-height, $toolbar-height);
+    }
+    .cart-toolbar {
+      bottom: 0;
+    }
   }
 }
 

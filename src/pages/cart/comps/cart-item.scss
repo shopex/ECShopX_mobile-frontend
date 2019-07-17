@@ -1,7 +1,7 @@
 @import '../../../style/imports';
 
-$item-img-width: 250px !default;
-$item-img-height: 206px !default;
+$item-img-width: 200px !default;
+$item-img-height: 200px !default;
 
 .cart-item {
   $self: &;
@@ -10,7 +10,7 @@ $item-img-height: 206px !default;
   overflow: hidden;
   margin: 0 0 $edge-margin;
   position: relative;
-  padding: 0 0 56px;
+  padding: 0 0 30px;
   &.is-disabled {
     background: #fafafa;
     opacity: 0.8;
@@ -18,7 +18,7 @@ $item-img-height: 206px !default;
   &__ft {
     position: absolute;
     right: 20px;
-    bottom: 56px;
+    bottom: 30px;
   }
   &__hd {
     padding: 25px - 5px;

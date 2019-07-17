@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtButton, AtActionSheet, AtActionSheetItem } from 'taro-ui'
 import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem } from '@/components'
-import { log, navigateTo, pickBy } from '@/utils'
+import { log, navigateTo, pickBy, classNames } from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
 import { withLogin, withPager } from '@/hocs'
@@ -373,6 +373,7 @@ export default class CartIndex extends Component {
   }
 
   handleCheckout = () => {
+    const { type } = this.$router.params
     if (this.updating) {
       Taro.showToast({
         title: '正在计算价格，请稍后',
@@ -382,7 +383,7 @@ export default class CartIndex extends Component {
     }
 
     Taro.navigateTo({
-      url: '/pages/cart/espier-checkout?cart_type=cart'
+      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}`
     })
   }
 
@@ -420,13 +421,14 @@ export default class CartIndex extends Component {
     if (loading) {
       return <Loading />
     }
-
+    const { type = 'distributor' } = this.$router.params
+    const isDrug = type === 'drug'
     const totalSelection = selection.size
     const totalItems = totalSelection
     const isEmpty = !list.length
 
     return (
-      <View className='page-cart-index'>
+      <View className={classNames('page-cart-index', isDrug && 'is-drug')}>
         <NavBar
           title='购物车'
           leftIconType='chevron-left'
@@ -575,7 +577,7 @@ export default class CartIndex extends Component {
           )}
 
           {
-            likeList.length
+            !isDrug && likeList.length
               ? <View className='cart-list cart-list__disabled'>
                 <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
                 <View className='goods-list goods-list__type-grid'>
@@ -641,7 +643,7 @@ export default class CartIndex extends Component {
                     className='btn-checkout'
                     disabled={totalItems <= 0}
                     onClick={this.handleCheckout}
-                  >结算</AtButton>
+                  >{isDrug ? '立即预约' : '结算'}</AtButton>
                 </View>
               : <View className='cart-toolbar__bd'>
                     <AtButton
@@ -668,9 +670,12 @@ export default class CartIndex extends Component {
           })}
         </AtActionSheet>
 
-        <TabBar
-          current={3}
-        />
+        {
+          !isDrug
+          && <TabBar
+            current={3}
+          />
+        }
       </View>
     )
   }

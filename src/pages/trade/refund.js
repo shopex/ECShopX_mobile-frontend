@@ -15,7 +15,7 @@ import api from '@/api'
 import req from '@/api/req'
 import { log, pickBy, classNames } from '@/utils'
 import S from '@/spx'
-import azureUploader from '@/utils/azure-wry'
+import imgUploader from '@/utils/qiniu'
 
 import './refund.scss'
 import DetailItem from "./detail";
@@ -111,7 +111,7 @@ export default class TradeRefund extends Component {
       S.toast('最多上传3张图片')
     }
     const imgFiles = data.slice(0, 3)
-    azureUploader.uploadImagesFn(imgFiles)
+    imgUploader.uploadImageFn(imgFiles)
       .then(res => {
         this.setState({
           imgs: res

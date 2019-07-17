@@ -108,7 +108,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "total", "showCheckoutItems", "curCheckoutItems", "submitLoading", "isBtnDisabled", "isPaymentOpend", "disabledPayment", "address_list", "showShippingPicker", "showCoupons", "coupons", "invoiceTitle", "__fn_onClearFastbuy", "defaultAddress", "__fn_onClearCoupon", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = CartCheckout.__proto__ || Object.getPrototypeOf(CartCheckout)).call.apply(_ref3, [this].concat(args))), _this), _this.$usedState = ["info", "showAddressPicker", "address", "payType", "couponText", "isDrug", "drug", "total", "showCheckoutItems", "curCheckoutItems", "submitLoading", "isBtnDisabled", "isDrugInfoOpend", "isPaymentOpend", "disabledPayment", "address_list", "shop", "showShippingPicker", "showCoupons", "coupons", "invoiceTitle", "__fn_onClearFastbuy", "defaultAddress", "__fn_onClearCoupon", "__fn_onAddressChoose", "coupon", "__fn_onClearCart"], _this.handleAddressChange = function (address) {
       if (!address) {
         return;
       }
@@ -176,13 +176,27 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           }
         }
       }, _callee, _this2);
-    })), _this.handlePaymentShow = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    })), _this.handleChange = function (val) {
+      var drug = null;
+      var arr = Object.values(val);
+      console.log(arr);
+      var isNan = arr.length > 0 && arr.find(function (item) {
+        return item !== '';
+      });
+      if (isNan) {
+        drug = val;
+      }_this.setState({
+        drug: drug,
+        isDrugInfoOpend: false
+      });
+    }, _this.handlePaymentShow = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _this.setState({
-                isPaymentOpend: true
+                isPaymentOpend: true,
+                isDrugInfoOpend: false
               });
 
             case 1:
@@ -191,30 +205,46 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           }
         }
       }, _callee2, _this2);
-    })), _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-      var _this$state, payType, total, _ref7, confirm, order_id, orderInfo, params, paymentParams, config, payErr, payRes;
-
+    })), _this.handleDrugInfoShow = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
+              _this.setState({
+                isPaymentOpend: false,
+                isDrugInfoOpend: true
+              });
+
+            case 1:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, _this2);
+    })), _this.handlePay = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _this$state, payType, total, _ref8, confirm, order_id, orderInfo, params, paymentParams, config, payErr, payRes;
+
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
               if (_this.state.address) {
-                _context3.next = 2;
+                _context4.next = 2;
                 break;
               }
 
-              return _context3.abrupt("return", _index7.default.toast('请选择地址'));
+              return _context4.abrupt("return", _index7.default.toast('请选择地址'));
 
             case 2:
               _this$state = _this.state, payType = _this$state.payType, total = _this$state.total;
 
               if (!(payType === 'dhpoint')) {
-                _context3.next = 17;
+                _context4.next = 17;
                 break;
               }
 
-              _context3.prev = 4;
-              _context3.next = 7;
+              _context4.prev = 4;
+              _context4.next = 7;
               return _index2.default.showModal({
                 title: '积分支付',
                 content: "\u786E\u8BA4\u4F7F\u7528" + total.remainpt + "\u79EF\u5206\u5168\u989D\u62B5\u6263\u5546\u54C1\u603B\u4EF7\u5417",
@@ -224,26 +254,26 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               });
 
             case 7:
-              _ref7 = _context3.sent;
-              confirm = _ref7.confirm;
+              _ref8 = _context4.sent;
+              confirm = _ref8.confirm;
 
               if (confirm) {
-                _context3.next = 11;
+                _context4.next = 11;
                 break;
               }
 
-              return _context3.abrupt("return");
+              return _context4.abrupt("return");
 
             case 11:
-              _context3.next = 17;
+              _context4.next = 17;
               break;
 
             case 13:
-              _context3.prev = 13;
-              _context3.t0 = _context3["catch"](4);
+              _context4.prev = 13;
+              _context4.t0 = _context4["catch"](4);
 
-              console.log(_context3.t0);
-              return _context3.abrupt("return");
+              console.log(_context4.t0);
+              return _context4.abrupt("return");
 
             case 17:
 
@@ -257,7 +287,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               });
 
               order_id = void 0, orderInfo = void 0;
-              _context3.prev = 20;
+              _context4.prev = 20;
               params = _this.getParams();
               // 积分不开票
 
@@ -265,26 +295,26 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 delete params.invoice_type;
                 delete params.invoice_content;
               }
-              _context3.next = 25;
+              _context4.next = 25;
               return _index5.default.trade.create(params);
 
             case 25:
-              orderInfo = _context3.sent;
+              orderInfo = _context4.sent;
 
               order_id = orderInfo.trade_info.order_id;
-              _context3.next = 34;
+              _context4.next = 34;
               break;
 
             case 29:
-              _context3.prev = 29;
-              _context3.t1 = _context3["catch"](20);
+              _context4.prev = 29;
+              _context4.t1 = _context4["catch"](20);
 
               _index2.default.showToast({
-                title: _context3.t1.message,
+                title: _context4.t1.message,
                 icon: 'none'
               });
 
-              _this.resolvePayError(_context3.t1);
+              _this.resolvePayError(_context4.t1);
 
               // dhpoint 判断
               if (payType === 'dhpoint') {
@@ -298,11 +328,11 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               _index2.default.hideLoading();
 
               if (order_id) {
-                _context3.next = 37;
+                _context4.next = 37;
                 break;
               }
 
-              return _context3.abrupt("return");
+              return _context4.abrupt("return");
 
             case 37:
               // 爱茉pay流程
@@ -312,23 +342,23 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 order_type: orderInfo.order_type
               };
               config = void 0, payErr = void 0;
-              _context3.prev = 39;
-              _context3.next = 42;
+              _context4.prev = 39;
+              _context4.next = 42;
               return _index5.default.cashier.getPayment(paymentParams);
 
             case 42:
-              config = _context3.sent;
+              config = _context4.sent;
 
               console.log(config, 449);
-              _context3.next = 50;
+              _context4.next = 50;
               break;
 
             case 46:
-              _context3.prev = 46;
-              _context3.t2 = _context3["catch"](39);
+              _context4.prev = 46;
+              _context4.t2 = _context4["catch"](39);
 
-              payErr = _context3.t2;
-              console.log(_context3.t2);
+              payErr = _context4.t2;
+              console.log(_context4.t2);
 
             case 50:
 
@@ -338,7 +368,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               // 积分流程
 
               if (!(payType === 'dhpoint')) {
-                _context3.next = 54;
+                _context4.next = 54;
                 break;
               }
 
@@ -354,39 +384,39 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 });
               }
 
-              return _context3.abrupt("return");
+              return _context4.abrupt("return");
 
             case 54:
 
               payErr = null;
-              _context3.prev = 55;
-              _context3.next = 58;
+              _context4.prev = 55;
+              _context4.next = 58;
               return _index2.default.requestPayment(config);
 
             case 58:
-              payRes = _context3.sent;
+              payRes = _context4.sent;
 
               _index9.log.debug("[order pay]: ", payRes);
-              _context3.next = 66;
+              _context4.next = 66;
               break;
 
             case 62:
-              _context3.prev = 62;
-              _context3.t3 = _context3["catch"](55);
+              _context4.prev = 62;
+              _context4.t3 = _context4["catch"](55);
 
-              payErr = _context3.t3;
+              payErr = _context4.t3;
               _index2.default.showToast({
-                title: _context3.t3.err_desc || _context3.t3.errMsg || '支付失败',
+                title: _context4.t3.err_desc || _context4.t3.errMsg || '支付失败',
                 icon: 'none'
               });
 
             case 66:
               if (payErr) {
-                _context3.next = 73;
+                _context4.next = 73;
                 break;
               }
 
-              _context3.next = 69;
+              _context4.next = 69;
               return _index2.default.showToast({
                 title: '支付成功',
                 icon: 'success'
@@ -403,7 +433,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               Taro.redirectTo({
                 url: `/pages/trade/detail?id=${order_id}`
               })*/
-              _context3.next = 74;
+              _context4.next = 74;
               break;
 
             case 73:
@@ -414,14 +444,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
               }
 
             case 74:
-              return _context3.abrupt("return");
+              return _context4.abrupt("return");
 
             case 75:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, _this2, [[4, 13], [20, 29], [39, 46], [55, 62]]);
+      }, _callee4, _this2, [[4, 13], [20, 29], [39, 46], [55, 62]]);
     })), _this.handleCouponsClick = function () {
       if (_this.state.payType === 'dhpoint') {
         return;
@@ -443,10 +473,10 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         url: "/pages/cart/coupon-picker?items=" + JSON.stringify(items)
       });
     }, _this.handlePaymentChange = function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(payType) {
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(payType) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 if (payType === 'dhpoint') {
                   _this.__triggerPropsFn("onClearCoupon", [null].concat([]));
@@ -460,18 +490,19 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               case 2:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4, _this2);
+        }, _callee5, _this2);
       }));
 
       return function (_x) {
-        return _ref8.apply(this, arguments);
+        return _ref9.apply(this, arguments);
       };
-    }(), _this.handlePaymentClose = function () {
+    }(), _this.handleLayoutClose = function () {
       _this.setState({
-        isPaymentOpend: false
+        isPaymentOpend: false,
+        isDrugInfoOpend: false
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -485,12 +516,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         info: null,
         submitLoading: false,
         address_list: [],
+        shop: null,
         showShippingPicker: false,
         showAddressPicker: false,
         showCheckoutItems: false,
         showCoupons: false,
         curCheckoutItems: [],
         coupons: [],
+        drug: null,
         total: {
           items_count: '',
           total_fee: '0.00',
@@ -503,6 +536,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
         payType: 'wxpay',
         disabledPayment: null,
         isPaymentOpend: false,
+        isDrugInfoOpend: false,
         invoiceTitle: ''
       };
     }
@@ -581,26 +615,28 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "fetchAddress",
     value: function () {
-      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(cb) {
+      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(cb) {
         var _this3 = this;
 
-        var _ref10, list;
+        var type, isDrug, _ref11, list;
 
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
+                type = this.$router.params.type;
+                isDrug = type === 'drug';
+
                 _index2.default.showLoading({
                   mask: true
                 });
-                _context5.next = 3;
+                // if (!isDrug) {
+                _context6.next = 5;
                 return _index5.default.member.addressList();
 
-              case 3:
-                _ref10 = _context5.sent;
-                list = _ref10.list;
-
-                _index2.default.hideLoading();
+              case 5:
+                _ref11 = _context6.sent;
+                list = _ref11.list;
 
                 this.setState({
                   address_list: list
@@ -608,17 +644,31 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                   _this3.changeSelection();
                   cb && cb(list);
                 });
+                /* } else {
+                  const { store_name, store_address, shop_id, hour } = await api.shop.getShop()
+                  this.setState({
+                    shop: {
+                      store_name,
+                      store_address,
+                      shop_id,
+                      hour
+                    }
+                  }, () => {
+                    this.calcOrder()
+                  })
+                } */
+                _index2.default.hideLoading();
 
-              case 7:
+              case 9:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee6, this);
       }));
 
       function fetchAddress(_x2) {
-        return _ref9.apply(this, arguments);
+        return _ref10.apply(this, arguments);
       }
 
       return fetchAddress;
@@ -661,22 +711,34 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "getParams",
     value: function getParams() {
-      var receiver = (0, _index9.pickBy)(this.state.address, {
-        receiver_name: 'name',
-        receiver_mobile: 'mobile',
-        receiver_state: 'state',
-        receiver_city: 'city',
-        receiver_district: 'district',
-        receiver_address: 'address',
-        receiver_zip: 'zip'
-      });
+      var type = this.$router.params.type;
+
+      var isDrug = type === 'drug';
+      var receiver = null;
+      if (isDrug) {
+        receiver = (0, _index9.pickBy)(this.state.address, {
+          receiver_name: 'name',
+          receiver_mobile: 'mobile',
+          receiver_state: 'state',
+          receiver_city: 'city',
+          receiver_district: 'district',
+          receiver_address: 'address',
+          receiver_zip: 'zip'
+        });
+      } else {
+        receiver = (0, _index9.pickBy)(this.state.drug, {
+          drug_buyer_name: 'name',
+          drug_buyer_id_card: 'id_card',
+          drug_list_image: 'imgs'
+        });
+      }
       var payType = this.state.payType;
       var coupon = this.props.coupon;
 
 
       var params = _extends({}, this.params, receiver, {
         receipt_type: 'logistics',
-        order_type: 'normal',
+        order_type: isDrug ? 'normal_drug' : 'normal',
         promotion: 'normal',
         member_discount: 0,
         coupon_discount: 0,
@@ -700,12 +762,12 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
   }, {
     key: "calcOrder",
     value: function () {
-      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
         var params, data, _data, items, item_fee, totalItemNum, _data$member_discount, member_discount, _data$coupon_discount, coupon_discount, discount_fee, _data$freight_fee, freight_fee, _data$freight_point, freight_point, _data$point, point, total_fee, remainpt, deduction, total, info;
 
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
                 _index2.default.showLoading({
                   title: '加载中',
@@ -713,28 +775,28 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
                 });
                 params = this.getParams();
                 data = void 0;
-                _context6.prev = 3;
-                _context6.next = 6;
+                _context7.prev = 3;
+                _context7.next = 6;
                 return _index5.default.cart.total(params);
 
               case 6:
-                data = _context6.sent;
-                _context6.next = 12;
+                data = _context7.sent;
+                _context7.next = 12;
                 break;
 
               case 9:
-                _context6.prev = 9;
-                _context6.t0 = _context6["catch"](3);
+                _context7.prev = 9;
+                _context7.t0 = _context7["catch"](3);
 
-                this.resolvePayError(_context6.t0);
+                this.resolvePayError(_context7.t0);
 
               case 12:
                 if (data) {
-                  _context6.next = 14;
+                  _context7.next = 14;
                   break;
                 }
 
-                return _context6.abrupt("return");
+                return _context7.abrupt("return");
 
               case 14:
                 _data = data, items = _data.items, item_fee = _data.item_fee, totalItemNum = _data.totalItemNum, _data$member_discount = _data.member_discount, member_discount = _data$member_discount === undefined ? 0 : _data$member_discount, _data$coupon_discount = _data.coupon_discount, coupon_discount = _data$coupon_discount === undefined ? 0 : _data$coupon_discount, discount_fee = _data.discount_fee, _data$freight_fee = _data.freight_fee, freight_fee = _data$freight_fee === undefined ? 0 : _data$freight_fee, _data$freight_point = _data.freight_point, freight_point = _data$freight_point === undefined ? 0 : _data$freight_point, _data$point = _data.point, point = _data$point === undefined ? 0 : _data$point, total_fee = _data.total_fee, remainpt = _data.remainpt, deduction = _data.deduction;
@@ -774,14 +836,14 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
 
               case 20:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6, this, [[3, 9]]);
+        }, _callee7, this, [[3, 9]]);
       }));
 
       function calcOrder() {
-        return _ref11.apply(this, arguments);
+        return _ref12.apply(this, arguments);
       }
 
       return calcOrder;
@@ -851,6 +913,9 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
           submitLoading = _state.submitLoading,
           disabledPayment = _state.disabledPayment,
           isPaymentOpend = _state.isPaymentOpend;
+      var type = this.$router.params.type;
+
+      var isDrug = type === 'drug';
 
       if (!info) {
         return null;
@@ -862,6 +927,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
       Object.assign(this.__state, {
         address: address,
         couponText: couponText,
+        isDrug: isDrug,
         isBtnDisabled: isBtnDisabled
       });
       return this.__state;
@@ -898,7 +964,7 @@ var CartCheckout = (_dec = (0, _index3.connect)(function (_ref2) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleCouponsClick", "handlePaymentShow", "toggleCheckoutItems", "handlePay", "handlePaymentClose", "handlePaymentChange"], _class2.defaultProps = {
+}, _class2.$$events = ["handleCouponsClick", "handleDrugInfoShow", "handlePaymentShow", "toggleCheckoutItems", "handlePay", "handleLayoutClose", "handleChange", "handlePaymentChange"], _class2.defaultProps = {
   list: []
 }, _temp2)) || _class) || _class);
 exports.default = CartCheckout;

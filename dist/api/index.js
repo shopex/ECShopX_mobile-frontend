@@ -52,6 +52,10 @@ var _wx = require("./wx.js");
 
 var wx = _interopRequireWildcard(_wx);
 
+var _shop = require("./shop.js");
+
+var shop = _interopRequireWildcard(_shop);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 exports.default = {
@@ -66,5 +70,6 @@ exports.default = {
   trade: trade,
   user: user,
   seckill: seckill,
-  wx: wx
+  wx: wx,
+  shop: shop
 };

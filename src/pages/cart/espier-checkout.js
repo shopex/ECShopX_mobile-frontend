@@ -12,6 +12,7 @@ import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
 import CheckoutItems from './checkout-items'
 import PaymentPicker from './comps/payment-picker'
+import DrugInfo from './comps/drug-info'
 import OrderItem from '../trade/comps/order-item'
 
 import './espier-checkout.scss'
@@ -52,12 +53,14 @@ export default class CartCheckout extends Component {
       info: null,
       submitLoading: false,
       address_list: [],
+      shop: null,
       showShippingPicker: false,
       showAddressPicker: false,
       showCheckoutItems: false,
       showCoupons: false,
       curCheckoutItems: [],
       coupons: [],
+      drug: null,
       total: {
         items_count: '',
         total_fee: '0.00',
@@ -70,6 +73,7 @@ export default class CartCheckout extends Component {
       payType: 'wxpay',
       disabledPayment: null,
       isPaymentOpend: false,
+      isDrugInfoOpend: false,
       invoiceTitle: ''
     }
   }
@@ -139,18 +143,33 @@ export default class CartCheckout extends Component {
   }
 
   async fetchAddress (cb) {
+    const { type } = this.$router.params
+    const isDrug = type === 'drug'
     Taro.showLoading({
       mask: true
     })
-    const { list } = await api.member.addressList()
+    // if (!isDrug) {
+      const { list } = await api.member.addressList()
+      this.setState({
+        address_list: list
+      }, () => {
+        this.changeSelection()
+        cb && cb(list)
+      })
+    /* } else {
+      const { store_name, store_address, shop_id, hour } = await api.shop.getShop()
+      this.setState({
+        shop: {
+          store_name,
+          store_address,
+          shop_id,
+          hour
+        }
+      }, () => {
+        this.calcOrder()
+      })
+    } */
     Taro.hideLoading()
-
-    this.setState({
-      address_list: list
-    }, () => {
-      this.changeSelection()
-      cb && cb(list)
-    })
   }
 
   changeSelection (params = {}) {
@@ -183,15 +202,26 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const receiver = pickBy(this.state.address, {
-      receiver_name: 'name',
-      receiver_mobile: 'mobile',
-      receiver_state: 'state',
-      receiver_city: 'city',
-      receiver_district: 'district',
-      receiver_address: 'address',
-      receiver_zip: 'zip'
-    })
+    const { type } = this.$router.params
+    const isDrug = type === 'drug'
+    let receiver = null
+    if (isDrug) {
+      receiver = pickBy(this.state.address, {
+        receiver_name: 'name',
+        receiver_mobile: 'mobile',
+        receiver_state: 'state',
+        receiver_city: 'city',
+        receiver_district: 'district',
+        receiver_address: 'address',
+        receiver_zip: 'zip'
+      })
+    } else {
+      receiver = pickBy(this.state.drug, {
+        drug_buyer_name: 'name',
+        drug_buyer_id_card: 'id_card',
+        drug_list_image: 'imgs',
+      })
+    }
     const { payType } = this.state
     const { coupon } = this.props
 
@@ -199,7 +229,7 @@ export default class CartCheckout extends Component {
       ...this.params,
       ...receiver,
       receipt_type: 'logistics',
-      order_type: 'normal',
+      order_type: isDrug ? 'normal_drug' : 'normal',
       promotion: 'normal',
       member_discount: 0,
       coupon_discount: 0,
@@ -337,6 +367,18 @@ export default class CartCheckout extends Component {
     }
   }
 
+  handleChange = (val) => {
+    let drug = null
+    const arr = Object.values(val)
+    console.log(arr)
+    const isNan = arr.length > 0 && arr.find(item => item !== '')
+    if (isNan) drug = val
+    this.setState({
+      drug,
+      isDrugInfoOpend: false
+    })
+  }
+
   toggleCheckoutItems (isOpened) {
     if (isOpened === undefined) {
       isOpened = !this.state.showCheckoutItems
@@ -358,7 +400,15 @@ export default class CartCheckout extends Component {
 
   handlePaymentShow = async () => {
     this.setState({
-      isPaymentOpend: true
+      isPaymentOpend: true,
+      isDrugInfoOpend: false
+    })
+  }
+
+  handleDrugInfoShow = async () => {
+    this.setState({
+      isPaymentOpend: false,
+      isDrugInfoOpend: true
     })
   }
 
@@ -545,15 +595,19 @@ export default class CartCheckout extends Component {
     })
   }
 
-  handlePaymentClose = () => {
+  handleLayoutClose = () => {
     this.setState({
-      isPaymentOpend: false
+      isPaymentOpend: false,
+      isDrugInfoOpend: false
     })
   }
 
   render () {
     const { coupon } = this.props
     const { info, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend } = this.state
+    const { type } = this.$router.params
+    const isDrug = type === 'drug'
+
     if (!info) {
       return <Loading />
     }
@@ -583,6 +637,23 @@ export default class CartCheckout extends Component {
           <AddressChoose
             isAddress={address}
           />
+          {
+            /* !isDrug
+            ? <AddressChoose
+              isAddress={address}
+            />
+            : <View className='address-info'>
+                <View className='address-info__label'>自提地址</View>
+                <View className='view-flex view-flex-middle'>
+                  <View className='address-info__icon icon-periscope'></View>
+                  <View>
+                    <View className='address-info__receiver'>{shop.store_name}</View>
+                    <View className='address-info__addr'>{shop.store_address}</View>
+                    <View className='address-info__addr'>营业时间：{shop.hour}</View>
+                  </View>
+                </View>
+              </View> */
+          }
 
           {(payType !== 'point' && payType !== 'dhpoint') && (
             <SpCell
@@ -645,6 +716,16 @@ export default class CartCheckout extends Component {
                       }
                     </View>
                     {/*<View className='cart-group__shop'>{cart.shop_name}</View>*/}
+                    {
+                      isDrug &&
+                      <SpCell
+                        isLink
+                        className='coupons-list'
+                        title='用药人信息'
+                        onClick={this.handleDrugInfoShow}
+                        value={drug ? '已上传' : '用药人及处方上传'}
+                      />
+                    }
                     <View className='sec cart-group__cont'>
                       <SpCell
                         className='sec trade-remark'
@@ -771,7 +852,7 @@ export default class CartCheckout extends Component {
 
         <View className='toolbar checkout-toolbar'>
           <View className='checkout__total'>
-            <Text>共 <Text className='total-items'>{total.items_count}</Text> 件商品　　总计:　</Text>
+            共<Text className='total-items'>{total.items_count}</Text>件商品　总计:
             {
               payType !== 'point'
                 ? <Price primary unit='cent' value={total.total_fee} />
@@ -784,14 +865,23 @@ export default class CartCheckout extends Component {
             loading={submitLoading}
             disabled={isBtnDisabled}
             onClick={this.handlePay}
-          >提交订单</AtButton>
+          >{isDrug ? '提交预约' : '提交订单'}</AtButton>
         </View>
+
+        {
+          <DrugInfo
+            isOpened={isDrugInfoOpend}
+            info={drug}
+            onClose={this.handleLayoutClose}
+            onChange={this.handleChange}
+          />
+        }
 
         <PaymentPicker
           isOpened={isPaymentOpend}
           type={payType}
           disabledPayment={disabledPayment}
-          onClose={this.handlePaymentClose}
+          onClose={this.handleLayoutClose}
           onChange={this.handlePaymentChange}
         ></PaymentPicker>
 

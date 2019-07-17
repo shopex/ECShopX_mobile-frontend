@@ -477,14 +477,18 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       if (loading) {
         return null;
       }
+      var _$router$params$type3 = this.$router.params.type,
+          type = _$router$params$type3 === undefined ? 'distributor' : _$router$params$type3;
 
+      var isDrug = type === 'drug';
       var totalSelection = selection.size;
       var totalItems = totalSelection;
       var isEmpty = !list.length;
 
-      var anonymousState__temp3 = list.length && list[0].discount_fee > 0 ? cartMode !== 'edit' ? -1 * list[0].discount_fee : null : null;
-      var anonymousState__temp4 = cartMode !== 'edit' ? totalItems <= 0 : null;
-      var anonymousState__temp5 = Boolean(curPromotions);
+      var anonymousState__temp = (0, _index4.classNames)('page-cart-index', isDrug && 'is-drug');
+      var anonymousState__temp4 = list.length && list[0].discount_fee > 0 ? cartMode !== 'edit' ? -1 * list[0].discount_fee : null : null;
+      var anonymousState__temp5 = cartMode !== 'edit' ? totalItems <= 0 : null;
+      var anonymousState__temp6 = Boolean(curPromotions);
       var loopArray0 = groups.map(function (activityGroup, idx) {
         activityGroup = {
           $original: (0, _index.internal_get_original)(activityGroup)
@@ -502,10 +506,10 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
             item = {
               $original: (0, _index.internal_get_original)(item)
             };
-            var $loopState__temp2 = shopCart.$original.list.length > 0 ? selection.has(item.$original.cart_id) : null;
+            var $loopState__temp3 = shopCart.$original.list.length > 0 ? selection.has(item.$original.cart_id) : null;
             return {
               activity: shopCart.activity,
-              $loopState__temp2: $loopState__temp2,
+              $loopState__temp3: $loopState__temp3,
               $original: item.$original
             };
           }) : [];
@@ -521,12 +525,14 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         };
       });
       Object.assign(this.__state, {
-        anonymousState__temp3: anonymousState__temp3,
+        anonymousState__temp: anonymousState__temp,
         anonymousState__temp4: anonymousState__temp4,
         anonymousState__temp5: anonymousState__temp5,
+        anonymousState__temp6: anonymousState__temp6,
         loopArray0: loopArray0,
         isEmpty: isEmpty,
         list: list,
+        isDrug: isDrug,
         page: page,
         totalPrice: totalPrice,
         isTotalChecked: this.isTotalChecked
@@ -576,7 +582,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 }, _initialiseProps = function _initialiseProps() {
   var _this4 = this;
 
-  this.$usedState = ["anonymousState__temp3", "anonymousState__temp4", "anonymousState__temp5", "loopArray0", "loading", "isEmpty", "groups", "list", "invalidList", "likeList", "page", "cartMode", "totalPrice", "curPromotions", "selection", "error", "defaultAllSelect", "__fn_onUpdateCart", "cartIds", "__fn_onCartSelection", "__fn_onUpdateCartNum", "isTotalChecked"];
+  this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp5", "anonymousState__temp6", "loopArray0", "loading", "isEmpty", "groups", "list", "invalidList", "isDrug", "likeList", "page", "cartMode", "totalPrice", "curPromotions", "selection", "error", "defaultAllSelect", "__fn_onUpdateCart", "cartIds", "__fn_onCartSelection", "__fn_onUpdateCartNum", "isTotalChecked"];
 
   this.handleClickItem = function (item) {
     var url = "/pages/item/espier-detail?id=" + item.item_id;
@@ -867,6 +873,8 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   };
 
   this.handleCheckout = function () {
+    var type = _this4.$router.params.type;
+
     if (_this4.updating) {
       _index2.default.showToast({
         title: '正在计算价格，请稍后',
@@ -876,7 +884,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
     }
 
     _index2.default.navigateTo({
-      url: '/pages/cart/espier-checkout?cart_type=cart'
+      url: "/pages/cart/espier-checkout?cart_type=cart&type=" + type
     });
   };
 

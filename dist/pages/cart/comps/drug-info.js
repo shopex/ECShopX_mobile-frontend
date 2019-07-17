@@ -14,6 +14,14 @@ var _index = require("../../../npm/@tarojs/taro-weapp/index.js");
 
 var _index2 = _interopRequireDefault(_index);
 
+var _qiniu = require("../../../utils/qiniu.js");
+
+var _qiniu2 = _interopRequireDefault(_qiniu);
+
+var _req = require("../../../api/req.js");
+
+var _req2 = _interopRequireDefault(_req);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22,49 +30,59 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
-  _inherits(PaymentPicker, _BaseComponent);
+var DrugInfo = (_temp2 = _class = function (_BaseComponent) {
+  _inherits(DrugInfo, _BaseComponent);
 
-  function PaymentPicker() {
+  function DrugInfo() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, PaymentPicker);
+    _classCallCheck(this, DrugInfo);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PaymentPicker.__proto__ || Object.getPrototypeOf(PaymentPicker)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp2", "anonymousState__temp3", "isOpened", "disabledPayment", "loading", "localType", "type", "__fn_onClose", "__fn_onClick"], _this.componentWillReceiveProps = function (nextProps) {
-      if (nextProps.type !== _this.props.type) {
-        _this.setState({
-          localType: nextProps.type
-        });
-      }
-    }, _this.handleCancel = function () {
-      _this.setState({
-        localType: _this.props.type
-      });
-      _this.__triggerPropsFn("onClose", [null].concat([]));
-    }, _this.handlePaymentChange = function (type) {
-      var disabledPayment = _this.props.disabledPayment;
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DrugInfo.__proto__ || Object.getPrototypeOf(DrugInfo)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["isOpened", "info", "onImgChange", "onImageClick", "__fn_onClick"], _this.handleChange = function (name, val) {
+      var info = _this.state.info;
 
-      if (disabledPayment && disabledPayment.name === type) {
+      info[name] = val;
+      _this.setState({
+        info: info
+      });
+    }, _this.handleImageChange = function (data, type) {
+      if (type === 'remove') {
+        _this.setState({
+          info: {
+            imgs: data
+          }
+        });
         return;
-      }_this.setState({
-        localType: type
+      }
+
+      if (data.length > 3) {
+        S.toast('最多上传3张图片');
+      }
+      var imgFiles = data.slice(0, 3);
+      _qiniu2.default.uploadImageFn(imgFiles, _req2.default.baseURL + 'espier/image_upload_token', 'qiniu', 'jpg/png', 'z2').then(function (res) {
+        console.log(res);
+        _this.setState({
+          info: {
+            imgs: res
+          }
+        });
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(PaymentPicker, [{
+  _createClass(DrugInfo, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(PaymentPicker.prototype.__proto__ || Object.getPrototypeOf(PaymentPicker.prototype), "_constructor", this).call(this, props);
+      _get(DrugInfo.prototype.__proto__ || Object.getPrototypeOf(DrugInfo.prototype), "_constructor", this).call(this, props);
 
       this.state = {
-        localType: props.type
+        info: {}
       };
     }
   }, {
@@ -77,54 +95,39 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
 
       var _props = this.__props,
           isOpened = _props.isOpened,
-          loading = _props.loading,
-          disabledPayment = _props.disabledPayment;
-      var localType = this.__state.localType;
+          onChange = _props.onChange,
+          onImgChange = _props.onImgChange,
+          onImageClick = _props.onImageClick;
+      var info = this.__state.info;
 
 
-      var anonymousState__temp = !!disabledPayment;
-      var anonymousState__temp2 = localType === 'dhpoint';
-      var anonymousState__temp3 = localType === 'wxpay';
       Object.assign(this.__state, {
-        anonymousState__temp: anonymousState__temp,
-        anonymousState__temp2: anonymousState__temp2,
-        anonymousState__temp3: anonymousState__temp3,
-        isOpened: isOpened,
-        disabledPayment: disabledPayment,
-        loading: loading
+        isOpened: isOpened
       });
       return this.__state;
     }
   }, {
-    key: "funPrivatemdEAA",
-    value: function funPrivatemdEAA() {
+    key: "funPrivatemTsUC",
+    value: function funPrivatemTsUC() {
       this.__triggerPropsFn("onChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
 
-  return PaymentPicker;
+  return DrugInfo;
 }(_index.Component), _class.properties = {
-  "type": {
-    "type": null,
-    "value": null
-  },
-  "__fn_onClose": {
-    "type": null,
-    "value": null
-  },
-  "disabledPayment": {
-    "type": null,
-    "value": null
-  },
   "isOpened": {
     "type": null,
     "value": null
   },
-  "loading": {
+  "onChange": {
     "type": null,
     "value": null
   },
-  "onChange": {
+  "onImgChange": {
+    "type": null,
+    "value": null
+  },
+  "onImageClick": {
     "type": null,
     "value": null
   },
@@ -136,13 +139,12 @@ var PaymentPicker = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleCancel", "handlePaymentChange", "funPrivatemdEAA"], _class.defaultProps = {
+}, _class.$$events = ["handleChange", "handleImageChange", "funPrivatemTsUC"], _class.defaultProps = {
   isOpened: false,
-  type: 'wxpay',
-  disabledPayment: null
+  onChange: function onChange() {}
 }, _class.options = {
   addGlobalClass: true
 }, _temp2);
-exports.default = PaymentPicker;
+exports.default = DrugInfo;
 
-Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(PaymentPicker));
+Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(DrugInfo));

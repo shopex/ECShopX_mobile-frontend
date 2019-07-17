@@ -24,9 +24,9 @@ var _index6 = require("../../spx/index.js");
 
 var _index7 = _interopRequireDefault(_index6);
 
-var _azureWry = require("../../utils/azure-wry.js");
+var _qiniu = require("../../utils/qiniu.js");
 
-var _azureWry2 = _interopRequireDefault(_azureWry);
+var _qiniu2 = _interopRequireDefault(_qiniu);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -81,7 +81,7 @@ var TradeRefund = (_temp2 = _class = function (_BaseComponent) {
         _index7.default.toast('最多上传3张图片');
       }
       var imgFiles = data.slice(0, 3);
-      _azureWry2.default.uploadImagesFn(imgFiles).then(function (res) {
+      _qiniu2.default.uploadImageFn(imgFiles).then(function (res) {
         _this.setState({
           imgs: res
         });

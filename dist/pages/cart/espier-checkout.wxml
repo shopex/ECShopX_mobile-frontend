@@ -43,6 +43,9 @@
                             </order-item>
                         </view>
                     </view>
+                    <block wx:if="{{isDrug}}">
+                        <sp-cell isLink="{{true}}" __triggerObserer="{{ _triggerObserer }}" className="coupons-list" title="用药人信息" bindonclick="handleDrugInfoShow" value="{{drug ? '已上传' : '用药人及处方上传'}}" __fn_onClick="{{true}}"></sp-cell>
+                    </block>
                     <view class="sec cart-group__cont">
                         <sp-cell className="sec trade-remark" __triggerObserer="{{ _triggerObserer }}" border="{{false}}">
                             <at-input className="trade-remark__input" __triggerObserer="{{ _triggerObserer }}" placeholder="给商家留言：选填（50字以内）"></at-input>
@@ -85,7 +88,7 @@
         </scroll-view>
         <checkout-items isOpened="{{showCheckoutItems}}" __triggerObserer="{{ _triggerObserer }}" list="{{curCheckoutItems}}" bindonclickback="toggleCheckoutItems" __fn_onClickBack="{{true}}" data-e-onclickback-so="this" data-e-onclickback-a-a="{{false}}"></checkout-items>
         <view class="toolbar checkout-toolbar">
-            <view class="checkout__total"><text>共 <text class="total-items">{{total.items_count}}</text>件商品　　总计:　</text>
+            <view class="checkout__total">共<text class="total-items">{{total.items_count}}</text>件商品　总计:
                 <block>
                     <block wx:if="{{payType !== 'point'}}">
                         <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" unit="cent" value="{{total.total_fee}}"></price>
@@ -97,9 +100,10 @@
                     </block>
                 </block>
             </view>
-            <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-confirm-order" loading="{{submitLoading}}" disabled="{{isBtnDisabled}}" bindonclick="handlePay" __fn_onClick="{{true}}">提交订单</at-button>
+            <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-confirm-order" loading="{{submitLoading}}" disabled="{{isBtnDisabled}}" bindonclick="handlePay" __fn_onClick="{{true}}">{{isDrug ? '提交预约' : '提交订单'}}</at-button>
         </view>
-        <payment-picker isOpened="{{isPaymentOpend}}" __triggerObserer="{{ _triggerObserer }}" type="{{payType}}" disabledPayment="{{disabledPayment}}" bindonclose="handlePaymentClose" bindonchange="handlePaymentChange" __fn_onClose="{{true}}" __fn_onChange="{{true}}"></payment-picker>
+        <drug-info isOpened="{{isDrugInfoOpend}}" __triggerObserer="{{ _triggerObserer }}" info="{{drug}}" bindonclose="handleLayoutClose" bindonchange="handleChange" __fn_onClose="{{true}}" __fn_onChange="{{true}}"></drug-info>
+        <payment-picker isOpened="{{isPaymentOpend}}" __triggerObserer="{{ _triggerObserer }}" type="{{payType}}" disabledPayment="{{disabledPayment}}" bindonclose="handleLayoutClose" bindonchange="handlePaymentChange" __fn_onClose="{{true}}" __fn_onChange="{{true}}"></payment-picker>
         <sp-toast __triggerObserer="{{ _triggerObserer }}"></sp-toast>
     </view>
 </block>

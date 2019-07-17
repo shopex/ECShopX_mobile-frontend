@@ -2,7 +2,7 @@
     <block wx:if="{{loading}}">
         <loading __triggerObserer="{{ _triggerObserer }}"></loading>
     </block>
-    <view class="page-cart-index" wx:else>
+    <view class="{{anonymousState__temp}}" wx:else>
         <nav-bar title="购物车" __triggerObserer="{{ _triggerObserer }}" leftIconType="chevron-left" fixed="true"></nav-bar>
         <scroll-view class="{{'' + (isEmpty ? 'hidden-scroll' : 'cart-list__scroll')}}" bindscrolltolower="nextPage" scroll-y="{{true}}">
             <view class="cart-list">
@@ -17,7 +17,7 @@
                             </block>
                             <cart-item wx:key="$original.cart_id" __triggerObserer="{{ _triggerObserer }}" info="{{item.$original}}" bindonnumchange="handleQuantityChange" bindonclickpromotion="handleClickPromotion" bindonclickimgandtitle="handleClickToDetail" wx:for="{{shopCart.$anonymousCallee__0}}" wx:for-item="item" wx:for-index="_anonIdx" __fn_onNumChange="{{true}}" data-e-onnumchange-so="this" data-e-onnumchange-a-a="{{item.$original}}" __fn_onClickPromotion="{{true}}" data-e-onclickpromotion-so="this" data-e-onclickpromotion-a-a="{{item.$original.cart_id}}" __fn_onClickImgAndTitle="{{true}}" data-e-onclickimgandtitle-so="this" data-e-onclickimgandtitle-a-a="{{item.$original.item_id}}">
                                 <view class="cart-item__act">
-                                    <sp-checkbox wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" checked="{{item.$loopState__temp2}}" bindonchange="handleSelectionChange" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{item.$original.cart_id}}"></sp-checkbox>
+                                    <sp-checkbox wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" checked="{{item.$loopState__temp3}}" bindonchange="handleSelectionChange" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{item.$original.cart_id}}"></sp-checkbox>
                                     <view class="in-icon in-icon-close" bindtap="handleDelect" data-e-tap-so="this" data-e-tap-a-a="{{item.$original.cart_id}}"></view>
                                 </view>
                             </cart-item>
@@ -58,7 +58,7 @@
                     </view>
                 </view>
             </block>
-            <block wx:if="{{likeList.length}}">
+            <block wx:if="{{!isDrug && likeList.length}}">
                 <view class="cart-list cart-list__disabled">
                     <view class="cart-list__hd like__hd"><text class="cart-list__title">猜你喜欢</text>
                     </view>
@@ -84,14 +84,14 @@
                         <view class="cart-total">
                             <block wx:if="{{list.length && list[0].discount_fee > 0}}">
                                 <view class="cart-total__discount"><text class="cart-total__hint">优惠：</text>
-                                    <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" value="{{anonymousState__temp3}}" unit="cent"></price>
+                                    <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" value="{{anonymousState__temp4}}" unit="cent"></price>
                                 </view>
                             </block>
                             <view class="cart-total__total"><text class="cart-total__hint">总计：</text>
                                 <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" value="{{totalPrice}}"></price>
                             </view>
                         </view>
-                        <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-checkout" disabled="{{anonymousState__temp4}}" bindonclick="handleCheckout" __fn_onClick="{{true}}">结算</at-button>
+                        <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-checkout" disabled="{{anonymousState__temp5}}" bindonclick="handleCheckout" __fn_onClick="{{true}}">{{isDrug ? '立即预约' : '结算'}}</at-button>
                     </view>
                 </block>
                 <block wx:else>
@@ -101,12 +101,14 @@
                 </block>
             </block>
         </view>
-        <at-action-sheet title="请选择商品优惠" __triggerObserer="{{ _triggerObserer }}" isOpened="{{anonymousState__temp5}}" bindonclose="handleClosePromotions" __fn_onClose="{{true}}">
+        <at-action-sheet title="请选择商品优惠" __triggerObserer="{{ _triggerObserer }}" isOpened="{{anonymousState__temp6}}" bindonclose="handleClosePromotions" __fn_onClose="{{true}}">
             <block wx:if="{{curPromotions}}">
                 <at-action-sheet-item wx:key="marketing_id" __triggerObserer="{{ _triggerObserer }}" bindonclick="handleSelectPromotion" wx:for="{{curPromotions}}" wx:for-item="item" wx:for-index="_anonIdx6" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{item}}"><text class="cart-promotion__label">{{item.promotion_tag}}</text><text>{{item.marketing_name}}</text>
                 </at-action-sheet-item>
             </block>
         </at-action-sheet>
-        <tab-bar current="{{3}}" __triggerObserer="{{ _triggerObserer }}"></tab-bar>
+        <block wx:if="{{!isDrug}}">
+            <tab-bar current="{{3}}" __triggerObserer="{{ _triggerObserer }}"></tab-bar>
+        </block>
     </view>
 </block>

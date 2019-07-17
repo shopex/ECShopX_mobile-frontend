@@ -10,6 +10,7 @@ import * as trade from './trade'
 import * as user from './user'
 import * as seckill from './seckill'
 import * as wx from './wx'
+import * as shop from './shop' 
 
 export default {
   article,
@@ -23,5 +24,6 @@ export default {
   trade,
   user,
   seckill,
-  wx
+  wx,
+  shop
 }
