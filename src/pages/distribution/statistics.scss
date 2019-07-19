@@ -1,0 +1,100 @@
+@import '../../style/imports';
+
+.page-distribution-statistics {
+  .header {
+    color: #fff;
+    background-image: linear-gradient(to top left, #cca76a, #e8cb97);
+    .header-top {
+      font-size: 24rpx;
+      padding-bottom: 30rpx;
+      .cash-btn {
+        height: 70rpx;
+        line-height: 70rpx;
+        padding: 0 50rpx;
+        margin: 20rpx 0;
+        font-size: 28rpx;
+        color: #cdb17c;
+        text-align: center;
+        border-radius: 70rpx;
+        background: #fff;
+      }
+      .record-btn {
+        padding: 0 10rpx;
+        border-radius: 60rpx;
+      }
+    }
+    .header-bottom {
+      padding-top: 30rpx;
+      border-top: 1px solid #e9d0a5;
+      .with-border {
+        border-right: 1px solid #e9d0a5;
+      }
+      .assets-label {
+        padding: 0 20rpx;
+        margin-bottom: 15rpx;
+        background: #e5cc99;
+        font-size: 24rpx;
+        line-height: 40rpx;
+        border-radius: 30rpx;
+      }
+    }
+  }
+
+  .tips {
+    position: relative;
+    padding-left: 30rpx;
+    color: #666;
+    font-size: 24rpx;
+    line-height: 1.5;
+    &::after {
+      position: absolute;
+      left: 10rpx;
+      top: 13rpx;
+      width: 10rpx;
+      height: 10rpx;
+      border-radius: 50%;
+      background: #ccc;
+      content: "";
+    }
+  }
+
+  .analysis {
+    color: #999;
+    box-shadow: 0 0 10rpx rgba(0,0,0,0.2);
+    margin-bottom: 30rpx;
+    .data-amount {
+      font-size: 42rpx;
+      color: #ff0000;
+      margin-bottom: 30rpx;
+    }
+    .data-count {
+      font-size: 30rpx;
+      color: #333;
+    }
+    .data-label {
+      font-size: 24rpx;
+      margin-bottom: 20rpx;
+    }
+    .analysis-footer {
+      position: relative;
+      padding: 20rpx 0;
+      background: #f7f6f8;
+      font-size: 24rpx;
+      border-radius: 0 0 10rpx 10rpx;
+      &::after {
+        position: absolute;
+        top: -20rpx;
+        right: 40%;
+        border-style: solid;
+        border-color: transparent;
+        border-width: 20rpx;
+        border-top-width: 0;
+        border-bottom-color: #f7f6f8;
+        content: "";
+      }
+      .footer-item {
+        padding: 6rpx 0;
+      }
+    }
+  }
+}

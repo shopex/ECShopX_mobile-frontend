@@ -78,6 +78,13 @@ class App extends Component {
       'pages/member/item-fav',
       'pages/member/item-guess',
 
+      'pages/distribution/index',
+      'pages/distribution/setting',
+      'pages/distribution/statistics',
+      'pages/distribution/trade',
+      'pages/distribution/subordinate',
+      'pages/distribution/withdraw',
+
       'pages/trade/list',
       'pages/trade/detail',
       'pages/trade/delivery-info',

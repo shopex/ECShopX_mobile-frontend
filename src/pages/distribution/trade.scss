@@ -1,0 +1,43 @@
+@import '../../style/imports';
+
+.page-distribution-trade {
+  .trade-list__scroll {
+    @include page-scroll($tabs-height + $navigate-height, 0);
+  }
+  .order-no {
+    font-size: 30rpx;
+    color: #555;
+    .key {
+      color: #999;
+      font-size: 26rpx;
+      .space {
+        display: inline-block;
+        width: 24rpx;
+      }
+    }
+  }
+  .order-date {
+    font-size: 28rpx;
+    color: #999;
+  }
+  .commission {
+    font-size: 30rpx;
+  }
+  .customer-logo {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 50%;
+    background: #eee;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+  }
+  .customer-name {
+    font-size: 28rpx;
+    color: #666;
+    padding-top: 5rpx;
+    line-height: 1.2;
+  }
+  .customer-phone {
+    font-size: 26rpx;
+    color: #999;
+  }
+}

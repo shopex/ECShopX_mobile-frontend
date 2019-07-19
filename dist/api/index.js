@@ -56,6 +56,10 @@ var _shop = require("./shop.js");
 
 var shop = _interopRequireWildcard(_shop);
 
+var _distribution = require("./distribution.js");
+
+var distribution = _interopRequireWildcard(_distribution);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 exports.default = {
@@ -71,5 +75,6 @@ exports.default = {
   user: user,
   seckill: seckill,
   wx: wx,
-  shop: shop
+  shop: shop,
+  distribution: distribution
 };

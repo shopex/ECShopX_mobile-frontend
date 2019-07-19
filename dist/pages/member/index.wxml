@@ -52,18 +52,38 @@
                     </view>
                 </view>
             </view>
+            <view class="important-box view-flex">
+                <navigator class="view-flex-item view-flex view-flex-vertical view-flex-middle" url="/pages/member/coupon">
+                    <image class="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit"></image>
+                    <view>优惠券</view>
+                </navigator>
+                <block wx:if="{{isOpenPopularize}}">
+                    <view class="view-flex-item view-flex view-flex-vertical view-flex-middle" bindtap="beDistributor" data-e-tap-so="this">
+                        <image class="icon-img" src="/assets/imgs/store.png" mode="aspectFit"></image>
+                        <block>
+                            <block wx:if="{{!info.isPromoter}}">
+                                <view>我要推广</view>
+                            </block>
+                            <block wx:else>
+                                <view>推广管理</view>
+                            </block>
+                        </block>
+                    </view>
+                </block>
+            </view>
             <view class="section section-card">
                 <view class="list">
-                    <navigator class="list-item" url="/pages/member/coupon">
-                        <view class="item-icon icon-ticket"></view>
-                        <view class="list-item-txt">优惠券</view>
-                        <view class="icon-arrowRight item-icon-go"></view>
-                    </navigator>
                     <navigator class="list-item" url="/pages/member/item-fav">
                         <view class="item-icon icon-faverite"></view>
                         <view class="list-item-txt">我的收藏</view>
                         <view class="icon-arrowRight item-icon-go"></view>
                     </navigator>
+                    <view open-type="share" class="list-item">
+                        <button class="btn-share" open-type="share"></button>
+                        <view class="item-icon icon-share"></view>
+                        <view class="list-item-txt">我要分享</view>
+                        <view class="icon-arrowRight item-icon-go"></view>
+                    </view>
                     <navigator class="list-item" url="/pages/member/address">
                         <view class="item-icon icon-periscope"></view>
                         <view class="list-item-txt">地址管理</view>

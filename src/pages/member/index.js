@@ -45,8 +45,7 @@ export default class MemberIndex extends Component {
         background_pic_url: ''
       },
       orderCount: '',
-      isOpenPopularize: false,
-      isPromoter: false
+      isOpenPopularize: false
     }
   }
 
@@ -65,22 +64,28 @@ export default class MemberIndex extends Component {
       this.setState({
         info: {
           username: resUser.username,
-          avatar: resUser.avatar
+          avatar: resUser.avatar,
+          isPromoter: resUser.isPromoter
         }
       })
     }
     const [res, { list: favs }] = await Promise.all([api.member.memberInfo(), api.member.favsList()])
     this.props.onFetchFavs(favs)
+    this.setState({
+      isOpenPopularize: res.is_open_popularize
+    })
     const userObj = {
       username: res.memberInfo.username,
       avatar: res.memberInfo.avatar,
+      isPromoter: res.is_promoter
     }
     if(!resUser || resUser.username !== userObj.username || resUser.avatar !== userObj.avatar) {
       Taro.setStorageSync('userinfo', userObj)
       this.setState({
         info: {
           username: res.memberInfo.username,
-          avatar: res.memberInfo.avatar
+          avatar: res.memberInfo.avatar,
+          isPromoter: res.is_promoter
         }
       })
     }
@@ -128,6 +133,47 @@ export default class MemberIndex extends Component {
     Taro.makePhoneCall({
       phoneNumber: '021-61255625'
     })
+  }
+
+  beDistributor = async () => {
+    const { isOpenPopularize, info } = this.state
+    const { username, avatar, isPromoter } = info
+    if ( isPromoter ) {
+      Taro.navigateTo({
+        url: '/pages/distribution/index'
+      })
+      return
+    }
+    const { confirm } = await Taro.showModal({
+      title: '邀请推广',
+      content: '确定申请成为推广员？',
+      showCancel: true,
+      cancel: '取消',
+      confirmText: '确认',
+      confirmColor: '#0b4137'
+    })
+    if (!confirm) return
+
+    const res = await api.distribution.become()
+    const { status } = res
+    if (status) {
+      Taro.showModal({
+        title: '恭喜',
+        content: '已成为推广员',
+        showCancel: false,
+        confirmText: '好'
+      })
+      let userinfo = {
+        username,
+        avatar,
+        isPromoter: true
+      }
+      console.log(userinfo)
+      Taro.setStorageSync('userinfo', userinfo)
+      this.setState({
+        info: userinfo
+      })
+    }
   }
 
   viewOrder = (type) => {
@@ -266,60 +312,49 @@ export default class MemberIndex extends Component {
               </View>
             </View>
           </View>
-          {
-            /* <View className="important-box view-flex">
-              <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
-                <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
-                <View>买单</View>
-              </View>
-              <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="user_coupon">
-                <Image className="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
-                <View>优惠券</View>
-              </Navigator>
-              {
-                isOpenPopularize && !isPromoter
-                && (
-                  <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.beDistributor.bind(this)}>
-                    <Image className="icon-img" src="/assets/imgs/store.png" mode="aspectFit" />
-                    <View>我要推广</View>
-                  </Navigator>
-                )
-              }
-              {
-                isOpenPopularize && isPromoter
-                && (
-                  <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="distribution/index">
-                    <Image className="icon-img" src="../assets/imgs/store.png" mode="aspectFit" />
-                    <View>推广管理</View>
-                  </Navigator>
-                )
-              }
-              <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
-                <Image className="icon-img" src="/assets/imgs/group.png" mode="aspectFit" />
-                <View>我的拼团</View>
-              </Navigator>
-            </View> */
-          }
+          <View className="important-box view-flex">
+            { /*<View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
+              <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
+              <View>买单</View>
+            </View> */}
+            <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="/pages/member/coupon">
+              <Image className="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
+              <View>优惠券</View>
+            </Navigator>
+            {
+              isOpenPopularize
+              && (
+                <View
+                  className="view-flex-item view-flex view-flex-vertical view-flex-middle"
+                  onClick={this.beDistributor.bind(this)}
+                >
+                  <Image className="icon-img" src="/assets/imgs/store.png" mode="aspectFit" />
+                  {
+                    !info.isPromoter
+                    ? <View>我要推广</View>
+                    : <View>推广管理</View>
+                  }
+                </View>
+              )
+            }
+            { /*<Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
+              <Image className="icon-img" src="/assets/imgs/group.png" mode="aspectFit" />
+              <View>我的拼团</View>
+            </Navigator>*/ }
+          </View>
           <View className="section section-card">
             <View className="list">
-              <Navigator className="list-item" url="/pages/member/coupon">
-                <View className="item-icon icon-ticket"></View>
-                <View className="list-item-txt">优惠券</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Navigator>
               <Navigator className="list-item" url="/pages/member/item-fav">
                 <View className="item-icon icon-faverite"></View>
                 <View className="list-item-txt">我的收藏</View>
                 <View className="icon-arrowRight item-icon-go"></View>
               </Navigator>
-              {
-                /* <View open-type="share" className="list-item">
-                  <Button className="btn-share" open-type="share"></Button>
-                  <View className="item-icon icon-share"></View>
-                  <View className="list-item-txt">我要分享</View>
-                  <View className="icon-arrowRight item-icon-go"></View>
-                </View> */
-              }
+              <View open-type="share" className="list-item">
+                <Button className="btn-share" open-type="share"></Button>
+                <View className="item-icon icon-share"></View>
+                <View className="list-item-txt">我要分享</View>
+                <View className="icon-arrowRight item-icon-go"></View>
+              </View>
               <Navigator className="list-item" url="/pages/member/address">
                 <View className="item-icon icon-periscope"></View>
                 <View className="list-item-txt">地址管理</View>

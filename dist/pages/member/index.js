@@ -61,7 +61,7 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MemberIndex.__proto__ || Object.getPrototypeOf(MemberIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "orderCount", "ordersCount", "vipgrade", "gradeInfo", "isOpenPopularize", "isPromoter", "__fn_onFetchFavs"], _this.handleClickRecommend = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MemberIndex.__proto__ || Object.getPrototypeOf(MemberIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["info", "orderCount", "isOpenPopularize", "ordersCount", "vipgrade", "gradeInfo", "__fn_onFetchFavs"], _this.handleClickRecommend = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var info;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -107,7 +107,83 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
       _index2.default.makePhoneCall({
         phoneNumber: '021-61255625'
       });
-    }, _this.viewOrder = function (type) {
+    }, _this.beDistributor = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _this$state, isOpenPopularize, info, username, avatar, isPromoter, _ref4, confirm, res, status, userinfo;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _this$state = _this.state, isOpenPopularize = _this$state.isOpenPopularize, info = _this$state.info;
+              username = info.username, avatar = info.avatar, isPromoter = info.isPromoter;
+
+              if (!isPromoter) {
+                _context2.next = 5;
+                break;
+              }
+
+              _index2.default.navigateTo({
+                url: '/pages/distribution/index'
+              });
+              return _context2.abrupt("return");
+
+            case 5:
+              _context2.next = 7;
+              return _index2.default.showModal({
+                title: '邀请推广',
+                content: '确定申请成为推广员？',
+                showCancel: true,
+                cancel: '取消',
+                confirmText: '确认',
+                confirmColor: '#0b4137'
+              });
+
+            case 7:
+              _ref4 = _context2.sent;
+              confirm = _ref4.confirm;
+
+              if (confirm) {
+                _context2.next = 11;
+                break;
+              }
+
+              return _context2.abrupt("return");
+
+            case 11:
+              _context2.next = 13;
+              return _index6.default.distribution.become();
+
+            case 13:
+              res = _context2.sent;
+              status = res.status;
+
+              if (status) {
+                _index2.default.showModal({
+                  title: '恭喜',
+                  content: '已成为推广员',
+                  showCancel: false,
+                  confirmText: '好'
+                });
+                userinfo = {
+                  username: username,
+                  avatar: avatar,
+                  isPromoter: true
+                };
+
+                console.log(userinfo);
+                _index2.default.setStorageSync('userinfo', userinfo);
+                _this.setState({
+                  info: userinfo
+                });
+              }
+
+            case 16:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, _this2);
+    })), _this.viewOrder = function (type) {
       _index2.default.navigateTo({
         url: "/pages/trade/list?status=" + type
       });
@@ -149,8 +225,7 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
           background_pic_url: ''
         },
         orderCount: '',
-        isOpenPopularize: false,
-        isPromoter: false
+        isOpenPopularize: false
       };
     }
   }, {
@@ -166,12 +241,12 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
   }, {
     key: "fetch",
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var resUser, _ref4, _ref5, res, favs, userObj;
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var resUser, _ref6, _ref7, res, favs, userObj;
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 resUser = null;
 
@@ -180,23 +255,28 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
                   this.setState({
                     info: {
                       username: resUser.username,
-                      avatar: resUser.avatar
+                      avatar: resUser.avatar,
+                      isPromoter: resUser.isPromoter
                     }
                   });
                 }
-                _context2.next = 4;
+                _context3.next = 4;
                 return Promise.all([_index6.default.member.memberInfo(), _index6.default.member.favsList()]);
 
               case 4:
-                _ref4 = _context2.sent;
-                _ref5 = _slicedToArray(_ref4, 2);
-                res = _ref5[0];
-                favs = _ref5[1].list;
+                _ref6 = _context3.sent;
+                _ref7 = _slicedToArray(_ref6, 2);
+                res = _ref7[0];
+                favs = _ref7[1].list;
 
                 this.__triggerPropsFn("onFetchFavs", [null].concat([favs]));
+                this.setState({
+                  isOpenPopularize: res.is_open_popularize
+                });
                 userObj = {
                   username: res.memberInfo.username,
-                  avatar: res.memberInfo.avatar
+                  avatar: res.memberInfo.avatar,
+                  isPromoter: res.is_promoter
                 };
 
                 if (!resUser || resUser.username !== userObj.username || resUser.avatar !== userObj.avatar) {
@@ -204,7 +284,8 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
                   this.setState({
                     info: {
                       username: res.memberInfo.username,
-                      avatar: res.memberInfo.avatar
+                      avatar: res.memberInfo.avatar,
+                      isPromoter: res.is_promoter
                     }
                   });
                 }
@@ -224,16 +305,16 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
                   }
                 });
 
-              case 12:
+              case 13:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
       function fetch() {
-        return _ref3.apply(this, arguments);
+        return _ref5.apply(this, arguments);
       }
 
       return fetch;
@@ -266,7 +347,7 @@ var MemberIndex = (_dec = (0, _index3.connect)(function () {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["viewOrder", "viewAftersales"], _temp2)) || _class) || _class);
+}, _class2.$$events = ["viewOrder", "viewAftersales", "beDistributor"], _temp2)) || _class) || _class);
 exports.default = MemberIndex;
 
 Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(MemberIndex, true));

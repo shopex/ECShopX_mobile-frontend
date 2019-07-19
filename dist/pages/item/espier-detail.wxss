@@ -27,7 +27,7 @@
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 0 20rpx 10rpx 20rpx;
+  padding: 0 20rpx 10rpx;
 }
 .wgt__title {
   display: -webkit-box;
@@ -137,7 +137,7 @@
 .goods-timer .goods-prices .price {
   font-size: 44rpx;
 }
-.goods-timer .goods-prices__type, .goods-timer .goods-prices__rule {
+.goods-timer .goods-prices__rule, .goods-timer .goods-prices__type {
   font-size: 22rpx;
   display: inline-block;
   padding: 0 10rpx;

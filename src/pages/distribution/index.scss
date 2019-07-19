@@ -1,0 +1,84 @@
+@import '../../style/imports';
+
+.page-distribution-index {
+  .header {
+    position: relative;
+    padding: 30px;
+    background: #2f3030;
+    height: 180px;
+    color: #ffffff;
+    .header-avatar {
+      width: 114px;
+      height: 114px;
+      border-radius: 50%;
+    }
+    .header-info {
+      padding-left: 26px;
+      .mcode {
+        font-size: 24px;
+        margin-bottom: 6rpx;
+        color: #eaeaea;
+      }
+      .nickname {
+        font-size: 14PX;
+      }
+    }
+    .member-acount {
+      padding: 5rpx 10rpx;
+      margin-right: 10rpx;
+      border: 1px solid #ccc;
+      border-radius: 60rpx;
+      font-size: 22rpx;
+      line-height: 1;
+      color: #ccc;
+    }
+    .icon-forward {
+      color: #ccc;
+    }
+  }
+  .achievement {
+    .section-body {
+      font-size: 24rpx;
+    }
+    .amount {
+      margin-bottom: 5rpx;
+      .count {
+        font-size: 50rpx;
+        margin-right: 10rpx;
+      }
+    }
+  }
+  .member {
+    font-size: 30rpx;
+    color: #333;
+  }
+  .analysis {
+    [class^="icon-"] {
+      color: #00c3ff;
+      font-size: 50rpx;
+    }
+    .label {
+      padding: 15rpx 0;
+      font-size: 24rpx;
+    }
+  }
+  .share {
+    .share-btn {
+      margin: 0;
+      padding: 0;
+      line-height: 1;
+      background: none;
+      font-size: inherit;
+      color: inherit;
+      &::after {
+        content: none;
+      }
+    }
+    [class^="icon-"] {
+      color: #00c3ff;
+      font-size: 50rpx;
+      margin-right: 10rpx;
+      vertical-align: middle;
+    }
+  }
+}
