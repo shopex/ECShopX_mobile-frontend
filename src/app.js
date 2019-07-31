@@ -108,6 +108,11 @@ class App extends Component {
 
       'pages/protocol/privacy'
     ],
+    permission: {
+      "scope.userLocation": {
+        "desc": "您的位置信息将用于定位附近门店"
+      }
+    },
     navigateToMiniProgramAppIdList: [
       'wx4721629519a8f25b',
       'wx2fb97cb696f68d22',

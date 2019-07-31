@@ -5,9 +5,7 @@ const [TARO_CMD, TARO_ENV] = process.env.npm_lifecycle_event.split(':')
 const DIST_PATH = TARO_ENV === 'h5'
   ? (process.env.NODE_ENV === 'production' ? 'h5_dist' : '.h5_dev_dist' )
   : 'dist'
-const API_HOST = process.env.NODE_ENV === 'production'
-  ? 'ecshopx.shopex123.com'
-  : 'pjj.aixue7.com'
+const API_HOST = 'ecshopx.shopex123.com'
 
 const config = {
   projectName: pkg.name,
