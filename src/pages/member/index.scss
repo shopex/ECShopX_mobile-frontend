@@ -2,27 +2,27 @@
 .page-member-index {
 }
 .user-info {
-  padding: 30rpx 0;
+  padding: 30px 0;
   .avatar {
     position: relative;
-    width: 100rpx;
-    height: 100rpx;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    margin-right: 20rpx;
+    margin-right: 20px;
     z-index: 1;
     .icon-planet {
       width: 100%;
       height: 100%;
-      line-height: 120rpx;
+      line-height: 120px;
       text-align: center;
-      font-size: 80rpx;
+      font-size: 80px;
     }
     .icon-vip {
       position: absolute;
-      width: 40rpx;
-      height: 40rpx;
-      bottom: -10rpx;
-      right: -10rpx;
+      width: 40px;
+      height: 40px;
+      bottom: -10px;
+      right: -10px;
     }
     .avatar-img {
       display: block;
@@ -34,27 +34,27 @@
   .nickname {
     position: relative;
     z-index: 1;
-    font-size: 32rpx;
+    font-size: 32px;
     font-weight: 800;
-    margin-bottom: 6rpx;
+    margin-bottom: 6px;
   }
   .gradename {
     position: relative;
-    padding: 0 20rpx;
+    padding: 0 20px;
     z-index: 1;
-    font-size: 22rpx;
+    font-size: 22px;
     text-align: center;
     color: #fff;
     background: linear-gradient(to right bottom, #fca280, #e75fa9);
-    border-radius: 50rpx;
+    border-radius: 50px;
   }
   .icon-qrcode {
-    margin-left: 10rpx;
-    font-size: 30rpx;
+    margin-left: 10px;
+    font-size: 30px;
   }
   .icon-arrowRight {
-    margin-left: 10rpx;
-    font-size: 32rpx;
+    margin-left: 10px;
+    font-size: 32px;
     color: #ccc;
   }
 }
@@ -73,12 +73,12 @@
   .member-info-bg {
     position: absolute;
     left: 50%;
-    top: 30rpx;
+    top: 30px;
     width: 80vw;
     height: 45vw;
     z-index: 0;
-    border-radius: 20rpx 20rpx 0 0;
-    box-shadow: 0 0 20rpx rgba(0,0,0,0.3);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
     transform: translateX(-50%) rotate(1.5deg);
     animation: cardShake 3s ease 2s infinite ;
     &::after {
@@ -88,7 +88,7 @@
       right: 0;
       bottom: 0;
       background: rgba(0,0,0,0.4);
-      border-radius: 20rpx;
+      border-radius: 20px;
       content: "";
       z-index: 10;
     }
@@ -117,18 +117,18 @@
   .vip-btn {
     position: relative;
     width: 60vw;
-    margin-bottom: 40rpx;
+    margin-bottom: 40px;
     background: linear-gradient(to right bottom, #f4d09e, #e8bd7f);
     text-align: center;
     color: #6f3c09;
-    line-height: 80rpx;
-    border-radius: 80rpx;
+    line-height: 80px;
+    border-radius: 80px;
     z-index: 10;
-    font-size: 30rpx;
+    font-size: 30px;
     .icon-crown {
       display: inline-block;
       vertical-align: middle;
-      font-size: 36rpx;
+      font-size: 36px;
     }
   }
   .grade-info {
@@ -141,34 +141,34 @@
     color: #e8bd7f;
     z-index: 10;
     .member-no {
-      font-size: 22rpx;
+      font-size: 22px;
       opacity: 0.6;
     }
     .renewals-btn {
-      margin-left: 20rpx;
-      padding: 0 30rpx;
+      margin-left: 20px;
+      padding: 0 30px;
       border: 1px solid #e8bd7f;
-      border-radius: 60rpx;
-      font-size: 24rpx;
-      line-height: 50rpx;
+      border-radius: 60px;
+      font-size: 24px;
+      line-height: 50px;
     }
     .vip-sign {
       position: absolute;
       right: 0;
       top: 0;
-      font-size: 60rpx;
-      letter-spacing: -20rpx;
+      font-size: 60px;
+      letter-spacing: -20px;
       opacity: 0.6;
     }
   }
 }
 
 .member-qrcode {
-  padding-left: 20rpx;
-  font-size: 28rpx;
+  padding-left: 20px;
+  font-size: 28px;
   color: #555;
   [class^="icon-"] {
-    font-size: 32rpx;
+    font-size: 32px;
   }
 }
 
@@ -178,21 +178,21 @@
     display: flex;
     justify-content: center;
     position: relative;
-    padding: 30rpx 0;
+    padding: 30px 0;
     &.identity {
-      padding: 0 60rpx;
+      padding: 0 60px;
       .member-info {
-        width: 115rpx;
-        height: 115rpx;
+        width: 115px;
+        height: 115px;
         margin-bottom: 0;
-        margin-right: 30rpx;
+        margin-right: 30px;
       }
       .name {
-        font-size: 36rpx;
-        margin-bottom: 10rpx;
+        font-size: 36px;
+        margin-bottom: 10px;
       }
       .amount {
-        font-size: 26rpx;
+        font-size: 26px;
       }
     }
   }
@@ -202,12 +202,12 @@
     width: 85vw;
     height: 45vw;
     position: relative;
-    padding: 0 40rpx;
+    padding: 0 40px;
     z-index: 1;
     background: #a2564c;
     color: #fff;
-    border-radius: 20rpx;
-    box-shadow: 0 0 20rpx rgba(0,0,0,0.3);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
     &::after {
       position: absolute;
       top: 0;
@@ -215,7 +215,7 @@
       bottom: 0;
       left: 0;
       background: rgba(0,0,0,0.4);
-      border-radius: 20rpx;
+      border-radius: 20px;
       content: ""
     }
     .member-info-bg {
@@ -225,7 +225,7 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      border-radius: 20rpx;
+      border-radius: 20px;
     }
   }
 }
@@ -253,20 +253,20 @@
     height: auto;
     background: transparent;
     box-shadow: none;
-    margin-bottom: 20rpx;
+    margin-bottom: 20px;
     &::after {
       content: none;
     }
     .avatar {
       position: relative;
-      width: 130rpx;
-      height: 130rpx;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       padding: 4px;
-      margin-bottom: 5rpx;
+      margin-bottom: 5px;
       z-index: 1;
       background: #e4e2d0;
-      font-size: 110rpx;
+      font-size: 110px;
       .avatar-img {
         display: block;
         width: 100%;
@@ -276,14 +276,14 @@
     }
   }
   .name {
-    font-size: 32rpx;
-    margin-bottom: 50rpx;
+    font-size: 32px;
+    margin-bottom: 50px;
     color: #666;
   }
   .authorized-btn {
     position: relative;
-    margin-bottom: 200rpx;
-    border-radius: 50rpx;
+    margin-bottom: 200px;
+    border-radius: 50px;
     background-color: #ff5000 !important;
     color: #fff;
     border: 1px solid #fd4700;
@@ -295,14 +295,14 @@
 }
 .important-box {
   position: relative;
-  padding: 30rpx;
-  margin: 0 30rpx;
+  padding: 30px;
+  margin: 0 30px;
   .view-flex-item {
     color: #666;
   }
   .icon-img {
-    width: 80rpx;
-    height: 80rpx;
+    width: 80px;
+    height: 80px;
   }
 }
 .order-box {
@@ -310,8 +310,8 @@
     position: relative;
     &::after {
       position: absolute;
-      left: 30rpx;
-      right: 30rpx;
+      left: 30px;
+      right: 30px;
       bottom: 0;
       height: 1px;
       background: #efefef;
@@ -319,24 +319,24 @@
     }
   }
   .icon-ziti {
-    margin-right: 10rpx;
-    font-size: 60rpx;
+    margin-right: 10px;
+    font-size: 60px;
     color: #999;
   }
   .section-body {
-    font-size: 26rpx;
+    font-size: 26px;
     .order-item {
       position: relative;
     }
     [class^="icon-"] {
       position: relative;
-      font-size: 60rpx;
-      margin-bottom: 10rpx;
+      font-size: 60px;
+      margin-bottom: 10px;
     }
     .order-num {
       position: absolute;
-      top: -10rpx;
-      right: -15rpx;
+      top: -10px;
+      right: -15px;
       display:inline-block;
       padding:.15em .4em;
       box-sizing: content-box;
@@ -353,12 +353,12 @@
   }
 }
 .address-box {
-  padding: 30rpx 20rpx;
+  padding: 30px 20px;
   image {
-    width: 28rpx;
-    height: 28rpx;
+    width: 28px;
+    height: 28px;
     vertical-align: middle;
-    margin-left: 5rpx;
+    margin-left: 5px;
   }
 }
 .gray {

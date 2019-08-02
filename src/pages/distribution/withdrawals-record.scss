@@ -6,7 +6,7 @@
   }
   .status-icon {
     display: block;
-    margin-right: 10rpx;
+    margin-right: 10px;
     vertical-align: middle;
   }
   .status-header {
@@ -19,8 +19,8 @@
     opacity: 0;
     transform: translateY(-50%);
     transition: .3s;
-    padding-top: 20rpx;
-    font-size: 28rpx;
+    padding-top: 20px;
+    font-size: 28px;
     color: #999;
     &.open {
       opacity: 1;

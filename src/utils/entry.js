@@ -92,14 +92,18 @@ async function getLocal (isNeedLocate) {
       }
       store = await api.shop.getShop(param)
     } else {
-      var locationData = await getLoc()
-      if (locationData !== '') {
-        let param = {}
-        if (isNeedLocate && positionStatus) {
-          param.lat = locationData.latitude
-          param.lng = locationData.longitude
+      if (process.env.TARO_ENV === 'weapp') {
+        var locationData = await getLoc()
+        if (locationData !== '') {
+          let param = {}
+          if (isNeedLocate && positionStatus) {
+            param.lat = locationData.latitude
+            param.lng = locationData.longitude
+          }
+          store = await api.shop.getShop(param)
         }
-        store = await api.shop.getShop(param)
+      } else {
+        store = await api.shop.getShop()
       }
     }
   }

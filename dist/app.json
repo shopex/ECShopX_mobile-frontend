@@ -90,5 +90,6 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "ecshopX商城",
     "navigationBarTextStyle": "black"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

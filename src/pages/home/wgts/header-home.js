@@ -38,16 +38,14 @@ export default class HeaderHome extends Component {
   }
 
   handleScanCode = () => {
-    Taro.scanCode({
-      success: (res) => {
-        var scene = decodeURIComponent(res.path)
-        var path = scene.replace('pages/', '')
-        path = path.replace('scene=', '')
-        //格式化二维码参数
-        Taro.navigateTo({
-          url: path
-        })
-      }
+    Taro.scanCode().then(res => {
+      var scene = decodeURIComponent(res.path)
+      var path = scene.replace('pages/', '')
+      path = path.replace('scene=', '')
+      //格式化二维码参数
+      Taro.navigateTo({
+        url: path
+      })
     })
   }
 
@@ -56,10 +54,10 @@ export default class HeaderHome extends Component {
 
     return (
       <View className="nearly-shop">
-        <View class="view-flex-item view-flex view-flex-middle" onClick={this.handlePickStore.bind(this)}>
-          <View class="icon-periscope"></View>
-          <View class="shop-name">{storeName || '选择店铺'}</View>
-          <View class="icon-arrowDown"></View>
+        <View className="view-flex-item view-flex view-flex-middle" onClick={this.handlePickStore.bind(this)}>
+          <View className="icon-periscope"></View>
+          <View className="shop-name">{storeName || '选择店铺'}</View>
+          <View className="icon-arrowDown"></View>
         </View>
         <View className="scancode" onClick={this.handleScanCode.bind(this)}>
           <View className="icon-scan"></View>

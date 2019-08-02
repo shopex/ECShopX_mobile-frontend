@@ -108,37 +108,41 @@ var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var _props$tabBar = this.props.tabBar,
-          config = _props$tabBar.config,
-          data = _props$tabBar.data;
-      var backgroundColor = config.backgroundColor,
-          color = config.color,
-          selectedColor = config.selectedColor;
+      var tabBar = this.props.tabBar;
 
-      this.setState({
-        backgroundColor: backgroundColor,
-        color: color,
-        selectedColor: selectedColor
-      });
       var list = [];
-      data.map(function (item) {
-        var obj = {
-          title: item.text,
-          iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
-          iconPrefixClass: 'icon',
-          image: item.iconPath,
-          selectedImage: item.selectedIconPath,
-          url: item.pagePath,
-          urlRedirect: true
-        };
-        if (item.name === 'cart') {
-          Object.assign(obj, { withLogin: true });
-        }
-        if (item.name === 'member') {
-          Object.assign(obj, { withLogin: true, text: _this2.props.cartTotalCount || '', max: '99' });
-        }
-        list.push(obj);
-      });
+
+      if (tabBar) {
+        var config = tabBar.config,
+            data = tabBar.data;
+
+        this.setState({
+          backgroundColor: backgroundColor,
+          color: color,
+          selectedColor: selectedColor
+        });
+        data.map(function (item) {
+          var obj = {
+            title: item.text,
+            iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
+            iconPrefixClass: 'icon',
+            image: item.iconPath,
+            selectedImage: item.selectedIconPath,
+            url: item.pagePath,
+            urlRedirect: true
+          };
+          if (item.name === 'cart') {
+            Object.assign(obj, { withLogin: true });
+          }
+          if (item.name === 'member') {
+            Object.assign(obj, { withLogin: true, text: _this2.props.cartTotalCount || '', max: '99' });
+          }
+          list.push(obj);
+        });
+      } else {
+        list = [{ title: '首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/index', urlRedirect: true }, { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/pages/category/index', urlRedirect: true }, { title: '购物车', iconType: 'cart', iconPrefixClass: 'icon', url: '/pages/cart/espier-index', withLogin: true, urlRedirect: true }, { title: '我的', iconType: 'member', iconPrefixClass: 'icon', url: '/pages/member/index', withLogin: true, text: this.props.cartTotalCount || '', max: '99', urlRedirect: true }];
+      }
+
       this.setState({
         tabList: list
       }, function () {

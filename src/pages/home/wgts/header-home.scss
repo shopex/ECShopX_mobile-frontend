@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   height: $home-header-height;
-  padding: 0 20rpx;
+  padding: 0 20px;
   background: #fff;
   &.fixed {
     position: fixed;
@@ -18,28 +18,28 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 30rpx;
+    font-size: 30px;
   }
   .icon-periscope {
-    font-size: 50rpx;
+    font-size: 50px;
     color: #666;
-    margin-right: 10rpx;
+    margin-right: 10px;
   }
   .icon-arrowDown {
-    margin-left: 10rpx;
-    font-size: 30rpx;
+    margin-left: 10px;
+    font-size: 30px;
     color: #ccc;
   }
 }
 .scancode {
   display: flex;
   align-items: center;
-  padding-left: 20rpx;
-  font-size: 20rpx;
+  padding-left: 20px;
+  font-size: 20px;
   color: #666;
   line-height: 1;
   .icon-scan {
-    font-size: 42rpx;
-    margin-right: 6rpx;
+    font-size: 42px;
+    margin-right: 6px;
   }
 }

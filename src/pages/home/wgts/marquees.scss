@@ -1,14 +1,14 @@
 @import "../../../style/imports";
 
 .marquees {
-  height: 60rpx;
+  height: 60px;
   background: #fff;
   .marquees-item {
-    padding: 0 30rpx;
+    padding: 0 30px;
     box-sizing: border-box;
-    line-height: 60rpx;
+    line-height: 60px;
     .item-text {
-      font-size: 28rpx;
+      font-size: 28px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

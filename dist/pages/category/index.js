@@ -122,9 +122,9 @@ var Category = (_dec = (0, _index3.connect)(function (store) {
               case 3:
                 _ref3 = _context.sent;
                 list = _ref3.list;
-                seriesList = list[0].params.data;
+                seriesList = list[0] ? list[0].params.data : [];
 
-                if (!(seriesList.length < 1)) {
+                if (!seriesList.length) {
                   _context.next = 14;
                   break;
                 }

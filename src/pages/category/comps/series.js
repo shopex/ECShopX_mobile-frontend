@@ -11,15 +11,14 @@ import {AtTabs, AtTabsPane} from "taro-ui";
   store
 }))
 export default class Series extends Component {
-  constructor (props) {
-    super(props)
+  static options = {
+    addGlobalClass: true
+  }
 
-    this.state = {
-      // list: null,
-      pluralType: true,
-      imgType: true,
-      currentIndex: 0,
-    }
+  static defaultProps = {
+    pluralType: true,
+    imgType: true,
+    currentIndex: 0
   }
 
   componentWillReceiveProps (nextProps){
@@ -36,9 +35,9 @@ export default class Series extends Component {
     })
   }
 
-  handleClickItem (item) {
+  handleClickItem = (item) => {
     const { category_id } = item
-    const url = `/pages/item/list?cat_id=${category_id}`
+    const url = `/pages/item/list?cat_id=${category_id || ''}`
 
     Taro.navigateTo({
       url
@@ -46,8 +45,7 @@ export default class Series extends Component {
   }
 
   render () {
-    const { info, isChanged } = this.props
-    const { pluralType, imgType, currentIndex } = this.state
+    const { info, isChanged, pluralType, imgType, currentIndex } = this.props
     let items, itemsImg
     if (!info) {
       return <Loading />

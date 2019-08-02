@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView, Picker } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, RecommendItem, NavBar, TabBar, SpNote, FilterBar } from '@/components'
@@ -330,7 +330,7 @@ export default class RecommendList extends Component {
   }
 
   render () {
-    const { list, showBackToTop, scrollTop, page, showDrawer, info, columnList } = this.state
+    const { list, showBackToTop, scrollTop, page, showDrawer, info, columnList, selectColumn, multiIndex, areaList } = this.state
     let address = info.province + info.city
 
     return (
@@ -395,12 +395,6 @@ export default class RecommendList extends Component {
             <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定</Text>
           </View>
         </AtDrawer>
-        <View className='goods-list__toolbar'>
-          <NavBar
-            leftIconType='chevron-left'
-            fixed='true'
-          />
-        </View>
 
         <ScrollView
           className='goods-list__scroll'

@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video } from '@tarojs/components'
+import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Navigator } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
 import { Loading, Price, BackToTop, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel } from '@/components'
@@ -34,7 +34,6 @@ export default class Detail extends Component {
     this.state = {
       marketing: 'normal',
       info: null,
-      store: null,
       desc: null,
       curImgIdx: 0,
       windowWidth: 320,
@@ -56,12 +55,6 @@ export default class Detail extends Component {
   }
 
   componentDidMount () {
-    const { name } = Taro.getStorageSync('curStore')
-    this.setState({
-      store: {
-        name
-      }
-    })
     this.handleResize()
     this.fetch()
     Taro.getSystemInfo()
@@ -295,6 +288,12 @@ export default class Detail extends Component {
   handleShare () {
   }
 
+  handleClickLink = () => {
+    Taro.navigateTo({
+      url: '/pages/store/index'
+    })
+  }
+
   handleToGiftMiniProgram = () => {
     Taro.navigateToMiniProgram({
       appId: APP_GIFT_APPID, // 要跳转的小程序的appid
@@ -307,7 +306,22 @@ export default class Detail extends Component {
   }
 
   render () {
-    const { info, windowWidth, screenWidth, isGreaterSix, sixSpecImgsDict, curImgIdx, desc, cartCount, scrollTop, showBackToTop, curSku, promotion_activity } = this.state
+    const store = Taro.getStorageSync('curStore')
+    const {
+      info,
+      windowWidth,
+      screenWidth,
+      isGreaterSix,
+      sixSpecImgsDict,
+      curImgIdx,
+      desc,
+      cartCount,
+      scrollTop,
+      showBackToTop,
+      curSku,
+      promotion_activity,
+      sessionFrom
+    } = this.state
     const { marketing, timer, isPromoter, startSecKill, hasStock, showBuyPanel, buyPanelType } = this.state
 
     if (!info) {
@@ -530,7 +544,18 @@ export default class Detail extends Component {
                     <View className="store-name">{store.name}</View>
                   </View>
                 </View>
-                <Navigator className="store-enter-btn" url="/pages/store/index">进入店铺</Navigator>
+                <View className='view-flex'>
+                  <View className='view-flex-item'>
+                    <View className="store-attention-btn">关注店铺</View>
+                  </View>
+                  <View className='view-flex-item'>
+                    <View
+                      className="store-enter-btn"
+                      onClick={this.handleClickLink}
+                    >进入店铺</View>
+                  </View>
+                </View>
+
               </View>
           }
 

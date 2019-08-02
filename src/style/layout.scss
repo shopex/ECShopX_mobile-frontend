@@ -11,8 +11,8 @@ $md-grey-600            : #757575;
 $md-grey-700            : #616161;
 $md-grey-800            : #424242;
 $md-grey-900            : #212121;
-$card-edge:20rpx;
-$content-edge:10rpx;
+$card-edge:20px;
+$content-edge:10px;
 scroll-view, view, text {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
@@ -86,11 +86,11 @@ scroll-view, view, text {
   margin-right: $card-edge;
   border-radius: $content-edge;
   overflow: hidden;
-  box-shadow: 0 5rpx 5rpx rgba(0,0,0,.1);
+  box-shadow: 0 5px 5px rgba(0,0,0,.1);
 }
 .section-title {
-  padding: 25rpx;
-  font-size: 30rpx;
+  padding: 25px;
+  font-size: 30px;
   color: #333;
 }
 .primary-border-left{
@@ -103,8 +103,8 @@ scroll-view, view, text {
   padding-bottom: 0;
 }
 .section-body {
-  padding: 25rpx;
-  font-size: 28rpx;
+  padding: 25px;
+  font-size: 28px;
   color: #666;
 }
 .section-footer {
@@ -114,11 +114,11 @@ scroll-view, view, text {
   border-top: 1px solid #efefef;
 }
 .section-more {
-  font-size: 24rpx;
+  font-size: 24px;
   color: #999;
 }
 .section-more .forward-icon {
-  font-size: 24rpx;
+  font-size: 24px;
   color: #ccc;
 }
 .desc-up-down-padded {
@@ -131,22 +131,22 @@ scroll-view, view, text {
   padding: 0 $card-edge;
 }
 .content-40-padded-left{
-  padding-left:40rpx;
+  padding-left:40px;
 }
 .content-15-padded {
-  padding: 0 15rpx;
+  padding: 0 15px;
 }
 .content-v-padded {
   padding: $card-edge 0;
 }
 .content-padded-b {
-  padding: 40rpx;
+  padding: 40px;
 }
 .content-bottom-padded {
-  padding-bottom: 8rpx;
+  padding-bottom: 8px;
 }
 .content-bottom-padded-b {
-  padding-bottom: 16rpx;
+  padding-bottom: 16px;
 }
 .content-padded-right {
   padding-right: $card-edge;
@@ -155,7 +155,7 @@ scroll-view, view, text {
   margin-top: $card-edge;
 }
 .content-padded-right-reset {
-  padding-right: 0rpx;
+  padding-right: 0px;
 }
 .content-padded-right-s {
   padding-right: $content-edge;
@@ -170,20 +170,20 @@ scroll-view, view, text {
   color: #6d93ce;
 }
 .cur {
-  font-size: 24rpx;
+  font-size: 24px;
 }
 .list {
   .list-item {
     display: flex;
     align-items: center;
     position: relative;
-    padding: 28rpx;
+    padding: 28px;
     &.no-flex {
       display: block;
     }
     &::after {
       position: absolute;
-      left: 30rpx;
+      left: 30px;
       right: 0;
       bottom: -1px;
       height: 1px;
@@ -197,18 +197,18 @@ scroll-view, view, text {
       align-items: top;
     }
     .item-icon {
-      font-size: 45rpx;
+      font-size: 45px;
       color: #999;
     }
     .list-item-txt {
       flex: 1;
       padding: 0 $card-edge 0 0;
-      font-size: 28rpx;
+      font-size: 28px;
       color: #333;
     }
     .label {
-      width: 150rpx;
-      font-size: 28rpx;
+      width: 150px;
+      font-size: 28px;
       color: #999;
     }
     .item-icon + .label, .item-icon + .list-item-txt {
@@ -216,11 +216,11 @@ scroll-view, view, text {
     }
     .list-txt {
       padding: 0 $card-edge;
-      font-size: 28rpx;
+      font-size: 28px;
       color: #333;
     }
     .item-icon-go {
-      font-size: 32rpx;
+      font-size: 32px;
       color: #ccc;
     }
   }
@@ -231,7 +231,7 @@ scroll-view, view, text {
   flex-wrap: wrap;
 }
 .grid-item {
-  padding: 1rpx;
+  padding: 1px;
 }
 .grid.two-inrow .grid-item {
   width: 50%;
@@ -271,60 +271,60 @@ scroll-view, view, text {
   left: 0;
   top: 0;
   right: 0;
-  height: 100rpx;
+  height: 100px;
   white-space: nowrap;
   overflow: hidden;
   z-index: 99;
   background: #fff;
-  box-shadow: 0 0 5rpx rgba(0,0,0,0.3);
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 .tabs .tabs-item {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90rpx;
-  font-size: 28rpx;
+  height: 90px;
+  font-size: 28px;
   color: #999;
   transition: all 0.2s ease;
 }
 .tabs .tabs-item.active {
   color: #ff5000;
   font-weight: 500;
-  font-size: 32rpx;
+  font-size: 32px;
 }
 .tabs .tabbar {
   position: absolute;
   left: 0;
   bottom: $content-edge;
-  height: 8rpx;
+  height: 8px;
   transition: all 0.2s ease;
   &::after {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     width: 40%;
-    height: 8rpx;
-    border-radius: 24rpx;
+    height: 8px;
+    border-radius: 24px;
     background: #ff5000;
     z-index: 5;
     content: "";
   }
 }
 .tab-content {
-  padding-top: 110rpx !important;
+  padding-top: 110px !important;
 }
 
 .input {
   border: 1px solid #efefef;
-  padding: $content-edge 15rpx;
+  padding: $content-edge 15px;
   background: #f8f8f8;
   border-radius: $content-edge;
-  font-size: 28rpx;
+  font-size: 28px;
 }
 .input.input-lg {
   padding: $content-edge $card-edge;
-  height: 80rpx;
-  font-size: 40rpx;
+  height: 80px;
+  font-size: 40px;
 }
 .mark {
   color: #ff5000 !important;
@@ -339,23 +339,23 @@ scroll-view, view, text {
   color: #ccc !important;
 }
 .text-muted {
-  font-size: 28rpx;
+  font-size: 28px;
   color: #999;
 }
 .text-overline {
   color: #ccc;
-  font-size: 24rpx;
+  font-size: 24px;
   text-decoration: line-through;
 }
 .bg-transparent {
   background: transparent;
 }
 .has-footer {
-  padding-bottom: 100rpx;
+  padding-bottom: 100px;
 }
 
 .has-action-bar {
-  padding-bottom: 110rpx;
+  padding-bottom: 110px;
 }
 .action-bar {
   display: flex;
@@ -363,14 +363,14 @@ scroll-view, view, text {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 110rpx;
+  height: 110px;
   background: #fff;
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 .action-bar-submit {
   flex: 1;
   text-align: center;
-  line-height: 110rpx;
+  line-height: 110px;
   color: #fff;
   font-weight: 500;
   background: #fc7900;
@@ -397,33 +397,33 @@ scroll-view, view, text {
   background: rgba(0,0,0,0.7);
 }
 .modal-close {
-  width: 80rpx;
-  height: 80rpx;
+  width: 80px;
+  height: 80px;
 }
 .modal-content {
   width: 80vw;
-  padding: 50rpx;
+  padding: 50px;
   background: #fff;
-  border-radius: 16rpx;
-  margin-bottom: 50rpx;
+  border-radius: 16px;
+  margin-bottom: 50px;
 }
 .modal-content.no-padded {
   padding: 0;
 }
 .form-control {
-  font-size: 28rpx;
+  font-size: 28px;
   color: #666;
 }
 .form-item {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 100rpx;
+  min-height: 100px;
   padding: $card-edge;
 }
 .form-item::after {
   position: absolute;
-  left: 30rpx;
+  left: 30px;
   right: 0;
   bottom: 0;
   height: 1px;
@@ -434,38 +434,38 @@ scroll-view, view, text {
   flex: 1;
 }
 .form-label {
-  width: 150rpx;
+  width: 150px;
 }
 .btn-default {
-  font-size: 32rpx;
+  font-size: 32px;
   background: #fff;
   color: #666;
 }
 .btn-submit {
-  font-size: 32rpx;
+  font-size: 32px;
   background: #ff4856;
   color: #fff;
 }
 .page-tip {
-  padding: $card-edge 0 30rpx 0;
-  font-size: 28rpx;
+  padding: $card-edge 0 30px 0;
+  font-size: 28px;
   color: #999;
 }
 .support-info {
   padding-top: $content-edge;
-  font-size: 24rpx;
+  font-size: 24px;
 }
 .no-data {
   height: 100vh;
   text-align: center;
 }
 .no-data .title {
-  font-size: 28rpx;
+  font-size: 28px;
   color: #ccc;
 }
 .no-data .no-data-icon {
   display: block;
-  font-size: 100rpx;
+  font-size: 100px;
   margin: 0 auto $content-edge;
   color: #ccc;
 }
@@ -473,15 +473,15 @@ scroll-view, view, text {
   color: #fff;
   background-color: #fc7900;
   border-radius: 25px;
-  font-size: 28rpx;
-  width: 300rpx;
-  margin-top: 30rpx;
+  font-size: 28px;
+  width: 300px;
+  margin-top: 30px;
 }
 
 checkbox .wx-checkbox-input{
    border-radius: 50%;
-   width: 40rpx;
-   height: 40rpx;
+   width: 40px;
+   height: 40px;
 }
 /* 选中后的 背景样式 （红色背景 无边框 可根据UI需求自己修改） */
 checkbox .wx-checkbox-input.wx-checkbox-input-checked{
@@ -491,24 +491,24 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked{
 /* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
 checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
    border-radius: 50%;/* 圆角 */
-   width: 40rpx;/* 选中后对勾大小，不要超过背景的尺寸 */
-   height: 40rpx;/* 选中后对勾大小，不要超过背景的尺寸 */
-   line-height: 40rpx;
+   width: 40px;/* 选中后对勾大小，不要超过背景的尺寸 */
+   height: 40px;/* 选中后对勾大小，不要超过背景的尺寸 */
+   line-height: 40px;
    text-align: center;
-   font-size:30rpx; /* 对勾大小 30rpx */
+   font-size:30px; /* 对勾大小 30px */
    color:#fff; /* 对勾颜色 白色 */
    background: transparent;
    transform:translate(-50%, -50%) scale(1);
    -webkit-transform:translate(-50%, -50%) scale(1);
 }
 .w220{
-  width:400rpx;
+  width:400px;
 }
 .line-bottom{
-  border-bottom: 1rpx solid #efefef;
+  border-bottom: 1px solid #efefef;
 }
 .line-top{
-  border-top: 1rpx solid #efefef;
+  border-top: 1px solid #efefef;
 }
 .ellipsis {
   overflow: hidden;

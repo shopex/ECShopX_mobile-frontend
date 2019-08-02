@@ -38,8 +38,8 @@ export default class Category extends Component {
 
     const query = {template_name: 'yykweishop', version: 'v1.0.1', page_name: 'category'}
     const { list } = await api.category.getCategory(query)
-    let seriesList = list[0].params.data
-    if (seriesList.length < 1) {
+    let seriesList = list[0] ? list[0].params.data : []
+    if (seriesList.length) {
       const res = await api.category.get()
       const nList = pickBy(res, {
         name: 'category_name',
@@ -100,23 +100,6 @@ export default class Category extends Component {
         isChanged: true
       })
     }
-  }
-
-  handleClickItem (item) {
-    const { category_id } = item
-    const url = `/pages/item/list?cat_id=${category_id}`
-
-    Taro.navigateTo({
-      url
-    })
-  }
-
-  handleConfirm = (val) => {
-    const url = `/pages/item/list?keywords=${val}`
-
-    Taro.navigateTo({
-      url
-    })
   }
 
   render () {

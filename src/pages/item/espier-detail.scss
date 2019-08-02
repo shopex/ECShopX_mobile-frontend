@@ -413,13 +413,19 @@
   .store-desc {
     color: #999;
   }
-  .store-enter-btn {
+  .store-attention-btn, .store-enter-btn {
     margin-top: 20px;
     line-height: 60px;
-    border-radius: 60px;
+    border-radius: 6px;
     box-shadow: 0 0 1PX rgba(0,0,0,0.5);
     text-align: center;
-    font-size: 28rpx;
+    font-size: 28px;
+  }
+  .store-attention-btn {
+    margin-right: 10px;
+  }
+  .store-enter-btn {
+    margin-left: 10px;
   }
 }
 

@@ -35,32 +35,44 @@ export default class TabBar extends Component {
   }
 
   componentDidMount () {
-    const { config, data } = this.props.tabBar
-    const { backgroundColor, color, selectedColor } = config
-    this.setState({
-      backgroundColor,
-      color,
-      selectedColor
-    })
+    const { tabBar } = this.props
     let list = []
-    data.map(item => {
-      let obj = {
-        title: item.text,
-        iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
-        iconPrefixClass: 'icon',
-        image: item.iconPath,
-        selectedImage: item.selectedIconPath,
-        url: item.pagePath,
-        urlRedirect: true
-      }
-      if (item.name === 'cart') {
-        Object.assign(obj, {withLogin: true})
-      }
-      if (item.name === 'member') {
-        Object.assign(obj, {withLogin: true, text: this.props.cartTotalCount || '', max: '99'})
-      }
-      list.push(obj)
-    })
+
+    if (tabBar) {
+      const { config, data } = tabBar
+      const { backgroundColor, color, selectedColor } = config
+      this.setState({
+        backgroundColor,
+        color,
+        selectedColor
+      })
+      data.map(item => {
+        let obj = {
+          title: item.text,
+          iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
+          iconPrefixClass: 'icon',
+          image: item.iconPath,
+          selectedImage: item.selectedIconPath,
+          url: item.pagePath,
+          urlRedirect: true
+        }
+        if (item.name === 'cart') {
+          Object.assign(obj, {withLogin: true})
+        }
+        if (item.name === 'member') {
+          Object.assign(obj, {withLogin: true, text: this.props.cartTotalCount || '', max: '99'})
+        }
+        list.push(obj)
+      })
+    } else {
+      list = [
+        { title: '首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/index', urlRedirect: true },
+        { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/pages/category/index', urlRedirect: true },
+        { title: '购物车', iconType: 'cart', iconPrefixClass: 'icon', url: '/pages/cart/espier-index', withLogin: true, urlRedirect: true },
+        { title: '我的', iconType: 'member', iconPrefixClass: 'icon', url: '/pages/member/index', withLogin: true, text: this.props.cartTotalCount || '', max: '99', urlRedirect: true },
+      ]
+    }
+
     this.setState({
       tabList: list
     }, () => {
@@ -143,7 +155,7 @@ export default class TabBar extends Component {
   }
 
   render () {
-    const { tabList, current } = this.state
+    const { color, backgroundColor, selectedColor, tabList, current } = this.state
 
     // eslint-disable-next-line
     if (APP_INTEGRATION) {

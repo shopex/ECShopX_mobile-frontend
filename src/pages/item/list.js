@@ -44,6 +44,7 @@ export default class List extends Component {
 
   componentDidMount () {
     this.firstStatus = true
+    console.log(this.$router.params)
     this.setState({
       query: {
         keywords: this.$router.params.keywords,
@@ -432,17 +433,13 @@ export default class List extends Component {
       multiIndex,
       areaList,
       tagsList,
-      curTagId
+      curTagId,
+      info
     } = this.state
 
     return (
       <View className='page-goods-list'>
         <View className='goods-list__toolbar'>
-          <NavBar
-            title='商城'
-            leftIconType='chevron-left'
-            fixed='true'
-          />
           <SearchBar
             onConfirm={this.handleConfirm.bind(this)}
           />
@@ -472,7 +469,7 @@ export default class List extends Component {
                 range={areaList}
               >
                 <View className='icon-periscope'></View>
-                <Text>{info.city.label || '产地'}</Text>
+                <Text>{info.city && info.city.label || '产地'}</Text>
               </Picker>
             </View>
           </FilterBar>

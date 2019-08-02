@@ -5,22 +5,22 @@
     @include page-scroll($tabs-height + $navigate-height, 0);
   }
   .avatar {
-    width: 70rpx;
-    height: 70rpx;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background: #eee;
-    margin-right: 20rpx;
-    border: 4rpx solid #ccc;
+    margin-right: 20px;
+    border: 4px solid #ccc;
   }
   .name {
-    font-size: 32rpx;
+    font-size: 32px;
   }
   .level-name {
-    font-size: 28rpx;
+    font-size: 28px;
     color: #999;
   }
   .mobile {
-    font-size: 28rpx;
+    font-size: 28px;
     color: #999;
   }
   .bind-date {
