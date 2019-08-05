@@ -76,8 +76,8 @@ var DistributionGoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivatelYBOR",
-    value: function funPrivatelYBOR() {
+    key: "funPrivatensowm",
+    value: function funPrivatensowm() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -104,7 +104,7 @@ var DistributionGoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivatelYBOR"], _class.defaultProps = {
+}, _class.$$events = ["funPrivatensowm"], _class.defaultProps = {
   onClick: function onClick() {},
   onShare: function onShare() {}
 }, _class.options = {

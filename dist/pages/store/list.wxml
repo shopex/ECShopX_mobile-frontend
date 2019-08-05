@@ -1,0 +1,37 @@
+<block>
+    <view class="page-store-list">
+        <view class="search-bar">
+            <list-search bindonconfirm="handleConfirm" __triggerObserer="{{ _triggerObserer }}" __fn_onConfirm="{{true}}" data-e-onconfirm-so="this"></list-search>
+        </view>
+        <view class="current-store">
+            <view class="label">当前位置</view>
+            <view class="content view-flex">
+                <view class="view-flex-item">
+                    <block>
+                        <block wx:if="{{loading}}"><text class="loading">定位中...</text>
+                        </block>
+                        <block wx:else><text>{{current ? current : '定位失败...'}}</text>
+                        </block>
+                    </block>
+                </view>
+                <view class="view-flex view-flex-middle" bindtap="handleGetLocation">重新定位 <text class="icon-target"></text>
+                </view>
+            </view>
+        </view>
+        <scroll-view class="page-store-list__scroll" scroll-top="{{scrollTop}}" bindscroll="handleScroll" bindscrolltolower="nextPage" scroll-y="{{true}}">
+            <view class="store-list">
+                <view class="store-item" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx">
+                    <view class="store-content">
+                        <view class="store-name">{{item.store_name}}</view>
+                        <view class="store-address">{{item.store_address}}</view>
+                    </view>
+                    <block wx:if="{{item.lat}}">
+                        <view class="store-location icon-location" bindtap="handleMap" data-e-tap-so="this" data-e-tap-a-a="{{item.lat}}" data-e-tap-a-b="{{item.lng}}"></view>
+                    </block>
+                </view>
+            </view>
+        </scroll-view>
+        <back-to-top show="{{showBackToTop}}" __triggerObserer="{{ _triggerObserer }}" bindonclick="scrollBackToTop" __fn_onClick="{{true}}"></back-to-top>
+        <sp-toast __triggerObserer="{{ _triggerObserer }}"></sp-toast>
+    </view>
+</block>

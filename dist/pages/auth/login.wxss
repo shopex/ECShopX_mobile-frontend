@@ -16,6 +16,8 @@
   background: #ffffff;
 }
 .auth-login__reg {
+  position: relative;
+  z-index: 805;
   padding: 30rpx;
   text-align: right;
   -webkit-box-sizing: border-box;

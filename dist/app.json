@@ -63,6 +63,7 @@
     "pages/distribution/qrcode",
     "pages/distribution/shop-home",
     "pages/store/index",
+    "pages/store/list",
     "pages/trade/list",
     "pages/trade/detail",
     "pages/trade/delivery-info",
@@ -90,6 +91,5 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "ecshopX商城",
     "navigationBarTextStyle": "black"
-  },
-  "sitemapLocation": "sitemap.json"
+  }
 }

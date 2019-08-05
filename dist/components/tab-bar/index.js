@@ -115,6 +115,9 @@ var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
       if (tabBar) {
         var config = tabBar.config,
             data = tabBar.data;
+        var backgroundColor = config.backgroundColor,
+            color = config.color,
+            selectedColor = config.selectedColor;
 
         this.setState({
           backgroundColor: backgroundColor,
@@ -269,6 +272,9 @@ var TabBar = (_dec = (0, _index3.connect)(function (_ref) {
       ;
 
       var _state2 = this.__state,
+          color = _state2.color,
+          backgroundColor = _state2.backgroundColor,
+          selectedColor = _state2.selectedColor,
           tabList = _state2.tabList,
           current = _state2.current;
 

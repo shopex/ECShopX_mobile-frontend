@@ -349,5 +349,6 @@ function parseUrlStr(urlStr) {
 }
 
 exports.default = {
-  entryLaunch: entryLaunch
+  entryLaunch: entryLaunch,
+  getLocal: getLocal
 };

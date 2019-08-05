@@ -205,7 +205,11 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       return function (_x2) {
         return _ref6.apply(this, arguments);
       };
-    }(), _this.handleToGiftMiniProgram = function () {
+    }(), _this.handleClickLink = function () {
+      _index2.default.navigateTo({
+        url: '/pages/store/index'
+      });
+    }, _this.handleToGiftMiniProgram = function () {
       _index2.default.navigateToMiniProgram({
         appId: "wx2fb97cb696f68d22", // 要跳转的小程序的appid
         path: '/pages/index/index', // 跳转的目标页面
@@ -225,7 +229,6 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       this.state = {
         marketing: 'normal',
         info: null,
-        store: null,
         desc: null,
         curImgIdx: 0,
         windowWidth: 320,
@@ -250,14 +253,6 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     value: function componentDidMount() {
       var _this3 = this;
 
-      var _Taro$getStorageSync = _index2.default.getStorageSync('curStore'),
-          name = _Taro$getStorageSync.name;
-
-      this.setState({
-        store: {
-          name: name
-        }
-      });
       this.handleResize();
       this.fetch();
       _index2.default.getSystemInfo().then(function (res) {
@@ -492,6 +487,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
       var __runloopRef = arguments[2];
       ;
 
+      var store = _index2.default.getStorageSync('curStore');
       var _state = this.__state,
           info = _state.info,
           windowWidth = _state.windowWidth,
@@ -504,7 +500,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
           scrollTop = _state.scrollTop,
           showBackToTop = _state.showBackToTop,
           curSku = _state.curSku,
-          promotion_activity = _state.promotion_activity;
+          promotion_activity = _state.promotion_activity,
+          sessionFrom = _state.sessionFrom;
       var _state2 = this.__state,
           marketing = _state2.marketing,
           timer = _state2.timer,
@@ -555,7 +552,8 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
         loopArray0: loopArray0,
         scrollTop: scrollTop,
         imgs: imgs,
-        $anonymousCallee__0: $anonymousCallee__0
+        $anonymousCallee__0: $anonymousCallee__0,
+        store: store
       });
       return this.__state;
     }
@@ -580,7 +578,7 @@ var Detail = (_dec = (0, _index3.connect)(function (_ref) {
     "type": null,
     "value": null
   }
-}, _class2.$$events = ["handleScroll", "handleSwiperChange", "handleBuyBarClick", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
+}, _class2.$$events = ["handleScroll", "handleSwiperChange", "handleBuyBarClick", "handleClickLink", "handleShare", "scrollBackToTop", "handleMenuClick", "anonymousFunc0", "handleSkuChange", "handleBuyAction"], _class2.options = {
   addGlobalClass: true
 }, _temp2)) || _class) || _class);
 exports.default = Detail;

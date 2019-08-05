@@ -13,6 +13,7 @@
 ===============================*/
 .auth-reg {
   height: 100vh;
+  padding-top: 92rpx;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   background: #ffffff;

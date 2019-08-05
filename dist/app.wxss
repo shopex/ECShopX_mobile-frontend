@@ -232,7 +232,7 @@ scroll-view, view, text {
 }
 
 .content-padded-right-reset {
-  padding-right: 0rpx;
+  padding-right: 0;
 }
 
 .content-padded-right-s {
@@ -687,7 +687,7 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   line-height: 40rpx;
   text-align: center;
   font-size: 30rpx;
-  /* 对勾大小 30rpx */
+  /* 对勾大小 30px */
   color: #fff;
   /* 对勾颜色 白色 */
   background: transparent;
@@ -718,8 +718,8 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 @font-face {
   font-family: "iconfont";
   /* project id 869421 */
-  src: url("//at.alicdn.com/t/font_869421_hxa460scj0e.eot");
-  src: url("//at.alicdn.com/t/font_869421_hxa460scj0e.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_869421_hxa460scj0e.woff2") format("woff2"), url("//at.alicdn.com/t/font_869421_hxa460scj0e.woff") format("woff"), url("//at.alicdn.com/t/font_869421_hxa460scj0e.ttf") format("truetype"), url("//at.alicdn.com/t/font_869421_hxa460scj0e.svg#iconfont") format("svg");
+  src: url("//at.alicdn.com/t/font_869421_gtnmserf05.eot");
+  src: url("//at.alicdn.com/t/font_869421_gtnmserf05.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_869421_gtnmserf05.woff2") format("woff2"), url("//at.alicdn.com/t/font_869421_gtnmserf05.woff") format("woff"), url("//at.alicdn.com/t/font_869421_gtnmserf05.ttf") format("truetype"), url("//at.alicdn.com/t/font_869421_gtnmserf05.svg#iconfont") format("svg");
 }
 [class^=icon-], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
@@ -733,6 +733,14 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-target:before {
+  content: "";
+}
+
+.icon-location:before {
+  content: "";
 }
 
 .icon-home:before {
@@ -13820,11 +13828,6 @@ checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
 }
 .taro__toast p {
   font-size: 28rpx !important;
-}
-
-.swiper-container {
-  height: auto !important;
-  min-height: 80rpx;
 }
 
 /*mod innisfree*/

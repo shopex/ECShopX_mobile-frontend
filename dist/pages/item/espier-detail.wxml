@@ -83,7 +83,14 @@
                             <view class="store-name">{{store.name}}</view>
                         </view>
                     </view>
-                    <navigator class="store-enter-btn" url="/pages/store/index">进入店铺</navigator>
+                    <view class="view-flex">
+                        <view class="view-flex-item">
+                            <view class="store-attention-btn">关注店铺</view>
+                        </view>
+                        <view class="view-flex-item">
+                            <view class="store-enter-btn" bindtap="handleClickLink">进入店铺</view>
+                        </view>
+                    </view>
                 </view>
             </block>
             <block>

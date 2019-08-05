@@ -2,7 +2,7 @@
     <block wx:if="{{!wgts || !store}}">
         <loading __triggerObserer="{{ _triggerObserer }}"></loading>
     </block>
-    <view class="page-store" wx:else>
+    <view class="page-store-index" wx:else>
         <scroll-view class="wgts-wrap wgts-wrap__fixed" scroll-top="{{scrollTop}}" bindscroll="handleScroll" bindscrolltolower="nextPage" scroll-y="{{true}}">
             <view class="wgts-wrap__cont">
                 <view class="store-header">

@@ -11,27 +11,27 @@
 /*===============================
 =            z-index            =
 ===============================*/
-.page-store {
+.page-store-index {
   background: #fff;
   height: 100%;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
-.page-store .store-header {
+.page-store-index .store-header {
   padding: 30rpx;
   text-align: center;
 }
-.page-store .store-header .store-brand {
+.page-store-index .store-header .store-brand {
   display: inline-block;
   width: 120rpx;
   height: 120rpx;
   -webkit-box-shadow: 0 0 1PX rgba(0, 0, 0, 0.5);
           box-shadow: 0 0 1PX rgba(0, 0, 0, 0.5);
 }
-.page-store .store-header .store-name {
+.page-store-index .store-header .store-name {
   font-size: 32rpx;
 }
-.page-store .add_tip {
+.page-store-index .add_tip {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -49,13 +49,13 @@
           box-shadow: 2rpx 2rpx 2rpx 2rpx rgba(0, 0, 0, 0.2);
   background: #ffffff;
 }
-.page-store .add_tip .tip-text {
+.page-store-index .add_tip .tip-text {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;
           flex: 1;
 }
-.page-store .add_tip .icon-view {
+.page-store-index .add_tip .icon-view {
   width: 30rpx;
   height: 30rpx;
   line-height: 30rpx;
@@ -65,7 +65,7 @@
   font-size: 24rpx;
   color: #fff;
 }
-.page-store .add_tip:after {
+.page-store-index .add_tip:after {
   content: "";
   display: inline-block;
   position: absolute;
@@ -77,12 +77,12 @@
   width: 0;
   height: 0;
 }
-.page-store .float-menus {
+.page-store-index .float-menus {
   width: 180rpx;
   right: 20rpx;
   bottom: 190rpx;
 }
-.page-store .float-menus .distribution-shop {
+.page-store-index .float-menus .distribution-shop {
   width: 100%;
   border-radius: 60rpx;
   -webkit-box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.2);

@@ -71,12 +71,6 @@ var Category = (_dec = (0, _index3.connect)(function (store) {
           isChanged: true
         });
       }
-    }, _this.handleConfirm = function (val) {
-      var url = "/pages/item/list?keywords=" + val;
-
-      _index2.default.navigateTo({
-        url: url
-      });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -193,17 +187,6 @@ var Category = (_dec = (0, _index3.connect)(function (store) {
 
       return fetch;
     }()
-  }, {
-    key: "handleClickItem",
-    value: function handleClickItem(item) {
-      var category_id = item.category_id;
-
-      var url = "/pages/item/list?cat_id=" + category_id;
-
-      _index2.default.navigateTo({
-        url: url
-      });
-    }
   }, {
     key: "_createData",
     value: function _createData() {

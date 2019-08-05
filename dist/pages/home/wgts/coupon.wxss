@@ -115,6 +115,7 @@
 }
 .coupon-wgt .coupon-btn__getted {
   position: absolute;
+  width: 120rpx;
   top: 50%;
   right: 30rpx;
   -webkit-transform: translateY(-50%);

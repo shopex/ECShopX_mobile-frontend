@@ -93,6 +93,7 @@ class App extends Component {
       'pages/distribution/shop-home',
 
       'pages/store/index',
+      'pages/store/list',
 
       'pages/trade/list',
       'pages/trade/detail',

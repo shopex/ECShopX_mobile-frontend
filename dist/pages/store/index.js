@@ -44,25 +44,25 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
+var StoreIndex = (_dec = (0, _index3.connect)(function (store) {
   return {
     store: store
   };
 }), _dec(_class = (0, _index7.withBackToTop)(_class = (_temp2 = _class2 = function (_BaseComponent) {
-  _inherits(HomeIndex, _BaseComponent);
+  _inherits(StoreIndex, _BaseComponent);
 
-  function HomeIndex() {
+  function StoreIndex() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    _classCallCheck(this, HomeIndex);
+    _classCallCheck(this, StoreIndex);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HomeIndex.__proto__ || Object.getPrototypeOf(HomeIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "brand", "showBackToTop", "name", "authStatus", "isShowAddTip", "store"], _this.componentDidShow = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = StoreIndex.__proto__ || Object.getPrototypeOf(StoreIndex)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["wgts", "scrollTop", "brand", "showBackToTop", "name", "authStatus", "isShowAddTip", "store"], _this.componentDidShow = function () {
       _index2.default.getStorage({ key: 'addTipIsShow' }).then(function () {}).catch(function (error) {
         console.log(error);
         _this.setState({
@@ -81,10 +81,10 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(HomeIndex, [{
+  _createClass(StoreIndex, [{
     key: "_constructor",
     value: function _constructor(props) {
-      _get(HomeIndex.prototype.__proto__ || Object.getPrototypeOf(HomeIndex.prototype), "_constructor", this).call(this, props);
+      _get(StoreIndex.prototype.__proto__ || Object.getPrototypeOf(StoreIndex.prototype), "_constructor", this).call(this, props);
 
       this.state = {
         wgts: null,
@@ -252,13 +252,13 @@ var HomeIndex = (_dec = (0, _index3.connect)(function (store) {
     }
   }]);
 
-  return HomeIndex;
+  return StoreIndex;
 }(_index.Component), _class2.properties = {
   "store": {
     "type": null,
     "value": null
   }
 }, _class2.$$events = ["handleScroll", "nextPage", "scrollBackToTop"], _temp2)) || _class) || _class);
-exports.default = HomeIndex;
+exports.default = StoreIndex;
 
-Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(HomeIndex, true));
+Component(require('../../npm/@tarojs/taro-weapp/index.js').default.createComponent(StoreIndex, true));

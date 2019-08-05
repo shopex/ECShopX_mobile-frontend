@@ -58,7 +58,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "loopArray0", "loopArray1", "curTagId", "tagsList", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "query", "selectParams", "info", "favs"], _this.handleTagChange = function (data) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "loopArray0", "loopArray1", "curTagId", "tagsList", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "info", "query", "selectParams", "favs"], _this.handleTagChange = function (data) {
       var current = data.current;
 
 
@@ -350,6 +350,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       var _this3 = this;
 
       this.firstStatus = true;
+      console.log(this.$router.params);
       this.setState({
         query: {
           keywords: this.$router.params.keywords,
@@ -540,7 +541,8 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
           multiIndex = _state2.multiIndex,
           areaList = _state2.areaList,
           tagsList = _state2.tagsList,
-          curTagId = _state2.curTagId;
+          curTagId = _state2.curTagId,
+          info = _state2.info;
 
 
       var anonymousState__temp = "" + _index2.default.pxTransform(570);

@@ -55,7 +55,7 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "multiIndex", "areaList", "showDrawer", "columnList", "scrollTop", "list", "page", "showBackToTop", "address", "query", "selectColumn", "info"], _this.handleClickItem = function (item) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = RecommendList.__proto__ || Object.getPrototypeOf(RecommendList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "loopArray0", "loopArray1", "multiIndex", "areaList", "showDrawer", "columnList", "scrollTop", "list", "page", "showBackToTop", "selectColumn", "address", "query", "info"], _this.handleClickItem = function (item) {
       var url = "/pages/recommend/detail?id=" + item.item_id;
       _index2.default.navigateTo({
         url: url
@@ -469,7 +469,10 @@ var RecommendList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_
           page = _state2.page,
           showDrawer = _state2.showDrawer,
           info = _state2.info,
-          columnList = _state2.columnList;
+          columnList = _state2.columnList,
+          selectColumn = _state2.selectColumn,
+          multiIndex = _state2.multiIndex,
+          areaList = _state2.areaList;
 
       var address = info.province + info.city;
 

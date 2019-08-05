@@ -38,19 +38,17 @@ var HeaderHome = (_temp2 = _class = function (_BaseComponent) {
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = HeaderHome.__proto__ || Object.getPrototypeOf(HeaderHome)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["storeName", "searchValue", "historyList", "isShowAction"], _this.handlePickStore = function () {
       _index2.default.navigateTo({
-        url: 'shop_picker'
+        url: '/pages/store/list'
       });
     }, _this.handleScanCode = function () {
-      _index2.default.scanCode({
-        success: function success(res) {
-          var scene = decodeURIComponent(res.path);
-          var path = scene.replace('pages/', '');
-          path = path.replace('scene=', '');
-          //格式化二维码参数
-          _index2.default.navigateTo({
-            url: path
-          });
-        }
+      _index2.default.scanCode().then(function (res) {
+        var scene = decodeURIComponent(res.path);
+        var path = scene.replace('pages/', '');
+        path = path.replace('scene=', '');
+        //格式化二维码参数
+        _index2.default.navigateTo({
+          url: path
+        });
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }

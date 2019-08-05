@@ -463,14 +463,20 @@
 .store-info .store-desc {
   color: #999;
 }
-.store-info .store-enter-btn {
+.store-info .store-attention-btn, .store-info .store-enter-btn {
   margin-top: 20rpx;
   line-height: 60rpx;
-  border-radius: 60rpx;
+  border-radius: 6rpx;
   -webkit-box-shadow: 0 0 1PX rgba(0, 0, 0, 0.5);
           box-shadow: 0 0 1PX rgba(0, 0, 0, 0.5);
   text-align: center;
   font-size: 28rpx;
+}
+.store-info .store-attention-btn {
+  margin-right: 10rpx;
+}
+.store-info .store-enter-btn {
+  margin-left: 10rpx;
 }
 
 .at-divider__line {

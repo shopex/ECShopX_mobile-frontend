@@ -44,9 +44,17 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Series.__proto__ || Object.getPrototypeOf(Series)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp3", "loopArray0", "loopArray1", "info", "itemsImg", "items", "pluralType", "imgType", "currentIndex", "isChanged"], _this.handleClickCategoryNav = function (gIndex) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Series.__proto__ || Object.getPrototypeOf(Series)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp3", "loopArray0", "loopArray1", "info", "itemsImg", "items", "isChanged", "pluralType", "imgType", "currentIndex"], _this.handleClickCategoryNav = function (gIndex) {
       _this.setState({
         currentIndex: gIndex
+      });
+    }, _this.handleClickItem = function (item) {
+      var category_id = item.category_id;
+
+      var url = "/pages/item/list?cat_id=" + (category_id || '');
+
+      _index2.default.navigateTo({
+        url: url
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -55,13 +63,6 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
     key: "_constructor",
     value: function _constructor(props) {
       _get(Series.prototype.__proto__ || Object.getPrototypeOf(Series.prototype), "_constructor", this).call(this, props);
-
-      this.state = {
-        // list: null,
-        pluralType: true,
-        imgType: true,
-        currentIndex: 0
-      };
     }
   }, {
     key: "componentWillReceiveProps",
@@ -73,17 +74,6 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
       }
     }
   }, {
-    key: "handleClickItem",
-    value: function handleClickItem(item) {
-      var category_id = item.category_id;
-
-      var url = "/pages/item/list?cat_id=" + category_id;
-
-      _index2.default.navigateTo({
-        url: url
-      });
-    }
-  }, {
     key: "_createData",
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
@@ -93,11 +83,10 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
 
       var _props = this.__props,
           info = _props.info,
-          isChanged = _props.isChanged;
-      var _state = this.__state,
-          pluralType = _state.pluralType,
-          imgType = _state.imgType,
-          currentIndex = _state.currentIndex;
+          isChanged = _props.isChanged,
+          pluralType = _props.pluralType,
+          imgType = _props.imgType,
+          currentIndex = _props.currentIndex;
 
       var items = void 0,
           itemsImg = void 0;
@@ -151,8 +140,26 @@ var Series = (_dec = (0, _index3.connect)(function (store) {
   "isChanged": {
     "type": null,
     "value": null
+  },
+  "pluralType": {
+    "type": null,
+    "value": null
+  },
+  "imgType": {
+    "type": null,
+    "value": null
+  },
+  "currentIndex": {
+    "type": null,
+    "value": null
   }
-}, _class2.$$events = ["handleClickCategoryNav", "handleClickItem"], _temp2)) || _class);
+}, _class2.$$events = ["handleClickCategoryNav", "handleClickItem"], _class2.options = {
+  addGlobalClass: true
+}, _class2.defaultProps = {
+  pluralType: true,
+  imgType: true,
+  currentIndex: 0
+}, _temp2)) || _class);
 exports.default = Series;
 
 Component(require('../../../npm/@tarojs/taro-weapp/index.js').default.createComponent(Series));

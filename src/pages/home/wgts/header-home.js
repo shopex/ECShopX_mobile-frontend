@@ -33,7 +33,7 @@ export default class HeaderHome extends Component {
 
   handlePickStore = () => {
     Taro.navigateTo({
-      url: 'shop_picker'
+      url: '/pages/store/list'
     })
   }
 

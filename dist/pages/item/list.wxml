@@ -1,7 +1,6 @@
 <block>
     <view class="page-goods-list">
         <view class="goods-list__toolbar">
-            <nav-bar title="商城" __triggerObserer="{{ _triggerObserer }}" leftIconType="chevron-left" fixed="true"></nav-bar>
             <search-bar bindonconfirm="handleConfirm" __triggerObserer="{{ _triggerObserer }}" __fn_onConfirm="{{true}}" data-e-onconfirm-so="this"></search-bar>
             <tags-bar current="{{curTagId}}" __triggerObserer="{{ _triggerObserer }}" list="{{tagsList}}" bindonchange="handleTagChange" __fn_onChange="{{true}}" data-e-onchange-so="this"></tags-bar>
             <filter-bar className="goods-list__tabs" __triggerObserer="{{ _triggerObserer }}" custom="{{true}}" current="{{curFilterIdx}}" list="{{filterList}}" bindonchange="handleFilterChange" __fn_onChange="{{true}}">
@@ -10,7 +9,7 @@
                 </view>
                 <view class="filter-bar__item">
                     <picker mode="multiSelector" bindtap="handleClickPicker" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{areaList}}">
-                        <view class="icon-periscope"></view><text>{{info.city.label || '产地'}}</text>
+                        <view class="icon-periscope"></view><text>{{info.city && info.city.label || '产地'}}</text>
                     </picker>
                 </view>
             </filter-bar>

@@ -1,0 +1,59 @@
+@import "../../style/imports";
+@import "../../style/animation";
+
+$current-shop-height: 150px !default;
+
+.page-store-list {
+  background: #fff;
+  height: 100%;
+  box-sizing: border-box;
+  &__scroll {
+    @include page-scroll($searchbar-height + $current-shop-height + 10, 0);
+  }
+  .store-list {
+    .store-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #fff;
+      .store-content {
+        padding-right: 20px;
+        flex: 1;
+        .store-name {
+          font-size: 32px;
+        }
+        .store-address {
+          font-size: $font-size-small;
+          color: $color-gray;
+        }
+      }
+      .store-location {
+        font-size: 46px;
+        color: $color-gray;
+      }
+    }
+  }
+  .current-store {
+    padding-top: 20px;
+    height: $current-shop-height;
+    .label {
+      padding: 0 30px;
+      height: 50px;
+      line-height: 50px;
+      background: #f8f8f8;
+    }
+    .content {
+      padding: 0 30px;
+      height: 80px;
+      line-height: 80px;
+      .loading {
+        animation: sp-anim-fade 0.5s infinite;
+      }
+      [class^="icon-"] {
+        font-size: 42px;
+        color: $color-gray;
+      }
+    }
+  }
+}

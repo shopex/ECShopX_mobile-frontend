@@ -15,7 +15,7 @@ import './index.scss'
   store
 }))
 @withBackToTop
-export default class HomeIndex extends Component {
+export default class StoreIndex extends Component {
   constructor (props) {
     super(props)
 
@@ -123,7 +123,7 @@ export default class HomeIndex extends Component {
     }
 
     return (
-      <View className='page-store'>
+      <View className='page-store-index'>
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed'
           scrollTop={scrollTop}
