@@ -53,7 +53,20 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = StoreList.__proto__ || Object.getPrototypeOf(StoreList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loading", "scrollTop", "list", "showBackToTop", "current"], _this.handleGetLocation = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = StoreList.__proto__ || Object.getPrototypeOf(StoreList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loading", "scrollTop", "list", "showBackToTop", "query", "current"], _this.handleConfirm = function (val) {
+      _this.setState({
+        query: _extends({}, _this.state.query, {
+          name: val
+        })
+      }, function () {
+        _this.resetPage();
+        _this.setState({
+          list: []
+        }, function () {
+          _this.nextPage();
+        });
+      });
+    }, _this.handleGetLocation = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var store;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -68,12 +81,23 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
             case 3:
               store = _context.sent;
 
-              _index2.default.setStorageSync('curStore', store);
-              _this.setState({
-                current: store
-              });
+              if (store) {
+                _index2.default.setStorageSync('curStore', store);
+                _this.resetPage();
+                _this.setState({
+                  current: store,
+                  loading: false
+                }, function () {
+                  _this.nextPage();
+                });
+              } else {
+                _this.setState({
+                  current: null,
+                  loading: false
+                });
+              }
 
-            case 6:
+            case 5:
             case "end":
               return _context.stop();
           }
@@ -85,6 +109,9 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
         longitude: Number(lng),
         scale: 18
       });
+    }, _this.handleClick = function (val) {
+      _index2.default.setStorageSync('curStore', val);
+      _index2.default.navigateBack();
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -95,6 +122,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
 
       this.state = _extends({}, this.state, {
         list: [],
+        query: null,
         current: null,
         loading: false
       });
@@ -102,27 +130,47 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.nextPage();
+      var _this3 = this;
+
+      var lnglat = _index2.default.getStorageSync('lnglat');
+      var query = {};
+      if (lnglat) {
+        var latitude = lnglat.latitude,
+            longitude = lnglat.longitude;
+
+        query = {
+          lat: lnglat.latitude,
+          lng: lnglat.longitude
+        };
+      }
+      var store = _index2.default.getStorageSync('curStore');
+      if (store) {
+        this.setState({
+          current: store,
+          query: query
+        }, function () {
+          _this3.nextPage();
+        });
+      }
     }
   }, {
     key: "fetch",
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var lnglat, param, latitude, longitude, _ref4, list, total;
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params) {
+        var page, pageSize, _state, selectParams, areaList, tagsList, curTagId, query, _ref4, list, total;
 
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                lnglat = _index2.default.getStorageSync('lnglat');
-                param = {};
-
-                if (lnglat) {
-                  latitude = lnglat.latitude, longitude = lnglat.longitude;
-                }
-
+                page = params.page_no, pageSize = params.page_size;
+                _state = this.state, selectParams = _state.selectParams, areaList = _state.areaList, tagsList = _state.tagsList, curTagId = _state.curTagId;
+                query = _extends({}, this.state.query, {
+                  page: page,
+                  pageSize: pageSize
+                });
                 _context2.next = 5;
-                return _index4.default.shop.list(param);
+                return _index4.default.shop.list(query);
 
               case 5:
                 _ref4 = _context2.sent;
@@ -131,7 +179,8 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
 
 
                 this.setState({
-                  list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(list))
+                  list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(list)),
+                  query: query
                 });
 
                 return _context2.abrupt("return", {
@@ -146,7 +195,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
         }, _callee2, this);
       }));
 
-      function fetch() {
+      function fetch(_x) {
         return _ref3.apply(this, arguments);
       }
 
@@ -160,10 +209,10 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
       var __runloopRef = arguments[2];
       ;
 
-      var _state = this.__state,
-          list = _state.list,
-          scrollTop = _state.scrollTop,
-          showBackToTop = _state.showBackToTop;
+      var _state2 = this.__state,
+          list = _state2.list,
+          scrollTop = _state2.scrollTop,
+          showBackToTop = _state2.showBackToTop;
 
 
       Object.assign(this.__state, {
@@ -175,7 +224,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
   }]);
 
   return StoreList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleGetLocation", "handleScroll", "nextPage", "handleMap", "scrollBackToTop"], _temp2)) || _class) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleGetLocation", "handleScroll", "nextPage", "handleClick", "handleMap", "scrollBackToTop"], _temp2)) || _class) || _class;
 
 exports.default = StoreList;
 

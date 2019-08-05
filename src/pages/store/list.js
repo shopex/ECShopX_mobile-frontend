@@ -19,26 +19,48 @@ export default class StoreList extends Component {
     this.state = {
       ...this.state,
       list: [],
+      query: null,
       current: null,
       loading: false
     }
   }
 
   componentDidMount () {
-    this.nextPage()
-  }
-
-  async fetch () {
     const lnglat = Taro.getStorageSync('lnglat')
-    const param = {}
+    let query = {}
     if (lnglat) {
       const { latitude, longitude } = lnglat
+      query = {
+        lat: lnglat.latitude,
+        lng: lnglat.longitude
+      }
+    }
+    const store = Taro.getStorageSync('curStore')
+    if (store) {
+      this.setState({
+        current: store,
+        query
+      }, () => {
+        this.nextPage()
+      })
     }
 
-    const { list, total_count: total} = await api.shop.list(param)
+  }
+
+  async fetch (params) {
+    const { page_no: page, page_size: pageSize } = params
+    const { selectParams, areaList, tagsList, curTagId } = this.state
+    const query = {
+      ...this.state.query,
+      page,
+      pageSize
+    }
+
+    const { list, total_count: total} = await api.shop.list(query)
 
     this.setState({
-      list: [...this.state.list, ...list]
+      list: [...this.state.list, ...list],
+      query
     })
 
     return {
@@ -46,15 +68,42 @@ export default class StoreList extends Component {
     }
   }
 
+  handleConfirm = (val) => {
+    this.setState({
+      query: {
+        ...this.state.query,
+        name: val,
+      }
+    }, () =>{
+      this.resetPage()
+      this.setState({
+        list: []
+      }, () => {
+        this.nextPage()
+      })
+    })
+  }
+
   handleGetLocation = async () => {
     this.setState({
       loading: true
     })
     const store = await entry.getLocal()
-    Taro.setStorageSync('curStore', store)
-    this.setState({
-      current: store
-    })
+    if (store) {
+      Taro.setStorageSync('curStore', store)
+      this.resetPage()
+      this.setState({
+        current: store,
+        loading: false
+      }, () => {
+        this.nextPage()
+      })
+    } else {
+      this.setState({
+        current: null,
+        loading: false
+      })
+    }
   }
 
   handleMap = (lat, lng) => {
@@ -63,6 +112,11 @@ export default class StoreList extends Component {
       longitude: Number(lng),
       scale: 18
     })
+  }
+
+  handleClick = (val) => {
+    Taro.setStorageSync('curStore', val)
+    Taro.navigateBack()
   }
 
   render () {
@@ -82,7 +136,7 @@ export default class StoreList extends Component {
               {
                 loading
                   ? <Text className="loading">定位中...</Text>
-                  : <Text>{current ? current : '定位失败...'}</Text>
+                  : <Text>{current ? current.store_name : '定位失败...'}</Text>
               }
             </View>
             <View
@@ -93,16 +147,20 @@ export default class StoreList extends Component {
         </View>
         <ScrollView
           className='page-store-list__scroll'
+          scrollY
           scrollTop={scrollTop}
+          scrollWithAnimation
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
-          scrollY
         >
           <View className='store-list'>
             {
               list.map(item => {
                 return (
-                  <View className='store-item'>
+                  <View
+                    className='store-item'
+                    onClick={this.handleClick.bind(this, item)}
+                  >
                     <View className='store-content'>
                       <View className="store-name">{item.store_name}</View>
                       <View className="store-address">{item.store_address}</View>

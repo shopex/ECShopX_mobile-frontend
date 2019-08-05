@@ -1,5 +1,9 @@
 @import './variables';
 
+@mixin fade-loop($interval) {
+  animation: sp-anim-fade $interval infinite;
+}
+
 @keyframes sp-anim-popup {
   0% {
     transform: translate3D(0, 100%, 0);

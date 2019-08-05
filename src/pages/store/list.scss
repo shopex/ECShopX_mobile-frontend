@@ -1,5 +1,5 @@
 @import "../../style/imports";
-@import "../../style/animation";
+@import "../../style/animations";
 
 $current-shop-height: 150px !default;
 
@@ -48,7 +48,7 @@ $current-shop-height: 150px !default;
       height: 80px;
       line-height: 80px;
       .loading {
-        animation: sp-anim-fade 0.5s infinite;
+        @include fade-loop(1s);
       }
       [class^="icon-"] {
         font-size: 42px;

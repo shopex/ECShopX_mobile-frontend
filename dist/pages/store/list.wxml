@@ -10,7 +10,7 @@
                     <block>
                         <block wx:if="{{loading}}"><text class="loading">定位中...</text>
                         </block>
-                        <block wx:else><text>{{current ? current : '定位失败...'}}</text>
+                        <block wx:else><text>{{current ? current.store_name : '定位失败...'}}</text>
                         </block>
                     </block>
                 </view>
@@ -18,9 +18,9 @@
                 </view>
             </view>
         </view>
-        <scroll-view class="page-store-list__scroll" scroll-top="{{scrollTop}}" bindscroll="handleScroll" bindscrolltolower="nextPage" scroll-y="{{true}}">
+        <scroll-view class="page-store-list__scroll" scroll-y="{{true}}" scroll-top="{{scrollTop}}" scroll-with-animation="{{true}}" bindscroll="handleScroll" bindscrolltolower="nextPage">
             <view class="store-list">
-                <view class="store-item" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx">
+                <view class="store-item" bindtap="handleClick" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx" data-e-tap-so="this" data-e-tap-a-a="{{item}}">
                     <view class="store-content">
                         <view class="store-name">{{item.store_name}}</view>
                         <view class="store-address">{{item.store_address}}</view>

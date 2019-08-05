@@ -11,6 +11,50 @@
 /*===============================
 =            z-index            =
 ===============================*/
+/*==============================
+=            colors            =
+==============================*/
+/*===============================
+=            z-index            =
+===============================*/
+@-webkit-keyframes sp-anim-popup {
+  0% {
+    -webkit-transform: translate3D(0, 100%, 0);
+            transform: translate3D(0, 100%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3D(0, 0, 0);
+            transform: translate3D(0, 0, 0);
+  }
+}
+@keyframes sp-anim-popup {
+  0% {
+    -webkit-transform: translate3D(0, 100%, 0);
+            transform: translate3D(0, 100%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3D(0, 0, 0);
+            transform: translate3D(0, 0, 0);
+  }
+}
+@-webkit-keyframes sp-anim-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes sp-anim-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 .page-store-list {
   background: #fff;
   height: 100%;
@@ -80,8 +124,8 @@
   line-height: 80rpx;
 }
 .page-store-list .current-store .content .loading {
-  -webkit-animation: sp-anim-fade 0.1s infinite;
-          animation: sp-anim-fade 0.1s infinite;
+  -webkit-animation: sp-anim-fade 1s infinite;
+          animation: sp-anim-fade 1s infinite;
 }
 .page-store-list .current-store .content [class^=icon-] {
   font-size: 42rpx;
