@@ -53,7 +53,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = StoreList.__proto__ || Object.getPrototypeOf(StoreList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loading", "scrollTop", "list", "showBackToTop", "query", "current"], _this.handleConfirm = function (val) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = StoreList.__proto__ || Object.getPrototypeOf(StoreList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["loading", "scrollTop", "list", "showBackToTop", "current", "query"], _this.handleConfirm = function (val) {
       _this.setState({
         query: _extends({}, _this.state.query, {
           name: val
@@ -85,6 +85,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
                 _index2.default.setStorageSync('curStore', store);
                 _this.resetPage();
                 _this.setState({
+                  list: [],
                   current: store,
                   loading: false
                 }, function () {
@@ -103,13 +104,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
           }
         }
       }, _callee, _this2);
-    })), _this.handleMap = function (lat, lng) {
-      _index2.default.openLocation({
-        latitude: Number(lat),
-        longitude: Number(lng),
-        scale: 18
-      });
-    }, _this.handleClick = function (val) {
+    })), _this.handleClick = function (val) {
       _index2.default.setStorageSync('curStore', val);
       _index2.default.navigateBack();
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
@@ -206,13 +201,15 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _state2 = this.__state,
           list = _state2.list,
           scrollTop = _state2.scrollTop,
-          showBackToTop = _state2.showBackToTop;
+          showBackToTop = _state2.showBackToTop,
+          loading = _state2.loading,
+          current = _state2.current;
 
 
       Object.assign(this.__state, {
@@ -224,7 +221,7 @@ var StoreList = (0, _index5.withPager)(_class = (0, _index5.withBackToTop)(_clas
   }]);
 
   return StoreList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleGetLocation", "handleScroll", "nextPage", "handleClick", "handleMap", "scrollBackToTop"], _temp2)) || _class) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleConfirm", "handleGetLocation", "handleScroll", "nextPage", "handleClick", "scrollBackToTop"], _temp2)) || _class) || _class;
 
 exports.default = StoreList;
 

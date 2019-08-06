@@ -3,6 +3,7 @@ import { View, Image, ScrollView, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { SpToast, Loading, SpNote, BackToTop } from '@/components'
 import ListSearch from '../recommend/comps/list-search'
+import StoreListItem from './comps/list-item'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
@@ -93,6 +94,7 @@ export default class StoreList extends Component {
       Taro.setStorageSync('curStore', store)
       this.resetPage()
       this.setState({
+        list: [],
         current: store,
         loading: false
       }, () => {
@@ -106,21 +108,13 @@ export default class StoreList extends Component {
     }
   }
 
-  handleMap = (lat, lng) => {
-    Taro.openLocation({
-      latitude: Number(lat),
-      longitude: Number(lng),
-      scale: 18
-    })
-  }
-
   handleClick = (val) => {
     Taro.setStorageSync('curStore', val)
     Taro.navigateBack()
   }
 
   render () {
-    const { list, scrollTop, showBackToTop } = this.state
+    const { list, scrollTop, showBackToTop, loading, current } = this.state
 
     return (
       <View className='page-store-list'>
@@ -157,22 +151,11 @@ export default class StoreList extends Component {
             {
               list.map(item => {
                 return (
-                  <View
-                    className='store-item'
+                  <StoreListItem
+                    info={item}
+                    key={item.distributor_id}
                     onClick={this.handleClick.bind(this, item)}
-                  >
-                    <View className='store-content'>
-                      <View className="store-name">{item.store_name}</View>
-                      <View className="store-address">{item.store_address}</View>
-                    </View>
-                    {
-                      item.lat &&
-                        <View
-                          className='store-location icon-location'
-                          onClick={this.handleMap.bind(this, item.lat, item.lng)}
-                        ></View>
-                    }
-                  </View>
+                  />
                 )
               })
             }

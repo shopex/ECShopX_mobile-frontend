@@ -1,0 +1,24 @@
+@import '../../../style/imports';
+
+.store-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #fff;
+  .store-content {
+    padding-right: 20px;
+    flex: 1;
+    .store-name {
+      font-size: 32px;
+    }
+    .store-address {
+      font-size: $font-size-small;
+      color: $color-gray;
+    }
+  }
+  .store-location {
+    font-size: 46px;
+    color: $color-gray;
+  }
+}

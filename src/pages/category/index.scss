@@ -22,6 +22,6 @@
   .category-comps-not {
     box-sizing: border-box;
     background: #ffffff;
-    @include page-scroll($searchbar-height + 10px, $tabbar-height);
+    @include page-scroll(0, $tabbar-height);
   }
 }

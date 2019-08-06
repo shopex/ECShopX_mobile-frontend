@@ -17,8 +17,15 @@ export default class Series extends Component {
 
   static defaultProps = {
     pluralType: true,
-    imgType: true,
-    currentIndex: 0
+    imgType: true
+  }
+
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      currentIndex: 0
+    }
   }
 
   componentWillReceiveProps (nextProps){
@@ -45,7 +52,8 @@ export default class Series extends Component {
   }
 
   render () {
-    const { info, isChanged, pluralType, imgType, currentIndex } = this.props
+    const { info, isChanged, pluralType, imgType } = this.props
+    const { currentIndex } = this.state
     let items, itemsImg
     if (!info) {
       return <Loading />
@@ -66,7 +74,7 @@ export default class Series extends Component {
             {
               info.map((item, index) =>
                 <View
-                  className={classNames('category-nav__content', currentIndex === index ? 'category-nav__content-checked' : null)}
+                  className={classNames('category-nav__content', currentIndex == index ? 'category-nav__content-checked' : null)}
                   key={index}
                   onClick={this.handleClickCategoryNav.bind(this, index)}
                 >
@@ -82,7 +90,10 @@ export default class Series extends Component {
           scrollY
         >
           <View className={classNames(pluralType ? 'category-content' : 'category-content-no')}>
-            <Image src={itemsImg} mode='aspectFill' className='category__banner' />
+            {
+              itemsImg
+              && <Image src={itemsImg} mode='aspectFill' className='category__banner' />
+            }
             {
               items.map(item =>
                 <View
@@ -90,11 +101,14 @@ export default class Series extends Component {
                   key={item.category_id}
                   onClick={this.handleClickItem.bind(this, item)}
                 >
-                  <Image
-                    className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
-                    mode='aspectFill'
-                    src={item.img}
-                  />
+                  {
+                    item.img
+                    && <Image
+                          className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
+                          mode='aspectFill'
+                          src={item.img}
+                        />
+                  }
                   <View className='img-cat-name'>{item.name}</View>
                 </View>
               )

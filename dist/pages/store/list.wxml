@@ -20,15 +20,7 @@
         </view>
         <scroll-view class="page-store-list__scroll" scroll-y="{{true}}" scroll-top="{{scrollTop}}" scroll-with-animation="{{true}}" bindscroll="handleScroll" bindscrolltolower="nextPage">
             <view class="store-list">
-                <view class="store-item" bindtap="handleClick" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx" data-e-tap-so="this" data-e-tap-a-a="{{item}}">
-                    <view class="store-content">
-                        <view class="store-name">{{item.store_name}}</view>
-                        <view class="store-address">{{item.store_address}}</view>
-                    </view>
-                    <block wx:if="{{item.lat}}">
-                        <view class="store-location icon-location" bindtap="handleMap" data-e-tap-so="this" data-e-tap-a-a="{{item.lat}}" data-e-tap-a-b="{{item.lng}}"></view>
-                    </block>
-                </view>
+                <store-list-item info="{{item}}" __triggerObserer="{{ _triggerObserer }}" wx:key="distributor_id" bindonclick="handleClick" wx:for="{{list}}" wx:for-item="item" wx:for-index="_anonIdx" __fn_onClick="{{true}}" data-e-onclick-so="this" data-e-onclick-a-a="{{item}}"></store-list-item>
             </view>
         </scroll-view>
         <back-to-top show="{{showBackToTop}}" __triggerObserer="{{ _triggerObserer }}" bindonclick="scrollBackToTop" __fn_onClick="{{true}}"></back-to-top>

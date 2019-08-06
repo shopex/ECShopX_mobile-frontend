@@ -443,11 +443,14 @@ export default class List extends Component {
           <SearchBar
             onConfirm={this.handleConfirm.bind(this)}
           />
-          <TagsBar
-            current={curTagId}
-            list={tagsList}
-            onChange={this.handleTagChange.bind(this)}
-          />
+          {
+            tagsList.length &&
+              <TagsBar
+                current={curTagId}
+                list={tagsList}
+                onChange={this.handleTagChange.bind(this)}
+              />
+          }
           <FilterBar
             className='goods-list__tabs'
             custom

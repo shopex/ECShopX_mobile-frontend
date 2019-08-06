@@ -90,7 +90,7 @@ var DrugInfo = (_temp2 = _class = function (_BaseComponent) {
     value: function _createData() {
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _props = this.__props,
@@ -107,8 +107,8 @@ var DrugInfo = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateEQvbt",
-    value: function funPrivateEQvbt() {
+    key: "funPrivatedmLCp",
+    value: function funPrivatedmLCp() {
       this.__triggerPropsFn("onChange", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -139,7 +139,7 @@ var DrugInfo = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["handleChange", "handleImageChange", "funPrivateEQvbt"], _class.defaultProps = {
+}, _class.$$events = ["handleChange", "handleImageChange", "funPrivatedmLCp"], _class.defaultProps = {
   isOpened: false,
   onChange: function onChange() {}
 }, _class.options = {

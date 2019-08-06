@@ -58,7 +58,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "loopArray0", "loopArray1", "curTagId", "tagsList", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "info", "query", "selectParams", "favs"], _this.handleTagChange = function (data) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = List.__proto__ || Object.getPrototypeOf(List)).call.apply(_ref2, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "loopArray0", "loopArray1", "tagsList", "curTagId", "curFilterIdx", "filterList", "multiIndex", "areaList", "showDrawer", "paramsList", "scrollTop", "listType", "list", "page", "showBackToTop", "info", "query", "selectParams", "favs"], _this.handleTagChange = function (data) {
       var current = data.current;
 
 
@@ -524,7 +524,7 @@ var List = (_dec = (0, _index3.connect)(function (_ref) {
 
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
-      var __runloopRef = arguments[2];
+      var __isRunloopRef = arguments[2];
       ;
 
       var _state2 = this.__state,
