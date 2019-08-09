@@ -46,6 +46,9 @@
                     <block wx:if="{{type === 'fastbuy' && hasStore}}">
                         <button loading="{{busy}}" class="{{anonymousState__temp6}}" bindtap="handleBuyClick" disabled="{{anonymousState__temp7}}" data-e-tap-so="this" data-e-tap-a-a="fastbuy" data-e-tap-a-b="{{curSkus}}" data-e-tap-a-c="{{quantity}}">{{fastBuyText}}</button>
                     </block>
+                    <block wx:if="{{type === 'pick' && hasStore}}">
+                        <button loading="{{busy}}" class="{{anonymousState__temp8}}" bindtap="handleBuyClick" disabled="{{anonymousState__temp9}}" data-e-tap-so="this" data-e-tap-a-a="pick" data-e-tap-a-b="{{curSkus}}" data-e-tap-a-c="{{quantity}}">确定</button>
+                    </block>
                     <block wx:if="{{!hasStore}}">
                         <button disabled="{{true}}" class="goods-buy-panel__btn btn-fast-buy">当前商品无货</button>
                     </block>

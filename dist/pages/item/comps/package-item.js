@@ -94,15 +94,17 @@ var PackageItem = (_temp2 = _class = function (_BaseComponent) {
                   item_id: 'item_id',
                   title: 'itemName',
                   desc: 'brief',
+                  pics: 'pics',
                   spec_items: 'spec_items',
                   item_spec_desc: 'item_spec_desc',
+                  checked_spec: null,
                   price: function price(_ref4) {
-                    var _price = _ref4.price;
-                    return (_price / 100).toFixed(2);
+                    var package_price = _ref4.package_price;
+                    return (package_price / 100).toFixed(2);
                   },
                   market_price: function market_price(_ref5) {
-                    var _market_price = _ref5.market_price;
-                    return (_market_price / 100).toFixed(2);
+                    var price = _ref5.price;
+                    return (price / 100).toFixed(2);
                   }
                 });
 
@@ -155,8 +157,10 @@ var PackageItem = (_temp2 = _class = function (_BaseComponent) {
           $original: (0, _index.internal_get_original)(item)
         };
         var $loopState__temp3 = selection.has(item.$original.item_id);
+        var $loopState__temp5 = (0, _index.internal_inline_style)(item.$original.spec_items.length ? '' : 'display: none;');
         return {
           $loopState__temp3: $loopState__temp3,
+          $loopState__temp5: $loopState__temp5,
           $original: item.$original
         };
       });
@@ -169,13 +173,13 @@ var PackageItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateEdvey",
-    value: function funPrivateEdvey() {
+    key: "funPrivateNcvrl",
+    value: function funPrivateNcvrl() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }, {
-    key: "funPrivateNHouG",
-    value: function funPrivateNHouG() {
+    key: "funPrivateOcHbv",
+    value: function funPrivateOcHbv() {
       this.__triggerPropsFn("onAddCart", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -210,7 +214,7 @@ var PackageItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateEdvey", "handleSelectionChange", "handleSkuPick", "funPrivateNHouG"], _class.options = {
+}, _class.$$events = ["funPrivateNcvrl", "handleSelectionChange", "handleSkuPick", "funPrivateOcHbv"], _class.options = {
   addGlobalClass: true
 }, _class.defaultProps = {
   onClick: function onClick() {},

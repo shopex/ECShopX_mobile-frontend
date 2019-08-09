@@ -39,10 +39,12 @@ export default class PackageItem extends Component {
       item_id: 'item_id',
       title: 'itemName',
       desc: 'brief',
+      pics: 'pics',
       spec_items: 'spec_items',
       item_spec_desc: 'item_spec_desc',
-      price: ({ price }) => (price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2)
+      checked_spec: null,
+      price: ({ package_price }) => (package_price/100).toFixed(2),
+      market_price: ({ price }) => (price/100).toFixed(2)
     })
 
     this.setState({
@@ -99,15 +101,14 @@ export default class PackageItem extends Component {
                     </View>
                   }
                   renderSpec={
-                    item.spec_items.length
-                      ? <View
-                          className='goods-item__sku'
-                          onClick={this.handleSkuPick.bind(this, item)}
-                        >
-                          <Text>请选择</Text>
-                          <Text className='icon-arrowDown'></Text>
-                        </View>
-                      : null
+                    <View
+                      className='goods-item__sku'
+                      style={item.spec_items.length ? '' : 'display: none;'}
+                      onClick={this.handleSkuPick.bind(this, item)}
+                    >
+                      <Text>请选择</Text>
+                      <Text className='icon-arrowDown'></Text>
+                    </View>
                   }
                 />
               )

@@ -93,6 +93,10 @@ export default class PackageList extends Component {
     })
   }
 
+  handleSkuPick = (sku) => {
+    console.log(sku)
+  }
+
   handleSkuChange = (curSku) => {
     this.setState({
       curSku
@@ -107,10 +111,7 @@ export default class PackageList extends Component {
     this.setState({
       info: data,
       showBuyPanel: true,
-      buyPanelType: 'cart'
-    }, () => {
-      const { info } = this.state
-      console.log(info)
+      buyPanelType: 'pick'
     })
   }
 
@@ -168,6 +169,7 @@ export default class PackageList extends Component {
             onChange={this.handleSkuChange}
             onAddCart={this.handleBuyAction.bind(this, 'cart')}
             onFastbuy={this.handleBuyAction.bind(this, 'fastbuy')}
+            onSubmit={this.handleSkuPick.bind(this)}
           />
         }
 

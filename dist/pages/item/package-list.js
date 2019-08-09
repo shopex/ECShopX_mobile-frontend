@@ -74,6 +74,8 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
         showBuyPanel: true,
         buyPanelType: type
       });
+    }, _this.handleSkuPick = function (sku) {
+      console.log(sku);
     }, _this.handleSkuChange = function (curSku) {
       _this.setState({
         curSku: curSku
@@ -84,11 +86,7 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
       _this.setState({
         info: data,
         showBuyPanel: true,
-        buyPanelType: 'cart'
-      }, function () {
-        var info = _this.state.info;
-
-        console.log(info);
+        buyPanelType: 'pick'
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -212,7 +210,7 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
   }]);
 
   return PackageList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleScroll", "nextPage", "handleItemClick", "handleCartAdd", "handleShowBuyPanel", "anonymousFunc0", "handleSkuChange", "handleBuyAction", "scrollBackToTop"], _temp2)) || _class) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleScroll", "nextPage", "handleItemClick", "handleCartAdd", "handleShowBuyPanel", "anonymousFunc0", "handleSkuChange", "handleBuyAction", "handleSkuPick", "scrollBackToTop"], _temp2)) || _class) || _class;
 
 exports.default = PackageList;
 

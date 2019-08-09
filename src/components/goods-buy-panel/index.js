@@ -271,6 +271,17 @@ export default class GoodsBuyPanel extends Component {
         url
       })
     }
+
+    if (type === 'pick') {
+      this.props.onSubmit(skuInfo)
+
+      this.setState({
+        busy: false
+      }, () => {
+        this.props.onClose()
+      })
+    }
+
   }
 
   render () {
@@ -390,6 +401,14 @@ export default class GoodsBuyPanel extends Component {
                   onClick={this.handleBuyClick.bind(this, 'fastbuy', curSkus, quantity)}
                   disabled={Boolean(!curSkus)}
                 >{fastBuyText}</Button>
+              )}
+              {(type === 'pick' && hasStore) && (
+                <Button
+                  loading={busy}
+                  className={classNames('goods-buy-panel__btn btn-fast-buy', { 'is-disabled': !curSkus })}
+                  onClick={this.handleBuyClick.bind(this, 'pick', curSkus, quantity)}
+                  disabled={Boolean(!curSkus)}
+                >确定</Button>
               )}
               {!hasStore && (<Button disabled className='goods-buy-panel__btn btn-fast-buy'>当前商品无货</Button>)}
             </View>
