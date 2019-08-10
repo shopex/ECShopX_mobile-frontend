@@ -18,7 +18,7 @@
   left: 0;
   width: 100%;
   top: 0;
-  bottom: 50rpx;
+  bottom: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-transform: translate3d(0, 0, 0);
@@ -35,4 +35,6 @@
 }
 .page-package-goods .package-add-cart {
   display: block;
+  height: 56rpx;
+  line-height: 52rpx;
 }

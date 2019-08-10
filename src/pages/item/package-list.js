@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text, Image } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, SpNote, GoodsBuyPanel } from '@/components'
+import { BackToTop, Loading, SpNote } from '@/components'
 import PackageItem from './comps/package-item'
 import api from '@/api'
 import { pickBy } from '@/utils'
@@ -18,10 +18,6 @@ export default class PackageList extends Component {
       ...this.state,
       query: null,
       currentPackage: 0,
-      info: null,
-      buyPanelType: null,
-      showBuyPanel: false,
-      curSku: null,
       list: []
     }
   }
@@ -48,6 +44,7 @@ export default class PackageList extends Component {
     const nList = pickBy(list, {
       package_id: 'package_id',
       package_name: 'package_name',
+      curSku: null,
       open: false
     })
 
@@ -73,50 +70,9 @@ export default class PackageList extends Component {
     })
   }
 
-  handleBuyAction = (type) => {
-    if (!S.getAuthToken()) {
-      Taro.showToast({
-        title: '请先登录再购买',
-        icon: 'none'
-      })
-
-      setTimeout(() => {
-        S.login(this)
-      }, 2000)
-
-      return
-    }
-
-    this.setState({
-      showBuyPanel: true,
-      buyPanelType: type
-    })
-  }
-
-  handleSkuPick = (sku) => {
-    console.log(sku)
-  }
-
-  handleSkuChange = (curSku) => {
-    this.setState({
-      curSku
-    })
-  }
-
-  handleCartAdd = () => {
-    console.log(111)
-  }
-
-  handleShowBuyPanel = (data) => {
-    this.setState({
-      info: data,
-      showBuyPanel: true,
-      buyPanelType: 'pick'
-    })
-  }
-
   render () {
     const { list, showBackToTop, scrollTop, page, currentPackage, buyPanelType } = this.state
+    const { curSku } = this.props
 
     return (
       <View className='page-package-goods'>
@@ -140,8 +96,6 @@ export default class PackageList extends Component {
                         info={item}
                         current={currentPackage}
                         onClick={this.handleItemClick.bind(this, item.package_id)}
-                        onAddCart={this.handleCartAdd.bind(this)}
-                        onShowBuyPanel={this.handleShowBuyPanel.bind(this)}
                       />
                     </View>
                   )
@@ -158,20 +112,6 @@ export default class PackageList extends Component {
               && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
-
-        {
-          info &&
-          <GoodsBuyPanel
-            info={info}
-            type={buyPanelType}
-            isOpened={showBuyPanel}
-            onClose={() => this.setState({ showBuyPanel: false })}
-            onChange={this.handleSkuChange}
-            onAddCart={this.handleBuyAction.bind(this, 'cart')}
-            onFastbuy={this.handleBuyAction.bind(this, 'fastbuy')}
-            onSubmit={this.handleSkuPick.bind(this)}
-          />
-        }
 
         <BackToTop
           show={showBackToTop}

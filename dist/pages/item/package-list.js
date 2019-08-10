@@ -50,43 +50,11 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PackageList.__proto__ || Object.getPrototypeOf(PackageList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["scrollTop", "list", "currentPackage", "page", "info", "buyPanelType", "showBuyPanel", "showBackToTop", "query", "curSku"], _this.config = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PackageList.__proto__ || Object.getPrototypeOf(PackageList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["scrollTop", "list", "currentPackage", "page", "showBackToTop", "query", "curSku"], _this.config = {
       navigationBarTitleText: '优惠组合'
     }, _this.handleItemClick = function (id) {
       _this.setState({
         currentPackage: id
-      });
-    }, _this.handleBuyAction = function (type) {
-      if (!S.getAuthToken()) {
-        _index2.default.showToast({
-          title: '请先登录再购买',
-          icon: 'none'
-        });
-
-        setTimeout(function () {
-          S.login(_this);
-        }, 2000);
-
-        return;
-      }
-
-      _this.setState({
-        showBuyPanel: true,
-        buyPanelType: type
-      });
-    }, _this.handleSkuPick = function (sku) {
-      console.log(sku);
-    }, _this.handleSkuChange = function (curSku) {
-      _this.setState({
-        curSku: curSku
-      });
-    }, _this.handleCartAdd = function () {
-      console.log(111);
-    }, _this.handleShowBuyPanel = function (data) {
-      _this.setState({
-        info: data,
-        showBuyPanel: true,
-        buyPanelType: 'pick'
       });
     }, _this.$$refs = [], _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -99,10 +67,6 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
       this.state = _extends({}, this.state, {
         query: null,
         currentPackage: 0,
-        info: null,
-        buyPanelType: null,
-        showBuyPanel: false,
-        curSku: null,
         list: []
       });
     }
@@ -139,6 +103,7 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
                 nList = (0, _index6.pickBy)(list, {
                   package_id: 'package_id',
                   package_name: 'package_name',
+                  curSku: null,
                   open: false
                 });
 
@@ -175,8 +140,6 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
   }, {
     key: "_createData",
     value: function _createData() {
-      var _this2 = this;
-
       this.__state = arguments[0] || this.state || {};
       this.__props = arguments[1] || this.props || {};
       var __isRunloopRef = arguments[2];
@@ -189,11 +152,8 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
           page = _state.page,
           currentPackage = _state.currentPackage,
           buyPanelType = _state.buyPanelType;
+      var curSku = this.__props.curSku;
 
-
-      this.anonymousFunc0 = function () {
-        return _this2.setState({ showBuyPanel: false });
-      };
 
       Object.assign(this.__state, {
         scrollTop: scrollTop,
@@ -202,15 +162,15 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
       });
       return this.__state;
     }
-  }, {
-    key: "anonymousFunc0",
-    value: function anonymousFunc0(e) {
-      ;
-    }
   }]);
 
   return PackageList;
-}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleScroll", "nextPage", "handleItemClick", "handleCartAdd", "handleShowBuyPanel", "anonymousFunc0", "handleSkuChange", "handleBuyAction", "handleSkuPick", "scrollBackToTop"], _temp2)) || _class) || _class;
+}(_index.Component), _class2.properties = {
+  "curSku": {
+    "type": null,
+    "value": null
+  }
+}, _class2.$$events = ["handleScroll", "nextPage", "handleItemClick", "scrollBackToTop"], _temp2)) || _class) || _class;
 
 exports.default = PackageList;
 

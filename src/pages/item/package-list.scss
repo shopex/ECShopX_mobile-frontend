@@ -1,12 +1,10 @@
 @import "../../style/imports";
 
-$submit-height: 50px !default;
-
 .page-package-goods {
   .package-goods{
     &__scroll {
       box-sizing: border-box;
-      @include page-scroll(0, $submit-height);
+      @include page-scroll(0, 0);
     }
     &__list {
 
@@ -18,5 +16,7 @@ $submit-height: 50px !default;
   }
   .package-add-cart {
     display: block;
+    height: 56px;
+    line-height: 52px;
   }
 }

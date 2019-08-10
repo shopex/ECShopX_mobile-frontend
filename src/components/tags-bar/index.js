@@ -38,7 +38,7 @@ export default class TagsBar extends Component {
     return (
       <ScrollView
         className='tags'
-        scroll-y
+        scrollX
       >
         {
           list.length > 0 &&

@@ -47,7 +47,7 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyPanel.__proto__ || Object.getPrototypeOf(GoodsBuyPanel)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp5", "anonymousState__temp6", "anonymousState__temp7", "anonymousState__temp8", "anonymousState__temp9", "info", "loopArray0", "curImg", "curSkus", "noSpecs", "maxStore", "quantity", "type", "hasStore", "busy", "isDrug", "fastBuyText", "marketing", "selection", "curSku", "isActive", "__fn_onChange", "__fn_onAddCart", "__fn_onFastbuy", "__fn_onSubmit", "isOpened"], _this.getSkuProps = function () {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = GoodsBuyPanel.__proto__ || Object.getPrototypeOf(GoodsBuyPanel)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["anonymousState__temp", "anonymousState__temp4", "anonymousState__temp5", "anonymousState__temp6", "anonymousState__temp7", "anonymousState__temp8", "anonymousState__temp9", "info", "loopArray0", "curImg", "curSkus", "noSpecs", "type", "maxStore", "quantity", "hasStore", "busy", "isDrug", "fastBuyText", "marketing", "selection", "curSku", "isActive", "__fn_onChange", "__fn_onAddCart", "__fn_onFastbuy", "__fn_onSubmit", "isOpened"], _this.getSkuProps = function () {
       var info = _this.props.info;
 
       if (!info) {
@@ -266,7 +266,6 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.log(this.state);
       var info = this.props.info;
       var spec_items = info.spec_items;
 
@@ -289,7 +288,6 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
         marketing: marketing,
         selection: selection
       });
-      console.log(111, selection);
 
       if (!spec_items || !spec_items.length) {
         this.noSpecs = true;
@@ -460,8 +458,8 @@ var GoodsBuyPanel = (_temp2 = _class = function (_BaseComponent) {
         loopArray0: loopArray0,
         curSkus: curSkus,
         noSpecs: noSpecs,
-        maxStore: maxStore,
         type: type,
+        maxStore: maxStore,
         hasStore: hasStore,
         busy: busy,
         isDrug: isDrug,

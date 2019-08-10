@@ -42,7 +42,6 @@ export default class GoodsBuyPanel extends Component {
   }
 
   componentDidMount () {
-    console.log(this.state)
     const { info } = this.props
     const { spec_items } = info
     const marketing = info.group_activity
@@ -64,7 +63,6 @@ export default class GoodsBuyPanel extends Component {
       marketing,
       selection
     })
-    console.log(111,selection)
 
     if (!spec_items || !spec_items.length) {
       this.noSpecs = true
@@ -372,17 +370,20 @@ export default class GoodsBuyPanel extends Component {
                 })
               }
             </ScrollView>
-            <View className='goods-quantity__wrap'>
-              <Text className='goods-quantity__hd'></Text>
-              <View className='goods-quantity__bd'>
-                <InputNumber
-                  min={1}
-                  max={maxStore}
-                  value={quantity}
-                  onChange={this.handleQuantityChange.bind(this)}
-                />
-              </View>
-            </View>
+            {
+              type !== 'pick' &&
+                <View className='goods-quantity__wrap'>
+                  <Text className='goods-quantity__hd'></Text>
+                  <View className='goods-quantity__bd'>
+                    <InputNumber
+                      min={1}
+                      max={maxStore}
+                      value={quantity}
+                      onChange={this.handleQuantityChange.bind(this)}
+                    />
+                  </View>
+                </View>
+            }
           </View>
           <View className='goods-buy-panel__ft'>
             <View className='goods-buy-panel__btns'>

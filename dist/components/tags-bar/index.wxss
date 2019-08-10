@@ -13,6 +13,7 @@
 ===============================*/
 .tags {
   width: 100%;
+  white-space: nowrap;
   background: #fff;
   border-bottom: 1PX solid #efefef;
 }
