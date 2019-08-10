@@ -50,7 +50,7 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PackageList.__proto__ || Object.getPrototypeOf(PackageList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["scrollTop", "list", "currentPackage", "page", "showBackToTop", "query", "curSku"], _this.config = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PackageList.__proto__ || Object.getPrototypeOf(PackageList)).call.apply(_ref, [this].concat(args))), _this), _this.$usedState = ["scrollTop", "list", "currentPackage", "page", "showBackToTop"], _this.config = {
       navigationBarTitleText: '优惠组合'
     }, _this.handleItemClick = function (id) {
       _this.setState({
@@ -65,7 +65,6 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
       _get(PackageList.prototype.__proto__ || Object.getPrototypeOf(PackageList.prototype), "_constructor", this).call(this, props);
 
       this.state = _extends({}, this.state, {
-        query: null,
         currentPackage: 0,
         list: []
       });
@@ -100,30 +99,32 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
                 _ref3 = _context.sent;
                 list = _ref3.list;
                 total = _ref3.total_count;
-                nList = (0, _index6.pickBy)(list, {
-                  package_id: 'package_id',
-                  package_name: 'package_name',
-                  curSku: null,
-                  open: false
-                });
 
 
-                this.setState({
-                  list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList)),
-                  query: query
-                });
-
-                if (!currentPackage) {
-                  this.setState({
-                    currentPackage: nList[0].package_id
+                if (list.length) {
+                  nList = (0, _index6.pickBy)(list, {
+                    package_id: 'package_id',
+                    package_name: 'package_name',
+                    open: false
                   });
+
+
+                  this.setState({
+                    list: [].concat(_toConsumableArray(this.state.list), _toConsumableArray(nList))
+                  });
+
+                  if (!currentPackage) {
+                    this.setState({
+                      currentPackage: nList[0].package_id
+                    });
+                  }
                 }
 
                 return _context.abrupt("return", {
                   total: total
                 });
 
-              case 13:
+              case 11:
               case "end":
                 return _context.stop();
             }
@@ -152,7 +153,6 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
           page = _state.page,
           currentPackage = _state.currentPackage,
           buyPanelType = _state.buyPanelType;
-      var curSku = this.__props.curSku;
 
 
       Object.assign(this.__state, {
@@ -165,12 +165,7 @@ var PackageList = (0, _index3.withPager)(_class = (0, _index3.withBackToTop)(_cl
   }]);
 
   return PackageList;
-}(_index.Component), _class2.properties = {
-  "curSku": {
-    "type": null,
-    "value": null
-  }
-}, _class2.$$events = ["handleScroll", "nextPage", "handleItemClick", "scrollBackToTop"], _temp2)) || _class) || _class;
+}(_index.Component), _class2.properties = {}, _class2.$$events = ["handleScroll", "nextPage", "handleItemClick", "scrollBackToTop"], _temp2)) || _class) || _class;
 
 exports.default = PackageList;
 

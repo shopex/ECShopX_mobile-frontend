@@ -39,26 +39,13 @@ function count(params) {
 }
 
 function add(params) {
-  var item_id = params.item_id,
-      _params$num = params.num,
-      num = _params$num === undefined ? 1 : _params$num,
-      _params$isAccumulate = params.isAccumulate,
-      isAccumulate = _params$isAccumulate === undefined ? false : _params$isAccumulate,
-      _params$shop_type2 = params.shop_type,
-      shop_type = _params$shop_type2 === undefined ? 'distributor' : _params$shop_type2;
-
-  return _req2.default.post('/cart', {
-    item_id: item_id,
-    num: num,
-    isAccumulate: isAccumulate,
-    shop_type: shop_type
-  });
+  return _req2.default.post('/cart', params);
 }
 
 function fastBuy(params) {
   var item_id = params.item_id,
-      _params$num2 = params.num,
-      num = _params$num2 === undefined ? 1 : _params$num2;
+      _params$num = params.num,
+      num = _params$num === undefined ? 1 : _params$num;
 
   return _req2.default.post('/cart', {
     cart_type: 'fastbuy',

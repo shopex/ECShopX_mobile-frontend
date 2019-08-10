@@ -76,8 +76,8 @@ var DistributionGoodsItem = (_temp2 = _class = function (_BaseComponent) {
       return this.__state;
     }
   }, {
-    key: "funPrivateuAMGD",
-    value: function funPrivateuAMGD() {
+    key: "funPrivatekAgrt",
+    value: function funPrivatekAgrt() {
       this.__triggerPropsFn("onClick", [].concat(Array.prototype.slice.call(arguments)));
     }
   }]);
@@ -104,7 +104,7 @@ var DistributionGoodsItem = (_temp2 = _class = function (_BaseComponent) {
     "type": null,
     "value": null
   }
-}, _class.$$events = ["funPrivateuAMGD"], _class.defaultProps = {
+}, _class.$$events = ["funPrivatekAgrt"], _class.defaultProps = {
   onClick: function onClick() {},
   onShare: function onShare() {}
 }, _class.options = {
