@@ -17,7 +17,7 @@
                             </block>
                             <cart-item wx:key="$original.cart_id" __triggerObserer="{{ _triggerObserer }}" info="{{item.$original}}" bindonnumchange="handleQuantityChange" bindonclickpromotion="handleClickPromotion" bindonclickimgandtitle="handleClickToDetail" wx:for="{{shopCart.$anonymousCallee__0}}" wx:for-item="item" wx:for-index="_anonIdx" __fn_onNumChange="{{true}}" data-e-onnumchange-so="this" data-e-onnumchange-a-a="{{item.$original}}" __fn_onClickPromotion="{{true}}" data-e-onclickpromotion-so="this" data-e-onclickpromotion-a-a="{{item.$original.cart_id}}" __fn_onClickImgAndTitle="{{true}}" data-e-onclickimgandtitle-so="this" data-e-onclickimgandtitle-a-a="{{item.$original.item_id}}">
                                 <view class="cart-item__act">
-                                    <sp-checkbox wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" checked="{{item.$loopState__temp3}}" bindonchange="handleSelectionChange" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{item.$original.cart_id}}"></sp-checkbox>
+                                    <sp-checkbox wx:key="$original.item_id" __triggerObserer="{{ _triggerObserer }}" checked="{{item.$loopState__temp3}}" bindonchange="handleSelectionChange" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{idx}}" data-e-onchange-a-b="{{item.$original.cart_id}}"></sp-checkbox>
                                     <view class="in-icon in-icon-close" bindtap="handleDelect" data-e-tap-so="this" data-e-tap-a-a="{{item.$original.cart_id}}"></view>
                                 </view>
                             </cart-item>
@@ -34,7 +34,7 @@
                             </block>
                             <view class="{{'toolbar cart-toolbar ' + (isEmpty && 'hidden')}}">
                                 <view class="cart-toolbar__hd">
-                                    <sp-checkbox checked="{{isTotalChecked}}" __triggerObserer="{{ _triggerObserer }}" bindonchange="handleAllSelect" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{shopCart.$original.shop_id}}">全选</sp-checkbox>
+                                    <sp-checkbox checked="{{isTotalChecked[idx]}}" __triggerObserer="{{ _triggerObserer }}" bindonchange="handleAllSelect" __fn_onChange="{{true}}" data-e-onchange-so="this" data-e-onchange-a-a="{{!isTotalChecked[idx]}}" data-e-onchange-a-b="{{idx}}">全选</sp-checkbox>
                                 </view>
                                 <block>
                                     <block wx:if="{{cartMode !== 'edit'}}">
@@ -46,7 +46,7 @@
                                                     </view>
                                                 </block>
                                                 <view class="cart-total__total"><text class="cart-total__hint">总计：</text>
-                                                    <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" value="{{totalPrice}}"></price>
+                                                    <price primary="{{true}}" __triggerObserer="{{ _triggerObserer }}" value="{{totalPrice[idx]}}"></price>
                                                 </view>
                                             </view>
                                             <at-button type="primary" __triggerObserer="{{ _triggerObserer }}" className="btn-checkout" disabled="{{shopCart.$loopState__temp7}}" bindonclick="handleCheckout" __fn_onClick="{{true}}">{{isDrug ? '立即预约' : '结算'}}</at-button>

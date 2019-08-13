@@ -21,7 +21,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 // import dotProp from 'dot-prop-immutable'
 
 function walkCart(state, fn) {
-  state.list.forEach(function (shopCart) {
+  state.list.forEach(function (shopCart, shopIndex) {
+    // console.log('1walkCart',shopCart,shopIndex)
     shopCart.list.forEach(fn);
   });
 }
@@ -71,9 +72,12 @@ var cart = (0, _index.createReducer)(initState, (_createReducer = {}, _definePro
 }), _defineProperty(_createReducer, 'cart/update', function cartUpdate(state, action) {
   var list = action.payload;
   var cartIds = [];
-  walkCart({ list: list }, function (t) {
-    cartIds.push(t.cart_id);
+  cartIds = list.map(function (shopCart, shopIndex) {
+    return shopCart.list.map(function (v) {
+      return v.cart_id;
+    });
   });
+  console.log('cartIds', cartIds);
 
   return _extends({}, state, {
     list: list,
@@ -115,15 +119,21 @@ function getTotalCount(state, isAll) {
 }
 
 function getTotalPrice(state) {
-  var total = 0;
-
-  walkCart(state, function (item) {
-    if (!state.selection.includes(item.cart_id)) return;
-
-    total += +item.price * +item.num;
+  // let total = 0
+  // walkCart(state, (item) => {
+  //   if (!state.selection.includes(item.cart_id)) return
+  //   total += (+item.price) * (+item.num)
+  // })
+  // return (total).toFixed(2)
+  var total = state.list.map(function (shopCart, shopIndex) {
+    var shop_total = 0;
+    shopCart.list.map(function (item) {
+      if (!state.selection.length || !state.selection[shopIndex].size) return;
+      state.selection[shopIndex].has(item.cart_id) && (shop_total += +item.price * +item.num);
+    });
+    return shop_total.toFixed(2);
   });
-
-  return total.toFixed(2);
+  return total;
 }
 
 function getSelectedCart(state) {

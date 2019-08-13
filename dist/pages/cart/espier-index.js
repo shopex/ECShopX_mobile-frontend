@@ -90,7 +90,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
       this.state = _extends({}, this.state, {
         loading: true,
-        selection: new Set(),
+        selection: [], //[new Set(),new Set(),...]
         cartMode: 'default',
         curPromotions: null,
         groups: [],
@@ -113,17 +113,16 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         }
         var groups = _this2.resolveActivityGroup(list);
         var selection = [];
-        list.forEach(function (shopCart) {
+        selection = list.map(function (shopCart) {
           var checkedIds = shopCart.list.filter(function (t) {
             return t.is_checked;
           }).map(function (t) {
             return t.cart_id;
           });
-
-          selection = [].concat(_toConsumableArray(selection), _toConsumableArray(checkedIds));
+          return [].concat(_toConsumableArray(selection), _toConsumableArray(checkedIds));
         });
+        console.log('selection', selection);
         _this2.updateSelection(selection);
-
         // this.props.list 此时为空数组
         setTimeout(function () {
           _this2.setState({
@@ -280,316 +279,28 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
                 valid_cart = [], invalid_cart = [];
                 _$router$params$type = this.$router.params.type, type = _$router$params$type === undefined ? 'distributor' : _$router$params$type;
                 params = { shop_type: type };
+                _context2.prev = 3;
+                _context2.next = 6;
+                return _index6.default.cart.get(params);
 
-                try {
-                  // const res = await api.cart.get(params)
-                  res = {
-                    "invalid_cart": [{
-                      "cart_id": "183",
-                      "company_id": "1",
-                      "user_id": "6",
-                      "user_ident": null,
-                      "shop_type": "distributor",
-                      "shop_id": "4",
-                      "activity_type": "normal",
-                      "activity_id": null,
-                      "marketing_type": null,
-                      "marketing_id": null,
-                      "item_type": "normal",
-                      "item_id": "99",
-                      "items_id": [],
-                      "item_name": "测试商品26",
-                      "pics": "http://mmbiz.qpic.cn/mmbiz_png/MUQsdY0GdK5ae4n1MtSjK0aksB7yCoufslMJhO5zyE0PRUdYElo6CSicOnJEbkpnbvHtfdd39LVtknSdMEFpOHQ/0?wx_fmt=png",
-                      "price": 1,
-                      "num": 1,
-                      "wxa_appid": null,
-                      "is_checked": false,
-                      "is_plus_buy": false,
-                      "created": 1565507373,
-                      "updated": 1565507373
-                    }, {
-                      "cart_id": "182",
-                      "company_id": "1",
-                      "user_id": "6",
-                      "user_ident": null,
-                      "shop_type": "distributor",
-                      "shop_id": "4",
-                      "activity_type": "normal",
-                      "activity_id": null,
-                      "marketing_type": null,
-                      "marketing_id": null,
-                      "item_type": "normal",
-                      "item_id": "98",
-                      "items_id": [],
-                      "item_name": "测试商品25",
-                      "pics": "http://mmbiz.qpic.cn/mmbiz_png/MUQsdY0GdK5ae4n1MtSjK0aksB7yCoufNBh17xk9Vq1dR5Vuh6vv9EEt61rKKv2DjW40VGV5JFOic77XyurzNsA/0?wx_fmt=png",
-                      "price": 100,
-                      "num": 1,
-                      "wxa_appid": null,
-                      "is_checked": false,
-                      "is_plus_buy": false,
-                      "created": 1565497994,
-                      "updated": 1565497994
-                    }, {
-                      "cart_id": "161",
-                      "company_id": "1",
-                      "user_id": "6",
-                      "user_ident": null,
-                      "shop_type": "distributor",
-                      "shop_id": "4",
-                      "activity_type": "normal",
-                      "activity_id": null,
-                      "marketing_type": null,
-                      "marketing_id": null,
-                      "item_type": "normal",
-                      "item_id": "100",
-                      "items_id": [],
-                      "item_name": " 云南白药 云丰 蒲地蓝消炎片 48片（消肿 咽炎 扁桃腺炎",
-                      "pics": "http://bbctest.aixue7.com/1/2019/07/09/8400174a0ba5e5b3577e719196cf5c1chvjL9AZcwdtqZ8dujNNxqGLoaCTfYpBR",
-                      "price": 10000,
-                      "num": 3,
-                      "wxa_appid": null,
-                      "is_checked": false,
-                      "is_plus_buy": false,
-                      "created": 1565348713,
-                      "updated": 1565348748
-                    }],
-                    "valid_cart": [{
-                      "shop_name": "怡康医药·广电智慧社区大兴东路店",
-                      "address": "安市莲湖区永安路9号龙湖水晶郦城",
-                      "shop_id": "4",
-                      "cart_total_price": 100,
-                      "item_fee": 100,
-                      "cart_total_num": 1,
-                      "cart_total_count": 1,
-                      "discount_fee": 0,
-                      "total_fee": "100",
-                      "list": [{
-                        "cart_id": "184",
-                        "company_id": "1",
-                        "user_id": "6",
-                        "user_ident": null,
-                        "shop_type": "distributor",
-                        "shop_id": "4",
-                        "activity_type": "normal",
-                        "activity_id": null,
-                        "marketing_type": null,
-                        "marketing_id": null,
-                        "item_type": "normal",
-                        "item_id": "207",
-                        "items_id": [],
-                        "item_name": "yao072901",
-                        "pics": "http://mmbiz.qpic.cn/mmbiz_jpg/MUQsdY0GdK4avNsaHHwqSumaBer5LDj0oWwuebbnzibRsgcickolK72CzfGArmp80LLgmibFov5dfTMwTwoMFtQqw/0?wx_fmt=jpeg",
-                        "price": 100,
-                        "num": 1,
-                        "wxa_appid": null,
-                        "is_checked": true,
-                        "is_plus_buy": false,
-                        "created": 1565540165,
-                        "updated": 1565540165,
-                        "is_last_price": true,
-                        "discount_fee": 0,
-                        "total_fee": "100",
-                        "store": 221,
-                        "market_price": 100,
-                        "brief": "072901",
-                        "approve_status": "onsale",
-                        "item_spec_desc": "颜色:绿",
-                        "parent_id": 0,
-                        "limitedTimeSaleAct": {
-                          "activity_id": "5",
-                          "marketing_type": "limited_time_sale",
-                          "marketing_name": "测试活动",
-                          "limit_total_money": 200,
-                          "limit_money": 1,
-                          "validity_period": 15,
-                          "is_free_shipping": false,
-                          "third_params": null,
-                          "promotion_tag": "限时优惠"
-                        },
-                        "total_price": "100"
-                      }],
-                      "used_activity": [],
-                      "used_activity_ids": [],
-                      "activity_grouping": [],
-                      "vipgrade_guide_title": {
-                        "guide_title_desc": ""
-                      }
-                    }, {
-                      "shop_id": "0",
-                      "cart_total_price": 0,
-                      "item_fee": 0,
-                      "cart_total_num": 0,
-                      "cart_total_count": 0,
-                      "discount_fee": 0,
-                      "total_fee": 0,
-                      "list": [{
-                        "cart_id": "179",
-                        "company_id": "1",
-                        "user_id": "6",
-                        "user_ident": null,
-                        "shop_type": "distributor",
-                        "shop_id": "0",
-                        "activity_type": "normal",
-                        "activity_id": null,
-                        "marketing_type": null,
-                        "marketing_id": null,
-                        "item_type": "normal",
-                        "item_id": "213",
-                        "items_id": [],
-                        "item_name": "兔兔5",
-                        "pics": "http://mmbiz.qpic.cn/mmbiz_jpg/MUQsdY0GdK7oJEMdx5fIyCIXwHkpN5ovseyoDNFo6ZiaicRJaPIyx3diaibjlia8JangYlLZMoLHpC5YTibbAqpAmHBg/0?wx_fmt=jpeg",
-                        "price": "1",
-                        "num": 1,
-                        "wxa_appid": null,
-                        "is_checked": false,
-                        "is_plus_buy": false,
-                        "created": 1565496251,
-                        "updated": 1565496251,
-                        "is_last_price": false,
-                        "discount_fee": 0,
-                        "total_fee": 1,
-                        "store": 96,
-                        "market_price": 0,
-                        "brief": "",
-                        "approve_status": "onsale",
-                        "item_spec_desc": "",
-                        "parent_id": 0,
-                        "original_price": 1,
-                        "discount_price": 0,
-                        "grade_name": "高级会员",
-                        "discount_desc": "",
-                        "total_price": "1"
-                      }, {
-                        "cart_id": "178",
-                        "company_id": "1",
-                        "user_id": "6",
-                        "user_ident": null,
-                        "shop_type": "distributor",
-                        "shop_id": "0",
-                        "activity_type": "normal",
-                        "activity_id": null,
-                        "marketing_type": null,
-                        "marketing_id": null,
-                        "item_type": "normal",
-                        "item_id": "212",
-                        "items_id": [],
-                        "item_name": "兔兔4",
-                        "pics": "http://mmbiz.qpic.cn/mmbiz_png/MUQsdY0GdK5RFlB9L9G7RAp9MD1iaCIqa7gcuY6cKaicg0v8xvrUGMtYkxhtNkpXOJaE6zYw48JD7xad39nicGmZw/0?wx_fmt=png",
-                        "price": "1",
-                        "num": 1,
-                        "wxa_appid": null,
-                        "is_checked": false,
-                        "is_plus_buy": false,
-                        "created": 1565495984,
-                        "updated": 1565496050,
-                        "is_last_price": false,
-                        "discount_fee": 0,
-                        "total_fee": 1,
-                        "store": 97,
-                        "market_price": 0,
-                        "brief": "",
-                        "approve_status": "onsale",
-                        "item_spec_desc": "",
-                        "parent_id": 0,
-                        "original_price": 1,
-                        "discount_price": 0,
-                        "grade_name": "高级会员",
-                        "discount_desc": "",
-                        "total_price": "1"
-                      }, {
-                        "cart_id": "177",
-                        "company_id": "1",
-                        "user_id": "6",
-                        "user_ident": null,
-                        "shop_type": "distributor",
-                        "shop_id": "0",
-                        "activity_type": "normal",
-                        "activity_id": null,
-                        "marketing_type": null,
-                        "marketing_id": null,
-                        "item_type": "normal",
-                        "item_id": "118",
-                        "items_id": [],
-                        "item_name": "兔兔1 有规格",
-                        "pics": "http://mmbiz.qpic.cn/mmbiz_jpg/MUQsdY0GdK7UY4x0PKJXNwsFp6Cic9RXsXOQszthYBhUibEEXOLHCNzwFBVZpMHqBHUQR2Wwjd0ftFia5sC0Wwv8g/0?wx_fmt=jpeg",
-                        "price": "500",
-                        "num": 1,
-                        "wxa_appid": null,
-                        "is_checked": false,
-                        "is_plus_buy": false,
-                        "created": 1565495559,
-                        "updated": 1565495559,
-                        "is_last_price": false,
-                        "discount_fee": 0,
-                        "total_fee": 500,
-                        "store": 92,
-                        "market_price": 0,
-                        "brief": "",
-                        "approve_status": "onsale",
-                        "item_spec_desc": "100cm大图:aaa,200cm大图:一",
-                        "parent_id": 0,
-                        "original_price": 500,
-                        "discount_price": 0,
-                        "grade_name": "高级会员",
-                        "discount_desc": "加入svip立省1元",
-                        "total_price": "500"
-                      }, {
-                        "cart_id": "175",
-                        "company_id": "1",
-                        "user_id": "6",
-                        "user_ident": null,
-                        "shop_type": "distributor",
-                        "shop_id": "0",
-                        "activity_type": "normal",
-                        "activity_id": null,
-                        "marketing_type": null,
-                        "marketing_id": null,
-                        "item_type": "normal",
-                        "item_id": "134",
-                        "items_id": [],
-                        "item_name": "兔兔3",
-                        "pics": "http://mmbiz.qpic.cn/mmbiz_jpg/MUQsdY0GdK5ae4n1MtSjK0aksB7yCoufgw0qmw3TGmiarsWAViaZNn0bx2GaFIia50pkWkTl16kB80URxibt3ubOyg/0?wx_fmt=jpeg",
-                        "price": "2000",
-                        "num": 3,
-                        "wxa_appid": null,
-                        "is_checked": false,
-                        "is_plus_buy": false,
-                        "created": 1565494811,
-                        "updated": 1565498543,
-                        "is_last_price": false,
-                        "discount_fee": 0,
-                        "total_fee": 6000,
-                        "store": 97,
-                        "market_price": 0,
-                        "brief": "",
-                        "approve_status": "onsale",
-                        "item_spec_desc": "",
-                        "parent_id": 0,
-                        "original_price": 2000,
-                        "discount_price": 0,
-                        "grade_name": "高级会员",
-                        "discount_desc": "加入svip立省12元",
-                        "total_price": "6000"
-                      }],
-                      "used_activity": [],
-                      "used_activity_ids": [],
-                      "activity_grouping": [],
-                      "vipgrade_guide_title": {
-                        "guide_title_desc": "是是是"
-                      }
-                    }]
-                  };
+              case 6:
+                res = _context2.sent;
 
-                  console.log('res', res);
-                  valid_cart = res.valid_cart || valid_cart;
-                  invalid_cart = res.invalid_cart || invalid_cart;
-                } catch (e) {
-                  this.setState({
-                    error: e
-                  });
-                }
+                console.log('res', res);
+                valid_cart = res.valid_cart || valid_cart;
+                invalid_cart = res.invalid_cart || invalid_cart;
+                _context2.next = 15;
+                break;
 
+              case 12:
+                _context2.prev = 12;
+                _context2.t0 = _context2["catch"](3);
+
+                this.setState({
+                  error: _context2.t0
+                });
+
+              case 15:
                 list = this.processCart({
                   valid_cart: valid_cart,
                   invalid_cart: invalid_cart
@@ -597,12 +308,12 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
                 cb && cb(list);
 
-              case 6:
+              case 17:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee2, this, [[3, 12]]);
       }));
 
       function fetchCart(_x2) {
@@ -616,16 +327,19 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
     value: function updateSelection() {
       var selection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
+      selection = selection.map(function (shopSelection) {
+        return new Set(shopSelection);
+      }); // [newSet,newSet]
       this.setState({
-        selection: new Set(selection)
+        selection: selection
       });
-
+      console.log('updateSelection', selection);
       this.__triggerPropsFn("onCartSelection", [null].concat([selection]));
     }
   }, {
     key: "handleSelectionChange",
     value: function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(cart_id, checked) {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(shopIndex, cart_id, checked) {
         var selection;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -633,21 +347,22 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
               case 0:
                 selection = this.state.selection;
 
-                selection[checked ? 'add' : 'delete'](cart_id);
+                console.log('handleSelectionChange', selection, selection[shopIndex]);
+                selection[shopIndex][checked ? 'add' : 'delete'](cart_id);
                 this.updateSelection([].concat(_toConsumableArray(selection)));
 
-                _context3.next = 5;
+                _context3.next = 6;
                 return _index6.default.cart.select({
                   cart_id: cart_id,
                   is_checked: checked
                 });
 
-              case 5:
+              case 6:
 
                 _index4.log.debug("[cart change] item: " + cart_id + ", selection:", selection);
                 this.updateCart();
 
-              case 7:
+              case 8:
               case "end":
                 return _context3.stop();
             }
@@ -655,7 +370,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         }, _callee3, this);
       }));
 
-      function handleSelectionChange(_x4, _x5) {
+      function handleSelectionChange(_x4, _x5, _x6) {
         return _ref7.apply(this, arguments);
       }
 
@@ -674,24 +389,35 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
                 _$router$params$type2 = this.$router.params.type, type = _$router$params$type2 === undefined ? 'distributor' : _$router$params$type2;
                 // this.updateCart.cancel()
 
-                _context4.next = 3;
+                _context4.prev = 1;
+                _context4.next = 4;
                 return _index6.default.cart.updateNum(item_id, num, type);
 
-              case 3:
+              case 4:
                 res = _context4.sent;
 
                 this.processCart(res);
-                // this.updateCart()
+                _context4.next = 12;
+                break;
 
-              case 5:
+              case 8:
+                _context4.prev = 8;
+                _context4.t0 = _context4["catch"](1);
+
+                this.setState({
+                  error: _context4.t0
+                });
+                this.fetchCart();
+
+              case 12:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee4, this, [[1, 8]]);
       }));
 
-      function changeCartNum(_x6, _x7) {
+      function changeCartNum(_x7, _x8) {
         return _ref8.apply(this, arguments);
       }
 
@@ -763,7 +489,9 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
           type = _$router$params$type3 === undefined ? 'distributor' : _$router$params$type3;
 
       var isDrug = type === 'drug';
-      var totalSelection = selection.size;
+      var totalSelection = (0, _index4.calCommonExp)(selection.map(function (v) {
+        return v.size;
+      }).join("+"));
       var totalItems = totalSelection;
       var isEmpty = !list.length;
       console.log('groups', groups);
@@ -773,14 +501,11 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         activityGroup = {
           $original: (0, _index.internal_get_original)(activityGroup)
         };
-
-        console.log(1111, { activityGroup: activityGroup.$original });
         var $anonymousCallee__1 = activityGroup.$original.map(function (shopCart) {
           shopCart = {
             $original: (0, _index.internal_get_original)(shopCart)
           };
 
-          console.log(2222, shopCart.$original);
           var activity = shopCart.$original.activity;
 
 
@@ -790,7 +515,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
             item = {
               $original: (0, _index.internal_get_original)(item)
             };
-            var $loopState__temp3 = shopCart.$original.list.length > 0 ? selection.has(item.$original.cart_id) : null;
+            var $loopState__temp3 = shopCart.$original.list.length > 0 ? selection[idx].has(item.$original.cart_id) : null;
             return {
               activity: shopCart.activity,
               $loopState__temp3: $loopState__temp3,
@@ -826,7 +551,11 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   }, {
     key: "isTotalChecked",
     get: function get() {
-      return this.props.cartIds.length === this.state.selection.size;
+      var _this4 = this;
+
+      return this.props.cartIds.map(function (cartId, i) {
+        return _this4.state.selection[i].size === cartId.length;
+      });
     }
   }]);
 
@@ -864,7 +593,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
   totalPrice: '0.00',
   list: null
 }, _initialiseProps = function _initialiseProps() {
-  var _this4 = this;
+  var _this5 = this;
 
   this.$usedState = ["anonymousState__temp", "anonymousState__temp8", "loopArray0", "loading", "isEmpty", "groups", "cartMode", "list", "totalPrice", "invalidList", "isDrug", "likeList", "page", "curPromotions", "selection", "error", "defaultAllSelect", "__fn_onUpdateCart", "cartIds", "__fn_onCartSelection", "__fn_onUpdateCartNum", "isTotalChecked"];
 
@@ -883,10 +612,10 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
             _index2.default.showLoading({
               mask: true
             });
-            _this4.updating = true;
+            _this5.updating = true;
             _context5.prev = 2;
             _context5.next = 5;
-            return _this4.fetchCart();
+            return _this5.fetchCart();
 
           case 5:
             _context5.next = 10;
@@ -899,7 +628,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
             console.log(_context5.t0);
 
           case 10:
-            _this4.updating = false;
+            _this5.updating = false;
             _index2.default.hideLoading();
 
           case 12:
@@ -907,7 +636,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
             return _context5.stop();
         }
       }
-    }, _callee5, _this4, [[2, 7]]);
+    }, _callee5, _this5, [[2, 7]]);
   }));
   this.asyncUpdateCart = (0, _debounce2.default)(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
@@ -915,71 +644,37 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
         switch (_context6.prev = _context6.next) {
           case 0:
             _context6.next = 2;
-            return _this4.updateCart();
+            return _this5.updateCart();
 
           case 2:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, _this4);
+    }, _callee6, _this5);
   })), 300);
 
   this.toggleCartMode = function () {
-    var cartMode = _this4.state.cartMode !== 'edit' ? 'edit' : 'default';
-    _this4.setState({
+    var cartMode = _this5.state.cartMode !== 'edit' ? 'edit' : 'default';
+    _this5.setState({
       cartMode: cartMode
     });
   };
 
   this.handleDelect = function () {
     var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(cart_id) {
-      var res, cartIds;
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
-              _context7.next = 2;
-              return _index2.default.showModal({
-                title: '将当前商品移出购物车?',
-                showCancel: true,
-                cancel: '取消',
-                confirmText: '确认',
-                confirmColor: '#0b4137'
-              });
-
-            case 2:
-              res = _context7.sent;
-
-              if (res.confirm) {
-                _context7.next = 5;
-                break;
-              }
-
-              return _context7.abrupt("return");
-
-            case 5:
-              _context7.next = 7;
-              return _index6.default.cart.del({ cart_id: cart_id });
-
-            case 7:
-              cartIds = _this4.props.cartIds.filter(function (t) {
-                return t !== cart_id;
-              });
-
-
-              _this4.updateSelection(cartIds);
-              _this4.updateCart();
-
-            case 10:
             case "end":
               return _context7.stop();
           }
         }
-      }, _callee7, _this4);
+      }, _callee7, _this5);
     }));
 
-    return function (_x8) {
+    return function (_x9) {
       return _ref15.apply(this, arguments);
     };
   }();
@@ -999,9 +694,9 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
                 mask: true
               });
 
-              _this4.__triggerPropsFn("onUpdateCartNum", [null].concat([cart_id, num]));
+              _this5.__triggerPropsFn("onUpdateCartNum", [null].concat([cart_id, num]));
               _context8.next = 6;
-              return _this4.changeCartNum(item_id, num);
+              return _this5.changeCartNum(item_id, num);
 
             case 6:
               _index2.default.hideLoading();
@@ -1019,72 +714,75 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
               return _context8.stop();
           }
         }
-      }, _callee8, _this4);
+      }, _callee8, _this5);
     }));
 
-    return function (_x9, _x10, _x11) {
+    return function (_x10, _x11, _x12) {
       return _ref16.apply(this, arguments);
     };
   }();
 
   this.handleAllSelect = function () {
-    var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(checked) {
+    var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(checked, shopIndex) {
       var selection, cartIds;
       return regeneratorRuntime.wrap(function _callee9$(_context9) {
         while (1) {
           switch (_context9.prev = _context9.next) {
             case 0:
-              selection = _this4.state.selection;
-              cartIds = _this4.props.cartIds;
+              selection = _this5.state.selection;
+              cartIds = _this5.props.cartIds;
 
+
+              console.log('handleAllSelect', checked, selection, cartIds);
 
               if (checked) {
-                cartIds.forEach(function (cartId) {
-                  return selection.add(cartId);
+                cartIds[shopIndex].forEach(function (cartId) {
+                  return selection[shopIndex].add(cartId);
                 });
               } else {
-                selection.clear();
+                selection[shopIndex].clear();
               }
 
               _index2.default.showLoading();
-              _context9.prev = 4;
-              _context9.next = 7;
+              _context9.prev = 5;
+              _context9.next = 8;
               return _index6.default.cart.select({
-                cart_id: cartIds,
+                cart_id: cartIds[shopIndex],
                 is_checked: checked
               });
 
-            case 7:
-              _context9.next = 12;
+            case 8:
+              _context9.next = 13;
               break;
 
-            case 9:
-              _context9.prev = 9;
-              _context9.t0 = _context9["catch"](4);
+            case 10:
+              _context9.prev = 10;
+              _context9.t0 = _context9["catch"](5);
 
               console.log(_context9.t0);
 
-            case 12:
+            case 13:
               _index2.default.hideLoading();
-              _this4.updateSelection([].concat(_toConsumableArray(selection)));
+              // this.updateSelection([...selection])
+              _this5.updateSelection(selection);
 
-            case 14:
+            case 15:
             case "end":
               return _context9.stop();
           }
         }
-      }, _callee9, _this4, [[4, 9]]);
+      }, _callee9, _this5, [[5, 10]]);
     }));
 
-    return function (_x12) {
+    return function (_x13, _x14) {
       return _ref17.apply(this, arguments);
     };
   }();
 
   this.handleClickPromotion = function (cart_id, e) {
-    _this4.isTodetail = 0;
+    _this5.isTodetail = 0;
     var promotions = void 0;
-    _this4.props.list.some(function (cart) {
+    _this5.props.list.some(function (cart) {
       cart.list.some(function (item) {
         if (item.cart_id === cart_id) {
           promotions = item.promotions.slice();
@@ -1092,18 +790,18 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       });
     });
 
-    _this4.setState({
+    _this5.setState({
       curPromotions: promotions
     }, function () {
-      _this4.isTodetail = 1;
+      _this5.isTodetail = 1;
     });
   };
 
   this.handleClickToDetail = function (item_id) {
-    if (_this4.isTodetail === 0) {
+    if (_this5.isTodetail === 0) {
       return false;
     }
-    _this4.isTodetail = 1;
+    _this5.isTodetail = 1;
     _index2.default.navigateTo({
       url: "/pages/item/espier-detail?id=" + item_id
     });
@@ -1121,7 +819,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
               _index2.default.showLoading({
                 mask: true
               });
-              _this4.setState({
+              _this5.setState({
                 curPromotions: null
               });
               _context10.next = 5;
@@ -1132,7 +830,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
 
             case 5:
               _context10.next = 7;
-              return _this4.fetchCart();
+              return _this5.fetchCart();
 
             case 7:
               _index2.default.hideLoading();
@@ -1142,24 +840,24 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
               return _context10.stop();
           }
         }
-      }, _callee10, _this4);
+      }, _callee10, _this5);
     }));
 
-    return function (_x13) {
+    return function (_x15) {
       return _ref18.apply(this, arguments);
     };
   }();
 
   this.handleClosePromotions = function () {
-    _this4.setState({
+    _this5.setState({
       curPromotions: null
     });
   };
 
   this.handleCheckout = function () {
-    var type = _this4.$router.params.type;
+    var type = _this5.$router.params.type;
 
-    if (_this4.updating) {
+    if (_this5.updating) {
       _index2.default.showToast({
         title: '正在计算价格，请稍后',
         icon: 'none'
@@ -1177,7 +875,7 @@ var CartIndex = (_dec = (0, _index3.connect)(function (_ref) {
       args[_key2] = arguments[_key2];
     }
 
-    _index4.navigateTo.apply(_this4, args);
+    _index4.navigateTo.apply(_this5, args);
   };
 
   this.$$refs = [];

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.throttle = exports.debounce = exports.log = exports.styleNames = exports.classNames = undefined;
+exports.calCommonExp = exports.throttle = exports.debounce = exports.log = exports.styleNames = exports.classNames = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -73,6 +73,10 @@ var _throttle2 = _interopRequireDefault(_throttle);
 var _log = require("./log.js");
 
 var _log2 = _interopRequireDefault(_log);
+
+var _calCommonExp = require("./calCommonExp.js");
+
+var _calCommonExp2 = _interopRequireDefault(_calCommonExp);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -291,3 +295,4 @@ exports.styleNames = _index6.default;
 exports.log = _log2.default;
 exports.debounce = _debounce2.default;
 exports.throttle = _throttle2.default;
+exports.calCommonExp = _calCommonExp2.default;
