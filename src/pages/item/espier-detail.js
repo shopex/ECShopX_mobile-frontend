@@ -9,7 +9,6 @@ import { log, calcTimer, isArray, pickBy, classNames } from '@/utils'
 import S from '@/spx'
 import GoodsBuyToolbar from './comps/buy-toolbar'
 import ItemImg from './comps/item-img'
-import Params from './comps/params-item'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -563,21 +562,8 @@ export default class Detail extends Component {
           }
 
           {
-            itemParams.length &&
-              <View className="goods-sec-specs">
-                <View className="goods-params">
-                  {
-                    itemParams.map((item, idx) => {
-                      return (
-                        <Params
-                          key={idx}
-                          info={item}
-                        />
-                      )
-                    })
-                  }
-                </View>
-              </View>
+            itemParams
+
           }
 
           {

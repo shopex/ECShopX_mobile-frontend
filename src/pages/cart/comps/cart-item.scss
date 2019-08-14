@@ -8,9 +8,14 @@ $item-img-height: 200px !default;
   align-items: center;
   background: #fff;
   overflow: hidden;
-  margin: 0 0 $edge-margin;
-  position: relative;
-  padding: 0 0 30px;
+  // margin: 0 0 $edge-margin;
+	padding: 0 0 30px;
+	border-bottom: 1px dashed $color-border-gray;
+	position: relative;
+	// &:last-child{
+	// 	border-bottom:none;
+	// }
+
   &.is-disabled {
     background: #fafafa;
     opacity: 0.8;
