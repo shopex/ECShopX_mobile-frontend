@@ -16,7 +16,7 @@ import './espier-index.scss'
   list: cart.list,
   cartIds: cart.cartIds,
   defaultAllSelect: false,
-  totalPrice: getTotalPrice(cart),
+  // totalPrice: getTotalPrice(cart),
   // workaround for none selection cartItem num change
   totalItems: getTotalCount(cart, true)
 }), (dispatch) => ({
@@ -132,22 +132,23 @@ export default class CartIndex extends Component {
         acc[val.cart_id] = val
         return acc
 			}, {})
-      const activityGrouping = shopCart.activity_grouping
+			const activityGrouping = shopCart.activity_grouping
+			
+			// 活动列表
       const group = used_activity.map((act) => {
         const activity = activityGrouping.find(a => String(a.activity_id) === String(act.activity_id))
         const itemList = activity.cart_ids.map(id => {
           const cartItem = tDict[id]
           delete tDict[id]
           return cartItem
-				})
-								
-        return Object.assign(shopCart,{activity,list: itemList})
-      })
-
+				})		
+				// return Object.assign({},shopCart,{list: itemList,activity})	
+				return {list: itemList,activity}
+			})
       // 无活动列表
-			group.push(Object.assign(shopCart,{activity: null, list: Object.values(tDict) }))
-
-      return group
+			group.push({activity: null, list: Object.values(tDict) })
+			// console.log('group',group)
+      return {shopInfo:shopCart,group}
     })
     return groups
   }
@@ -183,7 +184,7 @@ export default class CartIndex extends Component {
       invalid_cart = res.invalid_cart || invalid_cart
     } catch (e) {
       this.setState({
-        error: e
+        error: e.message
       })
     }
 
@@ -247,41 +248,44 @@ export default class CartIndex extends Component {
     this.updateCart()
   }
 
-  handleDelect = async (cart_id) => {
-    // const res = await Taro.showModal({
-    //   title: '将当前商品移出购物车?',
-    //   showCancel: true,
-    //   cancel: '取消',
-    //   confirmText: '确认',
-    //   confirmColor: '#0b4137'
-    // })
-    // if (!res.confirm) return
+  handleDelect = async (cart_id,shopIndex) => {
+    const res = await Taro.showModal({
+      title: '将当前商品移出购物车?',
+      showCancel: true,
+      cancel: '取消',
+      confirmText: '确认',
+      confirmColor: '#0b4137'
+    })
+    if (!res.confirm) return
 
-    // await api.cart.del({ cart_id })
+    await api.cart.del({ cart_id })
 
-    // const cartIds = this.props.cartIds.filter(t => t !== cart_id)
+    const cartIds = this.props.cartIds[shopIndex].filter(t => t !== cart_id)
 
     // this.updateSelection(cartIds)
-    // this.updateCart()
+		this.updateCart()
   }
 
-  async changeCartNum (item_id, num) {
+  async changeCartNum (shop_id,cart_id, num) {
     const { type = 'distributor' } = this.$router.params
 		// this.updateCart.cancel()
 		try {
-			const res = await api.cart.updateNum(item_id, num, type)
+			console.log('c')
+			const res = await api.cart.updateNum(shop_id,cart_id, num, type)
+
 			this.processCart(res)
 		}catch(e){
-			this.setState({
-        error: e
-      })
-			this.fetchCart()
-		}
-		
-    // this.updateCart()
+			Taro.showToast({
+				icon: 'none',
+				title: e.message,
+				duration: 5000
+			})
+		}		
+    this.updateCart()
   }
 
-  handleQuantityChange = async (item, num, e) => {
+  handleQuantityChange = async (shop_id,item, num, e) => {
+		console.log('a')
     e.stopPropagation()
 
     const { item_id, cart_id } = item
@@ -289,11 +293,11 @@ export default class CartIndex extends Component {
       mask: true
     })
 
-    this.props.onUpdateCartNum(cart_id, num)
-    await this.changeCartNum(item_id, num)
+		this.props.onUpdateCartNum(cart_id, num)
+		console.log('b')
+		await this.changeCartNum(shop_id,cart_id, num)
     Taro.hideLoading()
     // this.updateCart.cancel()
-
     // if (this.lastCartId === cart_id || this.lastCartId === undefined) {
     //   await this.debounceChangeCartNum(cart_id, num)
     // } else {
@@ -326,11 +330,12 @@ export default class CartIndex extends Component {
     }
     Taro.hideLoading()
 		// this.updateSelection([...selection])
-    this.updateSelection(selection)
-		
+    // this.updateSelection(selection)
+		this.updateCart()
   }
 
   handleClickPromotion = (cart_id, e) => {
+		return // 活动不需要选择
     this.isTodetail = 0
     let promotions
     this.props.list.some((cart) => {
@@ -380,7 +385,7 @@ export default class CartIndex extends Component {
     })
   }
 
-  handleCheckout = () => {
+  handleCheckout = (shop_id) => {
     const { type } = this.$router.params
     if (this.updating) {
       Taro.showToast({
@@ -389,9 +394,8 @@ export default class CartIndex extends Component {
       })
       return
     }
-
     Taro.navigateTo({
-      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}`
+      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}&shop_id=${shop_id}`
     })
   }
 
@@ -414,7 +418,8 @@ export default class CartIndex extends Component {
       img: ({ pics }) => pics,
       price: ({ price }) => (+price / 100).toFixed(2),
       market_price: ({ market_price }) => (+market_price / 100).toFixed(2),
-      num: 'num'
+			num: 'num',
+			packages: (item) => item.packages && item.packages.length && this.transformCartList(item.packages)
     })
   }
 
@@ -461,138 +466,161 @@ export default class CartIndex extends Component {
           <View className='cart-list'>
             {
 							
-              groups.map((activityGroup, idx) => {
+              groups.map((shopCart, shopIndex) => {
+								console.log('shopCart---->',shopCart)
+								const checked_all = shopCart.shopInfo.cart_total_count == shopCart.shopInfo.list.length
                 return (
                   <View
                     className='cart-list__shop'
-                    key={idx}
+                    key={shopIndex}
 									>
-                    {
-                      activityGroup.map(shopCart => {
-                        const { activity } = shopCart
-												
-                        return shopCart.list.length > 0 && (
-                          <View
-                            className='cart-group'
-                            key={shopCart.shop_id}
-													>
-													<Text>{shopCart.shop_name}</Text>
-                            {activity && (
-                              <View className='cart-group__activity'>
-                                <View
-                                  className='cart-group__activity-item'
-                                >
-                                  <Text className='cart-group__activity-label'>{activity.activity_tag}</Text>
-                                  <Text>{activity.activity_name}</Text>
-                                </View>
-                              </View>
-                            )}
-                            {
-                              shopCart.list.map((item) => {
-                                return (
-                                  <CartItem
-                                    key={item.cart_id}
-                                    info={item}
-                                    onNumChange={this.handleQuantityChange.bind(this, item)}
-                                    onClickPromotion={this.handleClickPromotion.bind(this, item.cart_id)}
-                                    onClickImgAndTitle={this.handleClickToDetail.bind(this, item.item_id)}
-                                  >
-                                    <View className='cart-item__act'>
-                                      <SpCheckbox
-                                        key={item.item_id}
-                                        checked={selection[idx].has(item.cart_id)}
-                                        onChange={this.handleSelectionChange.bind(this,idx, item.cart_id)}
-                                      />
-                                      <View
-                                        className='in-icon in-icon-close'
-                                        onClick={this.handleDelect.bind(this, item.cart_id)}
-                                      />
-                                    </View>
-                                  </CartItem>
-                                )
-                              })
-                            }
-                            {activity && activity.gifts && (
-                              <View className='cart-group__gifts'>
-                                <View className='cart-group__gifts-hd'>赠品</View>
-                                <View className='cart-group__gifts-bd'>
-                                  {activity.gifts.map(gift => {
-                                    return (
-                                      <View
-                                        className='gift-item'
-                                        key={gift.item_id}
-                                      >
-                                        <Image
-                                          className='gift-item__img'
-                                          src={gift.pics[0]}
-                                          mode='aspectFill'
-                                        />
-                                        <View className='gift-item__title'>{gift.item_name}</View>
-                                        <Text className='gift-item__num'>x{gift.gift_num}</Text>
-                                      </View>
-                                    )
-                                  })}
-                                </View>
-                              </View>
-														)}
-
-														<View className={`toolbar cart-toolbar ${isEmpty && 'hidden'}`}>
-														<View className='cart-toolbar__hd'>
-															<SpCheckbox
-																checked={this.isTotalChecked[idx]}
-																onChange={this.handleAllSelect.bind(this,!this.isTotalChecked[idx],idx)}
-															>全选</SpCheckbox>
-														</View>
+										<Text className='shop__name'>{shopCart.shopInfo.shop_name}</Text>
+										<View className='shop__wrap'>
+											{
+												shopCart.group.map(activityGroup => {
+													console.log('activityGroup---->',activityGroup)
+													const { activity } = activityGroup
+													
+													return activityGroup.list.length > 0 && (
+														<View
+															className='cart-group'
+															key={shopCart.shopInfo.shop_id}
+														>
+															{activity && (
+																<View className='cart-group__activity'>
+																	<View
+																		className='cart-group__activity-item'
+																	>
+																		<Text className='cart-group__activity-label'>{activity.activity_tag}</Text>
+																		<Text>{activity.activity_name}</Text>
+																	</View>
+																</View>
+															)}
 															{
-																cartMode !== 'edit'
-																	? <View className='cart-toolbar__bd'>
-																			<View className='cart-total'>
-																				{list.length && list[0].discount_fee > 0 && (
-																					<View className='cart-total__discount'>
-																						<Text className='cart-total__hint'>优惠：</Text>
-																						<Price
-																							primary
-																							value={-1 * list[0].discount_fee}
-																							unit='cent'
-																						/>
-																					</View>
-																				)}
-																				<View className='cart-total__total'>
-																					<Text className='cart-total__hint'>总计：</Text>
-																					<Price
-																						primary
-																						value={totalPrice[idx]}
+																activityGroup.list.map((item) => {
+																	console.log(3333,item)
+																	return (
+																		<View className='cart-group__item-wrap'>
+																			<CartItem
+																				key={item.cart_id}
+																				info={item}
+																				onNumChange={this.handleQuantityChange.bind(this, shopCart.shopInfo.shop_id,item)}
+																				onClickPromotion={this.handleClickPromotion.bind(this, item.cart_id)}
+																				onClickImgAndTitle={this.handleClickToDetail.bind(this, item.item_id)}
+																			>
+																				<View className='cart-item__act'>
+																					<SpCheckbox
+																						key={item.item_id}
+																						checked={selection[shopIndex]?selection[shopIndex].has(item.cart_id):false}
+																						onChange={this.handleSelectionChange.bind(this,shopIndex, item.cart_id)}
+																					/>
+																					<View
+																						className='in-icon in-icon-close'
+																						onClick={this.handleDelect.bind(this, item.cart_id,shopIndex)}
 																					/>
 																				</View>
-																			</View>
-																			<AtButton
-																				type='primary'
-																				className='btn-checkout'
-																				disabled={totalItems <= 0}
-																				onClick={this.handleCheckout}
-																			>{isDrug ? '立即预约' : '结算'}</AtButton>
+																			</CartItem>
+																			{item.packages && item.packages.length && (
+																				<View class="cart-item__packages">
+																				{item.packages.map(pack => {
+																					return (
+																						<CartItem
+																							isDisabled
+																							num={true}
+																						  info={pack}
+																						></CartItem>
+																					)
+																				})}
+																				</View>
+																			)}
 																		</View>
-																	: <View className='cart-toolbar__bd'>
-																			<AtButton
-																				type='primary'
-																				className='btn-checkout'
-																				onClick={this.handleDelect}
-																			>删除</AtButton>
-																		</View>
+																	)
+																})
 															}
+															{activity && activity.gifts && (
+																<View className='cart-group__gifts'>
+																	<View className='cart-group__gifts-hd'>赠品</View>
+																	<View className='cart-group__gifts-bd'>
+																		{activity.gifts.map(gift => {
+																			return (
+																				<View
+																					className='gift-item'
+																					key={gift.item_id}
+																				>
+																					<Image
+																						className='gift-item__img'
+																						src={gift.pics[0]}
+																						mode='aspectFill'
+																					/>
+																					<View className='gift-item__title'>{gift.item_name}</View>
+																					<Text className='gift-item__num'>x{gift.gift_num}</Text>
+																				</View>
+																			)
+																		})}
+																	</View>
+																</View>
+															)}
 														</View>
-
-                          </View>
-                        )
-                      })
-                    }
+													)
+												})
+											}
+										</View>
+                    
+									<View className={`toolbar cart-toolbar ${isEmpty && 'hidden'}`}>
+									<View className='cart-toolbar__hd'>
+										<SpCheckbox
+											// checked={this.isTotalChecked[shopIndex]}
+											checked={checked_all}
+											onChange={this.handleAllSelect.bind(this,!checked_all,shopIndex)}
+										>全选</SpCheckbox>
+									</View>
+										{
+											cartMode !== 'edit'
+												? <View className='cart-toolbar__bd'>
+														<View className='cart-total'>
+															{list.length && shopCart.shopInfo.discount_fee > 0 && (
+																<View className='cart-total__discount'>
+																	<Text className='cart-total__hint'>优惠：</Text>
+																	<Price
+																		primary
+																		value={-1 * Number(shopCart.shopInfo.discount_fee )}
+																		unit='cent'
+																	/>
+																</View>
+															)}
+															<View className='cart-total__total'>
+																<Text className='cart-total__hint'>总计：</Text>
+																<Price
+																	primary
+																	value={Number(shopCart.shopInfo.total_fee)}
+																	unit='cent'
+																/>
+															</View>
+														</View>
+														<AtButton
+															type='primary'
+															className='btn-checkout'
+															disabled={totalItems <= 0}
+															onClick={this.handleCheckout.bind(this,shopCart.shopInfo.shop_id)}
+														>{isDrug ? '立即预约' : '结算'}</AtButton>
+													</View>
+												: <View className='cart-toolbar__bd'>
+														<AtButton
+															type='primary'
+															className='btn-checkout'
+															onClick={this.handleDelect}
+														>删除</AtButton>
+													</View>
+										}
+								</View>
+					
                   </View>
                 )
               })
             }
-
+					
             {
-              (!list.length || this.state.error) && (
+              (!groups.length || this.state.error) && (
                 <View>
                   <View style='margin-bottom: 20px'>
                     <SpNote img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>

@@ -43,7 +43,14 @@
   }
 
   .cart-list {
-    padding: $edge-size;
+		padding: $edge-size;
+		&__shop {
+			margin: 0 0 20px;
+			padding: 0 0 4px;
+			.shop__name{
+				font-weight:bold;
+			}
+		}
     &__scroll {
 			// @include page-scroll($navigate-height, $toolbar-height + $tabbar-height);
       @include page-scroll($navigate-height, $tabbar-height);			
@@ -84,15 +91,14 @@
   }
   .hidden-scroll {
     @include page-scroll($navigate-height, $toolbar-height);
-  }
+	}
   .cart-group {
-    margin: 0 0 20px;
-    padding: 0 0 4px;
-    border-bottom: 1px dashed $color-border-gray;
+		margin: 0 0 $edge-margin;
+		&:last-child{
+			margin:0;
+		}
     &__activity {
       margin: 0 0 8px;
-      &-item {
-      }
       &-label {
         background: $color-brand-primary;
         color: #fff;
@@ -136,7 +142,7 @@
         }
       }
     }
-  }
+	}
   .cart-item {
     &__act {
       display: flex;

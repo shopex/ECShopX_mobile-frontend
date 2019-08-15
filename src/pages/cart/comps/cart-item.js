@@ -14,7 +14,8 @@ export default class GoodsItem extends Component {
     onClickImgAndTitle: () => {},
     showMarketPrice: false,
     noCurSymbol: false,
-    isDisabled: false
+		isDisabled: false,
+		num:false
   }
 
   static options = {
@@ -22,7 +23,7 @@ export default class GoodsItem extends Component {
   }
 
   render () {
-    const { info, showMarketPrice, noCurSymbol, noCurDecimal, onClick, appendText, className, isDisabled, isPointDraw } = this.props
+    const { num,info, showMarketPrice, noCurSymbol, noCurDecimal, onClick, appendText, className, isDisabled, isPointDraw } = this.props
     if (!info) {
       return null
     }
@@ -96,6 +97,9 @@ export default class GoodsItem extends Component {
               value={info.num}
               onChange={this.props.onNumChange}
             />
+					)}
+					{num && (
+            <Text>x {info.num}</Text>
           )}
         </View>
       </View>

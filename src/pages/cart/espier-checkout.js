@@ -85,7 +85,7 @@ export default class CartCheckout extends Component {
   componentDidMount () {
     // this.fetchAddress()
 
-    const { cart_type, pay_type: payType } = this.$router.params
+    const { cart_type, pay_type: payType,shop_id } = this.$router.params
     let info = null
 
     if (cart_type === 'fastbuy') {
@@ -202,10 +202,10 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const { type } = this.$router.params
+    const { type,shop_id } = this.$router.params
     const isDrug = type === 'drug'
     let receiver = null
-    if (isDrug) {
+    if (isDrug) { 
       receiver = pickBy(this.state.address, {
         receiver_name: 'name',
         receiver_mobile: 'mobile',
@@ -224,7 +224,6 @@ export default class CartCheckout extends Component {
     }
     const { payType } = this.state
     const { coupon } = this.props
-
     const params = {
       ...this.params,
       ...receiver,
@@ -233,7 +232,8 @@ export default class CartCheckout extends Component {
       promotion: 'normal',
       member_discount: 0,
       coupon_discount: 0,
-      pay_type: payType
+			pay_type: payType,
+			distributor_id: shop_id==='undefined'?0:shop_id
     }
 
     log.debug('[checkout] params: ', params)

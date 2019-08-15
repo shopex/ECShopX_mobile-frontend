@@ -1,7 +1,7 @@
 import req from './req'
 
 export function get (params) {
-  return req.get('/cart', params)
+  return req.get('/cart/list', params)
 }
 
 export function count (params) {
@@ -35,14 +35,14 @@ export function select ({ cart_id, is_checked }) {
   return req.put('/cartupdate/checkstatus', { cart_id, is_checked })
 }
 
-export function updateNum (item_id, num, shop_type) {
-  return req.post(`/cart`, {
-    item_id,
+export function updateNum (shop_id,cart_id, num, shop_type) {
+  return req.put(`/cartupdate/num`, {
+		shop_id,
+    cart_id,
     num,
     isAccumulate: false,
     shop_type
   })
-
   // return req.put('/cartupdate/num', { cart_id, num })
 }
 

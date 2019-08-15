@@ -47,7 +47,7 @@ class API {
     setTimeout(() => {
       Taro.showToast({
         icon: 'none',
-        title: newText
+				title: newText
       })
     }, 200)
   }
