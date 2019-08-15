@@ -24,7 +24,7 @@ export default class StoreInfo extends Component {
   componentDidMount() {
     const { info } = this.props
     api.member.storeIsFav(info.distributor_id).then(res => {
-      if (res) {
+      if (res.is_fav) {
         this.setState({
           isFav: true
         })
@@ -41,7 +41,7 @@ export default class StoreInfo extends Component {
   handleStoreFav = async (id) => {
     const { isFav } = this.state
     if (isFav) return
-    
+
     const { fav_id } = await api.member.storeFav(id)
     if (fav_id) {
       this.setState({

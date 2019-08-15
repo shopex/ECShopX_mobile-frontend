@@ -125,6 +125,16 @@ export default class ItemFav extends Component {
     })
   }
 
+  handleFavRemoved = () => {
+    console.log(111)
+    this.resetPage()
+    this.setState({
+      list: []
+    }, () => {
+      this.nextPage()
+    })
+  }
+
   handleClickTab = (idx) => {
     if (this.state.page.isLoading) return
 
@@ -221,6 +231,7 @@ export default class ItemFav extends Component {
                             key={item.distributor_id}
                             info={item}
                             onClick={() => this.handleClickItem(item)}
+                            onCancel={this.handleFavRemoved}
                           />
                         )
                       })
