@@ -18,11 +18,9 @@ import './espier-index.scss'
   defaultAllSelect: false,
   // totalPrice: getTotalPrice(cart),
   // workaround for none selection cartItem num change
-  totalItems: getTotalCount(cart, true)
 }), (dispatch) => ({
   onUpdateCartNum: (cart_id, num) => dispatch({ type: 'cart/updateNum', payload: { cart_id, num: +num } }),
-  onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
-  onCartSelection: (selection) => dispatch({ type: 'cart/selection', payload: selection })
+  onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list })
 }))
 @withPager
 @withLogin()
@@ -38,7 +36,6 @@ export default class CartIndex extends Component {
     this.state = {
       ...this.state,
       loading: true,
-      selection: [], //[new Set(),new Set(),...]
       cartMode: 'default',
       curPromotions: null,
       groups: [],
@@ -57,15 +54,6 @@ export default class CartIndex extends Component {
         this.handleAllSelect(true)
       }
       const groups = this.resolveActivityGroup(list)
-      let selection = []
-      selection = list.map(shopCart => {
-        const checkedIds = shopCart.list
-          .filter(t => t.is_checked)
-          .map(t => t.cart_id)
-				return [...selection, ...checkedIds]
-      })
-			console.log('selection',selection)
-      this.updateSelection(selection)
       // this.props.list 此时为空数组
       setTimeout(() => {
         this.setState({
@@ -227,9 +215,6 @@ export default class CartIndex extends Component {
     await this.updateCart()
   }, 300)
 
-  get isTotalChecked () {
-    return this.props.cartIds.map((cartId,i)=>this.state.selection[i].size === cartId.length)
-  }
 
   toggleCartMode = () => {
     const cartMode = this.state.cartMode !== 'edit' ? 'edit' : 'default'
@@ -238,27 +223,13 @@ export default class CartIndex extends Component {
     })
   }
 
-  updateSelection (selection = []) {
-		selection = selection.map(shopSelection=>new Set(shopSelection)) // [newSet,newSet]
-    this.setState({
-			selection
-    })
-		console.log('updateSelection',selection)
-    this.props.onCartSelection(selection)
-  }
 
   async handleSelectionChange (shopIndex,cart_id, checked) {
-		// const selection = this.state.selection
-		// console.log('handleSelectionChange',selection,selection[shopIndex])
-    // selection[shopIndex][checked ? 'add' : 'delete'](cart_id)
-    // this.updateSelection([...selection])
 
     await api.cart.select({
       cart_id,
       is_checked: checked
     })
-
-    // log.debug(`[cart change] item: ${cart_id}, selection:`, selection)
     this.updateCart()
   }
 
@@ -318,17 +289,8 @@ export default class CartIndex extends Component {
 
   handleAllSelect = async (checked,shopIndex) => {
 		
-    const  {selection}  = this.state
 		const  {cartIds}  = this.props
 		
-		console.log('handleAllSelect',checked,selection,cartIds)
-
-    if (checked) {
-      cartIds[shopIndex].forEach(cartId => selection[shopIndex].add(cartId))
-    } else {
-      selection[shopIndex].clear()
-    }
-
     Taro.showLoading()
     try {
       await api.cart.select({
@@ -339,8 +301,6 @@ export default class CartIndex extends Component {
       console.log(e)
     }
     Taro.hideLoading()
-		// this.updateSelection([...selection])
-    // this.updateSelection(selection)
 		this.updateCart()
   }
 
@@ -438,7 +398,7 @@ export default class CartIndex extends Component {
   }
 
   render () {
-    const { selection, groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
+    const {  groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
     const { totalPrice, list } = this.props
 
     if (loading) {
@@ -446,8 +406,6 @@ export default class CartIndex extends Component {
     }
     const { type = 'distributor' } = this.$router.params
     const isDrug = type === 'drug'
-    const totalSelection = calCommonExp(selection.map(v=>v.size).join("+"))
-    const totalItems = totalSelection
     const isEmpty = !list.length
 		console.log('groups',groups)
     return (
@@ -610,7 +568,7 @@ export default class CartIndex extends Component {
 														<AtButton
 															type='primary'
 															className='btn-checkout'
-															disabled={totalItems <= 0}
+															disabled={shopCart.shopInfo.cart_total_count <= 0}
 															onClick={this.handleCheckout.bind(this,shopCart.shopInfo.shop_id)}
 														>{isDrug ? '立即预约' : '结算'}</AtButton>
 													</View>
