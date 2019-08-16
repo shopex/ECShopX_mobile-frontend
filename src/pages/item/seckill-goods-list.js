@@ -19,17 +19,8 @@ export default class SeckillGoodsList extends Component {
       query: null,
       last_seconds: 1759242,
       timer: null,
-      list: [
-        {
-          last_seconds: 1759242,
-          img: 'http://mmbiz.qpic.cn/mmbiz_jpg/1nDJByqmW2f7v2eYIjM9lKBnyGsyZyCUDmZEE648cE7VZlvlNkFJMQcic6VtG6YnElMYJzWV2nJDtFU09xibhxgg/0?wx_fmt=jpeg'
-        },
-        {
-          last_seconds: 1775245,
-          img: 'http://mmbiz.qpic.cn/mmbiz_jpg/1nDJByqmW2f7v2eYIjM9lKBnyGsyZyCUDmZEE648cE7VZlvlNkFJMQcic6VtG6YnElMYJzWV2nJDtFU09xibhxgg/0?wx_fmt=jpeg'
-        },
-      ],
-      imgurl: 'http://mmbiz.qpic.cn/mmbiz_jpg/1nDJByqmW2f7v2eYIjM9lKBnyGsyZyCUDmZEE648cE7VZlvlNkFJMQcic6VtG6YnElMYJzWV2nJDtFU09xibhxgg/0?wx_fmt=jpeg'
+      list: [],
+      imgurl: ''
     }
   }
 
