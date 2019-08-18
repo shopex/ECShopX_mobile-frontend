@@ -8,15 +8,12 @@ import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
 import { getTotalCount } from '@/store/cart'
 
-@connect(({ tabBar }) => ({
-  tabBar: tabBar.current
+@connect(({ tabBar,cart }) => ({
+  tabBar: tabBar.current,
+  cartCount: cart.cartCount
+}),(dispatch) => ({
+  onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
-// @connect(({ cart }) => ({
-//   cart,
-//   cartTotalCount: getTotalCount(cart)
-// }), (dispatch) => ({
-//   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: { list } })
-// }))
 export default class TabBar extends Component {
   static options = {
     addGlobalClass: true
@@ -60,7 +57,8 @@ export default class TabBar extends Component {
           Object.assign(obj, {withLogin: true})
         }
         if (item.name === 'member') {
-          Object.assign(obj, {withLogin: true, text: this.props.cartTotalCount || '', max: '99'})
+          // Object.assign(obj, {withLogin: true, text: this.props.cartTotalCount || '', max: '99'})
+          Object.assign(obj, {withLogin: true, text: this.cartCount || '', max: '99'})
         }
         list.push(obj)
       })
@@ -69,7 +67,7 @@ export default class TabBar extends Component {
         { title: '首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/index', urlRedirect: true },
         { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/pages/category/index', urlRedirect: true },
         { title: '购物车', iconType: 'cart', iconPrefixClass: 'icon', url: '/pages/cart/espier-index', withLogin: true, urlRedirect: true },
-        { title: '我的', iconType: 'member', iconPrefixClass: 'icon', url: '/pages/member/index', withLogin: true, text: this.props.cartTotalCount || '', max: '99', urlRedirect: true },
+        { title: '我的', iconType: 'member', iconPrefixClass: 'icon', url: '/pages/member/index', withLogin: true, text: this.cartCount || '', max: '99', urlRedirect: true },
       ]
     }
 
@@ -90,6 +88,11 @@ export default class TabBar extends Component {
     if (nextProps.current !== undefined) {
       this.setState({ current: nextProps.current })
     }
+  }
+
+  get cartCount () {
+    // console.log('computed')
+    return this.props.cartCount
   }
 
   updateCurTab () {
@@ -125,6 +128,7 @@ export default class TabBar extends Component {
     try {
       const { item_count } = await api.cart.count({shop_type: 'distributor'})
       updateCartCount(item_count)
+      this.props.onUpdateCartCount(item_count)
     } catch (e) {
       console.error(e)
     }

@@ -20,7 +20,8 @@ import './espier-index.scss'
   // workaround for none selection cartItem num change
 }), (dispatch) => ({
   onUpdateCartNum: (cart_id, num) => dispatch({ type: 'cart/updateNum', payload: { cart_id, num: +num } }),
-  onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list })
+  onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
+  onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
 @withPager
 @withLogin()
@@ -128,8 +129,7 @@ export default class CartIndex extends Component {
         acc[val.cart_id] = val
         return acc
 			}, {})
-			const activityGrouping = shopCart.activity_grouping
-			
+			const activityGrouping = shopCart.activity_grouping			
 			// 活动列表
       const group = used_activity.map((act) => {
         const activity = activityGrouping.find(a => String(a.activity_id) === String(act.activity_id))
@@ -178,6 +178,7 @@ export default class CartIndex extends Component {
 			console.log('res',res)
       valid_cart = res.valid_cart || valid_cart
       invalid_cart = res.invalid_cart || invalid_cart
+      this.updateCartCount(valid_cart)
     } catch (e) {
       this.setState({
         error: e.message
@@ -189,6 +190,14 @@ export default class CartIndex extends Component {
       invalid_cart
     })
     cb && cb(list)
+  }
+
+  updateCartCount(shopList){
+    let count = 0
+    shopList.map(shopCart=>{
+      count += shopCart.cart_total_count
+    })
+    this.props.onUpdateCartCount(count)
   }
 
   updateCart = async () => {

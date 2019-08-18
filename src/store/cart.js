@@ -13,7 +13,8 @@ const initState = {
   cartIds: [],
   fastbuy: null,
   coupon: null,
-  selection: []
+  selection: [],
+  cartCount:0
 }
 
 const cart = createReducer(initState, {
@@ -97,6 +98,14 @@ const cart = createReducer(initState, {
       ...state,
       coupon
     }
+  },
+  ['cart/updateCount'](state,action){
+    console.log('cart/updateCount',action.payload)
+    const cartCount = action.payload
+    return {
+      ...state,
+      cartCount
+    }
   }
 })
 
@@ -114,12 +123,6 @@ export function getTotalCount (state, isAll) {
 }
 
 export function getTotalPrice (state) {
-  // let total = 0
-  // walkCart(state, (item) => {
-  //   if (!state.selection.includes(item.cart_id)) return
-  //   total += (+item.price) * (+item.num)
-  // })
-	// return (total).toFixed(2)
 	const total = state.list.map((shopCart,shopIndex)=>{
 		let shop_total = 0
 		shopCart.list.map(item=>{
