@@ -7,7 +7,6 @@ import { log, navigateTo, pickBy, classNames ,calCommonExp} from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
 import { withLogin, withPager } from '@/hocs'
-import { getTotalPrice, getTotalCount } from '@/store/cart'
 import CartItem from './comps/cart-item'
 
 import './espier-index.scss'
@@ -15,11 +14,7 @@ import './espier-index.scss'
 @connect(({ cart }) => ({ 
   list: cart.list,
   cartIds: cart.cartIds,
-  defaultAllSelect: false,
-  // totalPrice: getTotalPrice(cart),
-  // workaround for none selection cartItem num change
 }), (dispatch) => ({
-  onUpdateCartNum: (cart_id, num) => dispatch({ type: 'cart/updateNum', payload: { cart_id, num: +num } }),
   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
   onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
@@ -27,7 +22,6 @@ import './espier-index.scss'
 @withLogin()
 export default class CartIndex extends Component {
   static defaultProps = {
-    totalPrice: '0.00',
     list: null,
   }
 
@@ -51,9 +45,7 @@ export default class CartIndex extends Component {
 
   componentDidMount () {
     this.fetchCart((list) => {
-      if (this.props.defaultAllSelect) {
-        this.handleAllSelect(true)
-      }
+
       const groups = this.resolveActivityGroup(list)
       // this.props.list 此时为空数组
       setTimeout(() => {
@@ -74,20 +66,18 @@ export default class CartIndex extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-		console.log('componentWillReceiveProps')
-    if (nextProps.list !== this.props.list) {
-			const groups = this.resolveActivityGroup(nextProps.list)
-			// setTimeout(()=> {
-			// 	this.setState({
-			// 		...this.state.groups,
-			// 		groups
-			// 	})
-			// }, 1000)
+		console.log('componentWillReceiveProps',nextProps.list , this.props.list,nextProps.list !== this.props.list)
+		
+    // if (nextProps.list !== this.props.list) {
+		// 	const groups = this.resolveActivityGroup(nextProps.list)
+		// 		this.setState({
+		// 			groups
+		// 		})
+		// }
+		const groups = this.resolveActivityGroup(nextProps.list)
 				this.setState({
 					groups
 				})
-      
-    }
   }
 
   handleClickItem = (item) => {
@@ -150,7 +140,9 @@ export default class CartIndex extends Component {
   }
 
   processCart ({ valid_cart = [], invalid_cart = [] }) {
+		let cartCount = 0
     const list = valid_cart.map(shopCart => {
+			cartCount += shopCart.cart_total_count
       const tList = this.transformCartList(shopCart.list)
       return {
         ...shopCart,
@@ -165,6 +157,7 @@ export default class CartIndex extends Component {
 
     log.debug('[cart fetchCart]', list)
     this.props.onUpdateCart(list)
+		this.props.onUpdateCartCount(cartCount)
 
     return list
   }
@@ -175,10 +168,8 @@ export default class CartIndex extends Component {
     const params = {shop_type: type}
     try {
 			const res = await api.cart.get(params)
-			console.log('res',res)
       valid_cart = res.valid_cart || valid_cart
       invalid_cart = res.invalid_cart || invalid_cart
-      this.updateCartCount(valid_cart)
     } catch (e) {
       this.setState({
         error: e.message
@@ -192,14 +183,6 @@ export default class CartIndex extends Component {
     cb && cb(list)
   }
 
-  updateCartCount(shopList){
-    let count = 0
-    shopList.map(shopCart=>{
-      count += shopCart.cart_total_count
-    })
-    this.props.onUpdateCartCount(count)
-  }
-
   updateCart = async () => {
     Taro.showLoading({
       mask: true
@@ -207,12 +190,6 @@ export default class CartIndex extends Component {
     this.updating = true
     try {
 			await this.fetchCart()
-			// setTimeout(() => {
-			// 	this.setState({
-			// 		groups,
-			// 		loading: false
-			// 	})
-			// }, 40)
     } catch (e) {
       console.log(e)
 		}
@@ -256,17 +233,13 @@ export default class CartIndex extends Component {
 
     const cartIds = this.props.cartIds[shopIndex].filter(t => t !== cart_id)
 
-    // this.updateSelection(cartIds)
 		this.updateCart()
   }
 
   async changeCartNum (shop_id,cart_id, num) {
     const { type = 'distributor' } = this.$router.params
-		// this.updateCart.cancel()
 		try {
-			console.log('c')
 			const res = await api.cart.updateNum(shop_id,cart_id, num, type)
-
 			this.processCart(res)
 		}catch(e){
 			Taro.showToast({
@@ -279,25 +252,12 @@ export default class CartIndex extends Component {
   }
 
   handleQuantityChange = async (shop_id,item, num, e) => {
-		// console.log('a')
-    // e.stopPropagation()
-
-    // const { item_id, cart_id } = item
-    // Taro.showLoading({
-    //   mask: true
-    // })
-
-		// this.props.onUpdateCartNum(cart_id, num)
-		// console.log('b')
-		// await this.changeCartNum(shop_id,cart_id, num)
 		const { type = 'distributor' } = this.$router.params
 		await api.cart.updateNum(shop_id,item.cart_id, num, type)
 		this.updateCart()
-    // Taro.hideLoading()
   }
 
   handleAllSelect = async (checked,shopIndex) => {
-		
 		const  {cartIds}  = this.props
 		
     Taro.showLoading()
@@ -408,7 +368,7 @@ export default class CartIndex extends Component {
 
   render () {
     const {  groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
-    const { totalPrice, list } = this.props
+    const {  list } = this.props
 
     if (loading) {
       return <Loading />
@@ -444,7 +404,7 @@ export default class CartIndex extends Component {
             {
 							
               groups.map((shopCart, shopIndex) => {
-								console.log('shopCart---->',shopCart)
+								// console.log('shopCart---->',shopCart)
 								const checked_all = shopCart.shopInfo.cart_total_count == shopCart.shopInfo.list.length
                 return (
                   <View
@@ -455,7 +415,7 @@ export default class CartIndex extends Component {
 										<View className='shop__wrap'>
 											{
 												shopCart.group.map(activityGroup => {
-													console.log('activityGroup---->',activityGroup)
+													// console.log('activityGroup---->',activityGroup)
 													const { activity } = activityGroup
 													
 													return activityGroup.list.length > 0 && (
@@ -475,7 +435,7 @@ export default class CartIndex extends Component {
 															)}
 															{
 																activityGroup.list.map((item) => {
-																	console.log('item',item)
+																	// console.log('item',item)
 																	return (
 																		<View className='cart-group__item-wrap'>
 																			<CartItem

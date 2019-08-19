@@ -58,7 +58,6 @@ const cart = createReducer(initState, {
 		cartIds = list.map((shopCart,shopIndex)=>{
 			return shopCart.list.map(v=>v.cart_id)
 		})
-		console.log('cartIds',cartIds)
 
     return {
       ...state,
