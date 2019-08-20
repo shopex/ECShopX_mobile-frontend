@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
+import { QnImg } from '@/components'
 import { classNames } from '@/utils'
 import { linkPage } from './helper'
 
@@ -77,10 +78,12 @@ export default class WgtSlider extends Component {
                           style={`padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
                           onClick={this.handleClickItem.bind(this, item.linkPage, item.id)}
                         >
-                          <Image
-                            mode='widthFix'
-                            className='slider-item__img'
+                          <QnImg
+                            img-class='slider-item__img'
                             src={item.imgUrl}
+                            mode='widthFix'
+                            width='640'
+                            lazyLoad
                           />
                         </View>
                       </SwiperItem>

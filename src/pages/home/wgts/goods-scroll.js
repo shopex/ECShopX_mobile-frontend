@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { QnImg } from '@/components'
 
 import './goods-scroll.scss'
 
@@ -55,10 +56,12 @@ export default class WgtGoodsScroll extends Component {
                   </View>
                 )}
                 <View className='thumbnail'>
-                  <Image
-                    className='goods-img'
+                  <QnImg
+                    img-class="goods-img"
                     src={item.imgUrl}
                     mode='aspectFill'
+                    width='120'
+                    lazyLoad
                   />
                 </View>
               </View>

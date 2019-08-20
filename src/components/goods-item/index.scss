@@ -51,8 +51,12 @@ $item-img-size: 240px !default;
 
   }
   &__img {
-    width: $item-img-size;
-    height: $item-img-size;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
     &-wrap {
       width: $item-img-size;
       height: $item-img-size;

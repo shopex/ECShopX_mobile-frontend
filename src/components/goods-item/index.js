@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, Text, Image, Progress} from '@tarojs/components'
-import { Price } from '@/components'
+import { Price, QnImg } from '@/components'
 import { isObject, classNames } from '@/utils'
 import api from '@/api'
 
@@ -48,10 +48,12 @@ export default class GoodsItem extends Component {
         >
           <View
             className='goods-item__img-wrap'>
-            <Image
-              className='goods-item__img'
-              mode='aspectFix'
+            <QnImg
+              img-class='goods-item__img'
               src={img}
+              mode='aspectFill'
+              width='200'
+              lazyLoad
             />
           </View>
           <View className='goods-item__cont'>

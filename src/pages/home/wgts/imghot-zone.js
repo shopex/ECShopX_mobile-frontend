@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, SwiperItem } from '@tarojs/components'
+import { QnImg } from '@/components'
 import { classNames } from '@/utils'
 import { linkPage } from './helper'
 
@@ -47,13 +48,19 @@ export default class WgtImgHotZone extends Component {
           </View>
         )}
         <View className={`slider-wra img-hotzone ${config.padded ? 'padded' : ''}`}>
-          <Image src={config.imgUrl} mode='widthFix' className='img-hotzone_img' />
+          <QnImg
+            img-class='img-hotzone_img'
+            src={config.imgUrl}
+            mode='widthFix'
+            width='640'
+            lazyLoad
+          />
           {
             data.map((item, index) =>{
               return (
                 <View
                   key={index}
-                  className='img-hotzone_zone'
+                  img-class='img-hotzone_zone'
                   style={`width: ${item.widthPer*100}%; height: ${item.heightPer*100}%; top: ${item.topPer*100}%; left: ${item.leftPer*100}%`}
                   onClick={this.handleClickItem.bind(this, item.linkPage, item.id)}
                 >

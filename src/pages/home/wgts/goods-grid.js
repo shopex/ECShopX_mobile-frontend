@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
+import { QnImg } from '@/components'
 
 import './goods-grid.scss'
 
@@ -69,18 +70,21 @@ export default class WgtGoodsGrid extends Component {
               >
                 <View className='goods-wrap'>
                   <View className='thumbnail'>
-                    <Image
-                      className='goods-img'
+                    <QnImg
+                      img-class='goods-img'
                       src={item.imgUrl}
                       mode='aspectFill'
+                      width='200'
+                      lazyLoad
                     />
                   </View>
                   <View className='caption'>
                     {config.brand && item.brand && (
-                      <Image
-                        className='goods-brand'
+                      <QnImg
+                        img-class='goods-brand'
                         src={item.brand}
                         mode='aspectFill'
+                        width='100'
                       />
                     )}
                     <View className={`goods-title ${!config.brand || !item.brand ? 'no-brand' : ''}`}>{item.title}</View>

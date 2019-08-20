@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { Price } from '@/components'
+import { Price, QnImg } from '@/components'
 
 import './order-item.scss'
 
@@ -32,10 +32,12 @@ export default class OrderItem extends Component {
         onClick={onClick}
       >
         <View className='order-item__hd'>
-          <Image
-            mode='aspectFill'
-            className='order-item__img'
+          <QnImg
+            img-class='order-item__img'
             src={img}
+            mode='aspectFill'
+            width='100'
+            lazyLoad
           />
         </View>
         <View className='order-item__bd'>

@@ -56,6 +56,7 @@ export default class HomeIndex extends Component {
   async componentDidMount () {
     const options = this.$router.params
     const res = await entry.entryLaunch(options, true)
+    console.log(res)
     const { store } = res
     if (store) {
       this.setState({

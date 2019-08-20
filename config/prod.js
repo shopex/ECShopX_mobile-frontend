@@ -8,6 +8,7 @@ const resource = (isIntegration
 module.exports = {
   env: {
     NODE_ENV: '"production"',
+    IMG_HOST: '"bbctest.aixue7.com"',
     INTEGRATION_APP: isIntegration
   },
   plugins: {

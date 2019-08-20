@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { Image } from '@tarojs/components'
 import { classNames } from '@/utils'
 
-const HOSTS = ['wdwdcdn.com']
+const HOSTS = [process.env.IMG_HOST]
 const isQiniu = (src, hosts = HOSTS) => {
   return hosts.some(h => (new RegExp(h)).test(src))
 }
@@ -16,8 +16,10 @@ export default class QnImg extends Component {
     addGlobalClass: true
   }
 
+  static externalClasses = ['img-class']
+
   render () {
-    const { className, src, mode, qnMode, width, height, onError, onLoad, lazyLoad } = this.props
+    const { src, mode, qnMode, width, height, onError, onLoad, lazyLoad } = this.props
     let rSrc = src
     if (isQiniu(src) && !hasImageView(src)) {
       if (!qnMode) {
@@ -29,7 +31,7 @@ export default class QnImg extends Component {
 
     return (
       <Image
-        className={classNames('qn-img', className)}
+        className="img-class"
         src={rSrc}
         mode={mode}
         onError={onError}

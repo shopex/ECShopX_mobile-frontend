@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
+import { QnImg } from '@/components'
 import req from '@/api/req'
 import S from '@/spx'
 import { classNames } from '@/utils'
@@ -66,7 +67,12 @@ export default class WgtCoupon extends Component {
                 onClick={this.handleGetCard.bind(this, item.id)}
               > {
                   item.imgUrl
-                  ? <Image src={item.imgUrl} className='coupon_img' mode='widthFix'/>
+                  ? <QnImg
+                      className='coupon_img'
+                      src={item.imgUrl}
+                      mode='widthFix'
+                      width='320'
+                    />
                   : <View className='coupon-body'>
                       <View className='coupon__amount'>
                         <Text>{item.amount}</Text>
