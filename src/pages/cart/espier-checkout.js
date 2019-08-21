@@ -202,8 +202,8 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const { cart_type, shop_id } = this.$router.params
-    const isDrug = cart_type === 'drug'
+    const { type, shop_id } = this.$router.params
+    const isDrug = type === 'drug'
     let receiver = null
     if (!isDrug) {
       receiver = pickBy(this.state.address, {
