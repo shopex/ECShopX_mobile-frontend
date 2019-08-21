@@ -473,7 +473,7 @@ export default class CartCheckout extends Component {
         delete params.invoice_content
       }
       orderInfo = await api.trade.create(params)
-      order_id = orderInfo.trade_info.order_id
+      order_id = isDrug ? orderInfo.order_id : orderInfo.trade_info.order_id
     } catch (e) {
       Taro.showToast({
         title: e.message,
