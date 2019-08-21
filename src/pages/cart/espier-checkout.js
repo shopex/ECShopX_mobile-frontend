@@ -202,10 +202,10 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const { type,shop_id } = this.$router.params
-    const isDrug = type === 'drug'
+    const { cart_type, shop_id } = this.$router.params
+    const isDrug = cart_type === 'drug'
     let receiver = null
-    if (isDrug) {
+    if (!isDrug) {
       receiver = pickBy(this.state.address, {
         receiver_name: 'name',
         receiver_mobile: 'mobile',
@@ -257,7 +257,7 @@ export default class CartCheckout extends Component {
       mask: true
     })
     const params = this.getParams()
-
+    console.log(params)
     let data
     try {
       data = await api.cart.total(params)

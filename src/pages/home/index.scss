@@ -67,7 +67,7 @@
       @include page-scroll($home-header-height, $tabbar-height);
     }
     #{$self}__cont {
-      padding-top: $home-header-height;
+      padding-top: $home-search-height;
     }
   }
   &__is-distributor {
