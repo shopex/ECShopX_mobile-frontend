@@ -55,15 +55,17 @@ export default class HomeIndex extends Component {
   }
 
   async componentDidMount () {
+    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
+    const fixSetting = await req.get(url)
+
     const options = this.$router.params
-    const positionStatus = await entry.getLocalSetting()
     const res = await entry.entryLaunch(options, true)
     console.log(res)
     const { store } = res
     if (store) {
       this.setState({
         curStore: store,
-        positionStatus
+        positionStatus: fixSetting[0].params.config.fixTop
       }, () => {
         this.fetchInfo()
       })
@@ -159,13 +161,13 @@ export default class HomeIndex extends Component {
     return (
       <View className='page-index'>
         {
-          positionStatus &&
+          curStore &&
             <HeaderHome
               storeName={curStore.name}
             />
         }
         <ScrollView
-          className={`wgts-wrap wgts-wrap__fixed ${positionStatus ? 'with-location' : ''}`}
+          className={`wgts-wrap ${positionStatus ? 'wgts-wrap__fixed' : ''}`}
           scrollTop={scrollTop}
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
@@ -173,7 +175,6 @@ export default class HomeIndex extends Component {
         >
           <View className='wgts-wrap__cont'>
             <HomeWgts
-              location={positionStatus}
               wgts={wgts}
             />
             {!!goodsFavWgt && (

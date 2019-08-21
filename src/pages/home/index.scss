@@ -60,12 +60,12 @@
 
 .wgts-wrap {
   $self: &;
+  @include page-scroll($home-header-height, $tabbar-height);
+  background: #fff;
+  #{$self}__cont {
+    padding-top: 0;
+  }
   &__fixed {
-    background: #fff;
-    @include page-scroll(0, $tabbar-height);
-    &.with-location {
-      @include page-scroll($home-header-height, $tabbar-height);
-    }
     #{$self}__cont {
       padding-top: $home-search-height;
     }

@@ -79,6 +79,10 @@ export default class CartCheckout extends Component {
   }
 
   componentDidShow () {
+    this.setState({
+      isPaymentOpend: false,
+      isDrugInfoOpend: false
+    })
     this.fetchAddress()
   }
 
@@ -431,6 +435,8 @@ export default class CartCheckout extends Component {
     }
 
     const { payType, total } = this.state
+    const { type } = this.$router.params
+    const isDrug = type === 'drug'
 
     if (payType === 'dhpoint') {
       try {
@@ -459,7 +465,8 @@ export default class CartCheckout extends Component {
 
     let order_id, orderInfo
     try {
-      const params = this.getParams()
+      let params = this.getParams()
+      delete params.items
       // 积分不开票
       if (payType === 'dhpoint') {
         delete params.invoice_type
@@ -485,7 +492,14 @@ export default class CartCheckout extends Component {
 
     Taro.hideLoading()
     if (!order_id) return
-    // 爱茉pay流程
+
+    if (isDrug) {
+      Taro.redirectTo({
+        url: '/pages/trade/list'
+      })
+      return
+    }
+    // 支付流程
     const paymentParams = {
       order_id,
       pay_type: this.state.payType,
