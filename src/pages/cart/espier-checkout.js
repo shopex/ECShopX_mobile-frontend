@@ -204,19 +204,18 @@ export default class CartCheckout extends Component {
   getParams () {
     const { type, shop_id } = this.$router.params
     const isDrug = type === 'drug'
-    let receiver = null
-    if (!isDrug) {
-      receiver = pickBy(this.state.address, {
-        receiver_name: 'name',
-        receiver_mobile: 'mobile',
-        receiver_state: 'state',
-        receiver_city: 'city',
-        receiver_district: 'district',
-        receiver_address: 'address',
-        receiver_zip: 'zip'
-      })
-    } else {
-      receiver = pickBy(this.state.drug, {
+    const receiver = pickBy(this.state.address, {
+      receiver_name: 'name',
+      receiver_mobile: 'mobile',
+      receiver_state: 'state',
+      receiver_city: 'city',
+      receiver_district: 'district',
+      receiver_address: 'address',
+      receiver_zip: 'zip'
+    })
+    let buyerInfo = {}
+    if (isDrug) {
+      buyerInfo = pickBy(this.state.drug, {
         drug_buyer_name: 'name',
         drug_buyer_id_card: 'id_card',
         drug_list_image: 'imgs',
@@ -227,6 +226,7 @@ export default class CartCheckout extends Component {
     const params = {
       ...this.params,
       ...receiver,
+      ...buyerInfo,
       receipt_type: 'logistics',
       order_type: isDrug ? 'normal_drug' : 'normal',
       promotion: 'normal',
