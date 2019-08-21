@@ -215,7 +215,7 @@ export default class PackageItem extends Component {
               list.map(item => {
                 return (
                   <GoodsItem
-                    classes='package-goods__item'
+                    img-class='package-goods__item'
                     showFav={false}
                     showSku
                     key={item.item_id}

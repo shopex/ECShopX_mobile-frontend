@@ -12,6 +12,9 @@
     &__item {
       margin-bottom: 30px;
       background: #fff;
+      .goods-item {
+        box-shadow: none;
+      }
     }
   }
   .package-add-cart {
