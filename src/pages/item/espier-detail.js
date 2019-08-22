@@ -9,7 +9,7 @@ import { withBackToTop } from '@/hocs'
 import { log, calcTimer, isArray, pickBy, classNames, canvasExp } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
-import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, SharePanel } from './comps'
+import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, SharePanel, VipGuide } from './comps'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -49,6 +49,7 @@ export default class Detail extends Component {
       currentImgs: -1,
       sixSpecImgsDict: {},
       curSku: null,
+      vip: null,
       promotion_activity: [],
       promotion_package: [],
       itemParams: [],
@@ -128,6 +129,16 @@ export default class Detail extends Component {
     let hasStock = info.store && info.store > 0
     let startSecKill = true
     let sessionFrom = ''
+
+    let vip = null
+    if (info.is_vip_grade) {
+      const { grade_name, member_price, guide_title_desc } = info
+      vip = {
+        grade_name,
+        member_price,
+        guide_title_desc
+      }
+    }
 
     if (info.group_activity) {
       //团购
@@ -483,6 +494,7 @@ export default class Detail extends Component {
       scrollTop,
       showBackToTop,
       curSku,
+      vip,
       promotion_activity,
       promotion_package,
       itemParams,
@@ -623,6 +635,21 @@ export default class Detail extends Component {
               </View>
             )}
           </View>
+
+          {
+            info.vipgrade_guide_title &&
+              <VipGuide
+                info={info.vipgrade_guide_title}
+              />
+          }
+
+          {
+            info.is_vip_grade &&
+              <VipGuide
+                info={vip}
+              />
+          }
+
           {isPromoter && (
             <View className='goods-income'>
               <View className='sp-icon sp-icon-jifen'></View>
@@ -782,7 +809,7 @@ export default class Detail extends Component {
           icon='float-gift'
           onClick={this.handleToGiftMiniProgram.bind(this)}
         /> */}
-        <FloatMenus>
+        { /* <FloatMenus>
           <FloatMenuItem
             iconPrefixClass='in-icon'
             icon='fenxiang1'
@@ -800,7 +827,7 @@ export default class Detail extends Component {
             hide={!showBackToTop}
             onClick={this.scrollBackToTop}
           />
-        </FloatMenus>
+        </FloatMenus> */ }
 
         {(info.distributor_sale_status && hasStock && startSecKill)
           ?
