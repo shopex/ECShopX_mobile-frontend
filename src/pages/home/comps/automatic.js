@@ -1,6 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 
+import './automatic.scss'
+
 export default class Automatic extends Component {
   static defaultProps = {
     info: null,
@@ -13,7 +15,7 @@ export default class Automatic extends Component {
   }
 
   render () {
-    const { info, onClick, onClose } = this.props
+    const { info, onClick, onClose, isShow } = this.props
 
     if (!info) {
       return null
@@ -22,21 +24,18 @@ export default class Automatic extends Component {
     return (
       <View>
         {
-          info.isOpen && (!info.isVip && !info.isHadVip && info.isSetVip) &&
-            (<View className="gift-wrap">
-              {
-                info.gift &&
-                  <View className="gift">
-                    <Image
-                      className="gift-bg"
-                      src={info.adPic}
-                      mode="aspectFit"
-                      />
-                    <Button className="btn-primary gift-btn" onClick={onClick}>立即领取</Button>
-                    <View className="zoom-btn icon-close" onClick={onClose}></View>
-                  </View>
-              }
-            </View>)
+          isShow &&
+            <View className="gift-wrap">
+              <View className="gift">
+                <Image
+                  className="gift-bg"
+                  src={info.adPic}
+                  mode="widthFix"
+                  />
+                <Button className="btn-primary gift-btn" onClick={onClick}>{info.title}</Button>
+                <View className="zoom-btn icon-close" onClick={onClose}></View>
+              </View>
+            </View>
         }
       </View>
     )

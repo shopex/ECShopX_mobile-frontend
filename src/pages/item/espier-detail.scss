@@ -92,7 +92,7 @@
 }
 
 .goods-timer {
-  background: linear-gradient(to left, $color-brand-primary, #e2cfaa);
+  background: linear-gradient(to left, $color-brand-primary, $color-brand-primary);
   display: flex;
   align-items: stretch;
   justify-content: space-between;

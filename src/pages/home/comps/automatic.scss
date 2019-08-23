@@ -1,5 +1,3 @@
-@import '../../../styles/imports';
-
 .gift-wrap {
   display: flex;
   align-items: center;
@@ -13,8 +11,7 @@
   z-index: 997;
   .gift {
     position: relative;
-    width: 610px;
-    height: 780px;
+    width: 70%;
     .zoom-btn {
       position: absolute;
       left: 50%;
@@ -32,7 +29,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      bottom: 68px;
+      bottom: 50px;
       width: 460px;
       line-height: 80px;
     }

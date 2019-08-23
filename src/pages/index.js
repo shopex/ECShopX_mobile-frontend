@@ -33,7 +33,8 @@ export default class HomeIndex extends Component {
       isShowAddTip: false,
       curStore: null,
       positionStatus: false,
-      automatic: null
+      automatic: null,
+      showAuto: true
     }
   }
 
@@ -59,21 +60,18 @@ export default class HomeIndex extends Component {
     const userinfo = Taro.getStorageSync('userinfo')
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
     const fixSetting = await req.get(url)
-    const automatic = await api.promotion.automatic({register_type: 'all'})
 
-    if (automatic.is_open === 'true' && automatic.register_type === 'membercard' && userinfo) {
-      const { is_open, is_vip, is_had_vip, vip_type } = await api.vip.getUserVipInfo()
-      this.setState({
-        automatic: {
-          isSetVip: is_open,
-          isVip: is_vip,
-          isHadVip: is_had_vip,
-          vipType: vip_type,
-          isOpen: automatic.is_open === 'true',
-          adPic: automatic.ad_pic
-        }
-      })
-    }
+    // if (automatic.is_open === 'true' && automatic.register_type === 'membercard' && userinfo) {
+    //   const { is_open, is_vip, is_had_vip, vip_type } = await api.vip.getUserVipInfo()
+    //   this.setState({
+    //     vip: {
+    //       isSetVip: is_open,
+    //       isVip: is_vip,
+    //       isHadVip: is_had_vip,
+    //       vipType: vip_type
+    //     }
+    //   })
+    // }
 
     const options = this.$router.params
     const res = await entry.entryLaunch(options, true)
@@ -102,6 +100,15 @@ export default class HomeIndex extends Component {
   async fetchInfo () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
     const info = await req.get(url)
+
+    const { is_open, ad_pic, ad_title } = await api.promotion.automatic({register_type: 'general'})
+    this.setState({
+      automatic: {
+        title: ad_title,
+        isOpen: is_open === 'true',
+        adPic: ad_pic
+      }
+    })
 
     if (!S.getAuthToken()) {
       this.setState({
@@ -154,37 +161,38 @@ export default class HomeIndex extends Component {
 
   handleGift = async () => {
     if (!S.getAuthToken()) {
-      Taro.showToast({
-        title: '请先登录再购买',
-        icon: 'none'
-      })
-
       setTimeout(() => {
         S.login(this)
-      }, 2000)
-
+      }, 1000)
       return
     }
 
-    const status = await api.member.receiveVip()
-    if (status) {
-      const msg = status.card_type.desc + status.title
-      const vip = {
-        isVip: true,
-        isHadVip: true,
-        vipType: status.lv_type
-      }
-      this.setState({
-        vip
-      }, () => {
-        Taro.showToast({
-          title: '领取成功',
-          icon: 'success'
-        })
-      })
-    } else {
-      S.toast('活动已过期')
-    }
+    // const status = await api.member.receiveVip()
+    // if (status) {
+    //   const msg = status.card_type.desc + status.title
+    //   const vip = {
+    //     isVip: true,
+    //     isHadVip: true,
+    //     vipType: status.lv_type
+    //   }
+    //   this.setState({
+    //     vip
+    //   }, () => {
+    //     Taro.showToast({
+    //       title: '领取成功',
+    //       icon: 'success'
+    //     })
+    //   })
+    // } else {
+    //   S.toast('活动已过期')
+    // }
+  }
+
+  handleAutoClick = () => {
+    const { showAuto } = this.state
+    this.setState({
+      showAuto: !showAuto
+    })
   }
 
   handleClickCloseAddTip = () => {
@@ -247,23 +255,35 @@ export default class HomeIndex extends Component {
           </View>
         </ScrollView>
 
-        {/*
-          (isPromoter || distributionShopId)
-          && <FloatMenus>
+        {
+          <FloatMenus>
+            {/*
+              (isPromoter || distributionShopId) &&
               <Image
                 className='distribution-shop'
                 src='/assets/imgs/gift_mini.png'
                 mode='widthFix'
                 onClick={this.handleClickShop}
               />
-            </FloatMenus>
-        */}
+            */}
+            {
+              automatic.isOpen && !S.getAuthToken() &&
+                <FloatMenuItem
+                  iconPrefixClass='in-icon'
+                  icon='gift'
+                  onClick={this.handleAutoClick.bind(this)}
+                />
+            }
+          </FloatMenus>
+        }
 
         {
-          automatic && automatic.isOpen &&
+          automatic.isOpen && !S.getAuthToken() &&
             <Automatic
               info={automatic}
+              isShow={showAuto}
               onClick={this.handleGift.bind(this)}
+              onClose={this.handleAutoClick.bind(this)}
             />
         }
 
