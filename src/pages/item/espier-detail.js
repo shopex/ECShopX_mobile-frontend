@@ -608,7 +608,8 @@ export default class Detail extends Component {
                 </View>
               </View>
               <View className='goods-timer__bd'>
-                <Text className='goods-timer__label'>距结束还剩</Text>
+                {info.activity_info.status === 'in_the_notice' && <Text className='goods-timer__label'>距开始还剩</Text>}
+  							{info.activity_info.status === 'in_sale' && <Text className='goods-timer__label'>距结束还剩</Text>}
                 <AtCountdown
                   className="countdown__time"
                   isShowDay
