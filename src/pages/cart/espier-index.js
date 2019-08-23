@@ -98,7 +98,7 @@ export default class CartIndex extends Component {
     const nList = pickBy(list, {
       img: 'pics[0]',
       item_id: 'item_id',
-      price: 'price',
+      price: ({price}) => (price/100).toFixed(2),
       title: 'itemName',
       desc: 'brief',
     })
