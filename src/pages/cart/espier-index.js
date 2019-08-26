@@ -99,7 +99,8 @@ export default class CartIndex extends Component {
       img: 'pics[0]',
       item_id: 'item_id',
       title: 'itemName',
-      desc: 'brief',
+			desc: 'brief',
+			price: ({ price }) => { return (price/100).toFixed(2)}
     })
 
     this.setState({
