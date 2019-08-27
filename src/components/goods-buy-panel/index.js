@@ -43,11 +43,12 @@ export default class GoodsBuyPanel extends Component {
   }
 
   componentDidMount () {
-    const { info } = this.props
+		const { info } = this.props
     const { spec_items } = info
     const marketing = info.activity_type
       ? info.activity_type
-      : 'normal'
+			: 'normal'
+
     const skuDict = {}
 
     spec_items.forEach(t => {
@@ -288,15 +289,16 @@ export default class GoodsBuyPanel extends Component {
   }
 
   render () {
-    const { info, type, fastBuyText } = this.props
-    const { curImg, quantity, selection, isActive, busy, curSku } = this.state
+    const { info, type, fastBuyText,marketing } = this.props
+		const { curImg, quantity, selection, isActive, busy, curSku } = this.state
     if (!info) {
       return null
     }
 
     const { special_type } = info
     const isDrug = special_type === 'drug'
-    const curSkus = this.noSpecs ? info : curSku
+		const curSkus = this.noSpecs ? info : curSku
+
     const maxStore = +(curSkus ? curSkus.store : (info.store || 99999))
     const hasStore = curSkus ? curSkus.store > 0 : info.store > 0
 
@@ -317,14 +319,25 @@ export default class GoodsBuyPanel extends Component {
                 src={curImg || info.pics[0]}
               />
             </View>
-            <View className='goods-sku__price'>
-              <Price
-                primary
-                unit='cent'
-                noSymbol
-                appendText='元'
-                value={curSkus ? curSkus.price : info.price}
-              />
+						<View className='goods-sku__price'>
+						{
+							marketing =='seckill' &&  <Price
+								primary
+								unit='cent'
+								noSymbol
+								appendText='元'
+								value={curSkus ? curSkus.act_price : info.act_price}
+							/>
+						}
+						{
+							(marketing =='normal' || !marketing) &&  <Price
+								primary
+								unit='cent'
+								noSymbol
+								appendText='元'
+								value={curSkus ? curSkus.price : info.price}
+							/>
+						}
               <Price
                 className='price-market'
                 symbol='¥'

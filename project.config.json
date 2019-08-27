@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 5,
+			"current": 6,
 			"list": [
 				{
 					"id": 0,
@@ -63,13 +63,21 @@
 					"id": 4,
 					"name": "pages/item/espier-detail",
 					"pathName": "pages/item/espier-detail",
-					"query": "",
+					"query": "id=134&__key_=15668929934872",
 					"scene": null
 				},
 				{
 					"id": -1,
 					"name": "pages/vip/vipgrades",
 					"pathName": "pages/vip/vipgrades",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/item/espier-detail",
+					"pathName": "pages/item/espier-detail",
+					"query": "id=118&__key_=15668940616982",
 					"scene": null
 				}
 			]
