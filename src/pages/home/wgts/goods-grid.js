@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { QnImg } from '@/components'
+import { classNames } from '@/utils'
 
 import './goods-grid.scss'
 
@@ -26,7 +27,7 @@ export default class WgtGoodsGrid extends Component {
       return null
     }
 
-    const { base, data, config } = info
+		const { base, data, config } = info
     /*let listData = []
     data.map(item => {
       listData.push({
@@ -64,8 +65,8 @@ export default class WgtGoodsGrid extends Component {
           <View className='grid-goods out-padding grid-goods__type-grid'>
             {data.map((item, idx) => (
               <View
-                key={idx}
-                className='grid-item'
+								key={idx}
+                className={classNames('grid-item',{'grid-item-three': config.style=='grids'})}
                 onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}`)}
               >
                 <View className='goods-wrap'>
