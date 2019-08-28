@@ -44,7 +44,7 @@ export default class List extends Component {
 
   componentDidMount () {
     this.firstStatus = true
-    console.log(this.$router.params)
+   
     this.setState({
       query: {
         keywords: this.$router.params.keywords,
@@ -458,8 +458,6 @@ export default class List extends Component {
       curTagId,
 			info
     } = this.state
-		console.log(4,info)
-		console.info(info, 'render')
 
 		return (
 			<View className='page-goods-list'>

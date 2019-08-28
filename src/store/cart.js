@@ -14,7 +14,8 @@ const initState = {
   fastbuy: null,
   coupon: null,
   selection: [],
-  cartCount:0
+	cartCount:0,
+	showLikeList:true //展示猜你喜欢
 }
 
 const cart = createReducer(initState, {
@@ -105,7 +106,15 @@ const cart = createReducer(initState, {
       ...state,
       cartCount
     }
-  }
+	},
+	['cart/updateLikeList'](state,action){ //猜你喜欢
+    console.log('likeList/update',action.payload)
+    const showLikeList = action.payload
+    return {
+      ...state,
+      showLikeList
+    }
+	}
 })
 
 export default cart

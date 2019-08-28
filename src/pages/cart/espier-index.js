@@ -13,7 +13,8 @@ import './espier-index.scss'
 
 @connect(({ cart }) => ({
   list: cart.list,
-  cartIds: cart.cartIds,
+	cartIds: cart.cartIds,
+	showLikeList: cart.showLikeList
 }), (dispatch) => ({
   onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
   onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
@@ -370,7 +371,7 @@ export default class CartIndex extends Component {
 
   render () {
     const {  groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
-    const {  list } = this.props
+    const {  list,showLikeList } = this.props
 
     if (loading) {
       return <Loading />
@@ -600,7 +601,7 @@ export default class CartIndex extends Component {
           )}
 
           {
-            !isDrug && likeList.length
+            !isDrug && likeList.length && showLikeList
               ? <View className='cart-list cart-list__disabled'>
                 <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
                 <View className='goods-list goods-list__type-grid'>

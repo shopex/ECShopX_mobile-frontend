@@ -14,7 +14,12 @@ import Automatic from './home/comps/automatic'
 import { resolveFavsList } from './item/helper'
 
 import './home/index.scss'
-
+@connect(({ cart }) => ({
+  list: cart.list,
+	cartIds: cart.cartIds
+}), (dispatch) => ({
+  onUpdateLikeList: (show_likelist) => dispatch({ type: 'cart/updateLikeList', payload: show_likelist }),
+}))
 @connect(store => ({
   store
 }))
@@ -100,6 +105,9 @@ export default class HomeIndex extends Component {
   async fetchInfo () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
     const info = await req.get(url)
+		
+		const show_likelist = info.config.find(item=>item.name=='setting'&&item.config.faverite)
+		this.props.onUpdateLikeList(show_likelist?true:false)
 
     const { is_open, ad_pic, ad_title } = await api.promotion.automatic({register_type: 'general'})
     this.setState({
