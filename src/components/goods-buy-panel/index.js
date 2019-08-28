@@ -224,15 +224,14 @@ export default class GoodsBuyPanel extends Component {
           num,
           distributor_id,
           shop_type: isDrug ? 'drug' : 'distributor'
-        })
+				})
+				Taro.showToast({
+					title: '成功加入购物车',
+					icon: 'success'
+				})
       } catch (e) {
         console.log(e)
-      }
-
-      Taro.showToast({
-        title: '成功加入购物车',
-        icon: 'success'
-      })
+      } 
 
       this.setState({
         busy: false

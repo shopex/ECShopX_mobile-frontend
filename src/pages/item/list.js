@@ -327,9 +327,7 @@ export default class List extends Component {
 
   bindMultiPickerChange = async (e) => {
 		const { info } = this.state
-		console.log(1,info)
     this.addList.map((item, index) => {
-      console.log('bindMultiPickerChange',item)
       if(index === e.detail.value[0]) {
         info.province = {
           label: item.label,
@@ -353,7 +351,6 @@ export default class List extends Component {
         })
       }
 		})
-		console.log(2,info)
 
     let regions = [
       info.province.id,
@@ -374,7 +371,6 @@ export default class List extends Component {
         this.nextPage()
       })
 		})
-		console.log(3,info)
 		this.setState({ 
 			info:Object.assign({},info) 
 		})
@@ -443,11 +439,6 @@ export default class List extends Component {
         this.nextPage()
       })
     })
-	}
-	
-	componentDidUpdate(){
-		console.log("this------------")
-		console.log(this.state)
 	}
 
   render () {
