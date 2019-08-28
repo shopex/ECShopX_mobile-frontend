@@ -140,7 +140,8 @@ export default class WgtGoods extends Component {
         await api.cart.add({
           item_id:item_data.item_id,
           distributor_id,
-          num: 1
+					num: 1,
+					shop_type: 'distributor'
         })
         Taro.showToast({
           title: '成功加入购物车',
