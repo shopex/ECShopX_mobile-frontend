@@ -169,8 +169,7 @@ export default class List extends Component {
     })
   }
 
-	handleClickRefresh = (e) => {
-		console.log('handleClickRefresh')
+	handleRegionRefresh = (e) => {
 		e.stopPropagation()
     this.resetPage()
     const {query} = this.state
@@ -499,7 +498,7 @@ export default class List extends Component {
 								<View className='icon-periscope'></View>
 								<Text>{info.city && info.city.label || '产地'}</Text>
 							</Picker>
-							{info.city && info.city.label  && <Text className='icon-close' onClick={this.handleClickRefresh.bind(this)}></Text>}
+							{info.city && info.city.label  && <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text>}
 						</View>
           </FilterBar>
         </View>

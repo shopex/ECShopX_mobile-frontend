@@ -288,7 +288,7 @@ export default class GoodsBuyPanel extends Component {
   }
 
   render () {
-    const { info, type, fastBuyText,marketing } = this.props
+    const { info, type, fastBuyText } = this.props
 		const { curImg, quantity, selection, isActive, busy, curSku } = this.state
     if (!info) {
       return null

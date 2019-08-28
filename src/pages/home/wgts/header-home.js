@@ -51,7 +51,6 @@ export default class HeaderHome extends Component {
 
   render () {
     const { store } = this.props
-
     return (
       <View>
         {

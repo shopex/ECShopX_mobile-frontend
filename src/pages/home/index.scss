@@ -71,7 +71,10 @@
     }
   }
   &__is-distributor {
-  }
+	}
+	&.wgts-wrap-nolocation {
+		@include page-scroll(0, $tabbar-height);
+	}
 }
 
 

@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, Loading, SpNote, BackToTop, FloatMenus, FloatMenuItem } from '@/components'
 import req from '@/api/req'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { pickBy,classNames } from '@/utils'
 import entry from '@/utils/entry'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
@@ -216,18 +216,19 @@ export default class HomeIndex extends Component {
 
     if (!wgts || !this.props.store) {
       return <Loading />
-    }
+		}
+		const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
 
     return (
       <View className='page-index'>
         {
-          curStore &&
+          show_location && curStore &&
             <HeaderHome
               store={curStore}
             />
         }
-        <ScrollView
-          className={`wgts-wrap ${positionStatus ? 'wgts-wrap__fixed' : ''}`}
+				<ScrollView
+          className={classNames('wgts-wrap', positionStatus && 'wgts-wrap__fixed' , !show_location&&'wgts-wrap-nolocation')}
           scrollTop={scrollTop}
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
