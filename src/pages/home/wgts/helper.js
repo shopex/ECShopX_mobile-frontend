@@ -23,6 +23,9 @@ export function linkPage (type, id) {
       break;
     case 'link':
       url = id
+			break;
+		case 'tag':
+      url = '/pages/item/list?tag_id=' + id
       break;
     case 'custom':
       url = id

@@ -52,7 +52,8 @@ export default class List extends Component {
         is_point: 'false',
         approve_status: 'onsale,only_show',
         category: this.$router.params.cat_id
-      }
+			},
+			curTagId:this.$router.params.tag_id
     }, () => {
       this.nextPage()
     })
