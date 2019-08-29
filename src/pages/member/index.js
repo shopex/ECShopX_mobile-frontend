@@ -313,11 +313,11 @@ export default class MemberIndex extends Component {
               </View>
             </View>
           </View>
-          <View className="important-box view-flex">
-            { /*<View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
+          {/*<View className="important-box view-flex">
+            <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
               <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
               <View>买单</View>
-            </View> */}
+            </View> 
             <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="/pages/member/coupon">
               <Image className="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
               <View>优惠券</View>
@@ -338,13 +338,25 @@ export default class MemberIndex extends Component {
                 </View>
               )
             }
-            { /*<Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
+            { <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
               <Image className="icon-img" src="/assets/imgs/group.png" mode="aspectFit" />
               <View>我的拼团</View>
-            </Navigator>*/ }
-          </View>
+            </Navigator>}
+          </View>*/}
           <View className="section section-card">
-            <View className="list">
+						<View className="list">
+						<Navigator className="list-item" url="/pages/member/coupon">
+							<Image className="item-icon card-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
+							<View className="list-item-txt">优惠券</View>
+							<View className="icon-arrowRight item-icon-go"></View>
+						</Navigator>
+						{ isOpenPopularize && (
+							<View className="list-item" onClick={this.beDistributor.bind(this)}>
+								<Image className="item-icon card-img" src="/assets/imgs/store.png" mode="aspectFit" />
+								<View className="list-item-txt">{!info.isPromoter ? <Text>我要推广</Text> : <Text>推广管理</Text> }</View>
+								<View className="icon-arrowRight item-icon-go"></View>
+							</View>
+						)}
               <Navigator className="list-item" url="/pages/member/item-fav">
                 <View className="item-icon icon-faverite"></View>
                 <View className="list-item-txt">我的收藏</View>
