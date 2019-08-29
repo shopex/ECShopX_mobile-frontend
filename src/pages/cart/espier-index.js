@@ -626,7 +626,7 @@ export default class CartIndex extends Component {
               : null
           }
           {
-            !page.isLoading && !page.hasNext && !likeList.length
+            !page.isLoading && !page.hasNext && !likeList.length && showLikeList
             && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>

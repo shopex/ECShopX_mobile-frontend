@@ -372,7 +372,7 @@ export default class List extends Component {
       })
 		})
 		this.setState({ 
-			info:Object.assign({},info) 
+			info
 		})
   }
 
