@@ -16,9 +16,11 @@ import { resolveFavsList } from './item/helper'
 import './home/index.scss'
 @connect(({ cart }) => ({
   list: cart.list,
-	cartIds: cart.cartIds
+	cartIds: cart.cartIds,
+	cartCount: cart.cartCount
 }), (dispatch) => ({
-  onUpdateLikeList: (show_likelist) => dispatch({ type: 'cart/updateLikeList', payload: show_likelist }),
+	onUpdateLikeList: (show_likelist) => dispatch({ type: 'cart/updateLikeList', payload: show_likelist }),
+	onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
 @connect(store => ({
   store
@@ -89,7 +91,8 @@ export default class HomeIndex extends Component {
       }, () => {
         this.fetchInfo()
       })
-    }
+		}
+		this.fetchCartcount()
   }
 
   onShareAppMessage (res) {
@@ -101,7 +104,14 @@ export default class HomeIndex extends Component {
       path: '/pages/index'
     }
   }
-
+	async fetchCartcount() {
+    try {
+      const { item_count } = await api.cart.count({shop_type: 'distributor'})
+      this.props.onUpdateCartCount(item_count)
+    } catch (e) {
+      console.error(e)
+    }
+	}
   async fetchInfo () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
     const info = await req.get(url)

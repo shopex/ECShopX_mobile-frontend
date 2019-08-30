@@ -2,8 +2,6 @@ import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
-import req from '@/api/req'
-import api from '@/api'
 import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
 import { getTotalCount } from '@/store/cart'
@@ -11,8 +9,6 @@ import { getTotalCount } from '@/store/cart'
 @connect(({ tabBar,cart }) => ({
   tabBar: tabBar.current,
   cartCount: cart.cartCount
-}),(dispatch) => ({
-  onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
 export default class TabBar extends Component {
   static options = {
@@ -124,13 +120,6 @@ export default class TabBar extends Component {
       return
     }
 
-    try {
-      const { item_count } = await api.cart.count({shop_type: 'distributor'})
-      updateCartCount(item_count)
-      this.props.onUpdateCartCount(item_count)
-    } catch (e) {
-      console.error(e)
-    }
   }
 
   handleClick = (current) => {
