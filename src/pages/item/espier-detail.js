@@ -583,17 +583,23 @@ export default class Detail extends Component {
             <View className='goods-timer'>
               <View className='goods-timer__hd'>
                 <View className='goods-prices'>
-                  <Price
-                    unit='cent'
-                    symbol={info.cur.symbol}
-                    value={info.act_price}
-                  />
-                  <Price
-                    unit='cent'
-                    className='goods-prices__market'
-                    symbol={info.cur.symbol}
-                    value={info.price}
-                  />
+                  {
+                    info.cur &&
+                      <Price
+                        unit='cent'
+                        symbol={info.cur.symbol}
+                        value={info.act_price}
+                      />
+                  }
+                  {
+                    info.cur &&
+                      <Price
+                        unit='cent'
+                        className='goods-prices__market'
+                        symbol={info.cur.symbol}
+                        value={info.price}
+                      />
+                  }
                   {
                     marketing === 'group' &&
                       <View className='goods-prices__ft'>

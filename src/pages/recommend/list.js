@@ -14,7 +14,7 @@ import './list.scss'
 @withBackToTop
 export default class RecommendList extends Component {
   static config = {
-    navigationBarTitleText: '种草'
+    navigationBarTitleText: '文章'
   }
 
   constructor (props) {
