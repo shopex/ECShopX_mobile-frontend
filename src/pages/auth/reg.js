@@ -232,6 +232,12 @@ export default class Reg extends Component {
     })
   }
 
+  handleBackHome = () => {
+    Taro.redirectTo({
+      url: '/pages/index'
+    })
+  }
+
   handleGetPhoneNumber = async (e) => {
     // let { code } = this.$router.params
     // try {
@@ -402,7 +408,10 @@ export default class Reg extends Component {
           <View className='btns'>
             {
               process.env.TARO_ENV === 'weapp'
-                ? <AtButton type='primary' formType='submit'>同意协议并注册</AtButton>
+                ? (<View className=''>
+                    <AtButton type='primary' formType='submit'>同意协议并注册</AtButton>
+                    <AtButton type='default' onClick={this.handleBackHome.bind(this)}>我再想想</AtButton>
+                    </View>)
                 : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>同意协议并注册</AtButton>
             }
             <View className='accountAgreement'>

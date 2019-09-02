@@ -107,14 +107,7 @@ class App extends Component {
       'wx4721629519a8f25b',
       'wx2fb97cb696f68d22',
       'wxf91925e702efe3e3'
-    ],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'ecshopX商城',
-      navigationBarTextStyle: 'black',
-      // navigationStyle: 'custom'
-    }
+    ]
   }
   componentWillMount () {
   }

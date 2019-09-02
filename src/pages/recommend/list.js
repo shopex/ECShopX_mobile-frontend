@@ -14,7 +14,7 @@ import './list.scss'
 @withBackToTop
 export default class RecommendList extends Component {
   static config = {
-    navigationBarTitleText: '种草'
+    navigationBarTitleText: '文章'
   }
 
   constructor (props) {
@@ -34,6 +34,17 @@ export default class RecommendList extends Component {
   }
 
   componentDidShow () {
+    const params = this.$router.params
+    if (params) {
+      const { id, name } = params
+      this.setState({
+        selectColumn: {
+          id,
+          name,
+          isChooseColumn: true
+        }
+      })
+    }
     Taro.showLoading()
     this.resetPage()
     this.setState({
@@ -148,6 +159,7 @@ export default class RecommendList extends Component {
   handleConfirm = (val) => {
     this.setState({
       query: {
+        showDrawer: false,
         ...this.state.query,
         title: val,
       }
