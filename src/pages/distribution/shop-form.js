@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
-import { AtInput, AtTextarea, AtImagePicker } from 'taro-ui'
+import { AtInput, AtTextarea, AtImagePicker, AtButton } from 'taro-ui'
 import { SpCell } from '@/components'
 import imgUploader from '@/utils/qiniu'
 import api from '@/api'
@@ -27,7 +27,7 @@ export default class DistributionShopForm extends Component {
         val
       }
     })
-    if (key === 'shop_pic') {
+    if (key === 'shop_pic' && val) {
       imgs.push(val)
       this.setState({
         imgs
@@ -118,11 +118,17 @@ export default class DistributionShopForm extends Component {
                       <AtImagePicker
                         mode='aspectFill'
                         multiple
-                        length={1}
+                        count={1}
+                        length={3}
                         files={imgs}
                         onChange={this.handleImageChange.bind(this)}
                       > </AtImagePicker>
                     </View>
+                    {/*
+                      <View className="shop_pic-btn">
+                        <AtButton type='primary' onClick={this.handleSubmit.bind(this)}>提交</AtButton>
+                      </View>
+                    */}
                   </View>
             }
           </AtForm>
