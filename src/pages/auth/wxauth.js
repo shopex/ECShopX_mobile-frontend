@@ -98,6 +98,12 @@ export default class WxAuth extends Component {
     Taro.hideLoading()
   }
 
+  handleBackHome = () => {
+    Taro.redirectTo({
+      url: '/pages/index'
+    })
+  }
+
   render () {
     const { isAuthShow } = this.state
 
@@ -112,6 +118,7 @@ export default class WxAuth extends Component {
               openType='getUserInfo'
               onGetUserInfo={this.handleGetUserInfo}
             >点此授权</AtButton>
+            <AtButton className='back-btn' type='default' onClick={this.handleBackHome.bind(this)}>我再想想</AtButton>
           </View>
         )}
       </View>

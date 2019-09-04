@@ -233,27 +233,18 @@ export default class Detail extends Component {
 
     if (type === 'fav') {
       if (!isAuth) {
-        Taro.showToast({
-          title: '请登录后再收藏',
-          icon: 'none'
-        })
+        S.toast('请登录后再收藏')
         return
       }
 
       if (!info.is_fav) {
         const favRes = await api.member.addFav(info.item_id)
         this.props.onAddFav(favRes)
-        Taro.showToast({
-          title: '已加入收藏',
-          icon: 'none'
-        })
+        S.toast('已加入收藏')
       } else {
         await api.member.delFav(info.item_id)
         this.props.onDelFav(info)
-        Taro.showToast({
-          title: '已移出收藏',
-          icon: 'none'
-        })
+        S.toast('已移出收藏')
       }
 
       info.is_fav = !info.is_fav
@@ -301,10 +292,7 @@ export default class Detail extends Component {
 
   handleBuyBarClick = (type) => {
     if (!S.getAuthToken()) {
-      Taro.showToast({
-        title: '请先登录再购买',
-        icon: 'none'
-      })
+      S.toast('请先登录再购买')
 
       setTimeout(() => {
         S.login(this)
@@ -342,7 +330,6 @@ export default class Detail extends Component {
     const { info } = this.state
     const { pics, company_id, item_id } = info
     const host = req.baseURL.replace('/api/h5app/wxapp/','')
-    console.log(host)
     const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
     const { distributor_id } = Taro.getStorageSync('curStore')
     const pic = pics[0].replace('http:', 'https:')
@@ -363,7 +350,10 @@ export default class Detail extends Component {
         posterImgs
       }, () => {
         this.drawImage()
+        return posterImgs
       })
+    } else {
+      return null
     }
   }
 
@@ -435,10 +425,7 @@ export default class Detail extends Component {
 
   handleShare () {
     if (!S.getAuthToken()) {
-      Taro.showToast({
-        title: '请先登录再分享',
-        icon: 'none'
-      })
+      S.toast('请先登录再分享')
 
       setTimeout(() => {
         S.login(this)
@@ -478,16 +465,10 @@ export default class Detail extends Component {
       filePath: poster
     })
     .then(res => {
-      Taro.showToast({
-        title: '保存成功',
-        icon: 'success'
-      })
+      S.toast('保存成功')
     })
     .catch(res => {
-      Taro.showToast({
-        title: '保存失败',
-        icon: 'error'
-      })
+      S.toast('保存失败')
     })
   }
 
@@ -502,10 +483,22 @@ export default class Detail extends Component {
     })
   }
 
-  handleShowPoster = () => {
-    this.setState({
-      showPoster: true
-    })
+  handleShowPoster = async () => {
+    const { posterImgs } = this.state
+    if (!posterImgs || !posterImgs.avatar || !posterImgs.code || !posterImgs.goods) {
+      const imgs = await this.downloadPosterImg()
+      if (imgs && imgs.avatar && imgs.code && imgs.goods) {
+        this.setState({
+          showPoster: true
+        })
+      } else {
+        S.toast('海报生成失败，请稍后再试')
+      }
+    } else {
+      this.setState({
+        showPoster: true
+      })
+    }
   }
 
   handleHidePoster = () => {

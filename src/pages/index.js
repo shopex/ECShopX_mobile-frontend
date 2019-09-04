@@ -104,6 +104,10 @@ export default class HomeIndex extends Component {
     }
   }
 	async fetchCartcount() {
+    if (!S.getAuthToken()) {
+      return
+    }
+
     try {
       const { item_count } = await api.cart.count({shop_type: 'distributor'})
       this.props.onUpdateCartCount(item_count)
