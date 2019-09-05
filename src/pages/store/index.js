@@ -5,6 +5,7 @@ import { SpToast, TabBar, Loading, SpNote, BackToTop, FloatMenus, FloatMenuItem 
 import req from '@/api/req'
 import api from '@/api'
 import { pickBy } from '@/utils'
+import entry from '@/utils/entry'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
 import { WgtSlider, WgtLimittimeSlider, WgtImgHotZone, WgtGoodsFaverite, WgtMarquees, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck } from '../home/wgts'
@@ -52,7 +53,10 @@ export default class StoreIndex extends Component {
   }
 
   async fetchInfo () {
-    const { distributor_id } = Taro.getStorageSync('curStore')
+    const options = this.$router.params
+    const res = await entry.entryLaunch(options, true)
+
+    const { distributor_id } = await Taro.getStorageSync('curStore')
     const url = `/pageparams/setting?template_name=yykweishop&version=shop_${distributor_id}&page_name=shop_home`
     const info = await req.get(url)
 

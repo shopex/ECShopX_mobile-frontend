@@ -130,12 +130,6 @@ export default class MemberIndex extends Component {
     })
   }
 
-  handleClickPhone = () => {
-    Taro.makePhoneCall({
-      phoneNumber: '021-61255625'
-    })
-  }
-
   beDistributor = async () => {
     const { isOpenPopularize, info } = this.state
     const { username, avatar, isPromoter } = info
@@ -218,7 +212,7 @@ export default class MemberIndex extends Component {
                 : <View className="gradename">{vipgrade.grade_name}</View>
               }
             </View>
-            { <View className="icon-arrowRight"></View> }
+            {/* <View className="icon-arrowRight"></View> */}
           </View>
           {
             <View className="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">

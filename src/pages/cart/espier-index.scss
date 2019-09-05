@@ -6,7 +6,6 @@
       @include clearfix();
       .goods-item {
         width: 48%;
-        height: 520px;
         float: left;
         overflow: hidden;
         margin-left: 1%;
@@ -33,11 +32,10 @@
           padding-right: floor($edge-size / 2);
         }
         &__bd {
-          flex-direction: column;
-          flex: 1;
+          display: block;
         }
         &__cont {
-          height: 210px;
+          height: 250px;
         }
       }
     }
@@ -49,8 +47,16 @@
 			margin: 0 0 20px;
 			padding: 0 0 4px;
 			.shop__name{
-				font-weight:bold;
+        padding: $edge-margin;
+        .icon-shop {
+          margin-right: 10px;
+          color: $color-gray;
+        }
 			}
+      .shop__wrap {
+        background: #fff;
+        box-shadow: 0 0 15px rgba(0,0,0,.1);
+      }
 		}
     &__scroll {
 			// @include page-scroll($navigate-height, $toolbar-height + $tabbar-height);
@@ -77,7 +83,7 @@
       line-height: 40px;
     }
     &__disabled {
-      margin-top: -40px;
+      margin-top: 40px;
     }
     .goods-item {
       position: relative;
@@ -202,8 +208,12 @@
   }
   .btn-rand {
     width: 180px;
+    height: 80px;
+    line-height: 80px;
     margin: 0 auto;
     display: block;
+    background: $color-brand-primary;
+    border-color: $color-brand-primary;
   }
   .at-action-sheet__container {
     z-index: $z-index-modal;
@@ -221,7 +231,8 @@
 .cart-toolbar {
 	// bottom: $tabbar-height;
 	position: initial;
-  padding: 0 0 0 $edge-size;
+  padding: 0 $edge-margin;
+  background: #f9f9f9;
   &__hd {
   }
   &__bd {
@@ -251,14 +262,15 @@
     }
   }
   .btn-checkout {
-    width: 256px;
+    width: 200px;
     margin: 0 0 0 24px;
-    height: $toolbar-height;
-    line-height: $toolbar-height;
+    height: 68px;
+    line-height: 68px;
     border: none;
-    border-radius: 0;
+    border-radius: 68px;
     font-weight: bold;
     font-size: $font-size;
+    background: $color-brand-primary;
     &:before, &:after {
       border: none;
     }

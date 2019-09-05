@@ -56,12 +56,6 @@ export default class TradeRefundDetail extends Component {
       Taro.hideLoading()
     }
 
-    if(type === 'contact') {
-      Taro.makePhoneCall({
-        phoneNumber: '021-61255625'
-      })
-    }
-
     if (type === 'edit') {
       Taro.navigateTo({
         url: `/pages/trade/refund?aftersales_bn=${aftersales_bn}&order_id=${order_id}&item_id=${item_id}`
@@ -148,8 +142,8 @@ export default class TradeRefundDetail extends Component {
           <View className='info-name'>申请时间：<Text className='info-value'>{info.creat_time_str}</Text></View>
           <View className='info-name'>退款编号：<Text className='info-value'>{info.aftersales_bn}</Text></View>
         </View>
+        <Button openType='contact' className='refund-detail-btn'>联系客服</Button>
         {/*
-          <View onClick={this.handleBtnClick.bind(this, 'contact')} className='refund-detail-btn'>联系客服</View>
           <View className='refund-status'>
           {
             (progress == 0 || progress == 1 || progress == 3 || progress == 5)

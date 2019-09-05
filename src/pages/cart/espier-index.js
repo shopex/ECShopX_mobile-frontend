@@ -223,7 +223,8 @@ export default class CartIndex extends Component {
 
   handleDelect = async (cart_id,shopIndex) => {
     const res = await Taro.showModal({
-      title: '将当前商品移出购物车?',
+      title: '提示',
+      content: '将当前商品移出购物车?',
       showCancel: true,
       cancel: '取消',
       confirmText: '确认',
@@ -414,7 +415,10 @@ export default class CartIndex extends Component {
                     className='cart-list__shop'
                     key={shopIndex}
 									>
-										<Text className='shop__name'>{shopCart.shopInfo.shop_name}</Text>
+										<View className='shop__name'>
+                      <Text className='icon-shop'></Text>
+                      {shopCart.shopInfo.shop_name}
+                    </View>
 										<View className='shop__wrap'>
 											{
 												shopCart.group.map(activityGroup => {
@@ -467,6 +471,7 @@ export default class CartIndex extends Component {
 																						<CartItem
 																							isDisabled
 																							num={true}
+                                              key={pack.package_id}
 																						  info={pack}
 																						></CartItem>
 																					)
@@ -504,56 +509,56 @@ export default class CartIndex extends Component {
 													)
 												})
 											}
-										</View>
 
-									<View className={`toolbar cart-toolbar ${isEmpty && 'hidden'}`}>
-									<View className='cart-toolbar__hd'>
-										<SpCheckbox
-											// checked={this.isTotalChecked[shopIndex]}
-											checked={checked_all}
-											onChange={this.handleAllSelect.bind(this,!checked_all,shopIndex)}
-										>全选</SpCheckbox>
-									</View>
-										{
-											cartMode !== 'edit'
-												? <View className='cart-toolbar__bd'>
-														<View className='cart-total'>
-															{list.length && shopCart.shopInfo.discount_fee > 0 && (
-																<View className='cart-total__discount'>
-																	<Text className='cart-total__hint'>优惠：</Text>
-																	<Price
-																		primary
-																		value={-1 * Number(shopCart.shopInfo.discount_fee )}
-																		unit='cent'
-																	/>
-																</View>
-															)}
-															<View className='cart-total__total'>
-																<Text className='cart-total__hint'>总计：</Text>
-																<Price
-																	primary
-																	value={Number(shopCart.shopInfo.total_fee)}
-																	unit='cent'
-																/>
-															</View>
-														</View>
-														<AtButton
-															type='primary'
-															className='btn-checkout'
-															disabled={shopCart.shopInfo.cart_total_count <= 0}
-															onClick={this.handleCheckout.bind(this,shopCart.shopInfo.shop_id)}
-														>{isDrug ? '立即预约' : '结算'}</AtButton>
-													</View>
-												: <View className='cart-toolbar__bd'>
-														<AtButton
-															type='primary'
-															className='btn-checkout'
-															onClick={this.handleDelect}
-														>删除</AtButton>
-													</View>
-										}
-								</View>
 
+    									<View className={`toolbar cart-toolbar ${isEmpty && 'hidden'}`}>
+      									<View className='cart-toolbar__hd'>
+      										<SpCheckbox
+      											// checked={this.isTotalChecked[shopIndex]}
+      											checked={checked_all}
+      											onChange={this.handleAllSelect.bind(this,!checked_all,shopIndex)}
+      										>全选</SpCheckbox>
+      									</View>
+      										{
+      											cartMode !== 'edit'
+      												? <View className='cart-toolbar__bd'>
+      														<View className='cart-total'>
+      															{list.length && shopCart.shopInfo.discount_fee > 0 && (
+      																<View className='cart-total__discount'>
+      																	<Text className='cart-total__hint'>优惠：</Text>
+      																	<Price
+      																		primary
+      																		value={-1 * Number(shopCart.shopInfo.discount_fee )}
+      																		unit='cent'
+      																	/>
+      																</View>
+      															)}
+      															<View className='cart-total__total'>
+      																<Text className='cart-total__hint'>总计：</Text>
+      																<Price
+      																	primary
+      																	value={Number(shopCart.shopInfo.total_fee)}
+      																	unit='cent'
+      																/>
+      															</View>
+      														</View>
+      														<AtButton
+      															type='primary'
+      															className='btn-checkout'
+      															disabled={shopCart.shopInfo.cart_total_count <= 0}
+      															onClick={this.handleCheckout.bind(this,shopCart.shopInfo.shop_id)}
+      														>{isDrug ? '立即预约' : '结算'}</AtButton>
+      													</View>
+      												: <View className='cart-toolbar__bd'>
+      														<AtButton
+      															type='primary'
+      															className='btn-checkout'
+      															onClick={this.handleDelect}
+      														>删除</AtButton>
+      													</View>
+      										}
+      								</View>
+                    </View>
                   </View>
                 )
               })
@@ -603,31 +608,27 @@ export default class CartIndex extends Component {
           {
             !isDrug && likeList.length && showLikeList
               ? <View className='cart-list cart-list__disabled'>
-                <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
-                <View className='goods-list goods-list__type-grid'>
-                  {
-                    likeList.map(item => {
-                      return (
-                        <GoodsItem
-                          key={item.item_id}
-                          info={item}
-                          onClick={this.handleClickItem.bind(this, item)}
-                        />
-                      )
-                    })
-                  }
+                  <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
+                  <View className='goods-list goods-list__type-grid'>
+                    {
+                      likeList.map(item => {
+                        return (
+                          <GoodsItem
+                            key={item.item_id}
+                            info={item}
+                            onClick={this.handleClickItem.bind(this, item)}
+                          />
+                        )
+                      })
+                    }
+                  </View>
                 </View>
-              </View>
               : null
           }
           {
             page.isLoading
               ? <Loading>正在加载...</Loading>
               : null
-          }
-          {
-            !page.isLoading && !page.hasNext && !likeList.length && showLikeList
-            && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
 
