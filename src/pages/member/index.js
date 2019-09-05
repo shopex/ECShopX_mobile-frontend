@@ -130,12 +130,6 @@ export default class MemberIndex extends Component {
     })
   }
 
-  handleClickPhone = () => {
-    Taro.makePhoneCall({
-      phoneNumber: '021-61255625'
-    })
-  }
-
   beDistributor = async () => {
     const { isOpenPopularize, info } = this.state
     const { username, avatar, isPromoter } = info

@@ -199,12 +199,6 @@ export default class TradeDetail extends Component {
       return
     }
 
-    if(type === 'contact') {
-      Taro.makePhoneCall({
-        phoneNumber: '021-61255625'
-      })
-    }
-
     if (type === 'pay') {
       await this.handlePay()
       return
@@ -401,12 +395,12 @@ export default class TradeDetail extends Component {
         }
         {
           info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'confirm')}>确认收货</Text>
+            <Text className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'confirm')}>确认收货</Text>
           </View>
         }
         {
           info.status === 'TRADE_SUCCESS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn' onClick={this.handleClickBtn.bind(this, 'contact')}>联系客服</Text>
+            <Button openType='contact' className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'>联系客服</Button>
           </View>
         }
         {/*{
