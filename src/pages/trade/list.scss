@@ -24,10 +24,15 @@
     }
     &__item {
       height: $tabs-height;
+      color: $color-brand-accent-light;
     }
     &__item-underline {
       width: 40%;
       left: 30%;
+      background: $color-brand-primary;
+    }
+    &__item--active {
+      color: $color-brand-primary;
     }
   }
 
@@ -49,6 +54,15 @@
       padding-left: 26px;
       padding-right: 26px;
       margin-left: 20px;
+    }
+    .at-button--primary {
+      background: $color-brand-primary;
+      border-color: $color-brand-primary;
+    }
+    .at-button--secondary {
+      background: #fff;
+      border-color: $color-brand-accent-light;
+      color: $color-brand-primary;
     }
   }
   .order-item {

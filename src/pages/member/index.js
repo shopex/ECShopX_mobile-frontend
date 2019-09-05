@@ -212,7 +212,7 @@ export default class MemberIndex extends Component {
                 : <View className="gradename">{vipgrade.grade_name}</View>
               }
             </View>
-            { <View className="icon-arrowRight"></View> }
+            {/* <View className="icon-arrowRight"></View> */}
           </View>
           {
             <View className="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">
