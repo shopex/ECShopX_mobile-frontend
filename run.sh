@@ -1,8 +1,44 @@
 #/usr/bash
 
+#!/bin/bash
+cat <<MENU
+客户列表：
+  [ 1 ] => 测试环境
+  [ 2 ] => 预发布
+  [ 3 ] => 正式环境
+  [ 4 ] => 华信（小康龙江）
+  [ 5 ] => 云尚（医贵欣网上商城）
+MENU
+echo "请选择主机组:"
+read number
+case "$number" in
+  1)
+    appid="wx912913df9fef6ddd"
+    baseUrl="ecshopx.shopex123.com/index.php"
+    ;;
+  2)
+    appid="wx4721629519a8f25b"
+    baseUrl="preissue-b.yuanyuanke.cn"
+    ;;
+  3)
+    appid="wx5e27f0cc25fa9898"
+    baseUrl="b.yuanyuanke.cn"
+    ;;
+  4)
+    appid="wx22de6bb6f56392c1"
+    baseUrl="b.xiaokanglongjiang.com"
+    ;;
+  5)
+    appid="wxca119bea37be983c"
+    baseUrl="b.eguixin.com"
+    ;;
+  *)
+    echo "选择的序号不存在"
+    exit
+    ;;
+esac
+
 version=$(git describe --tags `git rev-list --tags --max-count=1`)
-appid="wx4721629519a8f25b"
-baseUrl="preissue-b.yuanyuanke.cn"
 desc="新版微商城"
 
 # 需要被替换的小程序appid，在./src/ext.json和 ./project.config.json
@@ -42,9 +78,9 @@ npm run build:weapp
 
 echo "【SUCCESS】编译完成"
 
-#echo "【SUCCESS】准备上传小程序"
-#echo "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u ${version}@`pwd`/dist --upload-desc '${desc}'"
-#/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u ${version}@`pwd`/dist --upload-desc "${desc}"
+# echo "【SUCCESS】准备上传小程序"
+# echo "/Applications/wechatwebdevtools.app/Contents/MacOS/cli -u ${version}@`pwd`/dist --upload-desc '${desc}'"
+# /Applications/wechatwebdevtools.app/Contents/MacOS/cli -u ${version}@`pwd`/dist --upload-desc "${desc}"
 
 git checkout .
 
