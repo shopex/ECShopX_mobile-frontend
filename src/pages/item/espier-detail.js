@@ -77,7 +77,12 @@ export default class Detail extends Component {
     // 浏览记录
     if (S.getAuthToken()) {
       try {
-        const { id } = this.$router.params
+        let itemId = ''
+        if (id) {
+          itemId = id
+        } else {
+          itemId = this.$router.params.id
+        }
         api.member.itemHistorySave(id)
       } catch (e) {
         console.log(e)
