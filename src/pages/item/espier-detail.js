@@ -63,7 +63,7 @@ export default class Detail extends Component {
 
   async componentDidMount () {
     const options = this.$router.params
-    const { store, uid, positionStatus } = await entry.entryLaunch(options, true)
+    const { store, uid, positionStatus, id } = await entry.entryLaunch(options, true)
     if (store) {
       this.setState({
         positionStatus
@@ -118,7 +118,12 @@ export default class Detail extends Component {
   }
 
   async fetch () {
-    const { id } = this.$router.params
+    let id = ''
+    if (itemId) {
+      id = itemId
+    } else {
+      id = this.$router.params.id
+    }
     const info = await api.item.detail(id)
     // let promotion_package = null
     // const { list } = await api.item.packageList({item_id: id})
