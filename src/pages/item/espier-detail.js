@@ -414,7 +414,7 @@ export default class Detail extends Component {
     canvasExp.textFill(ctx, '给你推荐好货好物', 90, 65, 14, '#999')
     canvasExp.drawImageFill(ctx, goods, 15, 95, 345, 345)
     canvasExp.imgCircleClip(ctx, avatar, 15, 15, 65, 65)
-    canvasExp.textMultipleOverflowFill(ctx, item_name, 20, 2, 15, 470, 18, '#333')
+    canvasExp.textMultipleOverflowFill(ctx, item_name, 22, 2, 15, 470, 345, 18, '#333')
     canvasExp.textSpliceFill(ctx, prices, 'left', 15, 600)
     canvasExp.drawImageFill(ctx, code, 250, 500, 100, 100)
     canvasExp.textFill(ctx, '保存并分享到朋友圈', 245, 620, 12, '#999')

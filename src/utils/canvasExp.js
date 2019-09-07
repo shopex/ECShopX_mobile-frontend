@@ -87,7 +87,7 @@ const canvasExp = {
     }
     ctx.fillText(temp, x, y)
   },
-  textMultipleOverflowFill: (ctx, text, num, rows, x, y, size, color) => {
+  textMultipleOverflowFill: (ctx, text, num, rows, x, y, w, size, color) => {
     ctx.setFontSize(size)
     ctx.setFillStyle(color)
     let chr = text.split('')
@@ -109,7 +109,7 @@ const canvasExp = {
         ctx.fillText(item, x, _y)
       }
       if (index === rows) {
-        this.textOverflowFill(ctx, item, x, _y, size, color)
+        this.textOverflowFill(ctx, item, x, _y, w, size, color)
       }
       _y = _y+24
     })
