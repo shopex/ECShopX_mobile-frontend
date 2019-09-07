@@ -72,7 +72,7 @@ const canvasExp = {
       }
     })
   },
-  textOverflowFill: (ctx, text, x, y, size, color) => {
+  textOverflowFill: (ctx, text, x, y, w, size, color) => {
     ctx.setFontSize(size)
     ctx.setFillStyle(color)
     let chr = text.split('')
@@ -94,7 +94,7 @@ const canvasExp = {
     let temp = ''
     let row = []
     chr.map(item =>{
-      if(temp.length <= num+1) {
+      if(temp.length < num) {
         temp += item
       } else {
         row.push(temp)
