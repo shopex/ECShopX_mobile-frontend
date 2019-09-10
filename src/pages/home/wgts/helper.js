@@ -18,6 +18,9 @@ export function linkPage (type, id) {
     case 'custom_page':
       url = '/pages/custom/custom-page?id=' + id
       break;
+    case 'marketing':
+      url = '/pages/item/group-list'
+      break;
     case 'seckill':
       url = '/pages/item/seckill-goods-list?seckill_id=' + id
       break;
