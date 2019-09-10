@@ -1,3 +1,5 @@
+@import '../../style/imports';
+
 .status-icon {
   position: fixed;
   right: -10px;
@@ -17,31 +19,22 @@
 }
 
 .activity-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-top: 50px;
-
-  .time-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 50px;
-    height: 60px;
-    padding: 0 6px;
-    background: #333;
-    color: #fff;
+  &__label {
+    padding-right: 10px;
+  }
+  .at-countdown__time-box {
+    font-family: "Helvetica";
+    background: $color-brand-primary;
     border-radius: 6px;
-    font-size: 28px;
-    font-family: sans-serif;
-  }
-
-  .dot {
-    padding: 0 6px;
-    font-size: 22px;
-  }
-
-  &.expire-time {
-    .time-box {
-      background: #7b6f73;
-    }
+    width: 50px;
+    height: 50px;
+    line-height: 52px;
+    color: #fff;
+    font-weight: 600;
   }
 }
 
@@ -172,6 +165,17 @@
     height: 100%;
     border-radius: 100%;
   }
+
+  .btn-submit {
+    background: $color-brand-primary;
+    color: #fff;
+  }
+}
+
+.at-button--primary {
+  background: $color-brand-primary;
+  border-color: $color-brand-primary;
+  color: #fff;
 }
 
 .view-flex {

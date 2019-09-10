@@ -49,7 +49,7 @@ class FormIds {
     log.debug(`[form-ids] sending ids: `, ids)
 
     try {
-      await api.member.fomrId(ids)
+      await api.member.formId(ids)
     } catch (e) {
       console.log(e)
     }

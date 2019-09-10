@@ -24,7 +24,7 @@ $item-img-size: 240px !default;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: $edge-margin $edge-size;
+      padding: $edge-size/1.5 $edge-size;
 			flex: 1;
 			position: relative;
 			.icon{
@@ -41,7 +41,12 @@ $item-img-size: 240px !default;
 				}
 			}
 		}
+    &__footer {
+      display: flex;
+      align-items: center;
+    }
 		&__avatar {
+      flex: 1;
 			display: flex;
 			padding-left: 28px;
 			.user-avatar {
@@ -65,7 +70,7 @@ $item-img-size: 240px !default;
       @include multi-ellipsis(2);
       line-height: 1.4;
       color: #111;
-      margin: 0 0 16px;
+      margin: 0 0 10px;
       &-status {
         color: $color-red;
         font-weight: bold;
@@ -79,28 +84,40 @@ $item-img-size: 240px !default;
       align-items: center;
     }
     &__tuan {
+      display: flex;
       border: 1px solid $color-red;
-      border-radius: 3PX;
+      border-radius: 6px;
       overflow: hidden;
       font-size: $font-size-small;
-      height: floor(1.3 * $font-size);
-      line-height: floor(1.3 * $font-size);
       margin-right: 16px;
       &-num {
-        background: $color-red;
-        text-align: center;
-        color: #fff;
-        display: inline-block;
         padding: 0 10px;
+        height: floor(1.3 * $font-size);
+        line-height: floor(1.3 * $font-size);
+        background: $color-red;
+        font-weight: bold;
+        color: #fff;
       }
       &-txt {
+        flex: 1;
+        padding: 0 10px;
+        height: floor(1.3 * $font-size);
+        line-height: floor(1.3 * $font-size);
         color: $color-red;
-        padding: 0 5px;
       }
     }
     &__price {
       font-size: floor(1.2 * $font-size);
       color: $color-red;
+    }
+    &__tips {
+      padding-top: 5px;
+      font-size: 24px;
+      color: #666;
+      .mark {
+        font-weight: 800;
+        font-family: "Helvetica Neue";
+      }
     }
     &__action {
       display: flex;

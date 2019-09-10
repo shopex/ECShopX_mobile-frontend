@@ -97,17 +97,19 @@ export default class myGroupList extends Component {
 												unit='cent'
 											/>
 										</View>
-										{item.team_status == 1 && (
-											<View className='group-tips'>还差 <Text className='mark'>{item.person_num - item.join_person_num}</Text> 人成团</View>
+									</View>
+                  <View className='group-item__footer'>
+  									<View className='group-item__avatar'>
+  										{item.member_list.map((avatar, index) => {
+  											return(
+  												<Image key={index}  mode='aspectFill' className='user-avatar' src={avatar.member_info.headimgurl}/>
+  												)
+  										})}
+  									</View>
+                    {item.team_status == 1 && (
+											<View className='group-item__tips'>还差<Text className='mark'>{item.person_num - item.join_person_num}</Text>人成团</View>
 										)}
-									</View>
-									<View className='group-item__avatar'>
-										{item.member_list.map((avatar,index)=>{
-											return(
-												<Image key={index}  mode='aspectFill' className='user-avatar' src={avatar.member_info.headimgurl}/>
-												)
-										})}
-									</View>
+                  </View>
 								</View>
 							</View>
 						)
