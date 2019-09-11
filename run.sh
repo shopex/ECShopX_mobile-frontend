@@ -8,6 +8,7 @@ cat <<MENU
   [ 3 ] => 正式环境
   [ 4 ] => 华信（小康龙江）
   [ 5 ] => 云尚（医贵欣网上商城）
+  [ 6 ] => 锦联华
 MENU
 echo "请选择主机组:"
 read number
@@ -31,6 +32,10 @@ case "$number" in
   5)
     appid="wxca119bea37be983c"
     baseUrl="b.eguixin.com"
+    ;;
+  6)
+    appid="wx744bbfebf3e71459"
+    baseUrl="b.jlhshop.com"
     ;;
   *)
     echo "选择的序号不存在"
