@@ -71,7 +71,6 @@ export default class WgtCoupon extends Component {
               <View
                 className={classNames('coupon-wgt', item.imgUrl && 'with-img')}
                 key={idx}
-                onClick={this.handleGetCard.bind(this, item.id)}
               > {
                   item.imgUrl
                   ? <QnImg
