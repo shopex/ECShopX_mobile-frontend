@@ -38,10 +38,13 @@ export default class RegRule extends Component {
           title='注册协议'
           leftIconType='chevron-left'
         />
-        <SpHtmlContent
-          className='goods-detail__content'
-          content={info}
-        />
+        {
+          info &&
+            <SpHtmlContent
+              className='pay-rule-style'
+              content={info}
+            />
+        }
       </View>
     )
   }
