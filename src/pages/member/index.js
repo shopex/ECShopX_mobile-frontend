@@ -358,9 +358,9 @@ export default class MemberIndex extends Component {
                 <SpCell
                   title={!info.isPromoter ? '我要推广' : '推广管理'}
                   isLink
+                  img='/assets/imgs/store.png'
                   onClick={this.beDistributor.bind(this)}
                   >
-                  <Image className="item-icon card-img" src="/assets/imgs/store.png" mode="aspectFit" />
                 </SpCell>
             }
             <SpCell
