@@ -141,12 +141,11 @@ function html2json(html, bindName) {
                     return pre;
                 }, {});
             }
-
             //对img添加额外数据
             if (node.tag === 'img') {
                 node.imgIndex = results.images.length;
                 var imgUrl = node.attr.src;
-                if (imgUrl[0] == '') {
+                if (imgUrl && imgUrl[0] == '') {
                     imgUrl.splice(0, 1);
                 }
                 imgUrl = wxDiscode.urlToHttpUrl(imgUrl, __placeImgeUrlHttps);
@@ -298,4 +297,3 @@ module.exports = {
     html2json: html2json,
     emojisInit:emojisInit
 };
-

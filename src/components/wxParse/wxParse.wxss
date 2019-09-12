@@ -3,9 +3,9 @@
  * author: Di (微信小程序开发工程师)
  * organization: WeAppDev(微信小程序开发论坛)(http://weappdev.com)
  *               垂直微信小程序开发交流社区
- * 
+ *
  * github地址: https://github.com/icindy/wxParse
- * 
+ *
  * for: 微信小程序富文本解析
  * detail : http://weappdev.com/t/wxparse-alpha0-1-html-markdown/184
  */
@@ -13,11 +13,11 @@
 .wxParse{
     margin: 0 5px;
     font-family: Helvetica,sans-serif;
-    font-size: 28px;
+    font-size: 28rpx;
     color: #666;
     line-height: 1.8;
 }
-view{
+.wxParse-p view{
     word-break:break-all; overflow:auto;
 }
 .wxParse-inline{
@@ -94,6 +94,8 @@ view{
 }
 
 .wxParse-img{
+    display: block;
+    width: 100%;
     /*background-color: #efefef;*/
     overflow: hidden;
 }
@@ -101,7 +103,7 @@ view{
 .wxParse-blockquote {
     margin: 0;
     padding:10px 0 10px 5px;
-    font-family:Courier, Calibri,"宋体";
+    font-family:Courier, Calibri;
     background:#f5f5f5;
     border-left: 3px solid #dbdbdb;
 }
@@ -111,16 +113,16 @@ view{
     background:#f5f5f5;
 }
 .wxParse-ul{
-    margin: 20px 10px;
+    margin: 20rpx 10rpx;
 }
 
 .wxParse-li,.wxParse-li-inner{
     display: flex;
     align-items: baseline;
-    margin: 10px 0;
+    margin: 10rpx 0;
 }
 .wxParse-li-text{
-    
+
     align-items: center;
     line-height: 20px;
 }
@@ -135,16 +137,16 @@ view{
 
 .wxParse-li-square{
     display: inline-flex;
-    width: 10px;
-    height: 10px;
+    width: 10rpx;
+    height: 10rpx;
     background-color: #333;
     margin-right: 5px;
 }
 .wxParse-li-ring{
     display: inline-flex;
-    width: 10px;
-    height: 10px;
-    border: 2px solid #333;
+    width: 10rpx;
+    height: 10rpx;
+    border: 2rpx solid #333;
     border-radius: 50%;
     background-color: #fff;
     margin-right: 5px;
@@ -187,7 +189,7 @@ view{
 .wxParse-td{
 	flex:1;
 	padding:5px;
-	font-size:28px;
+	font-size:28rpx;
 	border-left:1px solid #e0e0e0;
 	word-break: break-all;
 }
