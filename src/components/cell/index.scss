@@ -5,7 +5,7 @@
   padding: 24px $edge-size;
   display: flex;
   align-items: center;
-  @include hairline($color-border-gray-light, bottom);
+  @include hairline($color-border-gray-light, 75px, bottom);
   color: $color-primary-text;
   &__no-border {
     &:before {
@@ -25,6 +25,9 @@
     }
   }
   &__icon {
+    display: block;
+    width: 45px;
+    height: 45px;
     color: rgba($color-gray-light, 0.8);
     font-size: 40px;
     margin-right: 8px;

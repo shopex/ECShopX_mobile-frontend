@@ -76,7 +76,7 @@ $item-img-height: 200px !default;
     color: #333;
     display: inline-block;
     padding: 3px 10px;
-    @include hairline(#333, top, right, bottom, left);
+    @include hairline(#333, 0, top, right, bottom, left);
   }
   &__price {
     font-size: 28px;

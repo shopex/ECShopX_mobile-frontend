@@ -31,7 +31,7 @@
   transform: rotate(45deg);
 }
 
-@mixin hairline($color: $color-border-gray, $sides...) {
+@mixin hairline($color: $color-border-gray, $left-gap: 0, $sides...) {
   @if length($sides) == 0 {
     $sides: bottom;
   }
@@ -42,7 +42,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    left: 0;
+    left: $left-gap;
     top: 0;
     z-index: 2;
     pointer-events: none;

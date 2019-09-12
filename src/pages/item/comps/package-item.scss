@@ -12,7 +12,7 @@
     display: flex;
     align-items: center;
     padding: $edge-margin $edge-size;
-    @include hairline($color-border-gray, top);
+    @include hairline($color-border-gray, 0, top);
     .package-amount {
       flex: 1;
       .amount-number {

@@ -3,8 +3,7 @@ import { View, Text, Image, Navigator, Button } from '@tarojs/components'
 import { AtBadge, AtIcon, AtAvatar } from 'taro-ui'
 import { classNames, formatTime } from '@/utils'
 import { connect } from '@tarojs/redux'
-import { SpIconMenu, SpToast, TabBar} from '@/components'
-import { withLogin } from '@/hocs'
+import { SpIconMenu, SpToast, TabBar, SpCell} from '@/components'
 import api from '@/api'
 import S from '@/spx'
 
@@ -14,8 +13,11 @@ import './index.scss'
 }), (dispatch) => ({
   onFetchFavs: (favs) => dispatch({ type: 'member/favs', payload: favs })
 }))
-@withLogin()
 export default class MemberIndex extends Component {
+  config = {
+    navigationBarTitleText: ''
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -54,10 +56,16 @@ export default class MemberIndex extends Component {
   }
 
   componentDidMount () {
+    Taro.setNavigationBarColor({
+      backgroundColor: '#f5f5f5',
+      frontColor: '#000000'
+    })
     this.fetch()
   }
 
   async fetch () {
+    if (!S.getAuthToken()) return
+
     let resUser = null
     if(Taro.getStorageSync('userinfo')){
       resUser = Taro.getStorageSync('userinfo')
@@ -123,6 +131,13 @@ export default class MemberIndex extends Component {
     })
   }
 
+  handleClick = (url) => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
+    Taro.navigateTo({url})
+  }
+
   handleClickGiftApp = () => {
     Taro.navigateToMiniProgram({
       appId: APP_GIFT_APPID,
@@ -172,19 +187,29 @@ export default class MemberIndex extends Component {
   }
 
   viewOrder = (type) => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
     Taro.navigateTo({
       url: `/pages/trade/list?status=${type}`
     })
   }
 
+  handleLoginClick = () => {
+    S.login(this)
+  }
+
   viewAftersales = () => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
     Taro.navigateTo({
       url: `/pages/trade/after-sale`
     })
   }
 
   render () {
-    const { ordersCount, info } = this.state
+    const { ordersCount, info, isOpenPopularize } = this.state
     let isAvatatImg
     if(info.avatar) {
       isAvatatImg = true
@@ -196,24 +221,31 @@ export default class MemberIndex extends Component {
           className="member__scroll"
           scrollY
         >
-          <View className="user-info view-flex view-flex-middle view-flex-center">
-            <View className="avatar">
-              <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
-              {
-                (vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip')
-                && <Image className="icon-vip" src="/assets/imgs/svip.png" />
-              }
-            </View>
-            <View>
-              <View className="nickname">Hi, {info.username} {/*  <Text className="icon-qrcode"></Text> */}</View>
-              {
-                !vipgrade.is_vip
-                ? <View className="gradename">{gradeInfo.grade_name}</View>
-                : <View className="gradename">{vipgrade.grade_name}</View>
-              }
-            </View>
-            {/* <View className="icon-arrowRight"></View> */}
-          </View>
+          {
+            S.getAuthToken()
+              ? <View className="user-info view-flex view-flex-middle view-flex-center">
+                  <View className="avatar">
+                    <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
+                    {
+                      (vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip')
+                      && <Image className="icon-vip" src="/assets/imgs/svip.png" />
+                    }
+                  </View>
+                  <View>
+                    <View className="nickname">Hi, {info.username} {/*  <Text className="icon-qrcode"></Text> */}</View>
+                    {
+                      !vipgrade.is_vip
+                      ? <View className="gradename">{gradeInfo.grade_name}</View>
+                      : <View className="gradename">{vipgrade.grade_name}</View>
+                    }
+                  </View>
+                  {/* <View className="icon-arrowRight"></View> */}
+                </View>
+              : <View className="view-flex view-flex-vertical view-flex-middle view-flex-center" onClick={this.handleLoginClick.bind(this)}>
+                  <View className="avatar-placeholder icon-member"></View>
+                  <View className="unlogin">请登录</View>
+                </View>
+            }
           {
             <View className="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">
               {
@@ -312,189 +344,59 @@ export default class MemberIndex extends Component {
               <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
               <View>买单</View>
             </View>
-            <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="/pages/member/coupon">
-              <Image className="icon-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
-              <View>优惠券</View>
-            </Navigator>
-            {
-              isOpenPopularize
-              && (
-                <View
-                  className="view-flex-item view-flex view-flex-vertical view-flex-middle"
-                  onClick={this.beDistributor.bind(this)}
-                >
-                  <Image className="icon-img" src="/assets/imgs/store.png" mode="aspectFit" />
-                  {
-                    !info.isPromoter
-                    ? <View>我要推广</View>
-                    : <View>推广管理</View>
-                  }
-                </View>
-              )
-            }
-            { <Navigator className="view-flex-item view-flex view-flex-vertical view-flex-middle" url="my_group">
-              <Image className="icon-img" src="/assets/imgs/group.png" mode="aspectFit" />
-              <View>我的拼团</View>
-            </Navigator>}
           </View>*/}
           <View className="section section-card">
-						<View className="list">
-						<Navigator className="list-item" url="/pages/member/coupon">
-							<Image className="item-icon card-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
-							<View className="list-item-txt">优惠券</View>
-							<View className="icon-arrowRight item-icon-go"></View>
-						</Navigator>
-						{ isOpenPopularize && (
-							<View className="list-item" onClick={this.beDistributor.bind(this)}>
-								<Image className="item-icon card-img" src="/assets/imgs/store.png" mode="aspectFit" />
-								<View className="list-item-txt">{!info.isPromoter ? <Text>我要推广</Text> : <Text>推广管理</Text> }</View>
-								<View className="icon-arrowRight item-icon-go"></View>
-							</View>
-						)}
-              <Navigator className="list-item" url="/pages/member/item-fav">
-                <View className="item-icon icon-faverite"></View>
-                <View className="list-item-txt">我的收藏</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Navigator>
-              <View className="list-item">
-                <Button className="btn-share" open-type="share"></Button>
-                <View className="item-icon icon-share"></View>
-                <View className="list-item-txt">我要分享</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </View>
-              <Navigator className="list-item" url="/pages/member/address">
-                <View className="item-icon icon-periscope"></View>
-                <View className="list-item-txt">地址管理</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Navigator>
-            </View>
+            <SpCell
+              title="优惠券"
+              isLink
+              img='/assets/imgs/coupons.png'
+              onClick={this.handleClick.bind(this, '/pages/member/coupon')}
+              >
+            </SpCell>
+            {
+              isOpenPopularize &&
+                <SpCell
+                  title={!info.isPromoter ? '我要推广' : '推广管理'}
+                  isLink
+                  onClick={this.beDistributor.bind(this)}
+                  >
+                  <Image className="item-icon card-img" src="/assets/imgs/store.png" mode="aspectFit" />
+                </SpCell>
+            }
+            <SpCell
+              title="我的收藏"
+              isLink
+              iconPrefix='icon'
+              icon='faverite'
+              onClick={this.handleClick.bind(this, '/pages/member/item-fav')}
+              >
+            </SpCell>
+            <SpCell
+              title="我要分享"
+              isLink
+              iconPrefix='icon'
+              icon='share'
+              >
+              <Button className="btn-share" open-type="share"></Button>
+            </SpCell>
+            <SpCell
+              title="地址管理"
+              isLink
+              iconPrefix='icon'
+              icon='periscope'
+              onClick={this.handleClick.bind(this, '/pages/member/address')}
+              >
+            </SpCell>
           </View>
+
         </ScrollView>
+
+        <SpToast />
+
         <TabBar
           current={5}
         />
       </View>
-
-      // <View className='page-member-index'>
-      //   <View className='member-card'>
-      //     {/*<View className='member-welcome'>
-      //       <View className='in-icon in-icon-make-up' />
-      //     </View>*/}
-      //     <View
-      //       className='member-info'
-      //     >
-      //       <AtAvatar
-      //         className='member-avatar'
-      //         title={info.username}
-      //         Image={isAvatatImg ? info.avatar : ''}
-      //         text={isAvatatImg ? '' : info.username}
-      //         size='large'
-      //         circle
-      //       />
-      //       <View className='member-name'>{info.username}</View>
-      //     </View>
-      //     <View className='member-btns'>
-      //       <View className='member-btn__item'>
-      //         <View className='in-icon in-icon-check' />
-      //         <Text>Welcome</Text>
-      //       </View>
-      //       <View className='member-btn__item'>
-      //         {/*<View
-      //           className='in-icon in-icon-home-th'
-      //           onClick={this.handleClickApp}
-      //         ></View>*/}
-      //       </View>
-      //       <View className='member-btn__item' onClick={this.navigateTo.bind(this,'/pages/member/point')}>
-      //         <View className='in-icon in-icon-coin' />
-      //         <Text>我的积分</Text>
-      //       </View>
-      //     </View>
-      //   </View>
-      //
-      //   <View className='member-index__bd'>
-      //     <View className='member-menu__item'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='coupon'
-      //         iconPrefixClass='in-icon'
-      //         title='优惠券'
-      //         to='/pages/member/coupon'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='gift'
-      //         iconPrefixClass='in-icon'
-      //         title='我要送礼'
-      //         onClick={this.handleClickGiftApp}
-      //       />
-      //     </View>
-      //     <View className='member-menu__item none-br'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='clock'
-      //         iconPrefixClass='in-icon'
-      //         title='浏览记录'
-      //         to='/pages/member/item-history'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='address'
-      //         iconPrefixClass='in-icon'
-      //         title='我的地址'
-      //         to='/pages/member/address'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='order'
-      //         iconPrefixClass='in-icon'
-      //         title='我的订单'
-      //         to='/pages/trade/list'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item none-br'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='invoice'
-      //         iconPrefixClass='in-icon'
-      //         title='发票管理'
-      //         to='/pages/trade/invoice-list'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item none-bb'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='fav'
-      //         iconPrefixClass='in-icon'
-      //         title='我的收藏'
-      //         to='/pages/member/item-fav'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item none-bb'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='guess'
-      //         iconPrefixClass='in-icon'
-      //         title='猜你喜欢'
-      //         to='/pages/member/item-guess'
-      //       />
-      //     </View>
-      //     <View className='member-menu__item none-bb none-br'>
-      //       <SpIconMenu
-      //         size='28'
-      //         icon='kefu'
-      //         iconPrefixClass='in-icon'
-      //         title='联系客服'
-      //         onClick={this.handleClickPhone}
-      //       />
-      //     </View>
-      //   </View>
-      // </View>
     )
   }
 }

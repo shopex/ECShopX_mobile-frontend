@@ -133,7 +133,7 @@ class API {
           //   data.err_msg = data.err_msg || '登录过期正在重新登录'
           //   this.errorToast(data)
           // }
-          Taro.redirectTo({
+          Taro.navigateTo({
             url: APP_AUTH_PAGE
           })
           return Promise.reject(this.reqError(res))

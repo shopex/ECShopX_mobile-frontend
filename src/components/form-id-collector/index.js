@@ -38,7 +38,6 @@ export default class FormIdCollector extends Component {
         className={classNames('form-id-collector', 'classes')}
       >
         <Button
-          plain
           hoverClass='none'
           className='form-id-collector__btn'
           formType='submit'

@@ -19,12 +19,15 @@ export default class SpCell extends Component {
   }
 
   render () {
-    const { isLink, value, icon, iconPrefix, title, onClick, arrow, border, className } = this.props
+    const { isLink, value, icon, img, iconPrefix, title, onClick, arrow, border, className } = this.props
     return (
       <View
         className={classNames('sp-cell', className, isLink ? 'sp-cell__is-link' : null, border ? null : 'sp-cell__no-border')}
         onClick={onClick}
       >
+        {img && (
+          <Image className='sp-cell__icon' src={img} mode="aspectFit"/>
+        )}
         {icon && (
           <View className={`sp-cell__icon ${iconPrefix ? iconPrefix + ' ' + iconPrefix + '-' + icon : 'at-icon at-icon-' + icon}`}></View>
         )}
