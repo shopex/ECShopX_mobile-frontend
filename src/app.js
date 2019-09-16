@@ -65,6 +65,7 @@ class App extends Component {
       'pages/member/item-fav',
       'pages/member/item-guess',
       'pages/member/group-list',
+      'pages/member/member-code',
 
       'pages/distribution/index',
       'pages/distribution/setting',
@@ -84,6 +85,7 @@ class App extends Component {
       'pages/store/list',
 
       'pages/trade/list',
+      'pages/trade/customer-pickup-list',
       'pages/trade/detail',
       'pages/trade/delivery-info',
       'pages/trade/rate',

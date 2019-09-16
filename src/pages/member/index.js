@@ -186,12 +186,21 @@ export default class MemberIndex extends Component {
     }
   }
 
-  viewOrder = (type) => {
+  handleTradeClick = (type) => {
     if (!S.getAuthToken()) {
       return S.toast('请先登录')
     }
     Taro.navigateTo({
       url: `/pages/trade/list?status=${type}`
+    })
+  }
+
+  handleTradePickClick = () => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
+    Taro.navigateTo({
+      url: '/pages/trade/customer-pickup-list'
     })
   }
 
@@ -205,6 +214,12 @@ export default class MemberIndex extends Component {
     }
     Taro.navigateTo({
       url: `/pages/trade/after-sale`
+    })
+  }
+
+  handleCodeClick = () => {
+    Taro.navigateTo({
+      url: `/pages/member/member-code`
     })
   }
 
@@ -223,7 +238,10 @@ export default class MemberIndex extends Component {
         >
           {
             S.getAuthToken()
-              ? <View className="user-info view-flex view-flex-middle view-flex-center">
+              ? <View
+                  className="user-info view-flex view-flex-middle view-flex-center"
+                  onClick={this.handleCodeClick.bind(this)}
+                  >
                   <View className="avatar">
                     <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
                     {
@@ -232,14 +250,14 @@ export default class MemberIndex extends Component {
                     }
                   </View>
                   <View>
-                    <View className="nickname">Hi, {info.username} {/*  <Text className="icon-qrcode"></Text> */}</View>
+                    <View className="nickname">Hi, {info.username} <Text className="icon-qrcode"></Text></View>
                     {
                       !vipgrade.is_vip
                       ? <View className="gradename">{gradeInfo.grade_name}</View>
                       : <View className="gradename">{vipgrade.grade_name}</View>
                     }
                   </View>
-                  {/* <View className="icon-arrowRight"></View> */}
+                  <View className="icon-arrowRight"></View>
                 </View>
               : <View className="view-flex view-flex-vertical view-flex-middle view-flex-center" onClick={this.handleLoginClick.bind(this)}>
                   <View className="avatar-placeholder icon-member"></View>
@@ -288,23 +306,21 @@ export default class MemberIndex extends Component {
           <View className="section section-card order-box">
             <View className="section-title no-foot-padded view-flex view-flex-middle">
               <View className="view-flex-item">我的订单</View>
-              <View class="section-more" onClick={this.viewOrder.bind(this)}>全部订单 <Text className="forward-icon icon-arrowRight"></Text></View>
+              <View class="section-more" onClick={this.handleTradeClick.bind(this)}>全部订单<Text className="forward-icon icon-plus"></Text></View>
             </View>
-            {
-              /* <View className="list">
-                <View className="list-item" onClick={this.viewOrder.bind(this, 4)}>
-                  <View className="list-item-txt">
-                    <View>自提订单</View>
-                    <View className="text-muted">您有{orderCount.normal_payed_daiziti}个等待自提的订单</View>
-                  </View>
-                  <View className="icon-ziti"></View>
-                  <View className="icon-arrowRight item-icon-go"></View>
+            <View className="list">
+              <View className="list-item" onClick={this.handleTradePickClick.bind(this)}>
+                <View className="list-item-txt">
+                  <View>自提订单</View>
+                  <View className="text-muted">您有{orderCount.normal_payed_daiziti || 0}个等待自提的订单</View>
                 </View>
-              </View> */
-            }
+                <View className="icon-ziti"></View>
+                <View className="icon-arrowRight item-icon-go"></View>
+              </View>
+            </View>
             <View className="section-body">
               <View className="view-flex view-flex-justify">
-                <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.viewOrder.bind(this, 5)}>
+                <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.handleTradeClick.bind(this, 5)}>
                   <View className="icon-wallet">
                     {
                       orderCount.normal_notpay_notdelivery > 0 && (<View className="order-num" >{orderCount.normal_notpay_notdelivery}</View>)
@@ -312,7 +328,7 @@ export default class MemberIndex extends Component {
                   </View>
                   <View>待支付</View>
                 </View>
-                <View className="order-item view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.viewOrder.bind(this, 1)}>
+                <View className="order-item view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.handleTradeClick.bind(this, 1)}>
                   <View className="icon-delivery">
                     {
                       orderCount.normal_payed_notdelivery > 0 && (<View className="order-num">{orderCount.normal_payed_notdelivery}</View>)
@@ -320,7 +336,7 @@ export default class MemberIndex extends Component {
                   </View>
                   <View>待收货</View>
                 </View>
-                <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.viewOrder.bind(this, 3)}>
+                <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.handleTradeClick.bind(this, 3)}>
                   <View className="icon-office-box">
                     {
                       orderCount.normal_payed_delivered > 0 && <View className="order-num">{orderCount.normal_payed_delivered}</View>

@@ -1,7 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { AtTabs, AtTabsPane } from 'taro-ui'
-import _mapKeys from 'lodash/mapKeys'
 import { Loading, SpNote, NavBar } from '@/components'
 import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
@@ -12,48 +10,31 @@ import './list.scss'
 
 @withPager
 @withLogin()
-export default class TradeList extends Component {
+export default class TradePickList extends Component {
+  config: {
+    navigationBarTitleText: '自提订单'
+  }
+
   constructor (props) {
     super(props)
 
     this.state = {
       ...this.state,
-      curTabIdx: 0,
-      tabList: [
-        {title: '全部订单', status: '0'},
-        {title: '待付款', status: '5'},
-        {title: '待收货', status: '1'},
-        {title: '已完成', status: '3'}
-      ],
+      query: null,
       list: [],
       curItemActionsId: null
     }
   }
 
-  componentDidShow () {
-    const { status } = this.$router.params
-    const tabIdx = this.state.tabList.findIndex(tab => tab.status === status)
-
-    if (tabIdx >= 0) {
-      this.setState({
-        curTabIdx: tabIdx,
-        list: []
-      }, () => {
-        this.resetPage()
-        setTimeout(()=>{
-          this.nextPage()
-        },500)
-      })
-    } else {
-      this.resetPage()
-      this.setState({
-        list: []
-      })
-      setTimeout(()=>{
-        this.nextPage()
-      },500)
-    }
-
+  componentDidMount () {
+    this.setState({
+      query: {
+        order_type: 'normal',
+        status: 4
+      }
+    }, () => {
+      this.nextPage()
+    })
   }
 
   onPullDownRefresh = () =>{
@@ -77,20 +58,13 @@ export default class TradeList extends Component {
   }
 
   async fetch (params) {
-    const { tabList, curTabIdx } = this.state
-
-    params = _mapKeys({
-      ...params,
-      order_type: 'normal',
-      status: tabList[curTabIdx].status
-    }, function (val, key) {
-      if (key === 'page_no') return 'page'
-      if (key === 'page_size') return 'pageSize'
-
-      return key
-    })
-
-    const { list, pager: { count: total } } = await api.trade.list(params)
+    const { page_no: page, page_size: pageSize } = params
+    const query = {
+      ...this.state.query,
+      page,
+      pageSize
+    }
+    const { list, pager: { count: total } } = await api.trade.list(query)
     let nList = pickBy(list, {
       tid: 'order_id',
       status_desc: 'order_status_msg',
@@ -120,27 +94,7 @@ export default class TradeList extends Component {
       list: [...this.state.list, ...nList]
     })
 
-    Taro.stopPullDownRefresh()
-
     return { total }
-  }
-
-  handleClickTab = (idx) => {
-    this.hideLayer()
-    if (this.state.page.isLoading) return
-
-    if (idx !== this.state.curTabIdx) {
-      this.resetPage()
-      this.setState({
-        list: []
-      })
-    }
-
-    this.setState({
-      curTabIdx: idx
-    }, () => {
-      this.nextPage()
-    })
   }
 
   handleClickItem = (trade) => {
@@ -194,32 +148,15 @@ export default class TradeList extends Component {
   }
 
   render () {
-    const { curTabIdx, curItemActionsId, tabList, list, page } = this.state
+    const { curItemActionsId, tabList, list, page } = this.state
 
     return (
       <View className='page-trade-list'>
         <NavBar
-          title='订单列表'
+          title='自提订单'
           leftIconType='chevron-left'
           fixed='true'
         />
-        <AtTabs
-          className='trade-list__tabs'
-          current={curTabIdx}
-          tabList={tabList}
-          onClick={this.handleClickTab}
-        >
-          {
-            tabList.map((panes, pIdx) =>
-              (<AtTabsPane
-                current={curTabIdx}
-                key={pIdx}
-                index={pIdx}
-              >
-              </AtTabsPane>)
-            )
-          }
-        </AtTabs>
 
         <ScrollView
           scrollY

@@ -39,6 +39,7 @@
     margin-bottom: 6px;
   }
   .gradename {
+    display: inline-block;
     position: relative;
     padding: 0 20px;
     z-index: 1;
@@ -123,8 +124,8 @@
     z-index: 0;
     border-radius: 20px 20px 0 0;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    transform: translateX(-50%) rotate(1.5deg);
-    animation: cardShake 3s ease 2s infinite ;
+    transform: translateX(-50%) rotate(0);
+    animation: cardShake 10s ease 2s infinite ;
     &::after {
       position: absolute;
       left: 0;
@@ -140,22 +141,19 @@
 
   @keyframes cardShake {
     0% {
-      transform: translateX(-50%) rotate(1.5deg);
+      transform: translateX(-50%) rotate(0);
     }
-    5% {
-      transform: translateX(-50%) rotate(-1.5deg);
+    3% {
+      transform: translateX(-50%) rotate(-1deg);
     }
-    10% {
-      transform: translateX(-50%) rotate(1.5deg);
+    6% {
+      transform: translateX(-50%) rotate(1deg);
     }
-    15% {
-      transform: translateX(-50%) rotate(-1.5deg);
-    }
-    25% {
-      transform: translateX(-50%) rotate(1.5deg);
+    9% {
+      transform: translateX(-50%) rotate(0);
     }
     100% {
-      transform: translateX(-50%) rotate(1.5deg);
+      transform: translateX(-50%) rotate(0);
     }
   }
   .vip-btn {

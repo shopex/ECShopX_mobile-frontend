@@ -86,6 +86,10 @@ export function qrcodeData () {
   return req.get('/promoter/qrcode')
 }
 
+export function memberCode (params) {
+  return req.get('/barcode', params)
+}
+
 export function promoter () {
   return req.post('/promoter')
 }
