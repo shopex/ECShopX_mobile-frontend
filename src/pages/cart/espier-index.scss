@@ -1,6 +1,33 @@
 @import "../../style/imports";
 
 .page-cart-index {
+  .login-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 70px;
+    line-height: 70px;
+    background: #fff;
+    text-align: center;
+    font-size: 24px;
+    color: $color-brand-accent;
+    border-top: 1px solid #f5f5f5;
+    z-index: 999;
+    .btn-login {
+      padding: 0 20px;
+      height: 48px;
+      line-height: 48px;
+      margin-left: 10px;
+      border-radius: 48px;
+      background: $color-brand-primary;
+      color: #FFFFFF;
+      font-size: 24px;
+    }
+  }
   .goods-list {
     &__type-grid {
       @include clearfix();

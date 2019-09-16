@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Picker, Image } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { SpToast, Timer, NavBar } from '@/components'
+import { SpToast, Timer, NavBar, FormIdCollector } from '@/components'
 import { classNames, isString } from '@/utils'
 import S from '@/spx'
 import api from '@/api'
@@ -117,14 +117,19 @@ export default class Reg extends Component {
 
     try {
       if (isWeapp) {
+        const uid = Taro.getStorageSync('distribution_shop_id')
         const { union_id, open_id } = this.$router.params
-        const res = await api.user.reg({
+        let params = {
           ...data,
           user_type: 'wechat',
           auth_type: 'wxapp',
           union_id,
           open_id
-        })
+        }
+        if (uid) {
+          Object.assign(params, {uid})
+        }
+        const res = await api.user.reg(params)
 
         const { code } = await Taro.login()
         const { token } = await api.wx.login({ code })
@@ -414,10 +419,12 @@ export default class Reg extends Component {
           <View className='btns'>
             {
               process.env.TARO_ENV === 'weapp'
-                ? <View>
-                    <AtButton type='primary' formType='submit'>同意协议并注册</AtButton>
-                    <AtButton type='default' onClick={this.handleBackHome.bind(this)}>我再想想</AtButton>
-                  </View>
+                ? <FormIdCollector
+                    sync
+                  >
+                    <AtButton className="submit-btn" type='primary' formType='submit'>同意协议并注册</AtButton>
+                    <AtButton type='default' onClick={this.handleBackHome.bind(this)}>暂不注册，随便逛逛</AtButton>
+                  </FormIdCollector>
                 : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>同意协议并注册</AtButton>
             }
             <View className='accountAgreement'>

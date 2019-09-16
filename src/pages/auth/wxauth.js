@@ -66,14 +66,19 @@ export default class WxAuth extends Component {
     })
 
     try {
-      const { token, open_id, union_id, user_id } = await api.wx.prelogin({
+      const uid = Taro.getStorageSync('distribution_shop_id')
+      let params = {
         code,
         iv,
         encryptedData,
         rawData,
         signature,
         userInfo
-      })
+      }
+      if (uid) {
+        Object.assign(params, {inviter_id: uid})
+      }
+      const { token, open_id, union_id, user_id } = await api.wx.prelogin(params)
 
       S.setAuthToken(token)
 
@@ -99,26 +104,28 @@ export default class WxAuth extends Component {
   }
 
   handleBackHome = () => {
-    Taro.redirectTo({
-      url: '/pages/index'
-    })
+    Taro.navigateBack()
   }
 
   render () {
     const { isAuthShow } = this.state
+    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
 
     return (
       <View className='page-wxauth'>
         {isAuthShow && (
           <View className='sec-auth'>
-            <Text className='auth-hint'>需要您的授权才能继续</Text>
-            <AtButton
-              type='primary'
-              lang='zh_CN'
-              openType='getUserInfo'
-              onGetUserInfo={this.handleGetUserInfo}
-            >点此授权</AtButton>
-            <AtButton className='back-btn' type='default' onClick={this.handleBackHome.bind(this)}>我再想想</AtButton>
+            <View className='auth-title'>用户授权</View>
+            <Text className='auth-hint'>{extConfig.wxa_name}申请获得你的公开信息（昵称、头像等）</Text>
+            <View className='auth-btns'>
+              <AtButton
+                type='primary'
+                lang='zh_CN'
+                openType='getUserInfo'
+                onGetUserInfo={this.handleGetUserInfo}
+              >授权允许</AtButton>
+              <AtButton className='back-btn' type='default' onClick={this.handleBackHome.bind(this)}>拒绝</AtButton>
+            </View>
           </View>
         )}
       </View>

@@ -72,7 +72,7 @@ const canvasExp = {
       }
     })
   },
-  textOverflowFill: (ctx, text, x, y, size, color) => {
+  textOverflowFill: (ctx, text, x, y, w, size, color) => {
     ctx.setFontSize(size)
     ctx.setFillStyle(color)
     let chr = text.split('')
@@ -87,14 +87,14 @@ const canvasExp = {
     }
     ctx.fillText(temp, x, y)
   },
-  textMultipleOverflowFill: (ctx, text, num, rows, x, y, size, color) => {
+  textMultipleOverflowFill: (ctx, text, num, rows, x, y, w, size, color) => {
     ctx.setFontSize(size)
     ctx.setFillStyle(color)
     let chr = text.split('')
     let temp = ''
     let row = []
     chr.map(item =>{
-      if(temp.length <= num+1) {
+      if(temp.length < num) {
         temp += item
       } else {
         row.push(temp)
@@ -105,11 +105,11 @@ const canvasExp = {
     row.push(temp)
     let _y = y
     row.forEach((item, index) => {
-      if (index < rows) {
+      if (index+1 < rows) {
         ctx.fillText(item, x, _y)
       }
-      if (index === rows) {
-        this.textOverflowFill(ctx, item, x, _y, size, color)
+      if (index+1 === rows) {
+        this.textOverflowFill(ctx, item, x, _y, w, size, color)
       }
       _y = _y+24
     })

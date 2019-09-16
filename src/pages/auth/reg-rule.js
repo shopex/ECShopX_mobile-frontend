@@ -1,7 +1,7 @@
 
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { NavBar, SpHtmlContent } from '@/components'
 import { withPager } from '@/hocs'
 import api from '@/api'
 
@@ -38,7 +38,13 @@ export default class RegRule extends Component {
           title='注册协议'
           leftIconType='chevron-left'
         />
-        <View className='pay-rule-style'>{info}</View>
+        {
+          info &&
+            <SpHtmlContent
+              className='pay-rule-style'
+              content={info}
+            />
+        }
       </View>
     )
   }

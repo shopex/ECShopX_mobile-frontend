@@ -53,10 +53,7 @@ export default class TabBar extends Component {
           urlRedirect: true
         }
         if (item.name === 'cart') {
-          Object.assign(obj, {withLogin: true, text: this.cartCount || '', max: '99'})
-        }
-        if (item.name === 'member') {
-          Object.assign(obj, {withLogin: true})
+          Object.assign(obj, {text: this.cartCount || '', max: '99'})
         }
         list.push(obj)
       })
@@ -64,8 +61,8 @@ export default class TabBar extends Component {
       list = [
         { title: '首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/index', urlRedirect: true },
         { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/pages/category/index', urlRedirect: true },
-        { title: '购物车', iconType: 'cart', iconPrefixClass: 'icon', url: '/pages/cart/espier-index', withLogin: true, text: this.cartCount || '', max: '99',urlRedirect: true },
-        { title: '我的', iconType: 'member', iconPrefixClass: 'icon', url: '/pages/member/index', withLogin: true,  urlRedirect: true },
+        { title: '购物车', iconType: 'cart', iconPrefixClass: 'icon', url: '/pages/cart/espier-index', text: this.cartCount || '', max: '99',urlRedirect: true },
+        { title: '我的', iconType: 'member', iconPrefixClass: 'icon', url: '/pages/member/index', urlRedirect: true },
       ]
     }
 
@@ -134,7 +131,7 @@ export default class TabBar extends Component {
       const { fullPath } = getCurrentRoute(this.$router)
 
       if (withLogin && !S.getAuthToken()) {
-        return Taro.redirectTo({
+        return Taro.navigateTo({
           url: APP_AUTH_PAGE
         })
       }

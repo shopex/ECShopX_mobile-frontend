@@ -144,7 +144,7 @@ class Spx {
     }
   }
 
-  login (ctx, isRedirect = true) {
+  login (ctx, isRedirect = false) {
     const { path, fullPath } = getCurrentRoute(ctx.$router)
     const encodedRedirect = encodeURIComponent(fullPath)
     if (path === APP_AUTH_PAGE) {

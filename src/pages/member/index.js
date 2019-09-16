@@ -3,8 +3,7 @@ import { View, Text, Image, Navigator, Button } from '@tarojs/components'
 import { AtBadge, AtIcon, AtAvatar } from 'taro-ui'
 import { classNames, formatTime } from '@/utils'
 import { connect } from '@tarojs/redux'
-import { SpIconMenu, SpToast, TabBar} from '@/components'
-import { withLogin } from '@/hocs'
+import { SpIconMenu, SpToast, TabBar, SpCell} from '@/components'
 import api from '@/api'
 import S from '@/spx'
 
@@ -14,8 +13,11 @@ import './index.scss'
 }), (dispatch) => ({
   onFetchFavs: (favs) => dispatch({ type: 'member/favs', payload: favs })
 }))
-@withLogin()
 export default class MemberIndex extends Component {
+  config = {
+    navigationBarTitleText: ''
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -54,10 +56,16 @@ export default class MemberIndex extends Component {
   }
 
   componentDidMount () {
+    Taro.setNavigationBarColor({
+      backgroundColor: '#f5f5f5',
+      frontColor: '#000000'
+    })
     this.fetch()
   }
 
   async fetch () {
+    if (!S.getAuthToken()) return
+
     let resUser = null
     if(Taro.getStorageSync('userinfo')){
       resUser = Taro.getStorageSync('userinfo')
@@ -123,6 +131,13 @@ export default class MemberIndex extends Component {
     })
   }
 
+  handleClick = (url) => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
+    Taro.navigateTo({url})
+  }
+
   handleClickGiftApp = () => {
     Taro.navigateToMiniProgram({
       appId: APP_GIFT_APPID,
@@ -172,19 +187,29 @@ export default class MemberIndex extends Component {
   }
 
   viewOrder = (type) => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
     Taro.navigateTo({
       url: `/pages/trade/list?status=${type}`
     })
   }
 
+  handleLoginClick = () => {
+    S.login(this)
+  }
+
   viewAftersales = () => {
+    if (!S.getAuthToken()) {
+      return S.toast('请先登录')
+    }
     Taro.navigateTo({
       url: `/pages/trade/after-sale`
     })
   }
 
   render () {
-    const { ordersCount, info } = this.state
+    const { ordersCount, info, isOpenPopularize } = this.state
     let isAvatatImg
     if(info.avatar) {
       isAvatatImg = true
@@ -196,24 +221,31 @@ export default class MemberIndex extends Component {
           className="member__scroll"
           scrollY
         >
-          <View className="user-info view-flex view-flex-middle view-flex-center">
-            <View className="avatar">
-              <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
-              {
-                (vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip')
-                && <Image className="icon-vip" src="/assets/imgs/svip.png" />
-              }
-            </View>
-            <View>
-              <View className="nickname">Hi, {info.username} {/*  <Text className="icon-qrcode"></Text> */}</View>
-              {
-                !vipgrade.is_vip
-                ? <View className="gradename">{gradeInfo.grade_name}</View>
-                : <View className="gradename">{vipgrade.grade_name}</View>
-              }
-            </View>
-            {/* <View className="icon-arrowRight"></View> */}
-          </View>
+          {
+            S.getAuthToken()
+              ? <View className="user-info view-flex view-flex-middle view-flex-center">
+                  <View className="avatar">
+                    <Image className="avatar-img" src={info.avatar} mode="aspectFill"/>
+                    {
+                      (vipgrade.vip_type === 'vip' || vipgrade.vip_type === 'svip')
+                      && <Image className="icon-vip" src="/assets/imgs/svip.png" />
+                    }
+                  </View>
+                  <View>
+                    <View className="nickname">Hi, {info.username} {/*  <Text className="icon-qrcode"></Text> */}</View>
+                    {
+                      !vipgrade.is_vip
+                      ? <View className="gradename">{gradeInfo.grade_name}</View>
+                      : <View className="gradename">{vipgrade.grade_name}</View>
+                    }
+                  </View>
+                  {/* <View className="icon-arrowRight"></View> */}
+                </View>
+              : <View className="view-flex view-flex-vertical view-flex-middle view-flex-center" onClick={this.handleLoginClick.bind(this)}>
+                  <View className="avatar-placeholder icon-member"></View>
+                  <View className="unlogin">请登录</View>
+                </View>
+            }
           {
             <View className="member-card {{vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip ? 'opened' : ''}}">
               {
@@ -307,45 +339,60 @@ export default class MemberIndex extends Component {
               </View>
             </View>
           </View>
-          <View className="section section-card">
-						<View className="list">
-  						<Navigator className="list-item" url="/pages/member/coupon">
-  							<Image className="item-icon card-img" src="/assets/imgs/coupons.png" mode="aspectFit" />
-  							<View className="list-item-txt">优惠券</View>
-  							<View className="icon-arrowRight item-icon-go"></View>
-  						</Navigator>
-  						{
-                isOpenPopularize &&
-    							<View className="list-item" onClick={this.beDistributor.bind(this)}>
-    								<Image className="item-icon card-img" src="/assets/imgs/store.png" mode="aspectFit" />
-    								<View className="list-item-txt">{!info.isPromoter ? <Text>我要推广</Text> : <Text>推广管理</Text> }</View>
-    								<View className="icon-arrowRight item-icon-go"></View>
-    							</View>
-              }
-              <Navigator className="list-item" url="/pages/member/group-list">
-  							<Image className="item-icon card-img" src="/assets/imgs/group.png" mode="aspectFit" />
-  							<View className="list-item-txt">我的拼团</View>
-  							<View className="icon-arrowRight item-icon-go"></View>
-  						</Navigator>
-              <Navigator className="list-item" url="/pages/member/item-fav">
-                <View className="item-icon icon-faverite"></View>
-                <View className="list-item-txt">我的收藏</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Navigator>
-              <View className="list-item">
-                <Button className="btn-share" open-type="share"></Button>
-                <View className="item-icon icon-share"></View>
-                <View className="list-item-txt">我要分享</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </View>
-              <Navigator className="list-item" url="/pages/member/address">
-                <View className="item-icon icon-periscope"></View>
-                <View className="list-item-txt">地址管理</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Navigator>
+          {/*<View className="important-box view-flex">
+            <View className="view-flex-item view-flex view-flex-vertical view-flex-middle" onClick={this.toPay.bind(this)}>
+              <Image className="icon-img" src="/assets/imgs/buy.png" mode="aspectFit" />
+              <View>买单</View>
             </View>
+          </View>*/}
+          <View className="section section-card">
+            <SpCell
+              title="优惠券"
+              isLink
+              img='/assets/imgs/coupons.png'
+              onClick={this.handleClick.bind(this, '/pages/member/coupon')}
+              >
+            </SpCell>
+            {
+              isOpenPopularize &&
+                <SpCell
+                  title={!info.isPromoter ? '我要推广' : '推广管理'}
+                  isLink
+                  img='/assets/imgs/store.png'
+                  onClick={this.beDistributor.bind(this)}
+                  >
+                </SpCell>
+            }
+            <SpCell
+              title="我的收藏"
+              isLink
+              iconPrefix='icon'
+              icon='faverite'
+              onClick={this.handleClick.bind(this, '/pages/member/item-fav')}
+              >
+            </SpCell>
+            <SpCell
+              title="我要分享"
+              isLink
+              iconPrefix='icon'
+              icon='share'
+              >
+              <Button className="btn-share" open-type="share"></Button>
+            </SpCell>
+            <SpCell
+              title="地址管理"
+              isLink
+              iconPrefix='icon'
+              icon='periscope'
+              onClick={this.handleClick.bind(this, '/pages/member/address')}
+              >
+            </SpCell>
           </View>
+
         </ScrollView>
+
+        <SpToast />
+
         <TabBar
           current={5}
         />

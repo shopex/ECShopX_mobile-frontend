@@ -6,7 +6,8 @@ import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem } from '@
 import { log, navigateTo, pickBy, classNames ,calCommonExp} from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
-import { withLogin, withPager } from '@/hocs'
+import S from '@/spx'
+import { withPager } from '@/hocs'
 import CartItem from './comps/cart-item'
 
 import './espier-index.scss'
@@ -20,7 +21,6 @@ import './espier-index.scss'
   onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
 @withPager
-@withLogin()
 export default class CartIndex extends Component {
   static defaultProps = {
     list: null,
@@ -45,8 +45,11 @@ export default class CartIndex extends Component {
   }
 
   componentDidMount () {
-    this.fetchCart((list) => {
+    this.nextPage()
 
+    if (!S.getAuthToken()) return
+
+    this.fetchCart((list) => {
       const groups = this.resolveActivityGroup(list)
       // this.props.list 此时为空数组
       setTimeout(() => {
@@ -56,13 +59,10 @@ export default class CartIndex extends Component {
         })
       }, 40)
     })
-
-    this.nextPage()
-
   }
 
   componentDidShow () {
-    if (this.state.loading) return
+    if (!S.getAuthToken() || this.state.loading) return
     this.updateCart()
   }
 
@@ -79,6 +79,10 @@ export default class CartIndex extends Component {
 				this.setState({
 					groups
 				})
+  }
+
+  handleLoginClick = () => {
+    S.login(this)
   }
 
   handleClickItem = (item) => {
@@ -108,6 +112,12 @@ export default class CartIndex extends Component {
     this.setState({
       likeList: [...this.state.likeList, ...nList],
     })
+
+    if (!S.getAuthToken()) {
+      this.setState({
+        loading: false
+      })
+    }
 
     return {
       total
@@ -381,7 +391,6 @@ export default class CartIndex extends Component {
     const { type = 'distributor' } = this.$router.params
     const isDrug = type === 'drug'
     const isEmpty = !list.length
-		console.log('groups',groups)
     return (
       <View className={classNames('page-cart-index', isDrug && 'is-drug')}>
         <NavBar
@@ -389,6 +398,14 @@ export default class CartIndex extends Component {
           leftIconType='chevron-left'
           fixed='true'
         />
+        {
+          !S.getAuthToken()
+            ? <View className="login-header">
+                <View>授权登录后同步购物车的商品</View>
+                <View className="btn-login" onClick={this.handleLoginClick.bind(this)}>授权登录</View>
+              </View>
+            : null
+        }
 
         <ScrollView
           className={`${isEmpty ? 'hidden-scroll' : 'cart-list__scroll'}`}
