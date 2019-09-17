@@ -79,6 +79,7 @@ export default class TradeDetail extends Component {
       order_type: 'order_type',
       order_status_msg: 'order_status_msg',
       order_status_des: 'order_status_des',
+      order_class: 'order_class',
       item_fee: ({ item_fee }) => (+item_fee / 100).toFixed(2),
       coupon_discount: ({ coupon_discount }) => (+coupon_discount / 100).toFixed(2),
       freight_fee: ({ freight_fee }) => (+freight_fee / 100).toFixed(2),
@@ -285,21 +286,36 @@ export default class TradeDetail extends Component {
           leftIconType='chevron-left'
           fixed='true'
         />
-        {
-          info.status === 'WAIT_BUYER_PAY' && <View className={classNames('trade-detail-header', `trade-detail-header__waitpay`)}>
-            <View>该订单将为您保留
-              <AtCountdown
-                format={{ hours: ':', minutes: ':', seconds: '' }}
-                hours={timer.hh}
-                minutes={timer.mm}
-                seconds={timer.ss}
-                onTimeUp={this.countDownEnd.bind(this)}
-              />
-              分钟
-            </View>
-
-          </View>
-        }
+        <View className={classNames('trade-detail-header', `trade-detail-header__waitpay`)}>
+          {
+            info.order_class === 'drug'
+              ? <View>
+                  {
+                    info.order_status_des === 'CANCEL'
+                      ? <View>已取消</View>
+                      : <View>
+                          订单状态：
+                          {info.ziti_status === 'APPROVE' ? '审核通过' : '待审核'}
+                        </View>
+                  }
+                </View>
+              : <View>
+                  {
+                    info.status === 'WAIT_BUYER_PAY'
+                      && <View>该订单将为您保留
+                          <AtCountdown
+                            format={{ hours: ':', minutes: ':', seconds: '' }}
+                            hours={timer.hh}
+                            minutes={timer.mm}
+                            seconds={timer.ss}
+                            onTimeUp={this.countDownEnd.bind(this)}
+                          />
+                          分钟
+                        </View>
+                  }
+                </View>
+          }
+        </View>
         {
           info.status !== 'WAIT_BUYER_PAY' && <View className={classNames('trade-detail-header')}>
             <View className='trade-detail-waitdeliver'>
@@ -367,41 +383,46 @@ export default class TradeDetail extends Component {
           }
         </View>
         {
-          !isDhPoint && info.status === 'WAIT_BUYER_PAY' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn' onClick={this.handleClickBtn.bind(this, 'cancel')}>取消订单</Text>
-            <AtButton className='trade-detail__footer__btn trade-detail__footer_active' type='primary' loading={payLoading} onClick={this.handleClickBtn.bind(this, 'pay')}>立即支付</AtButton>
-          </View>
-        }
-        {
-          isDhPoint && info.status === 'WAIT_BUYER_PAY' && <View className='trade-detail__footer'>
-            <AtButton className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' type='primary' loading={payLoading} onClick={this.handleClickBtn.bind(this, 'pay')}>立即支付</AtButton>
-          </View>
-        }
-        {
-          !isDhPoint && info.status === 'WAIT_SELLER_SEND_GOODS' && <View className='trade-detail__footer'>
-            {
-              info.order_status_des !== 'PAYED_WAIT_PROCESS' && <Text className='trade-detail__footer__btn' onClick={this.handleClickBtn.bind(this, 'cancel')}>取消订单</Text>
-            }
-            <Text
-              className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === 'PAYED_WAIT_PROCESS' ? 'trade-detail__footer_allWidthBtn' : ''} `}
-              onClick={this.handleClickBtn.bind(this, 'home')}
-            >继续购物</Text>
-          </View>
-        }
-        {
-          isDhPoint && info.status === 'WAIT_SELLER_SEND_GOODS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'home')}>继续购物</Text>
-          </View>
-        }
-        {
-          info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-detail__footer'>
-            <Text className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'confirm')}>确认收货</Text>
-          </View>
-        }
-        {
-          info.status === 'TRADE_SUCCESS' && <View className='trade-detail__footer'>
-            <Button openType='contact' className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'>联系客服</Button>
-          </View>
+          info.order_class !== 'drug'
+            && <View>
+                {
+                  !isDhPoint && info.status === 'WAIT_BUYER_PAY' && <View className='trade-detail__footer'>
+                    <Text className='trade-detail__footer__btn' onClick={this.handleClickBtn.bind(this, 'cancel')}>取消订单</Text>
+                    <AtButton className='trade-detail__footer__btn trade-detail__footer_active' type='primary' loading={payLoading} onClick={this.handleClickBtn.bind(this, 'pay')}>立即支付</AtButton>
+                  </View>
+                }
+                {
+                  isDhPoint && info.status === 'WAIT_BUYER_PAY' && <View className='trade-detail__footer'>
+                    <AtButton className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' type='primary' loading={payLoading} onClick={this.handleClickBtn.bind(this, 'pay')}>立即支付</AtButton>
+                  </View>
+                }
+                {
+                  !isDhPoint && info.status === 'WAIT_SELLER_SEND_GOODS' && <View className='trade-detail__footer'>
+                    {
+                      info.order_status_des !== 'PAYED_WAIT_PROCESS' && <Text className='trade-detail__footer__btn' onClick={this.handleClickBtn.bind(this, 'cancel')}>取消订单</Text>
+                    }
+                    <Text
+                      className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === 'PAYED_WAIT_PROCESS' ? 'trade-detail__footer_allWidthBtn' : ''} `}
+                      onClick={this.handleClickBtn.bind(this, 'home')}
+                    >继续购物</Text>
+                  </View>
+                }
+                {
+                  isDhPoint && info.status === 'WAIT_SELLER_SEND_GOODS' && <View className='trade-detail__footer'>
+                    <Text className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'home')}>继续购物</Text>
+                  </View>
+                }
+                {
+                  info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <View className='trade-detail__footer'>
+                    <Text className='trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'confirm')}>确认收货</Text>
+                  </View>
+                }
+                {
+                  info.status === 'TRADE_SUCCESS' && <View className='trade-detail__footer'>
+                    <Button openType='contact' className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'>联系客服</Button>
+                  </View>
+                }
+              </View>
         }
         {/*{
           info.order_status_des === 'PAYED_WAIT_PROCESS' && <View className='trade-detail__footer'>

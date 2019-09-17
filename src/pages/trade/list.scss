@@ -43,12 +43,16 @@
   .trade-list {
     &__scroll {
       box-sizing: border-box;
-      @include page-scroll($navigate-height + $tabs-height + 10px, $edge-margin);
+      @include page-scroll($navigate-height, $edge-margin);
       z-index: 2;
+      &.with-tabs {
+        @include page-scroll($navigate-height + $tabs-height + 10px, $edge-margin);
+      }
     }
   }
 
   .trade-item {
+    position: relative;
     .at-button {
       font-size: $font-size-small;
       padding-left: 26px;
@@ -63,6 +67,16 @@
       background: #fff;
       border-color: $color-brand-accent-light;
       color: $color-brand-primary;
+    }
+    &__ft-drug {
+      position: absolute;
+      left: 30px;
+      bottom: 50px;
+      font-size: 25px;
+      color: #999;
+      display: inline-block;
+      vertical-align: top;
+      line-height: 40px;
     }
   }
   .order-item {

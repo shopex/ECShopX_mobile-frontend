@@ -86,6 +86,7 @@ class App extends Component {
 
       'pages/trade/list',
       'pages/trade/customer-pickup-list',
+      'pages/trade/drug-list',
       'pages/trade/detail',
       'pages/trade/delivery-info',
       'pages/trade/rate',

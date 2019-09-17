@@ -223,7 +223,7 @@ export default class TradeList extends Component {
 
         <ScrollView
           scrollY
-          className='trade-list__scroll'
+          className='trade-list__scroll with-tabs'
           onScrollToUpper={this.onPullDownRefresh.bind(this)}
           onScrollToLower={this.nextPage}
         >

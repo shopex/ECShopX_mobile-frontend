@@ -380,6 +380,14 @@ export default class MemberIndex extends Component {
                 </SpCell>
             }
             <SpCell
+              title="处方药订单"
+              isLink
+              iconPrefix='icon'
+              icon='drug'
+              onClick={this.handleClick.bind(this, '/pages/trade/drug-list')}
+              >
+            </SpCell>
+            <SpCell
               title="我的收藏"
               isLink
               iconPrefix='icon'

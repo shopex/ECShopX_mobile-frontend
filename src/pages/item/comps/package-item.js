@@ -176,7 +176,7 @@ export default class PackageItem extends Component {
       distributor_id
 		}
 		const res = await api.cart.add(query)
-		
+
     if (res) {
       Taro.showToast({
         title: '成功加入购物车',
@@ -185,7 +185,7 @@ export default class PackageItem extends Component {
 			this.fetchCartcount()
     }
   }
-	
+
 	async fetchCartcount() {
     try {
       const { item_count } = await api.cart.count({shop_type: 'distributor'})
@@ -216,7 +216,7 @@ export default class PackageItem extends Component {
     if (!info) {
       return null
     }
-    const { list, selection, packagePrice } = this.state
+    const { list, selection, packagePrice, curSku } = this.state
     const { package_id, package_name } = info
 
     return (

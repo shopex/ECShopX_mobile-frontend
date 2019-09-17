@@ -12,7 +12,7 @@ import './list.scss'
 @withLogin()
 export default class TradePickList extends Component {
   static config = {
-    navigationBarTitleText: '自提订单'
+    navigationBarTitleText: '处方药订单'
   }
 
   constructor (props) {
@@ -30,7 +30,7 @@ export default class TradePickList extends Component {
     this.setState({
       query: {
         order_type: 'normal',
-        status: 4
+        order_class: 'drug'
       }
     }, () => {
       this.nextPage()
@@ -176,6 +176,18 @@ export default class TradePickList extends Component {
                   onClickBtn={this.handleClickItemBtn.bind(this, item)}
                   onActionBtnClick={this.handleActionBtnClick.bind(this, item)}
                   onActionClick={this.handleActionClick.bind(this, item)}
+                  customFooter
+                  renderFooter={
+                    <View className='trade-item__ft-drug'>
+                      {
+                        item.order_status_des === 'CANCEL'
+                          ? <Text className='trade-item__status'>{item.order_status_des}</Text>
+                          : <Text className='trade-item__status'>
+                              { item.ziti_status == 'APPROVE' ? '审核通过' : '待审核' }
+                            </Text>
+                      }
+                    </View>
+                  }
                 />
               )
             })
