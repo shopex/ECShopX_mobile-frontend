@@ -10,7 +10,7 @@ module.exports = {
     test: 'ecshopx.shopex123.com/index.php'
   },
   websocket: {
-    development: 'ws://127.0.0.1:9051',
+    development: 'wss://ecshopx.shopex123.com/ws',
     production:  'wss://b-websocket.yuanyuanke.cn',
     preissue:  'wss://preissue-b-websocket.yuanyuanke.cn'
   }
