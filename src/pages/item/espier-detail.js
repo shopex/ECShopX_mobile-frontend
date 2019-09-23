@@ -9,7 +9,7 @@ import { withBackToTop } from '@/hocs'
 import { log, calcTimer, isArray, pickBy, classNames, canvasExp } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
-import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, SharePanel, VipGuide } from './comps'
+import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, SharePanel, VipGuide, ParamsItem } from './comps'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -49,7 +49,6 @@ export default class Detail extends Component {
       currentImgs: -1,
       sixSpecImgsDict: {},
       curSku: null,
-      vip: null,
       promotion_activity: [],
       promotion_package: [],
       itemParams: [],
@@ -142,16 +141,6 @@ export default class Detail extends Component {
     let startActivity = true
     let sessionFrom = ''
 
-    let vip = null
-    if (info.is_vip_grade) {
-      const { grade_name, member_price, guide_title_desc } = info
-      vip = {
-        gradeName: grade_name,
-        memberPrice: member_price,
-        guideTitleDesc: guide_title_desc
-      }
-    }
-
     if (info.activity_info) {
       if (info.activity_type === 'group') {
         marketing = 'group'
@@ -183,10 +172,11 @@ export default class Detail extends Component {
     }
 
     const { item_params } = info
-    const itemParams = pickBy(item_params, {
+    let itemParams = pickBy(item_params, {
       label: 'attribute_name',
       value: 'attribute_value_name'
     })
+    itemParams = itemParams.slice(0,4)
 
     info.is_fav = Boolean(this.props.favs[info.item_id])
     const specImgsDict = this.resolveSpecImgs(info.item_spec_desc)
@@ -552,7 +542,6 @@ export default class Detail extends Component {
       scrollTop,
       showBackToTop,
       curSku,
-      vip,
       promotion_activity,
       promotion_package,
       itemParams,
@@ -696,10 +685,26 @@ export default class Detail extends Component {
           )}
 
           <View className='goods-hd'>
-            <View className='goods-title__wrap'>
-              <Text className='goods-title'>{info.item_name}</Text>
-              <Text className='goods-title__desc'>{info.brief}</Text>
+            <View className='goods-info__wrap'>
+              <View className='goods-title__wrap'>
+                <Text className='goods-title'>{info.item_name}</Text>
+                <Text className='goods-title__desc'>{info.brief}</Text>
+              </View>
+              <View
+                className='goods-share__wrap'
+                onClick={this.handleShare.bind(this)}>
+                <View className='icon-share'></View>
+                <View className='share-label'>分享</View>
+              </View>
             </View>
+
+            {
+              info.vipgrade_guide_title
+                ? <VipGuide
+                    info={info.vipgrade_guide_title}
+                  />
+                : null
+            }
 
             {marketing === 'normal' && (
               <View className='goods-prices__wrap'>
@@ -707,8 +712,17 @@ export default class Detail extends Component {
                   <Price
                     primary
                     unit='cent'
-                    value={info.price}
+                    value={info.member_price && !info.is_vip_grade ? info.member_price : info.price}
                   />
+                  {
+                    info.market_price
+                      ? <Price
+                          lineThrough
+                          unit='cent'
+                          value={info.market_price}
+                        />
+                      : null
+                  }
                 </View>
 
                 {
@@ -717,21 +731,6 @@ export default class Detail extends Component {
               </View>
             )}
           </View>
-
-          {
-            info.vipgrade_guide_title &&
-              <VipGuide
-                info={info.vipgrade_guide_title}
-              />
-          }
-
-          {
-            info.is_vip_grade &&
-              <VipGuide
-                info={vip}
-                isVip={true}
-              />
-          }
 
           {isPromoter && (
             <View className='goods-income'>
@@ -795,12 +794,20 @@ export default class Detail extends Component {
 
           {
             itemParams.length &&
-              <SpCell
+              <View
                 className='goods-sec-specs'
-                isLink
-                title='商品参数'
                 onClick={this.handleParamsClick.bind(this)}
-              />
+              >
+                <View className='goods-sec-title'>商品参数</View>
+                {
+                  itemParams.map((item, idx) =>
+                    <ParamsItem
+                      key={idx}
+                      info={item}
+                    />
+                  )
+                }
+              </View>
           }
 
           {
@@ -850,11 +857,6 @@ export default class Detail extends Component {
             iconPrefixClass='icon'
             icon='home1'
             onClick={this.handleBackHome.bind(this)}
-          />
-          <FloatMenuItem
-            iconPrefixClass='icon'
-            icon='share'
-            onClick={this.handleShare.bind(this)}
           />
           <FloatMenuItem
             iconPrefixClass='icon'

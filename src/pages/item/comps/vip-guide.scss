@@ -5,8 +5,8 @@
   align-items: center;
   background: #fffdf1;
   padding: 30px;
-  margin-bottom: 10px;
   color: #9e8d66;
+  border-radius: 10px;
   &-content {
     flex: 1;
     padding-right: 20px;
@@ -14,6 +14,7 @@
   .vip-price {
     display: flex;
     align-items: center;
+    padding-bottom: 15px;
     .cur {
       font-size: 24px;
     }
@@ -24,7 +25,6 @@
     }
   }
   .vip-guide-text {
-  	padding-top: 15px;
     line-height: 1.2;
     font-size: 26px;
   }
