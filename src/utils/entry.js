@@ -138,7 +138,6 @@ function trackViewNum (monitor_id, source_id) {
 // distributorId 店铺ID
 async function handleDistributorId(distributorId) {
   const res = await api.shop.getShop({distributor_id: distributorId})
-  console.log('--------', res)
   if (res.status === false) {
     Taro.setStorageSync('curStore', res)
   } else {

@@ -55,7 +55,6 @@ export default class Detail extends Component {
       sessionFrom: '',
       posterImgs: null,
       poster: null,
-      positionStatus: false,
       showPoster: false
     }
   }
@@ -63,13 +62,9 @@ export default class Detail extends Component {
   async componentDidMount () {
     const options = this.$router.params
     console.log(options)
-    const { store, uid, positionStatus, id } = await entry.entryLaunch(options, true)
+    const { store, uid, id } = await entry.entryLaunch(options, true)
     if (store) {
-      this.setState({
-        positionStatus
-      }, () => {
-        this.fetch(id)
-      })
+      this.fetch(id)
     }
     if (uid) {
       this.uid = uid
@@ -90,7 +85,18 @@ export default class Detail extends Component {
     }
   }
 
-  componentDidShow () {
+  async componentDidShow () {
+    const userInfo = Taro.getStorageSync('userinfo')
+    if (S.getAuthToken() && !userInfo) {
+      const res = await api.member.memberInfo()
+      const userObj = {
+        username: res.memberInfo.username,
+        avatar: res.memberInfo.avatar,
+        userId: res.memberInfo.user_id,
+        isPromoter: res.is_promoter
+      }
+      Taro.setStorageSync('userinfo', userObj)
+    }
     this.fetchCartCount()
   }
 
@@ -177,7 +183,7 @@ export default class Detail extends Component {
       label: 'attribute_name',
       value: 'attribute_value_name'
     })
-    itemParams = itemParams.slice(0,4)
+    itemParams = itemParams.slice(0,5)
 
     info.is_fav = Boolean(this.props.favs[info.item_id])
     const specImgsDict = this.resolveSpecImgs(info.item_spec_desc)
@@ -446,14 +452,7 @@ export default class Detail extends Component {
 
       return
     }
-    const res = await api.member.memberInfo()
-    const userObj = {
-      username: res.memberInfo.username,
-      avatar: res.memberInfo.avatar,
-      userId: res.memberInfo.user_id,
-      isPromoter: res.is_promoter
-    }
-    Taro.setStorageSync('userinfo', userObj)
+
     this.setState({
       showSharePanel: true
     })
@@ -556,7 +555,6 @@ export default class Detail extends Component {
       showBuyPanel,
       buyPanelType,
       showSharePanel,
-      positionStatus,
       poster,
       showPoster
     } = this.state
@@ -713,7 +711,7 @@ export default class Detail extends Component {
                   <Price
                     primary
                     unit='cent'
-                    value={info.member_price && !info.is_vip_grade ? info.member_price : info.price}
+                    value={info.member_price && info.is_vip_grade ? info.member_price : info.price}
                   />
                   {
                     info.market_price

@@ -4,6 +4,7 @@ import { Price } from '@/components'
 import { AtTabs, AtTabsPane} from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
+import { classNames, pickBy } from '@/utils'
 import './vipgrades.scss'
 
 export default class VipIndex extends Component {
@@ -27,27 +28,31 @@ export default class VipIndex extends Component {
     }
   }
 
-  componentDidShow = () => {}
-
 	componentDidMount () {
 		const userInfo = Taro.getStorageSync('userinfo')
 		this.setState({
 			userInfo
+		}, () => {
+			this.fetchInfo()
+			this.fetchUserVipInfo()
 		})
-		this.fetchInfo()
-		this.fetchUserVipInfo()
 	}
 
-	async fetchInfo (){
-		const {cur,list} = await api.vip.getList()
+	async fetchInfo () {
+		const { cur, list } = await api.vip.getList()
+		const { grade_name } = this.$router.params
 
-		const tabList = list.map(tab=>{
-			 return {title:tab.grade_name}
+		const tabList = pickBy(list, {
+			title: ({grade_name}) => grade_name
 		})
+
+		const curTabIdx = tabList.findIndex(item => item.title === grade_name)
+
 		this.setState({
 			tabList,
 			cur,
-			list
+			list,
+			curTabIdx
 		})
 	}
 

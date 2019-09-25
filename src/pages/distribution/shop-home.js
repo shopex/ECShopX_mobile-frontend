@@ -6,6 +6,7 @@ import S from '@/spx'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import { classNames, pickBy } from '@/utils'
+import entry from '@/utils/entry'
 
 import './shop-home.scss'
 
@@ -33,27 +34,28 @@ export default class DistributionShopHome extends Component {
     }
   }
 
-  componentDidMount () {
-    this.firstStatus = true
-    this.setState({
-      query: {
-        item_type: 'normal',
-        approve_status: 'onsale,only_show',
-        is_promoter: true
-      }
-    }, () => {
-      this.nextPage()
-    })
-  }
-
-  componentDidShow () {
-    this.fetchInfo()
+  async componentDidMount () {
+    const options = this.$router.params
+    const { uid } = await entry.entryLaunch(options, true)
+    if (uid) {
+      this.firstStatus = true
+      this.setState({
+        query: {
+          item_type: 'normal',
+          approve_status: 'onsale,only_show',
+          is_promoter: true
+        }
+      }, async () => {
+        await this.fetchInfo()
+        await this.nextPage()
+      })
+    }
   }
 
   async fetchInfo () {
     const { userId } = Taro.getStorageSync('userinfo')
-    const { distribution_shop_id = '' } = this.$router.params
-    const param = distribution_shop_id ? {
+    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
+    const param = distributionShopId ? {
       user_id: distributionShopId
     } : {
       user_id: userId
