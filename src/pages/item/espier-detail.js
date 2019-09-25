@@ -62,6 +62,7 @@ export default class Detail extends Component {
 
   async componentDidMount () {
     const options = this.$router.params
+    console.log(options)
     const { store, uid, positionStatus, id } = await entry.entryLaunch(options, true)
     if (store) {
       this.setState({
