@@ -34,7 +34,12 @@ export default class GoodsItem extends Component {
       return null
     }
 
-    const price = isObject(info.price) ? info.price.total_price : info.price
+    let price = ''
+    if (isObject(info.price)) {
+      price = info.price.total_price
+    } else {
+      price = info.act_price ? info.act_price : info.member_price ? info.member_price : info.price
+    }
     const img = info.img || info.image_default_id
 
     return (

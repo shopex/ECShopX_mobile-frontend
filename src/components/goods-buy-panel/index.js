@@ -337,10 +337,10 @@ export default class GoodsBuyPanel extends Component {
     let price = '', marketPrice = ''
     if (curSkus) {
       price = curSkus.act_price ? curSkus.act_price : curSkus.member_price ? curSkus.member_price : curSkus.price
-      marketPrice = curSkus.act_price || curSkus.member_price ? curSkus.price : null
+      marketPrice = curSkus.act_price || curSkus.member_price ? curSkus.price : curSkus.market_price
     } else {
       price = info.act_price ? info.act_price : info.member_price ? info.member_price : info.price
-      marketPrice = info.act_price || info.member_price ? info.price : null
+      marketPrice = info.act_price || info.member_price ? info.price : info.market_price
     }
 
 

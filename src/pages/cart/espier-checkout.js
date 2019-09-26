@@ -6,7 +6,7 @@ import { Loading, Price, SpCell, AddressChoose, SpToast, NavBar } from '@/compon
 import api from '@/api'
 import S from '@/spx'
 import { withLogin } from '@/hocs'
-import { pickBy, log, classNames } from '@/utils'
+import { pickBy, log, classNames, isArray } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
