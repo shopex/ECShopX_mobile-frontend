@@ -53,7 +53,6 @@
     min-height: 140px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
   }
   &__bd {
     // @include hairline(rgba($color-gray-light, 0.5), top, bottom);
@@ -104,7 +103,7 @@
   .goods-img {
     width: 140px;
     height: 140px;
-    border: 1px solid $color-border-gray;
+    box-shadow: 0 0 0 1PX $color-border-gray;
     &__wrap {
       background: #fff;
       position: absolute;
@@ -130,6 +129,7 @@
       margin-bottom: 10px;
     }
     &__stock {
+      margin-top: 10px;
       display: block;
     }
     &__props {
@@ -140,6 +140,28 @@
         font-weight: bold;
         color: #000;
         margin-right: 16px;
+      }
+    }
+  }
+
+  .promotions {
+    padding: $edge-size;
+    &__item {
+      &-tag {
+        padding: 0 10px;
+        margin-right: 10px;
+        color: $color-price;
+        box-shadow: 0 0 0 1PX $color-price;
+        border-radius: 6px;
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 20px;
+      }
+
+      &-title {
+        margin-bottom: 10px;
+        vertical-align: middle;
+        font-size: 26px;
       }
     }
   }

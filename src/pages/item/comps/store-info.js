@@ -74,7 +74,7 @@ export default class StoreInfo extends Component {
     }
 
     return (
-      <View className='goods-sec-specs store-info'>
+      <View className='store-info'>
         <View className="view-flex view-flex-middle">
           <Image className="store-brand" src={info.imgUrl || 'https://fakeimg.pl/120x120/EFEFEF/CCC/?text=brand&font=lobster'} mode="aspectFit" />
           <View>

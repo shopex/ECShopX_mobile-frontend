@@ -374,7 +374,7 @@ export default class CartCheckout extends Component {
 
   handleMapClick = () => {
     const { lat, lng } = Taro.getStorageSync('curStore')
-    
+
     Taro.openLocation({
       latitude: Number(lat),
       longitude: Number(lng),
@@ -689,7 +689,7 @@ export default class CartCheckout extends Component {
           className='checkout__wrap'
         >
           {
-            curStore && curStore.is_ziti &&
+            !isArray(curStore) && curStore.is_ziti &&
               <View className="switch-tab">
                 <View
                   className={classNames('switch-item', express ? 'active' : '')}

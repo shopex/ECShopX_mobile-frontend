@@ -1,7 +1,7 @@
-@import '../../components/wxParse/wxParse.wxss';
+@import '../../components/wxParse/wxParse';
 
 .html-content {
-  img, .wxParse-img {
-    width: 100vw !important;
+  img {
+    width: 100% !important;
   }
 }

@@ -47,7 +47,7 @@ export default class VipGuide extends Component {
             </View>
             {
               (info.memberPrice || info.gradeDiscount) &&
-                <View>
+                <View className="vip-price-amount">
                   {
                     info.memberPrice &&
                       <View className="vip-price-amount"><Text className="cur">¥ </Text>{info.memberPrice}</View>

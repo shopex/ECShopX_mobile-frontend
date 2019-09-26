@@ -4,7 +4,7 @@ import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
 // import find from 'lodash/find'
 import { Price } from '@/components'
 import InputNumber from '@/components/input-number'
-import { classNames, log, isNumber } from '@/utils'
+import { classNames, pickBy, log, isNumber } from '@/utils'
 import api from '@/api'
 
 import './index.scss'
@@ -33,6 +33,7 @@ export default class GoodsBuyPanel extends Component {
     this.state = {
       marketing: 'normal',
       selection: [],
+      promotions: [],
       curSku: null,
       curImg: null,
       quantity: 1,
@@ -44,7 +45,19 @@ export default class GoodsBuyPanel extends Component {
 
   componentDidMount () {
 		const { info } = this.props
-    const { spec_items } = info
+    const { spec_items, promotion_activity } = info
+
+    if (promotion_activity) {
+      const promotions = pickBy(promotion_activity, {
+        condition_rules: 'condition_rules',
+        promotion_tag: 'promotion_tag',
+        items: 'items'
+      })
+      this.setState({
+        promotions
+      })
+    }
+
     const marketing = info.activity_type
       ? info.activity_type
 			: 'normal'
@@ -170,6 +183,26 @@ export default class GoodsBuyPanel extends Component {
     log.debug('[goods-buy-panel] updateCurSku: ', curSku)
   }
 
+  handleImgClick = () => {
+    const { curSku, info } = this.state
+    if (!curSku) return
+
+    const { item_spec } = curSku
+    const { item_image_url } = item_spec[0]
+    const { pics } = info
+
+    let imgs = []
+    if (item_image_url.length) {
+      imgs = item_image_url
+    } else {
+      imgs = pics
+    }
+
+    Taro.previewImage({
+      urls: imgs
+    })
+  }
+
   handleQuantityChange = (val) => {
     this.setState({
       quantity: val
@@ -289,7 +322,7 @@ export default class GoodsBuyPanel extends Component {
 
   render () {
     const { info, type, fastBuyText } = this.props
-		const { curImg, quantity, selection, isActive, busy, curSku, marketing } = this.state
+		const { curImg, quantity, selection, isActive, busy, curSku, marketing, promotions } = this.state
     if (!info) {
       return null
     }
@@ -301,6 +334,16 @@ export default class GoodsBuyPanel extends Component {
     const maxStore = +(curSkus ? curSkus.store : (info.store || 99999))
     const hasStore = curSkus ? curSkus.store > 0 : info.store > 0
 
+    let price = '', marketPrice = ''
+    if (curSkus) {
+      price = curSkus.act_price ? curSkus.act_price : curSkus.member_price ? curSkus.member_price : curSkus.price
+      marketPrice = curSkus.act_price || curSkus.member_price ? curSkus.price : null
+    } else {
+      price = info.act_price ? info.act_price : info.member_price ? info.member_price : info.price
+      marketPrice = info.act_price || info.member_price ? info.price : null
+    }
+
+
     return (
       <View className={classNames('goods-buy-panel', isActive ? 'goods-buy-panel__active' : null)}>
         <View className='goods-buy-panel__overlay'></View>
@@ -311,7 +354,10 @@ export default class GoodsBuyPanel extends Component {
             onClick={() => this.toggleShow(false)}
           />
           <View className='goods-buy-panel__hd'>
-            <View className='goods-img__wrap'>
+            <View
+              className='goods-img__wrap'
+              onClick={this.handleImgClick.bind(this)}
+              >
               <Image
                 className='goods-img'
                 mode='aspectFill'
@@ -319,44 +365,50 @@ export default class GoodsBuyPanel extends Component {
               />
             </View>
 						<View className='goods-sku__price'>
-						{
-							marketing =='seckill' &&  <Price
+						  <Price
 								primary
 								unit='cent'
 								noSymbol
 								appendText='元'
-								value={curSkus ? curSkus.act_price : info.act_price}
+								value={price}
 							/>
-						}
-						{
-							(marketing =='normal' || !marketing) &&  <Price
-								primary
-								unit='cent'
-								noSymbol
-								appendText='元'
-								value={curSkus ? curSkus.price : info.price}
-							/>
-						}
-              <Price
-                className='price-market'
-                symbol='¥'
-                unit='cent'
-                value={curSkus ? curSkus.market_price : info.market_price}
-              />
+            {
+              marketPrice &&
+                <Price
+                  className='price-market'
+                  symbol='¥'
+                  unit='cent'
+                  value={marketPrice}
+                />
+            }
             </View>
             <View className='goods-sku__info'>
               {
-                // curSku && <Text className='goods-sku__stock'>库存{curSku.store}{info.unit}</Text>
+                this.noSpecs
+                  ? (<Text className='goods-sku__props'>{info.item_name}</Text>)
+                  :(<Text className='goods-sku__props'>
+                      <Text>{curSkus ? `已选择 ${curSkus.propsText}` : '请选择规格'}</Text>
+                    </Text>)
               }
-              {this.noSpecs
-                ? (<Text className='goods-sku__props'>{info.item_name}</Text>)
-                :(<Text className='goods-sku__props'>
-                    <Text className='goods-sku__props-label'>选择规格</Text>
-                    <Text>{curSkus ? `已选择 ${curSkus.propsText}` : '请选择'}</Text>
-                  </Text>)
+              {
+                curSku && <Text className='goods-sku__stock'>库存{curSku.store}{info.unit}</Text>
               }
             </View>
           </View>
+          {
+            curSkus &&
+              <View className='promotions'>
+                {
+                  promotions.map(item =>
+                    item.items[curSkus.item_id] &&
+                      <View className='promotions__item'>
+                        <Text className='promotions__item-tag'>{item.promotion_tag}</Text>
+                        <Text className='promotions__item-title'>{item.condition_rules}</Text>
+                      </View>
+                  )
+                }
+              </View>
+          }
           <View className='goods-buy-panel__bd'>
             <ScrollView
               className='goods-skus__wrap'

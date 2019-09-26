@@ -9,7 +9,7 @@ import { withBackToTop } from '@/hocs'
 import { log, calcTimer, isArray, pickBy, classNames, canvasExp } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
-import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, SharePanel, VipGuide, ParamsItem } from './comps'
+import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem } from './comps'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -44,6 +44,7 @@ export default class Detail extends Component {
       cartCount: '',
       showBuyPanel: false,
       showSharePanel: false,
+      showPromotions: false,
       buyPanelType: null,
       specImgsDict: {},
       currentImgs: -1,
@@ -458,6 +459,12 @@ export default class Detail extends Component {
     })
   }
 
+  handlePromotionClick = () => {
+    this.setState({
+      showPromotions: true
+    })
+  }
+
   handleSavePoster () {
     const { poster } = this.state
     Taro.getSetting().then(res => {
@@ -555,6 +562,7 @@ export default class Detail extends Component {
       showBuyPanel,
       buyPanelType,
       showSharePanel,
+      showPromotions,
       poster,
       showPoster
     } = this.state
@@ -740,43 +748,12 @@ export default class Detail extends Component {
 
           {
             promotion_activity && promotion_activity.length > 0
-              ? <View className='goods-sec-specs'>
-                <View className='goods-sec-specs__activity'>
-                  {
-                    promotion_activity.map(item =>{
-                      return (
-                        <View
-                          key={item.marketing_id}
-                          className='goods-sec-specs__activity-item'
-                        >
-                          <View className='promotion-title'>以下优惠可参与{item.join_limit}次</View>
-                          <Text className='goods-sec-specs__activity-label promotion-text'>【{item.promotion_tag}】</Text>
-                          <Text className='promotion-text'>{item.marketing_name}</Text>
-                          <View className='promotion-rule-content'>
-                            <Text className='promotion-rule-content__text'>活动时间：{item.start_date}~{item.end_date}</Text>
-                            <Text className='promotion-rule-content__text'>活动规则：{item.condition_rules}</Text>
-                          </View>
-                          {
-                            item.promotion_tag === '满赠' && item.gifts
-                              ? <View>
-                                  {item.gifts.map(g_item => {
-                                    return (
-                                      <View className='promotion-goods'>
-                                        <Text className='promotion-goods__tag'>【赠品】</Text>
-                                        <Text className='promotion-goods__name'>{g_item.gift.item_name} </Text>
-                                        <Text className='promotion-goods__num'>x{g_item.gift.gift_num}</Text>
-                                      </View>
-                                    )
-                                  })}
-                                </View>
-                              : null
-                          }
-                        </View>
-                      )
-                    })
-                  }
-                </View>
-              </View>
+              ? <ActivityPanel
+                  info={promotion_activity}
+                  isOpen={showPromotions}
+                  onClick={this.handlePromotionClick.bind(this)}
+                  onClose={() => this.setState({ showPromotions: false })}
+                />
               : null
           }
 
@@ -797,15 +774,17 @@ export default class Detail extends Component {
                 className='goods-sec-specs'
                 onClick={this.handleParamsClick.bind(this)}
               >
-                <View className='goods-sec-title'>商品参数</View>
-                {
-                  itemParams.map((item, idx) =>
-                    <ParamsItem
-                      key={idx}
-                      info={item}
-                    />
-                  )
-                }
+                <View className='goods-sec-label'>商品参数</View>
+                <View className='goods-sec-value'>
+                  {
+                    itemParams.map((item, idx) =>
+                      <ParamsItem
+                        key={idx}
+                        info={item}
+                      />
+                    )
+                  }
+                </View>
               </View>
           }
 
@@ -815,17 +794,17 @@ export default class Detail extends Component {
                 className='goods-sec-specs'
                 isLink
                 title='规格'
-                onClick={this.handleBuyBarClick.bind(this, buyPanelType)}
+                onClick={this.handleBuyBarClick.bind(this, 'pick')}
                 value={curSku ? curSku.propsText : '请选择'}
               />
           }
 
-          {
-            store &&
+          {/*
+            !isArray(store) &&
               <StoreInfo
                 info={store}
               />
-          }
+          */}
 
           {
             isArray(desc)
@@ -915,12 +894,14 @@ export default class Detail extends Component {
         }
 
         {
-          <SharePanel
-            info={uid}
-            isOpen={showSharePanel}
-            onClose={() => this.setState({ showSharePanel: false })}
-            onClick={this.handleShowPoster.bind(this)}
-          />
+          <View className='share'>
+            <SharePanel
+              info={uid}
+              isOpen={showSharePanel}
+              onClose={() => this.setState({ showSharePanel: false })}
+              onClick={this.handleShowPoster.bind(this)}
+            />
+          </View>
         }
 
         {

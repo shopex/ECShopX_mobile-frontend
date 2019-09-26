@@ -2,21 +2,25 @@
 
 .page-goods-detail {
   .wgts-wrap__cont {
+    padding: $edge-size;
+    box-sizing: border-box;
     background: #ffffff;
   }
-  .at-float-layout {
-    .layout-header {
-      height: 80px;
-      background-color: transparent;
-    }
-    .at-float-layout__container {
-      min-height: auto;
-    }
-    .layout-body {
-      min-height: auto;
-    }
-    .layout-body__content {
-      min-height: auto;
+  .share {
+    .at-float-layout {
+      .layout-header {
+        height: 80px;
+        background-color: transparent;
+      }
+      .at-float-layout__container {
+        min-height: auto;
+      }
+      .layout-body {
+        min-height: auto;
+      }
+      .layout-body__content {
+        min-height: auto;
+      }
     }
   }
 }
@@ -54,9 +58,12 @@
   }
 
   &__content {
+    padding: $edge-size;
+    box-sizing: border-box;
     background: #fff;
-    font-size: 30px;
-
+    image {
+      width: 100% !important;
+    }
     .wxParse-inline {
       font-size: 30px;
     }
@@ -303,9 +310,37 @@
 }
 
 .goods-sec-specs {
+  display: flex;
   background: #fff;
   padding: 30px;
   margin: 0 0 $edge-margin;
+  .goods-sec-label {
+    width: 120px;
+    color: $color-gray;
+    font-size: 24px;
+  }
+  .goods-sec-value{
+    flex: 1;
+  }
+  .sp-cell__hd {
+    width: 120px;
+  }
+  .sp-cell__title {
+    font-size: 24px;
+    color: $color-gray;
+  }
+  .sp-cell__bd {
+    flex: none;
+  }
+  .sp-cell__ft {
+    flex: 1;
+    padding: 0 15px;
+  }
+  .sp-cell__value {
+    color: #333;
+    text-align: left;
+    font-size: 26px;
+  }
   .goods-sec-title {
     margin-bottom: 10px;
     color: #333;
@@ -314,66 +349,20 @@
     margin: 0 10px;
     display: flex;
     &-label {
-      flex: 2;
+      flex: 1;
       padding: 5px;
       margin-right: 1px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      @include text-overflow();
       color: $color-gray;
       background: #fff;
-    }
-    &-value {
-      flex: 3;
-      padding: 5px;
-      background: #fff;
-    }
-  }
-
-  &__activity {
-    font-size: 26px;
-
-    &-label {
-      color: $color-brand-primary;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .promotion-title {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    .promotion-text {
-      display: inline-block;
-      vertical-align: middle;
       font-size: 26px;
     }
-
-    .promotion-rule-content {
-      margin-left: 10px;
-
-      &__text {
-        font-size: 24px;
-        line-height: 34px;
-        display: block;
-      }
-    }
-
-    .promotion-goods {
-      &__tag {
-        font-size: 24px;
-        color: #FC7309;
-      }
-
-      &__name {
-        font-size: 24px;
-      }
-
-      &__num {
-        font-size: 24px;
-        margin-left: 30px;
-      }
+    &-value {
+      flex: 2;
+      padding: 5px;
+      @include text-overflow();
+      background: #fff;
+      font-size: 26px;
     }
   }
 }
@@ -411,6 +400,9 @@
 }
 
 .store-info {
+  padding: 30px;
+  margin-bottom: 15px;
+  background: #fff;
   .store-brand {
     display: block;
     margin-right: 20px;

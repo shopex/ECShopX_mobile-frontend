@@ -1,0 +1,53 @@
+@import '../../../style/imports';
+
+.goods-sec-specs__activity {
+  flex: 1;
+  font-size: 26px;
+
+  &-label {
+    padding: 0 10px;
+    margin-right: 10px;
+    color: $color-price;
+    box-shadow: 0 0 0 1PX $color-price;
+    border-radius: 6px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 20px;
+  }
+
+  .promotion-title {
+    vertical-align: middle;
+    font-size: 28px;
+  }
+
+  .promotion-text {
+    vertical-align: middle;
+    font-size: 26px;
+  }
+
+  .promotion-rule-content {
+    padding-top: 10px;
+    padding-left: 10px;
+
+    &__text {
+      font-size: 24px;
+      display: block;
+    }
+  }
+
+  .promotion-goods {
+    &__tag {
+      font-size: 24px;
+      color: #FC7309;
+    }
+
+    &__name {
+      font-size: 24px;
+    }
+
+    &__num {
+      font-size: 24px;
+      margin-left: 30px;
+    }
+  }
+}

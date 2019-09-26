@@ -26,7 +26,6 @@
     white-space: nowrap;
 
     &__item {
-      border: 1px solid $color-border-gray;
       width: 80px;
       height: 80px;
       box-sizing: border-box;
@@ -35,7 +34,7 @@
       margin-left: 20px;
       overflow: hidden;
       transition: all 0.2s ease;
-      box-shadow: 0 0 0 1PX transparent;
+      box-shadow: 0 0 0 1PX $color-border-gray;
       &-active {
         width: 85px;
         height: 85px;
