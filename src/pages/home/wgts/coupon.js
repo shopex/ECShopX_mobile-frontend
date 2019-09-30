@@ -80,7 +80,7 @@ export default class WgtCoupon extends Component {
                       img-class='coupon_img'
                       src={item.imgUrl}
                       mode='widthFix'
-                      width='320'
+                      width='750'
                     />
                   : <View className='coupon-body'>
                       <View className='coupon__amount'>

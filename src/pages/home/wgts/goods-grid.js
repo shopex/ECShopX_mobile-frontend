@@ -75,7 +75,7 @@ export default class WgtGoodsGrid extends Component {
                       img-class='goods-img'
                       src={item.imgUrl}
                       mode='aspectFill'
-                      width='200'
+                      width='400'
                       lazyLoad
                     />
                   </View>
@@ -85,7 +85,7 @@ export default class WgtGoodsGrid extends Component {
                         img-class='goods-brand'
                         src={item.brand}
                         mode='aspectFill'
-                        width='100'
+                        width='300'
                       />
                     )}
                     <View className={`goods-title ${!config.brand || !item.brand ? 'no-brand' : ''}`}>{item.title}</View>

@@ -193,7 +193,7 @@ export default class WgtGoods extends Component {
                         img-class='img-style'
                         src={item.img_url}
                         mode='aspectFill'
-                        width='120'
+                        width='240'
                         lazyLoad
                       />
                     </View>

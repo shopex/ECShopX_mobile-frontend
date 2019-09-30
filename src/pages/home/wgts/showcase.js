@@ -52,7 +52,7 @@ export default class WgtShowCase extends Component {
                 img-class='show-img'
                 src={data[0].imgUrl}
                 mode='scaleToFill'
-                width='175'
+                width='375'
                 lazyLoad
               />
             </View>
@@ -66,7 +66,7 @@ export default class WgtShowCase extends Component {
                 img-class='show-img'
                 src={data[1].imgUrl}
                 mode='scaleToFill'
-                width='175'
+                width='375'
                 lazyLoad
               />
             </View>
@@ -78,7 +78,7 @@ export default class WgtShowCase extends Component {
                 img-class='show-img'
                 src={data[2].imgUrl}
                 mode='scaleToFill'
-                width='175'
+                width='375'
                 lazyLoad
               />
             </View>

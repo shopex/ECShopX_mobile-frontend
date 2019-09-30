@@ -1,28 +1,30 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Navigator, Canvas } from '@tarojs/components'
+import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Navigator, Canvas, GoodsItem } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown, AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 import { Loading, Price, BackToTop, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
-import { withBackToTop } from '@/hocs'
+import { withPager, withBackToTop } from '@/hocs'
 import { log, calcTimer, isArray, pickBy, classNames, canvasExp } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { GoodsBuyToolbar, ItemImg, ImgSpec, Params, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem, GroupingItem } from './comps'
-import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading, WgtGoodsFaverite } from '../home/wgts'
 
 import './espier-detail.scss'
 
 @connect(({ cart, member }) => ({
   cart,
-  favs: member.favs
+  favs: member.favs,
+  showLikeList: cart.showLikeList
 }), (dispatch) => ({
   onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
   onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
   onAddFav: ({ item_id, fav_id }) => dispatch({ type: 'member/addFav', payload: { item_id, fav_id } }),
   onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
 }))
+@withPager
 @withBackToTop
 export default class Detail extends Component {
   static options = {
@@ -33,6 +35,7 @@ export default class Detail extends Component {
     super(props)
 
     this.state = {
+      ...this.state,
       marketing: 'normal',
       info: null,
       desc: null,
@@ -56,7 +59,8 @@ export default class Detail extends Component {
       sessionFrom: '',
       posterImgs: null,
       poster: null,
-      showPoster: false
+      showPoster: false,
+      likeList: []
     }
   }
 
@@ -65,7 +69,7 @@ export default class Detail extends Component {
     console.log(options)
     const { store, uid, id } = await entry.entryLaunch(options, true)
     if (store) {
-      this.fetch(id)
+      this.fetchInfo(id)
     }
     if (uid) {
       this.uid = uid
@@ -129,7 +133,7 @@ export default class Detail extends Component {
     }
   }
 
-  async fetch (itemId) {
+  async fetchInfo (itemId) {
     let id = ''
     if (itemId) {
       id = itemId
@@ -220,6 +224,31 @@ export default class Detail extends Component {
     })
 
     log.debug('fetch: done', info)
+  }
+
+  async fetch (params) {
+    const { page_no: page, page_size: pageSize } = params
+    const query = {
+      page,
+      pageSize
+    }
+    const { list, total_count: total } = await api.cart.likeList(query)
+
+    const nList = pickBy(list, {
+      img: 'pics[0]',
+      item_id: 'item_id',
+      title: 'itemName',
+      price: ({ price }) => { return (price/100).toFixed(2)},
+      desc: 'brief',
+    })
+
+    this.setState({
+      likeList: [...this.state.likeList, ...nList],
+    })
+
+    return {
+      total
+    }
   }
 
   resolveSpecImgs (specs) {
@@ -543,6 +572,13 @@ export default class Detail extends Component {
     })
   }
 
+  handleClickItem = (item) => {
+    const url = `/pages/item/espier-detail?id=${item.item_id}`
+    Taro.navigateTo({
+      url
+    })
+  }
+
   render () {
     const store = Taro.getStorageSync('curStore')
     const {
@@ -570,8 +606,12 @@ export default class Detail extends Component {
       showSharePanel,
       showPromotions,
       poster,
-      showPoster
+      showPoster,
+      likeList,
+      page
     } = this.state
+
+    const { showLikeList } = this.props
 
     const uid = this.uid
 
@@ -602,6 +642,7 @@ export default class Detail extends Component {
           scrollTop={scrollTop}
           scrollWithAnimation
           onScroll={this.handleScroll}
+          onScrollToLower={this.nextPage}
         >
           <View className='goods-imgs__wrap'>
             <Swiper
@@ -874,6 +915,26 @@ export default class Detail extends Component {
                 className='goods-detail__content'
                 content={desc}
               />
+          }
+          {
+            likeList.length > 0 && showLikeList
+              ? <View className='cart-list cart-list__disabled'>
+                  <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
+                  <View className='goods-list goods-list__type-grid'>
+                    {
+                      likeList.map(item => {
+                        return (
+                          <GoodsItem
+                            key={item.item_id}
+                            info={item}
+                            onClick={this.handleClickItem.bind(this, item)}
+                          />
+                        )
+                      })
+                    }
+                  </View>
+                </View>
+              : null
           }
         </ScrollView>
 

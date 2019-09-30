@@ -41,7 +41,7 @@ export default class WgtNavigation extends Component {
                       img-class='nav-img'
                       src={item.imgUrl}
                       mode='widthFix'
-                      width='80'
+                      width='200'
                       lazyLoad
                     />
                   </View>

@@ -52,7 +52,7 @@ export default class WgtImgHotZone extends Component {
             img-class='img-hotzone_img'
             src={config.imgUrl}
             mode='widthFix'
-            width='500'
+            width='750'
             lazyLoad
           />
           {

@@ -36,7 +36,7 @@ export default class OrderItem extends Component {
             img-class='order-item__img'
             src={img}
             mode='aspectFill'
-            width='100'
+            width='300'
             lazyLoad
           />
         </View>

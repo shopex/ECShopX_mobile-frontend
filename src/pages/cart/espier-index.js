@@ -46,7 +46,7 @@ export default class CartIndex extends Component {
 
   componentDidMount () {
     this.nextPage()
-
+    
     if (!S.getAuthToken()) return
 
     this.fetchCart((list) => {
@@ -105,8 +105,7 @@ export default class CartIndex extends Component {
       item_id: 'item_id',
       price: ({price}) => (price/100).toFixed(2),
       title: 'itemName',
-			desc: 'brief',
-			price: ({ price }) => { return (price/100).toFixed(2)}
+			desc: 'brief'
     })
 
     this.setState({
@@ -382,8 +381,8 @@ export default class CartIndex extends Component {
   }
 
   render () {
-    const {  groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
-    const {  list,showLikeList } = this.props
+    const { groups, invalidList, cartMode, loading, curPromotions, likeList, page } = this.state
+    const { list, showLikeList } = this.props
 
     if (loading) {
       return <Loading />

@@ -82,7 +82,7 @@ export default class WgtSlider extends Component {
                             img-class='slider-item__img'
                             src={item.imgUrl}
                             mode='widthFix'
-                            width='500'
+                            width='750'
                             lazyLoad
                           />
                         </View>

@@ -58,7 +58,7 @@ export default class GoodsItem extends Component {
               img-class='goods-item__img'
               src={img}
               mode='aspectFill'
-              width='200'
+              width='400'
               lazyLoad
             />
           </View>

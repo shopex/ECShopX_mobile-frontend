@@ -60,7 +60,7 @@ export default class WgtGoodsScroll extends Component {
                     img-class="goods-img"
                     src={item.imgUrl}
                     mode='aspectFill'
-                    width='120'
+                    width='240'
                     lazyLoad
 									/>
 								</View>

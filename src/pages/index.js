@@ -17,7 +17,8 @@ import './home/index.scss'
 @connect(({ cart }) => ({
   list: cart.list,
 	cartIds: cart.cartIds,
-	cartCount: cart.cartCount
+	cartCount: cart.cartCount,
+  showLikeList: cart.showLikeList
 }), (dispatch) => ({
 	onUpdateLikeList: (show_likelist) => dispatch({ type: 'cart/updateLikeList', payload: show_likelist }),
 	onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
@@ -237,6 +238,7 @@ export default class HomeIndex extends Component {
 
   render () {
     const { wgts, authStatus, page, likeList, showBackToTop, scrollTop, isShowAddTip, curStore, positionStatus, automatic, showAuto } = this.state
+    const { showLikeList } = this.props
     const user = Taro.getStorageSync('userinfo')
     const isPromoter = user && user.isPromoter
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
@@ -265,7 +267,7 @@ export default class HomeIndex extends Component {
             <HomeWgts
               wgts={wgts}
             />
-            {likeList.length > 0 && (
+            {likeList.length > 0 && showLikeList && (
               <View>
                 <WgtGoodsFaverite info={likeList} />
                 {
