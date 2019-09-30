@@ -52,8 +52,9 @@
     border-top: 1PX solid transparent;
   }
   .hot-tag {
+    display: inline-block;
     margin-right: 6px;
-    padding: 2px 4px;
+    padding: 4px;
     line-height: 1;
     vertical-align: super;
     text-align: center;
