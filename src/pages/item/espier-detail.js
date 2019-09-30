@@ -786,7 +786,7 @@ export default class Detail extends Component {
                       }
                     </View>
                     {
-                      info.nospec &&
+                      info.nospec && info.activity_type === 'limited_buy' &&
                         <View className='limited-buy-rule'>
                           {
                             ruleDay

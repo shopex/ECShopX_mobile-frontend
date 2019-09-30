@@ -42,7 +42,7 @@ export default class GoodsItem extends Component {
       marketPrice = info.act_price || info.member_price ? info.price : info.market_price
     }
     const img = info.img || info.image_default_id
-
+    console.log(info.title, price, marketPrice)
     return (
       <View className={classNames('goods-item', 'classes')}>
         <View className='goods-item__hd'>
@@ -73,7 +73,7 @@ export default class GoodsItem extends Component {
                 <Text className='goods-item__cur'>¥</Text>
                 <Text>{price}</Text>
                 {
-                  parseInt(marketPrice) &&
+                  Number(marketPrice) > 0 &&
                     <Text className='goods-item__price-market'>{marketPrice}</Text>
                 }
 							</View>
