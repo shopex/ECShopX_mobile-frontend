@@ -632,7 +632,7 @@ export default class CartCheckout extends Component {
       })
 
     Taro.navigateTo({
-      url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}`
+      url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}`
     })
   }
 
