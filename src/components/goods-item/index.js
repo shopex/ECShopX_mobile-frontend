@@ -41,8 +41,6 @@ export default class GoodsItem extends Component {
       price = Boolean(+info.act_price) ? info.act_price : Boolean(+info.member_price) ? info.member_price : info.price
       marketPrice = Boolean(+info.act_price) || Boolean(+info.member_price) ? info.price : info.market_price
     }
-    console.log(info.act_price, info.member_price, info.price, info.market_price)
-    console.log('--------', price, marketPrice, '--------')
     const img = info.img || info.image_default_id
 
     return (

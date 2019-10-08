@@ -67,9 +67,9 @@ export default class Detail extends Component {
   async componentDidMount () {
     const options = this.$router.params
     console.log(options)
-    const { store, uid, id } = await entry.entryLaunch(options, true)
+    const { store, uid, id, gid = '' } = await entry.entryLaunch(options, true)
     if (store) {
-      this.fetchInfo(id)
+      this.fetchInfo(id, gid)
     }
     if (uid) {
       this.uid = uid
@@ -133,14 +133,14 @@ export default class Detail extends Component {
     }
   }
 
-  async fetchInfo (itemId) {
+  async fetchInfo (itemId, goodsId) {
     let id = ''
     if (itemId) {
       id = itemId
     } else {
       id = this.$router.params.id
     }
-    const info = await api.item.detail(id)
+    const info = await api.item.detail(id, {goods_id: goodsId})
     let promotion_package = null
     const { list } = await api.item.packageList({item_id: id})
     if (list.length) {
