@@ -380,6 +380,36 @@
       font-size: 26px;
     }
   }
+
+  .coupon_tag {
+    display: inline-block;
+    border: 1PX solid #ff5000;
+    border-radius: 6px;
+    position: relative;
+    height: 40px;
+    line-height: 36px;
+    padding: 0 20px;
+    color: #ff5000;
+    font-size: 20px;
+    margin-left: 14px;
+    &_circle {
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      position: absolute;
+      border-radius: 50%;
+    }
+    .circle_left {
+      border-right: 1PX solid #ff5000;
+      left: -12px;
+      top: 8px;
+    }
+    .circle_right {
+      border-left: 1PX solid #ff5000;
+      right: -12px;
+      top: 8px;
+    }
+  }
 }
 
 .goods-sec-tabs {

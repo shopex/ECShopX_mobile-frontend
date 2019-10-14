@@ -43,8 +43,6 @@ export default class GoodsItem extends Component {
     }
     const img = info.img || info.image_default_id
 
-    console.log(info.promotion_activity_tag, 46)
-
     let promotion_activity = null
     if( info.promotion_activity_tag && info.promotion_activity_tag.length > 1 ) {
       info.promotion_activity_tag.map(tag_item => {

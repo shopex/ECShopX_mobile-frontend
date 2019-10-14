@@ -461,7 +461,6 @@ export default class List extends Component {
       curTagId,
 			info
     } = this.state
-    console.log(list, 135)
 
 		return (
 			<View className='page-goods-list'>

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Navigator, Canvas, GoodsItem } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
@@ -582,6 +583,12 @@ export default class Detail extends Component {
     })
   }
 
+  handleCouponClick = () => {
+    Taro.navigateTo({
+      url: `/pages/home/coupon-home?item_id=${this.state.info.item_id}`
+    })
+  }
+
   render () {
     const store = Taro.getStorageSync('curStore')
     const {
@@ -629,7 +636,7 @@ export default class Detail extends Component {
       ruleDay = JSON.parse(info.activity_info.rule.day)
     }
 
-    const { pics: imgs } = info
+    const { pics: imgs, kaquan_list: coupon_list } = info
 
     return (
       <View className='page-goods-detail'>
@@ -836,6 +843,25 @@ export default class Detail extends Component {
                 </View>
               </View>
           }
+
+          <SpCell 
+            className='goods-sec-specs' 
+            title='领券' 
+            isLink
+            onClick={this.handleCouponClick.bind(this)}
+          >
+            {
+              coupon_list && coupon_list.list.map(kaquan_item => {
+                return (
+                  <View className='coupon_tag'>
+                    <View className='coupon_tag_circle circle_left'></View>
+                    <Text>{kaquan_item.title}</Text>
+                    <View className='coupon_tag_circle circle_right'></View>
+                  </View>
+                )
+              })
+            }
+          </SpCell>
 
           {
             promotion_activity && promotion_activity.length > 0

@@ -126,7 +126,6 @@ export default class ItemFav extends Component {
   }
 
   handleFavRemoved = () => {
-    console.log(111)
     this.resetPage()
     this.setState({
       list: []
