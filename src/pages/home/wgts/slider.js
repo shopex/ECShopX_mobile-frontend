@@ -111,7 +111,7 @@ export default class WgtSlider extends Component {
             : null
         }
         {
-          (curContent && data.length > 0) &&
+          (config.content && curContent) &&
           <View className='slider-caption'>{curContent}</View>
         }
       </View>
