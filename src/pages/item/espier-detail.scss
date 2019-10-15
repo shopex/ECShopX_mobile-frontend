@@ -610,14 +610,12 @@
         }
       }
       &__cont {
+        height: 300px;
         padding-left: floor($edge-size / 2);
         padding-right: floor($edge-size / 2);
       }
       &__bd {
         display: block;
-      }
-      &__cont {
-        height: 250px;
       }
     }
   }
