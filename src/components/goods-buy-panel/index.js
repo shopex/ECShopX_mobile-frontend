@@ -439,7 +439,7 @@ export default class GoodsBuyPanel extends Component {
                 {
                   promotions.map(item =>
                     item.items[curSkus.item_id] &&
-                      <View className='promotions__item'>
+                      <View key={item.items[curSkus.item_id]} className='promotions__item'>
                         <Text className='promotions__item-tag'>{item.promotion_tag}</Text>
                         <Text className='promotions__item-title'>{item.condition_rules}</Text>
                       </View>
