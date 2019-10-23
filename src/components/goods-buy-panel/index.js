@@ -303,7 +303,7 @@ export default class GoodsBuyPanel extends Component {
       if (marketing === 'group') {
         const { groups_activity_id } = info.activity_info
         url += `&type=${marketing}&group_id=${groups_activity_id}`
-      } else if (marketing === 'seckill') {
+      } else if (marketing === 'seckill' || marketing === 'limited_time_sale') {
         const { seckill_id } = info.activity_info
         const { ticket } = await api.item.seckillCheck({ item_id, seckill_id, num }).catch(res => {
           this.setState({
@@ -439,7 +439,7 @@ export default class GoodsBuyPanel extends Component {
                 {
                   promotions.map(item =>
                     item.items[curSkus.item_id] &&
-                      <View className='promotions__item'>
+                      <View key={item.items[curSkus.item_id]} className='promotions__item'>
                         <Text className='promotions__item-tag'>{item.promotion_tag}</Text>
                         <Text className='promotions__item-title'>{item.condition_rules}</Text>
                       </View>

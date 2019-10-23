@@ -28,14 +28,17 @@ export default class GoodsBuyToolbar extends Component {
 
   render () {
     const { onClickAddCart, onClickFastBuy, cartCount, type, info } = this.props
-    let special_type = null
-    if (info) {
-      special_type = info.special_type
+
+    if (!info) {
+      return null
     }
+
+    let special_type = info.special_type
+
     const isDrug = special_type === 'drug'
     const fastBuyText = type === 'normal'
       ? '立即购买'
-      : type === 'seckill'
+      : (type === 'seckill' || type === 'limited_time_sale')
         ? '立即抢购' : '我要开团'
 
     return (

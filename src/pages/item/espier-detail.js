@@ -67,7 +67,6 @@ export default class Detail extends Component {
 
   async componentDidMount () {
     const options = this.$router.params
-    console.log(options)
     const { store, uid, id, gid = '' } = await entry.entryLaunch(options, true)
     if (store) {
       this.fetchInfo(id, gid)
@@ -161,10 +160,16 @@ export default class Detail extends Component {
         hasStock = info.activity_info.store && info.activity_info.store > 0
         startActivity = info.activity_info.show_status === 'noend'
       }
-      if (info.activity_type === 'seckill' || info.activity_type === 'limited_time_sale') {
-        marketing = info.activity_type
+      if (info.activity_type === 'seckill') {
+        marketing = 'seckill'
         timer = calcTimer(info.activity_info.last_seconds)
         hasStock = info.activity_info.item_total_store && info.activity_info.item_total_store > 0
+        startActivity = info.activity_info.status === 'in_sale'
+      }
+      if (info.activity_type === 'limited_time_sale') {
+        marketing = 'limited_time_sale'
+        timer = calcTimer(info.activity_info.last_seconds)
+        hasStock = info.item_total_store && info.item_total_store > 0
         startActivity = info.activity_info.status === 'in_sale'
       }
     }
@@ -468,7 +473,6 @@ export default class Detail extends Component {
         canvasId: 'myCanvas'
       }).then(res => {
         const shareImg = res.tempFilePath;
-        console.log(shareImg)
         this.setState({
           poster: shareImg
         })
@@ -860,7 +864,7 @@ export default class Detail extends Component {
             {
               coupon_list && coupon_list.list.map(kaquan_item => {
                 return (
-                  <View className='coupon_tag'>
+                  <View key={kaquan_item.id} className='coupon_tag'>
                     <View className='coupon_tag_circle circle_left'></View>
                     <Text>{kaquan_item.title}</Text>
                     <View className='coupon_tag_circle circle_right'></View>
@@ -1004,7 +1008,9 @@ export default class Detail extends Component {
               onFavItem={this.handleMenuClick.bind(this, 'fav')}
               onClickAddCart={this.handleBuyBarClick.bind(this, 'cart')}
               onClickFastBuy={this.handleBuyBarClick.bind(this, 'fastbuy')}
-            />)
+            >
+              <View>{marketing}</View>
+            </GoodsBuyToolbar>)
           :
             (<GoodsBuyToolbar
               info={info}
