@@ -39,23 +39,7 @@ export default class Category extends Component {
     const query = {template_name: 'yykweishop', version: 'v1.0.1', page_name: 'floor_guide'}
     const { list } = await api.category.getCategory(query)
     let seriesList = list[0] ? list[0].params.data : []
-    if (!seriesList.length) {
-      const res = await api.category.get()
-      const nList = pickBy(res, {
-        name: 'name',
-        img: 'image_url',
-        id: 'id',
-        children: ({ children }) => pickBy(children, {
-          name: 'name',
-          img: 'image_url',
-          id: 'id'
-        })
-      })
-      this.setState({
-        list: nList,
-        hasSeries: false
-      })
-    } else {
+    if (seriesList.length) {
       let tabList = []
       let contentList = []
       if (list[0].params.hasSeries) {
@@ -67,12 +51,14 @@ export default class Category extends Component {
         contentList.push(seriesList)
       }
       const curIndexList = contentList[this.state.curTabIdx]
-      const nList = pickBy(curIndexList, {
-        name: 'name',
-        img: 'img',
-        children: 'children',
-        hot: 'hot'
-      })
+      let nList = []
+      if (curIndexList.length) {
+        nList = pickBy(curIndexList, {
+          name: 'name',
+          tags: 'tags',
+          stores: 'stores'
+        })
+      }
       this.setState({
         tabList,
         contentList,
@@ -87,8 +73,8 @@ export default class Category extends Component {
 
     const nList = pickBy(curIndexList, {
       name: 'name',
-      img: 'img',
-      children: 'children'
+      tags: 'tags',
+      stores: 'stores'
     })
     this.setState({
       curTabIdx: idx,
@@ -137,7 +123,6 @@ export default class Category extends Component {
             info={list}
           />
         </View>
-        <TabBar />
       </View>
     )
   }

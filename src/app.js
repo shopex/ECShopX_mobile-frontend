@@ -27,7 +27,7 @@ class App extends Component {
       'pages/home/license',
 
       'pages/category/index',
-      'pages/category/floor-guide',
+      'pages/floorguide/index',
 
       'pages/item/list',
       'pages/item/espier-detail',
