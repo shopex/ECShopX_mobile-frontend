@@ -151,4 +151,12 @@ $item-img-size: 240px !default;
       color: $color-brand-primary;
     }
   }
+  &__store {
+    color: $color-gray;
+    font-size: 20px;
+    letter-spacing: 0;
+    &-entry {
+      color: #333;
+    }
+  }
 }

@@ -62,12 +62,10 @@ export default class List extends Component {
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { selectParams, areaList, tagsList, curTagId } = this.state
-    const { distributor_id } = Taro.getStorageSync('curStore')
     const query = {
       ...this.state.query,
       item_params: selectParams,
       tag_id: curTagId,
-      distributor_id,
       page,
       pageSize
     }
@@ -125,6 +123,7 @@ export default class List extends Component {
       item_id: 'item_id',
       title: 'itemName',
       desc: 'brief',
+      distributor_info: 'distributor_info',
       promotion_activity_tag: 'promotion_activity',
       price: ({ price }) => (price/100).toFixed(2),
       member_price: ({ member_price }) => (member_price/100).toFixed(2),
@@ -232,6 +231,13 @@ export default class List extends Component {
 
   handleClickItem = (item) => {
     const url = `/pages/item/espier-detail?id=${item.item_id}`
+    Taro.navigateTo({
+      url
+    })
+  }
+
+  handleClickStore = (item) => {
+    const url = `/pages/store/index?id=${item.distributor_info.distributor_id}`
     Taro.navigateTo({
       url
     })
@@ -563,6 +569,7 @@ export default class List extends Component {
                     key={item.item_id}
                     info={item}
                     onClick={() => this.handleClickItem(item)}
+                    onStoreClick={() => this.handleClickStore(item)}
                   />
                 )
               })

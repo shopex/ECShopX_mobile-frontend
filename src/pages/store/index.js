@@ -23,7 +23,8 @@ export default class StoreIndex extends Component {
     this.state = {
       wgts: null,
       authStatus: false,
-      isShowAddTip: false
+      isShowAddTip: false,
+      storeInfo: null
     }
   }
 
@@ -54,10 +55,20 @@ export default class StoreIndex extends Component {
 
   async fetchInfo () {
     const options = this.$router.params
-    const res = await entry.entryLaunch(options, true)
+    const { id } = this.$router.params
+    let storeInfo = null
+    if (!id) {
+      const { store } = entry.entryLaunch(options, true)
+      storeInfo = store
+    } else {
+      const { name, logo } = await api.shop.getShop({distributor_id: id})
+      storeInfo = {
+        name,
+        brand: logo
+      }
+    }
 
-    const { distributor_id } = await Taro.getStorageSync('curStore')
-    const url = `/pageparams/setting?template_name=yykweishop&version=shop_${distributor_id}&page_name=shop_home`
+    const url = `/pageparams/setting?template_name=yykweishop&version=shop_${id}&page_name=shop_home`
     const info = await req.get(url)
 
     if (!S.getAuthToken()) {
@@ -66,7 +77,8 @@ export default class StoreIndex extends Component {
       })
     }
     this.setState({
-      wgts: info.config
+      wgts: info.config,
+      storeInfo: storeInfo
     },()=>{
       if(info.config) {
         info.config.map(item => {
@@ -116,11 +128,9 @@ export default class StoreIndex extends Component {
   }
 
   render () {
-    const { wgts, authStatus, page, likeList, showBackToTop, scrollTop, isShowAddTip } = this.state
-    const { name, brand = '' } = Taro.getStorageSync('curStore')
+    const { wgts, storeInfo, authStatus, page, likeList, showBackToTop, scrollTop, isShowAddTip } = this.state
     const user = Taro.getStorageSync('userinfo')
     const isPromoter = user && user.isPromoter
-    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -138,9 +148,9 @@ export default class StoreIndex extends Component {
           <View className='wgts-wrap__cont'>
             <View className='store-header'>
               <View>
-                <Image className='store-brand' src={brand || 'https://fakeimg.pl/120x120/FFF/CCC/?text=brand&font=lobster'} />
+                <Image className='store-brand' src={storeInfo.brand || 'https://fakeimg.pl/120x120/FFF/CCC/?text=brand&font=lobster'} />
               </View>
-              <View className="store-name">{name}</View>
+              <View className="store-name">{storeInfo.name}</View>
             </View>
             {
               wgts.map((item, idx) => {

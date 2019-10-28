@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, Text, Image, Progress} from '@tarojs/components'
 import { Price, QnImg } from '@/components'
-import { isObject, classNames } from '@/utils'
+import { isObject, classNames, isArray } from '@/utils'
 import api from '@/api'
 
 import './index.scss'
@@ -9,6 +9,7 @@ import './index.scss'
 export default class GoodsItem extends Component {
   static defaultProps = {
     onClick: () => {},
+    onStoreClick: () => {},
     showMarketPrice: true,
     showFav: true,
     showSku: false,
@@ -29,7 +30,7 @@ export default class GoodsItem extends Component {
   }
 
   render () {
-    const { info, showMarketPrice, showFav, noCurSymbol, noCurDecimal, onClick, appendText, className, isPointDraw, type } = this.props
+    const { info, showMarketPrice, showFav, noCurSymbol, noCurDecimal, onClick, onStoreClick, appendText, className, isPointDraw, type } = this.props
     if (!info) {
       return null
     }
@@ -66,12 +67,10 @@ export default class GoodsItem extends Component {
         <View className='goods-item__hd'>
           {this.props.renderCheckbox}
         </View>
-        <View
-          className='goods-item__bd'
-          onClick={onClick}
-        >
+        <View className='goods-item__bd'>
           <View
             className='goods-item__img-wrap'
+            onClick={onClick}
           >
             <QnImg
               img-class='goods-item__img'
@@ -96,7 +95,7 @@ export default class GoodsItem extends Component {
                 </View>
               : null
             }
-            <View>
+            <View onClick={onClick}>
               <Text className='goods-item__title'>{info.title}</Text>
               <Text className='goods-item__desc'>{info.desc}</Text>
               {this.props.renderSpec}
@@ -129,6 +128,14 @@ export default class GoodsItem extends Component {
                    </View>)
               }
             </View>
+            {
+              !Array.isArray(info.distributor_info) &&
+                <View
+                  className='goods-item__store'
+                  onClick={onStoreClick}>
+                  {info.distributor_info.name} <Text class="goods-item__store-entry">进店<Text className='icon-arrowRight'></Text></Text>
+                </View>
+            }
           </View>
         </View>
         <View className='goods-item__ft'>

@@ -67,10 +67,8 @@ export default class Detail extends Component {
 
   async componentDidMount () {
     const options = this.$router.params
-    const { store, uid, id, gid = '' } = await entry.entryLaunch(options, true)
-    if (store) {
-      this.fetchInfo(id, gid)
-    }
+    const { uid, id, gid = '' } = await entry.entryLaunch(options, true)
+    this.fetchInfo(id, gid)
     if (uid) {
       this.uid = uid
     }
@@ -594,7 +592,6 @@ export default class Detail extends Component {
   }
 
   render () {
-    const store = Taro.getStorageSync('curStore')
     const {
       info,
       isGreaterSix,
@@ -935,9 +932,9 @@ export default class Detail extends Component {
           }
 
           {
-            !isArray(store) &&
+            !isArray(info.distributor_info) &&
               <StoreInfo
-                info={store}
+                info={info.distributor_info}
               />
           }
 
