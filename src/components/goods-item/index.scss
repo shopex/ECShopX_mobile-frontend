@@ -99,8 +99,9 @@ $item-img-size: 240px !default;
     font-size: 20px;
   }
   &__price {
-    font-size: floor(1.1 * $font-size);
+    font-size: floor(1.2 * $font-size);
     margin-right: 24px;
+    color: $color-price;
   }
   &__point {
     color: $color-brand-primary;
