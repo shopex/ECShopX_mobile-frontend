@@ -67,7 +67,7 @@ export default class WgtStore extends Component {
                   item.items.map(goods =>
                     <View
                       className='store-goods__item'
-                      onClick={this.handleGoodsClick.bind(this, goods.id)}
+                      onClick={this.handleGoodsClick.bind(this, goods.goodsId)}
                       >
                       <Image className='store-goods__item-thumbnail' src={goods.imgUrl} mode='scaleToFill'/>
                       <View className='store-goods__item-price'>¥{(goods.price/100).toFixed(2)}</View>
