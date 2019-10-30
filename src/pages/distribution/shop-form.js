@@ -121,40 +121,15 @@ export default class DistributionShopForm extends Component {
     }
 
     const results = await Promise.all(promises)
-<<<<<<< HEAD
     this.setState({
       imgs: results
     })
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const params = {
-      [key]: res[0].url
-    }
-    const { list } = await api.distribution.update(params)
-    if ( list[0] ) Taro.navigateBack()
-=======
-
     this.setState({
       info: {
         key,
         val: results[0].url
       }
     })
->>>>>>> 8d6d6621... 上传图片
-=======
-=======
-    this.setState({
-      imgs: results
-    })
-
->>>>>>> 8d6d6621... 上传图片
-    this.setState({
-      info: {
-        key,
-        val: results[0].url
-      }
-    })
->>>>>>> 1b213e4f... 修复小店设置
   }
 
   render () {
