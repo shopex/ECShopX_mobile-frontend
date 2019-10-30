@@ -89,7 +89,8 @@ export default class StoreList extends Component {
     this.setState({
       loading: true
     })
-    const store = await entry.getLocal()
+    Taro.removeStorageSync('lnglat')
+    const store = await entry.getLocal(true)
     if (store) {
       Taro.setStorageSync('curStore', store)
       this.resetPage()
