@@ -501,6 +501,9 @@ export default class List extends Component {
                 <Text>筛选</Text>
               </View>
             */}
+<<<<<<< HEAD
+>>>>>>> 8d6d6621... 上传图片
+=======
 >>>>>>> 8d6d6621... 上传图片
             <View className='filter-bar__item region-picker'>
               <Picker

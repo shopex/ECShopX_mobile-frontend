@@ -62,7 +62,6 @@ export default class DistributionShopForm extends Component {
   }
 
   handleSubmit = async() => {
-    console.log(111111)
     const { key, val } = this.state.info
     const params = {
       [key]: val
@@ -122,6 +121,7 @@ export default class DistributionShopForm extends Component {
     }
 
     const results = await Promise.all(promises)
+<<<<<<< HEAD
     this.setState({
       imgs: results
     })
@@ -142,10 +142,16 @@ export default class DistributionShopForm extends Component {
     })
 >>>>>>> 8d6d6621... 上传图片
 =======
+=======
+    this.setState({
+      imgs: results
+    })
+
+>>>>>>> 8d6d6621... 上传图片
     this.setState({
       info: {
         key,
-        val: res[0].url
+        val: results[0].url
       }
     })
 >>>>>>> 1b213e4f... 修复小店设置
