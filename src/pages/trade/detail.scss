@@ -2,7 +2,6 @@
 @import "../../style/imports";
 
 .trade-detail {
-  background: #ffffff;
   box-sizing: border-box;
   min-height: 100vh;
   padding-bottom: 84px;
@@ -73,12 +72,16 @@
   &-address {
     width: 100%;
 <<<<<<< HEAD
+<<<<<<< HEAD
     height: 143px;
+=======
+>>>>>>> 0ed9c205... 订单备注添加
     padding: 38px 38px 49px 30px;
 =======
     padding: 30px;
 >>>>>>> 8d6d6621... 上传图片
     box-sizing: border-box;
+    background: #fff;
     /*.trade-info {
       font-size: 20px;
       line-height: 36px;
@@ -108,9 +111,10 @@
     }
   }
   &-goods {
-    border-top: 14px solid #f6f6f6  ;
+    border-top: 14px solid #f6f6f6;
     width: 100%;
     min-height: 100px;
+    background: #fff;
   }
   .order-item__pay-type {
     display: none;
@@ -123,6 +127,7 @@
     font-size: 26px;
     color: #5b5b5b;
     border-top: 1PX solid #ececec;
+    background: #fff;
     &__num {
       font-size: 36px;
       color: $color-brand-primary;
@@ -136,6 +141,7 @@
     color: #999999;
     border-top: 14px solid #f6f6f6;
     padding: 42px 30px;
+    background: #fff;
     .info-text {
       display: block;
     }
@@ -153,6 +159,20 @@
         width: 120px;
         text-align: right;
       }
+    }
+  }
+  &-remark {
+    padding-top: 21px;
+    &__header {
+      padding: 20px 30px;
+      font-size: 26px;
+      background: #fff;
+      border-bottom: 1px solid #efefef;
+    }
+    &__body {
+      padding: 20px 30px;
+      font-size: 24px;
+      background: #fff;
     }
   }
   &__footer {

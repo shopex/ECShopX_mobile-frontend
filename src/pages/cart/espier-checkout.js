@@ -619,6 +619,13 @@ export default class CartCheckout extends Component {
     // Taro.navigateTo({ url })
   }
 
+  handleRemarkChange = (val) => {
+    this.params = {
+      ...this.params,
+      remark: val
+    }
+  }
+
   handleCouponsClick = () => {
     if (this.state.payType === 'dhpoint') {
       return
@@ -812,6 +819,7 @@ export default class CartCheckout extends Component {
                         <AtInput
                           className='trade-remark__input'
                           placeholder='给商家留言：选填（50字以内）'
+                          onChange={this.handleRemarkChange.bind(this)}
                         />
                       </SpCell>
                     </View>

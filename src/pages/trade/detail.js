@@ -91,6 +91,7 @@ export default class TradeDetail extends Component {
       order_status_msg: 'order_status_msg',
       order_status_des: 'order_status_des',
       order_class: 'order_class',
+      remark: 'remark',
       item_fee: ({ item_fee }) => (+item_fee / 100).toFixed(2),
       coupon_discount: ({ coupon_discount }) => (+coupon_discount / 100).toFixed(2),
       freight_fee: ({ freight_fee }) => (+freight_fee / 100).toFixed(2),
@@ -480,6 +481,13 @@ export default class TradeDetail extends Component {
           />
         </View>
         <View className='trade-money'>总计：<Text className='trade-money__num'>￥{info.item_fee}</Text></View>
+        {
+          info.remark &&
+            <View className='trade-detail-remark'>
+              <View className='trade-detail-remark__header'>订单备注</View>
+              <View className='trade-detail-remark__body'>{info.remark}</View>
+            </View>
+        }
         <View className='trade-detail-info'>
           <Text className='info-text'>订单号：{info.tid}</Text>
           <Text className='info-text'>下单时间：{info.created_time_str}</Text>
