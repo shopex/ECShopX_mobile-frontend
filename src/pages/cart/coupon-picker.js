@@ -25,12 +25,14 @@ export default class CouponPicker extends Component {
   }
 
   async fetch () {
+    const { distributor_id } = Taro.getStorageSync('curStore')
     const { items, is_checkout, cart_type, use_platform = 'mall' } = this.$router.params
 
     const params = {
       items: JSON.parse(items),
       use_platform,
       page_type: 'picker',
+      distributor_id,
       valid: true,
       is_checkout,
       cart_type
