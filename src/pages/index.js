@@ -334,8 +334,8 @@ export default class HomeIndex extends Component {
             {
               automatic.isOpen && !S.getAuthToken() &&
                 <FloatMenuItem
-                  iconPrefixClass='in-icon'
-                  icon='gift'
+                  iconPrefixClass='icon'
+                  icon='present'
                   onClick={this.handleAutoClick.bind(this)}
                 />
             }
