@@ -100,7 +100,7 @@ export default class Series extends Component {
             }
             {
               items.map(item =>
-                item.children.length > 0
+                item.children && item.children.length > 0
                   ? <View>
                       <View className='group-title'>{item.name}</View>
                       <View className='content-group'>
