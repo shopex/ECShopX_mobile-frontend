@@ -288,12 +288,6 @@ export default class HomeIndex extends Component {
 
     return (
       <View className={`page-index ${top < 1 ? 'onTop' : '' }`}>
-        {
-          curStore &&
-            <HeaderHome
-              store={curStore}
-            />
-        }
 				{/*<ScrollView
   className={classNames('wgts-wrap', positionStatus && 'wgts-wrap__fixed' , !curStore && 'wgts-wrap-nolocation')}
   scrollTop={scrollTop}

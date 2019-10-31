@@ -83,7 +83,6 @@
 
 .wgts-wrap {
   $self: &;
-  padding-top: $home-header-height;
   padding-bottom: $tabbar-height;
   background: #fff;
   #{$self}__cont {
@@ -95,7 +94,7 @@
     }
     .search {
       &.fixed {
-        top: $home-header-height;
+        top: 0;
       }
     }
   }
