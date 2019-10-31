@@ -807,7 +807,7 @@ export default class CartCheckout extends Component {
                         className='coupons-list'
                         title='用药人信息'
                         onClick={this.handleDrugInfoShow}
-                        onChange={this.handleDrugChange.bind(this)}
+                        onChange={this.handleDrugChange}
                         value={drug ? '已上传' : '用药人及处方上传'}
                       />
                     }

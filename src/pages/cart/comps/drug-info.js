@@ -46,6 +46,11 @@ export default class DrugInfo extends Component {
     })
   }
 
+  handleClick = () => {
+    const { info } = this.state
+    this.props.onChange(info)
+  }
+
   handleImageChange = async (data, type) => {
     if (type === 'remove') {
       this.setState({
@@ -146,7 +151,7 @@ export default class DrugInfo extends Component {
           </View>
           <AtButton
             type='primary'
-            onClick={this.props.onChange.bind(this, info)}
+            onClick={this.handleClick.bind(this)}
           >确定</AtButton>
         </View>
       </AtFloatLayout>
