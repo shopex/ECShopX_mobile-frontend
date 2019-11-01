@@ -42,7 +42,7 @@ export default class DistributionTrade extends Component {
     const { close, noClose } = await api.distribution.commission(query)
     const { total } = curTabIdx ? noClose.total_count : close.total_count
 
-    const nList = pickBy(curTabIdx ? noClose.list : noClose.list, {
+    const nList = pickBy(curTabIdx == 0 ? noClose.list : close.list, {
       order_id: 'order_id',
       rebate: 'rebate',
       created_date: 'created_date',
