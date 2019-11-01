@@ -12,6 +12,9 @@ export function linkPage (type, id) {
     case 'category':
       url = '/pages/item/list?cat_id=' + id
       break;
+    case 'store':
+      url = '/pages/store/index?id=' + id
+      break;
     case 'article':
       url = '/pages/article/index?id=' + id
       break;
