@@ -13,6 +13,7 @@ cat <<MENU
   [ 8 ] => 国药测试
   [ 9 ] => 善元荣锦
   [ 10 ] => 大润发飞牛
+  [ 11 ] => 国药正式
 MENU
 echo "请选择主机组:"
 read number
@@ -56,6 +57,10 @@ case "$number" in
   10)
     appid="wxf713653c6a98eff8"
     baseUrl="scpt.feiniugo.com"
+    ;;
+  11)
+    appid="wx68556422020bb751"
+    baseUrl="b.jkgohome.com"
     ;;
   *)
     echo "选择的序号不存在"
