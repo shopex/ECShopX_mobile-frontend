@@ -265,7 +265,7 @@ export default class GoodsBuyPanel extends Component {
     const { special_type } = info
     const isDrug = special_type === 'drug'
     const { item_id } = this.noSpecs ? info : skuInfo
-    const { distributor_id } = Taro.getStorageSync('curStore')
+    const { distributor_id } = info
     let url = `/pages/cart/espier-checkout`
 
     this.setState({
