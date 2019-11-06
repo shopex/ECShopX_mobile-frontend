@@ -37,13 +37,17 @@ export default class DistributionShopHome extends Component {
   async componentDidMount () {
     const options = this.$router.params
     const { uid } = await entry.entryLaunch(options, true)
-    if (uid) {
+    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
+    const { userId } = Taro.getStorageSync('userinfo')
+    const shopId = uid || distributionShopId || userId
+    if (shopId) {
       this.firstStatus = true
       this.setState({
         query: {
           item_type: 'normal',
           approve_status: 'onsale,only_show',
-          is_promoter: true
+          promoter_onsale: true,
+          promoter_shop_id: shopId
         }
       }, async () => {
         await this.fetchInfo()
@@ -76,9 +80,6 @@ export default class DistributionShopHome extends Component {
   }
 
   async fetch (params) {
-    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
-    const { userId } = Taro.getStorageSync('userinfo')
-    const uid = distributionShopId || userId
     const { page_no: page, page_size: pageSize } = params
     const { selectParams } = this.state
     const query = {
@@ -107,22 +108,6 @@ export default class DistributionShopHome extends Component {
       desc: 'brief',
       price: ({ price }) => (price/100).toFixed(2),
       market_price: ({ market_price }) => (market_price/100).toFixed(2)
-    })
-
-    let ids = []
-    list.map(item => {
-      ids.push(item.goods_id)
-    })
-
-    const param = {
-      goods_id: ids,
-      user_id: uid
-    }
-
-    const { goods_id } = await api.distribution.items(param)
-
-    this.setState({
-      goodsIds: [...this.state.goodsIds, ...goods_id],
     })
 
     this.setState({
@@ -236,32 +221,11 @@ export default class DistributionShopHome extends Component {
     })
   }
 
-  handleClickItem = async (id) => {
-    console.log(id)
-    const { goodsIds } = this.state
-    const goodsId = {goods_id: id}
-    const idx = goodsIds.findIndex(item => id === item)
-    const isRelease = idx !== -1
-    if (!isRelease) {
-      const { status } = await api.distribution.release(goodsId)
-      if ( status ) {
-        this.setState({
-          goodsIds: [...this.state.goodsIds, id]
-        }, () => {
-          S.toast('上架成功')
-        })
-      }
-    } else {
-      const { status } = await api.distribution.unreleased(goodsId)
-      if ( status ) {
-        goodsIds.splice(idx, 1)
-        this.setState({
-          goodsIds
-        }, () => {
-          S.toast('下架成功')
-        })
-      }
-    }
+  handleClickItem = (id) => {
+    const url = `/pages/item/espier-detail?id=${id}`
+    Taro.navigateTo({
+      url
+    })
   }
 
   render () {
@@ -294,10 +258,12 @@ export default class DistributionShopHome extends Component {
           list={filterList}
           onChange={this.handleFilterChange}
         >
-          <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
-            <View className='icon-filter'></View>
-            <Text>筛选</Text>
-          </View>
+          {/*
+            <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
+              <View className='icon-filter'></View>
+              <Text>筛选</Text>
+            </View>
+          */}
         </FilterBar>
 
         <AtDrawer
@@ -353,17 +319,13 @@ export default class DistributionShopHome extends Component {
         >
           <View className='goods-list'>
             {
-              list.map((item, index) => {
-                const isRelease = goodsIds.findIndex(n => item.goods_id == n) !== -1
-                return (
-                  isRelease
-                  && <GoodsItem
-                      key={index}
-                      info={item}
-                      onClick={() => this.handleClickItem(item.goods_id)}
-                    />
-                )
-              })
+              list.map((item, index) =>
+                <GoodsItem
+                  key={index}
+                  info={item}
+                  onClick={this.handleClickItem.bind(this, item.goods_id)}
+                />
+              )
             }
           </View>
           {
@@ -372,7 +334,7 @@ export default class DistributionShopHome extends Component {
               : null
           }
           {
-            !page.isLoading && !page.hasNext && !goodsIds.length
+            !page.isLoading && !page.hasNext && !list.length
               && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>

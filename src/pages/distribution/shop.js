@@ -302,10 +302,12 @@ export default class DistributionShop extends Component {
           list={filterList}
           onChange={this.handleFilterChange}
         >
-          <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
-            <View className='icon-filter'></View>
-            <Text>筛选</Text>
-          </View>
+          {/*
+            <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
+              <View className='icon-filter'></View>
+              <Text>筛选</Text>
+            </View>
+          */}
         </FilterBar>
 
         <AtDrawer
