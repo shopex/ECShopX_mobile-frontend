@@ -114,10 +114,10 @@ export default class Series extends Component {
                             {
                               child.img
                               && <Image
-                                    className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
-                                    mode='aspectFit'
-                                    src={child.img}
-                                  />
+                                className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
+                                mode='aspectFit'
+                                src={child.img}
+                              />
                             }
                             <View className='img-cat-name'>{child.name}</View>
                           </View>
@@ -126,17 +126,17 @@ export default class Series extends Component {
                       </View>
                     </View>
                   : <View
-                      className='category-content__img'
-                      key={item.category_id}
-                      onClick={this.handleClickItem.bind(this, item)}
-                    >
+                    className='category-content__img'
+                    key={item.category_id}
+                    onClick={this.handleClickItem.bind(this, item)}
+                  >
                       {
                         item.img
                         && <Image
-                              className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
-                              mode='aspectFit'
-                              src={item.img}
-                            />
+                          className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
+                          mode='aspectFit'
+                          src={item.img}
+                        />
                       }
                       <View className='img-cat-name'>{item.name}</View>
                     </View>

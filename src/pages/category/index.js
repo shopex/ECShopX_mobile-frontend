@@ -78,7 +78,8 @@ export default class Category extends Component {
         name: 'name',
         img: 'img',
         children: 'children',
-        hot: 'hot'
+        hot: 'hot',
+        id: 'id'
       })
       this.setState({
         tabList,
