@@ -157,7 +157,7 @@ export default class CartIndex extends Component {
   processCart ({ valid_cart = [], invalid_cart = [] }) {
 		let cartCount = 0
     const list = valid_cart.map(shopCart => {
-			cartCount += shopCart.cart_total_count
+			cartCount += shopCart.cart_total_num
       const tList = this.transformCartList(shopCart.list)
       return {
         ...shopCart,

@@ -38,7 +38,7 @@ export default class TradeDetail extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidShow () {
     console.log(APP_BASE_URL)
     this.fetch()
   }
