@@ -48,8 +48,8 @@ export default class StoreIndex extends Component {
       console.log(res.target)
     }
     return {
-      title: '首页',
-      path: '/pages/index'
+      title: this.state.storeInfo ? this.state.storeInfo.name : '店铺商品',
+      path: `/pages/store/index?id=${this.$router.params.id}`
     }
   }
 
@@ -67,6 +67,7 @@ export default class StoreIndex extends Component {
         brand: logo
       }
     }
+    console.log(storeInfo, 70)
 
     const url = `/pageparams/setting?template_name=yykweishop&version=shop_${id}&page_name=shop_home`
     const info = await req.get(url)
@@ -150,7 +151,7 @@ export default class StoreIndex extends Component {
               <View>
                 <Image className='store-brand' src={storeInfo.brand || 'https://fakeimg.pl/120x120/FFF/CCC/?text=brand&font=lobster'} />
               </View>
-              <View className="store-name">{storeInfo.name}</View>
+              <View className='store-name'>{storeInfo.name}</View>
             </View>
             {
               wgts.map((item, idx) => {
