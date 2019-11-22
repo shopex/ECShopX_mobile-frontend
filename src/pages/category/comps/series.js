@@ -43,12 +43,20 @@ export default class Series extends Component {
   }
 
   handleClickItem = (item) => {
-    const { category_id } = item
-    const url = `/pages/item/list?cat_id=${category_id || ''}`
-
-    Taro.navigateTo({
-      url
-    })
+    const { category_id, main_category_id } = item
+    let url = ''
+    if (category_id) {
+      url = `/pages/item/list?cat_id=${category_id || ''}`
+    }
+    if (main_category_id) {
+      url = `/pages/item/list?main_cat_id=${main_category_id || ''}`
+    }
+    console.log(url)
+    if (url) {
+      Taro.navigateTo({
+        url
+      })
+    }
   }
 
   handleCustomClick = (id) => {

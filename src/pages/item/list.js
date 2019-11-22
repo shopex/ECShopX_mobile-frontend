@@ -43,6 +43,7 @@ export default class List extends Component {
   }
 
   componentDidMount () {
+    const { cat_id = null, main_cat_id = null } = this.$router.params
     this.firstStatus = true
 
     this.setState({
@@ -52,7 +53,8 @@ export default class List extends Component {
         is_point: 'false',
         distributor_id: this.$router.params.dis_id,
         approve_status: 'onsale,only_show',
-        category: this.$router.params.cat_id
+        category: cat_id ? cat_id : '',
+        main_category: main_cat_id ? main_cat_id : ''
 			},
 			curTagId:this.$router.params.tag_id
     }, () => {
