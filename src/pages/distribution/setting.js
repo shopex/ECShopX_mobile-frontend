@@ -84,31 +84,6 @@ export default class DistributionSetting extends Component {
             </View>
           </View>
         </View>
-        <View className="content-padded">店铺资料</View>
-        <View className="section">
-          <View className="list">
-            <View className="list-item">
-              <View className="input-content">
-                <AtInput
-                  title='小店名称'
-                  disabled={!isEdit}
-                  placeholder='请为你的小店设置名字'
-                  onChange={this.handleChange.bind(this)}
-                  value={shop_name}
-                />
-              </View>
-              <View
-                className="input-edit"
-                onClick={this.handleClick.bind(this)}>
-                {
-                  isEdit
-                  ? '保存'
-                  : '修改'
-                }
-              </View>
-            </View>
-          </View>
-        </View>
       </View>
     )
   }

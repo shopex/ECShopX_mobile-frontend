@@ -78,6 +78,7 @@ class App extends Component {
       'pages/distribution/withdraw',
       'pages/distribution/withdrawals-record',
       'pages/distribution/withdrawals-acount',
+      'pages/distribution/goods',
       'pages/distribution/shop',
       'pages/distribution/shop-setting',
       'pages/distribution/shop-form',

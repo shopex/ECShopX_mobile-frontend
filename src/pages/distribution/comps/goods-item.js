@@ -41,13 +41,13 @@ export default class DistributionGoodsItem extends Component {
             </View>
             <View className='goods-item__extra'>
               <View className='goods-item__author'>
-                <AtButton onClick={onClick} size="small">
+                <View className={classNames('goods-item__release-btn', isRelease ? 'released' : null)} onClick={onClick}>
                   {
                     isRelease
-                      ? <Text>下架</Text>
-                      : <Text>上架</Text>
+                      ? <Text>从小店下架</Text>
+                      : <Text>上架到小店</Text>
                   }
-                </AtButton>
+                </View>
               </View>
               <View className='goods-item__actions'>
                 <Button
