@@ -51,7 +51,6 @@ export default class Series extends Component {
     if (main_category_id) {
       url = `/pages/item/list?main_cat_id=${main_category_id || ''}`
     }
-    console.log(url)
     if (url) {
       Taro.navigateTo({
         url
@@ -60,9 +59,11 @@ export default class Series extends Component {
   }
 
   handleCustomClick = (id) => {
-    Taro.navigateTo({
-      url: `/pages/custom/custom-page?id=${id}`
-    })
+    if (id) {
+      Taro.navigateTo({
+        url: `/pages/custom/custom-page?id=${id}`
+      })
+    }
   }
 
   render () {
@@ -72,7 +73,7 @@ export default class Series extends Component {
       return <Loading />
     }
     const items = info[currentIndex].children
-    const id = info[currentIndex].id
+    const id = info[currentIndex].id || ''
     const itemsImg = info[currentIndex].img
 
 
