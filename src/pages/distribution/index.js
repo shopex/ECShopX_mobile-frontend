@@ -43,12 +43,12 @@ export default class DistributionDashboard extends Component {
   }
 
   onShareAppMessage () {
-    const { window } = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
     const { username, userId } = Taro.getStorageSync('userinfo')
     const { info } = this.state
 
     return {
-      title: window.navigationBarTitleText,
+      title: extConfig.wxa_name,
       imageUrl: info.shop_pic,
       path: `/pages/index?uid=${userId}`
     }

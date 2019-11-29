@@ -229,6 +229,7 @@ export default class DistributionGoods extends Component {
   }
 
   render () {
+    const { status } = this.$router.params
     const { list, page, paramsList, selectParams, scrollTop, goodsIds, curFilterIdx, filterList } = this.state
 
     return (
@@ -260,6 +261,7 @@ export default class DistributionGoods extends Component {
                     key={index}
                     info={item}
                     isRelease={isRelease}
+                    status={status}
                     onClick={() => this.handleClickItem(item.goods_id)}
                   />
                 )
