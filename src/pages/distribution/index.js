@@ -189,7 +189,7 @@ export default class DistributionDashboard extends Component {
               </Navigator>
           }
           {
-            info.isOpenShop === 'true' && info.shop_status !== 1 &&
+            info.shop_status !== 1 &&
               <Button className="share-btn list-item" open-type="share">
                 <View className="item-icon icon-share1"></View>
                 <View className="list-item-txt">分享给好友</View>
