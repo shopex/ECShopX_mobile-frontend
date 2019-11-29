@@ -23,9 +23,10 @@ export default class DistributionQrcode extends Component {
 
   async fetch () {
     const { username, avatar } = Taro.getStorageSync('userinfo')
-    let { isOpenShop } = this.$router.params
+    let { isOpenShop, status } = this.$router.params
     isOpenShop = JSON.parse(isOpenShop)
-    const url = isOpenShop ? 'pages/distribution/shop-home' : 'pages/index'
+    status = JSON.parse(status)
+    const url = isOpenShop && status ? 'pages/distribution/shop-home' : 'pages/index'
     const res = await api.distribution.qrcode({path: url})
     const { qrcode } = res
 

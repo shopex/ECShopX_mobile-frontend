@@ -5,7 +5,6 @@
     position: relative;
     padding: 30px;
     background: #2f3030;
-    height: 180px;
     color: #ffffff;
     .header-avatar {
       width: 114px;
@@ -15,7 +14,7 @@
     .header-info {
       padding-left: 26px;
       .mcode {
-        font-size: 24px;
+        font-size: 28px;
         margin-bottom: 6px;
         color: #eaeaea;
       }
@@ -23,17 +22,26 @@
         font-size: 14PX;
       }
     }
-    .member-acount {
-      padding: 5px 10px;
-      margin-right: 10px;
+    .icon-info {
+      color: #eaeaea;
+      font-size: 50px;
+    }
+    .mini-store-apply {
+      margin: 40px 100px 20px 100px;
       border: 1px solid #ccc;
       border-radius: 60px;
-      font-size: 22px;
-      line-height: 1;
+      height: 72px;
+      line-height: 72px;
+      font-size: 28px;
       color: #ccc;
+      text-align: center;
     }
-    .icon-forward {
+    .mini-store-reason {
+      padding-top: 20px;
+      margin: 0 80px;
+      font-size: 24px;
       color: #ccc;
+      text-align: center;
     }
   }
   .achievement {

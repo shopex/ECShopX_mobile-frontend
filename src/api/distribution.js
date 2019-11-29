@@ -51,3 +51,11 @@ export function release (params) {
 export function unreleased (params) {
   return req.delete('/promoter/relgoods', params)
 }
+
+export function shopAchievement (params) {
+  return req.get('/promoter/taskBrokerage/count', params)
+}
+
+export function shopTrade (params) {
+  return req.get('/promoter/taskBrokerage/logs', params)
+}
