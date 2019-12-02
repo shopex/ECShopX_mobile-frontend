@@ -323,7 +323,7 @@ export default class HomeIndex extends Component {
         {
           <FloatMenus>
             {
-              (isPromoter || !!distributionShopId) &&
+              distributionShopId &&
               <Image
                 className='distribution-shop'
                 src='/assets/imgs/gift_mini.png'
