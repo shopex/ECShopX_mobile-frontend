@@ -103,7 +103,7 @@ export default class DistributionWithdraw extends Component {
           </View>
           {
             curIdx
-            && <Navigator url="/pages/distribution/withdrawals-acount" className="list-item">
+            && <Navigator url="/marketing/pages/distribution/withdrawals-acount" className="list-item">
                 <View className="label">提现账户</View>
                 <View className="list-item-txt content-right">{alipay_account ? alipay_account : '去设置'}</View>
                 <View className="item-icon-go icon-arrowRight"></View>

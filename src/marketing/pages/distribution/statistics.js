@@ -46,10 +46,10 @@ export default class DistributionStatistics extends Component {
           <View className="header-top">
             <View className="view-flex view-flex-justify">
               <View>累计提取金额：{info.payedRebate/100}元</View>
-              <Navigator url="/pages/distribution/withdrawals-record" className="record-btn">提现记录 <text className="icons icons-gengduo"></text></Navigator>
+              <Navigator url="/marketing/pages/distribution/withdrawals-record" className="record-btn">提现记录 <text className="icons icons-gengduo"></text></Navigator>
             </View>
             <View className="view-flex  view-flex-vertical view-flex-middle view-flex-center">
-              <Navigator className="cash-btn" url="/pages/distribution/withdraw">申请提现</Navigator>
+              <Navigator className="cash-btn" url="/marketing/pages/distribution/withdraw">申请提现</Navigator>
             </View>
           </View>
           <View className="header-bottom view-flex">

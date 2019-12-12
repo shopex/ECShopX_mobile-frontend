@@ -35,7 +35,7 @@ export default class DistributionShopSetting extends Component {
     const { info } = this.state
 
     Taro.navigateTo({
-      url: `/pages/distribution/shop-form?key=${key}&val=${info[key] || ''}`
+      url: `/marketing/pages/distribution/shop-form?key=${key}&val=${info[key] || ''}`
     })
   }
 

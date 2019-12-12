@@ -60,7 +60,7 @@ export default class DistributionDashboard extends Component {
   handleClick = () => {
     let { isOpenShop, shop_status } = this.state.info
     Taro.navigateTo({
-      url: `/pages/distribution/qrcode?isOpenShop=${isOpenShop}&status=${shop_status === 1}`
+      url: `/marketing/pages/distribution/qrcode?isOpenShop=${isOpenShop}&status=${shop_status === 1}`
     })
   }
 
@@ -116,7 +116,7 @@ export default class DistributionDashboard extends Component {
                 <Text>（{info.promoter_grade_name}）</Text>
               }
             </View>
-            <Navigator className="view-flex view-flex-middle" url="/pages/distribution/setting">
+            <Navigator className="view-flex view-flex-middle" url="/marketing/pages/distribution/setting">
               <Text className='icon-info'></Text>
             </Navigator>
           </View>
@@ -152,17 +152,17 @@ export default class DistributionDashboard extends Component {
         </View>
         <View className="section analysis">
           <View className="section-body view-flex content-center">
-            <Navigator className="view-flex-item" hover-class="none" url="/pages/distribution/trade?type=order">
+            <Navigator className="view-flex-item" hover-class="none" url="/marketing/pages/distribution/trade?type=order">
               <View className="icon-list3"></View>
               <View className="label">提成订单</View>
               <View>{info.promoter_order_count}</View>
             </Navigator>
-            <Navigator className="view-flex-item" hover-class="none" url="/pages/distribution/trade?type=order_team">
+            <Navigator className="view-flex-item" hover-class="none" url="/marketing/pages/distribution/trade?type=order_team">
               <View className="icon-list2"></View>
               <View className="label">津贴订单</View>
               <View>{info.promoter_grade_order_count}</View>
             </Navigator>
-            <Navigator className="view-flex-item" hover-class="none" url="/pages/distribution/statistics">
+            <Navigator className="view-flex-item" hover-class="none" url="/marketing/pages/distribution/statistics">
               <View className="icon-money"></View>
               <View className="label">推广费</View>
               <View className="mark">{info.rebateTotal/100}</View>
@@ -172,7 +172,7 @@ export default class DistributionDashboard extends Component {
         <View className="section">
           <Navigator
             className="section-title with-border view-flex view-flex-middle"
-            url={`/pages/distribution/subordinate?hasBuy=${info.isbuy_promoter}&noBuy=${info.notbuy_promoter}`}
+            url={`/marketing/pages/distribution/subordinate?hasBuy=${info.isbuy_promoter}&noBuy=${info.notbuy_promoter}`}
           >
             <View className="view-flex-item">我的会员</View>
             <View className="section-more icon-arrowRight"></View>
@@ -188,14 +188,14 @@ export default class DistributionDashboard extends Component {
             <View className="list-item-txt">我的二维码</View>
             <View className="icon-arrowRight item-icon-go"></View>
           </View>
-          <Navigator className="list-item" open-type="navigateTo" url={`/pages/distribution/goods?status=${info.isOpenShop === 'true' && info.shop_status === 1}`}>
+          <Navigator className="list-item" open-type="navigateTo" url={`/marketing/pages/distribution/goods?status=${info.isOpenShop === 'true' && info.shop_status === 1}`}>
             <View className="item-icon icon-weChart"></View>
             <View className="list-item-txt">推广商品</View>
             <View className="icon-arrowRight item-icon-go"></View>
           </Navigator>
           {
             info.isOpenShop === 'true' && info.shop_status === 1 &&
-              <Navigator className="list-item" open-type="navigateTo" url={`/pages/distribution/shop?turnover=${info.taskBrokerageItemTotalFee}`}>
+              <Navigator className="list-item" open-type="navigateTo" url={`/marketing/pages/distribution/shop?turnover=${info.taskBrokerageItemTotalFee}`}>
                 <View className="item-icon icon-shop"></View>
                 <View className="list-item-txt">我的小店</View>
                 <View className="icon-arrowRight item-icon-go"></View>

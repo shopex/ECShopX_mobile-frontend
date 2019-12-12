@@ -24,7 +24,6 @@ class App extends Component {
     pages: [
       'pages/index',
       'pages/home/landing',
-      'pages/home/license',
 
       'pages/category/index',
       'pages/floorguide/index',
@@ -70,23 +69,7 @@ class App extends Component {
       'pages/member/group-list',
       'pages/member/member-code',
 
-      'pages/distribution/index',
-      'pages/distribution/setting',
-      'pages/distribution/statistics',
-      'pages/distribution/trade',
-      'pages/distribution/subordinate',
-      'pages/distribution/withdraw',
-      'pages/distribution/withdrawals-record',
-      'pages/distribution/withdrawals-acount',
-      'pages/distribution/goods',
-      'pages/distribution/shop',
-      'pages/distribution/shop-setting',
-      'pages/distribution/shop-form',
-      'pages/distribution/qrcode',
       'pages/distribution/shop-home',
-      'pages/distribution/shop-goods',
-      'pages/distribution/shop-trade',
-      'pages/distribution/shop-achievement',
 
       'pages/store/index',
       'pages/store/list',
@@ -104,11 +87,39 @@ class App extends Component {
       'pages/trade/refund-sendback',
       'pages/trade/invoice-list',
 
-			'pages/protocol/privacy',
-
 			'pages/vip/vipgrades',
 
       'pages/custom/custom-page'
+    ],
+    subpackages: [
+      {
+        root: 'marketing',
+        pages: [
+          'pages/distribution/index',
+          'pages/distribution/setting',
+          'pages/distribution/statistics',
+          'pages/distribution/trade',
+          'pages/distribution/subordinate',
+          'pages/distribution/withdraw',
+          'pages/distribution/withdrawals-record',
+          'pages/distribution/withdrawals-acount',
+          'pages/distribution/goods',
+          'pages/distribution/shop',
+          'pages/distribution/shop-setting',
+          'pages/distribution/shop-form',
+          'pages/distribution/qrcode',
+          'pages/distribution/shop-goods',
+          'pages/distribution/shop-trade',
+          'pages/distribution/shop-achievement',
+        ]
+      },
+      {
+        root: 'others',
+        pages: [
+          'pages/home/license',
+          'pages/protocol/privacy',
+        ]
+      }
     ],
     permission: {
       "scope.userLocation": {

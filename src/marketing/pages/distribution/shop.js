@@ -53,13 +53,13 @@ export default class DistributionShop extends Component {
     let url = ''
     switch (key) {
       case 'achievement':
-        url = '/pages/distribution/shop-achievement'
+        url = '/marketing/pages/distribution/shop-achievement'
         break;
       case 'goods':
-        url = '/pages/distribution/shop-goods'
+        url = '/marketing/pages/distribution/shop-goods'
         break;
       case 'trade':
-        url = '/pages/distribution/shop-trade'
+        url = '/marketing/pages/distribution/shop-trade'
         break;
       default:
         url = ''
@@ -97,7 +97,7 @@ export default class DistributionShop extends Component {
               <View className='shop-desc'>{info.brief || '店主很懒什么都没留下'}</View>
             </View>
           </View>
-          <Navigator className="shop-setting" url="/pages/distribution/shop-setting">
+          <Navigator className="shop-setting" url="/marketing/pages/distribution/shop-setting">
             <Text class="icon-setting"></Text>
           </Navigator>
         </View>

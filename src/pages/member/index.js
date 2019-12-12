@@ -151,7 +151,7 @@ export default class MemberIndex extends Component {
     const { username, avatar, isPromoter } = info
     if ( isPromoter ) {
       Taro.navigateTo({
-        url: '/pages/distribution/index'
+        url: '/marketing/pages/distribution/index'
       })
       return
     }
