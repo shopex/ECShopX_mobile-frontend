@@ -26,7 +26,7 @@ export default class SeckillGoodsList extends Component {
   }
 
   config = {
-    navigationBarTitleText: '限时秒杀'
+    navigationBarTitleText: ''
   }
 
   componentDidMount () {

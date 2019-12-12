@@ -29,6 +29,11 @@ export function delFav (item_ids, params = {}) {
   })
 }
 
+
+export function memberAssets () {
+  return req.get(`/member/statistical`)
+}
+
 export function couponList (params = {}) {
   return req.get('/user/newGetCardList', params)
 }

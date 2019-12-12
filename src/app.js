@@ -24,18 +24,17 @@ class App extends Component {
     pages: [
       'pages/index',
       'pages/home/landing',
-
       'pages/category/index',
       'pages/floorguide/index',
 
       'pages/item/list',
       'pages/item/espier-detail',
-			'pages/item/group-list',
-			'pages/item/group-detail',
       'pages/item/item-params',
+      'pages/item/package-list',
+      'pages/item/group-list',
+      'pages/item/group-detail',
       'pages/item/seckill-list',
       'pages/item/seckill-goods-list',
-      'pages/item/package-list',
       'pages/home/coupon-home',
 
       'pages/cart/espier-index',
@@ -51,6 +50,7 @@ class App extends Component {
       'pages/auth/login',
       'pages/auth/forgotpwd',
       'pages/auth/wxauth',
+      'pages/auth/pclogin',
 
       'pages/cashier/index',
       'pages/cashier/cashier-result',
@@ -68,6 +68,7 @@ class App extends Component {
       'pages/member/item-guess',
       'pages/member/group-list',
       'pages/member/member-code',
+      'pages/qrcode-buy',
 
       'pages/distribution/shop-home',
 
@@ -87,7 +88,7 @@ class App extends Component {
       'pages/trade/refund-sendback',
       'pages/trade/invoice-list',
 
-			'pages/vip/vipgrades',
+      'pages/vip/vipgrades',
 
       'pages/custom/custom-page'
     ],
@@ -111,13 +112,24 @@ class App extends Component {
           'pages/distribution/shop-goods',
           'pages/distribution/shop-trade',
           'pages/distribution/shop-achievement',
+
+          'pages/reservation/brand-list',
+          'pages/reservation/brand-detail',
+          'pages/reservation/brand-result',
+          'pages/reservation/reservation-list',
+          'pages/reservation/goods-reservate',
+          'pages/reservation/reservation-detail',
+
+          'pages/member/item-activity',
+          'pages/member/activity-detail',
+          'pages/member/user-info'
         ]
       },
       {
         root: 'others',
         pages: [
           'pages/home/license',
-          'pages/protocol/privacy',
+          'pages/protocol/privacy'
         ]
       }
     ],
@@ -135,6 +147,11 @@ class App extends Component {
   componentWillMount () {
   }
   componentDidMount () {
+    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
+    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
+      Taro.setStorageSync('distribution_shop_id', '')
+      Taro.setStorageSync('distribution_shop_exp', '')
+    }
     this.fetchTabs()
   }
   componentDidShow (options) {

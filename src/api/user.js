@@ -53,3 +53,35 @@ export function forgotPwd (params = {}) {
 export function prelogin (data) {
   return req.post('/prelogin', data)
 }
+
+export function checkpclogin (data) {
+  return req.post('/oauthlogin', data)
+}
+
+export function pclogin (data) {
+  return req.post('/oauth/login/authorize', data)
+}
+
+export function reg_pclogin (data) {
+  return req.post('/member/decryptPhoneOauth', data)
+}
+
+export function registrationActivity (data) {
+  return req.get('/registrationActivity', data)
+}
+
+export function registrationSubmit (data) {
+  return req.post('/registrationSubmit', data)
+}
+
+export function registrationRecordList (data) {
+  return req.get('/registrationRecordList', data)
+}
+
+export function registrationRecordInfo (data) {
+  return req.get('/registrationRecordInfo', data)
+}
+
+export function scancodeAddcart (data) {
+  return req.post('/goods/scancodeAddcart', data)
+}
