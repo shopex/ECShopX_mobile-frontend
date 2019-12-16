@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Image, Button } from '@tarojs/components'
 
 import './automatic.scss'
 
