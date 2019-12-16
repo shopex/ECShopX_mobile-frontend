@@ -32,7 +32,7 @@ export default class Automatic extends Component {
                   src={info.adPic}
                   mode="widthFix"
                   />
-                <Button className="btn-primary gift-btn" onClick={onClick}>{info.title}</Button>
+                <Button className="btn-primary gift-btn" onClick={onClick}></Button>
                 <View className="zoom-btn icon-close" onClick={onClose}></View>
               </View>
             </View>

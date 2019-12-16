@@ -14,11 +14,10 @@
     width: 70%;
     .zoom-btn {
       position: absolute;
-      left: 50%;
-      bottom: -100px;
-      transform: translateX(-50%);
-      font-size: 70px;
-      color: #eee4b7;
+      right: 20px;
+      top: -40px;
+      font-size: 30px;
+      color: #fff;
     }
     .gift-bg {
       width: 100%;
@@ -27,11 +26,12 @@
     }
     .gift-btn {
       position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 50px;
-      width: 460px;
-      line-height: 80px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      z-index: 998;
     }
   }
 }
