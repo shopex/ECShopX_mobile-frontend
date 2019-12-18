@@ -2,7 +2,7 @@
 	"miniprogramRoot": "dist/",
 	"projectname": "mshop-taro",
 	"description": "taro app for bbc",
-	"appid": "wx912913df9fef6ddd",
+	"appid": "wx4f25fb911393034b",
 	"setting": {
 		"urlCheck": false,
 		"es6": false,
