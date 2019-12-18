@@ -35,7 +35,7 @@ version=$(git describe --tags `git rev-list --tags --max-count=1`)
 desc="微商城小程序"
 
 # 需要被替换的小程序appid，在./src/ext.json和 ./project.config.json
-oldAppid="wx912913df9fef6ddd"
+oldAppid="wx4f25fb911393034b"
 #需要被替换的 config/host.js 中prod环境域名
 oladBaseUrl="ecshopx.shopex123.com/index.php"
 
