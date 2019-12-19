@@ -15,9 +15,9 @@ $item-img-size: 240px !default;
 
 .goods-item {
   $self: &;
+	position: relative;
   border-radius: $item-border-radius;
   overflow: hidden;
-	position: relative;
 	box-shadow: 0 5px 5px rgba(0,0,0,0.1);
 
   &__hd {
@@ -56,7 +56,7 @@ $item-img-size: 240px !default;
   }
   &__tag {
     padding: 0 3px;
-    font-size: 20px;
+    font-size: 18px;
     border-radius: 4px;
     line-height: 1.2;
     border: 2px solid #FF5000;

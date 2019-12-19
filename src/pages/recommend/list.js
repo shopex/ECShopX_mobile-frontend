@@ -448,11 +448,13 @@ export default class RecommendList extends Component {
             {
               list.map(item => {
                 return (
-                  <RecommendItem
-                    key={item.item_id}
-                    info={item}
-                    onClick={() => this.handleClickItem(item)}
-                  />
+                  <View className='goods-list__item'>
+                    <RecommendItem
+                      key={item.item_id}
+                      info={item}
+                      onClick={() => this.handleClickItem(item)}
+                    />
+                  </View>
                 )
               })
             }

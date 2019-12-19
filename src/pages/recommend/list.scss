@@ -27,6 +27,14 @@
     &__scroll {
       @include page-scroll($tabs-height + $searchbar-height + $navigate-height - 10, $tabbar-height + floor($edge-margin / 2));
     }
+    &__type-grid {
+      display: flex;
+      flex-wrap: wrap;
+      .goods-list__item {
+        width: 50%;
+        padding: 10px;
+      }
+    }
   }
   .goods-item__cont{
     height: 250px !important;
