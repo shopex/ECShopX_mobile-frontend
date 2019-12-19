@@ -33,6 +33,7 @@ export default class SearchBar extends Component {
   }
 
   handleFocusSearchHistory = (isOpened) => {
+    this.props.onFocus()
     this.setState({
       showSearchDailog: isOpened,
       isShowAction: true,
@@ -83,6 +84,7 @@ export default class SearchBar extends Component {
   }
 
   handleClickCancel = (isOpened) => {
+    this.props.onCancel()
     this.setState({
       showSearchDailog: isOpened,
       searchValue: '',

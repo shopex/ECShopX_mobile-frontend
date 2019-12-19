@@ -81,32 +81,36 @@ export default class GoodsItem extends Component {
             />
           </View>
           <View className='goods-item__cont'>
-            {
-              promotion_activity !== null
-              ? <View>
-                  <Text className={(promotion_activity === 'single_group' || promotion_activity === 'limited_time_sale' || promotion_activity === 'normal') ? 'goods-item__tag goods-item__group' : 'goods-item__tag'}>
-                  {promotion_activity === 'single_group' ? '团购' : ''}
-                  {promotion_activity === 'full_minus' ? '满减' : ''}
-                  {promotion_activity === 'full_discount' ? '满折' : ''}
-                  {promotion_activity === 'full_gift' ? '满赠' : ''}
-                  {promotion_activity === 'normal' ? '秒杀' : ''}
-                  {promotion_activity === 'limited_time_sale' ? '限时特惠' : ''}
-                  </Text>
-                </View>
-              : null
-            }
-            <View onClick={onClick}>
-              <Text className='goods-item__title'>{info.title}</Text>
-              <Text className='goods-item__desc'>{info.desc}</Text>
-              {this.props.renderSpec}
+            <View className='goods-item__caption'>
+              {
+                promotion_activity !== null
+                ? <View className='goods-item__tag-list'>
+                    <Text className={(promotion_activity === 'single_group' || promotion_activity === 'limited_time_sale' || promotion_activity === 'normal') ? 'goods-item__tag goods-item__group' : 'goods-item__tag'}>
+                    {promotion_activity === 'single_group' ? '团购' : ''}
+                    {promotion_activity === 'full_minus' ? '满减' : ''}
+                    {promotion_activity === 'full_discount' ? '满折' : ''}
+                    {promotion_activity === 'full_gift' ? '满赠' : ''}
+                    {promotion_activity === 'normal' ? '秒杀' : ''}
+                    {promotion_activity === 'limited_time_sale' ? '限时特惠' : ''}
+                    </Text>
+                  </View>
+                : null
+              }
+              <View onClick={onClick}>
+                <Text className='goods-item__title'>{info.title}</Text>
+                <Text className='goods-item__desc'>{info.desc}</Text>
+                {this.props.renderSpec}
+              </View>
             </View>
             <View className='goods-item__extra'>
               <View className='goods-item__price'>
-                <Text className='goods-item__cur'>¥</Text>
-                <Text>{price}</Text>
+                <View>
+                  <Text className='goods-item__cur'>¥</Text>
+                  <Text>{price}</Text>
+                </View>
                 {
                   Boolean(+marketPrice) &&
-                    <Text className='goods-item__price-market'>{marketPrice}</Text>
+                    <Text className='goods-item__price-market'>¥{marketPrice}</Text>
                 }
 							</View>
 							{this.props.children}

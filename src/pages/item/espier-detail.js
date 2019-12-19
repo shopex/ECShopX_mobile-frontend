@@ -704,40 +704,45 @@ export default class Detail extends Component {
           }
 
           {timer && (
-            <View className='goods-timer'>
+            <View className='goods-timer' style='background: linear-gradient(to left, #d42f29, #d42f29);'>
               <View className='goods-timer__hd'>
                 <View className='goods-prices'>
-                  <Price
-                    unit='cent'
-                    symbol={(info.cur && info.cur.symbol) || ''}
-                    value={info.act_price}
-                  />
-                  <Price
-                    unit='cent'
-                    className='goods-prices__market'
-                    symbol={(info.cur && info.cur.symbol) || ''}
-                    value={info.price}
-                  />
-                  {
-                    marketing !== 'normal' &&
-                      <View className='goods-prices__ft'>
-                        {
-                          marketing === 'group' &&
-                            <View>
+                  <View className='view-flex view-flex-middle'>
+                    <Price
+                      unit='cent'
+                      symbol={(info.cur && info.cur.symbol) || ''}
+                      value={info.act_price}
+                    />
+                    {
+                      marketing !== 'normal' &&
+                        <View className='goods-prices__ft'>
+                          {
+                            marketing === 'group' &&
                               <Text className='goods-prices__type'>团购</Text>
+                          }
+                          {
+                            marketing === 'group' &&
                               <Text className='goods-prices__rule'>{info.activity_info.person_num}人团</Text>
-                            </View>
-                        }
-                        {
-                          marketing === 'seckill' &&
-                            <Text className='goods-prices__type'>秒杀</Text>
-                        }
-                        {
-                          marketing === 'limited_time_sale' &&
-                            <Text className='goods-prices__type'>限时特惠</Text>
-                        }
-                      </View>
-                  }
+                          }
+                          {
+                            marketing === 'seckill' &&
+                              <Text className='goods-prices__type'>秒杀</Text>
+                          }
+                          {
+                            marketing === 'limited_time_sale' &&
+                              <Text className='goods-prices__type'>限时特惠</Text>
+                          }
+                        </View>
+                    }
+                  </View>
+                  <View style='line-height: 1;'>
+                    <Price
+                      unit='cent'
+                      className='goods-prices__market'
+                      symbol={(info.cur && info.cur.symbol) || ''}
+                      value={info.price}
+                    />
+                  </View>
                 </View>
               </View>
               <View className='goods-timer__bd'>
@@ -757,6 +762,7 @@ export default class Detail extends Component {
                 }
                 <AtCountdown
                   className='countdown__time'
+                  format={{ day: '天', hours: ':', minutes: ':', seconds: '' }}
                   isShowDay
                   day={timer.dd}
                   hours={timer.hh}
@@ -794,22 +800,36 @@ export default class Detail extends Component {
               marketing === 'normal' && (
                 <View className='goods-prices__wrap'>
                   <View className='goods-prices'>
-                    <View className='view-flex-item'>
-                      <Price
-                        primary
-                        unit='cent'
-                        value={info.member_price ? info.member_price : info.price}
-                      />
-                      {
-                        info.market_price
-                          ? <Price
-                            lineThrough
-                            unit='cent'
-                            value={info.member_price ? info.price : info.market_price}
-                          />
-                          : null
-                      }
-                    </View>
+                    {
+                      info.member_price
+                        ? <View className='view-flex-item'>
+                            <Price
+                              primary
+                              unit='cent'
+                              value={info.member_price}
+                            />
+                            <Price
+                              lineThrough
+                              unit='cent'
+                              value={info.price}
+                            />
+                          </View>
+                        : <View className='view-flex-item'>
+                            <Price
+                              primary
+                              unit='cent'
+                              value={info.price}
+                            />
+                            {
+                              info.market_price &&
+                                <Price
+                                  lineThrough
+                                  unit='cent'
+                                  value={info.price}
+                                />
+                            }
+                          </View>
+                    }
                     {
                       info.nospec && info.activity_type === 'limited_buy' &&
                         <View className='limited-buy-rule'>
@@ -968,11 +988,13 @@ export default class Detail extends Component {
                     {
                       likeList.map(item => {
                         return (
-                          <GoodsItem
-                            key={item.item_id}
-                            info={item}
-                            onClick={this.handleClickItem.bind(this, item)}
-                          />
+                          <View className='goods-list__item'>
+                            <GoodsItem
+                              key={item.item_id}
+                              info={item}
+                              onClick={this.handleClickItem.bind(this, item)}
+                            />
+                          </View>
                         )
                       })
                     }

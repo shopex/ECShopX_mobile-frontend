@@ -34,6 +34,7 @@ export default class List extends Component {
       tagsList: [],
       paramsList: [],
       listType: 'grid',
+      isShowSearch: false,
       showDrawer: false,
       selectParams: [],
       info: {},
@@ -336,6 +337,19 @@ export default class List extends Component {
 
   }
 
+  handleViewChange = () => {
+    const { listType } = this.state
+    if (listType === 'grid') {
+      this.setState({
+        listType: 'list'
+      })
+    } else {
+      this.setState({
+        listType: 'grid'
+      })
+    }
+  }
+
   bindMultiPickerChange = async (e) => {
 		const { info } = this.state
     this.addList.map((item, index) => {
@@ -436,6 +450,18 @@ export default class List extends Component {
     }
   }
 
+  handleSearchOn = () => {
+    this.setState({
+      isShowSearch: true
+    })
+  }
+
+  handleSearchOff = () => {
+    this.setState({
+      isShowSearch: false
+    })
+  }
+
   handleConfirm = (val) => {
     this.setState({
       query: {
@@ -468,15 +494,28 @@ export default class List extends Component {
       areaList,
       tagsList,
       curTagId,
-			info
+			info,
+      isShowSearch
     } = this.state
 
 		return (
 			<View className='page-goods-list'>
 				<View className='goods-list__toolbar'>
-				<SearchBar
-  onConfirm={this.handleConfirm.bind(this)}
-				/>
+          <View className='goods-list__search'>
+    				<SearchBar
+              onFocus={this.handleSearchOn}
+              onCancel={this.handleSearchOff}
+              onConfirm={this.handleConfirm.bind(this)}
+    				/>
+            {
+              !isShowSearch &&
+                <View
+                  className={classNames('goods-list__type', listType === 'grid' ? 'icon-list' : 'icon-grid')}
+                  onClick={this.handleViewChange}
+                  >
+                </View>
+            }
+          </View>
           {
             tagsList.length &&
               <TagsBar
@@ -570,12 +609,14 @@ export default class List extends Component {
             {
               list.map(item => {
                 return (
-                  <GoodsItem
-                    key={item.item_id}
-                    info={item}
-                    onClick={() => this.handleClickItem(item)}
-                    onStoreClick={() => this.handleClickStore(item)}
-                  />
+                  <View className='goods-list__item'>
+                    <GoodsItem
+                      key={item.item_id}
+                      info={item}
+                      onClick={() => this.handleClickItem(item)}
+                      onStoreClick={() => this.handleClickStore(item)}
+                    />
+                  </View>
                 )
               })
             }
@@ -594,6 +635,7 @@ export default class List extends Component {
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}
+          bottom={30}
         />
       </View>
     )
