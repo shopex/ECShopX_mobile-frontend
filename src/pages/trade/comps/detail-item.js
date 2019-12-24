@@ -76,7 +76,7 @@ export default class DetailItem extends Component {
               />
               {
                 !customFooter && info.pay_type !== 'dhpoint' && (info.status === 'TRADE_SUCCESS' || info.status === 'WAIT_BUYER_CONFIRM_GOODS') && <View className='order-item__ft'>
-                 {/* {
+                 {
                     info.delivery_code
                     ? null
                     : item.delivery_code && 
@@ -89,7 +89,7 @@ export default class DetailItem extends Component {
                       >
                        查看物流
                       </AtButton>                   
-                  } */}
+                  }
                   {
                     info.status !== 'TRADE_SUCCESS' &&
                       <AtButton
