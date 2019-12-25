@@ -82,7 +82,7 @@ export default class DistributionShopCategory extends Component {
       item_type:'normal',
       page,
       pageSize,
-      distribution_shop_id,
+      promoter_shop_id:distribution_shop_id,
       promoter_onsale:true,
       approve_status: 'onsale,only_show'
     }
