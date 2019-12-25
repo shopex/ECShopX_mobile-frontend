@@ -406,13 +406,16 @@ export default class TradeDetail extends Component {
         <View className={classNames('trade-detail-header', info.status === 'WAIT_BUYER_PAY' ? 'trade-detail-header__waitpay' : '')}>
           {
             info.order_class === 'drug'
-              ? <View>
+              ? <View className='trade-detail-waitdeliver'>
                   {
                     info.order_status_des === 'CANCEL'
-                      ? <View>已取消</View>
+                      ? <View>
+                          <View>订单状态：</View>
+                          <View>已取消</View>
+                        </View>
                       : <View>
-                          订单状态：
-                          {info.ziti_status === 'APPROVE' ? '审核通过' : '待审核'}
+                          <View>订单状态：</View>
+                          <View>{info.ziti_status === 'APPROVE' ? '审核通过' : '待审核'}</View>
                         </View>
                   }
                 </View>

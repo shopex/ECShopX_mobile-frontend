@@ -76,6 +76,7 @@ export default class TradePickList extends Component {
       pay_type: 'pay_type',
       point: 'point',
       create_date: 'create_date',
+      ziti_status: 'ziti_status',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'item_id',
