@@ -40,7 +40,8 @@ export default class DistributionShopHome extends Component {
       ],
       wgts:null,
       authStatus: false,
-      positionStatus: false
+      positionStatus: false,
+      def_pic:''
     }
   }
 
@@ -50,6 +51,12 @@ export default class DistributionShopHome extends Component {
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const { userId } = Taro.getStorageSync('userinfo')
     const shopId = uid || distributionShopId || userId
+    const param = distributionShopId ? {
+      user_id: distributionShopId,
+    } : {
+      user_id: userId,
+    }
+    const { banner_img } = await api.distribution.shopBanner(param || null)
     if (shopId) {
       this.firstStatus = true
       this.setState({
@@ -58,7 +65,8 @@ export default class DistributionShopHome extends Component {
           approve_status: 'onsale,only_show',
           promoter_onsale: true,
           promoter_shop_id: shopId
-        }
+        },
+        def_pic:banner_img
       }, async () => {
         await this.fetchInfo()
         await this.fetch()
@@ -237,14 +245,21 @@ export default class DistributionShopHome extends Component {
   }
 
   render () {
-    const { wgts,positionStatus,authStatus,showBackToTop, list,tabList, page, showDrawer,localCurrent, paramsList, selectParams, scrollTop, goodsIds, curFilterIdx, filterList } = this.state
+    const { wgts,def_pic,positionStatus,authStatus,showBackToTop, list,tabList, page, showDrawer,localCurrent, paramsList, selectParams, scrollTop, goodsIds, curFilterIdx, filterList } = this.state
     if (!wgts) {
       return <Loading />
     }
-
+    console.warn(def_pic)
     return (
       <View className="page-distribution-shop">
         <View className="shop-banner">
+          <View className='shop-def'>
+          <Image
+                className='banner-img'
+                src={def_pic || null}
+                mode='aspectFill'
+          />
+          </View>
           <View className="shop-info">
             <Image
               className='shopkeeper-avatar'
