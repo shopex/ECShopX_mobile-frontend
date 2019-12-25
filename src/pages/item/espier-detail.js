@@ -594,10 +594,11 @@ export default class Detail extends Component {
   }
 
   handleCouponClick = () => {
-    const { distributor_id } = Taro.getStorageSync('curStore')
+    // const { distributor_id } = Taro.getStorageSync('curStore')
+    const { info } = this.state
 
     Taro.navigateTo({
-      url: `/pages/home/coupon-home?item_id=${this.state.info.item_id}&distributor_id=${distributor_id}`
+      url: `/pages/home/coupon-home?item_id=${this.state.info.item_id}&distributor_id=${info.distributor_id}`
     })
   }
 

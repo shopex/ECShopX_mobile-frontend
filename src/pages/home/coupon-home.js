@@ -24,7 +24,8 @@ export default class CouponHome extends Component {
   }
 
   async fetch (params) {
-    const { distributor_id } = Taro.getStorageSync('curStore')
+    let { distributor_id } = this.$router.params
+
     params = {
       ...params,
       end_date: 1,
