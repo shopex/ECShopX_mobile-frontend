@@ -182,7 +182,7 @@ export default class TradePickList extends Component {
                     <View className='trade-item__ft-drug'>
                       {
                         item.order_status_des === 'CANCEL'
-                          ? <Text className='trade-item__status'>{item.order_status_des}</Text>
+                          ? <Text className='trade-item__status'>已拒绝</Text>
                           : <Text className='trade-item__status'>
                               { item.ziti_status == 'APPROVE' ? '审核通过' : '待审核' }
                             </Text>

@@ -403,10 +403,10 @@ export default class TradeDetail extends Component {
           leftIconType='chevron-left'
           fixed='true'
         />
-        <View className={classNames('trade-detail-header', info.status === 'WAIT_BUYER_PAY' ? 'trade-detail-header__waitpay' : '')}>
+        <View className='trade-detail-header'>
           {
             info.order_class === 'drug'
-              ? <View className='trade-detail-waitdeliver'>
+              ? <View className='trade-detail-drug'>
                   {
                     info.order_status_des === 'CANCEL'
                       ? <View>
