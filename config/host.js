@@ -7,7 +7,7 @@ module.exports = {
   weapp: {
     prod: 'ecshopx.shopex123.com/index.php',
     preissue: 'ecshopx.shopex123.com/index.php',
-    test: 'preissue-b.yuanyuanke.cn'
+    test: 'ecshopx.shopex123.com/index.php'
   },
   websocket: {
     development: 'wss://ecshopx.shopex123.com/ws',
