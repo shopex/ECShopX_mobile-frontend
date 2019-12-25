@@ -720,7 +720,7 @@ export default class CartCheckout extends Component {
           scrollY
           className='checkout__wrap'
         >
-          {
+          {/*
             !isArray(curStore) && curStore.is_ziti &&
               <View className='switch-tab'>
                 <View
@@ -732,7 +732,7 @@ export default class CartCheckout extends Component {
                   onClick={this.handleSwitchExpress.bind(this, false)}
                 >自提</View>
               </View>
-          }
+          */}
           {
             express
               ? <AddressChoose
