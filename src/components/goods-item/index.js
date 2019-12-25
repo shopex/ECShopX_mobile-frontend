@@ -104,7 +104,7 @@ export default class GoodsItem extends Component {
             </View>
             <View className='goods-item__extra'>
               <View className='goods-item__price'>
-                <View>
+                <View className='package-price'>
                   <Text className='goods-item__cur'>¥</Text>
                   <Text>{price}</Text>
                 </View>
