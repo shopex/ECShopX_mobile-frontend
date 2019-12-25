@@ -45,7 +45,7 @@ export default class DistributionShopCategory extends Component {
     const query = {
       category_level:2
     }
-    
+
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const param = distributionShopId ? {
@@ -63,7 +63,7 @@ export default class DistributionShopCategory extends Component {
     })
     this.setState({
       list: nList,
-      defaultId:cate_id,      
+      defaultId:cate_id,
       hasSeries: false,
       shop_pic:banner_img
     },() => {
@@ -74,12 +74,16 @@ export default class DistributionShopCategory extends Component {
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { defaultId } = this.state
+    let distribution_shop_id = Taro.getStorageSync('distribution_shop_id')
+
     const query = {
       ...this.state.query,
       category: defaultId,
       item_type:'normal',
       page,
-      pageSize
+      pageSize,
+      distribution_shop_id,
+      promoter_onsale:true
     }
     //console.warn('83',params)
       const { list: goodsList, total_count: total} = await api.item.search(query)
@@ -101,7 +105,7 @@ export default class DistributionShopCategory extends Component {
       return {
         total
       }
-  
+
   }
 //  handleClickCategoryNav = (gIndex,value) => {
 //    console.warn(value)
@@ -139,8 +143,8 @@ handleClickCategoryNav = (idx,value) => {
     if (cur !== current) {
       const curTab = this.state.tabList[current]
       const { url, urlRedirect } = curTab
-      
-      const fullPath = ((getCurrentRoute(this.$router).fullPath).split('?'))[0]      
+
+      const fullPath = ((getCurrentRoute(this.$router).fullPath).split('?'))[0]
       if (url && fullPath !== url) {
         if (!urlRedirect || (url === '/pages/member/index' && !S.getAuthToken())) {
           Taro.navigateTo({ url })
@@ -164,7 +168,7 @@ handleClickCategoryNav = (idx,value) => {
     }
   }
   render () {
-    const { list, isChanged,tabList,localCurrent, contentList ,defaultId ,shop_pic ,currentIndex, page, scrollTop } = this.state  
+    const { list, isChanged,tabList,localCurrent, contentList ,defaultId ,shop_pic ,currentIndex, page, scrollTop } = this.state
     return (
       <View className='page-category-index'>
         <View className='category-banner'>
@@ -193,7 +197,7 @@ handleClickCategoryNav = (idx,value) => {
                 <View
                   className={classNames('category-nav__content', currentIndex == index ? 'category-nav__content-checked' : null)}
                   key={index}
-                  onClick={this.handleClickCategoryNav.bind(this,index,item)}                  
+                  onClick={this.handleClickCategoryNav.bind(this,index,item)}
                 >
                   { item.hot && <Text className='hot-tag'></Text> }{item.name}
                 </View>
@@ -201,7 +205,7 @@ handleClickCategoryNav = (idx,value) => {
             }
           </View>
         </ScrollView>
-        {/*右*/}        
+        {/*右*/}
         <View className='shop-category__wrap'>
           <ScrollView
             className='category-list__scroll'
@@ -211,7 +215,7 @@ handleClickCategoryNav = (idx,value) => {
             onScroll={this.handleScroll}
             onScrollToLower={this.nextPage}
           >
-            <View className='grid-goods'> 
+            <View className='grid-goods'>
             {
               contentList.length && contentList.map(item =>{
                 return (
@@ -223,7 +227,7 @@ handleClickCategoryNav = (idx,value) => {
                 )
               })
             }
-            </View> 
+            </View>
             {
               page.isLoading
                 ? <Loading>正在加载...</Loading>
@@ -236,7 +240,7 @@ handleClickCategoryNav = (idx,value) => {
 
           </ScrollView>
 
-        </View>        
+        </View>
       </View>
 
 
@@ -244,11 +248,11 @@ handleClickCategoryNav = (idx,value) => {
         <AtTabBar
           fixed
           tabList={tabList}
-          onClick={this.handleClick}     
+          onClick={this.handleClick}
           current={localCurrent}
         />
       </View>
-      
-    ) 
+
+    )
   }
 }
