@@ -24,10 +24,11 @@ export default class CouponHome extends Component {
   }
 
   async fetch (params) {
+    const { distributor_id } = Taro.getStorageSync('curStore')
     params = {
       ...params,
       end_date: 1,
-      distributor_id: this.$router.params.dis_id,
+      distributor_id,
       item_id: this.$router.params ? (this.$router.params.item_id ? this.$router.params.item_id : '') : ''
     }
     const { list, pagers: { total: total } } = await api.member.homeCouponList(params)
@@ -120,8 +121,8 @@ export default class CouponHome extends Component {
                     info={item}
                     key={item.card_id}
                   >
-                    <Text 
-                      className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`} 
+                    <Text
+                      className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
                       onClick={this.handleGetCard.bind(this, item, idx)}
                     >
                       {item.getted === 1 ? '已领取' : ''}

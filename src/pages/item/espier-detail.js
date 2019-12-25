@@ -154,7 +154,7 @@ export default class Detail extends Component {
     if(!isArray(desc)){
       if(info.videos_url){
         contentDesc += `<video src=${info.videos} controls style='width:100%'></video>`+ desc
-      }            
+      }
     }else {
       contentDesc = desc
     }
@@ -594,8 +594,10 @@ export default class Detail extends Component {
   }
 
   handleCouponClick = () => {
+    const { distributor_id } = Taro.getStorageSync('curStore')
+
     Taro.navigateTo({
-      url: `/pages/home/coupon-home?item_id=${this.state.info.item_id}`
+      url: `/pages/home/coupon-home?item_id=${this.state.info.item_id}&distributor_id=${distributor_id}`
     })
   }
 
@@ -974,7 +976,7 @@ export default class Detail extends Component {
                      <Video src={info.videos} controls style='width:100%'></Video>
                    )
                  }
-                {                  
+                {
                   desc.map((item, idx) => {
                     return (
                       <View className='wgt-wrap' key={idx}>
