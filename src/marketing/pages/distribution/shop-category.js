@@ -170,7 +170,7 @@ handleClickCategoryNav = (idx,value) => {
         <View className='category-banner'>
               <Image
                 className='banner-img'
-                src={def_pic || null}
+                src={shop_pic || null}
                 mode='aspectFill'
           />
       </View>
