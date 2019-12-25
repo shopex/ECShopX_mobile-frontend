@@ -92,6 +92,13 @@ export default class Coupon extends Component {
     })
   }
 
+  handleClick = (card_id, code) => {
+    const url = `/pages/member/coupon-detail?card_id=${card_id}&code=${code}`
+    Taro.navigateTo({
+      url
+    })
+  }
+
   /*handleClickChecked = (id) => {
     this.setState({
       curId: id
@@ -139,6 +146,7 @@ export default class Coupon extends Component {
                   <CouponItem
                     info={item}
                     key={item.id}
+                    onClick={this.handleClick.bind(this, item.card_id, item.code)}
                   />
                 )
               })

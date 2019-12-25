@@ -46,6 +46,14 @@ export function homeCouponGet (params = {}) {
   return req.get('/user/receiveCard', params)
 }
 
+export function getCardDetail (params = {}) {
+  return req.get('/user/getCardDetail', params)
+}
+
+export function userUsedCard (params = {}) {
+  return req.get('/user/usedCard', params)
+}
+
 export function addressList () {
   return req.get('/member/addresslist')
 }

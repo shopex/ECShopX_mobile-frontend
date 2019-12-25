@@ -325,7 +325,6 @@ export default class MemberIndex extends Component {
               <View className="member-trade__ziti" onClick={this.handleTradeDrugClick.bind(this)}>
                 <View className="view-flex-item" >
                   <View className='member-trade__ziti-title'>处方单</View>
-                  <View className="member-trade__ziti-desc">您有<Text className='mark'>{orderCount.normal_payed_daiziti || 0}</Text>个等待自提的订单</View>
                 </View>
                 <View className="icon-arrowRight item-icon-go"></View>
               </View>
