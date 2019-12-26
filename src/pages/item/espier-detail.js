@@ -151,14 +151,17 @@ export default class Detail extends Component {
     let startActivity = true
     let sessionFrom = ''
     let contentDesc =''
+    
     if(!isArray(desc)){
       if(info.videos_url){
         contentDesc += `<video src=${info.videos} controls style='width:100%'></video>`+ desc
+      }else {
+        contentDesc = desc
       }
     }else {
       contentDesc = desc
     }
-
+    console.warn('154',contentDesc)
     if (info.activity_info) {
       if (info.activity_type === 'group') {
         marketing = 'group'
@@ -642,7 +645,7 @@ export default class Detail extends Component {
         <Loading />
       )
     }
-
+    console.warn('645',desc)
     let ruleDay = 0
     if (info.activity_type === 'limited_buy') {
       ruleDay = JSON.parse(info.activity_info.rule.day)
