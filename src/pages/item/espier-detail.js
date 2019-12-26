@@ -161,7 +161,6 @@ export default class Detail extends Component {
     }else {
       contentDesc = desc
     }
-    console.warn('154',contentDesc)
     if (info.activity_info) {
       if (info.activity_type === 'group') {
         marketing = 'group'
