@@ -63,6 +63,8 @@ export default class Coupon extends Component {
       begin_date: 'begin_date',
       end_date: 'end_date',
       card_type: 'card_type',
+      card_id: 'card_id',
+      code: 'code',
       tagClass: 'tagClass',
       title: 'title',
       discount: 'discount'
