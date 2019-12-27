@@ -43,7 +43,7 @@ export default class CouponDetail extends Component {
 
   async fetch () {
     const { card_id, code } = this.$router.params
-    const { params } = {
+    const params = {
       card_id,
       code
     }
