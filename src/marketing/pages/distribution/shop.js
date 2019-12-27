@@ -25,12 +25,8 @@ export default class DistributionShop extends Component {
 
   async fetch () {
     const { turnover } = this.$router.params
-    console.log(this.$router)
     const { userId } = Taro.getStorageSync('userinfo')
-    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
-    const param = distributionShopId ? {
-      user_id: distributionShopId
-    } : {
+    const param =  {
       user_id: userId
     }
 
