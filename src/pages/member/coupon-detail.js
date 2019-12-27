@@ -43,8 +43,11 @@ export default class CouponDetail extends Component {
 
   async fetch () {
     const { card_id, code } = this.$router.params
-    let { params } = this.state
-    const { detail, card_code, card_info, shop_list } = await api.member.getCardDetail()
+    const { params } = {
+      card_id,
+      code
+    }
+    const { detail, card_code, card_info, shop_list } = await api.member.getCardDetail(params)
     if (detail.status == 2) {
       this.setState({
         show: false
