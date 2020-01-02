@@ -39,9 +39,7 @@ export default class List extends Component {
       isShowSearch: false,
       showDrawer: false,
       selectParams: [],
-      info: {},
-      areaList: [],
-			multiIndex: []
+      info: {}
     }
   }
 
@@ -67,7 +65,7 @@ export default class List extends Component {
 
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
-    const { selectParams, areaList, tagsList, curTagId } = this.state
+    const { selectParams, tagsList, curTagId } = this.state
     const query = {
       ...this.state.query,
       item_params: selectParams,
@@ -75,44 +73,8 @@ export default class List extends Component {
       page,
       pageSize
     }
-    const { list, total_count: total, item_params_list = [], select_tags_list = [], select_address_list = []} = await api.item.search(query)
+    const { list, total_count: total, item_params_list = [], select_tags_list = []} = await api.item.search(query)
     const { favs } = this.props
-
-    if (areaList.length === 0) {
-      let res = await api.member.areaList()
-      let regions = []
-      select_address_list.map(item => {
-        let match = res.find(area => item == area.id)
-        if (match) {
-          regions.push(match)
-        }
-      })
-      const addList = pickBy(regions, {
-        label: 'label',
-        id: 'id',
-        children: 'children',
-      })
-      this.addList = addList
-      let arrProvice = []
-      let arrCity = []
-      let arrCounty = []
-      addList.map((item, index) => {
-        arrProvice.push(item.label)
-        if(index === 0) {
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if(c_index === 0) {
-              c_item.children.map(cny_item => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-        }
-      })
-      this.setState({
-        areaList: [arrProvice, arrCity, arrCounty]
-      })
-    }
 
     item_params_list.map(item => {
       if(selectParams.length < 4){
@@ -189,28 +151,6 @@ export default class List extends Component {
       this.nextPage()
     })
   }
-
-	handleRegionRefresh = (e) => {
-		e.stopPropagation()
-    this.resetPage()
-    const {query} = this.state
-		query.regions_id = []
-    this.setState({
-      multiIndex: [],
-      areaList:[],
-      list: [],
-      oddList: [],
-      evenList: [],
-			info:{
-				city: {label: "", id: ""},
-				county: {label: "", id: ""},
-				province: {label: "", id: ""}
-			},
-      query
-    }, () => {
-      this.nextPage()
-    })
-	}
 
   handleFilterChange = (data) => {
     this.setState({
@@ -330,34 +270,6 @@ export default class List extends Component {
     })
   }
 
-  // 选定开户地区
-  handleClickPicker = () => {
-    let arrProvice = []
-    let arrCity = []
-    let arrCounty = []
-    if(this.addList){
-      this.addList.map((item, index) => {
-        arrProvice.push(item.label)
-        if(index === 0) {
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if(c_index === 0) {
-              c_item.children.map(cny_item => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-        }
-      })
-      this.setState({
-        showDrawer: false,
-        areaList: [arrProvice, arrCity, arrCounty],
-        multiIndex: [0, 0, 0]
-      })
-    }
-
-  }
-
   handleViewChange = () => {
     const { listType } = this.state
     if (listType === 'grid') {
@@ -367,106 +279,6 @@ export default class List extends Component {
     } else {
       this.setState({
         listType: 'grid'
-      })
-    }
-  }
-
-  bindMultiPickerChange = async (e) => {
-		const { info } = this.state
-    this.addList.map((item, index) => {
-      if(index === e.detail.value[0]) {
-        info.province = {
-          label: item.label,
-          id: item.id
-        }
-        item.children.map((s_item,sIndex) => {
-          if(sIndex === e.detail.value[1]) {
-            info.city = {
-              label: s_item.label,
-              id: s_item.id
-            }
-            s_item.children.map((th_item,thIndex) => {
-              if(thIndex === e.detail.value[2]) {
-                info.county = {
-                  label: th_item.label,
-                  id: th_item.id
-                }
-              }
-            })
-          }
-        })
-      }
-		})
-
-    let regions = [
-      info.province.id,
-      info.city.id,
-      info.county.id
-    ]
-
-    this.setState({
-      query: {
-        ...this.state.query,
-        regions_id: regions
-      }
-    }, () => {
-      this.resetPage()
-      this.setState({
-        list: []
-      }, () => {
-        this.nextPage()
-      })
-		})
-		this.setState({
-			info
-		})
-  }
-
-  bindMultiPickerColumnChange = (e) => {
-    const { areaList, multiIndex } = this.state
-    if(e.detail.column === 0) {
-      this.setState({
-        multiIndex: [e.detail.value,0,0]
-      })
-      this.addList.map((item, index) => {
-        if(index === e.detail.value) {
-          let arrCity = []
-          let arrCounty = []
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if(c_index === 0) {
-              c_item.children.map(cny_item => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-          areaList[1] = arrCity
-          areaList[2] = arrCounty
-          this.setState({ areaList })
-        }
-      })
-    } else if (e.detail.column === 1) {
-      multiIndex[1] = e.detail.value
-      multiIndex[2] = 0
-      this.setState({
-        multiIndex
-      },()=>{
-        this.addList[multiIndex[0]].children.map((c_item, c_index)  => {
-          if(c_index === e.detail.value) {
-            let arrCounty = []
-            c_item.children.map(cny_item => {
-              arrCounty.push(cny_item.label)
-            })
-            areaList[2] = arrCounty
-            this.setState({ areaList })
-          }
-        })
-      })
-
-    } else {
-      multiIndex[2] = e.detail.value
-      this.setState({
-        multiIndex
       })
     }
   }
@@ -515,8 +327,6 @@ export default class List extends Component {
       showDrawer,
       paramsList,
       selectParams,
-      multiIndex,
-      areaList,
       tagsList,
       curTagId,
 			info,
@@ -562,20 +372,6 @@ export default class List extends Component {
                 <Text>筛选</Text>
               </View>
             */}
-            <View className='filter-bar__item region-picker'>
-              <Picker
-                mode='multiSelector'
-                onClick={this.handleClickPicker}
-                onChange={this.bindMultiPickerChange}
-                onColumnChange={this.bindMultiPickerColumnChange}
-                value={multiIndex}
-                range={areaList}
-              >
-								<View className='icon-periscope'></View>
-								<Text>{info.city && info.city.label || '产地'}</Text>
-							</Picker>
-							{info.city && info.city.label  && <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text>}
-						</View>
           </FilterBar>
         </View>
 
