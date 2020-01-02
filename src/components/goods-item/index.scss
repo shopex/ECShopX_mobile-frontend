@@ -54,15 +54,14 @@ $item-img-size: 240px !default;
     display: flex;
   }
   &__tag {
-    padding: 0 3px;
-    font-size: 18px;
+    padding: 4px 4px 3px 4px;
+    line-height: 1;
+    font-size: 20px;
     border-radius: 4px;
-    line-height: 1.2;
-    border: 2px solid #FF5000;
+    box-shadow: 0 0 0 1PX #FF5000;
     color: #FF5000;
   }
   &__group {
-    border: 2px solid #FF5000;
     border-radius: 4px;
     background: #FF5000;
     color: #fff;
