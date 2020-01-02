@@ -43,8 +43,12 @@ export default class CouponDetail extends Component {
 
   async fetch () {
     const { card_id, code } = this.$router.params
-    let { params } = this.state
-    const { detail, card_code, card_info, shop_list } = await api.member.getCardDetail()
+    console.log(this.$router.params)
+    const params = {
+      card_id,
+      code
+    }
+    const { detail, card_code, card_info, shop_list } = await api.member.getCardDetail(params)
     if (detail.status == 2) {
       this.setState({
         show: false
@@ -164,81 +168,86 @@ export default class CouponDetail extends Component {
     const { cardInfo, curStore, curBranchStore, showCodeInput, curindex, show } = this.state
 
     return (
-      <View className='page-coupon-detail'>
+      <View>
         {
-          cardInfo.use_scenes !== 'SELF' && cardInfo.use_scenes !== 'SWEEP' &&
-            <View className="sweep-coupon-box">
-              <View className="content-padded card-header">
-                <View className="qrcode">
-                  <View className="qrcode-num">该卡券不适用线下消费</View>
-                </View>
-              </View>
-            </View>
-        }
-
-        {
-          cardInfo.use_scenes == 'SELF' &&
-            <View className="store-box">
-              <View className="view-flex" onClick={this.chooseStore.bind(this)}>
-                <View className="view-flex-item">选择门店</View>
-                <View className="view-flex-item content-right cur-store">{curBranchStore}<View className="arrow-right {{storeDialogShow ? 'down' : ''}}"></View></View>
-              </View>
-              <View className={`store-list ${storeDialogShow ? 'act' : ''}`}>
-                {
-                  storeList.map((item, index) =>
-                    <View className={`store-item ${curindex === index ? 'cur' : ''}`} onClick={this.storeTap.bind(this, item, index)}>
-                      <View className="content-padded">{item.companyName} ({item.storeName})</View>
-                    </View>
-                  )
-                }
-
-              </View>
-            </View>
-        }
-        {
-          cardInfo.use_scenes == 'SWEEP' &&
-            <View className="sweep-coupon-box">
-              <View className="content-padded card-header">
-                <View className="qrcode">
-                  <Image className="qrcode-img" src={cardCode.qrcode_url} mode="aspectFill"/>
-                  <View className="qrcode-num">{cardCode.code}</View>
-                </View>
-              </View>
-            </View>
-        }
-        {
-          cardInfo.use_scenes == 'SELF' &&
-            <View className="coupon-box">
-              <View className="content-padded card-header">
-                <View className="hr">
-                  <View className="card-title">商户名称</View>
-                  <View className="card-val">{curStore}</View>
-                </View>
-                <View className="hr">
-                  <View className="card-title">分店名称</View>
-                  <View className="card-val">{curBranchStore}</View>
-                </View>
-                {
-                  showCodeInput &&
-                    <View>
-                      <View className="card-title">验证码</View>
-                      <View className="card-val">
-                        <Input type="number" focus onInput={this.inputBlur.bind(this)} placeholder="请输入验证码" maxlength='4' confirm-type="done"/>
+          cardInfo.use_scenes &&
+            <View className='page-coupon-detail'>
+              {
+                cardInfo.use_scenes !== 'SELF' && cardInfo.use_scenes !== 'SWEEP' &&
+                  <View className="sweep-coupon-box">
+                    <View className="content-padded card-header">
+                      <View className="qrcode">
+                        <View className="qrcode-num">该卡券不适用线下消费</View>
                       </View>
                     </View>
-                }
-                <View className={`icon-used use-icon ${show ? '' : 'show'}`}></View>
-                <View className="card-decorate"></View>
-              </View>
-              <View className={`content-padded card-footer ${show ? '' : 'act'}`} onTouchStart={this.handletouchtart.bind(this)} onTouchMove={this.handletouchmove.bind(this)} onTouchEnd={this.handletouchend.bind(this)}>
-                <View className="gray remind-txt">划开副券确认使用</View>
-                <View className="view-flex">
-                  <View className="view-flex-item red">仅限商户操作</View>
-                  <View className="view-flex-item content-right">
-                    <Image src="../images/code.png" />
                   </View>
-                </View>
-              </View>
+              }
+
+              {
+                cardInfo.use_scenes == 'SELF' &&
+                  <View className="store-box">
+                    <View className="view-flex" onClick={this.chooseStore.bind(this)}>
+                      <View className="view-flex-item">选择门店</View>
+                      <View className="view-flex-item content-right cur-store">{curBranchStore}<View className="arrow-right {{storeDialogShow ? 'down' : ''}}"></View></View>
+                    </View>
+                    <View className={`store-list ${storeDialogShow ? 'act' : ''}`}>
+                      {
+                        storeList.map((item, index) =>
+                          <View className={`store-item ${curindex === index ? 'cur' : ''}`} onClick={this.storeTap.bind(this, item, index)}>
+                            <View className="content-padded">{item.companyName} ({item.storeName})</View>
+                          </View>
+                        )
+                      }
+
+                    </View>
+                  </View>
+              }
+              {
+                cardInfo.use_scenes == 'SWEEP' &&
+                  <View className="sweep-coupon-box">
+                    <View className="content-padded card-header">
+                      <View className="qrcode">
+                        <Image className="qrcode-img" src={cardCode.qrcode_url} mode="aspectFill"/>
+                        <View className="qrcode-num">{cardCode.code}</View>
+                      </View>
+                    </View>
+                  </View>
+              }
+              {
+                cardInfo.use_scenes == 'SELF' &&
+                  <View className="coupon-box">
+                    <View className="content-padded card-header">
+                      <View className="hr">
+                        <View className="card-title">商户名称</View>
+                        <View className="card-val">{curStore}</View>
+                      </View>
+                      <View className="hr">
+                        <View className="card-title">分店名称</View>
+                        <View className="card-val">{curBranchStore}</View>
+                      </View>
+                      {
+                        showCodeInput &&
+                          <View>
+                            <View className="card-title">验证码</View>
+                            <View className="card-val">
+                              <Input type="number" focus onInput={this.inputBlur.bind(this)} placeholder="请输入验证码" maxlength='4' confirm-type="done"/>
+                            </View>
+                          </View>
+                      }
+                      <View className={`icon-used use-icon ${show ? '' : 'show'}`}></View>
+                      <View className="card-decorate"></View>
+                    </View>
+                    <View className={`content-padded card-footer ${show ? '' : 'act'}`} onTouchStart={this.handletouchtart.bind(this)} onTouchMove={this.handletouchmove.bind(this)} onTouchEnd={this.handletouchend.bind(this)}>
+                      <View className="gray remind-txt">划开副券确认使用</View>
+                      <View className="view-flex">
+                        <View className="view-flex-item red">仅限商户操作</View>
+                        <View className="view-flex-item content-right">
+                          <Image src="../images/code.png" />
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+              }
             </View>
         }
       </View>
