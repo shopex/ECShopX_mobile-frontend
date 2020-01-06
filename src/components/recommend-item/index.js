@@ -36,38 +36,38 @@ export default class RecommendItem extends Component {
     const img_head = info.head_portrait || info.image_default_id
 
     return (
-      <View className={classNames('goods-item', className)}>
-        <View className='goods-item__hd'>
+      <View className={classNames('recommend-item', className)}>
+        <View className='recommend-item__hd'>
           {this.props.children}
         </View>
         <View
-          className='goods-item__bd'
+          className='recommend-item__bd'
           onClick={onClick}
         >
-          <View className='goods-item__img-wrap'>
+          <View className='recommend-item__img-wrap'>
             <QnImg
-              img-class='goods-item__img'
+              img-class='recommend-item__img'
               src={img}
               mode='aspectFill'
               width='400'
               lazyLoad
             />
           </View>
-          <View className='goods-item__cont'>
-            <View className='goods-item__caption'>
-              <Text className='goods-item__title'>{info.title}</Text>
-              <Text className='goods-item__desc'>{info.summary}</Text>
+          <View className='recommend-item__cont'>
+            <View className='recommend-item__caption'>
+              <Text className='recommend-item__title'>{info.title}</Text>
+              <Text className='recommend-item__desc'>{info.summary}</Text>
             </View>
-            <View className='goods-item__extra'>
-              <View className='goods-item__author'>
+            <View className='recommend-item__extra'>
+              <View className='recommend-item__author'>
                 <Image
-                  className='goods-item__author-avatar'
+                  className='recommend-item__author-avatar'
                   src={img_head}
                   mode='aspectFill'
                 />
-                <Text className='goods-item__author-name'>{info.author}</Text>
+                <Text className='recommend-item__author-name'>{info.author}</Text>
               </View>
-              <View className={`goods-item__actions ${info.isPraise ? 'is_like__active' : ''}`}>
+              <View className={`recommend-item__actions ${info.isPraise ? 'is_like__active' : ''}`}>
                 <View
                   className='icon-like'
                 ><Text>{info.articlePraiseNum}</Text></View>
@@ -75,7 +75,7 @@ export default class RecommendItem extends Component {
             </View>
           </View>
         </View>
-        <View className='goods-item__ft'>
+        <View className='recommend-item__ft'>
           {this.props.renderFooter}
         </View>
       </View>

@@ -65,6 +65,7 @@
 .at-search-bar__action {
   background-color: $color-search-cancel-bg;
   color: $color-primary-text;
+  margin-left: 0;
 }
 .at-search-bar::after {
   border: 0;

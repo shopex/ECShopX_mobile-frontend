@@ -295,8 +295,37 @@ export default class List extends Component {
     })
   }
 
+  handleSearchChange = (val) => {
+    this.setState({
+      query: {
+        ...this.state.query,
+        keywords: val
+      }
+    })
+  }
+
+  handleSearchClear = () => {
+    this.setState({
+      isShowSearch: false,
+      query: {
+        ...this.state.query,
+        keywords: ''
+      }
+    }, () =>{
+      this.resetPage()
+      this.setState({
+        list: [],
+        oddList: [],
+        evenList: []
+      }, () => {
+        this.nextPage()
+      })
+    })
+  }
+
   handleConfirm = (val) => {
     this.setState({
+      isShowSearch: false,
       query: {
         ...this.state.query,
         keywords: val,
@@ -330,15 +359,19 @@ export default class List extends Component {
       tagsList,
       curTagId,
 			info,
-      isShowSearch
+      isShowSearch,
+      query
     } = this.state
 
 		return (
 			<View className='page-goods-list'>
 				<View className='goods-list__toolbar'>
-          <View className='goods-list__search'>
+          <View className={`goods-list__search ${(query && query.keywords && !isShowSearch) ? 'on-search' : null}`}>
     				<SearchBar
+              keyword={query ? query.keywords : ''}
               onFocus={this.handleSearchOn}
+              onChange={this.handleSearchChange}
+              onClear={this.handleSearchClear}
               onCancel={this.handleSearchOff}
               onConfirm={this.handleConfirm.bind(this)}
     				/>
