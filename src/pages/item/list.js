@@ -125,8 +125,14 @@ export default class List extends Component {
     }
 
     if (tagsList.length === 0) {
+      let tags = select_tags_list
+      tags.unshift({
+        tag_id: 0,
+        tag_name: '全部'
+      })
       this.setState({
-        tagsList: select_tags_list,
+        curTagId: 0,
+        tagsList: tags
       })
     }
 
