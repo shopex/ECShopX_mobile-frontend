@@ -1,10 +1,15 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Image, Navigator, Button } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { AtDrawer } from 'taro-ui'
 import api from '@/api'
 import { classNames, pickBy } from '@/utils'
 
 import './shop.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class DistributionShop extends Component {
   static config = {
@@ -77,11 +82,12 @@ export default class DistributionShop extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { info } = this.state
 
     return (
       <View className="page-distribution-shop">
-        <View className="shop-banner">
+        <View className="shop-banner" style={'background: ' + colors.data[0].marketing}>
           <View className="shop-info">
             <Image
               className='shopkeeper-avatar'
@@ -97,13 +103,16 @@ export default class DistributionShop extends Component {
             <Text class="icon-setting"></Text>
           </Navigator>
         </View>
-        <View>
-          <Image
-            className='banner-img'
-            src={info.shop_pic}
-            mode='widthFix'
-          />
-        </View>
+        {
+          info.shop_pic &&
+            <View>
+              <Image
+                className='banner-img'
+                src={info.shop_pic}
+                mode='widthFix'
+              />
+            </View>
+        }
         <View className='section content-center'>
           <View className='content-padded-b shop-achievement'>
             <View className='achievement-label'>小店营业额</View>

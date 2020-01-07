@@ -1,10 +1,15 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Input } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { Loading, SpNote, NavBar } from '@/components'
 import api from '@/api'
 import { classNames, pickBy } from '@/utils'
 
 import './coupon-detail.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class CouponDetail extends Component {
   constructor (props) {
@@ -165,13 +170,16 @@ export default class CouponDetail extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { cardInfo, curStore, curBranchStore, showCodeInput, curindex, show } = this.state
 
     return (
       <View>
         {
           cardInfo.use_scenes &&
-            <View className='page-coupon-detail'>
+            <View
+              className='page-coupon-detail'
+               style={'background: ' + colors.data[0].marketing}>
               {
                 cardInfo.use_scenes !== 'SELF' && cardInfo.use_scenes !== 'SWEEP' &&
                   <View className="sweep-coupon-box">
@@ -216,7 +224,9 @@ export default class CouponDetail extends Component {
               {
                 cardInfo.use_scenes == 'SELF' &&
                   <View className="coupon-box">
-                    <View className="content-padded card-header">
+                    <View
+                      className="content-padded card-header"
+                      style={`background: radial-gradient(circle at bottom, transparent 3px, ${colors.data[0].primary} 3px); background-size: 20rpx 100%;`}>
                       <View className="hr">
                         <View className="card-title">商户名称</View>
                         <View className="card-val">{curStore}</View>

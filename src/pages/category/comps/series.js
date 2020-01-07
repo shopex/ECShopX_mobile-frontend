@@ -7,8 +7,9 @@ import api from '@/api'
 
 import './series.scss'
 import {AtTabs, AtTabsPane} from "taro-ui";
-@connect(store => ({
-  store
+@connect(({store, colors}) => ({
+  store,
+  colors: colors.current
 }))
 export default class Series extends Component {
   static options = {
@@ -67,7 +68,7 @@ export default class Series extends Component {
   }
 
   render () {
-    const { info, isChanged, pluralType, imgType } = this.props
+    const { info, isChanged, pluralType, imgType, colors } = this.props
     const { currentIndex } = this.state
     if (!info) {
       return <Loading />
@@ -88,6 +89,7 @@ export default class Series extends Component {
               info.map((item, index) =>
                 <View
                   className={classNames('category-nav__content', currentIndex == index ? 'category-nav__content-checked' : null)}
+                  style={currentIndex == index ? `border-left: 7rpx solid ${colors.data[0].primary};` : null}
                   key={index}
                   onClick={this.handleClickCategoryNav.bind(this, index)}
                 >

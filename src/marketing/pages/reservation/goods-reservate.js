@@ -10,6 +10,10 @@ import S from '@/spx'
 
 import './goods-reservate.scss'
 
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
+
 @withPager
 @withBackToTop
 export default class GoodsReservate extends Component {
@@ -25,9 +29,10 @@ export default class GoodsReservate extends Component {
       confirm_list: [],
       areaList: [],
       multiIndex: [],
+      isShowSubTips: false
     }
   }
-  
+
   componentDidShow () {
     this.count = 0
     this.fetch()
@@ -150,10 +155,10 @@ export default class GoodsReservate extends Component {
     }
   }
 
- 
+
   handleCell = (name, e) => {
     const { cur_activity_info } = this.state
-    cur_activity_info.formdata.content.map(item => {
+    cur_activity_info && cur_activity_info.formdata.content.map(item => {
       if(item.formdata && item.formdata.length > 0) {
         item.formdata.map(sec_item => {
           if(sec_item.field_name === name) {
@@ -194,12 +199,21 @@ export default class GoodsReservate extends Component {
     }
     try {
       await api.user.registrationSubmit(new_subdata)
-      Taro.redirectTo({
-        url: '/marketing/pages/member/item-activity'
+      this.setState({
+        isShowSubTips: true
       })
+      if(new_subdata.formdata && new_subdata.formdata.content) {
+        new_subdata.formdata.content = JSON.parse(new_subdata.formdata.content)
+      }
     }catch(e) {
       console.log(e, 53)
     }
+  }
+
+  handleToList = () => {
+    Taro.redirectTo({
+      url: '/marketing/pages/member/item-activity'
+    })
   }
 
   handleback  = () => {
@@ -239,16 +253,17 @@ export default class GoodsReservate extends Component {
     this.setState({
       showCheckboxPanel: false
     })
-    
+
   }
-  
+
 
 
   render () {
-
-    const { cur_activity_info, isHasActivityInfo, option_list, showCheckboxPanel, checkedList, multiIndex, areaList } = this.state
+    const { colors } = this.props
+    const { cur_activity_info, isHasActivityInfo, option_list, showCheckboxPanel, checkedList, multiIndex, areaList, isShowSubTips } = this.state
+    // let new_activity_info = JSON.parse(cur_activity_info)
     const { formdata } = cur_activity_info
-
+    console.log(formdata, 255)
     return (
       <View className='goods-reservate'>
         <View className='goods-reservate__storeinfo'>
@@ -325,7 +340,7 @@ export default class GoodsReservate extends Component {
                               }
                               {
                                 i_data.form_element === 'number'
-                                  ? <AtInput 
+                                  ? <AtInput
                                     className='goods-input'
                                     name={i_data.field_name}
                                     title={i_data.field_title}
@@ -338,7 +353,7 @@ export default class GoodsReservate extends Component {
                               }
                               {
                                 i_data.form_element === 'text'
-                                  ? <AtInput 
+                                  ? <AtInput
                                     className='goods-input'
                                     name={i_data.field_name}
                                     title={i_data.field_title}
@@ -366,20 +381,42 @@ export default class GoodsReservate extends Component {
               )
             })
           }
-        </View> 
+        </View>
 
         {
-          isHasActivityInfo 
+          isHasActivityInfo
             ? <View className='goods-reservate__statement'>
                 <Text className='goods-reservate__statement_title'>声明：</Text>
                 <Text>*{formdata.bottom_title}</Text>
-              </View> 
-            : <View className='goods-reservate__tips'>您已成功预约该活动！</View>
-        }  
+              </View>
+            : <View className='success-view'>
+                <View className='success-view__content'>
+                  <View className='success-view__title'>您已报名成功</View>
+                  <View>您已报名成功，我们将对所有报名用户进行筛选，报名结果将在2个工作日内通过短信及微信服务消息通知您，请注意查收！</View>
+                  <View className='success-view__btn' onClick={this.handleback.bind(this)}>我知道了</View>
+                </View>
+              </View>
+        }
         {
-          isHasActivityInfo 
-            ? <View className='goods-reservate__btn' onClick={this.handleReservate.bind(this)}>确定预约</View>
-            : <View className='goods-reservate__btn' onClick={this.handleback.bind(this)}>返回</View>
+          isHasActivityInfo
+            ? <View
+                className='goods-reservate__btn'
+                onClick={this.handleReservate.bind(this)}
+                style={`background: ${colors.data[0].primary}`}
+                >确定预约</View>
+            : null
+        }
+        {
+          isShowSubTips
+            ? <View className='success-view'>
+                <View className='success-view__content'>
+                  <Image src='/assets/imgs/ic_successed.png' mode='widthFix' className='success-view__img'></Image>
+                  <View className='success-view__title'>您已报名成功</View>
+                  <View>您已报名成功，我们将对所有报名用户进行筛选，报名结果将在2个工作日内通过短信及微信服务消息通知您，请注意查收！</View>
+                  <View className='success-view__btn' onClick={this.handleToList.bind(this)}>我知道了</View>
+                </View>
+              </View>
+            : null
         }
         <AtFloatLayout isOpened={showCheckboxPanel}>
           <AtCheckbox
@@ -393,7 +430,7 @@ export default class GoodsReservate extends Component {
           </View>
         </AtFloatLayout>
         <SpToast />
-      </View>   
+      </View>
     )
   }
 }

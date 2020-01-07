@@ -1,8 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import api from '@/api'
 
 import './qrcode.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class DistributionQrcode extends Component {
   constructor (props) {
@@ -14,9 +19,10 @@ export default class DistributionQrcode extends Component {
   }
 
   componentDidMount () {
+    const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: '#2f3030'
+      backgroundColor: colors.data[0].marketing
     })
     this.fetch()
   }
@@ -40,10 +46,11 @@ export default class DistributionQrcode extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { info } = this.state
 
     return (
-      <View className='page-distribution-qrcode'>
+      <View className='page-distribution-qrcode' style={'background: ' + colors.data[0].marketing}>
         <View className="qrcode-bg">
           <View className="title">邀请卡</View>
           <Image

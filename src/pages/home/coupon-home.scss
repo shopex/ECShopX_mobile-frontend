@@ -22,22 +22,15 @@
   }
 }
 
-.coupon-item___time {
-  font-size: 22px !important;
-  color: #999999 !important;
-}
-
 .coupon-btn {
-  position: absolute;
-  top: 77px;
-  background: $color-brand-primary;
   color: #ffffff;
-  font-size: 19px;
-  border-radius: 18px;
-  padding: 4px 18px;
-  right: 20px;
+  font-size: 24px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50px;
+  padding: 0 10px;
   &__done {
-    background: #c4c4c4;
+    background: #c4c4c4 !important;
     color: #ffffff;
     opacity: 0.8;
   }

@@ -67,12 +67,10 @@
     overflow: hidden;
     .is-disabled {
       opacity: 0.6;
-      background: $color-brand-primary !important;
       color: $color-brand-primary-text !important;
     }
   }
   &__btn {
-    background: $color-brand-primary;
     font-size: $font-size;
     flex: 1;
     height: $toolbar-height;

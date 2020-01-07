@@ -7,7 +7,8 @@ import S from '@/spx'
 
 import './index.scss'
 
-@connect(() => ({
+@connect(({ colors }) => ({
+  colors: colors.current
 }), (dispatch) => ({
   onFetchFavs: (favs) => dispatch({ type: 'member/favs', payload: favs })
 }))
@@ -51,11 +52,13 @@ export default class MemberIndex extends Component {
   }
 
   componentDidMount () {
+    const { colors } = this.props
     Taro.setNavigationBarColor({
-      backgroundColor: '#2f3030',
+      backgroundColor: colors.data[0].marketing,
       frontColor: '#ffffff'
     })
     this.fetch()
+
   }
 
   async fetch () {
@@ -215,6 +218,7 @@ export default class MemberIndex extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize } = this.state
 
     return (
@@ -226,7 +230,7 @@ export default class MemberIndex extends Component {
           {
             S.getAuthToken()
               ?
-                <View className={`page-member-header ${memberDiscount === '' ? 'no-card' : ''}`}>
+                <View className={`page-member-header ${memberDiscount === '' ? 'no-card' : ''}`} style={'background: ' + colors.data[0].marketing}>
                   <View className='user-info'>
                     <View className='view-flex view-flex-middle'>
                       <View className='avatar'>
@@ -267,9 +271,12 @@ export default class MemberIndex extends Component {
                     </View>
                   </View>
                 </View>
-              : <View className='page-member-header view-flex view-flex-vertical view-flex-middle view-flex-center' onClick={this.handleLoginClick.bind(this)}>
+              : <View
+                  className='page-member-header view-flex view-flex-vertical view-flex-middle view-flex-center'
+                  style={'background: ' + colors.data[0].marketing}
+                  onClick={this.handleLoginClick.bind(this)}>
                   <View className='avatar-placeholder icon-member'></View>
-                  <View className='unlogin'>请登录</View>
+                  <View className='unlogin' style={'background: ' + colors.data[0].primary}>请登录</View>
                 </View>
             }
           {
@@ -321,14 +328,12 @@ export default class MemberIndex extends Component {
               <View className='view-flex-item'>订单</View>
               <View class='section-more' onClick={this.handleTradeClick.bind(this)}>全部订单<Text className='forward-icon icon-arrowRight'></Text></View>
             </View>
-            {/*
-              <View className="member-trade__ziti" onClick={this.handleTradeDrugClick.bind(this)}>
-                <View className="view-flex-item" >
-                  <View className='member-trade__ziti-title'>处方单</View>
-                </View>
-                <View className="icon-arrowRight item-icon-go"></View>
+            <View className="member-trade__ziti" onClick={this.handleTradeDrugClick.bind(this)}>
+              <View className="view-flex-item" >
+                <View className='member-trade__ziti-title'>处方单</View>
               </View>
-            */}
+              <View className="icon-arrowRight item-icon-go"></View>
+            </View>
             <View className='member-trade'>
               <View className='member-trade__item' onClick={this.handleTradeClick.bind(this, 5)}>
                 <View className='icon-wallet'>

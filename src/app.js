@@ -20,6 +20,19 @@ const { store } = configStore()
 useHooks()
 
 class App extends Component {
+  // eslint-disable-next-line react/sort-comp
+  componentWillMount () {
+  }
+  componentDidMount () {
+    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
+    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
+      Taro.setStorageSync('distribution_shop_id', '')
+      Taro.setStorageSync('distribution_shop_exp', '')
+    }
+    this.fetchTabs()
+    this.fetchColors()
+  }
+
   config = {
     pages: [
       'pages/index',
@@ -146,16 +159,7 @@ class App extends Component {
       'wxf91925e702efe3e3'
     ]
   }
-  componentWillMount () {
-  }
-  componentDidMount () {
-    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
-    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
-      Taro.setStorageSync('distribution_shop_id', '')
-      Taro.setStorageSync('distribution_shop_exp', '')
-    }
-    this.fetchTabs()
-  }
+
   componentDidShow (options) {
     if (process.env.TARO_ENV === 'weapp') {
       FormIds.startCollectingFormIds()
@@ -215,6 +219,25 @@ class App extends Component {
     store.dispatch({
       type: 'tabBar',
       payload: info.list.length ? info.list[0].params : defaultTabs
+    })
+  }
+
+  async fetchColors () {
+    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=color_style'
+    const defaultColors = {
+      data: [
+        {
+          primary: '#d42f29',
+          accent: '#fba629',
+          marketing: '#2e3030'
+        }
+      ],
+      name: 'base'
+    }
+    const info = await req.get(url)
+    store.dispatch({
+      type: 'colors',
+      payload: info.list.length ? info.list[0].params : defaultColors
     })
   }
 

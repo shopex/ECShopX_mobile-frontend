@@ -1,5 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
+import { connect } from '@tarojs/redux'
 // import { AtInputNumber } from 'taro-ui'
 // import find from 'lodash/find'
 import { Price } from '@/components'
@@ -8,6 +10,10 @@ import { classNames, pickBy, log, isNumber } from '@/utils'
 import api from '@/api'
 
 import './index.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class GoodsBuyPanel extends Component {
   static options = {
@@ -40,7 +46,8 @@ export default class GoodsBuyPanel extends Component {
       curImg: null,
       curLimit: false,
       quantity: 1,
-      isActive: props.isOpened
+      isActive: props.isOpened,
+      colorStyle: ''
     }
 
     this.disabledSet = new Set()
@@ -345,7 +352,7 @@ export default class GoodsBuyPanel extends Component {
   }
 
   render () {
-    const { info, type, fastBuyText } = this.props
+    const { info, type, fastBuyText, colors } = this.props
 		const { curImg, quantity, selection, isActive, busy, curSku, marketing, promotions, activity, curLimit } = this.state
     if (!info) {
       return null
@@ -500,6 +507,7 @@ export default class GoodsBuyPanel extends Component {
                 <Button
                   loading={busy}
                   className={classNames('goods-buy-panel__btn btn-add-cart', { 'is-disabled': !curSkus })}
+                  style={`background: ${colors.data[0].accent}`}
                   onClick={this.handleBuyClick.bind(this, 'cart', curSkus, quantity)}
                   disabled={Boolean(!curSkus)}
                 >{isDrug ? '加入药品清单' : '加入购物车'}</Button>
@@ -508,6 +516,7 @@ export default class GoodsBuyPanel extends Component {
                 <Button
                   loading={busy}
                   className={classNames('goods-buy-panel__btn btn-fast-buy', { 'is-disabled': !curSkus })}
+                  style={`background: ${colors.data[0].primary}`}
                   onClick={this.handleBuyClick.bind(this, 'fastbuy', curSkus, quantity)}
                   disabled={Boolean(!curSkus)}
                 >{fastBuyText}</Button>
@@ -516,6 +525,7 @@ export default class GoodsBuyPanel extends Component {
                 <Button
                   loading={busy}
                   className={classNames('goods-buy-panel__btn btn-fast-buy', { 'is-disabled': !curSkus })}
+                  style={`background: ${colors.data[0].primary}`}
                   onClick={this.handleBuyClick.bind(this, 'pick', curSkus, quantity)}
                   disabled={Boolean(!curSkus)}
                 >确定</Button>

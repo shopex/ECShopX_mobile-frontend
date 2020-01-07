@@ -3,11 +3,16 @@ import {View, Text, Button, ScrollView} from '@tarojs/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
 import { FloatMenus, FloatMenuItem } from '@/components'
+import { connect } from '@tarojs/redux'
 import { formatTime } from '@/utils'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 import S from '@/spx'
 
 import './detail.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 @withPager
 export default class recommendDetail extends Component {
@@ -209,6 +214,7 @@ export default class recommendDetail extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { info, praiseCheckStatus, screenWidth, collectArticleStatus, showBackToTop } = this.state
 
     if (!info) {
@@ -269,11 +275,17 @@ export default class recommendDetail extends Component {
           />
         </FloatMenus>
         <View className='recommend-detail__bar'>
-          <View className={`recommend-detail__bar-item ${info.isPraise ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'like')}>
+          <View
+            className='recommend-detail__bar-item'
+            style={info.isPraise ? `color: ${colors.data[0].primary}` : 'color: inherit'}
+            onClick={this.handleClickBar.bind(this, 'like')}>
             <Text className='icon-like'> </Text>
             <Text>{info.isPraise ? '已赞' : '点赞'} · {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}</Text>
           </View>
-          <View className={`recommend-detail__bar-item ${collectArticleStatus ? 'check-true': ''}`} onClick={this.handleClickBar.bind(this, 'mark')}>
+          <View
+            className='recommend-detail__bar-item'
+            style={collectArticleStatus ? `color: ${colors.data[0].primary}` : 'color: inherit'}
+            onClick={this.handleClickBar.bind(this, 'mark')}>
             <Text className='icon-star-on'> </Text>
             <Text>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
           </View>

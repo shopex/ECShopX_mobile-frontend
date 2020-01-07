@@ -1,9 +1,14 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Button } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import api from '@/api'
 import { pickBy } from '@/utils'
 
 import './index.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class DistributionDashboard extends Component {
   constructor (props) {
@@ -14,9 +19,10 @@ export default class DistributionDashboard extends Component {
   }
 
   componentDidMount () {
+    const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: '#2f3030'
+      backgroundColor: colors.data[0].marketing
     })
     this.fetch()
   }
@@ -99,11 +105,12 @@ export default class DistributionDashboard extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { info } = this.state
 
     return (
       <View class="page-distribution-index">
-        <View className="header">
+        <View className="header" style={'background: ' + colors.data[0].marketing}>
           <View className='view-flex view-flex-middle'>
             <Image className="header-avatar"
               src={info.avatar}

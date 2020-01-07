@@ -23,7 +23,6 @@
       line-height: 48px;
       margin-left: 10px;
       border-radius: 48px;
-      background: $color-brand-primary;
       color: #FFFFFF;
       font-size: 24px;
     }
@@ -36,6 +35,12 @@
       .goods-list__item {
         width: 50%;
         padding: 10px;
+        .goods-item__cont {
+          height: 300px;
+        }
+        .goods-item__caption {
+          height: 200px;
+        }
       }
     }
   }
@@ -276,12 +281,29 @@
     border-radius: 68px;
     font-weight: bold;
     font-size: $font-size;
-    background: $color-brand-primary;
     &:before, &:after {
       border: none;
     }
     .at-button__wxbutton {
       border: none;
     }
+  }
+}
+
+.qrcode-bg {
+  position: fixed;
+  left: 30px;
+  max-width: 300px;
+  max-height: 200px;
+  bottom: 140px;
+  padding: 20px 30px;
+  border-radius: 60px;
+  display: flex;
+  align-items: center;
+  z-index: 999;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  &__img {
+    width: 60px;
   }
 }

@@ -302,7 +302,7 @@ export default class HomeIndex extends Component {
               wgts={wgts}
             />
             {likeList.length > 0 && showLikeList && (
-              <View>
+              <View className='faverite-list'>
                 <WgtGoodsFaverite info={likeList} />
                 {
                   page.isLoading

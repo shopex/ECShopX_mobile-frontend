@@ -10,8 +10,9 @@ import './address.scss'
 
 const ADDRESS_ID = 'address_id'
 
-@connect(( { address } ) => ({
+@connect(( { address, colors } ) => ({
   address: address.current,
+  colors: colors.current
 }), (dispatch) => ({
   onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
 }))
@@ -112,6 +113,7 @@ export default class AddressIndex extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { selectedId, isItemChecked, isPicker, list } = this.state
     return (
       <View className='page-address-index'>
@@ -173,7 +175,10 @@ export default class AddressIndex extends Component {
             })
           }
         </View>
-        <View className='member-address-add' onClick={this.handleClickToEdit.bind(this)}>添加新地址</View>
+        <View
+          className='member-address-add'
+          style={'background: ' + colors.data[0].primary}
+          onClick={this.handleClickToEdit.bind(this)}>添加新地址</View>
 
         <SpToast />
       </View>

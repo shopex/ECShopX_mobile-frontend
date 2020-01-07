@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Picker, Image } from '@tarojs/components'
+import { View, Form, Button, Text, Picker, Image } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
-import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { SpToast, Timer, NavBar, FormIdCollector, SpCheckbox } from '@/components'
+import { AtInput, AtButton } from 'taro-ui'
+import { SpToast, Timer, NavBar, SpCheckbox } from '@/components'
 import { classNames, isString, isArray } from '@/utils'
 import S from '@/spx'
 import api from '@/api'
@@ -11,8 +11,9 @@ import './reg.scss'
 
 const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP
 
-@connect(( { user } ) => ({
-  land_params: user.land_params
+@connect(( { user, colors } ) => ({
+  land_params: user.land_params,
+  colors: colors.current
 }), () => ({}))
 export default class Reg extends Component {
   constructor (props) {
@@ -26,7 +27,8 @@ export default class Reg extends Component {
       imgInfo: {},
       isHasValue: false,
       option_list: [],
-      showCheckboxPanel: false
+      showCheckboxPanel: false,
+      isHasData: true
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -68,31 +70,37 @@ export default class Reg extends Component {
     let arr  = []
     let res = await api.user.regParam()
     console.log(res)
-    Object.keys(res).forEach(key => {
-      if(res[key].is_open) {
-        if(key === 'sex'){
-          res[key].items = ['未知', '男', '女']
+    if(!res) {
+      this.setState({
+        isHasData: false
+      })
+    } else {
+      Object.keys(res).forEach(key => {
+        if(res[key].is_open) {
+          if(key === 'sex'){
+            res[key].items = ['未知', '男', '女']
+          }
+          if(key === 'birthday'){
+            res[key].items = []
+          }
+          arr.push({
+            key: key,
+            element_type: res[key].element_type,
+            name: res[key].name,
+            is_required: res[key].is_required,
+            items: res[key].items ? res[key].items : null
+          })
         }
-        if(key === 'birthday'){
-          res[key].items = []
-        }
-        arr.push({
-          key: key,
-          element_type: res[key].element_type,
-          name: res[key].name,
-          is_required: res[key].is_required,
-          items: res[key].items ? res[key].items : null
-        })
-      }
-    })
+      })
+      this.setState({
+        list: arr,
+        isHasData: true
+      })
+    }
 
     if (!isWeapp) {
       this.handleClickImgcode()
     }
-
-    this.setState({
-      list: arr
-    });
     this.count = 0
   }
 
@@ -148,9 +156,15 @@ export default class Reg extends Component {
 
       S.toast('注册成功')
       setTimeout(()=>{
-        Taro.redirectTo({
-          url: '/pages/member/index'
-        })
+        if(Taro.getStorageSync('isqrcode') === 'true') {
+          Taro.redirectTo({
+            url: '/pages/qrcode-buy'
+          })
+        } else {
+          Taro.redirectTo({
+            url: '/pages/member/index'
+          })
+        }
       }, 700)
     } catch (error) {
       return false
@@ -320,7 +334,8 @@ export default class Reg extends Component {
   }
 
   render () {
-    const { info, isVisible, isHasValue, list, imgVisible, imgInfo, option_list, showCheckboxPanel } = this.state
+    const { colors } = this.props
+    const { info, isHasValue, isVisible, isHasData, list, imgVisible, imgInfo, option_list, showCheckboxPanel } = this.state
 
     return (
       <View className='auth-reg'>
@@ -328,7 +343,7 @@ export default class Reg extends Component {
           title='注册'
           leftIconType='chevron-left'
         />
-        <AtForm
+        <Form
           onSubmit={this.handleSubmit}
         >
           <View className='sec auth-reg__form'>
@@ -415,7 +430,7 @@ export default class Reg extends Component {
               }
             </AtInput>*/}
             {
-              list.map((item, index) => {
+              isHasData && list.map((item, index) => {
                 return (
                   <View key={index}>
                     {
@@ -484,13 +499,21 @@ export default class Reg extends Component {
           <View className='btns'>
             {
               process.env.TARO_ENV === 'weapp'
-                ? <FormIdCollector
-                  sync
-                >
-                    <AtButton className='submit-btn' type='primary' formType='submit'>同意协议并注册</AtButton>
-                    <AtButton type='default' onClick={this.handleBackHome.bind(this)}>暂不注册，随便逛逛</AtButton>
-                  </FormIdCollector>
-                : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>同意协议并注册</AtButton>
+                ? <View>
+                    <Button
+                      className='submit-btn'
+                      type='primary'
+                      formType='submit'
+                      style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                      >同意协议并注册</Button>
+                      <AtButton type='default' onClick={this.handleBackHome.bind(this)}>暂不注册，随便逛逛</AtButton>
+                  </View>
+                : <Button
+                    type='primary'
+                    onClick={this.handleSubmit}
+                    formType='submit'
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    >同意协议并注册</Button>
             }
             <View className='accountAgreement'>
               已阅读并同意
@@ -502,7 +525,7 @@ export default class Reg extends Component {
               </Text>
             </View>
           </View>
-        </AtForm>
+        </Form>
         {
           showCheckboxPanel
             ? <View className='checkBoxPanel'>
@@ -525,7 +548,10 @@ export default class Reg extends Component {
                 </View>
                 <View className='panel-btns'>
                   <View className='panel-btn cancel-btn' onClick={this.btnClick.bind(this, 'cancel')}>取消</View>
-                  <View className='panel-btn require-btn' onClick={this.btnClick.bind(this, 'require')}>确定</View>
+                  <View
+                    className='panel-btn require-btn'
+                    style={`background: ${colors.data[0].primary}`}
+                    onClick={this.btnClick.bind(this, 'require')}>确定</View>
                 </View>
               </View>
           : null

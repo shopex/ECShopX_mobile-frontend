@@ -73,7 +73,7 @@ export default class ItemActivity extends Component {
                   <View className='reservation-list__item'>
                     <View className='reservation-list__item_title'>
                       <Text></Text>
-                      <Text>{item.status === 'rejected' ? '已拒绝' : ''}{item.status === 'pending' ? '待审核' : ''}{item.status === 'passed' ? '通过' : ''}</Text>
+                      <Text>{item.status === 'rejected' ? '本次活动太火爆了，很遗憾名额已满，请您持续关注！' : ''}{item.status === 'pending' ? '待审核' : ''}{item.status === 'passed' ? '通过' : ''}</Text>
                     </View>
                     <View className='reservation-list__item_content'>
                       <View className='content_data'>
@@ -95,7 +95,7 @@ export default class ItemActivity extends Component {
             }
             {
               !page.isLoading && !page.hasNext && !list.length
-              && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
+              && (<SpNote img='trades_empty.png'>您还未报名任何活动哦，快去报名吧!</SpNote>)
             }
           </View>
         </ScrollView>

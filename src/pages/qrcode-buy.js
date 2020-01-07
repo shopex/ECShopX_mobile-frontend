@@ -2,14 +2,18 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, ScrollView, Picker } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
-import { AtInput } from 'taro-ui'
-import { SpToast, CouponItem } from '@/components'
+import { AtInput, AtFloatLayout } from 'taro-ui'
+import { SpToast, CouponItem, SpCheckbox, SpHtmlContent } from '@/components'
 import api from '@/api'
-import { pickBy, classNames } from '@/utils'
+import { pickBy, normalizeQuerys } from '@/utils'
 import S from '@/spx'
 import entry from '@/utils/entry'
 
 import './member/qrcode-buy.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 @withPager
 @withBackToTop
@@ -21,17 +25,30 @@ export default class QrcodeBuy extends Component {
             isLogin: false,
             userInfo: '',
             couponData: '',
-            banner_img: ''
+            banner_img: '',
+            isCkeckTips: true,
+            tipsInfo: null,
+            tipsInfoShow: false,
         }
     }
-    
+
+
+
     async componentDidMount () {
         const options = this.$router.params
+        const query = normalizeQuerys(this.$router.params)
+        console.log(query, 38)
+        Taro.setStorageSync('isqrcode', query.qrcode)
+        Taro.setStorageSync('odtid', query.odtid)
         await entry.entryLaunch(options, true)
         const { banner } = await Taro.getStorageSync('curStore')
         this.setState({
             banner_img: banner
         })
+        this.fetchTips()
+    }
+
+    async componentDidShow () {
         this.fetch()
     }
 
@@ -51,6 +68,12 @@ export default class QrcodeBuy extends Component {
             })
         }
     }
+    async fetchTips () {
+        const { content } = await api.user.regRule()
+        this.setState({
+            tipsInfo: content
+        })
+     }
 
     couponData = async () => {
         let params = {
@@ -78,17 +101,28 @@ export default class QrcodeBuy extends Component {
     }
 
     handleLoginClick = () => {
-        S.login(this)
+        if(this.state.isCkeckTips === false) {
+            return S.toast('请先同意用户协议')
+        }
+        Taro.navigateTo({
+            url: '/pages/auth/wxauth'
+        })
+        // S.login(this, true)
     }
 
     handleCamera = async () => {
-        const uid = Taro.getStorageSync('distribution_shop_id')
+        if (!S.getAuthToken()){
+            return S.toast('请先授权')
+        }
+        // const distributor = Taro.getStorageSync('curStore')
+        const odtid = Taro.getStorageSync('odtid')
+        // console.log(116,Taro.getStorageSync('odtid'))
+        console.log(116,odtid)
         Taro.scanCode({
             async success (res) {
-            console.log(res.result)
             let query = {
                 barcode: res.result,
-                distributor_id: uid ? uid : 0
+                distributor_id: odtid ? odtid : 0
             }
             try {
                 const result = await api.user.scancodeAddcart(query)
@@ -99,8 +133,14 @@ export default class QrcodeBuy extends Component {
                     title: e.message
                 })
             }
-            
+
             }
+        })
+    }
+
+    handleTips = () => {
+        this.setState({
+            tipsInfoShow: true
         })
     }
 
@@ -112,7 +152,7 @@ export default class QrcodeBuy extends Component {
 
     handleCart = () => {
         Taro.navigateTo({
-            url: '/pages/cart/espier-index'
+            url: '/pages/cart/espier-index?path=qrcode'
         })
     }
 
@@ -121,10 +161,14 @@ export default class QrcodeBuy extends Component {
             url: '/pages/index'
         })
     }
- 
-  render () {
 
-    const { isLogin, userInfo, couponData, banner_img } = this.state
+    handleClose = () => {
+
+    }
+
+  render () {
+    const { colors } = this.props
+    const { isLogin, userInfo, couponData, banner_img, isCkeckTips, tipsInfo, tipsInfoShow } = this.state
 
     console.log(isLogin, 86)
     let bg_img = ''
@@ -136,7 +180,7 @@ export default class QrcodeBuy extends Component {
       <View className='qrcode-buy'>
         <View className='qrcode-buy__top'>
             {
-                isLogin 
+                isLogin === true
                 ? <View className='islogin_user'>
                     <View className='islogin_user__content'>
                         <Image src={bg_img} mode='widthFix' className='qrcode-buy__bgimg'></Image>
@@ -158,28 +202,44 @@ export default class QrcodeBuy extends Component {
                 <Image src='/assets/imgs/bt_scanning.png' mode='widthFix' className='qrcode-buy__scanning'></Image>
                 <View>扫描商品条码</View>
             </View>
-        </View> 
+        </View>
 
         {
-            !isLogin 
-            ? <View className='qrcode-buy__btn' onClick={this.handleLoginClick.bind(this)}>立即授权</View>
-            : <View className='auth-btns'>
-                <View className='auth-btns__item' onClick={this.handleHome.bind(this)}>
-                    <View className='icon icon-home'></View>
-                    <View>商城首页</View>
+            isLogin === false
+                ? <View className='wauth-btn'>
+                    <View
+                      className='wauth-btn__btn'
+                      onClick={this.handleLoginClick.bind(this)}
+                      style={`background: ${colors.data[0].primary}`}
+                      >立即授权</View>
+                    <View className='wauth-btn__tips'>
+                        <SpCheckbox checked={isCkeckTips} />
+                        <Text className='wauth-btn__text' onClick={this.handleTips.bind(this)}>用户协议</Text>
+                    </View>
                 </View>
-                <View className='auth-btns__item' onClick={this.handleCart.bind(this)}>
-                    <View className='icon icon-cart'></View>
-                    <View>购物车</View>
+                : <View className='auth-btns'>
+                    <View className='auth-btns__item' onClick={this.handleHome.bind(this)}>
+                        <View className='icon icon-home'></View>
+                        <View>商城首页</View>
+                    </View>
+                    <View className='auth-btns__item' onClick={this.handleCart.bind(this)}>
+                        <View className='icon icon-cart'></View>
+                        <View>购物车</View>
+                    </View>
+                    <View className='auth-btns__item' onClick={this.handleTrade.bind(this)}>
+                        <View className='icon icon-home'></View>
+                        <View>我的订单</View>
+                    </View>
                 </View>
-                <View className='auth-btns__item' onClick={this.handleTrade.bind(this)}>
-                    <View className='icon icon-home'></View>
-                    <View>我的订单</View>
-                </View>
-            </View>
         }
+
+        <AtFloatLayout isOpened={tipsInfoShow} title='用户协议' onClose={this.handleClose.bind(this)}>
+            {
+                tipsInfo && (<SpHtmlContent className='pay-rule-style' content={tipsInfo} />)
+            }
+        </AtFloatLayout>
         <SpToast />
-      </View>   
+      </View>
     )
   }
 }

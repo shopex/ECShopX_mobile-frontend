@@ -2,12 +2,17 @@ import Taro, { Component } from '@tarojs/taro'
 // import EditAddress from '@/components/new-address/edit-address'
 import { View, Switch, Text, Picker } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
+import { connect } from '@tarojs/redux'
 import { SpCell, SpToast } from '@/components'
 import api from '@/api'
 import { pickBy, log } from '@/utils'
 import S from '@/spx'
 
 import './edit-address.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class AddressIndex extends Component {
   constructor (props) {
@@ -250,7 +255,7 @@ export default class AddressIndex extends Component {
   }
 
   render () {
-
+    const { colors } = this.props
     const { info, multiIndex, areaList } = this.state
 
     return (
@@ -328,8 +333,18 @@ export default class AddressIndex extends Component {
           <View className='btns'>
             {
               process.env.TARO_ENV === 'weapp'
-                ? <AtButton type='primary' formType='submit'>提交</AtButton>
-                : <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>提交</AtButton>
+                ? <Button
+                    type='primary'
+                    onClick={this.handleSubmit}
+                    formType='submit'
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    >提交</Button>
+                : <Button
+                    type='primary'
+                    onClick={this.handleSubmit}
+                    formType='submit'
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    >提交</Button>
             }
           </View>
         </AtForm>

@@ -36,17 +36,25 @@
         width: 50%;
         margin: 40px auto 20px;
     }
-    &__btn {
-        position: fixed;
-        bottom: 0;
+
+    .wauth-btn {
         width: 80%;
         margin: 40px auto;
-        height: 80px;
-        border-radius: 10px;
-        line-height: 80px;
-        color: #ffffff;
-        text-align: center;
-        background: $color-brand-primary; 
+        &__btn {
+            width: 100%;
+            // margin: 40px auto;
+            height: 80px;
+            border-radius: 10px;
+            line-height: 80px;
+            color: #ffffff;
+            text-align: center;
+        }
+        &__tips {
+            margin-top: 20px;
+        }
+        &__text {
+            text-decoration: underline;
+        }
     }
     .auth-btns {
         position: fixed;

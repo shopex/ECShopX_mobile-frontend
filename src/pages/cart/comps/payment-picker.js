@@ -1,9 +1,14 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { AtIcon, AtFloatLayout, AtButton } from 'taro-ui'
 import { SpCheckbox } from '@/components'
 
 import './payment-picker.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class PaymentPicker extends Component {
   static defaultProps = {
@@ -53,7 +58,7 @@ export default class PaymentPicker extends Component {
   }
 
   render () {
-    const { isOpened, loading, disabledPayment } = this.props
+    const { isOpened, loading, disabledPayment, colors } = this.props
     const { localType } = this.state
 
     return (
@@ -100,13 +105,14 @@ export default class PaymentPicker extends Component {
                 ></SpCheckbox>
               </View>
             </View>
-
-            <AtButton
-              type='primary'
-              loading={loading}
-              onClick={this.handleChange.bind(this, localType)}
-            >确定</AtButton>
           </View>
+          <Button
+            type='primary'
+            className='btn-submit'
+            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
+            loading={loading}
+            onClick={this.handleChange.bind(this, localType)}
+          >确定</Button>
         </View>
       </AtFloatLayout>
     )

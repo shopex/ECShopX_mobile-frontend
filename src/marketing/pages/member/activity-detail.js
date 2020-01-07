@@ -1,10 +1,15 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, ScrollView, Picker } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
 import { isArray } from '@/utils'
 
 import './activity-detail.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class ActivityDetail extends Component {
   constructor (props) {
@@ -14,7 +19,7 @@ export default class ActivityDetail extends Component {
       cur_activity_info: ''
     }
   }
-  
+
   componentDidMount () {
     this.fetch()
   }
@@ -45,13 +50,13 @@ export default class ActivityDetail extends Component {
         cur_activity_info: answer_data,
     })
   }
- 
+
   handleback  = () => {
     Taro.navigateBack()
   }
-  
-  render () {
 
+  render () {
+    const { colors } = this.props
     const { cur_activity_info } = this.state
 
     return (
@@ -63,13 +68,16 @@ export default class ActivityDetail extends Component {
                 <View key={index} className='activity-detail__item'>
                   <Text className='activity-detail__item_title'>{item.field_title}</Text>
                   <Text className='activity-detail__item_value'>{item.answer}</Text>
-                </View> 
+                </View>
               )
             })
           }
         </View>
-        <View className='activity-detail__btn' onClick={this.handleback.bind(this)}>返回</View>
-      </View>   
+        <View
+          className='activity-detail__btn'
+          style={`background: ${colors.data[0].primary}`}
+          onClick={this.handleback.bind(this)}>返回</View>
+      </View>
     )
   }
 }

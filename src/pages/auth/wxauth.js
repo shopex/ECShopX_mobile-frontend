@@ -1,11 +1,16 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
 import { log } from '@/utils'
 
 import './wxauth.scss'
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class WxAuth extends Component {
   state = {
@@ -34,9 +39,16 @@ export default class WxAuth extends Component {
 
   redirect () {
     const redirect = this.$router.params.redirect
-    let redirect_url = redirect
-      ? decodeURIComponent(redirect)
-      : '/pages/member/index'
+    let redirect_url = ''
+    if(Taro.getStorageSync('isqrcode') === 'true') {
+      redirect_url = redirect
+        ? decodeURIComponent(redirect)
+        : '/pages/qrcode-buy'
+    } else {
+      redirect_url = redirect
+        ? decodeURIComponent(redirect)
+        : '/pages/member/index'
+    }
 
     Taro.redirectTo({
       url: redirect_url
@@ -112,6 +124,7 @@ export default class WxAuth extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { isAuthShow } = this.state
     const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
 
@@ -125,6 +138,7 @@ export default class WxAuth extends Component {
               <AtButton
                 type='primary'
                 lang='zh_CN'
+                customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                 openType='getUserInfo'
                 onGetUserInfo={this.handleGetUserInfo}
               >授权允许</AtButton>
