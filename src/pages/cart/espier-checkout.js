@@ -12,7 +12,7 @@ import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
 import CheckoutItems from './checkout-items'
 import PaymentPicker from './comps/payment-picker'
-import DrugInfo from './comps/drug-info'
+import DrugInfo from './drug-info'
 import OrderItem from '../trade/comps/order-item'
 
 import './espier-checkout.scss'
@@ -33,12 +33,14 @@ const transformCartList = (list) => {
 
 @connect(({ address, cart }) => ({
   address: address.current,
-  coupon: cart.coupon
+  coupon: cart.coupon,
+  drugInfo: cart.drugInfo
 }), (dispatch) => ({
   onClearFastbuy: () => dispatch({ type: 'cart/clearFastbuy' }),
   onClearCart: () => dispatch({ type: 'cart/clear' }),
   onClearCoupon: () => dispatch({ type: 'cart/clearCoupon' }),
-  onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
+  onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
+  //onChangeDrugInfo: (drugInfo) => dispatch({ type: 'cart/changeDrugInfo', payload: drugInfo })
 }))
 @withLogin()
 export default class CartCheckout extends Component {
@@ -267,7 +269,12 @@ export default class CartCheckout extends Component {
       }
     }
     const { payType, receiptType } = this.state
-    const { coupon } = this.props
+    const { coupon,drugInfo } = this.props
+    if(drugInfo){
+      this.setState({
+        drug:drugInfo
+      })
+  }
     const params = {
       ...this.params,
       ...receiver,
@@ -281,7 +288,8 @@ export default class CartCheckout extends Component {
       member_discount: 0,
       coupon_discount: 0,
 			pay_type: payType,
-			distributor_id: shop_id === 'undefined' ? 0 : shop_id
+      distributor_id: shop_id === 'undefined' ? 0 : shop_id,
+      ...drugInfo
     }
 
     log.debug('[checkout] params: ', params)
@@ -293,6 +301,7 @@ export default class CartCheckout extends Component {
         params.member_discount = coupon.value ? 1 : 0
       }
     }
+    
 
     this.params = params
 
@@ -315,7 +324,7 @@ export default class CartCheckout extends Component {
 
     if (!data) return
 
-    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction } = data
+    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params } = data
     const total = {
       ...this.state.total,
       item_fee,
@@ -342,11 +351,13 @@ export default class CartCheckout extends Component {
       }
       this.params.items = items
     }
+    //console.warn('third_params',third_params)
 
     Taro.hideLoading()
     this.setState({
       total,
-      info
+      info,
+      third_params
     })
   }
 
@@ -438,12 +449,13 @@ export default class CartCheckout extends Component {
   handleChange = (val) => {
     let drug = null
     const arr = Object.values(val)
-    console.log(arr)
     const isNan = arr.length > 0 && arr.find(item => item !== '')
     if (isNan) drug = val
     this.setState({
       drug,
       isDrugInfoOpend: false
+    }, () => {
+      this.calcOrder()
     })
   }
 
@@ -474,9 +486,13 @@ export default class CartCheckout extends Component {
   }
 
   handleDrugInfoShow = () => {
-    this.setState({
-      isPaymentOpend: false,
-      isDrugInfoOpend: true
+    // this.setState({
+    //   isPaymentOpend: false,
+    //   isDrugInfoOpend: true
+    // })
+    const { drug } = this.state
+    Taro.navigateTo({
+      url: `/pages/cart/drug-info`
     })
   }
 
@@ -690,7 +706,7 @@ export default class CartCheckout extends Component {
 
   render () {
     const { coupon } = this.props
-    const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug } = this.state
+    const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug,third_params } = this.state
     const curStore = Taro.getStorageSync('curStore')
     const { type } = this.$router.params
     const isDrug = type === 'drug'
@@ -831,8 +847,9 @@ export default class CartCheckout extends Component {
                         className='coupons-list'
                         title='用药人信息'
                         onClick={this.handleDrugInfoShow}
-                        onChange={this.handleDrugChange}
+                        //onChange={this.handleDrugChange}
                         value={drug ? '已上传' : '用药人及处方上传'}
+                        drug={drug}
                       />
                     }
                     <View className='sec cart-group__cont'>
@@ -980,14 +997,14 @@ export default class CartCheckout extends Component {
           >{isDrug ? '提交预约' : '提交订单'}</AtButton>
         </View>
 
-        {
+        {/* {
           <DrugInfo
             isOpened={isDrugInfoOpend}
             info={drug}
             onClose={this.handleLayoutClose}
             onChange={this.handleChange}
           />
-        }
+        } */}
 
         <PaymentPicker
           isOpened={isPaymentOpend}

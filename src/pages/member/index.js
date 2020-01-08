@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text, Image, Navigator, Button } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, SpCell} from '@/components'
 import api from '@/api'
@@ -137,6 +138,13 @@ export default class MemberIndex extends Component {
       return S.toast('请先登录')
     }
     Taro.navigateTo({url})
+  }
+  handleListClick =(e)=>{
+    e.stopPropagation()
+    Taro.navigateTo({
+      url:'/pages/cart/espier-index?type=drug'
+    })
+
   }
 
   beDistributor = async () => {
@@ -331,6 +339,12 @@ export default class MemberIndex extends Component {
             <View className="member-trade__ziti" onClick={this.handleTradeDrugClick.bind(this)}>
               <View className="view-flex-item" >
                 <View className='member-trade__ziti-title'>处方单</View>
+              </View>
+              <View className="icon-arrowRight item-icon-go"></View>
+            </View>
+            <View className="member-trade__ziti" onClick={this.handleListClick.bind(this)}>
+              <View className="view-flex-item" >
+                <View className='member-trade__ziti-title'>药品清单</View>                
               </View>
               <View className="icon-arrowRight item-icon-go"></View>
             </View>

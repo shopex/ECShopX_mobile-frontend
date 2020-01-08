@@ -1,16 +1,22 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import { connect } from '@tarojs/redux'
 import { AtIcon, AtFloatLayout, AtButton, AtInput, AtImagePicker } from 'taro-ui'
 import { SpCheckbox } from '@/components'
 import imgUploader from '@/utils/qiniu'
+import S from '@/spx'
 import req from '@/api/req'
 
 import './drug-info.scss'
+@connect(({ cart }) => ({
+  curDrugInfo: cart.drugInfo
+}), (dispatch) => ({
+  onChangeDrugInfo: (drugInfo) => dispatch({ type: 'cart/changeDrugInfo', payload: drugInfo })
+}))
 
 export default class DrugInfo extends Component {
   static defaultProps = {
-    isOpened: false,
-    onClose: () => {}
+
   }
 
   static options = {
@@ -21,8 +27,22 @@ export default class DrugInfo extends Component {
     super(props)
 
     this.state = {
-      info: {}
+      info: {},
+      imgInfo:{}
     }
+  }
+  componentDidMount () {
+    const { curDrugInfo } = this.props
+    const { info, imgInfo} = this.state
+    if(info && imgInfo){
+      info.drug_buyer_name = curDrugInfo.drug_buyer_name
+      info.drug_buyer_id_card = curDrugInfo.drug_buyer_id_card
+      imgInfo.drug_list_image = curDrugInfo.drug_list_image
+    }
+    this.setState({
+      info,
+      imgInfo
+    })
   }
 
   uploadURLFromRegionCode = (code) => {
@@ -38,7 +58,7 @@ export default class DrugInfo extends Component {
     return uploadURL;
   }
 
-  handleChange = (name, val) => {
+  handleInfoChange = (name, val) => {
     const { info } = this.state
     info[name] = val
     this.setState({
@@ -46,16 +66,24 @@ export default class DrugInfo extends Component {
     })
   }
 
-  handleClick = () => {
-    const { info } = this.state
-    this.props.onChange(info)
+  handleSubmitClick = () => {
+    const { info,imgInfo } = this.state
+    if(!info || !imgInfo){
+      return
+    }
+    const drugInfo = Object.assign(info,imgInfo);
+    this.props.onChangeDrugInfo(drugInfo)
+    setTimeout(()=>{
+      Taro.navigateBack()
+    }, 700)
+    
   }
 
   handleImageChange = async (data, type) => {
     if (type === 'remove') {
       this.setState({
-        info: {
-          imgs: data
+        imgInfo: {
+          drug_list_image: data
         }
       })
       return
@@ -88,7 +116,7 @@ export default class DrugInfo extends Component {
               'token': token,
               'key': key
             },
-            success: res => {
+            success: res => {             
               let imgData = JSON.parse(res.data)
               resolve({
                 url: `${domain}/${imgData.key}`
@@ -103,58 +131,53 @@ export default class DrugInfo extends Component {
 
     const results = await Promise.all(promises)
     this.setState({
-      info: {
-        imgs: results
+      imgInfo: {
+        drug_list_image: results
       }
-    }, () => {
-      this.props.onImgChange
     })
   }
+  handleImageClick = () => {
+  }
+  
 
   render () {
-    const { isOpened, onClose } = this.props
-    const { info } = this.state
-
+    const { info,imgInfo } = this.state
     return (
-      <AtFloatLayout
-        isOpened={isOpened}
-        onClose={onClose}
-      >
-        <View class="drug-info">
-          <AtInput
-            title='用药人姓名'
-            className='trade-remark__input'
-            value={info.name}
-            onChange={this.handleChange.bind(this, 'name')}
-          />
-          <AtInput
-            title='用药人身份证'
-            className='trade-remark__input'
-            placeholder='请输入有效的身份证号'
-            value={info.id_card}
-            onChange={this.handleChange.bind(this, 'id_card')}
-          />
-          <View className='drug-describe'>
-            <View className='drug-describe__img'>
-              <Text className='drug-describe__text'>上传处方单</Text>
-              <View className='drug-describe__imgupload'>
-                <AtImagePicker
-                  mode='aspectFill'
-                  multiple
-                  count={3}
-                  length={3}
-                  files={info.imgs}
-                  onChange={this.handleImageChange.bind(this)}
-                > </AtImagePicker>
-              </View>
-            </View>
+      <View class="drug-info">
+      <AtInput
+        title='用药人姓名'
+        className='trade-remark__input'
+        value={info.drug_buyer_name}
+        onChange={this.handleInfoChange.bind(this, 'drug_buyer_name')}
+      />
+      <AtInput
+        title='用药人身份证'
+        className='trade-remark__input'
+        placeholder='请输入有效的身份证号'
+        value={info.drug_buyer_id_card}
+        onChange={this.handleInfoChange.bind(this, 'drug_buyer_id_card')}
+      />
+      <View className='drug-describe'>
+        <View className='drug-describe__img'>
+          <Text className='drug-describe__text'>上传处方单</Text>
+          <View className='drug-describe__imgupload'>
+            <AtImagePicker
+              mode='aspectFill'
+              multiple
+              count={3}
+              length={3}
+              files={imgInfo.drug_list_image}
+              onChange={this.handleImageChange.bind(this)}
+              onImageClick={this.handleImageClick}
+            > </AtImagePicker>
           </View>
-          <AtButton
-            type='primary'
-            onClick={this.handleClick.bind(this)}
-          >确定</AtButton>
         </View>
-      </AtFloatLayout>
+      </View>
+      <AtButton
+        type='primary'
+        onClick={this.handleSubmitClick.bind(this)}
+      >确定</AtButton>
+    </View>
     )
   }
 }

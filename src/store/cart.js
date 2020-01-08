@@ -99,6 +99,14 @@ const cart = createReducer(initState, {
       coupon
     }
   },
+  ['cart/changeDrugInfo'](state, action) {
+    const drugInfo = action.payload
+
+    return {
+      ...state,
+      drugInfo
+    }
+  },
   ['cart/updateCount'](state,action){
     console.log('cart/updateCount',action.payload)
     const cartCount = action.payload
