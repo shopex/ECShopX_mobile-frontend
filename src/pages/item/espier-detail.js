@@ -211,7 +211,6 @@ export default class Detail extends Component {
 
     this.setState({
       info,
-      desc:contentDesc,
       marketing,
       timer,
       hasStock,
