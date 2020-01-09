@@ -139,9 +139,8 @@ export default class Detail extends Component {
     } else {
       id = this.$router.params.id
     }
-    let { distributor_id } = Taro.getStorageSync('curStore')
 
-    const info = await api.item.detail(id, {goods_id: goodsId, distributor_id })
+    const info = await api.item.detail(id, {goods_id: goodsId})
     const { intro: desc, promotion_activity: promotion_activity } = info
     let marketing = 'normal'
     let timer = null
