@@ -1,12 +1,16 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { Loading, SpNote, NavBar, SpToast, CouponItem } from '@/components'
+import { connect } from '@tarojs/redux'
 import api from '@/api'
 import S from '@/spx'
 import { withPager } from '@/hocs'
 import { classNames, pickBy, formatTime } from '@/utils'
 
 import '../home/coupon-home.scss'
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 @withPager
 export default class CouponHome extends Component {
@@ -99,6 +103,7 @@ export default class CouponHome extends Component {
   }
 
   render () {
+    const { colors } = this.props
     const { list, page } = this.state
 
     return (
@@ -122,14 +127,23 @@ export default class CouponHome extends Component {
                     info={item}
                     key={item.card_id}
                   >
-                    <Text
+                    {/* <Text
                       className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
                       onClick={this.handleGetCard.bind(this, item, idx)}
                     >
                       {item.getted === 1 ? '已领取' : ''}
                       {item.getted === 2 ? '已领完' : ''}
                       {(item.getted !== 2 && item.getted !== 1) ? '立即领取' : ''}
-                    </Text>
+                    </Text> */}
+                     <View
+                      className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
+                      style={`background: ${colors.data[0].primary}`}
+                      onClick={this.handleGetCard.bind(this, item, idx)}
+                    >
+                      {item.getted === 1 ? '已领取' : ''}
+                      {item.getted === 2 ? '已领完' : ''}
+                      {(item.getted !== 2 && item.getted !== 1) ? '立即领取' : ''}
+                    </View>
                   </CouponItem>
                 )
               })
