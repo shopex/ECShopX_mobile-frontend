@@ -121,12 +121,12 @@ export default class HomeIndex extends Component {
 
       const options = this.$router.params
       const res = await entry.entryLaunch(options, true)
-          if(S.getAuthToken()){
-              const promoterInfo = await api.distribution.info()
-              this.setState({
-                isShop:promoterInfo
-              })
-            }
+//           if(S.getAuthToken()){
+//               const promoterInfo = await api.distribution.info()
+//               this.setState({
+//                 isShop:promoterInfo
+//               })
+//             }
 
       const { store } = res
       if (!isArray(store)) {
@@ -316,7 +316,7 @@ export default class HomeIndex extends Component {
         {
           <FloatMenus>
             {
-              isShop && isShop.isOpenShop === 'true' && isShop.shop_status === 1 &&
+              // isShop && isShop.isOpenShop === 'true' && isShop.shop_status === 1 &&
               distributionShopId &&
               <Image
                 className='distribution-shop'
