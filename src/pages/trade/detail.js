@@ -112,6 +112,7 @@ export default class TradeDetail extends Component {
         // aftersales_status: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
         delivery_code: 'delivery_code',
         delivery_corp: 'delivery_corp',
+        delivery_name: 'delivery_corp_name',
         delivery_status: 'delivery_status',
         delivery_time: 'delivery_time',
         aftersales_status: 'aftersales_status',
