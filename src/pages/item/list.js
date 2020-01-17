@@ -45,7 +45,7 @@ export default class List extends Component {
 
   componentDidMount () {
     const { cat_id = null, main_cat_id = null } = this.$router.params
-    this.firstStatus = true
+    this.firstStatus = true    
 
     this.setState({
       query: {
@@ -66,6 +66,7 @@ export default class List extends Component {
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { selectParams, tagsList, curTagId } = this.state
+ 
     const query = {
       ...this.state.query,
       item_params: selectParams,
@@ -75,6 +76,7 @@ export default class List extends Component {
     }
     const { list, total_count: total, item_params_list = [], select_tags_list = []} = await api.item.search(query)
     const { favs } = this.props
+
 
     item_params_list.map(item => {
       if(selectParams.length < 4){
@@ -123,7 +125,7 @@ export default class List extends Component {
       })
       this.firstStatus = false
     }
-
+    
     if (tagsList.length === 0) {
       let tags = select_tags_list
       tags.unshift({
@@ -131,7 +133,7 @@ export default class List extends Component {
         tag_name: '全部'
       })
       this.setState({
-        curTagId: 0,
+        //curTagId: 0,
         tagsList: tags
       })
     }
@@ -143,7 +145,6 @@ export default class List extends Component {
 
   handleTagChange = (data) => {
     const { current } = data
-
     this.resetPage()
     this.setState({
       list: [],
