@@ -37,7 +37,7 @@ export default class DistributionSubordinate extends Component {
     }
 
     const { buy, not_buy } = await api.distribution.subordinate(query)
-    const { total } = curTabIdx ? not_buy.total_count : buy.total_count
+    const total  = curTabIdx ? not_buy.total_count : buy.total_count
 
     const nList = pickBy(curTabIdx ? not_buy.list : buy.list, {
       relationship_depth: 'relationship_depth',
