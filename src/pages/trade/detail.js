@@ -88,6 +88,7 @@ export default class TradeDetail extends Component {
       receiver_address: 'receiver_address',
       status_desc: 'order_status_msg',
       delivery_code: 'delivery_code',
+      delivery_name: 'delivery_corp_name',
       receipt_type: 'receipt_type',
       ziti_status: 'ziti_status',
       qrcode_url: 'qrcode_url',
@@ -293,7 +294,7 @@ export default class TradeDetail extends Component {
 
   handleClickDelivery = () => {
     Taro.navigateTo({
-      url: `/pages/trade/delivery-info?order_type=${this.state.info.order_type}&order_id=${this.state.info.tid}&delivery_code=${this.state.info.delivery_code}&delivery_corp=${this.state.info.delivery_corp}`
+      url: `/pages/trade/delivery-info?order_type=${this.state.info.order_type}&order_id=${this.state.info.tid}&delivery_code=${this.state.info.delivery_code}&delivery_corp=${this.state.info.delivery_corp}&delivery_name=${this.state.info.delivery_name}`
     })
   }
 
