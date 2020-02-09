@@ -661,11 +661,9 @@ export default class Detail extends Component {
 
     const { pics: imgs, kaquan_list: coupon_list } = info
     let new_coupon_list = []
-    if(coupon_list && coupon_list.list.length > 3) {
+    if(coupon_list && coupon_list.list.length >= 1) {
       new_coupon_list = coupon_list.list.slice(0,3)
     }
-
-    console.log(new_coupon_list, 649)
 
     return (
       <View className='page-goods-detail'>
