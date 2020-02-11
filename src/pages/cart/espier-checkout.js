@@ -531,10 +531,44 @@ export default class CartCheckout extends Component {
     }
   }
 
-  handlePay = async () => {
-    if (!this.state.address) {
-      return S.toast('请选择地址')
+  submitPay = () => {
+    let { receiptType } = this.state;
+    if (receiptType === 'logistics') {
+      if (this.state.curStore.is_delivery && !this.state.address) {
+        return S.toast('请选择地址')
+      }
     }
+
+    let _this=this
+    let templeparams = {
+      'temp_name': 'yykweishop',
+      'source_type': receiptType === 'logistics' ? 'logistics_order' : 'ziti_order',
+    }
+    api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
+      console.log('templeparams---1', tmlres)
+      if (tmlres.template_id && tmlres.template_id.length > 0) {
+        wx.requestSubscribeMessage({
+          tmplIds: tmlres.template_id,
+          success() {
+            _this.handlePay()
+          },
+          fail(){
+            _this.handlePay()
+          }
+        })
+      } else {
+        _this.handlePay()
+      }
+    },()=>{
+      _this.handlePay()
+    })
+  }
+
+
+  handlePay = async () => {
+    // if (!this.state.address) {
+    //   return S.toast('请选择地址')
+    // }
 
     const { payType, total } = this.state
     const { type } = this.$router.params
@@ -1012,7 +1046,7 @@ export default class CartCheckout extends Component {
             customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
             loading={submitLoading}
             disabled={isBtnDisabled}
-            onClick={this.handlePay}
+            onClick={this.submitPay}
           >{isDrug ? '提交预约' : '提交订单'}</AtButton>
         </View>
 

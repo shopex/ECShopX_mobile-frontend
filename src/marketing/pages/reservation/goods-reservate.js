@@ -193,6 +193,32 @@ export default class GoodsReservate extends Component {
     }
     this.count = 1
 
+    let _this=this
+    let templeparams = {
+      'temp_name': 'yykweishop',
+      'source_type': 'activity',
+    }
+    api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
+      console.log('templeparams---1', tmlres)
+      if (tmlres.template_id && tmlres.template_id.length > 0) {
+        wx.requestSubscribeMessage({
+          tmplIds: tmlres.template_id,
+          success() {
+            _this.handleSubmit()
+          },
+          fail(){
+            _this.handleSubmit()
+          }
+        })
+      } else {
+        _this.handleSubmit()
+      }
+    },()=>{
+      _this.handleSubmit()
+    })
+  }
+
+  handleSubmit = async () =>{
     let new_subdata = this.state.cur_activity_info
     if(new_subdata.formdata && new_subdata.formdata.content) {
       new_subdata.formdata.content = JSON.stringify(new_subdata.formdata.content)

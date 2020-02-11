@@ -85,3 +85,7 @@ export function registrationRecordInfo (data) {
 export function scancodeAddcart (data) {
   return req.post('/goods/scancodeAddcart', data)
 }
+
+export function newWxaMsgTmpl (params = {}) {
+  return req.get('/newtemplate', params)
+}

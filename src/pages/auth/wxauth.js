@@ -55,6 +55,27 @@ export default class WxAuth extends Component {
     })
   }
 
+  handleNews = () =>{
+    let templeparams = {
+      'temp_name': 'yykweishop',
+      'source_type': 'member',
+    }
+    let _this = this
+
+    api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
+      console.log('templeparams---1', tmlres)
+      if (tmlres.template_id && tmlres.template_id.length > 0) {
+        wx.requestSubscribeMessage({
+          tmplIds: tmlres.template_id,
+          complete() {
+            _this.handleGetUserInfo()
+          }
+        })
+      }
+    })
+  }
+
+
   handleGetUserInfo = async (res) => {
     const loginParams = res.detail
     const { iv, encryptedData, rawData, signature, userInfo } = loginParams
@@ -140,6 +161,7 @@ export default class WxAuth extends Component {
                 lang='zh_CN'
                 customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                 openType='getUserInfo'
+                onClick={this.handleNews.bind(this)}
                 onGetUserInfo={this.handleGetUserInfo}
               >授权允许</AtButton>
               <AtButton className='back-btn' type='default' onClick={this.handleBackHome.bind(this)}>拒绝</AtButton>

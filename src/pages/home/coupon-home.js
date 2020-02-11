@@ -73,6 +73,33 @@ export default class CouponHome extends Component {
     return { total }
   }
 
+  handleClickNews = (card_item, idx) => {
+    let templeparams = {
+      'temp_name': 'yykweishop',
+      'source_type': 'coupon',
+    }
+    let _this=this
+    api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
+      console.log('templeparams---1', tmlres)
+      if (tmlres.template_id && tmlres.template_id.length > 0) {
+        wx.requestSubscribeMessage({
+          tmplIds: tmlres.template_id,
+          success() {
+            _this.handleGetCard(card_item, idx)
+          },
+          fail(){
+            _this.handleGetCard(card_item, idx)
+          }
+        })
+      } else {
+        _this.handleGetCard(card_item, idx)
+      }
+    },()=>{
+      _this.handleGetCard(card_item, idx)
+    })
+  }
+
+
   handleGetCard = async (card_item, idx) => {
     const { list } = this.state
 
@@ -136,10 +163,10 @@ export default class CouponHome extends Component {
                       {(item.getted !== 2 && item.getted !== 1) ? '立即领取' : ''}
                     </Text> */}
                      <View
-                      className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
-                      style={`background: ${colors.data[0].primary}`}
-                      onClick={this.handleGetCard.bind(this, item, idx)}
-                    >
+                       className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
+                       style={`background: ${colors.data[0].primary}`}
+                       onClick={this.handleClickNews.bind(this, item, idx)}
+                     >
                       {item.getted === 1 ? '已领取' : ''}
                       {item.getted === 2 ? '已领完' : ''}
                       {(item.getted !== 2 && item.getted !== 1) ? '立即领取' : ''}

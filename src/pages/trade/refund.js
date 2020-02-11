@@ -234,7 +234,7 @@ export default class TradeRefund extends Component {
     }
   }
 
-  handleSubmit = async () => {
+  aftersalesAxios = async () => {
     const { segTypes, curSegIdx, curReasonIdx, description } = this.state
     const reason = this.state.reason[curReasonIdx]
     const aftersales_type = segTypes[curSegIdx].status
@@ -261,6 +261,33 @@ export default class TradeRefund extends Component {
       })
     }, 700)
   }
+
+  handleSubmit = () => {
+    let _this=this
+    let templeparams = {
+      'temp_name': 'yykweishop',
+      'source_type': 'after_refund',
+    }
+    api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
+      console.log('templeparams---1', tmlres)
+      if (tmlres.template_id && tmlres.template_id.length > 0) {
+        wx.requestSubscribeMessage({
+          tmplIds: tmlres.template_id,
+          success() {
+            _this.aftersalesAxios()
+          },
+          fail(){
+            _this.aftersalesAxios()
+          }
+        })
+      } else {
+        _this.aftersalesAxios()
+      }
+    },()=>{
+      _this.aftersalesAxios()
+    })
+  }
+
 
   render () {
     const { colors } = this.props
