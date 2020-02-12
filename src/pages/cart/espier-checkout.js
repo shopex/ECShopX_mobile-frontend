@@ -80,7 +80,8 @@ export default class CartCheckout extends Component {
       disabledPayment: null,
       isPaymentOpend: false,
       isDrugInfoOpend: false,
-      invoiceTitle: ''
+      invoiceTitle: '',
+      curStore:{}
     }
   }
 
@@ -90,6 +91,7 @@ export default class CartCheckout extends Component {
       isDrugInfoOpend: false
     })
     this.fetchAddress()
+    this.fetchZiTiShop()
   }
 
   componentDidMount () {
@@ -166,6 +168,16 @@ export default class CartCheckout extends Component {
     if (nextProps.address !== this.props.address) {
       this.fetchAddress()
     }
+  }
+
+  async fetchZiTiShop () {
+    const { shop_id } = this.$router.params
+    const {curStore} = this.state
+    const shopInfo = await api.shop.getShop({distributor_id: shop_id})
+    this.setState({
+        curStore:shopInfo
+    })
+    
   }
 
   async fetchAddress (cb) {
@@ -759,7 +771,8 @@ export default class CartCheckout extends Component {
   render () {
     const { coupon, colors } = this.props
     const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug, third_params } = this.state
-    const curStore = Taro.getStorageSync('curStore')
+    //const curStore = Taro.getStorageSync('curStore')
+    const { curStore } = this.state
     const { type } = this.$router.params
     const isDrug = type === 'drug'
 
