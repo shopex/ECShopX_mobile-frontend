@@ -231,7 +231,6 @@ export default class Detail extends Component {
       }else {
         contentDesc = desc
       }
-      console.log(contentDesc)
       let promotion_package = null
       const { list } = await api.item.packageList({item_id: id})
       if (list.length) {
@@ -465,7 +464,6 @@ export default class Detail extends Component {
         valign: 'bottom'
       })
     }
-
     const { username, userId } = Taro.getStorageSync('userinfo')
     const ctx = Taro.createCanvasContext('myCanvas')
 
@@ -653,7 +651,6 @@ export default class Detail extends Component {
         <Loading />
       )
     }
-    console.warn('645',desc)
     let ruleDay = 0
     if (info.activity_type === 'limited_buy') {
       ruleDay = JSON.parse(info.activity_info.rule.day)
