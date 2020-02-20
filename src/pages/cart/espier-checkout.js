@@ -789,7 +789,10 @@ export default class CartCheckout extends Component {
       : coupon.type === 'member'
         ? '会员折扣'
         : ((coupon.value && coupon.value.title) || '')
-    const isBtnDisabled = !address
+    //const isBtnDisabled = !address
+    const isBtnDisabled = express
+     ? !address
+     : false
 
     return (
       <View className='page-checkout'>
