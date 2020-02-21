@@ -68,7 +68,8 @@ export default class WgtGoodsGrid extends Component {
             {
               data.map((item, idx) => {
                 const price = ((item.act_price ? item.act_price : item.member_price ? item.member_price : item.price)/100).toFixed(2)
-                const marketPrice = ((item.act_price ? item.price : item.member_price ? item.price : item.market_price)/100).toFixed(2)
+                //const marketPrice = ((item.act_price ? item.price : item.member_price ? item.price : item.market_price)/100).toFixed(2)
+                const marketPrice = ((item.market_price)/100).toFixed(2)
                 return (
                   <View
                     key={idx}

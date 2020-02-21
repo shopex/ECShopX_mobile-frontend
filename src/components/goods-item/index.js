@@ -59,7 +59,8 @@ export default class GoodsItem extends Component {
       price = info.price.total_price
     } else {
       price = Boolean(+act_price) ? act_price : Boolean(+info.member_price) ? info.member_price : info.price
-      marketPrice = Boolean(+act_price) || Boolean(+info.member_price) ? info.price : info.market_price
+      //marketPrice = Boolean(+act_price) || Boolean(+info.member_price) ? info.price : info.market_price
+      marketPrice = info.market_price
     }
 
     return (
