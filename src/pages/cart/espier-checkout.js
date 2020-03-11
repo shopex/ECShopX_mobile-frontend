@@ -546,12 +546,18 @@ export default class CartCheckout extends Component {
   }
 
   submitPay = () => {
-    let { receiptType } = this.state;
+    let { receiptType, submitLoading } = this.state;
     if (receiptType === 'logistics') {
       if (this.state.curStore.is_delivery && !this.state.address) {
         return S.toast('请选择地址')
       }
     }
+    if (submitLoading) {
+      return false
+    }
+    this.setState({
+      submitLoading: true
+    })
 
     let _this=this
     let templeparams = {
@@ -597,8 +603,16 @@ export default class CartCheckout extends Component {
           confirmText: '确认使用',
           cancelText: '取消'
         })
-        if (!confirm) return
+        if (!confirm) {
+          this.setState({
+            submitLoading: false
+          })
+          return 
+        }
       } catch (e) {
+        this.setState({
+          submitLoading: false
+        })
         console.log(e)
         return
       }
