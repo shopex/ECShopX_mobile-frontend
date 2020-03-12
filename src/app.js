@@ -65,7 +65,7 @@ class App extends Component {
       'pages/auth/forgotpwd',
       'pages/auth/wxauth',
       'pages/auth/pclogin',
-
+      'pages/auth/store-reg',
       'pages/cashier/index',
       'pages/cashier/cashier-result',
 
@@ -138,7 +138,9 @@ class App extends Component {
 
           'pages/member/item-activity',
           'pages/member/activity-detail',
-          'pages/member/user-info'
+          'pages/member/user-info',
+
+          'pages/wheel/index'
         ]
       },
       {

@@ -89,3 +89,7 @@ export function scancodeAddcart (data) {
 export function newWxaMsgTmpl (params = {}) {
   return req.get('/newtemplate', params)
 }
+
+export function storeReg (data) {
+  return req.post('/distributor', data)
+}
