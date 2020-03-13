@@ -179,7 +179,7 @@ export default class CartCheckout extends Component {
           curStore:shopInfo
       })
 
-    
+
   }
 
   async fetchAddress (cb) {
@@ -433,8 +433,8 @@ export default class CartCheckout extends Component {
   }
 
   handleMapClick = () => {
-    const { lat, lng } = Taro.getStorageSync('curStore')
-
+    const { curStore } = this.state
+    const { lat, lng } = curStore ? curStore : Taro.getStorageSync('curStore')
     Taro.openLocation({
       latitude: Number(lat),
       longitude: Number(lng),
@@ -607,7 +607,7 @@ export default class CartCheckout extends Component {
           this.setState({
             submitLoading: false
           })
-          return 
+          return
         }
       } catch (e) {
         this.setState({
