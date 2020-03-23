@@ -152,6 +152,36 @@ export default class TradeItem extends Component {
             >订单详情</Button>
           </View>
         </View>}
+        {!customFooter && info.status === 'TRADE_SUCCESS' && <View className='trade-item__ft'>
+          <View className='trade-item__ft-actions'>
+            {/*<Text
+              className='trade-item__acts'
+              onClick={this.props.onActionBtnClick.bind(this)}
+            >更多</Text>*/}
+            <View className={classNames('trade-item__dropdown', { 'is-active': showActions })}>
+            {/*<Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'rate')}>评价|晒单</Text>*/}
+              <Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'rebuy')}>再次购买</Text>
+            </View>
+          </View>
+          <View className='trade-item__ft-bd'>
+            <Text className='trade-item__status'>{info.status_desc}</Text>
+            {
+              info.is_rate == 0
+                ?<Button
+                  className='btn-action'
+                  style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+                  onClick={this.handleClickBtn.bind(this, 'rate')}
+                >评价</Button>
+                : null
+            }
+
+            <Button
+              className='btn-action'
+              style={`background: ${colors.data[0].primary}`}
+              onClick={this.handleClickBtn.bind(this, 'detail')}
+            >订单详情</Button>
+          </View>
+        </View>}
         {/* {!customFooter && info.status === 'WAIT_RATE' && <View className='trade-item__ft'>
           <View className='trade-item__ft-actions'>
             <Text className='trade-item__acts'>更多</Text>

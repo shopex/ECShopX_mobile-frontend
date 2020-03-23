@@ -138,7 +138,10 @@ class App extends Component {
 
           'pages/member/item-activity',
           'pages/member/activity-detail',
-          'pages/member/user-info'
+          'pages/member/user-info',
+          'pages/item/espier-evaluation',
+          'pages/item/rate',
+          'pages/item/success'
         ]
       },
       {
