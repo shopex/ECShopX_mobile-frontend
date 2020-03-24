@@ -58,7 +58,7 @@ export default class PaymentPicker extends Component {
   }
 
   render () {
-    const { isOpened, loading, disabledPayment, colors, isShowPoint = true, isShowBalance = true  } = this.props
+    const { isOpened, loading, disabledPayment, colors, isShowPoint = true, isShowBalance = true } = this.props
     const { localType } = this.state
 
     return (

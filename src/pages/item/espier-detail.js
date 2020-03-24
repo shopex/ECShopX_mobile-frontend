@@ -353,8 +353,8 @@ export default class Detail extends Component {
     this.setState({
       currentImgs: index
     })
-    if (sixSpecImgsDict[index].images.length) {
-      info.pics = sixSpecImgsDict[index].images
+    if (sixSpecImgsDict[index].images.length || sixSpecImgsDict[index].url) {
+      info.pics = sixSpecImgsDict[index].images.length > 0 ? sixSpecImgsDict[index].images : [sixSpecImgsDict[index].url]
       this.setState({
         info,
         curImgIdx: 0

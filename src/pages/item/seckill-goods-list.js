@@ -143,12 +143,11 @@ export default class SeckillGoodsList extends Component {
             {
               list.map((item, index) => {
                 return (
-                  <View className='goods-list__item'>
+                  <View className='goods-list__item' onClick={() => this.handleClickItem(item.item_id)}>
                     <GoodsItem
                       key={item.item_id}
                       info={item}
                       showFav={false}
-                      onClick={() => this.handleClickItem(item.item_id)}
                     >
     									<View
                         className='seckill-goods__list-btn'
