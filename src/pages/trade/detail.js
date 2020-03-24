@@ -97,6 +97,7 @@ export default class TradeDetail extends Component {
       order_status_msg: 'order_status_msg',
       order_status_des: 'order_status_des',
       order_class: 'order_class',
+      latest_aftersale_time: 'latest_aftersale_time',
       remark: 'remark',
       item_fee: ({ item_fee }) => (+item_fee / 100).toFixed(2),
       coupon_discount: ({ coupon_discount }) => (+coupon_discount / 100).toFixed(2),
