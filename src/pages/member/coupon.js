@@ -54,7 +54,7 @@ export default class Coupon extends Component {
       page,
       pageSize
     }
-    const { list, count: total } = await api.member.couponList(params)
+    const { list, total_count: total } = await api.member.couponList(params)
     const nList = pickBy(list, {
       id: 'id',
       status: 'status',

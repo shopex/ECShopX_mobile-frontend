@@ -106,6 +106,7 @@ export default class TradeList extends Component {
       total_fee: 'total_fee',
       pay_type: 'pay_type',
       point: 'point',
+      is_rate: 'is_rate',
       create_date: 'create_date',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
@@ -174,6 +175,11 @@ export default class TradeList extends Component {
           url: `/pages/trade/cancel?order_id=${tid}`
         })
         break
+      case 'rate':
+        Taro.navigateTo({
+          url: `/marketing/pages/item/rate?id=${tid}`
+        })
+        break  
       default:
         Taro.navigateTo({
           url: `/pages/trade/detail?id=${tid}`

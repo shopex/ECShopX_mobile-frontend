@@ -620,3 +620,35 @@
     }
   }
 }
+
+.goods-evaluation {
+  background: #fff;
+  margin: 16px 0 0;
+  padding: 48px 32px;
+  .goods-sec-specs {
+    padding: 0 0 48px 0;
+    margin: 0;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  }
+  .goods-sec-label {
+   width: 114px;
+  }
+  .goods-sec-icon {
+    color: #000000;
+  }
+  .evaluation-list {
+    .at-rate__icon--on {
+      color: $color-brand-primary;
+    }
+  }
+  .all-evaluation {
+    font-size: 22px;
+    color: $color-brand-primary;
+    width: 207px;
+    height: 54px;
+    line-height: 54px;
+    border: 1px solid $color-brand-primary;
+    text-align: center;
+    margin: 60px auto 0;
+  }
+}

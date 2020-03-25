@@ -41,3 +41,7 @@ export function packageList (params = {}) {
 export function packageDetail (item_id) {
   return req.get(`/promotions/package/${item_id}`)
 }
+
+export function evaluationList (params) {
+  return req.get('/order/rate/list', params)
+}

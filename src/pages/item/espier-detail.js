@@ -3,7 +3,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Navigator, Canvas, GoodsItem } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown, AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
-import { Loading, Price, BackToTop, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell } from '@/components'
+import { Loading, Price, BackToTop, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell, GoodsEvaluation } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
 import { withPager, withBackToTop } from '@/hocs'
@@ -62,7 +62,10 @@ export default class Detail extends Component {
       posterImgs: null,
       poster: null,
       showPoster: false,
-      likeList: []
+      likeList: [],
+      evaluationList: [],
+      evaluationTotal: 0,
+
     }
   }
 
@@ -102,6 +105,23 @@ export default class Detail extends Component {
       Taro.setStorageSync('userinfo', userObj)
     }
     this.fetchCartCount()
+    this.getEvaluationList()
+  }
+
+  async getEvaluationList () {
+    const {list, total_count} = await api.item.evaluationList({
+      page: 1,
+      pageSize: 2,
+      item_id: this.$router.params.id
+    })
+    list.map(item => {
+      item.picList = item.rate_pic ? item.rate_pic.split(',') : []
+    })
+
+    this.setState({
+      evaluationList: list,
+      evaluationTotal: total_count
+    })
   }
 
   onShareAppMessage () {
@@ -333,8 +353,8 @@ export default class Detail extends Component {
     this.setState({
       currentImgs: index
     })
-    if (sixSpecImgsDict[index].images.length) {
-      info.pics = sixSpecImgsDict[index].images
+    if (sixSpecImgsDict[index].images.length || sixSpecImgsDict[index].url) {
+      info.pics = sixSpecImgsDict[index].images.length > 0 ? sixSpecImgsDict[index].images : [sixSpecImgsDict[index].url]
       this.setState({
         info,
         curImgIdx: 0
@@ -610,6 +630,18 @@ export default class Detail extends Component {
       url: `/pages/home/coupon-home?item_id=${this.state.info.item_id}&distributor_id=${info.distributor_id}`
     })
   }
+  handleClickViewAllEvaluation () {
+    Taro.navigateTo({
+      url: `/marketing/pages/item/espier-evaluation?id=${this.$router.params.id}`
+    })
+  }
+
+  handleToRateList = () =>{
+    Taro.navigateTo({
+      url: '/marketing/pages/item/espier-evaluation?id='+ this.$router.params.id
+    })
+  }
+
 
   render () {
     const {
@@ -639,7 +671,9 @@ export default class Detail extends Component {
       poster,
       showPoster,
       likeList,
-      page
+      page,
+      evaluationTotal,
+      evaluationList
     } = this.state
 
     const { showLikeList, colors } = this.props
@@ -974,6 +1008,26 @@ export default class Detail extends Component {
                 info={info.distributor_info}
               />
           }
+
+          <View className='goods-evaluation'>
+            <View className='goods-sec-specs' onClick={this.handleToRateList.bind(this)}>
+              <Text className='goods-sec-label'>评价</Text>
+              <Text className='goods-sec-value'>({evaluationTotal})</Text>
+              <View className='goods-sec-icon apple-arrow'></View>
+            </View>
+            <View className='evaluation-list'>
+              {evaluationList.map(item => {
+                return (
+                  <GoodsEvaluation
+                    info={item}
+                    key={item.rate_id}
+                    pathRoute='detail'
+                    onChange={this.handleClickViewAllEvaluation.bind(this)}
+                  />
+                )
+              })}
+            </View>
+          </View>        
 
           {
             isArray(desc)

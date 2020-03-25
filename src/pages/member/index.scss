@@ -1,5 +1,9 @@
 @import "../../style/imports";
+
 .page-member-index {
+  .icon-daipingjia:before {
+    content: "\e607";
+  }  
   .page-member-header {
     padding: 40px 60px 80px 60px;
     margin-bottom: 30px;
@@ -322,6 +326,11 @@
     display: flex;
     padding: 60px 20px 30px 20px;
     font-size: 26px;
+    .icons-status__img {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 28px;
+    }
     .member-trade__item {
       display: flex;
       flex: 1;

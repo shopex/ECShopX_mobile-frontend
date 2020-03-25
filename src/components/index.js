@@ -28,4 +28,9 @@ export { default as AddressChoose } from './address/choose-address'
 export { default as CouponItem } from './coupon-item'
 export { default as TimePicker } from './time-picker/index.js'
 
+
+export { default as GoodsEvaluation } from './goods-evaluation'
+export { default as GoodsComment } from './goods-comment'
+
+
 export default {}

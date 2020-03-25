@@ -141,7 +141,16 @@ class App extends Component {
           'pages/member/user-info',
 
           'pages/wheel/index'
-        ]
+          'pages/item/espier-evaluation',
+          'pages/item/rate',
+          'pages/item/success'
+        ],
+        "plugins": {
+          "live-player-plugin": {
+            "version": "1.0.3", // 填写该直播组件版本号
+            "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
+          }
+        }
       },
       {
         root: 'others',

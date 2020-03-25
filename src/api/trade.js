@@ -46,3 +46,7 @@ export function involiceList (params = {}) {
 export function zitiCode (params = {}) {
   return req.get(`/ziticode`, params)
 }
+
+export function createOrderRate (params = {}) {
+  return req.post(`/order/rate/create`, params)
+}
