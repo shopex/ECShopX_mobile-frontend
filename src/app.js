@@ -140,7 +140,7 @@ class App extends Component {
           'pages/member/activity-detail',
           'pages/member/user-info',
 
-          'pages/wheel/index'
+          'pages/wheel/index',
           'pages/item/espier-evaluation',
           'pages/item/rate',
           'pages/item/success'
