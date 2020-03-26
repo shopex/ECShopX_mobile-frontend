@@ -841,7 +841,7 @@ export default class CartCheckout extends Component {
               </View>
           }
           {
-            express && curStore.is_delivery
+            (express && curStore.is_delivery) || (!curStore.is_delivery && !curStore.is_ziti)
               ? <AddressChoose
                 isAddress={address}
               />
