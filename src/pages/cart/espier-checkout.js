@@ -1002,10 +1002,8 @@ export default class CartCheckout extends Component {
                 title='运费'
               >
                 <Price
-                  noSymbol
-                  noDecimal
-                  appendText='积分'
-                  value={total.freight_point}
+                  unit='cent'
+                  value={total.freight_fee}
                 />
               </SpCell>
               {/*
