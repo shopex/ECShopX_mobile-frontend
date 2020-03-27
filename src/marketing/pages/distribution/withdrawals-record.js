@@ -39,7 +39,8 @@ export default class DistributionWithdrawalsRecord extends Component {
       status: 'status',
       money: 'money',
       created_date: 'created_date',
-      isopen: 'isopen'
+      remarks: 'remarks',
+      isopen: true
     })
 
     this.setState({
@@ -102,7 +103,9 @@ export default class DistributionWithdrawalsRecord extends Component {
                       }
                       {
                         item.status === 'reject' &&
-                        <View className={classNames('status-content', item.isopen && 'open')}>申请驳回：{item.remarks}</View>
+                        <View className={classNames('status-content', item.isopen && 'open')}>
+                          申请驳回：{item.remarks}
+                        </View>
                       }
                     </View>
                   </View>

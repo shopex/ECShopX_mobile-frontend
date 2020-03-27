@@ -180,11 +180,13 @@ export default class Evaluation extends Component {
           />
         </FloatMenus>
 
-       <GoodsComment
-         isOpened={showCommentPanel}
-         onClose={() => this.setState({ showCommentPanel: false, curRate: {} })}
-         onReplyRate={this.handleReplyRate.bind(this)}
-       />
+        {
+          showCommentPanel && <GoodsComment
+            isOpened={showCommentPanel}
+            onClose={() => this.setState({ showCommentPanel: false, curRate: {} })}
+            onReplyRate={this.handleReplyRate.bind(this)}
+          />
+        }
       </View>
     )
   }

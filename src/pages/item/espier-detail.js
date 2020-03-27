@@ -637,9 +637,12 @@ export default class Detail extends Component {
   }
 
   handleToRateList = () =>{
-    Taro.navigateTo({
-      url: '/marketing/pages/item/espier-evaluation?id='+ this.$router.params.id
-    })
+    const { evaluationTotal } = this.state
+    if (evaluationTotal > 0) {
+      Taro.navigateTo({
+        url: '/marketing/pages/item/espier-evaluation?id='+ this.$router.params.id
+      })
+    }
   }
 
 
