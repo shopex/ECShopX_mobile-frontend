@@ -313,7 +313,7 @@ export default class Detail extends Component {
   handleMenuClick = async (type) => {
     const { info } = this.state
     const isAuth = S.getAuthToken()
-
+    console.log('收藏')
     if (type === 'fav') {
       if (!isAuth) {
         S.toast('请登录后再收藏')
@@ -1129,6 +1129,7 @@ export default class Detail extends Component {
               customRender
               cartCount={cartCount}
               type={marketing}
+              onFavItem={this.handleMenuClick.bind(this, 'fav')}
             >
               <View
                 className='goods-buy-toolbar__btns'
