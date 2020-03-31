@@ -436,13 +436,13 @@ export default class MemberIndex extends Component {
               onClick={this.handleClick.bind(this, '/marketing/pages/member/item-activity')}
             >
             </SpCell>
-            <SpCell
+            {/* <SpCell
               title='入驻申请'
               isLink
               img='/assets/imgs/buy.png'
               onClick={this.handleClick.bind(this, '/pages/auth/store-reg')}
             >
-            </SpCell>
+            </SpCell>*/}
 
           </View>
           <View className='page-member-section'>
