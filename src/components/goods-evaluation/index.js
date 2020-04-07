@@ -92,12 +92,14 @@ export default class GoodsEvaluation extends Component {
             })}
           </View>}
 
-          {/*<View className='reply-comment' onClick={this.handleClickEvaluate.bind(this, info)}>
-            <Text className='text'>评论</Text>
-            <Text className='text'>{info.reply.total_count}</Text>
-          </View>
+          {
+            showComment && ( <View className='reply-comment' onClick={this.handleClickEvaluate.bind(this, info)}>
+              <Text className='text'>评论</Text>
+              <Text className='text'>{info.reply.total_count}</Text>
+            </View>)
+          }
 
-          {showComment && info.reply && info.reply.total_count > 0 && <View className='reply-wrap'>
+          {showComment && info.reply && info.reply.list && info.reply.list.length > 0 && <View className='reply-wrap'>
             {
               info.reply.list.map(reply => {
                 return (
@@ -108,7 +110,7 @@ export default class GoodsEvaluation extends Component {
                 )
               })
             }
-          </View>}*/}
+          </View>}
 
         </View>
 
@@ -124,9 +126,9 @@ export default class GoodsEvaluation extends Component {
               <Text className='text'>{info.reply.total_count}</Text>
             </View>
           </View>
-        </View>
-*/}
-            {/*{showComment && info.reply && info.reply.total_count > 0 && <View className='reply-wrap'>
+        </View> */}
+
+            {/* {showComment && info.reply && info.reply.total_count > 0 && <View className='reply-wrap'>
                 {
                     info.reply.list.map(reply => {
                         return (
@@ -137,7 +139,7 @@ export default class GoodsEvaluation extends Component {
                         )
                     })
                 }
-            </View>}*/}
+            </View>} */}
         </View>
     )
   }

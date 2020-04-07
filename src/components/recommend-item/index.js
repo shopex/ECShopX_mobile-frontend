@@ -60,12 +60,12 @@ export default class RecommendItem extends Component {
             </View>
             <View className='recommend-item__extra'>
               <View className='recommend-item__author'>
-                <Image
+                {img_head && <Image
                   className='recommend-item__author-avatar'
                   src={img_head}
                   mode='aspectFill'
-                />
-                <Text className='recommend-item__author-name'>{info.author}</Text>
+                />}
+                {info.author && <Text className='recommend-item__author-name'>{info.author}</Text>}
               </View>
               <View className={`recommend-item__actions ${info.isPraise ? 'is_like__active' : ''}`}>
                 <View
