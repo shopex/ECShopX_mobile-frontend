@@ -6,7 +6,7 @@ import { Loading, Price, SpCell, AddressChoose, SpToast, NavBar } from '@/compon
 import api from '@/api'
 import S from '@/spx'
 import { withLogin } from '@/hocs'
-import { pickBy, log, classNames, isArray } from '@/utils'
+import { pickBy, log, classNames, isArray, authSetting } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
@@ -82,7 +82,7 @@ export default class CartCheckout extends Component {
       isPaymentOpend: false,
       isDrugInfoOpend: false,
       invoiceTitle: '',
-      curStore:{}
+      curStore:{},
     }
   }
 
@@ -543,6 +543,9 @@ export default class CartCheckout extends Component {
         this.calcOrder()
       })
     }
+
+
+    // 如果是余额支付
   }
 
   submitPay = () => {
@@ -784,6 +787,46 @@ export default class CartCheckout extends Component {
     })
   }
 
+  // 开发票
+  handleInvoiceClick = async () => {
+
+    authSetting('invoiceTitle', async () => {
+      const res = await Taro.chooseInvoiceTitle()
+
+      if (res.errMsg === 'chooseInvoiceTitle:ok') {
+        log.debug('[invoice] info:', res)
+        const { type, title: content, companyAddress: company_address, taxNumber: registration_number, bankName: bankname, bankAccount: bankaccount, telephone: company_phone } = res
+        console.log(type, 440)
+        this.params = {
+          ...this.params,
+          invoice_type: 'normal',
+          invoice_content: {
+            title: type == 0 ? 'unit' : 'individual',
+            content,
+            company_address,
+            registration_number,
+            bankname,
+            bankaccount,
+            company_phone
+          }
+        }
+        this.setState({
+          invoiceTitle: content
+        })
+      }
+
+    })
+    
+  }
+
+  resetInvoice = (e) => {
+    e.stopPropagation()
+    this.setState({ invoiceTitle: '' })
+    delete this.params.invoice_type
+    delete this.params.invoice_content
+  }
+
+
   render () {
     // 支付方式文字
     const payTypeText = {
@@ -962,6 +1005,21 @@ export default class CartCheckout extends Component {
               })
             }
           </View>
+
+          {
+            process.env.TARO_ENV === 'weapp' &&
+            <SpCell
+              isLink
+              className='trade-invoice'
+              title='开发票'
+              onClick={this.handleInvoiceClick}
+            >
+              <View className='invoice-title'>
+                {invoiceTitle && (<View className='invoice-guanbi' onClick={this.resetInvoice.bind(this)}></View>)}
+                {invoiceTitle || '否'}
+              </View>
+            </SpCell>
+          }
 
           {/*<SpCell
             isLink
