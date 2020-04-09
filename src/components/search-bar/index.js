@@ -49,7 +49,7 @@ export default class SearchBar extends Component {
   }
 
   handleChangeSearch = (value) => {
-    value = value.replace(/\s+/g,'')
+    // value = value.replace(/\s+/g,'')
     this.props.onChange(value)
   }
 

@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
 import { calcTimer } from '@/utils'
 import { QnImg } from '@/components'
+import { linkPage } from './helper'
 
 import './goods-scroll.scss'
 
@@ -51,6 +52,17 @@ export default class WgtGoodsScroll extends Component {
     }
   }
 
+
+  handleClickMore = () => {
+    const { config } = this.props.info
+    const { moreLink } = config
+    if (moreLink) {
+      linkPage(moreLink.linkPage, moreLink.id)
+    } else {
+      this.navigateToList(config.type, config.seckillId)
+    }
+  }
+
   render () {
     const { info } = this.props
     if (!info) {
@@ -87,7 +99,7 @@ export default class WgtGoodsScroll extends Component {
             </View>
             <View
               className='wgt__more'
-              onClick={this.navigateToList.bind(this, config.type, config.seckillId)}
+              onClick={this.handleClickMore}
             >
               <View className='three-dot'></View>
             </View>

@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { QnImg } from '@/components'
 import { classNames } from '@/utils'
-
+import { linkPage } from './helper'
 import './goods-grid.scss'
 
 export default class WgtGoodsGrid extends Component {
@@ -19,6 +19,15 @@ export default class WgtGoodsGrid extends Component {
     Taro.navigateTo({
       url
     })
+  }
+
+  handleClickMore = () => {
+    const { moreLink } = this.props.info.config
+    if (moreLink) {
+      linkPage(moreLink.linkPage, moreLink.id)
+    } else {
+      this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
+    }
   }
 
   render () {
@@ -49,18 +58,18 @@ export default class WgtGoodsGrid extends Component {
               <Text>{base.title}</Text>
               <View className='wgt__subtitle'>{base.subtitle}</View>
             </View>
-            {/*<View
+            <View
               className='wgt__more'
-              onClick={this.navigateTo.bind(this, '/pages/item/list')}
+              onClick={this.handleClickMore}
             >
               <View className='three-dot'></View>
-            </View>*/}
-            <View
+            </View>
+            {/* <View
               className='wgt__goods__more'
               onClick={this.navigateTo.bind(this, `/pages/item/list?dis_id=${dis_id}`)}
             >
               <View className='all-goods'>全部商品{dis_id}</View>
-            </View>
+            </View> */}
           </View>
         )}
         <View className='wgt__body with-padding'>

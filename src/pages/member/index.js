@@ -458,6 +458,12 @@ export default class MemberIndex extends Component {
               onClick={this.handleClick.bind(this, '/pages/member/address')}
             >
             </SpCell>
+            <SpCell
+              title='个人信息'
+              isLink
+              onClick={this.handleClick.bind(this, '/pages/member/userinfo')}
+            >
+            </SpCell>
           </View>
         </ScrollView>
 

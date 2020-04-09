@@ -1015,7 +1015,7 @@ export default class CartCheckout extends Component {
               onClick={this.handleInvoiceClick}
             >
               <View className='invoice-title'>
-                {invoiceTitle && (<View className='invoice-guanbi' onClick={this.resetInvoice.bind(this)}></View>)}
+                {invoiceTitle && (<View className='icon-close invoice-guanbi' onClick={this.resetInvoice.bind(this)}></View>)}
                 {invoiceTitle || '否'}
               </View>
             </SpCell>
