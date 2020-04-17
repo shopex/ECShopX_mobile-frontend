@@ -155,15 +155,21 @@ export default class Reg extends Component {
       }
 
       S.toast('注册成功')
+      const { isBack } = this.$router.params
       setTimeout(()=>{
         if(Taro.getStorageSync('isqrcode') === 'true') {
           Taro.redirectTo({
             url: '/pages/qrcode-buy'
           })
         } else {
-          Taro.redirectTo({
-            url: '/pages/member/index'
-          })
+          // 如果返回
+          if (isBack) {
+            Taro.navigateBack()
+          } else {
+            Taro.redirectTo({
+              url: '/pages/member/index'
+            })
+          }
         }
       }, 700)
     } catch (error) {
