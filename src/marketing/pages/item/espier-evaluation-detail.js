@@ -1,9 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { Loading, GoodsEvaluation, GoodsComment } from '@/components'
+import { Loading, GoodsEvaluation, GoodsComment, SpToast } from '@/components'
 import api from '@/api'
 import { connect } from '@tarojs/redux'
 import { withPager } from '@/hocs'
+import S from '@/spx'
 
 import './espier-evaluation.scss'
 
@@ -144,6 +145,18 @@ export default class EvaluationDetail extends Component {
     })
   }
 
+  // 点击评论
+  handleShowPanel = () => {
+    if (S.getAuthToken()) {
+      this.setState({showCommentPanel: true})
+    } else {
+      S.toast('请登录后再评论')
+      setTimeout(() => {
+        S.login(this)
+      }, 2000)
+    }
+  }
+
 
   render () {
     const { info, showCommentPanel } = this.state
@@ -161,7 +174,7 @@ export default class EvaluationDetail extends Component {
             <GoodsEvaluation
               info={info}
               showComment={true}
-              onReplyRate={() => this.setState({showCommentPanel: true})}
+              onReplyRate={this.handleShowPanel.bind(this)}
             />
           </View>
         </View>
@@ -171,6 +184,7 @@ export default class EvaluationDetail extends Component {
           onClose={() => this.setState({ showCommentPanel: false })}
           onReplyRate={this.handleReplyRate}
         />
+        <SpToast />
       </View>
     )
   }
