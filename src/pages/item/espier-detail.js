@@ -101,6 +101,7 @@ export default class Detail extends Component {
         username: res.memberInfo.username,
         avatar: res.memberInfo.avatar,
         userId: res.memberInfo.user_id,
+        mobile: res.memberInfo.mobile,
         isPromoter: res.is_promoter
       }
       Taro.setStorageSync('userinfo', userObj)
@@ -426,6 +427,7 @@ export default class Detail extends Component {
         username: res.memberInfo.username,
         avatar: res.memberInfo.avatar,
         userId: res.memberInfo.user_id,
+        mobile: res.memberInfo.mobile,
         isPromoter: res.is_promoter
       }
       Taro.setStorageSync('userinfo', userObj)
@@ -703,7 +705,7 @@ export default class Detail extends Component {
     } = this.state
 
     const { showLikeList, colors } = this.props
-
+    const meiqia = Taro.getStorageSync('meiqia')
     const uid = this.uid
 
     if (!info) {
@@ -1126,8 +1128,8 @@ export default class Detail extends Component {
             onClick={this.handleBackHome.bind(this)}
           />
           {
-            APP_CUSTOM_SERVER === 'meiqia'
-              ? <FloatMenuMeiQia /> 
+            meiqia.is_open === 'true'
+              ? <FloatMenuMeiQia storeId={info.distributor_id} info={{goodId: info.item_id, goodName: info.itemName}} /> 
               : <FloatMenuItem
                 iconPrefixClass='icon'
                 icon='headphones'

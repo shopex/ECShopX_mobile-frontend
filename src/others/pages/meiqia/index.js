@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/others/pages/meiqia/index.js
  * @Date: 2020-04-20 10:54:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-04-23 14:46:35
+ * @LastEditTime: 2020-04-29 14:11:34
  */
 
 import Taro, { Component } from '@tarojs/taro'
@@ -18,30 +18,38 @@ export default class MeiQia extends Component {
     this.state = {
       metadata: '',
       clientid: '',
-      agentid: ''
+      agentid: '',
+      id: ''
     }
   }
 
   componentDidMount () {
     const that = this
     const eventChannel = that.$scope.getOpenerEventChannel()
-    eventChannel.emit('acceptDataFromOpenedPage', { data2: 'test',dd:'55' })
-    eventChannel.emit('someEvent', { data: 'test' })
     // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     eventChannel.on('acceptDataFromOpenerPage', function (data) {
+      let metadata = data.metadata
+      if (metadata) {
+        metadata = JSON.stringify(data.metadata)
+      }
       that.setState({
-        agentid: data.agentid,
-        metadata: data.metadata,
-        clientid: data.clientid
+        id: data.id || '',
+        agentid: data.agentid || '',
+        metadata: encodeURIComponent(metadata) || '',
+        clientid: data.clientid || '',
+        groupid: data.groupid || ''
       })
     })
   }
+
+  handleClose = () => {
+    Taro.navigateBack()
+  }
   
   render () {
-    const {metadata, clientid, agentid} = this.state
+    const {metadata, clientid, agentid, id, groupid} = this.state
     return (
-      // <WebView src={`http://localhost:10086/others/pages/meiqia/index?metadata=${metadata}&clientid=${clientid}&agentid=${agentid}`}></WebView>
-      <WebView src={`http://ecshopx-wap.shopex123.com/others/pages/meiqia/index?metadata=${metadata}&clientid=${clientid}&agentid=${agentid}`}></WebView>
-      )
+      id && <WebView src={`${APP_CUSTOM_SERVER}/others/pages/meiqia/index?metadata=${metadata}&clientid=${clientid}&agentid=${agentid}&id=${id}&groupid=${groupid}`}></WebView>
+    )
   }
 }

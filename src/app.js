@@ -31,6 +31,8 @@ class App extends Component {
     }
     this.fetchTabs()
     this.fetchColors()
+    // 美洽客服插件
+    this.fetchMeiQia()
   }
 
   config = {
@@ -258,6 +260,12 @@ class App extends Component {
       type: 'colors',
       payload: info.list.length ? info.list[0].params : defaultColors
     })
+  }
+
+  // 获取美洽客服配置
+  async fetchMeiQia () {
+    const info = await api.user.imConfig()
+    Taro.setStorageSync('meiqia', info)
   }
 
   componentDidCatchError () {}

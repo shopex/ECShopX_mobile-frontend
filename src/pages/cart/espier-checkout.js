@@ -837,7 +837,8 @@ export default class CartCheckout extends Component {
     const payTypeText = {
       point: '积分支付',
       wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
-      balance: '余额支付'
+      balance: '余额支付',
+      delivery: '货到付款'
     }    
     const { coupon, colors } = this.props
     const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug, third_params } = this.state
@@ -1166,6 +1167,7 @@ export default class CartCheckout extends Component {
           type={payType}
           isShowPoint
           isShowBalance={false}
+          isShowDelivery={false}
           disabledPayment={disabledPayment}
           onClose={this.handleLayoutClose}
           onChange={this.handlePaymentChange}

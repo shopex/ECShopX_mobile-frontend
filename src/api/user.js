@@ -93,3 +93,13 @@ export function newWxaMsgTmpl (params = {}) {
 export function storeReg (data) {
   return req.post('/distributor', data)
 }
+// 客服 
+export function im (id) {
+  return req.get(`/im/meiqia/distributor/${id}`)
+}
+
+// 客服默认配置
+export function imConfig () {
+  return req.get(`/im/meiqia`)
+}
+

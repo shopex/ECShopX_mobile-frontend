@@ -6,53 +6,103 @@
  * @FilePath: /unite-vshop/src/components/float-menus/meiqia.js
  * @Date: 2020-04-20 16:57:55
  * @LastEditors: Arvin
- * @LastEditTime: 2020-04-23 14:46:12
+ * @LastEditTime: 2020-04-29 14:14:52
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
-
+import  api from '@/api'
 import './item.scss'
 
 export default class Index extends Component {
+  
+  static defaultProps = {
+    storeId: '',
+    info: {},
+    isFloat: true
+  }
+
   static options = {
     addGlobalClass: true
   }
 
-  static defaultProps = {
-    onClick: null,
-    iconPrefixClass: 'sp-icon',
-    icon: '',
-    openType: null,
-    hide: false
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      meiqia_id: '',
+      meiqia_token: '',
+      clientid: '',
+      groupid: ''
+    }
   }
 
+  async componentDidMount () {
+    const info = Taro.getStorageSync('curStore')
+    const meiqia = Taro.getStorageSync('meiqia') || {}
+    const { enterprise_id, group_id, persion_ids, is_distributor_open } = meiqia
+    let id = info.distributor_id
+    const { storeId } = this.props
+    // 如果不是标准版
+    if (APP_PLATFORM !== 'standard' && storeId) {
+      id = storeId
+    }
+    if (id !== 0) {
+      if (is_distributor_open === 'true') {        
+        const { meiqia_id, meiqia_token, clientid = '', groupid = '' } = await api.user.im(id)
+        this.setState({
+          meiqia_id,
+          meiqia_token,
+          clientid,
+          groupid
+        })
+      } else {
+        this.setState({
+          meiqia_id: enterprise_id,
+          meiqia_token: persion_ids,
+          groupid: group_id
+        })
+      }
+    }
+  }
+  
+
   // 美恰客服
-  contactMeiQia = () => {
+  contactMeiQia = async () => {
+    const userInfo = Taro.getStorageSync('userinfo') || {}
+    const metadata = {
+      ...this.props.info,
+      userId: userInfo.userId || '',
+      userName: userInfo.username || '',
+      mobile: userInfo.mobile || ''
+    }
+    const { meiqia_id, meiqia_token, clientid, groupid } = this.state
     Taro.navigateTo({
       url: '/others/pages/meiqia/index',
-      events: {
-        // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
-        acceptDataFromOpenedPage: function (data) {
-          console.log(data)
-        },
-      },
       success: function (res) {
         // 通过eventChannel向被打开页面传送数据
-        res.eventChannel.emit('acceptDataFromOpenerPage', { agentid: "", metadata: '%7b%22name%22%3a%22%e8%80%81%e7%8e%8b%22%2c%22tel%22%3a%2213888888888%22%2c%22address%22%3a%22%e6%b9%96%e5%8d%97%e9%95%bf%e6%b2%99%22%2c%22gender%22%3a%22%e7%94%b7%22%2c%22goodsName%22%3a%22%e5%8f%8c%e6%b0%af%e8%8a%ac%e9%85%b8%e9%92%a0%22%2c%22goodsNumber%22%3a%221112%22%2c%22goodsType%22%3a%22%e5%a4%84%e6%96%b9%e8%8d%af%22%2c%22target%22%3a%22%e5%8c%bb%e7%94%9f%22%7d', clientid:"123"})
+        res.eventChannel.emit('acceptDataFromOpenerPage', { id: meiqia_id, agentid: meiqia_token, metadata: metadata, clientid, groupid})
       }
-    });
+    })
   }
   
 
   render () {
-  
+    const { isFloat } = this.props
+    const { meiqia_id } = this.state
     return (
-      <Button
-        className='float-menu__item'
-        onClick={this.contactMeiQia}
-      >
-        <View className='icon icon-headphones'></View>
-      </Button>
+      meiqia_id ? <View>
+        {
+          isFloat ? <Button
+            className='float-menu__item'
+            onClick={this.contactMeiQia}
+          >
+            <View className='icon icon-headphones'></View>
+          </Button>
+          : <View onClick={this.contactMeiQia} className='refund-detail-btn'>
+            { this.props.children }
+          </View>
+        }
+      </View> : ''
     )
   }
 }

@@ -58,7 +58,7 @@ export default class PaymentPicker extends Component {
   }
 
   render () {
-    const { isOpened, loading, disabledPayment, colors, isShowPoint = true, isShowBalance = true } = this.props
+    const { isOpened, loading, disabledPayment, colors, isShowPoint = true, isShowBalance = true, isShowDelivery = true } = this.props
     const { localType } = this.state
 
     return (
@@ -75,7 +75,7 @@ export default class PaymentPicker extends Component {
           </View>
           <View className='payment-picker__bd'>
           {
-              isShowPoint && process.env.TARO_ENV === 'weapp' &&
+              isShowPoint &&
               <View
                 className={`payment-item ${disabledPayment && disabledPayment.name === 'point' ? 'is-disabled' : ''}`}
                 onClick={this.handlePaymentChange.bind(this, 'point')}
@@ -94,7 +94,7 @@ export default class PaymentPicker extends Component {
               </View>
             }
             {
-              isShowBalance && process.env.TARO_ENV === 'weapp' &&
+              isShowBalance &&
               <View
                 className={`payment-item ${disabledPayment && disabledPayment.name === 'balance' ? 'is-disabled' : ''}`}
                 onClick={this.handlePaymentChange.bind(this, 'balance')}
@@ -112,6 +112,26 @@ export default class PaymentPicker extends Component {
                 </View>
               </View>
             }
+            {
+              isShowDelivery &&
+              <View
+                className={`payment-item ${disabledPayment && disabledPayment.name === 'delivery' ? 'is-disabled' : ''}`}
+                onClick={this.handlePaymentChange.bind(this, 'delivery')}
+              >
+                <View className='payment-item__bd'>
+                  <Text className='payment-item__title'>货到付款</Text>
+                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment.name === 'delivery' ? disabledPayment.message : '货到付款'}</Text>
+                </View>
+                <View className='payment-item__ft'>
+                  <SpCheckbox
+                    disabled={!!disabledPayment}
+                    colors={colors}
+                    checked={localType === 'delivery'}
+                  ></SpCheckbox>
+                </View>
+              </View>
+            }
+            
             <View
               className='payment-item no-border'
               onClick={this.handlePaymentChange.bind(this, 'wxpay')}

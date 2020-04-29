@@ -89,6 +89,7 @@ export default class TradeDetail extends Component {
       status_desc: 'order_status_msg',
       delivery_code: 'delivery_code',
       delivery_name: 'delivery_corp_name',
+      distributor_id: 'distributor_id',
       receipt_type: 'receipt_type',
       ziti_status: 'ziti_status',
       qrcode_url: 'qrcode_url',
@@ -394,24 +395,6 @@ export default class TradeDetail extends Component {
     })
   }
 
-  // 美恰客服
-  contactMeiQia = () => {
-    Taro.navigateTo({
-      url: '/others/pages/meiqia/index',
-      events: {
-        // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
-        acceptDataFromOpenedPage: function (data) {
-          console.log(data)
-        },
-      },
-      success: function (res) {
-        // 通过eventChannel向被打开页面传送数据
-        res.eventChannel.emit('acceptDataFromOpenerPage', { agentid: "ab543d0fe418e33b8ce26a133db8ddcf", metadata: '%7b%22name%22%3a%22%e8%80%81%e7%8e%8b%22%2c%22tel%22%3a%2213888888888%22%2c%22address%22%3a%22%e6%b9%96%e5%8d%97%e9%95%bf%e6%b2%99%22%2c%22gender%22%3a%22%e7%94%b7%22%2c%22goodsName%22%3a%22%e5%8f%8c%e6%b0%af%e8%8a%ac%e9%85%b8%e9%92%a0%22%2c%22goodsNumber%22%3a%221112%22%2c%22goodsType%22%3a%22%e5%a4%84%e6%96%b9%e8%8d%af%22%2c%22target%22%3a%22%e5%8c%bb%e7%94%9f%22%7d', clientid:"123"})
-      }
-    });
-  }
-  
-
   render () {
     const { colors } = this.props
     const { info, ziti, qrcode, timer, payLoading } = this.state
@@ -420,7 +403,7 @@ export default class TradeDetail extends Component {
     }
 
     const isDhPoint = info.pay_type === 'point'
-
+    const meiqia = Taro.getStorageSync('meiqia')
     // TODO: orders 多商铺
     // const tradeOrders = resolveTradeOrders(info)
 
@@ -608,12 +591,15 @@ export default class TradeDetail extends Component {
                 {
                   info.status === 'TRADE_SUCCESS' && <View className='trade-detail__footer'>
                   {
-                   APP_CUSTOM_SERVER === 'meiqia'
-                   ? <Button
-                     onClick={this.contactMeiQia}
-                     className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'
-                     style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                   >联系客服</Button> :
+                   meiqia.is_open === 'true'
+                   ? 
+                    <FloatMenuMeiQia storeId={info.distributor_id} info={{orderId: info.order_id}} isFloat={false}> 
+                      <Button
+                        className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'
+                        style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                      >联系客服</Button>
+                    </FloatMenuMeiQia>
+                   :
                     <Button
                       openType='contact'
                       className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'
@@ -629,17 +615,17 @@ export default class TradeDetail extends Component {
             <Text className='trade-detail__footer__btn trade-detail__footer_active' onClick={this.handleClickBtn.bind(this, 'home')}>继续购物</Text>
           </View>
         }*/}
-        <FloatMenus>
+        {/* <FloatMenus>
         {
-          APP_CUSTOM_SERVER === 'meiqia'
-            ? <FloatMenuMeiQia /> 
+          meiqia.is_open === 'meiqia'
+            ? <FloatMenuMeiQia storeId={info.distributor_id} info={{orderId: info.order_id}} /> 
             : <FloatMenuItem
               iconPrefixClass='icon'
               icon='headphones'
               openType='contact'
             />
         }
-        </FloatMenus>
+        </FloatMenus> */}
         <SpToast></SpToast>
       </View>
     )
