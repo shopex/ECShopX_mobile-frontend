@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/components/float-menus/meiqia.js
  * @Date: 2020-04-20 16:57:55
  * @LastEditors: Arvin
- * @LastEditTime: 2020-04-29 14:14:52
+ * @LastEditTime: 2020-04-30 18:00:23
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
@@ -43,7 +43,7 @@ export default class Index extends Component {
     let id = info.distributor_id
     const { storeId } = this.props
     // 如果不是标准版
-    if (APP_PLATFORM !== 'standard' && storeId) {
+    if (APP_PLATFORM !== 'standard' && (storeId || storeId === 0)) {
       id = storeId
     }
     if (id !== 0) {
