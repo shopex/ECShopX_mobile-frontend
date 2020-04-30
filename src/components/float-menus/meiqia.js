@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/components/float-menus/meiqia.js
  * @Date: 2020-04-20 16:57:55
  * @LastEditors: Arvin
- * @LastEditTime: 2020-04-30 18:00:23
+ * @LastEditTime: 2020-04-30 21:14:15
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
@@ -46,16 +46,17 @@ export default class Index extends Component {
     if (APP_PLATFORM !== 'standard' && (storeId || storeId === 0)) {
       id = storeId
     }
-    if (id !== 0) {
-      if (is_distributor_open === 'true') {        
-        const { meiqia_id, meiqia_token, clientid = '', groupid = '' } = await api.user.im(id)
-        this.setState({
-          meiqia_id,
-          meiqia_token,
-          clientid,
-          groupid
-        })
-      } else {
+
+    if (is_distributor_open === 'true' && id !== 0) {        
+      const { meiqia_id, meiqia_token, clientid = '', groupid = '' } = await api.user.im(id)
+      this.setState({
+        meiqia_id,
+        meiqia_token,
+        clientid,
+        groupid
+      })
+    } else {
+      if (enterprise_id) {
         this.setState({
           meiqia_id: enterprise_id,
           meiqia_token: persion_ids,
