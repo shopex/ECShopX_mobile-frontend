@@ -96,7 +96,7 @@ export default class List extends Component {
     const nList = pickBy(list, {
       img: ({ pics }) => typeof pics !== 'string' ? pics[0] : JSON.parse(pics)[0],
       item_id: 'item_id',
-      title: 'itemName',
+      title: ({ itemName, item_name }) => itemName ? itemName : item_name,
       desc: 'brief',
       distributor_info: 'distributor_info',
       promotion_activity_tag: 'promotion_activity',
