@@ -45,7 +45,7 @@ export default class List extends Component {
 
   componentDidMount () {
     const { cat_id = null, main_cat_id = null } = this.$router.params
-    this.firstStatus = true    
+    this.firstStatus = true
 
     this.setState({
       query: {
@@ -79,7 +79,7 @@ export default class List extends Component {
     if (APP_PLATFORM === 'standard') {
       query.distributor_id =  distributor_id 
     }
-  
+
     const { list, total_count: total, item_params_list = [], select_tags_list = []} = await api.item.search(query)
     const { favs } = this.props
 
@@ -94,7 +94,7 @@ export default class List extends Component {
     })
 
     const nList = pickBy(list, {
-      img: 'pics[0]',
+      img: ({ pics }) => typeof pics !== 'string' ? pics[0] : JSON.parse(pics)[0],
       item_id: 'item_id',
       title: 'itemName',
       desc: 'brief',
@@ -130,7 +130,7 @@ export default class List extends Component {
       })
       this.firstStatus = false
     }
-    
+
     if (tagsList.length === 0) {
       let tags = select_tags_list
       tags.unshift({
