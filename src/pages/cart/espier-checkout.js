@@ -327,7 +327,21 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const { type, seckill_id = null, ticket = null, group_id = null, team_id = null, shop_id } = this.$router.params
+    const { type, seckill_id = null, ticket = null, group_id = null, team_id = null, shop_id, source, scene } = this.$router.params
+    let cxdid = null
+    let dtid = null
+    let smid = null
+    if (source === 'other_pay' || scene) {
+      let espierCheckoutData = {}
+      if (source === 'other_pay') {
+        espierCheckoutData = Taro.getStorageSync('espierCheckoutData')
+      } else {
+        espierCheckoutData = normalizeQuerys(this.$router.params)
+      }
+      cxdid = espierCheckoutData.cxdid
+      dtid = espierCheckoutData.dtid
+      smid = espierCheckoutData.smid
+    }
     let orderType = ''
     let activity = {}
     orderType = (() => {
@@ -405,11 +419,18 @@ export default class CartCheckout extends Component {
       member_discount: 0,
       coupon_discount: 0,
 			pay_type: payType,
-      distributor_id: shop_id === 'undefined' ? 0 : shop_id,
+      distributor_id: this.getShopId() || (shop_id === 'undefined' ? 0 : shop_id),
       ...drugInfo
     }
 
     log.debug('[checkout] params: ', params)
+    if (cxdid) {
+      params.cxdid = cxdid
+      params.distributor_id = dtid
+      params.cart_type = 'cxd'
+      params.order_type = 'normal_shopguide'
+      params.salesman_id = smid
+    }
 
     if (coupon) {
       if (coupon.type === 'coupon' && coupon.value.code) {
