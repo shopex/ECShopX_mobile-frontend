@@ -28,6 +28,22 @@ export default class WxAuth extends Component {
       if (!token) throw new Error(`token is not defined: ${token}`)
 
       S.setAuthToken(token)
+      let salesperson_id = Taro.getStorageSync('s_smid')
+      if(!salesperson_id){
+        return this.redirect()
+      }
+
+      let info = await api.member.getUsersalespersonrel({
+        salesperson_id
+      })
+
+      if(info.is_bind === '1'){
+        return this.redirect()
+      }
+      // 绑定导购
+      await api.member.setUsersalespersonrel({
+        salesperson_id
+      })
       return this.redirect()
     } catch (e) {
       console.log(e)
@@ -39,12 +55,21 @@ export default class WxAuth extends Component {
 
   redirect () {
     const redirect = this.$router.params.redirect
+    let { source } = this.$router.params
     let redirect_url = ''
-    if(Taro.getStorageSync('isqrcode') === 'true') {
+    if (Taro.getStorageSync('isqrcode') === 'true') {
       redirect_url = redirect
         ? decodeURIComponent(redirect)
         : '/pages/qrcode-buy'
-    } else {
+    } else if (Taro.getStorageSync('isShoppingGuideCard') === 'true') {
+      redirect_url = redirect
+        ? decodeURIComponent(redirect)
+        : '/marketing/pages/member/shopping-guide-card'
+    } else if(source === 'other_pay'){
+        redirect_url = redirect
+        ? decodeURIComponent(redirect)
+        : `/pages/cart/espier-checkout?source=${source}`
+    }else{
       redirect_url = redirect
         ? decodeURIComponent(redirect)
         : '/pages/member/index'

@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, Loading, SpNote, BackToTop, FloatMenus, FloatMenuItem } from '@/components'
 import req from '@/api/req'
 import api from '@/api'
-import { pickBy, classNames, isArray } from '@/utils'
+import { pickBy, classNames, isArray, normalizeQuerys } from '@/utils'
 import entry from '@/utils/entry'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
@@ -48,7 +48,8 @@ export default class HomeIndex extends Component {
       automatic: null,
       showAuto: true,
       top: 0,
-      isShop:null
+      isShop:null,
+      salesperson_id: ''
     }
   }
 
@@ -75,6 +76,7 @@ export default class HomeIndex extends Component {
   }
 
   componentDidShow = () => {
+    const options = this.$router.params
     const curStore = Taro.getStorageSync('curStore')
     if (!isArray(curStore)) {
       this.setState({
@@ -90,6 +92,18 @@ export default class HomeIndex extends Component {
           isShowAddTip: true
         })
       })
+
+    const { smid , dtid} = normalizeQuerys(options)
+
+    if (smid) {
+      Taro.setStorageSync('s_smid', smid)
+    }
+
+    if (dtid) {
+      Taro.setStorageSync('s_dtid', dtid)
+    }
+    
+    this.isShoppingGuide()
   }
 
   componentDidMount () {
@@ -134,6 +148,29 @@ export default class HomeIndex extends Component {
           curStore: store
         })
   		}
+    })
+  }
+
+    /**
+   * 检测有没有绑定导购员
+   * */
+  async isShoppingGuide(){
+    let token = S.getAuthToken()
+    if (!token) return;
+
+    let salesperson_id = Taro.getStorageSync('s_smid')
+    if(!salesperson_id)return;
+
+    // 判断是否已经绑定导购员
+    let info = await api.member.getUsersalespersonrel({
+      salesperson_id
+    })
+    console.log('getUsersalespersonrel --- val:',info)
+    if(info.is_bind === '1')return
+
+    // 绑定导购
+    await api.member.setUsersalespersonrel({
+      salesperson_id
     })
   }
 
