@@ -5,6 +5,7 @@ import configStore from '@/store'
 import useHooks from '@/hooks'
 import req from '@/api/req'
 import api from '@/api'
+import { normalizeQuerys } from '@/utils'
 import { FormIds, WxAuth } from '@/service'
 import Index from './pages/index'
 
@@ -28,6 +29,17 @@ class App extends Component {
     if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
       Taro.setStorageSync('distribution_shop_id', '')
       Taro.setStorageSync('distribution_shop_exp', '')
+    }
+    const { query } = this.$router.params
+    if (query && query.scene) {
+      const { smid , dtid } = normalizeQuerys(query)
+      if (smid) {
+        Taro.setStorageSync('s_smid', smid)
+      }
+  
+      if (dtid) {
+        Taro.setStorageSync('s_dtid', dtid)
+      }
     }
     this.fetchTabs()
     this.fetchColors()

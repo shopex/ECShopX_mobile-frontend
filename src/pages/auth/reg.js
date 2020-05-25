@@ -163,11 +163,15 @@ export default class Reg extends Component {
       }
 
       S.toast('注册成功')
-      const { isBack } = this.$router.params
+      const { isBack, source } = this.$router.params
       setTimeout(()=>{
         if(Taro.getStorageSync('isqrcode') === 'true') {
           Taro.redirectTo({
             url: '/pages/qrcode-buy'
+          })
+        } else if (source === 'other_pay') {
+          Taro.redirectTo({
+            url: `/pages/cart/espier-checkout?source=${source}`
           })
         } else {
           // 如果返回

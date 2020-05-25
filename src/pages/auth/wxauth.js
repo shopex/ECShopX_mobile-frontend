@@ -36,7 +36,6 @@ export default class WxAuth extends Component {
       let info = await api.member.getUsersalespersonrel({
         salesperson_id
       })
-
       if(info.is_bind === '1'){
         return this.redirect()
       }
@@ -152,10 +151,10 @@ export default class WxAuth extends Component {
         await this.autoLogin()
         return
       }
-
+      const { source } = this.$router.params
       // 跳转注册绑定
       Taro.redirectTo({
-        url: `/pages/auth/reg?code=${code}&open_id=${open_id}&union_id=${union_id}&isBack=${isBack}`
+        url: `/pages/auth/reg?code=${code}&open_id=${open_id}&union_id=${union_id}&isBack=${isBack}&source=${source}`
       })
     } catch (e) {
       console.info(e)

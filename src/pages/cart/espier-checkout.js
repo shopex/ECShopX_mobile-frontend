@@ -45,7 +45,7 @@ const transformCartList = (list) => {
   onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
   //onChangeDrugInfo: (drugInfo) => dispatch({ type: 'cart/changeDrugInfo', payload: drugInfo })
 }))
-@withLogin()
+// @withLogin()
 export default class CartCheckout extends Component {
   static defaultProps = {
     list: []
@@ -99,7 +99,6 @@ export default class CartCheckout extends Component {
 
   componentDidMount () {
     // this.fetchAddress()
-    console.log(this.$router.params)
     if (this.$router.params.scene) {
       console.log(normalizeQuerys(this.$router.params))
       Taro.setStorageSync('espierCheckoutData', normalizeQuerys(this.$router.params))
@@ -112,7 +111,6 @@ export default class CartCheckout extends Component {
       if (this.$router.params.scene) {
         source = 'other_pay'
       }
-
       Taro.redirectTo({
         url: `/pages/auth/wxauth?source=${source}`
       })
