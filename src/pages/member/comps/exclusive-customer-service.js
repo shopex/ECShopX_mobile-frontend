@@ -91,7 +91,7 @@ export default class ExclusiveCustomerService extends Component {
                 plugid={info.work_configid}
               />
               <View className='contact'>
-                <Image className='img' src='/assets/imgs/complaint_icon.png' />
+                <Image className='img' src='/assets/imgs/connect.jpg' />
                 <View className='text'>联系我</View>
               </View>
             </View>
