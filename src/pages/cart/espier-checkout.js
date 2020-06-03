@@ -5,14 +5,14 @@ import { AtButton, AtInput } from 'taro-ui'
 import { Loading, Price, SpCell, AddressChoose, SpToast, NavBar } from '@/components'
 import api from '@/api'
 import S from '@/spx'
-import { withLogin } from '@/hocs'
+// import { withLogin } from '@/hocs'
 import { pickBy, log, classNames, isArray, authSetting, normalizeQuerys } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
 import CheckoutItems from './checkout-items'
 import PaymentPicker from './comps/payment-picker'
-import DrugInfo from './drug-info'
+// import DrugInfo from './drug-info'
 import OrderItem from '../trade/comps/order-item'
 
 import './espier-checkout.scss'
@@ -191,15 +191,9 @@ export default class CartCheckout extends Component {
   }
 
   async fetchZiTiShop () {
-<<<<<<< HEAD
-    const { shop_id } = this.$router.params
-    const {curStore} = this.state
-    const shopInfo = await api.shop.getShop({distributor_id: shop_id})
-
-    this.setState({
-      curStore:shopInfo,
-=======
     const { shop_id, scene } = this.$router.params
+    // const {curStore} = this.state
+    // const shopInfo = await api.shop.getShop({distributor_id: shop_id})
     let id = shop_id
     if (scene) {
       const { dtid } = normalizeQuerys(this.$router.params)
@@ -208,7 +202,6 @@ export default class CartCheckout extends Component {
     const shopInfo = await api.shop.getShop({distributor_id: id})
     this.setState({
       curStore: shopInfo,
->>>>>>> shopping-guide
       receiptType: shopInfo.is_delivery ? 'logistics' : 'ziti',
       express: shopInfo.is_delivery ? true : false
     })
