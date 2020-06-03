@@ -144,6 +144,14 @@ export default class Reg extends Component {
         if (trackParams) {
           Object.assign(params, {source_id: trackParams.source_id, monitor_id: trackParams.monitor_id})
         }
+
+        // 导购id
+        let salesperson_id = Taro.getStorageSync('s_smid')
+        if(salesperson_id){
+          params.distributor_id = Taro.getStorageSync('s_dtid')
+          params.salesperson_id = salesperson_id
+        }
+        
         const res = await api.user.reg(params)
 
         const { code } = await Taro.login()
@@ -155,11 +163,15 @@ export default class Reg extends Component {
       }
 
       S.toast('注册成功')
-      const { isBack } = this.$router.params
+      const { isBack, source } = this.$router.params
       setTimeout(()=>{
         if(Taro.getStorageSync('isqrcode') === 'true') {
           Taro.redirectTo({
             url: '/pages/qrcode-buy'
+          })
+        } else if (source === 'other_pay') {
+          Taro.redirectTo({
+            url: `/pages/cart/espier-checkout?source=${source}`
           })
         } else {
           // 如果返回

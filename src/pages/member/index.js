@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Text, Image, Navigator, Button } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
+import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, SpCell} from '@/components'
+import ExclusiveCustomerService from './comps/exclusive-customer-service'
 import api from '@/api'
 import S from '@/spx'
 
@@ -44,7 +44,8 @@ export default class MemberIndex extends Component {
       },
       orderCount: '',
       memberDiscount: '',
-      isOpenPopularize: false
+      isOpenPopularize: false,
+      salespersonData: null
     }
   }
 
@@ -59,7 +60,10 @@ export default class MemberIndex extends Component {
       frontColor: '#ffffff'
     })
     this.fetch()
+  }
 
+  componentDidShow () {
+    this.getSalesperson()
   }
 
   async fetch () {
@@ -117,6 +121,16 @@ export default class MemberIndex extends Component {
       orderCount,
       memberDiscount: memberDiscount.length > 0 ? memberDiscount[memberDiscount.length-1].privileges.discount_desc : '',
       memberAssets: assets
+    })
+  }
+
+    /**
+   * 获取导购信息
+   * */
+  async getSalesperson() {
+    let data = await api.member.getSalesperson()
+    this.setState({
+      salespersonData: Array.isArray(data) ? false : data
     })
   }
 
@@ -240,7 +254,7 @@ export default class MemberIndex extends Component {
 
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize } = this.state
+    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData } = this.state
 
     return (
       <View className='page-member-index'>
@@ -415,6 +429,11 @@ export default class MemberIndex extends Component {
               <View>买单</View>
             </View>
           </View>*/}
+          {
+            salespersonData && salespersonData.is_show == 1 ?
+              <ExclusiveCustomerService info={salespersonData} />
+              : null
+          }
           <View className='page-member-section'>
             {
               isOpenPopularize &&
@@ -431,6 +450,13 @@ export default class MemberIndex extends Component {
               isLink
               img='/assets/imgs/group.png'
               onClick={this.handleClick.bind(this, '/pages/member/group-list')}
+            >
+            </SpCell>
+            <SpCell
+              title='投诉记录'
+              isLink
+              img='/assets/imgs/group.png'
+              onClick={this.handleClick.bind(this, '/marketing/pages/member/complaint-record')}
             >
             </SpCell>
             <SpCell

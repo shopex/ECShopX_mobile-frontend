@@ -6,7 +6,7 @@ import { Loading, Price, SpCell, AddressChoose, SpToast, NavBar } from '@/compon
 import api from '@/api'
 import S from '@/spx'
 import { withLogin } from '@/hocs'
-import { pickBy, log, classNames, isArray, authSetting } from '@/utils'
+import { pickBy, log, classNames, isArray, authSetting, normalizeQuerys } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
@@ -45,7 +45,7 @@ const transformCartList = (list) => {
   onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
   //onChangeDrugInfo: (drugInfo) => dispatch({ type: 'cart/changeDrugInfo', payload: drugInfo })
 }))
-@withLogin()
+// @withLogin()
 export default class CartCheckout extends Component {
   static defaultProps = {
     list: []
@@ -83,6 +83,8 @@ export default class CartCheckout extends Component {
       isDrugInfoOpend: false,
       invoiceTitle: '',
       curStore:{},
+      shoppingGuideData:null, //代客下单导购信息
+      // shopData:null, //店铺信息
     }
   }
 
@@ -97,7 +99,24 @@ export default class CartCheckout extends Component {
 
   componentDidMount () {
     // this.fetchAddress()
+    if (this.$router.params.scene) {
+      console.log(normalizeQuerys(this.$router.params))
+      Taro.setStorageSync('espierCheckoutData', normalizeQuerys(this.$router.params))
+    }
 
+    let token = S.getAuthToken()
+    if (!token) {
+
+      let source = ''
+      if (this.$router.params.scene) {
+        source = 'other_pay'
+      }
+      Taro.redirectTo({
+        url: `/pages/auth/wxauth?source=${source}`
+      })
+
+      return
+    }
     const { cart_type, pay_type: payType, shop_id } = this.$router.params
     let curStore = null, info = null
 
@@ -125,8 +144,6 @@ export default class CartCheckout extends Component {
 
     this.setState({
       curStore,
-      express: JSON.parse(curStore.is_delivery) ? true : false,
-      receiptType: JSON.parse(curStore.is_delivery) ? 'logistics' : 'ziti',
       info,
       payType: payType || this.state.payType
     })
@@ -157,6 +174,8 @@ export default class CartCheckout extends Component {
       }
     })
     this.handleAddressChange(this.props.defaultAddress)
+    this.getSalespersonNologin()
+    // this.getShop()
   }
 
   componentWillUnmount() {
@@ -172,12 +191,24 @@ export default class CartCheckout extends Component {
   }
 
   async fetchZiTiShop () {
+<<<<<<< HEAD
     const { shop_id } = this.$router.params
     const {curStore} = this.state
     const shopInfo = await api.shop.getShop({distributor_id: shop_id})
 
     this.setState({
       curStore:shopInfo,
+=======
+    const { shop_id, scene } = this.$router.params
+    let id = shop_id
+    if (scene) {
+      const { dtid } = normalizeQuerys(this.$router.params)
+      id = dtid
+    }
+    const shopInfo = await api.shop.getShop({distributor_id: id})
+    this.setState({
+      curStore: shopInfo,
+>>>>>>> shopping-guide
       receiptType: shopInfo.is_delivery ? 'logistics' : 'ziti',
       express: shopInfo.is_delivery ? true : false
     })
@@ -213,6 +244,70 @@ export default class CartCheckout extends Component {
     Taro.hideLoading()
   }
 
+    /**
+   * 获取代下单导购
+   * */
+  async getSalespersonNologin() {
+    const { source, scene } = this.$router.params
+    let salesperson_id = ''
+    if (source === 'other_pay' || scene) {
+      let espierCheckoutData = {}
+      if (source === 'other_pay') {
+        espierCheckoutData = Taro.getStorageSync('espierCheckoutData')
+      } else {
+        espierCheckoutData = normalizeQuerys(this.$router.params)
+      }
+      salesperson_id = espierCheckoutData.smid
+    }
+
+    if(!salesperson_id)return;
+
+    let shoppingGuideData = await api.member.getSalespersonNologin({
+      salesperson_id
+    })
+
+    shoppingGuideData.store_name = shoppingGuideData.store_name.length > 4 ? shoppingGuideData.store_name.substring(0,4)+'...' : shoppingGuideData.store_name
+
+    this.setState({
+      shoppingGuideData
+    })
+  }
+
+  async getShop() {
+    const { source, scene } = this.$router.params
+    let distributor_id = ''
+    if (source === 'other_pay' || scene) {
+      let espierCheckoutData = {}
+      if (source === 'other_pay') {
+        espierCheckoutData = Taro.getStorageSync('espierCheckoutData')
+      } else {
+        espierCheckoutData = normalizeQuerys(this.$router.params)
+      }
+      distributor_id = espierCheckoutData.dtid
+    }
+
+    if(!distributor_id)return;
+
+    let shopData = await api.shop.getShop({
+      distributor_id
+    })
+
+    this.setState({shopData})
+  }
+
+  getShopId(){
+    const {  source, scene } = this.$router.params
+    if (source === 'other_pay' || scene) {
+      let espierCheckoutData = {}
+      if (source === 'other_pay') {
+        espierCheckoutData = Taro.getStorageSync('espierCheckoutData')
+      } else {
+        espierCheckoutData = normalizeQuerys(this.$router.params)
+      }
+      return espierCheckoutData.dtid
+    }
+  }
+
   changeSelection (params = {}) {
     const { address_list } = this.state
     if (address_list.length === 0) {
@@ -243,7 +338,21 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const { type, seckill_id = null, ticket = null, group_id = null, team_id = null, shop_id } = this.$router.params
+    const { type, seckill_id = null, ticket = null, group_id = null, team_id = null, shop_id, source, scene } = this.$router.params
+    let cxdid = null
+    let dtid = null
+    let smid = null
+    if (source === 'other_pay' || scene) {
+      let espierCheckoutData = {}
+      if (source === 'other_pay') {
+        espierCheckoutData = Taro.getStorageSync('espierCheckoutData')
+      } else {
+        espierCheckoutData = normalizeQuerys(this.$router.params)
+      }
+      cxdid = espierCheckoutData.cxdid
+      dtid = espierCheckoutData.dtid
+      smid = espierCheckoutData.smid
+    }
     let orderType = ''
     let activity = {}
     orderType = (() => {
@@ -321,11 +430,18 @@ export default class CartCheckout extends Component {
       member_discount: 0,
       coupon_discount: 0,
 			pay_type: payType,
-      distributor_id: shop_id === 'undefined' ? 0 : shop_id,
+      distributor_id: this.getShopId() || (shop_id === 'undefined' ? 0 : shop_id),
       ...drugInfo
     }
 
     log.debug('[checkout] params: ', params)
+    if (cxdid) {
+      params.cxdid = cxdid
+      params.distributor_id = dtid
+      params.cart_type = 'cxd'
+      params.order_type = 'normal_shopguide'
+      params.salesman_id = smid
+    }
 
     if (coupon) {
       if (coupon.type === 'coupon' && coupon.value.code) {
@@ -348,6 +464,11 @@ export default class CartCheckout extends Component {
     })
     const params = this.getParams()
 
+    let salesperson_id = Taro.getStorageSync('s_smid')
+    if (salesperson_id) {
+      params.salesperson_id = salesperson_id
+    }
+    console.log(params)
     let data
     try {
       data = await api.cart.total(params)
@@ -358,6 +479,7 @@ export default class CartCheckout extends Component {
     if (!data) return
 
     const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params } = data
+    
     const total = {
       ...this.state.total,
       item_fee,
@@ -762,16 +884,36 @@ export default class CartCheckout extends Component {
           num
         }
       })
+
+
+      const { shop_id, source, scene } = this.$router.params
+
+      let m_source = ''
+      if (source === 'other_pay' || scene) {
+        m_source = 'other_pay'
+      }
+
+      // let { point_use, shopData } = this.state
+
+      // S.set('point_use',point_use)
+
       let id = ''
       if (APP_PLATFORM === 'standard') {
         const { distributor_id } = Taro.getStorageSync('curStore')
         id = distributor_id
       } else {
-        id = this.$router.params.shop_id
+        id = shop_id
+      }
+      if (scene) {
+        const espierCheckoutData = normalizeQuerys(this.$router.params)
+        id = espierCheckoutData.dtid
       }
       Taro.navigateTo({
-        url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}&distributor_id=${id}`
+        url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}&distributor_id=${id}&source=${m_source}`
       })
+      // Taro.navigateTo({
+      //   url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}&distributor_id=${id}`
+      // })
   }
 
   handlePaymentChange = async (payType) => {
@@ -842,9 +984,16 @@ export default class CartCheckout extends Component {
       delivery: '货到付款'
     }    
     const { coupon, colors } = this.props
-    const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug, third_params } = this.state
+    const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug, third_params, shoppingGuideData, curStore } = this.state
+    // let curStore = {}
+    // if (shopData) {
+    //   curStore = shopData
+    // } else {
+    //   curStore = this.state.curStore
+    // }
     //const curStore = Taro.getStorageSync('curStore')
-    const { curStore } = this.state
+    // const { curStore } = this.state
+    console.log(curStore)
     const { type } = this.$router.params
     const isDrug = type === 'drug'
 
@@ -873,6 +1022,11 @@ export default class CartCheckout extends Component {
             />
             : null
         }
+        {
+          shoppingGuideData ? <View className='shopping-guide-header'>
+            此订单商品来自“{shoppingGuideData.store_name}”导购“{shoppingGuideData.name}”的推荐
+          </View> : null
+        }        
         <ScrollView
           scrollY
           className='checkout__wrap'
