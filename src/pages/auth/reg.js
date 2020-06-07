@@ -151,7 +151,7 @@ export default class Reg extends Component {
           params.distributor_id = Taro.getStorageSync('s_dtid')
           params.salesperson_id = salesperson_id
         }
-        
+
         const res = await api.user.reg(params)
 
         const { code } = await Taro.login()
@@ -160,6 +160,24 @@ export default class Reg extends Component {
       } else {
         const res = await api.user.reg(data)
         S.setAuthToken(res.token)
+      }
+
+      try {
+        let salesperson_id = Taro.getStorageSync('s_smid')
+
+        if(salesperson_id){
+          await api.member.setUsersalespersonrel({
+            salesperson_id
+          })
+        }
+
+      } catch (err) {
+
+        Taro.showToast({
+          title: '导购员绑定失败',
+          icon: 'none',
+          duration: 2000
+        })
       }
 
       S.toast('注册成功')
