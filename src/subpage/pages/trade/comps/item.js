@@ -3,7 +3,7 @@ import { View, Text, Button } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { Price } from '@/components'
 import { classNames } from '@/utils'
-import OrderItem from './order-item'
+import OrderItem from '../../../../components/orderItem/order-item'
 
 import './item.scss'
 

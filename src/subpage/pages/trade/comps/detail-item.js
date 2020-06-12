@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { copyText } from '@/utils'
-import OrderItem from  './order-item'
+import OrderItem from  '../../../../components/orderItem/order-item'
 
 import './detail-item.scss'
 
@@ -12,7 +12,7 @@ export default class DetailItem extends Component {
   }
 
   static defaultProps = {
-    // customHeader: false,
+    // customHeader: false
     customFooter: false,
     // customRender: false,
     // noHeader: false,
