@@ -391,7 +391,7 @@ export default class Detail extends Component {
       S.toast('请先登录再购买')
 
       setTimeout(() => {
-        S.login(this)
+        S.login(this, true)
       }, 2000)
 
       return
