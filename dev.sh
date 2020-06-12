@@ -6,7 +6,7 @@
  # @FilePath: /unite-vshop/dev.sh
 # @Date: 2020-06-10 10:15:51
  # @LastEditors: Arvin
- # @LastEditTime: 2020-06-12 14:57:52
+ # @LastEditTime: 2020-06-12 15:02:05
 ### 
 #/usr/bash
 
@@ -95,16 +95,16 @@ APP_CUSTOM_SERVER='${custom_server}'
 APP_HOME_PAGE='${home_page}'
 ' > ./.env
 
-if["$(uname)"=="Darwin"];then
+if [ "$(uname)" == "Darwin" ]
+then
 
 echo "npm run dev:weapp"
-
 npm run dev:weapp
 
-elif["$(expr substr $(uname -s) 1 10)"=="MINGW32_NT"];then
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]
+then
 
 echo "npm run dev:weapp:windows"
-
 npm run dev:weapp:windows
 
 fi
