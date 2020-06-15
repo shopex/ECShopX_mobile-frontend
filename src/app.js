@@ -177,6 +177,20 @@ class App extends Component {
           'pages/trade/invoice-list',
         ]
       },
+      // 团购
+      {
+        root: 'groupBy',
+        pages: [
+          'pages/home/index',
+          'pages/cart/index',
+          'pages/goodDetail/index',
+          'pages/payOrder/index',
+          'pages/orderDetail/index',
+          'pages/orderList/index',
+          'pages/shareDetail/index',
+          'pages/community/index'
+        ]
+      },
       {
         root: 'others',
         pages: [
