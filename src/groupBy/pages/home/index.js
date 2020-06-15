@@ -1,0 +1,264 @@
+/*
+ * @Author: Arvin
+ * @GitHub: https://github.com/973749104
+ * @Blog: https://liuhgxu.com
+ * @Description: 团购首页
+ * @FilePath: /feat-Unite-group-by/src/groupBy/pages/home/index.js
+ * @Date: 2020-04-23 16:38:16
+ * @LastEditors: Arvin
+ * @LastEditTime: 2020-06-15 11:34:13
+ */
+import Taro, { Component } from '@tarojs/taro'
+import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
+import { debounce } from '@/utils'
+import api from '@/api'
+import { NavBar } from '@/components'
+import S from '@/spx'
+import { formatGood } from '../../utils'
+import GroupGood from '../../component/grouoGood'
+import LoadingMore from '../../component/loadingMore'
+import TabBar from '../../component/tabBar'
+import Classification from '../../component/classification'
+
+import './index.scss'
+
+export default class GroupByIndex extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      userInfo: {},
+      // banner
+      banner: [],
+      // 活动列表
+      list: [],
+      isRefresh: false,
+      isLoading: false,
+      isEnd: false,
+      isEmpty: false,
+      param: {
+        page: 1,
+        pageSize: 10
+      },
+      // 当前地区
+      current: {},
+      // 分类
+      category: 1,
+      // 定位信息
+      lbs: {
+        lat: '',
+        lng: ''
+      }
+    }
+  }
+
+  componentDidMount () {
+  }
+
+  componentDidShow () {
+    this.init()
+  }
+
+  config = {
+    navigationBarTitleText: '团购'
+  }
+  // 获取定位
+  init = async () => {
+    if (!S.getAuthToken()) {
+      Taro.showToast({
+        icon: 'none',
+        title: '请登录'
+      }).then(() => {
+        S.login(this, true)
+      })
+      return
+    }
+    let userInfo = Taro.getStorageSync('userinfo')
+    if (!userInfo) {
+      const info = await api.groupBy.info()
+      userInfo = {
+        username: info.memberInfo.username,
+        avatar: info.memberInfo.avatar,
+        userId: info.memberInfo.user_id,
+        isPromoter: info.is_promoter
+      }
+      Taro.setStorageSync('userinfo', userInfo)
+    }
+    const lbs = await Taro.getLocation({type: 'gcj02'})
+    const { latitude, longitude } = lbs
+    this.getSetting()
+    this.setState({
+      lbs: {
+        lat: latitude,
+        lng: longitude
+      },
+      userInfo
+    }, () => {
+      this.getNearBuyCommunity()
+    })
+  }
+  // 获取附近活动社区
+  getNearBuyCommunity = () => {
+    const currentCommunity = Taro.getStorageSync('community')
+    if (currentCommunity) {
+      this.setState({
+        current: currentCommunity
+      }, () => {
+        this.getActiveData(true)
+      })
+    } else {
+      const { lbs } = this.state
+      api.groupBy.activityCommunity(lbs).then(res => {
+        Taro.setStorageSync('community', res)
+        this.setState({
+          current: res
+        }, () => {
+          this.getActiveData(true)
+        })
+      })
+    }
+  }
+  // 获取活动数据
+  getActiveData = async (isRefrsh = false) => {
+    Taro.showLoading({title: '正在加载中', mask: true})
+    const { current, category, param, list } = this.state
+    // 原列表数据
+    const oldList = isRefrsh ? [] : list[0].good
+    api.groupBy.activityDetail({
+      ...param,
+      community_id: current.community_id,
+      activity_goods_category_key: category
+    }).then(res => {
+      const total_count = res.items.total_count
+      const isEnd = param.page >= (total_count / param.pageSize)
+      const data = res.last_second && res.items ? [{
+        time: res.last_second,
+        good: [...oldList, ...formatGood(res.items.list)],
+        deliveryDate: res.delivery_date
+      }] : []
+      this.setState({
+        list: data,
+        isRefresh: false,
+        isLoading: false,
+        isEnd,
+        isEmpty: data.length <= 0,
+        banner: res.banner_img ? [res.banner_img] : ''
+      })
+      Taro.hideLoading()
+    })
+  }
+  // 获取设置
+  getSetting = () => {
+    api.groupBy.getTemplate({
+      template_name: 'yykcommunity',
+      version: 'v1.0.1',
+      page_name: 'index'
+    }).then(res => {
+      console.log(res)
+    })
+  }
+  // 滚动事件
+  onScroll = debounce((e) => {
+    const { scrollTop } = e.detail
+    this.setState({
+      scrollTop
+    })
+  }, 1000)
+
+  // 下拉刷新
+  handleRefresh = () => {
+    this.setState({
+      isRefresh: true
+    })
+    this.getActiveData(true)
+  }
+
+  // 上拉加载
+  handleLoadMore = () => {
+    const { isLoading, isEnd, param, isEmpty } = this.state
+    if (isEnd || isLoading || isEmpty) return
+    this.setState({
+      param: {
+        page: ++param.page,
+        pageSize: param.pageSize
+      },
+      isLoading: true
+    })
+    this.getActiveData()
+  }
+
+  // 跳转社区列表
+  goCommunity = () => {
+    Taro.navigateTo({
+      url: '/groupBy/pages/community/index'
+    })
+  }
+  
+  render () {
+    const {
+      userInfo,
+      banner,
+      list,
+      scrollTop,
+      isRefresh, 
+      isLoading,
+      isEnd,
+      isEmpty,
+      current
+    } = this.state
+
+    return (
+      <View className='groupByHome' >
+        <NavBar
+          title={this.config.navigationBarTitleText}
+          leftIconType='chevron-left'
+          fixed='true'
+        />
+        <View className='header' onClick={this.goCommunity}>
+          <Image className='avatar' src={userInfo.avatar}></Image>
+          <View className='info'>
+            <View className='name'>{userInfo.username}</View>
+            <View className='address'>提货: {current.community_name}</View>
+          </View>
+        </View>
+        <ScrollView
+          className='list'
+          scrollY
+          scroll-anchoring
+          refresherEnabled
+          scrollWithAnimation
+          scrollTop={scrollTop}
+          onScroll={this.onScroll}
+          refresherTriggered={isRefresh}
+          onRefresherRefresh={this.handleRefresh}
+          onScrollToLower={this.handleLoadMore}
+        >
+          {/* banner */}
+          {
+            banner.length >0 && <Swiper
+              className='banner'
+            >
+              {
+                banner.map(item => (
+                  <SwiperItem key={item} className='bannerItem'>
+                    <Image className='bannerImg' src={item}></Image>
+                  </SwiperItem>
+                ))
+              }
+            </Swiper>
+          }
+          {/* 菜单 */}
+          <Classification />
+          {/* 列表图 */}
+          {
+            list.map(item => <GroupGood key={item.time} info={item} />)
+          }
+          {/* 加载更多 */}
+          <LoadingMore isLoading={isLoading} isEnd={isEnd} isEmpty={isEmpty} />
+          {/* 防止子内容无法支撑scroll-view下拉刷新 */}
+          <View style='width:2rpx;height:2rpx;bottom:-2rpx;position:absolute;' />
+        </ScrollView>
+        <TabBar current={0} />
+      </View>
+    )
+  }
+}
