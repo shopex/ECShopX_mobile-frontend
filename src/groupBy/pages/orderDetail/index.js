@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/orderDetail/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 18:35:01
+ * @LastEditTime: 2020-06-16 14:09:04
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -27,7 +27,11 @@ export default class OrderDetail extends Component {
       totalItemNum: 0,
       totalFee: 0,
       itemFee: 0,
-      orderStatus: ''
+      orderStatus: '',
+      currtent: {},
+      activityStatus: '',
+      deliveryDate: '',
+      qrcodeUrl: ''
     }
   }
   
@@ -39,7 +43,7 @@ export default class OrderDetail extends Component {
   }
 
   componentDidShow () {
-    this.getCalculateTotal()
+    this.getOrderDetail()
   }
 
   config = {
@@ -77,26 +81,25 @@ export default class OrderDetail extends Component {
     return `${d}天${format(h)}:${format(m)}:${format(s)}`
   }
 
-  getCalculateTotal = () => {
-    const currentCommunity = Taro.getStorageSync('community')
-    const { activityId } = this.$router.params
-    api.groupBy.getCalculateTotal({
-      receipt_type: 'ziti',
-      order_type: 'normal_community',
-      items: [],
-      remark: '',
-      community_id: currentCommunity.community_id,
-      community_activity_id: activityId,
-      member_discount: false,
-      coupon_discount: '',
+  getOrderDetail = () => {
+    const { orderId } = this.$router.params
+    if (!orderId) {
+      return
+    }
+    api.groupBy.getOrderDetail({
+      orderId
     }).then(res => {
       this.setState({
         list: res.items,
+        // currtent: currentCommunity,
         totalItemNum: res.totalItemNum,
         totalFee: (res.total_fee / 100).toFixed(2),
         itemFee: (res.item_fee / 100).toFixed(2),
         cancelTime: res.auto_cancel_time,
-        orderStatus: res.order_status
+        orderStatus: res.order_status,
+        activityStatus: res.activity_status,
+        deliveryDate: res.delivery_date,
+        qrcodeUrl: res.qrcode_url
       }, () => {
         this.countdown()
       })
@@ -104,7 +107,18 @@ export default class OrderDetail extends Component {
   }
 
   render () {
-    const { list, cancelTime, totalFee, totalItemNum, itemFee, orderStatus } = this.state
+    const { 
+      currtent,
+      activityStatus,
+      list,
+      deliveryDate,
+      cancelTime,
+      totalFee,
+      totalItemNum,
+      itemFee,
+      qrcodeUrl,
+      orderStatus
+    } = this.state
     return (
       <View className='orderDetail'>
         <NavBar
@@ -119,16 +133,18 @@ export default class OrderDetail extends Component {
             <View>{ this.formatCountTime(cancelTime) }后自动取消订单</View>
           </View>
           {/* 取货码 */}
-          <View className='code'>
-            <Text>取货码</Text>
-            <Image className='codeImg' src='http://www.weiyouma.com/attchment/uploadimg/20151025/1445778498161935117.jpg' />
-            <View className='codeBtn'>确认核销</View>
-          </View>
+          {
+            orderStatus === 'PAYED' && <View className='code'>
+              <Text>取货码</Text>
+              <Image className='codeImg' src={qrcodeUrl} />
+              <View className='codeBtn'>确认核销</View>
+            </View>
+          }
           {/* 配送地址 */}
           <View className='address'>
-            <View className='time'>预计送达: 2020/05/09 18:00</View>
-            <View className='community'>缤纷小区</View>
-            <View className='unit'>提货：九幢2单元101</View>
+          <View className='time'>预计送达: { deliveryDate }</View>
+            <View className='community'>{ currtent.community_name }</View>
+            <View className='unit'>提货：{ currtent.address }</View>
           </View>
           {/* 商品详情 */}
           <View className='goodinfo'>
@@ -141,7 +157,7 @@ export default class OrderDetail extends Component {
                 }
               </View>
               <View className='sum'>
-              共{ totalItemNum }件
+                共{ totalItemNum }件
                 <View className='iconfont icon-arrowRight'></View>
               </View>
             </View>
@@ -159,7 +175,7 @@ export default class OrderDetail extends Component {
           </View>
           {/* 订单详情 */}
           {
-            1 && <View className='orderinfo'>
+            orderStatus !== 'NOTPAY' && <View className='orderinfo'>
               <View className='infoLine'>
                 <Text>订单号</Text>
                 <Text>123912073019273</Text>
@@ -178,12 +194,9 @@ export default class OrderDetail extends Component {
               </View>
             </View>
           }
-          <View className='btn'>
-            申请退款
-          </View>
           {
-            orderStatus === 'NOTPAY' && <View className='btn pay'>
-              立即支付
+            orderStatus === 'PAYED' && activityStatus !== 'over' && <View className='btn'>
+              申请退款
             </View>
           }
           {
