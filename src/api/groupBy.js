@@ -3,10 +3,10 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 社区团购api
- * @FilePath: /feat-Unite-group-by/src/api/groupBy.js
+ * @FilePath: /unite-vshop/src/api/groupBy.js
  * @Date: 2020-05-26 10:23:49
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 15:13:20
+ * @LastEditTime: 2020-06-16 14:09:13
  */ 
 import req from './req'
 
@@ -158,7 +158,7 @@ export const getOrderCount = (param = {}) => req.get('/orders/count', param)
 export const getOrderCounts = (param = {}) => req.get('/orderscount', param)
 
 // 获取订单详情
-export const getOrderDetail = (param = {}) => req.get('/order', param)
+export const getOrderDetail = (param = {}) => req.get(`/order/${param.orderId}`)
 
 // 计算订单
 export const getCalculateTotal = (param = {}) => req.post('/getFreightFee', param)

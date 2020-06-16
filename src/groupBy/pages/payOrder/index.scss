@@ -39,10 +39,12 @@
       .goodImg {
         flex: 1;
         display: flex;
-        overflow: hidden;
+        overflow-x: scroll;
         .img {
-          width: 160px;
-          height: 160px;
+          border: 2px solid #efefef;
+          width: 184px;
+          height: 184px;
+          flex-shrink: 0;
           margin-left: 30px;
           &:first-child {
             margin-left: 0;

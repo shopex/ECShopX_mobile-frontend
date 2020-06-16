@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/cart/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 17:57:00
+ * @LastEditTime: 2020-06-16 13:38:29
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -102,7 +102,7 @@ export default class GroupByIndex extends Component {
     const { list } = this.state
     const activityId =  list[0] && list[0].activity_id
     Taro.navigateTo({
-      url: `/groupBy/pages/orderDetail/index?activityId=${activityId}`
+      url: `/groupBy/pages/payOrder/index?activityId=${activityId}`
     })
   }
 
@@ -110,8 +110,9 @@ export default class GroupByIndex extends Component {
 
   render () {
     const { list, failureList, isCheckAll, total } = this.state
+    const isEmpty = list.length <= 0 && failureList.length <= 0
     return (
-      <View className={`groupByCart ${list.length <= 0 && 'noGood'}`}>
+      <View className={`groupByCart ${isEmpty && 'noGood'}`}>
         <NavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
