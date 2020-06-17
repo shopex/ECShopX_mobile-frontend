@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, SpCell} from '@/components'
-import ExclusiveCustomerService from './comps/exclusive-customer-service'
+// import ExclusiveCustomerService from './comps/exclusive-customer-service'
 import api from '@/api'
 import S from '@/spx'
 
@@ -429,11 +429,11 @@ export default class MemberIndex extends Component {
               <View>买单</View>
             </View>
           </View>*/}
-          {
+          {/*
             salespersonData && salespersonData.is_show == 1 ?
               <ExclusiveCustomerService info={salespersonData} />
               : null
-          }
+          */}
           <View className='page-member-section'>
             {
               isOpenPopularize &&
