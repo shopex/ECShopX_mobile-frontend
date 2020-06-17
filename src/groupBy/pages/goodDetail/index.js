@@ -6,12 +6,12 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 15:29:52
+ * @LastEditTime: 2020-06-17 18:28:48
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
-import { NavBar } from '@/components'
+import { NavBar, SpHtmlContent } from '@/components'
 import api from '@/api'
 import CanvasUtil from '../../utils/canvas'
 
@@ -23,15 +23,23 @@ export default class GoodDetail extends Component {
     super(props)
     this.state = {
       goodInfo: {
-        img: [
-          'https://miniso-tw.com.tw/wp-content/uploads/2018/12/37295a0c6b697777c564ea2d188c99a8-300x300.jpg',
-          'https://miniso-tw.com.tw/wp-content/uploads/2018/12/4514003134212-300x300.jpg',
-          'https://miniso-tw.com.tw/wp-content/uploads/2018/12/c3f2c7034a01d52759d551a0a709114d-300x300.jpg'
-        ]
+        deliveryDate: '',
+        goodName: '',
+        goodDesc: '',
+        pics: [],
+        price: '0.00',
+        activityPrice: '0.00',
+        initialSales: 0,
+        historyData: [],
+        intro: '',
+        leaderName: '',
+        address: ''
       },
+      timeId: '',
       imgCurrent: 0,
       posterImg: '',
-      showPoster: false
+      showPoster: false,
+      countTime: 0
     }
   }
 
@@ -39,20 +47,76 @@ export default class GoodDetail extends Component {
     this.getGoodInfo()
   }
 
+  componentWillUnmount () {
+    let { timeId } = this.state
+    if (timeId) {
+      clearTimeout(timeId)
+    }
+  }
+
   config = {
     navigationBarTitleText: '商品详情'
   }
 
+  // 倒计时
+  countdown = () => {
+    let { countTime, timeId } = this.state
+    if (countTime > 0) {
+      timeId = setTimeout(() => {
+        this.setState({
+          countTime: countTime - 1
+        }, () => {
+          this.countdown()
+        })
+      }, 1000)
+    } else {
+      // 清除倒计时
+      timeId = ''
+      clearTimeout(timeId)
+    }
+    this.setState({
+      timeId
+    })
+  }
+
+  // 格式化时间
+  formatCountTime = (time) => {
+    const format = (val) => (val > 9) ? val : `0${val}`
+    const d = Math.floor(time / (24*3600))
+    const h = Math.floor(time % (24*3600) / 3600)
+    const m = Math.floor(time % 3600 / 60)
+    const s = Math.floor(time % 60)
+    return `${d}天${format(h)}:${format(m)}:${format(s)}`
+  }
   // 获取商品详情
   getGoodInfo = () => {
     const { itemId, activeId } = this.$router.params
     const currentCommunity = Taro.getStorageSync('community')
+
     api.groupBy.activityGoodDetail({
       item_id: itemId,
       activity_id: activeId,
       community_id: currentCommunity.community_id,
     }).then(res => {
-      console.log(res)
+      const { item, activity, history_data, community } = res
+      this.setState({
+        goodInfo: {
+          pics: item.pics,
+          goodDesc: item.brief,
+          goodName: item.itemName,
+          price: (item.price / 100).toFixed(2),
+          initialSales: activity.item.initial_sales,
+          deliveryDate: activity.delivery_date,
+          historyData: history_data,
+          activityPrice: (activity.item.activity_price / 100).toFixed(2),
+          intro: item.intro,
+          leaderName: community.leader_name,
+          address: community.address
+        },
+        countTime: activity.last_second
+      }, () => {
+        this.countdown()
+      })
     })
   }
 
@@ -72,9 +136,7 @@ export default class GoodDetail extends Component {
   }
   // 立即购买
   handleBuy = () => {
-    const ctx = Taro.createCanvasContext('poster')
-    const canvas = new CanvasUtil(ctx)
-    console.log(canvas)
+    this.drawCanvas()
   }
 
   // canvas 绘制
@@ -83,15 +145,17 @@ export default class GoodDetail extends Component {
       mask: true,
       title: '请稍等'
     })
+    const {goodInfo } = this.state
     const ctx = Taro.createCanvasContext('poster', this)
     const canvas = new CanvasUtil(ctx, Taro)
-    canvas.drawCanvas(375, 640, () => {
+    canvas.drawCanvas(375, 640, goodInfo, () => {
       Taro.canvasToTempFilePath({
         x: 0,
         y: 0,
         canvasId: 'poster',
       }).then(res => {
         this.setState({
+          showPoster: true,
           posterImg: res.tempFilePath
         })
         Taro.hideLoading()
@@ -106,7 +170,7 @@ export default class GoodDetail extends Component {
   }
 
   render () {
-    const { goodInfo, imgCurrent, posterImg, showPoster } = this.state
+    const { goodInfo, imgCurrent, posterImg, showPoster, countTime } = this.state
 
     return (
       <View className='goodDetail'>
@@ -121,7 +185,7 @@ export default class GoodDetail extends Component {
             onChange={this.swiperImgChange.bind(this)}
           >
             {
-              goodInfo.img.map(item => (
+              goodInfo.pics.map(item => (
                 <SwiperItem 
                   key={item}
                   className='swiperItem'
@@ -131,68 +195,54 @@ export default class GoodDetail extends Component {
               ))
             }
           </Swiper>
-          <View className='showCurrent'>{ (imgCurrent + 1) } / { goodInfo.img.length }</View>
+          <View className='showCurrent'>{ (imgCurrent + 1) } / { goodInfo.pics.length }</View>
         </View>
         {/* 倒计时 */}
         <View className='timeDown'>
-          <Text className='title'>仅剩</Text>
-          <AtCountdown 
-            isShowDay
-            day={2}
-            hours={1}
-            minutes={1}
-            seconds={10}
-          />
+          <Text className='title'>仅剩{ this.formatCountTime(countTime) }</Text>
         </View>
         {/* 详情 */}
         <View className='info'>
           {/* 商品名称 */}
           <View className='goodName'>
-            <View className='name'>阿巴斯都播哦吧都啊阿巴斯都播哦吧都啊阿巴斯都播哦吧都啊</View>
+          <View className='name'>{ goodInfo.goodName }</View>
             <View className='saled'>已售: 9210</View>
           </View>
           {/* 商品说明 */}
           <View className='desc'>
-            阿巴斯都播哦吧阿巴斯都播
+            { goodInfo.goodDesc }
           </View>
           {/* 预计送达 */}
-          <View className='arrivals'>预计送达：2020-05-13 18:00</View>
+          <View className='arrivals'>预计送达：{ goodInfo.deliveryDate }</View>
           {/* 标签 */}
           <View className='tag'>会员享受</View>
           {/* 价格 */}
           <View className='price'>
             ¥
-            <Text className='now'>10.00</Text>
-            <Text className='old'>12.00</Text>
+            <Text className='now'>{ goodInfo.activityPrice }</Text>
+            <Text className='old'>{ goodInfo.price }</Text>
           </View>
           {/* 最近下单 */}
-          <View className='recenter'>
+          <View className={`recenter ${ goodInfo.historyData.length <= 0 && 'noHistoryData'}`}>
             <View className='title'>最近下单</View>
             <View className='recenterList'>
               <View className='avatarContent'>
                 {
-                  [1, 3, 4, 5, 6, 9, 9].map(item => (
+                  goodInfo.historyData.map(item => (
                     <Image key={item} className='buyAvatar' src='https://pic1.zhimg.com/v2-d8bbab30a2a4db2fe03213ef3f9b50e8_r.jpg' />
                   ))
                 }
               </View>
               <View className='sumBuyer'>
-                230人...
+                { goodInfo.initialSales }人...
                 <View className='iconfont icon-arrowRight'></View>
               </View>
             </View>
           </View>
           {/* 其他规格信息 */}
           <View className='otherInfo'>
-            <View className='title'>商品信息</View>
-            {
-              [0, 1, 3, 4, 5].map(item => (
-                <View className='infoItem' key={item}>
-                  <View className='name'>产地</View>
-                  <View className='content'>马来西亚</View>
-                </View>
-              ))
-            }
+            <View className='title'>商品信息: </View>
+            {goodInfo.intro && <SpHtmlContent content={goodInfo.intro} className='richText' />}
           </View>
         </View>
         {/* 底部购物bar */}
@@ -208,6 +258,7 @@ export default class GoodDetail extends Component {
         {
           showPoster && <View className='imgContent' onTouchMove={this.stopTouch}>
             <Image className='posterImg' mode='widthFix' src={posterImg} />
+            <View className='closePoster' onClick={() => { this.setState({showPoster: false})}}>关闭</View>
           </View>
         }
       </View>

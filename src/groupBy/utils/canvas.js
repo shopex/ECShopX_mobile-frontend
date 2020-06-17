@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/utils/canvas.js
  * @Date: 2020-05-11 11:05:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 15:40:08
+ * @LastEditTime: 2020-06-17 18:25:33
  */
 
 export default class Canvas {
@@ -269,18 +269,18 @@ async createGoodList (data, x, y, w) {
   async createBottom (width, x, y, data) {
     const sx = x
     const sy = y + 18
-    const marginLeft = 18
+    const marginLeft = 10
     const marginTop = 24
     const list = [
       {
         name: '小区团长:', 
-        content: '李四'
+        content: data.leaderName
       }, {
         name: '预计送达:', 
-        content: '2018-02-02 18:00'
+        content: data.deliveryDate
       }, {
         name: '提货地址:',   
-        content: '三墩路85号'
+        content: data.address
       }
     ]
     // 重置文字大小
@@ -288,15 +288,17 @@ async createGoodList (data, x, y, w) {
     for (let i =0; i < list.length; i++) {
       const top = sy + marginTop * i
       const nameWidth = this.measureText(list[i].name)
+      const limtWidth = (width - 2 * sx - 100 - nameWidth - marginLeft )
+      const text = this.splitString(list[i].content, limtWidth)
       this.drawText(sx, top, list[i].name)
-      this.drawText(sx + nameWidth + marginLeft, top, list[i].content, '#000', 11, 'left')
+      this.drawText(sx + nameWidth + marginLeft, top, text, '#000', 11, 'left')
     }
     this.drawText(sx, sy + marginTop * list.length + 8, '保存图片扫一扫，优惠拼团', '#000', 13)
     await this.createRoundImg(width - sx, sy, 50, data.img, '#fff')
   }
 
   // 绘制
-  async drawCanvas (width, height, cb = null) {
+  async drawCanvas (width, height, goodInfo, cb = null) {
     const goodTop = 60
     const goodLeft = 15
     const goodWidth = width - (goodLeft * 2)
@@ -306,15 +308,18 @@ async createGoodList (data, x, y, w) {
     // 绘制商品内容框
     await this.createBackground(goodWidth, goodheight, goodLeft, goodTop, 10)
     await this.creatSingleGood({
-      img: 'http://www.embel.com.tw/store_image/0939890778/E1560220929701.jpg',
-      name: '澳大利亚橙子',
-      nPrice: '10.00',
-      oPrice: '14.00'
+      img: goodInfo.pics[0],
+      name: goodInfo.goodName,
+      nPrice: goodInfo.activityPrice,
+      oPrice: goodInfo.price
     }, goodLeft, goodTop, goodWidth, 340, 10)
     // await this.createGoodList({
     // }, goodLeft, goodTop, goodWidth)
     await this.createBottom(width, goodLeft, goodTop + goodheight, {
-      img: 'https://miniso-tw.com.tw/wp-content/uploads/2018/12/c3f2c7034a01d52759d551a0a709114d-300x300.jpg'
+      img: 'https://res.wx.qq.com/wxdoc/dist/assets/img/WXACode.fa3d686a.png',
+      leaderName: goodInfo.leaderName,
+      address: goodInfo.address,
+      deliveryDate: goodInfo.deliveryDate
     })
     this.ctx.draw(true, () => {
       if (cb) {

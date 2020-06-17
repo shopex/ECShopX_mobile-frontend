@@ -51,6 +51,7 @@
       align-items: center;
       justify-content: space-between;
       overflow-x: hidden;
+      padding: 10px 0;
       .name {
         flex: 1;
         overflow: hidden;
@@ -84,6 +85,7 @@
     .price {
       font-size: 22px;
       color: #928869;
+      padding: 10px 0;
       .now {
         font-size: 32px;
         margin: 0 5px;
@@ -96,6 +98,12 @@
       }
     }
     .recenter {
+      padding: 10px 0;
+      &.noHistoryData {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
       .title {
         padding: 8px 0;
       }
@@ -126,7 +134,10 @@
     }
     .otherInfo {
       .title {
-        padding: 45px 0 25px 0;
+        padding: 25px 0;
+      }
+      .richText {
+        width: 100%;
       }
       .infoItem {
         display: flex;
@@ -178,8 +189,8 @@
     width: 375PX;
     height: 640PX;
     position: fixed;
-    top: -100%;
-    left: -100%;
+    top: -200%;
+    left: -200%;
   }
   .imgContent {
     width: 100%;
@@ -191,15 +202,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     background: rgba($color: #000000, $alpha: 0.3);
-  }
-  .posterImg {
-    position: absolute;
-    width: 98%;
-    max-height: 99%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .posterImg {
+      width: 85%;
+      max-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .closePoster {
+      color: #fff;
+      margin-top: 20px;
+    }
   }
 }
 
