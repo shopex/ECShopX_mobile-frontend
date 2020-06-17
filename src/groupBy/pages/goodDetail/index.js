@@ -3,15 +3,16 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 商品详情
- * @FilePath: /feat-Unite-group-by/src/groupBy/pages/goodDetail/index.js
+ * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 11:36:18
+ * @LastEditTime: 2020-06-17 15:29:52
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
 import { NavBar } from '@/components'
+import api from '@/api'
 import CanvasUtil from '../../utils/canvas'
 
 import './index.scss'
@@ -29,12 +30,13 @@ export default class GoodDetail extends Component {
         ]
       },
       imgCurrent: 0,
-      posterImg: ''
+      posterImg: '',
+      showPoster: false
     }
   }
 
   componentDidMount () {
-    this.drawCanvas()
+    this.getGoodInfo()
   }
 
   config = {
@@ -43,7 +45,15 @@ export default class GoodDetail extends Component {
 
   // 获取商品详情
   getGoodInfo = () => {
-    console.log('获取商品详情')
+    const { itemId, activeId } = this.$router.params
+    const currentCommunity = Taro.getStorageSync('community')
+    api.groupBy.activityGoodDetail({
+      item_id: itemId,
+      activity_id: activeId,
+      community_id: currentCommunity.community_id,
+    }).then(res => {
+      console.log(res)
+    })
   }
 
   // 图片切换
@@ -54,6 +64,12 @@ export default class GoodDetail extends Component {
     })
   }
 
+  // 前往购物车
+  goCart = () => {
+    Taro.reLaunch({
+      url: '/groupBy/pages/cart/index'
+    })
+  }
   // 立即购买
   handleBuy = () => {
     const ctx = Taro.createCanvasContext('poster')
@@ -90,7 +106,7 @@ export default class GoodDetail extends Component {
   }
 
   render () {
-    const { goodInfo, imgCurrent, posterImg } = this.state
+    const { goodInfo, imgCurrent, posterImg, showPoster } = this.state
 
     return (
       <View className='goodDetail'>
@@ -181,7 +197,7 @@ export default class GoodDetail extends Component {
         </View>
         {/* 底部购物bar */}
         <View className='cartBar'>
-            <View className='cartBag'>
+            <View className='cartBag' onClick={this.goCart.bind(this)}>
               <View className='iconfont icon-shop'></View>
               购物袋
             </View>
@@ -189,9 +205,11 @@ export default class GoodDetail extends Component {
         </View>
         {/* 海报 */}
         <Canvas canvasId='poster' style='width: 375px; height: 640px;' className='posterCanvas' />
-        <View className='imgContent' onTouchMove={this.stopTouch}>
-          <Image className='posterImg' mode='widthFix' src={posterImg} />
-        </View>
+        {
+          showPoster && <View className='imgContent' onTouchMove={this.stopTouch}>
+            <Image className='posterImg' mode='widthFix' src={posterImg} />
+          </View>
+        }
       </View>
     )
   }

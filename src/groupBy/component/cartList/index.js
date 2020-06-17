@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/cartList/index.js
  * @Date: 2020-04-30 18:43:03
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 17:12:04
+ * @LastEditTime: 2020-06-17 16:01:16
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Button } from '@tarojs/components'
@@ -71,35 +71,39 @@ export default class cartList extends Component {
   }
 
   // 修改商品数量
-  setGoodNum = (itemId, type) => {
+  setGoodNum = (cartId, type) => {
     const { goodList } = this.state
-    const index = goodList.findIndex(item => item.itemId === itemId)
+    const index = goodList.findIndex(item => item.cartId === cartId)
     const num = goodList[index].num
     if (type === 'add') {
       goodList[index].num = num ? (num + 1) : 1
+      goodList[index].isChecked = true
     } else {
       if (num && num > 1) {
         goodList[index].num = num - 1
       }
     }
     api.groupBy.updateGoodNum({
-      cart_id: goodList[index].itemId,
+      cart_id: goodList[index].cartId,
       num: goodList[index].num 
     }).then(() => {  
       this.setState({
         goodList
+      }, () => {
+        const isCheckAll = goodList.some(item => !item.isChecked)
+        this.props.onSetChekckAll && this.props.onSetChekckAll(isCheckAll, false)
       })
     })
   }
 
   // 修改选中状态
-  setCheck = (itemId) => {
+  setCheck = (cartId) => {
     const { goodList } = this.state
-    const index = goodList.findIndex(item => item.itemId === itemId)
+    const index = goodList.findIndex(item => item.cartId === cartId)
     const { isChecked = false } = goodList[index]
     goodList[index].isChecked = !isChecked
     api.groupBy.updateCheckGood({
-      cart_id: itemId,
+      cart_id: cartId,
       is_checked: !isChecked
     }).then(() => {
       // 是否全选
@@ -116,7 +120,7 @@ export default class cartList extends Component {
     const { goodList } = this.state
     const checkId = goodList.map(item => {
       item.isChecked = isChecked
-      return item.itemId
+      return item.cartId
     })
     Taro.showLoading({
       title: '请稍等',
@@ -198,7 +202,7 @@ export default class cartList extends Component {
                 isOpened={item.isOpened}
                 onOpened={this.handleSingle.bind(this, index, false)}
                 onClosed={this.handleSingle.bind(this, index, true)}
-                onClick={this.toogleModal.bind(this, true, item.itemId)}
+                onClick={this.toogleModal.bind(this, true, item.cartId)}
               >
                 <GoodItem 
                   ShowCheckBox 

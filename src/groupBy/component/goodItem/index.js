@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/goodItem/index.js
  * @Date: 2020-04-24 09:46:24
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 17:09:10
+ * @LastEditTime: 2020-06-17 15:52:41
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -48,9 +48,9 @@ export default class GoodItem extends Component {
   }
 
   // 点击跳转
-  handleItem = (itemId) => {
+  handleItem = (itemId, activeId) => {
     Taro.navigateTo({
-      url: `/groupBy/pages/goodDetail/index?itemId=${itemId}`
+      url: `/groupBy/pages/goodDetail/index?itemId=${itemId}&activeId=${activeId}`
     })
   }
 
@@ -58,12 +58,12 @@ export default class GoodItem extends Component {
     const { goodInfo, isEnd, ShowBuyer, ShowCheckBox, isExpired, isCanReduce } = this.props
 
     return (
-      <View className='goodItem' onClick={this.handleItem.bind(this, goodInfo.itemId)}>
+      <View className='goodItem' onClick={this.handleItem.bind(this, goodInfo.itemId, goodInfo.activity_id)}>
         {
           ShowCheckBox &&
           <View
             className={`checkBox ${goodInfo.isChecked && 'isChecked'}`}
-            onClick={this.handleCheck.bind(this, goodInfo.itemId)}
+            onClick={this.handleCheck.bind(this, goodInfo.cartId)}
           >
             {goodInfo.isChecked && <AtIcon value='check' size='12' color='#fff'></AtIcon>}
           </View>
@@ -91,8 +91,8 @@ export default class GoodItem extends Component {
                   isEnd={isEnd}
                   quantity={goodInfo.num}
                   isCanReduce={isCanReduce}
-                  addQuantity={this.setGoodNum.bind(this, goodInfo.itemId, 'add')}
-                  reduceQuantity={this.setGoodNum.bind(this, goodInfo.itemId, 'reduce')}
+                  addQuantity={this.setGoodNum.bind(this, ShowCheckBox ? goodInfo.cartId : goodInfo.itemId, 'add')}
+                  reduceQuantity={this.setGoodNum.bind(this, ShowCheckBox ? goodInfo.cartId : goodInfo.itemId, 'reduce')}
                 />
               </View>
               : <View className='otherInfoExpired'>已过期</View>

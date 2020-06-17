@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/orderDetail/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-16 14:09:04
+ * @LastEditTime: 2020-06-17 14:41:57
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -74,11 +74,11 @@ export default class OrderDetail extends Component {
   // 格式化时间
   formatCountTime = (time) => {
     const format = (val) => (val > 9) ? val : `0${val}`
-    const d = Math.floor(time / (24*3600))
+    // const d = Math.floor(time / (24*3600))
     const h = Math.floor(time % (24*3600) / 3600)
     const m = Math.floor(time % 3600 / 60)
     const s = Math.floor(time % 60)
-    return `${d}天${format(h)}:${format(m)}:${format(s)}`
+    return `${format(h)}:${format(m)}:${format(s)}`
   }
 
   getOrderDetail = () => {
@@ -89,17 +89,19 @@ export default class OrderDetail extends Component {
     api.groupBy.getOrderDetail({
       orderId
     }).then(res => {
+      const { orderInfo } = res
       this.setState({
-        list: res.items,
+        list: orderInfo.items,
         // currtent: currentCommunity,
-        totalItemNum: res.totalItemNum,
-        totalFee: (res.total_fee / 100).toFixed(2),
-        itemFee: (res.item_fee / 100).toFixed(2),
-        cancelTime: res.auto_cancel_time,
-        orderStatus: res.order_status,
-        activityStatus: res.activity_status,
-        deliveryDate: res.delivery_date,
-        qrcodeUrl: res.qrcode_url
+        totalItemNum: orderInfo.totalItemNum,
+        totalFee: (orderInfo.total_fee / 100).toFixed(2),
+        itemFee: (orderInfo.item_fee / 100).toFixed(2),
+        cancelTime: orderInfo.auto_cancel_seconds,
+        orderStatus: orderInfo.order_status,
+        orderStatusMsg: orderInfo.order_status_msg,
+        activityStatus: orderInfo.activity_status,
+        deliveryDate: orderInfo.delivery_date,
+        qrcodeUrl: orderInfo.qrcode_url
       }, () => {
         this.countdown()
       })
@@ -115,6 +117,7 @@ export default class OrderDetail extends Component {
       cancelTime,
       totalFee,
       totalItemNum,
+      orderStatusMsg,
       itemFee,
       qrcodeUrl,
       orderStatus
@@ -129,8 +132,8 @@ export default class OrderDetail extends Component {
         <View className='orderInfo'>
           {/* 订单状态 */}
           <View className='infoLine status'>
-            <View>订单待支付</View>
-            <View>{ this.formatCountTime(cancelTime) }后自动取消订单</View>
+            <View>{ orderStatusMsg }</View>
+            { orderStatus === 'NOTPAY' && <View>{ this.formatCountTime(cancelTime) }后自动取消订单</View> }
           </View>
           {/* 取货码 */}
           {
@@ -141,11 +144,13 @@ export default class OrderDetail extends Component {
             </View>
           }
           {/* 配送地址 */}
-          <View className='address'>
-          <View className='time'>预计送达: { deliveryDate }</View>
-            <View className='community'>{ currtent.community_name }</View>
-            <View className='unit'>提货：{ currtent.address }</View>
-          </View>
+          {
+            orderStatus === 'PAYED' && <View className='address'>
+              <View className='time'>预计送达: { deliveryDate }</View>
+              <View className='community'>{ currtent.community_name }</View>
+              <View className='unit'>提货：{ currtent.address }</View>
+            </View>
+          }
           {/* 商品详情 */}
           <View className='goodinfo'>
             <View className='infoLine'>
@@ -170,12 +175,12 @@ export default class OrderDetail extends Component {
               <View>-¥7.50</View>
             </View>
             <View className='infoLine flexEnd'>
-              <Text>{ 1 ? '需支付' : '实际支付' }： <Text className='price'>¥{ totalFee }</Text></Text>
+              <Text>{ orderStatus === 'NOTPAY' ? '需支付' : '实际支付' }： <Text className='price'>¥{ totalFee }</Text></Text>
             </View>
           </View>
           {/* 订单详情 */}
           {
-            orderStatus !== 'NOTPAY' && <View className='orderinfo'>
+            orderStatus === 'PAYED' && <View className='orderinfo'>
               <View className='infoLine'>
                 <Text>订单号</Text>
                 <Text>123912073019273</Text>

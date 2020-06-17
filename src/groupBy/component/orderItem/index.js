@@ -3,13 +3,14 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 订单item
- * @FilePath: /feat-Unite-group-by/src/groupBy/component/orderItem/index.js
+ * @FilePath: /unite-vshop/src/groupBy/component/orderItem/index.js
  * @Date: 2020-05-09 15:10:18
  * @LastEditors: Arvin
- * @LastEditTime: 2020-05-09 16:03:09
+ * @LastEditTime: 2020-06-17 14:28:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
+import api from '@/api'
 
 import './index.scss'
 
@@ -21,8 +22,9 @@ export default class OrderItem extends Component {
 
   // 前往订单详情
   handleItem = () => {
+    const { info } = this.props
     Taro.navigateTo({
-      url: '/groupBy/pages/orderDetail/index'
+      url: `/groupBy/pages/orderDetail/index?orderId=${info.orderId}`
     })
   }
 
@@ -35,32 +37,63 @@ export default class OrderItem extends Component {
   // 去付款
   handlePay = (e) => {
     e.stopPropagation()
-    console.log('去付款')
+    const { info } = this.props
+    api.groupBy.payConfig({
+      order_id: info.orderId,
+      order_type: 'normal_community',
+      pay_type: 'wxpay'
+    }).then(res => {
+      Taro.requestPayment({
+        timeStamp: res.timeStamp,
+        nonceStr: res.nonceStr,
+        package: res.package,
+        signType: res.signType,
+        paySign: res.paySign,
+        success: () => { 
+          Taro.showToast({
+            title: '支付成功',
+            mask: true,
+            complete: () => {
+              Taro.redirectTo({
+                url: `/groupBy/pages/orderDetail/index?orderId=${info.orderId}`
+              })
+            }
+          })
+        },
+        fail: () => { 
+          Taro.showModal({
+            content: '支付失败',
+            showCancel: false
+          })
+        }
+      })
+    })
   }
   render () {
+    const { info } = this.props
     return (
       <View className='orderItem' onClick={this.handleItem.bind(this)}>
         <View className='orderHeader'>
-          <View className='orderNo'>XWXS12312321</View>
-          <View className='orderStatus'>待支付</View>
+          <View className='orderNo'>{info.orderId}</View>
+          <View className='orderStatus'>{info.orderStatusMsg}</View>
         </View>
         <View className='orderContent'>
-          <Image className='goodImg' src='https://www.xiantao.com/uploads/allimg/180604/4-1P6041H313-50.jpg' />
+          <Image className='goodImg' src={info.items[0].pic} />
           <View className='goodInfo'>
-            <View className='name'>拉上看洪都拉斯你的拉上你的啦看书呢撒打算离开</View>
+            <View className='name'>{info.items[0].itemName}</View>
             <View className='tag'>会员专享</View>
             <View className='price'>
               <View>
-                ¥<Text className='now'>10.00</Text>
-                <Text className='old'>¥14.00</Text>
+                ¥<Text className='now'>{info.items[0].totalFee}</Text>
+                <Text className='old'>¥{info.items[0].itemPrice}</Text>
               </View>
-              <View className='orderNum'>...共3件商品</View>
+              <View className='orderNum'>...共{info.items.length}件商品</View>
             </View>
           </View>
         </View>
         <View className='orderAct'>
-          <View className='actBtn' onClick={this.handlePay.bind(this)}>去付款</View>
-          <View className='actBtn' onClick={this.handleWriteOff.bind(this)}>核销</View>
+          { info.orderStatus === 'NOTPAY' && <View className='actBtn' onClick={this.handlePay.bind(this)}>去付款</View>}
+          {/* { <View className='actBtn' onClick={this.handleWriteOff.bind(this)}>核销</View> } */}
         </View>
       </View>
     )
