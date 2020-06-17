@@ -649,7 +649,7 @@ export default class Detail extends Component {
       id = distributor_id
     } else {
       const { info } = this.state
-      const { distributor_id } = info 
+      const { distributor_id } = info
       id = distributor_id
     }
     Taro.navigateTo({
@@ -1062,7 +1062,7 @@ export default class Detail extends Component {
                 })}
               </View>
             </View>
-          }      
+          }
 
           {
             isArray(desc)
@@ -1129,7 +1129,7 @@ export default class Detail extends Component {
           />
           {
             meiqia.is_open === 'true'
-              ? <FloatMenuMeiQia storeId={info.distributor_id} info={{goodId: info.item_id, goodName: info.itemName}} /> 
+              ? <FloatMenuMeiQia storeId={info.distributor_id} info={{goodId: info.item_id, goodName: info.itemName}} />
               : <FloatMenuItem
                 iconPrefixClass='icon'
                 icon='headphones'
@@ -1171,9 +1171,15 @@ export default class Detail extends Component {
                 style='width: 60%; text-align: center'
               >
                 {
-                  !startActivity
-                    ? <Text>活动即将开始</Text>
-                    : <Text>当前商品无货</Text>
+                  info.approve_status !== 'onsale'
+                    ? <Text>当前商品已下架</Text>
+                    : <Text>
+                        {
+                          !startActivity
+                            ? 活动即将开始
+                            : 当前商品无货
+                        }
+                      </Text>
                 }
               </View>
             </GoodsBuyToolbar>)
