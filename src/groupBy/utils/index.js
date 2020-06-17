@@ -3,10 +3,10 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 说明
- * @FilePath: /feat-Unite-group-by/src/groupBy/utils/index.js
+ * @FilePath: /unite-vshop/src/groupBy/utils/index.js
  * @Date: 2020-06-12 18:14:20
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 14:03:55
+ * @LastEditTime: 2020-06-17 15:48:15
  */
 
 
@@ -16,16 +16,20 @@ const formatGood = (data) => {
   }
   const list = data.map(item => {
     return {
-      itemId: item.itemId || item.cart_id,
+      itemId: item.item_id,
+      cartId: item.cart_id,
       itemName: item.item_name,
       history_data: item.history_data || [],
       initial_sales: item.initial_sales || 0,
       brief: item.brief,
       pics: Array.isArray(item.pics) ? item.pics[0] : item.pics,
+      pic: item.pic,
       activity_id: item.activity_id,
       isChecked: item.is_checked || false,
       num: item.cart_num || item.num,
       limit_num: item.limit_num,
+      itemPrice: (item.price / 100).toFixed(2),
+      totalFee: (item.total_fee / 100).toFixed(2),
       price: (item.activity_price / 100).toFixed(2),
       activity_price: (item.activity_price / 100).toFixed(2)
     }
@@ -33,9 +37,22 @@ const formatGood = (data) => {
   return list
 }
 
-const test = () => {}
+const formatOrder = (data) => {
+  if (!data || !data.length) {
+    return []
+  }
+  const list = data.map(item => {
+    return {
+      orderId: item.order_id,
+      items: formatGood(item.items),
+      orderStatus: item.order_status,
+      orderStatusMsg: item.order_status_msg
+    }
+  })
+  return list
+}
 
 export {
   formatGood,
-  test
+  formatOrder
 }

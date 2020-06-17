@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/cart/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-16 13:38:29
+ * @LastEditTime: 2020-06-17 11:05:15
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -100,10 +100,18 @@ export default class GroupByIndex extends Component {
   // 结算
   handleSettlement = () => {
     const { list } = this.state
+    const isChecked = list.some(item => item.isChecked)
     const activityId =  list[0] && list[0].activity_id
-    Taro.navigateTo({
-      url: `/groupBy/pages/payOrder/index?activityId=${activityId}`
-    })
+    if (!isChecked) {
+      Taro.showToast({
+        title: '请选择要购买的商品',
+        icon: "none"
+      })
+    } else {
+      Taro.navigateTo({
+        url: `/groupBy/pages/payOrder/index?activityId=${activityId}`
+      })
+    }
   }
 
   cartNode = node => this.cartRef = node

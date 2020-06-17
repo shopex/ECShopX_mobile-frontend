@@ -3,14 +3,16 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description:  订单列表
- * @FilePath: /feat-Unite-group-by/src/groupBy/pages/orderList/index.js
+ * @FilePath: /unite-vshop/src/groupBy/pages/orderList/index.js
  * @Date: 2020-05-09 10:17:35
  * @LastEditors: Arvin
- * @LastEditTime: 2020-05-09 17:49:26
+ * @LastEditTime: 2020-06-17 14:09:46
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { NavBar } from '@/components'
+import api from '@/api'
+import { formatOrder } from '../../utils'
 import OrderItem from '../../component/orderItem'
 import LoadingMore from '../../component/loadingMore'
 
@@ -21,60 +23,99 @@ export default class OrderList extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      tabsCurrent: 0,
+      list: [],
       isRefresh: false,
       isLoading: false,
-      isEnd: false
+      isEnd: false,
+      isEmpty: false,
+      param: {
+        status: 0,
+        page: 1,
+        pageSize: 10,
+        order_type: 'normal_community',
+        order_class: 'community'
+      }
     }
+  }
+
+  componentDidMount() {
+    this.getOrderList()
   }
 
   config = {
     navigationBarTitleText: '我的订单'
   }
 
+  // 获取订单列表
+  getOrderList = () => {
+    const { param } = this.state
+    api.groupBy.getOrderList(param).then(res => {
+      const { list, pager } = res
+      const count = pager.count
+      const isEnd = param.page >= (count / param.pageSize)
+      this.setState({
+        list: formatOrder(list),
+        isEnd,
+        isRefresh: false,
+        isLoading: false,
+        isEmpty: count === 0
+      })
+    })
+  }
   // 切换tabs
-  handleTabs = (index) => {
-    const { tabsCurrent } = this.state
+  handleTabs = (status) => {
+    const { param } = this.state
 
-    if (tabsCurrent === index) return
-    
+    if (param.status === status) return
+    param.status = status
     this.setState({
-      tabsCurrent: index
+      param
+    }, () => {
+      this.handleRefresh()
     })
   }
 
-    // 下拉刷新
-    handleRefresh = () => {
-      this.setState({
-        isRefresh: true
-      })
-  
-      setTimeout(() => {
-        this.setState({
-          isRefresh: false,
-          isEnd: false
-        })
-      }, 1000)
-    }
-  
-    // 上拉加载
-    handleLoadMore = () => {
-      const { isLoading, isEnd } = this.state
-      if (isEnd || isLoading) return
-      this.setState({
-        isLoading: true
-      })
-      setTimeout(() => {
-        this.setState({
-          isLoading: false,
-          isEnd: true
-        })
-      }, 1500)
-    }
+  // 下拉刷新
+  handleRefresh = () => {
+    const { param } = this.state
+    param.page = 1
+    this.setState({
+      isRefresh: true,
+      param
+    }, () => {
+      this.getOrderList()
+    })
+  }
+
+  // 上拉加载
+  handleLoadMore = () => {
+    const { isLoading, isEnd, isEmpty, param } = this.state
+    if (isEnd || isLoading || isEmpty) return
+    param.page += 1
+    this.setState({
+      isLoading: true,
+      param
+    }, () => {
+      this.getOrderList()
+    })
+  }
 
   render () {
-    const tabs = ['全部', '待支付', '待取货', '已完成']
-    const { tabsCurrent, isRefresh, isLoading, isEnd } = this.state
+    const tabs = [{
+      title: '全部',
+      status: 0
+    }, {
+      title: '待支付',
+      status: 5
+    }, {
+      title: '待取货',
+      status: 4
+    }, {
+      title: '已完成',
+      status: 3
+    }]
+    const { list, param, isRefresh, isLoading, isEnd, isEmpty } = this.state
+    console.log('刷新绘制')
     return (
       <View className='orderList'>
         <NavBar
@@ -84,13 +125,13 @@ export default class OrderList extends Component {
         />
         <View className='orderListTabs'>
           {
-            tabs.map((item, index) => (
+            tabs.map(item => (
               <View 
-                className={`tabsItem ${index === tabsCurrent && 'active'}`}
-                key={item}
-                onClick={this.handleTabs.bind(this, index)}
+                className={`tabsItem ${item.status === param.status && 'active'}`}
+                key={item.status}
+                onClick={this.handleTabs.bind(this, item.status)}
               >
-                { item }
+                { item.title }
               </View>
             ))
           }
@@ -105,9 +146,9 @@ export default class OrderList extends Component {
           onRefresherRefresh={this.handleRefresh}
           onScrollToLower={this.handleLoadMore}
         >
-          { [0].map(item => <OrderItem key={item} />) }
+          { list.map(item => <OrderItem key={item} info={item} />) }
           {/* 加载更多 */}
-          <LoadingMore isLoading={isLoading} isEnd={isEnd} />
+          <LoadingMore isLoading={isLoading} isEnd={isEnd} isEmpty={isEmpty} />
           {/* 防止子内容无法支撑scroll-view下拉刷新 */}
           <View style='width:2rpx;height:2rpx;bottom:-2rpx;position:absolute;' />
         </ScrollView>

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/payOrder/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-16 14:07:49
+ * @LastEditTime: 2020-06-17 14:18:27
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -26,6 +26,16 @@ export default class PayOrder extends Component {
       totalFee: 0,
       itemFee: 0,
       currtent: {},
+      param: {
+        receipt_type: 'ziti',
+        order_type: 'normal_community',
+        items: [],
+        remark: '',
+        community_id: '',
+        community_activity_id: '',
+        member_discount: false,
+        coupon_discount: '',
+      }
     }
   }
   
@@ -41,16 +51,10 @@ export default class PayOrder extends Component {
     Taro.showLoading({title: '请稍等...', mask: true})
     const currentCommunity = Taro.getStorageSync('community')
     const { activityId } = this.$router.params
-    api.groupBy.getCalculateTotal({
-      receipt_type: 'ziti',
-      order_type: 'normal_community',
-      items: [],
-      remark: '',
-      community_id: currentCommunity.community_id,
-      community_activity_id: activityId,
-      member_discount: false,
-      coupon_discount: '',
-    }).then(res => {
+    const { param } = this.state
+    param.community_id = currentCommunity.community_id
+    param.community_activity_id = activityId
+    api.groupBy.getCalculateTotal(param).then(res => {
       this.setState({
         orderId: res.order_id,
         list: res.items,
@@ -58,15 +62,36 @@ export default class PayOrder extends Component {
         totalItemNum: res.totalItemNum,
         totalFee: (res.total_fee / 100).toFixed(2),
         itemFee: (res.item_fee / 100).toFixed(2),
+        param
       })
       Taro.hideLoading()
     })
   }
   // 去支付
   handlePay = () => {
-    const { orderId } = this.state
-    Taro.redirectTo({
-      url: `/groupBy/pages/orderDetail/index?orderId=${orderId}`
+    const { orderId, param } = this.state
+    Taro.showLoading({title: '拉起支付中...', mask: true})
+    api.groupBy.createOrder(param).then(res => {
+      Taro.hideLoading()
+      Taro.requestPayment({
+        timeStamp: res.timeStamp,
+        nonceStr: res.nonceStr,
+        package: res.package,
+        signType: res.signType,
+        paySign: res.paySign,
+        success: () => {  },
+        fail: () => { 
+          Taro.showModal({
+            content: '支付失败',
+            showCancel: false,
+            complete: () => {
+              Taro.redirectTo({
+                url: `/groupBy/pages/orderDetail/index?orderId=${orderId}`
+              })
+            }
+          })
+        }
+      })
     })
   }
   
@@ -89,7 +114,7 @@ export default class PayOrder extends Component {
         <View className='orderInfo'>
           {/* 配送地址 */}
           <View className='address'>
-            <View className='time'>预计送达: 2020/05/09 18:00</View>
+            {/* <View className='time'>预计送达: 2020/05/09 18:00</View> */}
             <View className='community'>{ currtent.community_name }</View>
             <View className='unit'>提货：{ currtent.address }</View>
           </View>
