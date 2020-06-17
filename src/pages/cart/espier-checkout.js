@@ -83,6 +83,7 @@ export default class CartCheckout extends Component {
       isDrugInfoOpend: false,
       invoiceTitle: '',
       curStore:{},
+      shouldCalcOrder: false,
       shoppingGuideData:null, //代客下单导购信息
       // shopData:null, //店铺信息
     }
@@ -93,6 +94,13 @@ export default class CartCheckout extends Component {
       isPaymentOpend: false,
       isDrugInfoOpend: false
     })
+    if (this.state.shouldCalcOrder) {
+      this.setState({
+        shouldCalcOrder: false
+      }, () => {
+        this.calcOrder()
+      })
+    }
   }
 
   componentDidMount () {
@@ -914,8 +922,12 @@ export default class CartCheckout extends Component {
         const espierCheckoutData = normalizeQuerys(this.$router.params)
         id = espierCheckoutData.dtid
       }
-      Taro.navigateTo({
-        url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}&distributor_id=${id}&source=${m_source}`
+      this.setState({
+        shouldCalcOrder: true
+      }, () => {
+        Taro.navigateTo({
+          url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}&distributor_id=${id}&source=${m_source}`
+        })
       })
       // Taro.navigateTo({
       //   url: `/pages/cart/coupon-picker?items=${JSON.stringify(items)}&is_checkout=true&cart_type=${this.params.cart_type}&distributor_id=${id}`
