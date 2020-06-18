@@ -6,11 +6,11 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 18:28:48
+ * @LastEditTime: 2020-06-18 11:05:27
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
-import { AtCountdown } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 import { NavBar, SpHtmlContent } from '@/components'
 import api from '@/api'
 import CanvasUtil from '../../utils/canvas'
@@ -23,6 +23,8 @@ export default class GoodDetail extends Component {
     super(props)
     this.state = {
       goodInfo: {
+        itemId: '',
+        activityId: '',
         deliveryDate: '',
         goodName: '',
         goodDesc: '',
@@ -32,6 +34,7 @@ export default class GoodDetail extends Component {
         initialSales: 0,
         historyData: [],
         intro: '',
+        limitNum: 0,
         leaderName: '',
         address: ''
       },
@@ -101,9 +104,12 @@ export default class GoodDetail extends Component {
       const { item, activity, history_data, community } = res
       this.setState({
         goodInfo: {
+          itemId: item.item_id,
+          activityId: activity.activity_id,
           pics: item.pics,
           goodDesc: item.brief,
           goodName: item.itemName,
+          limitNum: activity.item.limit_num,
           price: (item.price / 100).toFixed(2),
           initialSales: activity.item.initial_sales,
           deliveryDate: activity.delivery_date,
@@ -116,6 +122,8 @@ export default class GoodDetail extends Component {
         countTime: activity.last_second
       }, () => {
         this.countdown()
+        // 绘制canvas
+        this.drawCanvas()
       })
     })
   }
@@ -136,15 +144,18 @@ export default class GoodDetail extends Component {
   }
   // 立即购买
   handleBuy = () => {
-    this.drawCanvas()
+    const { goodInfo } = this.state
+    Taro.navigateTo({
+      url: `/groupBy/pages/payOrder/index?activityId=${goodInfo.activityId}&itemId=${goodInfo.itemId}&itemNum=${1}`
+    })
   }
 
   // canvas 绘制
   drawCanvas = async () => {
-    Taro.showLoading({
-      mask: true,
-      title: '请稍等'
-    })
+    // Taro.showLoading({
+    //   mask: true,
+    //   title: '请稍等'
+    // })
     const {goodInfo } = this.state
     const ctx = Taro.createCanvasContext('poster', this)
     const canvas = new CanvasUtil(ctx, Taro)
@@ -155,11 +166,16 @@ export default class GoodDetail extends Component {
         canvasId: 'poster',
       }).then(res => {
         this.setState({
-          showPoster: true,
           posterImg: res.tempFilePath
         })
-        Taro.hideLoading()
+        // Taro.hideLoading()
       }).catch(err => console.log(err))
+    })
+  }
+
+  showPoster = () => {
+    this.setState({
+      showPoster: true
     })
   }
 
@@ -167,6 +183,13 @@ export default class GoodDetail extends Component {
   stopTouch = e => {
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  // 预览海报
+  previewImage = (posterImg) => {
+    Taro.previewImage({
+      urls: [posterImg]
+    })
   }
 
   render () {
@@ -206,7 +229,7 @@ export default class GoodDetail extends Component {
           {/* 商品名称 */}
           <View className='goodName'>
           <View className='name'>{ goodInfo.goodName }</View>
-            <View className='saled'>已售: 9210</View>
+            <View className='saled' onClick={this.showPoster}>已售: 9210</View>
           </View>
           {/* 商品说明 */}
           <View className='desc'>
@@ -257,8 +280,10 @@ export default class GoodDetail extends Component {
         <Canvas canvasId='poster' style='width: 375px; height: 640px;' className='posterCanvas' />
         {
           showPoster && <View className='imgContent' onTouchMove={this.stopTouch}>
-            <Image className='posterImg' mode='widthFix' src={posterImg} />
-            <View className='closePoster' onClick={() => { this.setState({showPoster: false})}}>关闭</View>
+            <Image className='posterImg' mode='widthFix' onClick={this.previewImage.bind(this, posterImg)} src={posterImg} />
+            <View className='closePoster' onClick={() => { this.setState({showPoster: false})}}>
+              <AtIcon value='close-circle' size='30' color='#fff' />
+            </View>
           </View>
         }
       </View>
