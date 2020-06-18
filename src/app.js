@@ -193,12 +193,12 @@ class App extends Component {
       'wx2fb97cb696f68d22',
       'wxf91925e702efe3e3'
     ],
-    plugins: {
-      contactPlugin: {
-        version: "1.3.0",
-        provider: "wx104a1a20c3f81ec2"
-      }
-    }
+    // plugins: {
+    //   contactPlugin: {
+    //     version: "1.3.0",
+    //     provider: "wx104a1a20c3f81ec2"
+    //   }
+    // }
   }
 
   componentDidShow (options) {
