@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/payOrder/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 14:18:27
+ * @LastEditTime: 2020-06-18 11:02:13
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -50,8 +50,14 @@ export default class PayOrder extends Component {
   getCalculateTotal = () => {
     Taro.showLoading({title: '请稍等...', mask: true})
     const currentCommunity = Taro.getStorageSync('community')
-    const { activityId } = this.$router.params
+    const { activityId, itemId, itemNum = 1 } = this.$router.params
     const { param } = this.state
+    if (itemId) {
+      param.items.push({
+        item_id: itemId,
+        num: itemNum
+      })
+    }
     param.community_id = currentCommunity.community_id
     param.community_activity_id = activityId
     api.groupBy.getCalculateTotal(param).then(res => {
