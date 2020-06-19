@@ -226,7 +226,7 @@ export default class CouponDetail extends Component {
                   <View className="coupon-box">
                     <View
                       className="content-padded card-header"
-                      style={`background: radial-gradient(circle at bottom, transparent 3px, ${colors.data[0].primary} 3px); background-size: 20rpx 100%;`}>
+                      style={`background: radial-gradient(circle at bottom, transparent 3px, ${colors.data[0].marketing} 3px); background-size: 20rpx 100%;`}>
                       <View className="hr">
                         <View className="card-title">商户名称</View>
                         <View className="card-val">{curStore}</View>
