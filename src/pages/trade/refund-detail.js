@@ -27,8 +27,7 @@ export default class TradeRefundDetail extends Component {
     const { aftersales: info, orderInfo, aftersalesAddress } = await api.aftersales.info({
       aftersales_bn,
       item_id,
-      order_id,
-      aftersalesAddress
+      order_id
     })
 
     const progress = +info.progress
@@ -37,7 +36,8 @@ export default class TradeRefundDetail extends Component {
     this.setState({
       orderInfo,
       info,
-      progress
+      progress,
+      aftersalesAddress
     })
   }
 
