@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-18 11:05:27
+ * @LastEditTime: 2020-06-19 14:41:25
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
@@ -265,7 +265,11 @@ export default class GoodDetail extends Component {
           {/* 其他规格信息 */}
           <View className='otherInfo'>
             <View className='title'>商品信息: </View>
-            {goodInfo.intro && <SpHtmlContent content={goodInfo.intro} className='richText' />}
+            {
+              goodInfo.intro && !Array.isArray(goodInfo.intro) 
+                ? <SpHtmlContent content={goodInfo.intro} className='richText' />
+                : <View>暂无详情</View>
+            }
           </View>
         </View>
         {/* 底部购物bar */}

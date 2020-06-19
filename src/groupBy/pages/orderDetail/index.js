@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/orderDetail/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-18 18:25:09
+ * @LastEditTime: 2020-06-19 16:58:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -63,10 +63,13 @@ export default class OrderDetail extends Component {
         })
       }, 1000)
     } else {
+      // 如果存在timeId
+      if (timeId) {
+        console.log('执行回调')
+      }
       // 清除倒计时
       timeId = ''
       clearTimeout(timeId)
-      console.log('执行回调')
     }
     this.setState({
       timeId
@@ -88,14 +91,23 @@ export default class OrderDetail extends Component {
     if (!orderId) {
       return
     }
+    Taro.showLoading()
     api.groupBy.getOrderDetail({
       orderId
-    }).then(res => {
-      const { orderInfo } = res
+    }).then(async res => {
+      const { orderInfo, community_activity } = res
+      let qrcodeUrl = ''
+      if (orderInfo.order_status === 'PAYED' && orderInfo.ziti_status === 'PENDING') {
+        const qrcodeRes = await api.groupBy.getZitiCode({order_id: orderId})
+        qrcodeUrl = qrcodeRes.qrcode_url 
+      }
+      //  查询提货地址
+      const { address } = await api.groupBy.activityCommunityDetail({community_id: orderInfo.shop_id})
+      Taro.hideLoading()
       this.setState({
         orderId: orderInfo.order_id,
         list: orderInfo.items,
-        // currtent: currentCommunity,
+        currtent: { address },
         totalItemNum: orderInfo.items.reduce((total, val) => total += val.num, 0),
         totalFee: (orderInfo.total_fee / 100).toFixed(2),
         itemFee: (orderInfo.item_fee / 100).toFixed(2),
@@ -103,8 +115,8 @@ export default class OrderDetail extends Component {
         orderStatus: orderInfo.order_status,
         orderStatusMsg: orderInfo.order_status_msg,
         activityStatus: orderInfo.activity_status,
-        deliveryDate: orderInfo.delivery_date,
-        qrcodeUrl: orderInfo.qrcode_url
+        deliveryDate: community_activity.delivery_date,
+        qrcodeUrl
       }, () => {
         this.countdown()
       })
@@ -130,10 +142,13 @@ export default class OrderDetail extends Component {
           Taro.showToast({
             title: '支付成功',
             mask: true,
+            duration: 1000,
             complete: () => {
-              Taro.redirectTo({
-                url: `/groupBy/pages/orderDetail/index?orderId=${orderId}`
-              })
+              setTimeout(() => {                
+                Taro.redirectTo({
+                  url: `/groupBy/pages/orderDetail/index?orderId=${orderId}`
+                })
+              }, 1000)
             }
           })
         },
@@ -145,10 +160,69 @@ export default class OrderDetail extends Component {
         }
       })
     })
-  }  
+  }
+
+  // 取消订单
+  cancelOrder = () => {
+    const { orderId } = this.state
+    Taro.showModal({
+      content: '确认取消此订单？',
+      success: res => {
+        if (res.confirm) {
+          Taro.showLoading({title: '请稍等', mask: true})
+          api.groupBy.cancelOrder({
+            order_id: orderId
+          }).then(result => {
+            Taro.hideLoading()
+            console.log(result)
+            Taro.showToast({
+              title: '取消成功',
+              duration: 1000,
+              mask: true,
+              success: () => {
+                // 成功返回
+                setTimeout(() => {
+                  Taro.navigateBack()
+                }, 1000)
+              }
+            })
+          })
+        }
+      }
+    })
+  }
+
+  // 申请退款
+  handleRefund = () => {
+    const { orderId } = this.state
+    Taro.showModal({
+      content: '确认申请退款？',
+      success: res => {
+        if (res.confirm) {
+          Taro.showLoading({title: '请稍等', mask: true})
+          api.groupBy.cancelOrder({
+            order_id: orderId
+          }).then(() => {
+            Taro.hideLoading()
+            Taro.showModal({
+              title: '已经申请,请耐心等候退款',
+              showCancel: false,
+              success: back => {
+                if (back.confirm) {
+                  // 成功返回
+                  Taro.navigateBack()
+                }
+              }
+            })
+          })
+        }
+      }
+    })
+  }
 
   render () {
     const { 
+      orderId,
       currtent,
       activityStatus,
       list,
@@ -179,7 +253,7 @@ export default class OrderDetail extends Component {
             orderStatus === 'PAYED' && <View className='code'>
               <Text>取货码</Text>
               <Image className='codeImg' src={qrcodeUrl} />
-              <View className='codeBtn'>确认核销</View>
+              {/* <View className='codeBtn'>确认核销</View> */}
             </View>
           }
           {/* 配送地址 */}
@@ -225,7 +299,7 @@ export default class OrderDetail extends Component {
             orderStatus === 'PAYED' && <View className='orderinfo'>
               <View className='infoLine'>
                 <Text>订单号</Text>
-                <Text>123912073019273</Text>
+                <Text>{ orderId }</Text>
               </View>
               <View className='infoLine'>
                 <Text>下单时间</Text>
@@ -242,7 +316,7 @@ export default class OrderDetail extends Component {
             </View>
           }
           {
-            orderStatus === 'PAYED' && activityStatus !== 'over' && <View className='btn'>
+            orderStatus === 'PAYED' && activityStatus !== 'over' && <View className='btn' onClick={this.handleRefund.bind(this)}>
               申请退款
             </View>
           }
@@ -251,7 +325,7 @@ export default class OrderDetail extends Component {
               <View className='btn pay' onClick={this.handlePay.bind(this)}>
                 去支付
               </View>
-              <View className='btn'>
+              <View className='btn' onClick={this.cancelOrder.bind(this)}>
                 取消订单
               </View>
             </View>

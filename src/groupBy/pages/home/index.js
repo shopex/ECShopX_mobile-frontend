@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-18 11:55:28
+ * @LastEditTime: 2020-06-19 13:50:30
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'

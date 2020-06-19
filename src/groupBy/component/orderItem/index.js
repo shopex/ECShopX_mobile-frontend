@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/orderItem/index.js
  * @Date: 2020-05-09 15:10:18
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-18 18:19:18
+ * @LastEditTime: 2020-06-19 14:37:21
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -53,10 +53,13 @@ export default class OrderItem extends Component {
           Taro.showToast({
             title: '支付成功',
             mask: true,
-            complete: () => {
-              Taro.navigateTo({
-                url: `/groupBy/pages/orderDetail/index?orderId=${info.orderId}`
-              })
+            duration: 2000,
+            success: () => {
+              setTimeout(() => {                
+                Taro.navigateTo({
+                  url: `/groupBy/pages/orderDetail/index?orderId=${info.orderId}`
+                })
+              }, 2000)
             }
           })
         },
@@ -67,6 +70,37 @@ export default class OrderItem extends Component {
           })
         }
       })
+    })
+  }
+  
+  // 取消订单
+  cancelOrder = (e) => {
+    e.stopPropagation()
+    const { info } = this.state
+    Taro.showModal({
+      content: '确认取消此订单？',
+      success: res => {
+        if (res.confirm) {
+          Taro.showLoading({title: '请稍等', mask: true})
+          api.groupBy.cancelOrder({
+            order_id: info.orderId
+          }).then(result => {
+            Taro.hideLoading()
+            console.log(result)
+            Taro.showToast({
+              title: '取消成功',
+              duration: 1000,
+              mask: true,
+              success: () => {
+                // 成功刷新
+                setTimeout(() => {
+                  this.props.onRefresh && this.props.onRefresh()
+                }, 1000)
+              }
+            })
+          })
+        }
+      }
     })
   }
   
@@ -94,6 +128,7 @@ export default class OrderItem extends Component {
         </View>
         <View className='orderAct'>
           { info.orderStatus === 'NOTPAY' && <View className='actBtn' onClick={this.handlePay.bind(this)}>去付款</View>}
+          { info.orderStatus === 'NOTPAY' && <View className='actBtn cancel' onClick={this.cancelOrder.bind(this)}>取消订单</View>}
           {/* { <View className='actBtn' onClick={this.handleWriteOff.bind(this)}>核销</View> } */}
         </View>
       </View>
