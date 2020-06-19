@@ -98,7 +98,7 @@ export default class WgtMarquees extends Component {
                     )
                   })}
                 </Swiper>
-            : <View style={`background:${config.bgcolor}; color:${config.fontcolor}`}>
+            : <View style={`background:${config.bgcolor}; color:${config.fontcolor}`} className='marqueContent'>
                 <AtNoticebar marquee>
                   <Text>{announce}</Text>
                 </AtNoticebar>
