@@ -13,7 +13,8 @@ export default class TradeRefundDetail extends Component {
 
     this.state = {
       info: null,
-      progress: 0
+      progress: 0,
+      aftersalesAddress: {}
     }
   }
 
@@ -23,10 +24,11 @@ export default class TradeRefundDetail extends Component {
 
   async fetch () {
     const { aftersales_bn, item_id, order_id } = this.$router.params
-    const { aftersales: info, orderInfo } = await api.aftersales.info({
+    const { aftersales: info, orderInfo, aftersalesAddress } = await api.aftersales.info({
       aftersales_bn,
       item_id,
-      order_id
+      order_id,
+      aftersalesAddress
     })
 
     const progress = +info.progress
@@ -76,7 +78,7 @@ export default class TradeRefundDetail extends Component {
   }
 
   render () {
-    const { info, orderInfo, progress } = this.state
+    const { info, orderInfo, progress, aftersalesAddress } = this.state
     const meiqia = Taro.getStorageSync('meiqia')
     if (!info) {
       return <Loading />
@@ -142,6 +144,24 @@ export default class TradeRefundDetail extends Component {
           <View className='info-name'>申请时间：<Text className='info-value'>{info.creat_time_str}</Text></View>
           <View className='info-name'>退款编号：<Text className='info-value'>{info.aftersales_bn}</Text></View>
           <View className='info-name'>驳回原因：<Text className='info-value'>{info.refuse_reason}</Text></View>
+          {
+            progress === 1 ?
+            <View>
+              {
+                aftersalesAddress.aftersales_name ?
+                <View className='info-name'>售后联系人：<Text className='info-value'>{aftersalesAddress.aftersales_name}</Text></View> : null
+              }
+              {
+                aftersalesAddress.aftersales_mobile ?
+                <View className='info-name'>售后电话：<Text className='info-value'>{aftersalesAddress.aftersales_mobile}</Text></View> : null
+              }
+              {
+                aftersalesAddress.aftersales_address ?
+                <View className='info-name'>售后地址：<Text className='info-value'>{aftersalesAddress.aftersales_address}</Text></View> : null
+              }
+            </View> : null
+          }
+
         </View>
         {
           meiqia.is_open === 'true'
