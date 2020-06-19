@@ -3,10 +3,10 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 社区列表
- * @FilePath: /feat-Unite-group-by/src/groupBy/pages/community/index.js
+ * @FilePath: /unite-vshop/src/groupBy/pages/community/index.js
  * @Date: 2020-06-11 11:39:49
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-12 17:22:36
+ * @LastEditTime: 2020-06-19 16:01:22
  */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Input } from '@tarojs/components'
@@ -178,14 +178,14 @@ export default class Community extends Component {
           </View>
           <View className='myZiti'>
             <View className='title'>我的当前自提点</View>
-            <View className='myCommunity'>
+            <View className='myCommunity' onClick={() => Taro.navigateBack()}>
               <View className='location'>{ current.community_name }</View>
               <View className='distance'>{ current.distance_show }{ current.distance_unit }</View>
             </View>
           </View>
           <View className='nearBy'>
             <View>附近自提点</View>
-            <View>重新定位</View>
+            <View onClick={this.init.bind(this)}>重新定位</View>
           </View>
         </View>
         <ScrollView

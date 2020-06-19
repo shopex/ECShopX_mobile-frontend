@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/payOrder/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-18 11:02:13
+ * @LastEditTime: 2020-06-19 12:01:27
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -75,24 +75,34 @@ export default class PayOrder extends Component {
   }
   // 去支付
   handlePay = () => {
-    const { orderId, param } = this.state
+    const { param } = this.state
     Taro.showLoading({title: '拉起支付中...', mask: true})
     api.groupBy.createOrder(param).then(res => {
       Taro.hideLoading()
+      const { trade_info } = res
       Taro.requestPayment({
         timeStamp: res.timeStamp,
         nonceStr: res.nonceStr,
         package: res.package,
         signType: res.signType,
         paySign: res.paySign,
-        success: () => {  },
+        success: () => {
+          Taro.showToast({
+            title: '支付成功',
+            complete: () => {
+              Taro.redirectTo({
+                url: `/groupBy/pages/orderDetail/index?orderId=${trade_info.order_id}`
+              })
+            }
+          })
+        },
         fail: () => { 
           Taro.showModal({
             content: '支付失败',
             showCancel: false,
             complete: () => {
               Taro.redirectTo({
-                url: `/groupBy/pages/orderDetail/index?orderId=${orderId}`
+                url: `/groupBy/pages/orderDetail/index?orderId=${trade_info.order_id}`
               })
             }
           })

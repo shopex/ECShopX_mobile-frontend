@@ -28,7 +28,7 @@
       border-radius: 30px;
       color: #fff;
       z-index: 99;
-      background: #999;
+      background: rgba($color: #000, $alpha: 0.4);
     }
   }
   .timeDown {
@@ -43,7 +43,7 @@
     }
   }
   .info {
-    padding: 10px 20px 130px 20px;
+    padding: 10px 20px 100px 20px;
     background: #fff;
     box-sizing: border-box;
     .goodName {

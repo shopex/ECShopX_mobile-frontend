@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/orderList/index.js
  * @Date: 2020-05-09 10:17:35
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 14:09:46
+ * @LastEditTime: 2020-06-19 17:05:08
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
@@ -39,7 +39,7 @@ export default class OrderList extends Component {
   }
 
   componentDidMount() {
-    this.getOrderList()
+    this.getOrderList(true)
   }
 
   config = {
@@ -47,14 +47,17 @@ export default class OrderList extends Component {
   }
 
   // 获取订单列表
-  getOrderList = () => {
-    const { param } = this.state
+  getOrderList = (isRefresh = false) => {
+    let { param, list: oldList } = this.state
+    if (isRefresh) {
+      oldList = []
+    }
     api.groupBy.getOrderList(param).then(res => {
       const { list, pager } = res
       const count = pager.count
       const isEnd = param.page >= (count / param.pageSize)
       this.setState({
-        list: formatOrder(list),
+        list: [...oldList, ...formatOrder(list)],
         isEnd,
         isRefresh: false,
         isLoading: false,
@@ -83,7 +86,7 @@ export default class OrderList extends Component {
       isRefresh: true,
       param
     }, () => {
-      this.getOrderList()
+      this.getOrderList(true)
     })
   }
 
@@ -146,7 +149,7 @@ export default class OrderList extends Component {
           onRefresherRefresh={this.handleRefresh}
           onScrollToLower={this.handleLoadMore}
         >
-          { list.map(item => <OrderItem key={item} info={item} />) }
+          { list.map(item => <OrderItem key={item} info={item} onRefresh={this.handleRefresh} />) }
           {/* 加载更多 */}
           <LoadingMore isLoading={isLoading} isEnd={isEnd} isEmpty={isEmpty} />
           {/* 防止子内容无法支撑scroll-view下拉刷新 */}

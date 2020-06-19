@@ -6,11 +6,11 @@
  * @FilePath: /unite-vshop/src/groupBy/component/cartList/index.js
  * @Date: 2020-04-30 18:43:03
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 16:01:16
+ * @LastEditTime: 2020-06-19 15:46:10
  */
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Button } from '@tarojs/components'
-import { AtSwipeAction, AtModal, AtModalAction } from 'taro-ui'
+import { View, ScrollView } from '@tarojs/components'
+import { AtSwipeAction } from 'taro-ui'
 import api from '@/api'
 import GoodItem from '../goodItem'
 
@@ -34,10 +34,7 @@ export default class cartList extends Component {
     })
     this.state = {
       goodList: list,
-      isRefresh: false,
-      modalStatus: false,
-      // 要删除的商品id
-      deleteId: ''
+      isRefresh: false
     }
   }
 
@@ -138,21 +135,50 @@ export default class cartList extends Component {
   }
 
   // 删除
-  handleDelete = () => {
-    const { goodList, deleteId } = this.state
-    const index = goodList.findIndex(item => item.itemId === deleteId)
-    goodList.splice(index, 1)
-    this.setState({
-      goodList,
-      modalStatus: false
+  handleDelete = (cartId) => {
+    Taro.showModal({
+      content: '确认删除该商品?',
+      success: res => {
+        if (res.confirm) {
+          Taro.showLoading({title: '删除中...'})
+          api.groupBy.deleteGood({cart_id: cartId})
+          .then(result => {
+            Taro.hideLoading()
+            console.log(result)
+            Taro.showToast({
+              title: '删除成功',
+              complete: () => {
+                this.handleRefresh()
+              }
+            })
+          })
+        }
+      }
     })
   }
 
-  // 切换弹出框
-  toogleModal = (status, id) => {
-    this.setState({
-      modalStatus: status,
-      deleteId: id
+  // 清空失效
+  clearCart = () => {
+    const { failureList } = this.props
+    const ids = failureList.map(item => item.cartId)
+    Taro.showModal({
+      content: '确认清空失效商品?',
+      success: res => {
+        if (res.confirm) {
+          Taro.showLoading({title: '清空中...'})
+          api.groupBy.deleteGood({cart_id: ids})
+          .then(result => {
+            Taro.hideLoading()
+            console.log(result)
+            Taro.showToast({
+              title: '清空成功',
+              complete: () => {
+                this.handleRefresh()
+              }
+            })
+          })
+        }
+      }
     })
   }
 
@@ -178,7 +204,7 @@ export default class cartList extends Component {
         }
       }
     ]
-    const { goodList, isRefresh, modalStatus } = this.state
+    const { goodList, isRefresh } = this.state
 
     const { failureList, isCanReduce } = this.props
 
@@ -202,7 +228,7 @@ export default class cartList extends Component {
                 isOpened={item.isOpened}
                 onOpened={this.handleSingle.bind(this, index, false)}
                 onClosed={this.handleSingle.bind(this, index, true)}
-                onClick={this.toogleModal.bind(this, true, item.cartId)}
+                onClick={this.handleDelete.bind(this, item.cartId)}
               >
                 <GoodItem 
                   ShowCheckBox 
@@ -219,7 +245,7 @@ export default class cartList extends Component {
             && <View className='failure'>
               <View className='failureTitle'>
                 <View>失效商品</View>
-                <View>清空</View>
+                <View onClick={this.clearCart.bind(this)}>清空</View>
               </View>
               <View className='failureList'>
                 {
@@ -240,15 +266,6 @@ export default class cartList extends Component {
             </View>
           }
         </ScrollView>
-        <AtModal
-          isOpened={modalStatus}
-        >
-          <View className='myModal'>确认要删除该商品吗?</View>
-          <AtModalAction>
-            <Button onClick={this.toogleModal.bind(this, false)}>取消</Button>
-            <Button onClick={this.handleDelete.bind(this)}>确定</Button>
-          </AtModalAction>
-        </AtModal>
       </View>
     )
   }

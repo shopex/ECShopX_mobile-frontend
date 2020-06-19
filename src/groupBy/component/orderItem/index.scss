@@ -74,10 +74,15 @@
     justify-content: flex-end;
     padding: 20px 10px;
     .actBtn {
-      padding: 10px 60px;
+      padding: 10px 40px;
       border-radius: 35px;
       color: $theme-color;
       border: 2px solid $theme-color;
+      &.cancel {
+        margin-left: 10px;
+        border-color: #999;
+        color: #999;
+      }
     }
   }
 }
