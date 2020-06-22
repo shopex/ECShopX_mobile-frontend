@@ -43,7 +43,7 @@
     }
   }
   .info {
-    padding: 10px 20px 100px 20px;
+    padding: 10px 20px 160px 20px;
     background: #fff;
     box-sizing: border-box;
     .goodName {
@@ -183,6 +183,10 @@
       color: #fff;
       background: $theme-color;
       border-radius: 35px;
+      &.no {
+        background: #ccc;
+        color: #fff;
+      }
     }
   }
   .posterCanvas {

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/orderItem/index.js
  * @Date: 2020-05-09 15:10:18
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 14:37:21
+ * @LastEditTime: 2020-06-22 18:21:02
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -37,12 +37,14 @@ export default class OrderItem extends Component {
   // 去付款
   handlePay = (e) => {
     e.stopPropagation()
+    Taro.showLoading({title: '拉起支付中...', mask: true})
     const { info } = this.props
     api.groupBy.payConfig({
       order_id: info.orderId,
       order_type: 'normal_community',
       pay_type: 'wxpay'
     }).then(res => {
+      Taro.hideLoading()
       Taro.requestPayment({
         timeStamp: res.timeStamp,
         nonceStr: res.nonceStr,

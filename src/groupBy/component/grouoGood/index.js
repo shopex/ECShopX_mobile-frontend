@@ -6,14 +6,16 @@
  * @FilePath: /unite-vshop/src/groupBy/component/grouoGood/index.js
  * @Date: 2020-04-23 18:06:17
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 13:50:18
+ * @LastEditTime: 2020-06-22 17:01:09
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import api from '@/api'
+import { formatCountTime } from '../../utils/index'
 import GoodItem from '../goodItem'
 import BuyerItem from '../buyerItem'
+
 import './index.scss'
 
 export default class GroupGood extends Component {
@@ -88,17 +90,7 @@ export default class GroupGood extends Component {
       isEnd: timeId === ''
     })
   }
-
-  // 格式化时间
-  formatCountTime = (time) => {
-    const format = (val) => (val > 9) ? val : `0${val}`
-    const d = Math.floor(time / (24*3600))
-    const h = Math.floor(time % (24*3600) / 3600)
-    const m = Math.floor(time % 3600 / 60)
-    const s = Math.floor(time % 60)
-    return `${d}天${format(h)}:${format(m)}:${format(s)}`
-  }
-
+  
   // 修改商品数量
   setGoodNum = (itemId, type) => {
     const currentCommunity = Taro.getStorageSync('community')
@@ -126,6 +118,12 @@ export default class GroupGood extends Component {
     })
   }
 
+  goNextNotice = () => {
+    Taro.navigateTo({
+      url: '/groupBy/pages/nextNotice/index'
+    })
+  }
+
   render () {
     const { countTime, isEnd, list } = this.state
     const { info } = this.props
@@ -135,9 +133,9 @@ export default class GroupGood extends Component {
         <View className='info'>
           <View className='time'>
             <View className='left'>
-              本期剩余时间{this.formatCountTime(countTime)}
+              本期剩余时间{ formatCountTime(countTime) }
             </View>
-            <View className='right'>
+            <View className='right' onClick={this.goNextNotice.bind(this)}>
               下期预告
               <AtIcon value='chevron-right' size='16'></AtIcon>
             </View>

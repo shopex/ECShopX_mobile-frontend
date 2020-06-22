@@ -6,12 +6,13 @@
  * @FilePath: /unite-vshop/src/groupBy/component/goodItem/index.js
  * @Date: 2020-04-24 09:46:24
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 15:52:41
+ * @LastEditTime: 2020-06-22 17:09:22
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import BuyContorl from '../buyContorl'
+
 import './index.scss'
 
 export default class GoodItem extends Component {
@@ -22,6 +23,8 @@ export default class GoodItem extends Component {
     isEnd: false,
     // 是否显示最近购买
     ShowBuyer: false,
+    // 是否下期预告
+    isNext: false,
     // 是否显示选择框
     ShowCheckBox: false,
     // 是否显示过期
@@ -49,13 +52,15 @@ export default class GoodItem extends Component {
 
   // 点击跳转
   handleItem = (itemId, activeId) => {
+    const currentCommunity = Taro.getStorageSync('community')
+    const { isNext } = this.props
     Taro.navigateTo({
-      url: `/groupBy/pages/goodDetail/index?itemId=${itemId}&activeId=${activeId}`
+      url: `/groupBy/pages/goodDetail/index?itemId=${itemId}&activeId=${activeId}&cid=${currentCommunity.community_id}&isNext=${isNext}`
     })
   }
 
   render () {
-    const { goodInfo, isEnd, ShowBuyer, ShowCheckBox, isExpired, isCanReduce } = this.props
+    const { goodInfo, isEnd, ShowBuyer, ShowCheckBox, isExpired, isCanReduce, isNext } = this.props
 
     return (
       <View className='goodItem' onClick={this.handleItem.bind(this, goodInfo.itemId, goodInfo.activity_id)}>
@@ -85,21 +90,23 @@ export default class GoodItem extends Component {
               </View>
             </View>
             {
-              !isExpired ? <View className='otherInfoRight'>
-                { true && <View className='limit'>限购{ goodInfo.limit_num }件</View>}
+              (!isExpired && !isNext) ? <View className='otherInfoRight'>
+                { goodInfo.limit_num > 0 && <View className='limit'>限购{ goodInfo.limit_num }件</View>}
                 <BuyContorl
                   isEnd={isEnd}
+                  store={goodInfo.store}
+                  limit={goodInfo.limit_num}
                   quantity={goodInfo.num}
                   isCanReduce={isCanReduce}
                   addQuantity={this.setGoodNum.bind(this, ShowCheckBox ? goodInfo.cartId : goodInfo.itemId, 'add')}
                   reduceQuantity={this.setGoodNum.bind(this, ShowCheckBox ? goodInfo.cartId : goodInfo.itemId, 'reduce')}
                 />
               </View>
-              : <View className='otherInfoExpired'>已过期</View>
+              : <View className='otherInfoExpired'>{ isNext ? '尚未开始' : '已经过期' }</View>
             }
           </View>
           {
-            ShowBuyer &&goodInfo.history_data.length > 0 && <View className='buyer'>
+            ShowBuyer && goodInfo.history_data.length > 0 && <View className='buyer'>
               最近购买
               <View className='recent'>
                 {

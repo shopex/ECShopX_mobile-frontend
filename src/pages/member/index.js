@@ -453,6 +453,13 @@ export default class MemberIndex extends Component {
             >
             </SpCell>
             <SpCell
+              title='我的社区团购'
+              isLink
+              img='/assets/imgs/group.png'
+              onClick={this.handleClick.bind(this, '/groupBy/pages/orderList/index')}
+            >
+            </SpCell>
+            <SpCell
               title='投诉记录'
               isLink
               img='/assets/imgs/group.png'

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/cart/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-18 17:40:45
+ * @LastEditTime: 2020-06-22 14:28:33
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -76,10 +76,18 @@ export default class GroupByIndex extends Component {
    */  
   // 全选
   setCheckAll = (isCheckAll, isAllBtn = true) => {
+    if (isAllBtn) {
+      this.cartRef.setCheckAll(!isCheckAll)
+    } else {
+      this.setCheckAllBack(isCheckAll)
+    }
+  }
+
+  // 全选回调
+  setCheckAllBack = (isCheckAll) => {
     this.setState({
-      isCheckAll: !isCheckAll
-    }, () => {
-      isAllBtn && this.cartRef.setCheckAll(!isCheckAll)
+      isCheckAll: isCheckAll
+    }, () => { 
       this.calcSum()
     })
   }
@@ -102,6 +110,7 @@ export default class GroupByIndex extends Component {
     const { list } = this.state
     const isChecked = list.some(item => item.isChecked)
     const activityId =  list[0] && list[0].activity_id
+    const currentCommunity = Taro.getStorageSync('community')
     if (!isChecked) {
       Taro.showToast({
         title: '请选择要购买的商品',
@@ -109,7 +118,7 @@ export default class GroupByIndex extends Component {
       })
     } else {
       Taro.navigateTo({
-        url: `/groupBy/pages/payOrder/index?activityId=${activityId}`
+        url: `/groupBy/pages/payOrder/index?activityId=${activityId}&communityId=${currentCommunity.community_id}`
       })
     }
   }
@@ -135,23 +144,20 @@ export default class GroupByIndex extends Component {
             isCheckAll={isCheckAll}
             onRefresh={this.getCartData.bind(this)}
             onCalc={this.calcSum.bind(this)}
-            onSetChekckAll={this.setCheckAll.bind(this)}
+            onSetChekckAll={this.setCheckAllBack.bind(this)}
           />
         </View>
         {
           list.length > 0 && <View className='toolBar'>
-            <View className='left'>
-              <View
-                className={`checkBox ${isCheckAll && 'isChecked'}`}
-                onClick={this.setCheckAll.bind(this, isCheckAll)}
-              >
+            <View className='left' onClick={this.setCheckAll.bind(this, isCheckAll)}>
+              <View className={`checkBox ${isCheckAll && 'isChecked'}`}>
                 {isCheckAll && <AtIcon value='check' size='12' color='#fff'></AtIcon>}
               </View>
               全选
             </View>
             <View className='right'>
               <View className='sum'>合计: <Text className='price'>¥{ total }</Text></View>
-              <View className='settlement' onClick={this.handleSettlement}>结算</View>
+              <View className='settlement' onClick={this.handleSettlement.bind(this)}>结算</View>
             </View>
           </View>          
         }

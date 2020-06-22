@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/cartList/index.js
  * @Date: 2020-04-30 18:43:03
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 15:46:10
+ * @LastEditTime: 2020-06-22 14:31:25
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
@@ -88,7 +88,7 @@ export default class cartList extends Component {
         goodList
       }, () => {
         const isCheckAll = goodList.some(item => !item.isChecked)
-        this.props.onSetChekckAll && this.props.onSetChekckAll(isCheckAll, false)
+        this.props.onSetChekckAll && this.props.onSetChekckAll(!isCheckAll, false)
       })
     })
   }
@@ -105,7 +105,7 @@ export default class cartList extends Component {
     }).then(() => {
       // 是否全选
       const isCheckAll = goodList.some(item => !item.isChecked)
-      this.props.onSetChekckAll && this.props.onSetChekckAll(isCheckAll, false)
+      this.props.onSetChekckAll && this.props.onSetChekckAll(!isCheckAll, false)
       this.setState({
         goodList
       })
@@ -128,6 +128,7 @@ export default class cartList extends Component {
       is_checked: isChecked
     }).then(() => {
       Taro.hideLoading()
+      this.props.onSetChekckAll && this.props.onSetChekckAll(isChecked, true)
       this.setState({
         goodList
       })

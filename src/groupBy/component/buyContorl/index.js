@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/buyContorl/index.js
  * @Date: 2020-04-26 16:01:13
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-15 17:18:41
+ * @LastEditTime: 2020-06-22 10:10:54
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
@@ -22,6 +22,8 @@ export default class buyContorl extends Component {
     isEnd: false,
     // 限购数量
     limit: 99,
+    // 库存
+    store: 99,
     quantity: 0,
     isCanReduce: false,
     addQuantity: () => {},
@@ -37,9 +39,21 @@ export default class buyContorl extends Component {
       })
       return
     }
-    const { addQuantity, reduceQuantity, quantity, isCanReduce } = this.props
+    const { addQuantity, reduceQuantity, quantity, isCanReduce, limit, store } = this.props
     if (type === 'add') {
-      addQuantity && addQuantity()
+      if (limit > 0 && quantity >= limit) {
+        Taro.showToast({
+          title: '超出限购数量',
+          mask: true
+        })
+      } else if (quantity >= store) {
+        Taro.showToast({
+          title: '库存不足',
+          mask: true
+        })
+      } else {
+        addQuantity && addQuantity()
+      }
     } else {
       if (!isCanReduce || quantity > 1) {
         reduceQuantity && reduceQuantity()
@@ -58,7 +72,7 @@ export default class buyContorl extends Component {
                 <AtIcon value='subtract' size='12'></AtIcon>
               </Button>
               <View className='num'>{ quantity }</View>
-              <Button className='addBtn' onClick={this.handleClick.bind(this, 'add')}>
+              <Button className='addBtn'onClick={this.handleClick.bind(this, 'add')}>
                 <AtIcon value='add' size='12'></AtIcon>
               </Button>
             </View>
