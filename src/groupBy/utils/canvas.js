@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/utils/canvas.js
  * @Date: 2020-05-11 11:05:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-17 18:25:33
+ * @LastEditTime: 2020-06-22 10:33:46
  */
 
 export default class Canvas {
@@ -99,7 +99,7 @@ export default class Canvas {
     const single = width / str.length
     // 可显示文字个数
     const num = limitWidth / single
-    if (num >= (strLength + 1)) {
+    if (num >= (strLength + 4)) {
       return str
     } else {
       // 截取位置
@@ -316,7 +316,7 @@ async createGoodList (data, x, y, w) {
     // await this.createGoodList({
     // }, goodLeft, goodTop, goodWidth)
     await this.createBottom(width, goodLeft, goodTop + goodheight, {
-      img: 'https://res.wx.qq.com/wxdoc/dist/assets/img/WXACode.fa3d686a.png',
+      img: goodInfo.qrCode,
       leaderName: goodInfo.leaderName,
       address: goodInfo.address,
       deliveryDate: goodInfo.deliveryDate

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 13:50:30
+ * @LastEditTime: 2020-06-22 17:53:25
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
@@ -29,6 +29,8 @@ export default class GroupByIndex extends Component {
       userInfo: {},
       // banner
       banner: [],
+      // 菜单列表
+      menuList: [],
       // 活动列表
       list: [],
       isRefresh: false,
@@ -84,7 +86,23 @@ export default class GroupByIndex extends Component {
       }
       Taro.setStorageSync('userinfo', userInfo)
     }
-    const lbs = await Taro.getLocation({type: 'gcj02'})
+    const lbs = await Taro.getLocation({type: 'gcj02'}).catch(() => {
+      Taro.showModal({
+        content: '您未授权访问您的定位信息，请先更改您的授权设置',
+        showCancel: false,
+        success: res => {
+          if (res.confirm) {
+            Taro.openSetting({
+              success: resSet => {
+                console.log(resSet)
+              }
+            })
+          }
+        }
+      })
+      return false
+    })
+    if (!lbs) return
     const { latitude, longitude } = lbs
     this.getSetting()
     this.setState({
@@ -158,7 +176,9 @@ export default class GroupByIndex extends Component {
       version: 'v1.0.1',
       page_name: 'index'
     }).then(res => {
-      console.log(res)
+      this.setState({
+        menuList: res.list || []
+      })
     })
   }
   // 滚动事件
@@ -211,7 +231,8 @@ export default class GroupByIndex extends Component {
       isLoading,
       isEnd,
       isEmpty,
-      current
+      current,
+      menuList
     } = this.state
 
     return (
@@ -255,7 +276,7 @@ export default class GroupByIndex extends Component {
             </Swiper>
           }
           {/* 菜单 */}
-          <Classification />
+          {  menuList.length > 0 && <Classification list={menuList} /> }
           {/* 列表图 */}
           {
             list.map(item => <GroupGood key={item.time} info={item} />)

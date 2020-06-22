@@ -32,13 +32,19 @@ class App extends Component {
     }
     const { query } = this.$router.params
     if (query && query.scene) {
-      const { smid , dtid } = normalizeQuerys(query)
+      const { smid , dtid, id, aid, cid  } = normalizeQuerys(query)
       if (smid) {
         Taro.setStorageSync('s_smid', smid)
       }
   
       if (dtid) {
         Taro.setStorageSync('s_dtid', dtid)
+      }
+      // 如果id、aid、cid同时存在则为团购分享详情
+      if (id && aid && cid) {
+        Taro.redirectTo({
+          url: `/groupBy/pages/shareDetail/index?aid=${aid}&itemId=${id}&cid=${cid}`
+        })
       }
     }
     this.fetchTabs()
@@ -188,6 +194,7 @@ class App extends Component {
           'pages/orderDetail/index',
           'pages/orderList/index',
           'pages/shareDetail/index',
+          'pages/nextNotice/index',
           'pages/community/index'
         ]
       },

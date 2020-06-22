@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/community/index.js
  * @Date: 2020-06-11 11:39:49
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 16:01:22
+ * @LastEditTime: 2020-06-22 18:10:36
  */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Input } from '@tarojs/components'
@@ -38,10 +38,8 @@ export default class Community extends Component {
     }
   }
 
-  componentDidMount () {
-    this.init().then(() => {
-      this.getNearBuyCommunity()
-    })
+  async componentDidMount () {
+    this.init()
   }
 
   config = {
@@ -60,7 +58,23 @@ export default class Community extends Component {
 
   // 获取定位
   init = async () => {
-    const lbs = await Taro.getLocation({type: 'gcj02'})
+    const lbs = await Taro.getLocation({type: 'gcj02'}).catch(() => {
+      Taro.showModal({
+        content: '您未授权访问您的定位信息，请先更改您的授权设置',
+        showCancel: false,
+        success: res => {
+          if (res.confirm) {
+            Taro.openSetting({
+              success: () => {
+                this.init()
+              }
+            })
+          }
+        }
+      })
+      return false
+    })
+    if (!lbs) return false
     const { latitude, longitude } = lbs
     this.setState({
       lbs: {
@@ -69,6 +83,7 @@ export default class Community extends Component {
       }
     }, () => {
       this.getCommunity(true)
+      this.getNearBuyCommunity()
     })
   }
 
@@ -97,6 +112,7 @@ export default class Community extends Component {
       })
     } else {
       const { lbs } = this.state
+      console.log(lbs)
       api.groupBy.activityCommunity(lbs).then(res => {
         Taro.setStorageSync('community', res)
         this.setState({

@@ -6,13 +6,14 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 14:41:25
+ * @LastEditTime: 2020-06-22 17:24:52
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import { NavBar, SpHtmlContent } from '@/components'
 import api from '@/api'
+import { formatCountTime } from '../../utils/index'
 import CanvasUtil from '../../utils/canvas'
 
 import './index.scss'
@@ -81,25 +82,15 @@ export default class GoodDetail extends Component {
       timeId
     })
   }
-
-  // 格式化时间
-  formatCountTime = (time) => {
-    const format = (val) => (val > 9) ? val : `0${val}`
-    const d = Math.floor(time / (24*3600))
-    const h = Math.floor(time % (24*3600) / 3600)
-    const m = Math.floor(time % 3600 / 60)
-    const s = Math.floor(time % 60)
-    return `${d}天${format(h)}:${format(m)}:${format(s)}`
-  }
+  
   // 获取商品详情
   getGoodInfo = () => {
-    const { itemId, activeId } = this.$router.params
-    const currentCommunity = Taro.getStorageSync('community')
+    const { itemId, activeId, cid } = this.$router.params
 
     api.groupBy.activityGoodDetail({
       item_id: itemId,
       activity_id: activeId,
-      community_id: currentCommunity.community_id,
+      community_id: cid,
     }).then(res => {
       const { item, activity, history_data, community } = res
       this.setState({
@@ -117,7 +108,9 @@ export default class GoodDetail extends Component {
           activityPrice: (activity.item.activity_price / 100).toFixed(2),
           intro: item.intro,
           leaderName: community.leader_name,
-          address: community.address
+          address: community.address,
+          currentId: community.community_id,
+          companyId: community.company_id
         },
         countTime: activity.last_second
       }, () => {
@@ -142,11 +135,17 @@ export default class GoodDetail extends Component {
       url: '/groupBy/pages/cart/index'
     })
   }
+  // 回到首页
+  goHome = () => {
+    Taro.reLaunch({
+      url: '/groupBy/pages/home/index'
+    })
+  }
   // 立即购买
   handleBuy = () => {
     const { goodInfo } = this.state
     Taro.navigateTo({
-      url: `/groupBy/pages/payOrder/index?activityId=${goodInfo.activityId}&itemId=${goodInfo.itemId}&itemNum=${1}`
+      url: `/groupBy/pages/payOrder/index?activityId=${goodInfo.activityId}&itemId=${goodInfo.itemId}&itemNum=${1}&communityId=${goodInfo.currentId}`
     })
   }
 
@@ -156,10 +155,16 @@ export default class GoodDetail extends Component {
     //   mask: true,
     //   title: '请稍等'
     // })
-    const {goodInfo } = this.state
+    const host = APP_BASE_URL.replace('api/h5app/wxapp', '')
+
+    const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
+    const { goodInfo } = this.state
+    //  二维码链接
+    const qrCode = `${host}wechatAuth/shopwxapp/community/qrcode.png?appid=${extConfig.appid}&company_id=${goodInfo.companyId}&aid=${goodInfo.activityId}&cid=${goodInfo.currentId}&id=${goodInfo.itemId}`
+
     const ctx = Taro.createCanvasContext('poster', this)
     const canvas = new CanvasUtil(ctx, Taro)
-    canvas.drawCanvas(375, 640, goodInfo, () => {
+    canvas.drawCanvas(375, 640, {...goodInfo, qrCode}, () => {
       Taro.canvasToTempFilePath({
         x: 0,
         y: 0,
@@ -194,6 +199,7 @@ export default class GoodDetail extends Component {
 
   render () {
     const { goodInfo, imgCurrent, posterImg, showPoster, countTime } = this.state
+    const { isNext = false } = this.$router.params
 
     return (
       <View className='goodDetail'>
@@ -222,7 +228,7 @@ export default class GoodDetail extends Component {
         </View>
         {/* 倒计时 */}
         <View className='timeDown'>
-          <Text className='title'>仅剩{ this.formatCountTime(countTime) }</Text>
+          <Text className='title'>仅剩{ formatCountTime(countTime) }</Text>
         </View>
         {/* 详情 */}
         <View className='info'>
@@ -274,11 +280,19 @@ export default class GoodDetail extends Component {
         </View>
         {/* 底部购物bar */}
         <View className='cartBar'>
+            <View className='cartBag' onClick={this.goHome.bind(this)}>
+              <View className='iconfont icon-home1'></View>
+              团购首页
+            </View>
             <View className='cartBag' onClick={this.goCart.bind(this)}>
-              <View className='iconfont icon-shop'></View>
+              <View className='iconfont icon-cart'></View>
               购物袋
             </View>
-            <View className='immediately' onClick={this.handleBuy.bind(this)}>立即抢购</View>
+            {
+              (!isNext || isNext === 'false')
+                ? <View className='immediately' onClick={this.handleBuy.bind(this)}>立即抢购</View>
+                : <View className='immediately no'>暂未开始</View>
+            }
         </View>
         {/* 海报 */}
         <Canvas canvasId='poster' style='width: 375px; height: 640px;' className='posterCanvas' />

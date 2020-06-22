@@ -1,9 +1,11 @@
+@import '../../styles/index';
+
 .shareDetail {
   width: 100%;
   background: #fff;
   .shareHeader {
     padding: 35px 20px;
-    background: #ffd859;
+    background: $theme-color;
     .community {
       font-size: 32px;
     }
@@ -85,6 +87,15 @@
             color: #999;
           }
         }
+      }
+      .buyBtn {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px 0;
+        border-radius: 40px;
+        color: #fff;
+        text-align: center;
+        background: $theme-color;
       }
     }
   }

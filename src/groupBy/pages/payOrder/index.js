@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/payOrder/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-19 12:01:27
+ * @LastEditTime: 2020-06-22 18:19:16
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -47,10 +47,11 @@ export default class PayOrder extends Component {
     navigationBarTitleText: '结算'
   }
 
-  getCalculateTotal = () => {
+  getCalculateTotal = async () => {
     Taro.showLoading({title: '请稍等...', mask: true})
-    const currentCommunity = Taro.getStorageSync('community')
-    const { activityId, itemId, itemNum = 1 } = this.$router.params
+    const { activityId, itemId, itemNum = 1, communityId } = this.$router.params
+    //  查询地址
+    const currentCommunity = await api.groupBy.activityCommunityDetail({community_id: communityId})
     const { param } = this.state
     if (itemId) {
       param.items.push({
@@ -58,11 +59,11 @@ export default class PayOrder extends Component {
         num: itemNum
       })
     }
-    param.community_id = currentCommunity.community_id
+    param.community_id = communityId
     param.community_activity_id = activityId
     api.groupBy.getCalculateTotal(param).then(res => {
       this.setState({
-        orderId: res.order_id,
+        // orderId: res.order_id,
         list: res.items,
         currtent: currentCommunity,
         totalItemNum: res.totalItemNum,
@@ -163,7 +164,7 @@ export default class PayOrder extends Component {
         {/* 支付 */}
         <View className='payBar'>
           <View className='sum'>合计: <Text className='price'>¥{ totalFee }</Text></View>
-          <View className='goPay' onClick={this.handlePay}>去支付</View>
+          <View className='goPay' onClick={this.handlePay.bind(this)}>去支付</View>
         </View>
       </View>
     )

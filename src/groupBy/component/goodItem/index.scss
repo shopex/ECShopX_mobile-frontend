@@ -14,7 +14,7 @@
     border-radius: 100%;
     box-sizing: border-box;
     text-align: center;
-    border: 1px solid #c1c1c1;
+    border: 2px solid #c1c1c1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,6 +93,7 @@
         background: #c1c1c1;
         color: #fff;
         border-radius: 6px;
+        flex-shrink: 0;
       }
     }
     .buyer {
