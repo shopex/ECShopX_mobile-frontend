@@ -1,12 +1,9 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView, Image, Navigator } from '@tarojs/components'
-import { AtDrawer } from 'taro-ui'
-import { SpToast, BackToTop, Loading, FilterBar, SpNote, GoodsItem } from '@/components'
-import S from '@/spx'
+import { View, Text, ScrollView } from '@tarojs/components'
+import { SpToast, Loading, SpNote } from '@/components'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
-import { classNames, pickBy, formatDataTime } from '@/utils'
-import entry from '@/utils/entry'
+import { pickBy, formatDataTime, resolveOrderStatus } from '@/utils'
 
 import './shop-trade.scss'
 
@@ -41,6 +38,14 @@ export default class DistributionShopTrade extends Component {
       order_id: 'order_id',
       created: 'created',
       title: 'item_name',
+      status: ({ status }) => {
+        switch (status) {
+          case 'wait': return '待发货'
+          case 'finish': return '已完成'
+          case 'close': return '已取消'
+          default: return ''
+        }
+      },
       num: 'num',
       price: ({ price }) => (price/100).toFixed(2)
     })
@@ -71,7 +76,7 @@ export default class DistributionShopTrade extends Component {
           <View className='trade-list'>
             {
               list.map((item, index) =>
-                <View className='section trade-list__item'>
+                <View className='section trade-list__item' key={item.order_id}>
                   <View className='section-title view-flex view-flex-middle with-border'>
                     <View className='view-flex-item trade-list__item-code'>{item.order_id}</View>
                     <View className='trade-list__item-date'><Text className='icon-clock muted'></Text> {formatDataTime(item.created*1000)}</View>
@@ -81,7 +86,10 @@ export default class DistributionShopTrade extends Component {
                       <View className='trade-list__item-title'>{item.title}</View>
                       <View className='trade-list__item-price'><Text className='cur'>¥</Text> {item.price}</View>
                     </View>
-                    <View className='trade-list__item-count'>x{item.num}</View>
+                    <View className='view-flex-item' style='text-align: right'>
+                      <View className='trade-list__item-count'>x{item.num}</View>
+                      <View className='trade-list__item-count' style='color: #e7305b'>{item.status}</View>
+                    </View>
                   </View>
                 </View>
               )
