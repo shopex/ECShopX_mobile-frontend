@@ -119,11 +119,13 @@ export function resolvePath (baseUrl, params = {}) {
 }
 
 export function formatTime (time, formatter = 'yyyy-MM-dd') {
-  return format(time, formatter)
+  const newTime = time.toString().length < 13 ? time * 1000 : time
+  return format(newTime, formatter)
 }
 
 export function formatDataTime (time, formatter = 'yyyy-MM-dd HH:mm:ss') {
-  return format(time, formatter)
+  const newTime = time.toString().length < 13 ? time * 1000 : time
+  return format(newTime, formatter)
 }
 
 export function copyText (text, msg = '内容已复制') {

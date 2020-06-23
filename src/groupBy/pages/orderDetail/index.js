@@ -6,11 +6,12 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/orderDetail/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 11:36:03
+ * @LastEditTime: 2020-06-23 14:08:25
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import api from '@/api'
+import { formatDataTime } from '@/utils'
 import { NavBar } from '@/components'
 
 import './index.scss'
@@ -31,8 +32,12 @@ export default class OrderDetail extends Component {
       currtent: {},
       activityStatus: '',
       deliveryDate: '',
+      endDate: '',
+      payDate: '',
+      createTime: '',
       qrcodeUrl: '',
-      orderId: ''
+      orderId: '',
+      symbol: '¥'
     }
   }
   
@@ -96,7 +101,7 @@ export default class OrderDetail extends Component {
     api.groupBy.getOrderDetail({
       orderId
     }).then(async res => {
-      const { orderInfo, community_activity } = res
+      const { orderInfo, community_activity, tradeInfo } = res
       let qrcodeUrl = ''
       if (orderInfo.order_status === 'PAYED' && orderInfo.ziti_status === 'PENDING') {
         const qrcodeRes = await api.groupBy.getZitiCode({order_id: orderId})
@@ -117,6 +122,10 @@ export default class OrderDetail extends Component {
         orderStatusMsg: orderInfo.order_status_msg,
         activityStatus: orderInfo.activity_status,
         deliveryDate: community_activity.delivery_date,
+        symbol: orderInfo.fee_symbol,
+        endDate: orderInfo.end_date,
+        payDate: tradeInfo.payDate,
+        createTime: formatDataTime(orderInfo.create_time),
         qrcodeUrl
       }, () => {
         if (orderInfo.order_status === 'NOTPAY') {
@@ -232,13 +241,17 @@ export default class OrderDetail extends Component {
       activityStatus,
       list,
       deliveryDate,
+      endDate,
       cancelTime,
       totalFee,
       totalItemNum,
       orderStatusMsg,
       itemFee,
       qrcodeUrl,
-      orderStatus
+      payDate,
+      createTime,
+      orderStatus,
+      symbol
     } = this.state
     return (
       <View className='orderDetail'>
@@ -255,7 +268,7 @@ export default class OrderDetail extends Component {
           </View>
           {/* 取货码 */}
           {
-            orderStatus === 'PAYED' && <View className='code'>
+            orderStatus === 'PAYED' && qrcodeUrl && <View className='code'>
               <Text>取货码</Text>
               <Image className='codeImg' src={qrcodeUrl} />
               {/* <View className='codeBtn'>确认核销</View> */}
@@ -286,7 +299,7 @@ export default class OrderDetail extends Component {
             </View>
             <View className='infoLine'>
               <Text>商品总价</Text>
-              <Text>¥{ itemFee }</Text>
+              <Text>{ symbol }{ itemFee }</Text>
             </View>
             {/* <View className='infoLine'>
               <View>会员优惠</View>
@@ -295,29 +308,33 @@ export default class OrderDetail extends Component {
             <View className='infoLine flexEnd'>
               <Text>
                 { orderStatus === 'NOTPAY' ? '需支付' : '合计' }： 
-                <Text className='price'>¥{ totalFee }</Text>
+                <Text className='price'>{ symbol }{ totalFee }</Text>
               </Text>
             </View>
           </View>
           {/* 订单详情 */}
           {
-            orderStatus === 'PAYED' && <View className='orderinfo'>
+            <View className='orderinfo'>
               <View className='infoLine'>
                 <Text>订单号</Text>
                 <Text>{ orderId }</Text>
               </View>
               <View className='infoLine'>
                 <Text>下单时间</Text>
-                <Text>2020-05-01 15:30</Text>
+                <Text>{ createTime }</Text>
               </View>
-              <View className='infoLine'>
-                <View>支付时间</View>
-                <View>2020-05-01 15:30</View>
-              </View>
-              <View className='infoLine'>
-                <View>完成时间</View>
-                <View>2020-05-01 15:30</View>
-              </View>
+              {
+                orderStatus === 'PAYED' && <View className='infoLine'>
+                  <View>支付时间</View>
+                  <View>{ payDate }</View>
+                </View>                
+              }
+              {
+                endDate && <View className='infoLine'>
+                  <View>完成时间</View>
+                  <View>{ endDate }</View>
+                </View>
+              }
             </View>
           }
           {

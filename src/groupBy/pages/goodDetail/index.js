@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 17:24:52
+ * @LastEditTime: 2020-06-23 11:53:25
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
@@ -92,7 +92,7 @@ export default class GoodDetail extends Component {
       activity_id: activeId,
       community_id: cid,
     }).then(res => {
-      const { item, activity, history_data, community } = res
+      const { item, activity, history_data, community, cur } = res
       this.setState({
         goodInfo: {
           itemId: item.item_id,
@@ -110,7 +110,8 @@ export default class GoodDetail extends Component {
           leaderName: community.leader_name,
           address: community.address,
           currentId: community.community_id,
-          companyId: community.company_id
+          companyId: community.company_id,
+          symbol: cur.symbol
         },
         countTime: activity.last_second
       }, () => {
@@ -247,7 +248,7 @@ export default class GoodDetail extends Component {
           <View className='tag'>会员享受</View>
           {/* 价格 */}
           <View className='price'>
-            ¥
+            { goodInfo.symbol }
             <Text className='now'>{ goodInfo.activityPrice }</Text>
             <Text className='old'>{ goodInfo.price }</Text>
           </View>

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/utils/canvas.js
  * @Date: 2020-05-11 11:05:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 10:33:46
+ * @LastEditTime: 2020-06-23 11:55:28
  */
 
 export default class Canvas {
@@ -233,14 +233,13 @@ async createGoodList (data, x, y, w) {
     this.ctx.clip()
     await this.drawImage(data.img, imgX, imgY, w, h)
     this.drawText((w + imgX * 2) / 2, imgY + h + 15, data.name, '#333', 23, 'center')
-    this.createShowPrice(data.nPrice, data.oPrice, (w + imgX * 2) / 2, imgY + h + 80, 22, true)
+    this.createShowPrice(data.symbol, data.nPrice, data.oPrice, (w + imgX * 2) / 2, imgY + h + 80, 22, true)
     this.ctx.restore()
     this.ctx.save()
   }
 
   // 创建价格展示
-  createShowPrice(nPrice, oPrice, x, y, fontSize, isCenter = false, align = 'left') {
-    const symbol = '¥'
+  createShowPrice(symbol = '¥', nPrice, oPrice, x, y, fontSize, isCenter = false, align = 'left') {
     const diff = 4
     const otherFontSize = fontSize - (diff + 1)
     const marignLeft = 2
@@ -311,7 +310,8 @@ async createGoodList (data, x, y, w) {
       img: goodInfo.pics[0],
       name: goodInfo.goodName,
       nPrice: goodInfo.activityPrice,
-      oPrice: goodInfo.price
+      oPrice: goodInfo.price,
+      symbol: goodInfo.symbol
     }, goodLeft, goodTop, goodWidth, 340, 10)
     // await this.createGoodList({
     // }, goodLeft, goodTop, goodWidth)
