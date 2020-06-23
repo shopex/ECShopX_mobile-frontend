@@ -40,7 +40,7 @@ export default class DistributionShopTrade extends Component {
       title: 'item_name',
       status: ({ status }) => {
         switch (status) {
-          case 'wait': return '待发货'
+          case 'wait': return '未收货'
           case 'finish': return '已完成'
           case 'close': return '已取消'
           default: return ''
@@ -88,7 +88,7 @@ export default class DistributionShopTrade extends Component {
                     </View>
                     <View className='view-flex-item' style='text-align: right'>
                       <View className='trade-list__item-count'>x{item.num}</View>
-                      <View className='trade-list__item-count' style='color: #e7305b'>{item.status}</View>
+                      <View className='trade-list__item-count' style='color: #ff5000'>{item.status}</View>
                     </View>
                   </View>
                 </View>
