@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/utils/canvas.js
  * @Date: 2020-05-11 11:05:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 11:55:28
+ * @LastEditTime: 2020-06-23 14:40:38
  */
 
 export default class Canvas {
@@ -292,7 +292,7 @@ async createGoodList (data, x, y, w) {
       this.drawText(sx, top, list[i].name)
       this.drawText(sx + nameWidth + marginLeft, top, text, '#000', 11, 'left')
     }
-    this.drawText(sx, sy + marginTop * list.length + 8, '保存图片扫一扫，优惠拼团', '#000', 13)
+    this.drawText(sx, sy + marginTop * list.length + 8, '点击放大，长按转发，优惠拼团扫一扫', '#000', 13)
     await this.createRoundImg(width - sx, sy, 50, data.img, '#fff')
   }
 

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/grouoGood/index.js
  * @Date: 2020-04-23 18:06:17
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 11:45:19
+ * @LastEditTime: 2020-06-23 14:43:51
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
@@ -84,6 +84,10 @@ export default class GroupGood extends Component {
       // 清除倒计时
       timeId = ''
       clearTimeout(timeId)
+      if (timeId) {
+        // 刷新
+        this.props.onRefesh && this.props.onRefesh()
+      }
     }
     this.setState({
       timeId,
