@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/orderItem/index.js
  * @Date: 2020-05-09 15:10:18
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 18:21:02
+ * @LastEditTime: 2020-06-23 13:46:34
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -121,8 +121,8 @@ export default class OrderItem extends Component {
             <View className='tag'>会员专享</View>
             <View className='price'>
               <View>
-                ¥<Text className='now'>{info.items[0].totalFee}</Text>
-                <Text className='old'>¥{info.items[0].itemPrice}</Text>
+                { info.symbol }<Text className='now'>{info.items[0].totalFee}</Text>
+                <Text className='old'>{ info.symbol }{info.items[0].itemPrice}</Text>
               </View>
               <View className='orderNum'>...共{info.items.length}件商品</View>
             </View>

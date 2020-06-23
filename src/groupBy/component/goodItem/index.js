@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/goodItem/index.js
  * @Date: 2020-04-24 09:46:24
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 17:09:22
+ * @LastEditTime: 2020-06-23 11:45:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -85,7 +85,7 @@ export default class GoodItem extends Component {
             <View className='otherInfoLeft'>
               <View className='vipTag'>会员专享</View>
               <View className='price'>
-                <Text className='symbol'>¥</Text>{ goodInfo.activity_price }
+                <Text className='symbol'>{ goodInfo.symbol }</Text>{ goodInfo.activity_price }
                 <View className='oldPrice'>{ goodInfo.price }</View>
               </View>
             </View>

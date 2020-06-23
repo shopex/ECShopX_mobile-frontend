@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 17:53:25
+ * @LastEditTime: 2020-06-23 11:44:51
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
@@ -155,7 +155,7 @@ export default class GroupByIndex extends Component {
       const isEnd = param.page >= (total_count / param.pageSize)
       const data = res.last_second && res.items ? [{
         time: res.last_second,
-        good: [...oldList, ...formatGood(res.items.list)],
+        good: [...oldList, ...formatGood(res.items.list, res.cur.symbol)],
         deliveryDate: res.delivery_date
       }] : []
       this.setState({

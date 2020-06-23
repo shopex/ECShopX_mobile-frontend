@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/grouoGood/index.js
  * @Date: 2020-04-23 18:06:17
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 17:01:09
+ * @LastEditTime: 2020-06-23 11:45:19
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'

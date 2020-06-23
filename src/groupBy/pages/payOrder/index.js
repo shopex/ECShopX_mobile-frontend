@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/payOrder/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 18:19:16
+ * @LastEditTime: 2020-06-23 13:43:00
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -26,6 +26,7 @@ export default class PayOrder extends Component {
       totalFee: 0,
       itemFee: 0,
       currtent: {},
+      symbol: '¥',
       param: {
         receipt_type: 'ziti',
         order_type: 'normal_community',
@@ -69,6 +70,7 @@ export default class PayOrder extends Component {
         totalItemNum: res.totalItemNum,
         totalFee: (res.total_fee / 100).toFixed(2),
         itemFee: (res.item_fee / 100).toFixed(2),
+        symbol: res.fee_symbol,
         param
       })
       Taro.hideLoading()
@@ -118,7 +120,8 @@ export default class PayOrder extends Component {
       list,
       totalFee,
       totalItemNum,
-      itemFee
+      itemFee,
+      symbol
     } = this.state
         
     return (
@@ -151,19 +154,19 @@ export default class PayOrder extends Component {
           </View>
           <View className='infoLine'>
             <Text>商品总价</Text>
-            <Text>¥{ itemFee }</Text>
+            <Text>{ symbol }{ itemFee }</Text>
           </View>
           {/* <View className='infoLine'>
             <View>会员优惠</View>
             <View>-¥7.50</View>
           </View> */}
           <View className='infoLine flexEnd'>
-            <Text>需支付： <Text className='price'>¥{ totalFee }</Text></Text>
+          <Text>需支付： <Text className='price'>{ symbol }{ totalFee }</Text></Text>
           </View>
         </View>
         {/* 支付 */}
         <View className='payBar'>
-          <View className='sum'>合计: <Text className='price'>¥{ totalFee }</Text></View>
+          <View className='sum'>合计: <Text className='price'>{ symbol }{ totalFee }</Text></View>
           <View className='goPay' onClick={this.handlePay.bind(this)}>去支付</View>
         </View>
       </View>

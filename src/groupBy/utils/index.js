@@ -6,16 +6,17 @@
  * @FilePath: /unite-vshop/src/groupBy/utils/index.js
  * @Date: 2020-06-12 18:14:20
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 16:58:10
+ * @LastEditTime: 2020-06-23 13:46:22
  */
 
 
-const formatGood = (data) => {
+const formatGood = (data, symbol = '¥') => {
   if (!data || !data.length) {
     return []
   }
   const list = data.map(item => {
     return {
+      symbol,
       itemId: item.item_id,
       cartId: item.cart_id,
       store: item.store,
@@ -45,7 +46,8 @@ const formatOrder = (data) => {
   const list = data.map(item => {
     return {
       orderId: item.order_id,
-      items: formatGood(item.items),
+      items: formatGood(item.items, item.fee_symbol),
+      symbol: item.fee_symbol,
       orderStatus: item.order_status,
       orderStatusMsg: item.order_status_msg
     }
