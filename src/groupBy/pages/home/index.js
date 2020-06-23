@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 11:44:51
+ * @LastEditTime: 2020-06-23 14:43:35
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
@@ -279,7 +279,7 @@ export default class GroupByIndex extends Component {
           {  menuList.length > 0 && <Classification list={menuList} /> }
           {/* 列表图 */}
           {
-            list.map(item => <GroupGood key={item.time} info={item} />)
+            list.map(item => <GroupGood key={item.time} info={item} onRefesh={this.handleRefresh.bind(this)} />)
           }
           {/* 加载更多 */}
           <LoadingMore isLoading={isLoading} isEnd={isEnd} isEmpty={isEmpty} />
