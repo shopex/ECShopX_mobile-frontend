@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/orderDetail/index.js
  * @Date: 2020-05-08 15:07:31
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 18:20:15
+ * @LastEditTime: 2020-06-23 11:36:03
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -65,7 +65,8 @@ export default class OrderDetail extends Component {
     } else {
       // 如果存在timeId
       if (timeId) {
-        console.log('执行回调')
+        // 刷新订单
+        this.getOrderDetail()
       }
       // 清除倒计时
       timeId = ''
@@ -118,7 +119,9 @@ export default class OrderDetail extends Component {
         deliveryDate: community_activity.delivery_date,
         qrcodeUrl
       }, () => {
-        this.countdown()
+        if (orderInfo.order_status === 'NOTPAY') {
+          this.countdown()
+        }
       })
     })
   }
@@ -285,10 +288,10 @@ export default class OrderDetail extends Component {
               <Text>商品总价</Text>
               <Text>¥{ itemFee }</Text>
             </View>
-            <View className='infoLine'>
+            {/* <View className='infoLine'>
               <View>会员优惠</View>
               <View>-¥7.50</View>
-            </View>
+            </View> */}
             <View className='infoLine flexEnd'>
               <Text>
                 { orderStatus === 'NOTPAY' ? '需支付' : '合计' }： 

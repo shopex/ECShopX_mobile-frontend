@@ -153,10 +153,10 @@ export default class PayOrder extends Component {
             <Text>商品总价</Text>
             <Text>¥{ itemFee }</Text>
           </View>
-          <View className='infoLine'>
+          {/* <View className='infoLine'>
             <View>会员优惠</View>
             <View>-¥7.50</View>
-          </View>
+          </View> */}
           <View className='infoLine flexEnd'>
             <Text>需支付： <Text className='price'>¥{ totalFee }</Text></Text>
           </View>
