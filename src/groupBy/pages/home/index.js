@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 14:43:35
+ * @LastEditTime: 2020-06-23 14:59:49
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
@@ -151,6 +151,13 @@ export default class GroupByIndex extends Component {
       community_id: current.community_id,
       activity_goods_category_key: category
     }).then(res => {
+      if (!res) {
+        this.setState({
+          isEmpty: true
+        })
+        Taro.hideLoading()
+        return
+      }
       const total_count = res.items.total_count
       const isEnd = param.page >= (total_count / param.pageSize)
       const data = res.last_second && res.items ? [{

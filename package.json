@@ -56,6 +56,7 @@
 		"redux-persist-weapp-storage": "^1.2.0",
 		"redux-thunk": "^2.3.0",
 		"regenerator": "^0.14.1",
+		"regenerator-runtime": "^0.11.1",
 		"stylenames": "^1.1.6",
 		"taro-ui": "^2.2.1"
 	},
