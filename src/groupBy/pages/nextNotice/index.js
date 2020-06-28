@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/nextNotice/index.js
  * @Date: 2020-06-22 15:22:59
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-28 16:16:02
+ * @LastEditTime: 2020-06-28 16:30:19
  */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
@@ -69,7 +69,7 @@ export default class nextNotice extends Component {
       ...param,
       community_id: currentCommunity.community_id
     }).then(res => {
-      if (!res) {
+      if (!res.status) {
         this.setState({
           isNotData: true
         })
