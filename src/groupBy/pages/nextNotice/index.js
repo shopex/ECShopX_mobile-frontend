@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/nextNotice/index.js
  * @Date: 2020-06-22 15:22:59
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 17:15:16
+ * @LastEditTime: 2020-06-28 16:07:52
  */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
@@ -34,7 +34,8 @@ export default class nextNotice extends Component {
       isNotData: true,
       param: {
         page: 1,
-        pageSize: 10
+        pageSize: 10,
+        status: 'waiting'
       }
     }
   }
