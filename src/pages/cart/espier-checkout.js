@@ -659,6 +659,27 @@ export default class CartCheckout extends Component {
   resolvePayError (e) {
     const { payType } = this.state
     if (payType === 'point' || payType === 'deposit') {
+      if (payType === 'deposit') {
+        Taro.showModal({
+          content: e.message,
+          confirmText: '去充值',
+          success: res => {
+            if (res.confirm) {
+              Taro.redirectTo({
+                url: '/pages/member/recharge'
+              })
+            } else {
+              this.setState({
+                disabledPayment: { name: payType, message: e.message },
+                payType: 'wxpay'
+              }, () => {
+                this.calcOrder()
+              })
+            }
+          }
+        })
+        return
+      }
       // let payTypeNeedsChange = ['当前积分不足以支付本次订单费用', '当月使用积分已达限额'].includes(e.message)
       this.setState({
         disabledPayment: { name: payType, message: e.message },
