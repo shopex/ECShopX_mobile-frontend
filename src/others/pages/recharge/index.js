@@ -3,22 +3,21 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 充值余额
- * @FilePath: /unite-vshop/src/pages/member/recharge.js
+ * @FilePath: /unite-vshop/src/others/pages/recharge/index.js
  * @Date: 2020-01-13 17:38:42
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-28 15:14:45
+ * @LastEditTime: 2020-06-30 13:37:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Input } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { NavBar, SpCell } from '@/components'
 import { connect } from '@tarojs/redux'
 import { withLogin } from '@/hocs'
 import S from '@/spx'
 import { classNames } from '@/utils'
-import api from '../../api/index'
-// import InputNumber from '@/components/input-number'
-// import api from '@/api'
-import './recharge.scss'
+import api from '@/api'
+
+import './index.scss'
 
 @connect(({ address, colors }) => ({
   address: address.current,
@@ -69,6 +68,10 @@ export default class Recharge extends Component {
 
   componentDidShow () {
     this.setStore()
+  }
+
+  config = {
+    navigationBarTitleText: '储值'
   }
 
   // 获取会员详情
@@ -203,6 +206,13 @@ export default class Recharge extends Component {
     })
   }
 
+  // 前往记录
+  toHistory = (type) => {
+    Taro.navigateTo({
+      url: `/others/pages/recharge/history?type=${type}`
+    })
+  }
+
   // H5支付
   // h5Pay = (param) => {
   // }
@@ -214,7 +224,7 @@ export default class Recharge extends Component {
     return (
       <View className='recharge'>
         {/* NavBar */}
-        <NavBar title='充值' leftIconType='chevron-left' />
+        <NavBar title={this.config.navigationBarTitleText} leftIconType='chevron-left' />
         {/* 当前门店 */}
         {
           currentShop && <View className='shopName' onClick={this.setStore.bind(this, true)}>
@@ -223,12 +233,24 @@ export default class Recharge extends Component {
         }
         {/* 余额 */}
         <View className='balance'>
-          <Image className='balanceImg' src={require('../../assets/imgs/buy.png')}></Image>
+          <Image className='balanceImg' src={require('../../../assets/imgs/buy.png')}></Image>
           <View className='content'>
             <View className='balancePrice'>¥{ deposit / 100}</View>
             <View className='balanceTip'>卡内余额</View>
           </View>
         </View>
+        <SpCell
+          title='充值记录'
+          isLink
+          onClick={this.toHistory.bind(this, 0)}
+        >
+        </SpCell>
+        <SpCell
+          title='消费记录'
+          isLink
+          onClick={this.toHistory.bind(this, 1)}
+        >
+        </SpCell>
         {/* 充值协议 */}
         <View className='balancePro'>
           <View className='price'>充值金额</View>

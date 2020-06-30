@@ -1,4 +1,4 @@
-@import '../../style/imports.scss';
+@import '../../../style/imports.scss';
 
 .recharge {
   .shopName {
@@ -12,6 +12,7 @@
     padding: 30px;
     background: #fff;
     display: flex;
+    border-bottom: 2px solid #efefef;
     .balanceImg {
       width: 100px;
       height: 100px;

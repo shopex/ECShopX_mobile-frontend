@@ -301,7 +301,7 @@ export default class MemberIndex extends Component {
                     </View>
                     <View
                       className='view-flex-item'
-                      onClick={this.handleClick.bind(this, `/pages/member/recharge`)}
+                      onClick={this.handleClick.bind(this, `/others/pages/recharge/index`)}
                     >
                       <View className='member-assets__label'>储值</View>
                       <View className='member-assets__value'>{(memberAssets.deposit || 0) / 100}</View>

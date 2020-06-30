@@ -97,7 +97,6 @@ class App extends Component {
       'pages/member/item-guess',
       'pages/member/group-list',
       'pages/member/member-code',
-      'pages/member/recharge',
       'pages/qrcode-buy',
 
       'pages/distribution/shop-home',
@@ -180,7 +179,10 @@ class App extends Component {
           'pages/home/license',
           'pages/protocol/privacy',
           // 美恰客服
-          'pages/meiqia/index'
+          'pages/meiqia/index',
+          // 储值
+          'pages/recharge/index',
+          'pages/recharge/history',
         ]
       }
     ],
