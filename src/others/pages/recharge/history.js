@@ -6,16 +6,20 @@
  * @FilePath: /unite-vshop/src/others/pages/recharge/history.js
  * @Date: 2020-06-30 10:11:18
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-30 14:52:04
+ * @LastEditTime: 2020-06-30 15:28:24
  */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { NavBar, Loading, SpNote } from '@/components'
+import { connect } from '@tarojs/redux'
 import { formatTime } from '@/utils'
 import api from '@/api'
 
 import './history.scss'
 
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 export default class History extends Component {
   constructor(props) {
     super(props)
@@ -26,7 +30,7 @@ export default class History extends Component {
       isEmpty: false,
       param: {
         page: 1,
-        pageSize: 10,
+        pageSize: 20,
         outin_type: 'income'
       }
     }
@@ -99,6 +103,7 @@ export default class History extends Component {
 
   render () {
     const { list, isLoading, isEmpty } = this.state
+    const { colors } = this.props
     return (
       <View className='history'>
         <NavBar
@@ -109,7 +114,14 @@ export default class History extends Component {
           list.map(item => (
             <View className='item' key={item.depositTradeId} onClick={this.showDetail.bind(this)}>
               <View className='left'>
-                <View className='title'>{ item.detail }</View>
+                <View className='title'>
+                  {
+                    item.tradeType === 'recharge_gift' && <Text style={`color: ${colors.data[0].primary}`}>
+                      (赠送)
+                    </Text>
+                  }
+                  { item.detail }
+                </View>
                 <View className='date'>{ item.timeStart }</View>
               </View>
               <View className='right'>
