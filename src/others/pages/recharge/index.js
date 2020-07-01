@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/others/pages/recharge/index.js
  * @Date: 2020-01-13 17:38:42
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-30 13:37:47
+ * @LastEditTime: 2020-07-01 16:15:58
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Input } from '@tarojs/components'
@@ -107,9 +107,10 @@ export default class Recharge extends Component {
     let rule_id = ''
     // 判断是否点击其他金额
     if (index !== (amounts.length - 1)) {
+      const sendType = value.ruleType === 'money' ? '元' : '积分'
       setValue = value.money
       rule_id = value.id
-      ruleValue = value.ruleType && value.ruleType === 'money' && value.ruleData > 0 ? `充值${ value.money }元送${ value.ruleData }元` : ''
+      ruleValue = value.ruleType && value.ruleData > 0 ? `充值${ value.money }元送${ value.ruleData }${sendType}` : ''
     }
     this.setState({
       active: index,
