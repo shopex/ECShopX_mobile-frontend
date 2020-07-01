@@ -659,9 +659,8 @@ export default class CartCheckout extends Component {
   resolvePayError (e) {
     const { payType } = this.state
     if (payType === 'point' || payType === 'deposit') {
-      if (payType === 'deposit') {
+      if (payType === 'deposit' && e.message === '当前余额不足以支付本次订单费用，请充值！') {
         Taro.hideLoading()
-
         Taro.showModal({
           content: e.message,
           confirmText: '去充值',
@@ -741,11 +740,12 @@ export default class CartCheckout extends Component {
     const { type } = this.$router.params
     const isDrug = type === 'drug'
 
-    if (payType === 'point') {
+    if (payType === 'point' || payType === 'deposit') {
       try {
+        const content = payType === 'point' ? `确认使用${total.remainpt}积分全额抵扣商品总价吗` : '确认使用余额支付吗？'
         const { confirm } = await Taro.showModal({
-          title: '积分支付',
-          content: `确认使用${total.remainpt}积分全额抵扣商品总价吗`,
+          title: payType === 'point' ? '积分支付' : '余额支付',
+          content,
           confirmColor: '#0b4137',
           confirmText: '确认使用',
           cancelText: '取消'
@@ -839,7 +839,7 @@ export default class CartCheckout extends Component {
       submitLoading: false
     })
     // 积分流程
-    if (payType === 'point') {
+    if (payType === 'point' || payType === 'deposit') {
       if (!payErr) {
         Taro.showToast({
           title: '支付成功',
