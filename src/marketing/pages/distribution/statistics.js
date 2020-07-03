@@ -29,7 +29,8 @@ export default class DistributionStatistics extends Component {
       orderCloseRebate: 'orderCloseRebate',
       orderNoCloseRebate: 'orderNoCloseRebate',
       orderTeamCloseRebate: 'orderTeamCloseRebate',
-      orderTeamNoCloseRebate: 'orderTeamNoCloseRebate'
+      orderTeamNoCloseRebate: 'orderTeamNoCloseRebate',
+      taskBrokerageItemTotalFee: 'taskBrokerageItemTotalFee'
     })
 
     this.setState({
@@ -107,6 +108,14 @@ export default class DistributionStatistics extends Component {
                   <View className="data-label">已确认</View>
                   <View className="data-count">{info.orderTeamCloseRebate/100}</View>
                 </View>
+              </View>
+            </View>
+          </View>
+          <View className="section section-card analysis">
+            <View className="content-padded-b">
+              <View>
+                <View className="data-label">小店提成</View>
+                <View className="data-amount">{info.taskBrokerageItemTotalFee/100}</View>
               </View>
             </View>
           </View>
