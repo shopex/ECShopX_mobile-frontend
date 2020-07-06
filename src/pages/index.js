@@ -9,11 +9,12 @@ import entry from '@/utils/entry'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
 import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
-import { HomeWgts } from './home/comps/home-wgts'
+import HomeWgts from './home/comps/home-wgts'
 import Automatic from './home/comps/automatic'
 // import { resolveFavsList } from './item/helper'
 
 import './home/index.scss'
+
 @connect(({ cart }) => ({
   list: cart.list,
 	cartIds: cart.cartIds,
@@ -29,12 +30,6 @@ import './home/index.scss'
 @withPager
 @withBackToTop
 export default class HomeIndex extends Component {
-  config = {
-    enablePullDownRefresh: true,
-    backgroundTextStyle: 'dark',
-    onReachBottomDistance: 50
-  }
-
   constructor (props) {
     super(props)
 
@@ -51,59 +46,6 @@ export default class HomeIndex extends Component {
       isShop:null,
       salesperson_id: ''
     }
-  }
-
-  onPullDownRefresh = () => {
-    this.resetPage()
-    this.setState({
-      likeList: [],
-      wgts: null
-    }, () => {
-      this.fetchInfo()
-    })
-  }
-
-  onPageScroll = (res) => {
-    console.log(res)
-    const { scrollTop } = res
-    this.setState({
-      top: scrollTop
-    })
-  }
-
-  onReachBottom = () => {
-    this.nextPage()
-  }
-
-  componentDidShow = () => {
-    const options = this.$router.params
-    const curStore = Taro.getStorageSync('curStore')
-    if (!isArray(curStore)) {
-      this.setState({
-        curStore
-      })
-    }
-
-    Taro.getStorage({ key: 'addTipIsShow' })
-      .then(() => {})
-      .catch((error) => {
-        console.log(error)
-        this.setState({
-          isShowAddTip: true
-        })
-      })
-
-    const { smid , dtid} = normalizeQuerys(options)
-
-    if (smid) {
-      Taro.setStorageSync('s_smid', smid)
-    }
-
-    if (dtid) {
-      Taro.setStorageSync('s_dtid', dtid)
-    }
-    
-    this.isShoppingGuide()
   }
 
   componentDidMount () {
@@ -149,6 +91,64 @@ export default class HomeIndex extends Component {
         })
   		}
     })
+  }
+
+  componentDidShow = () => {
+    const options = this.$router.params
+    const curStore = Taro.getStorageSync('curStore')
+    if (!isArray(curStore)) {
+      this.setState({
+        curStore
+      })
+    }
+
+    Taro.getStorage({ key: 'addTipIsShow' })
+      .then(() => {})
+      .catch((error) => {
+        console.log(error)
+        this.setState({
+          isShowAddTip: true
+        })
+      })
+
+    const { smid , dtid} = normalizeQuerys(options)
+
+    if (smid) {
+      Taro.setStorageSync('s_smid', smid)
+    }
+
+    if (dtid) {
+      Taro.setStorageSync('s_dtid', dtid)
+    }
+    
+    this.isShoppingGuide()
+  }
+
+  config = {
+    enablePullDownRefresh: true,
+    backgroundTextStyle: 'dark',
+    onReachBottomDistance: 50
+  }
+
+  onPullDownRefresh = () => {
+    this.resetPage()
+    this.setState({
+      likeList: [],
+      wgts: null
+    }, () => {
+      this.fetchInfo()
+    })
+  }
+
+  onPageScroll = (res) => {
+    const { scrollTop } = res
+    this.setState({
+      top: scrollTop
+    })
+  }
+
+  onReachBottom = () => {
+    this.nextPage()
   }
 
     /**
@@ -305,33 +305,26 @@ export default class HomeIndex extends Component {
   }
 
   render () {
-    const { wgts, page, isShop, likeList, showBackToTop, scrollTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, top } = this.state
+    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, top } = this.state
     const { showLikeList } = this.props
-    const user = Taro.getStorageSync('userinfo')
-    const isPromoter = user && user.isPromoter
+    // const user = Taro.getStorageSync('userinfo')
+    // const isPromoter = user && user.isPromoter
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
 
     if (!wgts || !this.props.store) {
       return <Loading />
 		}
-		const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
+		// const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
 
     return (
-      <View className={`page-index ${top < 1 ? 'onTop' : '' }`}>
+      <View className='page-index'>
         {
           APP_PLATFORM === 'standard' && curStore &&
             <HeaderHome
               store={curStore}
             />
         }        
-				{/*<ScrollView
-  className={classNames('wgts-wrap', positionStatus && 'wgts-wrap__fixed' , !curStore && 'wgts-wrap-nolocation')}
-  scrollTop={scrollTop}
-  onScroll={this.handleScroll}
-  onScrollToUpper={this.onScrollToUpper.bind(this)}
-  onScrollToLower={this.nextPage}
-  scrollY
-				>*/}
+
         <View className={classNames('wgts-wrap', APP_PLATFORM !== 'standard' && 
         'wgts-wrap_platform', positionStatus && (APP_PLATFORM !== 'standard' || curStore.distributor_id === 0 ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard') , !curStore && 'wgts-wrap-nolocation')}
         >
@@ -353,10 +346,8 @@ export default class HomeIndex extends Component {
                 }
               </View>
             )}
-
           </View>
         </View>
-        {/*</ScrollView>*/}
 
         {
           <FloatMenus>

@@ -86,6 +86,11 @@
   padding-top: $home-header-height;
   padding-bottom: $tabbar-height;
   background: #fff;
+  /*  #ifdef  h5  */
+  .taro-img {
+    width: 100%;
+  }
+  /*  #endif  */
   &_platform {
     padding-top: 0;
   }
@@ -94,7 +99,7 @@
   }
   &__fixed {
     #{$self}__cont {
-      padding-top: 0;
+      padding-top: $home-header-height;
     }
     .search {
       &.fixed {
