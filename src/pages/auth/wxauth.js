@@ -33,6 +33,7 @@ export default class WxAuth extends Component {
           avatar: memberInfo.memberInfo.avatar,
           userId: memberInfo.memberInfo.user_id,
           isPromoter: memberInfo.is_promoter,
+          vip: memberInfo.vipgrade ? memberInfo.vipgrade.vip_type : '',
           mobile: memberInfo.memberInfo.mobile
         }
         Taro.setStorageSync('userinfo', userObj)

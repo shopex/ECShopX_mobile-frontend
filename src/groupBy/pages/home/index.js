@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-24 16:24:16
+ * @LastEditTime: 2020-07-08 18:01:56
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
@@ -85,7 +85,8 @@ export default class GroupByIndex extends Component {
         username: info.memberInfo.username,
         avatar: info.memberInfo.avatar,
         userId: info.memberInfo.user_id,
-        isPromoter: info.is_promoter
+        isPromoter: info.is_promoter,
+        vip: info.vipgrade ? info.vipgrade.vip_type : ''
       }
       Taro.setStorageSync('userinfo', userInfo)
     }

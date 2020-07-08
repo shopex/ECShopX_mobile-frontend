@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/goodItem/index.js
  * @Date: 2020-04-24 09:46:24
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 11:45:47
+ * @LastEditTime: 2020-07-08 18:13:12
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -59,6 +59,21 @@ export default class GoodItem extends Component {
     })
   }
 
+  // 处理价格显示
+  showPrice = (item) => {
+    const { userInfo = {} } = Taro.getStorageSync('userinfo')
+    let price = item.activity_price
+    const vipPrice = Number(item.vip_price)
+    const svippPrice = Number(item.svip_price)
+    if (userInfo.vip === 'vip' && vipPrice !== 0) {
+      price = item.vip_price
+    }
+    if (userInfo.vip === 'svip' && svippPrice !== 0) {
+      price = item.svip_price
+    }
+    return price
+  }
+
   render () {
     const { goodInfo, isEnd, ShowBuyer, ShowCheckBox, isExpired, isCanReduce, isNext } = this.props
 
@@ -85,7 +100,8 @@ export default class GoodItem extends Component {
             <View className='otherInfoLeft'>
               <View className='vipTag'>会员专享</View>
               <View className='price'>
-                <Text className='symbol'>{ goodInfo.symbol }</Text>{ goodInfo.activity_price }
+                <Text className='symbol'>{ goodInfo.symbol }</Text>
+                { this.showPrice(goodInfo) }
                 <View className='oldPrice'>{ goodInfo.price }</View>
               </View>
             </View>
