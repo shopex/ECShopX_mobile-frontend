@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-07-08 18:39:34
+ * @LastEditTime: 2020-07-08 20:50:07
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
@@ -272,7 +272,7 @@ export default class GoodDetail extends Component {
               <View className='avatarContent'>
                 {
                   goodInfo.historyData.map(item => (
-                    <Image key={item} className='buyAvatar' src='https://pic1.zhimg.com/v2-d8bbab30a2a4db2fe03213ef3f9b50e8_r.jpg' />
+                    item.headimgurl && <Image key={item} className='buyAvatar' src={item.headimgurl} />
                   ))
                 }
               </View>

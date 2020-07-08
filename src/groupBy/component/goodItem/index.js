@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/goodItem/index.js
  * @Date: 2020-04-24 09:46:24
  * @LastEditors: Arvin
- * @LastEditTime: 2020-07-08 18:39:47
+ * @LastEditTime: 2020-07-08 20:48:33
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -128,7 +128,7 @@ export default class GoodItem extends Component {
               <View className='recent'>
                 {
                   goodInfo.history_data.map((item, index) => (
-                    <Image style={`left: -${Taro.pxTransform(index * 20)}px`} key={item} className='buyAvatar' src='https://pic1.zhimg.com/v2-d8bbab30a2a4db2fe03213ef3f9b50e8_r.jpg' />
+                    item.headimgurl && <Image style={`left: -${Taro.pxTransform(index * 20)}px`} key={item} className='buyAvatar' src={item.headimgurl} />
                   ))
                 }
               </View>
