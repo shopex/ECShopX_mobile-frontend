@@ -14,6 +14,7 @@ import Automatic from './home/comps/automatic'
 // import { resolveFavsList } from './item/helper'
 
 import './home/index.scss'
+import { isValid } from 'date-fns'
 
 @connect(({ cart }) => ({
   list: cart.list,
@@ -44,7 +45,9 @@ export default class HomeIndex extends Component {
       showAuto: true,
       top: 0,
       isShop:null,
-      salesperson_id: ''
+      salesperson_id: '',
+      // 店铺精选id
+      featuredshop: ''
     }
   }
 
@@ -122,6 +125,9 @@ export default class HomeIndex extends Component {
     }
     
     this.isShoppingGuide()
+
+    // 获取店铺精选信息
+    this.getDistributionInfo()
   }
 
   config = {
@@ -193,6 +199,33 @@ export default class HomeIndex extends Component {
     // 绑定导购
     await api.member.setUsersalespersonrel({
       salesperson_id
+    })
+  }
+
+  // 获取店铺精选
+  getDistributionInfo () {
+    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
+    const { userId } = Taro.getStorageSync('userinfo')
+    if (!S.getAuthToken() && !distributionShopId) {
+      return
+    }
+    const param = {
+      user_id: distributionShopId || userId
+    }
+    api.distribution.info(param).then(res => {
+
+      let featuredshop = ''
+      const { user_id, is_valid, selfInfo = {}, parentInfo = {} } = res
+      if (is_valid) {
+        featuredshop = user_id
+      } else if (selfInfo.is_valid) {
+        featuredshop = selfInfo.user_id
+      } else if (parentInfo.is_valid) {
+        featuredshop = parentInfo.user_id
+      }
+      this.setState({
+        featuredshop
+      })
     })
   }
 
@@ -321,17 +354,18 @@ export default class HomeIndex extends Component {
   }
 
   handleClickShop = () => {
+    const { featuredshop } = this.state
     Taro.navigateTo({
-      url: '/pages/distribution/shop-home'
+      url: `/pages/distribution/shop-home?featuredshop=${featuredshop}`
     })
   }
 
   render () {
-    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, top } = this.state
+    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop } = this.state
     const { showLikeList } = this.props
     // const user = Taro.getStorageSync('userinfo')
     // const isPromoter = user && user.isPromoter
-    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
+    // const distributionShopId = Taro.getStorageSync('distribution_shop_id')
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -375,7 +409,7 @@ export default class HomeIndex extends Component {
           <FloatMenus>
             {
               // isShop && isShop.isOpenShop === 'true' && isShop.shop_status === 1 &&
-              distributionShopId &&
+              featuredshop &&
               <Image
                 className='distribution-shop'
                 src='/assets/imgs/gift_mini.png'
