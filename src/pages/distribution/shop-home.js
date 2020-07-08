@@ -46,6 +46,7 @@ export default class DistributionShopHome extends Component {
 
   async componentDidMount () {
     const options = this.$router.params
+
     const { uid } = await entry.entryLaunch(options, true)
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const { userId } = Taro.getStorageSync('userinfo')
@@ -54,6 +55,9 @@ export default class DistributionShopHome extends Component {
       user_id: distributionShopId,
     } : {
       user_id: userId,
+    }    
+    if (options.featuredshop) {
+      param.user_id = options.featuredshop
     }
     const { banner_img } = await api.distribution.shopBanner(param || null)
     if (shopId) {
@@ -75,6 +79,7 @@ export default class DistributionShopHome extends Component {
   }
 
   async fetchInfo () {
+    const options = this.$router.params
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const param = distributionShopId ? {
@@ -82,9 +87,18 @@ export default class DistributionShopHome extends Component {
     } : {
       user_id: userId,
     }
+    if (options.featuredshop) {
+      param.user_id = options.featuredshop
+    }
 
     const res = await api.distribution.info(param || null)
-    const {shop_name, brief, shop_pic, username, headimgurl } = res
+    const {shop_name, brief, shop_pic, username, headimgurl, is_valid } = res
+
+    if (!is_valid) {
+      Taro.reLaunch({
+        url: '/pages/index'
+      })
+    }
 
     this.setState({
       localCurrent: 0,
