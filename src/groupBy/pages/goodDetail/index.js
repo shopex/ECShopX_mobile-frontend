@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-07-08 18:16:20
+ * @LastEditTime: 2020-07-08 18:39:34
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
@@ -93,15 +93,15 @@ export default class GoodDetail extends Component {
       community_id: cid,
     }).then(res => {
       const { item, activity, history_data, community, cur } = res
-      const { userInfo = {} } = Taro.getStorageSync('userinfo')
-      let activity_price = item.activity_price
-      const vipPrice = Number(item.vip_price)
-      const svippPrice = Number(item.svip_price)
+      const userInfo = Taro.getStorageSync('userinfo') || {}
+      let activity_price = activity.item.activity_price
+      const vipPrice = activity.item.vip_price
+      const svippPrice = activity.item.svip_price
       if (userInfo.vip === 'vip' && vipPrice !== 0) {
-        activity_price = item.vip_price
+        activity_price = activity.item.vip_price
       }
       if (userInfo.vip === 'svip' && svippPrice !== 0) {
-        activity_price = item.svip_price
+        activity_price = activity.item.svip_price
       }
       this.setState({
         goodInfo: {
