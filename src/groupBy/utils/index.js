@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/utils/index.js
  * @Date: 2020-06-12 18:14:20
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-23 13:46:22
+ * @LastEditTime: 2020-07-08 18:06:26
  */
 
 
@@ -32,8 +32,10 @@ const formatGood = (data, symbol = '¥') => {
       limit_num: item.limit_num,
       itemPrice: (item.price / 100).toFixed(2),
       totalFee: (item.total_fee / 100).toFixed(2),
-      price: (item.activity_price / 100).toFixed(2),
-      activity_price: (item.activity_price / 100).toFixed(2)
+      price: (item.price / 100).toFixed(2),
+      activity_price: (item.activity_price / 100).toFixed(2),
+      vip_price: (item.vip_price / 100).toFixed(2),
+      svip_price: (item.svip_price / 100).toFixed(2)
     }
   })
   return list

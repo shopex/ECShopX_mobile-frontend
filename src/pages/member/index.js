@@ -79,7 +79,8 @@ export default class MemberIndex extends Component {
           username: resUser.username,
           avatar: resUser.avatar,
           isPromoter: resUser.isPromoter,
-          mobile: resUser.mobile
+          mobile: resUser.mobile,
+          vip: resUser.vipgrade ? resUser.vipgrade.vip_type : ''
         }
       })
     }
@@ -93,7 +94,8 @@ export default class MemberIndex extends Component {
       avatar: res.memberInfo.avatar,
       userId: res.memberInfo.user_id,
       isPromoter: res.is_promoter,
-      mobile: res.memberInfo.mobile
+      mobile: res.memberInfo.mobile,
+      vip: res.vipgrade ? res.vipgrade.vip_type : ''
     }
     if(!resUser || resUser.username !== userObj.username || resUser.avatar !== userObj.avatar) {
       Taro.setStorageSync('userinfo', userObj)
@@ -102,7 +104,8 @@ export default class MemberIndex extends Component {
           username: res.memberInfo.username,
           avatar: res.memberInfo.avatar,
           mobile: res.memberInfo.mobile,
-          isPromoter: res.is_promoter
+          isPromoter: res.is_promoter,
+          vip: res.vipgrade ? res.vipgrade.vip_type : ''
         }
       })
     }
@@ -207,7 +210,8 @@ export default class MemberIndex extends Component {
         username,
         avatar,
         mobile,
-        isPromoter: true
+        isPromoter: true,
+        vip: info.vipgrade ? info.vipgrade.vip_type : '',
       }
       // console.log(userinfo)
       Taro.setStorageSync('userinfo', userinfo)

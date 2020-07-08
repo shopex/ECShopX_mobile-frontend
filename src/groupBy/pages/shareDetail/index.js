@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/shareDetail/index.js
  * @Date: 2020-05-09 18:00:27
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-22 16:57:42
+ * @LastEditTime: 2020-07-08 18:16:42
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, ScrollView } from '@tarojs/components'
@@ -88,6 +88,16 @@ export default class ShareDetail extends Component {
       community_id: cid,
     }).then(async res => {
       const { item, activity, history_data, community, cur } = res
+      const { userInfo = {} } = Taro.getStorageSync('userinfo')
+      let activity_price = item.activity_price
+      const vipPrice = Number(item.vip_price)
+      const svippPrice = Number(item.svip_price)
+      if (userInfo.vip === 'vip' && vipPrice !== 0) {
+        activity_price = item.vip_price
+      }
+      if (userInfo.vip === 'svip' && svippPrice !== 0) {
+        activity_price = item.svip_price
+      }      
       this.setState({
         current: community,
         goodInfo: {
@@ -102,7 +112,7 @@ export default class ShareDetail extends Component {
           deliveryDate: activity.delivery_date,
           historyData: history_data,
           salesStore: activity.item.sales_store,
-          activityPrice: (activity.item.activity_price / 100).toFixed(2),
+          activityPrice: (activity_price / 100).toFixed(2),
           intro: item.intro,
           leaderName: community.leader_name,
           address: community.address,
