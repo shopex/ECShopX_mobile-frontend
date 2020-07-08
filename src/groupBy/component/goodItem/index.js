@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/component/goodItem/index.js
  * @Date: 2020-04-24 09:46:24
  * @LastEditors: Arvin
- * @LastEditTime: 2020-07-08 18:13:12
+ * @LastEditTime: 2020-07-08 18:39:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
@@ -61,7 +61,8 @@ export default class GoodItem extends Component {
 
   // 处理价格显示
   showPrice = (item) => {
-    const { userInfo = {} } = Taro.getStorageSync('userinfo')
+    if (!item.activity_price) return
+    const userInfo = Taro.getStorageSync('userinfo') || {}
     let price = item.activity_price
     const vipPrice = Number(item.vip_price)
     const svippPrice = Number(item.svip_price)
