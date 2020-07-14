@@ -89,20 +89,6 @@ export default class CartCheckout extends Component {
     }
   }
 
-  componentDidShow () {
-    this.setState({
-      isPaymentOpend: false,
-      isDrugInfoOpend: false
-    })
-    if (this.state.shouldCalcOrder) {
-      this.setState({
-        shouldCalcOrder: false
-      }, () => {
-        this.calcOrder()
-      })
-    }
-  }
-
   componentDidMount () {
     // this.fetchAddress()
     if (this.$router.params.scene) {
@@ -186,15 +172,29 @@ export default class CartCheckout extends Component {
     this.fetchZiTiShop()
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.address !== this.props.address) {
+      this.fetchAddress()
+    }
+  }
+
   componentWillUnmount() {
     // teardown clean
     this.props.onClearCoupon()
     this.props.onClearDrugInfo()
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.address !== this.props.address) {
-      this.fetchAddress()
+  componentDidShow () {
+    this.setState({
+      isPaymentOpend: false,
+      isDrugInfoOpend: false
+    })
+    if (this.state.shouldCalcOrder) {
+      this.setState({
+        shouldCalcOrder: false
+      }, () => {
+        this.calcOrder()
+      })
     }
   }
 
@@ -657,8 +657,10 @@ export default class CartCheckout extends Component {
   }
 
   resolvePayError (e) {
-    const { payType } = this.state
+    const { payType, disabledPayment } = this.state
     if (payType === 'point' || payType === 'deposit') {
+      const disabledPaymentMes = {}
+      disabledPaymentMes[payType] = e.message
       if (payType === 'deposit' && e.message === '当前余额不足以支付本次订单费用，请充值！') {
         Taro.hideLoading()
         Taro.showModal({
@@ -670,8 +672,9 @@ export default class CartCheckout extends Component {
                 url: '/others/pages/recharge/index'
               })
             } else {
+              
               this.setState({
-                disabledPayment: { name: payType, message: e.message },
+                disabledPayment: { ...disabledPaymentMes, ...disabledPayment },
                 payType: 'wxpay'
               }, () => {
                 this.calcOrder()
@@ -683,7 +686,7 @@ export default class CartCheckout extends Component {
       }
       // let payTypeNeedsChange = ['当前积分不足以支付本次订单费用', '当月使用积分已达限额'].includes(e.message)
       this.setState({
-        disabledPayment: { name: payType, message: e.message },
+        disabledPayment: { ...disabledPaymentMes, ...disabledPayment },
         payType: 'wxpay'
       }, () => {
         this.calcOrder()

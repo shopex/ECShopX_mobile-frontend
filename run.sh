@@ -6,7 +6,7 @@
  # @FilePath: /unite-vshop/run.sh
 # @Date: 2020-06-10 10:15:51
  # @LastEditors: Arvin
- # @LastEditTime: 2020-06-11 09:56:44
+ # @LastEditTime: 2020-07-14 14:01:23
 ### 
 #/usr/bash
 
@@ -36,10 +36,12 @@ then
     baseUrl=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^base_url/{print $3}')
     appName=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^app_name/{print $3}')
     websocket=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^websocket/{print $3}')
-    comppany_id=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^comppany_id/{print $3}')
+    company_id=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^company_id/{print $3}')
     platform=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^platform/{print $3}')
     custom_server=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^custom_server/{print $3}')
     home_page=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^home_page/{print $3}')
+    map_key=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^map_key/{print $3}')
+    map_name=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^map_name/{print $3}')
     break
   done
     else
@@ -47,10 +49,12 @@ then
       baseUrl=${2}
       appName=${3}
       websocket=${4}
-      comppany_id=${5}
+      company_id=${5}
       platform=${6}
       custom_server=${7}
       home_page=${8}
+      map_key=${9}
+      map_name=${10}
     fi
 
 # version=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -87,6 +91,26 @@ echo '{
   }
 }' > ./src/ext.json
 
-echo "npm run build:weapp"
+echo 'APP_BASE_URL='${baseUrl}'
+APP_WEBSOCKET='${websocket}'
+APP_COMPANY_ID='${company_id}'
+APP_PLATFORM='${platform}'
+APP_CUSTOM_SERVER='${custom_server}'
+APP_HOME_PAGE='${home_page}'
+APP_MAP_KEY='${map_key}'
+APP_MAP_NAME='${map_name}'
+' > ./.env
 
+if [ "$(uname)" == "Darwin" ]
+then
+
+echo "npm run dev:weapp"
 npm run build:weapp
+
+else
+
+echo "npm run dev:weapp:windows"
+npm run build:weapp
+
+fi
+

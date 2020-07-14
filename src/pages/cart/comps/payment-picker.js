@@ -17,10 +17,6 @@ export default class PaymentPicker extends Component {
     disabledPayment: null
   }
 
-  static options = {
-    addGlobalClass: true
-  }
-
   constructor (props) {
     super(props)
 
@@ -37,6 +33,10 @@ export default class PaymentPicker extends Component {
     }
   }
 
+  static options = {
+    addGlobalClass: true
+  }
+
   handleCancel = () => {
     this.setState({
       localType: this.props.type
@@ -46,7 +46,7 @@ export default class PaymentPicker extends Component {
 
   handlePaymentChange = (type) => {
     const { disabledPayment } = this.props
-    if (disabledPayment && disabledPayment.name === type) return
+    if (disabledPayment && disabledPayment[type]) return
 
     this.setState({
       localType: type
@@ -77,16 +77,16 @@ export default class PaymentPicker extends Component {
           {
               isShowPoint &&
               <View
-                className={`payment-item ${disabledPayment && disabledPayment.name === 'point' ? 'is-disabled' : ''}`}
+                className={`payment-item ${disabledPayment && disabledPayment['point'] ? 'is-disabled' : ''}`}
                 onClick={this.handlePaymentChange.bind(this, 'point')}
               >
                 <View className='payment-item__bd'>
                   <Text className='payment-item__title'>积分支付</Text>
-                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment.name === 'point' ? disabledPayment.message : '使用积分支付'}</Text>
+                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment['point'] ? disabledPayment['point'] : '使用积分支付'}</Text>
                 </View>
                 <View className='payment-item__ft'>
                   <SpCheckbox
-                    disabled={!!disabledPayment}
+                    disabled={disabledPayment && !!disabledPayment['point']}
                     colors={colors}
                     checked={localType === 'point'}
                   ></SpCheckbox>
@@ -96,16 +96,16 @@ export default class PaymentPicker extends Component {
             {
               isShowBalance &&
               <View
-                className={`payment-item ${disabledPayment && disabledPayment.name === 'deposit' ? 'is-disabled' : ''}`}
+                className={`payment-item ${disabledPayment && disabledPayment['deposit'] ? 'is-disabled' : ''}`}
                 onClick={this.handlePaymentChange.bind(this, 'deposit')}
               >
                 <View className='payment-item__bd'>
                   <Text className='payment-item__title'>余额支付</Text>
-                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment.name === 'deposit' ? disabledPayment.message : '使用余额支付'}</Text>
+                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment['deposit'] ? disabledPayment['deposit'] : '使用余额支付'}</Text>
                 </View>
                 <View className='payment-item__ft'>
                   <SpCheckbox
-                    disabled={!!disabledPayment}
+                    disabled={disabledPayment && !!disabledPayment['deposit']}
                     colors={colors}
                     checked={localType === 'deposit'}
                   ></SpCheckbox>
@@ -115,16 +115,16 @@ export default class PaymentPicker extends Component {
             {
               isShowDelivery &&
               <View
-                className={`payment-item ${disabledPayment && disabledPayment.name === 'delivery' ? 'is-disabled' : ''}`}
+                className={`payment-item ${disabledPayment && disabledPayment['delivery'] ? 'is-disabled' : ''}`}
                 onClick={this.handlePaymentChange.bind(this, 'delivery')}
               >
                 <View className='payment-item__bd'>
                   <Text className='payment-item__title'>货到付款</Text>
-                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment.name === 'delivery' ? disabledPayment.message : '货到付款'}</Text>
+                  <Text className='payment-item__desc'>{disabledPayment && disabledPayment['delivery'] ? disabledPayment.message : '货到付款'}</Text>
                 </View>
                 <View className='payment-item__ft'>
                   <SpCheckbox
-                    disabled={!!disabledPayment}
+                    disabled={disabledPayment && !!disabledPayment['delivery']}
                     colors={colors}
                     checked={localType === 'delivery'}
                   ></SpCheckbox>

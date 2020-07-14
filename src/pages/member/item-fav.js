@@ -159,6 +159,7 @@ export default class ItemFav extends Component {
       <View className='page-goods-list page-goods-fav'>
         <View className='goods-list__toolbar'>
           <NavBar
+            title='收藏'
             leftIconType='chevron-left'
             fixed='true'
           />
@@ -194,7 +195,7 @@ export default class ItemFav extends Component {
                   {
                     list.map(item => {
                       return (
-                        <View className='goods-list__item'>
+                        <View className='goods-list__item' key={item.item_id}>
                           <GoodsItem
                             key={item.item_id}
                             info={item}
@@ -212,7 +213,7 @@ export default class ItemFav extends Component {
                   {
                     list.map(item => {
                       return (
-                        <View className='goods-list__item'>
+                        <View className='goods-list__item' key={item.item_id}>
                           <RecommendItem
                             key={item.item_id}
                             info={item}
@@ -230,7 +231,7 @@ export default class ItemFav extends Component {
                   {
                     list.map(item => {
                       return (
-                        <View className='goods-list__item'>
+                        <View className='goods-list__item' key={item.distributor_id}>
                           <StoreFavItem
                             key={item.distributor_id}
                             info={item}

@@ -4,7 +4,7 @@ import { SpToast, Loading, BackToTop } from '@/components'
 import req from '@/api/req'
 import { withBackToTop } from '@/hocs'
 import S from "@/spx";
-import { HomeWgts } from '../home/comps/home-wgts'
+import HomeWgts from '../home/comps/home-wgts'
 
 import './custom-page.scss'
 

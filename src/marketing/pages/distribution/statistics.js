@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Navigator, Button } from '@tarojs/components'
+import { View, Text, Navigator } from '@tarojs/components'
 import api from '@/api'
+import { NavBar } from '@/components'
 import { pickBy } from '@/utils'
 
 import './statistics.scss'
@@ -43,6 +44,10 @@ export default class DistributionStatistics extends Component {
 
     return (
       <View className="page-distribution-statistics">
+        <NavBar
+          title='推广费'
+          leftIconType='chevron-left'
+        />                
         <View className="header content-padded-b">
           <View className="header-top">
             <View className="view-flex view-flex-justify">

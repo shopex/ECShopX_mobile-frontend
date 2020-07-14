@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { Loading } from '@/components'
+import { Loading, NavBar } from '@/components'
 import { AtAvatar, AtButton } from 'taro-ui'
 import api from '@/api'
 import ComplaintRecordItem from './comps/complaint-record-item'
@@ -71,6 +71,11 @@ export default class ComplaintRecord extends Component {
 
     return (
       <View className='page-complaint-record'>
+        <NavBar
+          title='投诉记录'
+          leftIconType='chevron-left'
+          fixed='true'
+        />	        
         <View className='pege-header'>
           <View className='pege-header__avatar'>
             <AtAvatar image={info.avatar}

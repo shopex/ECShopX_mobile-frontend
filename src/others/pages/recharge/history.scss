@@ -1,4 +1,9 @@
+@import "../../../style/imports";
+
 .history {
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */
   width: 100%;
   min-height: 100vh;
   background: #fff;

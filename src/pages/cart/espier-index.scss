@@ -35,6 +35,13 @@
       .goods-list__item {
         width: 50%;
         padding: 10px;
+        box-sizing: border-box;
+        /*  #ifdef  h5  */
+        .taro-img {
+          width: 100%;
+          height: auto;
+        }
+        /*  #endif  */        
         .goods-item__cont {
           height: 300px;
         }
@@ -99,6 +106,9 @@
   }
   .hidden-scroll {
     @include page-scroll($navigate-height, $toolbar-height);
+    /*  #ifdef  h5  */  
+    @include page-scroll($navigate-height-h5, $toolbar-height);
+    /*  #endif  */    
 	}
   .cart-group {
 		margin: 0 0 $edge-margin;
@@ -232,6 +242,9 @@
   &.is-drug {
     .cart-list__scroll {
       @include page-scroll($navigate-height, $toolbar-height);
+      /*  #ifdef  h5  */  
+      @include page-scroll($navigate-height-h5, $toolbar-height);      
+      /*  #endif  */
     }
     .cart-toolbar {
       bottom: 0;

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtAvatar, AtTextarea, AtButton, AtImagePicker } from 'taro-ui'
-import { Loading } from '@/components'
+import { Loading, NavBar } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
 
@@ -173,6 +173,11 @@ export default class Complaint extends Component {
 
     return (
       <View className='page-complaint'>
+        <NavBar
+          title='投诉'
+          leftIconType='chevron-left'
+          fixed='true'
+        />	           
         <View className='pege-header'>
           <View>投诉对象：</View>
           <View className='flex exclusive-header'>

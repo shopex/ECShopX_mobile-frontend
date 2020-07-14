@@ -1,6 +1,16 @@
+/*
+ * @Author: Arvin
+ * @GitHub: https://github.com/973749104
+ * @Blog: https://liuhgxu.com
+ * @Description: 说明
+ * @FilePath: /unite-vshop/src/pages/home/wgts/film.js
+ * @Date: 2020-07-02 16:19:08
+ * @LastEditors: Arvin
+ * @LastEditTime: 2020-07-03 10:47:54
+ */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, Video } from '@tarojs/components'
-import { styleNames } from '@/utils'
+// import { styleNames } from '@/utils'
 import { linkPage } from './helper'
 
 import './film.scss'
@@ -69,7 +79,7 @@ export default class WgtFilm extends Component {
       return null
     }
 
-    const { config, base, data } = info
+    const { config = {}, base, data } = info
     const { width, height, objectFit } = this.resolveSize(config, screenWidth)
 
     return (
@@ -80,11 +90,13 @@ export default class WgtFilm extends Component {
             <View className='wgt__subtitle'>{base.subtitle}</View>
           </View>
         )}
-        <View className={`slider-wrap ${config.padded ? 'padded' : ''}`}>
+        <View 
+          className={`slider-wrap ${config.padded ? 'padded' : ''}`}
+          style={`width: ${width}; height: ${height}`}
+        >
           <Video
             className='flim-video'
             src={data[0].url}
-            style={styleNames({ width, height })}
             controls
           />
         </View>

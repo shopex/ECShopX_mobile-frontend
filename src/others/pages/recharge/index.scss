@@ -1,6 +1,9 @@
 @import '../../../style/imports.scss';
 
 .recharge {
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */
   .shopName {
     padding: 15px 10px;
     font-size: 28px;

@@ -429,7 +429,7 @@ export default class RecommendList extends Component {
             className='recommend-list__tabs'
           >
             <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
-              <View className='icon-menu'></View>
+              <View className='iconfont icon-menu'></View>
               <Text>{ selectColumn.name || '栏目' }</Text>
             </View>
             <View className='filter-bar__item region-picker'>
@@ -441,10 +441,10 @@ export default class RecommendList extends Component {
                 value={multiIndex}
                 range={areaList}
               >
-                <View className='icon-periscope'></View>
+                <View className='iconfont icon-periscope'></View>
                 <Text>{address || '地区'}</Text>
 							</Picker>
-							{address && <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text>}
+							{address ? <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text> : ''}
             </View>
           </FilterBar>
         </View>

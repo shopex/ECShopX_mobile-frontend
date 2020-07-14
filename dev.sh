@@ -6,7 +6,7 @@
  # @FilePath: /unite-vshop/dev.sh
 # @Date: 2020-06-10 10:15:51
  # @LastEditors: Arvin
- # @LastEditTime: 2020-06-12 15:07:13
+ # @LastEditTime: 2020-07-14 14:00:37
 ### 
 #/usr/bash
 
@@ -40,6 +40,8 @@ then
     platform=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^platform/{print $3}')
     custom_server=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^custom_server/{print $3}')
     home_page=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^home_page/{print $3}')
+    map_key=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^map_key/{print $3}')
+    map_name=$(sed -n '/\['$var'\]/,/^$/p' $conf|grep -Ev '\[|\]|^$'|awk  '/^map_name/{print $3}')
     break
   done
     else
@@ -51,6 +53,8 @@ then
       platform=${6}
       custom_server=${7}
       home_page=${8}
+      map_key=${9}
+      map_name=${10}
     fi
 
 # version=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -93,6 +97,8 @@ APP_COMPANY_ID='${company_id}'
 APP_PLATFORM='${platform}'
 APP_CUSTOM_SERVER='${custom_server}'
 APP_HOME_PAGE='${home_page}'
+APP_MAP_KEY='${map_key}'
+APP_MAP_NAME='${map_name}'
 ' > ./.env
 
 if [ "$(uname)" == "Darwin" ]

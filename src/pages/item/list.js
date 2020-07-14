@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
-import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote } from '@/components'
+import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote, NavBar } from '@/components'
 import api from '@/api'
 import { pickBy, classNames } from '@/utils'
 
@@ -377,16 +377,21 @@ export default class List extends Component {
 
 		return (
 			<View className='page-goods-list'>
+        <NavBar 
+          title='商品列表'
+          leftIconType='chevron-left'
+          fixed='true'
+        />
 				<View className='goods-list__toolbar'>
           <View className={`goods-list__search ${(query && query.keywords && !isShowSearch) ? 'on-search' : null}`}>
-    				<SearchBar
+            <SearchBar
               keyword={query ? query.keywords : ''}
               onFocus={this.handleSearchOn}
               onChange={this.handleSearchChange}
               onClear={this.handleSearchClear}
               onCancel={this.handleSearchOff}
               onConfirm={this.handleConfirm.bind(this)}
-    				/>
+            />
             {
               !isShowSearch &&
                 <View
@@ -473,12 +478,12 @@ export default class List extends Component {
         >
           {
             listType === 'grid' &&
-              <View className={`goods-list goods-list__type-grid`}>
+              <View className='goods-list goods-list__type-grid'>
                   <View className='goods-list__group'>
                     {
                       oddList.map(item => {
                         return (
-                          <View className='goods-list__item'>
+                          <View className='goods-list__item' key={item.item_id}>
                             <GoodsItem
                               key={item.item_id}
                               info={item}
@@ -494,7 +499,7 @@ export default class List extends Component {
                     {
                       evenList.map(item => {
                         return (
-                          <View className='goods-list__item'>
+                          <View className='goods-list__item' key={item.item_id}>
                             <GoodsItem
                               key={item.item_id}
                               info={item}

@@ -22,10 +22,12 @@ export default class QnImg extends Component {
     } else {
       rSrc += qnMode
     }
+    
+    const className = Taro.getEnv() === 'WEB' ? this.props['img-class'] : 'img-class'
 
     return (
       <Image
-        className='img-class'
+        className={className}
         src={rSrc}
         mode={mode}
         onError={onError}

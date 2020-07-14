@@ -14,9 +14,6 @@ import './index.scss'
   onFetchFavs: (favs) => dispatch({ type: 'member/favs', payload: favs })
 }))
 export default class MemberIndex extends Component {
-  config = {
-    navigationBarTitleText: ''
-  }
 
   constructor (props) {
     super(props)
@@ -45,12 +42,9 @@ export default class MemberIndex extends Component {
       orderCount: '',
       memberDiscount: '',
       isOpenPopularize: false,
-      salespersonData: null
+      salespersonData: null,
+      memberAssets: {}
     }
-  }
-
-  navigateTo (url) {
-    Taro.navigateTo({ url })
   }
 
   componentDidMount () {
@@ -67,6 +61,15 @@ export default class MemberIndex extends Component {
       this.getSalesperson()
     }
   }
+
+  config = {
+    navigationBarTitleText: ''
+  }
+
+  navigateTo (url) {
+    Taro.navigateTo({ url })
+  }
+
 
   async fetch () {
     if (!S.getAuthToken()) return
@@ -319,10 +322,11 @@ export default class MemberIndex extends Component {
                     </View>
                   </View>
                 </View>
-              : <View
+                : <View
                   className='page-member-header view-flex view-flex-vertical view-flex-middle view-flex-center'
                   style={'background: ' + colors.data[0].marketing}
-                  onClick={this.handleLoginClick.bind(this)}>
+                  onClick={this.handleLoginClick.bind(this)}
+                >
                   <View className='avatar-placeholder icon-member'></View>
                   <View className='unlogin' style={'background: ' + colors.data[0].primary}>请登录</View>
                 </View>
@@ -453,7 +457,7 @@ export default class MemberIndex extends Component {
                 <SpCell
                   title={!info.isPromoter ? '我要推广' : '推广管理'}
                   isLink
-                  img='/assets/imgs/store.png'
+                  img={require('../../assets/imgs/store.png')}
                   onClick={this.beDistributor.bind(this)}
                 >
                 </SpCell>
@@ -461,28 +465,28 @@ export default class MemberIndex extends Component {
             <SpCell
               title='我的拼团'
               isLink
-              img='/assets/imgs/group.png'
+              img={require('../../assets/imgs/group.png')}
               onClick={this.handleClick.bind(this, '/pages/member/group-list')}
             >
             </SpCell>
             <SpCell
               title='我的社区团购'
               isLink
-              img='/assets/imgs/group.png'
+              img={require('../../assets/imgs/group.png')}
               onClick={this.handleClick.bind(this, '/groupBy/pages/orderList/index')}
             >
             </SpCell>
             <SpCell
               title='投诉记录'
               isLink
-              img='/assets/imgs/group.png'
+              img={require('../../assets/imgs/group.png')}
               onClick={this.handleClick.bind(this, '/marketing/pages/member/complaint-record')}
             >
             </SpCell>
             <SpCell
               title='活动预约'
               isLink
-              img='/assets/imgs/buy.png'
+              img={require('../../assets/imgs/buy.png')}
               onClick={this.handleClick.bind(this, '/marketing/pages/member/item-activity')}
             >
             </SpCell>
@@ -496,12 +500,14 @@ export default class MemberIndex extends Component {
 
           </View>
           <View className='page-member-section'>
-            <SpCell
-              title='我要分享'
-              isLink
-            >
+            {
+              Taro.getEnv() !== 'WEB' && <SpCell
+                title='我要分享'
+                isLink
+              >
               <Button className='btn-share' open-type='share'></Button>
             </SpCell>
+            }
             <SpCell
               title='地址管理'
               isLink

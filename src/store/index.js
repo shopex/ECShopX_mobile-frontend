@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/store/index.js
  * @Date: 2020-04-30 17:12:45
  * @LastEditors: Arvin
- * @LastEditTime: 2020-06-10 14:17:10
+ * @LastEditTime: 2020-07-02 18:03:51
  */ 
 import { createStore, applyMiddleware } from 'redux'
 import persistReducer from 'redux-persist/lib/persistReducer'
@@ -16,6 +16,7 @@ import { createLogger } from 'redux-logger'
 import reducers from './reducers'
 
 let storage
+
 if (process.env.TARO_ENV === 'weapp') {
   storage = require('redux-persist-weapp-storage/lib/bundle')
 } else {

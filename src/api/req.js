@@ -110,11 +110,39 @@ class API {
       // nest data
       options.data = qs.stringify(options.data)
     }
-
+    let resData = {}
     return Taro.request(options)
       .then(res => {
+        resData = res
+      }).catch(err => {
+        resData.statusCode = err.status
+
+        resData.header = {}
+
+        err.headers.forEach((val, key) => {
+          resData.header[key] = val
+        })
+
+        if (config.responseType === 'arraybuffer') {
+          return err.arrayBuffer()
+        }
+
+        if (config.dataType === 'json' || typeof config.dataType === 'undefined') {
+            return err.json()
+        }
+
+        if (config.responseType === 'text') {
+          return err.text()
+        }
+
+        return Promise.resolve(null)
+      }).then(res => {
+        // 如果有错误则为错误信息
+        if (res) {
+          resData.data = res
+        }        
         // eslint-disable-next-line
-        const { data, statusCode, header } = res
+        const { data, statusCode, header } = resData
         if (showLoading) {
           Taro.hideLoading()
         }
@@ -122,14 +150,14 @@ class API {
         if (statusCode >= 200 && statusCode < 300) {
           if (data.data !== undefined) {
             if (options.url.indexOf('token/refresh') >= 0) {
-              data.data.token = res.header.Authorization.replace('Bearer ', '')
+              data.data.token = resData.header.Authorization.replace('Bearer ', '')
             }
             return data.data
           } else {
             if (showError) {
               this.errorToast(data)
             }
-            return Promise.reject(this.reqError(res))
+            return Promise.reject(this.reqError(resData))
           }
         }
 
@@ -138,7 +166,7 @@ class API {
             this.errorToast({
               msg: '帐号已被禁用'
             })
-            return Promise.reject(this.reqError(res, '帐号已被禁用'))
+            return Promise.reject(this.reqError(resData, '帐号已被禁用'))
           }
           S.logout()
           // if (showError) {
@@ -146,17 +174,17 @@ class API {
           //   this.errorToast(data)
           // }
           S.login(this, true)
-          return Promise.reject(this.reqError(res))
+          return Promise.reject(this.reqError(resData))
         }
 
         if (statusCode >= 400) {
           if (showError && data.error.message !== '当前余额不足以支付本次订单费用，请充值！') {
             this.errorToast(data)
           }
-          return Promise.reject(this.reqError(res))
+          return Promise.reject(this.reqError(resData))
         }
 
-        return Promise.reject(this.reqError(res, `API error: ${statusCode}`))
+        return Promise.reject(this.reqError(resData, `API error: ${statusCode}`))        
       })
   }
 
