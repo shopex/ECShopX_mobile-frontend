@@ -86,18 +86,14 @@ async function getLocal (isNeedLocate) {
       }
       store = await api.shop.getShop(param)
     } else {
-      if (process.env.TARO_ENV === 'weapp') {
-        var locationData = await getLoc()
-        if (locationData !== '') {
-          let param = {}
-          if (isNeedLocate && positionStatus) {
-            param.lat = locationData.latitude
-            param.lng = locationData.longitude
-          }
-          store = await api.shop.getShop(param)
-        } else {
-          store = await api.shop.getShop()
+      const locationData = await getLoc()
+      if (locationData !== '') {
+        let param = {}
+        if (isNeedLocate && positionStatus) {
+          param.lat = locationData.latitude
+          param.lng = locationData.longitude
         }
+        store = await api.shop.getShop(param)
       } else {
         store = await api.shop.getShop()
       }
@@ -113,13 +109,49 @@ async function getLocal (isNeedLocate) {
 }
 
 async function getLoc () {
-  return await Taro.getLocation({type: 'gcj02'}).then(locationData => {
-    Taro.setStorage({ key: 'lnglat', data: locationData })
-    return locationData
-  }, res => {
-    return ''
+  if (process.env.TARO_ENV === 'weapp') {
+    return await Taro.getLocation({type: 'gcj02'}).then(locationData => {
+      Taro.setStorage({ key: 'lnglat', data: locationData })
+      return locationData
+    }, () => {
+      return ''
+    })
+  } else {
+    if (APP_PLATFORM === 'standard') {
+      return getWebLocal().catch(() => '定位错误')
+    } else {
+      return ''
+    }
+  }  
+}
+
+// web定位获取
+function getWebLocal () {
+  const { qq } = window
+  // let geolocation = new qq.maps.Geolocation('PVUBZ-E24HK-7SXJY-AGQZC-DN3IT-6EB6V', 'oneX新零售门店定位')
+  let geolocation = new qq.maps.Geolocation(APP_MAP_KEY, APP_MAP_NAME)
+  return new Promise((resolve, reject) => {
+    geolocation.getLocation(r => {
+      console.log('您的位置：'+r.lng+','+r.lat)
+      const param = {
+        latitude: r.lat,
+        longitude: r.lng
+      }
+      Taro.setStorage({ key: 'lnglat', data: param })
+      resolve(param)
+    }, () => {
+      console.log('定位失败')
+      Taro.showToast({
+        icon: "none",
+        title: '定位失败'
+      })
+      reject('')
+    }, {
+      timeout: 3000
+    })
   })
 }
+
 
 // 新增千人千码跟踪记录
 function trackViewNum (monitor_id, source_id) {

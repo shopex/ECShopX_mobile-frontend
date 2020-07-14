@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import {View, Text, Button} from '@tarojs/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
-import { FloatMenus, FloatMenuItem } from '@/components'
+import { FloatMenus, FloatMenuItem, NavBar } from '@/components'
 import { connect } from '@tarojs/redux'
 import { formatTime } from '@/utils'
 import S from '@/spx'
@@ -223,6 +223,11 @@ export default class recommendDetail extends Component {
 
     return (
       <View className='page-recommend-detail'>
+        <NavBar
+          title='微商城'
+          leftIconType='chevron-left'
+          fixed='true'
+        />        
         <View className='recommend-detail__title'>{info.title}</View>
         <View className='recommend-detail-info'>
           <View className='recommend-detail-info__time'>

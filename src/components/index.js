@@ -1,3 +1,7 @@
+import FloatMenuMeiQia from './float-menus/meiqia'
+
+export { FloatMenuMeiQia }
+
 export { default as QnImg } from './qn-img'
 export { default as Loading } from './loading'
 export { default as Price } from './price'
@@ -10,7 +14,6 @@ export { default as TagsBar } from './tags-bar'
 export { default as FilterBar } from './filter-bar'
 export { default as FloatMenus } from './float-menus'
 export { default as FloatMenuItem } from './float-menus/item'
-export { default as FloatMenuMeiQia } from './float-menus/meiqia'
 export { default as FormIdCollector } from './form-id-collector'
 
 export { default as SearchBar } from './search-bar'

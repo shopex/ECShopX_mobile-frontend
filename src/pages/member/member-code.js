@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
+import { NavBar } from '@/components'
 import { withLogin } from '@/hocs'
 import api from '@/api'
 
@@ -11,7 +12,7 @@ export default class MemberCode extends Component {
     super(props)
 
     this.state = {
-      info: null
+      info: {}
     }
   }
 
@@ -38,23 +39,27 @@ export default class MemberCode extends Component {
 
   render () {
     const { username, avatar } = Taro.getStorageSync('userinfo')
-    const { info } = this.state
+    const { info = {} } = this.state
 
     return (
-      <View className="member-code-wrap">
-        <View className="member-code">
-          <View className="avatar">
-            <Image className="avatar-img" src={avatar} mode="aspectFill" />
+      <View className='member-code-wrap'>
+        <NavBar
+          title='我的二维码'
+          leftIconType='chevron-left'
+        />        
+        <View className='member-code'>
+          <View className='avatar'>
+            <Image className='avatar-img' src={avatar} mode='aspectFill' />
             {/* {
               info.vipType && (info.vipType === 'vip' || info.vipType === 'svip')
                 && <Image className="icon-vip" src="../images/svip.png" />
             } */}
           </View>
-          <View className="nickname">{username}</View>
-          <Image className="member-code-bar" mode="aspectFill" src={info.barcode_url} />
-          <Image className="member-code-qr" mode="aspectFit" src={info.qrcode_url} />
+          <View className='nickname'>{username}</View>
+          <Image className='member-code-bar' mode='aspectFill' src={info.barcode_url} />
+          <Image className='member-code-qr' mode='aspectFit' src={info.qrcode_url} />
           <View>{info.userCardCode}</View>
-          <View className="muted">使用时，出示此码</View>
+          <View className='muted'>使用时，出示此码</View>
         </View>
       </View>
     )

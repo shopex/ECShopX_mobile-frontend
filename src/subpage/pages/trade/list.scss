@@ -19,6 +19,9 @@
       position: fixed;
       left: 0;
       top: $navigate-height;
+      /*  #ifdef  h5  */  
+      top: $navigate-height-h5;
+      /*  #endif  */
       width: 100%;
       z-index: $z-index-toolbar;
     }
@@ -44,9 +47,15 @@
     &__scroll {
       box-sizing: border-box;
       @include page-scroll($navigate-height, $edge-margin);
+      /*  #ifdef  h5  */  
+      @include page-scroll($navigate-height-h5, $edge-margin);
+      /*  #endif  */      
       z-index: 2;
       &.with-tabs {
         @include page-scroll($navigate-height + $tabs-height + 10px, $edge-margin);
+        /*  #ifdef  h5  */  
+        @include page-scroll($navigate-height-h5 + $tabs-height + 10px, $edge-margin);
+        /*  #endif  */        
       }
     }
   }

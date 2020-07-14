@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
+import { NavBar } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
 
@@ -109,12 +110,17 @@ export default class DistributionDashboard extends Component {
     const { info } = this.state
 
     return (
-      <View class="page-distribution-index">
+      <View className="page-distribution-index">
+        <NavBar
+          title='推广管理'
+          leftIconType='chevron-left'
+        />	        
         <View className="header" style={'background: ' + colors.data[0].marketing}>
           <View className='view-flex view-flex-middle'>
-            <Image className="header-avatar"
+            <Image
+              className='header-avatar'
               src={info.avatar}
-              mode="aspectFill"
+              mode='aspectFill'
             />
             <View className="header-info view-flex-item">
               {info.username}
@@ -209,7 +215,7 @@ export default class DistributionDashboard extends Component {
               </Navigator>
           }
           {
-            info.shop_status !== 1 &&
+            Taro.getEnv() !== 'WEB' && info.shop_status !== 1 &&
               <Button className="share-btn list-item" open-type="share">
                 <View className="item-icon icon-share1"></View>
                 <View className="list-item-txt">分享给好友</View>

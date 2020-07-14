@@ -8,6 +8,7 @@ import api from '@/api'
 import { normalizeQuerys } from '@/utils'
 import { FormIds } from '@/service'
 import Index from './pages/index'
+import LBS from './utils/lbs'
 
 import './app.scss'
 
@@ -25,6 +26,10 @@ class App extends Component {
   componentWillMount () {
   }
   componentDidMount () {
+    if (APP_PLATFORM === 'standard' && Taro.getEnv() === 'WEB') {
+      new LBS()
+    }
+
     const promoterExp = Taro.getStorageSync('distribution_shop_exp')
     if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
       Taro.setStorageSync('distribution_shop_id', '')

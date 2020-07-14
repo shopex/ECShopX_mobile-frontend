@@ -7,9 +7,6 @@ import { linkPage } from './helper'
 import './slider.scss'
 
 export default class WgtSlider extends Component {
-  static options = {
-    addGlobalClass: true
-  }
 
   static defaultProps = {
     info: null
@@ -21,6 +18,10 @@ export default class WgtSlider extends Component {
     this.state = {
       curIdx: 0
     }
+  }
+
+  static options = {
+    addGlobalClass: true
   }
 
   handleClickItem = linkPage

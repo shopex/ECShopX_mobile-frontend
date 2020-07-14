@@ -4,16 +4,13 @@ import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
 import { navigateTo, getCurrentRoute } from '@/utils'
 import S from '@/spx'
-import { getTotalCount } from '@/store/cart'
+// import { getTotalCount } from '@/store/cart'
 
 @connect(({ tabBar,cart }) => ({
   tabBar: tabBar.current,
   cartCount: cart.cartCount
 }))
 export default class TabBar extends Component {
-  static options = {
-    addGlobalClass: true
-  }
 
   constructor (props) {
     super(props)
@@ -27,6 +24,7 @@ export default class TabBar extends Component {
     }
   }
 
+  
   componentDidMount () {
 		const { tabBar } = this.props
     let list = []
@@ -70,17 +68,22 @@ export default class TabBar extends Component {
     })
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.current !== undefined) {
+      this.setState({ localCurrent: nextProps.current })
+    }
+  }
+
   componentDidShow () {
     if (this.state.tabList.length > 0) {
       this.fetchCart()
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.current !== undefined) {
-      this.setState({ localCurrent: nextProps.current })
-    }
+  static options = {
+    addGlobalClass: true
   }
+
 
   get cartCount () {
     // console.log('computed')
@@ -146,7 +149,6 @@ export default class TabBar extends Component {
   render () {
     const { color, backgroundColor, selectedColor, tabList, localCurrent } = this.state
 
-    // eslint-disable-next-line
     if (APP_INTEGRATION) {
       return <View></View>
     }

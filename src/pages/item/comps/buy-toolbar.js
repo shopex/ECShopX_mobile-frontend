@@ -21,7 +21,7 @@ export default class GoodsBuyToolbar extends Component {
     onClickFastBuy: () => {},
     onFavItem: () => {},
     cartCount: '',
-    info: null
+    info: {}
   }
 
   handleClickCart = (id, type) => {

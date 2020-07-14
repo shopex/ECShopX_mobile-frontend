@@ -18,6 +18,8 @@
     "APP_PLATFORM": 1,
     "APP_CUSTOM_SERVER": 1,
     "APP_HOME_PAGE": 1,
-    "APP_AUTH_PAGE": 1
+    "APP_AUTH_PAGE": 1,
+    "APP_MAP_KEY": 1,
+    "APP_MAP_NAME": 1
   }
 }

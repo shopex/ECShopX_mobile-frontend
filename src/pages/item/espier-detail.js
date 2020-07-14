@@ -3,7 +3,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Canvas } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
-import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell, GoodsEvaluation, FloatMenuMeiQia } from '@/components'
+import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell, GoodsEvaluation, FloatMenuMeiQia, GoodsItem } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
 import { withPager, withBackToTop } from '@/hocs'
@@ -442,7 +442,7 @@ export default class Detail extends Component {
     const { info } = this.state
     const { pics, company_id, item_id } = info
     const host = req.baseURL.replace('/api/h5app/wxapp/','')
-    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const extConfig = (Taro.getEnv() === 'weapp' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
     const { distributor_id } = Taro.getStorageSync('curStore')
     const pic = pics[0].replace('http:', 'https:')
 
@@ -778,7 +778,7 @@ export default class Detail extends Component {
           </View>
 
           {
-            !info.nospec && sixSpecImgsDict.length && info.is_show_specimg
+            !info.nospec && sixSpecImgsDict.length > 0 && info.is_show_specimg
               ? <ImgSpec
                 info={sixSpecImgsDict}
                 current={currentImgs}
@@ -863,13 +863,15 @@ export default class Detail extends Component {
                 <Text className='goods-title'>{info.item_name}</Text>
                 <Text className='goods-title__desc'>{info.brief}</Text>
               </View>
-              <View
-                className='goods-share__wrap'
-                onClick={this.handleShare.bind(this)}
-              >
-                <View className='icon-share'></View>
-                <View className='share-label'>分享</View>
-              </View>
+              {
+                Taro.getEnv() !== 'WEB' && <View
+                  className='goods-share__wrap'
+                  onClick={this.handleShare.bind(this)}
+                >
+                  <View className='icon-share'></View>
+                  <View className='share-label'>分享</View>
+                </View>
+              }
             </View>
 
             {
@@ -1004,7 +1006,7 @@ export default class Detail extends Component {
           }
 
           {
-            itemParams.length &&
+            itemParams.length > 0 &&
               <View
                 className='goods-sec-specs'
                 onClick={this.handleParamsClick.bind(this)}

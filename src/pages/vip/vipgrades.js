@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Button } from '@tarojs/components'
-import { Price } from '@/components'
+import { Price, NavBar } from '@/components'
 import { connect } from '@tarojs/redux'
 import { AtTabs, AtTabsPane} from 'taro-ui'
 import api from '@/api'
@@ -22,7 +22,8 @@ export default class VipIndex extends Component {
     super(props)
 
     this.state = {
-			userInfo:null,
+			userInfo: {},
+			userVipInfo: {},
 			curTabIdx: 0,
 			curCellIdx: 0,
 			tabList:[],
@@ -140,12 +141,17 @@ export default class VipIndex extends Component {
 
 	render () {
 		const { colors } = this.props
-		const { userInfo, list, cur, curTabIdx, userVipInfo, tabList } = this.state
+		const { userInfo, list, cur, curTabIdx, userVipInfo, tabList, curCellIdx } = this.state
 		return (
-			<View>
+			<View className='vipgrades'>
+        <NavBar
+          title='会员购买'
+          leftIconType='chevron-left'
+          fixed='true'
+        />
 				<View className='header' style={'background: ' + colors.data[0].marketing}>
 					<View className='header-isauth'>
-						<Image className='header-isauth__avatar' src={userInfo.avatar} mode='aspectFill'/>
+						<Image className='header-isauth__avatar' src={userInfo.avatar} mode='aspectFill' />
 						<View className='header-isauth__info'>
 							<View className='nickname'>{userInfo.username}
 								<Image  className='icon-vip' src='/assets/imgs/svip.png' />
@@ -154,20 +160,21 @@ export default class VipIndex extends Component {
 						</View>
 					</View>
 					<AtTabs className='header-tab'
-						current={curTabIdx}
-						tabList={tabList}
-						onClick={this.handleClickTab} >
-           {
-             tabList.map((panes, pIdx) =>
-               (<AtTabsPane
-                 current={curTabIdx}
-                 key={pIdx}
-                 index={pIdx}
-               >
-               </AtTabsPane>)
-             )
-           }
-        	</AtTabs>
+  current={curTabIdx}
+  tabList={tabList}
+  onClick={this.handleClickTab}
+					>
+					{
+						tabList.map((panes, pIdx) =>
+							(<AtTabsPane
+  current={curTabIdx}
+  key={pIdx}
+  index={pIdx}
+							>
+							</AtTabsPane>)
+						)
+					}
+					</AtTabs>
 				</View>
 				<View className='section'>
 					<View className='section-body'>

@@ -38,7 +38,7 @@ export default class GoodsBuyPanel extends Component {
     super(props)
 
     this.state = {
-      marketing: 'normal',
+      // marketing: 'normal',
       selection: [],
       promotions: [],
       activity: null,
@@ -93,7 +93,7 @@ export default class GoodsBuyPanel extends Component {
     const selection = Array(info.item_spec_desc.length).fill(null)
     this.skuDict = skuDict
     this.setState({
-      marketing,
+      // marketing,
       selection
     })
 
@@ -272,7 +272,7 @@ export default class GoodsBuyPanel extends Component {
     console.warn(this.props)
     if (this.state.busy) return
 
-    const { marketing, info } = this.state
+    const { marketing, info } = this.props
     const { special_type } = info
     const isDrug = special_type === 'drug'
     const { item_id } = this.noSpecs ? info : skuInfo
@@ -369,7 +369,7 @@ export default class GoodsBuyPanel extends Component {
     // packItem={packagePrices}
     //                 mainItem={mainPackagePrice}
     const { info, type, fastBuyText, colors, isPackage, packItem, mainpackItem } = this.props
-		const { curImg, quantity, selection, isActive, busy, curSku, marketing, promotions, activity, curLimit } = this.state
+		const { curImg, quantity, selection, isActive, busy, curSku, promotions, activity, curLimit } = this.state
     if (!info) {
       return null
     }

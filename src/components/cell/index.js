@@ -1,13 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import { classNames } from '@/utils'
 
 import './index.scss'
 
 export default class SpCell extends Component {
-  static options = {
-    addGlobalClass: true
-  }
 
   static defaultProps = {
     isLink: false,
@@ -18,6 +15,10 @@ export default class SpCell extends Component {
     onClick: () => {}
   }
 
+    static options = {
+    addGlobalClass: true
+  }
+
   render () {
     const { isLink, value, icon, img, iconPrefix, title, onClick, arrow, border, className } = this.props
     return (
@@ -26,7 +27,7 @@ export default class SpCell extends Component {
         onClick={onClick}
       >
         {img && (
-          <Image className='sp-cell__icon' src={img} mode="aspectFit"/>
+          <Image className='sp-cell__icon' src={img} mode='' />
         )}
         {icon && (
           <View className={`sp-cell__icon ${iconPrefix ? iconPrefix + ' ' + iconPrefix + '-' + icon : 'at-icon at-icon-' + icon}`}></View>

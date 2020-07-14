@@ -256,7 +256,7 @@ export default class UserInfo extends Component {
     const { isHasAvator, info, imgs, isHasData, list, option_list, showCheckboxPanel } = this.state
     const { colors } = this.props
     return (
-      <View class='page-member-setting'>
+      <View className='page-member-setting'>
         <NavBar
           title='用户信息'
         />

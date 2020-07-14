@@ -2,7 +2,9 @@
 
 .page-checkout {
   margin: $edge-size $edge-margin;
-  
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */
   .shopping-guide-header{
     padding: 20px;
     text-align: center;

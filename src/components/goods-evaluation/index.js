@@ -19,7 +19,7 @@ export default class GoodsEvaluation extends Component {
     super(props)
 
     this.state = {
-        styles: {height: '220rpx'}
+      styles: {height: '220rpx'}
     }
   }
 
@@ -35,7 +35,8 @@ export default class GoodsEvaluation extends Component {
   }
 
   handleSelectEvaluation () {
-    this.props.onChange && this.props.onChange(this.props.info)
+    const { info } = this.props
+    this.props.onChange && this.props.onChange(info)
   }
 
   /*handleClickLike () {
@@ -43,7 +44,8 @@ export default class GoodsEvaluation extends Component {
   }*/
 
   handleClickEvaluate () {
-    this.props.onReplyRate() && this.props.onReplyRate(this.props.info)
+    const { info } = this.props
+    this.props.onReplyRate() && this.props.onReplyRate(info)
   }
 
   /*previewImg (url, e) {
@@ -68,7 +70,7 @@ export default class GoodsEvaluation extends Component {
     }
 
     return (
-      <View className='evaluation-item' onClick={this.handleSelectEvaluation}>
+      <View className='evaluation-item' onClick={this.handleSelectEvaluation.bind(this)}>
         <View className='evaluation-item__avator'>
           <Image src={info.avatar} mode='aspectFill' className='avatar' />
         </View>

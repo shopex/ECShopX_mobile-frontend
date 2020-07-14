@@ -8,7 +8,7 @@ import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import { getCurrentRoute} from '@/utils'
 import entry from '@/utils/entry'
-import { HomeWgts } from '../home/comps/home-wgts'
+import HomeWgts from '../home/comps/home-wgts'
 
 import './shop-home.scss'
 

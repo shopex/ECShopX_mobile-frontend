@@ -36,7 +36,7 @@ export default class WgtNavigation extends Component {
                   key={idx}
                   onClick={this.handleClickItem.bind(this, item.linkPage, item.id)}
                 >
-                  <View class='nav-img-wrap'>
+                  <View className='nav-img-wrap'>
                     <QnImg
                       img-class='nav-img'
                       src={item.imgUrl}

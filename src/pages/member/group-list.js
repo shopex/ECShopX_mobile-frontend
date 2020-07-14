@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text,Image } from '@tarojs/components'
-import { Loading, SpNote, Price } from '@/components'
+import { Loading, SpNote, Price, NavBar } from '@/components'
 import _mapKeys from 'lodash/mapKeys'
 import api from '@/api'
 import { withPager } from '@/hocs'
@@ -67,6 +67,11 @@ export default class myGroupList extends Component {
 
     return (
       <View className='page-my-group-list'>
+        <NavBar
+          title='我的拼团'
+          leftIconType='chevron-left'
+          fixed='true'
+        />				
 				{
 					list.map((item, idx) => {
 						const { remaining_time_obj } = item

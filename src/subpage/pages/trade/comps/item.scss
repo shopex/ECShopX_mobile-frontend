@@ -54,6 +54,12 @@
     &-bd {
       display: flex;
       justify-content: flex-end;
+      /*  #ifdef  h5  */  
+      button {
+        border: none;
+        margin-left: 15px;
+      }
+      /*  #endif  */      
     }
   }
   &__status {
@@ -62,6 +68,7 @@
     display: inline-block;
     vertical-align: top;
     line-height: 40px;
+    flex-shrink: 0;
   }
   &__acts {
     line-height: 40px;

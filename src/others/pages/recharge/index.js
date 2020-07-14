@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/others/pages/recharge/index.js
  * @Date: 2020-01-13 17:38:42
  * @LastEditors: Arvin
- * @LastEditTime: 2020-07-03 15:40:22
+ * @LastEditTime: 2020-07-07 10:09:35
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Input } from '@tarojs/components'
@@ -163,7 +163,13 @@ export default class Recharge extends Component {
     })
     api.member.rehcargePay(param).then(res => {
       Taro.hideLoading()
-      this.weappPay(res)
+      if (Taro.getEnv() === 'WEAPP') {
+        this.weappPay(res)
+      } else {
+        this.h5Pay('测试')
+      }
+    }).catch(() => {
+      Taro.hideLoading()
     })
   }
 
@@ -215,8 +221,12 @@ export default class Recharge extends Component {
   }
 
   // H5支付
-  // h5Pay = (param) => {
-  // }
+  h5Pay = (param) => {
+    console.log(param)
+    Taro.showToast({
+      title: 'H5支付'
+    })
+  }
 
   render () {
     const { currentShop, deposit, amounts, active, value, ruleValue } = this.state
