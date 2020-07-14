@@ -24,7 +24,7 @@ export default class NavBar extends Component {
       const { title, leftIconType, fixed } = this.props
       return (
         Taro.getEnv() !== Taro.ENV_TYPE.WEAPP ?
-          <View className='nav-bar-height'>
+          <View className={`nav-bar-height ${fixed !== false && 'fiexd'}`}>
             <AtNavBar
               fixed={fixed}
               color='#000'

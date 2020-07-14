@@ -4,7 +4,7 @@
   .recommend-list {
     &__toolbar {
       position: fixed;
-      top: 0;
+      top: 0;      
       left: 0;
       width: 100%;
       z-index: $z-index-toolbar;
@@ -73,10 +73,7 @@
       }
     }
     &__scroll {
-      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + 92, $tabbar-height + floor($edge-margin / 2));
-      /*  #ifdef  h5  */  
-      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + 92, $tabbar-height + floor($edge-margin / 2));
-      /*  #endif  */      
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + 10, $tabbar-height + floor($edge-margin / 2));
     }
     &__type-grid {
       display: flex;

@@ -2,6 +2,8 @@ import path, { join } from 'path'
 import dotenvFlow from 'dotenv-flow'
 import { name as _name, app_name, version } from '../package.json'
 
+console.log(version)
+
 dotenvFlow.config()
 
 const {
@@ -59,8 +61,8 @@ const config = {
     projectDirectory: path.resolve(__dirname, '..')
   },
   defineConstants: {
-    APP_NAME: app_name,
-    APP_VERSION: version,
+    APP_NAME: `'${app_name}'`,
+    APP_VERSION: `'${version}'`,
     API_HOST: isWeb ? `'${APP_BASE_URL}'` : APP_BASE_URL,
     APP_BASE_URL: isWeb ? `'${APP_BASE_URL}'` : APP_BASE_URL,
     APP_WEBSOCKET_URL: isWeb ? `'${APP_WEBSOCKET}'` : APP_WEBSOCKET,

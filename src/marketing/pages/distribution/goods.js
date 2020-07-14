@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Image, Navigator } from '@tarojs/components'
-import { SpToast, BackToTop, Loading, FilterBar, SpNote } from '@/components'
+import { SpToast, BackToTop, Loading, FilterBar, SpNote, NavBar } from '@/components'
 import DistributionGoodsItem from './comps/goods-item'
 import S from '@/spx'
 import api from '@/api'
@@ -234,6 +234,11 @@ export default class DistributionGoods extends Component {
 
     return (
       <View className="page-distribution-shop">
+        <NavBar
+          title='推广商品'
+          leftIconType='chevron-left'
+          fixed='true'
+        />        
         <FilterBar
           className='goods-list__tabs'
           custom

@@ -408,11 +408,13 @@ export default class CartIndex extends Component {
     const isEmpty = !list.length
     return (
       <View className={classNames('page-cart-index', isDrug && 'is-drug')}>
-        <NavBar
-          title='购物车'
-          leftIconType='chevron-left'
-          fixed='true'
-        />
+        {
+          isDrug && <NavBar
+            title='购物车'
+            leftIconType='chevron-left'
+            fixed='true'
+          />
+        }
         {
           !S.getAuthToken()
             ? <View className='login-header'>

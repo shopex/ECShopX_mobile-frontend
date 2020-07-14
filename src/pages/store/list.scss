@@ -5,7 +5,6 @@ $current-shop-height: 150px !default;
 
 
 .page-store-list {
-  background: #fff;
   height: 100%;
   box-sizing: border-box;
   /*  #ifdef  h5  */  
@@ -68,6 +67,7 @@ $current-shop-height: 150px !default;
     }
   }
   .current-store {
+    background: #fff;
     padding-top: 10px;
     // height: $current-shop-height;
     .label {
