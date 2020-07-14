@@ -3,6 +3,9 @@
 .auth-forgotpwd {
   height: 100vh;
   background: $color-brand-primary-text;
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */  
   &__form {
     padding: $edge-size;
     margin: 0 0 $edge-margin;

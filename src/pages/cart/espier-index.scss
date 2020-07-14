@@ -240,6 +240,9 @@
     z-index: $z-index-modal;
   }
   &.is-drug {
+    /*  #ifdef  h5  */    
+    padding-top: $navigate-height-h5;
+    /*  #endif  */    
     .cart-list__scroll {
       @include page-scroll($navigate-height, $toolbar-height);
       /*  #ifdef  h5  */  

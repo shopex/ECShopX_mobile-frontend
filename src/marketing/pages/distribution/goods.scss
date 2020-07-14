@@ -2,6 +2,9 @@
 
 .page-distribution-shop {
   background: $color-bg-gray;
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */     
   .goods-list {
     padding: 24px $edge-margin;
     &__toolbar {
@@ -41,6 +44,9 @@
     }
     &__scroll {
       @include page-scroll($tabs-height + $navigate-height, 0);
+      /*  #ifdef  h5  */  
+      @include page-scroll($tabs-height + $navigate-height-h5, 0);
+      /*  #endif  */         
     }
     &__type-grid {
       @include clearfix();

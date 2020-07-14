@@ -520,6 +520,15 @@ export default class MemberIndex extends Component {
               onClick={this.handleClick.bind(this, '/pages/member/userinfo')}
             >
             </SpCell>
+            {
+              process.env.TARO_ENV === 'h5' &&
+              <SpCell
+                title='设置'
+                isLink
+                onClick={this.handleClick.bind(this, '/pages/member/setting')}
+              >
+              </SpCell>
+            }            
           </View>
         </ScrollView>
 
