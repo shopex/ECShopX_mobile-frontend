@@ -20,6 +20,10 @@ export default class DistributionDashboard extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })     
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -61,6 +65,20 @@ export default class DistributionDashboard extends Component {
       title: extConfig.wxa_name,
       imageUrl: info.shop_pic,
       path: `/pages/index?uid=${userId}`
+    }
+  }
+
+  onShareTimeline () {
+    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const { userId } = Taro.getStorageSync('userinfo')
+    const { info } = this.state
+
+    return {
+      title: extConfig.wxa_name,
+      imageUrl: info.shop_pic,
+      query: {
+        uid: userId
+      }
     }
   }
 

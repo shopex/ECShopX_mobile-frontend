@@ -52,6 +52,10 @@ export default class HomeIndex extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })     
     this.fetchInfo(async () => {
       const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
       const [fixSetting, { is_open, ad_pic, ad_title }] = await Promise.all([req.get(url), api.promotion.automatic({register_type: 'general'})])
@@ -229,15 +233,22 @@ export default class HomeIndex extends Component {
     })
   }
 
-  onShareAppMessage (res) {
-    if (res.from === 'button') {
-      console.log(res.target)
-    }
+  async onShareAppMessage () {
+    const res = await api.wx.shareSetting({shareindex: 'index'})
     return {
-      title: '首页',
-      path: '/pages/index'
+      title: res.title,
+      imageUrl: res.imageUrl
     }
   }
+
+  async onShareTimeline () {
+    const res = await api.wx.shareSetting({shareindex: 'index'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }   
+  
 	async fetchCartcount() {
     if (!S.getAuthToken()) {
       return

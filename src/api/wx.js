@@ -43,3 +43,9 @@ export function decryptPhone (params) {
     appid
   })
 }
+
+export function shareSetting (params) {
+  return req.get('/share/setting', {
+    ...params
+  })
+}

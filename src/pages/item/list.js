@@ -44,6 +44,10 @@ export default class List extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })     
     const { cat_id = null, main_cat_id = null } = this.$router.params
     this.firstStatus = true
 
@@ -62,6 +66,22 @@ export default class List extends Component {
       this.nextPage()
     })
   }
+
+  async onShareAppMessage () {
+    const res = await api.wx.shareSetting({shareindex: 'itemlist'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }
+
+  async onShareTimeline () {
+    const res = await api.wx.shareSetting({shareindex: 'itemlist'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }     
 
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params

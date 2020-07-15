@@ -25,6 +25,10 @@ export default class DistributionShop extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })     
     this.fetch()
   }
 
@@ -78,6 +82,19 @@ export default class DistributionShop extends Component {
       title: info.shop_name || `${username}的小店`,
       imageUrl: info.shop_pic,
       path: `/pages/distribution/shop-home?uid=${userId}`
+    }
+  }
+
+  onShareTimeline () {
+    const { username, userId } = Taro.getStorageSync('userinfo')
+    const { info } = this.state
+
+    return {
+      title: info.shop_name || `${username}的小店`,
+      imageUrl: info.shop_pic,
+      query: {
+        uid: userId
+      }
     }
   }
 

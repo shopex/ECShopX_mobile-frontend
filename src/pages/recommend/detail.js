@@ -37,6 +37,10 @@ export default class recommendDetail extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })    
     Taro.getSystemInfo()
       .then(res =>{
         this.setState({
@@ -44,6 +48,27 @@ export default class recommendDetail extends Component {
         })
       })
   }
+
+  onShareAppMessage () {
+    const { info } = this.state
+    return {
+      title: info.title,
+      path: `/pages/recommend/detail?id=${info.article_id}`,
+      imageUrl: info.share_image_url || info.image_url
+    }
+  }
+
+  onShareTimeline () {
+    const { info } = this.state
+    const query = {
+      id: info.article_id
+    }
+    return {
+      title: info.title,
+      query,
+      imageUrl: info.share_image_url || info.image_url
+    }
+  }   
 
   /*async fetch (params) {
     const { page_no: page, page_size: pageSize } = params

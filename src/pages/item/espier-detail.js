@@ -70,6 +70,10 @@ export default class Detail extends Component {
   }
 
   async componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })    
     const options = this.$router.params
     const { uid, id, gid = '' } = await entry.entryLaunch(options, true)
     this.fetchInfo(id, gid)
@@ -133,9 +137,25 @@ export default class Detail extends Component {
 
     return {
       title: info.item_name,
-      path: '/pages/item/espier-detail?id='+ info.item_id + '&dtid=' + distributor_id + (userId && '&uid=' + userId)
+      path: '/pages/item/espier-detail?id='+ info.item_id + '&dtid=' + distributor_id + (userId && '&uid=' + userId),
+      imageUrl: info.pics[0]
     }
+  }
 
+  onShareTimeline () {
+    const { info } = this.state
+    const { distributor_id } = Taro.getStorageSync('curStore')
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = {
+      id: info.item_id,
+      dtid: distributor_id
+    }
+    if (userId) { query.uid = userId }
+    return {
+      title: info.item_name,
+      query,
+      imageUrl: info.pics[0]
+    }
   }
 
   async fetchCartCount () {
@@ -442,7 +462,7 @@ export default class Detail extends Component {
     const { info } = this.state
     const { pics, company_id, item_id } = info
     const host = req.baseURL.replace('/api/h5app/wxapp/','')
-    const extConfig = (Taro.getEnv() === 'weapp' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
+    const extConfig = (Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
     const { distributor_id } = Taro.getStorageSync('curStore')
     const pic = pics[0].replace('http:', 'https:')
 

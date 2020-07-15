@@ -23,6 +23,10 @@ export default class GroupDetail extends Component {
 	}
 
 	componentDidMount() {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })  
 		this.fetchDetail()
 	}
 
@@ -114,17 +118,30 @@ export default class GroupDetail extends Component {
     })
   }
 
-  onShareAppMessage (res) {
+  onShareAppMessage () {
     const { distributor_id } = Taro.getStorageSync('curStore')
     const { userId } = Taro.getStorageSync('userinfo')
     const { detail } = this.state
     const { team_info, activity_info } = detail
-    if (res.from === 'button') {
-      // 来自页面内转发按钮
-    }
     return {
       title: `【拼团】${activity_info.share_desc}`,
       path: `/pages/item/group-detail?team_id=${team_info.team_id}&dtid=${distributor_id}&uid=${userId}`,
+      imageUrl: activity_info.pics[0]
+    }
+  }
+
+  onShareTimeline () {
+    const { distributor_id } = Taro.getStorageSync('curStore')
+    const { userId } = Taro.getStorageSync('userinfo')
+    const { detail } = this.state
+    const { team_info, activity_info } = detail
+    return {
+      title: `【拼团】${activity_info.share_desc}`,
+      query: {
+        team_id: team_info.team_id,
+        dtid: distributor_id,
+        uid: userId
+      },
       imageUrl: activity_info.pics[0]
     }
   }

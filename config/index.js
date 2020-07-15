@@ -2,8 +2,6 @@ import path, { join } from 'path'
 import dotenvFlow from 'dotenv-flow'
 import { name as _name, app_name, version } from '../package.json'
 
-console.log(version)
-
 dotenvFlow.config()
 
 const {

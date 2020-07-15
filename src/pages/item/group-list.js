@@ -30,6 +30,10 @@ export default class GroupList extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })      
     this.nextPage()
   }
 
@@ -86,6 +90,22 @@ export default class GroupList extends Component {
       url: `/pages/item/espier-detail?id=${goods_id}`
     })
   }
+
+  async onShareAppMessage () {
+    const res = await api.wx.shareSetting({shareindex: 'group'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }
+
+  async onShareTimeline () {
+    const res = await api.wx.shareSetting({shareindex: 'group'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }   
 
   render () {
     const { tabList, curTabIdx, list, page } = this.state

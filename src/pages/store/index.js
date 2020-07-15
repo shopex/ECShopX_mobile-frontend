@@ -53,6 +53,10 @@ export default class StoreIndex extends Component {
   }
 
   async componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })    
     const options = normalizeQuerys(this.$router.params)
     // console.log(options)
     // const { dtid } = await entry.entryLaunch(options, true)
