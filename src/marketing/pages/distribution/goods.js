@@ -33,6 +33,10 @@ export default class DistributionGoods extends Component {
   }
 
   componentDidMount () {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })    
     this.firstStatus = true
     this.setState({
       query: {
@@ -225,6 +229,20 @@ export default class DistributionGoods extends Component {
       title: info.title,
       imageUrl: info.img,
       path: `/pages/item/espier-detail?id=${info.item_id}&uid=${userId}`
+    }
+  }
+
+  onShareTimeline (res) {
+    const { userId } = Taro.getStorageSync('userinfo')
+    const { info } = res.target.dataset
+    const query = {
+      id: info.item_id,
+      uid: userId
+    }
+    return {
+      title: info.title,
+      imageUrl: info.img,
+      query
     }
   }
 

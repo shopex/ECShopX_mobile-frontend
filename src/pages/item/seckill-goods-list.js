@@ -47,6 +47,23 @@ export default class SeckillGoodsList extends Component {
 		this.nextPage()
   }
 
+  async onShareAppMessage () {
+    const res = await api.wx.shareSetting({shareindex: 'seckill'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }
+
+  async onShareTimeline () {
+    const res = await api.wx.shareSetting({shareindex: 'seckill'})
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl
+    }
+  }   
+    
+
   calcTimer (totalSec) {
     let remainingSec = totalSec
     const dd = Math.floor(totalSec / 24 / 3600)

@@ -16,6 +16,7 @@ export default class HomeIndex extends Component {
     this.state = {
       ...this.state,
       wgts: null,
+      shareInfo: null,
       authStatus: false,
       positionStatus: false
     }
@@ -44,9 +45,27 @@ export default class HomeIndex extends Component {
       })
     }
     this.setState({
+      shareInfo: info.share,
       wgts: info.config
     })
   }
+
+  async onShareAppMessage () {
+    const { shareInfo } = this.state
+    return {
+      title: shareInfo.page_share_title,
+      imageUrl: shareInfo.page_share_imageUrl
+    }
+  }
+
+  async onShareTimeline () {
+    const { shareInfo } = this.state
+    return {
+      title: shareInfo.title,
+      imageUrl: shareInfo.imageUrl
+    }
+  }   
+    
 
   render () {
     const { wgts, authStatus, scrollTop, showBackToTop, positionStatus } = this.state
