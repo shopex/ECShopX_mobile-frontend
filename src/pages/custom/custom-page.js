@@ -61,8 +61,8 @@ export default class HomeIndex extends Component {
   onShareTimeline () {
     const { shareInfo } = this.state
     return {
-      title: shareInfo.title,
-      imageUrl: shareInfo.imageUrl
+      title: shareInfo.page_share_title,
+      imageUrl: shareInfo.page_share_imageUrl
     }
   }   
     
