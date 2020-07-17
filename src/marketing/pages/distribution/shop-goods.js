@@ -23,9 +23,9 @@ export default class DistributionShopGoods extends Component {
       curIdx: ''
     }
   }
-
+  
   componentDidMount () {
-    Taro.showShareMenu({
+    Taro.hideShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
     })     
@@ -154,19 +154,19 @@ export default class DistributionShopGoods extends Component {
     }
   }
 
-  onShareTimeline (res) {
-    const { userId } = Taro.getStorageSync('userinfo')
-    const { info } = res.target.dataset
+  // onShareTimeline (res) {
+  //   const { userId } = Taro.getStorageSync('userinfo')
+  //   const { info } = res.target.dataset
 
-    return {
-      title: info.title,
-      imageUrl: info.img,
-      query: {
-        id: info.item_id,
-        uid: userId
-      }
-    }
-  }
+  //   return {
+  //     title: info.title,
+  //     imageUrl: info.img,
+  //     query: {
+  //       id: info.item_id,
+  //       uid: userId
+  //     }
+  //   }
+  // }
 
   render () {
     const { list, goodsIds, page, scrollTop } = this.state
