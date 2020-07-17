@@ -33,7 +33,7 @@ export default class DistributionGoods extends Component {
   }
 
   componentDidMount () {
-    Taro.showShareMenu({
+    Taro.hideShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
     })    
@@ -232,19 +232,19 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  onShareTimeline (res) {
-    const { userId } = Taro.getStorageSync('userinfo')
-    const { info } = res.target.dataset
-    const query = {
-      id: info.item_id,
-      uid: userId
-    }
-    return {
-      title: info.title,
-      imageUrl: info.img,
-      query
-    }
-  }
+  // onShareTimeline (res) {
+  //   const { userId } = Taro.getStorageSync('userinfo')
+  //   const { info } = res.target.dataset
+  //   const query = {
+  //     id: info.item_id,
+  //     uid: userId
+  //   }
+  //   return {
+  //     title: info.title,
+  //     imageUrl: info.img,
+  //     query
+  //   }
+  // }
 
   render () {
     const { status } = this.$router.params
