@@ -918,7 +918,7 @@ export default class Detail extends Component {
                               value={info.price}
                             />
                             {
-                              info.market_price &&
+                              info.market_price !== 0 && info.market_price &&
                                 <Price
                                   lineThrough
                                   unit='cent'

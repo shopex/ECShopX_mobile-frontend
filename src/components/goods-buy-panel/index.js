@@ -434,7 +434,7 @@ export default class GoodsBuyPanel extends Component {
 						  <Price primary symbol='¥' unit='cent' value={price} />
               <View className='goods-sku__price-market'>
               {
-                marketPrice &&
+                marketPrice !== 0 && marketPrice &&
                   <Price
                     className='price-market'
                     symbol='¥'
