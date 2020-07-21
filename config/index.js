@@ -86,7 +86,8 @@ const config = {
     ]
   },
   plugins: [
-    '@tarojs/plugin-sass'
+    '@tarojs/plugin-sass',
+    '@tarojs/plugin-uglify'
   ],
   // 开启压缩
   uglify: {

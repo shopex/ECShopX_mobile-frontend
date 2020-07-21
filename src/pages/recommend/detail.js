@@ -265,7 +265,7 @@ export default class recommendDetail extends Component {
             {
               info.content.map((item, idx) => {
                 return (
-                  <View className='wgt-wrap' key={idx}>
+                  <View className='wgt-wrap' key={`${item.name}${idx}`}>
                     {item.name === 'film' && <WgtFilm info={item} />}
                     {item.name === 'slider' && <WgtSlider info={item} width={screenWidth} />}
                     {item.name === 'writing' && <WgtWriting info={item} />}

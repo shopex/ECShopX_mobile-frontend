@@ -206,7 +206,7 @@ export default class GroupDetail extends Component {
     				{detail && [...Array(activity_info.person_num).keys()].map((item, index) => {
     					return (
     						<View
-                  key={index}
+                  key={`${index}1`}
                   className={classNames('group-member-item',{'wait-member':member_list.list[index]})}
                   >
       						{

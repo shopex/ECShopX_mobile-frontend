@@ -5,7 +5,7 @@
 	"private": true,
 	"description": "taro app for bbc",
 	"scripts": {
-		"build:weapp": "taro build --type weapp",
+		"build:weapp": "taro build --type weapp --trace-warnings",
 		"build:swan": "taro build --type swan",
 		"build:alipay": "taro build --type alipay",
 		"build:tt": "taro build --type tt",
@@ -65,7 +65,7 @@
 		"@tarojs/plugin-babel": "2.2.11",
 		"@tarojs/plugin-csso": "2.2.11",
 		"@tarojs/plugin-sass": "2.2.11",
-		"@tarojs/plugin-uglifyjs": "2.2.7",
+		"@tarojs/plugin-uglify": "^2.2.7",
 		"@tarojs/webpack-runner": "2.2.11",
 		"@types/react": "^16.8.5",
 		"@types/webpack-env": "^1.13.6",

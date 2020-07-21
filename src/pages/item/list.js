@@ -456,7 +456,7 @@ export default class List extends Component {
           {
             paramsList.map((item, index) => {
               return (
-                <View className='drawer-item' key={index}>
+                <View className='drawer-item' key={`${index}1`}>
                   <View className='drawer-item__title'>
                     <Text>{item.attribute_name}</Text>
                     <View className='at-icon at-icon-chevron-down'> </View>
@@ -468,7 +468,7 @@ export default class List extends Component {
                           <View
                             className={classNames('drawer-item__options__item' ,v_item.isChooseParams ? 'drawer-item__options__checked' : '')}
                             // className='drawer-item__options__item'
-                            key={v_index}
+                            key={`${v_index}1`}
                             onClick={this.handleClickParmas.bind(this, item.attribute_id, v_item.attribute_value_id)}
                           >
                             {v_item.attribute_value_name}
