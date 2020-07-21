@@ -766,7 +766,7 @@ export default class Detail extends Component {
               {
                 imgs.map((img, idx) => {
                   return (
-                    <SwiperItem key={idx}>
+                    <SwiperItem key={`${img}${idx}`}>
                       <ItemImg
                         src={img}
                       ></ItemImg>
@@ -1025,9 +1025,9 @@ export default class Detail extends Component {
                 <View className='goods-sec-label'>商品参数</View>
                 <View className='goods-sec-value'>
                   {
-                    itemParams.map((item, idx) =>
+                    itemParams.map((item) =>
                       <ParamsItem
-                        key={idx}
+                        key={item.attribute_id}
                         info={item}
                       />
                     )
@@ -1093,7 +1093,7 @@ export default class Detail extends Component {
                 {
                   desc.map((item, idx) => {
                     return (
-                      <View className='wgt-wrap' key={idx}>
+                      <View className='wgt-wrap' key={`${item.name}${idx}`}>
                         {item.name === 'film' && <WgtFilm info={item} />}
                         {item.name === 'slider' && <WgtSlider info={item} />}
                         {item.name === 'writing' && <WgtWriting info={item} />}

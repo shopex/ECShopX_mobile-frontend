@@ -84,7 +84,7 @@ export default class WgtMarquees extends Component {
                   {data.map((item, idx) => {
                     return (
                       <SwiperItem
-                        key={idx}
+                        key={`${idx}1`}
                         className='marquees-item'
                       >
                         <View

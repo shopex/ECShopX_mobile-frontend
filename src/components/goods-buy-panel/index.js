@@ -113,13 +113,13 @@ export default class GoodsBuyPanel extends Component {
 
   getSkuProps = () => {
     const { info } = this.props
-    if (!info) return ''
+    if (!info) return null
 
     const { curSku } = this.state
     let propsText = ''
 
     if (this.noSpecs) {
-      return ''
+      return null
     }
 
     if (!curSku) {

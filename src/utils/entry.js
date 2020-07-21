@@ -114,13 +114,13 @@ async function getLoc () {
       Taro.setStorage({ key: 'lnglat', data: locationData })
       return locationData
     }, () => {
-      return ''
+      return null
     })
   } else {
     if (APP_PLATFORM === 'standard') {
       return getWebLocal().catch(() => '定位错误')
     } else {
-      return ''
+      return null
     }
   }  
 }
