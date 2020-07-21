@@ -52,20 +52,30 @@ export default class HomeIndex extends Component {
     }
   }
 
-  async componentDidMount () {
+  componentDidMount () {
     Taro.showShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
     })     
     
+   this.fetchData()
+
+    api.wx.shareSetting({shareindex: 'index'}).then(res => {
+      this.setState({
+        shareInfo: res
+      })
+    })
+  }
+
+  async fetchData() {
     const options = this.$router.params
     const res = await entry.entryLaunch(options, true)
-//           if(S.getAuthToken()){
-//               const promoterInfo = await api.distribution.info()
-//               this.setState({
-//                 isShop:promoterInfo
-//               })
-//             }
+    // if(S.getAuthToken()){
+    //   const promoterInfo = await api.distribution.info()
+    //     this.setState({
+    //     isShop:promoterInfo
+    //   })
+    // }
     const { store } = res
     if (!isArray(store)) {
       this.setState({
@@ -83,7 +93,6 @@ export default class HomeIndex extends Component {
             },
             positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
           })
-    
           // const userinfo = Taro.getStorageSync('userinfo')
           // if (automatic.is_open === 'true' && automatic.register_type === 'membercard' && userinfo) {
           //   const { is_open, is_vip, is_had_vip, vip_type } = await api.vip.getUserVipInfo()
@@ -96,24 +105,35 @@ export default class HomeIndex extends Component {
           //     }
           //   })
           // }
-    
         })
       })
     }
-    api.wx.shareSetting({shareindex: 'index'}).then(res => {
-      this.setState({
-        shareInfo: res
-      })
-    })
   }
 
-  componentDidShow = () => {
+  componentDidShow = async () => {
     const options = this.$router.params
-    const curStore = Taro.getStorageSync('curStore')
-    if (!isArray(curStore)) {
-      this.setState({
-        curStore
-      })
+    const {curStore} = this.state
+    const curStoreLocal = Taro.getStorageSync('curStore')
+    if (!isArray(curStoreLocal)) {
+      if (!curStore || (curStoreLocal.distributor_id != curStore.distributor_id) ) {
+        this.setState({
+          curStore: curStoreLocal
+        }, () => {
+          this.fetchInfo(async () => {
+            const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
+            const [fixSetting, { is_open, ad_pic, ad_title }] = await Promise.all([req.get(url), api.promotion.automatic({register_type: 'general'})])
+      
+            this.setState({
+              automatic: {
+                title: ad_title,
+                isOpen: is_open === 'true',
+                adPic: ad_pic
+              },
+              positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
+            })
+          })
+        })
+      }
     }
 
     Taro.getStorage({ key: 'addTipIsShow' })
@@ -152,30 +172,8 @@ export default class HomeIndex extends Component {
     this.setState({
       likeList: [],
       wgts: null
-    }, () => {
-      this.fetchInfo(async () => {
-        const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
-        const [fixSetting, { is_open, ad_pic, ad_title }] = await Promise.all([req.get(url), api.promotion.automatic({register_type: 'general'})])
-  
-        this.setState({
-          automatic: {
-            title: ad_title,
-            isOpen: is_open === 'true',
-            adPic: ad_pic
-          },
-          positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
-        })
-  
-        const options = this.$router.params
-        const res = await entry.entryLaunch(options, true)
-  
-        const { store } = res
-        if (!isArray(store)) {
-          this.setState({
-            curStore: store
-          })
-        }
-      })
+    }, async () => {
+      this.fetchData()
     })
   }
 
@@ -278,13 +276,13 @@ export default class HomeIndex extends Component {
     const url = '/pagestemplate/detail?weapp_pages=index&distributor_id='+curStore.distributor_id
     const info = await req.get(url)
     this.setState({
-      wgts: info.content
+      wgts: isArray(info) ? [] : info.content
     },()=>{
       if (cb) {
         cb(info)
       }
       Taro.stopPullDownRefresh()
-      if(info.content) {
+      if(!isArray(info) && info.content) {
         const show_likelist = info.content.find(item => item.name == 'setting' && item.config.faverite)
         this.props.onUpdateLikeList(show_likelist ? true : false)
         if (show_likelist) {
@@ -390,9 +388,10 @@ export default class HomeIndex extends Component {
     // const isPromoter = user && user.isPromoter
     // const distributionShopId = Taro.getStorageSync('distribution_shop_id')
 
-    if (!wgts || !this.props.store) {
+    // if (!wgts || !this.props.store) {
+    if (!this.props.store) {
       return <Loading />
-		}
+    }
 		// const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
 
     return (
@@ -408,9 +407,9 @@ export default class HomeIndex extends Component {
         'wgts-wrap_platform', positionStatus && (APP_PLATFORM !== 'standard' || curStore.distributor_id === 0 ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard') , !curStore && 'wgts-wrap-nolocation')}
         >
           <View className='wgts-wrap__cont'>
-            <HomeWgts
+            {wgts && <HomeWgts
               wgts={wgts}
-            />
+            />}
             {likeList.length > 0 && showLikeList && (
               <View className='faverite-list'>
                 <WgtGoodsFaverite info={likeList} />
