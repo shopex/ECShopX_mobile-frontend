@@ -113,20 +113,17 @@ export default class HomeIndex extends Component {
     const options = this.$router.params
     const {curStore} = this.state
     const curStoreLocal = Taro.getStorageSync('curStore')
-    this.setState({
-      likeList: [],
-      wgts: null
-    }, () => {
-      if (!isArray(curStoreLocal)) {
-        if (!curStore || (curStoreLocal.distributor_id != curStore.distributor_id) ) {
-          this.setState({
-            curStore: curStoreLocal
-          }, () => {
-            this.fetchData()
-          })
-        }
+    if (!isArray(curStoreLocal)) {
+      if (!curStore || (curStoreLocal.distributor_id != curStore.distributor_id) ) {
+        this.setState({
+          curStore: curStoreLocal,
+          likeList: [],
+          wgts: null
+        }, () => {
+          this.fetchData()
+        })
       }
-    })
+    }
 
     Taro.getStorage({ key: 'addTipIsShow' })
       .then(() => {})
