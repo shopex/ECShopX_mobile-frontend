@@ -6,7 +6,7 @@
  # @FilePath: /unite-vshop/dev.sh
 # @Date: 2020-06-10 10:15:51
  # @LastEditors: Arvin
- # @LastEditTime: 2020-07-23 11:00:58
+ # @LastEditTime: 2020-07-23 11:17:04
 ### 
 #/usr/bash
 
@@ -104,7 +104,7 @@ APP_MAP_NAME='${map_name}'
 
 echo "请选择编译方式"
 
-buildType="H5 WEAPP"
+buildType="WEAPP H5"
 
 select type in $buildType
 do
