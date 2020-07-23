@@ -53,11 +53,6 @@ export default class HomeIndex extends Component {
   }
 
   async componentDidMount () {
-    Taro.showShareMenu({
-      withShareTicket: true,
-      menus: ['shareAppMessage', 'shareTimeline']
-    })     
-    
    const options = this.$router.params
    const res = await entry.entryLaunch(options, true)
    // if(S.getAuthToken()){
@@ -92,7 +87,7 @@ export default class HomeIndex extends Component {
           isOpen: is_open === 'true',
           adPic: ad_pic
         },
-        positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
+        // positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
       })
       // const userinfo = Taro.getStorageSync('userinfo')
       // if (automatic.is_open === 'true' && automatic.register_type === 'membercard' && userinfo) {
@@ -283,6 +278,10 @@ export default class HomeIndex extends Component {
       Taro.stopPullDownRefresh()
       if(!isArray(info) && info.content) {
         const show_likelist = info.content.find(item => item.name == 'setting' && item.config.faverite)
+        const searchWgt = info.content.find(item => item.name == 'search')
+        this.setState({
+          positionStatus: searchWgt && searchWgt.config && searchWgt.config.fixTop
+        })
         this.props.onUpdateLikeList(show_likelist ? true : false)
         if (show_likelist) {
           this.resetPage()
@@ -403,7 +402,7 @@ export default class HomeIndex extends Component {
         }        
 
         <View className={classNames('wgts-wrap', APP_PLATFORM !== 'standard' && 
-        'wgts-wrap_platform', positionStatus && (APP_PLATFORM !== 'standard' || curStore.distributor_id === 0 ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard') , !curStore && 'wgts-wrap-nolocation')}
+        'wgts-wrap_platform', positionStatus && (APP_PLATFORM !== 'standard' || curStore.distributor_id == 0 ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard') , !curStore && 'wgts-wrap-nolocation')}
         >
           <View className='wgts-wrap__cont'>
             {wgts && <HomeWgts
