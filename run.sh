@@ -6,7 +6,7 @@
  # @FilePath: /unite-vshop/run.sh
 # @Date: 2020-06-10 10:15:51
  # @LastEditors: Arvin
- # @LastEditTime: 2020-07-23 11:02:23
+ # @LastEditTime: 2020-07-23 11:16:20
 ### 
 #/usr/bash
 
@@ -103,26 +103,19 @@ APP_MAP_NAME='${map_name}'
 
 echo "请选择编译方式"
 
-buildType="H5 WEAPP"
+buildType="WEAPP H5"
 
 select type in $buildType
 do
-if [ "$type" = 'WEAPP' ];then
-  if [ "$(uname)" == "Darwin" ]
-  then
-
-  echo "npm run dev:weapp"
-  npm run dev:weapp
-
-  else
-
-  echo "npm run dev:weapp:windows"
-  npm run dev:weapp:windows
-
-  fi
+if [ "$type" = 'H5' ]
+  echo "npm run build:H5"
+  npm run build:h5 
+then
 exit
 else
- npm run dev:h5 
+  echo "npm run build:weapp"
+  npm run build:weapp
 fi
+break
 done
 
