@@ -48,7 +48,10 @@ export default class HomeIndex extends Component {
       // 店铺精选id
       featuredshop: '',
       // 分享配置
-      shareInfo: {}
+      shareInfo: {},
+      is_open_recommend: null,
+      is_open_scan_qrcode: null,
+      is_open_wechatapp_location: null
     }
   }
 
@@ -69,6 +72,9 @@ export default class HomeIndex extends Component {
         this.fetchData()
       })
     }
+
+    this.fetchSetInfo()
+
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
       this.setState({
         shareInfo: res
@@ -76,17 +82,26 @@ export default class HomeIndex extends Component {
     })
   }
 
+  async fetchSetInfo () {
+    const setUrl = '/pagestemplate/setInfo'
+    const {is_open_recommend, is_open_scan_qrcode, is_open_wechatapp_location} = await req.get(setUrl)
+    this.setState({
+      is_open_recommend: is_open_recommend,
+      is_open_scan_qrcode: is_open_scan_qrcode,
+      is_open_wechatapp_location: is_open_wechatapp_location
+    })
+  }
+
   fetchData() {
     this.fetchInfo(async () => {
       const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
       const [fixSetting, { is_open, ad_pic, ad_title }] = await Promise.all([req.get(url), api.promotion.automatic({register_type: 'general'})])
-
       this.setState({
         automatic: {
           title: ad_title,
           isOpen: is_open === 'true',
           adPic: ad_pic
-        },
+        }
         // positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
       })
       // const userinfo = Taro.getStorageSync('userinfo')
@@ -380,8 +395,8 @@ export default class HomeIndex extends Component {
   }
 
   render () {
-    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop } = this.state
-    const { showLikeList } = this.props
+    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop, is_open_recommend, is_open_wechatapp_location, is_open_scan_qrcode } = this.state
+    // const { showLikeList } = this.props
     // const user = Taro.getStorageSync('userinfo')
     // const isPromoter = user && user.isPromoter
     // const distributionShopId = Taro.getStorageSync('distribution_shop_id')
@@ -395,20 +410,22 @@ export default class HomeIndex extends Component {
     return (
       <View className='page-index'>
         {
-          APP_PLATFORM === 'standard' && curStore &&
+          APP_PLATFORM === 'standard' && curStore && (is_open_scan_qrcode==1 || is_open_wechatapp_location==1) && 
             <HeaderHome
               store={curStore}
+              isOpenScanQrcode={is_open_scan_qrcode}
+              isOpenWechatappLocation={is_open_wechatapp_location}
             />
         }        
 
-        <View className={classNames('wgts-wrap', APP_PLATFORM !== 'standard' && 
+        <View className={classNames('wgts-wrap', is_open_scan_qrcode == 2 && is_open_wechatapp_location == 2 ? 'no-location' : null, APP_PLATFORM !== 'standard' && 
         'wgts-wrap_platform', positionStatus && (APP_PLATFORM !== 'standard' || curStore.distributor_id == 0 ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard') , !curStore && 'wgts-wrap-nolocation')}
         >
           <View className='wgts-wrap__cont'>
             {wgts && <HomeWgts
               wgts={wgts}
             />}
-            {likeList.length > 0 && showLikeList && (
+            {likeList.length > 0 && is_open_recommend==1 && (
               <View className='faverite-list'>
                 <WgtGoodsFaverite info={likeList} />
                 {
