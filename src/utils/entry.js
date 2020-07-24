@@ -96,7 +96,7 @@ async function getLocal (isNeedLocate) {
       store = await api.shop.getShop(param)
     } else {
       const locationData = await getLoc()
-      if (locationData !== '') {
+      if (locationData !== null && locationData !== '') {
         let param = {}
         if (isNeedLocate && positionStatus) {
           param.lat = locationData.latitude
