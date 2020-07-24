@@ -55,29 +55,29 @@ export default class HomeIndex extends Component {
   }
 
   async componentDidMount () {
-   const options = this.$router.params
-   const res = await entry.entryLaunch(options, true)
-   // if(S.getAuthToken()){
-   //   const promoterInfo = await api.distribution.info()
-   //     this.setState({
-   //     isShop:promoterInfo
-   //   })
-   // }
-   const { store } = res
-   if (!isArray(store)) {
-      this.setState({
-        curStore: store
-      }, () => {
-        this.fetchData()
-      })
-    }
+    const options = this.$router.params
+    const res = await entry.entryLaunch(options, true)
+    // if(S.getAuthToken()){
+    //   const promoterInfo = await api.distribution.info()
+    //     this.setState({
+    //     isShop:promoterInfo
+    //   })
+    // }
+    const { store } = res
+    if (!isArray(store)) {
+        this.setState({
+          curStore: store
+        }, () => {
+          this.fetchData()
+        })
+      }
 
-    this.fetchSetInfo()
+      this.fetchSetInfo()
 
-    api.wx.shareSetting({shareindex: 'index'}).then(res => {
-      this.setState({
-        shareInfo: res
-      })
+      api.wx.shareSetting({shareindex: 'index'}).then(res => {
+        this.setState({
+          shareInfo: res
+        })
     })
   }
 
