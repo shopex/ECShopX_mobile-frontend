@@ -19,14 +19,18 @@ export default class TabBar extends Component {
       localCurrent: 0,
       backgroundColor: '',
       color: '',
-      selectedColor: '',
+      selectedColor: '#1f82e0',
       tabList: []
     }
   }
 
   
   componentDidMount () {
-		const { tabBar } = this.props
+    this.initData()
+  }
+
+  initData () {
+    const { tabBar } = this.props
     let list = []
 
     if (tabBar) {
@@ -62,7 +66,7 @@ export default class TabBar extends Component {
     }
 
     this.setState({
-      tabList: list
+      tabList: list,
     }, () => {
       this.updateCurTab()
     })
@@ -90,12 +94,21 @@ export default class TabBar extends Component {
     return this.props.cartCount
   }
 
+  get tabBar () {
+    let initTabBar = Taro.getStorageSync('initTabBar')
+    if (this.props.tabBar && initTabBar == true) {
+      console.log('[init tabbar]')
+      Taro.setStorageSync('initTabBar', false)
+      this.initData()
+    }
+  }
+
   updateCurTab () {
     this.fetchCart()
     const { tabList, localCurrent } = this.state
     const fullPath = ((getCurrentRoute(this.$router).fullPath).split('?'))[0]
     const { url } = tabList[localCurrent]
-    if (url && url !== fullPath) {
+    if (tabList.length>0 && url && url !== fullPath) {
       const nCurrent = tabList.findIndex((t) => t.url === fullPath) || 0
       this.setState({
         localCurrent: nCurrent

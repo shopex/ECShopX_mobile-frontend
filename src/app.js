@@ -264,6 +264,7 @@ class App extends Component {
   }
 
   async fetchTabs () {
+    Taro.setStorageSync('initTabBar', false)
     // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
     const defaultTabs = {
       config: {
@@ -302,6 +303,7 @@ class App extends Component {
       type: 'tabBar',
       payload: info && info.tabBar ? info.tabBar : defaultTabs
     })
+    Taro.setStorageSync('initTabBar', true)
     // store.dispatch({
     //   type: 'tabBar',
     //   payload: info.list.length ? info.list[0].params : defaultTabs
