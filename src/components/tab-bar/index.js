@@ -23,8 +23,12 @@ export default class TabBar extends Component {
       tabList: []
     }
   }
-
+  
   componentDidMount () {
+    this.initTabbarData()
+  }
+
+  initTabbarData () {
     const { tabBar } = this.props
     let list = []
 
@@ -87,6 +91,14 @@ export default class TabBar extends Component {
   get cartCount () {
     // console.log('computed')
     return this.props.cartCount
+  }
+
+  get tabBar () {
+    let initTabBar = Taro.getStorageSync('initTabBar')
+    if (this.props.tabBar && initTabBar == true) {
+      Taro.setStorageSync('initTabBar', false)
+      this.initTabbarData()
+    }
   }
 
   updateCurTab () {
