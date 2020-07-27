@@ -55,38 +55,34 @@ export default class HomeIndex extends Component {
   }
 
   async componentDidMount () {
-    const options = this.$router.params
-    const res = await entry.entryLaunch(options, true)
-    // if(S.getAuthToken()){
-    //   const promoterInfo = await api.distribution.info()
-    //     this.setState({
-    //     isShop:promoterInfo
-    //   })
-    // }
-    const { store } = res
-    if (!isArray(store)) {
+    this.fetchSetInfo()
+
+    api.wx.shareSetting({shareindex: 'index'}).then(res => {
+      this.setState({
+        shareInfo: res
+      })
+    })
+  }
+
+  async fetchSetInfo () {
+    const setUrl = '/pagestemplate/setInfo'
+    const {is_open_recommend, is_open_scan_qrcode, is_open_wechatapp_location} = await req.get(setUrl)
+    this.setState({
+      is_open_recommend: is_open_recommend,
+      is_open_scan_qrcode: is_open_scan_qrcode,
+      is_open_wechatapp_location: is_open_wechatapp_location
+    }, async() => {
+      let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
+      const options = this.$router.params
+      const res = await entry.entryLaunch(options, isNeedLoacate)
+      const { store } = res
+      if (!isArray(store)) {
         this.setState({
           curStore: store
         }, () => {
           this.fetchData()
         })
       }
-
-      this.fetchSetInfo()
-
-      api.wx.shareSetting({shareindex: 'index'}).then(res => {
-        this.setState({
-          shareInfo: res
-        })
-    })
-  }
-
-  async fetchSetInfo () {
-    const setUrl = '/pagestemplate/setInfo'
-    const {is_open_recommend, is_open_scan_qrcode} = await req.get(setUrl)
-    this.setState({
-      is_open_recommend: is_open_recommend,
-      is_open_scan_qrcode: is_open_scan_qrcode
     })
   }
 
