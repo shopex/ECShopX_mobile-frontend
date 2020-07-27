@@ -47,18 +47,22 @@ export default class recommendDetail extends Component {
 
   onShareAppMessage () {
     const { info } = this.state
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `&uid=${userId}` : ''
     return {
       title: info.title,
-      path: `/pages/recommend/detail?id=${info.article_id}`,
+      path: `/pages/recommend/detail?id=${info.article_id}${query}`,
       imageUrl: info.share_image_url || info.image_url
     }
   }
 
   onShareTimeline () {
     const { info } = this.state
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `&uid=${userId}` : ''
     return {
       title: info.title,
-      query: `id=${info.article_id}`,
+      query: `id=${info.article_id}${query}`,
       imageUrl: info.share_image_url || info.image_url
     }
   }   

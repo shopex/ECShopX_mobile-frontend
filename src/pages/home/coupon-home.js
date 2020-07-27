@@ -36,17 +36,23 @@ export default class CouponHome extends Component {
 
   onShareAppMessage () {
     const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `?uid=${userId}` : ''         
     return {
       title: res.title,
-      imageUrl: res.imageUrl
+      imageUrl: res.imageUrl,
+      path: `/pages/home/coupon-home${query}`
     }
   }
 
   onShareTimeline () {
     const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `uid=${userId}` : ''         
     return {
       title: res.title,
-      imageUrl: res.imageUrl
+      imageUrl: res.imageUrl,
+      query: query
     }
   }     
 
