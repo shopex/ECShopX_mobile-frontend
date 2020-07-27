@@ -264,7 +264,6 @@ class App extends Component {
   }
 
   async fetchTabs () {
-    Taro.setStorageSync('initTabBar', false)
     // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
     const defaultTabs = {
       config: {
@@ -291,19 +290,12 @@ class App extends Component {
       }],
       name: "tabs"
     }
-    const options = this.$router.params
-    const res = await entry.entryLaunch(options, true)
-    let defultStore = res.store
-    let info = {}
-    if (defultStore.distributor_id) {
-      const url = '/pagestemplate/detail?weapp_pages=index&distributor_id=' + defultStore.distributor_id
-      info = await req.get(url)
-    }
+    const setUrl = '/pagestemplate/setInfo'
+    const { tab_bar } = await req.get(setUrl)
     store.dispatch({
       type: 'tabBar',
-      payload: info && info.tabBar ? info.tabBar : defaultTabs
+      payload: tab_bar ? JSON.parse(tab_bar) : defaultTabs
     })
-    Taro.setStorageSync('initTabBar', true)
     // store.dispatch({
     //   type: 'tabBar',
     //   payload: info.list.length ? info.list[0].params : defaultTabs
