@@ -276,28 +276,30 @@ export default class HomeIndex extends Component {
     }
 
     // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
-    const url = '/pagestemplate/detail?weapp_pages=index&distributor_id='+curStore.distributor_id
+    const url = '/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id='+curStore.distributor_id
     const info = await req.get(url)
     this.setState({
-      wgts: isArray(info) ? [] : info.content
+      wgts: isArray(info) ? [] : info.config
     },()=>{
       if (cb) {
         cb(info)
       }
       Taro.stopPullDownRefresh()
-      if(!isArray(info) && info.content) {
-        const show_likelist = info.content.find(item => item.name == 'setting' && item.config.faverite)
-        const searchWgt = info.content.find(item => item.name == 'search')
+      if(!isArray(info) && info.config) {
+        const searchWgt = info.config.find(item => item.name == 'search')
         this.setState({
           positionStatus: searchWgt && searchWgt.config && searchWgt.config.fixTop
         })
-        this.props.onUpdateLikeList(show_likelist ? true : false)
-        if (show_likelist) {
+        // const show_likelist = info.config.find(item => item.name == 'setting' && item.config.faverite)
+        if (this.state.is_open_recommend == 1) {
+          this.props.onUpdateLikeList(true)
           this.resetPage()
           this.setState({
             likeList: []
           })
           this.nextPage()
+        } else {
+          this.props.onUpdateLikeList(false)
         }
       }
     })
