@@ -52,17 +52,23 @@ export default class HomeIndex extends Component {
 
   async onShareAppMessage () {
     const { shareInfo } = this.state
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `?uid=${userId}` : ''     
     return {
       title: shareInfo.page_share_title,
-      imageUrl: shareInfo.page_share_imageUrl
+      imageUrl: shareInfo.page_share_imageUrl,
+      path: `/pages/custom/custom-page${query}`
     }
   }
 
   onShareTimeline () {
     const { shareInfo } = this.state
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `uid=${userId}` : ''     
     return {
       title: shareInfo.page_share_title,
-      imageUrl: shareInfo.page_share_imageUrl
+      imageUrl: shareInfo.page_share_imageUrl,
+      query: query
     }
   }   
     

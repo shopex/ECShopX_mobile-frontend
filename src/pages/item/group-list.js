@@ -95,17 +95,23 @@ export default class GroupList extends Component {
 
   onShareAppMessage () {
     const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `?uid=${userId}` : ''      
     return {
       title: res.title,
-      imageUrl: res.imageUrl
+      imageUrl: res.imageUrl,
+      path: `/pages/item/group-list${query}`
     }
   }
 
   onShareTimeline () {
     const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `uid=${userId}` : ''      
     return {
       title: res.title,
-      imageUrl: res.imageUrl
+      imageUrl: res.imageUrl,
+      query: query
     }
   }   
 
