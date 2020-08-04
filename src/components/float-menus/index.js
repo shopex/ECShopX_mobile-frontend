@@ -18,7 +18,7 @@ export default class BackToTop extends Component {
     return (
       <View
         className='float-menus'
-        style={`${bottom ? { bottom: `${Taro.pxTransform(bottom)}` } : null}`}
+        style={`${bottom ? `bottom: ${Taro.pxTransform(bottom)}` : ''}`}
       >
         {this.props.children}
       </View>

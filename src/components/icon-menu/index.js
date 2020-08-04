@@ -44,7 +44,7 @@ export default class IconMenu extends Component {
       >
         <View className='sp-iconmenu__icon'>
           {img && (<Image mode='aspectFill' className='sp-iconmenu__img' src={img} />)}
-          {icon && (<AtIcon value={icon} prefixClass={iconPrefixClass} style={`${iconStyle}`} size={size} />)}
+          {icon && (<AtIcon value={icon} prefixClass={iconPrefixClass} style={iconStyle} size={size} />)}
         </View>
         <Text className='sp-iconmenu__title'>{title}</Text>
       </Button>
