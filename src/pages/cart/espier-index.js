@@ -376,7 +376,7 @@ export default class CartIndex extends Component {
       is_checked: 'is_checked',
       store: 'store',
       curSymbol: 'cur.symbol',
-      distributor_id: 'distributor_id',
+      distributor_id: 'shop_id',
       promotions: ({ promotions = [], cart_id }) => promotions.map(p => {
         p.cart_id = cart_id
         return p
