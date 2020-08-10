@@ -1,9 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import {View, ScrollView, Image, Text} from '@tarojs/components'
+import {View, ScrollView, Image, Text, Button} from '@tarojs/components'
 import { Loading, SpNote} from '@/components'
 import { classNames, pickBy,getCurrentRoute } from '@/utils'
 import {AtTabBar} from "taro-ui"
-// import S from '@/spx'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
 
@@ -29,11 +28,17 @@ export default class DistributionShopCategory extends Component {
       isChanged: false,
       localCurrent:1,
       defaultId:0,
-      shop_pic:''
+      shop_pic:'',
+      // 上下架商品
+      goodIds: []
     }
   }
 
   componentDidMount () {
+    Taro.hideShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })    
     const { status } = this.$router.params
     const { tabList } = this.state
     tabList[0].url += `?status=${status}`
@@ -108,9 +113,17 @@ export default class DistributionShopCategory extends Component {
         //promoter_price: ({ promoter_price }) => (promoter_price/100).toFixed(2),
         market_price: ({ market_price }) => (market_price/100).toFixed(2)
       })
+      const { userId } = Taro.getStorageSync('userinfo')
+      const ids = nItem.map(item => item.goods_id)
+      const param = {
+        goods_id: ids,
+        user_id: userId
+      }
+      const { goods_id } = await api.distribution.items(param)
       this.setState({
         contentList:[...this.state.contentList,...nItem],
-        query
+        query,
+        goodIds: goods_id
       })
       //Taro.stopPullDownRefresh()
       return {
@@ -128,6 +141,17 @@ export default class DistributionShopCategory extends Component {
 //   })
 //  // console.warn(categoryId)
 // }
+onShareAppMessage (res) {
+  const { userId } = Taro.getStorageSync('userinfo')
+  const { info } = res.target.dataset
+  console.log(info)
+  return {
+    title: info.title,
+    imageUrl: info.img,
+    path: `/pages/item/espier-detail?id=${info.item_id}&uid=${userId}`
+  }
+}
+
 handleClickCategoryNav = (idx,value) => {
   console.warn(idx)
   if (this.state.page.isLoading) return
@@ -161,21 +185,44 @@ handleClickCategoryNav = (idx,value) => {
       }
     }
   }
-  handleClickItem = (item) => {
-    console.warn(item)
-    const { goods_id} = item
-    let url = ''
-    if (goods_id) {
-      url = `/pages/item/espier-detail?id=${goods_id || ''}`
-    }
-    if (url) {
-      Taro.navigateTo({
-        url
-      })
+
+  // 上下架
+  handleClickItem = async (id) => {
+    const { goodIds } = this.state
+    const goodsId = {goods_id: id}
+    const idx = goodIds.findIndex(item => id === item)
+    const isRelease = idx !== -1
+    if (!isRelease) {
+      const { status } = await api.distribution.release(goodsId)
+      if ( status ) {
+        this.setState({
+          goodIds: [...this.state.goodIds, id]
+        }, () => {
+          Taro.showToast({
+            icon: 'none',
+            title: '上架成功'
+          })
+        })
+      }
+    } else {
+      const { status } = await api.distribution.unreleased(goodsId)
+      if ( status ) {
+        goodIds.splice(idx, 1)
+        this.setState({
+          goodIds
+        }, () => {
+          Taro.showToast({
+            icon: 'none',
+            title: '下架成功'
+          })
+        })
+      }
     }
   }
+
   render () {
-    const { list, hasSeries, tabList, localCurrent, contentList, shop_pic, currentIndex, page, scrollTop } = this.state
+    const { status } = this.$router.params
+    const { list, hasSeries, tabList, localCurrent, contentList, shop_pic, currentIndex, page, scrollTop, goodIds } = this.state
     return (
       <View className='page-category-index'>
         <View className='category-banner'>
@@ -225,6 +272,7 @@ handleClickCategoryNav = (idx,value) => {
             <View className='grid-goods'>
             {
               contentList.length && contentList.map(item =>{
+                const isRelease = goodIds.findIndex(n => item.goods_id == n) !== -1
                 return (
                   <View key={item.goods_id} className='goodItem'>
                     <Image className='itemImg'
@@ -234,7 +282,31 @@ handleClickCategoryNav = (idx,value) => {
                     <View className='itemTitle'>
                       { item.title }
                     </View>
-                    <View className='itemPrice'><Text className='cur'>¥</Text>{item.price}</View>                
+                    <View className='itemPrice'><Text className='cur'>¥</Text>{item.price}</View>    
+                    <View className='itemextra'>
+                      <View className='itemStatus'>
+                        {
+                          status === 'true' &&
+                            <View className={classNames('goods-item__release-btn', isRelease ? 'released' : null)} onClick={this.handleClickItem.bind(this, item.item_id)}>
+                              {
+                                isRelease
+                                  ? <Text>从小店下架</Text>
+                                  : <Text>上架到小店</Text>
+                              }
+                            </View>
+                        }
+                      </View>
+                      <View className='itemActions'>
+                        <Button
+                          className='itemShareBtn'
+                          dataInfo={item}
+                          openType='share'
+                          size='small'
+                        >
+                          <Text class='iconfont icon-share2'></Text>
+                        </Button>
+                      </View>
+                  </View>                                
                   </View>
                 )
               })
