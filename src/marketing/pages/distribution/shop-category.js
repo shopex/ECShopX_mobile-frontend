@@ -3,6 +3,7 @@ import {View, ScrollView, Image, Text} from '@tarojs/components'
 import { Loading,GoodsItem,SpNote} from '@/components'
 import { classNames, pickBy,getCurrentRoute } from '@/utils'
 import {AtTabBar} from "taro-ui"
+import S from '@/spx'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
 
@@ -170,7 +171,7 @@ handleClickCategoryNav = (idx,value) => {
     }
   }
   render () {
-    const { list, isChanged,tabList,localCurrent, contentList ,defaultId ,shop_pic ,currentIndex, page, scrollTop } = this.state
+    const { list, hasSeries, tabList, localCurrent, contentList, shop_pic, currentIndex, page, scrollTop } = this.state
     return (
       <View className='page-category-index'>
         <View className='category-banner'>
@@ -222,10 +223,10 @@ handleClickCategoryNav = (idx,value) => {
               contentList.length && contentList.map(item =>{
                 return (
                   <GoodsItem
-                  key={item.item_id}
-                  info={item}
-                  onClick={() => this.handleClickItem(item)}
-                />
+                    key={item.item_id}
+                    info={item}
+                    onClick={() => this.handleClickItem(item)}
+                  />
                 )
               })
             }

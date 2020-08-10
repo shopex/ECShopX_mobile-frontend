@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, Text, ScrollView, Picker } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { withPager, withBackToTop } from '@/hocs'
+// import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
 import { isArray } from '@/utils'
 
@@ -63,7 +63,7 @@ export default class ActivityDetail extends Component {
       <View className='activity-detail'>
         <View className='activity-detail__list'>
           {
-            cur_activity_info.map((item, index) => {
+            cur_activity_info && cur_activity_info.map((item, index) => {
               return (
                 <View key={`${index}1`} className='activity-detail__item'>
                   <Text className='activity-detail__item_title'>{item.field_title}</Text>
