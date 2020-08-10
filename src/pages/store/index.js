@@ -81,7 +81,8 @@ export default class StoreIndex extends Component {
     // const res = await entry.entryLaunch(options, true)
 
     //const { distributor_id } = await Taro.getStorageSync('curStore')
-    const url = `/pageparams/setting?template_name=yykweishop&version=shop_${id}&page_name=shop_home`
+
+    const url = `pagestemplate/shopDetail?template_name=yykweishop&weapp_pages=index&distributor_id=${id}`
     const info = await req.get(url)
 
     if (!S.getAuthToken()) {
