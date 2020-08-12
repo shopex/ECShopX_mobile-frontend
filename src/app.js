@@ -214,6 +214,9 @@ class App extends Component {
           // 储值
           'pages/recharge/index',
           'pages/recharge/history',
+          // 店铺首页
+          'pages/store/list',
+          'pages/store/category'
         ]
       }
     ],
