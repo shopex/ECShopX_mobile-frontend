@@ -223,16 +223,16 @@ handleClickCategoryNav = (idx,value) => {
 
   render () {
     const { status } = this.$router.params
-    const { list, hasSeries, tabList, localCurrent, contentList, shop_pic, currentIndex, page, scrollTop, goodIds } = this.state
+    const { list, hasSeries, tabList, localCurrent, contentList, currentIndex, page, scrollTop, goodIds } = this.state
     return (
-      <View className='page-category-index'>
-        <View className='category-banner'>
+      <View className='page-category-index good-category'>
+        {/* <View className='category-banner'>
               <Image
                 className='banner-img'
                 src={shop_pic || null}
                 mode='aspectFill'
           />
-      </View>
+      </View> */}
         <View className={`${hasSeries && tabList.length !== 0 ? 'category-comps' : 'category-comps-not'}`}>
           {/* <SeriesItem
             isChanged={isChanged}
