@@ -7,7 +7,7 @@ import api from '@/api'
 import { pickBy,normalizeQuerys } from '@/utils'
 import { withBackToTop } from '@/hocs'
 import S from "@/spx";
-import { WgtSlider, WgtImgHotZone, WgtMarquees, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase } from '../home/wgts'
+import { WgtSlider, WgtImgHotZone, WgtMarquees, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtFilm } from '../home/wgts'
 
 import './index.scss'
 
@@ -208,6 +208,7 @@ export default class StoreIndex extends Component {
                 return (
                   <View className='wgt-wrap' key={`${item.name}${idx}`}>
                     {item.name === 'slider' && <WgtSlider info={item} />}
+                    {item.name === 'film' && <WgtFilm info={item} />}
                     {item.name === 'marquees' && <WgtMarquees info={item} />}
                     {item.name === 'navigation' && <WgtNavigation info={item} />}
                     {item.name === 'coupon' && <WgtCoupon info={item} dis_id={this.$router.params.id} />}
