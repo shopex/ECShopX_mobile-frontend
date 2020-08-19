@@ -69,8 +69,6 @@ export default class CouponPicker extends Component {
 
   handleCouponSelect (type = 'coupon', value) {
     if (value && !value.valid) return
-    console.log('value')
-    console.log(value)
 
     const payload = value
       ? { type, value }
@@ -86,7 +84,7 @@ export default class CouponPicker extends Component {
   render () {
     const { coupons } = this.state
     const { curCoupon } = this.props
-
+    console.log(curCoupon)
     if (!coupons) {
       return null
     }
@@ -116,7 +114,7 @@ export default class CouponPicker extends Component {
                 onClick={this.handleCouponSelect.bind(this, 'coupon', coupon)}
               >
                 <SpCheckbox
-                  checked={curCoupon && curCoupon.type === 'coupon' && curCoupon.value.code === coupon.code}
+                  checked={curCoupon && curCoupon.value && curCoupon.value.code === coupon.code}
                   disabled={!coupon.valid}
                 />
               </CouponItem>
