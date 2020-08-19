@@ -65,14 +65,14 @@ export default class HomeIndex extends Component {
         show_official:false
       })
     }
-    if(this.$router.params.scene){
-      const query = decodeURIComponent(this.$router.params.scene)
-      const queryStr = decodeURIComponent(query)
-      this.setState({
-        showCloseBtn:true
-      })
-     // const res = parseUrlStr(queryStr)
-  }
+  //   if(this.$router.params.scene){
+  //     const query = decodeURIComponent(this.$router.params.scene)
+  //     const queryStr = decodeURIComponent(query)
+  //     this.setState({
+  //       showCloseBtn:true
+  //     })
+  //    // const res = parseUrlStr(queryStr)
+  // }
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
       this.setState({
         shareInfo: res
@@ -435,9 +435,6 @@ export default class HomeIndex extends Component {
 		// const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
     return (
       <View className='page-index'>
-        {
-          showCloseBtn && (
-          <View>
           {
             is_open_official_account === 1 && show_official && (
               <AccountOfficial
@@ -449,10 +446,6 @@ export default class HomeIndex extends Component {
           </AccountOfficial>
             )
           }
-        </View>
-          )
-        }
-
         {
           APP_PLATFORM === 'standard' && curStore && 
             <HeaderHome
