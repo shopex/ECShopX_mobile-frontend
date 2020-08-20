@@ -26,7 +26,7 @@ export default class AccountOfficial extends Component {
     super(props)
 
     this.state = {
-      isShowAccount:true
+      isShowAccount:false
     }
   }
   componentDidMount(){
@@ -44,6 +44,9 @@ export default class AccountOfficial extends Component {
   handleClickLoad = (res) => {
     console.log('res',res)
     if(res && res.detail) {
+      this.setState({
+        isShowAccount:true
+      })
       let status_cur = res.detail.status
       this.props.onHandleError(status_cur)
     }
@@ -52,9 +55,6 @@ export default class AccountOfficial extends Component {
   handleClickError = (error) => {
     console.log('error',error)
     if(error && error.detail) {
-      this.setState({
-        isShowAccount:false
-      })
       let status_cur = error.detail.status
       this.props.onHandleError(status_cur)
     }
@@ -64,24 +64,20 @@ export default class AccountOfficial extends Component {
     const { isShowAccount } = this.state
     const { colors,isClose } = this.props
     return (
-     <View>
-       {isShowAccount && (
-               <View className='account-view'>
-               <OfficialAccount
-                 className='account-view__official'
-                 onLoad={(res) => this.handleClickLoad(res)}
-                 onError={(error) => this.handleClickError(error)}
-               />
-               
-               {
-                 isClose && (
-                   <View className='zoom-btn icon-close' onClick={this.handleClickClose.bind(this)}></View>
-       
-                 )
-               }
-             </View>
-       )}
-     </View>
+      <View className='account-view'>
+      <OfficialAccount
+        className='account-view__official'
+        onLoad={(res) => this.handleClickLoad(res)}
+        onError={(error) => this.handleClickError(error)}
+      />
+      
+      {
+        isShowAccount && isClose && (
+          <View className='zoom-btn icon-close' onClick={this.handleClickClose.bind(this)}></View>
+
+        )
+      }
+    </View>
 
     )
   }
