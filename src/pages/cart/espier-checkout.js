@@ -1098,7 +1098,6 @@ export default class CartCheckout extends Component {
     // }
     //const curStore = Taro.getStorageSync('curStore')
     // const { curStore } = this.state
-    console.log(curStore)
     const { type } = this.$router.params
     const isDrug = type === 'drug'
 
@@ -1113,8 +1112,8 @@ export default class CartCheckout extends Component {
         : ((coupon.value && coupon.value.title) || '')
     //const isBtnDisabled = !address
     const isBtnDisabled = express
-     ? !address
-     : false
+      ? !address
+      : false
 
     return (
       <View className='page-checkout'>

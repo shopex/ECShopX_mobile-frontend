@@ -30,7 +30,10 @@ class App extends Component {
     if (APP_PLATFORM === 'standard' && Taro.getEnv() === 'WEB') {
       new LBS()
     }
-
+    // 设置购物车默认类型
+    if (Taro.getStorageSync('cartType')) {
+      Taro.setStorageSync('cartType', 'normal')
+    }
     const promoterExp = Taro.getStorageSync('distribution_shop_exp')
     if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
       Taro.setStorageSync('distribution_shop_id', '')
