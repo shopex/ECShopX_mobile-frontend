@@ -188,6 +188,7 @@ export default class CartIndex extends Component {
 
   async fetchCart (cb) {
     let valid_cart = [], invalid_cart = []
+    const cartType = Taro.getStorageInfoSync('cartType')
     const { type = 'distributor' } = this.$router.params
     const params = {shop_type: type}
     try {
@@ -202,7 +203,8 @@ export default class CartIndex extends Component {
 
     const list = this.processCart({
       valid_cart,
-      invalid_cart
+      invalid_cart,
+      cartType
     })
     cb && cb(list)
   }
@@ -398,8 +400,25 @@ export default class CartIndex extends Component {
     Taro.navigateBack()
   }
 
+  // 切换购物车类型
+  onChangeCartType = () => {
+    let { cartType } = this.state
+    if(cartType === 'cross') {
+      cartType = 'normal'
+    } else {
+      cartType = 'cross'
+    }
+    Taro.setStorageSync('cartType', cartType)
+    this.setState({
+      cartType
+    }, () => {
+      // this.fetchCart()
+      console.log(111)
+    })
+  }
+
   render () {
-    const { groups, invalidList, cartMode, loading, curPromotions, likeList, page, isPathQrcode } = this.state
+    const { groups, invalidList, cartMode, loading, curPromotions, likeList, page, isPathQrcode, cartType } = this.state
     const { list, showLikeList, colors } = this.props
 
     if (loading) {
@@ -445,6 +464,7 @@ export default class CartIndex extends Component {
             //   </View>
             // )
           }
+          <View className='changeCross' onClick={this.onChangeCartType.bind(this)}>切换购物车类型-{cartType === 'cross' ? '普通' : '跨境'}</View>
           <View className='cart-list'>
             {
 
