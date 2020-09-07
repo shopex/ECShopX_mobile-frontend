@@ -5,8 +5,8 @@ import { name as _name, app_name, version } from '../package.json'
 dotenvFlow.config()
 
 const {
-  TARO_ENV = 'weapp',
-  NODE_ENV = 'development',
+  TARO_ENV = "weapp",
+  NODE_ENV = "development",
   APP_BASE_URL,
   APP_WEBSOCKET,
   APP_COMPANY_ID,
@@ -15,8 +15,9 @@ const {
   APP_HOME_PAGE,
   INTEGRATION_APP,
   APP_MAP_KEY,
-  APP_MAP_NAME
-} = process.env
+  APP_MAP_NAME,
+  APP_TRACK
+} = process.env;
 
 // 是否为web
 const isWeb = TARO_ENV === 'h5'
@@ -25,38 +26,44 @@ const isPro = NODE_ENV === 'production'
 const APP_AUTH_PAGE = !isWeb ? '/pages/auth/wxauth' : '/pages/auth/login' 
 const config = {
   projectName: _name,
-  date: '2019-7-31',
+  date: "2019-7-31",
   designWidth: 750,
   deviceRatio: {
-    '640': 2.34 / 2,
-    '750': 1,
-    '828': 1.81 / 2
+    "640": 2.34 / 2,
+    "750": 1,
+    "828": 1.81 / 2
   },
-  sourceRoot: 'src',
+  sourceRoot: "src",
   outputRoot: `dist/${TARO_ENV}`,
   babel: {
     sourceMap: true,
     presets: [
-      ['env', {
-        modules: false
-      }]
+      [
+        "env",
+        {
+          modules: false
+        }
+      ]
     ],
     plugins: [
-      'lodash',
-      'transform-decorators-legacy',
-      'transform-class-properties',
-      'transform-object-rest-spread',
-      ['transform-runtime', {
-        "helpers": false,
-        "polyfill": false,
-        "regenerator": true,
-        "moduleName": 'babel-runtime'
-      }]
+      "lodash",
+      "transform-decorators-legacy",
+      "transform-class-properties",
+      "transform-object-rest-spread",
+      [
+        "transform-runtime",
+        {
+          helpers: false,
+          polyfill: false,
+          regenerator: true,
+          moduleName: "babel-runtime"
+        }
+      ]
     ]
   },
   sass: {
-    resource: path.resolve(__dirname, '..', 'src/style/imports.scss'),
-    projectDirectory: path.resolve(__dirname, '..')
+    resource: path.resolve(__dirname, "..", "src/style/imports.scss"),
+    projectDirectory: path.resolve(__dirname, "..")
   },
   defineConstants: {
     APP_NAME: `'${app_name}'`,
@@ -71,24 +78,21 @@ const config = {
     APP_HOME_PAGE: isWeb ? `'${APP_HOME_PAGE}'` : APP_HOME_PAGE,
     APP_AUTH_PAGE: isWeb ? `'${APP_AUTH_PAGE}'` : APP_AUTH_PAGE,
     APP_MAP_KEY: `'${APP_MAP_KEY}'`,
-    APP_MAP_NAME: `'${APP_MAP_NAME}'`
+    APP_MAP_NAME: `'${APP_MAP_NAME}'`,
+    APP_TRACK: `${APP_TRACK}`
   },
   alias: {
-    '@': join(__dirname, '../src')
+    "@": join(__dirname, "../src")
   },
   copy: {
     patterns: [
-      { from: 'src/assets', to: `dist/${TARO_ENV}/assets` },
-      ...( !isWeb
-        ? [{ from: 'src/ext.json', to: `dist/${TARO_ENV}/ext.json` }]
-        : []
-      )
+      { from: "src/assets", to: `dist/${TARO_ENV}/assets` },
+      ...(!isWeb
+        ? [{ from: "src/ext.json", to: `dist/${TARO_ENV}/ext.json` }]
+        : [])
     ]
   },
-  plugins: [
-    '@tarojs/plugin-sass',
-    '@tarojs/plugin-uglify'
-  ],
+  plugins: ["@tarojs/plugin-sass", "@tarojs/plugin-uglify"],
   // 开启压缩
   uglify: {
     enable: true,
@@ -99,64 +103,63 @@ const config = {
         drop_debugger: true
       }
     }
-  },  
+  },
   mini: {
-    webpackChain (chain, webpack) {
+    webpackChain(chain, webpack) {
       chain.merge({
         optimization: {
           splitChunks: {
             cacheGroups: {
               lodash: {
-                name: 'lodash',
+                name: "lodash",
                 priority: 1000,
-                test (module) {
-                  return /node_modules[\\/]lodash/.test(module.context)
+                test(module) {
+                  return /node_modules[\\/]lodash/.test(module.context);
                 }
               },
               moment: {
-                name: 'date-fns',
+                name: "date-fns",
                 priority: 1000,
-                test (module) {
-                  return /node_modules[\\/]date-fns/.test(module.context)
+                test(module) {
+                  return /node_modules[\\/]date-fns/.test(module.context);
                 }
-              }           
+              }
             }
           }
         }
-      })
+      });
       if (isPro) {
-        chain.plugin('analyzer')
-          .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
+        chain
+          .plugin("analyzer")
+          .use(require("webpack-bundle-analyzer").BundleAnalyzerPlugin, []);
       }
-      chain.plugin('IgnorePlugin')
-        .use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/])
-      chain.plugin('LodashModuleReplacementPlugin')
-        .use(require('lodash-webpack-plugin'), [{
-          'coercions': true,
-          'paths': true
-        }])
+      chain
+        .plugin("IgnorePlugin")
+        .use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/]);
+      chain
+        .plugin("LodashModuleReplacementPlugin")
+        .use(require("lodash-webpack-plugin"), [
+          {
+            coercions: true,
+            paths: true
+          }
+        ]);
     },
-    commonChunks (commonChunks) {
-      commonChunks.push('lodash')
-      commonChunks.push('date-fns')
-      return commonChunks
+    commonChunks(commonChunks) {
+      commonChunks.push("lodash");
+      commonChunks.push("date-fns");
+      return commonChunks;
     },
     postcss: {
       autoprefixer: {
         enable: true,
         config: {
-          browsers: [
-            'last 3 versions',
-            'Android >= 4.1',
-            'ios >= 8'
-          ]
+          browsers: ["last 3 versions", "Android >= 4.1", "ios >= 8"]
         }
       },
       pxtransform: {
         enable: true,
-        config: {
-
-        }
+        config: {}
       },
       url: {
         enable: true,
@@ -167,76 +170,77 @@ const config = {
       cssModules: {
         enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
         config: {
-          namingPattern: 'module', // 转换模式，取值为 global/module
-          generateScopedName: '[name]__[local]___[hash:base64:5]'
+          namingPattern: "module", // 转换模式，取值为 global/module
+          generateScopedName: "[name]__[local]___[hash:base64:5]"
         }
       }
     }
   },
   h5: {
-    publicPath: '/',
-    staticDirectory: 'static',
+    publicPath: "/",
+    staticDirectory: "static",
     router: {
-      mode: 'browser',
+      mode: "browser"
     },
     postcss: {
       autoprefixer: {
         enable: true,
         config: {
-          browsers: [
-            'last 3 versions',
-            'Android >= 4.1',
-            'ios >= 8'
-          ]
+          browsers: ["last 3 versions", "Android >= 4.1", "ios >= 8"]
         }
       }
     },
-    esnextModules: ['taro-ui'],
-    webpackChain (chain, webpack) {
+    esnextModules: ["taro-ui"],
+    webpackChain(chain, webpack) {
       chain.merge({
         resolve: {
           alias: {
-            'react$': 'nervjs',
-            'react-dom$': 'nervjs'
+            react$: "nervjs",
+            "react-dom$": "nervjs"
           }
         }
-      })
+      });
       chain.merge({
         optimization: {
           splitChunks: {
             cacheGroups: {
               lodash: {
-                name: 'lodash',
+                name: "lodash",
                 priority: 1000,
-                test (module) {
-                  return /node_modules[\\/]lodash/.test(module.context)
+                test(module) {
+                  return /node_modules[\\/]lodash/.test(module.context);
                 }
               },
               moment: {
-                name: 'date-fns',
+                name: "date-fns",
                 priority: 1000,
-                test (module) {
-                  return /node_modules[\\/]date-fns/.test(module.context)
+                test(module) {
+                  return /node_modules[\\/]date-fns/.test(module.context);
                 }
-              }           
+              }
             }
           }
         }
-      })
+      });
       if (!isPro) {
-        chain.plugin('analyzer')
-          .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
+        chain
+          .plugin("analyzer")
+          .use(require("webpack-bundle-analyzer").BundleAnalyzerPlugin, []);
       }
-      chain.plugin('IgnorePlugin')
-        .use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/])
-      chain.plugin('LodashModuleReplacementPlugin')
-        .use(require('lodash-webpack-plugin'), [{
-          'coercions': true,
-          'paths': true
-        }])      
+      chain
+        .plugin("IgnorePlugin")
+        .use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/]);
+      chain
+        .plugin("LodashModuleReplacementPlugin")
+        .use(require("lodash-webpack-plugin"), [
+          {
+            coercions: true,
+            paths: true
+          }
+        ]);
     }
   }
-}
+};
 
 module.exports =  function (merge) {
   if (!isPro) {

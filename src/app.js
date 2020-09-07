@@ -21,11 +21,10 @@ import './app.scss'
 
 const { store } = configStore()
 useHooks()
-
-if (process.env.APP_TRACK) {
+if (APP_TRACK) {
   const system = Taro.getSystemInfoSync();
   if (!(system && system.environment && system.environment === "wxwork")) {
-    Tracker.use(process.env.APP_TRACK);
+    Tracker.use(APP_TRACK);
   }
 }
 
