@@ -966,12 +966,12 @@ export default class Detail extends Component {
             }
             {/* 跨境商品 */}
             {
-              info.origincountry_name &&
+              info.type == '1' &&
                 <View className='nationalInfo'>
                   <View className='nationalInfoLeft'>
                     <Image src={info.origincountry_img_url}  className='nationalImg' />
                     <Text>{ info.origincountry_name }</Text>
-                    <Image src='https://bkimg.cdn.bcebos.com/pic/8718367adab44aed30126fffbe1c8701a18bfb49' className='nationalImg last' />
+                    <View className='iconfont icon-globe'></View>
                     <Text>跨境</Text>
                   </View>
                   <View>预计税费：¥10</View>

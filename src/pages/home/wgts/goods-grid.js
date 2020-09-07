@@ -105,7 +105,7 @@ export default class WgtGoodsGrid extends Component {
                           />
                         )}
                         {
-                          item.origincountry_name && <View className='nationalInfo'>
+                          item.type === '1' && <View className='nationalInfo'>
                               <Image className='nationalFlag' src={item.origincountry_img_url} mode='aspectFill' lazyLoad />
                               <Text className='nationalTitle'>
                                 { item.origincountry_name }
