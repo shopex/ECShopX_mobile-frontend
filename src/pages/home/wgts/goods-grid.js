@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components'
 import { QnImg } from '@/components'
 import { classNames } from '@/utils'
 import { linkPage } from './helper'
+import { Tracker } from "@/service";
 import './goods-grid.scss'
 
 export default class WgtGoodsGrid extends Component {
@@ -10,11 +11,17 @@ export default class WgtGoodsGrid extends Component {
     addGlobalClass: true
   }
 
-  navigateTo (url) {
+  navigateTo(url) {
     Taro.navigateTo({ url })
+    if (item) {
+      // 商品卡触发
+      Tracker.dispatch("TRIGGER_SKU_COMPONENT", item);
+    }
   }
 
   handleClickItem = (item) => {
+    // 商品卡触发
+    Tracker.dispatch("TRIGGER_SKU_COMPONENT", item);
     const url = `/pages/item/espier-detail?id=${item.item_id}`
     Taro.navigateTo({
       url
@@ -30,7 +37,7 @@ export default class WgtGoodsGrid extends Component {
     }
   }
 
-  render () {
+  render() {
     const { info, dis_id = '' } = this.props
     console.log(dis_id)
     if (!info) {
@@ -76,13 +83,13 @@ export default class WgtGoodsGrid extends Component {
           <View className='grid-goods out-padding grid-goods__type-grid'>
             {
               data.map((item, idx) => {
-                const price = ((item.act_price ? item.act_price : item.member_price ? item.member_price : item.price)/100).toFixed(2)
+                const price = ((item.act_price ? item.act_price : item.member_price ? item.member_price : item.price) / 100).toFixed(2)
                 //const marketPrice = ((item.act_price ? item.price : item.member_price ? item.price : item.market_price)/100).toFixed(2)
-                const marketPrice = ((item.market_price)/100).toFixed(2)
+                const marketPrice = ((item.market_price) / 100).toFixed(2)
                 return (
                   <View
                     key={`${idx}1`}
-                    className={classNames('grid-item',{'grid-item-three': config.style=='grids'})}
+                    className={classNames('grid-item', { 'grid-item-three': config.style == 'grids' })}
                     onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}`)}
                   >
                     <View className='goods-wrap'>
@@ -109,12 +116,12 @@ export default class WgtGoodsGrid extends Component {
                         {
                           config.showPrice
                           && <View className='goods-price'>
-                              <Text className='cur'>¥</Text>{price}
-                              {
-                                marketPrice != 0 &&
-                                <Text className='market-price'>{marketPrice}</Text>
-                              }
-                            </View>
+                            <Text className='cur'>¥</Text>{price}
+                            {
+                              marketPrice != 0 &&
+                              <Text className='market-price'>{marketPrice}</Text>
+                            }
+                          </View>
                         }
                       </View>
                     </View>

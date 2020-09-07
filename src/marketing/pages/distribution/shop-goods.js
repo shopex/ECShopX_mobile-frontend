@@ -6,13 +6,13 @@ import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import { classNames, pickBy } from '@/utils'
 import DistributionGoodsItem from './comps/goods-item'
-
+import { Tracker } from "@/service";
 import './shop-goods.scss'
 
 @withPager
 @withBackToTop
 export default class DistributionShopGoods extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -23,11 +23,11 @@ export default class DistributionShopGoods extends Component {
       curIdx: ''
     }
   }
-  
-  componentDidMount () {
+
+  componentDidMount() {
     Taro.hideShareMenu({
       menus: ['shareAppMessage', 'shareTimeline']
-    })     
+    })
     this.setState({
       query: {
         item_type: 'normal',
@@ -39,7 +39,7 @@ export default class DistributionShopGoods extends Component {
     })
   }
 
-  async fetch (params) {
+  async fetch(params) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { page_no: page, page_size: pageSize } = params
     const { selectParams } = this.state
@@ -49,7 +49,7 @@ export default class DistributionShopGoods extends Component {
       pageSize
     }
 
-    const { list, total_count: total} = await api.item.search(query)
+    const { list, total_count: total } = await api.item.search(query)
 
     const nList = pickBy(list, {
       img: 'pics[0]',
@@ -58,8 +58,8 @@ export default class DistributionShopGoods extends Component {
       title: 'itemName',
       desc: 'brief',
       rebate_type: 'rebate_type',
-      price: ({ price }) => (price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2),
+      price: ({ price }) => (price / 100).toFixed(2),
+      market_price: ({ market_price }) => (market_price / 100).toFixed(2),
       cost_price: 'cost_price',
       details: null,
       view_detail: false,
@@ -103,8 +103,8 @@ export default class DistributionShopGoods extends Component {
       const res = await api.item.search(query)
       const details = pickBy(res.list, {
         item_spec: 'item_spec',
-        rebate_task_type: ({rebate_conf}) => rebate_conf.rebate_task_type,
-        task: ({rebate_conf}) => rebate_conf.rebate_task
+        rebate_task_type: ({ rebate_conf }) => rebate_conf.rebate_task_type,
+        task: ({ rebate_conf }) => rebate_conf.rebate_task
       })
       console.log(details)
       list[idx].details = details
@@ -117,12 +117,12 @@ export default class DistributionShopGoods extends Component {
 
   handleItemRelease = async (id) => {
     const { goodsIds } = this.state
-    const goodsId = {goods_id: id}
+    const goodsId = { goods_id: id }
     const idx = goodsIds.findIndex(item => id === item)
     const isRelease = idx !== -1
     if (!isRelease) {
       const { status } = await api.distribution.release(goodsId)
-      if ( status ) {
+      if (status) {
         this.setState({
           goodsIds: [...this.state.goodsIds, id]
         }, () => {
@@ -131,7 +131,7 @@ export default class DistributionShopGoods extends Component {
       }
     } else {
       const { status } = await api.distribution.unreleased(goodsId)
-      if ( status ) {
+      if (status) {
         goodsIds.splice(idx, 1)
         this.setState({
           goodsIds
@@ -142,10 +142,13 @@ export default class DistributionShopGoods extends Component {
     }
   }
 
-  onShareAppMessage (res) {
+  onShareAppMessage(res) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { info } = res.target.dataset
-
+    Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
+      ...info,
+      shareType: "分享给好友"
+    });
     return {
       title: info.title,
       imageUrl: info.img,
@@ -167,7 +170,7 @@ export default class DistributionShopGoods extends Component {
   //   }
   // }
 
-  render () {
+  render() {
     const { list, goodsIds, page, scrollTop } = this.state
 
     return (
@@ -181,27 +184,27 @@ export default class DistributionShopGoods extends Component {
           onScrollToLower={this.nextPage}
         >
           <View className='goods-list'>
-          {
-            list.map((item) => {
-              const isRelease = goodsIds.findIndex(n => item.goods_id == n) !== -1
-              console.log(isRelease)
-              return (
-                <DistributionGoodsItem
-                  key={item.goods_id}
-                  info={item}
-                  isRelease={isRelease}
-                  onClick={() => this.handleClickItem(item.goods_id)}
-                />
-              )
-            })
-          }
+            {
+              list.map((item) => {
+                const isRelease = goodsIds.findIndex(n => item.goods_id == n) !== -1
+                console.log(isRelease)
+                return (
+                  <DistributionGoodsItem
+                    key={item.goods_id}
+                    info={item}
+                    isRelease={isRelease}
+                    onClick={() => this.handleClickItem(item.goods_id)}
+                  />
+                )
+              })
+            }
             {
               list.map((item, index) => {
                 const isRelease = goodsIds.findIndex(n => item.goods_id == n) !== -1
                 return (
                   <View
                     className='shop-goods-item'
-                    >
+                  >
                     <View className='shop-goods'>
                       <Image className='shop-goods__thumbnail' src={item.img} mode='aspectFill' />
                       <View className='shop-goods__caption'>
@@ -212,64 +215,64 @@ export default class DistributionShopGoods extends Component {
                         </View>
                         <View className='shop-goods__task'>
                           <View className='shop-goods__task-label'>任务模式</View>
-                          { item.rebate_type === 'total_num' && <View className='shop-goods__task-type'>按售出总量</View> }
-                          { item.rebate_type === 'total_money' && <View className='shop-goods__task-type'>按总销售金额</View> }
+                          {item.rebate_type === 'total_num' && <View className='shop-goods__task-type'>按售出总量</View>}
+                          {item.rebate_type === 'total_money' && <View className='shop-goods__task-type'>按总销售金额</View>}
                         </View>
                       </View>
                       {
                         !item.view_detail
                           ? <View
-                              className='shop-goods__detail'
-                              onClick={this.handleViewDetail.bind(this, index, item.item_id)}
-                              >
-                              <Text className='icon-search'></Text> 查看指标明细
+                            className='shop-goods__detail'
+                            onClick={this.handleViewDetail.bind(this, index, item.item_id)}
+                          >
+                            <Text className='icon-search'></Text> 查看指标明细
                             </View>
                           : <View
-                              className='shop-goods__detail'
-                              >
-                              <View className='content-bottom-padded view-flex'>
-                                <View className='view-flex-item2'>规格</View>
-                                <View className='view-flex-item'>指标</View>
-                                <View className='view-flex-item'>奖金</View>
-                              </View>
-                              {
-                                item.details && item.details.map(detail =>
-                                  <View class="shop-goods__detail-item">
-                                    <View className='shop-goods__detail-skus view-flex-item2'>
-                                      {
-                                        detail.item_spec
-                                          ? detail.item_spec.map(sku =>
-                                              <View className='sku-item'>
-                                                {
-                                                  sku.spec_image_url &&
-                                                    <Image className='sku-img' src={sku.spec_image_url} mode="aspectFill"/>
-                                                }
-                                                {sku.spec_custom_value_name}
-                                              </View>
-                                            )
-                                          : <Text>单规格</Text>
-                                      }
-                                    </View>
-                                    <View className='view-flex-item2'>
-                                      {
-                                        detail.task.map(task =>
-                                          <View className='view-flex'>
-                                            <View className='view-flex-item'>{task.filter}</View>
-                                            <View className='view-flex-item'>
-                                              {
-                                                task.money &&
-                                                  <Text>¥</Text>
-                                              }
-                                              {task.money}
-                                            </View>
+                            className='shop-goods__detail'
+                          >
+                            <View className='content-bottom-padded view-flex'>
+                              <View className='view-flex-item2'>规格</View>
+                              <View className='view-flex-item'>指标</View>
+                              <View className='view-flex-item'>奖金</View>
+                            </View>
+                            {
+                              item.details && item.details.map(detail =>
+                                <View class="shop-goods__detail-item">
+                                  <View className='shop-goods__detail-skus view-flex-item2'>
+                                    {
+                                      detail.item_spec
+                                        ? detail.item_spec.map(sku =>
+                                          <View className='sku-item'>
+                                            {
+                                              sku.spec_image_url &&
+                                              <Image className='sku-img' src={sku.spec_image_url} mode="aspectFill" />
+                                            }
+                                            {sku.spec_custom_value_name}
                                           </View>
                                         )
-                                      }
-                                    </View>
+                                        : <Text>单规格</Text>
+                                    }
                                   </View>
-                                )
-                              }
-                            </View>
+                                  <View className='view-flex-item2'>
+                                    {
+                                      detail.task.map(task =>
+                                        <View className='view-flex'>
+                                          <View className='view-flex-item'>{task.filter}</View>
+                                          <View className='view-flex-item'>
+                                            {
+                                              task.money &&
+                                              <Text>¥</Text>
+                                            }
+                                            {task.money}
+                                          </View>
+                                        </View>
+                                      )
+                                    }
+                                  </View>
+                                </View>
+                              )
+                            }
+                          </View>
                       }
 
                     </View>
@@ -305,7 +308,7 @@ export default class DistributionShopGoods extends Component {
           }
           {
             !page.isLoading && !page.hasNext && !list.length
-              && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
+            && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
         <SpToast />
