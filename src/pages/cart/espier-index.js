@@ -188,9 +188,16 @@ export default class CartIndex extends Component {
 
   async fetchCart (cb) {
     let valid_cart = [], invalid_cart = []
-    const cartType = Taro.getStorageInfoSync('cartType')
+    const cartType = Taro.getStorageSync('cartType')
     const { type = 'distributor' } = this.$router.params
-    const params = {shop_type: type}
+    const params = {
+      shop_type: type
+    }
+    if (cartType === 'cross') {
+      params.iscrossborder = 1
+    } else {
+      delete params.iscrossborder
+    }
     try {
 			const res = await api.cart.get(params)
       valid_cart = res.valid_cart || valid_cart
@@ -203,8 +210,7 @@ export default class CartIndex extends Component {
 
     const list = this.processCart({
       valid_cart,
-      invalid_cart,
-      cartType
+      invalid_cart
     })
     cb && cb(list)
   }
@@ -379,6 +385,9 @@ export default class CartIndex extends Component {
       store: 'store',
       curSymbol: 'cur.symbol',
       distributor_id: 'shop_id',
+      type: 'type',
+      origincountry_name: 'origincountry_name',
+      origincountry_img_url: 'origincountry_img_url',
       promotions: ({ promotions = [], cart_id }) => promotions.map(p => {
         p.cart_id = cart_id
         return p
@@ -411,9 +420,11 @@ export default class CartIndex extends Component {
     Taro.setStorageSync('cartType', cartType)
     this.setState({
       cartType
-    }, () => {
-      // this.fetchCart()
-      console.log(111)
+    }, async () => {
+      Taro.showLoading()
+      await this.fetchCart()
+      Taro.hideLoading()
+      // console.log(111)
     })
   }
 
@@ -464,7 +475,12 @@ export default class CartIndex extends Component {
             //   </View>
             // )
           }
-          <View className='changeCross' onClick={this.onChangeCartType.bind(this)}>切换购物车类型-{cartType === 'cross' ? '普通' : '跨境'}</View>
+          <View className='changeCross'>
+            <View className='content' onClick={this.onChangeCartType.bind(this)}>
+              <View className={`iconfont ${cartType === 'cross' ? 'icon-flight' : 'icon-shop-cart-1'}`}></View>
+              <View className='iconfont icon-repeat'></View>
+            </View>
+          </View>
           <View className='cart-list'>
             {
 

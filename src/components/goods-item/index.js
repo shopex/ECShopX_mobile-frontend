@@ -82,10 +82,10 @@ export default class GoodsItem extends Component {
           </View>
           <View className='goods-item__cont'>
             {
-              info.origincountry_name && <View className='nationalInfo'>
+              info.type === '1' && <View className='nationalInfo'>
                   <Image className='nationalFlag' src={info.origincountry_img_url} mode='aspectFill' lazyLoad />
                   <Text className='nationalTitle'>
-                    info.origincountry_name
+                    {info.origincountry_name}
                   </Text>
               </View>
             }            

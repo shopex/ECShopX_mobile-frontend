@@ -344,6 +344,7 @@ export default class HomeIndex extends Component {
       origincountry_name: 'origincountry_name',
       origincountry_img_url: 'origincountry_img_url',
       promotion_activity_tag: 'promotion_activity',
+      type: 'type',
       price: ({ price }) => (price/100).toFixed(2),
       member_price: ({ member_price }) => (member_price/100).toFixed(2),
       market_price: ({ market_price }) => (market_price/100).toFixed(2),

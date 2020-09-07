@@ -1189,6 +1189,7 @@ export default class CartCheckout extends Component {
                   border={false}
                   placeholder='请输入身份证上的姓名'
                   value={identity.name}
+                  onChange={this.inputChange.bind(this, 'name')}
                 />                    
                 <AtInput
                   name='cardId'
@@ -1198,6 +1199,8 @@ export default class CartCheckout extends Component {
                   border={false}
                   placeholder='请输入身份证号码'
                   value={identity.cardId}
+                  ticket
+                  onChange={this.inputChange.bind(this, 'cardId')}
                 />
                 <Text className='extDesc'>根据海关规定，购买人身份信息需与支付软件认证信息一致才可通关。本信息仅作通关用户，将被严格保密</Text>
             </SpCell>
@@ -1235,7 +1238,7 @@ export default class CartCheckout extends Component {
                                   : (<View className='order-item__idx national'>
                                     <Text>第{idx + 1}件商品</Text>
                                     {
-                                      item.origincountry_name && <View className='nationalInfo'>
+                                      item.type === '1' && <View className='nationalInfo'>
                                           <Image className='nationalFlag' src={item.origincountry_img_url}  mode='aspectFill' lazyLoad />
                                           <Text className='nationalTitle'>
                                             { item.origincountry_name }
