@@ -10,11 +10,12 @@
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
-import  api from '@/api'
+import { Tracker } from "@/service";
+import api from '@/api'
 import './item.scss'
 
 export default class Index extends Component {
-  
+
   static defaultProps = {
     storeId: '',
     info: {},
@@ -25,7 +26,7 @@ export default class Index extends Component {
     addGlobalClass: true
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -36,7 +37,7 @@ export default class Index extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const info = Taro.getStorageSync('curStore')
     const meiqia = Taro.getStorageSync('meiqia') || {}
     const { enterprise_id, group_id, persion_ids, is_distributor_open } = meiqia
@@ -47,7 +48,7 @@ export default class Index extends Component {
       id = storeId
     }
 
-    if (is_distributor_open === 'true' && id !== 0) {        
+    if (is_distributor_open === 'true' && id !== 0) {
       const { meiqia_id, meiqia_token, clientid = '', groupid = '' } = await api.user.im(id)
       this.setState({
         meiqia_id,
@@ -65,7 +66,7 @@ export default class Index extends Component {
       }
     }
   }
-  
+
 
   // 美恰客服
   contactMeiQia = async () => {
@@ -77,17 +78,18 @@ export default class Index extends Component {
       mobile: userInfo.mobile || ''
     }
     const { meiqia_id, meiqia_token, clientid, groupid } = this.state
+    Tracker.dispatch("START_CONSULT", { type: 'meiqia' });
     Taro.navigateTo({
       url: '/others/pages/meiqia/index',
       success: function (res) {
         // 通过eventChannel向被打开页面传送数据
-        res.eventChannel.emit('acceptDataFromOpenerPage', { id: meiqia_id, agentid: meiqia_token, metadata: metadata, clientid, groupid})
+        res.eventChannel.emit('acceptDataFromOpenerPage', { id: meiqia_id, agentid: meiqia_token, metadata: metadata, clientid, groupid })
       }
     })
   }
-  
 
-  render () {
+
+  render() {
     const { isFloat } = this.props
     const { meiqia_id } = this.state
     return (
@@ -99,9 +101,9 @@ export default class Index extends Component {
           >
             <View className='icon icon-headphones'></View>
           </Button>
-          : <View onClick={this.contactMeiQia} className='refund-detail-btn'>
-            { this.props.children }
-          </View>
+            : <View onClick={this.contactMeiQia} className='refund-detail-btn'>
+              {this.props.children}
+            </View>
         }
       </View> : ''
     )

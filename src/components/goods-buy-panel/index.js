@@ -7,6 +7,7 @@ import { connect } from '@tarojs/redux'
 import { Price } from '@/components'
 import InputNumber from '@/components/input-number'
 import { classNames, pickBy, log } from '@/utils'
+import { Tracker } from "@/service";
 import api from '@/api'
 
 import './index.scss'
@@ -27,14 +28,14 @@ export default class GoodsBuyPanel extends Component {
     orderType: 'normal',
     fastBuyText: '立即购买',
     busy: false,
-    onClose: () => {},
-    onChange: () => {},
-    onClickAddCart: () => {},
-    onClickFastBuy: () => {},
-    onSubmit: () => {}
+    onClose: () => { },
+    onChange: () => { },
+    onClickAddCart: () => { },
+    onClickFastBuy: () => { },
+    onSubmit: () => { }
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -53,8 +54,8 @@ export default class GoodsBuyPanel extends Component {
     this.disabledSet = new Set()
   }
 
-  componentDidMount () {
-		const { info } = this.props
+  componentDidMount() {
+    const { info } = this.props
     const { spec_items, promotion_activity, activity_info = null, activity_type } = info
 
     if (promotion_activity) {
@@ -80,7 +81,7 @@ export default class GoodsBuyPanel extends Component {
 
     const marketing = info.activity_type
       ? info.activity_type
-			: 'normal'
+      : 'normal'
 
     const skuDict = {}
 
@@ -102,7 +103,7 @@ export default class GoodsBuyPanel extends Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { isOpened } = nextProps
     if (isOpened !== this.state.isActive) {
       this.setState({
@@ -130,7 +131,7 @@ export default class GoodsBuyPanel extends Component {
     return `已选 “${propsText}”`
   }
 
-  calcDisabled (selection) {
+  calcDisabled(selection) {
     const skuDict = this.skuDict
     const disabledSet = new Set()
     const makeReg = (sel, row, val) => {
@@ -165,7 +166,7 @@ export default class GoodsBuyPanel extends Component {
     this.disabledSet = disabledSet
   }
 
-  getCurSkuImg (sku) {
+  getCurSkuImg(sku) {
     let img = this.props.info.pics[0]
     if (!sku) {
       return img
@@ -180,7 +181,7 @@ export default class GoodsBuyPanel extends Component {
     return img
   }
 
-  updateCurSku (selection) {
+  updateCurSku(selection) {
     const { info } = this.props
     const { activity } = this.state
     const { activity_type } = info
@@ -251,7 +252,7 @@ export default class GoodsBuyPanel extends Component {
       selection[idx] = item.spec_value_id
     }
 
-    console.log(selection,254)
+    console.log(selection, 254)
 
     this.updateCurSku(selection)
     this.setState({
@@ -292,16 +293,25 @@ export default class GoodsBuyPanel extends Component {
           num,
           distributor_id,
           shop_type: isDrug ? 'drug' : 'distributor'
-				})
-				Taro.showToast({
-					title: '成功加入购物车',
-					icon: 'success'
-				})
+        })
+        Taro.showToast({
+          title: '成功加入购物车',
+          icon: 'success'
+        })
       } catch (e) {
         console.log(e)
         this.setState({
           busy: false
         })
+
+
+        // 首次加入购物车
+        Tracker.dispatch("GOODS_ADD_TO_CART", {
+          ...info,
+          ...skuInfo,
+          goods_num: +num
+        });
+
         return
       }
 
@@ -365,11 +375,11 @@ export default class GoodsBuyPanel extends Component {
 
   }
 
-  render () {
+  render() {
     // packItem={packagePrices}
     //                 mainItem={mainPackagePrice}
     const { info, type, fastBuyText, colors, isPackage, packItem, mainpackItem } = this.props
-		const { curImg, quantity, selection, isActive, busy, curSku, promotions, activity, curLimit } = this.state
+    const { curImg, quantity, selection, isActive, busy, curSku, promotions, activity, curLimit } = this.state
     if (!info) {
       return null
     }
@@ -395,11 +405,11 @@ export default class GoodsBuyPanel extends Component {
       marketPrice = info.market_price
     }
 
-    if(isPackage === 'package') {
+    if (isPackage === 'package') {
       price = info.price * 100
       marketPrice = info.market_price * 100
-      if(curSkus) {
-        console.log(curSkus.item_id, packItem[curSkus.item_id],mainpackItem[curSkus.item_id], 394)
+      if (curSkus) {
+        console.log(curSkus.item_id, packItem[curSkus.item_id], mainpackItem[curSkus.item_id], 394)
         price = (packItem[curSkus.item_id] && packItem[curSkus.item_id].price) || (mainpackItem[curSkus.item_id] && mainpackItem[curSkus.item_id].price)
         marketPrice = (packItem[curSkus.item_id] && packItem[curSkus.item_id].market_price) || (mainpackItem[curSkus.item_id] && mainpackItem[curSkus.item_id].market_price)
       } else {
@@ -430,11 +440,11 @@ export default class GoodsBuyPanel extends Component {
                 src={curImg || info.pics[0]}
               />
             </View>
-						<View className='goods-sku__price'>
-						  <Price primary symbol='¥' unit='cent' value={price} />
+            <View className='goods-sku__price'>
+              <Price primary symbol='¥' unit='cent' value={price} />
               <View className='goods-sku__price-market'>
-              {
-                marketPrice !== 0 && marketPrice &&
+                {
+                  marketPrice !== 0 && marketPrice &&
                   <Price
                     className='price-market'
                     symbol='¥'
@@ -442,50 +452,50 @@ export default class GoodsBuyPanel extends Component {
                     lineThrough
                     value={marketPrice}
                   />
-              }
+                }
               </View>
             </View>
             <View className='goods-sku__info'>
               {
                 this.noSpecs
                   ? (<Text className='goods-sku__props'>{info.item_name}</Text>)
-                  :(<Text className='goods-sku__props'>
-                      <Text>{curSkus ? `已选择 ${curSkus.propsText}` : '请选择规格'}</Text>
-                    </Text>)
+                  : (<Text className='goods-sku__props'>
+                    <Text>{curSkus ? `已选择 ${curSkus.propsText}` : '请选择规格'}</Text>
+                  </Text>)
               }
               {
                 curSku &&
-                  <View className='goods-sku__limit'>
-                    <Text className='goods-sku__stock'>库存{curSku.store}{info.unit}</Text>
-                    {
-                      activity && curLimit
-                        ? <Text>
-                            {
-                              ruleDay
-                                ? <Text>每{ruleDay}天</Text>
-                                : null
-                            }
-                            <Text>限购{activity.rule.limit}件</Text>
-                          </Text>
-                        : null
-                    }
-                  </View>
+                <View className='goods-sku__limit'>
+                  <Text className='goods-sku__stock'>库存{curSku.store}{info.unit}</Text>
+                  {
+                    activity && curLimit
+                      ? <Text>
+                        {
+                          ruleDay
+                            ? <Text>每{ruleDay}天</Text>
+                            : null
+                        }
+                        <Text>限购{activity.rule.limit}件</Text>
+                      </Text>
+                      : null
+                  }
+                </View>
               }
             </View>
           </View>
           {
             curSkus && promotions && promotions.length > 0 &&
-              <View className='promotions'>
-                {
-                  promotions.map(item =>
-                    item.items[curSkus.item_id] &&
-                      <View key={item.items[curSkus.item_id]} className='promotions__item'>
-                        <Text className='promotions__item-tag'>{item.promotion_tag}</Text>
-                        <Text className='promotions__item-title'>{item.condition_rules}</Text>
-                      </View>
-                  )
-                }
-              </View>
+            <View className='promotions'>
+              {
+                promotions.map(item =>
+                  item.items[curSkus.item_id] &&
+                  <View key={item.items[curSkus.item_id]} className='promotions__item'>
+                    <Text className='promotions__item-tag'>{item.promotion_tag}</Text>
+                    <Text className='promotions__item-title'>{item.condition_rules}</Text>
+                  </View>
+                )
+              }
+            </View>
           }
           <View className='goods-buy-panel__bd'>
             <ScrollView
@@ -519,17 +529,17 @@ export default class GoodsBuyPanel extends Component {
             </ScrollView>
             {
               type !== 'pick' &&
-                <View className='goods-quantity__wrap'>
-                  <Text className='goods-quantity__hd'></Text>
-                  <View className='goods-quantity__bd'>
-                    <InputNumber
-                      min={1}
-                      max={maxStore}
-                      value={quantity}
-                      onChange={this.handleQuantityChange.bind(this)}
-                    />
-                  </View>
+              <View className='goods-quantity__wrap'>
+                <Text className='goods-quantity__hd'></Text>
+                <View className='goods-quantity__bd'>
+                  <InputNumber
+                    min={1}
+                    max={maxStore}
+                    value={quantity}
+                    onChange={this.handleQuantityChange.bind(this)}
+                  />
                 </View>
+              </View>
             }
           </View>
           <View className='goods-buy-panel__ft'>

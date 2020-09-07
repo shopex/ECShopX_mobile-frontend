@@ -5,6 +5,7 @@ import { connect } from '@tarojs/redux'
 import S from '@/spx'
 import api from '@/api'
 import { AtTag, AtTextarea } from 'taro-ui'
+import { Tracker } from "@/service";
 
 import './cancel.scss';
 
@@ -17,7 +18,7 @@ export default class TradeCancel extends Component {
     navigationBarTitleText: '取消订单'
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       reason: ['多买/错买', '不想要了', '买多了', '其他'],
@@ -57,13 +58,20 @@ export default class TradeCancel extends Component {
     }
 
     const res = await api.trade.cancel(data)
+
+
+    // 取消订单埋点
+    Tracker.dispatch("CANCEL_ORDER", {
+      orderInfo,
+      orderCancel: res
+    });
     if (res) {
       S.toast('操作成功')
       Taro.navigateBack()
     }
   }
 
-  render () {
+  render() {
     const { reason, curReasonIdx, otherReason, textCount } = this.state
     const { colors } = this.props
 
@@ -106,7 +114,7 @@ export default class TradeCancel extends Component {
             onClick={this.handleSubmit}
             className='toolbar_btn'
             style={`background: ${colors.data[0].primary}`}
-            >确定取消</View>
+          >确定取消</View>
         </View>
 
         <SpToast />

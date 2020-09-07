@@ -10,6 +10,7 @@
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
+import { Tracker } from "@/service";
 import './item.scss'
 
 export default class Index extends Component {
@@ -19,8 +20,8 @@ export default class Index extends Component {
     info: {},
     isFloat: true
   }
-  
-  constructor (props) {
+
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -31,7 +32,7 @@ export default class Index extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const meiqia = Taro.getStorageSync('meiqia') || {}
     const { enterprise_id, group_id, persion_ids } = meiqia
     const info = Taro.getStorageSync('curStore')
@@ -73,12 +74,12 @@ export default class Index extends Component {
     const meiqiajs = document.getElementById('meiqiajs')
     if (!meiqiajs) {
       try {
-        (function(m, ei, q, i, a, j, s) {
-          m[i] = m[i] || function() {
-              (m[i].a = m[i].a || []).push(arguments)
+        (function (m, ei, q, i, a, j, s) {
+          m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
           };
           j = ei.createElement(q),
-              s = ei.getElementsByTagName(q)[0];
+            s = ei.getElementsByTagName(q)[0];
           j.async = true;
           j.charset = 'UTF-8';
           j.id = 'meiqiajs';
@@ -90,7 +91,7 @@ export default class Index extends Component {
       }
     }
   }
-  
+
 
   // 美恰客服
   contactMeiQia = async () => {
@@ -102,6 +103,7 @@ export default class Index extends Component {
       userName: userInfo.username || '',
       mobile: userInfo.mobile || ''
     }
+    Tracker.dispatch("START_CONSULT", { type: 'meiqia' });
     this.meiqiaInit()
     if (_MEIQIA) {
       // 设置企业id
@@ -129,9 +131,9 @@ export default class Index extends Component {
       _MEIQIA('showPanel')
     }
   }
-  
 
-  render () {
+
+  render() {
     const { isFloat } = this.props
     const { meiqia_id } = this.state
     return (
@@ -143,9 +145,9 @@ export default class Index extends Component {
           >
             <View className='icon icon-headphones'></View>
           </Button>
-          : <View onClick={this.contactMeiQia} className='refund-detail-btn'>
-            { this.props.children }
-          </View>
+            : <View onClick={this.contactMeiQia} className='refund-detail-btn'>
+              {this.props.children}
+            </View>
         }
       </View> : ''
     )

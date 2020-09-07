@@ -12,19 +12,20 @@ import api from '@/api'
 import req from '@/api/req'
 import { log, pickBy, classNames } from '@/utils'
 import S from '@/spx'
+import { Tracker } from "@/service";
 // import * as qiniu from 'qiniu-js'
 
 import './refund.scss'
 
 function uploadURLFromRegionCode(code) {
   let uploadURL = null;
-  switch(code) {
-      case 'z0': uploadURL = 'https://up.qiniup.com'; break;
-      case 'z1': uploadURL = 'https://up-z1.qiniup.com'; break;
-      case 'z2': uploadURL = 'https://up-z2.qiniup.com'; break;
-      case 'na0': uploadURL = 'https://up-na0.qiniup.com'; break;
-      case 'as0': uploadURL = 'https://up-as0.qiniup.com'; break;
-      default: console.error('please make the region is with one of [z0, z1, z2, na0, as0]');
+  switch (code) {
+    case 'z0': uploadURL = 'https://up.qiniup.com'; break;
+    case 'z1': uploadURL = 'https://up-z1.qiniup.com'; break;
+    case 'z2': uploadURL = 'https://up-z2.qiniup.com'; break;
+    case 'na0': uploadURL = 'https://up-na0.qiniup.com'; break;
+    case 'as0': uploadURL = 'https://up-as0.qiniup.com'; break;
+    default: console.error('please make the region is with one of [z0, z1, z2, na0, as0]');
   }
   return uploadURL;
 }
@@ -35,7 +36,7 @@ function uploadURLFromRegionCode(code) {
 
 
 export default class TradeRefund extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -50,8 +51,8 @@ export default class TradeRefund extends Component {
       isSameCurSegGood: false,
       curSegGoodValue: null,
       segTypes: [
-        {title: '仅退款', status: 'ONLY_REFUND'},
-        {title: '退货退款', status: 'REFUND_GOODS'}
+        { title: '仅退款', status: 'ONLY_REFUND' },
+        { title: '退货退款', status: 'REFUND_GOODS' }
       ],
       curSegIdx: 0,
       isShowSegTypeSheet: false,
@@ -60,11 +61,11 @@ export default class TradeRefund extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetch()
   }
 
-  async fetch () {
+  async fetch() {
     Taro.showLoading({
       mask: true
     })
@@ -144,7 +145,7 @@ export default class TradeRefund extends Component {
             url: uploadUrl,
             filePath: item.url,
             name: 'file',
-            formData:{
+            formData: {
               'token': token,
               'key': key
             },
@@ -218,7 +219,7 @@ export default class TradeRefund extends Component {
     if (type === 'type') {
       this.setState({
         curSegIdx: index === this.state.curSegIdx ? null : index,
-        isSameCurSegType:  index === this.state.curSegIdx ? !this.state.isSameCurSegType : true,
+        isSameCurSegType: index === this.state.curSegIdx ? !this.state.isSameCurSegType : true,
         isShowSegTypeSheet: false,
         curSegTypeValue: index === this.state.curSegIdx ? null : item.value
       })
@@ -227,7 +228,7 @@ export default class TradeRefund extends Component {
     if (type === 'goods') {
       this.setState({
         curGoodIdx: index === this.state.curGoodIdx ? null : index,
-        isSameCurSegGood:  index === this.state.curGoodIdx ? !this.state.isSameCurSegGood : true,
+        isSameCurSegGood: index === this.state.curGoodIdx ? !this.state.isSameCurSegGood : true,
         isShowSegGoodSheet: false,
         curSegGoodValue: index === this.state.curGoodIdx ? null : item
       })
@@ -254,6 +255,11 @@ export default class TradeRefund extends Component {
     const method = aftersales_bn ? 'modify' : 'apply'
     await api.aftersales[method](data)
 
+    // 退款退货
+    const { orderInfo } = await api.trade.detail(order_id);
+    Tracker.dispatch("ORDER_REFUND", orderInfo);
+
+
     S.toast('操作成功')
     setTimeout(() => {
       Taro.redirectTo({
@@ -263,7 +269,7 @@ export default class TradeRefund extends Component {
   }
 
   handleSubmit = () => {
-    let _this=this
+    let _this = this
     let templeparams = {
       'temp_name': 'yykweishop',
       'source_type': 'after_refund',
@@ -276,20 +282,20 @@ export default class TradeRefund extends Component {
           success() {
             _this.aftersalesAxios()
           },
-          fail(){
+          fail() {
             _this.aftersalesAxios()
           }
         })
       } else {
         _this.aftersalesAxios()
       }
-    },()=>{
+    }, () => {
       _this.aftersalesAxios()
     })
   }
 
 
-  render () {
+  render() {
     const { colors } = this.props
     const { segTypes, curSegIdx, reason, curReasonIdx,
       goodStatus, curGoodIdx, isShowSegGoodSheet, isSameCurSegGood, curSegGoodValue, description, imgs } = this.state
@@ -365,19 +371,19 @@ export default class TradeRefund extends Component {
           {
             curSegIdx === 1
               ? <View className='refund-describe__img'>
-                  <Text className='refund-describe__text'>上传凭证</Text>
-                  <View className='refund-describe__imgupload'>
-                    <Text className='refund-describe__imgupload_text'>您可以上传最多3张图片</Text>
-                    <AtImagePicker
-                      multiple
-                      mode='aspectFill'
-                      length={5}
-                      files={imgs}
-                      onChange={this.handleImageChange}
-                      onImageClick={this.handleImageClick}
-                    > </AtImagePicker>
-                  </View>
+                <Text className='refund-describe__text'>上传凭证</Text>
+                <View className='refund-describe__imgupload'>
+                  <Text className='refund-describe__imgupload_text'>您可以上传最多3张图片</Text>
+                  <AtImagePicker
+                    multiple
+                    mode='aspectFill'
+                    length={5}
+                    files={imgs}
+                    onChange={this.handleImageChange}
+                    onImageClick={this.handleImageClick}
+                  > </AtImagePicker>
                 </View>
+              </View>
               : null
           }
         </View>
