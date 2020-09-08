@@ -330,6 +330,10 @@ export default class GoodsBuyPanel extends Component {
         url += `&type=${marketing}&seckill_id=${seckill_id}&ticket=${ticket}`
       }
 
+      if (info.type == '1') {
+        url+= '&goodType=cross'
+      }
+
       try {
         await api.cart.fastBuy({
           item_id,

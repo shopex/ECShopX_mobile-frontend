@@ -346,7 +346,7 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
-    const { type, seckill_id = null, ticket = null, group_id = null, team_id = null, shop_id, source, scene } = this.$router.params
+    const { type, seckill_id = null, ticket = null, group_id = null, team_id = null, shop_id, source, scene, goodType } = this.$router.params
     let cxdid = null
     let dtid = null
     let smid = null
@@ -463,6 +463,11 @@ export default class CartCheckout extends Component {
         params.member_discount = coupon.value ? 1 : 0
       }
     }
+    if (goodType === 'cross') {
+      params.iscrossborder = 1
+    } else {
+      delete params.iscrossborder
+    }
 
 
     this.params = params
@@ -491,7 +496,7 @@ export default class CartCheckout extends Component {
 
     if (!data) return
 
-    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params, coupon_info } = data
+    const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params, coupon_info, total_tax } = data
 
     if (coupon_info) {
       this.props.onChangeCoupon({
@@ -511,6 +516,7 @@ export default class CartCheckout extends Component {
       member_discount: -1 * member_discount,
       coupon_discount: -1 * coupon_discount,
       freight_fee,
+      total_tax,
       total_fee: params.pay_type === 'point' ? 0 : total_fee,
       items_count: totalItemNum,
       point,
@@ -765,8 +771,8 @@ export default class CartCheckout extends Component {
     //   return S.toast('请选择地址')
     // }
 
-    const { payType, total } = this.state
-    const { type } = this.$router.params
+    const { payType, total, delivery } = this.state
+    const { type, goodType } = this.$router.params
     const isDrug = type === 'drug'
 
     if (payType === 'point' || payType === 'deposit') {
@@ -828,9 +834,13 @@ export default class CartCheckout extends Component {
         params.salesman_id = salesman_id
       }
 
+      // 如果是跨境商品
+      if (goodType === 'cross') {
+        params = {...params, ...delivery}
+      }
+
 
       if(process.env.TARO_ENV === 'h5' && payType !== 'point' &&  payType !== 'deposit' && !isDrug){
-        console.log(11111)
         config = await api.trade.h5create(params)
         Taro.redirectTo({
           url: `/pages/cashier/index?order_id=${config.order_id}`
@@ -1060,6 +1070,15 @@ export default class CartCheckout extends Component {
     })
   }
 
+  // 输入跨境信息
+  inputChange = (type, e) => {
+    const { identity } = this.state
+    identity[type] = e
+    this.setState({
+      identity
+    })
+  }
+
 
   render () {
     // 支付方式文字
@@ -1098,7 +1117,7 @@ export default class CartCheckout extends Component {
     // }
     //const curStore = Taro.getStorageSync('curStore')
     // const { curStore } = this.state
-    const { type } = this.$router.params
+    const { type, goodType } = this.$router.params
     const isDrug = type === 'drug'
 
     if (!info) {
@@ -1177,7 +1196,7 @@ export default class CartCheckout extends Component {
                 </View>
           }
           {
-            1 && <SpCell 
+            goodType === 'cross' && <SpCell 
               border={false}
               className='coupons-list'
             >
@@ -1416,20 +1435,22 @@ export default class CartCheckout extends Component {
                   value={total.freight_fee}
                 />
               </SpCell>
-              <SpCell
-                className='trade-sub-total__item'
-                title='税费：'
-              >
-                <Price
-                  unit='cent'
-                  value={total.freight_fee}
-                />
-              </SpCell>
+              {
+                goodType === 'cross' && <SpCell
+                  className='trade-sub-total__item'
+                  title='税费：'
+                >
+                  <Price
+                    unit='cent'
+                    value={total.total_tax}
+                  />
+                </SpCell>
+              }
             </View>
           )}
 
           {
-            1 && <View className='nationalNotice'>
+            goodType === 'cross' && <View className='nationalNotice'>
               <View className='title'>关于跨境电子商务年度个人额度注意事项</View>
               <View className='info'>
                 依据《关于跨境电子商务零售进口税收政策的通知》个人单次跨境消费购物消费额度未5000元。跨境消费年度交易额未2万6千元。超过限额将会无法清关。
