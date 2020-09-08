@@ -359,6 +359,7 @@ export default class CartIndex extends Component {
 
   handleCheckout = (shopCart) => {
     const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } = shopCart.shopInfo
+    const { cartType } = this.state
     const { type } = this.$router.params
     if (this.updating) {
       Taro.showToast({
@@ -368,7 +369,7 @@ export default class CartIndex extends Component {
       return
     }
     Taro.navigateTo({
-      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}&shop_id=${shop_id}&is_delivery=${is_delivery}&is_ziti=${is_ziti}&name=${shop_name}&store_address=${address}&lat=${lat}&lng=${lng}&hour=${hour}&phone=${mobile}`
+      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}&shop_id=${shop_id}&is_delivery=${is_delivery}&is_ziti=${is_ziti}&name=${shop_name}&store_address=${address}&lat=${lat}&lng=${lng}&hour=${hour}&phone=${mobile}&goodType=${cartType}`
     })
   }
 

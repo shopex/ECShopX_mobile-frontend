@@ -824,7 +824,7 @@ export default class Detail extends Component {
                     <Price
                       unit='cent'
                       symbol={(info.cur && info.cur.symbol) || ''}
-                      value={info.act_price}
+                      value={curSku ? curSku.act_price : info.priceinfo.act_price}
                     />
                     {
                       marketing !== 'normal' &&
@@ -853,7 +853,7 @@ export default class Detail extends Component {
                       unit='cent'
                       className='goods-prices__market'
                       symbol={(info.cur && info.cur.symbol) || ''}
-                      value={info.price}
+                      value={curSku ? curSku.price : info.price}
                     />
                   </View>
                 </View>
@@ -921,26 +921,26 @@ export default class Detail extends Component {
                             <Price
                               primary
                               unit='cent'
-                              value={info.member_price}
+                              value={curSku ? curSku.member_price : info.member_price}
                             />
                             <Price
                               lineThrough
                               unit='cent'
-                              value={info.market_price}
+                              value={curSku ? curSku.market_price : info.market_price}
                             />
                           </View>
                         : <View className='view-flex-item'>
                             <Price
                               primary
                               unit='cent'
-                              value={info.price}
+                              value={curSku ? curSku.price : info.price}
                             />
                             {
                               info.market_price !== 0 && info.market_price &&
                                 <Price
                                   lineThrough
                                   unit='cent'
-                                  value={info.market_price}
+                                  value={curSku ? curSku.market_price : info.market_price}
                                 />
                             }
                           </View>
