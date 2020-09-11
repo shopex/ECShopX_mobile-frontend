@@ -43,7 +43,7 @@ export default class OrderItem extends Component {
         </View>
         <View className='order-item__bd'>
           {
-            (isShowNational && info.type === '1') && <View className='nationalInfo'>
+            (isShowNational && info.type == '1' && info.origincountry_name) && <View className='nationalInfo'>
                 <Image className='nationalFlag' src={info.origincountry_img_url} mode='aspectFill' lazyLoad />
                 <Text className='nationalTitle'>
                   { info.origincountry_name }

@@ -20,6 +20,10 @@
       font-size: small;
       text-align: right;
     }
+    .right {
+      display: flex;
+      align-items: center;
+    }
   }
 
   &__total {
