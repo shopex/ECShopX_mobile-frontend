@@ -22,6 +22,7 @@ export default class TradeItem extends Component {
     customRender: false,
     noHeader: false,
     showActions: false,
+    isShowNational: false,
     payType: '',
     info: null,
     rateStatus: false,
@@ -35,7 +36,7 @@ export default class TradeItem extends Component {
   }
 
   render () {
-    const { customHeader, customFooter, noHeader, onClick, info, payType, showActions, colors, rateStatus } = this.props
+    const { customHeader, customFooter, noHeader, onClick, info, payType, showActions, colors, rateStatus, isShowNational } = this.props
     if (!info) {
       return null
     }
@@ -49,8 +50,12 @@ export default class TradeItem extends Component {
               : <View className='trade-item__hd'>
                   <Text className='time'>{info.create_date}</Text>
                   <View className='right'>
-                    <Text className='iconfont icon-globe'></Text>
-                    <Text>跨境</Text>
+                    {
+                      info.type == '1' && <View>
+                        <Text className='iconfont icon-globe'></Text>
+                        <Text>跨境</Text>
+                      </View>
+                    }
                     <Text className='trade-item__shop'>订单号：{info.tid}</Text>
                   </View>
                 </View>
@@ -63,6 +68,7 @@ export default class TradeItem extends Component {
           {
             info.order.map((item, idx) =>
               <OrderItem
+                // isShowNational={isShowNational}
                 key={`${idx}1`}
                 info={item}
                 payType={payType}

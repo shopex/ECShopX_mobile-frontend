@@ -99,6 +99,8 @@ export default class TradeDetail extends Component {
       order_class: 'order_class',
       latest_aftersale_time: 'latest_aftersale_time',
       remark: 'remark',
+      type: 'type',
+      total_tax: ({total_tax}) => (+total_tax / 100).toFixed(2),
       item_fee: ({ item_fee }) => (+item_fee / 100).toFixed(2),
       coupon_discount: ({ coupon_discount }) => (+coupon_discount / 100).toFixed(2),
       freight_fee: ({ freight_fee }) => (+freight_fee / 100).toFixed(2),
@@ -119,6 +121,9 @@ export default class TradeDetail extends Component {
         aftersales_status: 'aftersales_status',
         pic_path: 'pic',
         title: 'item_name',
+        type: 'type',
+        origincountry_name: 'origincountry_name',
+        origincountry_img_url: 'origincountry_img_url',
         delivery_status: 'delivery_status',
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         point: 'item_point',
@@ -522,7 +527,7 @@ export default class TradeDetail extends Component {
           <Text className='info-text'>商品金额：￥{info.item_fee}</Text>
           {/*<Text className='info-text'>积分抵扣：-￥XX</Text>*/}
           <Text className='info-text'>运费：￥{info.freight_fee}</Text>
-          <Text className='info-text'>税费：￥{info.total_tax}</Text>
+          {info.type == '1' && <Text className='info-text'>税费：￥{info.total_tax}</Text>}
           <Text className='info-text'>优惠：-￥{info.discount_fee}</Text>
           { isDhPoint && (<Text className='info-text' space>支付：{info.payment}积分 {' 积分支付'}</Text>) }
           { isDeposit && (<Text className='info-text' space>支付：¥{info.payment} {' 余额支付'}</Text>) }
