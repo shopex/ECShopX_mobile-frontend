@@ -25,33 +25,59 @@ class Tracker {
 
     let _createComponent = Taro.createComponent;
     var self = this;
-    Taro.createComponent = function (ComponentClass, isPage) {
+    Taro.createComponent = function(ComponentClass, isPage) {
       let obj = _createComponent(ComponentClass, isPage);
       const _onReady = obj.methods["onReady"];
-      obj.methods["onReady"] = function () {
+      obj.methods["onReady"] = function() {
         const result = _onReady.apply(this);
         self._componentDidMount(this);
         return result;
       };
 
+      const _onShow = obj.methods["onShow"];
+      obj.methods["onShow"] = function() {
+        const result = _onShow.apply(this);
+        self._componentDidShow(this);
+        return result;
+      };
+
       const _onHide = obj.methods["onHide"];
-      obj.methods["onHide"] = function () {
+      obj.methods["onHide"] = function() {
         const result = _onHide.apply(this);
         self._componentDidHide(this);
         return result;
+      };
+
+      // const _onUnload = obj.methods["onUnload"];
+      obj.methods["onUnload"] = function() {
+        // debugger;
+        // const result = _onUnload.apply(this);
+        self._componentWillUnmount(this);
+        // return result;
       };
       return obj;
     };
 
     // this.SOURCE_TYPE = SOURCE_TYPE;
   }
+  _componentDidShow(e) {
+    if (!this._tracker) return;
+    this._tracker.componentDidShow(e);
+  }
 
   _componentDidMount(e) {
+    if (!this._tracker) return;
     this._tracker.componentDidMount(e);
   }
 
   _componentDidHide(e) {
+    if (!this._tracker) return;
     this._tracker.componentDidHide(e);
+  }
+
+  _componentWillUnmount(e) {
+    if (!this._tracker) return;
+    this._tracker.componentWillUnmount(e);
   }
 
   resolveEvent(...args) {
@@ -75,7 +101,7 @@ class Tracker {
   }
 
   @enable
-  use( provider, config ) {
+  use(provider, config) {
     this._tracker = Trackers.get(provider, config);
   }
 

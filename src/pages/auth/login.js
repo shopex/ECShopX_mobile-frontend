@@ -6,6 +6,8 @@ import { SpToast, NavBar } from "@/components";
 
 import S from "@/spx";
 import api from "@/api";
+import { tokenParse } from "@/utils";
+import { Tracker } from "@/service";
 
 import "./login.scss";
 
@@ -45,12 +47,14 @@ export default class Login extends Component {
       const { token } = await api.user.login(data);
       S.setAuthToken(token);
       // 通过token解析openid
-      const userInfo = tokenParse(token);
-      Tracker.setVar({
-        user_id: userInfo.user_id,
-        open_id: userInfo.openid,
-        union_id: userInfo.unionid
-      });
+      if ( token ) {
+        const userInfo = tokenParse( token );
+        Tracker.setVar( {
+          user_id: userInfo.user_id,
+          open_id: userInfo.openid,
+          union_id: userInfo.unionid
+        } );
+      }
 
       const redirect = decodeURIComponent(
         this.$router.params.redirect || APP_HOME_PAGE
