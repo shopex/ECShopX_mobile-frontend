@@ -301,6 +301,7 @@ export default class CartIndex extends Component {
     if (item.num < parseInt(num)) {
       Tracker.dispatch("APPEND_TO_CART_IN_CART", {
         ...item,
+        num: parseInt(num) - item.num,
         goods_num: num
       });
     }
@@ -324,7 +325,6 @@ export default class CartIndex extends Component {
 
   handleClickPromotion = (cart_id, e) => {
     return // 活动不需要选择
-    let promotions
   }
 
   handleClickToDetail = (item) => {
