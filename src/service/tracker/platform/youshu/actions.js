@@ -97,7 +97,6 @@ const actions = {
   },
   // 用户关闭支付密码浮层
   ["CANCEL_PAY"](params) {
-    debugger
     const data = resolveOrderInfo({
       order_id: params.trade_info.order_id,
       order_time: params.timeStamp,
@@ -115,12 +114,12 @@ const actions = {
   },
   // 用户取消订单
   ["CANCEL_ORDER"](params) {
-    const { orderInfo, orderCancel } = params
+    const { orderInfo } = params;
     const data = resolveOrderInfo({
       order_id: orderInfo.order_id,
       order_time: orderInfo.create_time,
       order_status: "cancel_give_order",
-      cancel_time: orderCancel.create_time,
+      cancel_time: new Date().getTime(),
       sub_orders: [
         {
           sub_order_id: orderInfo.order_id,
@@ -132,8 +131,21 @@ const actions = {
     Tracker.trackEvents("custom_order", "用户取消订单", data);
   },
   // 用户发起支付
-  ["pay"](params) {
-    Tracker.trackEvents("custom_order", "用户发起支付");
+  ["ORDER_PAY"](params) {
+    const data = resolveOrderInfo({
+      order_id: params.trade_info.order_id,
+      order_time: params.timeStamp,
+      order_status: "pay",
+      pay_time: new Date().getTime(),
+      sub_orders: [
+        {
+          sub_order_id: params.trade_info.order_id,
+          order_amt: params.item_fee / 100,
+          pay_amt: parseInt(params.total_fee) / 100
+        }
+      ]
+    });
+    Tracker.trackEvents("custom_order", "用户发起支付", data);
   },
   // 用户发起退货退款
   ["ORDER_REFUND"](params) {
@@ -141,7 +153,7 @@ const actions = {
       order_id: params.order_id,
       order_time: params.create_time,
       order_status: "refund",
-      refund_time: params.create_time,
+      refund_time: new Date().getTime(),
       sub_orders: [
         {
           sub_order_id: params.order_id,
@@ -150,7 +162,7 @@ const actions = {
         }
       ]
     });
-    Tracker.trackEvents("custom_order", "用户发起退货退款");
+    Tracker.trackEvents("custom_order", "用户发起退货退款", data);
   },
   // 页面上拉触底
   ["PAGE_REACH_BOTTOM"]() {
@@ -172,9 +184,9 @@ const actions = {
   // 分享
   ["GOODS_SHARE_TO_CHANNEL_CLICK"](params) {
     const data = {
-      from_type: "button",
+      from_type: params.from_type || "button",
       share_title: params.item_name,
-      share_image_url: params.pics[0],
+      share_image_url: params.pics ? params.pics[0] : "",
       shareType: params.shareType
     };
 
@@ -204,20 +216,20 @@ const actions = {
   },
   // 商品页浏览
   ["GOODS_DETAIL_VIEW"](params) {
-    const { itemId, itemName, market_price, price, pics } = params;
+    const { itemId, goods_id, itemName, market_price, price, pics } = params;
     const data = resolveCartInfo({
       sku_id: itemId,
       sku_name: itemName,
       market_price,
       price,
-      goods_id: itemId,
+      goods_id: goods_id,
       goods_title: itemName,
       primary_image_url: pics[0]
     });
     Tracker.trackEvents("browse_sku_page", "浏览商品详情页", data);
   },
   // 商品卡曝光
-  ["EXPOSE_SKU_COMPONENT"](params) {
+  ["EXPOSE_SKU_COMPONENT"]( params ) {
     const { goodsId, title, market_price, price, imgUrl } = params;
     const data = resolveCartInfo({
       sku_id: goodsId,
@@ -276,7 +288,7 @@ const actions = {
     Tracker.trackEvents("add_to_cart", "从购物车彻底移除", data);
   },
   // 再次加车
-  ["append_to_cart"](params) { },
+  ["append_to_cart"](params) {},
   // 购物车追加
   ["APPEND_TO_CART_IN_CART"](params) {
     const {
@@ -311,7 +323,7 @@ const actions = {
       market_price,
       price,
       goods_id,
-      brief: goods_title
+      itemName: goods_title
     } = params;
 
     const data = resolveCartInfo(

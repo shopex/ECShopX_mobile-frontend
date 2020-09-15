@@ -11,21 +11,16 @@ export default class WgtGoodsGrid extends Component {
     addGlobalClass: true
   }
 
-  navigateTo(url) {
+  componentDidMount() {
+    this.startTrack();
+  }
+
+  navigateTo(url, item) {
     Taro.navigateTo({ url })
     if (item) {
       // 商品卡触发
       Tracker.dispatch("TRIGGER_SKU_COMPONENT", item);
     }
-  }
-
-  handleClickItem = ( item ) => {
-    // 商品卡触发
-    Tracker.dispatch("TRIGGER_SKU_COMPONENT", item);
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
-    Taro.navigateTo({
-      url
-    })
   }
 
   handleClickMore = () => {
@@ -34,6 +29,31 @@ export default class WgtGoodsGrid extends Component {
       linkPage(moreLink.linkPage, moreLink.id)
     } else {
       this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
+    }
+  }
+
+  startTrack() {
+    this.endTrack();
+    const observer = Taro.createIntersectionObserver(this.$scope, {
+      observeAll: true
+    });
+    observer.relativeToViewport({ bottom: 0 }).observe(".grid-item", res => {
+      console.log("res.intersectionRatio:", res.intersectionRatio);
+      if (res.intersectionRatio > 0) {
+        const { id } = res.dataset;
+        const { data } = this.state.info;
+        const curGoods = data.find( item => item.goodsId == id );
+        Tracker.dispatch("EXPOSE_SKU_COMPONENT", curGoods);
+      }
+    });
+
+    this.observe = observer;
+  }
+
+  endTrack() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observe = null;
     }
   }
 
@@ -90,7 +110,8 @@ export default class WgtGoodsGrid extends Component {
                   <View
                     key={`${idx}1`}
                     className={classNames('grid-item',{'grid-item-three': config.style=='grids'})}
-                    onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}&dtid=${item.distributor_id}`)}
+                    onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}&dtid=${item.distributor_id}`, item)}
+                    data-id={item.goodsId}
                   >
                     <View className='goods-wrap'>
                       <View className='thumbnail'>

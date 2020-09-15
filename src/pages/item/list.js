@@ -153,6 +153,8 @@ export default class List extends Component {
       evenList: [...this.state.evenList, ...even],
       showDrawer: false,
       query
+    }, () => {
+      this.startTrack();
     })
 
     if (this.firstStatus) {
@@ -177,6 +179,40 @@ export default class List extends Component {
 
     return {
       total
+    }
+  }
+
+  startTrack() {
+    this.endTrack();
+    const observer = Taro.createIntersectionObserver(this.$scope, {
+      observeAll: true
+    });
+    observer
+      .relativeToViewport({ bottom: 0 })
+      .observe(".goods-list__item", res => {
+        console.log("res.intersectionRatio:", res.intersectionRatio);
+        if (res.intersectionRatio > 0) {
+          const { id } = res.dataset;
+          const { list } = this.state
+          const curGoods = list.find( item => item.item_id == id );
+          const { item_id, title, market_price, price, img } = curGoods;
+          Tracker.dispatch("EXPOSE_SKU_COMPONENT", {
+            goodsId: item_id,
+            title: title,
+            market_price: market_price * 100,
+            price: price * 100,
+            imgUrl: img
+          });
+        }
+      });
+
+    this.observe = observer;
+  }
+
+  endTrack() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observe = null;
     }
   }
 
@@ -236,7 +272,15 @@ export default class List extends Component {
     })
   }
 
-  handleClickItem = (item) => {
+  handleClickItem = ( item ) => {
+    const { item_id, title, market_price, price, img } = item;
+    Tracker.dispatch("TRIGGER_SKU_COMPONENT", {
+      goodsId: item_id,
+      title: title,
+      market_price: market_price * 100,
+      price: price * 100,
+      imgUrl: img
+    });
     const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
     Taro.navigateTo({
       url
@@ -519,7 +563,11 @@ export default class List extends Component {
                 {
                   oddList.map(item => {
                     return (
-                      <View className='goods-list__item' key={item.item_id}>
+                      <View
+                        className="goods-list__item"
+                        key={item.item_id}
+                        data-id={item.item_id}
+                      >
                         <GoodsItem
                           key={item.item_id}
                           info={item}
@@ -527,7 +575,7 @@ export default class List extends Component {
                           onStoreClick={() => this.handleClickStore(item)}
                         />
                       </View>
-                    )
+                    );
                   })
                 }
               </View>
@@ -535,7 +583,11 @@ export default class List extends Component {
                 {
                   evenList.map(item => {
                     return (
-                      <View className='goods-list__item' key={item.item_id}>
+                      <View
+                        className="goods-list__item"
+                        key={item.item_id}
+                        data-id={item.item_id}
+                      >
                         <GoodsItem
                           key={item.item_id}
                           info={item}
@@ -543,7 +595,7 @@ export default class List extends Component {
                           onStoreClick={() => this.handleClickStore(item)}
                         />
                       </View>
-                    )
+                    );
                   })
                 }
               </View>
