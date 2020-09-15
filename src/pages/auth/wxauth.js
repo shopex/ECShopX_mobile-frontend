@@ -4,6 +4,8 @@ import { connect } from '@tarojs/redux'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
+import { tokenParse } from "@/utils";
+import { Tracker } from "@/service";
 
 import './wxauth.scss'
 
@@ -24,8 +26,17 @@ export default class WxAuth extends Component {
     const { code } = await Taro.login()
     try {
       const { token } = await api.wx.login({ code })
-      if (!token) throw new Error(`token is not defined: ${token}`)
-      S.setAuthToken(token)
+      if ( !token ) throw new Error( `token is not defined: ${token}` )
+      S.setAuthToken(token);
+      if (token) {
+        // 通过token解析openid
+        const userInfo = tokenParse(token);
+        Tracker.setVar({
+          user_id: userInfo.user_id,
+          open_id: userInfo.openid,
+          union_id: userInfo.unionid
+        });
+      }
       if (this.$router.params.redirect) {
         const memberInfo = await api.member.memberInfo()
         const userObj = {
@@ -159,6 +170,15 @@ export default class WxAuth extends Component {
       const { token, open_id, union_id, user_id } = await api.wx.prelogin(params)
 
       S.setAuthToken(token)
+      // 通过token解析openid
+      if ( token ) {
+        const userInfo = tokenParse( token );
+        Tracker.setVar( {
+          user_id: userInfo.user_id,
+          open_id: userInfo.openid,
+          union_id: userInfo.unionid  
+        } );
+      }
 
       // 绑定过，跳转会员中心
       if (user_id) {

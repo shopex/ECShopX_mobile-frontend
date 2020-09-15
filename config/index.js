@@ -16,7 +16,9 @@ const {
   INTEGRATION_APP,
   APP_MAP_KEY,
   APP_MAP_NAME,
-  APP_TRACK
+  APP_TRACK,
+  APP_ID,
+  APP_YOUSHU_TOKEN
 } = process.env;
 
 // 是否为web
@@ -79,7 +81,9 @@ const config = {
     APP_AUTH_PAGE: isWeb ? `'${APP_AUTH_PAGE}'` : APP_AUTH_PAGE,
     APP_MAP_KEY: `'${APP_MAP_KEY}'`,
     APP_MAP_NAME: `'${APP_MAP_NAME}'`,
-    APP_TRACK: `${APP_TRACK}`
+    APP_TRACK: `${APP_TRACK}`,
+    APP_ID: `'${APP_ID}'`,
+    APP_YOUSHU_TOKEN: `'${APP_YOUSHU_TOKEN}'`
   },
   alias: {
     "@": join(__dirname, "../src")

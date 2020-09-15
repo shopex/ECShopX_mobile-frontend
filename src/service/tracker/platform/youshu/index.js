@@ -48,11 +48,19 @@ export default class Youshu extends Base {
     });
   }
 
-  componentDidMount() {
+  componentDidShow() {
     sr.track("browse_wxapp_page");
   }
 
+  componentDidMount() {
+    // sr.track("browse_wxapp_page");
+  }
+
   componentDidHide() {
+    sr.track("leave_wxapp_page");
+  }
+
+  componentWillUnmount() {
     sr.track("leave_wxapp_page");
   }
 }

@@ -3,7 +3,7 @@ import { View, Form, Button, Text, Picker, Image } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { AtInput, AtButton } from 'taro-ui'
 import { SpToast, Timer, NavBar, SpCheckbox } from '@/components'
-import { classNames, isString, isArray } from '@/utils'
+import { classNames, isString, isArray, tokenParse } from "@/utils";
 import { Tracker } from "@/service";
 import S from '@/spx'
 import api from '@/api'
@@ -158,7 +158,16 @@ export default class Reg extends Component {
 
         const { code } = await Taro.login()
         const { token } = await api.wx.login({ code })
-        S.setAuthToken(token)
+        S.setAuthToken( token )
+        // 通过token解析openid
+        if ( token ) {
+          const userInfo = tokenParse(token);
+          Tracker.setVar({
+            user_id: userInfo.user_id,
+            open_id: userInfo.openid,
+            union_id: userInfo.unionid
+          });
+        }
       } else {
         const res = await api.user.reg(data)
         S.setAuthToken(res.token)
@@ -206,7 +215,6 @@ export default class Reg extends Component {
       }, 700)
     } catch (error) {
       return false
-      console.log(error)
     }
   }
 
@@ -282,7 +290,6 @@ export default class Reg extends Component {
       S.toast('发送成功')
     } catch (error) {
       return false
-      console.log(error)
     }
 
     resolve()
