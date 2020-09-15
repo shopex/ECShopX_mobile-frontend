@@ -476,7 +476,6 @@ export default class CartCheckout extends Component {
     if (salesperson_id) {
       params.salesperson_id = salesperson_id
     }
-    console.log(params)
     let data
     try {
       data = await api.cart.total(params)
@@ -488,9 +487,9 @@ export default class CartCheckout extends Component {
 
     const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params, coupon_info } = data
 
-    if (coupon_info) {
+    if (coupon_info && !this.props.coupon) {
       this.props.onChangeCoupon({
-        type: coupon_info.type,
+        type: 'coupon',
         value: {
           title: coupon_info.info,
           card_id: coupon_info.id,
@@ -801,8 +800,6 @@ export default class CartCheckout extends Component {
     let order_id, config, payErr
     try {
       let params = this.getParams()
-
-      
       if (APP_PLATFORM === 'standard') {
         const { distributor_id } = Taro.getStorageSync('curStore')
         params.distributor_id = this.getShopId() || distributor_id
@@ -825,7 +822,6 @@ export default class CartCheckout extends Component {
 
 
       if(process.env.TARO_ENV === 'h5' && payType !== 'point' &&  payType !== 'deposit' && !isDrug){
-        console.log(11111)
         config = await api.trade.h5create(params)
         Taro.redirectTo({
           url: `/pages/cashier/index?order_id=${config.order_id}`
@@ -1058,8 +1054,7 @@ export default class CartCheckout extends Component {
       delivery: '货到付款'
     }    
     const { coupon, colors } = this.props
-    console.log('coupon')
-    console.log(coupon)
+
     const { info, express, address, total, showAddressPicker, showCheckoutItems, curCheckoutItems, payType, invoiceTitle, submitLoading, disabledPayment, isPaymentOpend, isDrugInfoOpend, drug, third_params, shoppingGuideData, curStore } = this.state
     // let curStore = {}
     // if (shopData) {
