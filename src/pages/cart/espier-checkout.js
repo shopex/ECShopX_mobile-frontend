@@ -25,6 +25,9 @@ const transformCartList = (list) => {
     curSymbol: 'fee_symbol',
     discount_info: 'discount_info',
     order_item_type: 'order_item_type',
+    type: 'type',
+    origincountry_img_url: 'origincountry_img_url',
+    origincountry_name:'origincountry_name',
     pics: 'pic',
     price: ({ price }) => (+price / 100).toFixed(2),
     num: 'num',
@@ -1279,7 +1282,7 @@ export default class CartCheckout extends Component {
                                   : (<View className='order-item__idx national'>
                                     <Text>第{idx + 1}件商品</Text>
                                     {
-                                      item.type === '1' && <View className='nationalInfo'>
+                                      item.type == '1' && <View className='nationalInfo'>
                                           <Image className='nationalFlag' src={item.origincountry_img_url}  mode='aspectFill' lazyLoad />
                                           <Text className='nationalTitle'>
                                             { item.origincountry_name }
@@ -1289,6 +1292,7 @@ export default class CartCheckout extends Component {
                                   </View>)
                               }
                               <OrderItem
+                                // isShowNational
                                 info={item}
                                 showExtra={false}
                                 showDesc={true}
