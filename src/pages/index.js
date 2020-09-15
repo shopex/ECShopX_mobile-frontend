@@ -146,7 +146,7 @@ export default class HomeIndex extends Component {
           likeList: [],
           wgts: null
         }, () => {
-          this.fetchSetInfo()
+          this.fetchData()
         })
       }
     }
