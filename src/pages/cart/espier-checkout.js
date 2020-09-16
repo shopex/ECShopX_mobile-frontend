@@ -760,7 +760,7 @@ export default class CartCheckout extends Component {
     // }
 
     const { payType, total } = this.state
-    const { type } = this.$router.params
+    const { type, cart_type } = this.$router.params
     const isDrug = type === 'drug'
 
     if (payType === 'point' || payType === 'deposit') {
@@ -800,12 +800,9 @@ export default class CartCheckout extends Component {
     let order_id, config, payErr
     try {
       let params = this.getParams()
-      if (APP_PLATFORM === 'standard') {
+      if (APP_PLATFORM === 'standard' && cart_type !== 'cart') {
         const { distributor_id } = Taro.getStorageSync('curStore')
         params.distributor_id = this.getShopId() || distributor_id
-      } else {
-        const { shop_id } = this.$router.params
-        params.distributor_id = this.getShopId() || shop_id
       }
 
       delete params.items
