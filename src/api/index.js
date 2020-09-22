@@ -16,6 +16,7 @@ import * as user from './user'
 import * as vip from './vip'
 import * as group from './group'
 import * as groupBy from './groupBy'
+import * as boost from './boost'
 import * as wx from './wx'
 
 
@@ -38,5 +39,6 @@ export default {
 	track,
 	vip,
   group,
-  groupBy
+  groupBy,
+  boost
 }

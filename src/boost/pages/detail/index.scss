@@ -1,4 +1,17 @@
-.detail {
+@import "../../../style/imports";
+
+.home {
   width: 100%;
   height: 100%;
+  /*  #ifdef  h5  */
+    padding-top: $navigate-height-h5;
+  /*  #endif  */
+  .header {
+    width: 100%;
+    .adPic {
+      width: 100%;
+      height: 214px;
+      display: block;
+    }
+  }
 }
