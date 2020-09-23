@@ -6,11 +6,13 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-22 17:39:15
+ * @LastEditTime: 2020-09-23 18:27:21
  */
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, Button } from '@tarojs/components'
+import { View, Image, Text, Button } from '@tarojs/components'
 import { NavBar, SpHtmlContent } from '@/components'
+import { pickBy, calcTimer } from '@/utils'
+import { AtCountdown } from 'taro-ui'
 import api from '@/api'
 
 import './index.scss'
@@ -19,12 +21,43 @@ export default class Detail extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      adPic: ''
+      adPic: '',
+      info: {
+        item_name: '',
+        item_pics: '',
+        item_intro: '',
+        bargain_rules: '',
+        mkt_price: '0.00',
+        timeDown: {
+          dd: 0,
+          hh: 0,
+          mm: 0,
+          ss: 0
+        },
+        isSaleOut: false,
+        isOver: false
+      },
+      userInfo: {},
+      isJoin: false,
+      boostList: [],
+      orderInfo: {},
+      purchasePrice: '0.00'
     }
   }
   
   componentDidMount () {
     this.getBoostDetail()
+  }
+
+  onShareAppMessage () {
+    const { userInfo, info } = this.state
+    const userId = userInfo.user_id
+
+    return {
+      title: info.share_msg,
+      imageUrl: info.item_pics,
+      path: `/pages/flop/index?bargain_id=${info.bargain_id}&user_id=${userId}`
+    }    
   }
   
   config = {
@@ -33,27 +66,104 @@ export default class Detail extends Component {
 
   // 获取助力详情wechat-taroturntable
   getBoostDetail = async () => {
+    Taro.showLoading({mask: true})
     const { bargain_id } = this.$router.params
     const data = await api.boost.getDetail({
       template_name: 'yykcutdown',
       name: 'banner',
       page_name: 'pages/kanjia'
     })
-    const userBargain = await api.boost.getUserBargain({
+    const {
+      bargain_info = {},
+      user_bargain_info = {},
+      bargain_order = {},
+      bargain_log = {},
+      user_info = {}
+    } = await api.boost.getUserBargain({
       bargain_id,
       has_order: true
     })
+
+    const { mkt_price: mPrice, price } = bargain_info
+    const { user_id, cutdown_amount } = user_bargain_info
+    let purchasePrice = mPrice
+    const discount = mPrice - price
+    if (user_id && (discount > cutdown_amount)) {
+      purchasePrice = mPrice - cutdown_amount
+    }
+
     this.setState({
-      adPic: data[0].params.ad_pic
+      adPic: data[0].params.ad_pic,
+      info: pickBy(bargain_info, {
+        bargain_id: 'bargain_id',
+        item_name: 'item_name',
+        item_pics: 'item_pics',
+        item_intro: 'item_intro',
+        bargain_rules: 'bargain_rules',
+        share_msg: 'share_msg',
+        mkt_price: ({ mkt_price }) => (mkt_price / 100).toFixed(2),
+        timeDown: ({ left_micro_second }) => calcTimer(left_micro_second / 1000),
+        isSaleOut: ({ limit_num, order_num }) => (limit_num <= order_num),
+        isOver: ({ left_micro_second }) => left_micro_second <= 0,
+      }),
+      orderInfo: bargain_order,
+      boostList: bargain_log.list || [],
+      userInfo: user_info,
+      isJoin: !!user_bargain_info.user_id,
+      purchasePrice: (purchasePrice / 100).toFixed(2)
+    }, () => {
+      Taro.hideLoading()
     })
-    console.log(userBargain)
+  }
+
+  // 显示规则
+  showRule = () => {
+    const { info } = this.state
+    Taro.showModal({
+      title: '活动',
+      content: info.bargain_rules,
+      showCancel: false
+    })
+  }
+
+  handleSubmit = async () => {
+    const { info, isJoin, orderInfo } = this.state
+
+    const isDisabled = (info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE') 
+    if (isDisabled) return false
+    if (isJoin) {
+      console.log('优惠购买')
+      let url = `/boost/pages/pay/index?bargain_id=${info.bargain_id}`
+      if (orderInfo.order_id) {
+        url = `/boost/pages/payDetail/index?order_id=${orderInfo.order_id}`
+      }
+      Taro.navigateTo({ url })
+    } else {
+      console.log('发起助力')
+      const res = await api.boost.postUserBargain({
+        bargain_id: info.bargain_id
+      })
+      if (res) {
+        Taro.showToast({
+          title: '发起成功',
+          icon: 'none',
+          mask: true,
+          duration: 1500,
+        })
+        setTimeout(() => {
+          this.getBoostDetail()
+        }, 1500)
+      }
+    }
   }
 
   render () {
-    const goodInfo = {}
-    const { adPic } = this.state
+    const { adPic, info, isJoin, boostList, orderInfo, purchasePrice, userInfo } = this.state
+
+    const isDisabled = info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE'
+
     return (
-      <View className='home'>
+      <View className='detail'>
         <NavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
@@ -61,17 +171,103 @@ export default class Detail extends Component {
         />
         <View className='header'>
           <Image className='adPic' src={adPic} mode='aspectFill' />
-          <Button>活动规则</Button>
-          头部内容
+        </View>
+        <View className='rule'>
+          <View className='actBtn' onClick={this.showRule.bind(this)}>活动规则</View>
         </View>
         <View className='main'>
-          主内容
+          <View className='good'>
+            <Image src={info.item_pics} mode='aspectFill' className='img' />
+            <View className='info'>
+              <View className='title'>
+                { info.item_name }
+              </View>
+              <View className='price'>
+                ¥{ info.mkt_price }
+              </View>
+              {
+                (!info.isOver && info.timeDown) && <View className='timedown'>
+                  <View className='tip'>活动仅剩:</View>
+                  <AtCountdown 
+                    className='countdown__time'
+                    format={{ day: '天', hours: ':', minutes: ':', seconds: '' }}
+                    isShowDay
+                    day={info.timeDown.dd}
+                    hours={info.timeDown.hh}
+                    minutes={info.timeDown.mm}
+                    seconds={info.timeDown.ss}
+                    onTimeUp={this.getBoostDetail.bind(this)}
+                  />
+                </View>
+              }
+            </View>
+          </View>
           {
-            goodInfo.intro && !Array.isArray(goodInfo.intro) 
-              ? <SpHtmlContent content={goodInfo.intro} className='richText' />
-              : <View>暂无详情</View>
-          }
+            isJoin && <View>
+              <View className='share'>
+                <Button openType='share' className='item'>
+                  邀请好友助力
+                </Button>
+                <View className='item'>
+                  朋友圈海报
+                </View>
+              </View>
+              <View className='boost'>
+                <Image src={userInfo.headimgurl} class='avatar'></Image>
+                我正在邀请好友助力领取
+                <Text class='strong-txt'>{info.item_name}</Text>的折价优惠！
+              </View>
+              <View className='boostMain'>
+                <View className='title'>好友助力榜</View>
+                {
+                  (boostList && boostList.length > 0) ? <View className='boostList'>
+                    {
+                      boostList.map((item, index) => <View key={`${item.nickname}${index}`} className='boostItem'>
+                        <View className='left'>
+                          <Image src={info.headimgurl} mode='aspectFill' className='img' />
+                        </View>
+                        <View className='right'>
+                          <View className='name'>{ item.nickname }</View>
+                          <View>
+                            { item.cutdown_num >= 0 ? `减掉` : '增加'}{ (item.cutdown_num / 100).toFixed(2) }
+                          </View>
+                        </View>
+                        { item.cutdown_num < 0 && <View className='tag'>帮了倒忙</View> }
+                      </View>)
+                    }
+                    </View>
+                    :
+                    <View className='boostList noHelp'>暂无好友相助~
+                    </View>
+                }                
+              </View>
+            </View>
+          }   
+          <View className='goodDetail'>
+            <View className='h5'>
+              <Text>商品详情</Text>
+            </View>
+            {
+              (info.item_intro && Array.isArray(info.item_intro)) 
+                ? <SpHtmlContent content={info.item_intro || []} className='richText' />
+                : <View>{ info.item_intro ? info.item_intro : '暂无详情'}</View>
+            }
+          </View>
         </View>
+        <Button
+          disabled={isDisabled}
+          className={`showBtn ${isDisabled && 'disabled'}`}
+          onClick={this.handleSubmit.bind(this)}
+        >
+          {
+            isDisabled ? <Text>
+              { info.isOver && '已过期' }
+              { info.isSaleOut && '已售罄' }
+              { orderInfo.order_status === 'DONE' && '已购买' }
+            </Text> :
+            <Text>{ isJoin ? `¥${purchasePrice} 优惠购买` : '发起助力' }</Text>
+          }
+        </Button>
       </View>
     )
   }
