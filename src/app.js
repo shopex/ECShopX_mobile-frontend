@@ -213,7 +213,10 @@ class App extends Component {
         root: 'boost',
         pages: [
           'pages/home/index',
-          'pages/detail/index'
+          'pages/detail/index',
+          'pages/flop/index',
+          'pages/pay/index',
+          'pages/payDetail/index',
         ]
       },
       {

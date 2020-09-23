@@ -6,13 +6,13 @@
  * @FilePath: /unite-vshop/src/boost/pages/home/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-22 18:36:38
+ * @LastEditTime: 2020-09-23 11:49:29
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { NavBar } from '@/components'
 import api from '@/api'
-import { debounce } from '@/utils'
+import { debounce, pickBy } from '@/utils'
 import LoadingMore from '../../component/loadingMore'
 import BargainItem from '../../component/bargainItem'
 
@@ -48,8 +48,16 @@ export default class Home extends Component {
     const data = await api.boost.getList(param)
     const total_count = data.total_count
     const isEnd = param.page >= (total_count / param.pageSize)
+    const newList = pickBy(data.list, {
+      item_pics: 'item_pics',
+      item_name: 'item_name',
+      bargain_id: 'bargain_id',
+      mkt_price: ({ mkt_price }) => (mkt_price / 100).toFixed(2),
+      price: ({ price }) => (price / 100).toFixed(2),
+      diff_price: ({ mkt_price, price }) => ((mkt_price - price) / 100).toFixed(2)
+    })
     this.setState({
-      list: isRefrsh ? data.list : [...list, ...data.list],
+      list: isRefrsh ? data.list : [...list, ...newList],
       isRefresh: false,
       isLoading: false,
       isEnd,
@@ -121,7 +129,9 @@ export default class Home extends Component {
         >
           {/* 列表图 */}
           {
-            list.map(item => <BargainItem key={item.bargain_id} info={item} />)
+            list.map(item => <View className='item' key={item.bargain_id}>
+              <BargainItem info={item} />
+            </View>)
           }
           {/* 加载更多 */}
           <LoadingMore isLoading={isLoading} isEnd={isEnd} isEmpty={isEmpty} />
