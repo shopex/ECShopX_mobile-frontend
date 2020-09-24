@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-23 18:27:21
+ * @LastEditTime: 2020-09-24 13:49:02
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button } from '@tarojs/components'
@@ -135,7 +135,7 @@ export default class Detail extends Component {
       console.log('优惠购买')
       let url = `/boost/pages/pay/index?bargain_id=${info.bargain_id}`
       if (orderInfo.order_id) {
-        url = `/boost/pages/payDetail/index?order_id=${orderInfo.order_id}`
+        url = `/boost/pages/payDetail/index?bargain_id=${info.bargain_id}`
       }
       Taro.navigateTo({ url })
     } else {
