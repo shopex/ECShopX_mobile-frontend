@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/flop/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-24 15:55:20
+ * @LastEditTime: 2020-09-24 17:25:15
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Progress, Text, Button } from '@tarojs/components'
@@ -17,6 +17,15 @@ import './index.scss'
 export default class Flop extends Component {
   constructor (props) {
     super(props)
+
+    this.state = {
+      info: {},
+      orderInfo: {},
+      boostList: [],
+      userInfo: {},
+      isJoin: false,
+      isDiscount: false
+    }
   }
 
   componentDidMount () {
@@ -30,7 +39,6 @@ export default class Flop extends Component {
     const {
       bargain_info = {},
       user_bargain_info = {},
-      bargain_order = {},
       bargain_log = {},
       user_info = {}
     } = await api.boost.getUserBargain({
@@ -52,14 +60,61 @@ export default class Flop extends Component {
         isSaleOut: ({ limit_num, order_num }) => (limit_num <= order_num),
         isOver: ({ left_micro_second }) => left_micro_second <= 0,
       }),
-      orderInfo: bargain_order,
       boostList: bargain_log.list || [],
       userInfo: user_info,
-      isJoin: !!user_bargain_info.user_id,
+      isJoin: !!user_bargain_info.user_id
     }, () => {
       Taro.hideLoading()
     })
   }  
+
+  handleDiscount = async () => {
+    const { info, userInfo, isDiscount } = this.state
+    if (isDiscount) return false
+    this.setState({
+      isDiscount: true
+    })
+    Taro.showLoading({
+      title: '帮砍中',
+      mask: true
+    })
+    const param = {
+      bargain_id: info.bargain_id,
+      user_id: userInfo.user_id,
+      open_id: userInfo.open_id,
+      nickname: userInfo.nickName,
+      headimgurl: userInfo.avatarUrl
+    }
+    try {
+      await api.boost.postDiscount(param)
+      Taro.showToast({
+        title: '助力成功',
+        mask: true
+      })
+      this.getBoostDetail()
+    } catch (e) {
+      console.log(e.res)
+    }
+    this.setState({
+      isDiscount: false
+    })
+    Taro.hideLoading()    
+  }
+
+  handleJoin = () => {
+    const { info } = this.state
+    if (info.isOver) {
+      Taro.showToast({
+        title: '活动已结束',
+        icon: 'none',
+        mask: true
+      })
+    } else {
+      Taro.navigateTo({
+        url: `/boost/pages/detail/index?bargain_id=${info.bargain_id}`
+      })
+    }
+  }
 
   render () {
     const { info, boostList, isDisabled } = this.state
@@ -77,6 +132,23 @@ export default class Flop extends Component {
               </View>
             </View>
           </View>
+        </View>
+        <View className='discount'>
+          <View className='imgs'>
+            <Image src={require('../../../assets/imgs/discount_random_bg.png')} mode='aspectFill' className='banners' />
+            <Image src={require('../../../assets/imgs/icon_3.png')} mode='aspectFill' className='logo' />
+          </View>
+          <View className='tip'>
+            <View>点击任意一张卡片</View>
+            <View>帮助好友领取随机折扣优惠</View>
+          </View>
+          {
+            (info.help_pics && info.help_pics.length > 0 )&& <View className='discountImg'>
+              {
+                info.help_pics.map((item, index) => <Image key={`${item}${index}`}  src={item} mode='aspectFill' className='img' onClick={this.handleDiscount.bind(this)} />)
+              }
+            </View>
+          }
         </View>
         <View className='boostMain'>
           <View className='title'>好友助力榜</View>
@@ -105,7 +177,7 @@ export default class Flop extends Component {
         <Button
           disabled={isDisabled}
           className={`showBtn ${isDisabled && 'disabled'}`}
-          // onClick={this.handleSubmit.bind(this)}
+          onClick={this.handleJoin.bind(this)}
         >
           我也要参加
         </Button>               

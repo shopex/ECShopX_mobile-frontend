@@ -26,17 +26,61 @@ page {
       justify-content: space-between;
       .title {
         font-weight: bold;
-        margin-bottom: 20px;
       }
       .interval {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-top: 10px;
         .text {
           font-size: 20px;
         }
       }
     }    
+  }
+  .discount {
+    width: 100%;
+    background: #fff;
+    padding: 0 20px;
+    .imgs {
+      padding: 30px 20px;
+      width: 100%;
+      position: relative;
+      height: 250px;
+      .banners {
+        width: 70%;
+        display: block;
+        height: 130px;
+        margin: 0 auto;
+      }
+      .logo {
+        width: 172px;
+        height: 95px;
+        margin: 0 auto;
+        display: block;
+        position: absolute;
+        top: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    .tip {
+      color: #333;
+      text-align: center;
+      padding-bottom: 20px;
+    }
+    .discountImg {
+      padding: 20px 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: nowrap;
+      background: #efefef;
+      .img {
+        width: 150px;
+        height: 150px;
+        margin: 0 5px;
+      }
+    }
   }
   .boostMain {
     padding: 20px;
@@ -95,6 +139,7 @@ page {
     font-size: 32px;
     outline: none;
     border: none;
+    border-radius: 0;
     .isDisabled {
       background-color: #7b6f73;
     }
