@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/payDetail/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-24 15:26:55
+ * @LastEditTime: 2020-09-24 17:21:40
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
@@ -15,6 +15,7 @@ import api from '@/api'
 import { NavBar } from '@/components'
 
 import './index.scss'
+import { findLast } from 'lodash'
 
 export default class PayDetail extends Component {
   constructor (props) {
@@ -79,31 +80,26 @@ export default class PayDetail extends Component {
       order_id: info.order_id,
       total_fee: info.num_total
     }
-    const res = await api.boost.getPayConfig(param)
-    if (res.appId) {
-      try {
+    try {
+      const res = await api.boost.getPayConfig(param)
+      if (res.appId) {
         await Taro.requestPayment(res)
-      } catch (e) {
-        let errMsg = '支付失败'
-        if (e.errMsg === 'requestPayment:fail cancel') {
-          errMsg = '取消支付'
-        }
-        Taro.showToast({
-          title: errMsg,
-          icon: 'none',
-          mask: true
-        })
       }
-    } else {
+    } catch (e) {
+      if (e.res) return false
+      let errMsg = '支付失败'
+      if (e.errMsg === 'requestPayment:fail cancel') {
+        errMsg = '取消支付'
+      }
       Taro.showToast({
-        title: '获取支付信息失败',
+        title: errMsg,
         icon: 'none',
         mask: true
       })
     }
     this.setState({
       isLoading: false
-    })
+    })    
   }
   
   render () {

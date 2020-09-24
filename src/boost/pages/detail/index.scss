@@ -83,15 +83,32 @@
       text-align: center;
       background: #fff;
       padding: 30px 20px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
       .avatar {
-        display: block;
         width: 99rpx;
         height: 99rpx;
         border-radius: 50%;
         margin: 0 auto 20px auto;
       }
-      .strong-txt {
-        color: #a2564c;
+      .content {
+        .strong-txt {
+          color: #a2564c;
+        }
+        .progress {
+          margin-top: 30px;
+          .price {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            text {
+              &:last-child {
+                color: #e50909;
+              }
+            }
+          }
+        }
       }
     } 
     .boostMain {
@@ -179,6 +196,7 @@
     font-size: 32px;
     outline: none;
     border: none;
+    border-radius: 0;
     .isDisabled {
       background-color: #7b6f73;
     }

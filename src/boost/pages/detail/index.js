@@ -6,10 +6,10 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-24 13:49:02
+ * @LastEditTime: 2020-09-24 17:47:43
  */
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, Text, Button } from '@tarojs/components'
+import { View, Image, Text, Button, Progress } from '@tarojs/components'
 import { NavBar, SpHtmlContent } from '@/components'
 import { pickBy, calcTimer } from '@/utils'
 import { AtCountdown } from 'taro-ui'
@@ -41,7 +41,8 @@ export default class Detail extends Component {
       isJoin: false,
       boostList: [],
       orderInfo: {},
-      purchasePrice: '0.00'
+      purchasePrice: '0.00',
+      cutPercent: 0
     }
   }
   
@@ -56,7 +57,7 @@ export default class Detail extends Component {
     return {
       title: info.share_msg,
       imageUrl: info.item_pics,
-      path: `/pages/flop/index?bargain_id=${info.bargain_id}&user_id=${userId}`
+      path: `/boost/pages/flop/index?bargain_id=${info.bargain_id}&user_id=${userId}`
     }    
   }
   
@@ -84,10 +85,11 @@ export default class Detail extends Component {
       has_order: true
     })
 
-    const { mkt_price: mPrice, price } = bargain_info
+    const { mkt_price: mPrice, price: pPrice } = bargain_info
     const { user_id, cutdown_amount } = user_bargain_info
     let purchasePrice = mPrice
-    const discount = mPrice - price
+    const discount = mPrice - pPrice
+    const cutPercent = cutdown_amount / (mPrice - pPrice)
     if (user_id && (discount > cutdown_amount)) {
       purchasePrice = mPrice - cutdown_amount
     }
@@ -102,6 +104,7 @@ export default class Detail extends Component {
         bargain_rules: 'bargain_rules',
         share_msg: 'share_msg',
         mkt_price: ({ mkt_price }) => (mkt_price / 100).toFixed(2),
+        price: ({ price }) => (price / 100).toFixed(2),
         timeDown: ({ left_micro_second }) => calcTimer(left_micro_second / 1000),
         isSaleOut: ({ limit_num, order_num }) => (limit_num <= order_num),
         isOver: ({ left_micro_second }) => left_micro_second <= 0,
@@ -110,7 +113,8 @@ export default class Detail extends Component {
       boostList: bargain_log.list || [],
       userInfo: user_info,
       isJoin: !!user_bargain_info.user_id,
-      purchasePrice: (purchasePrice / 100).toFixed(2)
+      purchasePrice: (purchasePrice / 100).toFixed(2),
+      cutPercent
     }, () => {
       Taro.hideLoading()
     })
@@ -158,7 +162,7 @@ export default class Detail extends Component {
   }
 
   render () {
-    const { adPic, info, isJoin, boostList, orderInfo, purchasePrice, userInfo } = this.state
+    const { adPic, info, isJoin, boostList, orderInfo, purchasePrice, userInfo, cutPercent } = this.state
 
     const isDisabled = info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE'
 
@@ -203,7 +207,7 @@ export default class Detail extends Component {
             </View>
           </View>
           {
-            isJoin && <View>
+            (isJoin && cutPercent !== 1) && <View>
               <View className='share'>
                 <Button openType='share' className='item'>
                   邀请好友助力
@@ -214,8 +218,17 @@ export default class Detail extends Component {
               </View>
               <View className='boost'>
                 <Image src={userInfo.headimgurl} class='avatar'></Image>
-                我正在邀请好友助力领取
-                <Text class='strong-txt'>{info.item_name}</Text>的折价优惠！
+                <View className='content'>
+                  我正在邀请好友助力领取
+                  <Text class='strong-txt'>{info.item_name}</Text>的折价优惠！
+                  <View className='progress'>
+                    <Progress percent={cutPercent * 100} activeColor='#a2564c' backgroundColor='#f0eeed' strokeWidth={6} active />
+                    <View className='price'>
+                      <Text>¥{ info.mkt_price }</Text>
+                      <Text>¥{ info.price }</Text>
+                    </View>
+                  </View>
+                </View>
               </View>
               <View className='boostMain'>
                 <View className='title'>好友助力榜</View>
