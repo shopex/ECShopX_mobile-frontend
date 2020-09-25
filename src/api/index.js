@@ -1,3 +1,13 @@
+/*
+ * @Author: Arvin
+ * @GitHub: https://github.com/973749104
+ * @Blog: https://liuhgxu.com
+ * @Description: 说明
+ * @FilePath: /unite-vshop/src/api/index.js
+ * @Date: 2020-09-24 16:08:41
+ * @LastEditors: Arvin
+ * @LastEditTime: 2020-09-25 13:59:40
+ */
 import * as article from './article'
 import * as aftersales from './aftersales'
 import * as cart from './cart'
@@ -17,6 +27,7 @@ import * as vip from './vip'
 import * as group from './group'
 import * as groupBy from './groupBy'
 import * as wx from './wx'
+import * as wheel from './wheel'
 
 
 export default {
@@ -38,5 +49,6 @@ export default {
 	track,
 	vip,
   group,
-  groupBy
+  groupBy,
+  wheel
 }
