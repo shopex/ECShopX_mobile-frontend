@@ -6,13 +6,13 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-24 17:47:43
+ * @LastEditTime: 2020-09-25 13:38:46
  */
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, Text, Button, Progress } from '@tarojs/components'
+import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
 import { NavBar, SpHtmlContent } from '@/components'
 import { pickBy, calcTimer } from '@/utils'
-import { AtCountdown } from 'taro-ui'
+import { AtCountdown, AtIcon } from 'taro-ui'
 import api from '@/api'
 
 import './index.scss'
@@ -42,7 +42,9 @@ export default class Detail extends Component {
       boostList: [],
       orderInfo: {},
       purchasePrice: '0.00',
-      cutPercent: 0
+      cutPercent: 0,
+      showPoster: false,
+      posterImg: ''
     }
   }
   
@@ -130,20 +132,61 @@ export default class Detail extends Component {
     })
   }
 
+  // 绘制海报
+  drawPoster = async () => {
+    const { info, adPic, userInfo } = this.state
+    const host = APP_BASE_URL.replace('api/h5app/wxapp', '')
+    const codeUrl = `${host}${api.boost.codeUrl}`
+    const adImg = await Taro.getImageInfo({src: adPic})
+    const codeImg = await Taro.getImageInfo({src: codeUrl})
+    const context = wx.createCanvasContext('cardCanvas')
+    context.drawImage(adImg.path, 0, 0, 375, 380)
+    context.save()
+    var bgBox = context.createLinearGradient(0, 0, 0, 600)
+    bgBox.addColorStop(0, '#f4eee3')
+    bgBox.addColorStop(1, 'white')
+    context.setFillStyle(bgBox)
+    context.fillRect(0, 380, 375, 220)
+    // context.restore()
+    context.save()
+    context.setFillStyle('Azure')
+    context.setShadow(26, 26, 50, 'Black')
+    context.fillRect(127, 340, 70, 60)
+    context.restore()
+    context.save()
+    context.drawImage(codeImg.path, 127, 340, 121, 111)
+    // context.restore()
+    context.save()
+    context.setFontSize(14)
+    context.setFillStyle('#333333')
+    context.setTextAlign('center')
+    context.fillText(`我是${userInfo.nickname}邀请您一起帮我砍价`, 187, 480)
+    context.save()
+    context.setFillStyle('#a2564c')
+    context.fillText(info.item_name, 187, 504)
+    context.restore()
+    context.draw()
+  }
+
+  // 显示海报
+  showPoster = () => {
+    this.setState({
+      showPoster: true
+    })
+  }
+
   handleSubmit = async () => {
     const { info, isJoin, orderInfo } = this.state
 
     const isDisabled = (info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE') 
     if (isDisabled) return false
     if (isJoin) {
-      console.log('优惠购买')
       let url = `/boost/pages/pay/index?bargain_id=${info.bargain_id}`
       if (orderInfo.order_id) {
         url = `/boost/pages/payDetail/index?bargain_id=${info.bargain_id}`
       }
       Taro.navigateTo({ url })
     } else {
-      console.log('发起助力')
       const res = await api.boost.postUserBargain({
         bargain_id: info.bargain_id
       })
@@ -162,7 +205,18 @@ export default class Detail extends Component {
   }
 
   render () {
-    const { adPic, info, isJoin, boostList, orderInfo, purchasePrice, userInfo, cutPercent } = this.state
+    const {
+      adPic,
+      info,
+      isJoin,
+      boostList,
+      orderInfo,
+      purchasePrice,
+      userInfo,
+      cutPercent,
+      showPoster,
+      posterImg
+    } = this.state
 
     const isDisabled = info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE'
 
@@ -212,7 +266,7 @@ export default class Detail extends Component {
                 <Button openType='share' className='item'>
                   邀请好友助力
                 </Button>
-                <View className='item'>
+                <View className='item' onClick={this.showPoster.bind(this)}>
                   朋友圈海报
                 </View>
               </View>
@@ -281,6 +335,16 @@ export default class Detail extends Component {
             <Text>{ isJoin ? `¥${purchasePrice} 优惠购买` : '发起助力' }</Text>
           }
         </Button>
+        {/* 海报 */}
+        <Canvas canvasId='poster' style='width: 375px; height: 640px;' className='posterCanvas' />
+        {
+          showPoster && <View className='imgContent' onTouchMove={this.stopTouch}>
+            <Image className='posterImg' mode='widthFix' onClick={this.previewImage.bind(this, posterImg)} src={posterImg} />
+            <View className='closePoster' onClick={() => { this.setState({showPoster: false})}}>
+              <AtIcon value='close-circle' size='30' color='#fff' />
+            </View>
+          </View>
+        }        
       </View>
     )
   }
