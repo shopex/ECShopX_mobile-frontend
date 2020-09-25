@@ -98,6 +98,7 @@ export default class MemberIndex extends Component {
       userId: res.memberInfo.user_id,
       isPromoter: res.is_promoter,
       mobile: res.memberInfo.mobile,
+      openid: res.memberInfo.open_id,
       vip: res.vipgrade ? res.vipgrade.vip_type : ''
     }
     if(!resUser || resUser.username !== userObj.username || resUser.avatar !== userObj.avatar) {
@@ -108,6 +109,7 @@ export default class MemberIndex extends Component {
           avatar: res.memberInfo.avatar,
           mobile: res.memberInfo.mobile,
           isPromoter: res.is_promoter,
+          openid: res.memberInfo.open_id,
           vip: res.vipgrade ? res.vipgrade.vip_type : ''
         }
       })
@@ -184,7 +186,7 @@ export default class MemberIndex extends Component {
 
   beDistributor = async () => {
     const { info } = this.state
-    const { username, avatar, isPromoter, mobile } = info
+    const { username, avatar, isPromoter, mobile, openid } = info
     if ( isPromoter ) {
       Taro.navigateTo({
         url: '/marketing/pages/distribution/index'
@@ -215,6 +217,7 @@ export default class MemberIndex extends Component {
         avatar,
         mobile,
         isPromoter: true,
+        openid,
         vip: info.vipgrade ? info.vipgrade.vip_type : '',
       }
       // console.log(userinfo)

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/flop/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-24 17:25:15
+ * @LastEditTime: 2020-09-25 11:40:01
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Progress, Text, Button } from '@tarojs/components'
@@ -20,10 +20,10 @@ export default class Flop extends Component {
 
     this.state = {
       info: {},
-      orderInfo: {},
+      // orderInfo: {},
       boostList: [],
-      userInfo: {},
-      isJoin: false,
+      // userInfo: {},
+      // isJoin: false,
       isDiscount: false
     }
   }
@@ -38,9 +38,9 @@ export default class Flop extends Component {
     const { bargain_id } = this.$router.params
     const {
       bargain_info = {},
-      user_bargain_info = {},
+      // user_bargain_info = {},
       bargain_log = {},
-      user_info = {}
+      // user_info = {}
     } = await api.boost.getUserBargain({
       bargain_id,
       has_order: true
@@ -61,15 +61,16 @@ export default class Flop extends Component {
         isOver: ({ left_micro_second }) => left_micro_second <= 0,
       }),
       boostList: bargain_log.list || [],
-      userInfo: user_info,
-      isJoin: !!user_bargain_info.user_id
+      // userInfo: user_info,
+      // isJoin: !!user_bargain_info.user_id
     }, () => {
       Taro.hideLoading()
     })
   }  
 
   handleDiscount = async () => {
-    const { info, userInfo, isDiscount } = this.state
+    const { info, isDiscount } = this.state
+    const userInfo = Taro.getStorageSync('userinfo') || {}
     if (isDiscount) return false
     this.setState({
       isDiscount: true
@@ -80,10 +81,10 @@ export default class Flop extends Component {
     })
     const param = {
       bargain_id: info.bargain_id,
-      user_id: userInfo.user_id,
-      open_id: userInfo.open_id,
-      nickname: userInfo.nickName,
-      headimgurl: userInfo.avatarUrl
+      user_id: userInfo.userId,
+      open_id: userInfo.openid,
+      nickname: userInfo.username,
+      headimgurl: userInfo.avatar
     }
     try {
       await api.boost.postDiscount(param)

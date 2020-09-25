@@ -211,4 +211,35 @@
     border-radius: 10px;
     background: #a2564c;
   }
+  .posterCanvas {
+    width: 375PX;
+    height: 640PX;
+    position: fixed;
+    top: -200%;
+    left: -200%;
+  } 
+  .imgContent {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba($color: #000000, $alpha: 0.3);
+    .posterImg {
+      width: 85%;
+      max-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .closePoster {
+      color: #fff;
+      margin-top: 20px;
+    }
+  }   
 }

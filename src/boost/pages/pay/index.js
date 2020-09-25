@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/pay/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-24 17:05:05
+ * @LastEditTime: 2020-09-25 10:52:37
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Textarea, View, Image, Text, Button } from '@tarojs/components'
@@ -151,7 +151,7 @@ export default class Pay extends Component {
     }
     try {
       const res = await api.boost.pay(param)
-      if (res.order_id) {
+      if (res.appId) {
         await Taro.requestPayment(res)
       }
     } catch (e) {
