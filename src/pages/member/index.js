@@ -18,6 +18,7 @@ export default class MemberIndex extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      turntable_open: 0,
       info: {
         deposit: '',
         point: '',
@@ -54,6 +55,7 @@ export default class MemberIndex extends Component {
       frontColor: '#ffffff'
     })
     this.fetch()
+    this.getWheel()
   }
 
   componentDidShow () {
@@ -140,6 +142,15 @@ export default class MemberIndex extends Component {
     this.setState({
       salespersonData: Array.isArray(data) ? false : data
     })
+  }
+
+  // 转盘抽奖
+  async getWheel() {
+    const data = await api.wheel.getTurntableconfig()
+    this.setState({
+      turntable_open: data.turntable_open
+    })
+    console.log('大转盘', data.turntable_open)
   }
 
   handleClickRecommend = async () => {
@@ -269,7 +280,7 @@ export default class MemberIndex extends Component {
 
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData} = this.state
+    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open} = this.state
     const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
     return (
       <View className='page-member-index'>
@@ -548,8 +559,13 @@ export default class MemberIndex extends Component {
               </SpCell>
             }            
           </View>
+          {
+            turntable_open === '1' ?
+              <View className='wheel-to' onClick={this.handleClick.bind(this, '/marketing/pages/wheel/index')} >
+                <Image src='/assets/imgs/wheel_modal_icon.png' />
+              </View> : null
+          }
         </ScrollView>
-
         <SpToast />
 
         <TabBar />
