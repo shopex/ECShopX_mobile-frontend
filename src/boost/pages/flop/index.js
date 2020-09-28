@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/flop/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 14:33:44
+ * @LastEditTime: 2020-09-28 18:13:39
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Progress, Text, Button } from '@tarojs/components'
@@ -14,6 +14,7 @@ import { pickBy } from '@/utils'
 import { NavBar } from '@/components'
 import api from '@/api'
 import './index.scss'
+import { set } from 'lodash'
 
 export default class Flop extends Component {
   constructor (props) {
@@ -23,7 +24,7 @@ export default class Flop extends Component {
       info: {},
       // orderInfo: {},
       boostList: [],
-      // userInfo: {},
+      userInfo: {},
       // isJoin: false,
       isDiscount: false,
       cutPercent: 0
@@ -41,15 +42,15 @@ export default class Flop extends Component {
   // 获取助力详情wechat-taroturntable
   getBoostDetail = async () => {
     Taro.showLoading({mask: true})
-    const { bargain_id } = this.$router.params
+    const { bargain_id, user_id } = this.$router.params
     const {
       bargain_info = {},
       user_bargain_info = {},
       bargain_log = {},
-      // user_info = {}
+      user_info = {}
     } = await api.boost.getUserBargain({
       bargain_id,
-      has_order: true
+      user_id
     })
     const { mkt_price: mPrice, price: pPrice } = bargain_info
     const { cutdown_amount } = user_bargain_info
@@ -69,8 +70,8 @@ export default class Flop extends Component {
         isOver: ({ left_micro_second }) => left_micro_second <= 0,
       }),
       boostList: bargain_log.list || [],
-      cutPercent
-      // userInfo: user_info,
+      cutPercent,
+      userInfo: user_info
       // isJoin: !!user_bargain_info.user_id
     }, () => {
       Taro.hideLoading()
@@ -78,8 +79,8 @@ export default class Flop extends Component {
   }  
 
   handleDiscount = async () => {
-    const { info, isDiscount } = this.state
-    const userInfo = Taro.getStorageSync('userinfo') || {}
+    const { info, isDiscount, userInfo } = this.state
+    const myInfo = Taro.getStorageSync('userinfo') || {}
     if (isDiscount) return false
     this.setState({
       isDiscount: true
@@ -90,27 +91,29 @@ export default class Flop extends Component {
     })
     const param = {
       bargain_id: info.bargain_id,
-      user_id: userInfo.userId,
-      open_id: userInfo.openid,
-      nickname: userInfo.username,
-      headimgurl: userInfo.avatar
+      user_id: userInfo.user_id,
+      open_id: myInfo.openid,
+      nickname: myInfo.username,
+      headimgurl: myInfo.avatar
     }
     try {
       const res = await api.boost.postDiscount(param)
       const price = Math.abs(res.cutdown_num / 100).toFixed(2)
-      const msg = res.cutdown_num > 0 ? `太棒了！成功助力好友` : `对不起，助力失败！增加${price}`
+      const msg = (res.cutdown_num > 0) ? `太棒了！成功助力好友` : `对不起，助力失败！增加${price}`
+      Taro.hideLoading()
       Taro.showToast({
         title: msg,
         mask: true
       })
-      this.getBoostDetail()
+      setTimeout(() => {
+        this.getBoostDetail()
+      }, 1500)
     } catch (e) {
-      console.log(e.res)
+      Taro.hideLoading()
     }
     this.setState({
       isDiscount: false
-    })
-    Taro.hideLoading()    
+    })    
   }
 
   handleJoin = () => {
@@ -174,7 +177,7 @@ export default class Flop extends Component {
               {
                 boostList.map((item, index) => <View key={`${item.nickname}${index}`} className='boostItem'>
                   <View className='left'>
-                    <Image src={info.headimgurl} mode='aspectFill' className='img' />
+                    <Image src={item.headimgurl} mode='aspectFill' className='img' />
                   </View>
                   <View className='right'>
                     <View className='name'>{ item.nickname }</View>
