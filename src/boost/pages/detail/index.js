@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 13:57:41
+ * @LastEditTime: 2020-09-28 18:25:01
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -88,12 +88,14 @@ export default class Detail extends Component {
       has_order: true
     })
 
+    console.log(bargain_log)
+
     const { mkt_price: mPrice, price: pPrice } = bargain_info
     const { user_id, cutdown_amount } = user_bargain_info
     let purchasePrice = mPrice
     const discount = mPrice - pPrice
     const cutPercent = cutdown_amount / (mPrice - pPrice)
-    if (user_id && (discount > cutdown_amount)) {
+    if (user_id && (discount >= cutdown_amount)) {
       purchasePrice = mPrice - cutdown_amount
     }
 
@@ -297,14 +299,14 @@ export default class Detail extends Component {
                     hours={info.timeDown.hh}
                     minutes={info.timeDown.mm}
                     seconds={info.timeDown.ss}
-                    onTimeUp={this.getBoostDetail.bind(this)}
+                    // onTimeUp={this.getBoostDetail.bind(this)}
                   />
                 </View>
               }
             </View>
           </View>
           {
-            (isJoin && cutPercent !== 1) && <View>
+            (isJoin) && <View>
               <View className='share'>
                 <Button openType='share' className='item'>
                   邀请好友助力
@@ -330,11 +332,11 @@ export default class Detail extends Component {
               <View className='boostMain'>
                 <View className='title'>好友助力榜</View>
                 {
-                  (boostList && boostList.length > 0) ? <View className='boostList'>
+                  (boostList.length > 0) ? <View className='boostList'>
                     {
                       boostList.map((item, index) => <View key={`${item.nickname}${index}`} className='boostItem'>
                         <View className='left'>
-                          <Image src={info.headimgurl} mode='aspectFill' className='img' />
+                          <Image src={item.headimgurl} mode='aspectFill' className='img' />
                         </View>
                         <View className='right'>
                           <View className='name'>{ item.nickname }</View>
