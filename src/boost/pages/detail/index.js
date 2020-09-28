@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 18:25:01
+ * @LastEditTime: 2020-09-28 18:27:42
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -30,10 +30,10 @@ export default class Detail extends Component {
         bargain_rules: '',
         mkt_price: '0.00',
         timeDown: {
-          dd: 0,
-          hh: 0,
-          mm: 0,
-          ss: 0
+          dd: 1,
+          hh: 1,
+          mm: 1,
+          ss: 1
         },
         isSaleOut: false,
         isOver: false
@@ -299,7 +299,7 @@ export default class Detail extends Component {
                     hours={info.timeDown.hh}
                     minutes={info.timeDown.mm}
                     seconds={info.timeDown.ss}
-                    // onTimeUp={this.getBoostDetail.bind(this)}
+                    onTimeUp={this.getBoostDetail.bind(this)}
                   />
                 </View>
               }
