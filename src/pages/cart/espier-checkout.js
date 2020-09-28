@@ -443,6 +443,7 @@ export default class CartCheckout extends Component {
 			pay_type: payType,
       distributor_id: this.getShopId() || (shop_id === 'undefined' ? 0 : shop_id),
       ...drugInfo,
+      point_use: point_use
     }
 
     log.debug('[checkout] params: ', params)
@@ -453,11 +454,6 @@ export default class CartCheckout extends Component {
       params.order_type = 'normal_shopguide'
       params.salesman_id = smid
     }
-    if(point_use){
-      params.point_use = point_use
-    }
-   
-
     if (coupon) {
       if (coupon.not_use_coupon === 1){
         params.not_use_coupon = 1
@@ -1000,6 +996,7 @@ export default class CartCheckout extends Component {
         const espierCheckoutData = normalizeQuerys(this.$router.params)
         id = espierCheckoutData.dtid
       }
+      this.clearPoint()
       this.setState({
         shouldCalcOrder: true
       }, () => {
@@ -1337,8 +1334,8 @@ export default class CartCheckout extends Component {
               onClick={this.handlePointShow}
               >
               <View className='invoice-title'>
-                {pointInfo.real_use_point && (<View className='icon-close invoice-guanbi' onClick={this.resetPoint.bind(this)}></View>)}
-                {pointInfo.real_use_point ? `已使用${pointInfo.real_use_point}积分` : '使用积分'}
+                {(pointInfo.point_use > 0 )&& (<View className='icon-close invoice-guanbi' onClick={this.resetPoint.bind(this)}></View>)}
+                {pointInfo.point_use > 0 ? `已使用${pointInfo.real_use_point}积分` : '使用积分'}
               </View>
               </SpCell>
 
