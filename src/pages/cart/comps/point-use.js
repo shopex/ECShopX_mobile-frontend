@@ -14,7 +14,6 @@ import { tr } from 'date-fns/locale'
 export default class PointUse extends Component {
   static defaultProps = {
     isOpened: false,
-    disabledPayment: null,
     disabledPoint:false
   }
 
@@ -48,10 +47,6 @@ export default class PointUse extends Component {
     this.props.onClose()
   }
 
-  handlePaymentChange = (type) => {
-    const { disabledPayment } = this.props
-    if (disabledPayment && disabledPayment[type]) return
-  }
   handleRuleOpen = () =>{
     this.setState({
       isOpenRule:true
@@ -86,13 +81,12 @@ export default class PointUse extends Component {
   }
 
   render () {
-    const { info,isOpened, loading, disabledPayment, colors } = this.props
+    const { info,isOpened, loading, colors } = this.props
     const { point, isOpenRule,disabledPoint,localType } = this.state
     if (!info) {
       return null
     }
     const { deduct_point_rule } = info
-   console.log('disabledPayment',disabledPayment)
     return (
       <View>
         <AtFloatLayout

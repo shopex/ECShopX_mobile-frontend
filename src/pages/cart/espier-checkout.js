@@ -782,10 +782,10 @@ export default class CartCheckout extends Component {
     const { payType, total,point_use } = this.state
     const { type } = this.$router.params
     const isDrug = type === 'drug'
-
+    console.log('total',total)
     if (payType === 'point' || payType === 'deposit') {
       try {
-        const content = payType === 'point' ? `确认使用${total.remainpt}积分全额抵扣商品总价吗` : '确认使用余额支付吗？'
+        const content = payType === 'point' ? `确认使用${total.point}积分全额抵扣商品总价吗` : '确认使用余额支付吗？'
         const { confirm } = await Taro.showModal({
           title: payType === 'point' ? '积分支付' : '余额支付',
           content,
@@ -1353,7 +1353,7 @@ export default class CartCheckout extends Component {
             </SpCell>
             {total.deduction && (
               <View className='trade-payment__hint'>
-                可用{total.remainpt}积分，抵扣 <Price unit='cent' value={total.deduction} /> (包含运费 <Price unit='cent' value={total.freight_fee}></Price>)
+                可用{total.point}积分，抵扣 <Price unit='cent' value={total.deduction} /> (包含运费 <Price unit='cent' value={total.freight_fee}></Price>)
               </View>
             )}
           </View>
