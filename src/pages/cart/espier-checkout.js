@@ -453,18 +453,24 @@ export default class CartCheckout extends Component {
       params.order_type = 'normal_shopguide'
       params.salesman_id = smid
     }
-    if (coupon) {
-      if (coupon.not_use_coupon === 1){
-        params.not_use_coupon = 1
-      } else {
-        params.not_use_coupon = 0
-      }
-      if (coupon.type === 'coupon' && coupon.value.code) {
-        params.coupon_discount = coupon.value.code
-      } else if (coupon.type === 'member') {
-        params.member_discount = coupon.value ? 1 : 0
+    if(payType === 'point'){
+      params.not_use_coupon = 1
+      delete params.point_use
+    }else {
+      if (coupon) {
+        if (coupon.not_use_coupon === 1){
+          params.not_use_coupon = 1
+        } else {
+          params.not_use_coupon = 0
+        }
+        if (coupon.type === 'coupon' && coupon.value.code) {
+          params.coupon_discount = coupon.value.code
+        } else if (coupon.type === 'member') {
+          params.member_discount = coupon.value ? 1 : 0
+        }
       }
     }
+
 
 
     this.params = params
