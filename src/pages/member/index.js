@@ -498,14 +498,14 @@ export default class MemberIndex extends Component {
             >
             </SpCell>
             <SpCell
-              title='助力订单'
+              title='助力活动'
               isLink
               img={require('../../assets/imgs/group.png')}
               onClick={this.handleClick.bind(this, '/boost/pages/home/index')}
             >
             </SpCell>
             <SpCell
-              title='我的助力订单'
+              title='助力订单'
               isLink
               img={require('../../assets/imgs/group.png')}
               onClick={this.handleClick.bind(this, '/boost/pages/order/index')}

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 18:27:42
+ * @LastEditTime: 2020-09-29 15:03:04
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -263,7 +263,7 @@ export default class Detail extends Component {
       posterImg
     } = this.state
 
-    const isDisabled = info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE'
+    const isDisabled = info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE' || orderInfo.order_status === 'PAYED' 
 
     return (
       <View className='detail'>
@@ -307,14 +307,16 @@ export default class Detail extends Component {
           </View>
           {
             (isJoin) && <View>
-              <View className='share'>
-                <Button openType='share' className='item'>
-                  邀请好友助力
-                </Button>
-                <View className='item' onClick={this.showPoster.bind(this)}>
-                  朋友圈海报
+              {
+                (cutPercent !== 1 && !isDisabled) && <View className='share'>
+                  <Button openType='share' className='item'>
+                    邀请好友助力
+                  </Button>
+                  <View className='item' onClick={this.showPoster.bind(this)}>
+                    朋友圈海报
+                  </View>
                 </View>
-              </View>
+              }
               <View className='boost'>
                 <Image src={userInfo.headimgurl} class='avatar'></Image>
                 <View className='content'>
@@ -341,7 +343,7 @@ export default class Detail extends Component {
                         <View className='right'>
                           <View className='name'>{ item.nickname }</View>
                           <View>
-                            { item.cutdown_num >= 0 ? `减掉` : '增加'}{ (item.cutdown_num / 100).toFixed(2) }
+                            { item.cutdown_num >= 0 ? `减掉` : '增加'} ¥{ (item.cutdown_num / 100).toFixed(2) }
                           </View>
                         </View>
                         { item.cutdown_num < 0 && <View className='tag'>帮了倒忙</View> }
@@ -389,9 +391,9 @@ export default class Detail extends Component {
         >
           {
             isDisabled ? <Text>
-              { info.isOver && '已过期' }
-              { info.isSaleOut && '已售罄' }
-              { orderInfo.order_status === 'DONE' && '已购买' }
+              { info.isOver ? '已过期' : ''}
+              { info.isSaleOut ? '已售罄' : ''}
+              { (orderInfo.order_status === 'DONE' || orderInfo.order_status === 'PAYED')? '已购买' : '' }
             </Text> :
             <Text>{ isJoin ? `¥${purchasePrice} 优惠购买` : '发起助力' }</Text>
           }

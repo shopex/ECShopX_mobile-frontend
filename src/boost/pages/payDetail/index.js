@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/payDetail/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 09:59:30
+ * @LastEditTime: 2020-09-29 16:04:53
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
@@ -37,7 +37,7 @@ export default class PayDetail extends Component {
 
 
   config = {
-    navigationBarTitleText: '结算页面'
+    navigationBarTitleText: '订单详情'
   }
   
   // 获取支付订单信息
@@ -50,8 +50,13 @@ export default class PayDetail extends Component {
       has_order: true
     })
     
+    this.setOrderInfo(bargain_order)
+  }
+  
+  
+  setOrderInfo = (info) => {
     this.setState({
-      info: pickBy(bargain_order, {
+      info: pickBy(info, {
         order_id: 'order_id',
         bargain_id: 'bargain_id',
         item_name: 'item_name',
@@ -72,17 +77,17 @@ export default class PayDetail extends Component {
         item_fee: ({ item_fee }) => (item_fee / 100).toFixed(2)
       })
     })
-  }  
+  }
 
   // 获取订单详情
   getOrderDetail = async () => {
     const { order_id, bargain_id } = this.$router.params
-    const detail = await api.boost.getOrderDetail({
+    const { orderInfo } = await api.boost.getOrderDetail({
       order_id,
       bargain_id
     })
 
-    console.log(detail)
+    this.setOrderInfo(orderInfo)
   }
 
   handlePay = async () => {
