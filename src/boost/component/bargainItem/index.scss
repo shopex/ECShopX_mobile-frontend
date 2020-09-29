@@ -18,11 +18,17 @@
     margin-right: 20px;
     flex-direction: column;
     justify-content: space-between;
+    height: 180px;
+    overflow: hidden;
     .title {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       font-weight: bold;
     }
     .price {
-      margin: 20px 0;
+      // margin: 20px 0;
       .text {
         display: block;
         &.diff {

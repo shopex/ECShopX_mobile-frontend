@@ -9,7 +9,7 @@ import { normalizeQuerys } from '@/utils'
 import { FormIds } from '@/service'
 import Index from './pages/index'
 import LBS from './utils/lbs'
-import entry from '@/utils/entry'
+// import entry from '@/utils/entry'
 
 import './app.scss'
 

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/component/bargainItem/index.js
  * @Date: 2020-09-22 18:21:25
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-23 11:15:35
+ * @LastEditTime: 2020-09-29 10:02:39
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress } from '@tarojs/components'
@@ -40,13 +40,13 @@ export default class BargainItem extends Component {
             <Text className='text'>¥{ info.mkt_price }</Text>
             <Text className='text diff'>砍价立减：¥{ info.diff_price }</Text>
           </View>
-          <View className='progress'>
+          {/* <View className='progress'>
             <Progress percent={20} activeColor='#a2564c' backgroundColor='#f0eeed' strokeWidth={6} active />
             <View className='interval'>
               <Text className='text'>¥{ info.mkt_price }</Text>
               <Text className='text'>¥{ info.price }</Text>
             </View>
-          </View>
+          </View> */}
         </View>
         <View className='act'>
           <Button size='mini' className='btn' onClick={this.handleItem.bind(this)}>查看详情</Button>

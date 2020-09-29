@@ -6,17 +6,22 @@
  * @FilePath: /unite-vshop/src/boost/pages/order/index.js
  * @Date: 2020-09-27 14:08:06
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-27 15:52:28
+ * @LastEditTime: 2020-09-29 16:07:58
  */
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView } from '@tarojs/components'
+import { View, ScrollView, Image } from '@tarojs/components'
 import { NavBar } from '@/components'
 import api from '@/api'
-import { debounce, pickBy } from '@/utils'
+import { connect } from "@tarojs/redux"
+import { debounce, pickBy, formatDataTime } from '@/utils'
 import LoadingMore from '../../component/loadingMore'
 
 import './index.scss'
 
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 export default class Order extends Component {
   constructor (props) {
     super(props)
@@ -50,12 +55,14 @@ export default class Order extends Component {
     const total_count = data.total_count
     const isEnd = param.page >= (total_count / param.pageSize)
     const newList = pickBy(data.list, {
+      order_id: 'order_id',
       item_pics: 'item_pics',
       item_name: 'item_name',
+      order_status: 'order_status',
+      create_time: ({create_time}) => formatDataTime(create_time),
       bargain_id: 'bargain_id',
-      mkt_price: ({ mkt_price }) => (mkt_price / 100).toFixed(2),
-      price: ({ price }) => (price / 100).toFixed(2),
-      diff_price: ({ mkt_price, price }) => ((mkt_price - price) / 100).toFixed(2)
+      total_fee: ({ total_fee }) => (total_fee / 100).toFixed(2),
+      item_price: ({ item_price }) => (item_price / 100).toFixed(2)
     })
     this.setState({
       list: isRefrsh ? data.list : [...list, ...newList],
@@ -99,6 +106,13 @@ export default class Order extends Component {
     })
     this.getList()
   }  
+
+  handleItem = (item) => {
+    const { order_id, bargain_id } = item
+    Taro.navigateTo({
+      url: `/boost/pages/payDetail/index?bargain_id=${bargain_id}&order_id=${order_id}`
+    })
+  }
   
   render () {
     const {
@@ -109,6 +123,7 @@ export default class Order extends Component {
       isEnd,
       isEmpty
     } = this.state
+    const { colors } = this.props
     return (
       <View className='order'>
         <NavBar
@@ -131,8 +146,22 @@ export default class Order extends Component {
           {/* 列表图 */}
           {
             list.map(item => <View className='item' key={item.bargain_id}>
-              {/* <BargainItem info={item} /> */}
-              111111111111111
+              <View className='head'>
+                <View className='text'>{ item.create_time }</View>
+                <View className='text'>订单号：{ item.order_id }</View>
+              </View>
+              <View className='info'>
+                <Image src={item.item_pics} mode='aspectFill' className='img' />
+                <View className='detail'>
+                  <View className='title'>{ item.item_name }</View>
+                  <View className='price'>
+                    支付金额: ¥{ item.total_fee }
+                  </View>
+                </View>
+              </View>
+              <View className='foot'>
+                <View className='check' style={`background: ${colors.data[0].primary}`} onClick={this.handleItem.bind(this, item)}>订单详情</View>
+              </View>
             </View>)
           }
           {/* 加载更多 */}

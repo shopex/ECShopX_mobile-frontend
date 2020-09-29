@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/flop/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 18:13:39
+ * @LastEditTime: 2020-09-29 09:58:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Progress, Text, Button } from '@tarojs/components'
@@ -182,7 +182,7 @@ export default class Flop extends Component {
                   <View className='right'>
                     <View className='name'>{ item.nickname }</View>
                     <View>
-                      { item.cutdown_num >= 0 ? `减掉` : '增加'}{ (item.cutdown_num / 100).toFixed(2) }
+                      { item.cutdown_num >= 0 ? `减掉` : '增加'} ¥{ (item.cutdown_num / 100).toFixed(2) }
                     </View>
                   </View>
                   { item.cutdown_num < 0 && <View className='tag'>帮了倒忙</View> }
