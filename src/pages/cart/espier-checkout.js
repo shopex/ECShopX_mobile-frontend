@@ -453,26 +453,18 @@ export default class CartCheckout extends Component {
       params.order_type = 'normal_shopguide'
       params.salesman_id = smid
     }
-    if(payType === 'point'){
-      params.not_use_coupon = 1
-      delete params.point_use
-    }else {
-      if (coupon) {
-        if (coupon.not_use_coupon === 1){
-          params.not_use_coupon = 1
-        } else {
-          params.not_use_coupon = 0
-        }
-        if (coupon.type === 'coupon' && coupon.value.code) {
-          params.coupon_discount = coupon.value.code
-        } else if (coupon.type === 'member') {
-          params.member_discount = coupon.value ? 1 : 0
-        }
+    if (coupon) {
+      if (coupon.not_use_coupon === 1){
+        params.not_use_coupon = 1
+      } else {
+        params.not_use_coupon = 0
+      }
+      if (coupon.type === 'coupon' && coupon.value.code) {
+        params.coupon_discount = coupon.value.code
+      } else if (coupon.type === 'member') {
+        params.member_discount = coupon.value ? 1 : 0
       }
     }
-
-
-
     this.params = params
 
     return _cloneDeep(params)
@@ -958,9 +950,9 @@ export default class CartCheckout extends Component {
   }
 
   handleCouponsClick = () => {
-    if (this.state.payType === 'point'){
-      return
-    }
+    // if (this.state.payType === 'point'){
+    //   return
+    // }
     // if (this.params.order_type === 'normal' || this.params.order_type === 'normal_seckill' || this.params.order_type === 'single_group' || this.params.order_type === 'limited_time_sale') {
     //   return S.toast('该活动不支持使用优惠券')
     // }
@@ -1013,9 +1005,9 @@ export default class CartCheckout extends Component {
   }
 
   handlePaymentChange = async (payType) => {
-    if (payType === 'point') {
-      this.props.onClearCoupon()
-    }
+    // if (payType === 'point') {
+    //   this.props.onClearCoupon()
+    // }
     this.setState({
       payType,
       isPaymentOpend: false
@@ -1204,7 +1196,7 @@ export default class CartCheckout extends Component {
                 </View>
           }
 {/* type !== 'limited_time_sale' */}
-          {(payType !== 'point' && type !== 'group' && type !== 'seckill' ) && (
+          {(type !== 'group' && type !== 'seckill' ) && (
             <SpCell
               isLink
               className='coupons-list'
@@ -1241,11 +1233,7 @@ export default class CartCheckout extends Component {
                                 showDesc={true}
                                 renderDesc={
                                   <View className='order-item__desc'>
-                                    {
-                                      payType === 'point' 
-                                      ? ''
-                                      :<View>
-                                        {item.discount_info && item.discount_info.map((discount) =>
+                                     {item.discount_info && item.discount_info.map((discount) =>
                                           <Text
                                             className='order-item__discount'
                                             key={discount.type}
@@ -1253,10 +1241,6 @@ export default class CartCheckout extends Component {
                                             {discount.info}
                                           </Text>
                                             )}
-                                      </View>
-
-                                    }
-                                  
                                 </View>
                                 }
                                 customFooter
