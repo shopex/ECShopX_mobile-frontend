@@ -453,6 +453,9 @@ export default class CartCheckout extends Component {
       params.order_type = 'normal_shopguide'
       params.salesman_id = smid
     }
+    if(payType === 'point'){
+        delete params.point_use
+    }
     if (coupon) {
       if (coupon.not_use_coupon === 1){
         params.not_use_coupon = 1
@@ -830,6 +833,7 @@ export default class CartCheckout extends Component {
       if (payType === 'point') {
         delete params.invoice_type
         delete params.invoice_content
+        delete params.point_use
       }
 
       let salesman_id = Taro.getStorageSync('s_smid')
