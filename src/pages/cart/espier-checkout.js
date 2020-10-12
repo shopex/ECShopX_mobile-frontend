@@ -1094,9 +1094,12 @@ export default class CartCheckout extends Component {
   }
   resetPoint = (e) =>{
     e.stopPropagation()
+    const { pointInfo} = this.state
+    pointInfo.point_use = 0
     this.setState({
       point_use:0,
-      payType:'wxpay',
+     payType:'wxpay',
+     pointInfo,
     },()=>{
       this.calcOrder()
     })
@@ -1336,7 +1339,13 @@ export default class CartCheckout extends Component {
               >
               <View className='invoice-title'>
                 {(pointInfo.point_use > 0 || payType === 'point' )&& (<View className='icon-close invoice-guanbi' onClick={this.resetPoint.bind(this)}></View>)}
-                {payType === 'point' ? '全额抵扣' : pointInfo.point_use > 0 ? `已使用${pointInfo.real_use_point}积分` : '使用积分'}
+                {
+                  payType === 'point' 
+                  ? '全额抵扣' 
+                  : pointInfo.point_use > 0 
+                  ? `已使用${pointInfo.real_use_point}积分` 
+                  : '使用积分'
+                }
               </View>
               </SpCell>
 
