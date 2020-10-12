@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/home/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 10:53:38
+ * @LastEditTime: 2020-10-12 10:05:02
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
@@ -48,7 +48,7 @@ export default class Home extends Component {
     const data = await api.boost.getList(param)
     const total_count = data.total_count
     const isEnd = param.page >= (total_count / param.pageSize)
-    const newList = pickBy(data.list, {
+    const newList = pickBy(data.list || [], {
       item_pics: 'item_pics',
       item_name: 'item_name',
       bargain_id: 'bargain_id',
@@ -61,7 +61,7 @@ export default class Home extends Component {
       isRefresh: false,
       isLoading: false,
       isEnd,
-      isEmpty: data.list.length <= 0  
+      isEmpty: data.list && data.list.length <= 0  
     })
     Taro.hideLoading()
   }
