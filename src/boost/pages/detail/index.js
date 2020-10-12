@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-29 18:05:16
+ * @LastEditTime: 2020-10-12 11:02:10
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -14,10 +14,14 @@ import { NavBar, SpHtmlContent } from '@/components'
 import { pickBy, calcTimer } from '@/utils'
 import { AtCountdown, AtIcon } from 'taro-ui'
 import api from '@/api'
+import { connect } from '@tarojs/redux'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../../pages/home/wgts'
 
 import './index.scss'
 
+@connect(() => ({}), (dispatch) => ({
+  onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } })
+}))
 export default class Detail extends Component {
   constructor (props) {
     super(props)
@@ -87,8 +91,6 @@ export default class Detail extends Component {
       bargain_id,
       has_order: true
     })
-
-    console.log(bargain_log)
 
     const { mkt_price: mPrice, price: pPrice } = bargain_info
     const { user_id, cutdown_amount } = user_bargain_info
@@ -227,7 +229,7 @@ export default class Detail extends Component {
     const isDisabled = (info.isOver || info.isSaleOut || orderInfo.order_status === 'DONE') 
     if (isDisabled) return false
     if (isJoin) {
-      let url = `/pages/cart/espier-checkout?bargain_id=${info.bargain_id}`
+      let url = `/pages/cart/espier-checkout?bargain_id=${info.bargain_id}&cart_type=fastbuy`
       if (orderInfo.order_id) {
         url = `/subpage/pages/trade/detail?id=${orderInfo.order_id}?bargain_id=${info.bargain_id}`
       } else {
@@ -240,6 +242,7 @@ export default class Detail extends Component {
           return false
         }
       }
+      this.props.onFastbuy(info.item_id, 1)
       Taro.navigateTo({ url })
     } else {
       const res = await api.boost.postUserBargain({
