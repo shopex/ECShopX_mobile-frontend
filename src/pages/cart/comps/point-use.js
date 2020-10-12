@@ -42,7 +42,7 @@ export default class PointUse extends Component {
   handleCancel = () => {
     this.setState({
       localType: this.props.type,
-      point:null
+      //point:null
     })
     this.props.onClose()
   }
@@ -61,14 +61,19 @@ export default class PointUse extends Component {
   handlePointChange = (value) =>{
     const { info } = this.props
     this.setState({
-      point:Number(value) > Number(info.max_point) ? info.max_point : value
+      point:Number(value) > Number(info.max_point) ? info.max_point : value,
+      localType:info.deduct_point_rule.full_amount 
+              ? Number(value) === Number(info.max_point) 
+              ? 'point' 
+              : 'wxpay' 
+              :'wxpay'
     })
   }
 
   handleUseFullAmount = (checked)=>{
     const { info } = this.props
     this.setState({
-      point:null,
+      point:checked ? info.max_point : '',
       disabledPoint: checked ? true : false,
       localType: checked ? 'point' : 'wxpay'
     })
@@ -86,6 +91,7 @@ export default class PointUse extends Component {
       return null
     }
     const { deduct_point_rule } = info
+    console.log('info',info)
     return (
       <View>
         <AtFloatLayout
@@ -126,7 +132,7 @@ export default class PointUse extends Component {
                   type='number'
                   title=""
                   value={point}
-                  disabled={localType === 'point' ? true :false}
+                  //disabled={localType === 'point' ? true :false}
                   onChange={this.handlePointChange}
                 />
               </View>
