@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/home/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-12 10:05:02
+ * @LastEditTime: 2020-10-12 11:44:26
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
@@ -61,7 +61,7 @@ export default class Home extends Component {
       isRefresh: false,
       isLoading: false,
       isEnd,
-      isEmpty: data.list && data.list.length <= 0  
+      isEmpty: !data.list || data.list.length <= 0  
     })
     Taro.hideLoading()
   }
