@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-12 11:02:10
+ * @LastEditTime: 2020-10-12 15:32:12
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -236,7 +236,8 @@ export default class Detail extends Component {
         try {
           await api.cart.fastBuy({
             item_id: info.item_id,
-            num: 1
+            num: 1,
+            bargain_id: info.bargain_id
           })
         } catch (e){
           return false
