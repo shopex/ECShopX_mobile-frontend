@@ -209,9 +209,9 @@ export default class TradeDetail extends Component {
       payLoading: true
     })
 
-    const { tid: order_id, order_type } = info
+    const { tid: order_id, order_type ,pay_type} = info
     const paymentParams = {
-      pay_type: 'wxpay',
+      pay_type,
       order_id,
       order_type
     }
