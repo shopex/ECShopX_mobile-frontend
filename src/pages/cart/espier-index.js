@@ -264,7 +264,6 @@ export default class CartIndex extends Component {
 
 
   async handleSelectionChange (shopIndex,cart_id, checked) {
-
     await api.cart.select({
       cart_id,
       is_checked: checked
@@ -449,10 +448,20 @@ export default class CartIndex extends Component {
       // console.log(111)
     })
   }
+//加价购
+handleSelectPlusprice = () => {
+  const url = '/marketing/pages/plusprice/cart-plusprice-list'
+  Taro.navigateTo({
+    url: url
+  })
+}
+
+
 
   render () {
     const { groups, invalidList, cartMode, loading, curPromotions, likeList, page, isPathQrcode, cartType, crossborder_show } = this.state
     const { list, showLikeList, colors } = this.props
+    console.log('groups',groups)
 
     if (loading) {
       return <Loading />
@@ -528,7 +537,7 @@ export default class CartIndex extends Component {
 										<View className='shop__wrap'>
 											{
 												shopCart.group.map(activityGroup => {
-													// console.log('activityGroup---->',activityGroup)
+												 //console.log('activityGroup---->',activityGroup)
 													const { activity } = activityGroup
 
 													return activityGroup.list.length > 0 && (
@@ -536,6 +545,23 @@ export default class CartIndex extends Component {
                               className='cart-group'
                               key={shopCart.shopInfo.shop_id}
                             >
+                              <View className='cart-group__activity'>
+                              <View
+                                className='cart-group__activity-item'
+                              >
+                                <View className='cart-group__activity-item-left'>
+                                  <Text className='cart-group__activity-label'>换购</Text>
+                                  <Text>activity.activity_name</Text>
+                                </View>
+                                <View className='cart-group__activity-item-right' onClick={this.handleSelectPlusprice.bind(this)}>
+                                    去选择<Text className='at-icon at-icon-chevron-right'></Text>
+                                </View>
+
+
+                                
+                              </View>
+                              
+                            </View>
 															{activity && (
 																<View className='cart-group__activity'>
                                   <View
@@ -544,11 +570,11 @@ export default class CartIndex extends Component {
 																		<Text className='cart-group__activity-label'>{activity.activity_tag}</Text>
 																		<Text>{activity.activity_name}</Text>
 																	</View>
+                                  
 																</View>
 															)}
 															{
 																activityGroup.list.map((item) => {
-																	// console.log('item',item)
 																	return (
 																		<View className='cart-group__item-wrap' key={item.cart_id}>
                                       <CartItem

@@ -14,6 +14,16 @@
     vertical-align: middle;
     font-size: 20px;
   }
+  &-header{
+    display: flex;
+    &-title{
+      flex: 1;
+    }
+    &-icon{
+      flex-basis: 100px;
+      text-align: right;
+    }
+  }
 
   .promotion-title {
     vertical-align: middle;

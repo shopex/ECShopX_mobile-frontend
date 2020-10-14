@@ -15,6 +15,12 @@ export default class ActivityPanel extends Component {
     onClick: () => {}
   }
 
+  handlePlusprice=(e)=>{
+    Taro.navigateTo({
+      url: `/marketing/pages/plusprice/detail-plusprice-list`
+    })
+  }
+
   render () {
     const { info, isOpen, onClick, onClose } = this.props
 
@@ -63,9 +69,13 @@ export default class ActivityPanel extends Component {
                         ? <View className='promotion-title'>以下优惠可参与{item.join_limit}次</View>
                         : null
                     }
-                    <View>
+                    <View className='goods-sec-specs__activity-header'>
+                      <View className='goods-sec-specs__activity-header-title'>
                       <Text className='goods-sec-specs__activity-label'>{item.promotion_tag}</Text>
                       <Text className='promotion-text'>{item.marketing_name}</Text>
+                      </View>
+                      
+                      <View className='goods-sec-specs__activity-header-icon at-icon at-icon-chevron-right'  onClick={this.handlePlusprice.bind(this)}></View>
                     </View>
                     <View className='promotion-rule-content'>
                       <Text className='promotion-rule-content__text'>有效期至{item.end_date}</Text>
@@ -87,6 +97,9 @@ export default class ActivityPanel extends Component {
                             </View>
                           : null
                       }
+                    </View>
+                    <View>
+
                     </View>
                   </View>
                 )
