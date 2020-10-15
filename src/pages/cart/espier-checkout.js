@@ -539,7 +539,10 @@ export default class CartCheckout extends Component {
         max_point, //最大可使用积分
         real_use_point:real_use_point,
         point_use:point_use
-      },
+      }
+      if(pointInfo.real_use_point && pointInfo.real_use_point < pointInfo.point_use ){
+            S.toast('积分有调整')
+      }
 
       this.params.items = items
       //this.params.pointInfo = pointInfo
