@@ -1,9 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtFloatLayout, AtInput,AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
+import { AtFloatLayout,AtInput,AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 import { SpCheckbox } from '@/components'
-import S from '@/spx'
 import './point-use.scss'
 import { tr } from 'date-fns/locale'
 
@@ -26,7 +25,6 @@ export default class PointUse extends Component {
       localType:props.type
     }
   }
-
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.type !== this.props.type) {
       this.setState({
@@ -89,7 +87,6 @@ export default class PointUse extends Component {
 
 
   handleChange = (point,pay_type) => {
-    console.log('point',point)
     this.props.onChange(point,pay_type)
   }
 
@@ -100,13 +97,12 @@ export default class PointUse extends Component {
       return null
     }
     const { deduct_point_rule } = info
-    let score = info.real_use_point ? point : info.point_use
-    console.log('info',info)
     return (
       <View>
         <AtFloatLayout
         isOpened={isOpened}
       >
+        
         <View className='point-use'>
           <View className='point-use__hd'>
             <Text>积分</Text>
@@ -141,12 +137,13 @@ export default class PointUse extends Component {
                 <AtInput
                   type='number'
                   title=""
-                  value={info.real_use_point ? point : info.point_use}
+                  value={info.real_use_point ? info.real_use_point < info.point_use ? info.real_use_point : info.point_use : null}
                   //disabled={localType === 'point' ? true :false}
                   onChange={this.handlePointChange.bind(this)}
                 />
               </View>
            </View>
+   
            {
              deduct_point_rule.full_amount && (
               <View className='point-item'>
