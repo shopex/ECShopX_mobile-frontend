@@ -1401,8 +1401,9 @@ export default class CartCheckout extends Component {
                 <Text className='trade-payment__hint'>{total.remainpt}积分可用</Text>
               )}
               <Text>{payTypeText[payType]}</Text>
-            </SpCell>
-          </View>
+              </SpCell>
+            </View>
+          }
 
           {payType === 'point' && !bargain_id && (
             <View className='sec trade-sub-total'>

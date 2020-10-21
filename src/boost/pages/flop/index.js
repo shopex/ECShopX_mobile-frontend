@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/flop/index.js
  * @Date: 2020-09-23 16:49:53
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-20 17:36:34
+ * @LastEditTime: 2020-10-21 10:35:26
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Progress, Text, Button } from '@tarojs/components'
@@ -145,7 +145,7 @@ export default class Flop extends Component {
           <View className='info'>
             <View className='title'>{ info.item_name }</View>
             <View className='progress'>
-              <Progress percent={cutPercent} activeColor='#a2564c' backgroundColor='#f0eeed' strokeWidth={6} active />
+              <Progress percent={cutPercent * 100} activeColor='#a2564c' backgroundColor='#f0eeed' strokeWidth={6} active />
               <View className='interval'>
                 <Text className='text'>¥{ info.mkt_price }</Text>
                 <Text className='text'>¥{ info.price }</Text>
