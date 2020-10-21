@@ -449,8 +449,8 @@ export default class CartIndex extends Component {
     })
   }
 //加价购
-handleSelectPlusprice = () => {
-  const url = '/marketing/pages/plusprice/cart-plusprice-list'
+handleSelectPlusprice = (marketing_id) => {
+  const url = `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${marketing_id}`
   Taro.navigateTo({
     url: url
   })
@@ -534,6 +534,26 @@ handleSelectPlusprice = () => {
                         </View>
                       : null
                     }
+                    {
+                      shopCart.shopInfo.plus_buy_activity && shopCart.shopInfo.plus_buy_activity.map (plus_item =>{
+                        const { discount_desc } = plus_item
+                        return (
+                          <View className='cart-group__activity' style='background:#ffffff;'>
+                            <View
+                              className='cart-group__activity-item'
+                            >
+                              <View className='cart-group__activity-item-left'>
+                                <Text className='cart-group__activity-label'>换购</Text>
+                                <Text>{discount_desc.info}</Text>
+                              </View>
+                              <View className='cart-group__activity-item-right' onClick={this.handleSelectPlusprice.bind(this,plus_item.activity_id)}>
+                                  去选择<Text className='at-icon at-icon-chevron-right'></Text>
+                              </View>
+                            </View>    
+                      </View>
+                        )
+                      })     
+                    }
 										<View className='shop__wrap'>
 											{
 												shopCart.group.map(activityGroup => {
@@ -545,23 +565,6 @@ handleSelectPlusprice = () => {
                               className='cart-group'
                               key={shopCart.shopInfo.shop_id}
                             >
-                              <View className='cart-group__activity'>
-                              <View
-                                className='cart-group__activity-item'
-                              >
-                                <View className='cart-group__activity-item-left'>
-                                  <Text className='cart-group__activity-label'>换购</Text>
-                                  <Text>activity.activity_name</Text>
-                                </View>
-                                <View className='cart-group__activity-item-right' onClick={this.handleSelectPlusprice.bind(this)}>
-                                    去选择<Text className='at-icon at-icon-chevron-right'></Text>
-                                </View>
-
-
-                                
-                              </View>
-                              
-                            </View>
 															{activity && (
 																<View className='cart-group__activity'>
                                   <View
@@ -641,8 +644,27 @@ handleSelectPlusprice = () => {
 													)
 												})
 											}
+                      {
+                        shopCart.shopInfo.plus_buy_activity && shopCart.shopInfo.plus_buy_activity.map(plus =>{
+                         const {plus_item} = plus
+                          return(
+                            <GoodsItem
+                              key={plus_item.item_id}
+                              info={plus_item}
+                              //onClick={this.handleClickItem.bind(this, item)}
+                            />
+                          //   <CartItem
+                          //       key={plus_item.item_id}
+                          //       info={plus_item}
+                          //     >
+													// </CartItem>
+                          )
+                        })
+                      }
 
-
+                      <View >
+                      
+                      </View>
                       <View className={`toolbar cart-toolbar ${isEmpty && 'hidden'}`}>
                         <View className='cart-toolbar__hd'>
                           <SpCheckbox
