@@ -29,18 +29,27 @@ export default class DetailPluspriceList extends Component {
   }
 
   config = {
-    navigationBarTitleText: '优惠换购'
+    navigationBarTitleText: ''
   }
+  
 
   componentDidMount () {
+    // const { marketing_id } = this.$router.params
     // this.setState({
     //   query: {
-    //     status: this.state.curTabIdx === 0 ? 'valid' : 'notice',
-    //     item_type: 'normal'
+    //     marketing_id: marketing_id
     //   }
     // }, () => {
     //   this.nextPage()
     // })
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#FC7239',
+      animation: {
+        duration: 400,
+        timingFunc: 'easeIn'
+      }
+    })
     this.nextPage()
   }
 
@@ -55,8 +64,7 @@ export default class DetailPluspriceList extends Component {
   //   }
   // }
 
- 
-    
+
 
   calcTimer (totalSec) {
     let remainingSec = totalSec
@@ -83,13 +91,13 @@ export default class DetailPluspriceList extends Component {
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
-      seckill_id: this.$router.params.seckill_id,
-      type: this.$router.params.seckill_type,
+      marketing_id: this.$router.params.marketing_id,
       page,
       pageSize
     }
 
-    const { list, total_count: total, item_params_list = [], select_tags_list = []} = await api.item.search(query)
+    const { list, total_count: total} = await api.promotion.getpluspriceList(query)
+    console.log('list',list)
 
     // let timer = null
     // timer = this.calcTimer(last_seconds)
@@ -100,7 +108,8 @@ export default class DetailPluspriceList extends Component {
       title: 'itemName',
       desc: 'brief',
       distributor_id: 'distributor_id',
-      price: ({ activity_price }) => (activity_price/100).toFixed(2),
+      marketing_id:'marketing_id',
+      price: ({ price }) => (price/100).toFixed(2),
       market_price: ({ market_price }) => (market_price/100).toFixed(2)
     })
 
@@ -122,15 +131,7 @@ export default class DetailPluspriceList extends Component {
         <NavBar
           title='微商城'
         />
-        <ScrollView
-          className='plusprice-goods__scroll'
-          scrollY
-          scrollTop={scrollTop}
-          scrollWithAnimation
-          onScroll={this.handleScroll}
-          onScrollToLower={this.nextPage}
-        >
-          <View className='plusprice-goods__info'>
+        <View className='plusprice-goods__info'>
             <View className='title'> 满 XX 元/个 享换购优惠</View>
             <View className='plusprice-goods__timer'>
                   
@@ -142,8 +143,9 @@ export default class DetailPluspriceList extends Component {
                           minutes={timer.mm}
                           seconds={timer.ss}
           							/> */}
-                        <Text>据结束</Text>
+                        <Text className='time-text'>距结束</Text>
                         <AtCountdown
+                         format={{ day:'天',hours: ':', minutes: ':', seconds: '' }}
                           isShowDay
                           day={2}
                           hours={1}
@@ -155,7 +157,14 @@ export default class DetailPluspriceList extends Component {
                  
                 </View>
           </View>
-         
+        <ScrollView
+          className='plusprice-goods__scroll'
+          scrollY
+          scrollTop={scrollTop}
+          scrollWithAnimation
+          onScroll={this.handleScroll}
+          onScrollToLower={this.nextPage}
+        >
           <View className='plusprice-goods__list plusprice-goods__type-list'>
             {
               list.map((item) => {
@@ -183,6 +192,7 @@ export default class DetailPluspriceList extends Component {
          show={showBackToTop}
           onClick={this.scrollBackToTop}
         />
+        <View className='scroll-footer'></View>
       </View>
     )
   }

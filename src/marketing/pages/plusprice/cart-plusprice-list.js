@@ -54,27 +54,6 @@ export default class DetailPluspriceList extends Component {
   //     path: `/pages/item/seckill-goods-list${query}`
   //   }
   // }
-
- 
-    
-
-  calcTimer (totalSec) {
-    let remainingSec = totalSec
-    const dd = Math.floor(totalSec / 24 / 3600)
-    remainingSec -= dd * 3600 * 24
-    const hh = Math.floor(remainingSec / 3600)
-    remainingSec -= hh * 3600
-    const mm = Math.floor(remainingSec / 60)
-    remainingSec -= mm * 60
-    const ss = Math.floor(remainingSec)
-
-    return {
-			dd,
-			hh,
-      mm,
-      ss
-    }
-  }
   handleClickItem (item) {
 		Taro.navigateTo({
 			url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
@@ -106,12 +85,13 @@ export default class DetailPluspriceList extends Component {
         })
         return
       }
-      // const {marketing_id} = selected[0]
-      // const query = {
-      //   item_id:type=='cancle'?0:selected[0].item_id,
-      //   marketing_id
-      // }
-      //const {data} = await api.cart.redemptionBuy(query)
+     console.log('selected',selected)
+      const {marketing_id} = selected[0]
+      const query = {
+        item_id:type=='cancle'?0:selected[0].item_id,
+        marketing_id
+      }
+      const {data} = await api.cart.selectedPlusitem(query)
       Taro.showToast({
         title: '操作成功~',
         icon: 'none'
@@ -124,29 +104,24 @@ export default class DetailPluspriceList extends Component {
 
    }
 
-  async fetch (params) {
+   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
-      seckill_id: this.$router.params.seckill_id,
-      type: this.$router.params.seckill_type,
+      marketing_id: this.$router.params.marketing_id,
       page,
       pageSize
     }
 
-    const { list, total_count: total, item_params_list = [], select_tags_list = []} = await api.item.search(query)
-
-    // let timer = null
-    // timer = this.calcTimer(last_seconds)
-
+    const { list, total_count: total} = await api.promotion.getpluspriceList(query)
 		const nList = pickBy(list, {
       img: 'pics[0]',
       item_id: 'item_id',
       title: 'itemName',
       desc: 'brief',
       distributor_id: 'distributor_id',
-      price: ({ activity_price }) => (activity_price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2),
-      is_checked:'is_checked'
+      marketing_id:'marketing_id',
+      price: ({ price }) => (price/100).toFixed(2),
+      market_price: ({ market_price }) => (market_price/100).toFixed(2)
     })
 
     this.setState({
@@ -162,7 +137,7 @@ export default class DetailPluspriceList extends Component {
     const { colors } = this.props
     const { list, showBackToTop, scrollTop, page } = this.state
     return (
-      <View className='page-plusprice'>
+      <View className='page-plusprice cart-page-plusprice'>
         <NavBar
           title='微商城'
         />
@@ -174,7 +149,9 @@ export default class DetailPluspriceList extends Component {
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
         >
-          <View className='plusprice-goods__list plusprice-goods__type-list'>
+          {
+            list && list.length > 0 && (
+            <View className='plusprice-goods__list plusprice-goods__type-list'>
             {
               list.map((item) => {
                 return (
@@ -183,28 +160,33 @@ export default class DetailPluspriceList extends Component {
                       checked={item.is_checked}
                       onChange={this.handleSelectGoods.bind(this,item)}
                     >
-                      <GoodsItem
+                    </SpCheckbox>
+                    <GoodsItem
                         key={item.item_id}
                         info={item}
                         showFav={false}
                       >
                       </GoodsItem>
-                    </SpCheckbox>
                     
                   </View>
                 )
               })
             }
+           <View className='plusprice-footer'>
+             <View className='footer-list'>
+             <View className='footer-item no-use' onClick={this.handleClickConfirm.bind(this,'cancel')}>不使用换购</View>
+                <View className='footer-item' onClick={this.handleClickConfirm.bind(this,'confirm')}>确定</View>
+             </View>
           </View>
+          </View>
+            )
+          }
+          
           { page.isLoading ? <Loading>正在加载...</Loading> : null }
           {
 						!page.isLoading && !page.hasNext && !list.length
 						&& (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
-          <View className='plusprice-footer'>
-                <View className='footer-item' onClick={this.handleClickConfirm.bind(this,'cancel')}>不使用换购</View>
-                <View className='footer-item' style={`background:${colors.data[0].marketing}`} onClick={this.handleClickConfirm.bind(this,'confirm')}>确定</View>
-          </View>
         </ScrollView>
 
         <BackToTop
