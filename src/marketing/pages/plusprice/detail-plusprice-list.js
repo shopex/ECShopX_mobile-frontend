@@ -165,22 +165,27 @@ export default class DetailPluspriceList extends Component {
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
         >
-          <View className='plusprice-goods__list plusprice-goods__type-list'>
-            {
-              list.map((item) => {
-                return (
-                  <View key={item.item_id} className='goods-list__item' onClick={() => this.handleClickItem(item)}>
-                    <GoodsItem
-                      key={item.item_id}
-                      info={item}
-                      showFav={false}
-                    >
-  									</GoodsItem>
-                  </View>
-                )
-              })
-            }
-          </View>
+          {
+            list && list.length && (
+              <View className='plusprice-goods__list plusprice-goods__type-list'>
+              {
+                list.map((item) => {
+                  return (
+                    <View key={item.item_id} className='goods-list__item' onClick={() => this.handleClickItem(item)}>
+                      <GoodsItem
+                        key={item.item_id}
+                        info={item}
+                        showFav={false}
+                      >
+                      </GoodsItem>
+                    </View>
+                  )
+                })
+              }
+            </View>
+            )
+          }
+
           { page.isLoading ? <Loading>正在加载...</Loading> : null }
           {
 						!page.isLoading && !page.hasNext && !list.length

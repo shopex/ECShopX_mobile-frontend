@@ -33,14 +33,6 @@ export default class DetailPluspriceList extends Component {
   }
 
   componentDidMount () {
-    // this.setState({
-    //   query: {
-    //     status: this.state.curTabIdx === 0 ? 'valid' : 'notice',
-    //     item_type: 'normal'
-    //   }
-    // }, () => {
-    //   this.nextPage()
-    // })
     this.nextPage()
   }
 
@@ -85,10 +77,9 @@ export default class DetailPluspriceList extends Component {
         })
         return
       }
-     console.log('selected',selected)
       const {marketing_id} = selected[0]
       const query = {
-        item_id:type=='cancle'?0:selected[0].item_id,
+        item_id:type=='cancel'?0:selected[0].item_id,
         marketing_id
       }
       const {data} = await api.cart.selectedPlusitem(query)
@@ -96,7 +87,7 @@ export default class DetailPluspriceList extends Component {
         title: '操作成功~',
         icon: 'none'
       })
-      type=='cancle' && (list = list.map(v=>v.is_checked=false))
+      type=='cancel' && (list = list.map(v=>v.is_checked=false))
       this.setState({list})
       setTimeout(() => {
          Taro.navigateBack()
@@ -121,7 +112,8 @@ export default class DetailPluspriceList extends Component {
       distributor_id: 'distributor_id',
       marketing_id:'marketing_id',
       price: ({ price }) => (price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2)
+      market_price: ({ market_price }) => (market_price/100).toFixed(2),
+      is_checked:'is_checked'
     })
 
     this.setState({
@@ -156,17 +148,22 @@ export default class DetailPluspriceList extends Component {
               list.map((item) => {
                 return (
                   <View key={item.item_id} className='goods-list__item'>
-                    <SpCheckbox
-                      checked={item.is_checked}
-                      onChange={this.handleSelectGoods.bind(this,item)}
-                    >
-                    </SpCheckbox>
+                    <View className='item-check'>
+                      <SpCheckbox
+                        checked={item.is_checked}
+                        onChange={this.handleSelectGoods.bind(this,item)}
+                      >
+                      </SpCheckbox>
+                    </View>
+                    <View className='item-goodsItem'>
                     <GoodsItem
                         key={item.item_id}
                         info={item}
                         showFav={false}
+                        onClick={this.handleClickItem.bind(this)}
                       >
                       </GoodsItem>
+                    </View>
                     
                   </View>
                 )

@@ -139,8 +139,9 @@ export default class CartIndex extends Component {
 
   // 活动分组
   resolveActivityGroup (cartList) {
+    console.log('cartList--------->',cartList)
     const groups = cartList.map(shopCart => {
-      const { list, used_activity = [] } = shopCart
+      const { list, used_activity = [],plus_buy_activity =[] } = shopCart
       const tDict = list.reduce((acc, val) => {
         acc[val.cart_id] = val
         return acc
@@ -156,11 +157,29 @@ export default class CartIndex extends Component {
 				})
 				// return Object.assign({},shopCart,{list: itemList,activity})
 				return {list: itemList,activity}
-			})
+      })
+      //加价购商品
+      const plusBuyList=[]
+      plus_buy_activity.map(pitem =>{
+        const {plus_item} = pitem
+        if(plus_item){
+          const items = pickBy(plus_item, {
+            item_id: 'item_id',
+            activity_id:pitem.activity_id,
+            title: 'item_name',
+            img: ({ pics }) => pics[0],
+            price: ({ price }) => (+price / 100).toFixed(2),
+            market_price: ({ market_price }) => (+market_price / 100).toFixed(2),
+            num: 1,
+            is_plus_buy:true, //加价购
+          })
+          plusBuyList.push(items)
+        }
+       
+      })
       // 无活动列表
 			group.push({activity: null, list: Object.values(tDict) })
-			// console.log('group',group)
-      return {shopInfo:shopCart,group}
+      return {shopInfo:shopCart,plusBuyList:[...plusBuyList],group}
     })
     return groups
   }
@@ -455,6 +474,12 @@ handleSelectPlusprice = (marketing_id) => {
     url: url
   })
 }
+handleLookPlusprice = (marketing_id) =>{
+  const url = `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${marketing_id}`
+  Taro.navigateTo({
+    url: url
+  })
+}
 
 
 
@@ -542,7 +567,7 @@ handleSelectPlusprice = (marketing_id) => {
                             <View
                               className='cart-group__activity-item'
                             >
-                              <View className='cart-group__activity-item-left'>
+                              <View className='cart-group__activity-item-left' onClick={this.handleLookPlusprice.bind(this,plus_item.activity_id)}>
                                 <Text className='cart-group__activity-label'>换购</Text>
                                 <Text>{discount_desc.info}</Text>
                               </View>
@@ -616,7 +641,7 @@ handleSelectPlusprice = (marketing_id) => {
 																		</View>
 																	)
 																})
-															}
+															}                      
 															{activity && activity.gifts && (
 																<View className='cart-group__gifts'>
 																	<View className='cart-group__gifts-hd'>赠品</View>
@@ -645,19 +670,15 @@ handleSelectPlusprice = (marketing_id) => {
 												})
 											}
                       {
-                        shopCart.shopInfo.plus_buy_activity && shopCart.shopInfo.plus_buy_activity.map(plus =>{
-                         const {plus_item} = plus
-                          return(
-                            <GoodsItem
-                              key={plus_item.item_id}
-                              info={plus_item}
-                              //onClick={this.handleClickItem.bind(this, item)}
-                            />
-                          //   <CartItem
-                          //       key={plus_item.item_id}
-                          //       info={plus_item}
-                          //     >
-													// </CartItem>
+                        shopCart.plusBuyList && shopCart.plusBuyList.map(item =>{
+                          return (
+                            <CartItem
+                                isDisabled
+                                num
+                                key={item.item.item_id}
+                                info={item}
+                              >                           
+                          </CartItem>
                           )
                         })
                       }
