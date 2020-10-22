@@ -162,6 +162,12 @@
         background-color: #ffffff;
         margin-bottom: 20px;
         padding-left:15px;
+        .item-check{
+          flex-basis: 60px;
+        }
+        .item-goodsItem{
+          flex:1;
+        }
         .goods-item{
           box-shadow: none;
           margin-bottom: 0;
