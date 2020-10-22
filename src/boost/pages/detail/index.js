@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-15 16:17:21
+ * @LastEditTime: 2020-10-22 10:58:22
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -102,7 +102,7 @@ export default class Detail extends Component {
     }
 
     this.setState({
-      adPic: data[0].params.ad_pic,
+      adPic: data[0] ? data[0].params.ad_pic : '',
       info: pickBy(bargain_info, {
         item_id: 'item_id',
         bargain_id: 'bargain_id',
