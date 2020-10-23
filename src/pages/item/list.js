@@ -73,7 +73,7 @@ export default class List extends Component {
     const res = this.state.shareInfo
     const { cat_id = null, main_cat_id = null } = this.$router.params
     const { userId } = Taro.getStorageSync('userinfo')
-    const query = userId ? `?uid=${userId}&cat_id=${cat_id}&main_cat_id=${main_cat_id}` : `?cat_id=${cat_id}&main_cat_id=${main_cat_id}`     
+    const query = userId ? `?uid=${userId}&cat_id=${cat_id}&main_cat_id=${main_cat_id}` : `?cat_id=${cat_id}&main_cat_id=${main_cat_id}`
     return {
       title: res.title,
       imageUrl: res.imageUrl,
@@ -85,13 +85,13 @@ export default class List extends Component {
     const res = this.state.shareInfo
     const { cat_id = null, main_cat_id = null } = this.$router.params
     const { userId } = Taro.getStorageSync('userinfo')
-    const query = userId ? `uid=${userId}&cat_id=${cat_id}&main_cat_id=${main_cat_id}` : `cat_id=${cat_id}&main_cat_id=${main_cat_id}` 
+    const query = userId ? `uid=${userId}&cat_id=${cat_id}&main_cat_id=${main_cat_id}` : `cat_id=${cat_id}&main_cat_id=${main_cat_id}`
     return {
       title: res.title,
       imageUrl: res.imageUrl,
       query: query
     }
-  }     
+  }
 
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
@@ -124,7 +124,7 @@ export default class List extends Component {
     })
 
     const nList = pickBy(list, {
-      img: ({ pics }) => typeof pics !== 'string' ? pics[0] : JSON.parse(pics)[0],
+      img: ({ pics }) => pics ? typeof pics !== 'string' ? pics[0] : JSON.parse(pics)[0] : '',
       item_id: 'item_id',
       title: ({ itemName, item_name }) => itemName ? itemName : item_name,
       desc: 'brief',
@@ -411,7 +411,7 @@ export default class List extends Component {
 
 		return (
 			<View className='page-goods-list'>
-        <NavBar 
+        <NavBar
           title='商品列表'
           leftIconType='chevron-left'
           fixed='true'
