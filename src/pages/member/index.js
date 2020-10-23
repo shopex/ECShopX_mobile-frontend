@@ -148,6 +148,7 @@ export default class MemberIndex extends Component {
 
   // 转盘抽奖
   async getWheel() {
+    if (!S.getAuthToken()) return false
     const data = await api.wheel.getTurntableconfig()
     this.setState({
       turntable_open: data.turntable_open
