@@ -20,7 +20,7 @@ export default class OrderItem extends Component {
   render () {
     const { info, onClick, payType, showExtra,showDesc, customFooter, isShowNational } = this.props
     if (!info) return null
-
+    
     const img = info.pic_path
       ? info.pic_path
       : Array.isArray(info.pics)
@@ -69,7 +69,9 @@ export default class OrderItem extends Component {
                 ? <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={info.point}></Price>
                 : <Price className='order-item__price' value={info.price}></Price>
               }
-              <Text className='order-item__pay-type'>{payType === 'dhpoint' ? '积分支付' : '微信支付'}</Text>
+              {payType=='hfpay'&&<Text className='order-item__pay-type'>汇付支付</Text>}
+
+              {payType!='hfpay'&&<Text className='order-item__pay-type'>{payType === 'dhpoint' ? '积分支付' : '微信支付'}</Text>}
             </View>
           )
         }
