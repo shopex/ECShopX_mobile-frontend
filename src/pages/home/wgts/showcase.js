@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { QnImg } from '@/components'
+import { SpImg } from '@/components'
 import { navigateTo } from '@/utils'
 import { linkPage } from './helper'
 import './showcase.scss'
@@ -48,7 +48,7 @@ export default class WgtShowCase extends Component {
               className='layout layout-1'
               onClick={this.handleClickItem.bind(this, data[0].linkPage, data[0].id)}
             >
-              <QnImg
+              <SpImg
                 img-class='show-img'
                 src={data[0].imgUrl}
                 mode='scaleToFill'
@@ -74,7 +74,7 @@ export default class WgtShowCase extends Component {
               className='layout layout-3'
               onClick={this.handleClickItem.bind(this, data[2].linkPage, data[2].id)}
             >
-              <QnImg
+              <SpImg
                 img-class='show-img'
                 src={data[2].imgUrl}
                 mode='scaleToFill'
