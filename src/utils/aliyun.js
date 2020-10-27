@@ -1,66 +1,53 @@
+/*
+ * @Author: Arvin
+ * @GitHub: https://github.com/973749104
+ * @Blog: https://liuhgxu.com
+ * @Description: 阿里云图片上传
+ * @FilePath: /ossVshop/src/utils/aliyun.js
+ * @Date: 2020-03-04 13:51:30
+ * @LastEditors: Arvin
+ * @LastEditTime: 2020-03-13 12:35:03
+ */
 import Taro from "@tarojs/taro";
 import req from '@/api/req'
-import * as qiniu from 'qiniu-js'
-import log from "./log";
 
-async function uploadImageFn (imgFiles, getUrl, curFiletype) {
+async function uploadImageFn (imgFiles, getUrl, curFiletype, region) {
   let promises = []
-  console.log(getUrl)
   for (let item of imgFiles) {
     const promise = new Promise(async (resolve, reject) => {
       if (!item.file) {
         resolve(item)
       } else {
         const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-        const {token, key, domain, region} = await req.get(getUrl, {
-          filesystem: 'qiniu',
+        const {accessid, callback, dir, host, policy, signature} = await req.get(getUrl, {
+          filesystem: 'ali',
           filetype: curFiletype,
           filename
         })
-        let uploadUrl = uploadURLFromRegionCode(region)
-        if (process.env.TARO_ENV === 'weapp') {
-          console.log()
           Taro.uploadFile({
-            url: uploadUrl,
+            url: host,
             filePath: item.url,
             name: 'file',
             formData:{
-              'token': token,
-              'key': key
+              name: filename,
+              key: `${dir}`,
+              policy: policy,
+              OSSAccessKeyId: accessid,
+              // 让服务端返回200
+              signature: signature,
+              success_action_status: '200'
+              // 服务端回调
+              // callback: ''
             },
             success: res => {
-              let imgData = JSON.parse(res.data)
-              console.log(imgData)
+              // let imgData = JSON.parse(res.data)
+              console.log(res)
               resolve({
-                url: `${domain}/${imgData.key}`
+                url: `${host}${dir}`
               })
             },
             fail: error => reject(error)
           })
-        } else {
-          let observable
-          try {
-            const blobImg = await resolveBlobFromFile(item.url, item.file.type)
-            observable = qiniu.upload(blobImg, key, token, {}, {
-              region: qiniu.region[region]
-            })
-          } catch (e) {
-            console.log(e)
-          }
-
-          observable.subscribe({
-            next (res) {},
-            error (err) {
-              reject(err)
-            },
-            complete (res) {
-              resolve({
-                url: `${domain}/${res.key}`
-              })
-            }
-          })
-        }
-
       }
     })
     promises.push(promise)
@@ -75,6 +62,27 @@ function resolveBlobFromFile (url, type) {
   return fetch(url)
     .then(res => res.blob())
     .then(blob => blob.slice(0, blob.size, type))
+}
+
+const getPolicy = function () {
+  let date = new Date();
+  date.setHours(date.getHours() + env.timeout);
+  let expire = date.toISOString();
+  const policy = {
+    "expiration": expire, // 设置该Policy的失效时间
+    "conditions": [
+      ["content-length-range", 0, 3 * 1024 * 1024] // 设置上传文件的大小限制
+    ]
+  };
+
+  return Base64.encode(JSON.stringify(policy));
+}
+
+const getSignature = function (policyBase64) {
+  const bytes = Crypto.HMAC(Crypto.SHA1, policyBase64, env.AccessKeySecret, {
+    asBytes: true
+  });
+  return Crypto.util.bytesToBase64(bytes);
 }
 
 function uploadURLFromRegionCode(code) {
