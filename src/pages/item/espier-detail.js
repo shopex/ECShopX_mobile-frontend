@@ -749,7 +749,7 @@ export default class Detail extends Component {
     const { showLikeList, colors } = this.props
     const meiqia = Taro.getStorageSync('meiqia')
     const uid = this.uid
-    const taxRate = info ? info.cross_border_tax_rate : 0
+    const taxRate = info ? (Number(info.cross_border_tax_rate || 0) / 100) : 0
     const mainPrice = info ? (info.act_price ? info.act_price : info.price) : 0
     const memberPrice = info ? (info.member_price ? info.member_price : info.price) : 0
     const endPrice = marketing === 'normal' ? memberPrice : mainPrice
@@ -759,7 +759,8 @@ export default class Detail extends Component {
     const skuPrice = curSku ? skuEndprice : endPrice
 
     const crossPrice =  ((skuPrice * taxRate) / 100).toFixed(2)
-    const showPrice = ((skuPrice * (1 + taxRate)) / 100).toFixed(2)
+    const showPrice = (skuPrice * (1 + taxRate))
+    console.log(showPrice)
     const lnglat = Taro.getStorageSync('lnglat')
 
     if (!info) {
@@ -942,18 +943,11 @@ export default class Detail extends Component {
                       value={showPrice}
                     />
                     {
-                      info.type !== '1' &&  info.cross_border_tax_rate !== 0 ? <Price
+                      (info.type != 1 ||  info.cross_border_tax_rate == 0) ? <Price
                         lineThrough
                         unit='cent'
                         value={curSku ? curSku.market_price : info.market_price}
-                      /> : <View>
-                        (含税¥{ crossPrice })
-                        <Price
-                          lineThrough
-                          unit='cent'
-                          value={curSku ? curSku.market_price : info.market_price}
-                        />
-                      </View>
+                      /> : `(含税¥ ${ crossPrice })`
                     }
                   </View>
                     {
@@ -980,7 +974,7 @@ export default class Detail extends Component {
               info.type == '1' &&
                 <View className='nationalInfo'>
                   <View>
-                    进口税:商品包税
+                    进口税: 商品包税
                     {/* <Price
                       unit='cent'
                       symbol={(info.cur && info.cur.symbol) || ''}
