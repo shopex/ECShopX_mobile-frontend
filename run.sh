@@ -6,8 +6,8 @@
  # @FilePath: /unite-vshop/run.sh
 # @Date: 2020-06-10 10:15:51
  # @LastEditors: Arvin
- # @LastEditTime: 2020-09-03 10:57:24
-###
+ # @LastEditTime: 2020-10-28 13:51:17
+### 
 #/usr/bash
 
 cd $(dirname "$0")
@@ -103,41 +103,29 @@ APP_MAP_NAME='${map_name}'
 
 echo "请选择编译方式"
 
-buildType="WEAPP H5"
+buildType='weapp h5'
+
+runBuildType=h5
 
 select type in $buildType
-
 do
+  runBuildType=$type
+break
+done
+echo $runBuildType
+echo "请选择服务商"
 
-echo "请选择cdn服务商"
+ossType="qn ali"
 
-buildOss="qn ali"
-
-select oss in $buildOss
+select type in $ossType
 do
-if [ "$type" == 'H5' ]
-then
-  if [ "$oss" == 'ali' ]
+if [ "$type" == 'ali' ]
   then
-    echo "npm run build:H5:ali"
-    npm run build:h5:ali
-  else
-    echo "npm run build:H5"
-    npm run build:h5
-  fi
-  break
-  done
+  echo "npm run build:${runBuildType}:ali"
+  npm run build:$runBuildType:ali
 else
-  if [ "$oss" == 'ali' ]
-  then
-    echo "npm run build:weapp:ali"
-    npm run build:weapp:ali
-  else
-    echo "npm run build:weapp"
-    npm run build:weapp
-  fi
-  break
-  done
+  echo "npm run build:${runBuildType}"
+  npm run build:$runBuildType
 fi
 break
 done
