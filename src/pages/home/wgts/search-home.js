@@ -37,6 +37,18 @@ export default class WgtSearchHome extends Component {
     })
   }
 
+  handleScanCode = () => {
+    Taro.scanCode().then(res => {
+      var scene = decodeURIComponent(res.path)
+      var path = scene.replace('pages/', '')
+      path = path.replace('scene=', '')
+      //格式化二维码参数
+      Taro.navigateTo({
+        url: path
+      })
+    })
+  }  
+
   render () {
     const { info } = this.props
     if (!info) {
@@ -53,6 +65,12 @@ export default class WgtSearchHome extends Component {
               <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon>
               <View>输入商品名称</View>
             </View>
+            {
+                Taro.getEnv() !== 'WEB' && config.isOpenScanQrcode == 1 && <View className='scancode' onClick={this.handleScanCode.bind(this)}>
+                  <View className='iconfont icon-scan'></View>
+                  <View>扫码</View>
+                </View>
+              }            
           </View>
         </View>
       </View>
