@@ -145,7 +145,7 @@ export default class PointUse extends Component {
            </View>
    
            {
-             deduct_point_rule.full_amount && (
+             deduct_point_rule.full_amount && (info.max_point > 0) && (
               <View className='point-item'>
               <View className='point-item__title'>
               <SpCheckbox
