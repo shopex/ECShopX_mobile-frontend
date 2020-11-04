@@ -1465,12 +1465,12 @@ export default class CartCheckout extends Component {
           >
           </SpCell>*/}
           {
-            pointInfo.is_open_deduct_point && (
+            (goodType !== 'cross' && pointInfo.is_open_deduct_point )&& (
               <SpCell
-              isLink
-              className='trade-invoice'
-              title='积分抵扣'
-              onClick={this.handlePointShow}
+                isLink
+                className='trade-invoice'
+                title='积分抵扣'
+                onClick={this.handlePointShow}
               >
               <View className='invoice-title'>
                 {(pointInfo.point_use > 0 || payType === 'point' )&& (<View className='icon-close invoice-guanbi' onClick={this.resetPoint.bind(this)}></View>)}
@@ -1576,15 +1576,17 @@ export default class CartCheckout extends Component {
                   value={total.discount_fee}
                 />
               </SpCell>
-              <SpCell
-                className='trade-sub-total__item'
-                title='积分抵扣：'
-              >
-                <Price
-                  unit='cent'
-                  value={total.point_fee}
-                />
-              </SpCell>
+              {
+                goodType !== 'cross' && <SpCell
+                  className='trade-sub-total__item'
+                  title='积分抵扣：'
+                >
+                  <Price
+                    unit='cent'
+                    value={total.point_fee}
+                  />
+                </SpCell>
+              }
               <SpCell
                 className='trade-sub-total__item'
                 title='运费：'
