@@ -357,6 +357,8 @@ export default class CartCheckout extends Component {
   }
 
   getParams () {
+    // console.log('/////////////////')
+    console.log(this.$router.params)
     const {
       type,
       seckill_id = null,
@@ -495,12 +497,8 @@ export default class CartCheckout extends Component {
     }
     if (bargain_id) {
       params.bargain_id = bargain_id
-    } else {
-      delete params.bargain_id
     }
-
     this.params = params
-
     return _cloneDeep(params)
   }
 
@@ -510,7 +508,8 @@ export default class CartCheckout extends Component {
       mask: true
     })
     const params = this.getParams()
-
+    console.log('params////////////////////////')
+    console.log(params)
     let salesperson_id = Taro.getStorageSync('s_smid')
     if (salesperson_id) {
       params.salesperson_id = salesperson_id
