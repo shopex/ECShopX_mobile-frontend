@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/utils/upload.js
  * @Date: 2020-03-06 16:32:07
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-04 17:41:18
+ * @LastEditTime: 2020-11-05 14:48:14
  */
 import Taro from '@tarojs/taro'
 import req from '@/api/req'
@@ -16,23 +16,23 @@ const getToken = (params) => {
   return req.get('espier/image_upload_token', params)
 }
 
-const uploadURLFromRegionCode = (code) => {
-  switch(code) {
-      case 'z0': return'https://up.qiniup.com'
-      case 'z1': return 'https://up-z1.qiniup.com'
-      case 'z2': return 'https://up-z2.qiniup.com'
-      case 'na0': return 'https://up-na0.qiniup.com'
-      case 'as0': return 'https://up-as0.qiniup.com'
-      default: console.error('please make the region is with one of [z0, z1, z2, na0, as0]')
-  }
-}
+// const uploadURLFromRegionCode = (code) => {
+//   switch(code) {
+//       case 'z0': return'https://up.qiniup.com'
+//       case 'z1': return 'https://up-z1.qiniup.com'
+//       case 'z2': return 'https://up-z2.qiniup.com'
+//       case 'na0': return 'https://up-na0.qiniup.com'
+//       case 'as0': return 'https://up-as0.qiniup.com'
+//       default: console.error('please make the region is with one of [z0, z1, z2, na0, as0]')
+//   }
+// }
 
 const upload = {
   aliUpload: async (item, tokenRes) => {
-    const {accessid, callback = () => {}, dir, host, policy, signature} = tokenRes
+    const {accessid, dir, host, policy, signature} = tokenRes
     const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
     try {
-      await Taro.uploadFile({
+      const res = await Taro.uploadFile({
         url: host,
         filePath: item.url,
         name: 'file',
@@ -45,9 +45,12 @@ const upload = {
           signature: signature,
           success_action_status: '200',
           // 服务端回调
-          callback: callback
+          // callback: callback
         }
       })
+      if (!res) {
+        return false
+      }
       return {
         url: `${host}${dir}`
       }
@@ -56,11 +59,11 @@ const upload = {
     }
   },
   qiNiuUpload: async (item, tokenRes) => {
-    const { token, key, domain, region } = tokenRes
-    const url = uploadURLFromRegionCode(region)
+    const { token, key, domain, host } = tokenRes
+    // const url = uploadURLFromRegionCode(region)
     try {
-      const { data } = await  Taro.uploadFile({
-        url: url,
+      const { data } = await Taro.uploadFile({
+        url: host,
         filePath: item.url,
         name: 'file',
         formData:{
@@ -68,6 +71,9 @@ const upload = {
           'key': key
       }})
       const imgData = JSON.parse(data)
+      if (!imgData.key) {
+        return false
+      }
       return {
         url: `${domain}/${imgData.key}`
       }
@@ -76,11 +82,11 @@ const upload = {
     }
   },
   localUpload: async (item, tokenRes) => {
-    const { filetype } = tokenRes
+    const { filetype, domain } = tokenRes
     const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
     try {
-      const { image_url } = await Taro.uploadFile({
-        url: `${req.baseURL}espier/upload_localimage`,
+      const res = await Taro.uploadFile({
+        url: `${req.baseURL}espier/uploadlocal`,
         filePath: item.url,
         name: 'images',
         formData:{
@@ -88,8 +94,13 @@ const upload = {
           filetype
         }
       })
+      const data = JSON.parse(res.data)
+      const { image_url } = data.data
+      if (!image_url) {
+        return false
+      }
       return {
-        url: image_url
+        url: `${domain}/${image_url}`
       }
     } catch (e) {
       throw new Error (e)
@@ -110,15 +121,19 @@ const getUploadFun = (dirver) => {
 
 // 返回对应上传方式
 const uploadImageFn = async (imgFiles, filetype = 'image') => {
-  const { driver = 'oss', ...toeknRes } = await getToken({ filetype })
+  const { driver, token } = await getToken({ filetype })
   const uploadType = getUploadFun(driver)
   const imgs = []
+
   for (const item of imgFiles) {
     if (!item.file) {
       continue
     }
     try {
-      const img = await upload[uploadType](item, { ...toeknRes, filetype})
+      const img = await upload[uploadType](item, { ...token, filetype})
+      if (!img || !img.url) {
+        continue
+      }
       imgs.push(img)
     } catch (e) {
       console.log(e)
@@ -128,5 +143,5 @@ const uploadImageFn = async (imgFiles, filetype = 'image') => {
 }
 
 export default {
-  uploadImageFn: uploadImageFn
+  uploadImageFn
 }
