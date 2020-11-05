@@ -15,8 +15,7 @@ const {
   APP_HOME_PAGE,
   INTEGRATION_APP,
   APP_MAP_KEY,
-  APP_MAP_NAME,
-  STORAGE
+  APP_MAP_NAME
 } = process.env
 
 // 是否为web
@@ -72,8 +71,7 @@ const config = {
     APP_HOME_PAGE: isWeb ? `'${APP_HOME_PAGE}'` : APP_HOME_PAGE,
     APP_AUTH_PAGE: isWeb ? `'${APP_AUTH_PAGE}'` : APP_AUTH_PAGE,
     APP_MAP_KEY: isWeb ? `'${APP_MAP_KEY}'` : APP_MAP_KEY,
-    APP_MAP_NAME: `'${APP_MAP_NAME}'`,
-    STORAGE: isWeb ? `'${STORAGE}'` : STORAGE,
+    APP_MAP_NAME: `'${APP_MAP_NAME}'`
   },
   alias: {
     '@': join(__dirname, '../src')
