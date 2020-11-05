@@ -6,10 +6,10 @@
  * @FilePath: /unite-vshop/src/components/sp-img/index.js
  * @Date: 2020-03-04 17:27:15
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-28 10:13:30
+ * @LastEditTime: 2020-11-05 15:01:53
  */
 import Taro, { Component } from '@tarojs/taro'
-import QnImg from '../qn-img'
+// import QnImg from '../qn-img'
 import AliYunImg from '../aliyun-img'
 
 export default class SpImg extends Component {
@@ -44,36 +44,22 @@ export default class SpImg extends Component {
       p
     } = this.props
 
-    return (
-      (STORAGE !== 'ali')
-      ? <QnImg
-        img-class='img-class'
-        src={src}
-        mode={mode}
-        lazyLoad={lazyLoad}
-        qnMode={qnMode}
-        onLoad={onLoad}
-        onError={onError}
-        width={width}
-        height={height}
-      />
-      : <AliYunImg
-        img-class='img-class'
-        src={src}
-        mode={mode}
-        lazyLoad={lazyLoad}
-        qnMode={qnMode}
-        onLoad={onLoad}
-        onError={onError}
-        width={width}
-        height={height}
-        m={m}
-        l={l}
-        s={s}
-        limit={limit}
-        color={color}
-        p={p}
-      />
-    )
+    return <AliYunImg
+      img-class='img-class'
+      src={src}
+      mode={mode}
+      lazyLoad={lazyLoad}
+      qnMode={qnMode}
+      onLoad={onLoad}
+      onError={onError}
+      width={width}
+      height={height}
+      m={m}
+      l={l}
+      s={s}
+      limit={limit}
+      color={color}
+      p={p}
+    />
   }
 }
