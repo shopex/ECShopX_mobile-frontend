@@ -1,11 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { AtInput, AtTextarea, AtImagePicker, AtButton } from 'taro-ui'
-import { SpCell } from '@/components'
 import imgUploader from '@/utils/upload'
 import S from '@/spx'
 import api from '@/api'
-import req from '@/api/req'
+// import req from '@/api/req'
 
 import './shop-form.scss'
 
@@ -20,7 +19,7 @@ export default class DistributionShopForm extends Component {
   }
 
   componentDidMount () {
-    const { imgs } = this.state
+    // const { imgs } = this.state
     const { key, val } = this.$router.params
     this.setState({
       info: {
@@ -39,7 +38,7 @@ export default class DistributionShopForm extends Component {
 
   handleChange = (e) => {
     let value = e.detail ? e.detail.value : e
-    const { key, val } = this.state.info
+    const { key } = this.state.info
     this.setState({
       info: {
         key,
@@ -53,7 +52,7 @@ export default class DistributionShopForm extends Component {
     const params = {
       [key]: val
     }
-    const { list } = await api.distribution.update(params)
+    const { list = [] } = await api.distribution.update(params)
     if ( list[0] ) Taro.navigateBack()
   }
 
@@ -62,7 +61,11 @@ export default class DistributionShopForm extends Component {
 
     if (type === 'remove') {
       this.setState({
-        imgs: data
+        imgs: data,
+        info: {
+          key,
+          val: ''
+        }
       })
       return
     }
@@ -71,9 +74,14 @@ export default class DistributionShopForm extends Component {
       S.toast('最多上传1张图片')
     }
     const imgFiles = data.slice(0, 1)
-    const res = await imgUploader.uploadImageFn(imgFiles, 'espier/image_upload_token', 'jpg/png', 'z2')
+    const res = await imgUploader.uploadImageFn(imgFiles)
+
     this.setState({
-      imgs: res
+      imgs: res,
+      info: {
+        key,
+        val: res[0].url
+      }
     })
   }
 
@@ -86,20 +94,20 @@ export default class DistributionShopForm extends Component {
           {
             info.key == 'shop_name'
             && <AtInput
-                type='text'
-                title="小店名称"
-                value={info.val}
-                onChange={this.handleChange.bind(this)}
-              />
+              type='text'
+              title='小店名称'
+              value={info.val}
+              onChange={this.handleChange.bind(this)}
+            />
           }
           {
             info.key == 'brief'
             && <AtTextarea
-                type='textarea'
-                title="小店描述"
-                value={info.val}
-                onChange={this.handleChange.bind(this)}
-              />
+              type='textarea'
+              title='小店描述'
+              value={info.val}
+              onChange={this.handleChange.bind(this)}
+            />
           }
           {
             info.key == 'shop_pic'
@@ -117,8 +125,8 @@ export default class DistributionShopForm extends Component {
                   </View>
                 </View>
           }
-          <View className="shop_pic-btn">
-            <AtButton type="primary" onClick={this.handleSubmit.bind(this)}>提交</AtButton>
+          <View className='shop_pic-btn'>
+            <AtButton type='primary' onClick={this.handleSubmit.bind(this)}>提交</AtButton>
           </View>
         </View>
       </View>

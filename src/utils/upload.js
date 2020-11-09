@@ -1,40 +1,4 @@
 /*
- *                        ::
- *                       :;J7, :,                        ::;7:
- *                       ,ivYi, ,                       ;LLLFS:
- *                       :iv7Yi                       :7ri;j5PL
- *                      ,:ivYLvr                    ,ivrrirrY2X,
- *                      :;r@Wwz.7r:                :ivu@kexianli.
- *                     :iL7::,:::iiirii:ii;::::,,irvF7rvvLujL7ur
- *                    ri::,:,::i:iiiiiii:i:irrv177JX7rYXqZEkvv17
- *                 ;i:, , ::::iirrririi:i:::iiir2XXvii;L8OGJr71i
- *               :,, ,,:   ,::ir@mingyi.irii:i:::j1jri7ZBOS7ivv,
- *                  ,::,    ::rv77iiiriii:iii:i::,rvLq@huhao.Li
- *              ,,      ,, ,:ir7ir::,:::i;ir:::i:i::rSGGYri712:
- *            :::  ,v7r:: ::rrv77:, ,, ,:i7rrii:::::, ir7ri7Lri
- *           ,     2OBBOi,iiir;r::        ,irriiii::,, ,iv7Luur:
- *         ,,     i78MBBi,:,:::,:,  :7FSL: ,iriii:::i::,,:rLqXv::
- *         :      iuMMP: :,:::,:ii;2GY7OBB0viiii:i:iii:i:::iJqL;::
- *        ,     ::::i   ,,,,, ::LuBBu BBBBBErii:i:i:i:i:i:i:r77ii
- *       ,       :       , ,,:::rruBZ1MBBqi, :,,,:::,::::::iiriri:
- *      ,               ,,,,::::i:  @arqiao.       ,:,, ,:::ii;i7:
- *     :,       rjujLYLi   ,,:::::,:::::::::,,   ,:i,:,,,,,::i:iii
- *     ::      BBBBBBBBB0,    ,,::: , ,:::::: ,      ,,,, ,,:::::::
- *     i,  ,  ,8BMMBBBBBBi     ,,:,,     ,,, , ,   , , , :,::ii::i::
- *     :      iZMOMOMBBM2::::::::::,,,,     ,,,,,,:,,,::::i:irr:i:::,
- *     i   ,,:;u0MBMOG1L:::i::::::  ,,,::,   ,,, ::::::i:i:iirii:i:i:
- *     :    ,iuUuuXUkFu7i:iii:i:::, :,:,: ::::::::i:i:::::iirr7iiri::
- *     :     :rk@Yizero.i:::::, ,:ii:::::::i:::::i::,::::iirrriiiri::,
- *      :      5BMBBBBBBSr:,::rv2kuii:::iii::,:i:,, , ,,:,:i@petermu.,
- *           , :r50EZ8MBBBBGOBBBZP7::::i::,:::::,: :,:,::i;rrririiii::
- *               :jujYY7LS0ujJL7r::,::i::,::::::::::::::iirirrrrrrr:ii:
- *            ,:  :@kevensun.:,:,,,::::i:i:::::,,::::::iir;ii;7v77;ii;i,
- *            ,,,     ,,:,::::::i:iiiii:i::::,, ::::iiiir@xingjief.r;7:i,
- *         , , ,,,:,,::::::::iiiiiiiiii:,:,:::::::::iiir;ri7vL77rrirri::
- *          :,, , ::::::::i:::i:::i:i::,,,,,:,::i:i:::iir;@Secbone.ii:::
- */
-
-/*
  * @Author: Arvin
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
@@ -42,28 +6,142 @@
  * @FilePath: /unite-vshop/src/utils/upload.js
  * @Date: 2020-03-06 16:32:07
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-28 10:09:54
+ * @LastEditTime: 2020-11-05 14:48:14
  */
+import Taro from '@tarojs/taro'
+import req from '@/api/req'
+// import * as qiniu from 'qiniu-js'
 
-import AliOss from './aliyun'
-import QiNiu from './qiniu'
-// import Tecent from './tecent'
-// 判断上传
+const getToken = (params) => {
+  return req.get('espier/image_upload_token', params)
+}
 
-
-// console.log(process.env.STORAGE)
-
-const storage = (STORAGE === 'ali') ? AliOss: QiNiu
-
-// switch (process.env.STORAGE) {
-//   case 'ali':
-//     storage = AliOss
-//     break;
-//   case 'tecent':
-//     storage = Tecent
-//     break;
-//   default:
-//     storage = QiNiu
+// const uploadURLFromRegionCode = (code) => {
+//   switch(code) {
+//       case 'z0': return'https://up.qiniup.com'
+//       case 'z1': return 'https://up-z1.qiniup.com'
+//       case 'z2': return 'https://up-z2.qiniup.com'
+//       case 'na0': return 'https://up-na0.qiniup.com'
+//       case 'as0': return 'https://up-as0.qiniup.com'
+//       default: console.error('please make the region is with one of [z0, z1, z2, na0, as0]')
+//   }
 // }
 
-export default storage
+const upload = {
+  aliUpload: async (item, tokenRes) => {
+    const {accessid, dir, host, policy, signature} = tokenRes
+    const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
+    try {
+      const res = await Taro.uploadFile({
+        url: host,
+        filePath: item.url,
+        name: 'file',
+        formData:{
+          name: filename,
+          key: `${dir}`,
+          policy: policy,
+          OSSAccessKeyId: accessid,
+          // 让服务端返回200
+          signature: signature,
+          success_action_status: '200',
+          // 服务端回调
+          // callback: callback
+        }
+      })
+      if (!res) {
+        return false
+      }
+      return {
+        url: `${host}${dir}`
+      }
+    } catch (e) {
+      throw new Error (e)
+    }
+  },
+  qiNiuUpload: async (item, tokenRes) => {
+    const { token, key, domain, host } = tokenRes
+    // const url = uploadURLFromRegionCode(region)
+    try {
+      const { data } = await Taro.uploadFile({
+        url: host,
+        filePath: item.url,
+        name: 'file',
+        formData:{
+          'token': token,
+          'key': key
+      }})
+      const imgData = JSON.parse(data)
+      if (!imgData.key) {
+        return false
+      }
+      return {
+        url: `${domain}/${imgData.key}`
+      }
+    } catch (e) {
+      throw new Error (e)
+    }
+  },
+  localUpload: async (item, tokenRes) => {
+    const { filetype, domain } = tokenRes
+    const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
+    try {
+      const res = await Taro.uploadFile({
+        url: `${req.baseURL}espier/uploadlocal`,
+        filePath: item.url,
+        name: 'images',
+        formData:{
+          name: filename,
+          filetype
+        }
+      })
+      const data = JSON.parse(res.data)
+      const { image_url } = data.data
+      if (!image_url) {
+        return false
+      }
+      return {
+        url: `${domain}/${image_url}`
+      }
+    } catch (e) {
+      throw new Error (e)
+    }
+  }
+}
+
+const getUploadFun = (dirver) => {
+  switch (dirver) {
+    case 'oss':
+      return 'aliUpload'
+    case 'local':
+      return 'localUpload'
+    default:
+      return 'qiNiuUpload'
+  }
+}
+
+// 返回对应上传方式
+const uploadImageFn = async (imgFiles, filetype = 'image') => {
+  const { driver, token } = await getToken({ filetype })
+  const uploadType = getUploadFun(driver)
+  const imgs = []
+
+  for (const item of imgFiles) {
+    if (!item.file) {
+      continue
+    }
+    try {
+      const img = await upload[uploadType](item, { ...token, filetype})
+      if (!img || !img.url) {
+        continue
+      }
+      imgs.push(img)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  return imgs
+}
+
+export default {
+  uploadImageFn
+}
