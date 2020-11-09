@@ -725,6 +725,11 @@ export default class Detail extends Component {
       })
     }
   }
+  
+  //订阅通知
+  handleSubscription = () => {
+    console.log('handleSubscription')
+  } 
 
   render () {
     const {
@@ -1257,7 +1262,13 @@ export default class Detail extends Component {
                 {
                   !startActivity
                     ? <Text>活动即将开始</Text>
-                    : <Text>当前商品无货</Text>
+                    : <View
+                      style={`background: ${true ? colors.data[0].primary : 'inherit'}`}
+                      className={`arrivalNotice ${false && 'noNotice'}`}
+                      onClick={this.handleSubscription.bind(this)}
+                    >
+                      { false ? '到货通知' : '已订阅到货通知' }
+                    </View>
                 }
               </View>
             </GoodsBuyToolbar>)
