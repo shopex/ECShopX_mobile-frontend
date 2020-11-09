@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
  * @Date: 2020-05-07 09:58:08
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-06 10:46:28
+ * @LastEditTime: 2020-11-09 15:28:43
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
