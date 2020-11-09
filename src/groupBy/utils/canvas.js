@@ -3,10 +3,10 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: canvas绘制
- * @FilePath: /unite-vshop/src/groupBy/utils/canvas.js
+ * @FilePath: \shop\src\groupBy\utils\canvas.js
  * @Date: 2020-05-11 11:05:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-07-08 18:54:23
+ * @LastEditTime: 2020-11-09 20:47:18
  */
 
 export default class Canvas {
@@ -304,12 +304,13 @@ async createGoodList (data, x, y, w) {
     const goodLeft = 15
     const goodWidth = width - (goodLeft * 2)
     const goodheight = 450
+    const pic = goodInfo.pics[0].replace('http://', 'https://')
     // 绘制背景
     await this.createBackground(width, height, 0, 0, 10, '#fff')
     // 绘制商品内容框
     await this.createBackground(goodWidth, goodheight, goodLeft, goodTop, 10)
     await this.creatSingleGood({
-      img: goodInfo.pics[0],
+      img: pic,
       name: goodInfo.goodName,
       nPrice: goodInfo.activityPrice,
       oPrice: goodInfo.price,
