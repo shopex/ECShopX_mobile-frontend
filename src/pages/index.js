@@ -55,7 +55,8 @@ export default class HomeIndex extends Component {
       show_official:true,
       showCloseBtn:false,
       // 是否有跳转至店铺页
-      isGoStore: false
+      isGoStore: false,
+      show_tabBar:true
     }
   }
 
@@ -74,7 +75,7 @@ export default class HomeIndex extends Component {
   //     })
   //    // const res = parseUrlStr(queryStr)
   // }
-    this.fetchSetInfo()
+    this.checkWhite()
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
       this.setState({
         shareInfo: res
@@ -95,11 +96,6 @@ export default class HomeIndex extends Component {
       const options = this.$router.params
       const res = await entry.entryLaunch(options, isNeedLoacate)
       const { store } = res
-      if(!S.getAuthToken()){
-        setTimeout(() => {
-          this.checkWhite()
-        }, 1000)
-      }
       if (!isArray(store)) {
         this.setState({
           curStore: store
@@ -376,6 +372,11 @@ export default class HomeIndex extends Component {
       setTimeout(() => {
         S.login(this, true)
       }, 1000)
+      this.setState({
+        show_tabBar:false
+      })
+    }else{
+      this.fetchSetInfo()
     }
   }
     handleClickLicense = () => {
@@ -449,7 +450,7 @@ export default class HomeIndex extends Component {
   }
 
   render () {
-    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop, is_open_recommend, is_open_scan_qrcode,is_open_official_account,show_official,showCloseBtn } = this.state
+    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop, is_open_recommend, is_open_scan_qrcode,is_open_official_account,show_official,showCloseBtn,show_tabBar } = this.state
     // const { showLikeList } = this.props
     // const user = Taro.getStorageSync('userinfo')
     // const isPromoter = user && user.isPromoter
@@ -551,7 +552,10 @@ export default class HomeIndex extends Component {
         }
 
         <SpToast />
-        <TabBar />
+        <TabBar
+          showbar={show_tabBar}
+        />
+        
       </View>
     )
   }
