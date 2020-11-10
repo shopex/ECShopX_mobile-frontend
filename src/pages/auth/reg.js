@@ -29,7 +29,8 @@ export default class Reg extends Component {
       option_list: [],
       showCheckboxPanel: false,
       isHasData: true,
-      show_official:false
+      show_official:false,
+      show_kuangkuang:true
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -50,9 +51,13 @@ export default class Reg extends Component {
         }
       })
     }
+    
     this.fetch()
+    
   }
-
+  componentDidShow(){
+    this.checkWhite()
+  }
   handleClickImgcode = async () => {
     const query = {
       type: 'sign'
@@ -103,6 +108,18 @@ export default class Reg extends Component {
       this.handleClickImgcode()
     }
     this.count = 0
+
+  }
+  async checkWhite () {
+    const { status } = await api.wx.getWhiteList()
+    if(status == true){
+      setTimeout(() => {
+       this.setState({
+         show_kuangkuang:false
+       })
+       //Taro.hideHomeButton()
+      }, 1000)
+    }
   }
 
   handleSubmit = async (e) => {
@@ -382,7 +399,7 @@ export default class Reg extends Component {
 
   render () {
     const { colors } = this.props
-    const { info, isHasValue, isVisible, isHasData, list, imgVisible, imgInfo, option_list, showCheckboxPanel,show_official } = this.state
+    const { info, isHasValue, isVisible, isHasData, list, imgVisible, imgInfo, option_list, showCheckboxPanel,show_official,show_kuangkuang } = this.state
 
     return (
       <View className='auth-reg'>
@@ -561,7 +578,11 @@ export default class Reg extends Component {
                       formType='submit'
                       style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                       >同意协议并注册</Button>
-                      <AtButton type='default' onClick={this.handleBackHome.bind(this)}>暂不注册，随便逛逛</AtButton>
+                      {
+                        show_kuangkuang 
+                        ? <AtButton type='default' onClick={this.handleBackHome.bind(this)}>暂不注册，随便逛逛</AtButton>
+                        : ''
+                      }
                   </View>
                 : <Button
                     type='primary'
