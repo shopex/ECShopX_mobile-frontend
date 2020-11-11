@@ -369,9 +369,11 @@ export default class HomeIndex extends Component {
   async checkWhite () {
     const { status } = await api.wx.getWhiteList()
     if(status == true){
-      setTimeout(() => {
-        S.login(this, true)
-      }, 1000)
+      if(!S.getAuthToken()){
+        setTimeout(() => {
+          S.login(this, true)
+        }, 1000)
+      }
       this.setState({
         show_tabBar:false
       })
@@ -511,7 +513,7 @@ export default class HomeIndex extends Component {
           <FloatMenus>
             {
               // isShop && isShop.isOpenShop === 'true' && isShop.shop_status === 1 &&
-              featuredshop &&
+              show_tabBar && featuredshop &&
               <Image
                 className='distribution-shop'
                 src='/assets/imgs/gift_mini.png'
