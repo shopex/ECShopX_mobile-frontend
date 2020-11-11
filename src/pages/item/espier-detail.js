@@ -65,7 +65,8 @@ export default class Detail extends Component {
       likeList: [],
       evaluationList: [],
       evaluationTotal: 0,
-
+      // 是否订阅
+      isSubscribeGoods: false
     }
   }
 
@@ -215,8 +216,10 @@ export default class Detail extends Component {
       param.distributor_id  = this.$router.params.dtid
     }
 
+    // 商品详情
     const info = await api.item.detail(id, param)
-
+    // 是否订阅
+    const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
     const { intro: desc, promotion_activity: promotion_activity } = info
     let marketing = 'normal'
     let timer = null
@@ -294,7 +297,8 @@ export default class Detail extends Component {
       sixSpecImgsDict,
       promotion_activity,
       itemParams,
-      sessionFrom
+      sessionFrom,
+      isSubscribeGoods: !!subscribe
     }, async () => {
       let contentDesc =''
 
@@ -725,6 +729,26 @@ export default class Detail extends Component {
       })
     }
   }
+  
+  //订阅通知
+  handleSubscription = async () => {
+    const { isSubscribeGoods, info } = this.state
+    if (isSubscribeGoods) return false
+    await api.user.subscribeGoods(info.item_id)
+    const { template_id } = await api.user.newWxaMsgTmpl({
+      'temp_name': 'yykweishop',
+      'source_type': 'goods',
+    })
+    Taro.requestSubscribeMessage({
+      tmplIds: template_id,
+      success: () => {
+        this.fetchInfo()
+      },
+      fail: () => {
+        this.fetchInfo()
+      }
+    })
+  } 
 
   render () {
     const {
@@ -756,7 +780,8 @@ export default class Detail extends Component {
       likeList,
       page,
       evaluationTotal,
-      evaluationList
+      evaluationList,
+      isSubscribeGoods
     } = this.state
 
     const { showLikeList, colors } = this.props
@@ -1265,7 +1290,13 @@ export default class Detail extends Component {
                 {
                   !startActivity
                     ? <Text>活动即将开始</Text>
-                    : <Text>当前商品无货</Text>
+                    : <View
+                      style={`background: ${!isSubscribeGoods ? colors.data[0].primary : 'inherit'}`}
+                      className={`arrivalNotice ${isSubscribeGoods && 'noNotice'}`}
+                      onClick={this.handleSubscription.bind(this)}
+                    >
+                      { isSubscribeGoods ? '已订阅到货通知' : '到货通知' }
+                    </View>
                 }
               </View>
             </GoodsBuyToolbar>)

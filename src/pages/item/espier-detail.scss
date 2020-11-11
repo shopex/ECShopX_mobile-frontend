@@ -707,4 +707,15 @@
   .crossTitleAct {
     color: #fff;
   }
+  // 到货通知按钮
+  .arrivalNotice {
+    color: #fff;
+    height: $toolbar-height;
+    line-height: $toolbar-height;
+    width: 100%;
+    background: inherit;
+    &.noNotice {
+      color: #000;
+    }
+  }
 }
