@@ -3,10 +3,11 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: canvas绘制
- * @FilePath: \shop\src\groupBy\utils\canvas.js
+ * @FilePath: /unite-vshop/src/groupBy/utils/canvas.js
  * @Date: 2020-05-11 11:05:05
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-09 20:47:18
+ * @LastEditTime: 2020-11-11 17:08:06
+ * tip: H5的canvas绘制文字需要判断使用this.ctx.setFontSize(`23px Arial`)形式
  */
 
 export default class Canvas {
@@ -112,7 +113,7 @@ export default class Canvas {
   // 绘制文字
   drawText (x, y, text, color = '#333', fontSize = 11, textAlign = 'left', baseline = 'top') {
     if (!text) return
-    this.ctx.setFontSize(`${fontSize}px Arial`)
+    this.ctx.setFontSize(fontSize)
     this.ctx.setFillStyle(color)
     this.ctx.setTextAlign(textAlign)
     this.ctx.setTextBaseline(baseline)
@@ -232,7 +233,8 @@ async createGoodList (data, x, y, w) {
     this.ctx.closePath()
     this.ctx.clip()
     await this.drawImage(data.img, imgX, imgY, w, h)
-    this.ctx.setFontSize(`23px Arial`)
+    // this.ctx.setFontSize(`23px Arial`)
+    this.ctx.setFontSize(23)
     const splitName = this.splitString(data.name, w)
     this.drawText((w + imgX * 2) / 2, imgY + h + 15, splitName, '#333', 23, 'center')
     this.createShowPrice(data.symbol, data.nPrice, data.oPrice, (w + imgX * 2) / 2, imgY + h + 80, 22, true)
@@ -285,7 +287,7 @@ async createGoodList (data, x, y, w) {
       }
     ]
     // 重置文字大小
-    this.ctx.setFontSize(`11px Arial`)
+    this.ctx.setFontSize(11)
     for (let i =0; i < list.length; i++) {
       const top = sy + marginTop * i
       const nameWidth = this.measureText(list[i].name)
@@ -326,7 +328,9 @@ async createGoodList (data, x, y, w) {
     })
     this.ctx.draw(true, () => {
       if (cb) {
-        cb()
+        setTimeout(() => {
+          cb()
+        }, 1000)
       }
     })
   }
