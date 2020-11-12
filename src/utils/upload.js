@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/utils/upload.js
  * @Date: 2020-03-06 16:32:07
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-11 15:10:22
+ * @LastEditTime: 2020-11-12 17:24:10
  */
 import Taro from '@tarojs/taro'
 import req from '@/api/req'
@@ -108,35 +108,35 @@ const upload = {
   },
   awsUpload: async (item, tokenRes) => {
     const {
-      filetype,
-      Region = 'cn-northwest-1',
-      Bucket = 'wemall-media-dev',
-      AccessKeyId = 'AKIA4MSC276F5NBR4P7G',
-      effectiveUri = 'https://wemall-media-dev.s3.cn-northwest-1.amazonaws.com.cn',
-      SecretAccessKey = 'ae2475d6ec150e9f9e0d229a0de8d8bd2b3a7136fa434c1809fb6d6d77532398'    
+      key, 
+      XAmzCredential = 'AKIA4MSC276F5NBR4P7G/20201112/cn-northwest-1/s3/aws4_request',
+      XAmzAlgorithm = 'AWS4-HMAC-SHA256',
+      XAmzDate = '20201112T082518Z',
+      Policy = 'eyJleHBpcmF0aW9uIjoiMjAyMC0xMS0xMlQxMDoyNToxOFoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ3ZW1hbGwtbWVkaWEtZGV2In0seyJrZXkiOiJpbWFnZVwvMVwvMjAyMFwvMTFcLzEyXC9hOTMxN2FkOTNkNmI4MThhNzQyOTQ0NmU1MzM4YzY4Y3Rlc3QuanBnIn0seyJYLUFtei1EYXRlIjoiMjAyMDExMTJUMDgyNTE4WiJ9LHsiWC1BbXotQ3JlZGVudGlhbCI6IkFLSUE0TVNDMjc2RjVOQlI0UDdHXC8yMDIwMTExMlwvY24tbm9ydGh3ZXN0LTFcL3MzXC9hd3M0X3JlcXVlc3QifSx7IlgtQW16LUFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifV19',
+      formAttributes = {
+        action: 'https://wemall-media-dev.s3.cn-northwest-1.amazonaws.com.cn'
+      },
+      XAmzSignature = '2a2b5560a48e36c29c65ab4144dc2cc570c125dbf20833ba9d16ca060be01cf9' 
     } = tokenRes
-    const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
+
     try {
-      // const dateNow = new Date().toISOString()
-      // const dateNowRaw = dateNow.substr(0, dateNow.indexOf("T")).replace(/-/g, "")
       const res = await Taro.uploadFile({
-        url: effectiveUri,
+        url: formAttributes.action,
         filePath: item.url,
         name: 'file',
         formData:{
-          acl: 'public-read',
-          name: filename,
-          key: '/key',
-          'X-Amz-Credential': `AKIA4MSC276F5NBR4P7G/20201111/cn-northwest-1/s3/aws4_request`,
+          key,
+          'X-Amz-Credential': XAmzCredential,
           'X-Amz-Algorithm': `AES256`,
-          Policy: 'eyJleHBpcmF0aW9uIjoiMjAyMC0xMS0xMVQwODowNTowOFoiLCJjb25kaXRpb25zIjpbeyJhY2wiOiJwdWJsaWMtcmVhZCJ9LHsiYnVja2V0Ijoid2VtYWxsLW1lZGlhLWRldiJ9LFsic3RhcnRzLXdpdGgiLCIka2V5IiwidXNlclwvZXJpY1wvIl0seyJYLUFtei1EYXRlIjoiMjAyMDExMTFUMDYwNTA4WiJ9LHsiWC1BbXotQ3JlZGVudGlhbCI6IkFLSUE0TVNDMjc2RjVOQlI0UDdHXC8yMDIwMTExMVwvY24tbm9ydGh3ZXN0LTFcL3MzXC9hd3M0X3JlcXVlc3QifSx7IlgtQW16LUFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifV19',
-          'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
-          'X-Amz-Date': '20201111T060508Z',
-          'X-Amz-Signature': '010426c3b78fa354995a869987c5b4b916913a2f4e4ee300123daad9b1fedca'
+          Policy: Policy,
+          'X-Amz-Algorithm': XAmzAlgorithm,
+          'X-Amz-Date': XAmzDate,
+          'X-Amz-Signature': XAmzSignature
         }
       })
-      const data = JSON.parse(res.data)
-      const { image_url } = data.data
+      console.log(res)
+      // const data = JSON.parse(res.data)
+      const { image_url } = res
       if (!image_url) {
         return false
       }
@@ -165,11 +165,11 @@ const getUploadFun = (dirver) => {
 
 // 返回对应上传方式
 const uploadImageFn = async (imgFiles, filetype = 'image') => {
-  const { driver, token } = await getToken({ filetype })
-  const uploadType = getUploadFun(driver)
   const imgs = []
-
   for (const item of imgFiles) {
+    const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
+    const { driver, token } = await getToken({ filetype, filename })
+    const uploadType = getUploadFun(driver)
     if (!item.file) {
       continue
     }
