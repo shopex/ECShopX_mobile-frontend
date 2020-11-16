@@ -21,6 +21,18 @@ export default class WxAuth extends Component {
   componentDidMount () {
     this.autoLogin()
   }
+  componentDidShow (){
+    this.checkWhite()
+  }
+
+  async checkWhite () {
+    const { status } = await api.wx.getWhiteList()
+    if(status == true){
+      setTimeout(() => {
+        Taro.hideHomeButton()
+      }, 1000)
+    }
+  }
 
   async autoLogin () {
     const { code } = await Taro.login()

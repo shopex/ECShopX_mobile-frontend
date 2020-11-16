@@ -66,7 +66,8 @@ export default class Detail extends Component {
       likeList: [],
       evaluationList: [],
       evaluationTotal: 0,
-
+      // 是否订阅
+      isSubscribeGoods: false
     }
   }
 
@@ -220,8 +221,10 @@ export default class Detail extends Component {
       param.distributor_id  = this.$router.params.dtid
     }
 
+    // 商品详情
     const info = await api.item.detail(id, param)
-
+    // 是否订阅
+    const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
     const { intro: desc, promotion_activity: promotion_activity } = info
     let marketing = 'normal'
     let timer = null
@@ -299,7 +302,8 @@ export default class Detail extends Component {
       sixSpecImgsDict,
       promotion_activity,
       itemParams,
-      sessionFrom
+      sessionFrom,
+      isSubscribeGoods: !!subscribe
     }, async () => {
       let contentDesc = ''
 
@@ -501,7 +505,7 @@ export default class Detail extends Component {
     const pic = pics[0].replace('http:', 'https:')
     const infoId = info.distributor_id
     const id = APP_PLATFORM === 'standard' ? distributor_id : infoId
-    const wxappCode = `${host}/h5app/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&dtid=${id}&uid=${userId}`
+    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&dtid=${id}&uid=${userId}`
     const avatarImg = await Taro.getImageInfo({src: avatar})
     const goodsImg = await Taro.getImageInfo({src: pic})
     const codeImg = await Taro.getImageInfo({src: wxappCode})
@@ -731,6 +735,26 @@ export default class Detail extends Component {
       })
     }
   }
+  
+  //订阅通知
+  handleSubscription = async () => {
+    const { isSubscribeGoods, info } = this.state
+    if (isSubscribeGoods) return false
+    await api.user.subscribeGoods(info.item_id)
+    const { template_id } = await api.user.newWxaMsgTmpl({
+      'temp_name': 'yykweishop',
+      'source_type': 'goods',
+    })
+    Taro.requestSubscribeMessage({
+      tmplIds: template_id,
+      success: () => {
+        this.fetchInfo()
+      },
+      fail: () => {
+        this.fetchInfo()
+      }
+    })
+  } 
 
   render() {
     const {
@@ -762,7 +786,8 @@ export default class Detail extends Component {
       likeList,
       page,
       evaluationTotal,
-      evaluationList
+      evaluationList,
+      isSubscribeGoods
     } = this.state
 
     const { showLikeList, colors } = this.props
@@ -772,14 +797,14 @@ export default class Detail extends Component {
     const mainPrice = info ? (info.act_price ? info.act_price : info.price) : 0
     const memberPrice = info ? (info.member_price ? info.member_price : info.price) : 0
     const endPrice = marketing === 'normal' ? memberPrice : mainPrice
-    const skuActprice = curSku ? curSku.act_price : endPrice
-    const skuMemprice = curSku ? curSku.member_price : endPrice
+    const skuActprice = curSku ? curSku.act_price ? curSku.act_price : curSku.price : endPrice
+    const skuMemprice = curSku ? curSku.member_price ? curSku.member_price : curSku.price : endPrice
     const skuEndprice = marketing === 'normal' ? skuMemprice : skuActprice
     const skuPrice = curSku ? skuEndprice : endPrice
 
-    const crossPrice =  ((skuPrice * taxRate) / 100).toFixed(2)
+    const crossPrice =  (skuPrice * taxRate)
     const showPrice = (skuPrice * (1 + taxRate))
-    console.log(showPrice)
+    
     const lnglat = Taro.getStorageSync('lnglat')
 
     if (!info) {
@@ -799,39 +824,35 @@ export default class Detail extends Component {
     }
 
     return (
-      <View className='page-goods-detail'>
+      <View className="page-goods-detail">
         <NavBar
           title={info.item_name}
-          leftIconType='chevron-left'
-          fixed='true'
+          leftIconType="chevron-left"
+          fixed="true"
         />
 
         <ScrollView
-          className='goods-detail__wrap'
+          className="goods-detail__wrap"
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
         >
-          <View className='goods-imgs__wrap'>
+          <View className="goods-imgs__wrap">
             <Swiper
-              className='goods-imgs__swiper'
+              className="goods-imgs__swiper"
               indicator-dots
               current={curImgIdx}
               onChange={this.handleSwiperChange}
             >
-              {
-                imgs.map((img, idx) => {
-                  return (
-                    <SwiperItem key={`${img}${idx}`}>
-                      <ItemImg
-                        src={img}
-                      ></ItemImg>
-                    </SwiperItem>
-                  )
-                })
-              }
+              {imgs.map((img, idx) => {
+                return (
+                  <SwiperItem key={`${img}${idx}`}>
+                    <ItemImg src={img}></ItemImg>
+                  </SwiperItem>
+                );
+              })}
             </Swiper>
 
             {
@@ -846,76 +867,90 @@ export default class Detail extends Component {
             />*/}
           </View>
 
-          {
-            !info.nospec && sixSpecImgsDict.length > 0 && info.is_show_specimg
-              ? <ImgSpec
-                info={sixSpecImgsDict}
-                current={currentImgs}
-                onClick={this.handleSepcImgClick}
-              />
-              : null
-          }
+          {!info.nospec &&
+          sixSpecImgsDict.length > 0 &&
+          info.is_show_specimg ? (
+            <ImgSpec
+              info={sixSpecImgsDict}
+              current={currentImgs}
+              onClick={this.handleSepcImgClick}
+            />
+          ) : null}
 
           {timer && (
-            <View className='goods-timer' style={colors ? `background: linear-gradient(to left, ${colors.data[0].primary}, ${colors.data[0].primary});` : `background: linear-gradient(to left, #d42f29, #d42f29);`}>
-              <View className='goods-timer__hd'>
-                <View className='goods-prices'>
-                  <View className='view-flex view-flex-middle'>
+            <View
+              className="goods-timer"
+              style={
+                colors
+                  ? `background: linear-gradient(to left, ${colors.data[0].primary}, ${colors.data[0].primary});`
+                  : `background: linear-gradient(to left, #d42f29, #d42f29);`
+              }
+            >
+              <View className="goods-timer__hd">
+                <View className="goods-prices">
+                  <View className="view-flex view-flex-middle">
+                    {info.type == "1" && (
+                      <Text className="crossTitleAct">含税销售价</Text>
+                    )}
                     <Price
-                      unit='cent'
-                      symbol={(info.cur && info.cur.symbol) || ''}
+                      unit="cent"
+                      symbol={(info.cur && info.cur.symbol) || ""}
                       value={showPrice}
                     />
-                    {
-                      marketing !== 'normal' &&
-                      <View className='goods-prices__ft'>
-                        {
-                          marketing === 'group' &&
-                          <Text className='goods-prices__type'>团购</Text>
-                        }
-                        {
-                          marketing === 'group' &&
-                          <Text className='goods-prices__rule'>{info.activity_info.person_num}人团</Text>
-                        }
-                        {
-                          marketing === 'seckill' &&
-                          <Text className='goods-prices__type'>秒杀</Text>
-                        }
-                        {
-                          marketing === 'limited_time_sale' &&
-                          <Text className='goods-prices__type'>限时特惠</Text>
-                        }
+                    {marketing !== "normal" && (
+                      <View className="goods-prices__ft">
+                        {marketing === "group" && (
+                          <Text className="goods-prices__type">团购</Text>
+                        )}
+                        {marketing === "group" && (
+                          <Text className="goods-prices__rule">
+                            {info.activity_info.person_num}人团
+                          </Text>
+                        )}
+                        {marketing === "seckill" && (
+                          <Text className="goods-prices__type">秒杀</Text>
+                        )}
+                        {marketing === "limited_time_sale" && (
+                          <Text className="goods-prices__type">限时特惠</Text>
+                        )}
                       </View>
-                    }
+                    )}
                   </View>
-                  <View style='line-height: 1;'>
+                  <View style="line-height: 1;">
                     <Price
-                      unit='cent'
-                      className='goods-prices__market'
-                      symbol={(info.cur && info.cur.symbol) || ''}
+                      unit="cent"
+                      className="goods-prices__market"
+                      symbol={(info.cur && info.cur.symbol) || ""}
                       value={curSku ? curSku.price : info.price}
                     />
                   </View>
                 </View>
               </View>
-              <View className='goods-timer__bd'>
-                {
-                  (marketing === 'seckill' || marketing === 'limited_time_sale') &&
-                    <View>
-                      {info.activity_info.status === 'in_the_notice' && <Text className='goods-timer__label'>距开始还剩</Text>}
-                      {info.activity_info.status === 'in_sale' && <Text className='goods-timer__label'>距结束还剩</Text>}
-                    </View>
-                }
-                {
-                  marketing === 'group' &&
+              <View className="goods-timer__bd">
+                {(marketing === "seckill" ||
+                  marketing === "limited_time_sale") && (
                   <View>
-                    {info.activity_info.show_status === 'nostart' && <Text className='goods-timer__label'>距开始还剩</Text>}
-                    {info.activity_info.show_status === 'noend' && <Text className='goods-timer__label'>距结束还剩</Text>}
+                    {info.activity_info.status === "in_the_notice" && (
+                      <Text className="goods-timer__label">距开始还剩</Text>
+                    )}
+                    {info.activity_info.status === "in_sale" && (
+                      <Text className="goods-timer__label">距结束还剩</Text>
+                    )}
                   </View>
-                }
+                )}
+                {marketing === "group" && (
+                  <View>
+                    {info.activity_info.show_status === "nostart" && (
+                      <Text className="goods-timer__label">距开始还剩</Text>
+                    )}
+                    {info.activity_info.show_status === "noend" && (
+                      <Text className="goods-timer__label">距结束还剩</Text>
+                    )}
+                  </View>
+                )}
                 <AtCountdown
-                  className='countdown__time'
-                  format={{ day: '天', hours: ':', minutes: ':', seconds: '' }}
+                  className="countdown__time"
+                  format={{ day: "天", hours: ":", minutes: ":", seconds: "" }}
                   isShowDay
                   day={timer.dd}
                   hours={timer.hh}
@@ -926,365 +961,347 @@ export default class Detail extends Component {
             </View>
           )}
 
-          <View className='goods-hd'>
-            <View className='goods-info__wrap'>
-              <View className='goods-title__wrap'>
-                <Text className='goods-title'>{info.item_name}</Text>
-                <Text className='goods-title__desc'>{info.brief}</Text>
+          <View className="goods-hd">
+            <View className="goods-info__wrap">
+              <View className="goods-title__wrap">
+                <Text className="goods-title">{info.item_name}</Text>
+                <Text className="goods-title__desc">{info.brief}</Text>
               </View>
-              {
-                Taro.getEnv() !== 'WEB' && <View
-                  className='goods-share__wrap'
+              {Taro.getEnv() !== "WEB" && (
+                <View
+                  className="goods-share__wrap"
                   onClick={this.handleShare.bind(this)}
                 >
-                  <View className='icon-share'></View>
-                  <View className='share-label'>分享</View>
+                  <View className="icon-share"></View>
+                  <View className="share-label">分享</View>
                 </View>
-              }
+              )}
             </View>
 
-            {
-              info.vipgrade_guide_title
-                ? <VipGuide
-                  info={info.vipgrade_guide_title}
-                />
-                : null
-            }
+            {info.vipgrade_guide_title ? (
+              <VipGuide info={info.vipgrade_guide_title} />
+            ) : null}
 
-            {
-              marketing === 'normal' && (
-                <View className='goods-prices__wrap'>
-                  <View className='goods-prices'>
-                  <View className='view-flex-item'>
-                    <Price
-                      primary
-                      unit='cent'
-                      value={showPrice}
-                    />
-                    {
-                      (info.type != 1 ||  info.cross_border_tax_rate == 0) ? <Price
+            {marketing === "normal" && (
+              <View className="goods-prices__wrap">
+                <View className="goods-prices">
+                  <View className="view-flex-item">
+                    {info.type == "1" && (
+                      <Text className="crossTitle">含税销售价</Text>
+                    )}
+                    <Price primary unit="cent" value={showPrice} />
+                    {info.type == "1" ? (
+                      <Price
                         lineThrough
-                        unit='cent'
+                        unit="cent"
+                        value={curSku ? curSku.price : info.price}
+                      />
+                    ) : (
+                      <Price
+                        lineThrough
+                        unit="cent"
                         value={curSku ? curSku.market_price : info.market_price}
-                      /> : `(含税¥ ${ crossPrice })`
-                    }
+                      />
+                    )}
                   </View>
-                    {
-                      info.nospec && info.activity_type === 'limited_buy' &&
-                      <View className='limited-buy-rule'>
-                        {
-                          ruleDay
-                            ? <Text>每{ruleDay}天</Text>
-                            : null
-                        }
-                        <Text>限购{info.activity_info.rule.limit}件</Text>
-                      </View>
-                    }
-                  </View>
+                  {info.nospec && info.activity_type === "limited_buy" && (
+                    <View className="limited-buy-rule">
+                      {ruleDay ? <Text>每{ruleDay}天</Text> : null}
+                      <Text>限购{info.activity_info.rule.limit}件</Text>
+                    </View>
+                  )}
+                </View>
 
-                  {
-                    info.sales && (<Text className='goods-sold'>{info.sales || 0}人已购</Text>)
-                  }
-                </View>
-              )
-            }
+                {info.sales && (
+                  <Text className="goods-sold">{info.sales || 0}人已购</Text>
+                )}
+              </View>
+            )}
             {/* 跨境商品 */}
-            {
-              info.type == '1' &&
-                <View className='nationalInfo'>
-                  <View>
-                    进口税: 商品包税
-                    {/* <Price
-                      unit='cent'
-                      symbol={(info.cur && info.cur.symbol) || ''}
-                      value={crossPrice}
-                    /> */}
-                  </View>                  
-                  <View className='nationalInfoLeft'>
-                    <View className='item'>
-                      <Image src={info.origincountry_img_url}  className='nationalImg' />
-                      <Text>{ info.origincountry_name }</Text>
-                    </View>
-                    <View className='line'></View>
-                    <View className='item'>
-                      <View className='iconfont icon-matou'></View>
-                      <Text>自有保税区</Text>
-                    </View>
-                    <View className='line'></View>
-                    <View className='item'>
-                      <View className='iconfont icon-periscope'></View>
-                      <Text>{ lnglat.city }</Text>
-                    </View>
+            {info.type == "1" && (
+              <View className="nationalInfo">
+                <View>
+                  跨境综合税:
+                  <Price
+                    unit="cent"
+                    symbol={(info.cur && info.cur.symbol) || ""}
+                    value={crossPrice}
+                  />
+                </View>
+                <View className="nationalInfoLeft">
+                  <View className="item">
+                    <Image
+                      src={info.origincountry_img_url}
+                      className="nationalImg"
+                    />
+                    <Text>{info.origincountry_name}</Text>
+                  </View>
+                  <View className="line"></View>
+                  <View className="item">
+                    <View className="iconfont icon-matou"></View>
+                    <Text>自有保税区</Text>
+                  </View>
+                  <View className="line"></View>
+                  <View className="item">
+                    <View className="iconfont icon-periscope"></View>
+                    <Text>{lnglat.city}</Text>
                   </View>
                 </View>
-            }              
+              </View>
+            )}
           </View>
 
           {isPromoter && (
-            <View className='goods-income'>
-              <View className='sp-icon sp-icon-jifen'></View>
+            <View className="goods-income">
+              <View className="sp-icon sp-icon-jifen"></View>
               <Text>预计收益：{(info.promoter_price / 100).toFixed(2)}</Text>
             </View>
           )}
 
-          {
-            marketing === 'group' && info.groups_list.length > 0 &&
-            <View className='goods-sec-specs'>
-              <View className='goods-sec-value'>
-                <Text className='title-inner'>正在进行中的团</Text>
-                <View className='grouping'>
-                  {
-                    info.groups_list.map(item =>
-                      <GroupingItem
-                        total={info.activity_info.person_num}
-                        info={item}
-                        onClick={this.handleGroupClick.bind(this, item.team_id)}
-                      />
-                    )
-                  }
+          {marketing === "group" && info.groups_list.length > 0 && (
+            <View className="goods-sec-specs">
+              <View className="goods-sec-value">
+                <Text className="title-inner">正在进行中的团</Text>
+                <View className="grouping">
+                  {info.groups_list.map(item => (
+                    <GroupingItem
+                      total={info.activity_info.person_num}
+                      info={item}
+                      onClick={this.handleGroupClick.bind(this, item.team_id)}
+                    />
+                  ))}
                 </View>
               </View>
-            </View>  
-          }        
+            </View>
+          )}
 
           <SpCell
-            className='goods-sec-specs'
-            title='领券'
+            className="goods-sec-specs"
+            title="领券"
             isLink
             onClick={this.handleCouponClick.bind(this)}
           >
-            {
-              coupon_list && new_coupon_list.map(kaquan_item => {
+            {coupon_list &&
+              new_coupon_list.map(kaquan_item => {
                 return (
-                  <View key={kaquan_item.id} className='coupon_tag'>
-                    <View className='coupon_tag_circle circle_left'></View>
+                  <View key={kaquan_item.id} className="coupon_tag">
+                    <View className="coupon_tag_circle circle_left"></View>
                     <Text>{kaquan_item.title}</Text>
-                    <View className='coupon_tag_circle circle_right'></View>
+                    <View className="coupon_tag_circle circle_right"></View>
                   </View>
-                )
-              })
-            }
+                );
+              })}
           </SpCell>
 
-          {
-            promotion_activity && promotion_activity.length > 0
-              ? <ActivityPanel
-                info={promotion_activity}
-                isOpen={showPromotions}
-                onClick={this.handlePromotionClick.bind(this)}
-                onClose={() => this.setState({ showPromotions: false })}
-              />
-              : null
-          }
+          {promotion_activity && promotion_activity.length > 0 ? (
+            <ActivityPanel
+              info={promotion_activity}
+              isOpen={showPromotions}
+              onClick={this.handlePromotionClick.bind(this)}
+              onClose={() => this.setState({ showPromotions: false })}
+            />
+          ) : null}
 
-          {
-            promotion_package &&
+          {promotion_package && (
             <SpCell
-              className='goods-sec-specs'
+              className="goods-sec-specs"
               isLink
-              title='优惠组合'
+              title="优惠组合"
               onClick={this.handlePackageClick}
               value={`共${promotion_package}种组合随意搭配`}
             />
-          }
+          )}
 
-          {
-            itemParams.length > 0 &&
+          {itemParams.length > 0 && (
             <View
-              className='goods-sec-specs'
+              className="goods-sec-specs"
               onClick={this.handleParamsClick.bind(this)}
             >
-              <View className='goods-sec-label'>商品参数</View>
-              <View className='goods-sec-value'>
-                {
-                  itemParams.map((item) =>
-                    <ParamsItem
-                      key={item.attribute_id}
-                      info={item}
-                    />
-                  )
-                }
+              <View className="goods-sec-label">商品参数</View>
+              <View className="goods-sec-value">
+                {itemParams.map(item => (
+                  <ParamsItem key={item.attribute_id} info={item} />
+                ))}
               </View>
-              <View className='goods-sec-icon at-icon at-icon-chevron-right'></View>
+              <View className="goods-sec-icon at-icon at-icon-chevron-right"></View>
             </View>
-          }
+          )}
 
-          {
-            !info.nospec &&
+          {!info.nospec && (
             <SpCell
-              className='goods-sec-specs'
+              className="goods-sec-specs"
               isLink
-              title='规格'
-              onClick={this.handleBuyBarClick.bind(this, 'pick')}
-              value={curSku ? curSku.propsText : '请选择'}
+              title="规格"
+              onClick={this.handleBuyBarClick.bind(this, "pick")}
+              value={curSku ? curSku.propsText : "请选择"}
             />
-          }
+          )}
 
-          {
-            APP_PLATFORM !== 'standard' && !isArray(info.distributor_info) &&
-            <StoreInfo
-              info={info.distributor_info}
-            />
-          }
+          {APP_PLATFORM !== "standard" && !isArray(info.distributor_info) && (
+            <StoreInfo info={info.distributor_info} />
+          )}
 
-          {
-            info.rate_status &&
-            <View className='goods-evaluation'>
-              <View className='goods-sec-specs' onClick={this.handleToRateList.bind(this)}>
-                <Text className='goods-sec-label'>评价</Text>
-                {
-                  evaluationTotal > 0 ?
-                    <Text className='goods-sec-value'>({evaluationTotal})</Text>
-                    : <Text className='goods-sec-value'>暂无评价</Text>
-                }
-                <View className='goods-sec-icon apple-arrow'></View>
+          {info.rate_status && (
+            <View className="goods-evaluation">
+              <View
+                className="goods-sec-specs"
+                onClick={this.handleToRateList.bind(this)}
+              >
+                <Text className="goods-sec-label">评价</Text>
+                {evaluationTotal > 0 ? (
+                  <Text className="goods-sec-value">({evaluationTotal})</Text>
+                ) : (
+                  <Text className="goods-sec-value">暂无评价</Text>
+                )}
+                <View className="goods-sec-icon apple-arrow"></View>
               </View>
-              <View className='evaluation-list'>
+              <View className="evaluation-list">
                 {evaluationList.map(item => {
                   return (
                     <GoodsEvaluation
                       info={item}
                       key={item.rate_id}
-                      pathRoute='detail'
+                      pathRoute="detail"
                       onChange={this.handleClickViewAllEvaluation.bind(this)}
                     />
-                  )
+                  );
                 })}
               </View>
             </View>
-          }
+          )}
 
-          {
-            isArray(desc)
-              ? <View className='wgts-wrap__cont'>
-                {
-                  info.videos_url && (
-                    <Video src={info.videos} controls style='width:100%'></Video>
-                  )
-                }
-                {
-                  desc.map((item, idx) => {
-                    return (
-                      <View className='wgt-wrap' key={`${item.name}${idx}`}>
-                        {item.name === 'film' && <WgtFilm info={item} />}
-                        {item.name === 'slider' && <WgtSlider info={item} />}
-                        {item.name === 'writing' && <WgtWriting info={item} />}
-                        {item.name === 'heading' && <WgtHeading info={item} />}
-                        {item.name === 'goods' && <WgtGoods info={item} />}
-                      </View>
-                    )
-                  })
-                }
+          {isArray(desc) ? (
+            <View className="wgts-wrap__cont">
+              {info.videos_url && (
+                <Video src={info.videos} controls style="width:100%"></Video>
+              )}
+              {desc.map((item, idx) => {
+                return (
+                  <View className="wgt-wrap" key={`${item.name}${idx}`}>
+                    {item.name === "film" && <WgtFilm info={item} />}
+                    {item.name === "slider" && <WgtSlider info={item} />}
+                    {item.name === "writing" && <WgtWriting info={item} />}
+                    {item.name === "heading" && <WgtHeading info={item} />}
+                    {item.name === "goods" && <WgtGoods info={item} />}
+                  </View>
+                );
+              })}
+            </View>
+          ) : (
+            <View>
+              {desc && (
+                <SpHtmlContent
+                  className="goods-detail__content"
+                  content={desc}
+                />
+              )}
+            </View>
+          )}
+          {likeList.length > 0 && showLikeList ? (
+            <View className="cart-list cart-list__disabled">
+              <View className="cart-list__hd like__hd">
+                <Text className="cart-list__title">猜你喜欢</Text>
               </View>
-              : <View>
-                {
-                  desc &&
-                  <SpHtmlContent
-                    className='goods-detail__content'
-                    content={desc}
-                  />
-                }
+              <View className="goods-list goods-list__type-grid">
+                {likeList.map(item => {
+                  return (
+                    <View className="goods-list__item">
+                      <GoodsItem
+                        key={item.item_id}
+                        info={item}
+                        onClick={this.handleClickItem.bind(this, item)}
+                      />
+                    </View>
+                  );
+                })}
               </View>
-
-          }
-          {
-            likeList.length > 0 && showLikeList
-              ? <View className='cart-list cart-list__disabled'>
-                <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
-                <View className='goods-list goods-list__type-grid'>
-                  {
-                    likeList.map(item => {
-                      return (
-                        <View className='goods-list__item'>
-                          <GoodsItem
-                            key={item.item_id}
-                            info={item}
-                            onClick={this.handleClickItem.bind(this, item)}
-                          />
-                        </View>
-                      )
-                    })
-                  }
-                </View>
-              </View>
-              : null
-          }
+            </View>
+          ) : null}
         </ScrollView>
 
         <FloatMenus>
           <FloatMenuItem
-            iconPrefixClass='icon'
-            icon='home1'
+            iconPrefixClass="icon"
+            icon="home1"
             onClick={this.handleBackHome.bind(this)}
           />
-          {
-            meiqia.is_open === 'true'
-              ? <FloatMenuMeiQia storeId={info.distributor_id} info={{ goodId: info.item_id, goodName: info.itemName }} />
-              : <FloatMenuItem
-                iconPrefixClass='icon'
-                icon='headphones'
-                openType='contact'
-                sessionFrom={sessionFrom}
-              />
-
-          }
+          {meiqia.is_open === "true" || Taro.getEnv() === "WEB" ? (
+            <FloatMenuMeiQia
+              storeId={info.distributor_id}
+              info={{ goodId: info.item_id, goodName: info.itemName }}
+            />
+          ) : (
+            <FloatMenuItem
+              iconPrefixClass="icon"
+              icon="headphones"
+              openType="contact"
+              sessionFrom={sessionFrom}
+            />
+          )}
           <FloatMenuItem
-            iconPrefixClass='icon'
-            icon='arrow-up'
+            iconPrefixClass="icon"
+            icon="arrow-up"
             hide={!showBackToTop}
             onClick={this.scrollBackToTop}
           />
         </FloatMenus>
 
-        {(info.distributor_sale_status && hasStock && startActivity)
-          ?
-          (<GoodsBuyToolbar
+        {info.distributor_sale_status && hasStock && startActivity ? (
+          <GoodsBuyToolbar
             info={info}
             type={marketing}
             cartCount={cartCount}
-            onFavItem={this.handleMenuClick.bind(this, 'fav')}
-            onClickAddCart={this.handleBuyBarClick.bind(this, 'cart')}
-            onClickFastBuy={this.handleBuyBarClick.bind(this, 'fastbuy')}
+            onFavItem={this.handleMenuClick.bind(this, "fav")}
+            onClickAddCart={this.handleBuyBarClick.bind(this, "cart")}
+            onClickFastBuy={this.handleBuyBarClick.bind(this, "fastbuy")}
           >
             <View>{marketing}</View>
-          </GoodsBuyToolbar>)
-          :
-          (<GoodsBuyToolbar
+          </GoodsBuyToolbar>
+        ) : (
+          <GoodsBuyToolbar
             info={info}
             customRender
             cartCount={cartCount}
             type={marketing}
-            onFavItem={this.handleMenuClick.bind(this, 'fav')}
+            onFavItem={this.handleMenuClick.bind(this, "fav")}
           >
             <View
-              className='goods-buy-toolbar__btns'
-              style='width: 60%; text-align: center'
+              className="goods-buy-toolbar__btns"
+              style="width: 60%; text-align: center"
             >
-              {
-                !startActivity
-                  ? <Text>活动即将开始</Text>
-                  : <Text>当前商品无货</Text>
-              }
+              {!startActivity ? (
+                <Text>活动即将开始</Text>
+              ) : (
+                <View
+                  style={`background: ${
+                    !isSubscribeGoods ? colors.data[0].primary : "inherit"
+                  }`}
+                  className={`arrivalNotice ${isSubscribeGoods && "noNotice"}`}
+                  onClick={this.handleSubscription.bind(this)}
+                >
+                  {isSubscribeGoods ? "已订阅到货通知" : "到货通知"}
+                </View>
+              )}
             </View>
-          </GoodsBuyToolbar>)
-        }
+          </GoodsBuyToolbar>
+        )}
 
-        {
-          info && <GoodsBuyPanel
+        {info && (
+          <GoodsBuyPanel
             info={info}
             type={buyPanelType}
             marketing={marketing}
             isOpened={showBuyPanel}
             onClose={() => this.setState({ showBuyPanel: false })}
-            fastBuyText={marketing === 'group' ? '我要开团' : '立即购买'}
+            fastBuyText={marketing === "group" ? "我要开团" : "立即购买"}
             onChange={this.handleSkuChange}
-            onAddCart={this.handleBuyAction.bind(this, 'cart')}
-            onFastbuy={this.handleBuyAction.bind(this, 'fastbuy')}
+            onAddCart={this.handleBuyAction.bind(this, "cart")}
+            onFastbuy={this.handleBuyAction.bind(this, "fastbuy")}
           />
-        }
+        )}
 
         {
-          <View className='share'>
+          <View className="share">
             <SharePanel
               info={uid}
               isOpen={showSharePanel}
@@ -1294,24 +1311,29 @@ export default class Detail extends Component {
           </View>
         }
 
-        {
-          showPoster &&
-          <View className='poster-modal'>
-            <Image className='poster' src={poster} mode='widthFix' />
-            <View className='view-flex view-flex-middle'>
-              <View className='icon-close poster-close-btn' onClick={this.handleHidePoster.bind(this)}></View>
+        {showPoster && (
+          <View className="poster-modal">
+            <Image className="poster" src={poster} mode="widthFix" />
+            <View className="view-flex view-flex-middle">
               <View
-                className='icon-download poster-save-btn'
+                className="icon-close poster-close-btn"
+                onClick={this.handleHidePoster.bind(this)}
+              ></View>
+              <View
+                className="icon-download poster-save-btn"
                 style={`background: ${colors.data[0].primary}`}
-                onClick={this.handleSavePoster.bind(this)}>保存至相册</View>
+                onClick={this.handleSavePoster.bind(this)}
+              >
+                保存至相册
+              </View>
             </View>
           </View>
-        }
+        )}
 
-        <Canvas className='canvas' canvas-id='myCanvas'></Canvas>
+        <Canvas className="canvas" canvas-id="myCanvas"></Canvas>
 
         <SpToast />
       </View>
-    )
+    );
   }
 }

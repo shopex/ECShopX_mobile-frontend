@@ -138,6 +138,10 @@ export default class TabBar extends Component {
 
   handleClick = (current) => {
     const cur = this.state.localCurrent
+    const {showbar = true} = this.props
+    if(!showbar){
+      return false
+    }
 
     if (cur !== current) {
       const curTab = this.state.tabList[current]

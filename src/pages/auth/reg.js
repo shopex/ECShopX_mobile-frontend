@@ -30,7 +30,8 @@ export default class Reg extends Component {
       option_list: [],
       showCheckboxPanel: false,
       isHasData: true,
-      show_official:false
+      show_official:false,
+      show_kuangkuang:true
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -51,9 +52,13 @@ export default class Reg extends Component {
         }
       })
     }
+    
     this.fetch()
+    
   }
-
+  componentDidShow(){
+    this.checkWhite()
+  }
   handleClickImgcode = async () => {
     const query = {
       type: 'sign'
@@ -104,6 +109,18 @@ export default class Reg extends Component {
       this.handleClickImgcode()
     }
     this.count = 0
+
+  }
+  async checkWhite () {
+    const { status } = await api.wx.getWhiteList()
+    if(status == true){
+      setTimeout(() => {
+       this.setState({
+         show_kuangkuang:false
+       })
+       //Taro.hideHomeButton()
+      }, 1000)
+    }
   }
 
   handleSubmit = async (e) => {
@@ -391,36 +408,31 @@ export default class Reg extends Component {
 
   render() {
     const { colors } = this.props
-    const { info, isHasValue, isVisible, isHasData, list, imgVisible, imgInfo, option_list, showCheckboxPanel,show_official } = this.state
+    const { info, isHasValue, isVisible, isHasData, list, imgVisible, imgInfo, option_list, showCheckboxPanel,show_official,show_kuangkuang } = this.state
 
     return (
-      <View className='auth-reg'>
-        {
-          show_official && (
-            <AccountOfficial
-              onHandleError={this.handleOfficialError.bind(this)}
-              onClick={this.handleOfficialClose.bind(this)}
-           />
-          )
-        }
-        <NavBar
-          title='注册'
-          leftIconType='chevron-left'
-        />
-        <Form
-          onSubmit={this.handleSubmit}
-        >
-          <View className='sec auth-reg__form'>
-            {process.env.TARO_ENV === 'weapp' && (
-              <View className='at-input'>
-                <View className='at-input__container'>
-                  <View className='at-input__title'>手机号码</View>
-                  <View className='at-input__input'>{info.mobile}</View>
-                  <View className='at-input__children'>
+      <View className="auth-reg">
+        {show_official && (
+          <AccountOfficial
+            onHandleError={this.handleOfficialError.bind(this)}
+            onClick={this.handleOfficialClose.bind(this)}
+          />
+        )}
+        <NavBar title="注册" leftIconType="chevron-left" />
+        <Form onSubmit={this.handleSubmit}>
+          <View className="sec auth-reg__form">
+            {process.env.TARO_ENV === "weapp" && (
+              <View className="at-input">
+                <View className="at-input__container">
+                  <View className="at-input__title">手机号码</View>
+                  <View className="at-input__input">{info.mobile}</View>
+                  <View className="at-input__children">
                     <AtButton
-                      openType='getPhoneNumber'
+                      openType="getPhoneNumber"
                       onGetPhoneNumber={this.handleGetPhoneNumber}
-                    >获取手机号码</AtButton>
+                    >
+                      获取手机号码
+                    </AtButton>
                   </View>
                 </View>
               </View>
@@ -446,29 +458,37 @@ export default class Reg extends Component {
             {Taro.getEnv() !== Taro.ENV_TYPE.WEAPP && (
               <View>
                 <AtInput
-                  title='手机号码'
-                  name='mobile'
-                  type='number'
+                  title="手机号码"
+                  name="mobile"
+                  type="number"
                   maxLength={11}
                   value={info.mobile}
-                  placeholder='请输入手机号码'
+                  placeholder="请输入手机号码"
                   onFocus={this.handleErrorToastClose}
-                  onChange={this.handleChange.bind(this, 'mobile')}
+                  onChange={this.handleChange.bind(this, "mobile")}
                 />
-                {
-                  imgVisible
-                    ? <AtInput title='图片验证码' name='yzm' value={info.yzm} placeholder='请输入图片验证码' onFocus={this.handleErrorToastClose} onChange={this.handleChange.bind(this, 'yzm')}>
-                      <Image src={`${imgInfo.imageData}`} onClick={this.handleClickImgcode} />
-                    </AtInput>
-                    : null
-                }
+                {imgVisible ? (
+                  <AtInput
+                    title="图片验证码"
+                    name="yzm"
+                    value={info.yzm}
+                    placeholder="请输入图片验证码"
+                    onFocus={this.handleErrorToastClose}
+                    onChange={this.handleChange.bind(this, "yzm")}
+                  >
+                    <Image
+                      src={`${imgInfo.imageData}`}
+                      onClick={this.handleClickImgcode}
+                    />
+                  </AtInput>
+                ) : null}
                 <AtInput
-                  title='验证码'
-                  name='vcode'
+                  title="验证码"
+                  name="vcode"
                   value={info.vcode}
-                  placeholder='请输入验证码'
+                  placeholder="请输入验证码"
                   onFocus={this.handleErrorToastClose}
-                  onChange={this.handleChange.bind(this, 'vcode')}
+                  onChange={this.handleChange.bind(this, "vcode")}
                 >
                   <Timer
                     onStart={this.handleTimerStart}
@@ -493,96 +513,142 @@ export default class Reg extends Component {
                   : <View className='sp-icon sp-icon-icon6 icon-pwd' onClick={this.handleClickIconpwd}> </View>
               }
             </AtInput>*/}
-            {
-              isHasData && list.map((item, index) => {
+            {isHasData &&
+              list.map((item, index) => {
                 return (
                   <View key={`${index}1`}>
-                    {
-                      item.element_type === 'input'
-                        ? <View key={`${index}1`}>
-                          <AtInput
-                            key={`${index}1`}
-                            title={item.name}
-                            name={`${item.key}`}
-                            placeholder={`请输入${item.name}`}
-                            value={item.value}
-                            onFocus={this.handleErrorToastClose}
-                            onChange={this.handleChange.bind(this, `${item.key}`)}
-                            ref={(input) => { this.textInput = input }}
-                          />
+                    {item.element_type === "input" ? (
+                      <View key={`${index}1`}>
+                        <AtInput
+                          key={`${index}1`}
+                          title={item.name}
+                          name={`${item.key}`}
+                          placeholder={`请输入${item.name}`}
+                          value={item.value}
+                          onFocus={this.handleErrorToastClose}
+                          onChange={this.handleChange.bind(this, `${item.key}`)}
+                          ref={input => {
+                            this.textInput = input;
+                          }}
+                        />
+                      </View>
+                    ) : null}
+                    {item.element_type === "select" ? (
+                      <View className="page-section">
+                        <View key={`${index}1`}>
+                          {item.key === "birthday" ? (
+                            <Picker
+                              mode="date"
+                              onChange={this.handleChange.bind(
+                                this,
+                                `${item.key}`
+                              )}
+                            >
+                              <View className="picker">
+                                <View className="picker__title">
+                                  {item.name}
+                                </View>
+                                <Text
+                                  className={classNames(
+                                    item.value
+                                      ? "pick-value"
+                                      : "pick-value-null"
+                                  )}
+                                >
+                                  {item.value
+                                    ? item.value
+                                    : `请选择${item.name}`}
+                                </Text>
+                              </View>
+                            </Picker>
+                          ) : (
+                            <Picker
+                              mode="selector"
+                              range={item.items}
+                              key={`${index}1`}
+                              data-item={item}
+                              onChange={this.handleChange.bind(
+                                this,
+                                `${item.key}`
+                              )}
+                            >
+                              <View className="picker">
+                                <View className="picker__title">
+                                  {item.name}
+                                </View>
+                                <Text
+                                  className={classNames(
+                                    item.value
+                                      ? "pick-value"
+                                      : "pick-value-null"
+                                  )}
+                                >
+                                  {item.value
+                                    ? item.value
+                                    : `请选择${item.name}`}
+                                </Text>
+                              </View>
+                            </Picker>
+                          )}
                         </View>
-                        : null
-                    }
-                    {
-                      item.element_type === 'select'
-                        ? <View className='page-section'>
-                          <View key={`${index}1`}>
-                            {
-                              item.key === 'birthday'
-                                ? <Picker mode='date' onChange={this.handleChange.bind(this, `${item.key}`)}>
-                                  <View className='picker'>
-                                    <View className='picker__title'>{item.name}</View>
-                                    <Text
-                                      className={classNames(item.value ? 'pick-value' : 'pick-value-null')}
-                                    >{item.value ? item.value : `请选择${item.name}`}</Text>
-                                  </View>
-                                </Picker>
-                                : <Picker mode='selector' range={item.items} key={`${index}1`} data-item={item} onChange={this.handleChange.bind(this, `${item.key}`)}>
-                                  <View className='picker'>
-                                    <View className='picker__title'>{item.name}</View>
-                                    <Text
-                                      className={classNames(item.value ? 'pick-value' : 'pick-value-null')}
-                                    >{item.value ? item.value : `请选择${item.name}`}</Text>
-                                  </View>
-                                </Picker>
-                            }
-                          </View>
-                        </View>
-                        : null
-                    }
-                    {
-                      item.element_type === 'checkbox'
-                        ? <View className='page-section'>
-                          <AtInput
-                            key={`${index}1`}
-                            title={item.name}
-                            name={`${item.key}`}
-                            placeholder={`请选择${item.name}`}
-                            value={item.value}
-                            onFocus={this.showCheckboxPanel.bind(this, item.items, item.key)}
-                          />
-                        </View>
-                        : null
-                    }
+                      </View>
+                    ) : null}
+                    {item.element_type === "checkbox" ? (
+                      <View className="page-section">
+                        <AtInput
+                          key={`${index}1`}
+                          title={item.name}
+                          name={`${item.key}`}
+                          placeholder={`请选择${item.name}`}
+                          value={item.value}
+                          onFocus={this.showCheckboxPanel.bind(
+                            this,
+                            item.items,
+                            item.key
+                          )}
+                        />
+                      </View>
+                    ) : null}
                   </View>
-                )
-              })
-
-            }
+                );
+              })}
           </View>
-          <View className='btns'>
-            {
-              process.env.TARO_ENV === 'weapp'
-                ? <View>
-                  <Button
-                    className='submit-btn'
-                    type='primary'
-                    formType='submit'
-                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  >同意协议并注册</Button>
-                  <AtButton type='default' onClick={this.handleBackHome.bind(this)}>暂不注册，随便逛逛</AtButton>
-                </View>
-                : <Button
-                  type='primary'
-                  onClick={this.handleSubmit}
-                  formType='submit'
+          <View className="btns">
+            {process.env.TARO_ENV === "weapp" ? (
+              <View>
+                <Button
+                  className="submit-btn"
+                  type="primary"
+                  formType="submit"
                   style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                >同意协议并注册</Button>
-            }
-            <View className='accountAgreement'>
+                >
+                  同意协议并注册
+                </Button>
+                {show_kuangkuang ? (
+                  <AtButton
+                    type="default"
+                    onClick={this.handleBackHome.bind(this)}
+                  >
+                    暂不注册，随便逛逛
+                  </AtButton>
+                ) : (
+                  ""
+                )}
+              </View>
+            ) : (
+              <Button
+                type="primary"
+                onClick={this.handleSubmit}
+                formType="submit"
+                style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+              >
+                同意协议并注册
+              </Button>
+            )}
+            <View className="accountAgreement">
               已阅读并同意
               <Text
-                className='accountAgreement__text'
+                className="accountAgreement__text"
                 onClick={this.handleClickAgreement.bind(this)}
               >
                 《用户协议》
@@ -590,38 +656,44 @@ export default class Reg extends Component {
             </View>
           </View>
         </Form>
-        {
-          showCheckboxPanel
-            ? <View className='checkBoxPanel'>
-              <View className='checkBoxPanel-content'>
-                {
-                  option_list.map((item, index) => {
-                    return (
-                      <View
-                        className='checkBoxPanel-item'
-                        key={`${index}1`}
-                      >
-                        <SpCheckbox
-                          checked={item.ischecked}
-                          onChange={this.handleSelectionChange.bind(this, item.name)}
-                        >{item.name}</SpCheckbox>
-                      </View>
-                    )
-                  })
-                }
+        {showCheckboxPanel ? (
+          <View className="checkBoxPanel">
+            <View className="checkBoxPanel-content">
+              {option_list.map((item, index) => {
+                return (
+                  <View className="checkBoxPanel-item" key={`${index}1`}>
+                    <SpCheckbox
+                      checked={item.ischecked}
+                      onChange={this.handleSelectionChange.bind(
+                        this,
+                        item.name
+                      )}
+                    >
+                      {item.name}
+                    </SpCheckbox>
+                  </View>
+                );
+              })}
+            </View>
+            <View className="panel-btns">
+              <View
+                className="panel-btn cancel-btn"
+                onClick={this.btnClick.bind(this, "cancel")}
+              >
+                取消
               </View>
-              <View className='panel-btns'>
-                <View className='panel-btn cancel-btn' onClick={this.btnClick.bind(this, 'cancel')}>取消</View>
-                <View
-                  className='panel-btn require-btn'
-                  style={`background: ${colors.data[0].primary}`}
-                  onClick={this.btnClick.bind(this, 'require')}>确定</View>
+              <View
+                className="panel-btn require-btn"
+                style={`background: ${colors.data[0].primary}`}
+                onClick={this.btnClick.bind(this, "require")}
+              >
+                确定
               </View>
             </View>
-            : null
-        }
+          </View>
+        ) : null}
         <SpToast />
       </View>
-    )
+    );
   }
 }
