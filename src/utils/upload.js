@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/utils/upload.js
  * @Date: 2020-03-06 16:32:07
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-16 15:38:12
+ * @LastEditTime: 2020-11-16 17:42:43
  */
 import Taro from '@tarojs/taro'
 import req from '@/api/req'
@@ -107,41 +107,41 @@ const upload = {
     }
   },
   awsUpload: async (item, tokenRes) => {
-    const {
-      key, 
-      XAmzCredential,
-      XAmzAlgorithm,
-      XAmzDate,
-      Policy,
+    const { 
+      formInputs = {
+        XAmzCredential: '',
+        XAmzAlgorithm: '',
+        XAmzDate: '',
+        Policy: '',
+        XAmzSignature: '',
+        key: ''
+      },
       formAttributes = {
         action: ''
-      },
-      XAmzSignature 
+      }
     } = tokenRes
-
     try {
       const res = await Taro.uploadFile({
         url: formAttributes.action,
         filePath: item.url,
         name: 'file',
         formData:{
-          key,
-          'X-Amz-Credential': XAmzCredential,
+          key: formInputs.key,
+          'X-Amz-Credential': formInputs.XAmzCredential,
           'X-Amz-Algorithm': `AES256`,
-          Policy: Policy,
-          'X-Amz-Algorithm': XAmzAlgorithm,
-          'X-Amz-Date': XAmzDate,
-          'X-Amz-Signature': XAmzSignature
+          Policy: formInputs.Policy,
+          'X-Amz-Algorithm': formInputs.XAmzAlgorithm,
+          'X-Amz-Date': formInputs.XAmzDate,
+          'X-Amz-Signature': formInputs.XAmzSignature
         }
       })
-      console.log(res)
-      // const data = JSON.parse(res.data)
-      const { image_url } = res
-      if (!image_url) {
+
+      const { Location } = res.header
+      if (!Location) {
         return false
       }
       return {
-        url: ``
+        url: Location
       }
     } catch (e) {
       throw new Error (e)
@@ -166,13 +166,16 @@ const getUploadFun = (dirver) => {
 const uploadImageFn = async (imgFiles, filetype = 'image') => {
   const imgs = []
   for (const item of imgFiles) {
-    const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-    const { driver, token } = await getToken({ filetype, filename })
-    const uploadType = getUploadFun(driver)
     if (!item.file) {
+      if (item.url) {
+        imgs.push(item)
+      }
       continue
     }
     try {
+      const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
+      const { driver, token } = await getToken({ filetype, filename })
+      const uploadType = getUploadFun(driver)
       const img = await upload[uploadType](item, { ...token, filetype})
       if (!img || !img.url) {
         continue
