@@ -15,5 +15,7 @@ export { default as WgtGoodsFaverite } from './goods-faverite'
 export { default as WgtImgHotZone } from './imghot-zone'
 export { default as WgtMarquees } from './marquees'
 export { default as WgtStore } from './store'
-
+export { default as WgtHeadline } from './headline'
+export { default as WgtImgGif } from './img-gif'
+export { default as WgtHotTopic } from './hot-topic'
 export default {}
