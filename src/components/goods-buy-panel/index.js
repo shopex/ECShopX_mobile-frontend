@@ -405,7 +405,7 @@ export default class GoodsBuyPanel extends Component {
       activity,
       curLimit
     } = this.state;
-    if (!info) {
+    if ( !info ) {
       return null;
     }
 
@@ -413,37 +413,37 @@ export default class GoodsBuyPanel extends Component {
     const isDrug = special_type === "drug";
     const curSkus = this.noSpecs ? info : curSku;
 
-    const maxStore = +(curSkus ? curSkus.store : info.store || 99999);
+    const maxStore = +( curSkus ? curSkus.store : info.store || 99999 );
     const hasStore = curSkus ? curSkus.store > 0 : info.store > 0;
 
     let price = "",
       marketPrice = "",
       ruleDay = 0;
-    if (curSkus) {
+    if ( curSkus ) {
       price = curSkus.act_price
         ? curSkus.act_price
         : curSkus.member_price
-        ? curSkus.member_price
-        : curSkus.price;
+          ? curSkus.member_price
+          : curSkus.price;
       //marketPrice = curSkus.act_price || curSkus.member_price ? curSkus.member_price : curSkus.market_price
       marketPrice = curSkus.market_price;
-      if (info.activity_type === "limited_buy") {
-        ruleDay = JSON.parse(activity.rule.day);
+      if ( info.activity_type === "limited_buy" ) {
+        ruleDay = JSON.parse( activity.rule.day );
       }
     } else {
       price = info.act_price
         ? info.act_price
         : info.member_price
-        ? info.member_price
-        : info.price;
+          ? info.member_price
+          : info.price;
       //marketPrice = info.act_price || info.member_price ? info.member_price : info.market_price
       marketPrice = info.market_price;
     }
 
-    if (isPackage === "package") {
+    if ( isPackage === "package" ) {
       price = info.price * 100;
       marketPrice = info.market_price * 100;
-      if (curSkus) {
+      if ( curSkus ) {
         console.log(
           curSkus.item_id,
           packItem[curSkus.item_id],
@@ -451,20 +451,25 @@ export default class GoodsBuyPanel extends Component {
           394
         );
         price =
-          (packItem[curSkus.item_id] && packItem[curSkus.item_id].price) ||
-          (mainpackItem[curSkus.item_id] &&
-            mainpackItem[curSkus.item_id].price);
+          ( packItem[curSkus.item_id] && packItem[curSkus.item_id].price ) ||
+          ( mainpackItem[curSkus.item_id] &&
+            mainpackItem[curSkus.item_id].price );
         marketPrice =
-          (packItem[curSkus.item_id] &&
-            packItem[curSkus.item_id].market_price) ||
-          (mainpackItem[curSkus.item_id] &&
-            mainpackItem[curSkus.item_id].market_price);
+          ( packItem[curSkus.item_id] &&
+            packItem[curSkus.item_id].market_price ) ||
+          ( mainpackItem[curSkus.item_id] &&
+            mainpackItem[curSkus.item_id].market_price );
       } else {
         price = info.price * 100;
         marketPrice = info.market_price * 100;
       }
     }
-    console.log(curSkus, 399);
+
+    const taxRate = info ? ( Number( info.cross_border_tax_rate || 0 ) / 100 ) : 0
+    if ( info.type == '1' ) {
+      price = price * ( 1 + taxRate )
+      marketPrice = info.price
+    }
 
     return (
       <View
@@ -677,5 +682,5 @@ export default class GoodsBuyPanel extends Component {
         </View>
       </View>
     );
-  }
+  } 
 }

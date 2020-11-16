@@ -1225,16 +1225,14 @@ export default class CartCheckout extends Component {
     // if (payType === 'point') {
     //   this.props.onClearCoupon()
     // }
-    this.setState(
-      {
-        payType,
-        isPaymentOpend: false
-      },
-      () => {
-        this.calcOrder();
-      }
-    );
-  };
+    this.setState({
+      point_use:0,
+      payType,
+      isPaymentOpend: false
+    }, () => {
+      this.calcOrder()
+    })
+  }
 
   handleLayoutClose = () => {
     this.setState({

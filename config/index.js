@@ -84,8 +84,7 @@ const config = {
     APP_ID: `${APP_ID}`,
     APP_YOUSHU_TOKEN: `${APP_YOUSHU_TOKEN}`,
     APP_MAP_KEY: isWeb ? `'${APP_MAP_KEY}'` : APP_MAP_KEY,
-    APP_MAP_NAME: `'${APP_MAP_NAME}'`,
-    STORAGE: isWeb ? `'${STORAGE}'` : STORAGE,
+    APP_MAP_NAME: `'${APP_MAP_NAME}'`
   },
   alias: {
     "@": join(__dirname, "../src")
