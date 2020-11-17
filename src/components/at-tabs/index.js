@@ -2,6 +2,10 @@ import Taro, { Component } from '@tarojs/taro'
 import { Image } from '@tarojs/components'
 import { classNames } from '@/utils'
 import './index.scss'
+import { connect } from '@tarojs/redux'
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class AtTabslist extends Component {
     static options = {
@@ -29,14 +33,15 @@ export default class AtTabslist extends Component {
 
     render() {
         const { current } = this.state
-        const { tabList } = this.props
+        const { tabList,colors } = this.props
         return (
             <View className='outer'>
                 {tabList.map((item, index) => {
                     return (
                         <View
                             key={index}
-                            className={classNames('tab_li', current === index ? 'checked' : '')}
+                            className="tab_li"
+                            style={current === index ? 'color:'+ colors.data[0].primary : null}
                             onClick={this.handleClick.bind(this, index)}>
                             {item.tabTitle}
                         </View>
