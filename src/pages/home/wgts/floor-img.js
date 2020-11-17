@@ -19,56 +19,47 @@ export default class WgtFloorImg extends Component {
     }
     onRoute = linkPage
 
-
     render() {
 
-        const { info } = this.props
-        const { name, base, data } = info
+		const { info } = this.props
+				if (!info) {
+					return null
+				}
+        const {base, data } = info
 
         return (
-            <View className={`index ${info.base.padded ? 'wgt__padded' : null}`}>
-
-                {/* 1 */}
-                {name === 'floorImg' && <View>
-                    <View className={classNames('exclusive_list_one', 'exclusive_list')}>
-                        <View className='img_list'>
-                            <Image
-                                className='img'
-                                src={base.backgroundImg}
-                                style='width:100%;height:100%;'></Image>
-                            {data.map((item, idx) => {
-                                return (
-                                    <View className='lis' key={idx} onClick={this.onRoute.bind(this, item.linkPage, item.id)}>
-                                        <Image
-                                            src={item.imgUrl}
-                                            style='width:100%;height:100%;'
-                                        ></Image>
-                                        <View className='title' style={'color:' + base.WordColor}>{item.ImgTitle}</View>
-                                    </View>
-                                )
-                            })}</View>
+							<View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+							{base.title && (
+										<View className='wgt__header'>
+										<View className='wgt__title'>
+											<Text>{base.title}</Text>
+											<View className='wgt__subtitle'>{base.subtitle}</View>
+										</View>
+										{/* <View
+											className='wgt__more'
+											onClick={this.handleClickMore}
+										>
+											<View className='three-dot'></View>
+										</View> */}
+										</View>
+									)}
+									<View className={classNames('exclusive_list_two', 'exclusive_list')} 
+										style={base && base.openBackImg ? `background: url(${base && base.backgroundImg});` : null}
+											>
+										<ScrollView scrollX className='img_list'>
+												{data && data.map((item, idx) => {
+														return (
+																<View className='lis' key={idx} onClick={this.onRoute.bind(this, item.linkPage, item.id)}>
+																		<Image
+																				className='img'
+																				src={item.imgUrl}
+																		></Image>
+																		<View className='title' style={'color:' + base && base.WordColor}>{item.ImgTitle}</View>
+																</View>
+														)
+												})}
+											</ScrollView>
                     </View>
-                </View>
-                }
-
-                {/* 2 */}
-                {name === 'floorImg-two' && <View>
-                    <View className={classNames('exclusive_list_two', 'exclusive_list', base.padded ? 'wgt__padded' : null)}>
-                        <ScrollView scrollX className='img_list'>
-                            {data.map((item, idx) => {
-                                return (
-                                    <View className='lis' key={idx} onClick={this.onRoute.bind(this, item.linkPage, item.id)}>
-                                        <Image
-                                            className='img'
-                                            src={item.imgUrl}
-                                        ></Image>
-                                        <View className='title' style={'color:' + base.WordColor}>{item.ImgTitle}</View>
-                                    </View>
-                                )
-                            })}</ScrollView>
-                    </View>
-                </View>}
-
             </View>
         )
     }

@@ -4,7 +4,11 @@ import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
 import { AtTabslist, SpImg} from '@/components'
 import { linkPage } from './helper'
 import { classNames } from '@/utils'
+import { connect } from '@tarojs/redux'
 import './goods-grid-tab.scss'
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 
 export default class WgtGoodsGridTab extends Component {
   static options = {
@@ -51,7 +55,7 @@ export default class WgtGoodsGridTab extends Component {
     }
 
     render() {
-        const { info } = this.props
+        const { info,colors } = this.props
         if (!info) {
           return null
         }
@@ -65,12 +69,12 @@ export default class WgtGoodsGridTab extends Component {
                       <Text>{base.title}</Text>
                       <View className='wgt__subtitle'>{base.subtitle}</View>
                     </View>
-                    <View
+                    {/* <View
                       className='wgt__more'
                       onClick={this.handleClickMore}
                     >
                       <View className='three-dot'></View>
-                    </View>
+                    </View> */}
                     {/* <View
                       className='wgt__goods__more'
                       onClick={this.navigateTo.bind(this, `/pages/item/list?dis_id=${dis_id}`)}
@@ -142,12 +146,12 @@ export default class WgtGoodsGridTab extends Component {
             }
           </View>
         </View>
-        {/* {
-        moreLink.id && 
-        <View className='btn' onClick={this.onMore.bind(this, moreLink.linkPage, moreLink.id)}>
-            <Text className='more'>查看更多</Text>
-        </View >
-        } */}
+        {
+            moreLink.id && 
+            <View className='btn' onClick={this.handleClickMore}>
+                <Text className='more' style={`border-color:${colors.data[0].primary};color:${colors.data[0].primary}`}>查看更多</Text>
+            </View >
+        }
         </View>
         )
     }
