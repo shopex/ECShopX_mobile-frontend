@@ -25,7 +25,7 @@ export default class WgtFloorImg extends Component {
 				if (!info) {
 					return null
 				}
-        const {base, data } = info
+				const {base, data } = info
 
         return (
 							<View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
@@ -49,7 +49,7 @@ export default class WgtFloorImg extends Component {
 										<ScrollView scrollX className='img_list'>
 												{data && data.map((item, idx) => {
 														return (
-																<View className='lis' key={idx} onClick={this.onRoute.bind(this, item.linkPage, item.id)}>
+																<View className='lis' key={item.id} onClick={this.onRoute.bind(this, item.linkPage, item.id)}>
 																		<Image
 																				className='img'
 																				src={item.imgUrl}
