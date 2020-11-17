@@ -80,6 +80,7 @@ export default class TradeRefundDetail extends Component {
   render () {
     const { info, orderInfo, progress, aftersalesAddress } = this.state
     const meiqia = Taro.getStorageSync('meiqia')
+    const echat = Taro.getStorageSync('echat')
     if (!info) {
       return <Loading />
     }
@@ -164,7 +165,7 @@ export default class TradeRefundDetail extends Component {
 
         </View>
         {
-          meiqia.is_open === 'true'
+          meiqia.is_open === 'true' || echat.is_open === 'true'
             ? <FloatMenuMeiQia storeId={orderInfo.distributor_id} info={{orderId: orderInfo.order_id}} isFloat={false}> 
               <Button className='refund-detail-btn'>联系客服</Button>
             </FloatMenuMeiQia>

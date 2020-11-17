@@ -10,6 +10,7 @@ import S from '@/spx'
 import DetailItem from './comps/detail-item'
 
 import './detail.scss'
+import { echatConfig } from '../../../api/user'
 
 @connect(({ colors }) => ({
   colors: colors.current
@@ -441,6 +442,7 @@ export default class TradeDetail extends Component {
     // 是否为余额支付
     const isDeposit = info.pay_type === 'deposit'
     const meiqia = Taro.getStorageSync('meiqia')
+    const echat = Taro.getStorageSync('echat')
     // TODO: orders 多商铺
     // const tradeOrders = resolveTradeOrders(info)
     console.log('info',info)
@@ -704,7 +706,7 @@ export default class TradeDetail extends Component {
             )}
             {info.status === "TRADE_SUCCESS" && (
               <View className="trade-detail__footer">
-                {meiqia.is_open === "true" ? (
+                {meiqia.is_open === "true" || echat.is_open === 'true' ? (
                   <FloatMenuMeiQia
                     storeId={info.distributor_id}
                     info={{ orderId: info.order_id }}

@@ -103,6 +103,11 @@ export function imConfig () {
   return req.get(`/im/meiqia`)
 }
 
+// 客服默认配置
+export function echatConfig () {
+  return req.get(`/im/echat`)
+}
+
 // 扫码登录
 export function codeAuth (param = {}) {
   return req.post('/oauthlogin', param)

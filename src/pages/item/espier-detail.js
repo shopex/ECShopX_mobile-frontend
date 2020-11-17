@@ -10,9 +10,9 @@ import { withPager, withBackToTop } from '@/hocs'
 import { log, calcTimer, isArray, pickBy, canvasExp } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
+import { Tracker } from "@/service"
 import { GoodsBuyToolbar, ItemImg, ImgSpec, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem, GroupingItem } from './comps'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
-import { Tracker } from "@/service";
 
 import './espier-detail.scss'
 
@@ -792,6 +792,7 @@ export default class Detail extends Component {
 
     const { showLikeList, colors } = this.props
     const meiqia = Taro.getStorageSync('meiqia')
+    const echat = Taro.getStorageSync('echat')
     const uid = this.uid
     const taxRate = info ? (Number(info.cross_border_tax_rate || 0) / 100) : 0
     const mainPrice = info ? (info.act_price ? info.act_price : info.price) : 0
@@ -806,7 +807,6 @@ export default class Detail extends Component {
     const showPrice = (skuPrice * (1 + taxRate))
     
     const lnglat = Taro.getStorageSync('lnglat')
-
     if (!info) {
       return (
         <Loading />
@@ -978,7 +978,7 @@ export default class Detail extends Component {
               )}
             </View>
 
-            {info.vipgrade_guide_title ? (
+            { !info.is_gift && info.vipgrade_guide_title ? (
               <VipGuide info={info.vipgrade_guide_title} />
             ) : null}
 
@@ -1075,23 +1075,25 @@ export default class Detail extends Component {
             </View>
           )}
 
-          <SpCell
-            className="goods-sec-specs"
-            title="领券"
-            isLink
-            onClick={this.handleCouponClick.bind(this)}
-          >
-            {coupon_list &&
-              new_coupon_list.map(kaquan_item => {
-                return (
-                  <View key={kaquan_item.id} className="coupon_tag">
-                    <View className="coupon_tag_circle circle_left"></View>
-                    <Text>{kaquan_item.title}</Text>
-                    <View className="coupon_tag_circle circle_right"></View>
-                  </View>
-                );
-              })}
-          </SpCell>
+          {
+            !info.is_gift && <SpCell
+              className="goods-sec-specs"
+              title="领券"
+              isLink
+              onClick={this.handleCouponClick.bind(this)}
+            >
+              {coupon_list &&
+                new_coupon_list.map(kaquan_item => {
+                  return (
+                    <View key={kaquan_item.id} className="coupon_tag">
+                      <View className="coupon_tag_circle circle_left"></View>
+                      <Text>{kaquan_item.title}</Text>
+                      <View className="coupon_tag_circle circle_right"></View>
+                    </View>
+                  );
+                })}
+            </SpCell>
+          }
 
           {promotion_activity && promotion_activity.length > 0 ? (
             <ActivityPanel
@@ -1225,7 +1227,7 @@ export default class Detail extends Component {
             icon="home1"
             onClick={this.handleBackHome.bind(this)}
           />
-          {meiqia.is_open === "true" || Taro.getEnv() === "WEB" ? (
+          {meiqia.is_open === "true" || echat.is_open === 'true' || Taro.getEnv() === "WEB" ? (
             <FloatMenuMeiQia
               storeId={info.distributor_id}
               info={{ goodId: info.item_id, goodName: info.itemName }}
@@ -1246,7 +1248,7 @@ export default class Detail extends Component {
           />
         </FloatMenus>
 
-        {info.distributor_sale_status && hasStock && startActivity ? (
+        {info.distributor_sale_status && hasStock && startActivity && !info.is_gift ? (
           <GoodsBuyToolbar
             info={info}
             type={marketing}
@@ -1269,8 +1271,8 @@ export default class Detail extends Component {
               className="goods-buy-toolbar__btns"
               style="width: 60%; text-align: center"
             >
-              {!startActivity ? (
-                <Text>活动即将开始</Text>
+              {!startActivity || info.is_gift ? (
+                <Text>{ info.is_gift ? '赠品不可购买' : '活动即将开始' }</Text>
               ) : (
                 <View
                   style={`background: ${
