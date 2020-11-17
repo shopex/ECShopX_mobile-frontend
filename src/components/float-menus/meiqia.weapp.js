@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/components/float-menus/meiqia.weapp.js
  * @Date: 2020-04-20 16:57:55
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-17 13:38:13
+ * @LastEditTime: 2020-11-17 16:07:02
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
@@ -38,7 +38,6 @@ export default class Index extends Component {
   }
 
   async componentDidMount() {
-    const echat = Taro.getStorageSync('echat')
     const meiqia = Taro.getStorageSync('meiqia') || {}
     if (meiqia.is_open === 'true') {
       this.meiQiaInt()
@@ -78,9 +77,8 @@ export default class Index extends Component {
 
   // 美恰客服
   contactMeiQia = async () => {
-    const echat = Taro.getStorageSync('echat')
     const meiqia = Taro.getStorageSync('meiqia') || {}
-    if (meiqia.is_open == 'true') {
+    if (meiqia.is_open === 'true') {
       const userInfo = Taro.getStorageSync('userinfo') || {}
       const metadata = {
         ...this.props.info,
@@ -98,8 +96,9 @@ export default class Index extends Component {
         }
       })
     } else {
+      Tracker.dispatch("START_CONSULT", { type: 'echat' });
       Taro.navigateTo({
-        url: '/others/pages/meiqia/index'
+        url: '/others/pages/echat/index'
       })
     }
   }
