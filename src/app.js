@@ -67,6 +67,8 @@ class App extends Component {
     this.fetchColors()
     // 美洽客服插件
     this.fetchMeiQia()
+    // 一洽客服
+    this.fetchEchat()
   }
 
   config = {
@@ -237,6 +239,7 @@ class App extends Component {
           'pages/protocol/privacy',
           // 美恰客服
           'pages/meiqia/index',
+          'pages/echat/index',
           // 储值
           'pages/recharge/index',
           'pages/recharge/history',
@@ -357,6 +360,12 @@ class App extends Component {
   async fetchMeiQia () {
     const info = await api.user.imConfig()
     Taro.setStorageSync('meiqia', info)
+  }
+
+  // 获取一洽客服配置
+  async fetchEchat () {
+    const info = await api.user.echatConfig()
+    Taro.setStorageSync('echat', info)
   }
 
   componentDidCatchError () {}
