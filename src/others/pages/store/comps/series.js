@@ -44,14 +44,14 @@ export default class Series extends Component {
   }
 
   handleClickItem = (item) => {
-    const { category_id, main_category_id } = item
+    const { category_id, main_category_id, is_main_category } = item
     const { storeId } = this.props
     let url = ''
     if (category_id) {
       url = `/others/pages/store/list?cat_id=${category_id || ''}&dis_id=${storeId}`
     }
-    if (main_category_id) {
-      url = `/others/pages/store/list?main_cat_id=${main_category_id || ''}&dis_id=${storeId}`
+    if (main_category_id || is_main_category) {
+      url = `/others/pages/store/list?main_cat_id=${main_category_id || category_id}&dis_id=${storeId}`
     }
     if (url) {
       Taro.navigateTo({
