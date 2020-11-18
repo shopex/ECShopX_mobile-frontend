@@ -3,8 +3,10 @@ import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, SpCell,AccountOfficial} from '@/components'
 // import ExclusiveCustomerService from './comps/exclusive-customer-service'
+import MemberBanner from './comps/member-banner'
 import api from '@/api'
 import S from '@/spx'
+import req from '@/api/req'
 
 import './index.scss'
 
@@ -40,6 +42,7 @@ export default class MemberIndex extends Component {
         grade_name: '',
         background_pic_url: ''
       },
+      memberBanner:[],
       orderCount: '',
       memberDiscount: '',
       isOpenPopularize: false,
@@ -56,6 +59,7 @@ export default class MemberIndex extends Component {
     })
     this.fetch()
     this.getWheel()
+    this.fetchBanner()
   }
 
   componentDidShow () {
@@ -136,6 +140,13 @@ export default class MemberIndex extends Component {
     })
   }
 
+  async fetchBanner(){
+    const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=member_center_setting`
+    const { list } = await req.get(url)
+    this.setState({
+      memberBanner:list
+    })
+  }
     /**
    * 获取导购信息
    * */
@@ -281,11 +292,11 @@ export default class MemberIndex extends Component {
   }
   handleOfficialClose =()=>{
   }
-
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open} = this.state
+    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner} = this.state
     const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
+    const bannerInfo = memberBanner.length ? memberBanner[0].params : null
     return (
       <View className='page-member-index'>
         <ScrollView
@@ -484,6 +495,16 @@ export default class MemberIndex extends Component {
               <ExclusiveCustomerService info={salespersonData} />
               : null
           */}
+          {
+            bannerInfo && bannerInfo.data.is_show && (
+              <View className="page-member-section">
+                <MemberBanner
+                  info={bannerInfo.data}
+                />
+              </View>
+            )
+          }
+
           <View className='page-member-section'>
             {
               isOpenPopularize &&
