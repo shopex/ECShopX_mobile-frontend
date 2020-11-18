@@ -1,6 +1,9 @@
 .index {
   .imglist {
     position: relative;
+    background-size: contain;
+    height: 900px;
+    overflow: hidden;
     
   }
   .scale-placeholder {
@@ -9,19 +12,16 @@
   }
 
   .png {
-    width: 100%;
-    // position: absolute;
-    // width: 100%;
-    // height: 100%;
-    // top: 0;
-    // left: 0;
+    //width: 100%;
   }
   .gif{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    // position: absolute;
+    // width: 100%;
+    // //height: 100%;
+    // top: 0;
+    // left: 0;
+    // bottom: 0;
+    // right: 0;
   }
 }
 
