@@ -1,6 +1,6 @@
 import Taro, { PureComponent } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { WgtSearchHome, WgtFilm, WgtMarquees, WgtSlider, WgtImgHotZone, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtStore } from '../wgts'
+import { WgtSearchHome, WgtFilm, WgtMarquees, WgtSlider, WgtImgHotZone, WgtNavigation, WgtCoupon, WgtGoodsScroll,WgtGoodsGrid, WgtGoodsGridTab, WgtShowcase, WgtStore, WgtHeadline, WgtImgGif,WgtHotTopic,WgtFloorImg} from '../wgts'
 import { Tracker } from "@/service";
 
 
@@ -65,6 +65,7 @@ export default class HomeWgts extends PureComponent {
   render() {
     const { wgts } = this.props
     const { screenWidth } = this.state
+    console.log('wgts------->',wgts)
 
     return (
       <View>
@@ -81,7 +82,12 @@ export default class HomeWgts extends PureComponent {
                 {item.name === 'imgHotzone' && <WgtImgHotZone info={item} />}
                 {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} />}
                 {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} />}
+                {item.name === 'goodsGridTab' && <WgtGoodsGridTab info={item} />}
                 {item.name === 'showcase' && <WgtShowcase info={item} />}
+                {item.name === 'headline' && <WgtHeadline info={item}/>}
+                {item.name === 'img-gif' && <WgtImgGif info={item}/>}
+                {item.name === 'hotTopic' && <WgtHotTopic info={item}/>}
+                {item.name === 'floorImg' && <WgtFloorImg info={item}/>}
                 {APP_PLATFORM !== 'standard' && item.name === 'store' && <WgtStore info={item} />}
               </View>
             )
