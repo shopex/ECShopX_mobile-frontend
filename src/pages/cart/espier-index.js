@@ -174,6 +174,7 @@ export default class CartIndex extends Component {
             market_price: ({ market_price }) => (+market_price / 100).toFixed(2),
             num: 1,
             is_plus_buy:true, //加价购
+            desc: 'item_spec_desc'
           })
           plusBuyList.push(items)
         }
