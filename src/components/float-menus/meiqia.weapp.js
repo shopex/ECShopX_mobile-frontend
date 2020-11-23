@@ -6,15 +6,16 @@
  * @FilePath: /unite-vshop/src/components/float-menus/meiqia.weapp.js
  * @Date: 2020-04-20 16:57:55
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-05 17:35:12
+ * @LastEditTime: 2020-11-17 16:07:02
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
-import  api from '@/api'
+import { Tracker } from "@/service";
+import api from '@/api'
 import './item.scss'
 
 export default class Index extends Component {
-  
+
   static defaultProps = {
     storeId: '',
     info: {},
@@ -25,7 +26,7 @@ export default class Index extends Component {
     addGlobalClass: true
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -36,7 +37,15 @@ export default class Index extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
+    const meiqia = Taro.getStorageSync('meiqia') || {}
+    if (meiqia.is_open === 'true') {
+      this.meiQiaInt()
+    }
+  }
+
+  // 美洽初始化
+  meiQiaInt = async () => {
     const info = Taro.getStorageSync('curStore')
     const meiqia = Taro.getStorageSync('meiqia') || {}
     const { enterprise_id, group_id, persion_ids, is_distributor_open } = meiqia
@@ -47,7 +56,7 @@ export default class Index extends Component {
       id = storeId
     }
 
-    if (is_distributor_open === 'true' && id !== 0) {        
+    if (is_distributor_open === 'true' && id !== 0) {
       const { meiqia_id, meiqia_token, clientid = '', groupid = '' } = await api.user.im(id)
       this.setState({
         meiqia_id,
@@ -65,33 +74,42 @@ export default class Index extends Component {
       }
     }
   }
-  
 
   // 美恰客服
   contactMeiQia = async () => {
-    const userInfo = Taro.getStorageSync('userinfo') || {}
-    const metadata = {
-      ...this.props.info,
-      userId: userInfo.userId || '',
-      userName: userInfo.username || '',
-      mobile: userInfo.mobile || ''
-    }
-    const { meiqia_id, meiqia_token, clientid, groupid } = this.state
-    Taro.navigateTo({
-      url: '/others/pages/meiqia/index',
-      success: function (res) {
-        // 通过eventChannel向被打开页面传送数据
-        res.eventChannel.emit('acceptDataFromOpenerPage', { id: meiqia_id, agentid: meiqia_token, metadata: metadata, clientid, groupid})
+    const meiqia = Taro.getStorageSync('meiqia') || {}
+    if (meiqia.is_open === 'true') {
+      const userInfo = Taro.getStorageSync('userinfo') || {}
+      const metadata = {
+        ...this.props.info,
+        userId: userInfo.userId || '',
+        userName: userInfo.username || '',
+        mobile: userInfo.mobile || ''
       }
-    })
+      const { meiqia_id, meiqia_token, clientid, groupid } = this.state
+      Tracker.dispatch("START_CONSULT", { type: 'meiqia' });
+      Taro.navigateTo({
+        url: '/others/pages/meiqia/index',
+        success: function (res) {
+          // 通过eventChannel向被打开页面传送数据
+          res.eventChannel.emit('acceptDataFromOpenerPage', { id: meiqia_id, agentid: meiqia_token, metadata: metadata, clientid, groupid })
+        }
+      })
+    } else {
+      Tracker.dispatch("START_CONSULT", { type: 'echat' });
+      Taro.navigateTo({
+        url: '/others/pages/echat/index'
+      })
+    }
   }
-  
 
-  render () {
+
+  render() {
     const { isFloat } = this.props
     const { meiqia_id } = this.state
+    const echat = Taro.getStorageSync('echat')
     return (
-      meiqia_id ? <View>
+      (meiqia_id || echat.is_open === 'true') ? <View>
         {
           isFloat ? <Button
             className='float-menu__item'

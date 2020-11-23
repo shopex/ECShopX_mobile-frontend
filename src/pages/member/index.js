@@ -3,8 +3,10 @@ import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { SpToast, TabBar, SpCell,AccountOfficial} from '@/components'
 // import ExclusiveCustomerService from './comps/exclusive-customer-service'
+import MemberBanner from './comps/member-banner'
 import api from '@/api'
 import S from '@/spx'
+import req from '@/api/req'
 
 import './index.scss'
 
@@ -40,6 +42,8 @@ export default class MemberIndex extends Component {
         grade_name: '',
         background_pic_url: ''
       },
+      memberBanner:[],
+      redirectInfo:{},
       orderCount: '',
       memberDiscount: '',
       isOpenPopularize: false,
@@ -56,6 +60,8 @@ export default class MemberIndex extends Component {
     })
     this.fetch()
     this.getWheel()
+    this.fetchBanner()
+    this.fetchRedirect()
   }
 
   componentDidShow () {
@@ -136,6 +142,28 @@ export default class MemberIndex extends Component {
     })
   }
 
+// 获取banner
+  async fetchBanner(){
+    const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=member_center_setting`
+    const { list } = await req.get(url)
+    this.setState({
+      memberBanner:list
+    })
+  }
+
+  // 获取积分个人信息跳转
+  async fetchRedirect(){
+    const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=member_center_redirect_setting`
+    const {list = []} = await req.get(url)
+    if(list[0].params){
+      this.setState({
+        redirectInfo:list[0].params
+      })
+    }
+    // this.setState({
+    //   memberBanner:list
+    // })
+  }
     /**
    * 获取导购信息
    * */
@@ -281,11 +309,29 @@ export default class MemberIndex extends Component {
   }
   handleOfficialClose =()=>{
   }
-
+  handleClickPoint=()=>{
+    const { redirectInfo } = this.state
+    if(redirectInfo.data.point_url_is_open){
+      Taro.navigateToMiniProgram({
+        appId: redirectInfo.data.point_app_id,
+        path: redirectInfo.data.point_page,
+      })
+    }
+  }
+  handleClickInfo=()=>{
+    const { redirectInfo } = this.state
+    if(redirectInfo.data.info_url_is_open){
+      Taro.navigateToMiniProgram({
+        appId: redirectInfo.data.info_app_id,
+        path: redirectInfo.data.info_page,
+      })
+    }
+  }
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open} = this.state
+    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner} = this.state
     const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
+    const bannerInfo = memberBanner.length ? memberBanner[0].params : null
     return (
       <View className='page-member-index'>
         <ScrollView
@@ -297,7 +343,7 @@ export default class MemberIndex extends Component {
               ?
                 <View className={`page-member-header ${memberDiscount === '' ? 'no-card' : ''}`} style={'background: ' + colors.data[0].marketing}>
                   <View className='user-info'>
-                    <View className='view-flex view-flex-middle'>
+                    <View className='view-flex view-flex-middle' onClick={this.handleClickInfo}>
                       <View className='avatar'>
                         <Image className='avatar-img' src={info.avatar} mode='aspectFill' />
                       </View>
@@ -323,7 +369,7 @@ export default class MemberIndex extends Component {
                       <View className='member-assets__label'>优惠券</View>
                       <View className='member-assets__value'>{memberAssets.discount_total_count}</View>
                     </View>
-                    <View className='view-flex-item'>
+                    <View className='view-flex-item' onClick={this.handleClickPoint}>
                       <View className='member-assets__label'>积分</View>
                       <View className='member-assets__value'>{memberAssets.point_total_count}</View>
                     </View>
@@ -356,7 +402,7 @@ export default class MemberIndex extends Component {
             (vipgrade.is_open || !vipgrade.is_open && vipgrade.is_vip) && memberDiscount !== '' &&
               <View
                 className='member-card'
-                onClick={this.handleClick.bind(this, '/pages/vip/vipgrades')}
+                onClick={this.handleClick.bind(this, '/subpage/pages/vip/vipgrades')}
               >
                 {
                   vipgrade.is_open && !vipgrade.is_vip
@@ -484,6 +530,16 @@ export default class MemberIndex extends Component {
               <ExclusiveCustomerService info={salespersonData} />
               : null
           */}
+          {
+            bannerInfo && bannerInfo.data.is_show && (
+              <View className="page-member-section">
+                <MemberBanner
+                  info={bannerInfo.data}
+                />
+              </View>
+            )
+          }
+
           <View className='page-member-section'>
             {
               isOpenPopularize &&
@@ -550,7 +606,7 @@ export default class MemberIndex extends Component {
               title='入驻申请'
               isLink
               img='/assets/imgs/buy.png'
-              onClick={this.handleClick.bind(this, '/pages/auth/store-reg')}
+              onClick={this.handleClick.bind(this, '/subpage/pages/auth/store-reg')}
             >
             </SpCell>*/}
 

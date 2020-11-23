@@ -6,7 +6,7 @@ import useHooks from '@/hooks'
 import req from '@/api/req'
 import api from '@/api'
 import { normalizeQuerys } from '@/utils'
-import { FormIds } from '@/service'
+import { FormIds, Tracker } from "@/service";
 import Index from './pages/index'
 import LBS from './utils/lbs'
 // import entry from '@/utils/entry'
@@ -21,6 +21,13 @@ import './app.scss'
 
 const { store } = configStore()
 useHooks()
+if (APP_TRACK) {
+  const system = Taro.getSystemInfoSync();
+  if (!(system && system.environment && system.environment === "wxwork")) {
+    Tracker.use(APP_TRACK);
+  }
+}
+
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
@@ -60,6 +67,8 @@ class App extends Component {
     this.fetchColors()
     // 美洽客服插件
     this.fetchMeiQia()
+    // 一洽客服
+    this.fetchEchat()
   }
 
   config = {
@@ -85,22 +94,7 @@ class App extends Component {
       'pages/cart/drug-info',
       'pages/article/index',
 
-      'pages/recommend/list',
-      'pages/recommend/detail',
-
-      'pages/auth/reg',
-      'pages/auth/reg-rule',
-      'pages/auth/login',
-      'pages/auth/forgotpwd',
-      'pages/auth/wxauth',
-      'pages/auth/pclogin',
-      'pages/auth/store-reg',
-      'pages/cashier/index',
-      'pages/cashier/cashier-result',
-
       'pages/member/index',
-      // 'pages/member/pay',
-      // 'pages/member/pay-rule',
       'pages/member/coupon',
       'pages/member/coupon-detail',
       'pages/member/address',
@@ -112,14 +106,10 @@ class App extends Component {
       'pages/member/item-guess',
       'pages/member/group-list',
       'pages/member/member-code',
-      'pages/qrcode-buy',
-
       'pages/distribution/shop-home',
 
       'pages/store/index',
       'pages/store/list',
-
-      'pages/vip/vipgrades',
 
       'pages/custom/custom-page'
     ],
@@ -163,11 +153,14 @@ class App extends Component {
           'pages/item/espier-evaluation',
           'pages/item/espier-evaluation-detail',
           'pages/item/rate',
-          'pages/item/success'
+          'pages/item/success',
+
+          'pages/plusprice/detail-plusprice-list',
+          'pages/plusprice/cart-plusprice-list',
         ],
         "plugins": {
           "live-player-plugin": {
-            "version": "1.1.8", // 填写该直播组件版本号
+            "version": "1.2.3", // 填写该直播组件版本号
             "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
           }
           // "meiqia": {
@@ -191,6 +184,19 @@ class App extends Component {
           'pages/trade/refund-detail',
           'pages/trade/refund-sendback',
           'pages/trade/invoice-list',
+          'pages/cashier/index',
+          'pages/cashier/cashier-result',
+          'pages/recommend/list',
+          'pages/recommend/detail',
+          'pages/qrcode-buy',
+          'pages/vip/vipgrades',
+          'pages/auth/reg',
+          'pages/auth/reg-rule',
+          'pages/auth/login',
+          'pages/auth/forgotpwd',
+          'pages/auth/wxauth',
+          'pages/auth/pclogin',
+          'pages/auth/store-reg',
         ]
       },
       // 团购
@@ -227,6 +233,7 @@ class App extends Component {
           'pages/protocol/privacy',
           // 美恰客服
           'pages/meiqia/index',
+          'pages/echat/index',
           // 储值
           'pages/recharge/index',
           'pages/recharge/history',
@@ -347,6 +354,12 @@ class App extends Component {
   async fetchMeiQia () {
     const info = await api.user.imConfig()
     Taro.setStorageSync('meiqia', info)
+  }
+
+  // 获取一洽客服配置
+  async fetchEchat () {
+    const info = await api.user.echatConfig()
+    Taro.setStorageSync('echat', info)
   }
 
   componentDidCatchError () {}

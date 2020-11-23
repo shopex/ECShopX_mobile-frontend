@@ -8,6 +8,7 @@ import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, getCurrentRoute } from '@/utils'
 import TradeItem from './comps/item'
+import { Tracker } from "@/service";
 
 import './list.scss'
 
@@ -18,17 +19,17 @@ import './list.scss'
 @withPager
 @withLogin()
 export default class TradeList extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       ...this.state,
       curTabIdx: 0,
       tabList: [
-        {title: '全部订单', status: '0'},
-        {title: '待付款', status: '5'},
-        {title: '待收货', status: '1'},
-        {title: '已完成', status: '3'}
+        { title: '全部订单', status: '0' },
+        { title: '待付款', status: '5' },
+        { title: '待收货', status: '1' },
+        { title: '已完成', status: '3' }
       ],
       list: [],
       rate_status: false,
@@ -36,7 +37,7 @@ export default class TradeList extends Component {
     }
   }
 
-  componentDidShow () {
+  componentDidShow() {
     const { status } = this.$router.params
     const tabIdx = this.state.tabList.findIndex(tab => tab.status === status)
 
@@ -46,23 +47,24 @@ export default class TradeList extends Component {
         list: []
       }, () => {
         this.resetPage()
-        setTimeout(()=>{
+        setTimeout(() => {
           this.nextPage()
-        },500)
+        }, 500)
       })
     } else {
       this.resetPage()
       this.setState({
         list: []
       })
-      setTimeout(()=>{
+      setTimeout(() => {
         this.nextPage()
-      },500)
+      }, 500)
     }
 
   }
 
-  onPullDownRefresh = () =>{
+  onPullDownRefresh = () => {
+    Tracker.dispatch("PAGE_PULL_DOWN_REFRESH");
     // debugger
     Taro.showLoading({
       title: '加载中',
@@ -78,11 +80,11 @@ export default class TradeList extends Component {
   }
 
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.hideLayer()
   }
 
-  async fetch (params) {
+  async fetch(params) {
     const { tabList, curTabIdx } = this.state
 
     params = _mapKeys({
@@ -122,7 +124,8 @@ export default class TradeList extends Component {
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         item_fee: 'item_fee',
         point: 'item_point',
-        num: 'num'
+        num: 'num',
+        order_item_type:'order_item_type'
       })
     })
 
@@ -175,7 +178,7 @@ export default class TradeList extends Component {
       return
     }
 
-    switch(type) {
+    switch (type) {
       case 'cancel':
         Taro.navigateTo({
           url: `/subpage/pages/trade/cancel?order_id=${tid}`
@@ -185,7 +188,7 @@ export default class TradeList extends Component {
         Taro.navigateTo({
           url: `/marketing/pages/item/rate?id=${tid}`
         })
-        break  
+        break
       default:
         Taro.navigateTo({
           url: `/subpage/pages/trade/detail?id=${tid}`
@@ -211,7 +214,7 @@ export default class TradeList extends Component {
     })
   }
 
-  render () {
+  render() {
     const { colors } = this.props
     const { curTabIdx, curItemActionsId, tabList, list, page, rateStatus } = this.state
 
@@ -268,7 +271,7 @@ export default class TradeList extends Component {
           }
           {
             !page.isLoading && !page.hasNext && !list.length
-              && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
+            && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
           }
           {!!curItemActionsId && <View
             className='layer'

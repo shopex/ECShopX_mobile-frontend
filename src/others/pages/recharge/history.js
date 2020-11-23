@@ -7,12 +7,13 @@
  * @Date: 2020-06-30 10:11:18
  * @LastEditors: Arvin
  * @LastEditTime: 2020-06-30 15:28:24
- */ 
+ */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { NavBar, Loading, SpNote } from '@/components'
 import { connect } from '@tarojs/redux'
 import { formatTime } from '@/utils'
+import { Tracker } from "@/service";
 import api from '@/api'
 
 import './history.scss'
@@ -36,7 +37,7 @@ export default class History extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { type = 0 } = this.$router.params
     const title = type === '1' ? '消费记录' : '充值记录'
     Taro.setNavigationBarTitle({
@@ -55,7 +56,7 @@ export default class History extends Component {
   init = (isRefresh = false) => {
     const { type = 0 } = this.$router.params
     const { param, list: oldList } = this.state
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
     param.outin_type = type === '1' ? 'outcome' : 'income'
     if (isRefresh) {
       param.page = 1
@@ -88,6 +89,7 @@ export default class History extends Component {
   }
 
   onPullDownRefresh = () => {
+    Tracker.dispatch("PAGE_PULL_DOWN_REFRESH");
     this.init(true)
   }
 
@@ -101,7 +103,7 @@ export default class History extends Component {
     console.log(111)
   }
 
-  render () {
+  render() {
     const { list, isLoading, isEmpty } = this.state
     const { colors } = this.props
     return (
@@ -120,12 +122,12 @@ export default class History extends Component {
                       (赠送)
                     </Text>
                   }
-                  { item.detail }
+                  {item.detail}
                 </View>
-                <View className='date'>{ item.timeStart }</View>
+                <View className='date'>{item.timeStart}</View>
               </View>
               <View className='right'>
-                <Text className={`price ${item.tradeType === 'consume' && 'outcome'}`}>{item.tradeType === 'consume' ? '-' : '+'}{ item.money }</Text>
+                <Text className={`price ${item.tradeType === 'consume' && 'outcome'}`}>{item.tradeType === 'consume' ? '-' : '+'}{item.money}</Text>
                 {/* <View className='iconfont icon-arrowRight'></View> */}
               </View>
             </View>

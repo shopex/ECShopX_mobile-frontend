@@ -5,6 +5,7 @@ import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, getCurrentRoute } from '@/utils'
 import TradeItem from './comps/item'
+import { Tracker } from "@/service";
 
 import './list.scss'
 
@@ -15,7 +16,7 @@ export default class TradePickList extends Component {
     navigationBarTitleText: '自提订单'
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -26,7 +27,7 @@ export default class TradePickList extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({
       query: {
         order_type: 'normal',
@@ -37,7 +38,8 @@ export default class TradePickList extends Component {
     })
   }
 
-  onPullDownRefresh = () =>{
+  onPullDownRefresh = () => {
+    Tracker.dispatch("PAGE_PULL_DOWN_REFRESH");
     // debugger
     Taro.showLoading({
       title: '加载中',
@@ -53,11 +55,11 @@ export default class TradePickList extends Component {
   }
 
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.hideLayer()
   }
 
-  async fetch (params) {
+  async fetch(params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       ...this.state.query,
@@ -116,7 +118,7 @@ export default class TradePickList extends Component {
       return
     }
 
-    switch(type) {
+    switch (type) {
       case 'cancel':
         Taro.navigateTo({
           url: `/subpage/pages/trade/cancel?order_id=${tid}`
@@ -147,7 +149,7 @@ export default class TradePickList extends Component {
     })
   }
 
-  render () {
+  render() {
     const { curItemActionsId, tabList, list, page } = this.state
 
     return (
@@ -185,7 +187,7 @@ export default class TradePickList extends Component {
           }
           {
             !page.isLoading && !page.hasNext && !list.length
-              && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
+            && (<SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>)
           }
           {!!curItemActionsId && <View
             className='layer'
