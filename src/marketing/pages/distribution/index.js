@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux'
 import { NavBar } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
-
+import { Tracker } from "@/service";
 import './index.scss'
 
 @connect(({ colors }) => ({
@@ -12,14 +12,14 @@ import './index.scss'
 }))
 
 export default class DistributionDashboard extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       info: {}
     }
   }
 
-  componentDidMount () {   
+  componentDidMount() {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -28,35 +28,39 @@ export default class DistributionDashboard extends Component {
     this.fetch()
   }
 
-  handleOpenApply () {
+  handleOpenApply() {
     Taro.showModal({
       title: '申请开店',
       content: '是否申请开启小店推广',
       cancelText: '取消',
       confirmText: '确定'
     })
-    .then(res => {
-      if (res.confirm) {
-        api.distribution.update({shop_status: 2}).then(res => {
-          if (res.status) {
-            Taro.showToast({
-              title: '申请成功等待审核',
-              icon: 'success',
-              duration: 2000
-            })
-            .then(res => this.fetch())
-          }
-        })
-      }
-    })
+      .then(res => {
+        if (res.confirm) {
+          api.distribution.update({ shop_status: 2 }).then(res => {
+            if (res.status) {
+              Taro.showToast({
+                title: '申请成功等待审核',
+                icon: 'success',
+                duration: 2000
+              })
+                .then(res => this.fetch())
+            }
+          })
+        }
+      })
 
   }
 
-  onShareAppMessage () {
+  onShareAppMessage() {
     const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
     const { username, userId } = Taro.getStorageSync('userinfo')
     const { info } = this.state
 
+    Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
+      ...info,
+      shareType: "分享给好友"
+    });
     return {
       title: extConfig.wxa_name,
       imageUrl: info.shop_pic,
@@ -112,14 +116,14 @@ export default class DistributionDashboard extends Component {
       reason: 'reason'
     })
 
-    const info = {username, avatar, ...base, ...pInfo}
+    const info = { username, avatar, ...base, ...pInfo }
 
     this.setState({
       info
     })
   }
 
-  render () {
+  render() {
     const { colors } = this.props
     const { info } = this.state
 
@@ -128,7 +132,7 @@ export default class DistributionDashboard extends Component {
         <NavBar
           title='推广管理'
           leftIconType='chevron-left'
-        />	        
+        />
         <View className="header" style={'background: ' + colors.data[0].marketing}>
           <View className='view-flex view-flex-middle'>
             <Image
@@ -155,24 +159,24 @@ export default class DistributionDashboard extends Component {
           {
             info.isOpenShop === 'true' && info.shop_status === 4
               ? <View>
-                  <View className='mini-store-apply' onClick={this.handleOpenApply.bind(this)}>审核驳回，再次申请开启小店</View>
-                  <View className='mini-store-reason'>驳回理由：{info.reason}</View>
-                </View>
+                <View className='mini-store-apply' onClick={this.handleOpenApply.bind(this)}>审核驳回，再次申请开启小店</View>
+                <View className='mini-store-reason'>驳回理由：{info.reason}</View>
+              </View>
               : null
           }
           {
             info.isOpenShop === 'true' && info.shop_status === 2 &&
-              <View className='mini-store-apply'>申请开店审核中</View>
+            <View className='mini-store-apply'>申请开店审核中</View>
           }
         </View>
         <View className="section achievement">
           <View className="section-body view-flex">
             <View className="view-flex-item content-center">
-              <View className="amount"><Text className="count">{info.itemTotalPrice/100}</Text>元</View>
+              <View className="amount"><Text className="count">{info.itemTotalPrice / 100}</Text>元</View>
               <View>营业额</View>
             </View>
             <View className="view-flex-item content-center">
-              <View className="amount"><Text className="count">{info.cashWithdrawalRebate/100}</Text>元</View>
+              <View className="amount"><Text className="count">{info.cashWithdrawalRebate / 100}</Text>元</View>
               <View>可提现</View>
             </View>
           </View>
@@ -192,7 +196,7 @@ export default class DistributionDashboard extends Component {
             <Navigator className="view-flex-item" hover-class="none" url="/marketing/pages/distribution/statistics">
               <View className="icon-money"></View>
               <View className="label">推广费</View>
-              <View className="mark">{info.rebateTotal/100}</View>
+              <View className="mark">{info.rebateTotal / 100}</View>
             </Navigator>
           </View>
         </View>
@@ -222,19 +226,19 @@ export default class DistributionDashboard extends Component {
           </Navigator>
           {
             info.isOpenShop === 'true' && info.shop_status === 1 &&
-              <Navigator className="list-item" open-type="navigateTo" url={`/marketing/pages/distribution/shop?turnover=${info.taskBrokerageItemTotalFee}`}>
-                <View className="item-icon icon-shop"></View>
-                <View className="list-item-txt">我的小店</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Navigator>
+            <Navigator className="list-item" open-type="navigateTo" url={`/marketing/pages/distribution/shop?turnover=${info.taskBrokerageItemTotalFee}`}>
+              <View className="item-icon icon-shop"></View>
+              <View className="list-item-txt">我的小店</View>
+              <View className="icon-arrowRight item-icon-go"></View>
+            </Navigator>
           }
           {
             Taro.getEnv() !== 'WEB' && info.shop_status !== 1 &&
-              <Button className="share-btn list-item" open-type="share">
-                <View className="item-icon icon-share1"></View>
-                <View className="list-item-txt">分享给好友</View>
-                <View className="icon-arrowRight item-icon-go"></View>
-              </Button>
+            <Button className="share-btn list-item" open-type="share">
+              <View className="item-icon icon-share1"></View>
+              <View className="list-item-txt">分享给好友</View>
+              <View className="icon-arrowRight item-icon-go"></View>
+            </Button>
           }
         </View>
       </View>

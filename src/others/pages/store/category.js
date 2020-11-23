@@ -59,15 +59,18 @@ export default class Category extends Component {
         img: 'image_url',
         id: 'id',
         category_id: 'category_id',
+        is_main_category: 'is_main_category',
         children: ({ children }) => pickBy(children, {
           name: 'category_name',
           img: 'image_url',
           id: 'id',
+          is_main_category: 'is_main_category',
           category_id: 'category_id',
           children: ({ children }) => pickBy(children, {
             name: 'category_name',
             img: 'image_url',
-            category_id: 'category_id'
+            category_id: 'category_id',
+            is_main_category: 'is_main_category'
           })
         })
       })
@@ -92,7 +95,8 @@ export default class Category extends Component {
         img: 'img',
         children: 'children',
         hot: 'hot',
-        id: 'id'
+        id: 'id',
+        is_main_category: 'is_main_category'
       })
       this.setState({
         tabList,

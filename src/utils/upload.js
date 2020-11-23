@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/utils/upload.js
  * @Date: 2020-03-06 16:32:07
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-05 14:48:14
+ * @LastEditTime: 2020-11-16 17:42:43
  */
 import Taro from '@tarojs/taro'
 import req from '@/api/req'
@@ -105,6 +105,47 @@ const upload = {
     } catch (e) {
       throw new Error (e)
     }
+  },
+  awsUpload: async (item, tokenRes) => {
+    const { 
+      formInputs = {
+        XAmzCredential: '',
+        XAmzAlgorithm: '',
+        XAmzDate: '',
+        Policy: '',
+        XAmzSignature: '',
+        key: ''
+      },
+      formAttributes = {
+        action: ''
+      }
+    } = tokenRes
+    try {
+      const res = await Taro.uploadFile({
+        url: formAttributes.action,
+        filePath: item.url,
+        name: 'file',
+        formData:{
+          key: formInputs.key,
+          'X-Amz-Credential': formInputs.XAmzCredential,
+          'X-Amz-Algorithm': `AES256`,
+          Policy: formInputs.Policy,
+          'X-Amz-Algorithm': formInputs.XAmzAlgorithm,
+          'X-Amz-Date': formInputs.XAmzDate,
+          'X-Amz-Signature': formInputs.XAmzSignature
+        }
+      })
+
+      const { Location } = res.header
+      if (!Location) {
+        return false
+      }
+      return {
+        url: Location
+      }
+    } catch (e) {
+      throw new Error (e)
+    }
   }
 }
 
@@ -114,6 +155,8 @@ const getUploadFun = (dirver) => {
       return 'aliUpload'
     case 'local':
       return 'localUpload'
+    case 'aws':
+      return 'awsUpload'
     default:
       return 'qiNiuUpload'
   }
@@ -121,15 +164,18 @@ const getUploadFun = (dirver) => {
 
 // 返回对应上传方式
 const uploadImageFn = async (imgFiles, filetype = 'image') => {
-  const { driver, token } = await getToken({ filetype })
-  const uploadType = getUploadFun(driver)
   const imgs = []
-
   for (const item of imgFiles) {
     if (!item.file) {
+      if (item.url) {
+        imgs.push(item)
+      }
       continue
     }
     try {
+      const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
+      const { driver, token } = await getToken({ filetype, filename })
+      const uploadType = getUploadFun(driver)
       const img = await upload[uploadType](item, { ...token, filetype})
       if (!img || !img.url) {
         continue

@@ -50,7 +50,14 @@ export default class OrderItem extends Component {
                 </Text>
             </View>
           }            
-          <Text className='order-item__title'>{info.title}</Text>
+          <View className='order-item__title'>
+            {
+              info.order_item_type === 'plus_buy' && (
+                <Text className='order-item__title-tag'>换购</Text>
+              )
+            }
+            {info.title}
+          </View>
           {showDesc && info.item_spec_desc && <Text className='order-item__spec'>{info.item_spec_desc}</Text>}
           {this.props.renderDesc}
           {showExtra && (

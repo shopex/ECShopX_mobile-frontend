@@ -5,6 +5,7 @@ import { SpToast, Loading, FilterBar, SpNote, NavBar, SearchBar } from '@/compon
 import S from '@/spx'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
+import { Tracker } from "@/service";
 import { pickBy, getCurrentRoute } from '@/utils'
 import DistributionGoodsItem from './comps/goods-item'
 
@@ -13,7 +14,7 @@ import './goods.scss'
 @withPager
 @withBackToTop
 export default class DistributionGoods extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -38,11 +39,11 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Taro.hideShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
-    })    
+    })
     this.firstStatus = true
     const { status } = this.$router.params
     const { tabList } = this.state
@@ -59,7 +60,7 @@ export default class DistributionGoods extends Component {
     })
   }
 
-  async fetch (params) {
+  async fetch(params) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { page_no: page, page_size: pageSize } = params
     const { selectParams } = this.state
@@ -69,7 +70,7 @@ export default class DistributionGoods extends Component {
       pageSize
     }
 
-    const { list, total_count: total, item_params_list = []} = await api.item.search(query)
+    const { list, total_count: total, item_params_list = [] } = await api.item.search(query)
 
     item_params_list.map(item => {
       if (selectParams.length < 4) {
@@ -78,7 +79,7 @@ export default class DistributionGoods extends Component {
           attribute_value_id: 'all'
         })
       }
-      item.attribute_values.unshift({attribute_value_id: 'all', attribute_value_name: '全部', isChooseParams: true})
+      item.attribute_values.unshift({ attribute_value_id: 'all', attribute_value_name: '全部', isChooseParams: true })
     })
 
     const nList = pickBy(list, {
@@ -87,9 +88,9 @@ export default class DistributionGoods extends Component {
       goods_id: 'goods_id',
       title: 'item_name',
       desc: 'brief',
-      price: ({ price }) => (price/100).toFixed(2),
-      promoter_price: ({ promoter_price }) => (promoter_price/100).toFixed(2),
-      market_price: ({ market_price }) => (market_price/100).toFixed(2)
+      price: ({ price }) => (price / 100).toFixed(2),
+      promoter_price: ({ promoter_price }) => (promoter_price / 100).toFixed(2),
+      market_price: ({ market_price }) => (market_price / 100).toFixed(2)
     })
 
     let ids = []
@@ -129,10 +130,10 @@ export default class DistributionGoods extends Component {
     const query = {
       ...this.state.query,
       goodsSort: current === 0
-          ? null
-          : current === 1
-            ? 1
-            : (sort > 0 ? 3 : 2)
+        ? null
+        : current === 1
+          ? 1
+          : (sort > 0 ? 3 : 2)
     }
 
     if (current !== this.state.curFilterIdx || (current === this.state.curFilterIdx && query.goodsSort !== this.state.query.goodsSort)) {
@@ -153,9 +154,9 @@ export default class DistributionGoods extends Component {
   handleClickParmas = (id, child_id) => {
     const { paramsList, selectParams } = this.state
     paramsList.map(item => {
-      if(item.attribute_id === id) {
+      if (item.attribute_id === id) {
         item.attribute_values.map(v_item => {
-          if(v_item.attribute_value_id === child_id) {
+          if (v_item.attribute_value_id === child_id) {
             v_item.isChooseParams = true
           } else {
             v_item.isChooseParams = false
@@ -164,7 +165,7 @@ export default class DistributionGoods extends Component {
       }
     })
     selectParams.map(item => {
-      if(item.attribute_id === id) {
+      if (item.attribute_id === id) {
         item.attribute_value_id = child_id
       }
     })
@@ -175,11 +176,11 @@ export default class DistributionGoods extends Component {
   }
 
   handleClickSearchParams = (type) => {
-    if(type === 'reset') {
+    if (type === 'reset') {
       const { paramsList, selectParams } = this.state
       this.state.paramsList.map(item => {
         item.attribute_values.map(v_item => {
-          if(v_item.attribute_value_id === 'all') {
+          if (v_item.attribute_value_id === 'all') {
             v_item.isChooseParams = true
           } else {
             v_item.isChooseParams = false
@@ -205,12 +206,12 @@ export default class DistributionGoods extends Component {
 
   handleClickItem = async (id) => {
     const { goodsIds } = this.state
-    const goodsId = {goods_id: id}
+    const goodsId = { goods_id: id }
     const idx = goodsIds.findIndex(item => id === item)
     const isRelease = idx !== -1
     if (!isRelease) {
       const { status } = await api.distribution.release(goodsId)
-      if ( status ) {
+      if (status) {
         this.setState({
           goodsIds: [...this.state.goodsIds, id]
         }, () => {
@@ -219,7 +220,7 @@ export default class DistributionGoods extends Component {
       }
     } else {
       const { status } = await api.distribution.unreleased(goodsId)
-      if ( status ) {
+      if (status) {
         goodsIds.splice(idx, 1)
         this.setState({
           goodsIds
@@ -230,10 +231,14 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  onShareAppMessage (res) {
+  onShareAppMessage(res) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { info } = res.target.dataset
 
+    Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
+      ...info,
+      shareType: "分享给好友"
+    });
     return {
       title: info.title,
       imageUrl: info.img,
@@ -293,7 +298,7 @@ export default class DistributionGoods extends Component {
     }
   }  
 
-  render () {
+  render() {
     const { status } = this.$router.params
     const { list, page, scrollTop, goodsIds, curFilterIdx, filterList, query, tabList, localCurrent } = this.state
 
@@ -353,7 +358,7 @@ export default class DistributionGoods extends Component {
           }
           {
             !page.isLoading && !page.hasNext && !list.length
-              && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
+            && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
         <SpToast />

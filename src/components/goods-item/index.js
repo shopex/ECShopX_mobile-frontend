@@ -100,13 +100,14 @@ export default class GoodsItem extends Component {
                     {promotion_activity === 'full_gift' ? '满赠' : ''}
                     {promotion_activity === 'normal' ? '秒杀' : ''}
                     {promotion_activity === 'limited_time_sale' ? '限时特惠' : ''}
+                    {promotion_activity === 'plus_price_buy' ? '换购' : ''}
                     </Text>
                   </View>
                 : null
               }
               <View onClick={onClick}>
                 <Text className='goods-item__title'>{info.title}</Text>
-                <Text className='goods-item__desc'>{info.desc}</Text>
+                <Text className='goods-item__desc'>{info.desc || ''}</Text>
                 {this.props.renderSpec}
               </View>
             </View>

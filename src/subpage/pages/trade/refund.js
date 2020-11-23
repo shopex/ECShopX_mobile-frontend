@@ -10,6 +10,7 @@ import { SpCell, SpToast } from '@/components'
 import { connect } from '@tarojs/redux'
 import api from '@/api'
 // import req from '@/api/req'
+import { Tracker } from "@/service";
 import { pickBy, classNames } from '@/utils'
 import S from '@/spx'
 import imgUploader from '@/utils/upload'
@@ -23,14 +24,14 @@ import './refund.scss'
 
 
 export default class TradeRefund extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       // reason: ['多拍/拍错/不想要', '缺货', '买多了', '质量问题', '卖家发错货', '商品破损', '描述不符', '其他'],
       description: '',
       imgs: [],
-      reason: ['物流破损', '产品描述与实物不符', '质量问题', '皮肤过敏'],
+      reason: [],
       curReasonIdx: null,
       goodStatus: ['未收到货', '已收到货'],
       curGoodIdx: null,
@@ -38,8 +39,8 @@ export default class TradeRefund extends Component {
       isSameCurSegGood: false,
       curSegGoodValue: null,
       segTypes: [
-        {title: '仅退款', status: 'ONLY_REFUND'},
-        {title: '退货退款', status: 'REFUND_GOODS'}
+        { title: '仅退款', status: 'ONLY_REFUND' },
+        { title: '退货退款', status: 'REFUND_GOODS' }
       ],
       curSegIdx: 0,
       isShowSegTypeSheet: false,
@@ -48,16 +49,19 @@ export default class TradeRefund extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetch()
   }
 
-  async fetch () {
+  async fetch() {
     Taro.showLoading({
       mask: true
     })
 
     const { aftersales_bn, item_id, order_id } = this.$router.params
+    // 获取售后原因
+    const reasonList = await api.aftersales.reasonList()
+
     const res = await api.aftersales.info({
       aftersales_bn,
       item_id,
@@ -65,20 +69,29 @@ export default class TradeRefund extends Component {
     })
     Taro.hideLoading()
 
-    if (!res.aftersales) return
+    const { reason: oldReason } = this.state
+    const newReason = [...oldReason, ...reasonList]
+
+    if (!res.aftersales) {
+      this.setState({
+        reason: newReason
+      })
+      return 
+    }
 
     const params = pickBy(res.aftersales, {
       curSegIdx: ({ aftersales_type }) => this.state.segTypes.findIndex(t => t.status === aftersales_type) || 0,
       curSegTypeValue: ({ aftersales_type }) => this.state.segTypes[this.state.segTypes.findIndex(t => t.status === aftersales_type)].title,
-      curReasonIdx: ({ reason }) => this.state.reason.indexOf(reason) || 0,
+      curReasonIdx: ({ reason }) => newReason.indexOf(reason) || 0,
       curSegReasonValue: 'reason',
       description: 'description',
       imgs: ({ evidence_pic }) => evidence_pic.map(url => ({ url }))
     })
 
-    // console.log(params, 70)
-
-    this.setState(params)
+    this.setState({
+      ...params,
+      reason: newReason
+    })
   }
 
 
@@ -146,7 +159,7 @@ export default class TradeRefund extends Component {
     if (type === 'type') {
       this.setState({
         curSegIdx: index === this.state.curSegIdx ? null : index,
-        isSameCurSegType:  index === this.state.curSegIdx ? !this.state.isSameCurSegType : true,
+        isSameCurSegType: index === this.state.curSegIdx ? !this.state.isSameCurSegType : true,
         isShowSegTypeSheet: false,
         curSegTypeValue: index === this.state.curSegIdx ? null : item.value
       })
@@ -155,7 +168,7 @@ export default class TradeRefund extends Component {
     if (type === 'goods') {
       this.setState({
         curGoodIdx: index === this.state.curGoodIdx ? null : index,
-        isSameCurSegGood:  index === this.state.curGoodIdx ? !this.state.isSameCurSegGood : true,
+        isSameCurSegGood: index === this.state.curGoodIdx ? !this.state.isSameCurSegGood : true,
         isShowSegGoodSheet: false,
         curSegGoodValue: index === this.state.curGoodIdx ? null : item
       })
@@ -182,6 +195,11 @@ export default class TradeRefund extends Component {
     const method = aftersales_bn ? 'modify' : 'apply'
     await api.aftersales[method](data)
 
+    // 退款退货
+    const { orderInfo } = await api.trade.detail(order_id);
+    Tracker.dispatch("ORDER_REFUND", orderInfo);
+
+
     S.toast('操作成功')
     setTimeout(() => {
       Taro.redirectTo({
@@ -191,7 +209,7 @@ export default class TradeRefund extends Component {
   }
 
   handleSubmit = () => {
-    let _this=this
+    let _this = this
     let templeparams = {
       'temp_name': 'yykweishop',
       'source_type': 'after_refund',
@@ -204,20 +222,20 @@ export default class TradeRefund extends Component {
           success() {
             _this.aftersalesAxios()
           },
-          fail(){
+          fail() {
             _this.aftersalesAxios()
           }
         })
       } else {
         _this.aftersalesAxios()
       }
-    },()=>{
+    }, () => {
       _this.aftersalesAxios()
     })
   }
 
 
-  render () {
+  render() {
     const { colors } = this.props
     const { segTypes, curSegIdx, reason, curReasonIdx,
       goodStatus, curGoodIdx, isShowSegGoodSheet, isSameCurSegGood, curSegGoodValue, description, imgs } = this.state
@@ -293,19 +311,19 @@ export default class TradeRefund extends Component {
           {
             curSegIdx === 1
               ? <View className='refund-describe__img'>
-                  <Text className='refund-describe__text'>上传凭证</Text>
-                  <View className='refund-describe__imgupload'>
-                    <Text className='refund-describe__imgupload_text'>您可以上传最多3张图片</Text>
-                    <AtImagePicker
-                      multiple
-                      mode='aspectFill'
-                      length={5}
-                      files={imgs}
-                      onChange={this.handleImageChange}
-                      onImageClick={this.handleImageClick}
-                    > </AtImagePicker>
-                  </View>
+                <Text className='refund-describe__text'>上传凭证</Text>
+                <View className='refund-describe__imgupload'>
+                  <Text className='refund-describe__imgupload_text'>您可以上传最多3张图片</Text>
+                  <AtImagePicker
+                    multiple
+                    mode='aspectFill'
+                    length={5}
+                    files={imgs}
+                    onChange={this.handleImageChange}
+                    onImageClick={this.handleImageClick}
+                  > </AtImagePicker>
                 </View>
+              </View>
               : null
           }
         </View>
