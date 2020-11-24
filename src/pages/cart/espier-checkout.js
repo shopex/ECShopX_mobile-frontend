@@ -258,7 +258,7 @@ export default class CartCheckout extends Component {
   }
 
   async fetchZiTiShop() {
-    const { shop_id, scene } = this.$router.params;
+    const { shop_id, scene,cart_type} = this.$router.params;
     const isOpenStore = await entry.getStoreStatus()
     
     // const {curStore} = this.state
@@ -273,6 +273,7 @@ export default class CartCheckout extends Component {
       let lnglat = Taro.getStorageSync('lnglat')
         params.lat = lnglat.latitude
         params.lng = lnglat.longitude
+        params.cart_type = cart_type
     }else{
       params.distributor_id = id
     }
@@ -750,9 +751,9 @@ export default class CartCheckout extends Component {
     });
   };
   handleEditZitiClick =(id) =>{
-    const { curStore } = this.state;
+    const {cart_type} = this.$router.params;
     Taro.navigateTo({
-      url: `/pages/store/ziti-list?shop_id=${id}`
+      url: `/pages/store/ziti-list?shop_id=${id}&cart_type=${cart_type}`
     })
   }
 
