@@ -54,10 +54,12 @@ export default class StoreZitiList extends Component {
     const isOpenStore = await entry.getStoreStatus()
     const { page_no: page, page_size: pageSize } = params
     const { selectParams, areaList, tagsList, curTagId } = this.state
+    const { cart_type} = this.$router.params
     const query = {
       ...this.state.query,
       page,
-      pageSize
+      pageSize,
+      cart_type
     }
 
     const { list, total_count: total} = await api.shop.list(query)
