@@ -11,10 +11,11 @@ $current-shop-height: 150px !default;
   padding-top: $navigate-height-h5;
   /*  #endif  */     
   &__scroll {
-    @include page-scroll($searchbar-height + $current-shop-height + $navigate-height + 10); 
+    @include page-scroll(100px); 
     /*  #ifdef  h5  */  
-    @include page-scroll($searchbar-height + $current-shop-height + $navigate-height-h5 + 10); 
+    @include page-scroll($current-shop-height + $navigate-height-h5 + 10); 
     /*  #endif  */    
+    padding-bottom: 130px;
   }
   .store-list__search {  
     .at-search-bar {
@@ -65,9 +66,29 @@ $current-shop-height: 150px !default;
         color: $color-gray;
       }
     }
+    &_footer{
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        left:0;
+        height: 120px;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        background: #fff;
+      .sure-button{
+        height: 100px;
+        line-height: 100px;
+        background: #D0021B;
+        border-radius: 50px;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        font-size: 28px;
+      }
+    }
   }
   .current-store {
-    background: #fff;
     padding-top: 10px;
     // height: $current-shop-height;
     .label {

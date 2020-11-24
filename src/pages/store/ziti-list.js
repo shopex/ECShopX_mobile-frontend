@@ -1,14 +1,19 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Text } from '@tarojs/components'
-import { SpToast, SearchBar, BackToTop, NavBar,SpCheckbox } from '@/components'
+import { View, ScrollView, Text,Picker } from '@tarojs/components'
+import { SpToast, SearchBar, BackToTop, NavBar,SpCheckbox,SpNote } from '@/components'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import entry from '@/utils/entry'
 import StoreListItem from './comps/list-item'
 import { pickBy } from '@/utils'
+import { connect} from '@tarojs/redux'
 
-import './list.scss'
-
+import './ziti-list.scss'
+@connect(({ cart }) => ({
+  curZitiShop: cart.zitiShop
+}), (dispatch) => ({
+  onChangeZitiStore: (zitiShop) => dispatch({ type: 'cart/changeZitiStore', payload: zitiShop })
+}))
 @withPager
 @withBackToTop
 export default class StoreZitiList extends Component {
@@ -21,7 +26,9 @@ export default class StoreZitiList extends Component {
       query: null,
       current: null,
       loading: false,
-      is_open_store_status:false
+      is_open_store_status:false,
+      multiIndex:[],
+      areaList: [],
     }
   }
   config = {
@@ -47,6 +54,7 @@ export default class StoreZitiList extends Component {
         this.nextPage()
       })
     }
+    //this.handleGetLocation()
 
   }
 
@@ -79,10 +87,33 @@ export default class StoreZitiList extends Component {
       distance_unit:'distance_unit',
       is_checked:'is_checked'
     })
+    let res = await api.member.areaList()
+    const nAreaList = pickBy(res, {
+      label: 'label',
+      children: 'children',
+    })
+    this.nAreaList = nAreaList
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    nAreaList.map((item, index) => {
+      arrProvice.push(item.label)
+      if(index === 0) {
+        item.children.map((c_item, c_index) => {
+          arrCity.push(c_item.label)
+          if(c_index === 0) {
+            c_item.children.map(cny_item => {
+              arrCounty.push(cny_item.label)
+            })
+          }
+        })
+      }
+    })
     this.setState({
       list: [...this.state.list, ...nList],
       query,
-      is_open_store_status:isOpenStore
+      is_open_store_status:isOpenStore,
+      areaList: [arrProvice, arrCity, arrCounty],
     })
 
     return {
@@ -149,10 +180,10 @@ export default class StoreZitiList extends Component {
       loading: true
     })
     Taro.removeStorageSync('lnglat')
-    const store = await entry.getLocal(true)
+    const store = await entry.getLocal(true,'0')
     console.log('store---->',store)
     if (store) {
-      Taro.setStorageSync('curStore', store)
+     // Taro.setStorageSync('curStore', store)
       this.resetPage()
       this.setState({
         list: [],
@@ -170,7 +201,7 @@ export default class StoreZitiList extends Component {
   }
   handleSelectStore = (item) =>{
     const { list } = this.state
-    console.log('list--->',list)
+    const{ shop_id } =this.$router.params
     list.map(v =>{
       v.is_checked = false,
       v.distributor_id == item.distributor_id && (v.is_checked = true)
@@ -185,21 +216,38 @@ export default class StoreZitiList extends Component {
 
   }
 
-  handleClick = (val) => {
-    Taro.setStorageSync('curStore', val)
-    Taro.navigateBack()
+  // handleClick = (val) => {
+  //   Taro.setStorageSync('curStore', val)
+  //   Taro.navigateBack()
+  // }
+  handleChangeStore = ()=>{
+    let { list } = this.state
+    if(!list.length) return
+    const selected = list.filter(v=>v.is_checked)
+    if(!selected.length){
+      Taro.showToast({
+        title: '请选择店铺～',
+        icon: 'none'
+      })
+      return
+    }
+    this.props.onChangeZitiStore(selected[0])
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 300)
+
   }
 
   render () {
-    const { list, scrollTop, showBackToTop, loading, current, query,is_open_store_status } = this.state
-    let {shop_id} = this.$router.params
+    const { list, scrollTop, showBackToTop, loading, current, query,is_open_store_status,areaList,multiIndex,page } = this.state
+    const { shop_id } = this.$router.params
     return (
       <View className='page-store-list'>
         <NavBar
           title='选择自提门店'
           leftIconType='chevron-left'
         />
-        <View className='store-list__search'>
+        {/* <View className='store-list__search'>
           <SearchBar
             showDailog={false}
             keyword={query ? query.name : ''}
@@ -209,29 +257,38 @@ export default class StoreZitiList extends Component {
             onCancel={this.handleSearchOff}
             onConfirm={this.handleConfirm.bind(this)}
           />
-        </View>
-        <View className='current-store'>
+        </View> */}
+        <Picker
+              mode='multiSelector'
+              //onClick={this.handleClickPicker}
+              //onChange={this.bindMultiPickerChange}
+              //onColumnChange={this.bindMultiPickerColumnChange}
+              value={multiIndex}
+              range={areaList}
+            >
+               <View className='current-store'>
           {/* <View className='label'>当前位置</View> */}
           <View className='content view-flex'>
             <View className='view-flex-item'>
               {
                 loading
                   ? <Text className='loading'>定位中...</Text>
-                  : <Text>{current ? current.name : '定位失败...'}</Text>
+                  : <Text>
+                     {
+                       current
+                       ? <Text> {current.regions[0]}{current.regions[1]}{current.regions[2]} </Text>
+                       :'定位失败'
+                     }
+                    </Text>
               }
             </View>
-            {/* <View
-              className='view-flex view-flex-middle'
-              onClick={this.handleGetLocation}
-            >重新定位 <Text className='icon-target' />
-            </View> */}
             <View
               className='view-flex view-flex-middle'
-              onClick={this.handleGetLocation}
-            >上海市徐汇区 <Text className='icon-target' />
+            ><Text className='icon-arrowRight' />
             </View> 
           </View>
         </View>
+      </Picker>
         <ScrollView
           className='page-store-list__scroll'
           scrollY
@@ -266,7 +323,15 @@ export default class StoreZitiList extends Component {
                 )
               })
             }
+            <View className="store-list_footer">
+            <View className='sure-button' onClick={this.handleChangeStore.bind(this)}>确定</View>
+            </View>
           </View>
+          { page.isLoading ? <Loading>正在加载...</Loading> : null }
+          {
+						!page.isLoading && !page.hasNext && !list.length
+						&& (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
+          }
         </ScrollView>
 
         <BackToTop
