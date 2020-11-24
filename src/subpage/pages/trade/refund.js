@@ -46,6 +46,7 @@ export default class TradeRefund extends Component {
       isShowSegTypeSheet: false,
       isSameCurSegType: false,
       curSegTypeValue: null,
+      remind:null
     }
   }
 
@@ -61,7 +62,8 @@ export default class TradeRefund extends Component {
     const { aftersales_bn, item_id, order_id } = this.$router.params
     // 获取售后原因
     const reasonList = await api.aftersales.reasonList()
-
+   
+    
     const res = await api.aftersales.info({
       aftersales_bn,
       item_id,
@@ -71,14 +73,15 @@ export default class TradeRefund extends Component {
 
     const { reason: oldReason } = this.state
     const newReason = [...oldReason, ...reasonList]
-
+    let remind = await api.aftersales.remindDetail()
     if (!res.aftersales) {
       this.setState({
-        reason: newReason
+        reason: newReason,
+        remind,
       })
       return 
     }
-
+    
     const params = pickBy(res.aftersales, {
       curSegIdx: ({ aftersales_type }) => this.state.segTypes.findIndex(t => t.status === aftersales_type) || 0,
       curSegTypeValue: ({ aftersales_type }) => this.state.segTypes[this.state.segTypes.findIndex(t => t.status === aftersales_type)].title,
@@ -90,6 +93,7 @@ export default class TradeRefund extends Component {
 
     this.setState({
       ...params,
+      remind,
       reason: newReason
     })
   }
@@ -215,7 +219,6 @@ export default class TradeRefund extends Component {
       'source_type': 'after_refund',
     }
     api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
-      console.log('templeparams---1', tmlres)
       if (tmlres.template_id && tmlres.template_id.length > 0) {
         wx.requestSubscribeMessage({
           tmplIds: tmlres.template_id,
@@ -238,8 +241,7 @@ export default class TradeRefund extends Component {
   render() {
     const { colors } = this.props
     const { segTypes, curSegIdx, reason, curReasonIdx,
-      goodStatus, curGoodIdx, isShowSegGoodSheet, isSameCurSegGood, curSegGoodValue, description, imgs } = this.state
-
+      goodStatus, curGoodIdx, isShowSegGoodSheet, isSameCurSegGood, curSegGoodValue, description, imgs,remind } = this.state
     return (
       <View className='page-trade-refund'>
         <AtTabs
@@ -327,6 +329,14 @@ export default class TradeRefund extends Component {
               : null
           }
         </View>
+     
+        {remind.is_open&&<View className='remind-wrap'>
+          <Text className='biao-icon biao-icon-tishi'>  售后提醒</Text>
+          
+          <View className='remind-text'>
+            {remind.intro}
+          </View>
+        </View>}
         <View
           className='refund-btn'
           style={`background: ${colors.data[0].primary}`}
