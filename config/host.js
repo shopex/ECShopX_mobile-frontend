@@ -1,13 +1,13 @@
 module.exports = {
   h5: {
-    prod: 'ecshopx.shopex123.com/index.php',
-    preissue: 'ecshopx.shopex123.com/index.php',
-    test: 'ecshopx.shopex123.com/index.php'
+    prod: 'ecshopx1.shopex123.com/index.php',
+    preissue: 'ecshopx1.shopex123.com/index.php',
+    test: 'ecshopx1.shopex123.com/index.php'
   },
   weapp: {
-    prod: 'ecshopx.shopex123.com/index.php',
-    preissue: 'ecshopx.shopex123.com/index.php',
-    test: 'ecshopx.shopex123.com/index.php'
+    prod: 'ecshopx1.shopex123.com/index.php',
+    preissue: 'ecshopx1.shopex123.com/index.php',
+    test: 'ecshopx1.shopex123.com/index.php'
   },
   websocket: {
     development: 'wss://ecshopx.shopex123.com/ws',
