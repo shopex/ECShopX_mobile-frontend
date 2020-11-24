@@ -105,6 +105,15 @@ const cart = createReducer(initState, {
       coupon
     }
   },
+  ['cart/changeZitiStore'](state,action){
+    const zitiShop = action.payload
+
+    return {
+      ...state,
+      zitiShop
+    }
+
+  },
   ['cart/changeDrugInfo'](state, action) {
     const drugInfo = action.payload
 
