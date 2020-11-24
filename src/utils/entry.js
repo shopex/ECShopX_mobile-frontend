@@ -80,15 +80,14 @@ async function getLocalSetting() {
   }
 }
 
+
+  //   store = {
+  //     distributor_id:0
+  //   }
+  //   Taro.setStorageSync('curStore', store)
 async function getLocal (isNeedLocate) {
   const isOpenStore = await getStoreStatus()
   let store = null
-  if(isOpenStore){
-    store = {
-      distributor_id:0
-    }
-    Taro.setStorageSync('curStore', store)
-  }else {  
   const positionStatus = await getLocalSetting()
   if (!positionStatus) {
     store = await api.shop.getShop()
@@ -115,13 +114,20 @@ async function getLocal (isNeedLocate) {
       }
     }
   }
-
-  if (!store.status) {
+  if(isOpenStore){
+    store = {
+      distributor_id:0
+    }
     Taro.setStorageSync('curStore', store)
-  } else {
-    Taro.setStorageSync('curStore', [])
+  }else{
+    if (!store.status) {
+      Taro.setStorageSync('curStore', store)
+    } else {
+      Taro.setStorageSync('curStore', [])
+    }
   }
-}
+
+
   return store
 }
 

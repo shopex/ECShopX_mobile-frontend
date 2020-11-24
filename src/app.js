@@ -110,6 +110,7 @@ class App extends Component {
 
       'pages/store/index',
       'pages/store/list',
+      'pages/store/ziti-list',
 
       'pages/custom/custom-page'
     ],
