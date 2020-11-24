@@ -81,8 +81,15 @@ async function getLocalSetting() {
 }
 
 async function getLocal (isNeedLocate) {
-  const positionStatus = await getLocalSetting()
+  const isOpenStore = await getStoreStatus()
   let store = null
+  if(isOpenStore){
+    store = {
+      distributor_id:0
+    }
+    Taro.setStorageSync('curStore', store)
+  }else {  
+  const positionStatus = await getLocalSetting()
   if (!positionStatus) {
     store = await api.shop.getShop()
   } else {
@@ -114,6 +121,7 @@ async function getLocal (isNeedLocate) {
   } else {
     Taro.setStorageSync('curStore', [])
   }
+}
   return store
 }
 
@@ -132,6 +140,15 @@ async function getLoc () {
       return null
     }
   }  
+}
+
+async function getStoreStatus(){
+  const {nostores_status} = await api.shop.getStoreStatus()
+  if(nostores_status === 'true'){
+    return true
+  } else {
+    return false
+  }
 }
 
 // web定位获取
@@ -162,8 +179,6 @@ function getWebLocal (isSetStorage = true) {
     })
   })
 }
-
-
 // 新增千人千码跟踪记录
 function trackViewNum (monitor_id, source_id) {
   let _session = Taro.getStorageSync('_session')
@@ -219,5 +234,6 @@ export default {
   getLocal,
   getLocalSetting,
   getWebLocal,
-  InverseAnalysis
+  InverseAnalysis,
+  getStoreStatus
 }
