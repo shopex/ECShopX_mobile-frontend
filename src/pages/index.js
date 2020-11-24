@@ -53,6 +53,7 @@ export default class HomeIndex extends Component {
       is_open_recommend: null,
       is_open_scan_qrcode: null,
       is_open_official_account:null,
+      is_open_store_status:null,
       show_official:true,
       showCloseBtn:false,
       // 是否有跳转至店铺页
@@ -77,6 +78,7 @@ export default class HomeIndex extends Component {
   //    // const res = parseUrlStr(queryStr)
   // }
     this.checkWhite()
+    //this.fetchStoreStatus()
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
       this.setState({
         shareInfo: res
@@ -87,26 +89,41 @@ export default class HomeIndex extends Component {
   async fetchSetInfo() {
     const setUrl = '/pagestemplate/setInfo'
     const {is_open_recommend, is_open_scan_qrcode, is_open_wechatapp_location,is_open_official_account} = await req.get(setUrl)
+    const isOpenStore = await entry.getStoreStatus()
+    let store = {}
     this.setState({
       is_open_recommend: is_open_recommend,
       is_open_scan_qrcode: is_open_scan_qrcode,
       is_open_wechatapp_location: is_open_wechatapp_location,
-      is_open_official_account:is_open_official_account
+      is_open_official_account:is_open_official_account,
+      is_open_store_status:isOpenStore
     }, async() => {
-      let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
-      const options = this.$router.params
-      const res = await entry.entryLaunch(options, isNeedLoacate)
-      const { store } = res
-      if (!isArray(store)) {
-        this.setState({
-          curStore: store
-        }, () => {
-          this.fetchData()
-        })
+      if(this.state.is_open_store_status){
+        store.distributor_id = 0
+        if (!isArray(store)) {
+          this.setState({
+            curStore: store
+          }, () => {
+            this.fetchData()
+          })
+        }
+       
+      }else {
+        let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
+        const options = this.$router.params
+        const res = await entry.entryLaunch(options, isNeedLoacate)
+        const { store } = res
+        if (!isArray(store)) {
+          this.setState({
+            curStore: store
+          }, () => {
+            this.fetchData()
+          })
+        }
       }
+
     })
   }
-
   fetchData() {
     this.fetchInfo(async () => {
       // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'

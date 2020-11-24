@@ -10,6 +10,7 @@ import S from '@/spx'
 import { Tracker } from "@/service";
 import { withPager } from '@/hocs'
 import CartItem from './comps/cart-item'
+import entry from '@/utils/entry'
 
 import './espier-index.scss'
 
@@ -216,8 +217,14 @@ export default class CartIndex extends Component {
     let valid_cart = [], invalid_cart = [], crossborder_show = false
     const cartTypeLocal = Taro.getStorageSync('cartType')
     const { type = 'distributor' } = this.$router.params
+    const isOpenStore = await entry.getStoreStatus()//非门店自提
     const params = {
       shop_type: type
+    }
+    if(isOpenStore){
+      params.isNostores = 1
+    }else{
+      params.isNostores = 0
     }
     if (cartTypeLocal === 'cross') {
       params.iscrossborder = 1

@@ -67,7 +67,8 @@ export default class Detail extends Component {
       evaluationList: [],
       evaluationTotal: 0,
       // 是否订阅
-      isSubscribeGoods: false
+      isSubscribeGoods: false,
+      is_open_store_status:null,
     }
   }
 
@@ -75,39 +76,46 @@ export default class Detail extends Component {
     const options = this.$router.params
     let id = options.id
     let uid = ''
-    if (APP_PLATFORM === 'standard') {
-      const { distributor_id } = Taro.getStorageSync('curStore')
-      if (!options.dtid  || options.dtid !== 0) {
-        options.dtid = distributor_id
-      }
-      const entryData = await entry.entryLaunch(options, true)
-      id = entryData.id
-      uid = entryData.uid
-    }
-    if (uid) {
-      this.uid = uid
-    }
-    if(!S.getAuthToken()){
-      setTimeout(() => {
-        this.checkWhite()
-      }, 1000)
-    }
-    this.fetchInfo(id)
-    this.getEvaluationList(id)
-    // 浏览记录
-    if (S.getAuthToken()) {
-      try {
-        let itemId = ''
-        if (id) {
-          itemId = id
-        } else {
-          itemId = this.$router.params.id
+    const isOpenStore = await entry.getStoreStatus()
+    this.setState({
+      is_open_store_status:isOpenStore
+    },async()=>{
+      const { is_open_store_status }= this.state
+      if (APP_PLATFORM === 'standard') {
+        const { distributor_id } = Taro.getStorageSync('curStore')
+        if (!options.dtid  || options.dtid !== 0) {
+          options.dtid = is_open_store_status ? '0' : distributor_id 
         }
-        api.member.itemHistorySave(itemId)
-      } catch (e) {
-        console.log(e)
+        const entryData = await entry.entryLaunch(options, true)
+        id = entryData.id
+        uid = entryData.uid
       }
-    }
+      if (uid) {
+        this.uid = uid
+      }
+      if(!S.getAuthToken()){
+        setTimeout(() => {
+          this.checkWhite()
+        }, 1000)
+      }
+      this.fetchInfo(id)
+      this.getEvaluationList(id)
+      // 浏览记录
+      if (S.getAuthToken()) {
+        try {
+          let itemId = ''
+          if (id) {
+            itemId = id
+          } else {
+            itemId = this.$router.params.id
+          }
+          api.member.itemHistorySave(itemId)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    })
+  
 
     // 处理定位
     const lnglat = Taro.getStorageSync('lnglat')
