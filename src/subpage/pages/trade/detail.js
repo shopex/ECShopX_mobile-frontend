@@ -137,6 +137,28 @@ export default class TradeDetail extends Component {
         point: 'item_point',
         num: 'num',
         item_spec_desc:'item_spec_desc'
+      }),
+      express_orders: ({ logistics_items = [] }) => pickBy(logistics_items, {
+        order_id: 'order_id',
+        item_id: 'item_id',
+        // aftersales_status: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
+        delivery_code: 'delivery_code',
+        delivery_corp: 'delivery_corp',
+        delivery_name: 'delivery_corp_name',
+        delivery_status: 'delivery_status',
+        delivery_time: 'delivery_time',
+        aftersales_status: 'aftersales_status',
+        pic_path: 'pic',
+        title: 'item_name',
+        type: 'type',
+        origincountry_name: 'origincountry_name',
+        origincountry_img_url: 'origincountry_img_url',
+        delivery_status: 'delivery_status',
+        is_logistics: 'is_logistics',
+        price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
+        point: 'item_point',
+        num: 'num',
+        item_spec_desc:'item_spec_desc'
       })
     })
 
