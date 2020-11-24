@@ -33,6 +33,7 @@ import PointUse from "./comps/point-use";
 import OrderItem from "../../components/orderItem/order-item";
 
 import "./espier-checkout.scss";
+import entry from "../../utils/entry";
 
 const transformCartList = list => {
   return pickBy(list, {
@@ -123,7 +124,8 @@ export default class CartCheckout extends Component {
       //积分相关
       isPointOpen: false,
       point_use: 0,
-      pointInfo: null
+      pointInfo: null,
+      isOpenStore:null
     };
   }
 
@@ -257,18 +259,29 @@ export default class CartCheckout extends Component {
 
   async fetchZiTiShop() {
     const { shop_id, scene } = this.$router.params;
+    const isOpenStore = await entry.getStoreStatus()
+    
     // const {curStore} = this.state
     // const shopInfo = await api.shop.getShop({distributor_id: shop_id})
     let id = shop_id;
+    let params ={}
     if (scene) {
       const { dtid } = normalizeQuerys(this.$router.params);
       id = dtid;
     }
-    const shopInfo = await api.shop.getShop({ distributor_id: id });
+    if(isOpenStore){
+      let lnglat = Taro.getStorageSync('lnglat')
+        params.lat = lnglat.latitude
+        params.lng = lnglat.longitude
+    }else{
+      params.distributor_id = id
+    }
+    const shopInfo = await api.shop.getShop(params);
     this.setState({
       curStore: shopInfo,
       receiptType: shopInfo.is_delivery ? "logistics" : "ziti",
-      express: shopInfo.is_delivery ? true : false
+      express: shopInfo.is_delivery ? true : false,
+      isOpenStore
     });
   }
 
@@ -736,6 +749,12 @@ export default class CartCheckout extends Component {
       scale: 18
     });
   };
+  handleEditZitiClick =(id) =>{
+    const { curStore } = this.state;
+    Taro.navigateTo({
+      url: `/pages/store/ziti-list?shop_id=${id}`
+    })
+  }
 
   handleShippingChange = type => {
     console.log(type);
@@ -1369,7 +1388,8 @@ export default class CartCheckout extends Component {
       pointInfo,
       isPointOpen,
       identity,
-      quota_tip
+      quota_tip,
+      isOpenStore
     } = this.state;
     // let curStore = {}
     // if (shopData) {
@@ -1393,6 +1413,7 @@ export default class CartCheckout extends Component {
       : (coupon.value && coupon.value.title) || "";
     //const isBtnDisabled = !address
     const isBtnDisabled = express ? !address : false;
+    console.log('curStore---->',curStore)
 
     return (
       <View className="page-checkout">
@@ -1446,10 +1467,17 @@ export default class CartCheckout extends Component {
                   <View className="addr-title">{curStore.name}</View>
                   <View className="addr-detail">{curStore.store_address}</View>
                 </View>
-                <View
-                  className="icon-location"
-                  onClick={this.handleMapClick.bind(this)}
+                {
+                  isOpenStore 
+                  ? <View
+                  className="icon-edit"
+                  onClick={this.handleEditZitiClick.bind(this,curStore.distributor_id)}
                 ></View>
+                :<View
+                className="icon-location"
+                onClick={this.handleMapClick.bind(this)}
+              ></View>
+                }
               </View>
               <View className="view-flex">
                 <View className="view-flex-item">

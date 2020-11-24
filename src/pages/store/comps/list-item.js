@@ -21,7 +21,7 @@ export default class StoreListItem extends Component {
   }
 
   render () {
-    const { info, onClick } = this.props
+    const { info, onClick,isStore } = this.props
     if (!info) return null
 
     return (
@@ -30,11 +30,24 @@ export default class StoreListItem extends Component {
         onClick={onClick}
       >
         <View className='store-content'>
-          <View className="store-name">{info.name}</View>
-          <View className="store-address">{info.store_address}</View>
+          <View className="store-content_left">
+            <View className="store-name">{info.name}</View>
+            <View className="store-address">{info.store_address}</View>
+            <View className="store-address">营业时间：{info.hour}</View>
+            <View className="store-address">营业时间：{info.mobile}</View>
+          </View>
+
+          {
+            info.distance && (
+            <View className="store-content_distance">
+              {info.distance}{info.distance_unit}
+            </View>
+            )
+          }
         </View>
+
         {
-          info.lat &&
+          !isStore && info.lat &&
             <View
               className='store-location icon-location'
               onClick={this.handleMap.bind(this, info.lat, info.lng)}
