@@ -109,7 +109,7 @@ export default class PaymentPicker extends Component {
                   ></SpCheckbox>
                 </View>
               </View>
-            } */}
+            }
             {
               isShowBalance &&
               <View
