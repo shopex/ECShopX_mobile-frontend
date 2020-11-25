@@ -79,6 +79,7 @@ export default class SelectPackage extends Component {
       this.props.onHanleChange && this.props.onHanleChange(checked)
     })
   }
+  
   handleClose=()=>{
     this.setState({
       isOpend: false
