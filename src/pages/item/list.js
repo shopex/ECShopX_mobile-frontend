@@ -555,7 +555,7 @@ export default class List extends Component {
         </AtDrawer>
 
         <ScrollView
-          className={classNames('goods-list__scroll', tagsList.length > 0 && 'with-tag-bar')}
+          className={classNames(isTabBar ? 'goods-list__scroll_isTabBar' : 'goods-list__scroll', tagsList.length > 0 && 'with-tag-bar', isTabBar && 'isTabBar')}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
