@@ -87,6 +87,19 @@
       }
     }
 
+    &__scroll_isTabBar {
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + $tabbar-height + 8, $tabbar-height);
+      /*  #ifdef  h5  */  
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height-h5 + $tabbar-height + 8, $tabbar-height);
+      /*  #endif  */      
+      &.with-tag-bar {
+        @include page-scroll($tabs-height + $searchbar-height + $tags-height + $navigate-height + 8, $tabbar-height);
+        /*  #ifdef  h5  */  
+        @include page-scroll($tabs-height + $searchbar-height + $tags-height + $navigate-height-h5 + 8, $tabbar-height);
+        /*  #endif  */        
+      }
+    }
+
     /*  #ifdef  h5  */  
     .taro-img {
       img {
