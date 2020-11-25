@@ -1,6 +1,7 @@
 @import "../../../style/imports";
 
 .page-trade-refund {
+  overflow: auto;
   .trade-refund__reason {
     margin-top: $tabs-height;
     padding-top: 30px;
