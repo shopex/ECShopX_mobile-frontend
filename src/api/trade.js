@@ -55,5 +55,5 @@ export function h5create (data) {
   return req.post('/order_new', data)
 }
 export function tradeSetting (data) {
-  return req.get('/trade/setting ', data)
+  return req.get('/trade/setting', data)
 }
