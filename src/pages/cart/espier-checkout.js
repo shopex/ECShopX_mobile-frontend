@@ -28,6 +28,8 @@ import find from "lodash/find";
 import _cloneDeep from "lodash/cloneDeep";
 import CheckoutItems from "./checkout-items";
 import PaymentPicker from "./comps/payment-picker";
+import SelectPackage from "./comps/selectPackage";
+
 import PointUse from "./comps/point-use";
 // import DrugInfo from './drug-info'
 import OrderItem from "../../components/orderItem/order-item";
@@ -568,7 +570,7 @@ export default class CartCheckout extends Component {
   async tradeSetting () {
     let res = await api.trade.tradeSetting()
     let { is_open ,packName,packDes} = res
-    
+    is_open=true
     this.setState({
       isPackage: is_open,
       pack: {
@@ -1395,7 +1397,9 @@ export default class CartCheckout extends Component {
       isPointOpen,
       identity,
       quota_tip,
-      isNeedPackage
+      isNeedPackage,
+      isPackage,
+      pack
     } = this.state;
     // let curStore = {}
     // if (shopData) {
@@ -1636,7 +1640,7 @@ export default class CartCheckout extends Component {
               </View>
             </SpCell>
           )}
-          <SelectPackage isChecked={isNeedPackage} onHanleChange={this.changeNeedPackage.bind(this)} />
+          {isPackage&&<SelectPackage isChecked={isNeedPackage} onHanleChange={this.changeNeedPackage.bind(this)} packInfo={pack} />}
 
           {/*<SpCell
             isLink

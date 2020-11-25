@@ -10,26 +10,31 @@
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpCheckbox } from '@/components'
+import { connect } from '@tarojs/redux'
+
+import { SpCheckbox, SpCell } from '@/components'
 import { AtActionSheet } from 'taro-ui'
 
 
 import './index.scss'
-
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 export default class SelectPackage extends Component {
   defaultProps = {
     isChecked: false,
-    onHanleChange: null
+    onHanleChange: null,
+    packInfo: {}
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       isOpend: false,
       checked: false
     }
   }
-  
+
   componentDidMount () {
     const { isChecked } = this.props
     this.setState({
@@ -77,44 +82,56 @@ export default class SelectPackage extends Component {
 
   render () {
     const { isOpend, checked } = this.state
-    const { isChecked } = this.props
-
-    const colors = {data: [{primary: '#000'}]}
-
+    const { isChecked, packInfo, colors } = this.props
     return (
-      <View className='selectPackage'>
-        <View className='showline' onClick={this.showSheet.bind(this)}>
-          <View className='left'>礼包</View>
-          <View className='right'>
-            { isChecked ? '需要' : '不需要'}
-            <Text className='iconfont icon-arrowRight'></Text>
+
+      <View className=''>
+        <SpCell
+          isLink
+          className="trade-invoice"
+          title="礼包"
+          onClick={this.showSheet.bind(this)}
+        >
+          <View className="invoice-title">
+            {isChecked ? '需要' : '不需要'}
           </View>
-        </View>
+        </SpCell>
         <AtActionSheet
-          className='sheet'
-          title='是否需要礼袋'
           isOpened={isOpend}
         >
-          <View className='line' onClick={this.handleChange.bind(this, false)}>
-            不需要
-            <SpCheckbox
-              colors={colors}
-              checked={!checked}
-            />
+          <View className='payment-picker'>
+          <View className='payment-picker__hd'>
+              <Text>支付方式</Text>
+              </View>
+          <View className='payment-item no-border' onClick={this.handleChange.bind(this, false)}>
+            <View className='payment-item__ft'>
+              <Text className='payment-item__title'>不需要</Text>
+              <SpCheckbox
+                colors={colors}
+                checked={!checked}
+              />
+            </View>
           </View>
-          <View className='needline' onClick={this.handleChange.bind(this, true)}>
-            <View className='line'>
-              需要
+          <View className='payment-item no-border' onClick={this.handleChange.bind(this, true)}>
+            <View className='payment-item__ft'>
+              <Text className='payment-item__title'>需要</Text>
+              <Text className='payment-item__desc'>{packInfo.packDes}</Text>
               <SpCheckbox
                 colors={colors}
                 checked={checked}
-              />                
+              />
             </View>
-            <View className='ext'>礼袋说明文字礼袋说明文字礼袋说明文字</View>         
           </View>
-          <View className='btn' onClick={this.handleConfrim.bind(this)}>确认</View>
+          <Button
+            type='primary'
+            className='btn-submit'
+            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
+            onClick={this.handleConfrim.bind(this)}
+              >确定</Button>
+              </View>
         </AtActionSheet>
       </View>
+      
     )
   }
 }
