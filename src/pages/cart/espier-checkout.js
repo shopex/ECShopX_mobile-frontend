@@ -1641,7 +1641,7 @@ export default class CartCheckout extends Component {
             </SpCell>
           )}
           {isPackage&&<SelectPackage isChecked={isNeedPackage} onHanleChange={this.changeNeedPackage.bind(this)} packInfo={pack} />}
-
+                  
           {/*<SpCell
             isLink
             className='trade-invoice'
