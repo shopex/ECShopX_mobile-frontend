@@ -100,43 +100,44 @@ export default class SelectPackage extends Component {
           isOpened={isOpend}
         >
           <View className='payment-picker'>
-          <View className='payment-picker__hd'>
+            <View className='payment-picker__hd'>
               <Text>礼包</Text>
-              </View>
-          <View className='payment-item no-border' onClick={this.handleChange.bind(this, false)}>
-            <View className='payment-item__ft'>
-              <Text className='payment-item__title'>不需要</Text>
-              <View className='payment-item__ft'></View>
-                <SpCheckbox
-                colors={colors}
-                checked={!checked}
-                />
-                </View>
             </View>
-          </View>
-          <View className='payment-item no-border' onClick={this.handleChange.bind(this, true)}>
-            <View className='payment-item__ft'>
-              <Text className='payment-item__title'>需要</Text>
+            <View className='payment-item no-border' onClick={this.handleChange.bind(this, false)}>
               <View className='payment-item__ft'>
+                <Text className='payment-item__title'>不需要</Text>
+                <View className='payment-item__ft'></View>
                 <SpCheckbox
                   colors={colors}
-                  checked={checked}
+                  checked={!checked}
                 />
-             </View>
-             
+              </View>
+            </View>
+          
+          <View className='payment-item no-border' onClick={this.handleChange.bind(this, true)}>
+            <View className='payment-item__bd'>
+              <Text className='payment-item__title'>需要</Text>
               <Text className='payment-item__desc'>{packInfo.packDes}</Text>
+            </View>
+            <View className='payment-item__ft'>
+              <SpCheckbox
+                colors={colors}
+                checked={checked}
+              />
+            </View>
+
+
+            <Button
+              type='primary'
+              className='btn-submit'
+              style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
+              onClick={this.handleConfrim.bind(this)}
+            >确定</Button>
           </View>
-          <Button
-            type='primary'
-            className='btn-submit'
-            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
-            onClick={this.handleConfrim.bind(this)}
-              >确定</Button>
           </View>
-        
         </AtActionSheet>
       </View>
-      
+
     )
   }
 }
