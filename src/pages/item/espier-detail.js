@@ -88,9 +88,7 @@ export default class Detail extends Component {
       this.uid = uid
     }
     if(!S.getAuthToken()){
-      setTimeout(() => {
-        this.checkWhite()
-      }, 1000)
+      this.checkWhite()
     }
     this.fetchInfo(id)
     this.getEvaluationList(id)
@@ -630,7 +628,7 @@ export default class Detail extends Component {
 
   handleGroupClick = (tid) => {
     Taro.navigateTo({
-      url: `/pages/item/group-detail?team_id=${tid}`
+      url: `/marketing/pages/item/group-detail?team_id=${tid}`
     })
   }
 

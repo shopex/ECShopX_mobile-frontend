@@ -77,6 +77,7 @@ export default class HomeIndex extends Component {
   //    // const res = parseUrlStr(queryStr)
   // }
     this.checkWhite()
+    //this.fetchSetInfo()
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
       this.setState({
         shareInfo: res
@@ -375,10 +376,12 @@ export default class HomeIndex extends Component {
         this.setState({
           show_tabBar:false
         })
-      }
         setTimeout(() => {
           S.login(this, true)
         }, 1000)
+      } else {
+        this.fetchSetInfo()
+      }
     }else {
       this.fetchSetInfo()
     }
