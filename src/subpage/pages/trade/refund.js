@@ -46,7 +46,7 @@ export default class TradeRefund extends Component {
       isShowSegTypeSheet: false,
       isSameCurSegType: false,
       curSegTypeValue: null,
-      remind: null
+      remind: {}
     }
   }
 

@@ -3,10 +3,10 @@
  * @GitHub: https://github.com/973749104
  * @Blog: https://liuhgxu.com
  * @Description: 是否需要包装
- * @FilePath: /zippo-h5/src/pages/screen/components/selectPackage/index.js
+ * @FilePath: /unite-vshop/src/pages/cart/comps/selectPackage/index.js
  * @Date: 2020-11-06 11:01:46
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-06 14:20:51
+ * @LastEditTime: 2020-11-26 20:18:13
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -87,7 +87,7 @@ export default class SelectPackage extends Component {
   }
   render() {
     const { isOpend, checked } = this.state
-    const { isChecked, packInfo, colors } = this.props
+    const { isChecked, packInfo = {}, colors } = this.props
     return (
 
       <View className=''>
