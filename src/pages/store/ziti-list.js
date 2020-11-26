@@ -31,6 +31,7 @@ export default class StoreZitiList extends Component {
       multiIndex:[],
       areaList: [],
       info: {},
+      currCityinfo:{}
     }
   }
   config = {
@@ -39,6 +40,7 @@ export default class StoreZitiList extends Component {
 
   componentDidMount () {
     const lnglat = Taro.getStorageSync('lnglat')
+    const cityInfo = Taro.getStorageSync('ztStore')
     let query = {}
     if (lnglat) {
       const { latitude, longitude } = lnglat
@@ -47,11 +49,19 @@ export default class StoreZitiList extends Component {
         lng: lnglat.longitude
       }
     }
+    if(cityInfo){
+      query = {
+        province:cityInfo.province,
+        city:cityInfo.city,
+        area:cityInfo.county,
+      }
+    }
     const store = Taro.getStorageSync('curStore')
     if (store) {
       this.setState({
         current: store,
-        query
+        query,
+        currCityinfo:cityInfo ? cityInfo : {}
       }, () => {
         this.nextPage()
       })
@@ -62,6 +72,7 @@ export default class StoreZitiList extends Component {
 
   async fetch (params) {
     const isOpenStore = await entry.getStoreStatus()
+    const  cityInfo = Taro.getStorageSync('cityInfo')
     const { page_no: page, page_size: pageSize } = params
     const { selectParams, areaList, tagsList, curTagId } = this.state
     const { shop_id,order_type, cart_type,seckill_id,ticket,goodType} = this.$router.params
@@ -86,13 +97,13 @@ export default class StoreZitiList extends Component {
       distributor_id: 'distributor_id',
       regions:'regions',
       regions_id:'regions_id',
+      is_checked:'is_checked',
       lat:'lat',
       lng:'lng',
       distributor_self:'distributor_self',
       distance:'distance',
       distance_show:'distance_show',
       distance_unit:'distance_unit',
-      is_checked:'is_checked',
       store_id:isOpenStore ? '' : 0,
       isNostores:isOpenStore ? 1 : 0
     })
@@ -123,6 +134,7 @@ export default class StoreZitiList extends Component {
       query,
       is_open_store_status:isOpenStore,
       areaList: [arrProvice, arrCity, arrCounty],
+      //info:cityInfo ? cityInfo : {}
     })
 
     return {
@@ -190,7 +202,6 @@ export default class StoreZitiList extends Component {
     })
     Taro.removeStorageSync('lnglat')
     const store = await entry.getLocal(true)
-    console.log('store---->',store)
     if (store) {
      // Taro.setStorageSync('curStore', store)
       this.resetPage()
@@ -261,7 +272,6 @@ handleClickPicker = () => {
 bindMultiPickerChange = async (e) => {
   console.log('bindMultiPickerChange')
   const { info,query } = this.state
-  console.log('info---->',info)
   this.nAreaList.map((item, index) => {
     if(index === e.detail.value[0]) {
       info.province = item.label
@@ -277,7 +287,7 @@ bindMultiPickerChange = async (e) => {
       })
     }
   })
-  const { province, city, area,county } = info
+  const { province, city,county } = info
   delete query.lat
   delete query.lng
   this.setState({
@@ -295,7 +305,7 @@ bindMultiPickerChange = async (e) => {
       this.nextPage()
     })
   })
- // this.setState({ list })
+ this.setState({ info })
 }
 bindMultiPickerColumnChange = (e) => {
   const { areaList, multiIndex } = this.state
@@ -347,7 +357,7 @@ bindMultiPickerColumnChange = (e) => {
 }
 
   handleChangeStore = ()=>{
-    let { list } = this.state
+    let { list,info } = this.state
     if(!list.length) return
     const selected = list.filter(v=>v.is_checked)
     if(!selected.length){
@@ -365,10 +375,7 @@ bindMultiPickerColumnChange = (e) => {
   }
 
   render () {
-    const { list, scrollTop, showBackToTop, loading, current, query,is_open_store_status,areaList,multiIndex,page } = this.state
-    const { shop_id } = this.$router.params
-    console.log('areaList---->',areaList)
-    console.log('multiIndex--->',multiIndex)
+    const { list, scrollTop, showBackToTop, loading, current, query,is_open_store_status,areaList,multiIndex,page,info,currCityinfo } = this.state
     return (
       <View className='page-store-list'>
         <NavBar
@@ -403,10 +410,10 @@ bindMultiPickerColumnChange = (e) => {
                   ? <Text className='loading'>定位中...</Text>
                   : <Text>
                      {
-                      multiIndex.length > 0
-                      ? <Text>{areaList[0][multiIndex[0]]}{areaList[1][multiIndex[1]]}{areaList[2][multiIndex[2]]}</Text>
-                      : current
-                       ? <Text> {current.regions[0]}{current.regions[1]}{current.regions[2]} </Text>
+                      info && info.province
+                     ? <Text>{info.province}{info.city}{info.county}</Text>
+                      : currCityinfo
+                       ? <Text> {currCityinfo.regions[0]}{currCityinfo.regions[1]}{currCityinfo.regions[2]} </Text>
                        :'定位失败'
                      }
                     </Text>
@@ -453,9 +460,14 @@ bindMultiPickerColumnChange = (e) => {
                 )
               })
             }
-            <View className="store-list_footer">
-            <View className='sure-button' onClick={this.handleChangeStore.bind(this)}>确定</View>
-            </View>
+            {
+              list.length && (
+                <View className="store-list_footer">
+                <View className='sure-button' onClick={this.handleChangeStore.bind(this)}>确定</View>
+                </View>
+              )
+            }
+          
           </View>
           { page.isLoading ? <Loading>正在加载...</Loading> : null }
           {

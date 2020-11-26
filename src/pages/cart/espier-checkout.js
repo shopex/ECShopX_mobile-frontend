@@ -226,6 +226,7 @@ export default class CartCheckout extends Component {
     // this.handleAddressChange(this.props.defaultAddress)
     this.props.onAddressChoose(null);
     this.props.onChangeZitiStore(null);
+    Taro.removeStorageSync('cityInfo')
     this.getSalespersonNologin();
     // this.getShop()
     this.fetchAddress();
@@ -310,6 +311,7 @@ export default class CartCheckout extends Component {
       }
     }
     const shopInfo = await api.shop.getShop(ztparams);
+    Taro.setStorageSync('ztStore',shopInfo)
     this.setState({
       curStore: shopInfo,
       receiptType: zitiShop ? 'ziti' : shopInfo.is_delivery ? "logistics" : "ziti",
@@ -574,7 +576,7 @@ export default class CartCheckout extends Component {
                           : curStore 
                             ? curStore.distributor_id 
                             : this.getShopId() || (shop_id === "undefined" ? 0 : shop_id) 
-                    : this.getShopId() || (shop_id === "undefined" ? 0 : shop_id),
+                    : this.getShopId() || (shop_id === "undefined" ? curStorageStore.distributor_id : shop_id),
       ...drugInfo,
       point_use: point_use
     };
