@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-10-22 10:58:22
+ * @LastEditTime: 2020-11-26 23:03:01
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -138,6 +138,37 @@ export default class Detail extends Component {
     })
   }
 
+
+  base64Tosrc = (base64data) => {
+    const fsm = Taro.getFileSystemManager()
+    const FILE_BASE_NAME = 'tmp_base64src'
+    return new Promise((resolve, reject) => {
+    const [, format, bodyData] = /data:image\/(\w+);base64,(.*)/.exec(base64data) || []
+    if (!format) {
+      reject(new Error('ERROR_BASE64SRC_PARSE'))
+    }
+    const filePath = `${Taro.env.USER_DATA_PATH}/${FILE_BASE_NAME}.${format}`
+    const buffer = Taro.base64ToArrayBuffer(bodyData)
+    fsm.writeFile({
+      filePath,
+      data: buffer,
+      encoding: 'binary',
+      success() {
+        Taro.getImageInfo({
+          src: filePath,
+          success(res){
+            resolve(res.path)
+          },
+        })
+      },
+      fail() {
+        reject(new Error('ERROR_BASE64SRC_WRITE'))
+      }
+    })
+    })
+  }
+
+
   // 绘制海报
   drawPoster = async () => {
     const { info, adPic, userInfo } = this.state
@@ -145,10 +176,9 @@ export default class Detail extends Component {
       bargain_id: info.bargain_id,
       user_id: userInfo.user_id
     })
+    // const file = await this.base64Tosrc(codeUrl.base64Image)
     const adImg = await Taro.getImageInfo({src: adPic})
-    const codeImg = await Taro.getImageInfo({src: codeUrl})
-    console.log(adImg)
-    console.log(codeImg)
+    const codeImg = await this.base64Tosrc(codeUrl.base64Image)
     const context = Taro.createCanvasContext('poster', this)
     context.drawImage(adImg.path, 0, 0, 375, 380)
     context.save()
@@ -164,7 +194,7 @@ export default class Detail extends Component {
     context.fillRect(127, 340, 70, 60)
     context.restore()
     context.save()
-    context.drawImage(codeImg.path, 127, 340, 121, 111)
+    context.drawImage(codeImg, 127, 320, 121, 121)
     // context.restore()
     context.save()
     context.setFontSize(14)
