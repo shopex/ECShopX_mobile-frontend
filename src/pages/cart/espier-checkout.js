@@ -268,8 +268,7 @@ export default class CartCheckout extends Component {
     const { shop_id, scene,cart_type} = this.$router.params;
     const isOpenStore = await entry.getStoreStatus()
     const { zitiShop } = this.props;
-    // const {curStore} = this.state
-    // const shopInfo = await api.shop.getShop({distributor_id: shop_id})
+    const params = this.getParams()
     let id = shop_id;
     let ztparams ={}
     if (scene) {
@@ -280,7 +279,9 @@ export default class CartCheckout extends Component {
       ztparams.distributor_id = zitiShop.distributor_id
       if(isOpenStore){
         ztparams.cart_type = cart_type
+        ztparams.order_type = params.order_type
         ztparams.isNostores = 1
+        
       }else{
         ztparams.isNostores = 0
       }
@@ -290,6 +291,7 @@ export default class CartCheckout extends Component {
         ztparams.lat = lnglat.latitude
         ztparams.lng = lnglat.longitude
         ztparams.cart_type = cart_type
+        ztparams.order_type = params.order_type
         ztparams.isNostores = 1
       }else{
         ztparams.distributor_id = id
