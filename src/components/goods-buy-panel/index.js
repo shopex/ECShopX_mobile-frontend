@@ -9,6 +9,7 @@ import InputNumber from "@/components/input-number";
 import { classNames, pickBy, log } from "@/utils";
 import { Tracker } from "@/service";
 import api from "@/api";
+import entry from '@/utils/entry'
 
 import "./index.scss";
 
@@ -273,14 +274,14 @@ export default class GoodsBuyPanel extends Component {
   handleBuyClick = async (type, skuInfo, num) => {
     console.warn(this.props);
     if (this.state.busy) return;
-
-    const { marketing, info,isOpenStores } = this.props;
+    const isOpenStore = await entry.getStoreStatus()
+    const { marketing, info } = this.props;
     const { special_type } = info;
     const isDrug = special_type === "drug";
     const { item_id } = this.noSpecs ? info : skuInfo;
     const { distributor_id } = info;
     const curStore = Taro.getStorageSync('curStore');
-    let id = isOpenStores ? curStore.store_id: curStore.distributor_id 
+    let id = isOpenStore ? curStore.store_id: curStore.distributor_id 
     let url = `/pages/cart/espier-checkout`;
 
     this.setState({
