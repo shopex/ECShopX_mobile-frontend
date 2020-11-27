@@ -1329,7 +1329,6 @@ export default class Detail extends Component {
             type={buyPanelType}
             marketing={marketing}
             isOpened={showBuyPanel}
-            isOpenStores={is_open_store_status}
             onClose={() => this.setState({ showBuyPanel: false })}
             fastBuyText={marketing === "group" ? "我要开团" : "立即购买"}
             onChange={this.handleSkuChange}
