@@ -316,15 +316,14 @@ export default class CartCheckout extends Component {
       }
     }
   }
-    //console.log('zitiShop---->',zitiShop)
     const shopInfo = await api.shop.getShop(ztparams);
-     Taro.setStorageSync('selectShop',shopInfo)
+    isOpenStore && Taro.setStorageSync('selectShop',shopInfo)
     this.setState({
       curStore: shopInfo,
       receiptType: selectShop ? 'ziti' : shopInfo.is_delivery ? "logistics" : "ziti",
       express: selectShop ? false :  shopInfo.is_delivery ? true : false,
     },()=>{
-       this.calcOrder()
+      isOpenStore && this.calcOrder()
     });
   }
 
@@ -1004,7 +1003,6 @@ export default class CartCheckout extends Component {
     // }
     const { payType, total, identity,isOpenStore,curStore } = this.state;
     const { type, goodType, cart_type } = this.$router.params;
-
     // const { payType, total,point_use } = this.state
     // const { type } = this.$router.params
     const isDrug = type === "drug";
@@ -1049,8 +1047,8 @@ export default class CartCheckout extends Component {
     try {
       let params = this.getParams();
       if (APP_PLATFORM === "standard" && cart_type !== "cart") {
-        const { distributor_id } = Taro.getStorageSync("curStore");
-        params.distributor_id = isOpenStore ? curStore.distributor_id : this.getShopId() || distributor_id;
+        const { distributor_id,store_id } = Taro.getStorageSync("curStore");
+        params.distributor_id = isOpenStore ? store_id : this.getShopId() || distributor_id;
 
       }
 
