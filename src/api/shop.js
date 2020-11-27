@@ -7,3 +7,7 @@ export function getShop (params = {}) {
 export function list (params = {}) {
   return req.get('/distributor/list', params)
 }
+
+export function getStoreStatus (params = {}) {
+  return req.get('/nostores/getstatus', params)
+}

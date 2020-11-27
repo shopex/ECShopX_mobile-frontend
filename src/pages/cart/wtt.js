@@ -36,7 +36,6 @@ import PointUse from "./comps/point-use";
 import OrderItem from "../../components/orderItem/order-item";
 
 import "./espier-checkout.scss";
-import entry from "../../utils/entry";
 
 const transformCartList = list => {
   return pickBy(list, {
@@ -61,8 +60,7 @@ const transformCartList = list => {
     address: address.current,
     coupon: cart.coupon,
     drugInfo: cart.drugInfo,
-    colors: colors.current,
-    zitiShop:cart.zitiShop
+    colors: colors.current
   }),
   dispatch => ({
     onClearFastbuy: () => dispatch({ type: "cart/clearFastbuy" }),
@@ -72,9 +70,7 @@ const transformCartList = list => {
     onAddressChoose: address =>
       dispatch({ type: "address/choose", payload: address }),
     onChangeCoupon: coupon =>
-      dispatch({ type: "cart/changeCoupon", payload: coupon }),
-    onChangeZitiStore: zitiShop =>
-    dispatch({ type:"cart/changeZitiStore",payload:zitiShop})
+      dispatch({ type: "cart/changeCoupon", payload: coupon })
     //onChangeDrugInfo: (drugInfo) => dispatch({ type: 'cart/changeDrugInfo', payload: drugInfo })
   })
 )
@@ -134,8 +130,7 @@ export default class CartCheckout extends Component {
       isPackage:false,
       isPackageOpen:false,
       isNeedPackage: false,
-      pick:{},
-      isOpenStore:null
+      pick:{}
     };
   }
 
@@ -235,8 +230,6 @@ export default class CartCheckout extends Component {
 
 
     this.props.onAddressChoose(null);
-    this.props.onChangeZitiStore(null);
-    Taro.removeStorageSync('selectShop')
     this.getSalespersonNologin();
     this.tradeSetting()
     // this.getShop()
@@ -248,15 +241,12 @@ export default class CartCheckout extends Component {
     if (nextProps.address !== this.props.address) {
       this.fetchAddress();
     }
-    if(nextProps.zitiShop !== this.props.zitiShop){
-      this.fetchZiTiShop();
-    }
   }
+
   componentWillUnmount () {
     // teardown clean
     this.props.onClearCoupon();
     this.props.onClearDrugInfo();
-    Taro.removeStorageSync('selectShop');
   }
 
   componentDidShow () {
@@ -276,63 +266,20 @@ export default class CartCheckout extends Component {
     }
   }
 
-  async fetchZiTiShop() {
-    const { shop_id, scene,cart_type,seckill_id = null,ticket = null,order_type} = this.$router.params;
-    //const { zitiShop } = this.props;
-    const params = this.getParams()
-    const selectShop = Taro.getStorageSync('selectShop')
+  async fetchZiTiShop () {
+    const { shop_id, scene } = this.$router.params;
+    // const {curStore} = this.state
+    // const shopInfo = await api.shop.getShop({distributor_id: shop_id})
     let id = shop_id;
-    let ztparams ={}
     if (scene) {
       const { dtid } = normalizeQuerys(this.$router.params);
       id = dtid;
     }
-    const isOpenStore = await entry.getStoreStatus()
-    this.setState({
-      isOpenStore
-    })
-    if(isOpenStore) {//是否开启非门店自提
-      ztparams = {
-        isNostores: 1,//1 开启
-        order_type : params.order_type, 
-        cart_type,
-        seckill_id: seckill_id,
-        seckill_ticket: ticket,
-      }
-      if(selectShop){
-          ztparams = {
-            ...ztparams,
-            distributor_id:selectShop.distributor_id,
-          
-          }
-      }else {
-        let lnglat = Taro.getStorageSync('lnglat')
-          ztparams = {
-            ...ztparams,
-            lat: lnglat.latitude,
-            lng:lnglat.longitude,
-            cart_type: cart_type,
-          }
-      }
-    } else {
-      ztparams ={
-        isNostores: 0//0 未开启
-      }
-    if(!selectShop){
-      ztparams ={
-        ...ztparams,
-        distributor_id: id
-      }
-    }
-  }
-    const shopInfo = await api.shop.getShop(ztparams);
-    isOpenStore && Taro.setStorageSync('selectShop',shopInfo)
+    const shopInfo = await api.shop.getShop({ distributor_id: id });
     this.setState({
       curStore: shopInfo,
-      receiptType: selectShop ? 'ziti' : shopInfo.is_delivery ? "logistics" : "ziti",
-      express: selectShop ? false :  shopInfo.is_delivery ? true : false,
-    },()=>{
-      isOpenStore && this.calcOrder()
+      receiptType: shopInfo.is_delivery ? "logistics" : "ziti",
+      express: shopInfo.is_delivery ? true : false
     });
   }
 
@@ -553,16 +500,15 @@ export default class CartCheckout extends Component {
         monitor_id: trackParams.monitor_id
       };
     }
-    const distributionShopId = Taro.getStorageSync("distribution_shop_id")
-    const curStorageStore = Taro.getStorageSync('curStore')
+    const distributionShopId = Taro.getStorageSync("distribution_shop_id");
     let miniShopId = {};
     if (distributionShopId) {
       miniShopId = {
         promoter_shop_id: distributionShopId
       };
     }
-    const { payType, receiptType, point_use,isOpenStore,curStore } = this.state;
-    const { coupon, drugInfo,zitiShop } = this.props;
+    const { payType, receiptType, point_use } = this.state;
+    const { coupon, drugInfo } = this.props;
     if (drugInfo) {
       this.setState({
         drug: drugInfo
@@ -581,17 +527,8 @@ export default class CartCheckout extends Component {
       member_discount: 0,
       coupon_discount: 0,
       pay_type: payType,
-      isNostores: isOpenStore ? 1 : 0,
-     //distributor_id:this.getShopId() || (shop_id === "undefined" ? 0 : shop_id),
-     distributor_id:isOpenStore 
-                      ? receiptType === 'logistics' 
-                        ? curStorageStore.store_id 
-                        : zitiShop 
-                          ? zitiShop.distributor_id 
-                          : curStore 
-                            ? curStore.distributor_id 
-                            : this.getShopId() || (shop_id === "undefined" ? 0 : shop_id) 
-                    : this.getShopId() || (shop_id === "undefined" ? curStorageStore.distributor_id : shop_id),
+      distributor_id:
+        this.getShopId() || (shop_id === "undefined" ? 0 : shop_id),
       ...drugInfo,
       point_use: point_use
     };
@@ -823,13 +760,6 @@ export default class CartCheckout extends Component {
       scale: 18
     });
   };
-  handleEditZitiClick =(id) =>{
-    const {cart_type,seckill_id = null,ticket = null,goodType} = this.$router.params;
-    const params = this.getParams()
-    Taro.navigateTo({
-      url: `/pages/store/ziti-list?shop_id=${id}&cart_type=${cart_type}&order_type=${params.order_type}&seckill_id=${seckill_id}&ticket=${ticket}&goodType=${goodType}`
-    })
-  }
 
   handleShippingChange = type => {
     console.log(type);
@@ -1023,9 +953,9 @@ export default class CartCheckout extends Component {
     // if (!this.state.address) {
     //   return S.toast('请选择地址')
     // }
-    const { payType, total, identity,isOpenStore,curStore,receiptType } = this.state;
+    const { payType, total, identity } = this.state;
     const { type, goodType, cart_type } = this.$router.params;
-    
+
     // const { payType, total,point_use } = this.state
     // const { type } = this.$router.params
     const isDrug = type === "drug";
@@ -1070,9 +1000,10 @@ export default class CartCheckout extends Component {
     try {
       let params = this.getParams();
       if (APP_PLATFORM === "standard" && cart_type !== "cart") {
-        const { distributor_id,store_id } = Taro.getStorageSync("curStore");
-        params.distributor_id = isOpenStore ? receiptType === 'ziti' ? curStore.distributor_id : store_id : this.getShopId() || distributor_id;
+        const { distributor_id } = Taro.getStorageSync("curStore");
+        params.distributor_id = this.getShopId() || distributor_id;
       }
+
       delete params.items;
       // 积分不开票
       if (payType === "point") {
@@ -1085,7 +1016,7 @@ export default class CartCheckout extends Component {
       if (salesman_id) {
         params.salesman_id = salesman_id;
       }
-     
+
       // 如果是跨境商品
       if (goodType === "cross") {
         if (!identity.identity_id || !identity.identity_name) {
@@ -1470,8 +1401,7 @@ export default class CartCheckout extends Component {
       quota_tip,
       isNeedPackage,
       isPackage,
-      pack,
-      isOpenStore
+      pack
     } = this.state;
     // let curStore = {}
     // if (shopData) {
@@ -1495,6 +1425,7 @@ export default class CartCheckout extends Component {
         : (coupon.value && coupon.value.title) || "";
     //const isBtnDisabled = !address
     const isBtnDisabled = express ? !address : false;
+
     return (
       <View className="page-checkout">
         {showAddressPicker === false ? (
@@ -1536,29 +1467,22 @@ export default class CartCheckout extends Component {
               </View>
             )}
           {bargain_id ||
-          (express && curStore && curStore.is_delivery) ||
-          (curStore && !curStore.is_delivery && !curStore.is_ziti) ||
-          goodType === "cross" ? (
-            <AddressChoose isAddress={address} />
-          ) : (
-            <View className="address-module">
-              <View className="addr">
-                <View className="view-flex-item">
-                  <View className="addr-title">{curStore.name}</View>
-                  <View className="addr-detail">{curStore.store_address}</View>
+            (express && curStore && curStore.is_delivery) ||
+            (curStore && !curStore.is_delivery && !curStore.is_ziti) ||
+            goodType === "cross" ? (
+              <AddressChoose isAddress={address} />
+            ) : (
+              <View className="address-module">
+                <View className="addr">
+                  <View className="view-flex-item">
+                    <View className="addr-title">{curStore.name}</View>
+                    <View className="addr-detail">{curStore.store_address}</View>
+                  </View>
+                  <View
+                    className="icon-location"
+                    onClick={this.handleMapClick.bind(this)}
+                  ></View>
                 </View>
-                {
-                  isOpenStore 
-                  ?<View
-                    className="icon-edit"
-                    onClick={this.handleEditZitiClick.bind(this,curStore.distributor_id)}>
-                    </View>
-                  :<View
-                  className="icon-location"
-                  onClick={this.handleMapClick.bind(this)}
-                ></View>
-                }
-              </View>
                 <View className="view-flex">
                   <View className="view-flex-item">
                     <View className="text-muted">营业时间：</View>

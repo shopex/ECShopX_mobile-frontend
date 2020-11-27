@@ -13,12 +13,13 @@ async function entryLaunch(data, isNeedLocate) {
   } else {
     options = data
   }
+  console.log('options---->',options)
 
   // 如果没有带店铺id
   if (!options.dtid) {
-    let { distributor_id } = Taro.getStorageSync('curStore')
+    let { distributor_id,isNostores,store_id } = Taro.getStorageSync('curStore')
     if (distributor_id) {
-      options.dtid = distributor_id
+      options.dtid =isNostores === 1 ? "" : distributor_id
     }
   }
   let dtidValid = false
@@ -80,9 +81,14 @@ async function getLocalSetting() {
   }
 }
 
+
+  //   store = {
+  //     distributor_id:0
+  //   }
+  //   Taro.setStorageSync('curStore', store)
 async function getLocal (isNeedLocate) {
-  const positionStatus = await getLocalSetting()
   let store = null
+  const positionStatus = await getLocalSetting()
   if (!positionStatus) {
     store = await api.shop.getShop()
   } else {
@@ -108,12 +114,15 @@ async function getLocal (isNeedLocate) {
       }
     }
   }
+    if (!store.status) {
+      // 新增逻辑，如果开启了非门店自提流程，新增字段,开启非门店自提流程，所有的distribution_id 取值为0，store_id
+      store.store_id = 0
+      Taro.setStorageSync('curStore', store)
+    } else {
+      Taro.setStorageSync('curStore', [])
+    }
 
-  if (!store.status) {
-    Taro.setStorageSync('curStore', store)
-  } else {
-    Taro.setStorageSync('curStore', [])
-  }
+
   return store
 }
 
@@ -132,6 +141,15 @@ async function getLoc () {
       return null
     }
   }  
+}
+
+async function getStoreStatus(){
+  const {nostores_status} = await api.shop.getStoreStatus()
+  if(nostores_status === 'true'){
+    return true
+  } else {
+    return false
+  }
 }
 
 // web定位获取
@@ -162,8 +180,6 @@ function getWebLocal (isSetStorage = true) {
     })
   })
 }
-
-
 // 新增千人千码跟踪记录
 function trackViewNum (monitor_id, source_id) {
   let _session = Taro.getStorageSync('_session')
@@ -181,7 +197,10 @@ function trackViewNum (monitor_id, source_id) {
 // distributorId 店铺ID
 async function handleDistributorId(distributorId) {
   const res = await api.shop.getShop({distributor_id: distributorId})
+  //const isOpenStore = await getStoreStatus()
   if (res.status === false) {
+    // 新增逻辑，如果开启了非门店自提流程，新增字段,开启非门店自提流程，所有的distribution_id 取值为0，store_id
+    res.store_id = 0
     Taro.setStorageSync('curStore', res)
   } else {
     Taro.setStorageSync('curStore', [])
@@ -219,5 +238,6 @@ export default {
   getLocal,
   getLocalSetting,
   getWebLocal,
-  InverseAnalysis
+  InverseAnalysis,
+  getStoreStatus
 }

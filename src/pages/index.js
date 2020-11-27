@@ -53,6 +53,7 @@ export default class HomeIndex extends Component {
       is_open_recommend: null,
       is_open_scan_qrcode: null,
       is_open_official_account:null,
+      is_open_store_status:null,
       show_official:true,
       showCloseBtn:false,
       // 是否有跳转至店铺页
@@ -76,6 +77,10 @@ export default class HomeIndex extends Component {
   //     })
   //    // const res = parseUrlStr(queryStr)
   // }
+    const isOpenStore = await entry.getStoreStatus()
+    this.setState({
+      is_open_store_status:isOpenStore
+    })
     this.checkWhite()
     //this.fetchSetInfo()
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
@@ -92,22 +97,23 @@ export default class HomeIndex extends Component {
       is_open_recommend: is_open_recommend,
       is_open_scan_qrcode: is_open_scan_qrcode,
       is_open_wechatapp_location: is_open_wechatapp_location,
-      is_open_official_account:is_open_official_account
+      is_open_official_account:is_open_official_account,
+     
     }, async() => {
-      let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
-      const options = this.$router.params
-      const res = await entry.entryLaunch(options, isNeedLoacate)
-      const { store } = res
-      if (!isArray(store)) {
-        this.setState({
-          curStore: store
-        }, () => {
-          this.fetchData()
-        })
-      }
+        let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
+        const options = this.$router.params
+        const res = await entry.entryLaunch(options, isNeedLoacate)
+        const { store } = res
+        if (!isArray(store)) {
+          this.setState({
+            curStore: store
+          }, () => {
+            this.fetchData()
+          })
+        }
+
     })
   }
-
   fetchData() {
     this.fetchInfo(async () => {
       // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index&name=search'
@@ -137,13 +143,16 @@ export default class HomeIndex extends Component {
 
   componentDidShow = () => {
     const options = this.$router.params
-    const { curStore } = this.state
+    const { curStore,is_open_store_status } = this.state
     const curStoreLocal = Taro.getStorageSync('curStore')
+    const localdis_id = curStoreLocal && is_open_store_status ? curStoreLocal.store_id : curStoreLocal.distributor_id //非自提门店判断
+    //const curdis_id = curStore && curStore.isNostores == 1 ? curStore.store_id : curStore.distributor_id
+
     if (!isArray(curStoreLocal) && this.state.isGoStore) {
       this.setState({
         isGoStore: false
       })
-      if (!curStore || (curStoreLocal.distributor_id != curStore.distributor_id) ) {
+      if (!curStore || (localdis_id != curStore.distributor_id) ) {
         this.setState({
           curStore: curStoreLocal,
           likeList: [],
@@ -302,12 +311,13 @@ export default class HomeIndex extends Component {
     }
   }
   async fetchInfo(cb) {
-    const { curStore } = this.state
+    const { curStore,is_open_store_status } = this.state
+    const curdis_id = curStore && is_open_store_status ? curStore.store_id : curStore.distributor_id
     if (!curStore.distributor_id && curStore.distributor_id !== 0) {
       return
     }
     // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
-    const url = '/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=' + curStore.distributor_id
+    const url = '/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=' + curdis_id
     const info = await req.get(url)
     this.setState({
       wgts: isArray(info) ? [] : info.config
@@ -457,7 +467,7 @@ export default class HomeIndex extends Component {
   }
 
   render () {
-    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop, is_open_recommend, is_open_scan_qrcode,is_open_official_account,show_official,showCloseBtn,show_tabBar } = this.state
+    const { wgts, page, likeList, showBackToTop, isShowAddTip, curStore, positionStatus, automatic, showAuto, featuredshop, is_open_recommend, is_open_scan_qrcode,is_open_official_account,show_official,showCloseBtn,show_tabBar,is_open_store_status } = this.state
     // const { showLikeList } = this.props
     // const user = Taro.getStorageSync('userinfo')
     // const isPromoter = user && user.isPromoter
@@ -467,7 +477,7 @@ export default class HomeIndex extends Component {
     if (!this.props.store) {
       return <Loading />
     }
-		// const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
+    // const show_location = wgts.find(item=>item.name=='setting'&&item.config.location)
     return (
       <View className='page-index'>
           {
@@ -486,6 +496,7 @@ export default class HomeIndex extends Component {
               store={curStore}
               onClickItem={this.goStore.bind(this)}
               isOpenScanQrcode={is_open_scan_qrcode}
+              isOpenStoreStatus={is_open_store_status}
             />
         }        
 
