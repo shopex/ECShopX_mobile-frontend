@@ -84,10 +84,12 @@ export default class Detail extends Component {
         const { is_open_store_status } = this.state
        // const { distributor_id } = Taro.getStorageSync('curStore')
         const curStore = Taro.getStorageSync('curStore')
-        if(!is_open_store_status){
+        if(is_open_store_status){
           if (!options.dtid  || options.dtid !== 0) {
             options.dtid = curStore.distributor_id 
           }
+        }else{
+          delete options.dtid
         }
         const entryData = await entry.entryLaunch(options, true)
         id = entryData.id
