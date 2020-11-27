@@ -284,7 +284,7 @@ export default class CartCheckout extends Component {
     if(isOpenStore) {//是否开启非门店自提
       console.log('111111')
       ztparams = {
-        sNostores: 1,//1 开启
+        isNostores: 1,//1 开启
         order_type : params.order_type, 
         cart_type,
         seckill_id: seckill_id,
@@ -1001,7 +1001,7 @@ export default class CartCheckout extends Component {
     // if (!this.state.address) {
     //   return S.toast('请选择地址')
     // }
-    const { payType, total, identity,isOpenStore,curStore } = this.state;
+    const { payType, total, identity,isOpenStore,curStore,receiptType } = this.state;
     const { type, goodType, cart_type } = this.$router.params;
     // const { payType, total,point_use } = this.state
     // const { type } = this.$router.params
@@ -1048,10 +1048,9 @@ export default class CartCheckout extends Component {
       let params = this.getParams();
       if (APP_PLATFORM === "standard" && cart_type !== "cart") {
         const { distributor_id,store_id } = Taro.getStorageSync("curStore");
-        params.distributor_id = isOpenStore ? store_id : this.getShopId() || distributor_id;
+        params.distributor_id = isOpenStore ? receiptType === 'ziti' ? curStore.distributor_id : store_id : this.getShopId() || distributor_id;
 
       }
-
       delete params.items;
       // 积分不开票
       if (payType === "point") {
@@ -1064,6 +1063,7 @@ export default class CartCheckout extends Component {
       if (salesman_id) {
         params.salesman_id = salesman_id;
       }
+     
 
       // 如果是跨境商品
       if (goodType === "cross") {
