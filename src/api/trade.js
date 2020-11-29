@@ -57,3 +57,7 @@ export function h5create (data) {
 export function tradeSetting (data) {
   return req.get('/trade/setting', data)
 }
+
+export function deliveryLists (data) {
+  return req.get('/delivery/lists', data)
+}

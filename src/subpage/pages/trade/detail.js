@@ -123,6 +123,7 @@ export default class TradeDetail extends Component {
         delivery_corp: 'delivery_corp',
         delivery_name: 'delivery_corp_name',
         delivery_status: 'delivery_status',
+        delivery_type:'delivery_type',
         delivery_time: 'delivery_time',
         aftersales_status: 'aftersales_status',
         pic_path: 'pic',
@@ -182,8 +183,6 @@ export default class TradeDetail extends Component {
     }
     info.status_img = `ico_${infoStatus === 'trade_success' ? 'wait_rate' : infoStatus}.png`
 
-    log.debug('[trade info] info: ', info)
-
     sessionFrom += '{'
     if (Taro.getStorageSync('userinfo')) {
       sessionFrom += `"nickName": "${Taro.getStorageSync('userinfo').username}", `
@@ -191,7 +190,6 @@ export default class TradeDetail extends Component {
     sessionFrom += `"商品": "${info.orders[0].title}"`
     sessionFrom += `"订单号": "${info.orders[0].order_id}"`
     sessionFrom += '}'
-
     this.setState({
       info,
       sessionFrom,

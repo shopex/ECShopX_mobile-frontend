@@ -40,9 +40,17 @@ export default class DetailItem extends Component {
     }
   }
     handleLookDelivery = (value) => {
-    Taro.navigateTo({
-      url: `/subpage/pages/trade/delivery-info?order_type=${this.props.info.order_type}&order_id=${this.props.info.tid}&delivery_code=${value.delivery_code}&delivery_corp=${value.delivery_corp}&delivery_name=${value.delivery_name}`
-    })
+     
+      if(value.delivery_type=='new'){
+        Taro.navigateTo({
+          url: `/subpage/pages/trade/split-bagpack?order_type=${this.props.info.order_type}&order_id=${this.props.info.tid}&delivery_code=${value.delivery_code}&delivery_corp=${value.delivery_corp}&delivery_name=${value.delivery_name}`
+        })
+      }else{
+        Taro.navigateTo({
+          url: `/subpage/pages/trade/delivery-info?order_type=${this.props.info.order_type}&order_id=${this.props.info.tid}&delivery_code=${value.delivery_code}&delivery_corp=${value.delivery_corp}&delivery_name=${value.delivery_name}`
+        })
+      }
+    
   }
   handleCodeCopy = (val) => {
     copyText(val)
