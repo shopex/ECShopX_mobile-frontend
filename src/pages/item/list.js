@@ -7,6 +7,7 @@ import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote, N
 import api from '@/api'
 import { Tracker } from "@/service";
 import { pickBy, classNames } from '@/utils'
+import entry from "../../utils/entry";
 
 import './list.scss'
 
@@ -41,20 +42,26 @@ export default class List extends Component {
       showDrawer: false,
       selectParams: [],
       info: {},
-      shareInfo: {}
+      shareInfo: {},
+      isOpenStore:null
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { cat_id = null, main_cat_id = null } = this.$router.params
     this.firstStatus = true
+    const isOpenStore = await entry.getStoreStatus()
+    const { store_id } = Taro.getStorageSync('curStore')
+    this.setState({
+      isOpenStore
+    })
 
     this.setState({
       query: {
         keywords: this.$router.params.keywords,
         item_type: 'normal',
         is_point: 'false',
-        distributor_id: this.$router.params.dis_id,
+        distributor_id:isOpenStore ? store_id : this.$router.params.dis_id,
         approve_status: 'onsale,only_show',
         category: cat_id ? cat_id : '',
         main_category: main_cat_id ? main_cat_id : ''
@@ -96,8 +103,8 @@ export default class List extends Component {
 
   async fetch(params) {
     const { page_no: page, page_size: pageSize } = params
-    const { selectParams, tagsList, curTagId } = this.state
-    const { distributor_id,isNostores,store_id } = Taro.getStorageSync('curStore')
+    const { selectParams, tagsList, curTagId,isOpenStore } = this.state
+    const { distributor_id,store_id } = Taro.getStorageSync('curStore')
 
     const query = {
       ...this.state.query,
@@ -108,7 +115,7 @@ export default class List extends Component {
     }
 
     if (APP_PLATFORM === 'standard') {
-      query.distributor_id = isNostores === 1 ? store_id : distributor_id
+      query.distributor_id = isOpenStore ? store_id : distributor_id
     }
 
     const { list, total_count: total, item_params_list = [], select_tags_list = [] } = await api.item.search(query)
