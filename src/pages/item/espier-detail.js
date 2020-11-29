@@ -76,6 +76,9 @@ export default class Detail extends Component {
     const options = this.$router.params
     let id = options.id
     let uid = ''
+    if(!S.getAuthToken()){
+      this.checkWhite()
+    }
     const isOpenStore = await entry.getStoreStatus()
     this.setState({
       is_open_store_status:isOpenStore
@@ -105,12 +108,10 @@ export default class Detail extends Component {
           uid = query.uid
         }
       }
+      this.fetchInfo(id)
     })
  
-    if(!S.getAuthToken()){
-      this.checkWhite()
-    }
-    this.fetchInfo(id)
+    
     this.getEvaluationList(id)
     // 浏览记录
     if (S.getAuthToken()) {
@@ -240,6 +241,7 @@ export default class Detail extends Component {
   async fetchInfo(itemId, goodsId) {
     const { distributor_id,store_id } = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
+    //const isOpenStore = await entry.getStoreStatus()
     let id = ''
     if (itemId) {
       id = itemId
@@ -249,21 +251,41 @@ export default class Detail extends Component {
 
     const param = { goods_id: goodsId }
 
+    // if (APP_PLATFORM === 'standard') {
+    //   param.distributor_id = is_open_store_status ? store_id : distributor_id 
+    // } else {
+    //   if (this.$router.params.dtid) {
+    //     param.distributor_id  = is_open_store_status ? store_id : this.$router.params.dtid
+    //   } else {
+    //     const options = this.$router.params
+    //     if (options.scene) {
+    //       const query = normalizeQuerys(options)
+    //       if (query.dtid) {
+    //         param.distributor_id = is_open_store_status ? store_id : query.dtid
+    //       }
+    //     }
+    //   }
+    // }
+    console.log('is_open_store_status--->',is_open_store_status)
     if (APP_PLATFORM === 'standard') {
-      param.distributor_id = is_open_store_status ? store_id : distributor_id 
+      param.distributor_id = distributor_id 
     } else {
       if (this.$router.params.dtid) {
-        param.distributor_id  = is_open_store_status ? store_id : this.$router.params.dtid
+        param.distributor_id  = this.$router.params.dtid
       } else {
         const options = this.$router.params
         if (options.scene) {
           const query = normalizeQuerys(options)
           if (query.dtid) {
-            param.distributor_id = is_open_store_status ? store_id : query.dtid
+            param.distributor_id = query.dtid
           }
         }
       }
     }
+    if(is_open_store_status){
+      delete param.distributor_id
+    }
+    console.log('param',param)
     // 商品详情
     const info = await api.item.detail(id, param)
     // 是否订阅
