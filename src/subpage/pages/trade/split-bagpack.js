@@ -50,41 +50,7 @@ export default class TradeDetail extends Component {
     async fetch() {
         const { order_id, order_type } = this.$router.params
         const data = await api.trade.deliveryLists({order_id})
-        // let data = {
-        //     "delivery_num": "2",
-        //     "list": [
-        //         {
-        //             "delivery_corp": "SF",
-        //             "delivery_corp_name": "顺丰快递",
-        //             "delivery_code": "SF2020112900001",
-        //             "items": [
-        //                 {
-        //                     "pic": "http://bbctest.aixue7.com/image/1/2020/08/03/b22be4303a51a762fa32e226dd40418cnIUa2NLGrtuWGiEt27ZY1npobUQlhLc4"
-        //                 },
-        //                 {
-        //                     "pic": "http://bbctest.aixue7.com/image/1/2020/08/03/b22be4303a51a762fa32e226dd40418cnIUa2NLGrtuWGiEt27ZY1npobUQlhLc4"
-        //                 }
-        //             ],
-        //             "items_num": 2,
-        //             "status_msg": "已发货"
-        //         },
-        //         {
-        //             "delivery_corp": "",
-        //             "delivery_corp_name": "",
-        //             "delivery_code": "",
-        //             "items": [
-        //                 {
-        //                     "pic": "http://bbctest.aixue7.com/image/1/2020/08/03/b22be4303a51a762fa32e226dd40418cnIUa2NLGrtuWGiEt27ZY1npobUQlhLc4"
-        //                 },
-        //                 {
-        //                     "pic": "http://bbctest.aixue7.com/image/1/2020/08/03/b22be4303a51a762fa32e226dd40418cnIUa2NLGrtuWGiEt27ZY1npobUQlhLc4"
-        //                 }
-        //             ],
-        //             "items_num": 2,
-        //             "status_msg": "未发货"
-        //         }
-        //     ]
-        // }
+       
         let { delivery_num, list } = data
         this.setState({
             delivery_num, list,
@@ -180,11 +146,9 @@ export default class TradeDetail extends Component {
 
 
     handleClickDelivery = (item) => {
-        console.log(item, 'item');
-        let { delivery_code, delivery_corp, delivery_corp_name } = item
-        console.log(delivery_code, delivery_corp, delivery_corp_name, 'delivery_code,delivery_corp,delivery_name');
+        let { delivery_code, delivery_corp, delivery_corp_name,delivery_id,delivery_type } = item
         Taro.navigateTo({
-            url: `/subpage/pages/trade/delivery-info?order_type=${this.state.order_type}&order_id=${this.state.order_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}`
+            url: `/subpage/pages/trade/delivery-info?delivery_id=${delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}&delivery_type=${delivery_type}`
         })
     }
 
@@ -214,12 +178,11 @@ export default class TradeDetail extends Component {
                             <View className="wuliu-status">
                                 {item.status_msg=='已发货'&&<Text className='biao-icon biao-icon-yifahuo'><Text className="icon-text">已发货</Text></Text>}
                                 {item.status_msg=='未发货'&&<Text className='biao-icon biao-icon-daifahuo'><Text className="icon-text">待发货</Text></Text>}
-                                <Text className='wuliu-order'>{item.delivery_corp_name} {item.delivery_code}</Text>
+                                <Text className='wuliu-order' onClick={this.handleClickDelivery.bind(this, item)}>{item.delivery_corp_name} {item.delivery_code}</Text>
                             </View>
-                            <View className='wuliu-info' onClick={this.handleClickDelivery.bind(this, item)}>
-                                {/* {item.status_msg} */}
-                                这是测试的快递签收信息
-                            </View>
+                            {item.delivery_info&&<View className='wuliu-info' onClick={this.handleClickDelivery.bind(this, item)}>
+                                {item.delivery_info}
+                            </View>}
                             <View className="good-list">
                                 {/* <OrderItem
                                
