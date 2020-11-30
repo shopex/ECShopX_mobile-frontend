@@ -491,7 +491,6 @@ export default class TradeDetail extends Component {
                       onTimeUp={this.countDownEnd.bind(this)}
                     />
                   分钟
-<<<<<<< HEAD
                 </View>
               )}
               {info.status !== "WAIT_BUYER_PAY" && (
@@ -516,7 +515,6 @@ export default class TradeDetail extends Component {
                       </Text>
                     </View>
                     {/*{
-=======
                   </View>
                 )}
                 {info.status !== "WAIT_BUYER_PAY" && (
@@ -541,7 +539,6 @@ export default class TradeDetail extends Component {
                         </Text>
                       </View>
                       {/*{
->>>>>>> feat-split-package
                             info.status !== 'TRADE_SUCCESS' ? <Text className='delivery-infos__text'>2019-04-30 11:30:21</Text> : null
                           }*/}
                     </View>
