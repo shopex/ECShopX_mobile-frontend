@@ -200,10 +200,10 @@ export default class TradeList extends Component {
         break
       case 'delivery':
         {
-          let { delivery_code, delivery_corp, delivery_corp_name, delivery_id, delivery_type, is_all_delivery, tid ,order_type} = trade
+          let { delivery_code, delivery_corp, delivery_corp_name, orders_delivery_id, delivery_type, is_all_delivery, tid ,order_type} = trade
           if (is_all_delivery) {
             Taro.navigateTo({
-              url: `/subpage/pages/trade/delivery-info?delivery_id=${delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}&delivery_type=${delivery_type}`
+              url: `/subpage/pages/trade/delivery-info?delivery_id=${orders_delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}&delivery_type=${delivery_type}`
             })
           } else {
             Taro.navigateTo({
