@@ -98,8 +98,11 @@ export default class DetailItem extends Component {
                        查看物流
                       </AtButton> )                  
                   }
+                  <View>
+                    
+                  </View>
                   {
-                    (info.status !== 'WAIT_SELLER_SEND_GOODS' && info.latest_aftersale_time >= 0 &&item.aftersales_status !== 'CLOSED' && item.delivery_status === 'DONE')  &&
+                    (info.status !== 'WAIT_SELLER_SEND_GOODS' && info.latest_aftersale_time >= 0 &&item.aftersales_status !== 'CLOSED') && (info.is_all_delivery || (!info.is_all_delivery && item.delivery_status === 'DONE'))  &&
                       <AtButton
                         circle
                         type='primary'
