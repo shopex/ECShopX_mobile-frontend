@@ -84,6 +84,7 @@ export default class TradeDetail extends Component {
       receiver_mobile: 'receiver_mobile',
       receiver_state: 'receiver_state',
       estimate_get_points: 'estimate_get_points',
+      is_all_delivery: 'is_all_delivery',
       discount_fee: ({ discount_fee }) => (+discount_fee / 100).toFixed(2),
       point_fee: ({ point_fee }) => (+point_fee / 100).toFixed(2),
       point_use: 'point_use',
@@ -105,6 +106,7 @@ export default class TradeDetail extends Component {
       order_status_msg: 'order_status_msg',
       order_status_des: 'order_status_des',
       order_class: 'order_class',
+      is_all_delivery: 'is_all_delivery',
       latest_aftersale_time: 'latest_aftersale_time',
       remark: 'remark',
       type: 'type',
@@ -691,7 +693,7 @@ export default class TradeDetail extends Component {
                 </Text>
               </View>
             )}
-            {info.status === "WAIT_BUYER_CONFIRM_GOODS" && info.delivery_status === 'DONE' && (
+            {info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE')) && (
               <View className="trade-detail__footer">
                 <Text
                   className="trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active"
