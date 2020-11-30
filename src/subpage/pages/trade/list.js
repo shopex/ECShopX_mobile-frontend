@@ -120,12 +120,12 @@ export default class TradeList extends Component {
       delivery_corp: 'delivery_corp',
       delivery_corp_name: 'delivery_corp_name',
       delivery_id: 'delivery_id',
+      orders_delivery_id: 'orders_delivery_id',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'item_id',
         pic_path: 'pic',
         title: 'item_name',
-        orders_delivery_id: 'orders_delivery_id',
         origincountry_name: 'origincountry_name',
         origincountry_img_url: 'origincountry_img_url',
         type: 'type',
