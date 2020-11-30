@@ -85,7 +85,7 @@ export default class DetailItem extends Component {
               {
                 !customFooter && info.pay_type !== 'dhpoint' && (info.status === 'TRADE_SUCCESS' || info.status === 'WAIT_BUYER_CONFIRM_GOODS' || info.status === 'WAIT_SELLER_SEND_GOODS') && <View className='order-item__ft'>
                  {
-                    info.delivery_code
+                    info.delivery_type=='old'&&(info.delivery_code
                     ? null
                     : item.delivery_code && 
                     <AtButton
@@ -96,7 +96,7 @@ export default class DetailItem extends Component {
                         onClick={this.handleLookDelivery.bind(this, item)}
                       >
                        查看物流
-                      </AtButton>                   
+                      </AtButton> )                  
                   }
                   {
                     (info.status !== 'WAIT_SELLER_SEND_GOODS' && info.latest_aftersale_time >= 0)  &&

@@ -395,15 +395,10 @@ export default class TradeDetail extends Component {
     }
   }
   handleLookDelivery = (value) => {
-
-    
       let { info } = this.state
-      console.log(info,'info');
       Taro.navigateTo({
         url: `/subpage/pages/trade/split-bagpack?order_type=${info.order_type}&order_id=${info.tid}`
       })
-    
-
   }
   restartOpenWebsocket = () => {
     const { restartOpenWebsoect } = this.state
@@ -579,15 +574,7 @@ export default class TradeDetail extends Component {
         </View>
         
         <View className="trade-money">
-        {(info.delivery_type=='new'&&info.pay_status=='PAYED'&&info.delivery_status!='PENDING')&&<AtButton
-            circle
-            type='text'
-            size='small'
-            className='delivery-btn'
-            onClick={this.handleLookDelivery.bind(this, info)}
-          >
-            查看物流
-          </AtButton>} <View>总计：<Text className="trade-money__num">￥{info.item_fee}</Text></View>
+         <View>总计：<Text className="trade-money__num">￥{info.item_fee}</Text></View>
         </View>
         {info.remark && (
           <View className="trade-detail-remark">
