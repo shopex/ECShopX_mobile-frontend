@@ -132,7 +132,10 @@
   .trade-money {
     box-sizing: border-box;
     width: 100%;
-    text-align: right;
+    // text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 34px 38px;
     font-size: 26px;
     color: #5b5b5b;
