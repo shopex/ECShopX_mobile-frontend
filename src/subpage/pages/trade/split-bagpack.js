@@ -146,9 +146,9 @@ export default class TradeDetail extends Component {
 
 
     handleClickDelivery = (item) => {
-        let { delivery_code, delivery_corp, delivery_corp_name,delivery_id,delivery_type } = item
+        let { delivery_code, delivery_corp, delivery_corp_name,delivery_id } = item
         Taro.navigateTo({
-            url: `/subpage/pages/trade/delivery-info?delivery_id=${delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}&delivery_type=${delivery_type}`
+            url: `/subpage/pages/trade/delivery-info?delivery_id=${delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}&delivery_type=new`
         })
     }
 
