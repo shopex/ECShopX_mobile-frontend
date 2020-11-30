@@ -15,9 +15,9 @@ async function entryLaunch(data, isNeedLocate) {
   }
   // 如果没有带店铺id
   if (!options.dtid) {
-    let { distributor_id,isNostores,store_id } = Taro.getStorageSync('curStore')
+    let { distributor_id,store_id } = Taro.getStorageSync('curStore')
     if (distributor_id) {
-      options.dtid =isNostores === 1 ? "" : distributor_id
+      options.dtid = options.isStore ? store_id : distributor_id
     }
   }
   let dtidValid = false
