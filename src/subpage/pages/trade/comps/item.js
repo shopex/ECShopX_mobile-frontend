@@ -40,8 +40,8 @@ export default class TradeItem extends Component {
     if (!info) {
       return null
     }
-    console.log('info',info)
-
+    console.log('info111',info)
+    info.status='WAIT_SELLER_SEND_GOODS'
     return (
       <View className='trade-item'>
         {
@@ -120,6 +120,11 @@ export default class TradeItem extends Component {
                 >取消订单</Button>
                 : null
             }
+          {(info.delivery_type=='new'&&info.pay_status=='PAYED'&&info.delivery_status!='PENDING')&&<Button
+              className='btn-action'
+              style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+              onClick={this.handleClickBtn.bind(this, 'delivery')}
+            >查看物流</Button>}
             <Button
               className='btn-action'
               style={`background: ${colors.data[0].primary}`}

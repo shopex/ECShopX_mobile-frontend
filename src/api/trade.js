@@ -30,7 +30,9 @@ export function getCount (params = { order_type: 'normal' }) {
 export function deliveryInfo (order_type, order_id) {
   return req.get(`/trackerpull?order_type=${order_type}&order_id=${order_id}`)
 }
-
+export function deliveryInfoNew (params) {
+  return req.get(`/delivery/trackerpull`,params)
+}
 export function tradeQuery (trade_id) {
   return req.get(`/tradequery`, { trade_id })
 }
@@ -56,4 +58,8 @@ export function h5create (data) {
 }
 export function tradeSetting (data) {
   return req.get('/trade/setting', data)
+}
+
+export function deliveryLists (data) {
+  return req.get('/delivery/lists', data)
 }
