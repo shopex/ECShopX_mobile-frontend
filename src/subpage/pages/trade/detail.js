@@ -514,30 +514,6 @@ export default class TradeDetail extends Component {
                           : null}
                       </Text>
                     </View>
-                    {/*{
-                  </View>
-                )}
-                {info.status !== "WAIT_BUYER_PAY" && (
-                  <View>
-                    <View></View>
-                    <View className="delivery-infos">
-                      <View className="delivery-infos__status">
-                        <Text className="delivery-infos__text text-status">
-                          {info.order_status_msg}
-                        </Text>
-                        <Text className="delivery-infos__text">
-                          {info.status === "WAIT_SELLER_SEND_GOODS"
-                            ? "正在审核订单"
-                            : null}
-                          {info.status === "WAIT_BUYER_CONFIRM_GOODS"
-                            ? "正在派送中"
-                            : null}
-                          {info.status === "TRADE_CLOSED" ? "订单已取消" : null}
-                          {info.status === "TRADE_SUCCESS"
-                            ? `物流单号：${info.delivery_code}`
-                            : null}
-                        </Text>
-                      </View>
                       {/*{
                             info.status !== 'TRADE_SUCCESS' ? <Text className='delivery-infos__text'>2019-04-30 11:30:21</Text> : null
                           }*/}
