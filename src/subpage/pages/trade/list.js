@@ -37,7 +37,7 @@ export default class TradeList extends Component {
     }
   }
 
-  componentDidShow() {
+  componentDidShow () {
     const { status } = this.$router.params
     const tabIdx = this.state.tabList.findIndex(tab => tab.status === status)
 
@@ -80,11 +80,11 @@ export default class TradeList extends Component {
   }
 
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.hideLayer()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { tabList, curTabIdx } = this.state
 
     params = _mapKeys({
@@ -112,11 +112,20 @@ export default class TradeList extends Component {
       type: 'type',
       is_rate: 'is_rate',
       create_date: 'create_date',
+      is_all_delivery: "is_all_delivery",
+      delivery_type: 'delivery_type',
+      pay_status: 'pay_status',
+      delivery_status: "delivery_status",
+      delivery_code: 'delivery_code',
+      delivery_corp: 'delivery_corp',
+      delivery_corp_name: 'delivery_corp_name',
+      delivery_id: 'delivery_id',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'item_id',
         pic_path: 'pic',
         title: 'item_name',
+        orders_delivery_id: 'orders_delivery_id',
         origincountry_name: 'origincountry_name',
         origincountry_img_url: 'origincountry_img_url',
         type: 'type',
@@ -125,7 +134,7 @@ export default class TradeList extends Component {
         item_fee: 'item_fee',
         point: 'item_point',
         num: 'num',
-        order_item_type:'order_item_type'
+        order_item_type: 'order_item_type'
       })
     })
 
@@ -189,6 +198,20 @@ export default class TradeList extends Component {
           url: `/marketing/pages/item/rate?id=${tid}`
         })
         break
+      case 'delivery':
+        {
+          let { delivery_code, delivery_corp, delivery_corp_name, delivery_id, delivery_type, is_all_delivery, tid ,order_type} = trade
+          if (is_all_delivery) {
+            Taro.navigateTo({
+              url: `/subpage/pages/trade/delivery-info?delivery_id=${delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name}&delivery_type=${delivery_type}`
+            })
+          } else {
+            Taro.navigateTo({
+              url: `/subpage/pages/trade/split-bagpack?order_type=${order_type}&order_id=${tid}`
+            })
+          }
+        }
+        break
       default:
         Taro.navigateTo({
           url: `/subpage/pages/trade/detail?id=${tid}`
@@ -214,7 +237,7 @@ export default class TradeList extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { curTabIdx, curItemActionsId, tabList, list, page, rateStatus } = this.state
 
