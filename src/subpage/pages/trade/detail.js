@@ -646,7 +646,7 @@ export default class TradeDetail extends Component {
             )}
             {!isDhPoint && info.status === "WAIT_SELLER_SEND_GOODS" && (
               <View className="trade-detail__footer">
-                {info.order_status_des !== "PAYED_WAIT_PROCESS" && (
+                {info.order_status_des !== "PAYED_WAIT_PROCESS" && info.order_status_des !== "PAYED_PARTAIL" && (
                   <Text
                     className="trade-detail__footer__btn"
                     onClick={this.handleClickBtn.bind(this, "cancel",111)}
@@ -654,16 +654,30 @@ export default class TradeDetail extends Component {
                     取消订单
                   </Text>
                 )}
-                <Text
+                {
+                  (info.order_status_des !== "PAYED_WAIT_PROCESS" && info.order_status_des !== "PAYED_PARTAIL") 
+                  ? <Text
                   className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === "PAYED_WAIT_PROCESS"
                       ? "trade-detail__footer_allWidthBtn"
                       : ""
-                    } `}
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    }`}
+                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
                   onClick={this.handleClickBtn.bind(this, "home")}
                 >
                   继续购物
                 </Text>
+                : <Text
+                className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === "PAYED_WAIT_PROCESS"
+                    ? "trade-detail__footer_allWidthBtn"
+                    : ""
+                  }`}
+                style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};width: 100% !important;`}
+                onClick={this.handleClickBtn.bind(this, "home")}
+              >
+                继续购物
+              </Text>
+                }
+                
               </View>
             )}
             {isDhPoint && info.status === "WAIT_SELLER_SEND_GOODS" && (
