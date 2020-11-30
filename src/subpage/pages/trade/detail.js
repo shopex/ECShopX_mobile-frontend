@@ -84,7 +84,6 @@ export default class TradeDetail extends Component {
       receiver_mobile: 'receiver_mobile',
       receiver_state: 'receiver_state',
       estimate_get_points: 'estimate_get_points',
-      is_all_delivery: 'is_all_delivery',
       discount_fee: ({ discount_fee }) => (+discount_fee / 100).toFixed(2),
       point_fee: ({ point_fee }) => (+point_fee / 100).toFixed(2),
       point_use: 'point_use',
