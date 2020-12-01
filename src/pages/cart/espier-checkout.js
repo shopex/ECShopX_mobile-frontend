@@ -326,6 +326,9 @@ export default class CartCheckout extends Component {
       }
     }
   }
+  if(APP_PLATFORM === 'platform'){
+    delete ztparams.isNostores
+  }
     const shopInfo = await api.shop.getShop(ztparams);
     isOpenStore && Taro.setStorageSync('selectShop',shopInfo)
     this.setState({
@@ -608,6 +611,9 @@ export default class CartCheckout extends Component {
     }
     if (payType === "point") {
       delete params.point_use;
+    }
+    if(APP_PLATFORM === 'platform'){
+      delete params.isNostores
     }
     if (coupon) {
       if (coupon.not_use_coupon === 1) {
@@ -1549,7 +1555,7 @@ export default class CartCheckout extends Component {
                   <View className="addr-detail">{curStore.store_address}</View>
                 </View>
                 {
-                  isOpenStore 
+                  isOpenStore && (APP_PLATFORM === 'standard') 
                   ?<View
                     className="icon-edit"
                     onClick={this.handleEditZitiClick.bind(this,curStore.distributor_id)}>
