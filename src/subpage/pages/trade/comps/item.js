@@ -24,7 +24,7 @@ export default class TradeItem extends Component {
     showActions: false,
     isShowNational: false,
     payType: '',
-    info: null,
+    info: {},
     rateStatus: false,
     onClickBtn: () => {},
     onClick: () => {}
@@ -36,12 +36,11 @@ export default class TradeItem extends Component {
   }
 
   render () {
-    const { customHeader, customFooter, noHeader, onClick, info, payType, showActions, colors, rateStatus, isShowNational } = this.props
+    const { customHeader, customFooter, noHeader, onClick, info = {}, payType, showActions, colors, rateStatus, isShowNational } = this.props
+
     if (!info) {
       return null
     }
-    console.log('info',info)
-
     return (
       <View className='trade-item'>
         {
@@ -120,11 +119,23 @@ export default class TradeItem extends Component {
                 >取消订单</Button>
                 : null
             }
+          {(info.delivery_type=='new' && info.pay_status === 'PAYED' && info.delivery_status != 'PENDING') && <Button
+              className='btn-action'
+              style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+              onClick={this.handleClickBtn.bind(this, 'delivery')}
+            >查看物流</Button>}
             <Button
               className='btn-action'
               style={`background: ${colors.data[0].primary}`}
               onClick={this.handleClickBtn.bind(this, 'detail')}
             >订单详情</Button>
+            {/* {
+              info.delivery_status === 'DONE' && info.status === 'WAIT_BUYER_CONFIRM_GOODS' && <Button
+                className='btn-action'
+                style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+                onClick={this.handleClickBtn.bind(this, 'confirm')}
+              >确认收货</Button>
+            } */}
           </View>
         </View>)}
         {!customFooter && info.status === 'TRADE_CLOSED' && (<View className='trade-item__ft'>
@@ -151,6 +162,13 @@ export default class TradeItem extends Component {
           </View>
           <View className='trade-item__ft-bd'>
             <Text className='trade-item__status'>{info.status_desc}</Text>
+            {
+              info.delivery_type=='new' && <Button
+                className='btn-action'
+                style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+                onClick={this.handleClickBtn.bind(this, 'delivery')}
+              >查看物流</Button>
+            }
             <Button
               className='btn-action'
               style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
@@ -190,7 +208,11 @@ export default class TradeItem extends Component {
                 >评价</Button>
                 : null
             }
-
+            <Button
+              className='btn-action'
+              style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+              onClick={this.handleClickBtn.bind(this, 'delivery')}
+            >查看物流</Button>
             <Button
               className='btn-action'
               style={`background: ${colors.data[0].primary}`}
