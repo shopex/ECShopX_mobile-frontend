@@ -266,7 +266,6 @@ export default class Detail extends Component {
     //     }
     //   }
     // }
-    console.log('is_open_store_status--->',is_open_store_status)
     if (APP_PLATFORM === 'standard') {
       param.distributor_id = distributor_id 
     } else {

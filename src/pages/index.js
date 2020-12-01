@@ -77,10 +77,11 @@ export default class HomeIndex extends Component {
   //     })
   //    // const res = parseUrlStr(queryStr)
   // }
-    const isOpenStore = await entry.getStoreStatus()
-    this.setState({
-      is_open_store_status:isOpenStore
-    })
+  const isOpenStore = await entry.getStoreStatus()
+  this.setState({
+    is_open_store_status:isOpenStore
+  })
+
     this.checkWhite()
     //this.fetchSetInfo()
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
