@@ -29,21 +29,28 @@ export default class DetailItem extends Component {
   // }
 
   handleClickAfterSale= (item) => {
-    const { info: { tid: order_id } } = this.props
+    const { info: { tid: order_id, is_all_delivery, delivery_status } } = this.props
     if (!item.aftersales_status || item.aftersales_status === 'SELLER_REFUSE_BUYER') {
       Taro.navigateTo({
-        url: `/subpage/pages/trade/refund?order_id=${order_id}&item_id=${item.item_id}`
+        url: `/subpage/pages/trade/refund?order_id=${order_id}&item_id=${item.item_id}&isDelivery=${is_all_delivery}&delivery_status=${delivery_status}`
       })
     } else {
       Taro.navigateTo({
-        url: `/subpage/pages/trade/refund-detail?order_id=${order_id}&item_id=${item.item_id}`
+        url: `/subpage/pages/trade/refund-detail?order_id=${order_id}&item_id=${item.item_id}&isDelivery=${is_all_delivery}&delivery_status=${delivery_status}`
       })
     }
   }
     handleLookDelivery = (value) => {
-    Taro.navigateTo({
-      url: `/subpage/pages/trade/delivery-info?order_type=${this.props.info.order_type}&order_id=${this.props.info.tid}&delivery_code=${value.delivery_code}&delivery_corp=${value.delivery_corp}&delivery_name=${value.delivery_name}`
-    })
+      if(value.delivery_type=='new'){
+        Taro.navigateTo({
+          url: `/subpage/pages/trade/split-bagpack?order_type=${this.props.info.order_type}&order_id=${this.props.info.tid}&delivery_code=${value.delivery_code}&delivery_corp=${value.delivery_corp}&delivery_name=${value.delivery_name}`
+        })
+      }else{
+        Taro.navigateTo({
+          url: `/subpage/pages/trade/delivery-info?order_type=${this.props.info.order_type}&order_id=${this.props.info.tid}&delivery_code=${value.delivery_code}&delivery_corp=${value.delivery_corp}&delivery_name=${value.delivery_name}`
+        })
+      }
+    
   }
   handleCodeCopy = (val) => {
     copyText(val)
@@ -79,7 +86,7 @@ export default class DetailItem extends Component {
               {
                 !customFooter && info.pay_type !== 'dhpoint' && (info.status === 'TRADE_SUCCESS' || info.status === 'WAIT_BUYER_CONFIRM_GOODS' || info.status === 'WAIT_SELLER_SEND_GOODS') && <View className='order-item__ft'>
                  {
-                    info.delivery_code
+                    info.delivery_type=='old'&&(info.delivery_code
                     ? null
                     : item.delivery_code && 
                     <AtButton
@@ -90,10 +97,13 @@ export default class DetailItem extends Component {
                         onClick={this.handleLookDelivery.bind(this, item)}
                       >
                        查看物流
-                      </AtButton>                   
+                      </AtButton> )                  
                   }
+                  <View>
+                    
+                  </View>
                   {
-                    (info.status !== 'WAIT_SELLER_SEND_GOODS' && info.latest_aftersale_time >= 0 &&item.aftersales_status !== 'CLOSED')  &&
+                    ((info.is_all_delivery && info.status !== 'WAIT_SELLER_SEND_GOODS' || !info.is_all_delivery)&& info.latest_aftersale_time >= 0 &&item.aftersales_status !== 'CLOSED') && (info.is_all_delivery || (!info.is_all_delivery && item.delivery_status === 'DONE'))  &&
                       <AtButton
                         circle
                         type='primary'

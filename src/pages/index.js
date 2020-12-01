@@ -100,8 +100,10 @@ export default class HomeIndex extends Component {
       is_open_official_account:is_open_official_account,
      
     }, async() => {
+         const { is_open_store_status } = this.state
         let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
         const options = this.$router.params
+        options.isStore = is_open_store_status
         const res = await entry.entryLaunch(options, isNeedLoacate)
         const { store } = res
         if (!isArray(store)) {
