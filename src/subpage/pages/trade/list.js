@@ -198,16 +198,6 @@ export default class TradeList extends Component {
           url: `/marketing/pages/item/rate?id=${tid}`
         })
         break
-        case 'aftersales-list':
-          Taro.navigateTo({
-            url: `/subpage/pages/trade/after-sale-list?id=${tid}`
-          })
-          break;      
-        case 'aftersales':
-          Taro.navigateTo({
-            url: `/subpage/pages/trade/after-sale-detail?id=${tid}`
-          })
-          break;
       case 'delivery':
         {
           let { delivery_code, delivery_corp, delivery_corp_name, orders_delivery_id, delivery_type, is_all_delivery, tid ,order_type} = trade

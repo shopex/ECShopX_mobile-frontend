@@ -169,7 +169,7 @@ export default class TradeItem extends Component {
                 onClick={this.handleClickBtn.bind(this, 'delivery')}
               >查看物流</Button>
             }
-           <Button
+           {/* <Button
               className='btn-action'
               style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
               onClick={this.handleClickBtn.bind(this, 'aftersales-list')}
@@ -178,7 +178,7 @@ export default class TradeItem extends Component {
               className='btn-action'
               style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
               onClick={this.handleClickBtn.bind(this, 'aftersales')}
-            >申请售后</Button>
+            >申请售后</Button> */}
             <Button
               className='btn-action'
               style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}

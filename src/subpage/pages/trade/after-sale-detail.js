@@ -548,10 +548,7 @@ export default class TradeDetail extends Component {
         <View className="trade-money">
          <View>总计：<Text className="trade-money__num">￥{info.item_fee}</Text></View>
         </View>
-        {info.order_class !== "drug" && (
-          <View>
-            {info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE')) && (
-              <View className="trade-detail__footer">
+        <View className="trade-detail__footer">
                 <Button
                   className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
                   style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
@@ -561,9 +558,6 @@ export default class TradeDetail extends Component {
                 </Button>
               
             </View>
-            )}
-          </View>
-        )}
         <SpToast></SpToast>
       </View>
     );

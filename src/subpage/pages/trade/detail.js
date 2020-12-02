@@ -308,6 +308,18 @@ export default class TradeDetail extends Component {
       }
       return
     }
+    if(type === 'aftersales-list'){
+      Taro.navigateTo({
+        url: `/subpage/pages/trade/after-sale-list?id=${info.tid}`
+      })
+      return
+    }
+    if(type==="aftersales"){
+        Taro.navigateTo({
+          url: `/subpage/pages/trade/after-sale-detail?id=${info.tid}`
+        })
+        return
+    }
   }
 
   async handleClickRefund (type, item_id) {
@@ -732,6 +744,26 @@ export default class TradeDetail extends Component {
                   )}
               </View>
             )}
+              <View className="trade-detail__footer">
+                <Button
+                  className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
+                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                  onClick={this.handleClickBtn.bind(this, "aftersales")}
+                >
+                  申请售后
+                </Button>
+              
+            </View>
+            {/* <View className="trade-detail__footer">
+                <Button
+                  className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
+                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                  onClick={this.handleClickBtn.bind(this, "aftersales-list")}
+                >
+                  查看售后
+                </Button>
+              
+            </View>           */}
           </View>
         )}
         {/*{
