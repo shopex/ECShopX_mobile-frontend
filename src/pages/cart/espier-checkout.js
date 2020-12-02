@@ -1203,7 +1203,8 @@ export default class CartCheckout extends Component {
     } catch (e) {
       payErr = e;
       Taro.showToast({
-        title: e.err_desc || e.errMsg || "支付失败",
+        //title: e.err_desc || e.errMsg || "支付失败",
+        title:"支付失败",
         icon: "none"
       });
     }
