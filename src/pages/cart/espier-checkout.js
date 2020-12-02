@@ -931,7 +931,7 @@ export default class CartCheckout extends Component {
     // })
     const { drug } = this.state;
     Taro.navigateTo({
-      url: `/pages/cart/drug-info`
+      url: `/others/pages/cart/drug-info`
     });
   };
 
@@ -1301,7 +1301,7 @@ export default class CartCheckout extends Component {
       },
       () => {
         Taro.navigateTo({
-          url: `/pages/cart/coupon-picker?items=${JSON.stringify(
+          url: `/others/pages/cart/coupon-picker?items=${JSON.stringify(
             items
           )}&is_checkout=true&cart_type=${this.params.cart_type
             }&distributor_id=${id}&source=${m_source}&goodType=${goodType}`
