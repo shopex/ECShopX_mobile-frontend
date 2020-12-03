@@ -600,7 +600,7 @@ export default class TradeDetail extends Component {
           <Text className='info-text'>运费：￥{info.freight_fee}</Text>
           {info.type == '1' && <Text className='info-text'>税费：￥{info.total_tax}</Text>}
           <Text className='info-text'>优惠：-￥{info.discount_fee}</Text>
-          {isDhPoint && (<Text className='info-text' space>支付：{info.point_fee * 100}积分  抵扣:￥{info.point_fee} {' 积分支付'}</Text>)}
+          {isDhPoint && (<Text className='info-text' space>积分支付：{info.point_fee * 100}积分，抵扣:￥{info.point_fee}</Text>)}
           {isDeposit && (<Text className='info-text' space>支付：¥{info.payment} {' 余额支付'}</Text>)}
           {isHf && (<Text className='info-text' space>支付：¥{info.payment} {'汇付支付'}</Text>)}
           {!isDhPoint && !isDeposit && !isHf && (<Text className='info-text' space>支付：￥{info.payment} {' 微信支付'}</Text>)}
