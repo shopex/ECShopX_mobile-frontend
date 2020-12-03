@@ -70,7 +70,7 @@ export default class AfterDetailItem extends Component {
   handleQuantityChange(item,val){   //改变售后商品的数量
     const { info } = this.props
     info.orders.map(v=>{
-      v.item_id == item.item_id && (v.store_num = val)
+      v.item_id == item.item_id && (v.left_aftersales_num = val)
     })
     this.setState({
       info
@@ -104,17 +104,19 @@ export default class AfterDetailItem extends Component {
                 }               
             </View>
             <View className="order-flex">
-            {
-                ((info.is_all_delivery && info.status !== 'WAIT_SELLER_SEND_GOODS' || !info.is_all_delivery)&& info.latest_aftersale_time >= 0 &&item.aftersales_status !== 'CLOSED') && (info.is_all_delivery || (!info.is_all_delivery && item.delivery_status === 'DONE'))  &&
                 <View className="order-flex_checkbox">
-                <SpCheckbox
-                  key={item.item_id}
-                  checked={item.is_checked}
-                  onChange={this.handleSelectionChange.bind(this, item.item_id)}
-                />
+                    {
+                      item.left_aftersales_num > 0 
+                      ?  <SpCheckbox
+                      key={item.item_id}
+                      checked={item.is_checked}
+                      onChange={this.handleSelectionChange.bind(this, item.item_id)}
+                    />
+                    : null
+                    }
                 </View>
 
-            }
+            
               <View className="order-flex_goods">
               <OrderItem
                   key={`${idx}1`}
@@ -161,8 +163,8 @@ export default class AfterDetailItem extends Component {
                            (!item.aftersales_status || item.aftersales_status === 'SELLER_REFUSE_BUYER') 
                            ? <InputNumber
                            min={1}
-                           max={item.num}
-                           value={item.store_num}
+                           max={item.left_aftersales_num}
+                           value={item.left_aftersales_num}
                           // onChange={this.props.onNumChange}
                            onChange={this.handleQuantityChange.bind(this,item)}
 

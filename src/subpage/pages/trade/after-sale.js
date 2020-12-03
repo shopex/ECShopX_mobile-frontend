@@ -65,15 +65,15 @@ export default class AfterSale extends Component {
       id: 'aftersales_bn',
       status_desc: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
       totalItems: 'num',
-      payment: ({ item }) => (item.refunded_fee / 100).toFixed(2),
-      pay_type: 'orderInfo.pay_type',
-      point: 'orderInfo.point',
-      order: ({ orderInfo }) => pickBy(orderInfo.items, {
+      payment: ({ refund_fee }) => (refund_fee / 100).toFixed(2),
+      pay_type: 'pay_type',
+      point: 'point',
+      order: ({ detail }) => pickBy(detail, {
         order_id: 'order_id',
         item_id: 'item_id',
-        pic_path: 'pic',
+        pic_path: 'item_pic',
         title: 'item_name',
-        price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
+        price: ({ refund_fee }) => (+refund_fee / 100).toFixed(2),
         point: 'item_point',
         num: 'num'
       })

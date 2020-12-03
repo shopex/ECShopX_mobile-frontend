@@ -32,15 +32,18 @@ export default class DetailItem extends Component {
 
   handleClickAfterSale= (item) => {
     const { info: { tid: order_id, is_all_delivery, delivery_status } } = this.props
-    if (!item.aftersales_status || item.aftersales_status === 'SELLER_REFUSE_BUYER') {
-      Taro.navigateTo({
-        url: `/subpage/pages/trade/refund?order_id=${order_id}&item_id=${item.item_id}&isDelivery=${is_all_delivery}&delivery_status=${delivery_status}`
-      })
-    } else {
-      Taro.navigateTo({
-        url: `/subpage/pages/trade/refund-detail?order_id=${order_id}&item_id=${item.item_id}&isDelivery=${is_all_delivery}&delivery_status=${delivery_status}`
-      })
-    }
+    Taro.navigateTo({
+      url: `/subpage/pages/trade/after-sale`
+    })
+    // if (!item.aftersales_status || item.aftersales_status === 'SELLER_REFUSE_BUYER') {
+    //   Taro.navigateTo({
+    //     url: `/subpage/pages/trade/refund?order_id=${order_id}&item_id=${item.item_id}&isDelivery=${is_all_delivery}&delivery_status=${delivery_status}`
+    //   })
+    // } else {
+    //   Taro.navigateTo({
+    //     url: `/subpage/pages/trade/refund-detail?order_id=${order_id}&item_id=${item.item_id}&isDelivery=${is_all_delivery}&delivery_status=${delivery_status}`
+    //   })
+    // }
   }
     handleLookDelivery = (value) => {
       if(value.delivery_type=='new'){
@@ -127,6 +130,21 @@ export default class DetailItem extends Component {
                   <View>
                     
                   </View>
+                  {
+                    (item.show_aftersales === 1) && (
+                      <AtButton
+                      circle
+                      type='primary'
+                      size='small'
+                      onClick={this.handleClickAfterSale.bind(this, item)}
+                    >
+                      售后详情
+                      {/* {
+                        (!item.aftersales_status || item.aftersales_status === 'SELLER_REFUSE_BUYER') ? '申请售后' : '售后详情'
+                      } */}
+                    </AtButton>  
+                    )
+                  }
                   
                   {/* {
                     ((info.is_all_delivery && info.status !== 'WAIT_SELLER_SEND_GOODS' || !info.is_all_delivery)&& info.latest_aftersale_time >= 0 &&item.aftersales_status !== 'CLOSED') && (info.is_all_delivery || (!info.is_all_delivery && item.delivery_status === 'DONE'))  &&

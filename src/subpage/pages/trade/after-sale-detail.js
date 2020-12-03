@@ -77,11 +77,9 @@ export default class TradeDetail extends Component {
     let refund= []
     selected.map(item=>{
       params = {
-        //is_all_delivery:item.is_all_delivery,
-        delivery_status:item.delivery_status,
         order_id:item.orders,
-       item_id:item.item_id,
-       store_num:item.store_num
+        id:item.item_id,
+        num:item.left_aftersales_num
       }
       refund.push(params)
     })
@@ -92,7 +90,6 @@ export default class TradeDetail extends Component {
     const { id } = this.$router.params
     const data = await api.trade.detail(id)
     let sessionFrom = ''
-    console.log(data.orderInfo.item_fee)
     const info = pickBy(data.orderInfo, {
       tid: 'order_id',
       created_time_str: ({ create_time }) => formatTime(create_time * 1000),
@@ -139,7 +136,7 @@ export default class TradeDetail extends Component {
       status: ({ order_status }) => resolveOrderStatus(order_status),
       orders: ({ items = [] }) => pickBy(items, {
         order_id: 'order_id',
-        item_id: 'item_id',
+        item_id: 'id',
         // aftersales_status: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
         delivery_code: 'delivery_code',
         delivery_corp: 'delivery_corp',
@@ -157,7 +154,7 @@ export default class TradeDetail extends Component {
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         point: 'item_point',
         num: 'num',
-        store_num:'num',
+        left_aftersales_num:'left_aftersales_num',
         item_spec_desc: 'item_spec_desc',
         order_item_type: 'order_item_type'
       })
@@ -290,6 +287,7 @@ export default class TradeDetail extends Component {
 
   async handleClickBtn (type,val) {
     const { info } = this.state
+
     if (type === 'REFUND') {//仅退款
       //let { info } = this.state 
       const selected = this.selectionGoods(info.orders)
@@ -302,7 +300,7 @@ export default class TradeDetail extends Component {
       }
       const deliverData = JSON.stringify(selected)
       Taro.navigateTo({
-        url: `/subpage/pages/trade/refund?deliverData=${deliverData}&status=${type}`
+        url: `/subpage/pages/trade/refund?deliverData=${deliverData}&status=${type}&order_id=${info.tid}`
       })
     }
   }

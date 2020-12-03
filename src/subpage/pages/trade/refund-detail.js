@@ -24,19 +24,25 @@ export default class TradeRefundDetail extends Component {
 
   async fetch () {
     const { aftersales_bn, item_id, order_id } = this.$router.params
-    const { aftersales: info, orderInfo } = await api.aftersales.info({
+    // const { detail: info, order_info:orderInfo,progress,reason} = await api.aftersales.info({
+    //   aftersales_bn,
+    //   item_id,
+    //   order_id
+    // })
+      const info = await api.aftersales.info({
       aftersales_bn,
       item_id,
       order_id
     })
+    let prog = +info.progress
+    info.status_str = REFUND_STATUS[String(prog)]
+    info.creat_time_str = formatTime(info.create_time * 1000,'yyyy-MM-dd HH:mm')
 
-    const progress = +info.progress
-    info.status_str = REFUND_STATUS[String(progress)]
-    info.creat_time_str = formatTime(info.create_time * 1000)
+
     this.setState({
-      orderInfo,
+      //orderInfo,
       info,
-      progress,
+      progress:prog,
       aftersalesAddress: info.aftersales_address
     })
   }
@@ -84,6 +90,8 @@ export default class TradeRefundDetail extends Component {
     if (!info) {
       return <Loading />
     }
+    console.log('info====>',info)
+    //console.log('orderorderInfo===>',orderInfo)
 
     return (
       <View className='trade-refund-detail'>
@@ -105,7 +113,7 @@ export default class TradeRefundDetail extends Component {
           {
             progress == 0
               ? <View>
-                  <Text className='refund-detail__btn' onClick={this.handleBtnClick.bind(this, 'edit')}>修改申请</Text>
+                  {/* <Text className='refund-detail__btn' onClick={this.handleBtnClick.bind(this, 'edit')}>修改申请</Text> */}
                   <Text className='refund-detail__btn refund-detail__cancel' onClick={this.handleBtnClick.bind(this, 'cancel')}>撤销申请</Text>
                 </View>
               : null
@@ -113,7 +121,7 @@ export default class TradeRefundDetail extends Component {
           {
             (progress == 3 || progress == 5)
               ? <View>
-                  <Text className='refund-detail__btn' onClick={this.handleBtnClick.bind(this, 'refund')}>再次申请</Text>
+                  {/* <Text className='refund-detail__btn' onClick={this.handleBtnClick.bind(this, 'refund')}>再次申请</Text> */}
                   <Text className='refund-detail__btn refund-detail__cancel' onClick={this.handleBtnClick.bind(this, 'cancel')}>撤销申请</Text>
                 </View>
               : null
@@ -144,7 +152,7 @@ export default class TradeRefundDetail extends Component {
           <View className='info-name'>退款原因：<Text className='info-value'>{info.reason}</Text></View>
           <View className='info-name'>申请时间：<Text className='info-value'>{info.creat_time_str}</Text></View>
           <View className='info-name'>退款编号：<Text className='info-value'>{info.aftersales_bn}</Text></View>
-          <View className='info-name'>驳回原因：<Text className='info-value'>{info.refuse_reason}</Text></View>
+          {info.refuse_reason && <View className='info-name'>驳回原因：<Text className='info-value'>{info.refuse_reason}</Text></View>}
           {
             progress === 1 ?
             <View>
@@ -166,7 +174,7 @@ export default class TradeRefundDetail extends Component {
         </View>
         {
           meiqia.is_open === 'true' || echat.is_open === 'true'
-            ? <FloatMenuMeiQia storeId={orderInfo.distributor_id} info={{orderId: orderInfo.order_id}} isFloat={false}> 
+            ? <FloatMenuMeiQia storeId={info.distributor_id} info={{orderId: info.order_id}} isFloat={false}> 
               <Button className='refund-detail-btn'>联系客服</Button>
             </FloatMenuMeiQia>
             : <Button openType='contact' className='refund-detail-btn'>联系客服</Button>
