@@ -119,10 +119,11 @@ export default class TradeDetail extends Component {
       invoice_content: 'invoice.content',
       delivery_status: 'delivery_status',
       point: 'point',
+      can_apply_aftersales:'can_apply_aftersales',
       status: ({ order_status }) => resolveOrderStatus(order_status),
       orders: ({ items = [] }) => pickBy(items, {
         order_id: 'order_id',
-        item_id: 'item_id',
+        item_id: 'id',
         // aftersales_status: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
         delivery_code: 'delivery_code',
         delivery_corp: 'delivery_corp',
@@ -140,9 +141,10 @@ export default class TradeDetail extends Component {
         price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
         point: 'item_point',
         num: 'num',
-        store_num:'num',
+        left_aftersales_num:'left_aftersales_num',
         item_spec_desc: 'item_spec_desc',
-        order_item_type: 'order_item_type'
+        order_item_type: 'order_item_type',
+        show_aftersales:'show_aftersales'
       })
     })
 
@@ -612,7 +614,7 @@ export default class TradeDetail extends Component {
           <Text className='info-text'>运费：￥{info.freight_fee}</Text>
           {info.type == '1' && <Text className='info-text'>税费：￥{info.total_tax}</Text>}
           <Text className='info-text'>优惠：-￥{info.discount_fee}</Text>
-          {isDhPoint && (<Text className='info-text' space>支付：{info.payment}积分 {' 积分支付'}</Text>)}
+          {isDhPoint && (<Text className='info-text' space>支付：{info.point_use}积分 {' 积分支付'}</Text>)}
           {isDeposit && (<Text className='info-text' space>支付：¥{info.payment} {' 余额支付'}</Text>)}
           {isHf && (<Text className='info-text' space>支付：¥{info.payment} {'汇付支付'}</Text>)}
           {!isDhPoint && !isDeposit && !isHf && (<Text className='info-text' space>支付：￥{info.payment} {' 微信支付'}</Text>)}
@@ -744,7 +746,9 @@ export default class TradeDetail extends Component {
                   )}
               </View>
             )}
-              <View className="trade-detail__footer">
+            {
+              info.can_apply_aftersales === 1 && (
+                <View className="trade-detail__footer">
                 <Button
                   className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
                   style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
@@ -754,6 +758,9 @@ export default class TradeDetail extends Component {
                 </Button>
               
             </View>
+              )
+            }
+
             {/* <View className="trade-detail__footer">
                 <Button
                   className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
