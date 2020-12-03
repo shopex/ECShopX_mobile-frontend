@@ -134,6 +134,7 @@ export default class TradeDetail extends Component {
       delivery_status: 'delivery_status',
       point: 'point',
       status: ({ order_status }) => resolveOrderStatus(order_status),
+      can_apply_aftersales:'can_apply_aftersales',
       orders: ({ items = [] }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'id',
@@ -547,16 +548,21 @@ export default class TradeDetail extends Component {
         <View className="trade-money">
          <View>总计：<Text className="trade-money__num">￥{info.item_fee}</Text></View>
         </View>
-        <View className="trade-detail__footer">
-                <Button
-                  className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  onClick={this.handleClickBtn.bind(this, "REFUND")}
-                >
-                  退货退款
-                </Button>
-              
-            </View>
+        {
+          info.can_apply_aftersales === 1 && (
+            <View className="trade-detail__footer">
+            <Button
+              className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
+              style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+              onClick={this.handleClickBtn.bind(this, "REFUND")}
+            >
+              申请售后
+            </Button>
+          
+        </View>
+          )
+        }
+
         <SpToast></SpToast>
       </View>
     );
