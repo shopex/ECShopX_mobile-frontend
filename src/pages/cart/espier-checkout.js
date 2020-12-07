@@ -1656,7 +1656,7 @@ export default class CartCheckout extends Component {
                             showDesc={true}
                             renderDesc={
                               <View className="order-item__desc">
-                                {item.discount_info &&
+                                {item.discount_info && item.order_item_type !== "gift"  &&
                                   item.discount_info.map(discount => (
                                     <Text
                                       className="order-item__discount"
