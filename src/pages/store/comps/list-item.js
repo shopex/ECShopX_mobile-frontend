@@ -34,7 +34,7 @@ export default class StoreListItem extends Component {
             <View className="store-name">{info.name}</View>
             <View className="store-address">{info.store_address}</View>
             <View className="store-address">营业时间：{info.hour}</View>
-            <View className="store-address">营业时间：{info.mobile}</View>
+            <View className="store-address">营业电话：{info.mobile}</View>
           </View>
 
           {
