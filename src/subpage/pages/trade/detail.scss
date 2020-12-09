@@ -7,7 +7,9 @@ $custabs: 80px;
   box-sizing: border-box;
   height: 100vh;
   overflow: hidden;
-  padding-bottom: 84px;
+  &.paddingBottom {
+    padding-bottom: 84px;
+  }
   /*  #ifdef  h5  */  
   padding-top: $navigate-height-h5;
   /*  #endif  */  
@@ -296,6 +298,23 @@ $custabs: 80px;
       box-sizing: border-box;
       font-size: $font-size-small;
       border: none;
+    }
+  }
+  .kefuBtn {
+    width: 50%;
+    box-sizing: border-box;
+  }
+  .logConfirm {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+    .btn {
+      width: 240px;
+      height: 70px;
+      line-height: 70px;
+      border-radius: 30px;
+      text-align: center;
+      color: #fff;
     }
   }
 }

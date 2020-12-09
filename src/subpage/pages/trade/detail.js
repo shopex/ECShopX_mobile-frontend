@@ -467,7 +467,7 @@ export default class TradeDetail extends Component {
     // const tradeOrders = resolveTradeOrders(info)
 
     return (
-      <View className={`trade-detail ${info.is_logistics && 'islog'}`}>
+      <View className={`trade-detail ${info.is_logistics && 'islog'} ${info.status !== 'TRADE_CLOSED' && 'paddingBottom'}`}>
         <NavBar title='订单详情' leftIconType='chevron-left' fixed='true' />
         {
           info.is_logistics && <View className='custabs'>
@@ -611,7 +611,19 @@ export default class TradeDetail extends Component {
               info={info}
             />
           </View>
-
+          {
+            info.is_logistics && <View className='logConfirm'>
+              {info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE')) && (
+                  <View
+                    className='btn'
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    onClick={this.handleClickBtn.bind(this, "confirm")}
+                  >
+                    确认收货
+                  </View>
+              )}
+            </View>
+          }
           {
             info.is_logistics && <View className='screenZiti' id='order-1'>
               <View
@@ -717,27 +729,38 @@ export default class TradeDetail extends Component {
                   </Text>
                 )}
                 {
+                  info.can_apply_aftersales === 1 && (
+                    <Button
+                      className='trade-detail__footer__btn'
+                      // style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                      onClick={this.handleClickBtn.bind(this, "aftersales")}
+                    >
+                      申请售后
+                    </Button>
+                  )
+                }
+                {
                   (info.order_status_des !== "PAYED_WAIT_PROCESS" && info.order_status_des !== "PAYED_PARTAIL" && !info.is_logistics) 
                   ? <Text
-                  className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === "PAYED_WAIT_PROCESS"
+                    className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === "PAYED_WAIT_PROCESS"
+                        ? "trade-detail__footer_allWidthBtn"
+                        : ""
+                      }`}
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
+                    onClick={this.handleClickBtn.bind(this, "home")}
+                  >
+                  继续购物
+                </Text>
+                : <Text
+                  className={`trade-detail__footer__btn trade-detail__footer_active ${(info.order_status_des === "PAYED_WAIT_PROCESS" || info.can_apply_aftersales !== 1 )
                       ? "trade-detail__footer_allWidthBtn"
                       : ""
                     }`}
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
+                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                   onClick={this.handleClickBtn.bind(this, "home")}
                 >
                   继续购物
                 </Text>
-                : <Text
-                className={`trade-detail__footer__btn trade-detail__footer_active ${info.order_status_des === "PAYED_WAIT_PROCESS"
-                    ? "trade-detail__footer_allWidthBtn"
-                    : ""
-                  }`}
-                style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};width: 100% !important;`}
-                onClick={this.handleClickBtn.bind(this, "home")}
-              >
-                继续购物
-              </Text>
                 }
                 
               </View>
@@ -755,34 +778,58 @@ export default class TradeDetail extends Component {
             )}
             {info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE')) && (
               <View className="trade-detail__footer">
-                <Text
-                  className="trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active"
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  onClick={this.handleClickBtn.bind(this, "confirm")}
-                >
-                  确认收货
-                </Text>
+                {
+                  info.can_apply_aftersales === 1 && (
+                    <Button
+                      className={`trade-detail__footer__btn ${info.is_logistics && 'trade-detail__footer_active trade-detail__footer_allWidthBtn'}`}
+                      style={`background: ${ info.is_logistics ? colors.data[0].primary : '#fff'}; border-color: $${ info.is_logistics ? colors.data[0].primary : '#fff'}`}
+                      onClick={this.handleClickBtn.bind(this, "aftersales")}
+                    >
+                      申请售后
+                    </Button>
+                  )
+                }
+                {
+                  !info.is_logistics && <Text
+                    className={`trade-detail__footer__btn trade-detail__footer_active ${info.can_apply_aftersales === 0 && 'trade-detail__footer_allWidthBtn'}`}
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    onClick={this.handleClickBtn.bind(this, "confirm")}
+                  >
+                    确认收货
+                  </Text>
+                }
               </View>
             )}
             {info.status === "TRADE_SUCCESS" && (
-              <View className="trade-detail__footer">
-                {meiqia.is_open === "true" || echat.is_open === 'true' ? (
-                  <FloatMenuMeiQia
-                    storeId={info.distributor_id}
-                    info={{ orderId: info.order_id }}
-                    isFloat={false}
-                  >
+              <View className='trade-detail__footer'>
+                {
+                  info.can_apply_aftersales === 1 && (
                     <Button
-                      className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
-                      style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                      className='trade-detail__footer__btn'
+                      // style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                      onClick={this.handleClickBtn.bind(this, "aftersales")}
                     >
-                      联系客服
+                      申请售后
                     </Button>
-                  </FloatMenuMeiQia>
+                  )
+                }
+                {meiqia.is_open === "true" || echat.is_open === 'true' ? (
+                  <View 
+                    className={`trade-detail__footer__btn trade-detail__footer_active ${info.can_apply_aftersales === 0 && 'trade-detail__footer_allWidthBtn'}`}
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                  >
+                    <FloatMenuMeiQia
+                      storeId={info.distributor_id}
+                      info={{ orderId: info.order_id }}
+                      isFloat={false}
+                    >
+                        联系客服
+                    </FloatMenuMeiQia>
+                  </View>
                 ) : (
                     <Button
-                      openType="contact"
-                      className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
+                      openType='contact'
+                      className={`trade-detail__footer__btn trade-detail__footer_active ${info.can_apply_aftersales === 0 && 'trade-detail__footer_allWidthBtn'}`}
                       style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                     >
                       联系客服
@@ -790,20 +837,6 @@ export default class TradeDetail extends Component {
                   )}
               </View>
             )}
-            {
-              info.can_apply_aftersales === 1 && (
-                <View className="trade-detail__footer">
-                <Button
-                  className="trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn"
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  onClick={this.handleClickBtn.bind(this, "aftersales")}
-                >
-                  申请售后
-                </Button>
-              
-            </View>
-              )
-            }
           </View>
         )}
         <SpToast></SpToast>
