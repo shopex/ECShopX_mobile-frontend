@@ -151,8 +151,8 @@ export default class TradeDetail extends Component {
       point: 'point',
       status: ({ order_status }) => resolveOrderStatus(order_status),
       can_apply_aftersales:'can_apply_aftersales',
-      orders: ({ items = [] }) => pickBy(items, pickItem),
-      log_orders: ({ logistics_items = [] }) => pickBy(logistics_items, pickItem)
+      orders: ({ items = [], logistics_items = [], is_logistics  }) => pickBy((is_logistics ? logistics_items : items), pickItem),
+      log_orders: ({ items = [] }) => pickBy(items, pickItem)
     })
 
     const ziti = pickBy(data.distributor, {
