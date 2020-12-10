@@ -3,6 +3,7 @@ import { View, Text } from '@tarojs/components'
 import { SpImg } from '@/components'
 import { connect } from '@tarojs/redux'
 import { Tracker } from "@/service";
+import entry from '@/utils/entry'
 import api from '@/api'
 
 import './goods.scss'
@@ -138,11 +139,12 @@ export default class WgtGoods extends Component {
 
     if (type === 'buy') {
       try {
-        const { distributor_id } = Taro.getStorageSync('curStore')
+        const isOpenStore = await entry.getStoreStatus()
+        const { distributor_id,store_id } = Taro.getStorageSync('curStore')
 
         await api.cart.add({
           item_id: item_data.item_id,
-          distributor_id,
+          distributor_id:isOpenStore ? store_id : distributor_id,
           num: 1,
           shop_type: 'distributor'
         })
