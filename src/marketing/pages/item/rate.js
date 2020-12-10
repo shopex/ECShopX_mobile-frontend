@@ -48,14 +48,25 @@ export default class TradeRate extends Component {
         star: 0,
         content: '',
         pics: []
-      })
+      }),
+      logistics_items: ({ logistics_items = [] }) => pickBy(logistics_items, {
+        item_id: 'item_id',
+        item_spec_desc: 'item_spec_desc',
+        pic_path: 'pic',
+        title: 'item_name',
+        price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
+        num: 'num',
+        star: 0,
+        content: '',
+        pics: []
+      }), 
     })
     Taro.hideLoading()
-
+    const orders = [...info.orders, ...info.logistics_items]
     let goodsList = []
     let giftList = []
-    if(info && info.orders.length > 0){
-      info.orders.map(item => {
+    if(orders && orders.length > 0){
+      orders.map(item => {
         if(item.order_item_type !== 'gift') {
           goodsList.push(item)
         } else {
