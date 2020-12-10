@@ -137,13 +137,15 @@ export default class AfterDetailItem extends Component {
                        查看物流
                       </AtButton> )                  
                   }
-                  <InputNumber
-                    min={1}
-                    max={item.left_aftersales_num}
-                    value={item.apply_num}
-                  // onChange={this.props.onNumChange}
-                    onChange={this.handleQuantityChange.bind(this,item)}
-                  />
+                  {
+                    item.left_aftersales_num && <InputNumber
+                      min={1}
+                      max={item.left_aftersales_num}
+                      value={item.apply_num}
+                    // onChange={this.props.onNumChange}
+                      onChange={this.handleQuantityChange.bind(this,item)}
+                    />
+                  }
                 </View>
               }
             </View>
