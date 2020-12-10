@@ -1210,7 +1210,8 @@ export default class CartCheckout extends Component {
       payErr = e;
       console.log(e)
       // Taro.showToast({
-      //   title: e.err_desc || e.errMsg || "支付失败",
+      //   //title: e.err_desc || e.errMsg || "支付失败",
+      //   title:"支付失败",
       //   icon: "none"
       // });
     }
@@ -1655,7 +1656,7 @@ export default class CartCheckout extends Component {
                             showDesc={true}
                             renderDesc={
                               <View className="order-item__desc">
-                                {item.discount_info &&
+                                {item.discount_info && item.order_item_type !== "gift"  &&
                                   item.discount_info.map(discount => (
                                     <Text
                                       className="order-item__discount"
