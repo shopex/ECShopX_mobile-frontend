@@ -123,7 +123,7 @@ export default class DistributionDashboard extends Component {
           applyStatus: 'status',
         })
     const res3 = await api.member.getIsHf()
-    let isHf=res3.hfpay_version_status=='open'
+    let isHf=res3.hfpay_version_status
     const info = { username, avatar, ...base, ...pInfo, ...userInfo,isHf }
    
     
