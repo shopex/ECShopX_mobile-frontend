@@ -21,7 +21,7 @@ export default class Coupon extends Component {
       ...this.state,
       curTabIdx: 0,
       tabList: [
-        {title: '可用优惠券', status: '1'},
+        {title: '未使用', status: '1'},
         {title: '已使用', status: '2'},
         {title: '已过期', status: '3'}
       ],
