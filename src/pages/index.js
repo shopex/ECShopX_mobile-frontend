@@ -1,15 +1,15 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { SpToast, TabBar, Loading, SpNote, BackToTop, FloatMenus, FloatMenuItem,AccountOfficial } from '@/components'
+import { SpToast, TabBar, Loading, SpNote, BackToTop, FloatMenus, FloatMenuItem,AccountOfficial, ScreenAd } from '@/components'
 import req from '@/api/req'
 import api from '@/api'
 import { pickBy, classNames, isArray, normalizeQuerys } from '@/utils'
 import entry from '@/utils/entry'
 import { withPager, withBackToTop } from '@/hocs'
 import S from "@/spx";
+import { Tracker } from "@/service"
 import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
-import { Tracker } from "@/service";
 import HomeWgts from './home/comps/home-wgts'
 import Automatic from './home/comps/automatic'
 // import { resolveFavsList } from './item/helper'
@@ -575,6 +575,8 @@ export default class HomeIndex extends Component {
         <TabBar
           showbar={show_tabBar}
         />
+        {/* 开屏广告 */}
+        <ScreenAd />
         
       </View>
     )
