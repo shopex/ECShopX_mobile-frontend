@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/others/pages/auth/index.js
  * @Date: 2020-10-29 15:36:41
  * @LastEditors: Arvin
- * @LastEditTime: 2020-12-24 11:12:42
+ * @LastEditTime: 2020-12-25 15:07:11
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
@@ -40,7 +40,7 @@ export default class AuthLogin extends Component {
   scanCode = async () => {
     let { token, scene } = this.$router.params
     if (!token && scene) {
-      const t = normalizeQuerys(this.$router.params)
+      const { t } = normalizeQuerys(this.$router.params)
       token = t
     }
     const { code } = await Taro.login()
@@ -59,7 +59,7 @@ export default class AuthLogin extends Component {
       }
     } catch (e) {}
     setTimeout(() => {
-      Taro.navigateBack()
+      this.cancel()
     }, 1500)
   }
 
@@ -67,7 +67,7 @@ export default class AuthLogin extends Component {
   comfimLogin = async () => {
     let { token, scene } = this.$router.params
     if (!token && scene) {
-      const t = normalizeQuerys(this.$router.params)
+      const { t } = normalizeQuerys(this.$router.params)
       token = t
     }
     const { code } = await Taro.login()
@@ -93,12 +93,19 @@ export default class AuthLogin extends Component {
     }
     Taro.hideLoading()
     setTimeout(() => {
-      Taro.navigateBack()
+      this.cancel()
     }, 1500)    
   }
 
   cancel = () => {
-    Taro.navigateBack()
+    const pages = Taro.getCurrentPages()
+    if (pages.length > 1) {
+      Taro.navigateBack()
+    } else {
+      Taro.redirectTo({
+        url: '/pages/index'
+      })
+    }
   }
   
   render () {
