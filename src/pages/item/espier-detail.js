@@ -112,28 +112,28 @@ export default class Detail extends Component {
       this.fetchInfo(id)
       this.getEvaluationList(id)
        // 浏览记录
-    if (S.getAuthToken()) {
-      try {
-        let itemId = ''
-        if (id) {
-          itemId = id
-        } else {
-          itemId = this.$router.params.id
+      if (S.getAuthToken()) {
+        try {
+          let itemId = ''
+          if (id) {
+            itemId = id
+          } else {
+            itemId = this.$router.params.id
+          }
+          api.member.itemHistorySave(itemId)
+        } catch (e) {
+          console.log(e)
         }
-        api.member.itemHistorySave(itemId)
-      } catch (e) {
-        console.log(e)
       }
-    }
+    }) 
     // 处理定位
     const lnglat = Taro.getStorageSync('lnglat')
     if (lnglat && !lnglat.city) {
       entry.InverseAnalysis(lnglat)
     }
     this.getDetailShare()
-    }) 
-   
   }
+  
   async getDetailShare(){
     const options = this.$router.params
     let id = options.dtid
@@ -268,6 +268,9 @@ export default class Detail extends Component {
     //     }
     //   }
     // }
+    if(!param.goods_id){
+      delete param.goods_id
+    }
     if (APP_PLATFORM === 'standard') {
       param.distributor_id = distributor_id 
     } else {
