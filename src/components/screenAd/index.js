@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/components/screenAd/index.js
  * @Date: 2020-12-21 11:03:55
  * @LastEditors: Arvin
- * @LastEditTime: 2020-12-29 16:58:44
+ * @LastEditTime: 2020-12-30 14:08:15
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Video } from '@tarojs/components'
@@ -94,6 +94,8 @@ export default class ScreenAd extends Component {
   // 跳过广告
   jumpAd = (e) => {
     e && e.stopPropagation()
+    const { isJump } = this.state
+    if (e && !isJump) return false
     this.timeId && clearTimeout(this.timeId)
     this.setState({
       isShow: false
@@ -129,11 +131,9 @@ export default class ScreenAd extends Component {
         onTouchMove={this.disableTouch.bind(this)}
       >
         {/* 倒计时 */}
-        {
-          isJump && <View className={`countDown ${position}`} onClick={this.jumpAd.bind(this)}>
-            跳过 { downTime }s
-          </View>
-        }
+        <View className={`countDown ${position}`} onClick={this.jumpAd.bind(this)}>
+          {isJump ? `跳过${downTime}s` : `${downTime}s`}
+        </View>
         {
           !isVideo ? <Image className='adImg' src={url} />
           : <Video
