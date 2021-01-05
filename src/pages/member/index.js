@@ -49,6 +49,8 @@ export default class MemberIndex extends Component {
       isOpenPopularize: false,
       salespersonData: null,
       memberAssets: {},
+      // 是否开启储值
+      rechargeStatus: true
     }
   }
 
@@ -136,6 +138,7 @@ export default class MemberIndex extends Component {
         grade_name: res.memberInfo.gradeInfo.grade_name,
         background_pic_url: res.memberInfo.gradeInfo.background_pic_url
       },
+      rechargeStatus: res.is_recharge_status,
       orderCount,
       memberDiscount: memberDiscount.length > 0 ? memberDiscount[memberDiscount.length-1].privileges.discount_desc : '',
       memberAssets: {...assets, deposit: res.deposit}
@@ -331,7 +334,7 @@ export default class MemberIndex extends Component {
   }
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner} = this.state
+    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner, rechargeStatus } = this.state
     const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
     const bannerInfo = memberBanner.length ? memberBanner[0].params : null
     return (
@@ -375,13 +378,15 @@ export default class MemberIndex extends Component {
                       <View className='member-assets__label'>积分</View>
                       <View className='member-assets__value'>{memberAssets.point_total_count}</View>
                     </View>
-                    <View
-                      className='view-flex-item'
-                      onClick={this.handleClick.bind(this, `/others/pages/recharge/index`)}
-                    >
-                      <View className='member-assets__label'>储值</View>
-                      <View className='member-assets__value'>{(memberAssets.deposit || 0) / 100}</View>
-                    </View>                 
+                    {
+                      rechargeStatus && <View
+                        className='view-flex-item'
+                        onClick={this.handleClick.bind(this, `/others/pages/recharge/index`)}
+                      >
+                        <View className='member-assets__label'>储值</View>
+                        <View className='member-assets__value'>{(memberAssets.deposit || 0) / 100}</View>
+                      </View>
+                    }               
                     <View
                       className='view-flex-item'
                       onClick={this.handleClick.bind(this, '/pages/member/item-fav')}
