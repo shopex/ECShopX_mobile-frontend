@@ -83,8 +83,8 @@ export default class HomeIndex extends Component {
     is_open_store_status:isOpenStore
   })
 
-    this.checkWhite()
-    //this.fetchSetInfo()
+    // this.checkWhite()
+    this.fetchSetInfo()
     api.wx.shareSetting({shareindex: 'index'}).then(res => {
       this.setState({
         shareInfo: res
@@ -99,10 +99,9 @@ export default class HomeIndex extends Component {
       is_open_recommend: is_open_recommend,
       is_open_scan_qrcode: is_open_scan_qrcode,
       is_open_wechatapp_location: is_open_wechatapp_location,
-      is_open_official_account:is_open_official_account,
-     
+      is_open_official_account:is_open_official_account
     }, async() => {
-         const { is_open_store_status } = this.state
+        const { is_open_store_status } = this.state
         let isNeedLoacate = is_open_wechatapp_location == 1 ? true : false
         const options = this.$router.params
         options.isStore = is_open_store_status
@@ -128,20 +127,7 @@ export default class HomeIndex extends Component {
           isOpen: is_open === 'true',
           adPic: ad_pic
         }
-        // positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
       })
-      // const userinfo = Taro.getStorageSync('userinfo')
-      // if (automatic.is_open === 'true' && automatic.register_type === 'membercard' && userinfo) {
-      //   const { is_open, is_vip, is_had_vip, vip_type } = await api.vip.getUserVipInfo()
-      //   this.setState({
-      //     vip: {
-      //       isSetVip: is_open,
-      //       isVip: is_vip,
-      //       isHadVip: is_had_vip,
-      //       vipType: vip_type
-      //     }
-      //   })
-      // }
     })
   }
 
@@ -322,8 +308,9 @@ export default class HomeIndex extends Component {
     // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=index'
     const url = '/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=' + curdis_id
     const info = await req.get(url)
+    const wgts = isArray(info) ? [] : info.config
     this.setState({
-      wgts: isArray(info) ? [] : info.config
+      wgts: wgts.length > 5 ? wgts.slice[0, 5] : wgts
     }, () => {
       if (cb) {
         cb(info)
@@ -347,6 +334,11 @@ export default class HomeIndex extends Component {
           this.props.onUpdateLikeList(false)
         }
       }
+      setTimeout(() => {
+        this.setState({
+          wgts
+        })
+      }, 1000)
     })
   }
 
@@ -563,7 +555,7 @@ export default class HomeIndex extends Component {
 
         <BackToTop
           show={showBackToTop}
-          onClick={this.scrollBackToTop}
+          onClick={this.scrollBackToTop.bind(this)}
         />
         {
           isShowAddTip ? <View className='add_tip'>
