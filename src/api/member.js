@@ -337,3 +337,12 @@ export function getIsHf (params = {}) {
 export function getCrmsetting () {
   return req.get('/member/crmsetting')
 }
+
+// 配置地址
+export function getSettingCenter () {
+  return req.get('/pageparams/setting', {
+    template_name: 'yykweishop',
+    version: 'v1.0.1',
+    page_name: 'member_center_menu_setting'
+  })
+}
