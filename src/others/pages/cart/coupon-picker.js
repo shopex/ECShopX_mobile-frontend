@@ -24,13 +24,13 @@ export default class CouponPicker extends Component {
   }
 
   componentDidMount () {
-    this.fetch()
+    this.nextPage()
   }
 
   async fetch (query = {}) {
     //const { distributor_id } = Taro.getStorageSync('curStore')
     const { items, is_checkout, cart_type, use_platform = 'mall',distributor_id, source, goodType } = this.$router.params
-    const { curCoupon } = this.props
+    // const { curCoupon } = this.props
     const { page_no: page, page_size: pageSize } = query
 
     const params = {
@@ -72,11 +72,11 @@ export default class CouponPicker extends Component {
       discount: 'discount',
       begin_date: 'begin_date',
       end_date: 'end_date'
-    }).sort((a) => !a.valid)
+    })
     const list = [...this.state.coupons, ...coupons]
     this.setState({
-      // coupons: list.sort(a => (a.code === curCoupon.value.code) ? -1 : 1)
-      coupons: list
+      coupons: list.sort(a => a.valid ? -1 : 1)
+      // coupons: list
     })
     return { total: couponsData.total_count }
   }
