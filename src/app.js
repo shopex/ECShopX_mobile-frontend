@@ -82,7 +82,6 @@ class App extends Component {
       'pages/item/espier-detail',
       'pages/item/item-params',
       'pages/item/package-list',
-     
 
       'pages/cart/espier-index',
       'pages/cart/espier-checkout',
@@ -332,13 +331,25 @@ class App extends Component {
       name: "tabs"
     }
     const setUrl = '/pagestemplate/setInfo'
-    const { tab_bar,is_open_official_account } = await req.get(setUrl)
+    const {
+      tab_bar,
+      is_open_recommend,
+      is_open_scan_qrcode,
+      is_open_wechatapp_location,
+      is_open_official_account
+    } = await req.get(setUrl)
     store.dispatch({
       type: 'tabBar',
       payload: tab_bar ? JSON.parse(tab_bar) : defaultTabs
     })
     Taro.setStorageSync('initTabBar', true)
-    Taro.setStorageSync('isOpenOfficial',is_open_official_account)
+    // Taro.setStorageSync('isOpenOfficial',is_open_official_account)
+    Taro.setStorageSync('settingInfo', {
+      is_open_recommend,
+      is_open_scan_qrcode,
+      is_open_wechatapp_location,
+      is_open_official_account
+    })
     // store.dispatch({
     //   type: 'tabBar',
     //   payload: info.list.length ? info.list[0].params : defaultTabs

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/components/sp-img/index.js
  * @Date: 2020-03-04 17:27:15
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-09 18:28:54
+ * @LastEditTime: 2021-01-06 18:25:44
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Image } from '@tarojs/components'
@@ -32,7 +32,7 @@ export default class SpImg extends Component {
       src,
       mode,
       lazyLoad,
-      qnMode,
+      qnMode = true,
       onLoad,
       onError,
       width,
@@ -69,7 +69,7 @@ export default class SpImg extends Component {
       const isMode = mod || width || height || ll || ss || lim || col || per
       url += isMode ? `?x-oss-process=image/resize,${mod}${w}${h}${ll}${ss}${lim}${col}${per}` : ''
     } else {
-      url += qnMode
+      url += (width || height) ? `?imageView2/2${width ? '/w/' + width : ''}${height ? '/h/' + height : ''}` : ''
     }
 
     const imgClass = Taro.getEnv() !== 'WEB' ? 'img-class' : this.props['img-class']
