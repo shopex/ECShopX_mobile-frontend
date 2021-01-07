@@ -20,7 +20,9 @@ import './app.scss'
 // }
 
 const { store } = configStore()
+
 useHooks()
+
 if (APP_TRACK) {
   const system = Taro.getSystemInfoSync();
   if (!(system && system.environment && system.environment === "wxwork")) {
@@ -34,46 +36,12 @@ class App extends Component {
   componentWillMount () {
   }
   componentDidMount () {
-    if (APP_PLATFORM === 'standard' && Taro.getEnv() === 'WEB') {
-      new LBS()
-    }
-    // 设置购物车默认类型
-    if (Taro.getStorageSync('cartType')) {
-      Taro.setStorageSync('cartType', 'normal')
-    }
-    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
-    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
-      Taro.setStorageSync('distribution_shop_id', '')
-      Taro.setStorageSync('distribution_shop_exp', '')
-    }
-    const { query } = this.$router.params
-    if (query && query.scene) {
-      const { smid , dtid, id, aid, cid  } = normalizeQuerys(query)
-      if (smid) {
-        Taro.setStorageSync('s_smid', smid)
-      }
-  
-      if (dtid) {
-        Taro.setStorageSync('s_dtid', dtid)
-      }
-      // 如果id、aid、cid同时存在则为团购分享详情
-      if (id && aid && cid) {
-        Taro.redirectTo({
-          url: `/groupBy/pages/shareDetail/index?aid=${aid}&itemId=${id}&cid=${cid}`
-        })
-      }
-    }
-    this.fetchTabs()
-    this.fetchColors()
-    // 美洽客服插件
-    this.fetchMeiQia()
-    // 一洽客服
-    this.fetchEchat()
+    this.init()
   }
 
   config = {
     pages: [
-      'pages/index',
+      'pages/newindex',
       'pages/home/landing',
       'pages/category/index',
       'pages/floorguide/index',
@@ -275,6 +243,19 @@ class App extends Component {
   }
 
   componentDidShow (options) {
+    const { referrerInfo } = options || {}
+    if (referrerInfo) {
+      console.log(referrerInfo)
+    }
+  }
+
+  componentDidHide () {
+    FormIds.stop()
+  }
+
+  // 初始化
+  init () {
+    // 获取收藏列表
     if (process.env.TARO_ENV === 'weapp') {
       FormIds.startCollectingFormIds()
       if (S.getAuthToken()) {
@@ -291,20 +272,50 @@ class App extends Component {
           })
       }
     }
-
-    const { referrerInfo } = options || {}
-    if (referrerInfo) {
-      console.log(referrerInfo)
+    // H5定位
+    if (APP_PLATFORM === 'standard' && Taro.getEnv() === 'WEB') {
+      new LBS()
     }
+    // 设置购物车默认类型
+    if (Taro.getStorageSync('cartType')) {
+      Taro.setStorageSync('cartType', 'normal')
+    }
+    // 过期时间
+    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
+    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
+      Taro.setStorageSync('distribution_shop_id', '')
+      Taro.setStorageSync('distribution_shop_exp', '')
+    }
+    // 根据路由参数
+    const { query } = this.$router.params
+    if (query && query.scene) {
+      const { smid , dtid, id, aid, cid  } = normalizeQuerys(query)
+      if (smid) {
+        Taro.setStorageSync('s_smid', smid)
+      }
+  
+      if (dtid) {
+        Taro.setStorageSync('s_dtid', dtid)
+      }
+      // 如果id、aid、cid同时存在则为团购分享详情
+      if (id && aid && cid) {
+        Taro.redirectTo({
+          url: `/groupBy/pages/shareDetail/index?aid=${aid}&itemId=${id}&cid=${cid}`
+        })
+      }
+    }
+    // 初始化tabbar
+    this.fetchTabs()
+    // 获取主题配色
+    this.fetchColors()
+    // 美洽客服插件
+    this.fetchMeiQia()
+    // 一洽客服
+    this.fetchEchat()
   }
 
-  componentDidHide () {
-    FormIds.stop()
-  }
-
-  async fetchTabs () {
+  fetchTabs () {
     Taro.setStorageSync('initTabBar', false)
-    // const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
     const defaultTabs = {
       config: {
         backgroundColor: "#ffffff",
@@ -331,32 +342,28 @@ class App extends Component {
       name: "tabs"
     }
     const setUrl = '/pagestemplate/setInfo'
-    const {
+    req.get(setUrl).then(({
       tab_bar,
       is_open_recommend,
       is_open_scan_qrcode,
       is_open_wechatapp_location,
       is_open_official_account
-    } = await req.get(setUrl)
-    store.dispatch({
-      type: 'tabBar',
-      payload: tab_bar ? JSON.parse(tab_bar) : defaultTabs
+    }) => {
+      store.dispatch({
+        type: 'tabBar',
+        payload: tab_bar ? JSON.parse(tab_bar) : defaultTabs
+      })
+      Taro.setStorageSync('initTabBar', true)
+      Taro.setStorageSync('settingInfo', {
+        is_open_recommend,
+        is_open_scan_qrcode,
+        is_open_wechatapp_location,
+        is_open_official_account
+      })
     })
-    Taro.setStorageSync('initTabBar', true)
-    // Taro.setStorageSync('isOpenOfficial',is_open_official_account)
-    Taro.setStorageSync('settingInfo', {
-      is_open_recommend,
-      is_open_scan_qrcode,
-      is_open_wechatapp_location,
-      is_open_official_account
-    })
-    // store.dispatch({
-    //   type: 'tabBar',
-    //   payload: info.list.length ? info.list[0].params : defaultTabs
-    // })
   }
 
-  async fetchColors () {
+  fetchColors () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=color_style'
     const defaultColors = {
       data: [
@@ -368,23 +375,27 @@ class App extends Component {
       ],
       name: 'base'
     }
-    const info = await req.get(url)
-    store.dispatch({
-      type: 'colors',
-      payload: info.list.length ? info.list[0].params : defaultColors
+    req.get(url).then(info => {
+      store.dispatch({
+        type: 'colors',
+        payload: info.list.length ? info.list[0].params : defaultColors
+      })
     })
+
   }
 
   // 获取美洽客服配置
-  async fetchMeiQia () {
-    const info = await api.user.imConfig()
-    Taro.setStorageSync('meiqia', info)
+  fetchMeiQia () {
+    api.user.imConfig().then(info => {
+      Taro.setStorageSync('meiqia', info)
+    })
   }
 
   // 获取一洽客服配置
-  async fetchEchat () {
-    const info = await api.user.echatConfig()
-    Taro.setStorageSync('echat', info)
+  fetchEchat () {
+    api.user.echatConfig().then(info => {
+      Taro.setStorageSync('echat', info)
+    })
   }
 
   componentDidCatchError () {}
