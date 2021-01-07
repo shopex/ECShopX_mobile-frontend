@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/newindex.js
  * @Date: 2021-01-06 15:46:54
  * @LastEditors: Arvin
- * @LastEditTime: 2021-01-06 17:54:38
+ * @LastEditTime: 2021-01-07 15:56:15
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
@@ -75,9 +75,51 @@ export default class Home extends Component {
 
   componentDidMount () {
     this.getHomeSetting()
+    this.getShareSetting()
   }
 
   componentDidShow () {
+  }
+
+  // 分享
+  onShareAppMessage () {
+    const shareInfo = this.shareInfo()
+    return {
+      ...shareInfo
+    }
+  }
+  
+  // 分享朋友圈
+  onShareTimeline () {
+    const shareInfo = this.shareInfo('time')
+    return {
+      ...shareInfo
+    }
+  }
+
+  // 分享
+  shareInfo = (type = '') => {
+    const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    let query = userId ? `/pages/index?uid=${userId}` : '/pages/index'
+    if (type) {
+      query = userId ? `uid=${userId}` : ''
+    }
+    const path = type ? 'query' : 'path'
+    const params = {
+      title: res.title,
+      imageUrl: res.imageUrl,
+      [path]: query
+    }
+    return params
+  }
+
+  // 获取分享配置
+  getShareSetting = async () => {
+    const res = await api.wx.shareSetting({shareindex: 'index'})
+    this.setState({
+      shareInfo: res
+    })
   }
 
   // 获取首页配置
@@ -89,7 +131,7 @@ export default class Home extends Component {
       is_open_wechatapp_location,
       is_open_official_account
     } = Taro.getStorageSync('settingInfo')
-    let isNeedLoacate = is_open_wechatapp_location == 1
+    const isNeedLoacate = is_open_wechatapp_location == 1
     const options = this.$router.params
     options.isStore = is_open_store_status
     const res = await entry.entryLaunch(options, isNeedLoacate)
@@ -117,9 +159,16 @@ export default class Home extends Component {
     }
     const url = `/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=${curdis_id}` 
     const info = await req.get(url)
+    const wgts = isArray(info) ? [] : info.config
     this.setState({
-      wgts: isArray(info) ? [] : info.config
+      wgts: wgts.length > 5 ? wgts.slice(0, 5) : wgts
     }, () => {
+      // 1s后补足缺失挂件
+      setTimeout(() => {
+        this.setState({
+          wgts
+        })
+      }, 1000)
       if (cb) {
         cb(info)
       }
