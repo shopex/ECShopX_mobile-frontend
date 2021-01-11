@@ -307,10 +307,7 @@ class App extends Component {
     this.fetchTabs()
     // 获取主题配色
     this.fetchColors()
-    // 美洽客服插件
-    this.fetchMeiQia()
-    // 一洽客服
-    this.fetchEchat()
+    this.getHomeSetting()
   }
 
   fetchTabs () {
@@ -383,17 +380,22 @@ class App extends Component {
 
   }
 
-  // 获取美洽客服配置
-  fetchMeiQia () {
-    api.user.imConfig().then(info => {
-      Taro.setStorageSync('meiqia', info)
-    })
-  }
-
-  // 获取一洽客服配置
-  fetchEchat () {
-    api.user.echatConfig().then(info => {
-      Taro.setStorageSync('echat', info)
+  // 获取首页配置
+  getHomeSetting = async () => {
+    const {
+      echat = {},
+      meiqia = {},
+      whitelist_status =  false,
+      nostores_status = false
+    } = await api.shop.homeSetting()
+    // 美洽客服配置
+    Taro.setStorageSync('meiqia', meiqia)
+    // 一洽客服配置
+    Taro.setStorageSync('echat', echat)
+    // 白名单配置、门店配置
+    Taro.setStorageSync('otherSetting', {
+      whitelist_status,
+      nostores_status
     })
   }
 
