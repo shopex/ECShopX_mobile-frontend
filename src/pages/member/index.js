@@ -49,6 +49,8 @@ export default class MemberIndex extends Component {
       isOpenPopularize: false,
       salespersonData: null,
       memberAssets: {},
+      // 是否开启储值
+      rechargeStatus: true,
       // 菜单配置
       menuSetting: {
         activity: false,
@@ -149,6 +151,7 @@ export default class MemberIndex extends Component {
         grade_name: res.memberInfo.gradeInfo.grade_name,
         background_pic_url: res.memberInfo.gradeInfo.background_pic_url
       },
+      rechargeStatus: res.is_recharge_status,
       orderCount,
       memberDiscount: memberDiscount.length > 0 ? memberDiscount[memberDiscount.length-1].privileges.discount_desc : '',
       memberAssets: {...assets, deposit: res.deposit}
@@ -354,7 +357,7 @@ export default class MemberIndex extends Component {
   }
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner, menuSetting } = this.state
+    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner, menuSetting, rechargeStatus } = this.state
     const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
     const bannerInfo = memberBanner.length ? memberBanner[0].params : null
     return (
@@ -401,7 +404,7 @@ export default class MemberIndex extends Component {
                       <View className='member-assets__value'>{memberAssets.point_total_count}</View>
                     </View>
                     {
-                      menuSetting.recharge && <View
+                      rechargeStatus && <View
                         className='view-flex-item'
                         onClick={this.handleClick.bind(this, `/others/pages/recharge/index`)}
                       >
@@ -573,7 +576,7 @@ export default class MemberIndex extends Component {
 
           <View className='page-member-section'>
             {
-              menuSetting.ext_info &&
+              isOpenPopularize &&
                 <SpCell
                   title={!info.isPromoter ? '我要推广' : '推广管理'}
                   isLink
