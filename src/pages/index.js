@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/index.js
  * @Date: 2021-01-06 15:46:54
  * @LastEditors: Arvin
- * @LastEditTime: 2021-01-08 17:22:43
+ * @LastEditTime: 2021-01-11 11:26:41
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
@@ -256,10 +256,10 @@ export default class Home extends Component {
   }
 
   // 白名单
-  checkWhite = async () => {
+  checkWhite = () => {
+    const setting = Taro.getStorageSync('otherSetting')
     if(!S.getAuthToken()){
-      const { status } = await api.wx.getWhiteList()
-      if(status == true){
+      if (setting.whitelist_status == true) {
         this.setState({
           show_tabBar:false
         })
