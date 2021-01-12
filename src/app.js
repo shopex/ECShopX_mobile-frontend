@@ -385,6 +385,7 @@ class App extends Component {
     const {
       echat = {},
       meiqia = {},
+      driver = 'qiniu',
       whitelist_status =  false,
       nostores_status = false
     } = await api.shop.homeSetting()
@@ -392,10 +393,11 @@ class App extends Component {
     Taro.setStorageSync('meiqia', meiqia)
     // 一洽客服配置
     Taro.setStorageSync('echat', echat)
-    // 白名单配置、门店配置
+    // 白名单配置、门店配置、图片存储信息
     Taro.setStorageSync('otherSetting', {
       whitelist_status,
-      nostores_status
+      nostores_status,
+      driver
     })
   }
 
