@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/components/sp-img/index.js
  * @Date: 2020-03-04 17:27:15
  * @LastEditors: Arvin
- * @LastEditTime: 2021-01-12 10:46:46
+ * @LastEditTime: 2021-01-12 11:14:46
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Image } from '@tarojs/components'
@@ -25,7 +25,7 @@ export default class SpImg extends Component {
   static externalClasses = ['img-class']
 
   render () {
-    const { driver = 'qiniu'} = Taro.getStorageSync('otherSetting') || {}
+    const { disks_driver = 'qiniu'} = Taro.getStorageSync('otherSetting') || {}
     const {
       src,
       mode,
@@ -52,7 +52,7 @@ export default class SpImg extends Component {
 
     let url = src
 
-    if (driver === 'oss') {
+    if (disks_driver === 'oss') {
       // 处理阿里云的图片缩放参数
       const mod = m ? `m_${m},` : ''
       const w = width ? `w_${width},` : ''
@@ -65,7 +65,7 @@ export default class SpImg extends Component {
       // 是否需要处理
       const isMode = mod || width || height || ll || ss || lim || col || per
       url += isMode ? `?x-oss-process=image/resize,${mod}${w}${h}${ll}${ss}${lim}${col}${per}` : ''
-    } else if (driver === 'qiniu'){
+    } else if (disks_driver === 'qiniu'){
       url += (width || height) ? `?imageView2/2${width ? '/w/' + width : ''}${height ? '/h/' + height : ''}` : ''
     }
 
