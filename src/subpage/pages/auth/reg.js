@@ -125,6 +125,7 @@ export default class Reg extends Component {
 
   handleSubmit = async (e) => {
     const { value } = e.detail
+    let contine = false
     const data = {
       ...this.state.info,
       ...value
@@ -142,8 +143,16 @@ export default class Reg extends Component {
       return S.toast('请输入密码')
     }*/
     this.state.list.map(item => {
-      return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
+      if(item.is_required && !data[item.key]){
+        contine = true
+        return S.toast(`请输入${item.name}`)
+
+      }
+      //return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
     })
+    if(contine){
+      return false
+    }
 
     try {
       if (isWeapp) {
