@@ -385,7 +385,7 @@ class App extends Component {
     const {
       echat = {},
       meiqia = {},
-      driver = 'qiniu',
+      disks_driver = 'qiniu',
       whitelist_status =  false,
       nostores_status = false
     } = await api.shop.homeSetting()
@@ -397,7 +397,7 @@ class App extends Component {
     Taro.setStorageSync('otherSetting', {
       whitelist_status,
       nostores_status,
-      driver
+      disks_driver
     })
   }
 
