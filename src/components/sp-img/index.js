@@ -6,13 +6,10 @@
  * @FilePath: /unite-vshop/src/components/sp-img/index.js
  * @Date: 2020-03-04 17:27:15
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-09 18:28:54
+ * @LastEditTime: 2021-01-12 10:46:46
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Image } from '@tarojs/components'
-// import { h5 } from '../../../config/dev'
-// import QnImg from '../qn-img'
-// import AliYunImg from '../aliyun-img'
 
 export default class SpImg extends Component {
 
@@ -28,11 +25,11 @@ export default class SpImg extends Component {
   static externalClasses = ['img-class']
 
   render () {
+    const { driver = 'qiniu'} = Taro.getStorageSync('otherSetting') || {}
     const {
       src,
       mode,
-      lazyLoad,
-      qnMode,
+      lazyLoad = true,
       onLoad,
       onError,
       width,
@@ -55,7 +52,7 @@ export default class SpImg extends Component {
 
     let url = src
 
-    if (!qnMode) {
+    if (driver === 'oss') {
       // 处理阿里云的图片缩放参数
       const mod = m ? `m_${m},` : ''
       const w = width ? `w_${width},` : ''
@@ -68,8 +65,8 @@ export default class SpImg extends Component {
       // 是否需要处理
       const isMode = mod || width || height || ll || ss || lim || col || per
       url += isMode ? `?x-oss-process=image/resize,${mod}${w}${h}${ll}${ss}${lim}${col}${per}` : ''
-    } else {
-      url += qnMode
+    } else if (driver === 'qiniu'){
+      url += (width || height) ? `?imageView2/2${width ? '/w/' + width : ''}${height ? '/h/' + height : ''}` : ''
     }
 
     const imgClass = Taro.getEnv() !== 'WEB' ? 'img-class' : this.props['img-class']
