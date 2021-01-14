@@ -1,20 +1,34 @@
 import Taro, { PureComponent } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { WgtSearchHome, WgtFilm, WgtMarquees, WgtSlider, WgtImgHotZone, WgtNavigation, WgtCoupon, WgtGoodsScroll,WgtGoodsGrid, WgtGoodsGridTab, WgtShowcase, WgtStore, WgtHeadline, WgtImgGif,WgtHotTopic,WgtFloorImg} from '../wgts'
-import { Tracker } from "@/service";
+import { Tracker } from "@/service"
+import {
+  WgtSearchHome,
+  WgtFilm,
+  WgtMarquees,
+  WgtSlider,
+  WgtImgHotZone,
+  WgtNavigation,
+  WgtCoupon,
+  WgtGoodsScroll,
+  WgtGoodsGrid,
+  WgtGoodsGridTab,
+  WgtShowcase,
+  WgtStore,
+  WgtHeadline,
+  WgtImgGif,
+  WgtHotTopic,
+  WgtFloorImg
+} from '../wgts'
 
 
 export default class HomeWgts extends PureComponent {
-  state = {
-    screenWidth: 375
-  }
-
-  static options = {
-    addGlobalClass: true
-  }
 
   static defaultProps = {
     wgts: []
+  }
+
+  state = {
+    screenWidth: 375
   }
 
   componentDidMount() {
@@ -27,6 +41,10 @@ export default class HomeWgts extends PureComponent {
       })
   }
 
+  static options = {
+    addGlobalClass: true
+  }
+
   startTrack() {
 
     this.endTrack();
@@ -35,8 +53,9 @@ export default class HomeWgts extends PureComponent {
 
     if (!wgts) return;
 
-    const toExpose = wgts.map((t, idx) => String(idx));
-    const observer = Taro.createIntersectionObserver(this.$scope, { observeAll: true });
+    // const toExpose = wgts.map((t, idx) => String(idx))
+
+    const observer = Taro.createIntersectionObserver(this.$scope, { observeAll: true })
 
     observer.relativeToViewport({ bottom: 0 }).observe(".wgt-wrap", res => {
       if (res.intersectionRatio > 0) {
@@ -65,7 +84,8 @@ export default class HomeWgts extends PureComponent {
   render() {
     const { wgts } = this.props
     const { screenWidth } = this.state
-    console.log('wgts------->',wgts)
+
+    if (!wgts || wgts.length <= 0) return null
 
     return (
       <View>
@@ -84,10 +104,10 @@ export default class HomeWgts extends PureComponent {
                 {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} />}
                 {item.name === 'goodsGridTab' && <WgtGoodsGridTab info={item} />}
                 {item.name === 'showcase' && <WgtShowcase info={item} />}
-                {item.name === 'headline' && <WgtHeadline info={item}/>}
-                {item.name === 'img-gif' && <WgtImgGif info={item}/>}
-                {item.name === 'hotTopic' && <WgtHotTopic info={item}/>}
-                {item.name === 'floorImg' && <WgtFloorImg info={item}/>}
+                {item.name === 'headline' && <WgtHeadline info={item} />}
+                {item.name === 'img-gif' && <WgtImgGif info={item} />}
+                {item.name === 'hotTopic' && <WgtHotTopic info={item} />}
+                {item.name === 'floorImg' && <WgtFloorImg info={item} />}
                 {APP_PLATFORM !== 'standard' && item.name === 'store' && <WgtStore info={item} />}
               </View>
             )

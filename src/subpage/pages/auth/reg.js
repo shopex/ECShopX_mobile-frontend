@@ -125,6 +125,7 @@ export default class Reg extends Component {
 
   handleSubmit = async (e) => {
     const { value } = e.detail
+    let contine = false
     const data = {
       ...this.state.info,
       ...value
@@ -142,8 +143,16 @@ export default class Reg extends Component {
       return S.toast('请输入密码')
     }*/
     this.state.list.map(item => {
-      return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
+      if(item.is_required && !data[item.key]){
+        contine = true
+        return S.toast(`请输入${item.name}`)
+
+      }
+      //return item.is_required ? (item.is_required && data[item.key] ? true : S.toast(`请输入${item.name}`)) : null
     })
+    if(contine){
+      return false
+    }
 
     try {
       if (isWeapp) {
@@ -315,7 +324,6 @@ export default class Reg extends Component {
     resolve()
   }
 
-
   handleTimerStop = () => {
 
   }
@@ -424,7 +432,7 @@ export default class Reg extends Component {
             {process.env.TARO_ENV === "weapp" && (
               <View className="at-input">
                 <View className="at-input__container">
-                  <View className="at-input__title">手机号码</View>
+                  <View className="at-input__title"><Text className="require-text">*</Text>手机号码</View>
                   <View className="at-input__input">{info.mobile}</View>
                   <View className="at-input__children">
                     <AtButton
@@ -458,6 +466,7 @@ export default class Reg extends Component {
             {Taro.getEnv() !== Taro.ENV_TYPE.WEAPP && (
               <View>
                 <AtInput
+                  required
                   title="手机号码"
                   name="mobile"
                   type="number"
@@ -470,6 +479,7 @@ export default class Reg extends Component {
                 {imgVisible ? (
                   <AtInput
                     title="图片验证码"
+                    required
                     name="yzm"
                     value={info.yzm}
                     placeholder="请输入图片验证码"
@@ -484,6 +494,7 @@ export default class Reg extends Component {
                 ) : null}
                 <AtInput
                   title="验证码"
+                  required
                   name="vcode"
                   value={info.vcode}
                   placeholder="请输入验证码"
@@ -497,6 +508,8 @@ export default class Reg extends Component {
                 </AtInput>
               </View>
             )}
+
+            
             {/*<AtInput
               title='密码'
               name='password'
@@ -520,6 +533,7 @@ export default class Reg extends Component {
                     {item.element_type === "input" ? (
                       <View key={`${index}1`}>
                         <AtInput
+                          required={item.is_required}
                           key={`${index}1`}
                           title={item.name}
                           name={`${item.key}`}
@@ -546,6 +560,9 @@ export default class Reg extends Component {
                             >
                               <View className="picker">
                                 <View className="picker__title">
+                                  {
+                                    item.is_required && (<Text className="require-text">*</Text>)
+                                  }
                                   {item.name}
                                 </View>
                                 <Text
@@ -574,7 +591,10 @@ export default class Reg extends Component {
                             >
                               <View className="picker">
                                 <View className="picker__title">
-                                  {item.name}
+                                {
+                                    item.is_required && (<Text className="require-text">*</Text>)
+                                }
+                                {item.name}
                                 </View>
                                 <Text
                                   className={classNames(
@@ -596,6 +616,7 @@ export default class Reg extends Component {
                     {item.element_type === "checkbox" ? (
                       <View className="page-section">
                         <AtInput
+                          required={item.is_required}
                           key={`${index}1`}
                           title={item.name}
                           name={`${item.key}`}
