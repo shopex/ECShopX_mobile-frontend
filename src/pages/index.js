@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/index.js
  * @Date: 2021-01-06 15:46:54
  * @LastEditors: Arvin
- * @LastEditTime: 2021-01-11 11:26:41
+ * @LastEditTime: 2021-01-18 18:42:30
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
@@ -437,7 +437,6 @@ export default class Home extends Component {
   render () {
 
     const {
-      showAdv,
       show_tabBar,
       isShowAddTip,
       showBackToTop,
@@ -456,6 +455,8 @@ export default class Home extends Component {
       show_official
     } = this.state
 
+    // 广告屏
+    const { showAdv } = this.props
     // 是否是标准版
     const isStandard = APP_PLATFORM === 'standard'
     // 否是fixed
