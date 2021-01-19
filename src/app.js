@@ -397,7 +397,8 @@ class App extends Component {
     Taro.setStorageSync('otherSetting', {
       whitelist_status,
       nostores_status,
-      disk_driver
+      disk_driver,
+      nostores_status
     })
   }
 

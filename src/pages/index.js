@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/index.js
  * @Date: 2021-01-06 15:46:54
  * @LastEditors: Arvin
- * @LastEditTime: 2021-01-18 19:12:48
+ * @LastEditTime: 2021-01-19 11:31:49
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
@@ -458,10 +458,10 @@ export default class Home extends Component {
     // 广告屏
     const { showAdv } = this.props
     // 是否是标准版
-    const isStandard = APP_PLATFORM === 'standard'
+    const isStandard = APP_PLATFORM === 'standard' && !is_open_store_status
     // 否是fixed
-    const isFixed = positionStatus && (!isStandard || curStore.distributor_id == 0)
-
+    const isFixed = positionStatus
+  
     return (
       <View className='page-index'>
         {
@@ -487,8 +487,9 @@ export default class Home extends Component {
             classNames(
               'wgts-wrap',
               !isStandard && 'wgts-wrap_platform', 
-              isFixed ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard',
-              !curStore && 'wgts-wrap-nolocation'
+              (!isFixed || !isStandard) ? 'wgts-wrap__fixed' : 'wgts-wrap__fixed_standard',
+              !curStore && 'wgts-wrap-nolocation',
+              (!isFixed && !isStandard) && 'platform'
             )
           }
         >
