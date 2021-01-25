@@ -168,7 +168,7 @@ export default class CouponItem extends Component {
           </View>
         </View>
         <View className={`detail ${isExpanded && 'show'} `}> 
-          {info.use_condition}
+          {`卡劵使用说明：${info.description?info.description:'无'}`}
         </View> 
 
         
