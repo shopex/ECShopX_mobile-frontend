@@ -26,8 +26,12 @@ export default class WgtFilm extends Component {
 
   handleClickItem = linkPage
 
-  resolveSize ({ width, height, ratio: tRatio } = {}, screenWidth) {
-    let ratio = 16 / 9
+  resolveSize ({ width, height, ratio: tRatio, proportion = (16 / 9) } = {}, screenWidth) {
+    // let ratio = 16 / 9
+    let ratio = proportion
+    // let ratio = 3 / 4
+    // let ratio = 4 / 3
+    // let ratio = 1 / 1
     let w = '100%', h
     let objectFit = 'contain'
     const defaultHeight = Math.round(screenWidth / ratio)
