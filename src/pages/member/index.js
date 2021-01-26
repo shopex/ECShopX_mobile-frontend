@@ -64,7 +64,8 @@ export default class MemberIndex extends Component {
         member_code: false,
         recharge: false,
         ziti_order: false
-      }
+      },
+      imgUrl:''
     }
   }
 
@@ -78,6 +79,7 @@ export default class MemberIndex extends Component {
     this.getWheel()
     this.fetchBanner()
     this.fetchRedirect()
+    //this.getDefaultImg()
   }
 
   componentDidShow () {
@@ -85,6 +87,11 @@ export default class MemberIndex extends Component {
       this.getSalesperson()
     }
     this.getSettingCenter()
+  }
+
+  async getDefaultImg(){
+    const url = `/distributors/info?distributor_id=0`
+    const data= await req.get(url) 
   }
   
   config = {
@@ -361,11 +368,10 @@ export default class MemberIndex extends Component {
   async onShareAppMessage () { 
 
     const url = `/memberCenterShare/getInfo`
-    const {share_title,share_pic_wechatapp,share_description}= await req.get(url)
-   
+    const {share_title,share_pic_wechatapp,share_description}= await req.get(url) 
     return {
-      title: share_title,
-      imageUrl: share_pic_wechatapp,
+      title: share_title?share_title:'震惊！这店绝了！',
+      imageUrl: share_pic_wechatapp?share_pic_wechatapp:this.imgUrl,
       path:'/pages/index'
     }    
   }
