@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/home/wgts/goods-faverite.js
  * @Date: 2020-08-03 14:15:49
  * @LastEditors: Arvin
- * @LastEditTime: 2020-08-03 17:16:04
+ * @LastEditTime: 2021-01-26 18:24:32
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -24,7 +24,7 @@ export default class WgtGoodsFaverite extends Component {
   }
 
   handleClickItem = (item) => {
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
+    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id || 0}`
     Taro.navigateTo({
       url
     })
