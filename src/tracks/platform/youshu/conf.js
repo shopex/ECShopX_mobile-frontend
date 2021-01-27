@@ -10,7 +10,7 @@ const conf = {
   /**
    * 有数 - ka‘接入测试用’ 分配的 app_id，对应的业务接口人负责
    */
-  token: "bi281e87ab2424481a",
+  token: "bid2ebfbfc47054696",
 
   /**
    * 微信小程序appID，以wx开头
