@@ -173,6 +173,11 @@
     padding-left:16rpx;
     padding-right:16rpx; 
     color: #aaa;
+    word-wrap:break-word;
+
+    view{
+      font-size: 22px;
+    }
 
     &.show {
       max-height: 370rpx;  
