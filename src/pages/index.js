@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/index.js
  * @Date: 2021-01-06 15:46:54
  * @LastEditors: Arvin
- * @LastEditTime: 2021-01-19 11:31:49
+ * @LastEditTime: 2021-01-28 14:06:13
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
@@ -86,6 +86,8 @@ export default class Home extends Component {
     this.getDistributionInfo()
     // 检测白名单
     this.checkWhite()
+    // 购物车数量
+    this.fetchCartCount()
   }
   
   // 配置信息
@@ -381,6 +383,17 @@ export default class Home extends Component {
       total
     }
   } 
+
+  // 获取购物车数量
+  async fetchCartCount() {
+    if (!S.getAuthToken()) return
+    try {
+      const res = await api.cart.count({ shop_type: 'distributor' })
+      this.props.onUpdateCartCount(res.item_count)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   // 跳转选择店铺
   goStore = () => {
