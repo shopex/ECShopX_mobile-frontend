@@ -159,7 +159,7 @@ export default class CouponItem extends Component {
 
               <View className='coupon-item__content__bottom' onClick={this.changeExpand}>
                   <View className='text'>{"使用规则"}</View>
-                  <View className={`iconfont .icon-arrow-up ${!isExpanded && 'bottom'}`}>
+                  <View className={`iconfont .icon-arrowUp ${!isExpanded && 'bottom'}`}>
 
                   </View>
               </View>
@@ -168,7 +168,9 @@ export default class CouponItem extends Component {
           </View>
         </View>
         <View className={`detail ${isExpanded && 'show'} `}> 
-          {`卡劵使用说明：${info.description?info.description:'无'}`}
+          <View>{`卡劵使用说明：${info.description?info.description:'无'}`}</View>
+          { info.use_bound!=='0' && info.use_bound=='1' && <View>{'此优惠券只适合指定商品可用'}</View>}
+          { info.use_bound!=='0' && info.use_bound=='2' && <View>{'此优惠券只适合指定分类商品可用'}</View>}
         </View> 
 
         
