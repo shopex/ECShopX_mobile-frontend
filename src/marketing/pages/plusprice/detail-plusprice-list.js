@@ -5,7 +5,7 @@ import { BackToTop, Loading, SpNote, GoodsItem, NavBar } from '@/components'
 import { AtCountdown } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { pickBy,validColor,isString } from '@/utils'
 
 import './plusprice.scss'
 
@@ -26,7 +26,8 @@ export default class DetailPluspriceList extends Component {
       timer: null,
       list: [],
       promotion_activity:{},
-      isSetBackground:false
+      isSetBackground:false,
+      timeBackgroundColor:undefined
     }
   }
 
@@ -52,7 +53,7 @@ export default class DetailPluspriceList extends Component {
   setNavBar=(navbar_color)=>{
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: navbar_color && typeof navbar_color==='string'?navbar_color:'#FC7239',
+      backgroundColor: isString(navbar_color) && validColor(navbar_color)?navbar_color:'#FC7239',
       animation: {
         duration: 400,
         timingFunc: 'easeIn'
@@ -105,7 +106,7 @@ export default class DetailPluspriceList extends Component {
     }
 
     const { list, total_count: total,promotion_activity={}} = await api.promotion.getpluspriceList(query)
-    const { left_time,navbar_color,activity_background } = promotion_activity
+    const { left_time,navbar_color,activity_background,timeBackgroundColor } = promotion_activity
 
     this.setNavBar(navbar_color);
 
@@ -127,7 +128,8 @@ export default class DetailPluspriceList extends Component {
       list: [...this.state.list, ...nList],
       promotion_activity,
       timer,
-      isSetBackground:activity_background?activity_background:false
+      isSetBackground:activity_background?activity_background:false,
+      timeBackgroundColor:timeBackgroundColor?timeBackgroundColor:undefined
     })
     return {
       total
@@ -137,7 +139,7 @@ export default class DetailPluspriceList extends Component {
 
   render () {
     const { colors } = this.props
-    const { list, showBackToTop, scrollTop, page,promotion_activity,timer,isSetBackground } = this.state
+    const { list, showBackToTop, scrollTop, page,promotion_activity,timer,isSetBackground ,timeBackgroundColor} = this.state
     console.log('list---->',isSetBackground)
     return (
       <View className={`page-plusprice${isSetBackground?' is-set-background':''}`} style={{backgroundImage:isSetBackground?`url(${isSetBackground})`:'auto',backgroundSize:isSetBackground?'cover':'contain'}}>
@@ -146,7 +148,7 @@ export default class DetailPluspriceList extends Component {
         />
         <View className='plusprice-goods__info'>
             <View className='title'> {promotion_activity.marketing_name} </View>
-            <View className='plusprice-goods__timer'>
+            <View className='plusprice-goods__timer' style={{backgroundColor:timeBackgroundColor?timeBackgroundColor:'#FC682D'}}>
                   
                       <View>          				
                         <Text className='time-text'>距结束</Text>
