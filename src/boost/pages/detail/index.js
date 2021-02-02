@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
  * @LastEditors: Arvin
- * @LastEditTime: 2020-11-26 23:03:01
+ * @LastEditTime: 2021-02-02 16:15:41
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -42,6 +42,7 @@ export default class Detail extends Component {
         isSaleOut: false,
         isOver: false
       },
+      imgBase: '',
       userInfo: {},
       isJoin: false,
       boostList: [],
@@ -76,11 +77,11 @@ export default class Detail extends Component {
   getBoostDetail = async () => {
     Taro.showLoading({mask: true})
     const { bargain_id } = this.$router.params
-    const data = await api.boost.getDetail({
-      template_name: 'yykcutdown',
-      name: 'banner',
-      page_name: 'pages/kanjia'
-    })
+    // const data = await api.boost.getDetail({
+    //   template_name: 'yykweishop',
+    //   name: 'banner',
+    //   page_name: 'pages/kanjia'
+    // })
     const {
       bargain_info = {},
       user_bargain_info = {},
@@ -102,7 +103,7 @@ export default class Detail extends Component {
     }
 
     this.setState({
-      adPic: data[0] ? data[0].params.ad_pic : '',
+      adPic: bargain_info ? bargain_info.ad_pic : '',
       info: pickBy(bargain_info, {
         item_id: 'item_id',
         bargain_id: 'bargain_id',
@@ -149,16 +150,25 @@ export default class Detail extends Component {
     }
     const filePath = `${Taro.env.USER_DATA_PATH}/${FILE_BASE_NAME}.${format}`
     const buffer = Taro.base64ToArrayBuffer(bodyData)
+    const that = this
     fsm.writeFile({
       filePath,
       data: buffer,
       encoding: 'binary',
-      success() {
+      success(s) {
+        console.log(s)
+        console.log(filePath)
+        that.setState({
+          imgBase: base64data
+        })
         Taro.getImageInfo({
           src: filePath,
           success(res){
             resolve(res.path)
           },
+          fail(e) {
+            console.log(e)
+          }
         })
       },
       fail() {
@@ -220,10 +230,10 @@ export default class Detail extends Component {
 
   // 显示海报
   showPoster = () => {
-    Taro.showLoading({
-      title: '海报生成中',
-      mask: true
-    })
+    // Taro.showLoading({
+    //   title: '海报生成中',
+    //   mask: true
+    // })
     if (this.posterImg) {
       this.setState({
         showPoster: true
@@ -297,6 +307,7 @@ export default class Detail extends Component {
     const {
       adPic,
       info,
+      imgBase,
       isJoin,
       boostList,
       orderInfo,
@@ -443,6 +454,7 @@ export default class Detail extends Component {
             <Text>{ isJoin ? `¥${purchasePrice} 优惠购买` : '发起助力' }</Text>
           }
         </Button>
+        <Image src={imgBase} />
         {/* 海报 */}
         <Canvas canvasId='poster' style='width: 375px; height: 640px;' className='posterCanvas' />
         {
