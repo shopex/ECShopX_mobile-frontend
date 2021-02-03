@@ -74,15 +74,19 @@ export default class TradeDetail extends Component {
     return refund
   }
 
-  getParamsAboutItem=(oldInfo)=>{
-    const newInfo=JSON.parse(JSON.stringify(oldInfo));
-    //是否有积分商品
-    const is_has_point=newInfo.orders.reduce((item,total)=>total+item.point_fee,0);
-    //是否有普通商品
-    const is_has_normal=newInfo.orders.reduce((item,total)=>total+item.point_fee,0);
+  // getParamsAboutItem=(oldInfo)=>{
+  //   const newInfo=JSON.parse(JSON.stringify(oldInfo));
+  //   //是否有积分商品
+  //   const is_has_point=newInfo.orders.reduce((item,total)=>total+item.point_fee,0)>0;
+  //   //是否有普通商品
+  //   const is_has_normal=newInfo.orders.reduce((item,total)=>total+item.point_fee,0)>0;
 
+  //   return Object.assign(newInfo,{
+  //     is_has_point,
+  //     is_has_normal
+  //   })
 
-  }
+  // }
 
   async fetch () {
     const { id } = this.$router.params
