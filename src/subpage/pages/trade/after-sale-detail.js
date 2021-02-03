@@ -74,19 +74,21 @@ export default class TradeDetail extends Component {
     return refund
   }
 
-  // getParamsAboutItem=(oldInfo)=>{
-  //   const newInfo=JSON.parse(JSON.stringify(oldInfo));
-  //   //是否有积分商品
-  //   const is_has_point=newInfo.orders.reduce((item,total)=>total+item.point_fee,0)>0;
-  //   //是否有普通商品
-  //   const is_has_normal=newInfo.orders.reduce((item,total)=>total+item.point_fee,0)>0;
+  getParamsAboutItem=(oldInfo,isInit)=>{
+    const newInfo=JSON.parse(JSON.stringify(oldInfo));
+    //是否有积分商品
+    const is_has_point=newInfo.orders.reduce((item,total)=>total+item.point_fee,0)>0;
+    //是否有普通商品
+    const is_has_normal=newInfo.orders.reduce((item,total)=>total+item.total_fee,0)>0;
 
-  //   return Object.assign(newInfo,{
-  //     is_has_point,
-  //     is_has_normal
-  //   })
+    return Object.assign(newInfo,{
+      is_has_point,
+      is_has_normal,
+      total_point_money:isInit?0:newInfo.total_point_money,
+      total_normal_money:isInit?0:newInfo.total_normal_money
+    })
 
-  // }
+  }
 
   async fetch () {
     const { id } = this.$router.params
@@ -145,8 +147,7 @@ export default class TradeDetail extends Component {
       ziti_status: 'ziti_status',
       qrcode_url: 'qrcode_url',
       delivery_corp: 'delivery_corp',
-      order_type: 'order_type',
-      totalpayment:({ total_fee}) =>   ((+Number(total_fee)) / 100).toFixed(2),
+      order_type: 'order_type', 
       order_status_msg: 'order_status_msg',
       order_status_des: 'order_status_des',
       order_class: 'order_class',
@@ -223,9 +224,9 @@ export default class TradeDetail extends Component {
     sessionFrom += `"商品": "${info.orders[0].title}"`
     sessionFrom += `"订单号": "${info.orders[0].order_id}"`
     sessionFrom += '}' 
-
+    const _this=this;
     this.setState({
-      info:this.getParamsAboutItem(info),
+      info:_this.getParamsAboutItem(info),
       sessionFrom,
       ziti
     })
@@ -452,7 +453,7 @@ export default class TradeDetail extends Component {
     if (!info) {
       return <Loading></Loading>
     }
-
+    console.log(info)
     console.log(info['orders'])
 
     return (
@@ -621,7 +622,8 @@ export default class TradeDetail extends Component {
             </View>
           }
           <View className="trade-money">
-          <View>总计：<Text className="trade-money__num">￥{info.totalpayment}</Text></View>
+            {info.is_has_normal && <View>总计金额：<Text className="trade-money__num">￥{info.total_normal_money}</Text></View>}
+            {info.is_has_point && <View>总计积分：<Text className="trade-money__num">￥{info.total_point_money}</Text></View>}
           </View>
         </ScrollView>
         
