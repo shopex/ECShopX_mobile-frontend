@@ -76,16 +76,39 @@ export default class TradeDetail extends Component {
 
   getParamsAboutItem=(oldInfo,isInit=false)=>{
     const newInfo=JSON.parse(JSON.stringify(oldInfo));
-    //是否有积分商品
-    const is_has_point=newInfo.orders.reduce((total,item)=>total+item.point_fee,0)>0;
-    //是否有普通商品
-    const is_has_normal=newInfo.orders.reduce((total,item)=>total+item.total_fee,0)>0;
+    /** 是否有积分商品 */
+    let is_has_point;
+    /** 是否有普通商品 */
+    let is_has_normal;
+    /** 计算新的订单 */
+    let newOrders;
+
+    /** 初始化时所有数值为0 */
+    if(isInit){
+      is_has_point=newInfo.orders.reduce((total,item)=>total+item.point_fee,0)>0;
+      is_has_normal=newInfo.orders.reduce((total,item)=>total+item.total_fee,0)>0;
+
+      newOrders=newInfo.orders.map(item=>({
+        ...item,
+        /** 单个商品的积分 */
+        point_unit:item.point_fee/item.left_aftersales_num,
+        /** 单个商品的价格 */
+        normal_unit:item.total_fee/item.left_aftersales_num,
+        /** 每行选中的积分 */
+        selected_point_total:0,
+        /** 每行选中的价格 */
+        selected_normal_total:0,
+      })) 
+    }  
+
+    let total_point_money=newOrders.reduce((total,i)=>total+i.selected_point_total,0);
+    let total_normal_money=newOrders.reduce((total,i)=>total+i.selected_normal_total,0); 
 
     return Object.assign(newInfo,{
       is_has_point,
-      is_has_normal,
-      total_point_money:isInit?0:newInfo.total_point_money,
-      total_normal_money:isInit?"0.00":newInfo.total_normal_money
+      is_has_normal, 
+      total_point_money,
+      total_normal_money
     })
 
   }
