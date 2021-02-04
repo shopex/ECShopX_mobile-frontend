@@ -62,14 +62,17 @@ export default class AfterDetailItem extends Component {
   handleSelectionChange (item_id, checked) {//选择要申请售后的商品
     const { info, showType } = this.props
     info[showType].map(item=>{
-      item.item_id == item_id && (item.is_checked = checked)
+      item.item_id == item_id && (item.is_checked = checked);
+      if(item.is_checked){
+        
+      }
     })
     this.setState({
       info
     })
   }
-  handleQuantityChange(item,val){   //改变售后商品的数量
-    const { info, showType } = this.props
+  handleQuantityChange(item,val){   //改变售后商品的数量 
+    const { info, showType } = this.props 
     info[showType].map(v=>{
       v.item_id == item.item_id && (v.apply_num = val)
     })
@@ -80,6 +83,9 @@ export default class AfterDetailItem extends Component {
 
   render () {
     const { customHeader, customFooter, noHeader, onClick, info, showActions, showType } = this.props;
+
+    console.log("-----props-----")
+    console.log(info) 
 
     return (
       <View className='detail-item'>
