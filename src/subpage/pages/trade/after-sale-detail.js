@@ -74,6 +74,48 @@ export default class TradeDetail extends Component {
     return refund
   }
 
+  handleInputNumberChange=(item,val)=>{ 
+    const { info }=this.state;
+    info['orders'].forEach(v=>{
+      v.item_id == item.item_id && (v.apply_num = val)
+    })
+    const _this=this;
+    this.setState({
+      info:_this.getParamsAboutItem(info)
+    })
+  }
+
+  handleCheckChange=(item_id,checked)=>{
+    const { info }=this.state;
+    info['orders'].map(item=>{
+      item.item_id == item_id && (item.is_checked = checked); 
+    })
+    const _this=this;
+    this.setState({
+      info:_this.getParamsAboutItem(info)
+    })
+  }
+
+  /** 计算每一行总值 */
+  computed=(item)=>{
+    const newItemTotal=item.normal_unit*item.apply_num;
+    if(newItemTotal>0 && newItemTotal<1){/** 如果是分数以下的值 */
+      return Number(newItemTotal.toFixed());
+    }else if(newItemTotal>=1){
+      return newItemTotal;
+    }else{
+      return 0;
+    } 
+  }
+
+  /** 计算每一行总值 */
+  computedInit=(item,type)=>{
+    /** 如果数量相等 直接返回总值 */
+    if(item.left_aftersales_num===item.apply_num){
+      return item[type];
+    } 
+  }
+
   getParamsAboutItem=(oldInfo,isInit=false)=>{
     const newInfo=JSON.parse(JSON.stringify(oldInfo));
     /** 是否有积分商品 */
@@ -95,20 +137,35 @@ export default class TradeDetail extends Component {
         /** 单个商品的价格 */
         normal_unit:item.total_fee/item.left_aftersales_num,
         /** 每行选中的积分 */
-        selected_point_total:0,
+        selected_point_total:this.computedInit(item,'point_fee'),
         /** 每行选中的价格 */
-        selected_normal_total:0,
+        selected_normal_total:this.computedInit(item,'total_fee'),
       })) 
+    }else{
+
+      is_has_point=newInfo.is_has_point;
+      is_has_normal=newInfo.is_has_normal;
+
+      newOrders=newInfo.orders.map(item=>({
+        ...item, 
+        /** 每行选中的积分 */
+        selected_point_total:item.point_unit*item.apply_num,
+        /** 每行选中的价格 */
+        selected_normal_total:this.computed(item)
+      })) 
+
     }  
 
-    let total_point_money=newOrders.reduce((total,i)=>total+i.selected_point_total,0);
-    let total_normal_money=newOrders.reduce((total,i)=>total+i.selected_normal_total,0); 
+    let total_point_money=newOrders.reduce((total,i)=>total+(i.is_checked?i.selected_point_total:0),0); 
 
+    let total_normal_money=newOrders.reduce((total,i)=>total+(i.is_checked?i.selected_normal_total:0),0); 
+     
     return Object.assign(newInfo,{
       is_has_point,
       is_has_normal, 
       total_point_money,
-      total_normal_money
+      total_normal_money,
+      orders:newOrders
     })
 
   }
@@ -475,9 +532,7 @@ export default class TradeDetail extends Component {
 
     if (!info) {
       return <Loading></Loading>
-    }
-    console.log(info)
-    console.log(info['orders'])
+    } 
 
     return (
       <View className={`trade-detail ${info.is_logistics && 'islog'}`}>
@@ -622,6 +677,8 @@ export default class TradeDetail extends Component {
           <View className='trade-detail-goods'>
             <AfterDetailItem 
               info={info}
+              onInputNumberChange={this.handleInputNumberChange}
+              onCheckChange={this.handleCheckChange}
             />
           </View>
           {
@@ -640,12 +697,13 @@ export default class TradeDetail extends Component {
                 <AfterDetailItem 
                   info={info}
                   showType='log_orders'
+                 
                 />
               </View>
             </View>
           }
           <View className="trade-money">
-            {info.is_has_normal && <View>总计金额：<Text className="trade-money__num">￥{info.total_normal_money}</Text></View>}
+            {info.is_has_normal && <View>总计金额：<Text className="trade-money__num">￥{(info.total_normal_money/100).toFixed(2)}</Text></View>}
             {info.is_has_point && <View>总计积分：<Text className="trade-money__num">￥{info.total_point_money}</Text></View>}
           </View>
         </ScrollView>
