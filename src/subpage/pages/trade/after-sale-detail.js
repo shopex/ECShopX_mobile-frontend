@@ -202,7 +202,7 @@ export default class TradeDetail extends Component {
       point_fee:'point_fee',
       total_fee:'total_fee',
       remain_fee:'remain_fee',
-
+      remain_point:'remain_point'
     }
     const info = pickBy(data.orderInfo, {
       tid: 'order_id',
