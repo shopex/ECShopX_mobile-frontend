@@ -154,7 +154,7 @@ export default class Detail extends Component {
     if (S.getAuthToken() && (!userInfo || !userInfo.userId)) {
       const res = await api.member.memberInfo()
       const userObj = {
-        username: res.memberInfo.nickname,
+        username: res.memberInfo.nickname || res.memberInfo.username || res.memberInfo.mobile,
         avatar: res.memberInfo.avatar,
         userId: res.memberInfo.user_id,
         mobile: res.memberInfo.mobile,
@@ -557,7 +557,7 @@ export default class Detail extends Component {
     if (S.getAuthToken() && (!userinfo || !userinfo.userId)) {
       const res = await api.member.memberInfo()
       const userObj = {
-        username: res.memberInfo.nickname,
+        username: res.memberInfo.nickname || res.memberInfo.username || res.memberInfo.mobile,
         avatar: res.memberInfo.avatar,
         userId: res.memberInfo.user_id,
         mobile: res.memberInfo.mobile,
@@ -1067,7 +1067,7 @@ export default class Detail extends Component {
                     )}
                     <Price primary unit="cent" value={showPrice} />
                     {
-                      (curSku && curSku.market_price > 0) || (info && info.market_price > 0) &&
+                      ((curSku && curSku.market_price > 0) || (info && info.market_price > 0)) &&
                       <Price
                         lineThrough
                         unit='cent'
