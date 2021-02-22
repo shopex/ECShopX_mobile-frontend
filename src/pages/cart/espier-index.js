@@ -1,16 +1,16 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtButton, AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem } from '@/components'
+import { AtButton, AtActionSheet, AtActionSheetItem, AtNoticebar } from 'taro-ui'
+import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem, } from '@/components'
 import { log, navigateTo, pickBy, classNames} from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
 import S from '@/spx'
 import { Tracker } from "@/service";
 import { withPager } from '@/hocs'
-import CartItem from './comps/cart-item'
 import entry from '@/utils/entry'
+import CartItem from './comps/cart-item'
 
 import './espier-index.scss'
 
@@ -552,12 +552,24 @@ handleLookPlusprice = (marketing_id) =>{
             //   </View>
             // )
           }
+          <View
+            style={`background: ${colors.data[0].primary}`}
+          >            
+            <AtNoticebar
+              marquee
+              className='notice'
+              single
+            >
+              消息通知消息通知消息通知消息通知消息通知消息通知消息通知
+            </AtNoticebar>
+          </View>
+          
           {
             crossborder_show && 
             <View className='changeCross'>
-              <View className='content' onClick={this.onChangeCartType.bind(this)}>
+              <View className='content'>
                 <View className={`iconfont ${cartType === 'cross' ? 'icon-flight' : 'icon-shop-cart-1'}`}></View>
-                <View className='iconfont icon-repeat'></View>
+                <View className='iconfont icon-repeat' onClick={this.onChangeCartType.bind(this)}></View>
               </View>
             </View>
           }
