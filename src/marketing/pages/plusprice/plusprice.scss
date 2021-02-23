@@ -3,7 +3,9 @@
     /*  #ifdef  h5  */  
     padding-top: $navigate-height-h5;
     /*  #endif  */  
-    background: #FC7239 url(../../../assets/imgs/plusprice-head.png) center top no-repeat;
+    // background: #FC7239 url(../../../assets/imgs/plusprice-head.png) center top no-repeat;
+    background-repeat: no-repeat;
+    background-position: center top;
     height: 100vh;
     width: 100%;
     background-size: contain;
