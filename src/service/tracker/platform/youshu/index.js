@@ -1,11 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2021-01-25 10:54:19
- * @LastEditTime: 2021-02-24 11:05:24
+ * @LastEditTime: 2021-02-24 13:55:18
  * @LastEditors: PrendsMoi
  * @Description: In User Settings Edit
  * @FilePath: /unite-vshop/src/service/tracker/platform/youshu/index.js
  */
+import Taro from '@tarojs/taro'
 import sr from "sr-sdk-wxapp";
 import S from "@/spx";
 import { tokenParse } from "@/utils";
@@ -18,11 +19,13 @@ export default class Youshu extends Base {
 
   constructor(options = {}) {
     super(options);
-    // const { onBeforeInit } = options;
 
     console.log('---------init--------')
+    const { youshu = {} } =  Taro.getStorageSync('otherSetting') || {}
+    config.appid = youshu.app_id
+    config.token = youshu.app_secret
     console.log(config)
-
+    
     sr.init(config);
 
     this.actions = actions;
