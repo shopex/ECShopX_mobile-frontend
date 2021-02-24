@@ -23,14 +23,14 @@ const { store } = configStore()
 
 useHooks()
 
-if (APP_TRACK) {
-  const system = Taro.getSystemInfoSync();
-  if (!(system && system.environment && system.environment === "wxwork")) {
-    console.log('----------------aa--------------')
-    console.log(Tracker)
-    Tracker.use(APP_TRACK);
-  }
-}
+// if (APP_TRACK) {
+//   const system = Taro.getSystemInfoSync();
+//   if (!(system && system.environment && system.environment === "wxwork")) {
+//     console.log('----------------aa--------------')
+//     console.log(Tracker)
+//     Tracker.use(APP_TRACK);
+//   }
+// }
 
 
 class App extends Component {
@@ -43,6 +43,8 @@ class App extends Component {
 
   config = {
     pages: [
+      'pages/pointitem/list',
+
       'pages/index',
       'pages/home/landing',
       'pages/category/index',
@@ -224,7 +226,13 @@ class App extends Component {
           // 绑定订单
           'pages/bindOrder/index'
         ]
-      }
+      },
+      // {
+      //   root:'pointitem',
+      //   pages:[
+      //     'pages/list',
+      //   ]
+      // }
     ],
     permission: {
       "scope.userLocation": {
