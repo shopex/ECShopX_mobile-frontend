@@ -67,7 +67,8 @@ export default class MemberIndex extends Component {
         //是否开启积分链接
         score_menu:false
       },
-      imgUrl:''
+      imgUrl:'',
+      score_menu_open:false
     }
   }
 
@@ -83,6 +84,7 @@ export default class MemberIndex extends Component {
     this.fetchBanner()
     this.fetchRedirect()
     this.getDefaultImg()
+    
   }
 
   componentDidShow () {
@@ -90,6 +92,7 @@ export default class MemberIndex extends Component {
       this.getSalesperson()
     }
     this.getSettingCenter()
+    this.getConfigPointitem()
   }
 
   async getDefaultImg(){
@@ -367,11 +370,17 @@ export default class MemberIndex extends Component {
     if (list[0] && list[0].params && list[0].params.data) {      
       this.setState({
         menuSetting: {
-          ...list[0].params.data,
-          score_menu:true
+          ...list[0].params.data, 
         }
       })
     }
+  }
+
+  getConfigPointitem=async ()=>{
+    const { entrance:{mobile_openstatus}   } = await api.pointitem.getPointitemSetting()
+    this.setState({
+      score_menu_open:mobile_openstatus
+    })
   }
 
   async onShareAppMessage () { 
@@ -388,7 +397,7 @@ export default class MemberIndex extends Component {
 
   render () {
     const { colors } = this.props
-    const { vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner, menuSetting, rechargeStatus } = this.state
+    const { score_menu_open,vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner, menuSetting, rechargeStatus } = this.state
     const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
     const bannerInfo = memberBanner.length ? memberBanner[0].params : null
     return (
@@ -689,11 +698,11 @@ export default class MemberIndex extends Component {
               </SpCell>
             } 
             {
-              menuSetting.score_menu && <SpCell
+              score_menu_open && <SpCell
                 title="积分商城"
                 isLink
                 img={require('../../assets/imgs/score.png')}
-                onClick={this.handleClick.bind(this, '/pointitem/pages/list')}
+                onClick={this.handleClick.bind(this, '/pages/pointitem/list')}
               > 
               </SpCell>
             }
