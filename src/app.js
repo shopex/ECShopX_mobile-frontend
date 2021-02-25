@@ -21,16 +21,42 @@ import "./app.scss";
 
 const { store } = configStore();
 
+// 获取首页配置
+const getHomeSetting = async () => {
+  const {
+    echat = {},
+    meiqia = {},
+    youshu = {},
+    disk_driver = "qiniu",
+    whitelist_status = false,
+    nostores_status = false
+  } = await api.shop.homeSetting();
+  // 美洽客服配置
+  Taro.setStorageSync("meiqia", meiqia);
+  // 一洽客服配置
+  Taro.setStorageSync("echat", echat);
+  // 白名单配置、门店配置、图片存储信息、有数配置
+  Taro.setStorageSync("otherSetting", {
+    whitelist_status,
+    nostores_status,
+    disk_driver,
+    nostores_status,
+    youshu
+  });
+  if (APP_TRACK) {
+    const system = Taro.getSystemInfoSync();
+    if (!(system && system.environment && system.environment === "wxwork")) {
+      console.log("----------------aa--------------");
+      console.log(Tracker);
+      Tracker.use(APP_TRACK);
+    }
+  }
+};
+
 useHooks();
 
-if (APP_TRACK) {
-  const system = Taro.getSystemInfoSync();
-  if (!(system && system.environment && system.environment === "wxwork")) {
-    console.log("----------------企业微信环境--------------");
-    console.log(Tracker);
-    Tracker.use(APP_TRACK);
-  }
-}
+// 获取基础配置
+getHomeSetting();
 
 class App extends Component {
   system = Taro.getSystemInfoSync();
@@ -312,7 +338,6 @@ class App extends Component {
     this.fetchTabs();
     // 获取主题配色
     this.fetchColors();
-    this.getHomeSetting();
   }
 
   fetchTabs() {
@@ -426,28 +451,6 @@ class App extends Component {
       });
     });
   }
-
-  // 获取首页配置
-  getHomeSetting = async () => {
-    const {
-      echat = {},
-      meiqia = {},
-      disk_driver = "qiniu",
-      whitelist_status = false,
-      nostores_status = false
-    } = await api.shop.homeSetting();
-    // 美洽客服配置
-    Taro.setStorageSync("meiqia", meiqia);
-    // 一洽客服配置
-    Taro.setStorageSync("echat", echat);
-    // 白名单配置、门店配置、图片存储信息
-    Taro.setStorageSync("otherSetting", {
-      whitelist_status,
-      nostores_status,
-      disk_driver,
-      nostores_status
-    });
-  };
 
   componentDidCatchError() {}
 
