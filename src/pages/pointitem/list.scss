@@ -33,8 +33,33 @@
       /* line-height: 42px; */
       margin-bottom: 30rpx;
     }
-    .input-wrap{
-      
+    .input-wrap{ 
+      display: flex;
+      margin-bottom: 20rpx;
+      align-items: center;
+
+      .at-input{
+        padding:0;
+        margin:0;
+        width: 250rpx;
+        height: 70rpx;
+        background: #FFFFFF;
+        border-radius: 4rpx;
+        border: 1px solid #DDDDDD;
+        display: flex;
+        padding-left: 10rpx;
+    
+      }
+
+      .text{
+        margin: 0 29rpx;
+        font-size: 38rpx;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #333333;
+   
+      }
+
     }
   }
 

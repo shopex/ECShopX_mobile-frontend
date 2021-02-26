@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-25 13:14:46
- * @LastEditTime: 2021-02-25 20:41:45
+ * @LastEditTime: 2021-02-26 13:35:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /ecshopx-newpc/Users/wujiabao/Desktop/work/ecshopx-vshop/src/pages/pointitem/comps/header.js
@@ -33,12 +33,31 @@ export default class FilterBlock extends Component{
         }
     }
 
+    getId=()=>{
+        const { info,type }=this.props;
+        if(type==='brand'){
+            return info.attribute_id
+        }else if(type==='category'){
+            return info.category_id
+        }else{
+            return `${info[0]} ~ ${info[1]}`
+        }
+    }
+
+    handleClickItem=()=>{
+        const { type }=this.props;
+        const id=this.getId();
+        if(this.props.onClickItem){
+            this.props.onClickItem({id,type});
+        }
+    }
+
     render(){ 
 
-        const name=this.getName();
+        const name=this.getName(); 
         
         return (
-            <View className={`filter-block${this.props.active ? ' active' : ''}`}>
+            <View className={`filter-block${this.props.active ? ' active' : ''}`} onClick={this.handleClickItem}>
                 {name}
             </View>
         )
