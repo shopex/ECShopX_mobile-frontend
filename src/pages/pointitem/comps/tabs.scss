@@ -12,13 +12,57 @@
     justify-content: center;
 
   }
+
+  .text{
+    display: flex;
+    flex: 11;
+    position:relative;
+
+    &::after{
+      position: absolute;
+      content: '';
+      display: block;
+      right: 0;
+      height: 33rpx;
+      width: 2rpx;
+      background: #DDDDDD;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+  }
+
+  .action{
+    flex: 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666; 
+
+    .filter,.search{
+      flex:1;
+      color: #666; 
+    }
+
+    .filter{
+      color: #666; 
+      .icon-filter{
+        margin-left:10rpx;
+      }
+    }
+    .search{
+      color: #666; 
+    }
+
+  }
+
   background: #fff;
-  height: $tabs-height;
+  //height: $tabs-height;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 176rpx;
-  padding-top: 100rpx;
+  //height: 176rpx;
+  padding-top: 130rpx;
   
   &__bd {
     flex: 1;

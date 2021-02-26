@@ -33,8 +33,7 @@ export default class List extends Component {
       filterList: [
         { title: '综合' },
         { title: '销量' },
-        { title: '价格', sort: -1 },
-        { title: '筛选' },
+        { title: '价格', sort: -1 }, 
       ],
       //获取用户信息
       userInfo:{},
@@ -99,39 +98,22 @@ export default class List extends Component {
   
 
   async fetchUserInfo(){
-    if (!S.getAuthToken()) return 
-    let resUser = null
-    if(Taro.getStorageSync('userinfo')){
-      resUser = Taro.getStorageSync('userinfo')
-      this.setState({
-        useInfo: {
-          username: resUser.username,
-          avatar: resUser.avatar, 
-        }
-      })
-    }
-    const [res,{point}] = await Promise.all([api.member.memberInfo(),api.pointitem.getMypoint()]) 
+     
+    const [ res, { point } ] = await Promise.all([api.member.memberInfo(),api.pointitem.getMypoint()]) 
+
     const userObj = {
       username: res.memberInfo.nickname || res.memberInfo.username || res.memberInfo.mobile,
       avatar: res.memberInfo.avatar, 
-    }
-    if(!resUser || resUser.username !== userObj.username || resUser.avatar !== userObj.avatar) {
-      Taro.setStorageSync('userinfo', userObj)
-      this.setState({
-        useInfo: {
-          ...this.state.useInfo,
-          username: res.memberInfo.nickname || res.memberInfo.username || res.memberInfo.mobile,
-          avatar: res.memberInfo.avatar, 
+    } 
 
-        }
-      })
-    }
     this.setState({
-      useInfo: {
-        ...this.state.useInfo,
+      useInfo: { 
+        username:userObj.username,
+        avatar:userObj.avatar,
         point
       }
     })
+
   }
 
   async fetchConfig(params){ 
@@ -407,8 +389,7 @@ export default class List extends Component {
         <Header useInfo={useInfo} />
 
         <View class="navigation">
-          <Image src={require('../../assets/imgs/black.png')} class="navigation_image" />
-
+          <Image src={require('../../assets/imgs/black.png')} class="navigation_image" /> 
         </View>
 
         <View class="content">

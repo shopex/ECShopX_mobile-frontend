@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-02-25 14:06:54
- * @LastEditTime: 2021-02-25 14:28:21
+ * @LastEditTime: 2021-02-26 18:42:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /ecshopx-newpc/Users/wujiabao/Desktop/work/ecshopx-vshop/src/pages/pointitem/comps/tabs.js
@@ -63,7 +63,8 @@ export default class FilterBar extends Component {
 
         return (
             <View className={classNames('filter-bar', className)}>
-                <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon>
+                {/* <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon> */}
+                <View class="text">
                 {
                     custom &&
                     list.map((item, idx) => {
@@ -82,6 +83,11 @@ export default class FilterBar extends Component {
                         )
                     })
                 }
+                </View>
+                <View class='action'>
+                    <View class="filter">筛选<View className={"iconfont icon-filter"}></View></View>
+                    <View class="search"><Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon></View>
+                </View>
                 {this.props.children}
             </View>
         )
