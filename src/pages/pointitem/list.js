@@ -57,6 +57,10 @@ export default class List extends Component {
         brandVisible:true,
         categoryVisible:true,
         scoreVisible:false
+      },
+      filterParams:{
+        brand:[],
+        category:[]
       }
     }
   }
@@ -594,6 +598,17 @@ export default class List extends Component {
     })
   }
 
+  handleClickFilterBlock= ({id,type}) =>{
+    const { filterParams }=this.state;
+    let newFilterParams;
+    if(type==='brand'){
+      newFilterParams={
+        ...filterParams,
+        
+      }
+    }
+  }
+
   handleConfirm = (val) => {
 
     Tracker.dispatch("SEARCH_RESULT", {
@@ -764,7 +779,7 @@ export default class List extends Component {
                   {
                     brandList.map((item,index)=>{
                       return (
-                        <FilterBlock info={item} type="brand" />
+                        <FilterBlock info={item} type="brand" onClickItem={this.handleClickFilterBlock} />
                       )
                     })
                   }
@@ -776,7 +791,7 @@ export default class List extends Component {
                   {
                     categoryList.map((item,index)=>{
                       return (
-                        <FilterBlock info={item} type="category"/>
+                        <FilterBlock info={item} type="category" onClickItem={this.handleClickFilterBlock} />
                       )
                     })
                   }
@@ -784,7 +799,7 @@ export default class List extends Component {
               </View>
               <View class="score">
                 <View class="title">积分区间</View>
-                <View class="input-wrap"><AtInput /><View>~</View><AtInput /></View>
+                <View class="input-wrap"><AtInput placeholder="最低积分值"/><View class='text'>~</View><AtInput placeholder="最高积分值"/></View>
                 {
                     scoreInternel.map((item,index)=>{
                       return (
