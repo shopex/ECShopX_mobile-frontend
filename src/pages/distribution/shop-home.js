@@ -1,14 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Image } from '@tarojs/components'
-import { AtTabBar  } from 'taro-ui'
-import { SpToast, BackToTop, Loading, NavBar } from '@/components'
+import { AtTabBar, AtSearchBar  } from 'taro-ui'
+import { BackToTop, Loading, NavBar, SpImg } from '@/components'
 import S from '@/spx'
 import req from '@/api/req'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import { getCurrentRoute} from '@/utils'
 import entry from '@/utils/entry'
-import HomeWgts from '../home/comps/home-wgts'
 
 import './shop-home.scss'
 
@@ -22,11 +21,11 @@ export default class DistributionShopHome extends Component {
       ...this.state,
       info: {},
       curFilterIdx: 0,
-      filterList: [
-        { title: '综合1' },
-        { title: '销量' },
-        { title: '价格', sort: -1 }
-      ],
+      // filterList: [
+      //   { title: '综合1' },
+      //   { title: '销量' },
+      //   { title: '价格', sort: -1 }
+      // ],
       query: null,
       showDrawer: false,
       paramsList: [],
@@ -34,13 +33,15 @@ export default class DistributionShopHome extends Component {
       list: [],
       goodsIds: [],
       tabList: [
-        { title: '重点推荐', iconType: 'home', iconPrefixClass: 'icon',url: '/pages/distribution/shop-home',urlRedirect: true },
+        { title: '小店首页', iconType: 'home', iconPrefixClass: 'icon',url: '/pages/distribution/shop-home',urlRedirect: true },
         { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/marketing/pages/distribution/shop-category', urlRedirect: true },
       ],
-      wgts:null,
+      wgts: null,
       authStatus: false,
       positionStatus: false,
-      def_pic:''
+      def_pic: '',
+      // 是否显示搜索
+      showSearch: true
     }
   }
 
@@ -69,7 +70,7 @@ export default class DistributionShopHome extends Component {
           promoter_onsale: true,
           promoter_shop_id: shopId
         },
-        def_pic:banner_img
+        def_pic: banner_img || 'https://img.ixintu.com/download/jpg/202004/e92587f8223c1c5aa878f49411e6af67_800_250.jpg!con'
       }, async () => {
         await this.fetchInfo()
         await this.fetch()
@@ -120,12 +121,12 @@ export default class DistributionShopHome extends Component {
     this.setState({
       positionStatus: (fixSetting.length && fixSetting[0].params.config.fixTop) || false
     }, () => {
-      this.fetchTpl()
+      this.fetchTpl(custompage_template_id)
     })  
   }
-  async fetchTpl () {
-    const { custompage_template_id } = await api.distribution.getCustompage()
-    const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=custom_${custompage_template_id}`
+
+  async fetchTpl (id) {
+    const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=custom_${id}`
     const info = await req.get(url)
 
     if (!S.getAuthToken()) {
@@ -239,6 +240,7 @@ export default class DistributionShopHome extends Component {
       url
     })
   }
+
   handleClick = (current) => {
     const cur = this.state.localCurrent
 
@@ -257,8 +259,46 @@ export default class DistributionShopHome extends Component {
     }
   }
 
+  // 显示搜索
+  handleShowSearch = () => {
+    this.setState({
+      showSearch: true
+    })
+  }
+
+  // 筛选切换
+  handleFilterChange = (filterInfo) => {
+    const { type } = filterInfo
+    this.setState({
+      curFilterIdx: type
+    })
+  }
+
   render () {
-    const { wgts,def_pic,positionStatus ,showBackToTop,tabList,localCurrent, scrollTop, info } = this.state
+    const {
+      wgts,
+      def_pic,
+      showBackToTop,
+      tabList,
+      localCurrent,
+      scrollTop,
+      info,
+      showSearch,
+      curFilterIdx
+    } = this.state
+
+    // 筛选选项
+    const filterList = [{
+        title: '综合',
+        type: 0
+      }, {
+        title: '销量',
+        type: 1
+      }, {
+        title: '价格',
+        type: 2
+      }]
+
     if (!wgts) {
       return <Loading />
     }
@@ -272,41 +312,95 @@ export default class DistributionShopHome extends Component {
         />
         <View className='shop-banner'>
           <View className='shop-def'>
-          <Image
-            className='banner-img'
-            src={def_pic || null}
-            mode='aspectFill'
-          />
-          </View>
-          <View className='shop-info'>
             <Image
-              className='shopkeeper-avatar'
-              src={info.headimgurl}
+              className='banner-img'
+              src={def_pic || null}
               mode='aspectFill'
             />
-            <View>
+          </View>
+          <View className='shop-info'>
+            <View className='left'>
+              <Image
+                className='shopkeeper-avatar'
+                src={info.headimgurl}
+                mode='aspectFill'
+              />
               <View className='shop-name'>{info.shop_name || `${info.username}的小店`}</View>
-              <View className='shop-desc'>{info.brief || '店主很懒什么都没留下'}</View>
             </View>
-          </View>    
+            <View className='right'>
+              <View className='item'>
+                <View className='num'>200</View>
+                <View className='text'>全部商品</View>
+              </View>
+              <View className='item'>
+                <View className='iconfont icon-share'></View>
+                <View className='text'>分享店铺</View>
+              </View>
+            </View>
+          </View>   
+          <View className='filter'>
+            <View className='iconfont icon-search'></View>
+            {
+              filterList.map(item =>
+                <View
+                  className={`filterItem ${curFilterIdx === item.type && 'active'}`}
+                  key={item.type}
+                  onClick={this.handleFilterChange.bind(this, item)}
+                >
+                  { item.title }
+                </View>
+              )
+            }
+          </View> 
         </View>
         <ScrollView
-          className={`wgts-wrap ${positionStatus ? 'wgts-wrap__fixed' : ''}`}
-          scrollTop={scrollTop}
+          className='goods-list'
           scrollY
+          scrollTop={scrollTop}
         >
-          <View className='wgts-wrap__cont'>
-            <HomeWgts
-              wgts={wgts}
-            />
+          <View className='main'>
+            {
+              [0, 1, 2, 3, 4, 5, 6, 7].map(item => 
+                <View
+                  key={item}
+                  className='goodItem'
+                >
+                  <View className='content'>
+                    <View className='imgContent'>
+                      <SpImg
+                        lazyLoad
+                        width='400'
+                        mode='aspectFill'
+                        img-class='goodImg'
+                        src='https://bbctest.aixue7.com/1/2019/08/07/17de0d280df6a0dc603b6056aace3c92nlqU3KNYregEcKluMNQj6PGtMfLWrBa7'
+                      />
+                      <View className='outSale'></View>
+                    </View>
+                    <View className='info'>
+                      <View className='goodName'>积分商城商品2这里最多显示两行文字这说是第二行省第二行省第二行省第二行省</View>
+                      <View className='price'>¥99.00</View>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
           </View>
         </ScrollView>
 
+        {/* 搜索 */}
+        {
+          showSearch && <View className='searchMask'>
+            <AtSearchBar
+              actionName='搜一下'
+              focus={showSearch}
+            />
+          </View>
+        }
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}
         />
-        <SpToast />
+
         <AtTabBar
           fixed
           tabList={tabList}
