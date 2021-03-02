@@ -23,6 +23,8 @@
 
 
   .wrapper-filter {
+    max-height: 1000rpx;
+    overflow: auto;
     .title {
       //width: 60rpx;
       /* height: 42px; */
@@ -49,6 +51,10 @@
         border: 1px solid #DDDDDD;
         display: flex;
         padding-left: 10rpx;
+
+        &::after{
+          border-color:transparent;
+        }
     
       }
 
@@ -357,7 +363,6 @@
       border-radius: 10rpx;
       border: 1px solid #DDDDDD;
       flex: 1;
-      margin-right: 22rpx;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -365,6 +370,10 @@
       &_active {
         background: $color-brand-primary;
         color: #ffffff;
+      }
+
+      &:nth-child(1){
+        margin-right: 22rpx;
       }
     }
   }

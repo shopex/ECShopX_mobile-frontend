@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer,AtInput } from 'taro-ui'
-import { BackToTop, Loading,SpNote, NavBar, TabBar } from '@/components'
+import { BackToTop, Loading,SpNote, NavBar, TabBar,HomeCapsule } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
 import { classNames } from '@/utils' 
@@ -47,11 +47,17 @@ export default class List extends Component {
         scoreInternel:[],
         brandVisible:true,
         categoryVisible:true,
-        scoreVisible:false
+        pointVisible:false
       },
       filterParams:{
         brand:[],
         category:[]
+      },
+      navbarHeight:undefined,
+      homeIconInfo:{
+        height:0,
+        top:0,
+        left:0
       }
     }
   }
@@ -63,7 +69,7 @@ export default class List extends Component {
   } 
 
   async componentDidMount() {
-    const { keywords,dis_id,cat_id, main_cat_id } = this.$router.params 
+    const { keywords,dis_id,cat_id, main_cat_id } = this.$router.params  
  
     this.fetchUserInfo(); 
 
@@ -75,7 +81,7 @@ export default class List extends Component {
         item_type: 'normal', 
         distributor_id: dis_id?dis_id:undefined, 
         category: cat_id ? cat_id : undefined,
-        main_category: main_cat_id ? main_cat_id : undefined
+        category_id: main_cat_id ? main_cat_id : undefined
       }, 
     }, () => {
       this.nextPage() 
@@ -95,7 +101,23 @@ export default class List extends Component {
       })
     }
   }
+
+  getWechatNavBarHeight=()=>{ 
+    //statusBarHeight为状态栏高度
+    const { screenWidth } =Taro.getSystemInfoSync();
+    const { top ,height,right }=Taro.getMenuButtonBoundingClientRect(); 
+    this.setState({
+      homeIconInfo:{
+        height:height,
+        top:top,
+        left:screenWidth-right
+      }
+    })
+  }
   
+  componentDidShow() {
+    this.getWechatNavBarHeight() 
+  }
 
   async fetchUserInfo(){
      
@@ -114,6 +136,22 @@ export default class List extends Component {
       }
     })
 
+  }
+
+  getLeafChild=(list)=>{
+    //获取分类的叶子节点
+    function queryList(json,arr) {
+      for (var i = 0; i < json.length; i++) {
+          var sonList = json[i].children;
+          if (sonList.length == 0) {
+              arr.push(json[i]);
+          } else {
+              queryList(sonList, arr);
+          }
+      }
+      return arr;
+    }
+    return queryList(list,[]);
   }
 
   async fetchConfig(params){ 
@@ -150,8 +188,11 @@ export default class List extends Component {
       filterConfig:{
         ...this.state.filterConfig,
         scoreInternel:point_section,
-        categoryList:categoryList,
-        brandList:brand_list
+        categoryList:this.getLeafChild(categoryList),
+        brandList:brand_list,
+        brandVisible:brand_openstatus,
+        categoryVisible:cat_openstatus,
+        pointVisible:point_openstatus
       }
     }) 
   }
@@ -160,7 +201,7 @@ export default class List extends Component {
  
     const { page_no: page, page_size: pageSize } = params
 
-    const {filterParams:{brand,category}}=this.state;
+    const {filterParams:{brand,category,start_price,end_price}}=this.state;
 
     const query={
       ...this.state.query,
@@ -168,7 +209,9 @@ export default class List extends Component {
       item_type:'normal',
       pageSize,
       brand_id:brand?brand[0]:undefined,
-      main_category:category?category[0]:undefined,
+      category_id:category?category[0]:undefined,
+      start_price,
+      end_price
     }
     let total;
     const { list:prevState }=this.state;
@@ -250,6 +293,8 @@ export default class List extends Component {
     })
   }
 
+
+
   handleFilterChange = (data) => {
     // this.setState({
     //   showDrawer: true
@@ -298,12 +343,16 @@ export default class List extends Component {
     this.setState({ 
       list: [],
       query
-    }, () => { 
+    }, () => {
+      console.log(this.state)
       this.nextPage()
     })
   }
  
-  handleClickItem = (item) => { 
+  handleClickItem = (item) => {
+    if(item.store===0){
+      return ;
+    }
     const { item_id, title, market_price, price, img } = item;
     Tracker.dispatch("TRIGGER_SKU_COMPONENT", {
       goodsId: item_id,
@@ -312,7 +361,7 @@ export default class List extends Component {
       price: price * 100,
       imgUrl: img
     });
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
+    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}&type=pointitem`
     Taro.navigateTo({
       url
     })
@@ -345,7 +394,7 @@ export default class List extends Component {
   }
     
    
-  handleClickFilterBlock= ({id,type}) =>{
+  handleClickFilterBlock= ({id,type,start,end}) =>{
     const { filterParams }=this.state;
     let newFilterParams;
     if(type==='brand'){
@@ -364,12 +413,37 @@ export default class List extends Component {
         ...filterParams,
         category:[id], 
       }
+    }else if(type==='point'){
+      newFilterParams={
+        ...filterParams,
+        start_price:start,
+        end_price:end
+      }
     }
     this.setState({
       filterParams:newFilterParams
     })
   } 
    
+  handleChangeStartprice=(value)=>{
+    console.log("handleChangeStartprice",value)
+    this.setState({
+      filterParams:{
+        ...this.state.filterParams,
+        start_price:value
+      }
+    })
+  }
+
+  handleChangeEndprice=(value)=>{
+    this.setState({
+      filterParams:{
+        ...this.state.filterParams,
+        end_price:value
+      }
+    })
+  }
+
   render() {
     const {
       list, 
@@ -383,17 +457,23 @@ export default class List extends Component {
       filterConfig:{
         brandList,
         categoryList,
-        scoreInternel
+        scoreInternel,
+        brandVisible,
+        categoryVisible,
+        pointVisible
       },
       filterParams:{
         brand,
-        category
-      }
+        category,
+        start_price,
+        end_price
+      },
+      homeIconInfo
     } = this.state
     const { isTabBar = '' } = this.$router.params
     const noData=!page.isLoading && !page.hasNext && !list.length;
-    // console.log('-----isTabBar----', !isTabBar)
-    // console.log('-----page----', page)
+     
+    console.log('-----homeIconInfo----', homeIconInfo)
     // console.log('-----useInfo----', useInfo)
     // console.log('-----filterConfig----', this.state.filterConfig)
     return (
@@ -406,6 +486,14 @@ export default class List extends Component {
           />
         }
         <Header useInfo={useInfo} />
+
+        {
+          homeIconInfo && homeIconInfo.height!==0 && <HomeCapsule style={{
+            top:homeIconInfo.top+'px',
+            left:homeIconInfo.left+'px',
+            height:homeIconInfo.height+'px'
+          }}/>
+        }
 
         <View class="navigation">
           <Image src={require('../../assets/imgs/black.png')} class="navigation_image" /> 
@@ -442,6 +530,7 @@ export default class List extends Component {
                           <GoodsItem
                             key={item.item_id}
                             info={item}
+                            isStoreOut={item.store===0}
                             onClick={() => this.handleClickItem(item)}
                             onStoreClick={() => this.handleClickStore(item)}
                           />
@@ -473,7 +562,7 @@ export default class List extends Component {
         >
           {
             <View class="wrapper-filter">
-              <View class="brand">
+              {brandVisible && <View class="brand" >
                 <View class="title">品牌</View>
                 <View class="content-filter">
                   {
@@ -484,8 +573,8 @@ export default class List extends Component {
                     })
                   }
                 </View>
-              </View>
-              <View class="category">
+              </View>}
+              {categoryVisible && <View class="category">
                 <View class="title">分类</View>
                 <View class="content-filter">
                   {
@@ -496,18 +585,22 @@ export default class List extends Component {
                     })
                   }
                 </View>
-              </View>
-              <View class="score">
+              </View>}
+              {pointVisible && <View class="score">
                 <View class="title">积分区间</View>
-                <View class="input-wrap"><AtInput placeholder="最低积分值"/><View class='text'>~</View><AtInput placeholder="最高积分值"/></View>
+                <View class="input-wrap">
+                  <AtInput placeholder="最低积分值" value={start_price} onChange={this.handleChangeStartprice} />
+                  <View class='text'>~</View>
+                  <AtInput placeholder="最高积分值" value={end_price} onChange={this.handleChangeEndprice} />
+                </View>
                 {
                     scoreInternel.map((item,index)=>{
                       return (
-                        <FilterBlock info={item} type="score" />
+                        <FilterBlock info={item} type="score" active={start_price==item[0]&&end_price==item[1]} onClickItem={this.handleClickFilterBlock.bind(this,{type:"point",start:item[0],end:item[1]})}/>
                       )
                     })
                   }
-              </View>
+              </View>}
             </View>
           }
           
