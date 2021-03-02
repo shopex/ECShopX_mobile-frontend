@@ -232,6 +232,11 @@ class App extends Component {
           "pages/order/index"
         ]
       },
+      // 导购货架 guide
+      {
+        root: "guide",
+        pages: ["pages/index"]
+      },
 
       {
         root: "others",
