@@ -20,7 +20,7 @@ export default class DistributionShopCategory extends Component {
       curTabIdx: 0,
       currentIndex:0,
       tabList: [
-        { title: '重点推荐', iconType: 'home', iconPrefixClass: 'icon',url: '/pages/distribution/shop-home',urlRedirect: true },
+        { title: '小店首页', iconType: 'home', iconPrefixClass: 'icon',url: '/pages/distribution/shop-home',urlRedirect: true },
         { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/marketing/pages/distribution/shop-category', urlRedirect: true },
       ],
       contentList: [],
@@ -32,6 +32,13 @@ export default class DistributionShopCategory extends Component {
       shop_pic:''
     }
   }
+
+  componentDidMount () {
+    // 隐藏home按钮
+    Taro.hideHomeButton()
+    this.fetchInfo()
+  }
+
   componentWillReceiveProps (nextProps){
     if(nextProps.isChanged === true) {
       this.setState({
@@ -40,14 +47,11 @@ export default class DistributionShopCategory extends Component {
     }
   }
 
-  componentDidMount () {
-    this.fetchInfo()
-  }
   async fetchInfo (){
     const query = {
       category_level:2
     }
-
+    const options = this.$router.params
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const param = distributionShopId ? {
@@ -67,7 +71,11 @@ export default class DistributionShopCategory extends Component {
       list: nList,
       defaultId:cate_id,
       hasSeries: false,
-      shop_pic:banner_img
+      shop_pic:banner_img,
+      tabList: [
+        { title: '小店首页', iconType: 'home', iconPrefixClass: 'icon',url: `/pages/distribution/shop-home?featuredshop=${options.featuredshop}`,urlRedirect: true },
+        { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: `/marketing/pages/distribution/shop-category?featuredshop=${options.featuredshop}`, urlRedirect: true },
+      ]
     },() => {
       this.nextPage()
     })

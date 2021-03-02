@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Image } from '@tarojs/components'
+import { View, ScrollView, Image, Text, Button } from '@tarojs/components'
 import { AtTabBar, AtSearchBar  } from 'taro-ui'
 import { BackToTop, Loading, NavBar, SpImg } from '@/components'
 import S from '@/spx'
@@ -41,13 +41,16 @@ export default class DistributionShopHome extends Component {
       positionStatus: false,
       def_pic: '',
       // 是否显示搜索
-      showSearch: true
+      showSearch: false,
+      // 搜索关键词
+      keywords: '',
+      // 价格排序, true为升 false为降
+      sort: true
     }
   }
 
   async componentDidMount () {
     const options = this.$router.params
-
     const { uid } = await entry.entryLaunch(options, true)
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const { userId } = Taro.getStorageSync('userinfo')
@@ -70,7 +73,11 @@ export default class DistributionShopHome extends Component {
           promoter_onsale: true,
           promoter_shop_id: shopId
         },
-        def_pic: banner_img || 'https://img.ixintu.com/download/jpg/202004/e92587f8223c1c5aa878f49411e6af67_800_250.jpg!con'
+        def_pic: banner_img,
+        // tabList: [
+        //   { title: '小店首页', iconType: 'home', iconPrefixClass: 'icon',url: `/pages/distribution/shop-home?featuredshop=${options.featuredshop}`,urlRedirect: true },
+        //   { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: `/marketing/pages/distribution/shop-category?featuredshop=${options.featuredshop}`, urlRedirect: true },
+        // ]
       }, async () => {
         await this.fetchInfo()
         await this.fetch()
@@ -139,100 +146,48 @@ export default class DistributionShopHome extends Component {
     })
     
   }
-
+  // 分享
+  onShareAppMessage(res) {
+    const { info } = res.target.dataset
+    const options = this.$router.params
+    return {
+      title: info.title,
+      imageUrl: info.img,
+      path: `/pages/distribution/shop-home?featuredshop=${options.featuredshop}`
+    }
+  }
   
 
-  handleFilterChange = (data) => {
-    this.setState({
-      showDrawer: false
-    })
-    const { current, sort } = data
+  // handleFilterChange = (data) => {
+  //   this.setState({
+  //     showDrawer: false
+  //   })
+  //   const { current, sort } = data
 
-    const query = {
-      ...this.state.query,
-      goodsSort: current === 0
-          ? null
-          : current === 1
-            ? 1
-            : (sort > 0 ? 3 : 2)
-    }
+  //   const query = {
+  //     ...this.state.query,
+  //     goodsSort: current === 0
+  //         ? null
+  //         : current === 1
+  //           ? 1
+  //           : (sort > 0 ? 3 : 2)
+  //   }
 
-    if (current !== this.state.curFilterIdx || (current === this.state.curFilterIdx && query.goodsSort !== this.state.query.goodsSort)) {
-      this.resetPage()
-      this.setState({
-        list: []
-      })
-    }
+  //   if (current !== this.state.curFilterIdx || (current === this.state.curFilterIdx && query.goodsSort !== this.state.query.goodsSort)) {
+  //     this.resetPage()
+  //     this.setState({
+  //       list: []
+  //     })
+  //   }
 
-    this.setState({
-      curFilterIdx: current,
-      query
-    }, () => {
-      this.nextPage()
-    })
-  }
+  //   this.setState({
+  //     curFilterIdx: current,
+  //     query
+  //   }, () => {
+  //     this.nextPage()
+  //   })
+  // }
 
-  handleClickFilter = () => {
-    this.setState({
-      showDrawer: true
-    })
-  }
-
-  handleClickParmas = (id, child_id) => {
-    const { paramsList, selectParams } = this.state
-    paramsList.map(item => {
-      if(item.attribute_id === id) {
-        item.attribute_values.map(v_item => {
-          if(v_item.attribute_value_id === child_id) {
-            v_item.isChooseParams = true
-          } else {
-            v_item.isChooseParams = false
-          }
-        })
-      }
-    })
-    selectParams.map(item => {
-      if(item.attribute_id === id) {
-        item.attribute_value_id = child_id
-      }
-    })
-    this.setState({
-      paramsList,
-      selectParams
-    })
-  }
-
-  handleClickSearchParams = (type) => {
-    this.setState({
-      showDrawer: false
-    })
-    if(type === 'reset') {
-      const { paramsList, selectParams } = this.state
-      this.state.paramsList.map(item => {
-        item.attribute_values.map(v_item => {
-          if(v_item.attribute_value_id === 'all') {
-            v_item.isChooseParams = true
-          } else {
-            v_item.isChooseParams = false
-          }
-        })
-      })
-      selectParams.map(item => {
-        item.attribute_value_id = 'all'
-      })
-      this.setState({
-        paramsList,
-        selectParams
-      })
-    }
-
-    this.resetPage()
-    this.setState({
-      list: []
-    }, () => {
-      this.nextPage()
-    })
-  }
 
   handleClickItem = (item) => {
     const url = `/pages/item/espier-detail?id=${item.goods_id}&dtid=${item.distributor_id}`
@@ -266,12 +221,52 @@ export default class DistributionShopHome extends Component {
     })
   }
 
+  // 搜索输入框
+  searchInput = (data) => {
+    this.setState({
+      keywords: data
+    })
+  }
+
+  // 确认搜索
+  handleConfirm = () => {
+    this.setState({
+      showSearch: false
+    })
+  }
+
+  // 防止点击穿透
+  handleDisable = (e) => {
+    e.stopPropagation()
+  }
+
+  // 清除搜索
+  handleClear = () => {
+    this.searchInput('')
+    this.handleConfirm()
+  }
+
+  // 点击搜索蒙层
+  handleCloseSearch = (e) => {
+    e.stopPropagation()
+    console.log('触发handleCloseSearch')
+    this.handleConfirm()
+  }
+
   // 筛选切换
   handleFilterChange = (filterInfo) => {
     const { type } = filterInfo
-    this.setState({
-      curFilterIdx: type
-    })
+    const { curFilterIdx, sort } = this.state
+    if (curFilterIdx === type && type === 2) {
+      this.setState({
+        sort: !sort
+      })
+    } else {
+      this.setState({
+        curFilterIdx: type,
+        sort: true
+      })
+    }
   }
 
   render () {
@@ -283,7 +278,9 @@ export default class DistributionShopHome extends Component {
       localCurrent,
       scrollTop,
       info,
+      sort,
       showSearch,
+      keywords,
       curFilterIdx
     } = this.state
 
@@ -314,7 +311,7 @@ export default class DistributionShopHome extends Component {
           <View className='shop-def'>
             <Image
               className='banner-img'
-              src={def_pic || null}
+              src={def_pic}
               mode='aspectFill'
             />
           </View>
@@ -332,14 +329,16 @@ export default class DistributionShopHome extends Component {
                 <View className='num'>200</View>
                 <View className='text'>全部商品</View>
               </View>
-              <View className='item'>
+              <Button className='item share' open-type='share'>
                 <View className='iconfont icon-share'></View>
                 <View className='text'>分享店铺</View>
-              </View>
+              </Button>
             </View>
           </View>   
           <View className='filter'>
-            <View className='iconfont icon-search'></View>
+            <View className='iconfont icon-search' onClick={this.handleShowSearch.bind(this)}>
+              <Text className='txt'>{ keywords }</Text>
+            </View>
             {
               filterList.map(item =>
                 <View
@@ -348,6 +347,10 @@ export default class DistributionShopHome extends Component {
                   onClick={this.handleFilterChange.bind(this, item)}
                 >
                   { item.title }
+                  {
+                    (item.type === 2 && item.title === '价格') &&
+                    <View className={`sort ${sort ? 'down' : 'up'}`}></View>
+                  }
                 </View>
               )
             }
@@ -374,7 +377,7 @@ export default class DistributionShopHome extends Component {
                         img-class='goodImg'
                         src='https://bbctest.aixue7.com/1/2019/08/07/17de0d280df6a0dc603b6056aace3c92nlqU3KNYregEcKluMNQj6PGtMfLWrBa7'
                       />
-                      <View className='outSale'></View>
+                      <View className={`outSale ${item % 2 === 0 && 'show'}`}></View>
                     </View>
                     <View className='info'>
                       <View className='goodName'>积分商城商品2这里最多显示两行文字这说是第二行省第二行省第二行省第二行省</View>
@@ -388,14 +391,20 @@ export default class DistributionShopHome extends Component {
         </ScrollView>
 
         {/* 搜索 */}
-        {
-          showSearch && <View className='searchMask'>
+        <View
+          className={`searchMask ${showSearch && 'show'}`}
+          onClick={this.handleCloseSearch.bind(this)}
+        >
+          <View className='seachMain' onClick={this.handleDisable.bind(this)}>
             <AtSearchBar
-              actionName='搜一下'
+              value={keywords}
               focus={showSearch}
+              onClear={this.handleClear.bind(this)}
+              onChange={this.searchInput.bind(this)}
+              onConfirm={this.handleConfirm.bind(this)}
             />
           </View>
-        }
+        </View>
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}
