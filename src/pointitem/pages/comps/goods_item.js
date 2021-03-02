@@ -8,15 +8,12 @@
  */
 import Taro ,{ Component } from '@tarojs/taro';
 import { View,Image } from '@tarojs/components';
+import { classNames } from '@/utils'
 
 import './goods_item.scss';
 
 
 export default class GoodsItem extends Component{
-
-    static defaultProps = {
-        onClick: () => {}, 
-    }
 
     constructor(props){
         super(props);
@@ -26,19 +23,13 @@ export default class GoodsItem extends Component{
         }
     }
     
-    handleClick=()=>{ 
-        const { onClick }=this.props;
-        if(onClick){
-            onClick()
-        }
-    }
 
     render(){
-        const { info }=this.props;
+        const {info,onClick,isStoreOut}=this.props;
         
         return (
-            <View class="goods_item" onClick={this.handleClick}>
-                <View class="goods_item_image" >
+            <View class={classNames('goods_item',{'isStoreOut':isStoreOut})} onClick={onClick}>
+                <View class="goods_item_image">
                     <Image src={info.imgUrl} />
                 </View>
                 <View class="goods_item_name">
@@ -48,6 +39,8 @@ export default class GoodsItem extends Component{
                     <View class="number">{info.point}</View>
                     <View class="title">积分</View>
                 </View>
+
+                {isStoreOut && <View class="block">已兑完</View>}
             </View>
         )
     }

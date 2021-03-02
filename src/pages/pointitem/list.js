@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer,AtInput } from 'taro-ui'
-import { BackToTop, Loading,SpNote, NavBar, TabBar } from '@/components'
+import { BackToTop, Loading,SpNote, NavBar, TabBar,HomeCapsule } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
 import { classNames } from '@/utils' 
@@ -52,6 +52,12 @@ export default class List extends Component {
       filterParams:{
         brand:[],
         category:[]
+      },
+      navbarHeight:undefined,
+      homeIconInfo:{
+        height:0,
+        top:0,
+        left:0
       }
     }
   }
@@ -63,7 +69,7 @@ export default class List extends Component {
   } 
 
   async componentDidMount() {
-    const { keywords,dis_id,cat_id, main_cat_id } = this.$router.params 
+    const { keywords,dis_id,cat_id, main_cat_id } = this.$router.params  
  
     this.fetchUserInfo(); 
 
@@ -95,7 +101,23 @@ export default class List extends Component {
       })
     }
   }
+
+  getWechatNavBarHeight=()=>{ 
+    //statusBarHeight为状态栏高度
+    const { screenWidth } =Taro.getSystemInfoSync();
+    const { top ,height,right }=Taro.getMenuButtonBoundingClientRect(); 
+    this.setState({
+      homeIconInfo:{
+        height:height,
+        top:top,
+        left:screenWidth-right
+      }
+    })
+  }
   
+  componentDidShow() {
+    this.getWechatNavBarHeight() 
+  }
 
   async fetchUserInfo(){
      
@@ -271,6 +293,8 @@ export default class List extends Component {
     })
   }
 
+
+
   handleFilterChange = (data) => {
     // this.setState({
     //   showDrawer: true
@@ -443,12 +467,13 @@ export default class List extends Component {
         category,
         start_price,
         end_price
-      }
+      },
+      homeIconInfo
     } = this.state
     const { isTabBar = '' } = this.$router.params
     const noData=!page.isLoading && !page.hasNext && !list.length;
      
-    // console.log('-----page----', page)
+    console.log('-----homeIconInfo----', homeIconInfo)
     // console.log('-----useInfo----', useInfo)
     // console.log('-----filterConfig----', this.state.filterConfig)
     return (
@@ -461,6 +486,14 @@ export default class List extends Component {
           />
         }
         <Header useInfo={useInfo} />
+
+        {
+          homeIconInfo && homeIconInfo.height!==0 && <HomeCapsule style={{
+            top:homeIconInfo.top+'px',
+            left:homeIconInfo.left+'px',
+            height:homeIconInfo.height+'px'
+          }}/>
+        }
 
         <View class="navigation">
           <Image src={require('../../assets/imgs/black.png')} class="navigation_image" /> 
