@@ -71,8 +71,15 @@
   }
   .at-input{
     width: 716rpx;
-    transition: width 0.3s;
+   
   }
+}
+
+.searchInput-P{
+  .at-input{
+    transition: width 0.3s; 
+  }
+ 
 }
 
 .at-button {

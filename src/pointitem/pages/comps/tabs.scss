@@ -12,7 +12,16 @@
     justify-content: center;
 
   }
-
+  .searchInput-P{
+    position: absolute;
+    right: 18rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .search-icon{
+      position: absolute;
+    }
+  }
   &.active{
     .text{
       display: none;
@@ -24,8 +33,9 @@
       }
     }
     .searchInput{
-      
+     
     }
+   
 
   }
 
