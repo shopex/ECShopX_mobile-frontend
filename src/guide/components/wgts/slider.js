@@ -1,173 +1,159 @@
-import Taro, { PureComponent } from '@tarojs/taro'
-import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
-import { classNames, styleNames,previewImgVideo } from '@/utils'
-import api from '@/api'
-import { linkPage } from './helper'
-import './slider.scss'
+import Taro, { Component } from "@tarojs/taro";
+import { View, Image, Swiper, SwiperItem } from "@tarojs/components";
+import { SpImg } from "@/components";
+import { classNames } from "@/utils";
+import { linkPage } from "./helper";
+import { WgtPlateType } from "./index";
 
-export default class WgtSlider extends PureComponent {
-  static options = {
-    addGlobalClass: true
-  }
+import "./slider.scss";
 
+export default class WgtSlider extends Component {
   static defaultProps = {
-    info: null,
-    autoPlay: true
-  }
+    info: null
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       curIdx: 0,
-      imgHeight:null
-     
-    }
+      index: 0
+    };
   }
-  componentWillMount(){
-    
-     const {  info:{data} } = this.props
-      Taro.getImageInfo({
-        src: data[0].imgUrl,
-      }).then(res => {
-        let width=res.width
-        let height=res.height
-        let ratio=width/height
-        let imgHeight=+(Taro.$systemSize.screenWidth/ratio).toFixed(2)
-        this.setState({
-           imgHeight
-        })
-    })
-  }
-  
 
-  handleClickItem = async (item,index) => {
-    
-    if(item.linkPage){
-      linkPage(item.linkPage, item.id, item)
-    }else{
-      const {info:{data}}=this.props
-      let bannerImg=data.map((p_item)=>{
-        let p_obj={
-          filet:'image',
-          url:p_item.imgUrl
-        }
-        return p_obj
-      })
-      previewImgVideo(bannerImg,index)
+  static options = {
+    addGlobalClass: true
+  };
 
-    }
-}
+  handleClickItem = linkPage;
 
-  handleSwiperChange = (e) => {
-    const { current } = e.detail
+  // handleSwiperChange = (e) => {
+  //   const { current  } = e.detail
 
+  //   this.setState({
+  //     curIdx: current
+  //   })
+  // }
+  handleSwiperChange = e => {
+    const { current } = e.detail;
     this.setState({
-      curIdx: current
-    })
-  }
-
+      curIdx: current,
+      index: e.target.current
+    });
+  };
 
   render() {
-    const { info, autoPlay} = this.props
-    const { curIdx,imgHeight} = this.state
+    const { info } = this.props;
+    const { curIdx, index } = this.state;
 
-   
-    if (!(info&&(imgHeight||info.config.imgHeight))) {
-      return null
+    if (!info) {
+      return null;
     }
-    const { config, base, data } = info
-    const curContent = (data[curIdx] || {}).content
-    let sliderImgHeight=imgHeight||config.imgHeight
-   
+    const { config, base, data } = info;
+    const curContent = (data[curIdx] || {}).content;
 
-    // 'height':`${sliderImgHeight}px`,
-  return (
-  <View style={styleNames({'position': 'relative', 'top': `${Number(config.top) ? -(Number(config.top)) : 0}px` })}>
-    <View className={`wgt ${base.padded ? 'wgt__padded' : null} slidepostion`} style={styleNames({'background-image': 'url(' + config.bgimgUrl + ')', 'background-size': 'contain', 'padding': `${config.bgpadding?(`${config.bgpadding.toppadding||0}px ${config.bgpadding.rightpadding||0}px ${config.bgpadding.bottompadding||0}px ${config.bgpadding.leftpadding||0}px`):'0px'}` })}>
-      {base.title && (
-        <View className='wgt__header'>
-          <View className='wgt__title'>{base.title}</View>
-          <View className='wgt__subtitle'>{base.subtitle}</View>
-          <Text className={classNames('wgt__header__more', Taro.$system === 'iOS' ? 'wgt__header__iosmore' : '')}> > </Text>
-        </View>
-      )}
-      {/* style={styleNames({'height':`${imgHeight}px`})} */}
-      {
-        config
-          ? <View className={`slider-wrap ${config.padded ? 'padded' : ''}`} style={styleNames({'height':`${sliderImgHeight}px`})}>
-            {/* <Image
-              mode='widthFix'
-              className={classNames('slider-item__img plus-hidden__img', config.type === 'type2' ? 'type2-img' : config.type === 'type3'?'type3-img':'')}
-             
-              src={data[0].imgUrl}
-
-            /> */}
-            {/* plus_img */}
-
-            {(config.type === 'type1'||!config.type) && <Swiper
-              className='slider-img'
+    return (
+      <View className={`wgt ${base.padded ? "wgt__padded" : null}`}>
+        {base.title && (
+          <View className="wgt__header">
+            <View className="wgt__title">{base.title}</View>
+            <View className="wgt__subtitle">{base.subtitle}</View>
+          </View>
+        )}
+        {config ? (
+          <View className={`slider-wrap ${config.padded ? "padded" : ""}`}>
+            {data[0] && (
+              <Image
+                mode="widthFix"
+                className="scale-placeholder"
+                lazyLoad
+                src={data[0].imgUrl}
+              />
+            )}
+            <Swiper
+              className="slider-img"
               circular
-              autoplay={autoPlay}
+              autoplay
               current={curIdx}
               interval={config.interval}
-              duration={400}
-              style={styleNames({'height':`${sliderImgHeight}px`})}
+              duration={300}
               onChange={this.handleSwiperChange}
             >
-              {data.map((item, index) => {
+              {data.map((item, idx) => {
                 return (
                   <SwiperItem
-                    key='id'
-                    className={`slider-item ${config.rounded ? 'rounded' : null}`}
-                   
+                    key={`${idx}1`}
+                    className={`slider-item ${
+                      config.rounded ? "rounded" : null
+                    }`}
                   >
                     <View
-                      style={`height:${imgHeight}px;padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
-                      onClick={this.handleClickItem.bind(this, item,index)}
-                      
+                      style={`padding: 0 ${
+                        config.padded ? Taro.pxTransform(20) : 0
+                      }`}
+                      onClick={this.handleClickItem.bind(
+                        this,
+                        item.linkPage,
+                        item
+                      )}
                     >
-                      <Image
-                        mode='widthFix'
-                        className='slider-item__img'
+                      <WgtPlateType
+                        info={item}
+                        index={index}
+                        num={idx}
+                        base={base}
+                      />
+                      <SpImg
+                        img-class="slider-item__img"
                         src={item.imgUrl}
-                        
+                        mode="widthFix"
+                        width="750"
+                        lazyLoad
                       />
                     </View>
                   </SwiperItem>
-                )
+                );
               })}
-            </Swiper>}
+            </Swiper>
+
             {data.length > 1 && config.dot && (
-              <View className={classNames('slider-dot', { 'dot-size-switch': config.animation }, config.dotLocation, config.dotCover ? 'cover' : 'no-cover', config.shape)}>
-                {data.map((dot, dotIdx) =>
-                  <View
-                    className={classNames('dot', { active: curIdx === dotIdx })}
-                    style={styleNames({ 'background-color': curIdx === dotIdx ? config.activedotColor : config.dotColor })}
-                    key='id'
-                  > </View>
+              <View
+                className={classNames(
+                  "slider-dot",
+                  { "dot-size-switch": config.animation },
+                  config.dotLocation,
+                  config.dotCover ? "cover" : "no-cover",
+                  config.dotColor,
+                  config.shape
                 )}
+              >
+                {data.map((dot, dotIdx) => (
+                  <View
+                    className={classNames("dot", { active: curIdx === dotIdx })}
+                    key={`${dotIdx}1`}
+                  ></View>
+                ))}
               </View>
             )}
 
             {data.length > 1 && !config.dot && (
               <View
-                className={classNames('slider-count', config.dotLocation, config.shape, config.dotColor)}
-                style={styleNames({ 'background-color': config.dotColor })}
+                className={classNames(
+                  "slider-count",
+                  config.dotLocation,
+                  config.shape,
+                  config.dotColor
+                )}
               >
                 {curIdx + 1}/{data.length}
               </View>
             )}
           </View>
-          : null
-      }
-      {config.content && data.length > 0 && (
-        <Text className='slider-caption'>{curContent}</Text>
-      )}
-    </View>
-  </View>
-     
-
-    )
+        ) : null}
+        {config.content && curContent && (
+          <View className="slider-caption">{curContent}</View>
+        )}
+      </View>
+    );
   }
 }

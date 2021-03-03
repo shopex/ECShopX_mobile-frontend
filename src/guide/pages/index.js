@@ -12,7 +12,6 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import {
-  TabBar,
   Loading,
   SpNote,
   BackToTop,
@@ -31,6 +30,7 @@ import { Tracker } from "@/service";
 import { WgtGoodsFaverite, HeaderHome } from "../../pages/home/wgts";
 import HomeWgts from "../../pages/home/comps/home-wgts";
 import Automatic from "../../pages/home/comps/automatic";
+import BaTabBar from "../components"
 
 import "../../pages/home/index.scss";
 
@@ -623,7 +623,7 @@ export default class Home extends Component {
           </View>
         )}
         {/* tabBar */}
-        <TabBar showbar={show_tabBar} />
+        <BaTabBar showbar={show_tabBar} />
         {/* 开屏广告 */}
         {showAdv && <ScreenAd />}
       </View>
