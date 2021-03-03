@@ -235,7 +235,14 @@ class App extends Component {
       // 导购货架 guide
       {
         root: "guide",
-        pages: ["pages/index"]
+        pages: [
+          "pages/index",
+          "pages/category/index",
+          "pages/item/list",
+          "pages/item/espier-detail",
+          "pages/item/item-params",
+          "pages/item/package-list",
+        ]
       },
 
       {

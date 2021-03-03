@@ -1,74 +1,120 @@
 import Taro, { Component } from '@tarojs/taro'
+import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtTabBar } from 'taro-ui'
-import api from '@/api'
-import {  getCurrentRoute } from '@/utils'
+import { getCurrentRoute } from '@/utils'
 import S from '@/spx'
+// import { getTotalCount } from '@/store/cart'
 
-@connect(({ cart,home,member}) => ({
-  cartTotalCount: cart.count,
-  tabSet:home.tabSet,
-  refundCount:member.refundCount
-}), (dispatch) => ({
-  onUpdateCartCount: (count) => dispatch({ type: 'cart/count', payload: count })
+@connect(({ tabBar,cart }) => ({
+  tabBar: tabBar.current,
+  cartCount: cart.cartCount
 }))
-export default class BaTabBar extends Component {
-  static options = {
-    addGlobalClass: true
-  }
+export default class TabBar extends Component {
 
   constructor (props) {
     super(props)
 
-    const { cartTotalCount, current,refundCount } = props
-    const count = current !== 3 ? (cartTotalCount || '') : ''
-  
-   
     this.state = {
-      count:count,
       localCurrent: 0,
-      tabList: [
-        { title: '首页', iconType: 'home', iconPrefixClass: 'in-icon', url: '/guide/index', urlRedirect: true },
-        { title: '分类', iconType: 'menu', iconPrefixClass: 'in-icon', url: '/guide/category/index', urlRedirect: true },
-        { title: '优惠券', iconType: 'coupon', iconPrefixClass: 'in-icon', url: '/guide/coupon-home/index', urlRedirect: true },
-        { title: '种草', iconType: 'grass', iconPrefixClass: 'in-icon', url: '/guide/recommend/list', urlRedirect: true },
-        { title: '购物车', iconType: 'cart', iconPrefixClass: 'in-icon', url: '/guide/cart/espier-index', text: count, max: '99', withLogin: true, urlRedirect: true },
-      ]
+      backgroundColor: '',
+      color: '',
+      selectedColor: '#1f82e0',
+      tabList: []
     }
-    this.cartTabIdx = 4
+  }
+  
+  componentDidMount () {
+    this.initTabbarData()
   }
 
-
-  componentDidMount () {
-    this.updateCurTab()
-    
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.current !== undefined) {
+      this.setState({ localCurrent: nextProps.current })
+    }
+    if (this.props.cartCount !== nextProps.cartCount) {
+      setTimeout(() => {
+        this.initTabbarData()
+      })
+    }
   }
 
   componentDidShow () {
-    this.fetchCart()
-  
+    if (this.state.tabList.length > 0) {
+      this.fetchCart()
+    }
   }
-  
 
-  componentWillReceiveProps (nextProps) {
-   
-    if (nextProps.current !== undefined) {
-     
-      const {tabList}=this.state
-   
-      this.setState({ 
-        localCurrent: nextProps.current,
-        tabList
-      })
-     
+  static options = {
+    addGlobalClass: true
+  }
+
+  initTabbarData () {
+    const { tabBar } = this.props
+    let list = []
+    list = [
+      { title: '首页', iconType: 'home', iconPrefixClass: 'icon', url: '/guide/pages/index', urlRedirect: true },
+      { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/guide/pages/category/index', urlRedirect: true },
+      { title: '优惠券', iconType: 'member', iconPrefixClass: 'icon', url: '/guide/pages/member/index', urlRedirect: true },
+      { title: '种草', iconType: 'member', iconPrefixClass: 'icon', url: '/guide/pages/member/index', urlRedirect: true },
+      { title: '购物车', iconType: 'cart', iconPrefixClass: 'icon', url: '/guide/pages/cart/espier-index', text: this.cartCount || '', max: '99',urlRedirect: true },
+    ]
+
+    // if (tabBar) {
+    //   const { config, data } = tabBar
+    //   const { backgroundColor, color, selectedColor } = config
+    //   this.setState({
+    //     backgroundColor,
+    //     color,
+    //     selectedColor
+    //   })
+    //   data.map(item => {
+    //     let obj = {
+    //       title: item.text,
+    //       iconType: item.iconPath && item.selectedIconPath ? '' : item.name,
+    //       iconPrefixClass: 'icon',
+    //       image: item.iconPath,
+    //       selectedImage: item.selectedIconPath,
+    //       url: item.pagePath,
+    //       urlRedirect: true
+    //     }
+    //     if (item.name === 'cart') {
+    //       Object.assign(obj, {text: this.cartCount || '', max: '99'})
+    //     }
+    //     list.push(obj)
+    //   })
+    // } else {
+
+    // }
+
+    this.setState({
+      tabList: list,
+    }, () => {
+      this.updateCurTab()
+    })
+  }
+
+  get cartCount () {
+    // console.log('computed')
+    return this.props.cartCount
+  }
+
+  get tabBar () {
+    let initTabBar = Taro.getStorageSync('initTabBar')
+    if (this.props.tabBar && initTabBar == true) {
+      Taro.setStorageSync('initTabBar', false)
+      this.initTabbarData()
     }
   }
 
   updateCurTab () {
     this.fetchCart()
     const { tabList, localCurrent } = this.state
-    const { fullPath } = getCurrentRoute(this.$router)
-    const { url } = tabList[localCurrent]
+    const fullPath = ((getCurrentRoute(this.$router).fullPath).split('?'))[0]
+    if (tabList.length == 0) {
+      return
+    }
+    const { url } = tabList[localCurrent] || {}
     if (url && url !== fullPath) {
       const nCurrent = tabList.findIndex((t) => t.url === fullPath) || 0
       this.setState({
@@ -77,81 +123,72 @@ export default class BaTabBar extends Component {
     }
   }
 
-  updateCartCount (count) {
-    if (!count) count = ''
-    const cartTabIdx = this.cartTabIdx
-    const { tabList } = this.state
-    const { path } = getCurrentRoute(this.$router)
-    if (path === tabList[cartTabIdx].url||count==0) {
-      count = ''
-    }
-    tabList[cartTabIdx].text = count
-
-    this.setState({
-      tabList
-    })
-  }
-
   async fetchCart () {
     if (!S.getAuthToken()) return
-     
-    try {
-      const { item_count } = await api.cart.count()
-      this.updateCartCount(item_count)
-      this.props.onUpdateCartCount(item_count)
-    } catch (e) {
-      console.error(e)
+    const { tabList } = this.state
+    const cartTabIdx = tabList.findIndex(item => item.url.indexOf('cart') !== -1)
+    const updateCartCount = (count) => {
+      tabList[cartTabIdx].text = count || ''
+      this.setState({
+        tabList
+      })
     }
+
+    const { path } = getCurrentRoute(this.$router)
+    if (this.state.tabList[cartTabIdx] && (path === this.state.tabList[cartTabIdx].url)) {
+      updateCartCount('')
+      return
+    }
+
   }
 
-  handleClick = (current,e) => {
-  
-    e.stopPropagation()
+  handleClick = (current) => {
     const cur = this.state.localCurrent
-    
+    const {showbar = true} = this.props
+    if(!showbar){
+      return false
+    }
+
     if (cur !== current) {
       const curTab = this.state.tabList[current]
-      const { url, urlRedirect, withLogin } = curTab
-      const { fullPath } = getCurrentRoute(this.$router)
-     
+      const { url, withLogin } = curTab
+      const fullPath = ((getCurrentRoute(this.$router).fullPath).split('?'))[0]
       if (withLogin && !S.getAuthToken()) {
-        let pathurl=BA_APP_AUTH_PAGE
-       if(urlRedirect){
-         pathurl=`${BA_APP_AUTH_PAGE}?redirect=${encodeURIComponent(url)}`
-       }
-        return Taro.redirectTo({
-          url: pathurl
+        return Taro.navigateTo({
+          url: APP_AUTH_PAGE
         })
       }
 
       if (url && fullPath !== url) {
-        if (!urlRedirect) {
-          Taro.navigateTo({ url })
-        } else {
-          Taro.redirectTo({ url })
-        }
+        // if (!urlRedirect || (url === '/pages/member/index' && !S.getAuthToken())) {
+        //   Taro.navigateTo({ url })
+        // } else {
+        Taro.redirectTo({ url })
+        // }
       }
     }
   }
 
-  render () {
-    const { tabList, localCurrent } = this.state
-    const {tabSet}=this.props
+ 
 
-    // const ipxClass = S.get('ipxClass')
+  render () {
+    const { color, backgroundColor, selectedColor, tabList, localCurrent } = this.state
+ 
+
+    if (APP_INTEGRATION) {
+      return <View></View>
+    }
 
     return (
       <AtTabBar
         fixed
-        backgroundColor={tabSet?tabSet.config.tabBackgroundColor:''}
-        color={tabSet?tabSet.config.tabColor:'#818181'}
-        selectedColor={tabSet?tabSet.config.activetabColor:'#0b4137'}
-        // className={ipxClass}
+        color={color}
+        backgroundColor={backgroundColor}
+        selectedColor={selectedColor}
         tabList={tabList}
         onClick={this.handleClick}
         current={localCurrent}
       />
-
     )
   }
 }
