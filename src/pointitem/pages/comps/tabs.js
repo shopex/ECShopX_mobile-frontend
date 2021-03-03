@@ -47,6 +47,8 @@ export default class FilterBar extends Component {
   
     handleClickItem(idx) {
         const item = this.props.list[idx]||{}
+
+        console.log("---handleClickItem----",idx,item)
         let sortOrder = null
 
         if (item.sort) {
