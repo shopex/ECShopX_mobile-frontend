@@ -21,8 +21,7 @@ export default class GoodsItem extends Component{
         this.state={
 
         }
-    }
-    
+    } 
 
     render(){
         const {info,onClick,isStoreOut}=this.props;

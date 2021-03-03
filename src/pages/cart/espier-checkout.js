@@ -111,7 +111,8 @@ export default class CartCheckout extends Component {
         member_discount: "",
         coupon_discount: "",
         point: "",
-        point_fee: ""
+        point_fee: "",
+        freight_type:""
       },
       payType: '',
       disabledPayment: null,
@@ -698,6 +699,7 @@ export default class CartCheckout extends Component {
       coupon_discount = 0,
       discount_fee,
       freight_fee = 0,
+      freight_type,
       freight_point = 0,
       point = 0,
       total_fee,
@@ -716,7 +718,7 @@ export default class CartCheckout extends Component {
       max_point = 0,
       is_open_deduct_point,
       deduct_point_rule,
-      real_use_point
+      real_use_point,
     } = data;
 
     //const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params, coupon_info,point_fee=0,point_use, user_point = 0,max_point = 0 ,is_open_deduct_point,deduct_point_rule,real_use_point } = data      // 测试数据
@@ -747,7 +749,8 @@ export default class CartCheckout extends Component {
       remainpt, // 总积分
       deduction, // 抵扣
       point_fee: -1 * point_fee, //积分抵扣金额,
-      item_point
+      item_point,
+      freight_type
     };
 
     let info = this.state.info;
@@ -1536,6 +1539,7 @@ export default class CartCheckout extends Component {
       isOpenStore
     } = this.state;
     console.log("---total---",total);
+    console.log("---info---",info);
     // let curStore = {}
     // if (shopData) {
     //   curStore = shopData
@@ -1589,7 +1593,7 @@ export default class CartCheckout extends Component {
                 >
                   配送
                 </View>
-                <View
+                {!this.isPointitemGood() && <View
                   className={classNames(
                     "switch-item",
                     !express ? "active" : ""
@@ -1597,7 +1601,7 @@ export default class CartCheckout extends Component {
                   onClick={this.handleSwitchExpress.bind(this, false)}
                 >
                   自提
-                </View>
+                </View>}
               </View>
             )}
           {bargain_id ||
@@ -1903,6 +1907,8 @@ export default class CartCheckout extends Component {
             )}
             <SpCell className="trade-sub-total__item" title="运费：">
               <Price unit="cent" value={total.freight_fee} />
+             
+              
             </SpCell>
             {goodType === "cross" && (
               <SpCell className="trade-sub-total__item" title="税费：">
@@ -1918,7 +1924,7 @@ export default class CartCheckout extends Component {
               <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.item_point}></Price> 
             </SpCell>
             <SpCell className="trade-sub-total__item" title="运费：">
-              <Price unit="cent" value={total.freight_fee} />
+              {total.freight_type==="point"?<Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.freight_fee} />:<Price unit="cent" value={total.freight_fee} />}
             </SpCell>
           </View>}
 
@@ -1950,14 +1956,7 @@ export default class CartCheckout extends Component {
             ) : (
                 total.point && (
                   <View class="last_price">
-                    <Price
-                      primary
-                      value={total.point}
-                      noSymbol
-                      noDecimal 
-                      appendText="积分"
-                    /> 
-                    {total.freight_fee && <View><View>+￥</View> <Price unit="cent" value={total.freight_fee} /></View>}
+                    <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.point} />
                   </View>
                 )
               )}

@@ -259,7 +259,19 @@ export default class Detail extends Component {
     return info;
   }
 
+  async goodPackageList(id){
+    let info;
+    if(this.isPointitemGood()){
+      info={list:[]};
+    }else{
+      info=await api.item.packageList({ item_id: id })
+    }
+    return info;
+  }
+
   async fetchInfo(itemId, goodsId) {
+    console.log("---fetchInfo---")
+    this.nextPage();
     const { distributor_id,store_id } = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
     //const isOpenStore = await entry.getStoreStatus()
@@ -406,7 +418,7 @@ export default class Detail extends Component {
         contentDesc = desc
       }
       let promotion_package = null
-      const { list } = await api.item.packageList({ item_id: id })
+      const { list } = await this.goodPackageList(id);
       if (list.length) {
         promotion_package = list.length
       }
@@ -422,11 +434,11 @@ export default class Detail extends Component {
   }
 
   async goodLikeList(query){ 
-    const {item_id} =this.state.info;
+    const { id } = this.$router.params;
     let info;
     if(this.isPointitemGood()){
       info = await api.pointitem.likeList({
-        item_id
+        item_id:id
       })
     }else{
       info = await api.cart.likeList(query)
@@ -434,7 +446,7 @@ export default class Detail extends Component {
     return info;
   }
 
-  async fetch(params) {
+  async fetch(params) { 
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -1217,7 +1229,7 @@ export default class Detail extends Component {
             />
           ) : null}
 
-          {promotion_package && (
+          {promotion_package && !this.isPointitemGood() && (
             <SpCell
               className="goods-sec-specs"
               isLink
