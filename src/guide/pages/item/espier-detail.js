@@ -12,7 +12,7 @@ import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from "@/service"
 import { GoodsBuyToolbar, ItemImg, ImgSpec, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem, GroupingItem } from './comps'
-import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../components/wgts'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../../pages/home/wgts'
 
 import './espier-detail.scss'
 
