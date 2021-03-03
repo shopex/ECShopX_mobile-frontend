@@ -510,7 +510,10 @@ export default class List extends Component {
           >
 
           </Tabs>
-          <ScrollView
+          
+        </View>
+        
+        <ScrollView
             className={classNames(isTabBar ? 'goods-list__scroll_isTabBar' : 'goods-list__scroll', isTabBar && 'isTabBar')}
             scrollY
             scrollTop={scrollTop}
@@ -549,9 +552,6 @@ export default class List extends Component {
               noData && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
             }
           </ScrollView>
-        </View>
-        
-
         <AtDrawer
           show={showDrawer}
           right

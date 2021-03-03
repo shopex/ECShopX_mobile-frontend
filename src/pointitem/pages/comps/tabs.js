@@ -130,12 +130,16 @@ export default class FilterBar extends Component {
                 </View>
                 <View class='action'>
                     <View class="filter"  onClick={this.handleClickItem.bind(this, 3)}><View class="textFilter">筛选</View><View className={"iconfont icon-filter"}></View></View>
-                    <View class="searchInput">
-                       
-                        <AtInput value={inputValue} onFocus={this.handleFocus} onBlur={this.handleBlur} onConfirm={this.handleConfirm} onChange={this.handleInputChange} />
-                       
-                        <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon>
+                    <View class="searchInput"> 
+
                     </View>
+                   
+                </View>
+                <View class="searchInput searchInput-P">
+                       
+                       <AtInput value={inputValue} onFocus={this.handleFocus} onBlur={this.handleBlur} onConfirm={this.handleConfirm} onChange={this.handleInputChange} />
+                      
+                       {!active && <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon>}
                 </View>
                 {this.props.children}
             </View>

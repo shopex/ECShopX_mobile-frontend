@@ -85,7 +85,7 @@
     top: 450rpx;
     left: 0;
     right: 0;
-    z-index: 0;
+    z-index: 1;
   }
 
   .goods-list {
@@ -184,7 +184,16 @@
       //   @include page-scroll($tabs-height + $searchbar-height + $tags-height + $navigate-height-h5 + 8, 0);
       //   /*  #endif  */        
       // }
-      height: 679rpx;
+      position: absolute;
+      left: 0;
+      width: 100%;
+      top: 654rpx;
+      bottom: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 1;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
     }
 
     &__scroll_isTabBar {
@@ -213,9 +222,9 @@
     &__type-grid {
       display: flex;
       flex-wrap: wrap;
-      padding: 0 20rpx;
+      padding: 0 20px;
       justify-content: space-between;
-      margin-top: 30rpx;
+      margin-top: 20px;
 
       .goods-list__group {
         width: 50%;
