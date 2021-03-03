@@ -56,6 +56,8 @@ export default class FilterBlock extends Component{
     render(){ 
 
         const name=this.getName(); 
+
+        const { type }=this.props;
         
         return (
             <View className={classNames('filter-block',{'active':this.props.active,'ellipsis2':type==='brand' })} onClick={this.handleClickItem}>

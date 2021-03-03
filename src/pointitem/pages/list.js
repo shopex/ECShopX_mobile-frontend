@@ -35,6 +35,11 @@ export default class List extends Component {
         { title: '销量' },
         { title: '价格', sort: -1 }, 
       ],
+      useInfo:{
+        username:'',
+        avatar:'',
+        point:""
+      },
       //获取用户信息
       userInfo:{},
       query: null,
