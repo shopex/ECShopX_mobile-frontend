@@ -214,41 +214,29 @@ $height-percent: 80%;
         }
       }
       .inputContent {
-        display: flex;
-        align-items: center;
-        visibility: hidden;
-        opacity: 0;
+        width: calc(100% - 60px);
         height: 100%;
-        width: 0;
-        transition: width 0.3s;
+        display: flex;
+        position: absolute;
+        left: 55px;
+        flex: 1;
+        align-items: center;
         .keywords {
-          width: 0;
-          transition: width 0.3s;
+          flex: 1;
+        }
+        .at-icon-close-circle {
+          color: #999;
+          display: none;
+          border: 10px solid transparent;
+          &.show {
+            display: block;
+          }
         }
       }
       &.unfold {
         width: calc(100% - 60px);
+        justify-content: flex-start;
         z-index: 9;
-        .inputContent {
-          width: 100%;
-          visibility: visible;
-          opacity: 1;
-          padding-right: 20px;
-          .keywords {
-            width: 100%;
-            margin-right: 10px;
-          }
-          .at-icon-close-circle {
-            color: #999;
-            opacity: 0;
-            visibility: hidden;
-            border: 10px solid transparent;
-            &.show {
-              opacity: 1;
-              visibility: visible;
-            }
-          }
-        }
         .txt {
           display: none;
         }
