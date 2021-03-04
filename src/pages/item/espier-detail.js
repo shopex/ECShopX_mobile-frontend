@@ -322,9 +322,11 @@ export default class Detail extends Component {
       }
     }
 
-    Taro.setNavigationBarTitle({
-      title: info.item_name
-    })
+    if (this.$router.path === '/pages/item/espier-detail') {
+      Taro.setNavigationBarTitle({
+        title: info.item_name
+      })
+    }
 
     if (marketing === 'group' || marketing === 'seckill' || marketing === 'limited_time_sale') {
       const { colors } = this.props
@@ -600,17 +602,21 @@ export default class Detail extends Component {
   }
 
   drawImage = () => {
-    const { posterImgs } = this.state
+    const { posterImgs, marketing } = this.state
     if (!posterImgs) return
     const { avatar, goods, code } = posterImgs
     const { info } = this.state
-    const { item_name, act_price = null, member_price = null, price, market_price } = info
+    const { item_name, act_price = null, member_price = null, price, market_price, type } = info
     //let mainPrice = act_price ? act_price : member_price ? member_price : price
     let mainPrice = act_price ? act_price : price
     let sePrice = market_price
     mainPrice = (mainPrice / 100).toFixed(2)
     if (sePrice) {
       sePrice = (sePrice / 100).toFixed(2)
+    }
+    if (type == '1') {
+      const { showPrice } = this.calcCrossPrice(info, marketing)
+      mainPrice = (showPrice / 100).toFixed(2)
     }
     let prices = [{
       text: '¥',
@@ -628,6 +634,7 @@ export default class Detail extends Component {
       lineThrough: false,
       valign: 'bottom'
     }]
+
     if (sePrice) {
       prices.push({
         text: sePrice,
@@ -638,6 +645,7 @@ export default class Detail extends Component {
         valign: 'bottom'
       })
     }
+
     const { username, userId } = Taro.getStorageSync('userinfo')
     const ctx = Taro.createCanvasContext('myCanvas')
 
@@ -647,7 +655,10 @@ export default class Detail extends Component {
     canvasExp.drawImageFill(ctx, goods, 15, 95, 345, 345)
     canvasExp.imgCircleClip(ctx, avatar, 15, 15, 65, 65)
     canvasExp.textMultipleOverflowFill(ctx, item_name, 22, 2, 15, 470, 345, 18, '#333')
-    canvasExp.textSpliceFill(ctx, prices, 'left', 15, 600)
+    if (type == '1') {
+      canvasExp.textFill(ctx, '含税售价:', 15, 565, 16, '#666')
+    }
+    canvasExp.textSpliceFill(ctx, prices, 'left', type == '1' ? 30 : 15, 600)
     canvasExp.drawImageFill(ctx, code, 250, 500, 100, 100)
     canvasExp.textFill(ctx, '长按识别小程序码', 245, 620, 12, '#999')
     if (act_price) {
@@ -828,7 +839,28 @@ export default class Detail extends Component {
         this.fetchInfo()
       }
     })
-  } 
+  }
+
+  // 计算跨境价
+  calcCrossPrice = (info, marketing, curSku) => {
+    const taxRate = info ? (Number(info.cross_border_tax_rate || 0) / 100) : 0
+    const mainPrice = info ? (info.act_price ? info.act_price : info.price) : 0
+    const memberPrice = info ? (info.member_price ? info.member_price : info.price) : 0
+    const endPrice = marketing === 'normal' ? memberPrice : mainPrice
+    const skuActprice = curSku ? curSku.act_price ? curSku.act_price : curSku.price : endPrice
+    const skuMemprice = curSku ? curSku.member_price ? curSku.member_price : curSku.price : endPrice
+    const skuEndprice = marketing === 'normal' ? skuMemprice : skuActprice
+    const skuPrice = curSku ? skuEndprice : endPrice
+
+    const crossPrice = Math.floor(skuPrice * taxRate)
+
+    const showPrice = Math.floor(skuPrice * (1 + taxRate))
+
+    return {
+      crossPrice,
+      showPrice
+    }
+  }
 
   render() {
     const {
@@ -868,18 +900,7 @@ export default class Detail extends Component {
     const meiqia = Taro.getStorageSync('meiqia')
     const echat = Taro.getStorageSync('echat')
     const uid = this.uid
-    const taxRate = info ? (Number(info.cross_border_tax_rate || 0) / 100) : 0
-    const mainPrice = info ? (info.act_price ? info.act_price : info.price) : 0
-    const memberPrice = info ? (info.member_price ? info.member_price : info.price) : 0
-    const endPrice = marketing === 'normal' ? memberPrice : mainPrice
-    const skuActprice = curSku ? curSku.act_price ? curSku.act_price : curSku.price : endPrice
-    const skuMemprice = curSku ? curSku.member_price ? curSku.member_price : curSku.price : endPrice
-    const skuEndprice = marketing === 'normal' ? skuMemprice : skuActprice
-    const skuPrice = curSku ? skuEndprice : endPrice
-
-    const crossPrice = Math.floor(skuPrice * taxRate)
-
-    const showPrice = Math.floor(skuPrice * (1 + taxRate))
+    const { showPrice, crossPrice } = this.calcCrossPrice(info, marketing, curSku)
     
     const lnglat = Taro.getStorageSync('lnglat')
     if (!info) {
@@ -1054,7 +1075,7 @@ export default class Detail extends Component {
             </View>
 
             { !info.is_gift && info.vipgrade_guide_title ? (
-              <VipGuide info={info.vipgrade_guide_title} />
+              <VipGuide info={{...info.vipgrade_guide_title, type: info.type, tax_rate: info.cross_border_tax_rate}} />
             ) : null}
 
             {marketing === "normal" && (
