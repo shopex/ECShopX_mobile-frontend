@@ -34,6 +34,8 @@ export default class DistributionShopHome extends Component {
         shop_user_id: '',
         goodsSort: ''
       },
+      // 是否聚焦
+      isFocus: false,
       // 是否显示搜索
       showSearch: false,
       // 搜索关键词
@@ -49,11 +51,16 @@ export default class DistributionShopHome extends Component {
     this.getShopInfo()
   }
 
+  componentDidShow () {
+    this.handleCloseSearch()
+  }
+
   // 配置信息
   config = {
     enablePullDownRefresh: true,
     onReachBottomDistance: 80,
-    backgroundTextStyle: 'dark'
+    backgroundTextStyle: 'dark',
+    navigationBarTitleText: ''
   }
 
   // 分享
@@ -213,11 +220,19 @@ export default class DistributionShopHome extends Component {
   }
 
   // 显示搜索
-  handleShowSearch = () => {
+  handleShowSearch = (e) => {
+    this.handleDisable(e)
     const { showSearch } = this.state
     if (!showSearch) {      
       this.setState({
         showSearch: true
+      }, () => {
+        // 延迟获取焦点
+        setTimeout(() => {
+          this.setState({
+            isFocus: true
+          })
+        }, 300)
       })
     }
   }
@@ -236,6 +251,7 @@ export default class DistributionShopHome extends Component {
     params.keywords = keywords.trim()
     this.setState({
       showSearch: false,
+      isFocus: false,
       keywords: params.keywords,
       params
     }, () => {
@@ -258,6 +274,7 @@ export default class DistributionShopHome extends Component {
     this.setState({
       params,
       keywords: '',
+      isFocus: false,
       showSearch: false
     }, () => {
       this.resetGet()
@@ -276,12 +293,14 @@ export default class DistributionShopHome extends Component {
   }
 
   // 点击搜索蒙层
-  handleCloseSearch = (e) => {
-    e.stopPropagation()
+  handleCloseSearch = (e = {}) => {
+    e.preventDefault && e.preventDefault()
+    e.stopPropagation && e.stopPropagation()
     const { params } = this.state
     this.setState({
       keywords: params.keywords,
-      showSearch: false
+      showSearch: false,
+      isFocus: false
     })
   }
 
@@ -318,7 +337,8 @@ export default class DistributionShopHome extends Component {
       page,
       showSearch,
       keywords,
-      curFilterIdx
+      curFilterIdx,
+      isFocus
     } = this.state
 
     // 筛选选项
@@ -346,11 +366,9 @@ export default class DistributionShopHome extends Component {
         />
         <View className='shop-banner'>
           <View className='shop-def'>
-            <SpImg
-              lazyLoad
-              width='800'
+            <Image
               mode='aspectFill'
-              img-class='banner-img'
+              className='banner-img'
               src={info.shop_pic || require('./assets/black.png')}
             />
           </View>
@@ -399,24 +417,29 @@ export default class DistributionShopHome extends Component {
             className={`searchContent ${showSearch && 'unfold'}`}
             onClick={this.handleShowSearch.bind(this)}
           >
-            <View className='iconfont icon-search'>
+            <View
+              className='iconfont icon-search'
+            >
               <Text className='txt'>{ params.keywords }</Text>
             </View>
-            <View className='inputContent'>
-              <Input
-                className='keywords'
-                value={keywords}
-                focus={showSearch}
-                placeholder='搜索小店商品'
-                onConfirm={this.handleConfirm.bind(this)}
-                onBlur={this.handleCloseSearch.bind(this)}
-                onInput={this.searchInput.bind(this)}
-              />
-              <View
-                className={`at-icon at-icon-close-circle ${(keywords.length > 0) && 'show'}`}
-                onClick={this.handleClear.bind(this)}
-              ></View>
-            </View>
+            {
+              showSearch && <View className='inputContent'>
+                <Input
+                  className='keywords'
+                  value={keywords}
+                  focus={isFocus}
+                  placeholder='搜索小店商品'
+                  confirmType='search'
+                  onConfirm={this.handleConfirm.bind(this)}
+                  onBlur={this.handleCloseSearch.bind(this)}
+                  onInput={this.searchInput.bind(this)}
+                />
+                <View
+                  className={`at-icon at-icon-close-circle ${(keywords.length > 0) && 'show'}`}
+                  onClick={this.handleClear.bind(this)}
+                ></View>
+              </View>
+            }
           </View>
         </View> 
         <View className='main'>
