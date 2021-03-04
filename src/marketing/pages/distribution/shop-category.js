@@ -159,10 +159,13 @@ export default class DistributionShopCategory extends Component {
       }
     }
   }
+
+
   handleClickItem = (item) => {
     console.warn(item)
     const { goods_id, distributor_id} = item
     let url = ''
+    if (item.isOutSale) return false
     if (goods_id) {
       url = `/pages/item/espier-detail?id=${goods_id || ''}&dtid=${distributor_id}`
     }
