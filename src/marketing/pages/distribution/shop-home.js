@@ -64,12 +64,12 @@ export default class DistributionShopHome extends Component {
   }
 
   // 分享
-  onShareAppMessage(res) {
-    const { info } = res.target.dataset
-    const { params } = this.state
+  onShareAppMessage() {
+    const { params, info: shopInfo } = this.state
+    const title = shopInfo.shop_name || `${shopInfo.username}的小店`
     return {
-      title: info.title,
-      imageUrl: info.img,
+      title: title,
+      imageUrl: shopInfo.shop_pic,
       path: `/marketing/pages/distribution/shop-home?featuredshop=${params.user_id}`
     }
   }
@@ -136,7 +136,8 @@ export default class DistributionShopHome extends Component {
         headimgurl,
         shop_name,
         brief,
-        shop_pic: shop_pic || ''
+        is_valid,
+        shop_pic
       },
       tabList
     }, () => {
@@ -353,7 +354,7 @@ export default class DistributionShopHome extends Component {
         type: 2
       }]
 
-    if (!info.headimgurl) {
+    if (!info.is_valid) {
       return <Loading />
     }
 
@@ -376,7 +377,7 @@ export default class DistributionShopHome extends Component {
             <View className='left'>
               <Image
                 className='shopkeeper-avatar'
-                src={info.headimgurl}
+                src={info.headimgurl ||require('./assets/shop.png')}
                 mode='aspectFill'
               />
               <View className='shop-name-goods'>

@@ -49,7 +49,7 @@ export default class DistributionShopCategory extends Component {
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const query = {
-      category_level: 2,
+      category_level: 1,
       shop_user_id: distributionShopId || userId
     }
 
