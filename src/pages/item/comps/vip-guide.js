@@ -5,8 +5,8 @@
  * @Description: 说明
  * @FilePath: /unite-vshop/src/pages/item/comps/vip-guide.js
  * @Date: 2020-11-19 14:22:17
- * @LastEditors: Arvin
- * @LastEditTime: 2020-11-19 15:28:11
+ * @LastEditors: PrendsMoi
+ * @LastEditTime: 2021-03-04 15:41:59
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -48,6 +48,12 @@ export default class VipGuide extends Component {
       return null
     }
 
+    let price = info.memberPrice
+    if (info.type == '1') {
+      const taxRate = (Number(info.tax_rate || 0) / 100)
+      price = Math.floor((price * 100) * (1 + taxRate)) / 100
+    }
+
     return (
       <View className="vip-guide">
         <View className="vip-guide-content">
@@ -63,7 +69,7 @@ export default class VipGuide extends Component {
                 <View className="vip-price-amount">
                   {
                     info.memberPrice &&
-                      <View className="vip-price-amount"><Text className="cur">¥ </Text>{info.memberPrice}</View>
+                      <View className="vip-price-amount"><Text className="cur">¥ </Text>{price}</View>
                   }
                   {
                     info.gradeDiscount &&
