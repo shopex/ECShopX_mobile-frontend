@@ -245,7 +245,8 @@ class App extends Component {
           "pages/cart/espier-index",
           "pages/cart/espier-checkout",
           "pages/member/coupon",
-          "pages/member/coupon-detail"
+          "pages/member/coupon-detail",
+          "pages/recommend/list"
         ]
       },
 

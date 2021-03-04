@@ -77,7 +77,7 @@ export default class TabBar extends Component {
         title: "种草",
         iconType: "member",
         iconPrefixClass: "icon",
-        url: "/guide/pages/member/index",
+        url: "/guide/pages/recommend/list",
         urlRedirect: true
       },
       {
