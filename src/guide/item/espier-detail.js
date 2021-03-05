@@ -12,8 +12,8 @@ import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from "@/service"
 import { GoodsBuyToolbar, ItemImg, ImgSpec, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem, GroupingItem } from './comps'
-import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../../pages/home/wgts'
-import { BaGoodsBuyPanel } from '../../components'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../pages/home/wgts'
+import { BaGoodsBuyPanel,BaNavBar } from '../components'
 
 import './espier-detail.scss'
 
@@ -34,6 +34,10 @@ import './espier-detail.scss'
 export default class Detail extends Component {
   static options = {
     addGlobalClass: true
+  }
+  config = {
+    navigationStyle:'custom',
+    navigationBarTitleText: '导购商城'
   }
 
   constructor(props) {
@@ -71,11 +75,27 @@ export default class Detail extends Component {
       // 是否订阅
       isSubscribeGoods: false,
       is_open_store_status:null,
+      jumpType:'home'
+
     }
   }
 
   async componentDidMount() {
     const options = this.$router.params
+    //判断是否是从b端小程序跳转
+    let jumpType = 'home'
+    const { emp, sence } = options 
+    if(emp || sence){
+      jumpType = 'home'
+    }else {
+      jumpType = 'item'
+    }
+    this.setState({
+      jumpType
+    })
+
+
+
     let id = options.id
     let uid = ''
     if(!S.getAuthToken()){
@@ -862,7 +882,8 @@ export default class Detail extends Component {
       page,
       evaluationTotal,
       evaluationList,
-      isSubscribeGoods
+      isSubscribeGoods,
+      jumpType
     } = this.state
 
     const { showLikeList, colors } = this.props
@@ -901,11 +922,12 @@ export default class Detail extends Component {
 
     return (
       <View className="page-goods-detail">
-        <NavBar
+        <BaNavBar title='导购商城' fixed jumpType={jumpType}/>
+        {/* <NavBar
           title={info.item_name}
           leftIconType="chevron-left"
           fixed="true"
-        />
+        /> */}
 
         <ScrollView
           className="goods-detail__wrap"
