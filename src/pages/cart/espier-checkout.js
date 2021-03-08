@@ -1185,8 +1185,7 @@ export default class CartCheckout extends Component {
           pay_type:this.state.total.freight_type==="point"?'point':'wxpay'
         });
         order_id = isDrug ? config.order_id : config.trade_info.order_id;
-      }
-
+      }  
       // 提交订单埋点
       Tracker.dispatch("CREATE_ORDER", {
         ...total,

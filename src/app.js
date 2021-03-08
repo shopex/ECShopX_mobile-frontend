@@ -21,6 +21,7 @@ import './app.scss'
 
 const { store } = configStore()
 
+<<<<<<< HEAD
 useHooks()
 
 // if (APP_TRACK) {
@@ -31,14 +32,49 @@ useHooks()
 //     Tracker.use(APP_TRACK);
 //   }
 // }
+=======
+// 获取首页配置
+const getHomeSetting = async () => {
+  const {
+    echat = {},
+    meiqia = {},
+    youshu = {},
+    disk_driver = 'qiniu',
+    whitelist_status =  false,
+    nostores_status = false
+  } = await api.shop.homeSetting()
+  // 美洽客服配置
+  Taro.setStorageSync('meiqia', meiqia)
+  // 一洽客服配置
+  Taro.setStorageSync('echat', echat)
+  // 白名单配置、门店配置、图片存储信息、有数配置
+  Taro.setStorageSync('otherSetting', {
+    whitelist_status,
+    nostores_status,
+    disk_driver,
+    nostores_status,
+    youshu
+  })
+  if (APP_TRACK) {
+    const system = Taro.getSystemInfoSync();
+    if (!(system && system.environment && system.environment === "wxwork")) {
+      console.log('----------------aa--------------')
+      console.log(Tracker)
+      Tracker.use(APP_TRACK);
+    }
+  }
+}
+>>>>>>> feat-Unite
 
+useHooks()
+
+// 获取基础配置
+getHomeSetting()
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   componentWillMount () {
     this.init()
-  }
-  componentDidMount () {
   }
 
   config = {
@@ -64,9 +100,6 @@ class App extends Component {
       'pages/recommend/list',
       'pages/member/index',
       'pages/member/item-fav',
-
-      'pages/distribution/shop-home',
-
       'pages/store/index',
       'pages/store/list',
       'pages/store/ziti-list',
@@ -79,6 +112,7 @@ class App extends Component {
         pages: [
           'pages/distribution/index',
           'pages/distribution/setting',
+          'pages/distribution/shop-home',
           'pages/distribution/statistics',
           'pages/distribution/trade',
           'pages/distribution/subordinate',
@@ -137,10 +171,17 @@ class App extends Component {
           'pages/plusprice/cart-plusprice-list',
         ],
         "plugins": {
+<<<<<<< HEAD
           // "live-player-plugin": {
           //   "version": "1.2.6", // 填写该直播组件版本号
           //   "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
           // }
+=======
+          "live-player-plugin": {
+            "version": "1.2.8", // 填写该直播组件版本号
+            "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
+          }
+>>>>>>> feat-Unite
           // "meiqia": {
           //   "version": "1.1.0",
           //   "provider": "wx2d2cd5fd79396601"
@@ -319,7 +360,6 @@ class App extends Component {
     this.fetchTabs()
     // 获取主题配色
     this.fetchColors()
-    this.getHomeSetting()
   }
 
   fetchTabs () {
@@ -392,27 +432,6 @@ class App extends Component {
 
   }
 
-  // 获取首页配置
-  getHomeSetting = async () => {
-    const {
-      echat = {},
-      meiqia = {},
-      disk_driver = 'qiniu',
-      whitelist_status =  false,
-      nostores_status = false
-    } = await api.shop.homeSetting()
-    // 美洽客服配置
-    Taro.setStorageSync('meiqia', meiqia)
-    // 一洽客服配置
-    Taro.setStorageSync('echat', echat)
-    // 白名单配置、门店配置、图片存储信息
-    Taro.setStorageSync('otherSetting', {
-      whitelist_status,
-      nostores_status,
-      disk_driver,
-      nostores_status
-    })
-  }
 
   componentDidCatchError () {}
 

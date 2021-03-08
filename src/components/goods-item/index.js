@@ -1,10 +1,22 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, Text, Image} from '@tarojs/components'
+<<<<<<< HEAD
 import { SpImg ,PointLine} from '@/components'
+=======
+import { SpImg } from '@/components'
+import api from '@/api'
+import { connect } from '@tarojs/redux'
+
+>>>>>>> feat-Unite
 import { isObject, classNames } from '@/utils'
 
 import './index.scss'
 
+@connect(() => ({
+}), (dispatch) => ({
+  onAddFav: ({ item_id, fav_id }) => dispatch({ type: 'member/addFav', payload: { item_id, fav_id } }),
+  onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
+}))
 export default class GoodsItem extends Component {
   static defaultProps = {
     onClick: () => {},
@@ -25,8 +37,17 @@ export default class GoodsItem extends Component {
 
   handleFavClick = async () => {
     const { item_id, is_fav } = this.props.info
-    console.log(is_fav, item_id)
-    // await api.item.collect(item_id)
+    if (!is_fav) {
+      const favRes = await api.member.addFav(item_id)
+      this.props.onAddFav(favRes)
+    } else {
+      await api.member.delFav(item_id)
+      this.props.onDelFav(this.props.info)
+    }
+    Taro.showToast({
+      title: is_fav ? '已移出收藏' : '已加入收藏',
+      mask: true
+    })
   }
 
   render () {
@@ -95,19 +116,25 @@ export default class GoodsItem extends Component {
             }            
             <View className='goods-item__caption'>
               {
-                promotion_activity !== null
-                ? <View className='goods-item__tag-list'>
-                    <Text className={(promotion_activity === 'single_group' || promotion_activity === 'limited_time_sale' || promotion_activity === 'normal') ? 'goods-item__tag goods-item__group' : 'goods-item__tag'}>
-                    {promotion_activity === 'single_group' ? '团购' : ''}
-                    {promotion_activity === 'full_minus' ? '满减' : ''}
-                    {promotion_activity === 'full_discount' ? '满折' : ''}
-                    {promotion_activity === 'full_gift' ? '满赠' : ''}
-                    {promotion_activity === 'normal' ? '秒杀' : ''}
-                    {promotion_activity === 'limited_time_sale' ? '限时特惠' : ''}
-                    {promotion_activity === 'plus_price_buy' ? '换购' : ''}
-                    </Text>
-                  </View>
-                : null
+                info.promotion_activity_tag && <View className='goods-item__tag-list'>
+                  {
+                    info.promotion_activity_tag.map(item =>
+                      <Text
+                        key={item.promotion_id}
+                        className={`tagitem ${(item.tag_type === 'single_group' || item.tag_type === 'limited_time_sale' || item.tag_type === 'normal') ? 'goods-item__tag goods-item__group' : 'goods-item__tag'} ${item.tag_type === 'member_preference' && 'member_preference'}`}
+                      >
+                        {item.tag_type === 'single_group' ? '团购' : ''}
+                        {item.tag_type === 'full_minus' ? '满减' : ''}
+                        {item.tag_type === 'full_discount' ? '满折' : ''}
+                        {item.tag_type === 'full_gift' ? '满赠' : ''}
+                        {item.tag_type === 'normal' ? '秒杀' : ''}
+                        {item.tag_type === 'limited_time_sale' ? '限时特惠' : ''}
+                        {item.tag_type === 'plus_price_buy' ? '换购' : ''}
+                        {item.tag_type === 'member_preference' ? '会员限购' : ''}
+                      </Text>
+                    )
+                  }
+                </View>
               }
               <View onClick={onClick}>
                 <Text className='goods-item__title'>{info.title}</Text>
@@ -138,21 +165,21 @@ export default class GoodsItem extends Component {
 							</View>}
 							{this.props.children}
               {
-                 showFav &&
-                   (<View className='goods-item__actions'>
-                     {(type === 'item') && (
-                       <View
-                         className={`${info.is_fav ? 'icon-star-on' : 'icon-star'}`}
-                         onClick={this.handleFavClick}
-                       />
-                     )}
-                     {type === 'recommend' && (
-                       <View
-                         className='icon-like'
-                         onClick={this.handleLikeClick}
-                       ><Text>666</Text></View>
-                     )}
-                   </View>)
+                showFav &&
+                  (<View className='goods-item__actions'>
+                    {(type === 'item') && (
+                      <View
+                        className={`${info.is_fav ? 'icon-star-on' : 'icon-star'}`}
+                        onClick={this.handleFavClick}
+                      />
+                    )}
+                    {type === 'recommend' && (
+                      <View
+                        className='icon-like'
+                        onClick={this.handleLikeClick}
+                      ><Text>666</Text></View>
+                    )}
+                  </View>)
               }
             </View>
 
@@ -162,8 +189,9 @@ export default class GoodsItem extends Component {
               APP_PLATFORM !== 'standard' && info.distributor_info && !Array.isArray(info.distributor_info) &&
                 <View
                   className='goods-item__store'
-                  onClick={onStoreClick}>
-                  {info.distributor_info.name} <Text class="goods-item__store-entry">进店<Text className='icon-arrowRight'></Text></Text>
+                  onClick={onStoreClick}
+                >
+                  {info.distributor_info.name} <Text class='goods-item__store-entry'>进店<Text className='icon-arrowRight'></Text></Text>
                 </View>
             }
           </View>
