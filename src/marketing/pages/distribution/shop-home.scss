@@ -1,8 +1,8 @@
 @import "../../../style/imports";
 
-$banner-height: 680px !default;
+$banner-height: 570px !default;
 
-$height-percent: 85%;
+$height-percent: 82%;
 
 .page-distribution-shop {
   width: 100%;
@@ -11,6 +11,7 @@ $height-percent: 85%;
   padding-top: $navigate-height-h5;
   /*  #endif  */
   .shop-banner {
+    width: 100%;
     position: relative;
     height: $banner-height;
     background: #fff;

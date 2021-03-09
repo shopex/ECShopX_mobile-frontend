@@ -46,6 +46,12 @@
     /*  #endif  */
   }
   .shop-category__wrap{
+    &.all {
+      .category-list__scroll {
+        width: 100%;
+        left: 0;
+      }
+    }
     .category-list__scroll{
       @include page-scroll($tabs-height + $navigate-height, 0);
       /*  #ifdef  h5  */  
