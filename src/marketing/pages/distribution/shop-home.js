@@ -4,7 +4,7 @@ import { AtTabBar } from 'taro-ui'
 import { BackToTop, Loading, NavBar, SpImg, SpNote } from '@/components'
 import S from '@/spx'
 import api from '@/api'
-import debounce from 'lodash.debounce'
+import throttle from 'lodash/throttle'
 import { withPager } from '@/hocs'
 import { getCurrentRoute, pickBy } from '@/utils'
 import CustomHeader from './comps/header'
@@ -27,6 +27,7 @@ export default class DistributionShopHome extends Component {
         { title: '小店首页', iconType: 'home', iconPrefixClass: 'icon',url: '/marketing/pages/distribution/shop-home',urlRedirect: true },
         { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/marketing/pages/distribution/shop-category', urlRedirect: true },
       ],
+      userId: '',
       // 商品总数
       goods_total: 0,
       // 搜索参数
@@ -74,12 +75,12 @@ export default class DistributionShopHome extends Component {
 
   // 分享
   onShareAppMessage() {
-    const { params, info: shopInfo } = this.state
+    const { info: shopInfo, userId } = this.state
     const title = shopInfo.shop_name || `${shopInfo.username}的小店`
     return {
       title: title,
       imageUrl: shopInfo.shop_pic,
-      path: `/marketing/pages/distribution/shop-home?featuredshop=${params.user_id}`
+      path: `/marketing/pages/distribution/shop-home?featuredshop=${userId}`
     }
   }
 
@@ -89,21 +90,23 @@ export default class DistributionShopHome extends Component {
   }
 
   // 页面滚动
-  onPageScroll = debounce((res) => {
+  onPageScroll = throttle((res) => {
     const { showBackToTop, statusBarHeight, paddindTop } = this.state
     const { scrollTop } = res
     const topOffset = statusBarHeight + 40
     const query = Taro.createSelectorQuery()
     query.select('.filter').boundingClientRect(({ top }) => {
-      if ((top <= topOffset && paddindTop < topOffset)) {
-        this.setState({
-          paddindTop: Math.abs(top - topOffset)
-        })
-      } else if (top <= topOffset && paddindTop > 0) {
-        this.setState({
-          paddindTop: Math.abs(top - topOffset)
-        })
-      } else {
+      if (
+        top <= topOffset
+        && (paddindTop < topOffset || paddindTop > 0)
+      ) {
+        const diffTop = Math.abs(top - topOffset)
+        if (diffTop !== paddindTop) {
+          this.setState({
+            paddindTop: top > 0 ? diffTop : topOffset
+          })
+        }
+      }  else if (paddindTop !== 0){
         this.setState({
           paddindTop: 0
         })
@@ -119,7 +122,7 @@ export default class DistributionShopHome extends Component {
         showBackToTop: false
       })
     }
-  }, 0)
+  }, 100)
 
   // 触底事件
   onReachBottom = () => {
@@ -183,10 +186,10 @@ export default class DistributionShopHome extends Component {
         shop_name,
         brief,
         is_valid,
-        shop_pic,
-        user_id: param.user_id
+        shop_pic
       },
-      tabList
+      tabList,
+      userId: param.user_id
     }, () => {
       this.resetGet()
     })
@@ -194,20 +197,13 @@ export default class DistributionShopHome extends Component {
 
   // 获取小店商品列表
   fetch = async (params) => {
-    const options = this.$router.params
-    const { userId } = Taro.getStorageSync('userinfo')
-    const distributionShopId = Taro.getStorageSync('distribution_shop_id')
+    const { userId } = this.state
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
       pageSize,
+      shop_user_id: userId,
       ...this.state.params
-    }
-
-    if (options.featuredshop || options.uid) {
-      query.shop_user_id = options.featuredshop || options.uid
-    } else {
-      query.shop_user_id = userId || distributionShopId
     }
 
     const { list, total_count: total, goods_total = 0 } = await api.distribution.getShopGoods(query)
@@ -451,7 +447,7 @@ export default class DistributionShopHome extends Component {
         </View>
         <View
           className='filter'
-          style={`padding-top: ${paddindTop}px`}
+          style={`padding-top: ${paddindTop}px; transition: padding ${paddindTop > 20 ? paddindTop * 3.5 : 300 }ms linear;`}
         >
           <View className='filterMain'>
             {
