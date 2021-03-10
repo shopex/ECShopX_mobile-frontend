@@ -457,6 +457,13 @@ export default class Home extends Component {
     })
   }
 
+  handleClickShop2 = () => {
+    const { featuredshop } = this.state
+    Taro.navigateTo({
+      url: `/pages/pointitem/list`
+    })
+  }
+
   // 显示浮窗广告
   handleAutoClick = () => {
     const { showAuto } = this.state
@@ -555,6 +562,15 @@ export default class Home extends Component {
               src='/assets/imgs/gift_mini.png'
               mode='widthFix'
               onClick={this.handleClickShop.bind(this)}
+            />
+          }
+          {
+            show_tabBar && featuredshop &&
+            <Image
+              className='distribution-shop'
+              src='/assets/imgs/gift_mini.png'
+              mode='widthFix'
+              onClick={this.handleClickShop2.bind(this)}
             />
           }
           {

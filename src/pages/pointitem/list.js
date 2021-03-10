@@ -2,17 +2,18 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
-import { AtDrawer,AtInput } from 'taro-ui'
-import { BackToTop, Loading,SpNote, NavBar, TabBar,HomeCapsule } from '@/components'
+import { AtDrawer, AtInput } from 'taro-ui'
+import { BackToTop, Loading, SpNote, NavBar, TabBar, HomeCapsule } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
-import { classNames } from '@/utils' 
+import { classNames } from '@/utils'
 import Header from './comps/header'
 import Tabs from './comps/tabs'
 import GoodsItem from './comps/goods_item'
 import FilterBlock from './comps/filter-block'
+import CustomHeader from './comps/headerContainer'
 import S from '@/spx'
-import './list.scss' 
+import './list.scss'
 
 @connect(({
   member
@@ -28,68 +29,76 @@ export default class List extends Component {
     this.state = {
       ...this.state,
       //当前筛选菜单下标
-      curFilterIdx: 0, 
+      curFilterIdx: 0,
       //筛选菜单
       filterList: [
         { title: '综合' },
         { title: '销量' },
-        { title: '价格', sort: -1 }, 
+        { title: '价格', sort: -1 },
       ],
-      useInfo:{
-        username:'',
-        avatar:'',
-        point:""
+      useInfo: {
+        username: '',
+        avatar: '',
+        point: ""
       },
       //获取用户信息
-      userInfo:{},
+      userInfo: {},
       query: null,
-      list: [],   
-      showDrawer: false, 
-      info: {}, 
-      filterConfig:{
-        brandList:[],
-        categoryList:[],
-        scoreInternel:[],
-        brandVisible:true,
-        categoryVisible:true,
-        pointVisible:false
+      list: [],
+      showDrawer: false,
+      info: {},
+      filterConfig: {
+        brandList: [],
+        categoryList: [],
+        scoreInternel: [],
+        brandVisible: true,
+        categoryVisible: true,
+        pointVisible: false
       },
-      filterParams:{
-        brand:[],
-        category:[]
+      filterParams: {
+        brand: [],
+        category: []
       },
-      navbarHeight:undefined,
-      homeIconInfo:{
-        height:0,
-        top:0,
-        left:0
-      }
+      navbarHeight: undefined,
+      homeIconInfo: {
+        height: 0,
+        top: 0,
+        left: 0
+      },
+      paddindTop: 0,
+      // 是否首页
+      isHome: false
     }
   }
 
   config = {
-    // navigationBarBackgroundColor: '#2600b7',
-    navigationStyle: 'custom',
-    backgroundColor: '#F5F5F5'
-  } 
+    enablePullDownRefresh: true,
+    onReachBottomDistance: 80,
+    backgroundTextStyle: 'dark',
+    navigationBarTitleText: '',
+    navigationBarTextStyle: 'white',
+    navigationStyle: 'custom'
+  }
 
   async componentDidMount() {
-    const { keywords,dis_id,cat_id, main_cat_id } = this.$router.params  
- 
-    this.fetchUserInfo(); 
+    const { keywords, dis_id, cat_id, main_cat_id } = this.$router.params;
+
+    this.init();
+
+    this.fetchUserInfo();
 
     this.fetchConfig();
 
     this.setState({
       query: {
-        keywords: keywords?keywords:undefined,
-        item_type: 'normal', 
-        distributor_id: dis_id?dis_id:undefined, 
+        keywords: keywords ? keywords : undefined,
+        item_type: 'normal',
+        distributor_id: dis_id ? dis_id : undefined,
         category: cat_id ? cat_id : undefined,
         category_id: main_cat_id ? main_cat_id : undefined
-      }, 
+      },
     }, () => {
-      this.nextPage() 
+      this.nextPage()
     })
   }
 
@@ -107,77 +116,77 @@ export default class List extends Component {
     }
   }
 
-  getWechatNavBarHeight=()=>{ 
+  getWechatNavBarHeight = () => {
     //statusBarHeight为状态栏高度
-    const { screenWidth } =Taro.getSystemInfoSync();
-    const { top ,height,right }=Taro.getMenuButtonBoundingClientRect(); 
+    const { screenWidth } = Taro.getSystemInfoSync();
+    const { top, height, right } = Taro.getMenuButtonBoundingClientRect();
     this.setState({
-      homeIconInfo:{
-        height:height,
-        top:top,
-        left:screenWidth-right
+      homeIconInfo: {
+        height: height,
+        top: top,
+        left: screenWidth - right
       }
     })
   }
-  
+
   componentDidShow() {
-    this.getWechatNavBarHeight() 
+    this.getWechatNavBarHeight()
   }
 
-  async fetchUserInfo(){
-     
-    const [ res, { point } ] = await Promise.all([api.member.memberInfo(),api.pointitem.getMypoint()]) 
+  async fetchUserInfo() {
+
+    const [res, { point }] = await Promise.all([api.member.memberInfo(), api.pointitem.getMypoint()])
 
     const userObj = {
       username: res.memberInfo.nickname || res.memberInfo.username || res.memberInfo.mobile,
-      avatar: res.memberInfo.avatar, 
-    } 
+      avatar: res.memberInfo.avatar,
+    }
 
     this.setState({
-      useInfo: { 
-        username:userObj.username,
-        avatar:userObj.avatar,
+      useInfo: {
+        username: userObj.username,
+        avatar: userObj.avatar,
         point
       }
     })
 
   }
 
-  getLeafChild=(list)=>{
+  getLeafChild = (list) => {
     //获取分类的叶子节点
-    function queryList(json,arr) {
+    function queryList(json, arr) {
       for (var i = 0; i < json.length; i++) {
-          var sonList = json[i].children||[];
-          if (sonList.length == 0) {
-              arr.push(json[i]);
-          } else {
-              queryList(sonList, arr);
-          }
+        var sonList = json[i].children || [];
+        if (sonList.length == 0) {
+          arr.push(json[i]);
+        } else {
+          queryList(sonList, arr);
+        }
       }
       return arr;
     }
-    return queryList(list,[]);
+    return queryList(list, []);
   }
 
-  async fetchConfig(params){ 
-    const query={ 
-      page:1,
-      item_type:'normal',
-      pageSize:20
+  async fetchConfig(params) {
+    const query = {
+      page: 1,
+      item_type: 'normal',
+      pageSize: 20
     }
     const [
       {
-        list, 
-        brand_list:{list:brand_list}
-      } ,
-      { screen:{brand_openstatus,cat_openstatus,point_openstatus,point_section} },
+        list,
+        brand_list: { list: brand_list }
+      },
+      { screen: { brand_openstatus, cat_openstatus, point_openstatus, point_section } },
       categoryList
-    ]=await  Promise.all([
+    ] = await Promise.all([
       api.pointitem.search(query),
       api.pointitem.getPointitemSetting(),
-      api.pointitem.getPointitemCategory({have_items:true})],
+      api.pointitem.getPointitemCategory({ have_items: true })],
     );
- 
+
 
     list.map((item) => {
       item.imgUrl = "";
@@ -186,51 +195,51 @@ export default class List extends Component {
       }
     });
 
-    this.setState({ 
-      list:[ 
+    this.setState({
+      list: [
         ...list
       ],
-      filterConfig:{
+      filterConfig: {
         ...this.state.filterConfig,
-        scoreInternel:point_section,
-        categoryList:this.getLeafChild(categoryList),
-        brandList:brand_list,
-        brandVisible:brand_openstatus,
-        categoryVisible:cat_openstatus,
-        pointVisible:point_openstatus
+        scoreInternel: point_section,
+        categoryList: this.getLeafChild(categoryList),
+        brandList: brand_list,
+        brandVisible: brand_openstatus,
+        categoryVisible: cat_openstatus,
+        pointVisible: point_openstatus
       }
-    }) 
+    })
   }
 
-  async fetch(params){
- 
+  async fetch(params) {
+
     const { page_no: page, page_size: pageSize } = params
 
-    const {filterParams:{brand,category,start_price,end_price}}=this.state;
+    const { filterParams: { brand, category, start_price, end_price } } = this.state;
 
-    const query={
+    const query = {
       ...this.state.query,
       page,
-      item_type:'normal',
+      item_type: 'normal',
       pageSize,
-      brand_id:brand?brand[0]:undefined,
-      category_id:category?category[0]:undefined,
+      brand_id: brand ? brand[0] : undefined,
+      category_id: category ? category[0] : undefined,
       start_price,
       end_price
     }
     let total;
-    const { list:prevState }=this.state;
+    const { list: prevState } = this.state;
     try {
       const [
         {
           list,
-          total_count,  
-        } 
-      ]=await  Promise.all([
+          total_count,
+        }
+      ] = await Promise.all([
         api.pointitem.search(query)
       ]);
-  
-      total=total_count;
+
+      total = total_count;
 
       list.map((item) => {
         item.imgUrl = "";
@@ -239,23 +248,23 @@ export default class List extends Component {
         }
       });
 
-      this.setState({ 
-        list:[
+      this.setState({
+        list: [
           ...prevState,
           ...list
-        ], 
-      })  
-   
-    } catch (e) { 
-      total=0;
-      console.log(e); 
-    } 
+        ],
+      })
+
+    } catch (e) {
+      total = 0;
+      console.log(e);
+    }
 
     return {
       total
     }
-    
-  } 
+
+  }
 
   startTrack() {
     this.endTrack();
@@ -290,15 +299,15 @@ export default class List extends Component {
       this.observe = null;
     }
   }
- 
 
-  filterOpen=(flag)=>{
+
+  filterOpen = (flag) => {
     this.setState({
-      showDrawer:flag
+      showDrawer: flag
     })
   }
 
-  handleOpenFilter=()=>{
+  handleOpenFilter = () => {
     this.filterOpen(true);
   }
 
@@ -308,7 +317,7 @@ export default class List extends Component {
     // })
     const { current, sort } = data
     //goodsSort null-综合 1-销量倒序（暂时无正序） 2-积分价格倒序 3-积分价格正序 
-    
+
     const query = {
       ...this.state.query,
       goodsSort: current === 0
@@ -316,8 +325,8 @@ export default class List extends Component {
         : current === 1
           ? 1
           : (sort > 0 ? 3 : 2)
-    } 
- 
+    }
+
 
     // if(this.state.curFilterIdx===current){
     //   //点击相同菜单项不用操作
@@ -335,13 +344,13 @@ export default class List extends Component {
     })
   }
 
-  handleInputConfirm=(value)=>{
+  handleInputConfirm = (value) => {
     const query = {
       ...this.state.query,
-      keywords:value
-    } 
+      keywords: value
+    }
     this.resetPage()
-    this.setState({ 
+    this.setState({
       list: [],
       query
     }, () => {
@@ -349,10 +358,10 @@ export default class List extends Component {
       this.nextPage()
     })
   }
- 
+
   handleClickItem = (item) => {
-    if(item.store===0){
-      return ;
+    if (item.store === 0) {
+      return;
     }
     const { item_id, title, market_price, price, img } = item;
     Tracker.dispatch("TRIGGER_SKU_COMPONENT", {
@@ -373,89 +382,100 @@ export default class List extends Component {
     Taro.navigateTo({
       url
     })
-  }  
+  }
 
-  handleClickSearchParams = (type) => { 
+  handleClickSearchParams = (type) => {
     this.resetPage()
-    this.setState({ 
-      showDrawer:false,
+    this.setState({
+      showDrawer: false,
       list: [],
     }, () => {
       this.nextPage()
     })
   }
 
-  handleResetFilter=()=>{
+  handleResetFilter = () => {
     this.setState({
-      filterParams:{
-        brand:[],
-        category:[]
-      }
-    })
-  }
-    
-   
-  handleClickFilterBlock= ({id,type,start,end}) =>{
-    const { filterParams }=this.state;
-    let newFilterParams;
-    if(type==='brand'){
-      if(filterParams.brand[0]===id){
-        return ;
-      } 
-      newFilterParams={
-        ...filterParams,
-        brand:[id], 
-      }
-    }else if(type==='category'){
-      if(filterParams.category[0]===id){
-        return ;
-      } 
-      newFilterParams={
-        ...filterParams,
-        category:[id], 
-      }
-    }else if(type==='point'){
-      newFilterParams={
-        ...filterParams,
-        start_price:start,
-        end_price:end
-      }
-    }
-    this.setState({
-      filterParams:newFilterParams
-    })
-  } 
-   
-  handleChangeStartprice=(value)=>{
-    console.log("handleChangeStartprice",value)
-    this.setState({
-      filterParams:{
-        ...this.state.filterParams,
-        start_price:value
+      filterParams: {
+        brand: [],
+        category: []
       }
     })
   }
 
-  handleChangeEndprice=(value)=>{
-    this.setState({
-      filterParams:{
-        ...this.state.filterParams,
-        end_price:value
+
+  handleClickFilterBlock = ({ id, type, start, end }) => {
+    const { filterParams } = this.state;
+    let newFilterParams;
+    if (type === 'brand') {
+      if (filterParams.brand[0] === id) {
+        return;
       }
+      newFilterParams = {
+        ...filterParams,
+        brand: [id],
+      }
+    } else if (type === 'category') {
+      if (filterParams.category[0] === id) {
+        return;
+      }
+      newFilterParams = {
+        ...filterParams,
+        category: [id],
+      }
+    } else if (type === 'point') {
+      newFilterParams = {
+        ...filterParams,
+        start_price: start,
+        end_price: end
+      }
+    }
+    this.setState({
+      filterParams: newFilterParams
+    })
+  }
+
+  handleChangeStartprice = (value) => {
+    console.log("handleChangeStartprice", value)
+    this.setState({
+      filterParams: {
+        ...this.state.filterParams,
+        start_price: value
+      }
+    })
+  }
+
+  handleChangeEndprice = (value) => {
+    this.setState({
+      filterParams: {
+        ...this.state.filterParams,
+        end_price: value
+      }
+    })
+  }
+
+  // 获取设备信息
+  init = async () => {
+    const pages = Taro.getCurrentPages()
+    const isHome = pages[pages.length - 2]
+    const { statusBarHeight = 44 } = await Taro.getSystemInfo()
+    this.setState({
+      statusBarHeight,
+      isHome: !isHome
     })
   }
 
   render() {
     const {
-      list, 
+      list,
       curFilterIdx,
       filterList,
       showBackToTop,
       scrollTop,
       page,
-      showDrawer,  
+      showDrawer,
       useInfo,
-      filterConfig:{
+      filterConfig: {
         brandList,
         categoryList,
         scoreInternel,
@@ -463,97 +483,90 @@ export default class List extends Component {
         categoryVisible,
         pointVisible
       },
-      filterParams:{
+      filterParams: {
         brand,
         category,
         start_price,
         end_price
       },
-      homeIconInfo
+      homeIconInfo,
+      statusBarHeight,
+      paddindTop,
+      isHome
     } = this.state
     const { isTabBar = '' } = this.$router.params
-    const noData=!page.isLoading && !page.hasNext && !list.length;
-     
+    const noData = !page.isLoading && !page.hasNext && !list.length;
+
     console.log('-----homeIconInfo----', homeIconInfo)
     // console.log('-----useInfo----', useInfo)
     // console.log('-----filterConfig----', this.state.filterConfig)
     return (
-      <View className='page-goods-list'>
-        {
-          !isTabBar && <NavBar
-            title='商品列表'
-            leftIconType='chevron-left'
-            fixed='true'
-          />
-        }
-        <Header useInfo={useInfo} />
+      <View className='page-pointitem-home'>
 
+        <CustomHeader isWhite={paddindTop > 0} isHome={isHome} statusBarHeight={statusBarHeight} />
+
+        <View className='pointitem-banner'>
+          <View className='pointitem-def'>
+            <Image
+              mode='aspectFill'
+              className='banner-img'
+              src={require('../../assets/imgs/black.png')}
+            />
+          </View>
+          <Header useInfo={useInfo} />
+        </View>
+
+        {/* 
         {
           homeIconInfo && homeIconInfo.height!==0 && <HomeCapsule style={{
             top:homeIconInfo.top+'px',
             left:homeIconInfo.left+'px',
             height:homeIconInfo.height+'px'
           }}/>
-        }
+        }  */}
 
-        <View class="navigation">
-          <Image src={require('../../assets/imgs/black.png')} class="navigation_image" /> 
+        <Tabs
+          className='goods-list__tabs'
+          custom
+          current={curFilterIdx}
+          list={filterList}
+          onChange={this.handleFilterChange}
+          onInputConfirm={this.handleInputConfirm}
+          onOpenFilter={this.handleOpenFilter}
+        >
+        </Tabs>
+
+
+        <View className='main'>
+          {
+            list.map(item => {
+              return (
+                <View
+                  className="goods-list__item"
+                  key={item.item_id}
+                  data-id={item.item_id}
+                >
+                  <GoodsItem
+                    key={item.item_id}
+                    info={item}
+                    isStoreOut={item.store === 0}
+                    onClick={() => this.handleClickItem(item)}
+                    onStoreClick={() => this.handleClickStore(item)}
+                  />
+                </View>
+              );
+            })
+          }
+          {
+            page.isLoading
+              ? <Loading>正在加载...</Loading>
+              : null
+          }
+          {
+            noData && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
+          }
         </View>
 
-        <View class="content">
-          <Tabs
-            className='goods-list__tabs'
-            custom
-            current={curFilterIdx}
-            list={filterList}
-            onChange={this.handleFilterChange}
-            onInputConfirm={this.handleInputConfirm}
-            onOpenFilter={this.handleOpenFilter}
-          >
-
-          </Tabs>
-          
-        </View>
-        
-        <ScrollView
-            className={classNames(isTabBar ? 'goods-list__scroll_isTabBar' : 'goods-list__scroll', isTabBar && 'isTabBar')}
-            scrollY
-            scrollTop={scrollTop}
-            scrollWithAnimation
-            onScroll={this.handleScroll}
-            onScrollToLower={this.nextPage}
-          > 
-              <View className='goods-list goods-list__type-grid'> 
-                  {
-                    list.map(item => {
-                      return (
-                        <View
-                          className="goods-list__item"
-                          key={item.item_id}
-                          data-id={item.item_id}
-                        >
-                          <GoodsItem
-                            key={item.item_id}
-                            info={item}
-                            isStoreOut={item.store===0}
-                            onClick={() => this.handleClickItem(item)}
-                            onStoreClick={() => this.handleClickStore(item)}
-                          />
-                        </View>
-                      );
-                    })
-                  } 
-               
-              </View> 
-            {
-              page.isLoading
-                ? <Loading>正在加载...</Loading>
-                : null
-            }
-            {
-              noData && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
-            }
-          </ScrollView>
         <AtDrawer
           show={showDrawer}
           right
@@ -568,9 +581,9 @@ export default class List extends Component {
                 <View class="title">品牌</View>
                 <View class="content-filter">
                   {
-                    brandList.map((item,index)=>{
+                    brandList.map((item, index) => {
                       return (
-                        <FilterBlock info={item} type="brand" active={brand.indexOf(item.attribute_id)>-1} onClickItem={this.handleClickFilterBlock} />
+                        <FilterBlock info={item} type="brand" active={brand.indexOf(item.attribute_id) > -1} onClickItem={this.handleClickFilterBlock} />
                       )
                     })
                   }
@@ -580,9 +593,9 @@ export default class List extends Component {
                 <View class="title">分类</View>
                 <View class="content-filter">
                   {
-                    categoryList.map((item,index)=>{
+                    categoryList.map((item, index) => {
                       return (
-                        <FilterBlock info={item} type="category" active={category.indexOf(item.category_id)>-1} onClickItem={this.handleClickFilterBlock} />
+                        <FilterBlock info={item} type="category" active={category.indexOf(item.category_id) > -1} onClickItem={this.handleClickFilterBlock} />
                       )
                     })
                   }
@@ -596,16 +609,16 @@ export default class List extends Component {
                   <AtInput placeholder="最高积分值" value={end_price} onChange={this.handleChangeEndprice} />
                 </View>
                 {
-                    scoreInternel.map((item,index)=>{
-                      return (
-                        <FilterBlock info={item} type="score" active={start_price==item[0]&&end_price==item[1]} onClickItem={this.handleClickFilterBlock.bind(this,{type:"point",start:item[0],end:item[1]})}/>
-                      )
-                    })
-                  }
+                  scoreInternel.map((item, index) => {
+                    return (
+                      <FilterBlock info={item} type="score" active={start_price == item[0] && end_price == item[1]} onClickItem={this.handleClickFilterBlock.bind(this, { type: "point", start: item[0], end: item[1] })} />
+                    )
+                  })
+                }
               </View>}
             </View>
           }
-          
+
           <View className='drawer-footer'>
             <Text className='drawer-footer__btn' onClick={this.handleResetFilter}>重置</Text>
             <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定并筛选</Text>
