@@ -7,7 +7,7 @@ import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavB
 import api from '@/api'
 import req from '@/api/req'
 import { withPager, withBackToTop } from '@/hocs'
-import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys } from '@/utils'
+import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys, paramsSplice } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from "@/service"
@@ -75,9 +75,20 @@ export default class Detail extends Component {
       // 是否订阅
       isSubscribeGoods: false,
       is_open_store_status:null,
-      jumpType:'home'
+      jumpType:'home',
+      shareMenu:false,
+      entry_form:null,
+      pageShareUrl:'',
+      subtask_id:''
 
     }
+  }
+
+  async componentWillMount() {
+    const query = normalizeQuerys(this.$router.params)
+    this.$router.params.id = query.id
+    await entry.entryLaunch(this.$router.params, false)
+    
   }
 
   async componentDidMount() {
@@ -184,7 +195,58 @@ export default class Detail extends Component {
       }
       Taro.setStorageSync('userinfo', userObj)
     }
+      let  entry_form=S.get('entry_form',true)
+      const query = normalizeQuerys(this.$router.params)
+        Taro.hideShareMenu({ //禁用胶囊分享
+            menus: ['shareAppMessage', 'shareTimeline']
+        })
+      this.setState({
+        entry_form,
+        subtask_id:query.subtask_id
+      },()=>{
+        this.innitPageShareUrl()
+      })
+
+
     this.fetchCartCount()
+  }
+
+  innitPageShareUrl(){
+    const query = normalizeQuerys(this.$router.params)
+    const {entry_form,subtask_id } = this.state
+    let gu=null
+    let url = `/pages/item/espier-detail.html`
+    let ba_params=S.get('ba_params',true)
+    let qw_chatId=S.get('qw_chatId',true)
+   
+    let share_params={
+      id:query.id
+    }
+  
+    if(ba_params){
+      let store_code=ba_params.store_code
+      let guide_code=ba_params.guide_code
+      gu=guide_code+`${store_code?'_'+store_code:''}`
+      share_params.gu=gu
+    }
+    if(qw_chatId){//群ID
+      share_params.share_chatId=qw_chatId
+    }
+    if(entry_form){
+      share_params.entrySource=entry_form.entry
+    }
+    if(subtask_id){
+      share_params.subtask_id=subtask_id
+    }
+    let p_str=paramsSplice(share_params)
+    url=`/pages/item/espier-detail?${p_str}`
+    if(entry_form&&['single_chat_tools','group_chat_tools'].includes(entry_form.entry)){
+      url=`/pages/item/espier-detail.html?${p_str}`
+    }
+    console.log('url-----1',url)
+    this.setState({
+      pageShareUrl:url
+    })
   }
 
   async getEvaluationList(id) {
@@ -203,37 +265,37 @@ export default class Detail extends Component {
     })
   }
 
-  onShareAppMessage() {
-    const { info } = this.state
-   const curStore = Taro.getStorageSync('curStore')
-    const { userId } = Taro.getStorageSync('userinfo')
-    const infoId = info.distributor_id
-    const { is_open_store_status} = this.state
-    const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
-    Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
-      ...info,
-      shareType: "分享给好友"
-    });
-    return {
-      title: info.item_name,
-      path: '/pages/item/espier-detail?id='+ info.item_id + '&dtid=' + id + (userId && '&uid=' + userId),
-      imageUrl: info.pics[0]
-    }
-  }
+  // onShareAppMessage() {
+  //   const { info,pageShareUrl } = this.state
+  //  const curStore = Taro.getStorageSync('curStore')
+  //   const { userId } = Taro.getStorageSync('userinfo')
+  //   const infoId = info.distributor_id
+  //   const { is_open_store_status} = this.state
+  //   const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
+  //   Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
+  //     ...info,
+  //     shareType: "分享给好友"
+  //   });
+  //   return {
+  //     title: info.item_name,
+  //     path: '/pages/item/espier-detail?id='+ info.item_id + '&dtid=' + id + (userId && '&uid=' + userId),
+  //     imageUrl: info.pics[0]
+  //   }
+  // }
 
-  onShareTimeline() {
-    const { info } = this.state
-   const curStore = Taro.getStorageSync('curStore')
-    const { userId } = Taro.getStorageSync('userinfo')
-    const { is_open_store_status} = this.state
-    const infoId = info.distributor_id
-    const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
-    return {
-      title: info.item_name,
-      query: `id=${info.item_id}&dtid=${id}&uid=${userId}`,
-      imageUrl: info.pics[0]
-    }
-  }
+  // onShareTimeline() {
+  //   const { info } = this.state
+  //  const curStore = Taro.getStorageSync('curStore')
+  //   const { userId } = Taro.getStorageSync('userinfo')
+  //   const { is_open_store_status} = this.state
+  //   const infoId = info.distributor_id
+  //   const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
+  //   return {
+  //     title: info.item_name,
+  //     query: `id=${info.item_id}&dtid=${id}&uid=${userId}`,
+  //     imageUrl: info.pics[0]
+  //   }
+  // }
 
   async fetchCartCount() {
     const { info } = this.state
@@ -589,19 +651,53 @@ export default class Detail extends Component {
       userinfo = userObj
     }
     const { avatar, userId } = userinfo
-    const { info,is_open_store_status } = this.state
+    const { info,is_open_store_status,subtask_id,entry_form } = this.state
     const { pics, company_id, item_id } = info
-    const host = req.baseURL.replace('/api/h5app/wxapp/', '')
     const extConfig = (Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
+      //新增导购信息
+      let ba_params = S.get('ba_params',true)
+      let qw_chatId = S.get('qw_chatId',true)
+      let gu = null
+      let share_params = {
+        appid:extConfig.appid,
+        id:this.$router.params.id,
+        company_id:extConfig.company_id || APP_COMPANY_ID,
+        share_type:'item_share'
+      }
+      if(ba_params) {
+        const store_code = ba_params.store_code
+        const guide_code = ba_params.guide_code
+        gu = guide_code+`${store_code?'_'+store_code:''}`
+        share_params.gu = gu
+      }
+      if(qw_chatId){
+        share_params.share_chatId = qw_chatId
+      }
+     
+      if(entry_form){
+        share_params.entrySource = entry_form.entry
+      }
+      if(subtask_id){
+        share_params.subtask_id = subtask_id
+      }
+
+      //此处需要发送一个请求，获取分享id,将获取到的share_id  放到二维码链接上
+      //const {share_id}=await api.item.creatItemShare(share_params)
+
+
+      //导购信息结束
+
+    const host = req.baseURL.replace('/api/h5app/wxapp/', '')
     const { distributor_id,store_id } = Taro.getStorageSync('curStore')
     const pic = pics[0].replace('http:', 'https:')
     const infoId = info.distributor_id
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
-    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&dtid=${id}&uid=${userId}`
-    const avatarImg = await Taro.getImageInfo({src: avatar})
-    const goodsImg = await Taro.getImageInfo({src: pic})
-    const codeImg = await Taro.getImageInfo({src: wxappCode})
-
+    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&dtid=${id}&uid=${userId}&sid=2`
+    console.log('wxappCode---->',wxappCode)
+    try {
+      const avatarImg = await Taro.getImageInfo({src: avatar})
+      const goodsImg = await Taro.getImageInfo({src: pic})
+      const codeImg = await Taro.getImageInfo({src: wxappCode})
     if (avatarImg && goodsImg && codeImg) {
       const posterImgs = {
         avatar: avatarImg.path,
@@ -618,6 +714,12 @@ export default class Detail extends Component {
     } else {
       return null
     }
+
+    }catch(err){
+      console.log(err)
+
+    }
+    
   }
 
   drawImage = () => {
@@ -919,9 +1021,14 @@ export default class Detail extends Component {
     if (coupon_list && coupon_list.list.length >= 1) {
       new_coupon_list = coupon_list.list.slice(0, 3)
     }
+    const navbar_height = S.get('navbar_height',true)
+    console.log('navbar_height---->',navbar_height)
 
     return (
-      <View className="page-goods-detail">
+      <View 
+      className="page-goods-detail"
+      style={`padding-top:${navbar_height}PX`}
+      >
         <BaNavBar title='导购商城' fixed jumpType={jumpType}/>
         {/* <NavBar
           title={info.item_name}
@@ -1065,7 +1172,7 @@ export default class Detail extends Component {
                 <Text className="goods-title">{info.item_name}</Text>
                 <Text className="goods-title__desc">{info.brief}</Text>
               </View>
-              {Taro.getEnv() !== "WEB" && (
+              {/* {Taro.getEnv() !== "WEB" && (
                 <View
                   className="goods-share__wrap"
                   onClick={this.handleShare.bind(this)}
@@ -1073,7 +1180,7 @@ export default class Detail extends Component {
                   <View className="icon-share"></View>
                   <View className="share-label">分享</View>
                 </View>
-              )}
+              )} */}
             </View>
 
             {/* { !info.is_gift && info.vipgrade_guide_title ? (
@@ -1315,24 +1422,6 @@ export default class Detail extends Component {
         </ScrollView>
 
         <FloatMenus>
-          <FloatMenuItem
-            iconPrefixClass="icon"
-            icon="home1"
-            onClick={this.handleBackHome.bind(this)}
-          />
-          {meiqia.is_open === "true" || echat.is_open === 'true' || Taro.getEnv() === "WEB" ? (
-            <FloatMenuMeiQia
-              storeId={info.distributor_id}
-              info={{ goodId: info.item_id, goodName: info.itemName }}
-            />
-          ) : (
-            <FloatMenuItem
-              iconPrefixClass="icon"
-              icon="headphones"
-              openType="contact"
-              sessionFrom={sessionFrom}
-            />
-          )}
           <FloatMenuItem
             iconPrefixClass="icon"
             icon="arrow-up"
