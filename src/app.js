@@ -68,9 +68,9 @@ class App extends Component {
     pages: [
       
       //'{"path":"pages/pointitem/list","style":{"navigationStyle":"custom"}}',
-      //'pages/pointitem/list',
+      
       'pages/index',
-     
+      'pages/pointitem/list',
       'pages/home/landing',
       'pages/category/index',
       'pages/floorguide/index',
@@ -250,12 +250,12 @@ class App extends Component {
           'pages/bindOrder/index'
         ]
       },
-      {
-        root:'pointitem',
-        pages:[
-          'pages/list',
-        ]
-      }
+      // {
+      //   root:'pointitem',
+      //   pages:[
+      //     'pages/list',
+      //   ]
+      // }
     ],
     permission: {
       "scope.userLocation": {
