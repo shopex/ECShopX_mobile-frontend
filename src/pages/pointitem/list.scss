@@ -35,17 +35,29 @@ $height-percent: 82%;
 
   .main {
     width: 100%;
-    padding: 10px;
+    padding: 30px 20px;
     display: flex;
     box-sizing: border-box;
     flex-wrap: wrap;
     overflow: hidden;
     background: #f5f5f5;
+    justify-content: space-between;
     min-height: calc(100vh - #{$banner-height} - #{2 * $tabbar-height});
     /*  #ifdef  h5  */
-    height: calc(100vh - #{$banner-height} - #{2 * $tabbar-height} - $navigate-height-h5); 
+    height: calc(100vh - #{$banner-height} - #{2 * $tabbar-height} - $navigate-height-h5);
     /*  #endif  */
-   
+
+    .goods-list__group {
+      width: 50%;
+    }
+
+    .goods-list__item {
+      // padding: 10px;
+      width: 49%;
+      margin-bottom: 2%;
+      overflow: hidden;
+    }
+
 
     .empty {
       width: calc(100vw - 20px);
@@ -129,7 +141,7 @@ $height-percent: 82%;
   .goods-list {
     margin: 0 -10px;
 
-     
+
     &__tabs {
       display: flex;
 
@@ -206,25 +218,6 @@ $height-percent: 82%;
     }
 
     /*  #endif  */
-    .main {
-
-      display: flex;
-      flex-wrap: wrap;
-      padding: 0 20px;
-      justify-content: space-between;
-      margin-top: 20px;
-
-      .goods-list__group {
-        width: 50%;
-      }
-
-      .goods-list__item {
-        // padding: 10px;
-        width: 49%;
-        margin-bottom: 2%;
-        overflow: hidden;
-      }
-    }
 
     &__type-list {
 
