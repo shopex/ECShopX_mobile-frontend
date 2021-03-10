@@ -465,6 +465,46 @@ export default class List extends Component {
     })
   }
 
+  // 页面滚动
+  onPageScroll = throttle((res) => {
+    const { showBackToTop, statusBarHeight, paddindTop } = this.state
+    const { scrollTop } = res
+    const topOffset = statusBarHeight + 40
+    const query = Taro.createSelectorQuery()
+    query.select('.filter').boundingClientRect(({ top }) => {
+      if (
+        top <= topOffset
+        && (paddindTop < topOffset || paddindTop > 0)
+      ) {
+        const diffTop = Math.abs(top - topOffset)
+        if (diffTop !== paddindTop) {
+          this.setState({
+            paddindTop: top > 0 ? diffTop : topOffset
+          })
+        }
+      }  else if (paddindTop !== 0){
+        this.setState({
+          paddindTop: 0
+        })
+      }
+    }).exec()
+
+    if (scrollTop > 300 && !showBackToTop) {
+      this.setState({
+        showBackToTop: true
+      })
+    } else if (scrollTop <= 300 && showBackToTop) {
+      this.setState({
+        showBackToTop: false
+      })
+    }
+  }, 100)
+
+  // 触底事件
+  onReachBottom = () => {
+    this.nextPage()
+  }    
+
   render() {
     const {
       list,
