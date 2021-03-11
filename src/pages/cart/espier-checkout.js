@@ -1804,7 +1804,7 @@ export default class CartCheckout extends Component {
             })}
           </View>
  
-          {process.env.TARO_ENV === "weapp" && !this.isPointitemGood() && !bargain_id &&  total.invoice_status(
+          {process.env.TARO_ENV === "weapp" && !this.isPointitemGood() && !bargain_id &&  total.invoice_status && (
             <SpCell
               isLink
               className="trade-invoice"
@@ -1917,16 +1917,7 @@ export default class CartCheckout extends Component {
               <SpCell className="trade-sub-total__item" title="应税商品金额">
                 <Price unit="cent" value={total.taxable_fee} />
               </SpCell>
-            )}
-            {/*<SpCell
-                className='trade-sub-total__item'
-                title='会员折扣：'
-              >
-                <Price
-                  unit='cent'
-                  value={total.member_discount}
-                />
-              </SpCell>*/}
+            )} 
             <SpCell className="trade-sub-total__item" title="优惠金额：">
               <Price unit="cent" value={total.discount_fee} />
             </SpCell>
