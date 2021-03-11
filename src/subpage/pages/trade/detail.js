@@ -276,14 +276,15 @@ export default class TradeDetail extends Component {
   async handleClickBtn (type,val) {
     const { info } = this.state
 
-    if(this.isPointitemGood()){
-      Taro.redirectTo({
-        url: "/pointitem/pages/list"
-      });
-      return ;
-    }
+ 
 
     if (type === 'home') {
+      if(this.isPointitemGood()){
+        Taro.redirectTo({
+          url: "/pointitem/pages/list"
+        });
+        return ;
+      }
       Taro.redirectTo({
         url: APP_HOME_PAGE
       })
