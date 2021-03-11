@@ -1804,7 +1804,7 @@ export default class CartCheckout extends Component {
             })}
           </View>
  
-          {process.env.TARO_ENV === "weapp" && !this.isPointitemGood() && !bargain_id &&  total.invoice_status(
+          {process.env.TARO_ENV === "weapp" && !this.isPointitemGood() && !bargain_id &&  total.invoice_status && (
             <SpCell
               isLink
               className="trade-invoice"
