@@ -52,8 +52,11 @@ $item-img-size: 240px !default;
   &__tag-list {
     padding-bottom: 10px;
     display: flex;
+    flex-wrap: wrap;
     .tagitem {
+      margin-top: 10px;
       margin-right: 10px;
+      flex-shrink: 0;
     }
     .member_preference {
       background: rgb(247, 106, 13);
