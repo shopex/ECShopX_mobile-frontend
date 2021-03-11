@@ -1239,8 +1239,7 @@ export default class CartCheckout extends Component {
     const isExtraPoint=this.isPointitemGood() && this.state.total.freight_type==="point";
  
     // 积分流程
-    if (payType === "point" || payType === "deposit" || isExtraPoint ) {
-      debugger;
+    if (payType === "point" || payType === "deposit" || isExtraPoint ) { 
       if (!payErr) {
         Taro.showToast({
           title: "支付成功",
@@ -1313,8 +1312,15 @@ export default class CartCheckout extends Component {
     } else {
       if (payErr.errMsg.indexOf("fail cancel") >= 0) {
         this.cancelpay();
+
+        let purl=`/subpage/pages/trade/detail?id=${order_id}`;
+
+        if(this.isPointitemGood()){
+          purl+="&type=pointitem";
+        } 
+
         Taro.redirectTo({
-          url: `/subpage/pages/trade/detail?id=${order_id}`
+          url: purl
         });
       }
     }
