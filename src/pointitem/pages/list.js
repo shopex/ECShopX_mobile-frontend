@@ -23,8 +23,7 @@ import './list.scss'
   favs: member.favs,
   colors: colors.current
 }))
-@withPager
-@withBackToTop
+@withPager 
 export default class List extends Component {
   constructor(props) {
     super(props)
@@ -564,7 +563,12 @@ export default class List extends Component {
         inputValue: value
     })
   } 
-  
+
+  scrollBackToTop = () => {
+    Taro.pageScrollTo({
+      scrollTop: 0
+    })
+  }
 
   render() {
     const {
@@ -626,29 +630,6 @@ export default class List extends Component {
           </View>
           <Header useInfo={useInfo} />
         </View>
-
-        {/* 
-        {
-          homeIconInfo && homeIconInfo.height!==0 && <HomeCapsule style={{
-            top:homeIconInfo.top+'px',
-            left:homeIconInfo.left+'px',
-            height:homeIconInfo.height+'px'
-          }}/>
-        }  */}
-
-        {/* <Tabs
-          className='goods-list__tabs filter'
-          custom
-          current={curFilterIdx}
-          list={filterList}
-          onChange={this.handleFilterChange}
-          onInputConfirm={this.handleInputConfirm}
-          onOpenFilter={this.handleOpenFilter}  
-          ref={this.cartNode}
-        >
-
-        
-        </Tabs> */}
 
         <View className={classNames('filter-bar', { 'active': filterActive }, `goods-list__tabs filter`)} id="filter" style={`padding-top: ${paddindTop}px; transition: padding ${paddindTop > 20 ? paddindTop * 3.5 : 300 }ms linear;`}>
           {/* <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon> */}
@@ -725,6 +706,7 @@ export default class List extends Component {
           onClose={this.filterOpen.bind(false)}
           class='custom_drawer'
         >
+          <View>
           {
             <View class="wrapper-filter">
               {brandVisible && <View class="brand" >
@@ -773,16 +755,15 @@ export default class List extends Component {
             <Text className='drawer-footer__btn' onClick={this.handleResetFilter}>重置</Text>
             <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定并筛选</Text>
           </View>
+        </View>
         </AtDrawer>
 
-
-
+ 
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}
           bottom={30}
-        />
-        { isTabBar && <TabBar />}
+        /> 
       </View>
     )
   }
