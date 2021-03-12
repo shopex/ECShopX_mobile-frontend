@@ -47,6 +47,10 @@ $height-percent: 82%;
     height: calc(100vh - #{$banner-height} - #{2 * $tabbar-height} - $navigate-height-h5);
     /*  #endif  */
 
+    &.noData{
+      justify-content: center;
+    }
+
     .goods-list__group {
       width: 50%;
     }
