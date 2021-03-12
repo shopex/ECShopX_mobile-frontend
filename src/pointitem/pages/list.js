@@ -690,7 +690,9 @@ export default class List extends Component {
           {this.props.children}
         </View>
 
-        <View className='main'>
+        <View className={classNames('main',[
+          {'noData':noData}
+        ])}  >
           {
             list.map(item => {
               return (
