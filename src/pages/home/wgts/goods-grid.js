@@ -60,6 +60,7 @@ export default class WgtGoodsGrid extends Component {
   render() {
     const { info, dis_id = '' } = this.props
     console.log(dis_id)
+    console.log('--goodsgridinfo--',info);
     if (!info) {
       return null
     }
@@ -123,10 +124,10 @@ export default class WgtGoodsGrid extends Component {
                         />
                       </View>
                       <View className='caption'>
-                        {config.brand && item.brand && (
+                        {config.brand && (
                           <SpImg
                             img-class='goods-brand'
-                            src={item.brand}
+                            src={item.brand?item.brand:'https://fakeimg.pl/60x60/EFEFEF/CCC/?text=brand&font=lobster'}
                             mode='aspectFill'
                             width='300'
                           />
