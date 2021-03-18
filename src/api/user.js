@@ -49,10 +49,14 @@ export function info() {
 export function forgotPwd(params = {}) {
   return req.post("/member/reset/password", params);
 }
-
+//悦诗风呀 导购登录
 export function prelogin(data) {
   return req.post("/prelogin", data);
 }
+//云店-导购登录
+// export function prelogin(params = {}) {
+//   return req.get("/workwechatlogin", params);
+// }
 
 export function checkpclogin(data) {
   return req.post("/oauthlogin", data);
@@ -135,6 +139,11 @@ export function getGuideInfo(params = {}) {
 export function getGuideShops(params = {}) {
   return req.get("/guide/shops", params);
 }
+//获取导购session_key
 export function getSession(params = {}) {
-  return req.get("/guide/check/session", params);
+  return req.post("/workwechatcheck", params);
 }
+// //导购登录
+// export function getGuideShops(params = {}) {
+//   return req.get("/workwechatlogin", params);
+// }

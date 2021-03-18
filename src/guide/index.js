@@ -31,7 +31,7 @@ import { WgtGoodsFaverite, HeaderHome } from "../pages/home/wgts";
 import HomeWgts from "../pages/home/comps/home-wgts";
 import Automatic from "../pages/home/comps/automatic";
 import { BaTabBar, BaNavBar} from "./components"
-
+import { BaStore,BaStoreList } from './ba-components'
 import "../pages/home/index.scss";
 
 @connect(
@@ -87,7 +87,9 @@ export default class BaGuideHomeIndex extends Component {
       showCloseBtn: false,
       // 是否有跳转至店铺页
       isGoStore: false,
-      show_tabBar: true
+      show_tabBar: true,
+      defaultStore:null,
+      showStore:false,
     };
   }
 
@@ -448,7 +450,30 @@ export default class BaGuideHomeIndex extends Component {
       featuredshop
     });
   };
-
+  /**
+   * 悦诗风饮 导购货架未备注代码  ---开始
+   */
+  handleStoreConfirm=()=>{
+    const {shopList,currentIndex}=this.state
+  
+    this.setState({
+      defaultStore:shopList[currentIndex],
+      showStore:false
+    })
+   let ba_params=S.get('ba_params',true)
+  
+   ba_params.ba_store=shopList[currentIndex]
+   ba_params.store_code=shopList[currentIndex].wxshop_bn
+   S.set('ba_params',ba_params,true)
+ }
+ handleOpenStore=(val)=>{
+  this.setState({
+    showStore:val
+  })
+}
+ /**
+   * 悦诗风饮 导购货架未备注代码  ---结束
+   */
   // 白名单
   checkWhite = () => {
     const setting = Taro.getStorageSync("otherSetting");
@@ -673,7 +698,9 @@ export default class BaGuideHomeIndex extends Component {
       is_open_official_account,
       is_open_scan_qrcode,
       is_open_store_status,
-      show_official
+      show_official,
+      defaultStore,
+      showStore
     } = this.state;
 
     // 广告屏
@@ -686,6 +713,8 @@ export default class BaGuideHomeIndex extends Component {
     return (
       <View className="page-index">
         <BaNavBar title="导购商城" fixed jumpType="home" />
+        <BaStore onClick={this.handleOpenStore}  defaultStore={defaultStore}  />
+        {showStore&&<BaStoreList shopList={shopList} currentIndex={currentIndex} onStoreConfirm={this.handleStoreConfirm} onSearchStore={this.getStoreList.bind(this)} onChangeCurIndex={this.handleCurIndex.bind(this)}  onClose={this.handleOpenStore}/>}
         {is_open_official_account === 1 && show_official && (
           <AccountOfficial
             isClose

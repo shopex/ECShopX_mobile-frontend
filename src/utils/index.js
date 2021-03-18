@@ -285,6 +285,24 @@ function validColor(color) {
   return re2.test(color) || re1.test(color) || re3.test(color);
 }
 
+/**
+ * 参数拼接
+ * 
+ */
+
+export function paramsSplice(params){
+  let str=''
+  let arr=[]
+  for(var key in params){
+    let p=`${key}=${params[key]}`
+    arr.push(p)
+    
+  }
+  str=arr.join('&')
+  return str
+
+}
+
 export {
   classNames,
   styleNames,

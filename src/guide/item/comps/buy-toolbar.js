@@ -60,15 +60,16 @@ export default class GoodsBuyToolbar extends Component {
                         </View>
                       </FormIdCollector>
                     )}
-                    {!isDrug && (
-                        <FormIdCollector
+                    {/* {!isDrug && (
+                      
+                      )
+                    } */}
+                      <FormIdCollector
                           sync
                           onClick={onClickFastBuy}
                         >
                           <View className={`goods-buy-toolbar__btn btn-fast-buy ${type !== 'normal' && type !== 'limited_time_sale' && 'marketing-btn'}`} style={'background: ' + colors.data[0].primary}>分享给顾客</View>
                         </FormIdCollector>
-                      )
-                    }
                   </View>
                   : <View className='goods-buy-toolbar__btns'><View className="goods-buy-toolbar__btn disabled">暂不可售</View></View>
           }

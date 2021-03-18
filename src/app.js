@@ -238,6 +238,7 @@ class App extends Component {
         pages: [
           "index",
           "category/index",
+          "auth/wxauth",
           "item/list",
           "item/espier-detail",
           "item/item-params",
