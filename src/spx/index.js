@@ -40,7 +40,7 @@ class Spx {
 
   async setQwSession() {
     let { code } = await this.getQyLoginCode();
-    const r_session = await api.user.getSession({
+    const r_session = await api.user.getSession({appname:`${APP_NAME}`,
       code
     });
     console.log("r_session======setQwSession", r_session);
