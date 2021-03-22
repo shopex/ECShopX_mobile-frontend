@@ -34,7 +34,7 @@ function resolveCartInfo(params, action_type) {
   const baseData = {
     sku: {
       sku_id: params.sku_id,
-      sku_name: params.sku_name||params.item_name
+      sku_name: params.sku_name||params.item_name||params.goods_title
     },
     spu: {
       spu_id: params.goods_id,
@@ -333,7 +333,7 @@ const actions = {
         market_price: parseInt(market_price * 100),
         price: parseInt(price * 100),
         goods_id: sku_id,
-        goods_title: title
+        goods_title: title,
       },
       "remove_from_cart"
     );
