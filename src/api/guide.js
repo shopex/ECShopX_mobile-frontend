@@ -1,11 +1,20 @@
 import req from './req'
-
+import S from "@/spx";
+console.log('---req-guide-S---',S)
+function createHead (){
+  console.log('---req-guide-S-createHead---',S)
+  return {header: {
+    "x-wxapp-session": S&&S.get('session3rd',true)||'',
+    "salesperson-type": "shopping_guide"
+  }}
+}
+ 
 //获取导购店铺列表
 export function distributorlist (params = {}) {
   return req.get('/salesperson/distributorlist', params)
 }
 //验证导购员的店铺id是否有效
-export function is_valid (params = {},config={}) {
+export function is_valid (params = {},config=createHead()) {
   console.log('/salesperson/distributor/is_valid')
   return req.get('/salesperson/distributor/is_valid', params,config)
 }

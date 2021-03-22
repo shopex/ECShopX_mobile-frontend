@@ -39,25 +39,52 @@ class Spx {
   }
 
   async setQwUserInfo() {
+    console.log("---------------SPX-企业微信录入--------------");
     let { code } = await this.getQyLoginCode();
-    const QwUserInfo = await api.user.getQwUserInfo({appname:`${APP_NAME}`,
+    const QwUserInfo = await api.user.getQwUserInfo({
+      appname: `${APP_NAME}`,
       code
     });
-    console.log('spx-setQwUserInfo',QwUserInfo)
     this.set(
-      'QwUserInfo',
+      "session3rd",
+      QwUserInfo.session3rd,
+      true
+    );
+    
+    return await this.initGuideInfo(QwUserInfo);
+  }
+  //初始化导购身份
+  async initGuideInfo(QwUserInfo){
+    console.log('初始化导购身份-initGuideInfo',QwUserInfo,this.get('session3rd',true))
+
+    if(!QwUserInfo)return
+    let {
+      salesperson_id,
+      distributor_id,
+      employee_status
+    } = QwUserInfo;
+    //employee_status:1内部导购,2编外导购
+    if(employee_status == 1){
+
+    }else{
+      await api.guide.distributorlist()
+    }
+    //查询当前导购门店信息是否有效
+    const res = await api.guide.is_valid(
+      { salesperson_id, distributor_id }      
+    );
+    console.log("is_valid", res);
+    QwUserInfo.store_isValid = res
+    
+    this.set(
+      "QwUserInfo",
       {
         ...QwUserInfo
       },
       true
     );
-    
-    let {salesperson_id,distributor_id,session3rd} = QwUserInfo
-    const res =  await api.guide.is_valid({salesperson_id,distributor_id},{header:{'x-wxapp-session':session3rd,'salesperson-type':'shopping_guide'}})
-      console.log('is_valid',res)
-    return QwUserInfo;
+    return QwUserInfo
   }
-
   refreshQwUserinfo() {
     if (this._refreshSessionKeyTimer) {
       clearTimeout(this._refreshSessionKeyTimer);

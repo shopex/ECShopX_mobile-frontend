@@ -31,7 +31,6 @@ import * as wx from './wx'
 import * as wheel from './wheel'
 import * as guide from './guide'
 
-
 export default {
   article,
   aftersales,
