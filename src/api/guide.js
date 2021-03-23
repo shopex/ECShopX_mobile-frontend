@@ -1,8 +1,6 @@
 import req from "./req";
 import S from "@/spx";
-console.log("---req-guide-S---", S);
 function createHead() {
-  console.log("---req-guide-S-createHead---", S);
   return {
     header: {
       "x-wxapp-session": (S && S.get("session3rd")) || "",
