@@ -30,8 +30,7 @@ import { Tracker } from "@/service";
 import { WgtGoodsFaverite, HeaderHome } from "../pages/home/wgts";
 import HomeWgts from "../pages/home/comps/home-wgts";
 import Automatic from "../pages/home/comps/automatic";
-import { BaTabBar, BaNavBar} from "./components"
-import { BaStore,BaStoreList } from './ba-components'
+import { BaTabBar, BaNavBar,BaStore,BaStoreList} from "./components"
 import "../pages/home/index.scss";
 
 @connect(

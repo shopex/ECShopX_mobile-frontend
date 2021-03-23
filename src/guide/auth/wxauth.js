@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image,Text } from '@tarojs/components'
-import {BaNavBar} from '../ba-components'
+import {BaNavBar} from '../components'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
