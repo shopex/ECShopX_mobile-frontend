@@ -22,10 +22,10 @@ export default class BaStore extends Component {
 }
 componentDidMount(){
   
-  let ba_params=S.get('ba_params',true)
+  let QwUserInfo=S.get('QwUserInfo',true)
   if(ba_params){
     this.setState({
-      baInfo:ba_params.ba_info,
+      baInfo:QwUserInfo,
      
     })
   }
@@ -37,10 +37,10 @@ componentDidMount(){
       onClick(true)
   }
 
-  router(){
-    console.log('/guide/auth/wxauth')
-    navigateTo('/guide/auth/wxauth',true)
-  }
+  // router(){
+  //   console.log('/guide/auth/wxauth')
+  //   navigateTo('/guide/auth/wxauth',true)
+  // }
  
 
   render () {
@@ -50,20 +50,21 @@ componentDidMount(){
     return (
       <View
        className='ba-store'
-       onClick={this.router}
+      //  onClick={this.router}
+       style='background:#3333'
       >
         <Image className='ba-avatar' mode='widthFix' src={baInfo.avatar||'/assets/imgs/home-unloginhead.png'} />
         {token?
-          <View className={classNames('ba-username')}>悦诗风吟{baInfo.name}</View>:
-          <View className={classNames('ba-username',!token?'undenline':'')} 
-            onClick={this.router}>
-            请点击授权登录
-          </View>
+          <View className={classNames('ba-username')}>导购货架{baInfo.name}</View>:null
+          // <View className={classNames('ba-username',!token?'undenline':'')} 
+          //   onClick={this.router}>
+          //   请点击授权登录
+          // </View>
         }
 
         
         {defaultStore&&<View className='ba-store__info' onClick={this.handleClick}>
-            <Text className='ba-store__name'>{defaultStore.wxshop_name}</Text>
+            <Text className='ba-store__name'>{defaultStore.store_name}</Text>
             
             <Text className='in-icon in-icon-sanjiaoxing02'></Text>
         </View>}

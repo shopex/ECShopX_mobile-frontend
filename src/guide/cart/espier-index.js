@@ -8,7 +8,7 @@ import {
   AtNoticebar
 } from "taro-ui";
 import { SpCheckbox, SpNote, Loading, Price } from "@/components";
-import { log, navigateTo, pickBy, classNames } from "@/utils";
+import { log, navigateTo, pickBy, classNames,styleNames } from "@/utils";
 import debounce from "lodash/debounce";
 import api from "@/api";
 import S from "@/spx";
@@ -74,7 +74,7 @@ export default class CartIndex extends Component {
     this.getRemind();
     this.nextPage();
 
-    console.log('cart-S.getAuthToken()',S.getAuthToken())
+    console.log("cart-S.getAuthToken()", S.getAuthToken());
     // if (!S.getAuthToken()) return;
 
     this.fetchCart(list => {
@@ -245,7 +245,7 @@ export default class CartIndex extends Component {
   }
 
   async fetchCart(cb) {
-    console.log('fetchCart-run',cb)
+    console.log("fetchCart-run", cb);
     let valid_cart = [],
       invalid_cart = [],
       crossborder_show = false;
@@ -266,7 +266,7 @@ export default class CartIndex extends Component {
     }
     try {
       let res = await api.guide.cartdatalist(params);
-      console.log('fetchCart-cartdatalist',res)
+      console.log("fetchCart-cartdatalist", res);
       //  res = await api.cart.get(params);
       if (!res.crossborder_show && cartTypeLocal !== "normal") {
         Taro.setStorageSync("cartType", "normal");
@@ -334,19 +334,24 @@ export default class CartIndex extends Component {
     });
   }
   //购物车商品选中变更
-  async handleSelectionChange(item) {
-    console.log('handleSelectionChange-item',item)
+  async handleSelectionChange(type='item',item) {
+    console.log("handleSelectionChange-item", item);
+    if(type=='all'){
+      
+    }
+
     await api.guide.checkstatus({
-      cart_id:item.cart_id,
+      cart_id: item.cart_id,
       num: item.num,
       item_id: item.item_id,
       is_accumulate: false,
-      is_checked: item.is_checked =='1'?'false':'true',
-    });
+      is_checked: item.is_checked == "1" ? "false" : "true"
+    })
     this.updateCart();
+    
   }
   //删除商品
-  handleDelect = async (cart_id,shopIndex,item) => {
+  handleDelect = async (cart_id, shopIndex, item) => {
     const res = await Taro.showModal({
       title: "提示",
       content: "将当前商品移出购物车?",
@@ -584,270 +589,6 @@ export default class CartIndex extends Component {
       url: url
     });
   };
-  //创建导购分享海报
-  drawCanvas = async params => {
-    try {
-      const params = this.getParams();
-      params.receipt_type = "logistics";
-      delete params.items;
-      const ba_params = Taro.getStorageSync("ba_params");
-      const qw_chatId = S.get("qw_chatId", true);
-      let entry_form = S.get("entry_form", true);
-      const {
-        share_id,
-        wxshop_name,
-        item_nums: { item_total, gift_total }
-      } = await api.cart.getShareGoodsId({
-        guide_id: (ba_params.ba_info && ba_params.ba_info.guide_id) || "",
-        wxshop_id: ba_params.ba_store ? ba_params.ba_store.wxshop_id : "",
-        chatId: qw_chatId,
-        entrySource: entry_form.entry,
-        ...params
-      });
-      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
-      const userinfo = Taro.getStorageSync("userinfo");
-      const url = `https://${API_HOST}/wechatAuth/wxapp/qrcode.png?appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout`;
-      const { path: qrcode } = await Taro.getImageInfo({ src: url });
-      const { giftslist, total, ratio, canvasWidth, canvasHeight } = this.state;
-      let avatar = null;
-      if (userinfo.avatar) {
-        let avatarImgInfo = await Taro.getImageInfo({ src: userinfo.avatar });
-        avatar = avatarImgInfo.path;
-      }
-
-      console.log("======qrcode===", qrcode);
-      console.log("======avatar===", avatar);
-      const ctx = Taro.createCanvasContext("myCanvas");
-
-      canvasExp.roundRect(ctx, 0, 0, canvasWidth, canvasHeight, 0);
-      ctx.save();
-
-      // 头部信息
-      if (avatar) {
-        canvasExp.imgCircleClip(
-          ctx,
-          avatar,
-          15 * ratio,
-          15 * ratio,
-          45 * ratio,
-          45 * ratio
-        );
-      }
-
-      ctx.restore();
-
-      canvasExp.textFill(
-        ctx,
-        userinfo.username || "",
-        75 * ratio,
-        25 * ratio,
-        14,
-        "#184337"
-      );
-      if (wxshop_name) {
-        canvasExp.textOverflowFill(
-          ctx,
-          wxshop_name,
-          75 * ratio,
-          42 * ratio,
-          160 * ratio,
-          12,
-          "#87C55C"
-        );
-        canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 65 * ratio, 12, "#666");
-      } else {
-        canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 45 * ratio, 12, "#666");
-      }
-      canvasExp.drawImageFill(
-        ctx,
-        "https://bbc-espier-images.amorepacific.com.cn/image/2/2021/02/28/c82701f15f42ee1743d3a779d6a38327Z4zMvCPbp2FhYwf4zzfLBmmaHSVOUqcD",
-        224 * ratio,
-        32 * ratio,
-        98 * ratio,
-        18 * ratio
-      );
-
-      // 总计
-      canvasExp.textFill(
-        ctx,
-        `共${item_total}件商品，${gift_total}件赠品`,
-        15 * ratio,
-        425 * ratio,
-        12,
-        "#101010"
-      );
-      canvasExp.textFill(ctx, "合计", 15 * ratio, 450 * ratio, 12, "#999");
-      canvasExp.textFill(
-        ctx,
-        `¥${returnFloat(total.item_fee / 100)}`,
-        64 * ratio,
-        450 * ratio,
-        12,
-        "#101010"
-      );
-      canvasExp.textFill(ctx, "为您省", 15 * ratio, 468 * ratio, 12, "#999");
-      canvasExp.textFill(
-        ctx,
-        `¥${returnFloat(total.discount_fee / 100)}`,
-        64 * ratio,
-        468 * ratio,
-        12,
-        "#101010"
-      );
-      canvasExp.textFill(ctx, "实付", 15 * ratio, 493 * ratio, 12, "#999");
-      canvasExp.textFill(
-        ctx,
-        `¥${returnFloat(total.total_fee / 100)}`,
-        64 * ratio,
-        493 * ratio,
-        14,
-        "#101010",
-        "blod"
-      );
-      canvasExp.drawImageFill(
-        ctx,
-        qrcode,
-        230 * ratio,
-        410 * ratio,
-        100 * ratio,
-        100 * ratio
-      );
-      canvasExp.textFill(
-        ctx,
-        "长按识别下单",
-        248 * ratio,
-        525 * ratio,
-        12,
-        "#999"
-      );
-      canvasExp.textFill(
-        ctx,
-        "长按图片可立即转发",
-        (canvasWidth / 2) * ratio,
-        535 * ratio,
-        12,
-        "#666",
-        "",
-        "center"
-      );
-
-      // 商品信息
-      canvasExp.roundRect(
-        ctx,
-        14 * ratio,
-        84 * ratio,
-        canvasWidth - 14 * ratio * 2,
-        310 * ratio,
-        5,
-        "#f5f5f5"
-      );
-      ctx.save();
-
-      ctx.setTextAlign("left");
-      canvasExp.textFill(ctx, "商品", 30 * ratio, 112 * ratio, 12, "#666");
-      canvasExp.textFill(ctx, "单价", 206 * ratio, 112 * ratio, 12, "#666");
-      canvasExp.textFill(ctx, "数量", 284 * ratio, 112 * ratio, 12, "#666");
-      for (let i = 0; i < total.goodsItems.length; i++) {
-        if (i > 5) {
-          canvasExp.textFill(
-            ctx,
-            "······",
-            30 * ratio,
-            290 * ratio,
-            12,
-            "#101010"
-          );
-          break;
-        }
-        let item = total.goodsItems[i];
-        canvasExp.textOverflowFill(
-          ctx,
-          item.item_name,
-          30 * ratio,
-          (120 + 24 * (i + 1)) * ratio,
-          184 * ratio,
-          12,
-          "#101010"
-        );
-        canvasExp.textFill(
-          ctx,
-          `${item.fee_symbol}${returnFloat(item.price / 100)}`,
-          206 * ratio,
-          (120 + 24 * (i + 1)) * ratio,
-          12,
-          "#101010"
-        );
-        canvasExp.textFill(
-          ctx,
-          `x ${item.num}`,
-          284 * ratio,
-          (120 + 24 * (i + 1)) * ratio,
-          12,
-          "#666"
-        );
-      }
-
-      // 分割线
-      ctx.beginPath();
-      ctx.setStrokeStyle("#ddd");
-      ctx.setLineWidth(1);
-
-      ctx.moveTo(30 * ratio, 305 * ratio);
-      ctx.lineTo(310 * ratio, 305 * ratio);
-      ctx.stroke();
-
-      // 赠品
-      ctx.beginPath();
-      for (let i = 0; i < giftslist.length; i++) {
-        if (i > 1) {
-          canvasExp.textFill(
-            ctx,
-            "······",
-            30 * ratio,
-            380 * ratio,
-            12,
-            "#101010"
-          );
-          break;
-        }
-        let item = giftslist[i];
-        canvasExp.textOverflowFill(
-          ctx,
-          "【赠品】 " + item.title,
-          22 * ratio,
-          (310 + 24 * (i + 1)) * ratio,
-          220 * ratio,
-          12,
-          "#87C65C"
-        );
-        canvasExp.textFill(
-          ctx,
-          `x ${item.num}`,
-          284 * ratio,
-          (310 + 24 * (i + 1)) * ratio,
-          12,
-          "#666"
-        );
-      }
-
-      ctx.draw(false, async () => {
-        const res = await Taro.canvasToTempFilePath({
-          x: 0,
-          y: 0,
-          canvasId: "myCanvas"
-        });
-        console.log("======canvasToTempFilePath====", res);
-        this.setState({
-          poster: res.tempFilePath,
-          isShowQrcode: true
-        });
-        Taro.hideLoading();
-      });
-    } catch (err) {
-      console.log(err);
-      Taro.hideLoading();
-    }
-  };
   render() {
     const {
       groups,
@@ -863,6 +604,7 @@ export default class CartIndex extends Component {
       remindInfo
     } = this.state;
     const { list, showLikeList, colors } = this.props;
+    const n_ht = S.get('navbar_height', true)
     console.log("groups", groups);
 
     if (loading) {
@@ -891,6 +633,7 @@ export default class CartIndex extends Component {
         ) : null} */}
 
         <ScrollView
+          style={styleNames({'top': `${n_ht}px`})}
           className={`${isEmpty ? "hidden-scroll" : "cart-list__scroll"}`}
           onScrollToLower={this.nextPage}
           scrollY
@@ -1028,11 +771,9 @@ export default class CartIndex extends Component {
                                     <View className="cart-item__act">
                                       <SpCheckbox
                                         key={item.item_id}
-                                        checked={item.is_checked=='1'}
-                                        onChange={()=>
-                                          this.handleSelectionChange(
-                                            item                                                                               
-                                          )
+                                        checked={item.is_checked == "1"}
+                                        onChange={() =>
+                                          this.handleSelectionChange('item',item)
                                         }
                                       />
                                       <View
@@ -1116,11 +857,7 @@ export default class CartIndex extends Component {
                         <SpCheckbox
                           // checked={this.isTotalChecked[shopIndex]}
                           checked={checked_all}
-                          onChange={this.handleAllSelect.bind(
-                            this,
-                            !checked_all,
-                            shopIndex
-                          )}
+                          onChange={()=>{this.handleSelectionChange('all')}}
                         >
                           全选
                         </SpCheckbox>

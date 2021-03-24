@@ -30,7 +30,7 @@ import { Tracker } from "@/service";
 import { WgtGoodsFaverite, HeaderHome } from "../pages/home/wgts";
 import HomeWgts from "../pages/home/comps/home-wgts";
 import Automatic from "../pages/home/comps/automatic";
-import { BaTabBar, BaNavBar,BaStore,BaStoreList} from "./components"
+import { BaTabBar, BaNavBar, BaStore, BaStoreList } from "./components";
 import "../pages/home/index.scss";
 
 @connect(
@@ -87,75 +87,58 @@ export default class BaGuideHomeIndex extends Component {
       // 是否有跳转至店铺页
       isGoStore: false,
       show_tabBar: true,
-      defaultStore:null,
-      showStore:false,
+      defaultStore: null, //默认门店信息
+      showStore: false, //展示门店状态
+      shopList: [], //商店列表
+      QwUserInfo: {}, //导购信息
+      currentIndex: 0 //当前导购店铺的index
     };
   }
 
   async componentDidMount() {
     const options = this.$router.params;
     const res = await entry.entryLaunch(options, false);
-
-    let shops = [];
-    if (S.getAuthToken()) {
-      let ba_params = S.get("ba_params", true);
-      console.log("======获取导购信息====", ba_params);
-      let ba_info = await api.user.getGuideInfo({
-        guide_code: ba_params.guide_code,
-        wxshop_bn: ba_params.store_code || ""
-      });
-      ba_params.ba_info = ba_info;
-      ba_params.store_code = ba_info.wxshop_bn;
-      S.set("ba_params", ba_params, true);
-      let defaultStore = ba_info.wxshop_name
-        ? {
-            wxshop_name: ba_info.wxshop_name,
-            wxshop_id: ba_info.wxshop_id,
-            wxshop_bn: ba_info.wxshop_bn
-          }
-        : null;
-      shops = await this.getStoreList();
-      let currentIndex =
-        (shops &&
-          shops.findIndex(s_item => s_item.wxshop_bn == ba_info.wxshop_bn)) ||
-        0;
-      this.setState(
-        {
-          defaultStore,
-          currentIndex
-        },
-        () => {
-          // let ba_params=S.get('ba_params',true)
-          ba_params.ba_store = defaultStore;
-          S.set("ba_params", ba_params, true);
-        }
-      );
-    }
-    let version = res.version;
+    this.init(res);
+    //设置导购信息
+  }
+  async init(entryData) {
+    const QwUserInfo = S.get("QwUserInfo", true);
+    this.setState({ QwUserInfo });
+    let version = entryData.version;
     this.fetchInfo(version);
     let system = await Taro.getSystemInfoSync();
     if (system && system.environment === "wxwork") {
       //企业微信登录接口
       this.isAppWxWork();
     }
-
+    //获取门店list
+    this.getStoreList();
+    //获取首页配置
     this.getHomeSetting();
+    //获取分享信息
     this.getShareSetting();
+    //是否展示tips
     this.isShowTips();
   }
+  //获取导购店铺列表shops
   async getStoreList(params = {}) {
-    let ba_params = S.get("ba_params", true);
-    let ba_info = ba_params ? ba_params.ba_info : null;
-    let n_parems = {
-      ...params,
-      guide_id: ba_info.guide_id
-    };
-    const { shops } = await api.user.getGuideShops(n_parems);
-
-    this.setState({
-      shopList: shops
+    const { QwUserInfo } = this.state;
+    const shops = await api.guide.distributorlist({
+      page: 1,
+      pageSize: 10000,
+      store_type: "distributor"
     });
-    return shops;
+    let currentIndex = 0;
+    shops.list.forEach((d, idx) => {
+      if (d.salesperson_id == QwUserInfo.distributor_id) currentIndex = idx;
+    });
+    this.setState({
+      defaultStore: shops.list[currentIndex],
+      shopList: shops.list,
+      currentIndex: currentIndex
+    });
+
+    return shops.list;
   }
   async fetchInfo(version = "") {
     const url = `/pageparams/setting?template_name=yykweishopamore&version=${version}&page_name=dgindex`;
@@ -208,7 +191,7 @@ export default class BaGuideHomeIndex extends Component {
   }
   async isAppWxWork() {
     let _this = this;
-
+    return;
     const checkSession = await this.checkSession();
     console.log("=====checkSession检查结果返回====", checkSession);
     if (checkSession.errMsg == "qy.checkSession:ok") {
@@ -245,72 +228,68 @@ export default class BaGuideHomeIndex extends Component {
   }
   async getQyChatId() {
     //客户群id
-   
-    let ground = null
-   
+
+    let ground = null;
+
     try {
       const context = await new Promise((reslove, reject) => {
         wx.qy.getContext({
-          success: (res) => {
-            reslove(res)
+          success: res => {
+            reslove(res);
           }
-         
-        })
-      })
-      console.log('群=====',context)
-      S.set('entry_form',context, true)
-      if (context.entry === 'group_chat_tools') {
+        });
+      });
+      console.log("群=====", context);
+      S.set("entry_form", context, true);
+      if (context.entry === "group_chat_tools") {
         ground = await new Promise((reslove, reject) => {
           wx.qy.getCurExternalChat({
-            success: (res) => {
-              reslove(res)
+            success: res => {
+              reslove(res);
             }
-          })
-        })
-        return ground.chatId
+          });
+        });
+        return ground.chatId;
       } else {
-        S.delete('qw_chatId', true)
-        if(['contact_profile','single_chat_tools','chat_attachment'].includes(context.entry)){
-          wx.qy.getCurExternalContact ({
+        S.delete("qw_chatId", true);
+        if (
+          ["contact_profile", "single_chat_tools", "chat_attachment"].includes(
+            context.entry
+          )
+        ) {
+          wx.qy.getCurExternalContact({
             success: function(res) {
-              S.set('chat_uid', res.userId, true)
-             
+              S.set("chat_uid", res.userId, true);
             }
-          })
-         
+          });
         }
       }
 
-      return ground
-
+      return ground;
     } catch (err) {
-      console.log('找不到函数---1', err)
-      S.delete('qw_chatId', true)
-      return false
+      console.log("找不到函数---1", err);
+      S.delete("qw_chatId", true);
+      return false;
     }
   }
   checkSession() {
-   
     return new Promise((reslove, reject) => {
       try {
         wx.qy.checkSession({
-          success: (res) => {
-            reslove(res)
+          success: res => {
+            reslove(res);
           },
-          fail: (err) => {
-           
-            reslove(err)
+          fail: err => {
+            reslove(err);
           },
-          complete: (err2) => {
-          
-            reslove(err2)
+          complete: err2 => {
+            reslove(err2);
           }
-        })
+        });
       } catch (err) {
-        reject(err)
+        reject(err);
       }
-
-    })
+    });
   }
   // 检测收藏变化
   componentWillReceiveProps(next) {
@@ -520,25 +499,26 @@ export default class BaGuideHomeIndex extends Component {
   /**
    * 悦诗风饮 导购货架未备注代码  ---开始
    */
-  handleStoreConfirm=()=>{
-    const {shopList,currentIndex}=this.state
-  
+  handleStoreConfirm = () => {
+    const { shopList, currentIndex } = this.state;
+
     this.setState({
-      defaultStore:shopList[currentIndex],
-      showStore:false
-    })
-   let ba_params=S.get('ba_params',true)
-  
-   ba_params.ba_store=shopList[currentIndex]
-   ba_params.store_code=shopList[currentIndex].wxshop_bn
-   S.set('ba_params',ba_params,true)
- }
- handleOpenStore=(val)=>{
-  this.setState({
-    showStore:val
-  })
-}
- /**
+      defaultStore: shopList[currentIndex],
+      showStore: false
+    });
+    let ba_params = S.get("ba_params", true);
+
+    ba_params.ba_store = shopList[currentIndex];
+    ba_params.store_code = shopList[currentIndex].wxshop_bn;
+    S.set("ba_params", ba_params, true);
+  };
+  handleOpenStore = val => {
+    console.log("handleOpenStore-val", val);
+    this.setState({
+      showStore: val
+    });
+  };
+  /**
    * 悦诗风饮 导购货架未备注代码  ---结束
    */
   // 白名单
@@ -747,7 +727,13 @@ export default class BaGuideHomeIndex extends Component {
       showAuto: !showAuto
     });
   };
-
+  //修改选中门店index
+  handleCurIndex = currentIndex => {
+    this.setState({
+      currentIndex,
+      showStore: false
+    });
+  };
   render() {
     const {
       show_tabBar,
@@ -767,7 +753,9 @@ export default class BaGuideHomeIndex extends Component {
       is_open_store_status,
       show_official,
       defaultStore,
-      showStore
+      showStore,
+      shopList,
+      currentIndex
     } = this.state;
 
     // 广告屏
@@ -779,9 +767,18 @@ export default class BaGuideHomeIndex extends Component {
 
     return (
       <View className="page-index">
+        <BaStore onClick={this.handleOpenStore} defaultStore={shopList[currentIndex]} />
+        {showStore && (
+          <BaStoreList
+            shopList={shopList}
+            currentIndex={currentIndex}
+            onStoreConfirm={this.handleStoreConfirm}
+            onSearchStore={this.getStoreList.bind(this)}
+            onChangeCurIndex={this.handleCurIndex.bind(this)}
+            onClose={this.handleOpenStore}
+          />
+        )}
         {/* <BaNavBar title="导购商城" fixed jumpType="home" /> */}
-        <BaStore onClick={this.handleOpenStore}  defaultStore={defaultStore}  />
-        {showStore&&<BaStoreList shopList={shopList} currentIndex={currentIndex} onStoreConfirm={this.handleStoreConfirm} onSearchStore={this.getStoreList.bind(this)} onChangeCurIndex={this.handleCurIndex.bind(this)}  onClose={this.handleOpenStore}/>}
         {is_open_official_account === 1 && show_official && (
           <AccountOfficial
             isClose

@@ -11,8 +11,8 @@ function createHead() {
 }
 
 //获取导购店铺列表
-export function distributorlist(params = {}) {
-  return req.get("/salesperson/distributorlist", params);
+export function distributorlist(params = {}, config = createHead()) {
+  return req.get("/salesperson/distributorlist", params,config);
 }
 //验证导购员的店铺id是否有效
 export function is_valid(params = {}, config = createHead()) {

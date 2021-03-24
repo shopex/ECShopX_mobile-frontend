@@ -275,7 +275,15 @@ export default class EspireCheckout extends Component {
        * smid: 78,//导购id
        * distributor_id: 103,//门店id
        */
-      const qrcode_params = `appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout&cxdid=${cxdid}&company_id=`
+      let qwUserInfo = S.get('QwUserInfo',true)
+      const qrcode_params = `appid=${extConfig.appid}
+                             &share_id=${share_id}
+                             &page=pages/cart/espier-checkout
+                             &cxdid=${cxdid}
+                             &company_id=${qwUserInfo.company_id}
+                             &smid=${qwUserInfo.salesperson_id}
+                             &distributor_id=${qwUserInfo.distributor_id}
+                             `
       
       // https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?temp_name=yykweishop&page=pages/cart/espier-checkout&company_id=1&cxdid=159&smid=78&distributor_id=103
       const url = `https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?${qrcode_params}`;
