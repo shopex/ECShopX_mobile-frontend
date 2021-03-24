@@ -1,5 +1,6 @@
 import req from "./req";
 import S from "@/spx";
+
 function createHead() {
   return {
     header: {
@@ -42,5 +43,11 @@ export function cartdatadel(params = {}, config = createHead()) {
 //生成海报的二维码，增加一个参数 salesman_distributor_id:导购的店铺id
 export function salesPromotion(params = {}, config = createHead()) {
   return req.get("/salesperson/salesPromotion", params, config);
+}
+
+//获取导购货架商品列表 wxapp/goods/salesperson/items
+
+export function salespersonItems(params = {}, config = createHead()) {
+  return req.get("/goods/salesperson/items", params, config,{showLoading:true});
 }
  
