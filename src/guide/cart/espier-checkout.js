@@ -79,7 +79,8 @@ export default class EspireCheckout extends Component {
       ratio,
       canvasWidth: 375 * ratio,
       canvasHeight: 600 * ratio,
-      isShowQrcode: false // 分享订单图片显示状态
+      isShowQrcode: false, // 分享订单图片显示状态
+      cxdid:null,//获取二维码携带参数
     };
   }
   componentDidMount() {
@@ -93,7 +94,7 @@ export default class EspireCheckout extends Component {
     });
     const params = this.getParams();
     params.receipt_type = "logistics";
-    let data;
+    let data,cxdid;
 
     try {
       delete params.items;
@@ -101,7 +102,7 @@ export default class EspireCheckout extends Component {
       data = await api.cart.total(params);
       data = await api.guide.salesPromotion(params);
       data = data.valid_cart[0]
-      
+      cxdid = data.sales_promotion_id
       
       console.log('获取导购分享订单计算金额',data)
     } catch (e) {
@@ -197,7 +198,8 @@ export default class EspireCheckout extends Component {
       cartlist,
       goodsllist,
       giftslist,
-      notgoodslist
+      notgoodslist,
+      cxdid
     });
     Taro.hideLoading();
   }
@@ -261,10 +263,23 @@ export default class EspireCheckout extends Component {
 
       const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
       const userinfo = Taro.getStorageSync("userinfo");
+      
+      
+      const { giftslist, total, ratio, canvasWidth, canvasHeight,cxdid } = this.state;
+      //qrcode参数
+      /**
+       * 导购参数
+       * page: pages/cart/espier-checkout
+       * company_id: 1,
+       * cxdid: 159,//营销活动
+       * smid: 78,//导购id
+       * distributor_id: 103,//门店id
+       */
+      const qrcode_params = `appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout&cxdid=${cxdid}&company_id=`
+      
       // https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?temp_name=yykweishop&page=pages/cart/espier-checkout&company_id=1&cxdid=159&smid=78&distributor_id=103
-      const url = `https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout`;
+      const url = `https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?${qrcode_params}`;
       const { path: qrcode } = await Taro.getImageInfo({ src: url });
-      const { giftslist, total, ratio, canvasWidth, canvasHeight } = this.state;
       let avatar = null;
       if (userinfo.avatar) {
         let avatarImgInfo = await Taro.getImageInfo({ src: userinfo.avatar });
