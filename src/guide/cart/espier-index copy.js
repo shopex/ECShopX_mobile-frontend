@@ -7,7 +7,15 @@ import {
   AtActionSheetItem,
   AtNoticebar
 } from "taro-ui";
-import { SpCheckbox, SpNote, Loading, Price } from "@/components";
+import {
+  SpCheckbox,
+  SpNote,
+  TabBar,
+  Loading,
+  Price,
+  NavBar,
+  GoodsItem
+} from "@/components";
 import { log, navigateTo, pickBy, classNames } from "@/utils";
 import debounce from "lodash/debounce";
 import api from "@/api";
@@ -74,8 +82,7 @@ export default class CartIndex extends Component {
     this.getRemind();
     this.nextPage();
 
-    console.log('cart-S.getAuthToken()',S.getAuthToken())
-    // if (!S.getAuthToken()) return;
+    if (!S.getAuthToken()) return;
 
     this.fetchCart(list => {
       const groups = this.resolveActivityGroup(list);
@@ -114,9 +121,9 @@ export default class CartIndex extends Component {
     this.updateCart();
   }
 
-  // handleLoginClick = () => {
-  //   S.login(this, true);
-  // };
+  handleLoginClick = () => {
+    S.login(this, true);
+  };
 
   handleClickItem = item => {
     const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`;
@@ -245,7 +252,6 @@ export default class CartIndex extends Component {
   }
 
   async fetchCart(cb) {
-    console.log('fetchCart-run',cb)
     let valid_cart = [],
       invalid_cart = [],
       crossborder_show = false;
@@ -266,8 +272,7 @@ export default class CartIndex extends Component {
     }
     try {
       let res = await api.guide.cartdatalist(params);
-      console.log('fetchCart-cartdatalist',res)
-      //  res = await api.cart.get(params);
+       res = await api.cart.get(params);
       if (!res.crossborder_show && cartTypeLocal !== "normal") {
         Taro.setStorageSync("cartType", "normal");
         this.fetchCart(list => {
@@ -333,19 +338,16 @@ export default class CartIndex extends Component {
       remindInfo: res
     });
   }
-  //购物车商品选中变更
-  async handleSelectionChange(checked,item) {
-    console.log('handleSelectionChange-item',checked,item)
-    await api.guide.cartdataadd({
-      num: item.num,
-      item_id: item.item_id,
-      is_accumulate: false,
-      is_checked: checked,
+
+  async handleSelectionChange(shopIndex, cart_id, checked) {
+    await api.cart.select({
+      cart_id,
+      is_checked: checked
     });
     this.updateCart();
   }
-  //删除商品
-  handleDelect = async (cart_id,shopIndex,item) => {
+
+  handleDelect = async cart_id => {
     const res = await Taro.showModal({
       title: "提示",
       content: "将当前商品移出购物车?",
@@ -356,12 +358,7 @@ export default class CartIndex extends Component {
     });
     if (!res.confirm) return;
 
-    await api.guide.cartdataadd({
-      cart_id,
-      num: 0,
-      item_id: item.item_id,
-      is_accumulate: false
-    });
+    await api.cart.del({ cart_id });
 
     const cartIds = this.props.cartIds.filter(t => t !== cart_id);
 
@@ -382,31 +379,24 @@ export default class CartIndex extends Component {
     this.updateCart();
   };
 
-  // async changeCartNum(shop_id, cart_id, num) {
-  //   const { type = "distributor" } = this.$router.params;
-  //   try {
-  //     const res = await api.guide.cartdataadd(shop_id, cart_id, num, type);
-  //     this.processCart(res);
-  //   } catch (e) {
-  //     Taro.showToast({
-  //       icon: "none",
-  //       title: e.message,
-  //       duration: 5000
-  //     });
-  //   }
-  //   this.updateCart();
-  // }
+  async changeCartNum(shop_id, cart_id, num) {
+    const { type = "distributor" } = this.$router.params;
+    try {
+      const res = await api.cart.updateNum(shop_id, cart_id, num, type);
+      this.processCart(res);
+    } catch (e) {
+      Taro.showToast({
+        icon: "none",
+        title: e.message,
+        duration: 5000
+      });
+    }
+    this.updateCart();
+  }
 
-  //购物车商品详情变更:数量、选中状态
   handleQuantityChange = async (shop_id, item, num, e) => {
     const { type = "distributor" } = this.$router.params;
-    await api.guide.cartdataadd({
-      shop_id,
-      item_id: item.item_id,
-      num,
-      type,
-      is_accumulate: false
-    });
+    await api.cart.updateNum(shop_id, item.cart_id, num, type);
     this.updateCart();
 
     // 购物车追加
@@ -418,13 +408,13 @@ export default class CartIndex extends Component {
       });
     }
   };
-  //购物车全选
+
   handleAllSelect = async (checked, shopIndex) => {
     const { cartIds } = this.props;
 
     Taro.showLoading();
     try {
-      await api.guide.cartdataadd({
+      await api.cart.select({
         cart_id: cartIds[shopIndex],
         is_checked: checked
       });
@@ -470,7 +460,7 @@ export default class CartIndex extends Component {
       curPromotions: null
     });
   };
-  //结算
+
   handleCheckout = shopCart => {
     const {
       shop_id,
@@ -496,19 +486,7 @@ export default class CartIndex extends Component {
       url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}&shop_id=${shop_id}&is_delivery=${is_delivery}&is_ziti=${is_ziti}&name=${shop_name}&store_address=${address}&lat=${lat}&lng=${lng}&hour=${hour}&phone=${mobile}&goodType=${cartType}`
     });
   };
-  //为顾客下单
-  handleCheckoutToGuide = () => {
-    if (this.updating) {
-      Taro.showToast({
-        title: "正在计算价格，请稍后",
-        icon: "none"
-      });
-      return;
-    }
-    Taro.navigateTo({
-      url: "/guide/cart/espier-checkout?cart_type=cart"
-    });
-  };
+
   transformCartList(list) {
     return pickBy(list, {
       item_id: "item_id",
@@ -584,65 +562,53 @@ export default class CartIndex extends Component {
     });
   };
   //创建导购分享海报
-  drawCanvas = async params => {
+  drawCanvas = async (params) => {
     try {
-      const params = this.getParams();
-      params.receipt_type = "logistics";
-      delete params.items;
-      const ba_params = Taro.getStorageSync("ba_params");
-      const qw_chatId = S.get("qw_chatId", true);
-      let entry_form = S.get("entry_form", true);
-      const {
-        share_id,
-        wxshop_name,
-        item_nums: { item_total, gift_total }
-      } = await api.cart.getShareGoodsId({
-        guide_id: (ba_params.ba_info && ba_params.ba_info.guide_id) || "",
-        wxshop_id: ba_params.ba_store ? ba_params.ba_store.wxshop_id : "",
-        chatId: qw_chatId,
-        entrySource: entry_form.entry,
+      const params = this.getParams()
+      params.receipt_type = 'logistics'
+      delete params.items
+      const ba_params = Taro.getStorageSync('ba_params')
+      const qw_chatId =S.get('qw_chatId',true)
+      let  entry_form=S.get('entry_form',true)
+      const { share_id, wxshop_name, item_nums: { item_total, gift_total } } = await api.cart.getShareGoodsId({
+        guide_id: ba_params.ba_info&&ba_params.ba_info.guide_id||'',
+        wxshop_id: ba_params.ba_store?ba_params.ba_store.wxshop_id:'',
+        chatId:qw_chatId,
+        entrySource:entry_form.entry,
         ...params
-      });
-      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
-      const userinfo = Taro.getStorageSync("userinfo");
-      const url = `https://${API_HOST}/wechatAuth/wxapp/qrcode.png?appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout`;
-      const { path: qrcode } = await Taro.getImageInfo({ src: url });
-      const { giftslist, total, ratio, canvasWidth, canvasHeight } = this.state;
-      let avatar = null;
-      if (userinfo.avatar) {
-        let avatarImgInfo = await Taro.getImageInfo({ src: userinfo.avatar });
-        avatar = avatarImgInfo.path;
+      })
+      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+      const userinfo = Taro.getStorageSync('userinfo')
+      const url = `https://${API_HOST}/wechatAuth/wxapp/qrcode.png?appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout`
+      const { path: qrcode } = await Taro.getImageInfo({ src: url })
+      const {
+        giftslist,
+        total,
+        ratio,
+        canvasWidth,
+        canvasHeight
+      } = this.state
+      let avatar=null
+      if(userinfo.avatar){
+        let avatarImgInfo = await Taro.getImageInfo({ src: userinfo.avatar })
+        avatar=avatarImgInfo.path
       }
-
-      console.log("======qrcode===", qrcode);
-      console.log("======avatar===", avatar);
-      const ctx = Taro.createCanvasContext("myCanvas");
-
-      canvasExp.roundRect(ctx, 0, 0, canvasWidth, canvasHeight, 0);
-      ctx.save();
-
+      
+      console.log('======qrcode===',qrcode)
+      console.log('======avatar===',avatar)
+      const ctx = Taro.createCanvasContext('myCanvas')
+  
+      canvasExp.roundRect(ctx, 0, 0, canvasWidth, canvasHeight, 0)
+      ctx.save()
+  
       // 头部信息
-      if (avatar) {
-        canvasExp.imgCircleClip(
-          ctx,
-          avatar,
-          15 * ratio,
-          15 * ratio,
-          45 * ratio,
-          45 * ratio
-        );
+      if(avatar){
+        canvasExp.imgCircleClip(ctx, avatar, 15 * ratio, 15 * ratio, 45 * ratio, 45 * ratio)
       }
-
-      ctx.restore();
-
-      canvasExp.textFill(
-        ctx,
-        userinfo.username || "",
-        75 * ratio,
-        25 * ratio,
-        14,
-        "#184337"
-      );
+     
+      ctx.restore()
+      
+      canvasExp.textFill(ctx, userinfo.username||'', 75 * ratio, 25 * ratio, 14, '#184337')
       if (wxshop_name) {
         canvasExp.textOverflowFill(
           ctx,
@@ -651,202 +617,101 @@ export default class CartIndex extends Component {
           42 * ratio,
           160 * ratio,
           12,
-          "#87C55C"
-        );
-        canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 65 * ratio, 12, "#666");
+          '#87C55C'
+        )
+        canvasExp.textFill(ctx, '为您推荐', 75 * ratio, 65 * ratio, 12, '#666')
       } else {
-        canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 45 * ratio, 12, "#666");
+        canvasExp.textFill(ctx, '为您推荐', 75 * ratio, 45 * ratio, 12, '#666')
       }
-      canvasExp.drawImageFill(
-        ctx,
-        "https://bbc-espier-images.amorepacific.com.cn/image/2/2021/02/28/c82701f15f42ee1743d3a779d6a38327Z4zMvCPbp2FhYwf4zzfLBmmaHSVOUqcD",
-        224 * ratio,
-        32 * ratio,
-        98 * ratio,
-        18 * ratio
-      );
-
-      // 总计
-      canvasExp.textFill(
-        ctx,
-        `共${item_total}件商品，${gift_total}件赠品`,
-        15 * ratio,
-        425 * ratio,
-        12,
-        "#101010"
-      );
-      canvasExp.textFill(ctx, "合计", 15 * ratio, 450 * ratio, 12, "#999");
-      canvasExp.textFill(
-        ctx,
-        `¥${returnFloat(total.item_fee / 100)}`,
-        64 * ratio,
-        450 * ratio,
-        12,
-        "#101010"
-      );
-      canvasExp.textFill(ctx, "为您省", 15 * ratio, 468 * ratio, 12, "#999");
-      canvasExp.textFill(
-        ctx,
-        `¥${returnFloat(total.discount_fee / 100)}`,
-        64 * ratio,
-        468 * ratio,
-        12,
-        "#101010"
-      );
-      canvasExp.textFill(ctx, "实付", 15 * ratio, 493 * ratio, 12, "#999");
-      canvasExp.textFill(
-        ctx,
-        `¥${returnFloat(total.total_fee / 100)}`,
-        64 * ratio,
-        493 * ratio,
-        14,
-        "#101010",
-        "blod"
-      );
-      canvasExp.drawImageFill(
-        ctx,
-        qrcode,
-        230 * ratio,
-        410 * ratio,
-        100 * ratio,
-        100 * ratio
-      );
-      canvasExp.textFill(
-        ctx,
-        "长按识别下单",
-        248 * ratio,
-        525 * ratio,
-        12,
-        "#999"
-      );
-      canvasExp.textFill(
-        ctx,
-        "长按图片可立即转发",
-        (canvasWidth / 2) * ratio,
-        535 * ratio,
-        12,
-        "#666",
-        "",
-        "center"
-      );
-
+      canvasExp.drawImageFill(ctx,'https://bbc-espier-images.amorepacific.com.cn/image/2/2021/02/28/c82701f15f42ee1743d3a779d6a38327Z4zMvCPbp2FhYwf4zzfLBmmaHSVOUqcD', 224 * ratio, 32 * ratio, 98 * ratio, 18 * ratio)
+  
+     // 总计
+      canvasExp.textFill(ctx, `共${item_total}件商品，${gift_total}件赠品`, 15 * ratio, 425 * ratio, 12, '#101010')
+      canvasExp.textFill(ctx, '合计', 15 * ratio, 450 * ratio, 12, '#999')
+      canvasExp.textFill(ctx, `¥${returnFloat(total.item_fee/100)}`, 64 * ratio, 450 * ratio, 12, '#101010')
+      canvasExp.textFill(ctx, '为您省', 15 * ratio, 468 * ratio, 12, '#999')
+      canvasExp.textFill(ctx, `¥${returnFloat(total.discount_fee/100)}`, 64 * ratio, 468 * ratio, 12, '#101010')
+      canvasExp.textFill(ctx, '实付', 15 * ratio, 493 * ratio, 12, '#999')
+      canvasExp.textFill(ctx, `¥${returnFloat(total.total_fee/100)}`, 64 * ratio, 493 * ratio, 14, '#101010', 'blod')
+      canvasExp.drawImageFill(ctx, qrcode, 230 * ratio, 410 * ratio, 100 * ratio, 100 * ratio)
+      canvasExp.textFill(ctx, '长按识别下单', 248 * ratio, 525 * ratio, 12, '#999')
+      canvasExp.textFill(ctx, '长按图片可立即转发', (canvasWidth / 2) * ratio, 535 * ratio, 12, '#666', '', 'center')
+      
       // 商品信息
-      canvasExp.roundRect(
-        ctx,
-        14 * ratio,
-        84 * ratio,
-        canvasWidth - 14 * ratio * 2,
-        310 * ratio,
-        5,
-        "#f5f5f5"
-      );
-      ctx.save();
-
-      ctx.setTextAlign("left");
-      canvasExp.textFill(ctx, "商品", 30 * ratio, 112 * ratio, 12, "#666");
-      canvasExp.textFill(ctx, "单价", 206 * ratio, 112 * ratio, 12, "#666");
-      canvasExp.textFill(ctx, "数量", 284 * ratio, 112 * ratio, 12, "#666");
-      for (let i = 0; i < total.goodsItems.length; i++) {
+     canvasExp.roundRect(ctx, 14 * ratio, 84 * ratio, canvasWidth - (14 * ratio * 2), 310 * ratio, 5, '#f5f5f5')
+     ctx.save()
+      
+      ctx.setTextAlign('left')
+      canvasExp.textFill(ctx, '商品', 30 * ratio, 112 * ratio, 12, '#666')
+      canvasExp.textFill(ctx, '单价', 206 * ratio, 112 * ratio, 12, '#666')
+      canvasExp.textFill(ctx, '数量', 284 * ratio, 112 * ratio, 12, '#666')
+      for (let i = 0; i < total.goodsItems.length; i ++) {
         if (i > 5) {
-          canvasExp.textFill(
-            ctx,
-            "······",
-            30 * ratio,
-            290 * ratio,
-            12,
-            "#101010"
-          );
-          break;
+          canvasExp.textFill(ctx, '······', 30 * ratio, 290 * ratio, 12, '#101010')
+          break
         }
-        let item = total.goodsItems[i];
+        let item = total.goodsItems[i]
         canvasExp.textOverflowFill(
           ctx,
           item.item_name,
           30 * ratio,
-          (120 + 24 * (i + 1)) * ratio,
+          (120 + (24 * (i + 1))) * ratio,
           184 * ratio,
           12,
-          "#101010"
-        );
-        canvasExp.textFill(
-          ctx,
-          `${item.fee_symbol}${returnFloat(item.price / 100)}`,
-          206 * ratio,
-          (120 + 24 * (i + 1)) * ratio,
-          12,
-          "#101010"
-        );
-        canvasExp.textFill(
-          ctx,
-          `x ${item.num}`,
-          284 * ratio,
-          (120 + 24 * (i + 1)) * ratio,
-          12,
-          "#666"
-        );
+          '#101010'
+        )
+        canvasExp.textFill(ctx, `${item.fee_symbol}${returnFloat(item.price/100)}`, 206 * ratio, (120 + (24 * (i + 1))) * ratio, 12, '#101010')
+        canvasExp.textFill(ctx, `x ${item.num}`, 284 * ratio, (120 + (24 * (i + 1))) * ratio, 12, '#666')
       }
-
+  
       // 分割线
-      ctx.beginPath();
-      ctx.setStrokeStyle("#ddd");
-      ctx.setLineWidth(1);
-
-      ctx.moveTo(30 * ratio, 305 * ratio);
-      ctx.lineTo(310 * ratio, 305 * ratio);
-      ctx.stroke();
-
+      ctx.beginPath()
+      ctx.setStrokeStyle('#ddd')
+      ctx.setLineWidth(1)
+      
+      ctx.moveTo(30 * ratio, 305 * ratio)
+      ctx.lineTo(310 * ratio, 305 * ratio)
+      ctx.stroke()
+  
       // 赠品
-      ctx.beginPath();
-      for (let i = 0; i < giftslist.length; i++) {
+      ctx.beginPath()
+      for (let i = 0; i < giftslist.length; i ++) {
         if (i > 1) {
-          canvasExp.textFill(
-            ctx,
-            "······",
-            30 * ratio,
-            380 * ratio,
-            12,
-            "#101010"
-          );
-          break;
+          canvasExp.textFill(ctx, '······', 30 * ratio, 380 * ratio, 12, '#101010')
+          break
         }
-        let item = giftslist[i];
+        let item = giftslist[i]
         canvasExp.textOverflowFill(
-          ctx,
-          "【赠品】 " + item.title,
+          ctx, '【赠品】 ' + item.title,
           22 * ratio,
-          (310 + 24 * (i + 1)) * ratio,
+          (310 + (24 * (i + 1))) * ratio,
           220 * ratio,
           12,
-          "#87C65C"
-        );
-        canvasExp.textFill(
-          ctx,
-          `x ${item.num}`,
-          284 * ratio,
-          (310 + 24 * (i + 1)) * ratio,
-          12,
-          "#666"
-        );
+          '#87C65C'
+        )
+        canvasExp.textFill(ctx, `x ${item.num}`, 284 * ratio, (310 + (24 * (i + 1))) * ratio, 12, '#666')
       }
-
+      
+  
       ctx.draw(false, async () => {
         const res = await Taro.canvasToTempFilePath({
           x: 0,
           y: 0,
-          canvasId: "myCanvas"
-        });
-        console.log("======canvasToTempFilePath====", res);
+          canvasId: 'myCanvas'
+        })
+        console.log('======canvasToTempFilePath====',res)
         this.setState({
           poster: res.tempFilePath,
           isShowQrcode: true
-        });
-        Taro.hideLoading();
-      });
+        })
+        Taro.hideLoading()
+      })
     } catch (err) {
-      console.log(err);
-      Taro.hideLoading();
+      console.log(err)
+      Taro.hideLoading()
     }
-  };
+  
+  }
   render() {
     const {
       groups,
@@ -876,7 +741,7 @@ export default class CartIndex extends Component {
         {/* {isDrug && (
           <NavBar title="购物车" leftIconType="chevron-left" fixed="true" />
         )} */}
-        {/* {!S.getAuthToken() ? (
+        {!S.getAuthToken() ? (
           <View className="login-header">
             <View>授权登录后同步购物车的商品</View>
             <View
@@ -887,7 +752,7 @@ export default class CartIndex extends Component {
               授权登录
             </View>
           </View>
-        ) : null} */}
+        ) : null}
 
         <ScrollView
           className={`${isEmpty ? "hidden-scroll" : "cart-list__scroll"}`}
@@ -1028,20 +893,18 @@ export default class CartIndex extends Component {
                                       <SpCheckbox
                                         key={item.item_id}
                                         checked={item.is_checked}
-                                        onChange={()=>
-                                          this.handleSelectionChange(
-                                            item.is_checked,                                            
-                                            item
-                                          )
-                                        }
+                                        onChange={this.handleSelectionChange.bind(
+                                          this,
+                                          shopIndex,
+                                          item.cart_id
+                                        )}
                                       />
                                       <View
                                         className="icon-close"
                                         onClick={this.handleDelect.bind(
                                           this,
                                           item.cart_id,
-                                          shopIndex,
-                                          item
+                                          shopIndex
                                         )}
                                       />
                                     </View>
@@ -1149,7 +1012,7 @@ export default class CartIndex extends Component {
                               />
                             </View>
                           </View>
-                          {/* <Button
+                          <Button
                             type="primary"
                             className="btn-checkout"
                             style={`background: ${colors.data[0].primary}`}
@@ -1157,15 +1020,7 @@ export default class CartIndex extends Component {
                             onClick={this.handleCheckout.bind(this, shopCart)}
                           >
                             {isDrug ? "立即预约" : "结算"}
-                          </Button> */}
-                          <AtButton
-                            type="primary"
-                            className="btn-checkout"
-                            // disabled={totalItems <= 0}
-                            onClick={this.handleCheckoutToGuide}
-                          >
-                            为顾客下单
-                          </AtButton>
+                          </Button>
                         </View>
                       ) : (
                         <View className="cart-toolbar__bd">

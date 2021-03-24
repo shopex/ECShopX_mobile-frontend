@@ -45,8 +45,12 @@ const getHomeSetting = async () => {
   });
   if (APP_TRACK) {
     const system = Taro.getSystemInfoSync();
+    console.log("----------------system--------------",system,system.environment);
+    await S.setQwUserInfo()
     if (!(system && system.environment && system.environment === "wxwork")) {
-      console.log("----------------aa--------------");
+      console.log("----------------企业微信录入--------------");
+      //企业微信录入
+      await S.setQwUserInfo()
       console.log(Tracker);
       Tracker.use(APP_TRACK);
     }
@@ -238,6 +242,7 @@ class App extends Component {
         pages: [
           "index",
           "category/index",
+          "auth/wxauth",
           "item/list",
           "item/espier-detail",
           "item/item-params",
@@ -310,6 +315,42 @@ class App extends Component {
     // 获取收藏列表
     if (process.env.TARO_ENV === "weapp") {
       FormIds.startCollectingFormIds();
+      try {
+        const {
+          model,
+          system,
+          windowWidth,
+          windowHeight,
+          screenHeight,
+          screenWidth,
+          pixelRatio,
+          brand
+        } = Taro.getSystemInfoSync()
+        const { networkType } = Taro.getNetworkType()
+       
+        let px = screenWidth / 750 //rpx换算px iphone5：1rpx=0.42px
+
+        Taro.$systemSize = {
+          windowWidth,
+          windowHeight,
+          screenHeight,
+          screenWidth,
+          model,
+          px,
+          pixelRatio,
+          brand,
+          system,
+          networkType
+        }
+
+        if (system.indexOf('iOS') !== -1) {
+          Taro.$system = 'iOS'
+        }
+
+        S.set('ipxClass', model.toLowerCase().indexOf('iphone x') >= 0 ? 'is-ipx' : '')
+      } catch (e) {
+        console.log(e)
+      }
     }
     if (S.getAuthToken()) {
       api.member
