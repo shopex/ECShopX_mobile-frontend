@@ -293,11 +293,12 @@ export default class GoodsBuyPanel extends Component {
       url = `/pages/cart/espier-index`;
 
       try {
-        await api.cart.add({
+        await api.guide.cartdataadd({
           item_id,
           num,
-          distributor_id:id,
-          shop_type: isDrug ? "drug" : "distributor"
+          is_accumulate:'true',
+         // distributor_id:id,
+         // shop_type: isDrug ? "drug" : "distributor"
         });
         Taro.showToast({
           title: "成功加入购物车",
@@ -484,51 +485,51 @@ export default class GoodsBuyPanel extends Component {
           isActive ? "goods-buy-panel__active" : null
         )}
       >
-        <View className="goods-buy-panel__overlay"></View>
+        <View className='goods-buy-panel__overlay'></View>
 
-        <View className="goods-buy-panel__wrap">
+        <View className='goods-buy-panel__wrap'>
           <View
-            className="at-icon at-icon-close"
+            className='at-icon at-icon-close'
             onClick={() => this.toggleShow(false)}
           />
-          <View className="goods-buy-panel__hd">
+          <View className='goods-buy-panel__hd'>
             <View
-              className="goods-img__wrap"
+              className='goods-img__wrap'
               onClick={this.handleImgClick.bind(this)}
             >
               <Image
-                className="goods-img"
-                mode="aspectFill"
+                className='goods-img'
+                mode='aspectFill'
                 src={curImg || info.pics[0]}
               />
             </View>
-            <View className="goods-sku__price">
-              <Price primary symbol="¥" unit="cent" value={price} />
-              <View className="goods-sku__price-market">
+            <View className='goods-sku__price'>
+              <Price primary symbol='¥' unit='cent' value={price} />
+              <View className='goods-sku__price-market'>
                 {marketPrice !== 0 && marketPrice && (
                   <Price
-                    className="price-market"
-                    symbol="¥"
-                    unit="cent"
+                    className='price-market'
+                    symbol='¥'
+                    unit='cent'
                     lineThrough
                     value={marketPrice}
                   />
                 )}
               </View>
             </View>
-            <View className="goods-sku__info">
+            <View className='goods-sku__info'>
               {this.noSpecs ? (
-                <Text className="goods-sku__props">{info.item_name}</Text>
+                <Text className='goods-sku__props'>{info.item_name}</Text>
               ) : (
-                <Text className="goods-sku__props">
+                <Text className='goods-sku__props'>
                   <Text>
                     {curSkus ? `已选择 ${curSkus.propsText}` : "请选择规格"}
                   </Text>
                 </Text>
               )}
               {curSku && (
-                <View className="goods-sku__limit">
-                  <Text className="goods-sku__stock">
+                <View className='goods-sku__limit'>
+                  <Text className='goods-sku__stock'>
                     库存{curSku.store}
                     {info.unit}
                   </Text>
@@ -543,18 +544,18 @@ export default class GoodsBuyPanel extends Component {
             </View>
           </View>
           {curSkus && promotions && promotions.length > 0 && (
-            <View className="promotions">
+            <View className='promotions'>
               {promotions.map(
                 item =>
                   item.items[curSkus.item_id] && (
                     <View
                       key={item.items[curSkus.item_id]}
-                      className="promotions__item"
+                      className='promotions__item'
                     >
-                      <Text className="promotions__item-tag">
+                      <Text className='promotions__item-tag'>
                         {item.promotion_tag}
                       </Text>
-                      <Text className="promotions__item-title">
+                      <Text className='promotions__item-title'>
                         {item.condition_rules}
                       </Text>
                     </View>
@@ -562,17 +563,17 @@ export default class GoodsBuyPanel extends Component {
               )}
             </View>
           )}
-          <View className="goods-buy-panel__bd">
-            <ScrollView className="goods-skus__wrap">
+          <View className='goods-buy-panel__bd'>
+            <ScrollView className='goods-skus__wrap'>
               {info.item_spec_desc.map((spec, idx) => {
                 return (
-                  <View className="sku-item__group" key={spec.spec_id}>
+                  <View className='sku-item__group' key={spec.spec_id}>
                     {info.item_spec_desc.length > 1 && (
-                      <Text className="sku-item__group-hd">
+                      <Text className='sku-item__group-hd'>
                         {spec.spec_name}
                       </Text>
                     )}
-                    <View className="sku-item__group-bd">
+                    <View className='sku-item__group-bd'>
                       {spec.spec_values.map(sku => {
                         return (
                           <Text
@@ -595,9 +596,9 @@ export default class GoodsBuyPanel extends Component {
               })}
             </ScrollView>
             {(type !== "pick" && isActive) && (
-              <View className="goods-quantity__wrap">
-                <Text className="goods-quantity__hd"></Text>
-                <View className="goods-quantity__bd">
+              <View className='goods-quantity__wrap'>
+                <Text className='goods-quantity__hd'></Text>
+                <View className='goods-quantity__bd'>
                   <InputNumber
                     min={1}
                     max={maxStore}
@@ -608,8 +609,8 @@ export default class GoodsBuyPanel extends Component {
               </View>
             )}
           </View>
-          <View className="goods-buy-panel__ft">
-            <View className="goods-buy-panel__btns">
+          <View className='goods-buy-panel__ft'>
+            <View className='goods-buy-panel__btns'>
               {type === "cart" &&
                 hasStore &&
                 (!curSkus ||
@@ -674,12 +675,12 @@ export default class GoodsBuyPanel extends Component {
                   </Button>
                 )}
               {!hasStore && (
-                <Button disabled className="goods-buy-panel__btn btn-fast-buy">
+                <Button disabled className='goods-buy-panel__btn btn-fast-buy'>
                   当前商品无货
                 </Button>
               )}
               {curSkus && curSkus.approve_status !== "onsale" && (
-                <Button disabled className="goods-buy-panel__btn btn-fast-buy">
+                <Button disabled className='goods-buy-panel__btn btn-fast-buy'>
                   暂不可售
                 </Button>
               )}
