@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import classNames from 'classnames'
+import styleNames from 'stylenames'
 import qs from 'qs'
 // import moment from 'moment'
 import format from 'date-fns/format'
@@ -24,7 +25,24 @@ export function isFunction (val) {
 export function isNumber (val) {
   return isPrimitiveType(val, '[object Number]')
 }
-
+/**
+ * 保留两个位小数，不足补0 
+ * @param { Number } value 
+ */
+export const returnFloat = value => {
+	var value = Math.round(parseFloat(value)*100)/100;
+	var s = value.toString().split(".");
+	if(s.length == 1){
+		value=value.toString()+".00";
+		return value;
+	}
+	if(s.length > 1){
+		if(s[1].length < 2){
+			value=value.toString()+"0";
+		}
+		return value;
+	}
+}
 export function isObject (val) {
   return isPrimitiveType(val, '[object Object]')
 }
@@ -293,8 +311,27 @@ function validColor(color) {
   return re2.test(color) || re1.test(color) || re3.test(color);
 }
 
+/**
+ * 参数拼接
+ * 
+ */
+
+export function paramsSplice(params){
+  let str=''
+  let arr=[]
+  for(var key in params){
+    let p=`${key}=${params[key]}`
+    arr.push(p)
+    
+  }
+  str=arr.join('&')
+  return str
+
+}
+
 export {
   classNames,
+  styleNames,
   log,
   debounce,
 	throttle,
