@@ -258,6 +258,7 @@
     padding-top: $navigate-height-h5;
     /*  #endif  */
     .cart-list__scroll {
+      margin-top: 60px;
       @include page-scroll($navigate-height, $toolbar-height);
       /*  #ifdef  h5  */
       @include page-scroll($navigate-height-h5, $toolbar-height);

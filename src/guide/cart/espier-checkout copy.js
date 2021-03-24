@@ -15,7 +15,7 @@ import {
   styleNames,
   returnFloat
 } from "@/utils";
-import  guideCanvasExp from "./guideCanvasExp.js";
+import { canvasExp }   from "./guideCanvasExp.js";
 import _cloneDeep from "lodash/cloneDeep";
 import debounce from "lodash/debounce";
 // import logoimg from '@/assets/imgs/logo.png'
@@ -275,12 +275,12 @@ export default class EspireCheckout extends Component {
       ctx.draw(true);
       // return
 
-      guideCanvasExp.roundRect(ctx, 0, 0, canvasWidth, canvasHeight, 0);
+      canvasExp.roundRect(ctx, 0, 0, canvasWidth, canvasHeight, 0);
       ctx.save();
       console.log("======ctx.save()===");
       // 头部信息
       if (avatar) {
-        guideCanvasExp.imgCircleClip(
+        canvasExp.imgCircleClip(
           ctx,
           avatar,
           15 * ratio,
@@ -291,7 +291,7 @@ export default class EspireCheckout extends Component {
       }
 
       ctx.restore();
-      guideCanvasExp.textFill(
+      canvasExp.textFill(
         ctx,
         userinfo.username || "",
         75 * ratio,
@@ -300,7 +300,7 @@ export default class EspireCheckout extends Component {
         "#184337"
       );
       if (wxshop_name) {
-        guideCanvasExp.textOverflowFill(
+        canvasExp.textOverflowFill(
           ctx,
           wxshop_name,
           75 * ratio,
@@ -309,11 +309,11 @@ export default class EspireCheckout extends Component {
           12,
           "#87C55C"
         );
-        guideCanvasExp.textFill(ctx, "为您推荐", 75 * ratio, 65 * ratio, 12, "#666");
+        canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 65 * ratio, 12, "#666");
       } else {
-        guideCanvasExp.textFill(ctx, "为您推荐", 75 * ratio, 45 * ratio, 12, "#666");
+        canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 45 * ratio, 12, "#666");
       }
-      guideCanvasExp.drawImageFill(
+      canvasExp.drawImageFill(
         ctx,
         "https://bbc-espier-images.amorepacific.com.cn/image/2/2021/02/28/c82701f15f42ee1743d3a779d6a38327Z4zMvCPbp2FhYwf4zzfLBmmaHSVOUqcD",
         224 * ratio,
@@ -323,7 +323,7 @@ export default class EspireCheckout extends Component {
       );
 
       // 总计
-      guideCanvasExp.textFill(
+      canvasExp.textFill(
         ctx,
         `共${item_total}件商品，${gift_total}件赠品`,
         15 * ratio,
@@ -331,8 +331,8 @@ export default class EspireCheckout extends Component {
         12,
         "#101010"
       );
-      guideCanvasExp.textFill(ctx, "合计", 15 * ratio, 450 * ratio, 12, "#999");
-      guideCanvasExp.textFill(
+      canvasExp.textFill(ctx, "合计", 15 * ratio, 450 * ratio, 12, "#999");
+      canvasExp.textFill(
         ctx,
         `¥${returnFloat(total.item_fee / 100)}`,
         64 * ratio,
@@ -340,8 +340,8 @@ export default class EspireCheckout extends Component {
         12,
         "#101010"
       );
-      guideCanvasExp.textFill(ctx, "为您省", 15 * ratio, 468 * ratio, 12, "#999");
-      guideCanvasExp.textFill(
+      canvasExp.textFill(ctx, "为您省", 15 * ratio, 468 * ratio, 12, "#999");
+      canvasExp.textFill(
         ctx,
         `¥${returnFloat(total.discount_fee / 100)}`,
         64 * ratio,
@@ -349,8 +349,8 @@ export default class EspireCheckout extends Component {
         12,
         "#101010"
       );
-      guideCanvasExp.textFill(ctx, "实付", 15 * ratio, 493 * ratio, 12, "#999");
-      guideCanvasExp.textFill(
+      canvasExp.textFill(ctx, "实付", 15 * ratio, 493 * ratio, 12, "#999");
+      canvasExp.textFill(
         ctx,
         `¥${returnFloat(total.total_fee / 100)}`,
         64 * ratio,
@@ -359,7 +359,7 @@ export default class EspireCheckout extends Component {
         "#101010",
         "blod"
       );
-      guideCanvasExp.drawImageFill(
+      canvasExp.drawImageFill(
         ctx,
         qrcode,
         230 * ratio,
@@ -367,7 +367,7 @@ export default class EspireCheckout extends Component {
         100 * ratio,
         100 * ratio
       );
-      guideCanvasExp.textFill(
+      canvasExp.textFill(
         ctx,
         "长按识别下单",
         248 * ratio,
@@ -375,7 +375,7 @@ export default class EspireCheckout extends Component {
         12,
         "#999"
       );
-      guideCanvasExp.textFill(
+      canvasExp.textFill(
         ctx,
         "长按图片可立即转发",
         (canvasWidth / 2) * ratio,
@@ -385,9 +385,9 @@ export default class EspireCheckout extends Component {
         "",
         "center"
       );
-      console.log('guideCanvasExp',guideCanvasExp)
+
       // 商品信息
-      guideCanvasExp.roundRect(
+      canvasExp.roundRect(
         ctx,
         14 * ratio,
         84 * ratio,
@@ -399,12 +399,12 @@ export default class EspireCheckout extends Component {
       ctx.save();
 
       ctx.setTextAlign("left");
-      guideCanvasExp.textFill(ctx, "商品", 30 * ratio, 112 * ratio, 12, "#666");
-      guideCanvasExp.textFill(ctx, "单价", 206 * ratio, 112 * ratio, 12, "#666");
-      guideCanvasExp.textFill(ctx, "数量", 284 * ratio, 112 * ratio, 12, "#666");
+      canvasExp.textFill(ctx, "商品", 30 * ratio, 112 * ratio, 12, "#666");
+      canvasExp.textFill(ctx, "单价", 206 * ratio, 112 * ratio, 12, "#666");
+      canvasExp.textFill(ctx, "数量", 284 * ratio, 112 * ratio, 12, "#666");
       for (let i = 0; i < total.goodsItems.length; i++) {
         if (i > 5) {
-          guideCanvasExp.textFill(
+          canvasExp.textFill(
             ctx,
             "······",
             30 * ratio,
@@ -415,7 +415,7 @@ export default class EspireCheckout extends Component {
           break;
         }
         let item = total.goodsItems[i];
-        guideCanvasExp.textOverflowFill(
+        canvasExp.textOverflowFill(
           ctx,
           item.item_name,
           30 * ratio,
@@ -424,7 +424,7 @@ export default class EspireCheckout extends Component {
           12,
           "#101010"
         );
-        guideCanvasExp.textFill(
+        canvasExp.textFill(
           ctx,
           `${item.fee_symbol}${returnFloat(item.price / 100)}`,
           206 * ratio,
@@ -432,7 +432,7 @@ export default class EspireCheckout extends Component {
           12,
           "#101010"
         );
-        guideCanvasExp.textFill(
+        canvasExp.textFill(
           ctx,
           `x ${item.num}`,
           284 * ratio,
@@ -455,7 +455,7 @@ export default class EspireCheckout extends Component {
       ctx.beginPath();
       for (let i = 0; i < giftslist.length; i++) {
         if (i > 1) {
-          guideCanvasExp.textFill(
+          canvasExp.textFill(
             ctx,
             "······",
             30 * ratio,
@@ -466,7 +466,7 @@ export default class EspireCheckout extends Component {
           break;
         }
         let item = giftslist[i];
-        guideCanvasExp.textOverflowFill(
+        canvasExp.textOverflowFill(
           ctx,
           "【赠品】 " + item.title,
           22 * ratio,
@@ -475,7 +475,7 @@ export default class EspireCheckout extends Component {
           12,
           "#87C65C"
         );
-        guideCanvasExp.textFill(
+        canvasExp.textFill(
           ctx,
           `x ${item.num}`,
           284 * ratio,
@@ -518,13 +518,148 @@ export default class EspireCheckout extends Component {
         });
       }, 2000);
     } catch (err) {
-      console.log('guideCanvasExp',guideCanvasExp)
       console.log(err);
       Taro.hideLoading();
     }
   };
 
-  
+  // 绘制海报
+  drawPoster = async () => {
+    
+    //导购参数
+    const params = this.getParams();
+      params.receipt_type = "logistics";
+      delete params.items;
+      const ba_params = Taro.getStorageSync("ba_params");
+      const qw_chatId = S.get("qw_chatId", true);
+      let entry_form = S.get("entry_form", true);
+      let share_id = "888",
+        wxshop_name = "wxshop_name",
+        item_total = "2",
+        gift_total = "3";
+
+      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
+      const userinfo = Taro.getStorageSync("userinfo");
+      // https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?temp_name=yykweishop&page=pages/cart/espier-checkout&company_id=1&cxdid=159&smid=78&distributor_id=103
+      const url = `https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout`;
+      const { path: qrcode } = await Taro.getImageInfo({ src: url });
+      const { giftslist, total, ratio, canvasWidth, canvasHeight } = this.state;
+      let avatar = null;
+      if (userinfo.avatar) {
+        let avatarImgInfo = await Taro.getImageInfo({ src: userinfo.avatar });
+        avatar = avatarImgInfo.path;
+      }
+
+      console.log("======qrcode===", qrcode);
+      console.log("======avatar===", avatar);
+    // const file = await this.base64Tosrc(codeUrl.base64Image)
+    const { goods,  } = {
+      goods:'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJROwzRqp5JG0ViaaXNfvVxbIAJbg9ZIWvcgqibwZIVqeKOPZdQrUa0icf9Cuu19sXW2UuThsOayROdw/132'
+    }
+    const { item_name, act_price = null,  price, market_price } = {
+      item_name:"苹果",
+      act_price : 20000,
+      price:30000,
+      market_price:10000
+    }
+    //let mainPrice = act_price ? act_price : member_price ? member_price : price
+    let mainPrice = act_price ? act_price : price
+    let sePrice = market_price
+    mainPrice = (mainPrice / 100).toFixed(2)
+    if (sePrice) {
+      sePrice = (sePrice / 100).toFixed(2)
+    }
+    let prices = [{
+      text: '¥',
+      size: 16,
+      color: '#ff5000',
+      bold: false,
+      lineThrough: false,
+      valign: 'bottom'
+    },
+    {
+      text: mainPrice,
+      size: 24,
+      color: '#ff5000',
+      bold: true,
+      lineThrough: false,
+      valign: 'bottom'
+    }]
+    if (sePrice) {
+      prices.push({
+        text: sePrice,
+        size: 16,
+        color: '#999',
+        bold: false,
+        lineThrough: true,
+        valign: 'bottom'
+      })
+    }
+    const { username, userId } = Taro.getStorageSync('userinfo')
+    const ctx = Taro.createCanvasContext('myCanvas')
+
+    canvasExp.roundRect(ctx, '#fff', 0, 0, 375, 640, 5)
+    canvasExp.textFill(ctx, username, 90, 45, 18, '#333')
+    canvasExp.textFill(ctx, '给你推荐好货好物', 90, 65, 14, '#999')
+    canvasExp.drawImageFill(ctx, goods, 15, 95, 345, 345)
+    canvasExp.imgCircleClip(ctx, avatar, 15, 15, 65, 65)
+    canvasExp.textMultipleOverflowFill(ctx, item_name, 22, 2, 15, 470, 345, 18, '#333')
+    canvasExp.textSpliceFill(ctx, prices, 'left', 15, 600)
+    canvasExp.drawImageFill(ctx, qrcode, 250, 500, 100, 100)
+    canvasExp.textFill(ctx, '长按识别小程序码', 245, 620, 12, '#999')
+    if (act_price) {
+      canvasExp.roundRect(ctx, '#ff5000', 15, 540, 70, 25, 5)
+      canvasExp.textFill(ctx, '限时活动', 22, 559, 14, '#fff')
+    }
+    if (avatar) {
+      canvasExp.imgCircleClip(
+        ctx,
+        avatar,
+        15,
+        15,
+        45,
+        45
+      );
+    }
+
+    ctx.restore();
+    canvasExp.textFill(
+      ctx,
+      userinfo.username || "",
+      75,
+      25,
+      14,
+      "#184337"
+    );
+    if (wxshop_name) {
+      canvasExp.textOverflowFill(
+        ctx,
+        wxshop_name,
+        75 * ratio,
+        42 * ratio,
+        160 * ratio,
+        12,
+        "#87C55C"
+      );
+      canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 65 * ratio, 12, "#666");
+    } else {
+      canvasExp.textFill(ctx, "为您推荐", 75 * ratio, 45 * ratio, 12, "#666");
+    }
+    ctx.draw(true, async () => {
+      console.log("checkout-ctx.draw-res2", ctx);
+      const res = await Taro.canvasToTempFilePath({
+        x: 0,
+        y: 0,
+        canvasId: "myCanvas"
+      });
+      console.log("======canvasToTempFilePath====", res);
+      this.setState({
+        poster: res.tempFilePath,
+        isShowQrcode: true
+      });
+      Taro.hideLoading();
+    })
+  }
   handleClickHideImage = () => {
     this.setState({
       isShowQrcode: false
