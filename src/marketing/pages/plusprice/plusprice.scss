@@ -86,9 +86,14 @@
           content: "";
         }
       }
-      .goods-item__caption {
-        flex: 1;
-        height: auto;
+      .scroll-footer{
+        background: #FC7239 url(../../assets/plusprice-footer.png) center top no-repeat;
+        height: 249px;
+        width: 100%;
+        background-size: contain;
+        position: absolute;
+        left:0;
+        bottom:0;
       }
     }
   }
@@ -144,8 +149,8 @@
     }
   }
   .scroll-footer {
-    background: #fc7239 url(../../../assets/imgs/plusprice-footer.png) center
-      top no-repeat;
+    // background: #fc7239 url(../../../assets/imgs/plusprice-footer.png) center
+      // top no-repeat;
     height: 249px;
     width: 100%;
     background-size: contain;

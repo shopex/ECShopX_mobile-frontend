@@ -18,9 +18,8 @@ const {
   APP_MAP_NAME,
   APP_TRACK,
   APP_ID,
-  APP_YOUSHU_TOKEN,
-  STORAGE
-} = process.env;
+  APP_YOUSHU_TOKEN
+} = process.env
 
 // 是否为web
 const isWeb = TARO_ENV === "h5";
@@ -159,6 +158,10 @@ const config = {
       commonChunks.push("lodash");
       commonChunks.push("date-fns");
       return commonChunks;
+    },
+    // 图片转换base64
+    imageUrlLoaderOption: {
+      limit: 0
     },
     postcss: {
       autoprefixer: {

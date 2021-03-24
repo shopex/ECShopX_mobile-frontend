@@ -77,26 +77,23 @@ class App extends Component {
 
   config = {
     pages: [
-      "pages/index",
-
-      "pages/home/landing",
-      "pages/category/index",
-      "pages/floorguide/index",
+      
+      //'{"path":"pages/pointitem/list","style":{"navigationStyle":"custom"}}',
+      
+      'pages/index', 
+      'pages/home/landing',
+      'pages/category/index',
+      'pages/floorguide/index',
 
       "pages/item/list",
       "pages/item/espier-detail",
       "pages/item/item-params",
       "pages/item/package-list",
 
-      "pages/cart/espier-index",
-      "pages/cart/espier-checkout",
-
-      "pages/article/index",
-      "pages/recommend/list",
-      "pages/member/index",
-      "pages/member/item-fav",
-
-      "pages/distribution/shop-home",
+      'pages/article/index',
+      'pages/recommend/list',
+      'pages/member/index',
+      'pages/member/item-fav',
 
       "pages/store/index",
       "pages/store/list",
@@ -108,70 +105,71 @@ class App extends Component {
       {
         root: "marketing",
         pages: [
-          "pages/distribution/index",
-          "pages/distribution/setting",
-          "pages/distribution/statistics",
-          "pages/distribution/trade",
-          "pages/distribution/subordinate",
-          "pages/distribution/withdraw",
-          "pages/distribution/withdrawals-record",
-          "pages/distribution/withdrawals-acount",
-          "pages/distribution/goods",
-          "pages/distribution/shop",
-          "pages/distribution/shop-setting",
-          "pages/distribution/shop-form",
-          "pages/distribution/qrcode",
-          "pages/distribution/shop-category",
-          "pages/distribution/good-category",
-          "pages/distribution/shop-goods",
-          "pages/distribution/shop-trade",
-          "pages/distribution/shop-achievement",
-          "pages/verified-card/index",
-          "pages/verified-card/verified",
-          "pages/verified-card/card",
-          "pages/reservation/brand-list",
-          "pages/reservation/brand-detail",
-          "pages/reservation/brand-result",
-          "pages/reservation/reservation-list",
-          "pages/reservation/goods-reservate",
-          "pages/reservation/reservation-detail",
+          'pages/distribution/index',
+          'pages/distribution/setting',
+          'pages/distribution/shop-home',
+          'pages/distribution/statistics',
+          'pages/distribution/trade',
+          'pages/distribution/subordinate',
+          'pages/distribution/withdraw',
+          'pages/distribution/withdrawals-record',
+          'pages/distribution/withdrawals-acount',
+          'pages/distribution/goods',
+          'pages/distribution/shop',
+          'pages/distribution/shop-setting',
+          'pages/distribution/shop-form',
+          'pages/distribution/qrcode',
+          'pages/distribution/shop-category',
+          'pages/distribution/good-category',
+          'pages/distribution/shop-goods',
+          'pages/distribution/shop-trade',
+          'pages/distribution/shop-achievement',
+          'pages/verified-card/index',
+          'pages/verified-card/verified',
+          'pages/verified-card/card',
+          'pages/reservation/brand-list',
+          'pages/reservation/brand-detail',
+          'pages/reservation/brand-result',
+          'pages/reservation/reservation-list',
+          'pages/reservation/goods-reservate',
+          'pages/reservation/reservation-detail',
 
-          "pages/member/item-activity",
-          "pages/member/activity-detail",
-          "pages/member/user-info",
-          "pages/member/complaint",
-          "pages/member/complaint-record",
-          "pages/member/coupon",
-          "pages/member/coupon-detail",
-          "pages/member/address",
-          "pages/member/edit-address",
-          "pages/member/crm-address-list",
-          "pages/member/setting",
-          "pages/member/userinfo",
-          "pages/member/item-history",
-          "pages/member/item-guess",
-          "pages/member/member-code",
-          "pages/member/group-list",
+          'pages/member/item-activity',
+          'pages/member/activity-detail',
+          'pages/member/user-info',
+          'pages/member/complaint',
+          'pages/member/complaint-record',
+          'pages/member/coupon',
+          'pages/member/coupon-detail',
+          'pages/member/address',
+          'pages/member/edit-address',
+          'pages/member/crm-address-list',
+          'pages/member/setting',
+          'pages/member/userinfo',
+          'pages/member/item-history',
+          'pages/member/item-guess',
+          'pages/member/member-code',
+          'pages/member/group-list',
 
-          "pages/wheel/index",
-          "pages/item/espier-evaluation",
-          "pages/item/espier-evaluation-detail",
-          "pages/item/rate",
-          "pages/item/success",
+          'pages/wheel/index',
+          'pages/item/espier-evaluation',
+          'pages/item/espier-evaluation-detail',
+          'pages/item/rate',
+          'pages/item/success',
 
-          "pages/item/seckill-goods-list",
-          "pages/item/seckill-list",
-          "pages/item/group-detail",
-          "pages/item/group-list",
+          'pages/item/seckill-goods-list',
+          'pages/item/seckill-list',
+          'pages/item/group-detail',
+          'pages/item/group-list',
 
-          "pages/plusprice/detail-plusprice-list",
-          "pages/plusprice/cart-plusprice-list"
+          'pages/plusprice/detail-plusprice-list',
+          'pages/plusprice/cart-plusprice-list',
         ],
         plugins: {
           "live-player-plugin": {
-            version: "1.2.6", // 填写该直播组件版本号
-            provider: "wx2b03c6e691cd7370" // 必须填该直播组件appid
-          }
+            "version": "1.2.6", // 填写该直播组件版本号
+            "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
+          } 
           // "meiqia": {
           //   "version": "1.1.0",
           //   "provider": "wx2d2cd5fd79396601"
@@ -279,6 +277,12 @@ class App extends Component {
           // 绑定订单
           "pages/bindOrder/index"
         ]
+      },
+      {
+        root:'pointitem',
+        pages:[
+          'pages/list',
+        ]
       }
     ],
     permission: {
@@ -383,7 +387,7 @@ class App extends Component {
     // 根据路由参数
     const { query } = this.$router.params;
     if (query && query.scene) {
-      const { smid, dtid, id, aid, cid } = normalizeQuerys(query);
+      const { smid , dtid, id, aid, cid } = normalizeQuerys(query)
       if (smid) {
         Taro.setStorageSync("s_smid", smid);
       }

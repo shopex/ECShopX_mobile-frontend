@@ -32,7 +32,8 @@ export default class DistributionShopGoods extends Component {
         query: {
           item_type: "normal",
           approve_status: "onsale,only_show",
-          rebate_type: ["total_money", "total_num"]
+          rebate_type: ["total_money", "total_num"],
+          is_promoter: true
         }
       },
       () => {
@@ -200,10 +201,13 @@ export default class DistributionShopGoods extends Component {
   };
 
   onShareAppMessage(res) {
+    console.log("--onShareAppMessage---",res)
+    const { from }=res;
     const { userId } = Taro.getStorageSync("userinfo");
     const { info } = res.target.dataset;
     Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
       ...info,
+      from_type:from,
       shareType: "分享给好友"
     });
     return {
