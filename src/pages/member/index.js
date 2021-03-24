@@ -65,10 +65,13 @@ export default class MemberIndex extends Component {
         group: false,
         member_code: false,
         recharge: false,
-        ziti_order: false
+        ziti_order: false,
+        //是否开启积分链接
+        score_menu:false
       },
-      imgUrl: ""
-    };
+      imgUrl:'',
+      score_menu_open:false
+    }
   }
 
   componentDidMount() {
@@ -80,20 +83,23 @@ export default class MemberIndex extends Component {
     const { colors } = this.props;
     Taro.setNavigationBarColor({
       backgroundColor: colors.data[0].marketing,
-      frontColor: "#ffffff"
-    });
-    this.fetch();
-    this.getWheel();
-    this.fetchBanner();
-    this.fetchRedirect();
-    this.getDefaultImg();
+      frontColor: '#ffffff'
+    })
+   
+    this.fetch()
+    this.getWheel()
+    this.fetchBanner()
+    this.fetchRedirect()
+    this.getDefaultImg()
+    
   }
 
   componentDidShow() {
     if (S.getAuthToken()) {
       this.getSalesperson();
     }
-    this.getSettingCenter();
+    this.getSettingCenter()
+    this.getConfigPointitem()
   }
 
   async getDefaultImg() {
@@ -388,18 +394,21 @@ export default class MemberIndex extends Component {
     const { list = [] } = await api.member.getSettingCenter();
     if (list[0] && list[0].params && list[0].params.data) {
       this.setState({
-        menuSetting: list[0].params.data
-      });
+        menuSetting: {
+          ...list[0].params.data, 
+        }
+      })
     }
   };
 
-  async onShareAppMessage() {
-    const url = `/memberCenterShare/getInfo`;
-    const {
-      share_title,
-      share_pic_wechatapp,
-      share_description
-    } = await req.get(url);
+  getConfigPointitem=async ()=>{
+    const { entrance:{mobile_openstatus}   } = await api.pointitem.getPointitemSetting()
+    this.setState({
+      score_menu_open:mobile_openstatus
+    })
+  }
+
+  async onShareAppMessage () { 
 
     return {
       title: share_title ? share_title : "震惊！这店绝了！",
@@ -408,24 +417,11 @@ export default class MemberIndex extends Component {
     };
   }
 
-  render() {
-    const { colors } = this.props;
-    const {
-      vipgrade,
-      gradeInfo,
-      orderCount,
-      memberDiscount,
-      memberAssets,
-      info,
-      isOpenPopularize,
-      salespersonData,
-      turntable_open,
-      memberBanner,
-      menuSetting,
-      rechargeStatus
-    } = this.state;
-    const is_open_official_account = Taro.getStorageSync("isOpenOfficial");
-    const bannerInfo = memberBanner.length ? memberBanner[0].params : null;
+  render () {
+    const { colors } = this.props
+    const { score_menu_open,vipgrade, gradeInfo, orderCount, memberDiscount, memberAssets, info, isOpenPopularize, salespersonData, turntable_open,memberBanner, menuSetting, rechargeStatus } = this.state
+    const is_open_official_account = Taro.getStorageSync('isOpenOfficial')
+    const bannerInfo = memberBanner.length ? memberBanner[0].params : null
     return (
       <View className="page-member-index">
         <ScrollView className="member__scroll" scrollY>
@@ -814,6 +810,15 @@ export default class MemberIndex extends Component {
                 )}
               ></SpCell>
             )}
+            {
+              score_menu_open && <SpCell
+                title="积分商城"
+                isLink
+                img={require('../../assets/imgs/score.png')}
+                onClick={this.handleClick.bind(this, '/pointitem/pages/list')}
+              > 
+              </SpCell>
+            }
             {/* {
               menuSetting.activity && <SpCell
                 title='活动预约'
