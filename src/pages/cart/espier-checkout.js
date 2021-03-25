@@ -114,6 +114,8 @@ export default class CartCheckout extends Component {
         point_fee: "",
         freight_type:""
       },
+      // 上次支付方式
+      lastPayType: '',
       payType: '',
       disabledPayment: null,
       isPaymentOpend: false,
@@ -967,7 +969,7 @@ export default class CartCheckout extends Component {
   };
 
   resolvePayError(e) {
-    const { payType, disabledPayment } = this.state;
+    const { payType, disabledPayment, lastPayType } = this.state;
     if (payType === "point" || payType === "deposit") {
       const disabledPaymentMes = {};
       disabledPaymentMes[payType] = e.message;
@@ -985,10 +987,9 @@ export default class CartCheckout extends Component {
                 url: "/others/pages/recharge/index"
               });
             } else {
-
               this.setState({
                 disabledPayment: { ...disabledPaymentMes, ...disabledPayment },
-                payType: 'wxpay'
+                payType: lastPayType
               }, () => {
                 this.calcOrder()
               })
@@ -1407,9 +1408,11 @@ export default class CartCheckout extends Component {
     // if (payType === 'point') {
     //   this.props.onClearCoupon()
     // }
+    const { payType: lastPayType } = this.state
     this.setState({
       point_use: 0,
       payType,
+      lastPayType,
       isPaymentOpend: false
     }, () => {
       this.calcOrder()
@@ -1484,9 +1487,10 @@ export default class CartCheckout extends Component {
 
   //清除使用积分
   clearPoint = () => {
+    const { lastPayType } = this.state
     this.setState({
       point_use: 0,
-      payType: "wxpay"
+      payType: lastPayType
     });
   };
   // 选择是否需要礼袋
@@ -1503,12 +1507,12 @@ export default class CartCheckout extends Component {
   };
   resetPoint = e => {
     e.stopPropagation();
-    const { pointInfo } = this.state;
+    const { pointInfo, lastPayType } = this.state;
     pointInfo.point_use = 0;
     this.setState(
       {
         point_use: 0,
-        payType: "wxpay",
+        payType: lastPayType,
         pointInfo
       },
       () => {
