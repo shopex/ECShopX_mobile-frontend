@@ -650,52 +650,30 @@ export default class Detail extends Component {
       Taro.setStorageSync('userinfo', userObj)
       userinfo = userObj
     }
-    const { avatar, userId } = userinfo
-    const { info,is_open_store_status,subtask_id,entry_form } = this.state
-    const { pics, company_id, item_id } = info
+    const { avatar } = userinfo
+    const { info } = this.state
+    const { pics, item_id } = info
     const extConfig = (Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
+    //const id = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
       //新增导购信息
-      let ba_params = S.get('ba_params',true)
-      let qw_chatId = S.get('qw_chatId',true)
-      let gu = null
-      let smid = null
-      //let subtask_id = null
-      let share_params = {
-        appid:extConfig.appid,
-        id:this.$router.params.id,
-        company_id:extConfig.company_id || APP_COMPANY_ID,
-        share_type:'item_share'
-      }
-      if(ba_params) {
-        // const store_code = ba_params.store_code
-        // const guide_code = ba_params.guide_code
-        // gu = guide_code+`${store_code?'_'+store_code:''}`
-        // share_params.gu = gu
-        smid = ba_params.guide_code
-      }
-      // if(qw_chatId){
-      //   share_params.share_chatId = qw_chatId
-      // }
+      const QwUserInfo = S.get('QwUserInfo',true)
+      const qrcode_params =`page=pages/item/espier-detail
+                             &appid=${extConfig.appid}
+                             &company_id=${QwUserInfo.company_id}
+                             &itemid=${item_id}
+                             &distributor_id=${QwUserInfo.distributor_id}
+                             &smid=${QwUserInfo.salesperson_id}
+                             &subtask_id=${QwUserInfo.subtask_id}`
      
-      if(entry_form){
-        share_params.entrySource = entry_form.entry
-      }
-      if(subtask_id){
-        share_params.subtask_id = subtask_id
-      }
 
       //此处需要发送一个请求，获取分享id,将获取到的share_id  放到二维码链接上
       //const {share_id}=await api.item.creatItemShare(share_params)
-
-
       //导购信息结束
-
     const host = req.baseURL.replace('/api/h5app/wxapp/', '')
-    const { distributor_id,store_id } = Taro.getStorageSync('curStore')
+    //const { distributor_id,store_id } = Taro.getStorageSync('curStore')
     const pic = pics[0].replace('http:', 'https:')
-    const infoId = info.distributor_id
-    const id = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
-    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&itemid=${item_id}&distributor_id=${id}&smid=${smid}&subtask_id=${subtask_id}`
+    //const infoId = info.distributor_id
+    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=pages/item/espier-detail&appid=${extConfig.appid}&company_id=${QwUserInfo.company_id}&itemid=${item_id}&distributor_id=${QwUserInfo.distributor_id}&smid=${QwUserInfo.salesperson_id}&subtask_id=${QwUserInfo.subtask_id}`
     try {
       const avatarImg = await Taro.getImageInfo({src: avatar})
       const goodsImg = await Taro.getImageInfo({src: pic})

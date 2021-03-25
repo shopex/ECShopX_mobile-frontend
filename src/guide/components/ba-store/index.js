@@ -23,12 +23,10 @@ export default class BaStore extends Component {
 componentDidMount(){
   
   let QwUserInfo=S.get('QwUserInfo',true)
-  if(ba_params){
-    this.setState({
-      baInfo:QwUserInfo,
-     
-    })
-  }
+  this.setState({
+    baInfo:QwUserInfo,
+   
+  })
  
 
 }
@@ -49,9 +47,9 @@ componentDidMount(){
     const token=S.getAuthToken()
     return (
       <View
-       className='ba-store'
+        className='ba-store'
       //  onClick={this.router}
-       style='background:#3333'
+        style='background:#3333'
       >
         <Image className='ba-avatar' mode='widthFix' src={baInfo.avatar||'/assets/imgs/home-unloginhead.png'} />
         {token?
