@@ -1,5 +1,15 @@
 @import "@/style/imports";
 
+.shareCSS {
+  margin-top: -8px!important;
+  font-size: 24px !important;
+  text-align: center !important;
+  border: none !important;
+  background: #fff !important;
+  padding :0!important;
+  // margin-right: -20px !important;
+}
+.shareCSS:after{ border: none; }
 .coupon-list {
   /*  #ifdef  h5  */
   padding-top: $navigate-height-h5;

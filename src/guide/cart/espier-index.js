@@ -325,7 +325,7 @@ export default class CartIndex extends Component {
   }
   //购物车商品选中变更
   async handleSelectionChange(type='item',item) {
-    console.log("handleSelectionChange-item", item);
+    console.log("handleSelectionChange-item", type,item);
     if(type=='all'){
       
     }
