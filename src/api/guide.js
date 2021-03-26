@@ -38,7 +38,7 @@ export function cartdataadd(params = {}, config = createHead()) {
 export function cartdataupdate(params = {}, config = createHead()) {
   return req.get("/salesperson/cartdataupdate", params, config);
 }
-//获取导购员购物车
+//获取导购员购物车列表
 export function cartdatalist(params = {}, config = createHead()) {
   return req.get("/salesperson/cartdatalist", params, config);
 }

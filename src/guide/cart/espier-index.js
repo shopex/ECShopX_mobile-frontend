@@ -65,7 +65,6 @@ export default class CartIndex extends Component {
   }
 
   componentDidMount() {
-    console.log(this.$router.params, 48);
     if (this.$router.params && this.$router.params.path === "qrcode") {
       this.setState({
         isPathQrcode: true
@@ -73,9 +72,6 @@ export default class CartIndex extends Component {
     }
     this.getRemind();
     this.nextPage();
-
-    console.log("cart-S.getAuthToken()", S.getAuthToken());
-    // if (!S.getAuthToken()) return;
 
     this.fetchCart(list => {
       const groups = this.resolveActivityGroup(list);
@@ -97,7 +93,7 @@ export default class CartIndex extends Component {
       nextProps.list !== this.props.list
     );
 
-    const groups = this.resolveActivityGroup(nextProps.list);
+    const groups = this.resolveActivityGroup(nextProps.list)
     this.setState({
       groups
     });
@@ -152,11 +148,8 @@ export default class CartIndex extends Component {
 
   // 活动分组
   resolveActivityGroup(cartList = []) {
-    console.log(cartList);
     const groups = cartList.map(shopCart => {
-      console.log("shopCart0---->", shopCart);
       const { list, used_activity = [], plus_buy_activity = [] } = shopCart;
-      console.log("plus_buy_activity---->", plus_buy_activity);
       const tDict = list.reduce((acc, val) => {
         acc[val.cart_id] = val;
         return acc;
@@ -235,7 +228,6 @@ export default class CartIndex extends Component {
   }
 
   async fetchCart(cb) {
-    console.log("fetchCart-run", cb);
     let valid_cart = [],
       invalid_cart = [],
       crossborder_show = false;
@@ -256,7 +248,10 @@ export default class CartIndex extends Component {
     }
     try {
       let res = await api.guide.cartdatalist(params);
-      console.log("fetchCart-cartdatalist", res);
+      console.log("获取导购购物车列表-fetchCart-cartdatalist", res);
+      //设置购物车当前全选状态
+      let shopCart = res.valid_cart[0]
+      shopCart.checked_all = shopCart.cart_total_count == shopCart.list.length
       //  res = await api.cart.get(params);
       if (!res.crossborder_show && cartTypeLocal !== "normal") {
         Taro.setStorageSync("cartType", "normal");
@@ -325,19 +320,22 @@ export default class CartIndex extends Component {
   }
   //购物车商品选中变更
   async handleSelectionChange(type='item',item) {
-    console.log("handleSelectionChange-item", type,item);
-    if(type=='all'){
-      
-      return
+    
+    let params = {
+      cart_id: item && item.cart_id || '',
+      is_checked:item && item.is_checked == "1" ? "false" : "true"
     }
-
-    await api.guide.checkstatus({
-      cart_id: item.cart_id,
-      num: item.num,
-      item_id: item.item_id,
-      is_accumulate: false,
-      is_checked: item.is_checked == "1" ? "false" : "true"
-    })
+    if(type=='all'){
+      const { groups } = this.state,
+      shopCart = groups[0].shopInfo
+      console.log("购物车商品选中变更-handleSelectionChange-shopCart",shopCart);
+      params = {
+        cart_id:shopCart.list.map(d=>d.cart_id),
+        is_checked : !shopCart.checked_all
+      }
+    }
+    console.log("购物车商品选中变更-handleSelectionChange-params",params);
+    await api.guide.checkstatus(params)
     this.updateCart();
     
   }
@@ -481,6 +479,18 @@ export default class CartIndex extends Component {
   };
   //为顾客下单
   handleCheckoutToGuide = () => {
+    let shopCart = this.state.groups[0].shopInfo
+    let is_checkedType = false
+    shopCart.list.forEach((d)=>{
+      is_checkedType = d.is_checked == 1 ?true:is_checkedType
+    })
+    if(!is_checkedType){
+      Taro.showToast({
+        title: "当前未选中商品",
+        icon: "none"
+      });
+      return;
+    }
     if (this.updating) {
       Taro.showToast({
         title: "正在计算价格，请稍后",
