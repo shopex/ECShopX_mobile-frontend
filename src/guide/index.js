@@ -115,7 +115,7 @@ export default class BaGuideHomeIndex extends Component {
     //获取门店list
     setTimeout(()=>{
     this.getStoreList();
-    },200)
+    },500)
     //获取首页配置
     this.getHomeSetting();
     //获取分享信息
