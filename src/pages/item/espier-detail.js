@@ -104,7 +104,7 @@ export default class Detail extends Component {
         this.uid = uid
       }
       if (options.scene) {
-        const query = normalizeQuerys(options)
+        const query = await normalizeQuerys(options)
         if (query.id) {
           id = query.id
           uid = query.uid
@@ -299,7 +299,7 @@ export default class Detail extends Component {
       } else {
         const options = this.$router.params
         if (options.scene) {
-          const query = normalizeQuerys(options)
+          const query = await normalizeQuerys(options)
           if (query.dtid) {
             param.distributor_id = query.dtid
           }

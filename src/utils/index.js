@@ -77,8 +77,6 @@ export async function normalizeQuerys (params = {}) {
     const data = await api.wx.getShareId({
       share_id: obj.share_id
     })
-    console.log('%c ---------------------------------', 'color: red;font-size: 14px;')
-    console.log(data)
     return {
       ...rest,
       ...data
