@@ -286,7 +286,7 @@ class App extends Component {
   }
 
   // 初始化
-  init () {
+  async init () {
     // 获取收藏列表
     if (process.env.TARO_ENV === 'weapp') {
       FormIds.startCollectingFormIds()
@@ -321,7 +321,7 @@ class App extends Component {
     // 根据路由参数
     const { query } = this.$router.params
     if (query && query.scene) {
-      const { smid , dtid, id, aid, cid } = normalizeQuerys(query)
+      const { smid , dtid, id, aid, cid } = await normalizeQuerys(query)
       if (smid) {
         Taro.setStorageSync('s_smid', smid)
       }

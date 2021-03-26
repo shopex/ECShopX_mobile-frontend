@@ -55,7 +55,7 @@ export function getWhiteList () {
 
 // 获取shareid解析
 export function getShareId (params) {
-  return req.get('/wechatAuth/wxapp/getbyshareid', {
+  return req.get('/getbyshareid', {
     ...params
   })
 }
