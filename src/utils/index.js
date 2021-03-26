@@ -6,6 +6,7 @@ import format from 'date-fns/format'
 import copy from 'copy-to-clipboard'
 import S from '@/spx'
 import { STATUS_TYPES_MAP } from '@/consts'
+import api from '@/api'
 import _get from 'lodash/get'
 import _findKey from 'lodash/findKey'
 import _pickBy from 'lodash/pickBy'
@@ -68,13 +69,24 @@ export function formatPriceToHundred (price) {
   } 
 }
 
-export function normalizeQuerys (params = {}) {
+export async function normalizeQuerys (params = {}) {
   const { scene, ...rest } = params
   const queryStr = decodeURIComponent(scene)
-
+  const obj = qs.parse(queryStr)
+  if (obj.share_id) {
+    const data = await api.wx.getShareId({
+      share_id: obj.share_id
+    })
+    console.log('%c ---------------------------------', 'color: red;font-size: 14px;')
+    console.log(data)
+    return {
+      ...rest,
+      ...data
+    }
+  }
   const ret = {
     ...rest,
-    ...qs.parse(queryStr)
+    ...obj
   }
 
   return ret
