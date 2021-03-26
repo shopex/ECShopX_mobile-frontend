@@ -487,7 +487,6 @@ export default class CartCheckout extends Component {
   }
 
   getParams() {
-    // console.log('/////////////////')
     let { isNeedPackage, pack } = this.state
 
     const {
@@ -1022,7 +1021,7 @@ export default class CartCheckout extends Component {
       submitLoading: true
     });
     let _this = this;
-    console.log("---Taro.getEnv()--",Taro.getEnv())
+
     if (Taro.getEnv() === "WEAPP") {
       let templeparams = {
         temp_name: "yykweishop",
@@ -1031,7 +1030,6 @@ export default class CartCheckout extends Component {
       };
       api.user.newWxaMsgTmpl(templeparams).then(
         tmlres => {
-          console.log("templeparams---1", tmlres);
           if (tmlres.template_id && tmlres.template_id.length > 0) {
             wx.requestSubscribeMessage({
               tmplIds: tmlres.template_id,
@@ -1130,7 +1128,6 @@ export default class CartCheckout extends Component {
     try {
       let params = this.getParams();
 
-      console.log("-----paramsparams----",params)
       if (APP_PLATFORM === "standard" && cart_type !== "cart") {
         const { distributor_id, store_id } = Taro.getStorageSync("curStore");
         params.distributor_id = isOpenStore ? receiptType === 'ziti' ? curStore.distributor_id : store_id : this.getShopId() || distributor_id;
@@ -1408,6 +1405,7 @@ export default class CartCheckout extends Component {
     // if (payType === 'point') {
     //   this.props.onClearCoupon()
     // }
+
     const { payType: lastPayType } = this.state
     this.setState({
       point_use: 0,
@@ -1473,10 +1471,12 @@ export default class CartCheckout extends Component {
     });
   };
   handlePointUseChange = async (point_use, payType) => {
+    const { payType: lastPayType } = this.state
     this.setState(
       {
         point_use,
         payType,
+        lastPayType,
         isPointOpen: false
       },
       () => {
@@ -1487,10 +1487,8 @@ export default class CartCheckout extends Component {
 
   //清除使用积分
   clearPoint = () => {
-    const { lastPayType } = this.state
     this.setState({
-      point_use: 0,
-      payType: lastPayType
+      point_use: 0
     });
   };
   // 选择是否需要礼袋

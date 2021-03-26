@@ -57,10 +57,11 @@ export default class PointUse extends Component {
   }
   handlePointChange = (value) =>{
     const { info } = this.props
+    const { localType } = this.state
     const max_point = Number(info.max_point)
     if(value >= max_point){
       this.setState({
-        localType:info.deduct_point_rule.full_amount ? 'point' : 'wxpay',
+        localType: info.deduct_point_rule.full_amount ? 'point' : localType,
         point:max_point
       })
       return max_point
@@ -71,8 +72,8 @@ export default class PointUse extends Component {
       localType:info.deduct_point_rule.full_amount 
               ? Number(value) === max_point
               ? 'point' 
-              : 'wxpay' 
-              :'wxpay'
+              : localType 
+              : localType
     },()=>{
       console.log(this.state.localType)
     })
@@ -80,10 +81,11 @@ export default class PointUse extends Component {
 
   handleUseFullAmount = (checked)=>{
     const { info } = this.props
+    const { localType } = this.state
     this.setState({
       point:checked ? info.max_point : '',
       disabledPoint: checked ? true : false,
-      localType: checked ? 'point' : 'wxpay'
+      localType: checked ? 'point' : localType
     })
   }
 
