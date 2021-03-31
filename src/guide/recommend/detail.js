@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
-import { NavBar } from '@/components'
+import { BaNavBar } from '../components'
 import { connect } from '@tarojs/redux'
 import { formatTime } from '@/utils'
 import S from '@/spx'
@@ -24,19 +24,10 @@ export default class recommendDetail extends Component {
     this.state = {
       ...this.state,
       info: null,
-      collectArticleStatus: false,
       item_id_List: [],
-      screenWidth: 0
+      screenWidth: 0,
+      jumpType: 'home'
     }
-  }
-
-  config = {
-    navigationBarTitleText: '种草详情'
-  }
-
-  componentDidShow() {
-    console.log(this.props,'propspropspropspropspropsprops');
-    this.fetchContent()
   }
 
   componentDidMount() {
@@ -46,12 +37,37 @@ export default class recommendDetail extends Component {
           screenWidth: res.screenWidth
         })
       })
+    
+    const options = this.$router.params
+    //判断小程序跳转
+    let jumpType = 'home'
+    const { salesperson_id, sence } = options 
+    if(salesperson_id || sence){
+      jumpType = 'home'
+    }else {
+      jumpType = ''
+    }
+    this.setState({
+      jumpType
+    })
+  }
+
+  componentDidShow() {
+    this.fetchContent()
+  }
+
+  config = {
+    navigationStyle:'custom',
+    navigationBarTitleText: '种草详情'
   }
 
   onShareAppMessage() {
     const { info } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `&uid=${userId}` : ''
+    const QwUserInfo = S.get('QwUserInfo',true)
+    const { salesperson_id } = QwUserInfo
+    const guideid = salesperson_id ? `&salesperson_id=${salesperson_id}` : ''
 
     Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
       ...info,
@@ -59,36 +75,8 @@ export default class recommendDetail extends Component {
     });
     return {
       title: info.title,
-      path: `/subpage/pages/recommend/detail?id=${info.article_id}${query}`,
+      path: `/guide/recommend/detail?id=${info.article_id}${query}${guideid}`,
       imageUrl: info.share_image_url || info.image_url
-    }
-  }
-
-  onShareTimeline() {
-    const { info } = this.state
-    const { userId } = Taro.getStorageSync('userinfo')
-    const query = userId ? `&uid=${userId}` : ''
-    return {
-      title: info.title,
-      query: `id=${info.article_id}${query}`,
-      imageUrl: info.share_image_url || info.image_url
-    }
-  }
-
-  // 确认本人文章是否已收藏
-  confirmCollectArticle = async () => {
-    const { id } = this.$router.params
-    if (S.getAuthToken()) {
-      const res = await api.article.collectArticleInfo({ article_id: id })
-      if (res.length === 0) {
-        this.setState({
-          collectArticleStatus: false
-        })
-      } else {
-        this.setState({
-          collectArticleStatus: true
-        })
-      }
     }
   }
 
@@ -109,15 +97,9 @@ export default class recommendDetail extends Component {
     // 关注数加1
     const resFocus = await api.article.focus(id)
 
-    this.confirmCollectArticle()
-
     if (resFocus) {
       this.detailInfo(id)
     }
-  }
-
-  handleClickBar = async (type) => {
-    const { id } = this.$router.params
   }
 
   handleClickGoods = () => {
@@ -127,20 +109,16 @@ export default class recommendDetail extends Component {
 
   render() {
     const { colors } = this.props
-    const { info, screenWidth, collectArticleStatus } = this.state
-    console.log(screenWidth,'screenWidth');
+    const { info, screenWidth, jumpType } = this.state
+    const navbar_height = S.get('navbar_height',true)
 
     if (!info) {
       return null
     }
 
     return (
-      <View className='guide-recommend-detail'>
-        <NavBar
-          title='种草详情'
-          leftIconType='chevron-left'
-          fixed='true'
-        />
+      <View className='guide-recommend-detail' style={`padding-top:${navbar_height}PX`}>
+        <BaNavBar title='种草详情' fixed jumpType={jumpType} />
         <View className='recommend-detail__title'>{info.title}</View>
         <View className='recommend-detail-info'>
           <View className='recommend-detail-info__time'>

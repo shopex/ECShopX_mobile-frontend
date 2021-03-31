@@ -2,10 +2,10 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { SearchBar, RecommendItem, SpNote } from '@/components'
-import {BaTabBar} from '../components'
+import { BaTabBar, BaNavBar } from '../components'
 import api from '@/api'
-import { pickBy } from '@/utils'
-
+import S from '@/spx'
+import { pickBy, styleNames } from '@/utils'
 import './list.scss'
 
 @withPager
@@ -21,11 +21,13 @@ export default class RecommendList extends Component{
     }
   }
 
-  config = {
-    navigationBarTitleText: '种草'
-  }
   componentDidMount () {
     this.nextPage()
+  }
+
+  config = {
+    navigationBarTitleText: '种草',
+    navigationStyle:'custom'
   }
 
   componentDidShow(){
@@ -124,9 +126,13 @@ export default class RecommendList extends Component{
 
   render() {
     const { query, isShowSearch, scrollTop, list, page } = this.state
+    const n_ht = S.get('navbar_height', true)
+    const c_ht = n_ht + 42
 
     return(
-      <View className="guide-recommend-list">
+      <View className='guide-recommend-list'>
+        <BaNavBar title='种草' fixed jumpType='home' />
+        <View style={styleNames({'height': `${n_ht}px`})}></View>
         <View className={`recommend-list__search ${(query && query.title && isShowSearch) ? 'on-search' : null}`}>
           <SearchBar
             showDailog={false}
@@ -146,6 +152,7 @@ export default class RecommendList extends Component{
           scrollWithAnimation
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
+          style={styleNames({'top': `${c_ht}px`})}
         >
           <View className='recommend-list recommend-list__type-grid'>
             {
@@ -171,7 +178,7 @@ export default class RecommendList extends Component{
               && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
           }
         </ScrollView>
-        <BaTabBar current={3} />
+        <BaTabBar />
       </View>
     )
   }
