@@ -362,6 +362,7 @@ export default class CartIndex extends Component {
   }
 
   handleQuantityChange = async (shop_id, item, num, e) => {
+    debugger;
     const { type = 'distributor' } = this.$router.params
     await api.cart.updateNum(shop_id, item.cart_id, num, type)
     this.updateCart()

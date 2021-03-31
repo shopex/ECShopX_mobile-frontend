@@ -31,6 +31,7 @@ function resolveOrderInfo(params) {
 }
 
 function resolveCartInfo(params, action_type) {
+  console.log("--params--",params)
   const baseData = {
     sku: {
       sku_id: params.sku_id,
@@ -41,7 +42,7 @@ function resolveCartInfo(params, action_type) {
       spu_name: params.goods_title||params.item_name
     },
     sale: {
-      original_price: params.market_price / 100,
+      original_price: Number(params.market_price)?params.market_price / 100:params.price / 100,
       current_price: params.price / 100
     },
     goods_title: params.goods_title||params.item_name
