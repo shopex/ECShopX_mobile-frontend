@@ -7,7 +7,7 @@ import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavB
 import api from '@/api'
 import req from '@/api/req'
 import { withPager, withBackToTop } from '@/hocs'
-import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys } from '@/utils'
+import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys, buriedPoint } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from "@/service"
@@ -73,7 +73,10 @@ export default class Detail extends Component {
   
 
   async componentDidMount() {
-    const options = this.$router.params 
+    const options = await normalizeQuerys(this.$router.params)
+    if (options.itemid && !options.id) {
+      options.id = options.itemid
+    }
     let id = options.id
     let uid = ''
     if(!S.getAuthToken()){
@@ -83,7 +86,7 @@ export default class Detail extends Component {
     this.setState({
       is_open_store_status:isOpenStore,
       goodType:options.type==="pointitem"?"pointitem":"normal"
-    },async()=>{
+    }, async()=>{
       const { is_open_store_status } = this.state
       if (APP_PLATFORM === 'standard') {
        // const { distributor_id } = Taro.getStorageSync('curStore')
@@ -110,6 +113,8 @@ export default class Detail extends Component {
           uid = query.uid
         }
       }
+      console.log('%c ---------query------', 'color:red; font-size:24px')
+      console.log(entryData)
       this.fetchInfo(id)
       this.getEvaluationList(id)
        // 浏览记录
@@ -133,6 +138,10 @@ export default class Detail extends Component {
       entry.InverseAnalysis(lnglat)
     }
     this.getDetailShare()
+    // 埋点处理
+    buriedPoint.call(this, {
+      item_id: id
+    })
   }
 
   static options = {
@@ -275,7 +284,7 @@ export default class Detail extends Component {
 
   async fetchInfo(itemId, goodsId) { 
     this.nextPage();
-    const { distributor_id,store_id } = Taro.getStorageSync('curStore') 
+    const { distributor_id, store_id } = Taro.getStorageSync('curStore') 
     const { is_open_store_status } = this.state
     //const isOpenStore = await entry.getStoreStatus()
     let id = ''
@@ -306,12 +315,13 @@ export default class Detail extends Component {
         }
       }
     }
+
     if(is_open_store_status){
       delete param.distributor_id
     }
     console.log('param',param)
     // 商品详情 
-    const info = await this.goodInfo(id,param);
+    const info = await this.goodInfo(id, param);
     console.log('---info----',info);
     // 是否订阅
     const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
