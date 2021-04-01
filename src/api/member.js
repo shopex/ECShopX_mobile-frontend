@@ -16,8 +16,8 @@ export function favsList (params = {}) {
   return req.get('/member/collect/item', params,null, { showError: false })
 }
 
-export function addFav (item_id) {
-  return req.post(`/member/collect/item/${item_id}`)
+export function addFav (item_id,params) {
+  return req.post(`/member/collect/item/${item_id}`,params)
 }
 
 export function delFav (item_ids, params = {}) {
@@ -38,6 +38,10 @@ export function couponList (params = {}) {
   return req.get('/user/newGetCardList', params)
 }
 
+export function getUserCardList (params = {}) {
+  return req.get('/user/getUserCardList', params)
+}
+
 export function homeCouponList (params = {}) {
   return req.get('/getCardList', params)
 }
@@ -56,6 +60,9 @@ export function userUsedCard (params = {}) {
 
 export function addressList () {
   return req.get('/member/addresslist')
+}
+export function crmAddressList (params = {}) {//获取crm地址
+  return req.post('/member/crmaddresslist',params)
 }
 
 export function addressCreate (params = {}) {
@@ -93,6 +100,11 @@ export function itemHistory (params) {
 
 export function getRechargeNumber () {
   return req.get('/deposit/rechargerules')
+}
+
+// 充值
+export function rehcargePay (params) {
+  return req.post('/deposit/recharge', params)
 }
 
 export function qrcodeData () {
@@ -295,4 +307,42 @@ export function getSalespersonNologin (params = {}) {
 //
 export function getUserNewGetCardDetail (params = {}) {
   return req.get('/user/newGetCardDetail', params)
+}
+// 经销商入驻申请
+export function hfpayApplySave (params = {}) {
+  return req.post('/hfpay/applysave', params)
+}
+// 经销商入驻详情
+export function hfpayUserApply (params = {}) {
+  return req.get('/hfpay/userapply', params)
+}
+// 绑定银行卡
+export function hfpayBankSave (params = {}) {
+  return req.post('/hfpay/banksave', params)
+}
+// 获取绑定银行卡
+export function hfpayBankInfo (params = {}) {
+  return req.get('/hfpay/bankinfo', params)
+}
+// 获取获取支付方式
+export function getTradePaymentList (params = {}) {
+  return req.get('/trade/payment/list', params)
+}
+export function getIsHf (params = {}) {
+  return req.get('/trade/payment/hfpayversionstatus', params)
+}
+
+
+//获取是否开启获取crm地址
+export function getCrmsetting () {
+  return req.get('/member/crmsetting')
+}
+
+// 配置地址
+export function getSettingCenter () {
+  return req.get('/pageparams/setting', {
+    template_name: 'yykweishop',
+    version: 'v1.0.1',
+    page_name: 'member_center_menu_setting'
+  })
 }

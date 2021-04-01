@@ -30,7 +30,6 @@ const cart = createReducer(initState, {
   },
   ['cart/fastbuy'](state, action) {
     const { item , num = 1 } = action.payload
-
     return {
       ...state,
       fastbuy: {
@@ -105,6 +104,15 @@ const cart = createReducer(initState, {
       ...state,
       coupon
     }
+  },
+  ['cart/changeZitiStore'](state,action){
+    const zitiShop = action.payload
+
+    return {
+      ...state,
+      zitiShop
+    }
+
   },
   ['cart/changeDrugInfo'](state, action) {
     const drugInfo = action.payload

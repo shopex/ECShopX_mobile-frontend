@@ -1,11 +1,18 @@
 import Taro, { Component } from '@tarojs/taro'
-import {View, Text, Image, Progress} from '@tarojs/components'
-import { Price, QnImg } from '@/components'
-import { isObject, classNames, isArray } from '@/utils'
+import {View, Text, Image} from '@tarojs/components'
+import { SpImg ,PointLine} from '@/components' 
 import api from '@/api'
+import { connect } from '@tarojs/redux'
+
+import { isObject, classNames } from '@/utils'
 
 import './index.scss'
 
+@connect(() => ({
+}), (dispatch) => ({
+  onAddFav: ({ item_id, fav_id }) => dispatch({ type: 'member/addFav', payload: { item_id, fav_id } }),
+  onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
+}))
 export default class GoodsItem extends Component {
   static defaultProps = {
     onClick: () => {},
@@ -14,7 +21,8 @@ export default class GoodsItem extends Component {
     showFav: true,
     showSku: false,
     noCurSymbol: false,
-    type: 'item'
+    type: 'item',
+    isPointitem:false
   }
 
   static options = {
@@ -25,12 +33,22 @@ export default class GoodsItem extends Component {
 
   handleFavClick = async () => {
     const { item_id, is_fav } = this.props.info
-    console.log(is_fav, item_id)
-    // await api.item.collect(item_id)
+    if (!is_fav) {
+      const favRes = await api.member.addFav(item_id)
+      this.props.onAddFav(favRes)
+    } else {
+      await api.member.delFav(item_id)
+      this.props.onDelFav(this.props.info)
+    }
+    Taro.showToast({
+      title: is_fav ? '已移出收藏' : '已加入收藏',
+      mask: true
+    })
   }
 
   render () {
-    const { info, showMarketPrice, showFav, noCurSymbol, noCurDecimal, onClick, onStoreClick, appendText, className, isPointDraw, type } = this.props
+    const { info, showMarketPrice, showFav, noCurSymbol, noCurDecimal, onClick, onStoreClick, appendText, className, isPointDraw, type ,isPointitem} = this.props 
+
     if (!info) {
       return null
     }
@@ -73,7 +91,7 @@ export default class GoodsItem extends Component {
             className='goods-item__img-wrap'
             onClick={onClick}
           >
-            <QnImg
+            <SpImg
               img-class='goods-item__img'
               src={img}
               mode='aspectFill'
@@ -82,63 +100,92 @@ export default class GoodsItem extends Component {
             />
           </View>
           <View className='goods-item__cont'>
+            {
+              info.type === '1' && <View className='nationalInfo'>
+                  <Image className='nationalFlag' src={info.origincountry_img_url} mode='aspectFill' lazyLoad />
+                  <Text className='nationalTitle'>
+                    {info.origincountry_name}
+                  </Text>
+              </View>
+            }            
             <View className='goods-item__caption'>
               {
-                promotion_activity !== null
-                ? <View className='goods-item__tag-list'>
-                    <Text className={(promotion_activity === 'single_group' || promotion_activity === 'limited_time_sale' || promotion_activity === 'normal') ? 'goods-item__tag goods-item__group' : 'goods-item__tag'}>
-                    {promotion_activity === 'single_group' ? '团购' : ''}
-                    {promotion_activity === 'full_minus' ? '满减' : ''}
-                    {promotion_activity === 'full_discount' ? '满折' : ''}
-                    {promotion_activity === 'full_gift' ? '满赠' : ''}
-                    {promotion_activity === 'normal' ? '秒杀' : ''}
-                    {promotion_activity === 'limited_time_sale' ? '限时特惠' : ''}
-                    </Text>
-                  </View>
-                : null
+                info.promotion_activity_tag && <View className='goods-item__tag-list'>
+                  {
+                    info.promotion_activity_tag.map(item =>
+                      <Text
+                        key={item.promotion_id}
+                        className={`tagitem ${(item.tag_type === 'single_group' || item.tag_type === 'limited_time_sale' || item.tag_type === 'normal') ? 'goods-item__tag goods-item__group' : 'goods-item__tag'} ${item.tag_type === 'member_preference' && 'member_preference'}`}
+                      >
+                        {item.tag_type === 'single_group' ? '团购' : ''}
+                        {item.tag_type === 'full_minus' ? '满减' : ''}
+                        {item.tag_type === 'full_discount' ? '满折' : ''}
+                        {item.tag_type === 'full_gift' ? '满赠' : ''}
+                        {item.tag_type === 'normal' ? '秒杀' : ''}
+                        {item.tag_type === 'limited_time_sale' ? '限时特惠' : ''}
+                        {item.tag_type === 'plus_price_buy' ? '换购' : ''}
+                        {item.tag_type === 'member_preference' ? '会员限购' : ''}
+                      </Text>
+                    )
+                  }
+                </View>
               }
               <View onClick={onClick}>
                 <Text className='goods-item__title'>{info.title}</Text>
-                <Text className='goods-item__desc'>{info.desc}</Text>
+                <Text className='goods-item__desc'>{info.desc || ''}</Text>
                 {this.props.renderSpec}
               </View>
             </View>
             <View className='goods-item__extra'>
-              <View className='goods-item__price'>
+            {
+              isPointitem && <PointLine 
+                point={info.point} 
+              />
+            }
+            { !isPointitem && <View className='goods-item__price'>
                 <View className='package-price'>
                   <Text className='goods-item__cur'>¥</Text>
-                  <Text>{price}</Text>
+                  <Text>
+                    {price}
+                    {
+                      info.type === '1' && <Text className='taxText'>（含税）</Text>
+                    }
+                  </Text>
                 </View>
                 {
                   Boolean(+marketPrice) &&
                     <Text className='goods-item__price-market'>¥{marketPrice}</Text>
                 }
-							</View>
+							</View>}
 							{this.props.children}
               {
-                 showFav &&
-                   (<View className='goods-item__actions'>
-                     {(type === 'item') && (
-                       <View
-                         className={`${info.is_fav ? 'icon-star-on' : 'icon-star'}`}
-                         onClick={this.handleFavClick}
-                       />
-                     )}
-                     {type === 'recommend' && (
-                       <View
-                         className='icon-like'
-                         onClick={this.handleLikeClick}
-                       ><Text>666</Text></View>
-                     )}
-                   </View>)
+                showFav &&
+                  (<View className='goods-item__actions'>
+                    {(type === 'item') && (
+                      <View
+                        className={`${info.is_fav ? 'icon-star-on' : 'icon-star'}`}
+                        onClick={this.handleFavClick}
+                      />
+                    )}
+                    {type === 'recommend' && (
+                      <View
+                        className='icon-like'
+                        onClick={this.handleLikeClick}
+                      ><Text>666</Text></View>
+                    )}
+                  </View>)
               }
             </View>
+
+          
+
             {
               APP_PLATFORM !== 'standard' && info.distributor_info && !Array.isArray(info.distributor_info) &&
                 <View
                   className='goods-item__store'
-                  onClick={onStoreClick}>
-                  {info.distributor_info.name} <Text class="goods-item__store-entry">进店<Text className='icon-arrowRight'></Text></Text>
+                  onClick={onStoreClick}
+                >
+                  {info.distributor_info.name} <Text class='goods-item__store-entry'>进店<Text className='icon-arrowRight'></Text></Text>
                 </View>
             }
           </View>

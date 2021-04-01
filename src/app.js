@@ -6,8 +6,10 @@ import useHooks from '@/hooks'
 import req from '@/api/req'
 import api from '@/api'
 import { normalizeQuerys } from '@/utils'
-import { FormIds, WxAuth } from '@/service'
+import { FormIds, Tracker } from "@/service";
 import Index from './pages/index'
+import LBS from './utils/lbs'
+// import entry from '@/utils/entry'
 
 import './app.scss'
 
@@ -18,38 +20,56 @@ import './app.scss'
 // }
 
 const { store } = configStore()
+
+// 获取首页配置
+const getHomeSetting = async () => {
+  const {
+    echat = {},
+    meiqia = {},
+    youshu = {},
+    disk_driver = 'qiniu',
+    whitelist_status =  false,
+    nostores_status = false
+  } = await api.shop.homeSetting()
+  // 美洽客服配置
+  Taro.setStorageSync('meiqia', meiqia)
+  // 一洽客服配置
+  Taro.setStorageSync('echat', echat)
+  // 白名单配置、门店配置、图片存储信息、有数配置
+  Taro.setStorageSync('otherSetting', {
+    whitelist_status,
+    nostores_status,
+    disk_driver,
+    nostores_status,
+    youshu
+  })
+  if (APP_TRACK) {
+    const system = Taro.getSystemInfoSync();
+    if (!(system && system.environment && system.environment === "wxwork")) {
+      console.log('----------------aa--------------')
+      console.log(Tracker)
+      Tracker.use(APP_TRACK);
+    }
+  }
+}
+
 useHooks()
+
+// 获取基础配置
+getHomeSetting()
 
 class App extends Component {
   // eslint-disable-next-line react/sort-comp
   componentWillMount () {
-  }
-  componentDidMount () {
-    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
-    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
-      Taro.setStorageSync('distribution_shop_id', '')
-      Taro.setStorageSync('distribution_shop_exp', '')
-    }
-    const { query } = this.$router.params
-    if (query && query.scene) {
-      const { smid , dtid } = normalizeQuerys(query)
-      if (smid) {
-        Taro.setStorageSync('s_smid', smid)
-      }
-  
-      if (dtid) {
-        Taro.setStorageSync('s_dtid', dtid)
-      }
-    }
-    this.fetchTabs()
-    this.fetchColors()
-    // 美洽客服插件
-    this.fetchMeiQia()
+    this.init()
   }
 
   config = {
     pages: [
-      'pages/index',
+      
+      //'{"path":"pages/pointitem/list","style":{"navigationStyle":"custom"}}',
+      
+      'pages/index', 
       'pages/home/landing',
       'pages/category/index',
       'pages/floorguide/index',
@@ -58,66 +78,17 @@ class App extends Component {
       'pages/item/espier-detail',
       'pages/item/item-params',
       'pages/item/package-list',
-      'pages/item/group-list',
-      'pages/item/group-detail',
-      'pages/item/seckill-list',
-      'pages/item/seckill-goods-list',
-      'pages/home/coupon-home',
 
       'pages/cart/espier-index',
       'pages/cart/espier-checkout',
-      'pages/cart/coupon-picker',
-      'pages/cart/drug-info',
+
       'pages/article/index',
-
       'pages/recommend/list',
-      'pages/recommend/detail',
-
-      'pages/auth/reg',
-      'pages/auth/reg-rule',
-      'pages/auth/login',
-      'pages/auth/forgotpwd',
-      'pages/auth/wxauth',
-      'pages/auth/pclogin',
-      'pages/auth/store-reg',
-      'pages/cashier/index',
-      'pages/cashier/cashier-result',
-
       'pages/member/index',
-      'pages/member/pay',
-      'pages/member/pay-rule',
-      'pages/member/coupon',
-      'pages/member/coupon-detail',
-      'pages/member/address',
-      'pages/member/edit-address',
-      'pages/member/setting',
-      'pages/member/userinfo',
-      'pages/member/item-history',
       'pages/member/item-fav',
-      'pages/member/item-guess',
-      'pages/member/group-list',
-      'pages/member/member-code',
-      'pages/qrcode-buy',
-
-      'pages/distribution/shop-home',
-
       'pages/store/index',
       'pages/store/list',
-
-      'pages/trade/list',
-      'pages/trade/customer-pickup-list',
-      'pages/trade/drug-list',
-      'pages/trade/detail',
-      'pages/trade/delivery-info',
-      'pages/trade/rate',
-      'pages/trade/cancel',
-      'pages/trade/after-sale',
-      'pages/trade/refund',
-      'pages/trade/refund-detail',
-      'pages/trade/refund-sendback',
-      'pages/trade/invoice-list',
-
-      'pages/vip/vipgrades',
+      'pages/store/ziti-list',
 
       'pages/custom/custom-page'
     ],
@@ -127,6 +98,7 @@ class App extends Component {
         pages: [
           'pages/distribution/index',
           'pages/distribution/setting',
+          'pages/distribution/shop-home',
           'pages/distribution/statistics',
           'pages/distribution/trade',
           'pages/distribution/subordinate',
@@ -139,10 +111,13 @@ class App extends Component {
           'pages/distribution/shop-form',
           'pages/distribution/qrcode',
           'pages/distribution/shop-category',
+          'pages/distribution/good-category',
           'pages/distribution/shop-goods',
           'pages/distribution/shop-trade',
           'pages/distribution/shop-achievement',
-
+          'pages/verified-card/index',
+          'pages/verified-card/verified',
+          'pages/verified-card/card',
           'pages/reservation/brand-list',
           'pages/reservation/brand-detail',
           'pages/reservation/brand-result',
@@ -155,18 +130,37 @@ class App extends Component {
           'pages/member/user-info',
           'pages/member/complaint',
           'pages/member/complaint-record',
+          'pages/member/coupon',
+          'pages/member/coupon-detail',
+          'pages/member/address',
+          'pages/member/edit-address',
+          'pages/member/crm-address-list',
+          'pages/member/setting',
+          'pages/member/userinfo',
+          'pages/member/item-history',
+          'pages/member/item-guess',
+          'pages/member/member-code',
+          'pages/member/group-list',
 
           'pages/wheel/index',
           'pages/item/espier-evaluation',
           'pages/item/espier-evaluation-detail',
           'pages/item/rate',
-          'pages/item/success'
+          'pages/item/success',
+
+          'pages/item/seckill-goods-list',
+          'pages/item/seckill-list',
+          'pages/item/group-detail',
+          'pages/item/group-list',
+
+          'pages/plusprice/detail-plusprice-list',
+          'pages/plusprice/cart-plusprice-list',
         ],
         "plugins": {
           "live-player-plugin": {
-            "version": "1.0.7", // 填写该直播组件版本号
+            "version": "1.2.6", // 填写该直播组件版本号
             "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
-          }
+          } 
           // "meiqia": {
           //   "version": "1.1.0",
           //   "provider": "wx2d2cd5fd79396601"
@@ -174,12 +168,91 @@ class App extends Component {
         }
       },
       {
+        root: 'subpage',
+        pages: [
+          'pages/trade/list',
+          'pages/trade/customer-pickup-list',
+          'pages/trade/drug-list',
+          'pages/trade/detail',
+          'pages/trade/after-sale-detail',
+          'pages/trade/delivery-info',
+          'pages/trade/split-bagpack',
+          'pages/trade/rate',
+          'pages/trade/cancel',
+          'pages/trade/after-sale',
+          'pages/trade/refund',
+          'pages/trade/refund-detail',
+          'pages/trade/refund-sendback',
+          'pages/trade/invoice-list',
+          'pages/cashier/index',
+          'pages/cashier/cashier-result',
+          'pages/recommend/detail',
+          'pages/qrcode-buy',
+          'pages/vip/vipgrades',
+          'pages/auth/reg',
+          'pages/auth/reg-rule',
+          'pages/auth/login',
+          'pages/auth/forgotpwd',
+          'pages/auth/wxauth',
+          'pages/auth/pclogin',
+          'pages/auth/store-reg',
+        ]
+      },
+      // 团购
+      {
+        root: 'groupBy',
+        pages: [
+          'pages/home/index',
+          'pages/cart/index',
+          'pages/goodDetail/index',
+          'pages/payOrder/index',
+          'pages/orderDetail/index',
+          'pages/orderList/index',
+          'pages/shareDetail/index',
+          'pages/nextNotice/index',
+          'pages/community/index'
+        ]
+      },
+      // 助力
+      {
+        root: 'boost',
+        pages: [
+          'pages/home/index',
+          'pages/detail/index',
+          'pages/flop/index',
+          'pages/pay/index',
+          'pages/payDetail/index',
+          'pages/order/index',
+        ]
+      },
+      {
         root: 'others',
         pages: [
           'pages/home/license',
+          'pages/home/coupon-home',
           'pages/protocol/privacy',
           // 美恰客服
-          'pages/meiqia/index'
+          'pages/meiqia/index',
+          'pages/echat/index',
+          // 扫码授权登录
+          'pages/auth/index',
+          // 储值
+          'pages/recharge/index',
+          'pages/recharge/history',
+          // 店铺首页
+          'pages/store/list',
+          'pages/store/category',
+          // cart
+          'pages/cart/coupon-picker',
+          'pages/cart/drug-info',
+          // 绑定订单
+          'pages/bindOrder/index'
+        ]
+      },
+      {
+        root:'pointitem',
+        pages:[
+          'pages/list',
         ]
       }
     ],
@@ -193,32 +266,15 @@ class App extends Component {
       'wx2fb97cb696f68d22',
       'wxf91925e702efe3e3'
     ],
-    plugins: {
-      contactPlugin: {
-        version: "1.3.0",
-        provider: "wx104a1a20c3f81ec2"
-      }
-    }
+    // plugins: {
+    //   contactPlugin: {
+    //     version: "1.3.0",
+    //     provider: "wx104a1a20c3f81ec2"
+    //   }
+    // }
   }
 
   componentDidShow (options) {
-    if (process.env.TARO_ENV === 'weapp') {
-      FormIds.startCollectingFormIds()
-      if (S.getAuthToken()) {
-        api.member.favsList()
-          .then(({ list }) => {
-            if (!list) return
-            store.dispatch({
-              type: 'member/favs',
-              payload: list
-            })
-          })
-          .catch(e => {
-            console.info(e)
-          })
-      }
-    }
-
     const { referrerInfo } = options || {}
     if (referrerInfo) {
       console.log(referrerInfo)
@@ -229,8 +285,64 @@ class App extends Component {
     FormIds.stop()
   }
 
-  async fetchTabs () {
-    const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=tabs'
+  // 初始化
+  init () {
+    // 获取收藏列表
+    if (process.env.TARO_ENV === 'weapp') {
+      FormIds.startCollectingFormIds()
+    }
+    if (S.getAuthToken()) {
+      api.member.favsList()
+        .then(({ list }) => {
+          if (!list) return
+          store.dispatch({
+            type: 'member/favs',
+            payload: list
+          })
+        })
+        .catch(e => {
+          console.info(e)
+        })
+    }
+    // H5定位
+    if (APP_PLATFORM === 'standard' && Taro.getEnv() === 'WEB') {
+      new LBS()
+    }
+    // 设置购物车默认类型
+    if (Taro.getStorageSync('cartType')) {
+      Taro.setStorageSync('cartType', 'normal')
+    }
+    // 过期时间
+    const promoterExp = Taro.getStorageSync('distribution_shop_exp')
+    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
+      Taro.setStorageSync('distribution_shop_id', '')
+      Taro.setStorageSync('distribution_shop_exp', '')
+    }
+    // 根据路由参数
+    const { query } = this.$router.params
+    if (query && query.scene) {
+      const { smid , dtid, id, aid, cid } = normalizeQuerys(query)
+      if (smid) {
+        Taro.setStorageSync('s_smid', smid)
+      }
+      if (dtid) {
+        Taro.setStorageSync('s_dtid', dtid)
+      }
+      // 如果id、aid、cid同时存在则为团购分享详情
+      if (id && aid && cid) {
+        Taro.redirectTo({
+          url: `/groupBy/pages/shareDetail/index?aid=${aid}&itemId=${id}&cid=${cid}`
+        })
+      }
+    }
+    // 初始化tabbar
+    this.fetchTabs()
+    // 获取主题配色
+    this.fetchColors()
+  }
+
+  fetchTabs () {
+    Taro.setStorageSync('initTabBar', false)
     const defaultTabs = {
       config: {
         backgroundColor: "#ffffff",
@@ -256,14 +368,29 @@ class App extends Component {
       }],
       name: "tabs"
     }
-    const info = await req.get(url)
-    store.dispatch({
-      type: 'tabBar',
-      payload: info.list.length ? info.list[0].params : defaultTabs
+    const setUrl = '/pagestemplate/setInfo'
+    req.get(setUrl).then(({
+      tab_bar,
+      is_open_recommend,
+      is_open_scan_qrcode,
+      is_open_wechatapp_location,
+      is_open_official_account
+    }) => {
+      store.dispatch({
+        type: 'tabBar',
+        payload: tab_bar ? JSON.parse(tab_bar) : defaultTabs
+      })
+      Taro.setStorageSync('initTabBar', true)
+      Taro.setStorageSync('settingInfo', {
+        is_open_recommend,
+        is_open_scan_qrcode,
+        is_open_wechatapp_location,
+        is_open_official_account
+      })
     })
   }
 
-  async fetchColors () {
+  fetchColors () {
     const url = '/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=color_style'
     const defaultColors = {
       data: [
@@ -275,18 +402,15 @@ class App extends Component {
       ],
       name: 'base'
     }
-    const info = await req.get(url)
-    store.dispatch({
-      type: 'colors',
-      payload: info.list.length ? info.list[0].params : defaultColors
+    req.get(url).then(info => {
+      store.dispatch({
+        type: 'colors',
+        payload: info.list.length ? info.list[0].params : defaultColors
+      })
     })
+
   }
 
-  // 获取美洽客服配置
-  async fetchMeiQia () {
-    const info = await api.user.imConfig()
-    Taro.setStorageSync('meiqia', info)
-  }
 
   componentDidCatchError () {}
 

@@ -1,12 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, ScrollView, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { SpToast, Loading, SpNote, SearchBar, BackToTop } from '@/components'
-import StoreListItem from './comps/list-item'
+import { View, ScrollView, Text } from '@tarojs/components'
+import { SpToast, SearchBar, BackToTop, NavBar } from '@/components'
 import api from '@/api'
-import { pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
 import entry from '@/utils/entry'
+import StoreListItem from './comps/list-item'
 
 import './list.scss'
 
@@ -55,9 +53,7 @@ export default class StoreList extends Component {
       page,
       pageSize
     }
-
     const { list, total_count: total} = await api.shop.list(query)
-
     this.setState({
       list: [...this.state.list, ...list],
       query
@@ -147,6 +143,9 @@ export default class StoreList extends Component {
   }
 
   handleClick = (val) => {
+    if(val){
+      val.store_id = 0 //新增非门店自提，开启distributor_id 取值为store_id
+    }
     Taro.setStorageSync('curStore', val)
     Taro.navigateBack()
   }
@@ -156,7 +155,11 @@ export default class StoreList extends Component {
 
     return (
       <View className='page-store-list'>
-        <View class="store-list__search">
+        <NavBar
+          title='选择店铺'
+          leftIconType='chevron-left'
+        />
+        <View className='store-list__search'>
           <SearchBar
             showDailog={false}
             keyword={query ? query.name : ''}
@@ -167,13 +170,13 @@ export default class StoreList extends Component {
             onConfirm={this.handleConfirm.bind(this)}
           />
         </View>
-        <View class="current-store">
+        <View className='current-store'>
           <View className='label'>当前位置</View>
           <View className='content view-flex'>
             <View className='view-flex-item'>
               {
                 loading
-                  ? <Text className="loading">定位中...</Text>
+                  ? <Text className='loading'>定位中...</Text>
                   : <Text>{current ? current.name : '定位失败...'}</Text>
               }
             </View>

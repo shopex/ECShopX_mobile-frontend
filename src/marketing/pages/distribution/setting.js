@@ -1,6 +1,16 @@
+/*
+ * @Author: PrendsMoi
+ * @GitHub: https://github.com/PrendsMoi
+ * @Blog: https://liuhgxu.com
+ * @Description: 说明
+ * @FilePath: /unite-vshop/src/marketing/pages/distribution/setting.js
+ * @Date: 2020-09-24 14:25:07
+ * @LastEditors: PrendsMoi
+ * @LastEditTime: 2021-03-09 14:38:33
+ */
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Button } from '@tarojs/components'
-import { AtInput } from 'taro-ui'
+import { View, Text } from '@tarojs/components'
+import { NavBar } from '@/components'
 import api from '@/api'
 
 import './setting.scss'
@@ -55,6 +65,10 @@ export default class DistributionSetting extends Component {
 
     return (
       <View className='page-distribution-setting'>
+        <NavBar
+          title='会员资料'
+          leftIconType='chevron-left'
+        />	          
         <View className="content-padded">会员资料</View>
         <View className="section">
           <View className="list">
@@ -63,7 +77,7 @@ export default class DistributionSetting extends Component {
               <View className="list-item-txt text-right">
                 {
                   info.parent_info
-                  ? <Text>{info.parent_info.username}({info.parent_info.mobile})</Text>
+                  ? <Text>{ info.parent_info.nickname || info.parent_info.username}({info.parent_info.mobile})</Text>
                   : <Text>--</Text>
                 }
               </View>

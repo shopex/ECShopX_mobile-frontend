@@ -4,12 +4,19 @@ $pege-header-height:155px;
 .page-complaint-record{
   margin: 30px 30px 0 30px;
   padding-bottom: 40px;
-
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */
   .pege-header{
     height: $pege-header-height;
     position: fixed;
     left: 0;
     top: 0;
+    /*  #ifdef  h5  */  
+    top: $navigate-height-h5;
+    box-sizing: border-box;
+    height: auto;
+    /*  #endif  */    
     width: 100%;
     background-color: #ffffff;
     padding: 30px;

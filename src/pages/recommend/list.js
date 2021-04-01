@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Picker } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
-import { BackToTop, Loading, RecommendItem, SearchBar, NavBar, TabBar, SpNote, FilterBar } from '@/components'
+import { BackToTop, Loading, RecommendItem, SearchBar, TabBar, SpNote, FilterBar } from '@/components'
 import api from '@/api'
 import { classNames, pickBy } from '@/utils'
 import S from '@/spx'
@@ -29,8 +29,18 @@ export default class RecommendList extends Component {
       info: {},
       areaList: [],
       multiIndex: [],
-      isShowSearch: false
+      isShowSearch: false,
+      shareInfo: {}
     }
+  }
+
+
+  componentDidMount () {
+    api.wx.shareSetting({shareindex: 'planting'}).then(res => {
+      this.setState({
+        shareInfo: res
+      })
+    })
   }
 
   componentDidShow () {
@@ -58,6 +68,28 @@ export default class RecommendList extends Component {
     // this.praiseNum()
   }
 
+  onShareAppMessage () {
+    const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `/pages/recommend/list?uid=${userId}` : '/pages/recommend/list'
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl,
+      path: query
+    }
+  }
+
+  onShareTimeline () {
+    const res = this.state.shareInfo
+    const { userId } = Taro.getStorageSync('userinfo')
+    const query = userId ? `uid=${userId}` : ''
+    return {
+      title: res.title,
+      imageUrl: res.imageUrl,
+      query: query
+    }
+  }
+  
   async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { columnList, areaList } = this.state
@@ -162,7 +194,7 @@ export default class RecommendList extends Component {
   }
 
   handleClickItem = (item) => {
-    const url = `/pages/recommend/detail?id=${item.item_id}`
+    const url = `/subpage/pages/recommend/detail?id=${item.item_id}`
     Taro.navigateTo({
       url
     })
@@ -407,9 +439,16 @@ export default class RecommendList extends Component {
     }
   }
 
+  handleClose=(e)=>{
+    this.setState({
+      showDrawer:false
+    })
+  }
+
   render () {
     const { list, showBackToTop, scrollTop, page, showDrawer, info, columnList, selectColumn, multiIndex, areaList, query, isShowSearch } = this.state
     let address = info.province + info.city
+ 
 
 		return (
       <View className='page-recommend-list'>
@@ -429,7 +468,7 @@ export default class RecommendList extends Component {
             className='recommend-list__tabs'
           >
             <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
-              <View className='icon-menu'></View>
+              <View className='iconfont icon-menu'></View>
               <Text>{ selectColumn.name || '栏目' }</Text>
             </View>
             <View className='filter-bar__item region-picker'>
@@ -441,10 +480,10 @@ export default class RecommendList extends Component {
                 value={multiIndex}
                 range={areaList}
               >
-                <View className='icon-periscope'></View>
+                <View className='iconfont icon-periscope'></View>
                 <Text>{address || '地区'}</Text>
 							</Picker>
-							{address && <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text>}
+							{address ? <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text> : ''}
             </View>
           </FilterBar>
         </View>
@@ -453,6 +492,7 @@ export default class RecommendList extends Component {
           right
           mask
           width={`${Taro.pxTransform(570)}`}
+          onClose={this.handleClose}
         >
           <View className='drawer-item'>
             <View className='drawer-item__options'>
@@ -462,7 +502,7 @@ export default class RecommendList extends Component {
                     <View
                       className={classNames('drawer-item__options__item' ,item.isChooseColumn ? 'drawer-item__options__checked' : '')}
                       // className='drawer-item__options__item'
-                      key={index}
+                      key={`${index}1`}
                       onClick={this.handleClickParmas.bind(this, item.id)}
                     >
                       {item.name}

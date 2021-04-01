@@ -1,7 +1,11 @@
+@import "../../../style/imports";
+
 .page-complaint{
   background: #fff;
   margin: 30px;
-
+  /*  #ifdef  h5  */  
+  padding-top: $navigate-height-h5;
+  /*  #endif  */
   .flex{
     display: flex;
   }

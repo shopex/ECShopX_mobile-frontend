@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
 import { calcTimer } from '@/utils'
-import { QnImg } from '@/components'
+import { SpImg } from '@/components'
 import { linkPage } from './helper'
 
 import './goods-scroll.scss'
@@ -43,11 +43,11 @@ export default class WgtGoodsScroll extends Component {
       this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
     } else if (type === 'limitTimeSale') {
       Taro.navigateTo({
-        url: `/pages/item/seckill-goods-list?seckill_type=limited_time_sale&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
+        url: `/marketing/pages/item/seckill-goods-list?seckill_type=limited_time_sale&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
       })
     } else {
       Taro.navigateTo({
-        url: `/pages/item/seckill-goods-list?seckill_type=normal&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
+        url: `/marketing/pages/item/seckill-goods-list?seckill_type=normal&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
       })
     }
   }
@@ -57,7 +57,7 @@ export default class WgtGoodsScroll extends Component {
     const { config } = this.props.info
     const { moreLink } = config
     if (moreLink) {
-      linkPage(moreLink.linkPage, moreLink.id)
+      linkPage(moreLink.linkPage, moreLink)
     } else {
       this.navigateToList(config.type, config.seckillId)
     }
@@ -83,7 +83,7 @@ export default class WgtGoodsScroll extends Component {
                   ? <View className='wgt__subtitle'>{base.subtitle}</View>
                   : <View>
                       {
-                        config.lastSeconds != 0
+                        timer && config.lastSeconds != 0
                           ? <AtCountdown
                             className='countdown__time'
                             isShowDay
@@ -116,18 +116,18 @@ export default class WgtGoodsScroll extends Component {
                 const marketPrice = ((item.act_price ? item.price : item.member_price ? item.price : item.market_price)/100).toFixed(2)
                 return (
                   <View
-                    key={idx}
+                    key={`${idx}1`}
                     className='scroll-item'
-                    onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}`)}
+                    onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}&dtid=${item.distributor_id}`)}
                   >
                     {config.leaderboard && (
                       <View className='subscript'>
                         <View className='subscript-text'>NO.{idx + 1}</View>
-                        <Image className='subscript-img' src='/assets/imgs/paihang.png' />
+                        <Image className='subscript-img' lazyLoad src='/assets/imgs/paihang.png' />
                       </View>
                     )}
                     <View className='thumbnail'>
-                      <QnImg
+                      <SpImg
                         img-class='goods-img'
                         src={item.imgUrl}
                         mode='aspectFill'
@@ -135,6 +135,14 @@ export default class WgtGoodsScroll extends Component {
                         lazyLoad
                       />
     								</View>
+                    {
+                      item.type === '1' && <View className='nationalInfo'>
+                          <Image className='nationalFlag' src={item.origincountry_img_url}  mode='aspectFill' lazyLoad />
+                          <Text className='nationalTitle'>
+                            { item.origincountry_name }
+                          </Text>
+                      </View>
+                    }
     								{
     									config.showPrice
     									&& <View className='goods-price'>
