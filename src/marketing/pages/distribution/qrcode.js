@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
+import { NavBar } from '@/components'
 import api from '@/api'
 
 import './qrcode.scss'
@@ -28,11 +29,11 @@ export default class DistributionQrcode extends Component {
   }
 
   async fetch () {
-    const { username, avatar } = Taro.getStorageSync('userinfo')
+    const { username, avatar, userId } = Taro.getStorageSync('userinfo')
     let { isOpenShop, status } = this.$router.params
     isOpenShop = JSON.parse(isOpenShop)
     status = JSON.parse(status)
-    const url = isOpenShop && status ? 'pages/distribution/shop-home' : 'pages/index'
+    const url = isOpenShop && status ? `marketing/pages/distribution/shop-home` : `pages/index`
     const res = await api.distribution.qrcode({path: url})
     const { qrcode } = res
 
@@ -51,6 +52,10 @@ export default class DistributionQrcode extends Component {
 
     return (
       <View className='page-distribution-qrcode' style={'background: ' + colors.data[0].marketing}>
+        <NavBar
+          title='二维码'
+          leftIconType='chevron-left'
+        />	          
         <View className="qrcode-bg">
           <View className="title">邀请卡</View>
           <Image

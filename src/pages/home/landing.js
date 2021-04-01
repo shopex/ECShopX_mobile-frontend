@@ -1,3 +1,13 @@
+/*
+ * @Author: Arvin
+ * @GitHub: https://github.com/973749104
+ * @Blog: https://liuhgxu.com
+ * @Description: 说明
+ * @FilePath: /unite-vshop/src/pages/home/landing.js
+ * @Date: 2020-11-19 14:22:17
+ * @LastEditors: PrendsMoi
+ * @LastEditTime: 2021-03-01 16:19:20
+ */
 
 import Taro, { Component } from '@tarojs/taro'
 import {View } from '@tarojs/components'
@@ -5,6 +15,7 @@ import { connect } from "@tarojs/redux";
 import { normalizeQuerys } from '@/utils'
 
 import './landing.scss'
+
 @connect(() => ({}), (dispatch) => ({
   onUserLanding: (land_params) => dispatch({ type: 'user/landing', payload: land_params })
 }))
@@ -26,7 +37,7 @@ export default class Landing extends Component {
 
   async fetch () {
     Taro.redirectTo({
-      url: '/pages/auth/reg'
+      url: '/subpage/pages/auth/reg'
     })
   }
 

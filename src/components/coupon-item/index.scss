@@ -1,18 +1,21 @@
 @import "../../style/imports";
 
 .coupon-item-index {
-  display: flex;
-  justify-content: space-between;
+  width: 100%;
   padding: 0 10px;
   box-sizing: border-box;
+  margin-bottom: $edge-margin;
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .coupon-item {
-    flex: 1;
+    width: 100%;
     min-height:180px;
     position: relative;
     display: flex;
     justify-content: space-between;
-    margin-bottom: $edge-margin;
-
     &__check {
       width: 32px;
       margin-right:10px;
@@ -108,12 +111,41 @@
       background: #fff;
       font-size: 24px;
       border-radius: 0 10px 10px 0;
+
+      &__bottom{
+        position: absolute;
+        bottom: 10rpx;
+        right: 10rpx;
+        font-size: 24rpx;
+        display: flex;
+        align-items: center; 
+        line-height: 1;
+      
+        .text{
+          margin-right: 6rpx;
+          font-size:inherit;
+        }
+        .iconfont{
+          transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+          font-size:inherit;
+
+          &.bottom{
+            transform:rotate(180deg);
+          }
+        }
+      }
     }
     &___description {
       padding-right: 20px;
       flex: 1;
       color: #666;
       font-size: 24px;
+      .checkDetail {
+        margin-top: 20px;
+        font-size: 22px;
+        height: 50px;
+        line-height: 50px;
+      }
     }
     &___time {
       font-size: 20px;
@@ -121,12 +153,37 @@
     }
     &___used {
       text-align: right;
-      .icon-used {
+      .icon-used, .icon-yiguoqi {
         position: absolute;
         top: 5px;
         right: 15px;
         font-size: 80px;
       }
     }
+  }
+  .detail {
+    box-sizing: border-box;
+    max-height: 0;
+    font-size: 22px;
+    overflow: hidden;
+    transition: all 0.3s;
+    background-color: white;
+    margin-top:10rpx; 
+    margin-bottom:30rpx;
+    padding-left:16rpx;
+    padding-right:16rpx; 
+    color: #aaa;
+    word-wrap:break-word;
+
+    view{
+      font-size: 22px;
+    }
+
+    &.show {
+      max-height: 400rpx;  
+      padding-top:16rpx;
+      padding-bottom:16rpx;
+    }
+ 
   }
 }

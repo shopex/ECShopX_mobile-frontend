@@ -16,15 +16,20 @@ export function add (params) {
   return req.post(`/cart`, params)
 }
 
-export function fastBuy (params) {
-  const { item_id, num = 1 } = params
-  return req.post('/cart', {
+export function fastBuy (params,isPointitem) {
+  const { item_id, num = 1, bargain_id,distributor_id } = params
+  const query = {
     cart_type: 'fastbuy',
     item_id,
     num,
+    distributor_id,
     isAccumulate: false,
-    shop_type: 'distributor'
-  })
+    shop_type: isPointitem?'pointsmall':'distributor'
+  }
+  if (bargain_id) {
+    query.bargain_id = bargain_id
+  }
+  return req.post('/cart', query)
 }
 
 export function del ({ cart_id }) {
@@ -65,4 +70,13 @@ export function coupons (params) {
 
 export function likeList (params) {
   return req.get('/promotions/recommendlike', params)
+}
+
+export function selectedPlusitem (params) {
+  return req.post('/cart/check/plusitem', params)
+}
+
+// 消息通知
+export function getCartRemind (params) {
+  return req.get('/cartremind/setting', params)
 }

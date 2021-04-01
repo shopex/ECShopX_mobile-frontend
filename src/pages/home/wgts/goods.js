@@ -1,12 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Video, SwiperItem } from '@tarojs/components'
-import { QnImg } from '@/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import { View, Text } from '@tarojs/components'
+import { SpImg } from '@/components'
 import { connect } from '@tarojs/redux'
+import { Tracker } from "@/service";
+import entry from '@/utils/entry'
 import api from '@/api'
 
 import './goods.scss'
+
 @connect(({ cart, member }) => ({
   cart,
   favs: member.favs
@@ -14,8 +15,8 @@ import './goods.scss'
   onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
   onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
   onAddFav: ({ item_id }) => dispatch({ type: 'member/addFav', payload: { item_id } }),
-	onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } }),
-	onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
+  onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } }),
+  onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
 }))
 export default class WgtGoods extends Component {
   static options = {
@@ -26,7 +27,7 @@ export default class WgtGoods extends Component {
     info: null
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -36,7 +37,7 @@ export default class WgtGoods extends Component {
     }
   }
 
-  handleClickItem = (id) => {
+  handleClickItem = (item) => {
     // const { info } = this.props
 
     /*if(info.data) {
@@ -54,7 +55,7 @@ export default class WgtGoods extends Component {
     }*/
     try {
       Taro.navigateTo({
-        url: `/pages/item/espier-detail?id=${id}`
+        url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id || 0}`
       })
     } catch (error) {
       console.log(error)
@@ -66,7 +67,7 @@ export default class WgtGoods extends Component {
   }
 
   handleSwiperChange = (e) => {
-    const { current  } = e.detail
+    const { current } = e.detail
 
     this.setState({
       curIdx: current
@@ -90,7 +91,7 @@ export default class WgtGoods extends Component {
         return false
       }
     }*/
-    if(type === 'collect') {
+    if (type === 'collect') {
       /*if(this.state.count === 0) {
         let is_fav = Boolean(this.props.favs[item_data.item_id])
         this.setState({
@@ -116,8 +117,11 @@ export default class WgtGoods extends Component {
       this.setState({
         is_fav: !this.state.is_fav
       })*/
-      if(!item_data.favStatus) {
+      if (!item_data.favStatus) {
         await api.member.addFav(item_data.item_id)
+
+        Tracker.dispatch("GOODS_COLLECT", info);
+
         this.props.onAddFav(item_data)
         Taro.showToast({
           title: '已加入收藏',
@@ -134,37 +138,42 @@ export default class WgtGoods extends Component {
       this.props.onClick()
     }
 
-    if(type === 'buy') {
+    if (type === 'buy') {
       try {
-        const { distributor_id } = Taro.getStorageSync('curStore')
+        const isOpenStore = await entry.getStoreStatus()
+        const { distributor_id, store_id } = Taro.getStorageSync('curStore')
+        let id = Number(item_data.distributor_id) || 0
+        if (APP_PLATFORM === 'standard' && !id) {
+          id = isOpenStore ? store_id : distributor_id
+        }
 
         await api.cart.add({
-          item_id:item_data.item_id,
-          distributor_id,
-					num: 1,
-					shop_type: 'distributor'
+          item_id: item_data.item_id,
+          distributor_id: id,
+          num: 1,
+          shop_type: 'distributor'
         })
         Taro.showToast({
           title: '成功加入购物车',
           icon: 'success'
-				})
-				this.fetchCartcount()
+        })
+        this.fetchCartcount()
       } catch (error) {
         console.log(error)
       }
     }
 
   }
-	async fetchCartcount() {
+  async fetchCartcount() {
     try {
-      const { item_count } = await api.cart.count({shop_type: 'distributor'})
+      const { item_count } = await api.cart.count({ shop_type: 'distributor' })
       this.props.onUpdateCartCount(item_count)
     } catch (e) {
       console.error(e)
     }
-	}
+  }
 
-  render () {
+  render() {
     const { info } = this.props
     const { curIdx, is_fav } = this.state
     if (!info) {
@@ -186,10 +195,10 @@ export default class WgtGoods extends Component {
           {
             data.map(item => {
               return (
-                <View className='goods-content' key={item.item_id} onClick={this.handleClickItem.bind(this, item.item_id)}>
+                <View className='goods-content' key={item.item_id} onClick={this.handleClickItem.bind(this, item)}>
                   <View className='goods-content__info'>
                     <View className='goods-content__info_img'>
-                      <QnImg
+                      <SpImg
                         img-class='img-style'
                         src={item.img_url}
                         mode='aspectFill'

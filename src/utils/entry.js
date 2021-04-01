@@ -13,12 +13,11 @@ async function entryLaunch(data, isNeedLocate) {
   } else {
     options = data
   }
-
   // 如果没有带店铺id
   if (!options.dtid) {
-    let { distributor_id } = Taro.getStorageSync('curStore')
+    let { distributor_id,store_id } = Taro.getStorageSync('curStore')
     if (distributor_id) {
-      options.dtid = distributor_id
+      options.dtid = options.isStore ? store_id : distributor_id
     }
   }
   let dtidValid = false
@@ -53,27 +52,41 @@ async function entryLaunch(data, isNeedLocate) {
 }
 
 //获取定位配置
+// async function getLocalSetting() {
+//   const filter = {template_name: 'yykweishop', version: 'v1.0.1', name: 'setting'}
+//   const res = await api.category.getCategory(filter)
+//   const data = res.length ? res[0].params : null
+//   if (res.length > 0) {
+//     if (!data || !data.config) {
+//       return true
+//     } else if(data.config.location){
+//       return true
+//     } else {
+//       return false
+//     }
+//   } else {
+//     return true
+//   }
+//   return positionStatus
+// }
 async function getLocalSetting() {
-  const filter = {template_name: 'yykweishop', version: 'v1.0.1', name: 'setting'}
-  const res = await api.category.getCategory(filter)
-  const data = res.length ? res[0].params : null
-  if (res.length > 0) {
-    if (!data || !data.config) {
-      return true
-    } else if(data.config.location){
-      return true
-    } else {
-      return false
-    }
-  } else {
+  const url = '/pagestemplate/setInfo'
+  const {is_open_wechatapp_location} = await req.get(url)
+  if (is_open_wechatapp_location == 1) {
     return true
+  } else {
+    return false
   }
-  return positionStatus
 }
 
+
+  //   store = {
+  //     distributor_id:0
+  //   }
+  //   Taro.setStorageSync('curStore', store)
 async function getLocal (isNeedLocate) {
-  const positionStatus = await getLocalSetting()
   let store = null
+  const positionStatus = await getLocalSetting()
   if (!positionStatus) {
     store = await api.shop.getShop()
   } else {
@@ -86,41 +99,89 @@ async function getLocal (isNeedLocate) {
       }
       store = await api.shop.getShop(param)
     } else {
-      if (process.env.TARO_ENV === 'weapp') {
-        var locationData = await getLoc()
-        if (locationData !== '') {
-          let param = {}
-          if (isNeedLocate && positionStatus) {
-            param.lat = locationData.latitude
-            param.lng = locationData.longitude
-          }
-          store = await api.shop.getShop(param)
-        } else {
-          store = await api.shop.getShop()
+      const locationData = await getLoc()
+      if (locationData !== null && locationData !== '') {
+        let param = {}
+        if (isNeedLocate && positionStatus) {
+          param.lat = locationData.latitude
+          param.lng = locationData.longitude
         }
+        store = await api.shop.getShop(param)
       } else {
         store = await api.shop.getShop()
       }
     }
   }
+    if (!store.status) {
+      // 新增逻辑，如果开启了非门店自提流程，新增字段,开启非门店自提流程，所有的distribution_id 取值为0，store_id
+      store.store_id = 0
+      Taro.setStorageSync('curStore', store)
+    } else {
+      Taro.setStorageSync('curStore', [])
+    }
 
-  if (!store.status) {
-    Taro.setStorageSync('curStore', store)
-  } else {
-    Taro.setStorageSync('curStore', [])
-  }
+
   return store
 }
 
 async function getLoc () {
-  return await Taro.getLocation({type: 'gcj02'}).then(locationData => {
-    Taro.setStorage({ key: 'lnglat', data: locationData })
-    return locationData
-  }, res => {
-    return ''
-  })
+  if (process.env.TARO_ENV === 'weapp') {
+    return await Taro.getLocation({type: 'gcj02'}).then(async locationData => {
+      InverseAnalysis(locationData)
+      return locationData
+    }, () => {
+      return null
+    })
+  } else {
+    if (APP_PLATFORM === 'standard') {
+      return getWebLocal().catch(() => '定位错误')
+    } else {
+      return null
+    }
+  }  
 }
 
+async function getStoreStatus(){
+  const { nostores_status } = Taro.getStorageSync('otherSetting')
+  if (APP_PLATFORM === 'standard') {
+    if (nostores_status === true) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+// web定位获取
+function getWebLocal (isSetStorage = true) {
+  const { qq } = window
+  // let geolocation = new qq.maps.Geolocation('PVUBZ-E24HK-7SXJY-AGQZC-DN3IT-6EB6V', 'oneX新零售门店定位')
+  let geolocation = new qq.maps.Geolocation(APP_MAP_KEY, APP_MAP_NAME)
+  return new Promise((resolve, reject) => {
+    geolocation.getLocation(r => {
+      console.log('您的位置：'+r.lng+','+r.lat)
+      const param = {
+        latitude: r.lat,
+        longitude: r.lng
+      }
+      if (isSetStorage) {
+        Taro.setStorage({ key: 'lnglat', data: param })
+      }
+      resolve(param)
+    }, () => {
+      console.log('定位失败')
+      Taro.showToast({
+        icon: "none",
+        title: '定位失败'
+      })
+      reject('')
+    }, {
+      timeout: 3000
+    })
+  })
+}
 // 新增千人千码跟踪记录
 function trackViewNum (monitor_id, source_id) {
   let _session = Taro.getStorageSync('_session')
@@ -138,7 +199,10 @@ function trackViewNum (monitor_id, source_id) {
 // distributorId 店铺ID
 async function handleDistributorId(distributorId) {
   const res = await api.shop.getShop({distributor_id: distributorId})
+  //const isOpenStore = await getStoreStatus()
   if (res.status === false) {
+    // 新增逻辑，如果开启了非门店自提流程，新增字段,开启非门店自提流程，所有的distribution_id 取值为0，store_id
+    res.store_id = 0
     Taro.setStorageSync('curStore', res)
   } else {
     Taro.setStorageSync('curStore', [])
@@ -162,8 +226,20 @@ function parseUrlStr (urlStr) {
   return kvObj
 }
 
+// 逆解析地址
+async function InverseAnalysis (locationData) {
+  const { latitude, longitude } = locationData
+  const cityInfo = await Taro.request({
+    url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${latitude},${longitude}&key=${APP_MAP_KEY}`
+  })
+  Taro.setStorageSync('lnglat', {...locationData, ...cityInfo.data.result.address_component})
+}
+
 export default {
   entryLaunch,
   getLocal,
-  getLocalSetting
+  getLocalSetting,
+  getWebLocal,
+  InverseAnalysis,
+  getStoreStatus
 }

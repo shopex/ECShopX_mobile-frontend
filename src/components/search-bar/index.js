@@ -42,7 +42,10 @@ export default class SearchBar extends Component {
     })
     Taro.getStorage({ key: 'searchHistory' })
       .then(res => {
-        let stringArr = res.data.split(',')
+        let stringArr = res.data.split(',').filter(item => {
+          const isHave = item.trim()
+          return isHave
+        })
         this.setState({ historyList: stringArr })
       })
       .catch(() => {})
@@ -58,7 +61,7 @@ export default class SearchBar extends Component {
   }
 
   handleConfirm = (e) => {
-    if (e.detail.value) {
+    if (e.detail.value && e.detail.value.trim()) {
       Taro.getStorage({ key: 'searchHistory' })
         .then(res => {
           let stringArr = res.data.split(',')
@@ -178,7 +181,7 @@ export default class SearchBar extends Component {
             </View>
             <View className='search-input__history-list'>
              {
-                historyList.map((item, index) => <View className='search-input__history-list__btn' key={index} onClick={this.handleClickTag.bind(this, item)}>{item}</View> )
+                historyList.map((item, index) => <View className='search-input__history-list__btn' key={`${index}1`} onClick={this.handleClickTag.bind(this, item)}>{item}</View> )
              }
             </View>
             {/*<View className='search-input__history-title hot-title'>

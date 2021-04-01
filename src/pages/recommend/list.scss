@@ -4,17 +4,18 @@
   .recommend-list {
     &__toolbar {
       position: fixed;
-      top: 0;
+      top: 0;      
       left: 0;
       width: 100%;
       z-index: $z-index-toolbar;
       background: #fff;
       box-shadow: $box-shadow;
-
+      padding-top: 10px;
       .at-search-bar {
         padding-right: 30px !important;
       }
       .search-input {
+        box-shadow: none;
         &__focus{
           .at-search-bar {
             padding-right: 30px !important;
@@ -72,7 +73,7 @@
       }
     }
     &__scroll {
-      @include page-scroll($tabs-height + $searchbar-height + $navigate-height, $tabbar-height + floor($edge-margin / 2));
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + 10, $tabbar-height + floor($edge-margin / 2));
     }
     &__type-grid {
       display: flex;
@@ -80,6 +81,7 @@
       .recommend-list__item {
         width: 50%;
         padding: 10px;
+        box-sizing: border-box;
       }
     }
   }
@@ -145,9 +147,11 @@
   }
 	.region-picker{
 		display: flex;
-		justify-content: center;
+    justify-content: center;
+    align-items: center;
 		line-height: 75rpx;
 		.icon-close{
+      margin-left: 10px;
 			line-height: 75px;
 		}
 	}

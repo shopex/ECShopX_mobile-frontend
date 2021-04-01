@@ -6,7 +6,8 @@ import { withLogin } from '@/hocs'
 import { pickBy, classNames } from '@/utils'
 import { AtRate, AtTextarea, AtButton, AtImagePicker } from 'taro-ui'
 import S from '@/spx'
-import azureUploader from '@/utils/azure-wry'
+// import azureUploader from '@/utils/azure-wry'
+import imgUploader from '@/utils/upload'
 
 import './rate.scss'
 
@@ -47,14 +48,25 @@ export default class TradeRate extends Component {
         star: 0,
         content: '',
         pics: []
-      })
+      }),
+      logistics_items: ({ logistics_items = [] }) => pickBy(logistics_items, {
+        item_id: 'item_id',
+        item_spec_desc: 'item_spec_desc',
+        pic_path: 'pic',
+        title: 'item_name',
+        price: ({ item_fee }) => (+item_fee / 100).toFixed(2),
+        num: 'num',
+        star: 0,
+        content: '',
+        pics: []
+      }), 
     })
     Taro.hideLoading()
-
+    const orders = [...info.orders, ...info.logistics_items]
     let goodsList = []
     let giftList = []
-    if(info && info.orders.length > 0){
-      info.orders.map(item => {
+    if(orders && orders.length > 0){
+      orders.map(item => {
         if(item.order_item_type !== 'gift') {
           goodsList.push(item)
         } else {
@@ -86,13 +98,13 @@ export default class TradeRate extends Component {
 
   handleChangeComment (index, e) {
     const { goodsList } = this.state
-    goodsList[index].content = e.detail.value
+    goodsList[index].content = e
     this.setState({
       goodsList
     })
   }
 
-  handleImageChange = (index, files, type) => {
+  handleImageChange = async (index, files, type) => {
     const { goodsList } = this.state
     if (type === 'remove') {
       goodsList[index].pics = files
@@ -108,13 +120,11 @@ export default class TradeRate extends Component {
       return
     }
     const imgFiles = files.slice(0, 6)
-    azureUploader.uploadImagesFn(imgFiles)
-      .then(res => {
-        goodsList[index].pics = res
-        this.setState({
-          goodsList
-        })
-      })
+    const results = await imgUploader.uploadImageFn(imgFiles)
+    goodsList[index].pics = results
+    this.setState({
+      goodsList
+    })
   }
 
   handleClickSubmit = async () => {
@@ -180,7 +190,7 @@ export default class TradeRate extends Component {
         <View className='rate-list'>
           {goodsList.map((item, idx) => {
             return (
-              <View className='rate-item' key={idx}>
+              <View className='rate-item' key={`${idx}1`}>
                 <View className='goods-item'>
                   <View className='goods-item__hd'>
                     {Array.isArray(item.pic_path) && <Image

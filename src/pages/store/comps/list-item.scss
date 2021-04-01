@@ -9,6 +9,16 @@
   .store-content {
     padding-right: 20px;
     flex: 1;
+    border-right: 1PX solid #DDDDDD;
+    display: flex;
+    &_left{
+      flex:1
+    }
+    &_distance{
+      flex-basis: 100px;
+      color: #222222;
+      font-size: 20px;
+    }
     .store-name {
       font-size: 32px;
     }
