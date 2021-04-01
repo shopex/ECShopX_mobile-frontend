@@ -113,8 +113,6 @@ export default class Detail extends Component {
           uid = query.uid
         }
       }
-      console.log('%c ---------query------', 'color:red; font-size:24px')
-      console.log(entryData)
       this.fetchInfo(id)
       this.getEvaluationList(id)
        // 浏览记录

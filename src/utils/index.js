@@ -322,15 +322,19 @@ export async function buriedPoint (data) {
     subtask_id = '',
     dtid = '',
     shop_code = '',
-    item_id = ''
+    item_id = '',
+    smid = ''
   } =  await normalizeQuerys(params)
+  let employee_number = smid, store_bn = ''
+  if (gu) {
+    [employee_number, store_bn] = gu.split('_')
+  }
   // 任务埋点
   if (subtask_id) {
     const { distributor_id: shopId } = Taro.getStorageSync('curStore') 
     if (APP_PLATFORM === 'standard') {
       dtid= shopId
     }
-    const [employee_number, store_bn] = gu.split('_')
     const newData = {
       employee_number,
       store_bn,
@@ -340,19 +344,16 @@ export async function buriedPoint (data) {
       item_id,
       ...data
     }
-    console.log('%c ---------buriedPoint Data------', 'color:red; font-size:24px')
-    console.log(newData)
     api.wx.taskReportData(newData)
   }
-  // 互动埋点
-  const smid = Taro.getStorageSync('s_smid')
-  if (data.event_type && S.getAuthToken() && smid) {
+  if (data.event_type && S.getAuthToken() && employee_number) {
     const { userId } = Taro.getStorageSync('userinfo')
     api.wx.interactiveReportData({
-      event_id: smid,
+      event_id: employee_number,
       user_type: 'wechat',
       user_id: userId,
-      event_type: data.event_type
+      event_type: data.event_type,
+      store_bn
     })
   }
 }
