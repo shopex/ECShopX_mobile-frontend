@@ -316,6 +316,7 @@ export async function buriedPoint (data) {
     shop_code = '',
     item_id = ''
   } =  await normalizeQuerys(params)
+  // 任务埋点
   if (subtask_id) {
     const { distributor_id: shopId } = Taro.getStorageSync('curStore') 
     if (APP_PLATFORM === 'standard') {
@@ -333,7 +334,11 @@ export async function buriedPoint (data) {
     }
     console.log('%c ---------buriedPoint Data------', 'color:red; font-size:24px')
     console.log(newData)
-    api.wx.reportData(newData)
+    api.wx.taskReportData(newData)
+  }
+  // 互动埋点
+  if (data.event_type) {
+    api.wx.taskReportData(data)
   }
 }
 

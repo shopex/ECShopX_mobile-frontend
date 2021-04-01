@@ -60,9 +60,16 @@ export function getShareId (params) {
   })
 }
 
-// 埋点上报
-export function reportData (params) {
+// 任务埋点上报
+export function taskReportData (params) {
   return req.get('/salesperson/subtask/post', {
+    ...params
+  })
+}
+
+// 互动埋点上报
+export function interactiveReportData (params) {
+  return req.get('/salesperson/relationshipcontinuity', {
     ...params
   })
 }
