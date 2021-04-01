@@ -37,7 +37,7 @@ export default class TradeList extends Component {
     }
   }
 
-  componentDidShow() {
+  componentDidShow () {
     const { status } = this.$router.params
     const tabIdx = this.state.tabList.findIndex(tab => tab.status === status)
 
@@ -65,7 +65,7 @@ export default class TradeList extends Component {
 
   onPullDownRefresh = () => {
     Tracker.dispatch("PAGE_PULL_DOWN_REFRESH");
-    // debugger
+ 
     Taro.showLoading({
       title: '加载中',
       icon: 'none',
@@ -80,11 +80,11 @@ export default class TradeList extends Component {
   }
 
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.hideLayer()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { tabList, curTabIdx } = this.state
 
     params = _mapKeys({
@@ -109,9 +109,24 @@ export default class TradeList extends Component {
       total_fee: 'total_fee',
       pay_type: 'pay_type',
       point: 'point',
+      order_class:'order_class',
+      freight_fee:'freight_fee',
+      freight_type:'freight_type', 
       type: 'type',
       is_rate: 'is_rate',
       create_date: 'create_date',
+      is_all_delivery: "is_all_delivery",
+      is_logistics: 'is_split',
+      receipt_type: 'receipt_type',
+      delivery_type: 'delivery_type',
+      pay_status: 'pay_status',
+      delivery_status: "delivery_status",
+      delivery_code: 'delivery_code',
+      delivery_corp: 'delivery_corp',
+      delivery_corp_name: 'delivery_corp_name',
+      delivery_id: 'delivery_id',
+      orders_delivery_id: 'orders_delivery_id',
+      order_type: 'order_type',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'item_id',
@@ -125,7 +140,7 @@ export default class TradeList extends Component {
         item_fee: 'item_fee',
         point: 'item_point',
         num: 'num',
-        order_item_type:'order_item_type'
+        order_item_type: 'order_item_type'
       })
     })
 
@@ -160,15 +175,30 @@ export default class TradeList extends Component {
   }
 
   handleClickItem = (trade) => {
-    const { tid } = trade
+    const { tid } = trade;
+
+    console.log("----handleClickItem----",trade)
+
+    let url=`/subpage/pages/trade/detail?id=${tid}`;
+
+    if(trade.order_class==="pointsmall"){
+      url+=`&type=pointitem`
+    }
 
     Taro.navigateTo({
-      url: `/subpage/pages/trade/detail?id=${tid}`
+      url
     })
   }
 
   handleClickItemBtn = async (trade, type) => {
     const { tid } = trade
+
+    let detailUrl=`/subpage/pages/trade/detail?id=${tid}`;
+
+    if(trade.order_class==="pointsmall"){
+      detailUrl+=`&type=pointitem`
+    }
+
     if (type === 'confirm') {
       await api.trade.confirm(tid)
       const { fullPath } = getCurrentRoute(this.$router)
@@ -176,7 +206,7 @@ export default class TradeList extends Component {
         url: fullPath
       })
       return
-    }
+    } 
 
     switch (type) {
       case 'cancel':
@@ -189,9 +219,23 @@ export default class TradeList extends Component {
           url: `/marketing/pages/item/rate?id=${tid}`
         })
         break
+      case 'delivery':
+        {
+          let { delivery_code, delivery_corp, delivery_corp_name, orders_delivery_id, delivery_type, is_all_delivery, tid, order_type} = trade
+          if (is_all_delivery || delivery_type === 'old') {
+            Taro.navigateTo({
+              url: `/subpage/pages/trade/delivery-info?delivery_id=${orders_delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name || delivery_corp}&delivery_type=${delivery_type}&order_type=${order_type}&order_id=${tid}`
+            })
+          } else {
+            Taro.navigateTo({
+              url: `/subpage/pages/trade/split-bagpack?order_type=${order_type}&order_id=${tid}`
+            })
+          }
+        }
+        break
       default:
         Taro.navigateTo({
-          url: `/subpage/pages/trade/detail?id=${tid}`
+          url:detailUrl
         })
     }
   }
@@ -214,9 +258,9 @@ export default class TradeList extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
-    const { curTabIdx, curItemActionsId, tabList, list, page, rateStatus } = this.state
+    const { curTabIdx, curItemActionsId, tabList, list = [], page, rateStatus } = this.state
 
     return (
       <View className='page-trade-list'>

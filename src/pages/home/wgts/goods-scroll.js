@@ -43,11 +43,11 @@ export default class WgtGoodsScroll extends Component {
       this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
     } else if (type === 'limitTimeSale') {
       Taro.navigateTo({
-        url: `/pages/item/seckill-goods-list?seckill_type=limited_time_sale&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
+        url: `/marketing/pages/item/seckill-goods-list?seckill_type=limited_time_sale&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
       })
     } else {
       Taro.navigateTo({
-        url: `/pages/item/seckill-goods-list?seckill_type=normal&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
+        url: `/marketing/pages/item/seckill-goods-list?seckill_type=normal&seckill_id=${seckillId}&dis_id=${this.props.dis_id || ''}`
       })
     }
   }
@@ -57,7 +57,7 @@ export default class WgtGoodsScroll extends Component {
     const { config } = this.props.info
     const { moreLink } = config
     if (moreLink) {
-      linkPage(moreLink.linkPage, moreLink.id)
+      linkPage(moreLink.linkPage, moreLink)
     } else {
       this.navigateToList(config.type, config.seckillId)
     }
@@ -123,7 +123,7 @@ export default class WgtGoodsScroll extends Component {
                     {config.leaderboard && (
                       <View className='subscript'>
                         <View className='subscript-text'>NO.{idx + 1}</View>
-                        <Image className='subscript-img' src='/assets/imgs/paihang.png' />
+                        <Image className='subscript-img' lazyLoad src='/assets/imgs/paihang.png' />
                       </View>
                     )}
                     <View className='thumbnail'>

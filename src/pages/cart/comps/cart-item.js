@@ -73,7 +73,12 @@ export default class GoodsItem extends Component {
               <Text className='cart-item__tag'> 换购 </Text>
             )
           }{info.title}</View>
-							<Text className='cart-item__desc'>{info.desc}</Text>
+          {
+            info.desc && (
+            <Text className='cart-item__desc'>{info.desc}</Text>
+            )
+          }
+							
 							{
 								info.item_spec_desc && (
 									<Text className='cart-item__desc'>{info.item_spec_desc}</Text>

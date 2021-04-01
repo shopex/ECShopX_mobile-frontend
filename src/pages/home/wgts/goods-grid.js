@@ -26,7 +26,7 @@ export default class WgtGoodsGrid extends Component {
   handleClickMore = () => {
     const { moreLink } = this.props.info.config
     if (moreLink) {
-      linkPage(moreLink.linkPage, moreLink.id)
+      linkPage(moreLink.linkPage, moreLink)
     } else {
       this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
     }
@@ -60,12 +60,12 @@ export default class WgtGoodsGrid extends Component {
   render() {
     const { info, dis_id = '' } = this.props
     console.log(dis_id)
+    console.log('--goodsgridinfo--',info);
     if (!info) {
       return null
     }
 
     const { base, data, config } = info
-    console.log(info, 31)
     /*let listData = []
     data.map(item => {
       listData.push({
@@ -124,10 +124,10 @@ export default class WgtGoodsGrid extends Component {
                         />
                       </View>
                       <View className='caption'>
-                        {config.brand && item.brand && (
+                        {config.brand && (
                           <SpImg
                             img-class='goods-brand'
-                            src={item.brand}
+                            src={item.brand?item.brand:'https://fakeimg.pl/60x60/EFEFEF/CCC/?text=brand&font=lobster'}
                             mode='aspectFill'
                             width='300'
                           />
@@ -147,7 +147,7 @@ export default class WgtGoodsGrid extends Component {
                           && <View className='goods-price'>
                             <Text className='cur'>¥</Text>{price}
                             {
-                              marketPrice != 0 &&
+                              (marketPrice && marketPrice != 0)&&
                               <Text className='market-price'>{marketPrice}</Text>
                             }
                           </View>

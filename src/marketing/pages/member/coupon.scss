@@ -1,0 +1,13 @@
+@import "../../../style/imports";
+
+.coupon-list {
+  background: #f6f6f6;
+  &__scroll {
+    @include page-scroll($navigate-height + $tabs-height, $edge-margin);
+    box-sizing: border-box;
+  }
+}
+
+.coupon-list-ticket {
+  padding-top: 20px;
+}

@@ -28,7 +28,7 @@ export default class DistributionGoods extends Component {
       ],
       tabList: [
         { title: '推广商品', iconType: 'home', iconPrefixClass: 'icon',url: '/marketing/pages/distribution/goods',urlRedirect: true },
-        { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/marketing/pages/distribution/good-category', urlRedirect: true },
+        { title: '分类', iconType: 'category', iconPrefixClass: 'icon', url: '/marketing/pages/distribution/good-category?status=true', urlRedirect: true },
       ],  
       localCurrent: 0,    
       query: null,
@@ -232,11 +232,14 @@ export default class DistributionGoods extends Component {
   }
 
   onShareAppMessage(res) {
+    console.log("--onShareAppMessage---",res)
+    const { from }=res;
     const { userId } = Taro.getStorageSync('userinfo')
     const { info } = res.target.dataset
 
     Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
       ...info,
+      from_type:from,
       shareType: "分享给好友"
     });
     return {

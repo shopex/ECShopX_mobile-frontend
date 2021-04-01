@@ -1,14 +1,15 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtButton, AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem } from '@/components'
+import { AtButton, AtActionSheet, AtActionSheetItem, AtNoticebar } from 'taro-ui'
+import { SpCheckbox, SpNote, TabBar, Loading, Price, NavBar, GoodsItem, } from '@/components'
 import { log, navigateTo, pickBy, classNames} from '@/utils'
 import debounce from 'lodash/debounce'
 import api from '@/api'
 import S from '@/spx'
 import { Tracker } from "@/service";
 import { withPager } from '@/hocs'
+import entry from '@/utils/entry'
 import CartItem from './comps/cart-item'
 
 import './espier-index.scss'
@@ -42,7 +43,9 @@ export default class CartIndex extends Component {
       error: null,
       isPathQrcode: false,
       cartType: 'normal',
-      crossborder_show: false
+      crossborder_show: false,
+      // 消息通知
+      remindInfo: {}
     }
 
     this.updating = false
@@ -56,6 +59,7 @@ export default class CartIndex extends Component {
         isPathQrcode: true
       })
     }
+    this.getRemind()
     this.nextPage()
 
     if (!S.getAuthToken()) return
@@ -72,11 +76,6 @@ export default class CartIndex extends Component {
     })
   }
 
-  componentDidShow () {
-    if (!S.getAuthToken() || this.state.loading) return
-    this.updateCart()
-  }
-
   componentWillReceiveProps (nextProps) {
 		console.log('componentWillReceiveProps',nextProps.list , this.props.list,nextProps.list !== this.props.list)
 
@@ -90,6 +89,11 @@ export default class CartIndex extends Component {
     this.setState({
       groups
     })
+  }
+
+  componentDidShow () {
+    if (!S.getAuthToken() || this.state.loading) return
+    this.updateCart()
   }
 
   handleLoginClick = () => {
@@ -139,7 +143,8 @@ export default class CartIndex extends Component {
   }
 
   // 活动分组
-  resolveActivityGroup (cartList) {
+  resolveActivityGroup (cartList = []) {
+    console.log(cartList)
     const groups = cartList.map(shopCart => {
       console.log('shopCart0---->',shopCart)
       const { list, used_activity = [],plus_buy_activity =[] } = shopCart
@@ -187,7 +192,8 @@ export default class CartIndex extends Component {
     return groups
   }
 
-  processCart ({ valid_cart = [], invalid_cart = [], cartType, crossborder_show }) {
+  processCart ({ valid_cart = [], invalid_cart = [], cartType, crossborder_show, item_count = 0 }) {
+    // const res = await api.cart.count({ shop_type: 'distributor' })
     let cartCount = 0
     const list = valid_cart.map(shopCart => {
       cartCount += shopCart.cart_total_num
@@ -207,7 +213,7 @@ export default class CartIndex extends Component {
 
     log.debug('[cart fetchCart]', list)
     this.props.onUpdateCart(list)
-    this.props.onUpdateCartCount(cartCount)
+    this.props.onUpdateCartCount(item_count)
 
     return list
   }
@@ -216,8 +222,13 @@ export default class CartIndex extends Component {
     let valid_cart = [], invalid_cart = [], crossborder_show = false
     const cartTypeLocal = Taro.getStorageSync('cartType')
     const { type = 'distributor' } = this.$router.params
+    const isOpenStore = await entry.getStoreStatus()//非门店自提
     const params = {
-      shop_type: type
+      shop_type: type,
+      isNostores: isOpenStore ? 1 : 0//是否开启非门店自提流程
+    }
+    if(APP_PLATFORM === 'platform'){
+      delete params.isNostores
     }
     if (cartTypeLocal === 'cross') {
       params.iscrossborder = 1
@@ -248,10 +259,11 @@ export default class CartIndex extends Component {
         error: e.message
       })
     }
-
+    const { item_count } = await api.cart.count({ shop_type: 'distributor' })
     const list = this.processCart({
       valid_cart,
       invalid_cart,
+      item_count,
       cartType: cartTypeLocal,
       crossborder_show
     })
@@ -281,6 +293,14 @@ export default class CartIndex extends Component {
     const cartMode = this.state.cartMode !== 'edit' ? 'edit' : 'default'
     this.setState({
       cartMode
+    })
+  }
+
+  // 获取购物车消息通知
+  async getRemind () {
+    const res = await api.cart.getCartRemind()
+    this.setState({
+      remindInfo: res
     })
   }
 
@@ -341,16 +361,24 @@ export default class CartIndex extends Component {
     this.updateCart()
   }
 
-  handleQuantityChange = async (shop_id, item, num, e) => {
+  handleQuantityChange = async (shop_id, item, num, e) => { 
     const { type = 'distributor' } = this.$router.params
     await api.cart.updateNum(shop_id, item.cart_id, num, type)
     this.updateCart()
 
     // 购物车追加
-    if (item.num < parseInt(num)) {
+    if (item.num < parseInt(num)) {  
       Tracker.dispatch("APPEND_TO_CART_IN_CART", {
         ...item,
+        goods_id:item.goods_id||item.item_id,
         num: parseInt(num) - item.num,
+        goods_num: num
+      });
+    }else{ 
+      
+      Tracker.dispatch("REMOVE_FROM_CART_NUM", {
+        ...item,
+        num: item.num-parseInt(num),
         goods_num: num
       });
     }
@@ -438,6 +466,7 @@ export default class CartIndex extends Component {
       curSymbol: 'cur.symbol',
       distributor_id: 'shop_id',
       type: 'type',
+      goods_id:'goods_id',
       origincountry_name: 'origincountry_name',
       origincountry_img_url: 'origincountry_img_url',
       promotions: ({ promotions = [], cart_id }) => promotions.map(p => {
@@ -479,24 +508,25 @@ export default class CartIndex extends Component {
       // console.log(111)
     })
   }
-//加价购
-handleSelectPlusprice = (marketing_id) => {
-  const url = `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${marketing_id}`
-  Taro.navigateTo({
-    url: url
-  })
-}
-handleLookPlusprice = (marketing_id) =>{
-  const url = `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${marketing_id}`
-  Taro.navigateTo({
-    url: url
-  })
-}
+  //加价购
+  handleSelectPlusprice = (marketing_id) => {
+    const url = `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${marketing_id}`
+    Taro.navigateTo({
+      url: url
+    })
+  }
+
+  handleLookPlusprice = (marketing_id) =>{
+    const url = `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${marketing_id}`
+    Taro.navigateTo({
+      url: url
+    })
+  }
 
 
 
   render () {
-    const { groups, invalidList, cartMode, loading, curPromotions, likeList, page, isPathQrcode, cartType, crossborder_show } = this.state
+    const { groups, invalidList, cartMode, loading, curPromotions, likeList, page, isPathQrcode, cartType, crossborder_show, remindInfo } = this.state
     const { list, showLikeList, colors } = this.props
     console.log('groups',groups)
 
@@ -544,11 +574,27 @@ handleLookPlusprice = (marketing_id) =>{
             // )
           }
           {
+            remindInfo.is_open && <View
+              className={`${!S.getAuthToken() && 'paddingTop'}`}
+              style={`background: ${colors.data[0].primary}`}
+            >            
+              <AtNoticebar
+                marquee
+                icon='volume-plus'
+                className='notice'
+                single
+              >
+                { remindInfo.remind_content }
+              </AtNoticebar>
+            </View>
+          }
+          
+          {
             crossborder_show && 
             <View className='changeCross'>
-              <View className='content' onClick={this.onChangeCartType.bind(this)}>
+              <View className='content'>
                 <View className={`iconfont ${cartType === 'cross' ? 'icon-flight' : 'icon-shop-cart-1'}`}></View>
-                <View className='iconfont icon-repeat'></View>
+                <View className='iconfont icon-repeat' onClick={this.onChangeCartType.bind(this)}></View>
               </View>
             </View>
           }

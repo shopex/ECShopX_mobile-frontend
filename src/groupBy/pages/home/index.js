@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
  * @Date: 2020-04-23 16:38:16
  * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 16:30:22
+ * @LastEditTime: 2021-02-02 13:51:45
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
@@ -83,7 +83,7 @@ export default class GroupByIndex extends Component {
     if (S.getAuthToken() && !userInfo) {
       const info = await api.groupBy.info()
       userInfo = {
-        username: info.memberInfo.username,
+        username: info.memberInfo.nickname || info.memberInfo.username || info.memberInfo.mobile,
         avatar: info.memberInfo.avatar,
         userId: info.memberInfo.user_id,
         isPromoter: info.is_promoter,
