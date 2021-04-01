@@ -49,8 +49,9 @@ export default class WgtFloorImg extends Component {
 										<ScrollView scrollX className='img_list'>
 												{data && data.map((item, idx) => {
 														return (
-																<View className='lis' key={item.id} onClick={this.onRoute.bind(this, item.linkPage, item.id)}>
+																<View className='lis' key={item.id} onClick={this.onRoute.bind(this, item.linkPage, item)}>
 																		<Image
+																				lazyLoad
 																				className='img'
 																				src={item.imgUrl}
 																		></Image>

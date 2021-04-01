@@ -59,6 +59,15 @@ export function getCurrentRoute (router) {
   }
 }
 
+// 除以100以后的千分符
+export function formatPriceToHundred (price) {
+  if (price) {
+    return (Number(price)/100).toFixed(2).toString().replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,')
+  } else {
+    return 0
+  } 
+}
+
 export function normalizeQuerys (params = {}) {
   const { scene, ...rest } = params
   const queryStr = decodeURIComponent(scene)
@@ -261,11 +270,36 @@ export function tokenParse(token) {
 }
 
 
+// 解析字符串
+function  getQueryVariable(herf) {
+  const url = herf.split('?')
+  let query = {}
+  if (url[1]) {
+      const str = url[1]
+      // const str = url.substr(1)
+      const pairs = str.split("&")
+      for(let i = 0; i < pairs.length; i ++) {
+          const pair = pairs[i].split("=")
+          query[pair[0]] = pair[1]
+      }
+  }
+  return query
+}
+/** 是否是合法的color */
+function validColor(color) {
+  var re1 = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i
+  var re2 = /^rgb\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\)$/i
+  var re3 = /^rgba\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,(1|1.0|0.[0-9])\)$/i
+  return re2.test(color) || re1.test(color) || re3.test(color);
+}
+
 export {
   classNames,
   log,
   debounce,
 	throttle,
 	calCommonExp,
-  canvasExp
+  canvasExp,
+  getQueryVariable,
+  validColor
 }

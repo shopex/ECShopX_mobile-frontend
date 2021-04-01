@@ -11,8 +11,7 @@ export default function withTracker(Component) {
   return class WithTrackerComponent extends Component {
     constructor(props) {
       super(props);
-      this.page = this;
-      debugger;
+      this.page = this; 
     }
 
     async componentDidMount() {
@@ -99,6 +98,7 @@ export default function withTracker(Component) {
     }
 
     report(path, track, args) {
+      console.log('-------report ---------')
       const { element, method, dataKeys } = track;
       const logger = [];
       if (Object.prototype.toString.call(dataKeys) == "[object Function]") {

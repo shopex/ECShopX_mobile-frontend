@@ -16,9 +16,9 @@ function resolveOrderInfo(params) {
       order_id,
       order_time: parseInt(order_time * 1000),
       // 用户关闭支付密码的浮层时间，在 cancel_pay 下必填
-      cancel_pay_time,
+      // cancel_pay_time,
       // 用户取消订单时间，在 cancel_give_order 下必填
-      cancel_time,
+      // cancel_time,
       // 用户支付订单时间，在 pay 下必填
       pay_time,
       // 用户发起退货退款时间，在 refund 下必填
@@ -30,23 +30,23 @@ function resolveOrderInfo(params) {
   return baseData;
 }
 
-function resolveCartInfo(params, action_type) {
+function resolveCartInfo(params, action_type) {  
   const baseData = {
     sku: {
       sku_id: params.sku_id,
-      sku_name: params.sku_name
+      sku_name: params.sku_name||params.item_name||params.goods_title
     },
     spu: {
       spu_id: params.goods_id,
-      spu_name: params.goods_title
+      spu_name: params.goods_title||params.item_name
     },
     sale: {
-      original_price: params.market_price / 100,
+      original_price: Number(params.market_price)?params.market_price / 100:params.price / 100,
       current_price: params.price / 100
     },
-    goods_title: params.goods_title
+    goods_title: params.goods_title||params.item_name
   };
-  if (action_type) {
+  if (action_type) {     
     Object.assign(baseData, { action_type });
   }
   if (params.num) {
@@ -80,7 +80,7 @@ const actions = {
    * refund：用户发起退货退款
    */
   // 用户提交订单
-  ["CREATE_ORDER"](params) {
+  ["CREATE_ORDER"](params) { 
     const data = resolveOrderInfo({
       order_id: params.trade_info.order_id,
       order_time: params.timeStamp,
@@ -136,7 +136,7 @@ const actions = {
       order_id: params.trade_info.order_id,
       order_time: params.timeStamp,
       order_status: "pay",
-      pay_time: new Date().getTime(),
+      //pay_time: new Date().getTime(),
       sub_orders: [
         {
           sub_order_id: params.trade_info.order_id,
@@ -185,7 +185,7 @@ const actions = {
   ["GOODS_SHARE_TO_CHANNEL_CLICK"](params) {
     const data = {
       from_type: params.from_type || "button",
-      share_title: params.item_name,
+      share_title: params.item_name || params.share_title,
       share_image_url: params.pics ? params.pics[0] : "",
       shareType: params.shareType
     };
@@ -297,6 +297,32 @@ const actions = {
       num,
       market_price,
       price,
+      title,
+      goods_id
+    } = params;
+    const data = resolveCartInfo(
+      {
+        sku_id,
+        sku_name,
+        num,
+        market_price: parseInt(market_price * 100),
+        price: parseInt(price * 100),
+        goods_id,
+        goods_title: title
+      },
+      "append_to_cart"
+    );
+
+    Tracker.trackEvents("add_to_cart", "购物车追加", data);
+  },
+  // 购物车移除
+  ["REMOVE_FROM_CART_NUM"](params) {
+    const {
+      item_id: sku_id,
+      item_spec_desc: sku_name,
+      num,
+      market_price,
+      price,
       title
     } = params;
     const data = resolveCartInfo(
@@ -307,15 +333,17 @@ const actions = {
         market_price: parseInt(market_price * 100),
         price: parseInt(price * 100),
         goods_id: sku_id,
-        goods_title: title
+        goods_title: title,
       },
-      "append_to_cart_in_cart"
+      "remove_from_cart"
     );
 
-    Tracker.trackEvents("add_to_cart", "购物车追加", data);
+    Tracker.trackEvents("add_to_cart", "购物车移除", data);
   },
   // 首次加车
-  ["GOODS_ADD_TO_CART"](params) {
+  ["GOODS_ADD_TO_CART"](params) {  
+
+    
     const {
       item_id: sku_id,
       propsText: sku_name,
@@ -323,12 +351,13 @@ const actions = {
       market_price,
       price,
       goods_id,
-      itemName: goods_title
+      itemName: goods_title,
+      item_name
     } = params;
 
     const data = resolveCartInfo(
-      { sku_id, sku_name, num, market_price, price, goods_id, goods_title },
-      "first_add_to_cart"
+      { sku_id, sku_name, num, market_price, price, goods_id, goods_title,item_name },
+      "append_to_cart"
     );
     Tracker.trackEvents("add_to_cart", "首次加车", data);
   }

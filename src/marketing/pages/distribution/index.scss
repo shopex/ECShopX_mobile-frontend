@@ -46,6 +46,28 @@
       text-align: center;
     }
   }
+  .bandCardInfo {
+    display: flex;
+    align-items: center;
+    color: #e6a23b;
+    background: #fff;
+    padding: 20px 0;
+    .icon-info {
+      font-size: 56px;
+      padding: 0 30px;
+    }
+    .info {
+      flex: 1;
+      padding-right: 60px;
+      .title {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      .content {
+        font-size: 24px;
+      }
+    }
+  }
   .achievement {
     .section-body {
       font-size: 24px;

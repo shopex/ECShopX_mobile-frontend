@@ -5,8 +5,8 @@
  * @Description: 助力详情
  * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
  * @Date: 2020-09-22 14:08:32
- * @LastEditors: Arvin
- * @LastEditTime: 2020-10-22 10:58:22
+ * @LastEditors: PrendsMoi
+ * @LastEditTime: 2021-02-22 18:18:35
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
@@ -76,11 +76,11 @@ export default class Detail extends Component {
   getBoostDetail = async () => {
     Taro.showLoading({mask: true})
     const { bargain_id } = this.$router.params
-    const data = await api.boost.getDetail({
-      template_name: 'yykcutdown',
-      name: 'banner',
-      page_name: 'pages/kanjia'
-    })
+    // const data = await api.boost.getDetail({
+    //   template_name: 'yykweishop',
+    //   name: 'banner',
+    //   page_name: 'pages/kanjia'
+    // })
     const {
       bargain_info = {},
       user_bargain_info = {},
@@ -102,7 +102,7 @@ export default class Detail extends Component {
     }
 
     this.setState({
-      adPic: data[0] ? data[0].params.ad_pic : '',
+      adPic: bargain_info ? bargain_info.ad_pic : '',
       info: pickBy(bargain_info, {
         item_id: 'item_id',
         bargain_id: 'bargain_id',
@@ -138,6 +138,40 @@ export default class Detail extends Component {
     })
   }
 
+
+  base64Tosrc = (base64data) => {
+    const fsm = Taro.getFileSystemManager()
+    const FILE_BASE_NAME = `tmp_base64src_${new Date().getTime()}`
+    return new Promise((resolve, reject) => {
+    const [, format, bodyData] = /data:image\/(\w+);base64,(.*)/.exec(base64data) || []
+    if (!format) {
+      reject(new Error('ERROR_BASE64SRC_PARSE'))
+    }
+    const filePath = `${Taro.env.USER_DATA_PATH}/${FILE_BASE_NAME}.${format}`
+    // const buffer = Taro.base64ToArrayBuffer(bodyData)
+    fsm.writeFile({
+      filePath,
+      data: bodyData,
+      encoding: 'base64',
+      success() {
+        Taro.getImageInfo({
+          src: filePath,
+          success(res){
+            resolve(res.path)
+          },
+          fail(e) {
+            console.log(e)
+          }
+        })
+      },
+      fail() {
+        reject(new Error('ERROR_BASE64SRC_WRITE'))
+      }
+    })
+    })
+  }
+
+
   // 绘制海报
   drawPoster = async () => {
     const { info, adPic, userInfo } = this.state
@@ -145,10 +179,9 @@ export default class Detail extends Component {
       bargain_id: info.bargain_id,
       user_id: userInfo.user_id
     })
+    // const file = await this.base64Tosrc(codeUrl.base64Image)
     const adImg = await Taro.getImageInfo({src: adPic})
-    const codeImg = await Taro.getImageInfo({src: codeUrl})
-    console.log(adImg)
-    console.log(codeImg)
+    const codeImg = await this.base64Tosrc(codeUrl.base64Image)
     const context = Taro.createCanvasContext('poster', this)
     context.drawImage(adImg.path, 0, 0, 375, 380)
     context.save()
@@ -164,7 +197,7 @@ export default class Detail extends Component {
     context.fillRect(127, 340, 70, 60)
     context.restore()
     context.save()
-    context.drawImage(codeImg.path, 127, 340, 121, 111)
+    context.drawImage(codeImg, 127, 320, 121, 121)
     // context.restore()
     context.save()
     context.setFontSize(14)

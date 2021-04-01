@@ -35,6 +35,9 @@ export default class WxAuth extends Component {
   }
 
   async autoLogin () {
+    Taro.showLoading({
+      title: '登录中'
+    })
     const { code } = await Taro.login()
     try {
       const { token } = await api.wx.login({ code })
@@ -52,7 +55,7 @@ export default class WxAuth extends Component {
       if (this.$router.params.redirect) {
         const memberInfo = await api.member.memberInfo()
         const userObj = {
-          username: memberInfo.memberInfo.username,
+          username: memberInfo.memberInfo.nickname || memberInfo.memberInfo.username || memberInfo.memberInfo.mobile,
           avatar: memberInfo.memberInfo.avatar,
           userId: memberInfo.memberInfo.user_id,
           isPromoter: memberInfo.is_promoter,
@@ -74,12 +77,14 @@ export default class WxAuth extends Component {
       if(info.is_bind === '1'){
         return this.redirect()
       }
+      console.log("------a-----")
       // 绑定导购
       await api.member.setUsersalespersonrel({
         salesperson_id
       })
       return this.redirect()
     } catch (e) {
+      Taro.hideLoading()
       if (e.res.data.error.code === 401002) {
         setTimeout(() => {
           Taro.navigateBack()
@@ -94,6 +99,7 @@ export default class WxAuth extends Component {
   redirect () {
     const redirect = this.$router.params.redirect
     let { source } = this.$router.params
+    Taro.hideLoading()
     let redirect_url = ''
     if (Taro.getStorageSync('isqrcode') === 'true') {
       redirect_url = redirect

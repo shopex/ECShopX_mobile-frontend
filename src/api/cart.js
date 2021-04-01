@@ -16,14 +16,15 @@ export function add (params) {
   return req.post(`/cart`, params)
 }
 
-export function fastBuy (params) {
-  const { item_id, num = 1, bargain_id } = params
+export function fastBuy (params,isPointitem) {
+  const { item_id, num = 1, bargain_id,distributor_id } = params
   const query = {
     cart_type: 'fastbuy',
     item_id,
     num,
+    distributor_id,
     isAccumulate: false,
-    shop_type: 'distributor'
+    shop_type: isPointitem?'pointsmall':'distributor'
   }
   if (bargain_id) {
     query.bargain_id = bargain_id
@@ -73,4 +74,9 @@ export function likeList (params) {
 
 export function selectedPlusitem (params) {
   return req.post('/cart/check/plusitem', params)
+}
+
+// 消息通知
+export function getCartRemind (params) {
+  return req.get('/cartremind/setting', params)
 }

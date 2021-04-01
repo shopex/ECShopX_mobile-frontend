@@ -1,17 +1,32 @@
+/*
+ * @Author: your name
+ * @Date: 2021-01-25 10:54:19
+ * @LastEditTime: 2021-02-24 16:56:29
+ * @LastEditors: PrendsMoi
+ * @Description: In User Settings Edit
+ * @FilePath: /unite-vshop/src/service/tracker/platform/youshu/index.js
+ */
+import Taro from '@tarojs/taro'
 import sr from "sr-sdk-wxapp";
 import S from "@/spx";
+import { tokenParse } from "@/utils";
 import Base from "../base";
 import actions from "./actions";
 import config from "./config";
-import { tokenParse } from "@/utils";
 
 export default class Youshu extends Base {
   name = "youshu";
 
   constructor(options = {}) {
     super(options);
-    // const { onBeforeInit } = options;
 
+    console.log('---------init--------')
+    const { youshu = {} } =  Taro.getStorageSync('otherSetting') || {}
+    //后台配置的APP_ID是微信小程序需要用到的token 
+    config.token = youshu.app_id  
+     
+    console.log('---------config--------',config)
+    
     sr.init(config);
 
     this.actions = actions;
@@ -20,6 +35,8 @@ export default class Youshu extends Base {
     const token = S.getAuthToken();
     if (token) {
       const userInfo = tokenParse(token);
+      console.log("------useInfo------")
+      console.log(userInfo)
       this.setVar({
         user_id: userInfo.user_id,
         open_id: userInfo.openid,
@@ -40,7 +57,7 @@ export default class Youshu extends Base {
     sr.track(action, data);
   }
 
-  setVar(params) {
+  setVar(params) { 
     sr.setUser({
       user_id: params.user_id,
       open_id: params.open_id,

@@ -3,9 +3,11 @@ import { View, Text } from '@tarojs/components'
 import { SpImg } from '@/components'
 import { connect } from '@tarojs/redux'
 import { Tracker } from "@/service";
+import entry from '@/utils/entry'
 import api from '@/api'
 
 import './goods.scss'
+
 @connect(({ cart, member }) => ({
   cart,
   favs: member.favs
@@ -53,7 +55,7 @@ export default class WgtGoods extends Component {
     }*/
     try {
       Taro.navigateTo({
-        url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
+        url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id || 0}`
       })
     } catch (error) {
       console.log(error)
@@ -138,11 +140,16 @@ export default class WgtGoods extends Component {
 
     if (type === 'buy') {
       try {
-        const { distributor_id } = Taro.getStorageSync('curStore')
+        const isOpenStore = await entry.getStoreStatus()
+        const { distributor_id, store_id } = Taro.getStorageSync('curStore')
+        let id = Number(item_data.distributor_id) || 0
+        if (APP_PLATFORM === 'standard' && !id) {
+          id = isOpenStore ? store_id : distributor_id
+        }
 
         await api.cart.add({
           item_id: item_data.item_id,
-          distributor_id,
+          distributor_id: id,
           num: 1,
           shop_type: 'distributor'
         })

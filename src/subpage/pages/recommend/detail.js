@@ -45,18 +45,21 @@ export default class recommendDetail extends Component {
       })
   }
 
-  onShareAppMessage() {
+  onShareAppMessage(res) {
+    console.log("--onShareAppMessage---",res)
+    const { from }=res;
     const { info } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `&uid=${userId}` : ''
 
     Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
       ...info,
+      from_type:from,
       shareType: "分享给好友"
     });
     return {
       title: info.title,
-      path: `/pages/recommend/detail?id=${info.article_id}${query}`,
+      path: `/subpage/pages/recommend/detail?id=${info.article_id}${query}`,
       imageUrl: info.share_image_url || info.image_url
     }
   }

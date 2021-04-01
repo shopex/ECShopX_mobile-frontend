@@ -3,10 +3,11 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
-import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote, NavBar } from '@/components'
+import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote, NavBar, TabBar } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
 import { pickBy, classNames } from '@/utils'
+import entry from "../../utils/entry";
 
 import './list.scss'
 
@@ -41,20 +42,26 @@ export default class List extends Component {
       showDrawer: false,
       selectParams: [],
       info: {},
-      shareInfo: {}
+      shareInfo: {},
+      isOpenStore:null
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { cat_id = null, main_cat_id = null } = this.$router.params
     this.firstStatus = true
+    const isOpenStore = await entry.getStoreStatus()
+    const { store_id } = Taro.getStorageSync('curStore')
+    this.setState({
+      isOpenStore
+    })
 
     this.setState({
       query: {
         keywords: this.$router.params.keywords,
         item_type: 'normal',
         is_point: 'false',
-        distributor_id: this.$router.params.dis_id,
+        distributor_id:isOpenStore ? store_id : this.$router.params.dis_id,
         approve_status: 'onsale,only_show',
         category: cat_id ? cat_id : '',
         main_category: main_cat_id ? main_cat_id : ''
@@ -68,6 +75,20 @@ export default class List extends Component {
         })
       })
     })
+  }
+
+  componentWillReceiveProps (next) {
+    if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
+      setTimeout(() => {
+        const list = this.state.list.map(item => {
+          item.is_fav = Boolean(next.favs[item.item_id])
+          return item
+        })
+        this.setState({
+          list
+        }) 
+      })
+    }
   }
 
   onShareAppMessage() {
@@ -96,9 +117,9 @@ export default class List extends Component {
 
   async fetch(params) {
     const { page_no: page, page_size: pageSize } = params
-    const { selectParams, tagsList, curTagId } = this.state
-    const { distributor_id } = Taro.getStorageSync('curStore')
-
+    const { selectParams, tagsList, curTagId,isOpenStore } = this.state
+    const { distributor_id,store_id } = Taro.getStorageSync('curStore')
+    const { cardId } = this.$router.params
     const query = {
       ...this.state.query,
       item_params: selectParams,
@@ -108,7 +129,11 @@ export default class List extends Component {
     }
 
     if (APP_PLATFORM === 'standard') {
-      query.distributor_id = distributor_id
+      query.distributor_id = isOpenStore ? store_id : distributor_id
+    }
+
+    if (cardId) {
+      query.card_id = cardId
     }
 
     const { list, total_count: total, item_params_list = [], select_tags_list = [] } = await api.item.search(query)
@@ -375,6 +400,7 @@ export default class List extends Component {
   }
 
   handleSearchOn = () => {
+    console.log("handleSearchOn")
     this.setState({
       isShowSearch: true
     })
@@ -457,14 +483,16 @@ export default class List extends Component {
       isShowSearch,
       query
     } = this.state
-
+    const { isTabBar = '' } = this.$router.params
 		return (
 			<View className='page-goods-list'>
-        <NavBar
-          title='商品列表'
-          leftIconType='chevron-left'
-          fixed='true'
-        />
+        {
+          !isTabBar && <NavBar
+            title='商品列表'
+            leftIconType='chevron-left'
+            fixed='true'
+          />
+        }
         <View className='goods-list__toolbar'>
           <View className={`goods-list__search ${(query && query.keywords && !isShowSearch) ? 'on-search' : null}`}>
             <SearchBar
@@ -552,7 +580,7 @@ export default class List extends Component {
         </AtDrawer>
 
         <ScrollView
-          className={classNames('goods-list__scroll', tagsList.length > 0 && 'with-tag-bar')}
+          className={classNames(isTabBar ? 'goods-list__scroll_isTabBar' : 'goods-list__scroll', tagsList.length > 0 && 'with-tag-bar', isTabBar && 'isTabBar')}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
@@ -567,7 +595,7 @@ export default class List extends Component {
                   oddList.map(item => {
                     return (
                       <View
-                        className="goods-list__item"
+                        className='goods-list__item'
                         key={item.item_id}
                         data-id={item.item_id}
                       >
@@ -587,7 +615,7 @@ export default class List extends Component {
                   evenList.map(item => {
                     return (
                       <View
-                        className="goods-list__item"
+                        className='goods-list__item'
                         key={item.item_id}
                         data-id={item.item_id}
                       >
@@ -606,13 +634,12 @@ export default class List extends Component {
           }
           {
             listType === 'list' &&
-            <View className={`goods-list goods-list__type-list`}>
+            <View className='goods-list goods-list__type-list'>
               {
                 list.map(item => {
                   return (
-                    <View className='goods-list__item'>
+                    <View className='goods-list__item' key={item.item_id}>
                       <GoodsItem
-                        key={item.item_id}
                         info={item}
                         onClick={() => this.handleClickItem(item)}
                         onStoreClick={() => this.handleClickStore(item)}
@@ -639,6 +666,7 @@ export default class List extends Component {
           onClick={this.scrollBackToTop}
           bottom={30}
         />
+        { isTabBar && <TabBar />}
       </View>
     )
   }

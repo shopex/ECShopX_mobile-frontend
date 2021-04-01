@@ -18,8 +18,7 @@ const {
   APP_MAP_NAME,
   APP_TRACK,
   APP_ID,
-  APP_YOUSHU_TOKEN,
-  STORAGE
+  APP_YOUSHU_TOKEN
 } = process.env
 
 // 是否为web
@@ -149,6 +148,10 @@ const config = {
       commonChunks.push("lodash");
       commonChunks.push("date-fns");
       return commonChunks;
+    },
+    // 图片转换base64
+    imageUrlLoaderOption: {
+      limit: 0
     },
     postcss: {
       autoprefixer: {
