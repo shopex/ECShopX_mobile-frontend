@@ -5,8 +5,8 @@
 # @Description: 说明
  # @FilePath: /unite-vshop/dev.sh
 # @Date: 2020-06-10 10:15:51
- # @LastEditors: Arvin
- # @LastEditTime: 2020-09-03 10:00:52
+ # @LastEditors: PrendsMoi
+ # @LastEditTime: 2021-04-01 16:09:56
 ### 
 #/usr/bash
 
@@ -97,7 +97,10 @@ APP_COMPANY_ID='${company_id}'
 APP_PLATFORM='${platform}'
 APP_CUSTOM_SERVER='${custom_server}'
 APP_HOME_PAGE='${home_page}'
-APP_MAP_KEY='${map_key}'
+APP_TRACK=youshu
+APP_YOUSHU_TOKEN=bi281e87ab2424481a
+APP_ID=wx912913df9fef6ddd
+APP_MAP_KEY='${map_key}
 APP_MAP_NAME='${map_name}'
 ' > ./.env
 
