@@ -22,7 +22,7 @@ import './app.scss'
 const { store } = configStore()
 
 // 三天时间戳
-const treeDay = 86400000  *3
+const treeDay = 86400000 * 3
 // 获取首页配置
 const getHomeSetting = async () => {
   const {
@@ -326,7 +326,7 @@ class App extends Component {
     if ((!guideExp || (Date.parse(new Date()) - guideExp > treeDay))) {
       Taro.setStorageSync('s_smid', '')
       Taro.setStorageSync('chatId', '')
-
+      Taro.setStorageSync('s_dtid', '')
     }
     // 根据路由参数
     const { query } = this.$router.params
