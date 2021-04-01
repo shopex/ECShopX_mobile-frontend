@@ -5,7 +5,7 @@ import { connect } from '@tarojs/redux'
 import api from '@/api'
 import S from '@/spx'
 import { withPager } from '@/hocs'
-import { pickBy, formatTime } from '@/utils'
+import { pickBy, formatTime, buriedPoint } from '@/utils'
 import { Tracker } from "@/service";
 
 import '../home/coupon-home.scss'
@@ -32,6 +32,10 @@ export default class CouponHome extends Component {
       this.setState({
         shareInfo: res
       })
+    })
+    const { distributor_id } = this.$router.params
+    buriedPoint.call(this, {
+      distributor_id
     })
   }
 

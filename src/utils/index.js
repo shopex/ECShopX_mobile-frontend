@@ -73,9 +73,9 @@ export async function normalizeQuerys (params = {}) {
   const { scene, ...rest } = params
   const queryStr = decodeURIComponent(scene)
   const obj = qs.parse(queryStr)
-  if (obj.share_id) {
+  if (obj.sid || obj.share_id) {
     const data = await api.wx.getShareId({
-      share_id: obj.share_id
+      share_id: obj.sid || obj.share_id
     })
     return {
       ...rest,
@@ -301,6 +301,40 @@ function validColor(color) {
   var re2 = /^rgb\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\)$/i
   var re3 = /^rgba\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,(1|1.0|0.[0-9])\)$/i
   return re2.test(color) || re1.test(color) || re3.test(color);
+}
+
+/**
+ * 导购埋点上报
+ * @param {*} data 新增上报数据
+ */
+export async function buriedPoint (data) {
+  const params = this.$router.params
+  let {
+    gu,
+    subtask_id = '',
+    dtid = '',
+    shop_code = '',
+    item_id = ''
+  } =  await normalizeQuerys(params)
+  if (subtask_id) {
+    const { distributor_id: shopId } = Taro.getStorageSync('curStore') 
+    if (APP_PLATFORM === 'standard') {
+      dtid= shopId
+    }
+    const [employee_number, store_bn] = gu.split('_')
+    const newData = {
+      employee_number,
+      store_bn,
+      subtask_id,
+      distributor_id: dtid,
+      shop_code,
+      item_id,
+      ...data
+    }
+    console.log('%c ---------buriedPoint Data------', 'color:red; font-size:24px')
+    console.log(newData)
+    api.wx.reportData(newData)
+  }
 }
 
 export {

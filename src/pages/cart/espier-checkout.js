@@ -21,7 +21,8 @@ import {
   isArray,
   authSetting,
   normalizeQuerys,
-  redirectUrl
+  redirectUrl,
+  buriedPoint
 } from "@/utils";
 import { lockScreen } from "@/utils/dom";
 import { Tracker } from "@/service";
@@ -141,19 +142,16 @@ export default class CartCheckout extends Component {
       isNeedPackage: false,
       pick: {},
       isOpenStore: null
-    };
-  }
+    }
 
-
-  isPointitemGood() { 
-    const options = this.$router.params;
-    return options.type === 'pointitem';
+    // 路由参数缓存
+    this.routerParams = {}
   }
 
   async componentDidMount() {
-    // this.fetchAddress()
     if (this.$router.params.scene) {
       const data = await normalizeQuerys(this.$router.params)
+      this.routerParams = data
       Taro.setStorageSync(
         "espierCheckoutData",
         data
@@ -253,14 +251,16 @@ export default class CartCheckout extends Component {
     // this.getShop()
     this.fetchAddress();
     this.fetchZiTiShop();
+    // 埋点处理
+    buriedPoint.call(this)
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.address !== this.props.address) {
-      this.fetchAddress();
+      this.fetchAddress()
     }
     if (nextProps.zitiShop !== this.props.zitiShop) {
-      this.fetchZiTiShop();
+      this.fetchZiTiShop()
     }
   }
   componentWillUnmount() {
@@ -288,6 +288,11 @@ export default class CartCheckout extends Component {
     }
   }
 
+  isPointitemGood() { 
+    const options = this.$router.params;
+    return options.type === 'pointitem';
+  }
+
   async fetchZiTiShop() {
     const { shop_id, scene, cart_type, seckill_id = null, ticket = null, order_type } = this.$router.params;
     //const { zitiShop } = this.props;
@@ -296,7 +301,7 @@ export default class CartCheckout extends Component {
     let id = shop_id;
     let ztparams = {}
     if (scene) {
-      const { dtid } = await normalizeQuerys(this.$router.params);
+      const { dtid } = this.routerParams
       id = dtid;
     }
     const isOpenStore = await entry.getStoreStatus()
@@ -396,7 +401,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = await normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       salesperson_id = espierCheckoutData.smid;
     }
@@ -425,7 +430,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = await normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       distributor_id = espierCheckoutData.dtid;
     }
@@ -446,7 +451,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = await normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       return espierCheckoutData.dtid;
     }
@@ -502,7 +507,6 @@ export default class CartCheckout extends Component {
       goodType,
       bargain_id = ""
     } = this.$router.params
-    console.log("---this.$router.params---", this.$router.params)
     let cxdid = null;
     let dtid = null;
     let smid = null;
@@ -511,7 +515,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = await normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       cxdid = espierCheckoutData.cxdid;
       dtid = espierCheckoutData.dtid;
@@ -616,6 +620,7 @@ export default class CartCheckout extends Component {
     if (isNeedPackage) {
       params.pack = pack
     }
+    // 处理导购数据(旧)
     if (cxdid) {
       params.cxdid = cxdid;
       params.distributor_id = dtid;
@@ -623,6 +628,9 @@ export default class CartCheckout extends Component {
       params.order_type = "normal_shopguide";
       params.salesman_id = smid;
     }
+
+    // 处理导购数据（新）
+    this.dealGuidInfo(params)
 
     if (this.isPointitemGood()) {
       params.order_type = "normal_pointsmall";
@@ -807,6 +815,18 @@ export default class CartCheckout extends Component {
       },
       pointInfo
     });
+  }
+
+  // 处理导购
+  dealGuidInfo (params) {
+    const smid = Taro.getStorageSync('s_smid')
+    const chatId = Taro.getStorageSync('chatId')
+    if (smid) {
+      params.salesman_id = smid 
+    }
+    if (chatId) {
+      params.chat_id = chatId
+    }
   }
 
   handleSwitchExpress = key => {
@@ -1132,7 +1152,8 @@ export default class CartCheckout extends Component {
 
     let order_id, config, payErr;
     try {
-      let params = this.getParams();
+      let params = await this.getParams();
+      const getShopId = await this.getShopId()
 
       if (APP_PLATFORM === "standard" && cart_type !== "cart") {
         const { distributor_id, store_id } = Taro.getStorageSync("curStore");
@@ -1385,7 +1406,7 @@ export default class CartCheckout extends Component {
       id = shop_id;
     }
     if (scene) {
-      const espierCheckoutData = await normalizeQuerys(this.$router.params);
+      const espierCheckoutData = this.routerParams
       id = espierCheckoutData.dtid;
     }
     this.clearPoint();

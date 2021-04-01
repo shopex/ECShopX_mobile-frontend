@@ -21,6 +21,8 @@ import './app.scss'
 
 const { store } = configStore()
 
+// 三天时间戳
+const treeDay = 86400000  *3
 // 获取首页配置
 const getHomeSetting = async () => {
   const {
@@ -314,19 +316,42 @@ class App extends Component {
     }
     // 过期时间
     const promoterExp = Taro.getStorageSync('distribution_shop_exp')
-    if (Date.parse(new Date()) - promoterExp > 86400000 * 3) {
+    if (Date.parse(new Date()) - promoterExp > treeDay) {
       Taro.setStorageSync('distribution_shop_id', '')
       Taro.setStorageSync('distribution_shop_exp', '')
+    }
+
+    // 导购数据过期时间
+    const guideExp = Taro.getStorageSync('guideExp')
+    if ((!guideExp || (Date.parse(new Date()) - guideExp > treeDay))) {
+      Taro.setStorageSync('s_smid', '')
+      Taro.setStorageSync('chatId', '')
+
     }
     // 根据路由参数
     const { query } = this.$router.params
     if (query && query.scene) {
-      const { smid , dtid, id, aid, cid } = await normalizeQuerys(query)
+      const { smid , dtid, id, aid, cid, gu, chatId } = await normalizeQuerys(query)
+      // 旧导购存放
       if (smid) {
         Taro.setStorageSync('s_smid', smid)
       }
       if (dtid) {
         Taro.setStorageSync('s_dtid', dtid)
+      }
+      // 新导购埋点数据存储导购员工工号
+      if (gu) {
+        const [employee_number, store_bn] = gu.split('_')
+        Taro.setStorageSync('s_smid', employee_number)
+        console.log(store_bn)
+      }
+      // 存储群id
+      if (chatId) {
+        Taro.setStorageSync('chatId', chatId)
+      }
+      // 设置保存时间
+      if (chatId || smid || gu) {
+        Taro.setStorageSync('guideExp', Date.parse(new Date()))
       }
       // 如果id、aid、cid同时存在则为团购分享详情
       if (id && aid && cid) {

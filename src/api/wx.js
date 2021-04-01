@@ -59,3 +59,10 @@ export function getShareId (params) {
     ...params
   })
 }
+
+// 埋点上报
+export function reportData (params) {
+  return req.get('/salesperson/subtask/post', {
+    ...params
+  })
+}
