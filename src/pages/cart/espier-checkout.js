@@ -695,8 +695,6 @@ export default class CartCheckout extends Component {
     if (salesperson_id) {
       params.salesperson_id = salesperson_id;
     }
-    console.log('%c ----------checkOut--------------', 'color: red; font-size: 20px; font-weight: bold')
-    console.log(params)
     let data;
     try {
       data = await api.cart.total(params);

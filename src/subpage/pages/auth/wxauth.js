@@ -52,7 +52,8 @@ export default class WxAuth extends Component {
           union_id: userInfo.unionid
         });
       }
-      if (this.$router.params.redirect) {
+      const { source, redirect } = this.$router.params
+      if (source || redirect) {
         const memberInfo = await api.member.memberInfo()
         const userObj = {
           username: memberInfo.memberInfo.nickname || memberInfo.memberInfo.username || memberInfo.memberInfo.mobile,
