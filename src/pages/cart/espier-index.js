@@ -374,10 +374,10 @@ export default class CartIndex extends Component {
         num: parseInt(num) - item.num,
         goods_num: num
       });
-    }else{ 
-      
+    }else{  
       Tracker.dispatch("REMOVE_FROM_CART_NUM", {
         ...item,
+        goods_id:item.goods_id||item.item_id,
         num: item.num-parseInt(num),
         goods_num: num
       });
