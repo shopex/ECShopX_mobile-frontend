@@ -238,13 +238,13 @@ export default class TradeDetail extends Component {
     })
 
     let payErr
-    try {
-      
+    try { 
       Tracker.dispatch("ORDER_PAY", {
         ...info,
         item_fee: info.item_fee * 100,
         total_fee: info.item_fee * 100,
-        ...config
+        ...config,
+        timeStamp:config.order_info.create_time,
       }); 
       const payRes = await Taro.requestPayment(config)
       // 支付上报
