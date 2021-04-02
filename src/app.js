@@ -9,6 +9,7 @@ import { normalizeQuerys } from '@/utils'
 import { FormIds, Tracker } from "@/service";
 import Index from './pages/index'
 import LBS from './utils/lbs'
+import { youshuLogin } from '@/utils/youshu'
 // import entry from '@/utils/entry'
 
 import './app.scss'
@@ -49,6 +50,7 @@ const getHomeSetting = async () => {
       console.log('----------------aa--------------')
       console.log(Tracker)
       Tracker.use(APP_TRACK);
+      youshuLogin();
     }
   }
 }
