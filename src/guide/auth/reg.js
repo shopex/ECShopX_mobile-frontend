@@ -16,7 +16,7 @@ const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP
 }), () => ({}))
 export default class Reg extends Component {
   config = {
-    navigationBarTitleText: 'innisfree 导购商城'
+    navigationBarTitleText: '导购商城'
   }
   constructor (props) {
     super(props)

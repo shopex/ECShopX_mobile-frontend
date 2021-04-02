@@ -347,16 +347,16 @@ export default class BaGuideHomeIndex extends Component {
     return (
       <View className={!isLoading ? "page-index" : ""}>
         <BaNavBar
-          title="innisfree 导购商城"
+          title='导购商城'
           fixed
-          jumpType="home"
-          icon="in-icon in-icon-backhome"
+          jumpType='home'
+          icon='in-icon in-icon-backhome'
         />
         <View >
          <BaStore
-                onClick={this.handleOpenStore}
-                defaultStore={defaultStore}
-              />
+           onClick={this.handleOpenStore}
+           defaultStore={defaultStore}
+         />
               </View>
         {isLoading ? (
           <Loading></Loading>
@@ -368,10 +368,10 @@ export default class BaGuideHomeIndex extends Component {
             scrollY
             style={styleNames({ top: n_ht + "PX" })}
           >
-            <View className="wgts-wrap__cont">
+            <View className='wgts-wrap__cont'>
               <BaHomeWgts
                 wgts={wgts}
-                source="bahome"
+                source='bahome'
                 onChangPageScroll={this.handlePageScroll}
               />
 
@@ -385,7 +385,7 @@ export default class BaGuideHomeIndex extends Component {
         {showBuyPanel && (
           <BaGoodsBuyPanel
             info={goodsSkuInfo}
-            type="cart"
+            type='cart'
             isOpened={showBuyPanel}
             onClose={this.handleCloseCart}
             onAddCart={this.handleCloseCart}
