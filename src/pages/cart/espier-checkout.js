@@ -30,7 +30,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import CheckoutItems from "./checkout-items";
 import PaymentPicker from "./comps/payment-picker";
 import SelectPackage from "./comps/selectPackage";
-
+import { TracksPayed } from '@/utils/youshu'
 import PointUse from "./comps/point-use";
 // import DrugInfo from './drug-info'
 import OrderItem from "../../components/orderItem/order-item";
@@ -1192,7 +1192,7 @@ export default class CartCheckout extends Component {
         ...config
       });
 
-      this.cancelpay = () => { 
+      this.cancelpay = () => {  
         Tracker.dispatch("CANCEL_PAY", {
           ...total,
           ...config
@@ -1267,7 +1267,7 @@ export default class CartCheckout extends Component {
     console.log("-----configCheckout-----",config)
     try {
 
-      const { total } = this.state;
+      const { total } = this.state; 
       Tracker.dispatch("ORDER_PAY", {
         ...total,
         ...config
@@ -1289,6 +1289,9 @@ export default class CartCheckout extends Component {
     }
 
     if (!payErr) {
+
+      TracksPayed(total,config,"espier-checkout")
+
       await Taro.showToast({
         title: "支付成功",
         icon: "success"
