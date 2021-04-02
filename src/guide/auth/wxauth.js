@@ -9,6 +9,7 @@ import { tokenParse} from '@/utils'
 import { Tracker } from "@/service";
 
 import './wxauth.scss'
+
 @connect(()=>({}),(dispatch)=>({
   dispatch
 }))
@@ -175,11 +176,11 @@ export default class WxAuth extends Component {
 
     return (
       <View className='page-wxauth'>
-         <BaNavBar title='innisfree 导购商城' fixed jumpType='home'  icon='in-icon in-icon-backhome'/>
+         <BaNavBar title='导购商城' fixed jumpType='home'  icon='in-icon in-icon-backhome' />
         {isAuthShow && (
           <View className='sec-auth'>
             <Text className='auth-hint__title'>用户授权</Text>
-            <Text className='auth-hint__text'>innisfree悦诗风吟申请获得\n你的公开信息（昵称、头像等）</Text>
+            <Text className='auth-hint__text'>悦诗风吟申请获得\n你的公开信息（昵称、头像等）</Text>
             <Image
               className='login-bg_img'
               mode='widthFix'
@@ -190,7 +191,7 @@ export default class WxAuth extends Component {
               lang='zh_CN'
               openType='getUserInfo'
               onGetUserInfo={this.handleGetUserInfo}
-						>立即授权</AtButton>
+            >立即授权</AtButton>
 						<Text className='auth-more' onClick={this.handleClickHome}>再逛逛</Text>
           </View>
         )}
