@@ -15,10 +15,16 @@ import './wxauth.scss'
 
 export default class WxAuth extends Component {
   state = {
-    isAuthShow: false
+    isAuthShow: false,
+    canIUseGetUserProfile: false
   }
 
   componentDidMount () {
+    if (wx.getUserProfile) {
+      this.setState({
+        canIUseGetUserProfile: true
+      })
+    }
     this.autoLogin()
   }
   componentDidShow (){
@@ -143,11 +149,24 @@ export default class WxAuth extends Component {
     })
   }
 
+  // getUserProfile 新事件
+  handleGetUserProfile = () => {
+    wx.getUserProfile({
+      desc: '用于完善会员资料',
+      success: async data => {
+        const res = {
+          detail: data
+        }
+        await this.handleGetUserInfo(res)
+        this.handleNews()
+      }
+    })
+  }
+
 
   handleGetUserInfo = async (res) => {
     const loginParams = res.detail
     const { iv, encryptedData, rawData, signature, userInfo } = loginParams
-
     if (!iv || !encryptedData) {
       Taro.showModal({
         title: '授权提示',
@@ -188,11 +207,11 @@ export default class WxAuth extends Component {
       S.setAuthToken(token)
       // 通过token解析openid
       if ( token ) {
-        const userInfo = tokenParse( token );
+        const userToken = tokenParse(token);
         Tracker.setVar( {
-          user_id: userInfo.user_id,
-          open_id: userInfo.openid,
-          union_id: userInfo.unionid  
+          user_id: userToken.user_id,
+          open_id: userToken.openid,
+          union_id: userToken.unionid  
         } );
       }
 
@@ -224,9 +243,8 @@ export default class WxAuth extends Component {
 
   render () {
     const { colors } = this.props
-    const { isAuthShow } = this.state
+    const { isAuthShow, canIUseGetUserProfile } = this.state
     const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
-
     return (
       <View className='page-wxauth'>
         {isAuthShow && (
@@ -234,14 +252,24 @@ export default class WxAuth extends Component {
             <View className='auth-title'>用户授权</View>
             <Text className='auth-hint'>{extConfig.wxa_name}申请获得你的公开信息（昵称、头像等）</Text>
             <View className='auth-btns'>
-              <AtButton
-                type='primary'
-                lang='zh_CN'
-                customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                openType='getUserInfo'
-                onClick={this.handleNews.bind(this)}
-                onGetUserInfo={this.handleGetUserInfo}
-              >授权允许</AtButton>
+              {
+                canIUseGetUserProfile ? <AtButton
+                  type='primary'
+                  lang='zh_CN'
+                  customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                  onClick={this.handleGetUserProfile.bind(this)}
+                >
+                  授权允许
+                </AtButton>
+                : <AtButton
+                  type='primary'
+                  lang='zh_CN'
+                  customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                  openType='getUserInfo'
+                  onClick={this.handleNews.bind(this)}
+                  onGetUserInfo={this.handleGetUserInfo}
+                >授权允许</AtButton>
+              }
               <AtButton className='back-btn' type='default' onClick={this.handleBackHome.bind(this)}>拒绝</AtButton>
             </View>
           </View>
