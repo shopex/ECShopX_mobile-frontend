@@ -33,6 +33,7 @@ export default class Youshu extends Base {
     this.sr = sr;
 
     const token = S.getAuthToken();
+    
     if (token) {
       const userInfo = tokenParse(token);
       console.log("------useInfo------")

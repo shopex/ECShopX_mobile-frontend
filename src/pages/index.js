@@ -23,6 +23,7 @@ import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
 import HomeWgts from './home/comps/home-wgts'
 import Automatic from './home/comps/automatic'
 
+
 import './home/index.scss'
 
 @connect(({ cart, member, store }) => ({
