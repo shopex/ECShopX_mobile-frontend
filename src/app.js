@@ -45,16 +45,17 @@ const getHomeSetting = async () => {
     nostores_status,
     youshu
   });
-  if (APP_TRACK) {
-    const system = Taro.getSystemInfoSync();
-    console.log("----------------system--------------",system,system.environment);
+
+  const system = Taro.getSystemInfoSync();
+  console.log("----------------system--------------", system,system.environment);
+  if ((system && system.environment && system.environment === "wxwork")) {
+    console.log("----------------企业微信录入--------------");
+    //企业微信录入
     await S.setQwUserInfo()
-    if (!(system && system.environment && system.environment === "wxwork")) {
-      console.log("----------------企业微信录入--------------");
-      //企业微信录入
-      await S.setQwUserInfo()
-      Tracker.use(APP_TRACK);
-    }
+  }
+
+  if (APP_TRACK) {
+    Tracker.use(APP_TRACK);
   }
 };
 
@@ -65,7 +66,6 @@ getHomeSetting();
 
 class App extends Component {
   //Taro.getSystemInfoSync().environment == "wxwork"
-  system = Taro.getSystemInfoSync();
 
   // eslint-disable-next-line react/sort-comp
   componentWillMount() {
@@ -75,6 +75,8 @@ class App extends Component {
     this.init();
   }
   componentDidMount() {}
+
+  system = Taro.getSystemInfoSync()
 
   config = {
     pages: [
@@ -332,7 +334,7 @@ class App extends Component {
           brand
         } = Taro.getSystemInfoSync()
         const { networkType } = Taro.getNetworkType()
-       
+        
         let px = screenWidth / 750 //rpx换算px iphone5：1rpx=0.42px
 
         Taro.$systemSize = {
