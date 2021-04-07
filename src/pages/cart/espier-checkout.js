@@ -30,7 +30,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import CheckoutItems from "./checkout-items";
 import PaymentPicker from "./comps/payment-picker";
 import SelectPackage from "./comps/selectPackage";
-
+import { TracksPayed } from '@/utils/youshu'
 import PointUse from "./comps/point-use";
 // import DrugInfo from './drug-info'
 import OrderItem from "../../components/orderItem/order-item";
@@ -1189,13 +1189,15 @@ export default class CartCheckout extends Component {
       // 提交订单埋点 
       Tracker.dispatch("CREATE_ORDER", {
         ...total,
-        ...config
+        ...config,
+        timeStamp:config.order_created,
       });
 
-      this.cancelpay = () => { 
+      this.cancelpay = () => {  
         Tracker.dispatch("CANCEL_PAY", {
           ...total,
-          ...config
+          ...config,
+          timeStamp:config.order_created,
         });
       };
     } catch (e) {
@@ -1265,12 +1267,12 @@ export default class CartCheckout extends Component {
 
     payErr = null;
     console.log("-----configCheckout-----",config)
-    try {
-
-      const { total } = this.state;
+    try {  
+      const { total } = this.state; 
       Tracker.dispatch("ORDER_PAY", {
         ...total,
-        ...config
+        ...config,
+        timeStamp:config.order_created,
       });
 
       const payRes = await Taro.requestPayment(config); 
@@ -1289,6 +1291,9 @@ export default class CartCheckout extends Component {
     }
 
     if (!payErr) {
+
+      TracksPayed(total,config,"espier-checkout")
+
       await Taro.showToast({
         title: "支付成功",
         icon: "success"

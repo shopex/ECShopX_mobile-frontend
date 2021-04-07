@@ -34,5 +34,7 @@ export default {
   // 建议开启-是否开启页面分享链路自动跟踪
   openSdkShareDepth: true,
   // 建议开启-元素事件跟踪，自动上报元素事件，入tap、change、longpress、confirm
-  autoTrack: false
+  autoTrack: false,
+  // 建议开启-自动化获取openId，授权过的小程序可自动化获取openId
+  openAutoTrackOpenId:true
 };
