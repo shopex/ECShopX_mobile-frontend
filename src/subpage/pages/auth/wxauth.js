@@ -129,36 +129,28 @@ export default class WxAuth extends Component {
     })
   }
 
-  handleNews = () =>{
+  handleNews = async () =>{
     let templeparams = {
       'temp_name': 'yykweishop',
       'source_type': 'member',
     }
-    let _this = this
-
-    api.user.newWxaMsgTmpl(templeparams).then(tmlres => {
-      console.log('templeparams---1', tmlres)
-      if (tmlres.template_id && tmlres.template_id.length > 0) {
-        wx.requestSubscribeMessage({
-          tmplIds: tmlres.template_id,
-          complete() {
-            _this.handleGetUserInfo()
-          }
-        })
-      }
-    })
+    const tmlres = await api.user.newWxaMsgTmpl(templeparams)
+    if (tmlres.template_id && tmlres.template_id.length > 0) {
+      await Taro.requestSubscribeMessage({
+        tmplIds: tmlres.template_id
+      })
+    }
   }
 
   // getUserProfile 新事件
   handleGetUserProfile = () => {
     wx.getUserProfile({
       desc: '用于完善会员资料',
-      success: async data => {
+      success: data => {
         const res = {
           detail: data
         }
-        await this.handleGetUserInfo(res)
-        this.handleNews()
+        this.handleGetUserInfo(res)
       }
     })
   }
@@ -212,19 +204,28 @@ export default class WxAuth extends Component {
           user_id: userToken.user_id,
           open_id: userToken.openid,
           union_id: userToken.unionid  
-        } );
+        });
       }
 
-      // 绑定过，跳转会员中心
-      if (user_id) {
-        await this.autoLogin()
-        return
-      }
-      const { source, redirect } = this.$router.params
-      const redirectUrl= encodeURIComponent(redirect)
-      // 跳转注册绑定
-      Taro.redirectTo({
-        url: `/subpage/pages/auth/reg?code=${code}&open_id=${open_id}&union_id=${union_id}&redirect=${redirectUrl}&source=${source}`
+      Taro.showModal({
+        title: '提示',
+        content: '是否订阅注册成功通知？',
+        success: async confirmRes => {
+          if (confirmRes.confirm) {
+            await this.handleNews()
+          }
+          // 绑定过，跳转会员中心
+          if (user_id) {
+            await this.autoLogin()
+            return
+          }
+          const { source, redirect } = this.$router.params
+          const redirectUrl= encodeURIComponent(redirect)
+          // 跳转注册绑定
+          Taro.redirectTo({
+            url: `/subpage/pages/auth/reg?code=${code}&open_id=${open_id}&union_id=${union_id}&redirect=${redirectUrl}&source=${source}`
+          })
+        }
       })
     } catch (e) {
       console.info(e)
@@ -266,7 +267,6 @@ export default class WxAuth extends Component {
                   lang='zh_CN'
                   customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                   openType='getUserInfo'
-                  onClick={this.handleNews.bind(this)}
                   onGetUserInfo={this.handleGetUserInfo}
                 >授权允许</AtButton>
               }
