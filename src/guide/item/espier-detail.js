@@ -85,7 +85,7 @@ export default class Detail extends Component {
   }
 
   async componentWillMount() {
-    const query = normalizeQuerys(this.$router.params)
+    const query = await normalizeQuerys(this.$router.params)
     this.$router.params.id = query.id
     await entry.entryLaunch(this.$router.params, false)
     
@@ -135,7 +135,7 @@ export default class Detail extends Component {
         this.uid = uid
       }
       if (options.scene) {
-        const query = normalizeQuerys(options)
+        const query = await normalizeQuerys(options)
         if (query.id) {
           id = query.id
           uid = query.uid
@@ -196,7 +196,7 @@ export default class Detail extends Component {
       Taro.setStorageSync('userinfo', userObj)
     }
       let  entry_form=S.get('entry_form',true)
-      const query = normalizeQuerys(this.$router.params)
+      const query = await normalizeQuerys(this.$router.params)
         Taro.hideShareMenu({ //禁用胶囊分享
             menus: ['shareAppMessage', 'shareTimeline']
         })
@@ -211,8 +211,8 @@ export default class Detail extends Component {
     this.fetchCartCount()
   }
 
-  innitPageShareUrl(){
-    const query = normalizeQuerys(this.$router.params)
+  async innitPageShareUrl(){
+    const query = await normalizeQuerys(this.$router.params)
     const {entry_form,subtask_id } = this.state
     let gu=null
     let url = `/pages/item/espier-detail.html`
@@ -362,7 +362,7 @@ export default class Detail extends Component {
       } else {
         const options = this.$router.params
         if (options.scene) {
-          const query = normalizeQuerys(options)
+          const query = await normalizeQuerys(options)
           if (query.dtid) {
             param.distributor_id = query.dtid
           }
