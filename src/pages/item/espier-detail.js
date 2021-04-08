@@ -68,7 +68,6 @@ export default class Detail extends Component {
       isSubscribeGoods: false,
       is_open_store_status:null,
       goodType:'normal',
-      myurl:''
     }
   }
   
@@ -88,7 +87,6 @@ export default class Detail extends Component {
     this.setState({
       is_open_store_status:isOpenStore,
       goodType:options.type==="pointitem"?"pointitem":"normal",
-      myurl:options
     }, async()=>{
       const { is_open_store_status } = this.state
       if (APP_PLATFORM === 'standard') {
@@ -952,7 +950,6 @@ export default class Detail extends Component {
       evaluationTotal,
       evaluationList,
       isSubscribeGoods,
-      myurl
     } = this.state
 
     console.log("--info--",info)
@@ -1017,7 +1014,6 @@ export default class Detail extends Component {
             </Swiper>
  
           </View>
-            <View>{myurl}</View>
 
           {!info.nospec &&
           sixSpecImgsDict.length > 0 &&
