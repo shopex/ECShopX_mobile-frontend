@@ -211,10 +211,11 @@ export default class Detail extends Component {
     this.fetchCartCount()
   }
   onShareAppMessage() {
-    
+    const { info,pageShareUrl} = this.state
     return {
-      title: '商品分享',
-      path:  this.state.pageShareUrl,      
+      title:info.item_name,
+      path:pageShareUrl,
+      imageUrl:info.pics[0]
     }
   }
   async innitPageShareUrl(){
@@ -272,38 +273,6 @@ export default class Detail extends Component {
       evaluationTotal: total_count
     })
   }
-
-  // onShareAppMessage() {
-  //   const { info,pageShareUrl } = this.state
-  //  const curStore = Taro.getStorageSync('curStore')
-  //   const { userId } = Taro.getStorageSync('userinfo')
-  //   const infoId = info.distributor_id
-  //   const { is_open_store_status} = this.state
-  //   const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
-  //   Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
-  //     ...info,
-  //     shareType: "分享给好友"
-  //   });
-  //   return {
-  //     title: info.item_name,
-  //     path: '/pages/item/espier-detail?id='+ info.item_id + '&dtid=' + id + (userId && '&uid=' + userId),
-  //     imageUrl: info.pics[0]
-  //   }
-  // }
-
-  // onShareTimeline() {
-  //   const { info } = this.state
-  //  const curStore = Taro.getStorageSync('curStore')
-  //   const { userId } = Taro.getStorageSync('userinfo')
-  //   const { is_open_store_status} = this.state
-  //   const infoId = info.distributor_id
-  //   const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
-  //   return {
-  //     title: info.item_name,
-  //     query: `id=${info.item_id}&dtid=${id}&uid=${userId}`,
-  //     imageUrl: info.pics[0]
-  //   }
-  // }
 
   async fetchCartCount() {
     const { info } = this.state
