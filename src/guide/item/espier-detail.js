@@ -216,19 +216,21 @@ export default class Detail extends Component {
     const {entry_form,subtask_id } = this.state
     let gu=null
     let url = `/pages/item/espier-detail.html`
-    let ba_params=S.get('ba_params',true)
+    const QwUserInfo = S.get('QwUserInfo',true)
+    //let ba_params=S.get('ba_params',true)
     let qw_chatId=S.get('qw_chatId',true)
+    console.log('QwUserInfo--->',QwUserInfo)
    
     let share_params={
       id:query.id
     }
-  
-    if(ba_params){
-      let store_code=ba_params.store_code
-      let guide_code=ba_params.guide_code
+    if(QwUserInfo){
+      let store_code=QwUserInfo.distributor_id
+      let guide_code=QwUserInfo.salesperson_id
       gu=guide_code+`${store_code?'_'+store_code:''}`
       share_params.gu=gu
     }
+  
     if(qw_chatId){//群ID
       share_params.share_chatId=qw_chatId
     }
@@ -674,6 +676,7 @@ export default class Detail extends Component {
     const pic = pics[0].replace('http:', 'https:')
     //const infoId = info.distributor_id
     const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=pages/item/espier-detail&appid=${extConfig.appid}&company_id=${QwUserInfo.company_id}&itemid=${item_id}&distributor_id=${QwUserInfo.distributor_id}&smid=${QwUserInfo.salesperson_id}&subtask_id=${QwUserInfo.subtask_id}`
+    console.log('wxappCode========>',wxappCode)
     try {
       const avatarImg = await Taro.getImageInfo({src: avatar})
       const goodsImg = await Taro.getImageInfo({src: pic})
@@ -965,7 +968,8 @@ export default class Detail extends Component {
       evaluationTotal,
       evaluationList,
       isSubscribeGoods,
-      jumpType
+      jumpType,
+      pageShareUrl
     } = this.state
 
     const { showLikeList, colors } = this.props
@@ -1050,8 +1054,9 @@ export default class Detail extends Component {
             {/*<ItemImg
               info={imgInfo}
             />*/}
+            
           </View>
-
+          <View>{pageShareUrl}</View>
           {!info.nospec &&
           sixSpecImgsDict.length > 0 &&
           info.is_show_specimg ? (

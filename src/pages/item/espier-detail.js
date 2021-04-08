@@ -67,13 +67,15 @@ export default class Detail extends Component {
       // 是否订阅
       isSubscribeGoods: false,
       is_open_store_status:null,
-      goodType:'normal'
+      goodType:'normal',
+      myurl:''
     }
   }
   
 
   async componentDidMount() {
     const options = await normalizeQuerys(this.$router.params)
+    console.log('options----->',options)
     if (options.itemid && !options.id) {
       options.id = options.itemid
     }
@@ -85,7 +87,8 @@ export default class Detail extends Component {
     const isOpenStore = await entry.getStoreStatus()
     this.setState({
       is_open_store_status:isOpenStore,
-      goodType:options.type==="pointitem"?"pointitem":"normal"
+      goodType:options.type==="pointitem"?"pointitem":"normal",
+      myurl:options
     }, async()=>{
       const { is_open_store_status } = this.state
       if (APP_PLATFORM === 'standard') {
@@ -100,6 +103,7 @@ export default class Detail extends Component {
         }
       }
       const entryData = await entry.entryLaunch({...options}, true)
+      console.log('entryData---->',entryData)
       id = entryData.id
       uid = entryData.uid
       
@@ -947,7 +951,8 @@ export default class Detail extends Component {
       likeList,
       evaluationTotal,
       evaluationList,
-      isSubscribeGoods
+      isSubscribeGoods,
+      myurl
     } = this.state
 
     console.log("--info--",info)
@@ -1012,6 +1017,7 @@ export default class Detail extends Component {
             </Swiper>
  
           </View>
+            <View>{myurl}</View>
 
           {!info.nospec &&
           sixSpecImgsDict.length > 0 &&
@@ -1179,7 +1185,7 @@ export default class Detail extends Component {
             )}
             {/* 跨境商品 */}
             {info.type == "1" && !this.isPointitemGood() && (
-              <View className="nationalInfo"> 
+              <View className='nationalInfo'> 
                 <View>
                   跨境综合税:
                   <Price
@@ -1210,10 +1216,10 @@ export default class Detail extends Component {
               </View>
             )}
             {
-              this.isPointitemGood() && <View class="goods_point">
+              this.isPointitemGood() && <View class='goods_point'>
                     <PointLine 
-                        point={info.point} 
-                        plus
+                      point={info.point} 
+                      plus
                     /> 
               </View>
             }
@@ -1244,11 +1250,11 @@ export default class Detail extends Component {
           )}
 
           { !info.is_gift && !this.isPointitemGood() &&  <SpCell
-              className='goods-sec-specs'
-              title='领券'
-              isLink
-              onClick={this.handleCouponClick.bind(this)}
-            >
+            className='goods-sec-specs'
+            title='领券'
+            isLink
+            onClick={this.handleCouponClick.bind(this)}
+          >
               {coupon_list &&
                 new_coupon_list.map(kaquan_item => {
                   return (
