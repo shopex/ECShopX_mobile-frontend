@@ -52,9 +52,7 @@ const getHomeSetting = async () => {
     console.log("----------------企业微信录入--------------");
     //企业微信录入
     await S.setQwUserInfo()
-  }
-
-  if (APP_TRACK) {
+  } else if (APP_TRACK && youshu.appid) {
     Tracker.use(APP_TRACK);
   }
 };
