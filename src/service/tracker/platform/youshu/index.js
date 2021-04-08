@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-25 10:54:19
- * @LastEditTime: 2021-04-08 14:59:49
+ * @LastEditTime: 2021-04-08 15:52:04
  * @LastEditors: PrendsMoi
  * @Description: In User Settings Edit
  * @FilePath: /unite-vshop/src/service/tracker/platform/youshu/index.js
@@ -22,7 +22,7 @@ export default class Youshu extends Base {
     const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
     const { youshu = {} } =  Taro.getStorageSync('otherSetting') || {}
 
-    config.token = youshu.app_id  
+    config.token = youshu.app_id || youshu.sandbox_app_id
     config.appid = youshu.weapp_app_id || extConfig.appid
 
     sr.init(config);
