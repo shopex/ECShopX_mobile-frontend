@@ -1,3 +1,13 @@
+/*
+ * @Author: PrendsMoi
+ * @GitHub: https://github.com/PrendsMoi
+ * @Blog: https://liuhgxu.com
+ * @Description: 说明
+ * @FilePath: /unite-vshop/src/guide/components/ba-store/index.js
+ * @Date: 2021-04-08 17:20:07
+ * @LastEditors: PrendsMoi
+ * @LastEditTime: 2021-04-09 15:37:59
+ */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image,Text } from '@tarojs/components'
 import { navigateTo,classNames } from '@/utils'
@@ -50,7 +60,7 @@ handleClick=()=>{
       <View
         className='ba-store'
         // style={styleNames({'margin-top': `${n_ht}px`,'background':'#3333'})}   
-        style='margin-top:60px;background:#3333'           
+        style='margin-top:60px;'           
       >
         <Image className='ba-avatar' mode='widthFix' src={baInfo.avatar||'/assets/imgs/home-unloginhead.png'} />
         <View className={classNames('ba-username')}>导购货架{baInfo.name}</View>

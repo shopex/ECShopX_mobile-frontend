@@ -169,8 +169,8 @@ export default class EspireCheckout extends Component {
     //   )
     // ];
 
-    let cartlist = await api.guide.cartdatalist(params);
-    cartlist = cartlist.valid_cart[0].list;
+    // let cartlist = await api.guide.cartdatalist(params);
+    let cartlist = data.list;
     console.log("计算接口-cartlist", cartlist);
     let goodsllist = [];
     let giftslist = [];
@@ -277,6 +277,9 @@ export default class EspireCheckout extends Component {
        * distributor_id: 103,//门店id
        */
       let qwUserInfo = S.get("QwUserInfo", true);
+      if (qwUserInfo && qwUserInfo.store_name) {
+        wxshop_name = qwUserInfo.store_name
+      }
       const qrcode_params = `appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout&cxdid=${cxdid}&company_id=${qwUserInfo.company_id}&smid=${qwUserInfo.salesperson_id}&distributor_id=${qwUserInfo.distributor_id}`
       const host = req.baseURL.replace("/api/h5app/wxapp/", "");
       // https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?temp_name=yykweishop&page=pages/cart/espier-checkout&company_id=1&cxdid=159&smid=78&distributor_id=103
@@ -878,19 +881,17 @@ export default class EspireCheckout extends Component {
               <Image
                 onClick={e => e.stopPropagation()}
                 showMenuByLongpress
-                style={styleNames({
-                  width: canvasWidth-35 + "px",
-                  height: canvasHeight-100 + "px"
-                })}
+                mode='widthFix'
+                style='width: 80%'
                 src={poster}
               />
-              <AtButton
-                className="download-btn"
+              <View
+                className='at-button at-button--primary download-btn'
                 onClick={this.handleDownloadImage}
-                type="primary"
+                type='primary'
               >
                 下载到相册
-              </AtButton>
+              </View>
             </View>
           )}
           {/* 'canvas' */}

@@ -86,21 +86,23 @@ class App extends Component {
       'pages/category/index',
       'pages/floorguide/index',
 
-      "pages/item/list",
-      "pages/item/espier-detail",
-      "pages/item/item-params",
-      "pages/item/package-list",
+      'pages/item/list',
+      'pages/item/espier-detail',
+      'pages/item/item-params',
+      'pages/item/package-list',
+
+      'pages/cart/espier-index',
+      'pages/cart/espier-checkout',
 
       'pages/article/index',
       'pages/recommend/list',
       'pages/member/index',
       'pages/member/item-fav',
+      'pages/store/index',
+      'pages/store/list',
+      'pages/store/ziti-list',
 
-      "pages/store/index",
-      "pages/store/list",
-      "pages/store/ziti-list",
-
-      "pages/custom/custom-page"
+      'pages/custom/custom-page'
     ],
     subpackages: [
       {
