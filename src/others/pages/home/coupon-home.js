@@ -65,10 +65,11 @@ export default class CouponHome extends Component {
   }
 
   async fetch(params) {
-    let { distributor_id, dtid, item_id = '', itemid = '' } = this.routerParams
+    let { distributor_id, dtid, item_id = '', itemid = '', card_id } = this.routerParams
     params = {
       ...params,
       end_date: 1,
+      card_id,
       distributor_id: distributor_id || dtid,
       item_id: item_id || itemid
     }
