@@ -28,9 +28,11 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+    width: 100%;
     .download-btn{
-      width: 680px;
+      width: 80%;
       border-radius: 0;
+      // background: #ff593d;
     }
   }
   .canvas-tag {

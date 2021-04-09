@@ -42,7 +42,7 @@ export default class BaOrderItem extends Component {
             />
           </View>
           <View className='order-item__bd'>
-            <Text className='order-item__title'>{info.title||''}</Text>
+            <Text className='order-item__title'>{info.title || info.item_name ||''}</Text>
             {info.item_spec_desc && <Text className='order-item__spec'>{info.item_spec_desc}</Text>}
             {this.props.renderDesc}
             
