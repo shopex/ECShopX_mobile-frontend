@@ -41,9 +41,9 @@ export default class CouponHome extends Component {
     const { info } = item.target.dataset
     const res = this.state.shareInfo;
     console.log('onShareAppMessage-item',res,info)
-    const { userId } = Taro.getStorageSync("userinfo");
-    const query = `?uid=${userId}&card_id=${info.card_id}` ;
-    
+    // const { userId } = Taro.getStorageSync("userinfo");
+    const QwUserInfo = S.get('QwUserInfo',true)
+    const query = `?uid=${QwUserInfo.salesperson_id}&card_id=${info.card_id}&distributor_id=${QwUserInfo.distributor_id}`;
     return {
       title: info.title+'优惠券',
       imageUrl: res.imageUrl,

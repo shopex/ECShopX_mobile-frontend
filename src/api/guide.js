@@ -46,6 +46,11 @@ export function cartdataupdate(params = {}, config = createHead()) {
 export function cartdatalist(params = {}, config = createHead()) {
   return req.get("/salesperson/cartdatalist", params, config);
 }
+// 获取购物车数量
+export function cartCount(params = {}, config = createHead()) {
+  return req.get("/salesperson/cartcount", params, config);
+}
+
 //导购员购物车删除
 export function cartdatadel(params = {}, config = createHead()) {
   return req.get("/salesperson/cartdatadel", params, config);
