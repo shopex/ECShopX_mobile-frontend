@@ -323,6 +323,7 @@ export default class BaGuideHomeIndex extends Component {
   };
   //修改当前门店下标
   handleCurIndex = currentIndex => {
+    
     this.setState({
       currentIndex
     });
