@@ -46,6 +46,10 @@ export default class HomeIndex extends Component {
         this.fetchInfo();
       }
     );
+    Taro.hideShareMenu({
+      //禁用胶囊分享
+      menus: ["shareAppMessage", "shareTimeline"]
+    });
     // 埋点处理
     buriedPoint.call(this, {
       event_type: "activeSeedingDetail"
