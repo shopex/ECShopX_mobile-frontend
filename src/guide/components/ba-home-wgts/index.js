@@ -53,7 +53,7 @@ export default class HomeWgts extends PureComponent {
                 {item.name === 'slider-hotzone' && <WgtSliderHotzone source={source} componentIndex={idx} info={item} />}
                 {item.name === 'film' && <WgtFilm source={source} componentIndex={idx} info={item}  />}
                 {item.name === 'navigation' && <WgtNavigation source={source} componentIndex={idx} info={item} />}
-                {item.name === 'coupon' && <WgtCoupon source={source} componentIndex={idx}  info={item} />}
+                {/* {item.name === 'coupon' && <WgtCoupon source={source} componentIndex={idx}  info={item} />} */}
                 {item.name === 'imgHotzone' && <WgtImgHotZone source={source} componentIndex={idx}  info={item} />}
                 {item.name === 'goodsScroll' && <WgtGoodsScroll source={source} componentIndex={idx} info={item} />}
                 {item.name === 'goodsGrid' && <WgtGoodsGrid source={source} componentIndex={idx} info={item} />}
