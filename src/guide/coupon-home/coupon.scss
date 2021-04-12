@@ -5,13 +5,16 @@
   font-size: 22rpx !important;
   text-align: center !important;
   border: none !important;
-  padding: 0!important;
-  background: #3E0F3C;
+  padding: 0 !important;
+  background: #3E0F3C !important;
   color: #fff;
   height: 36rpx;
   line-height: 36rpx;
   border-radius: 30rpx;
   width: 170rpx;
+}
+.coupon-btn {
+  opacity: 1 !important;
 }
 .shareCSS:after{ border: none; }
 .coupon-list {
