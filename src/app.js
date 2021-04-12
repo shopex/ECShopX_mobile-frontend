@@ -46,7 +46,7 @@ const getHomeSetting = async () => {
   })
   if (APP_TRACK) {
     const system = Taro.getSystemInfoSync();
-    if (!(system && system.environment && system.environment === "wxwork")) {
+    if (!(system && system.environment && system.environment === "wxwork") && (youshu.appid || youshu.sandbox_app_id)) {
       console.log('----------------aa--------------')
       console.log(Tracker)
       Tracker.use(APP_TRACK);
