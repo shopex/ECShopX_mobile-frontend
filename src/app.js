@@ -421,6 +421,11 @@ class App extends Component {
         const [employee_number, store_bn] = gu.split("_");
         Taro.setStorageSync("s_smid", employee_number);
         Taro.setStorageSync("store_bn", store_bn);
+        if (S.getAuthToken()) {
+          api.user.bindSaleperson({
+            work_userid: employee_number
+          })
+        }
       }
       // 存储群id
       if (chatId) {

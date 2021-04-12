@@ -734,10 +734,10 @@ export default class CartIndex extends Component {
                                       this,
                                       item.cart_id
                                     )}
-                                    onClickImgAndTitle={this.handleClickToDetail.bind(
-                                      this,
-                                      item
-                                    )}
+                                    // onClickImgAndTitle={this.handleClickToDetail.bind(
+                                    //   this,
+                                    //   item
+                                    // )}
                                   >
                                     <View className='cart-item__act'>
                                       <SpCheckbox
