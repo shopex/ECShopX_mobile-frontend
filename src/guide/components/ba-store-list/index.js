@@ -23,7 +23,7 @@ export default class BaStoreList extends Component {
   //点击门店item
   handleClick = index => {
     console.log("点击门店item-----", index);
-    const { onSearchStore, onChangeCurIndex } = this.props;
+    const { onChangeCurIndex } = this.props;
     this.setState({
       setIdx:index
     },()=>{
@@ -43,9 +43,9 @@ export default class BaStoreList extends Component {
   hanldeConfirm = () => {
     const { keyWord } = this.state;
 
-    const { onSearchStore, onChangeCurIndex } = this.props;
+    const { onSearchStore } = this.props;
     onSearchStore({ store_name: keyWord });
-    onChangeCurIndex(0);
+    // onChangeCurIndex(0);
   };
   //搜索框
   hanldeInput = e => {
@@ -58,9 +58,12 @@ export default class BaStoreList extends Component {
   };
   //重制搜索框
   handleReset = () => {
+    const { onSearchStore } = this.props;
     //   debugger
     this.setState({
       keyWord: ""
+    }, () => {
+      onSearchStore({ store_name: "" })
     });
   };
   //提交当前选择
