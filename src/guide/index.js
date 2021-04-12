@@ -95,7 +95,7 @@ export default class BaGuideHomeIndex extends Component {
       //企业微信登录接口
       // this.isAppWxWork();
       await S.setQwUserInfo();
-      this.getStoreList();
+      this.getStoreList({}, true);
 
     }
     //获取门店list
@@ -271,7 +271,7 @@ export default class BaGuideHomeIndex extends Component {
     });
   }
   //获取门店列表
-  async getStoreList(params = {}) {
+  async getStoreList(params = {}, isInit = false) {
     let QwUserInfo = S.get("QwUserInfo", true),{currentIndex} = this.state
     let storeId = QwUserInfo.ba_store ? QwUserInfo.ba_store.distributor_id : QwUserInfo.distributor_id
     const  shops  = await api.guide.distributorlist({
@@ -284,11 +284,15 @@ export default class BaGuideHomeIndex extends Component {
     shops.list.forEach((d,idx)=>{
       if(d.distributor_id == storeId) currentIndex = idx
     })
-    this.handleCurIndex(currentIndex)
     this.setState({
-      shopList: shops.list,
-      defaultStore: shops.list[currentIndex]
+      shopList: shops.list
     });
+    this.handleCurIndex(currentIndex)
+    if (isInit) {
+      this.setState({
+        defaultStore: shops.list[currentIndex]
+      })
+    }
     return shops;
   }
 
