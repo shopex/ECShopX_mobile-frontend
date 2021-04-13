@@ -27,30 +27,26 @@ import { pickBy, classNames, isArray } from "@/utils";
 import entry from "@/utils/entry";
 import { withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
-import { Tracker } from "@/service";
-import { WgtGoodsFaverite, HeaderHome } from "./home/wgts";
-import HomeWgts from "./home/comps/home-wgts";
-import Automatic from "./home/comps/automatic";
+import { Tracker } from "@/service"
+import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
+import HomeWgts from './home/comps/home-wgts'
+import Automatic from './home/comps/automatic'
 
-import "./home/index.scss";
 
-@connect(
-  ({ cart, member, store }) => ({
-    store,
-    list: cart.list,
-    cartIds: cart.cartIds,
-    cartCount: cart.cartCount,
-    showLikeList: cart.showLikeList,
-    showAdv: member.showAdv,
-    favs: member.favs
-  }),
-  dispatch => ({
-    onUpdateLikeList: show_likelist =>
-      dispatch({ type: "cart/updateLikeList", payload: show_likelist }),
-    onUpdateCartCount: count =>
-      dispatch({ type: "cart/updateCount", payload: count })
-  })
-)
+import './home/index.scss'
+
+@connect(({ cart, member, store }) => ({
+  store,
+  list: cart.list,
+  cartIds: cart.cartIds,
+  cartCount: cart.cartCount,
+  showLikeList: cart.showLikeList,
+  showAdv: member.showAdv,
+  favs: member.favs
+}), (dispatch) => ({
+  onUpdateLikeList: (show_likelist) => dispatch({ type: 'cart/updateLikeList', payload: show_likelist }),
+  onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
+}))
 @withPager
 @withBackToTop
 export default class Home extends Component {
@@ -169,16 +165,25 @@ export default class Home extends Component {
   };
 
   // 分享
-  onShareAppMessage() {
-    const shareInfo = this.shareInfo();
+  onShareAppMessage (params) {  
+    const shareInfo = this.shareInfo()
+  
+    Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
+      from_type:params.from_type,
+      share_title:"分享给好友"
+    }); 
     return {
       ...shareInfo
     };
   }
 
   // 分享朋友圈
-  onShareTimeline() {
-    const shareInfo = this.shareInfo("time");
+  onShareTimeline (params) {
+    const shareInfo = this.shareInfo('time') 
+    Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
+      from_type:params.from_type,
+      share_title:"分享到朋友圈"
+    }); 
     return {
       ...shareInfo
     };

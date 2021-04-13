@@ -5,8 +5,8 @@
  * @Description: 充值余额
  * @FilePath: /unite-vshop/src/others/pages/recharge/index.js
  * @Date: 2020-01-13 17:38:42
- * @LastEditors: Arvin
- * @LastEditTime: 2020-07-07 10:09:35
+ * @LastEditors: PrendsMoi
+ * @LastEditTime: 2021-04-01 09:45:09
  */
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, Text, Input } from "@tarojs/components";
@@ -268,12 +268,12 @@ export default class Recharge extends Component {
     const { colors } = this.props;
     const amountLength = amounts.length - 1;
     const payTypeText = {
-      point: "积分支付",
-      wxpay: process.env.TARO_ENV === "weapp" ? "微信支付" : "现金支付",
-      deposit: "余额支付",
-      delivery: "货到付款",
-      hfpay: "汇付支付"
-    };
+      point: '积分支付',
+      wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
+      deposit: '余额支付',
+      delivery: '货到付款',
+      hfpay: '微信支付'
+    }
     return (
       <View className="recharge">
         {/* NavBar */}
