@@ -265,7 +265,9 @@ export default class EspireCheckout extends Component {
       const { path: qrcode } = await Taro.getImageInfo({ src: url });
       let avatar = null;
       if (guideInfo.avatar) {
-        let avatarImgInfo = await Taro.getImageInfo({ src: guideInfo.avatar });
+        let avatarImgInfo = await Taro.getImageInfo({
+          src: guideInfo.avatar.replace("http:", "https:")
+        });
         avatar = avatarImgInfo.path;
       }
 

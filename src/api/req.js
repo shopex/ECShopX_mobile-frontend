@@ -83,7 +83,7 @@ class API {
    
     const token = S.getAuthToken();
     if (token) {
-      header["Authorization"] = `Bearer ${S.getAuthToken()}`;
+      header["Authorization"] = `Bearer ${token}`;
     }
 
     const { company_id, appid } = this.options;
@@ -94,7 +94,7 @@ class API {
       // 企微货架
       if (isGoodsShelves()) {
         header["salesperson-type"] = "shopping_guide";
-        header["x-wxapp-session"] = S.getAuthToken();
+        header["x-wxapp-session"] = token;
       }
     }
 
