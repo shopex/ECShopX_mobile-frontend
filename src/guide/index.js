@@ -1,12 +1,11 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, ScrollView, Text } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
-import { SpToast, Loading } from "@/components";
-import req from "@/api/req";
+import { Loading } from "@/components";
 import api from "@/api";
 import { pickBy, styleNames, resolveFavsList } from "@/utils";
 import entry from "@/utils/entry";
-import { withPager, withBackToTop } from "@/hocs";
+import { withLogin, withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
 
 import { WgtSearchHome } from "./components/wgts";
@@ -22,21 +21,15 @@ import {
 import "../pages/home/index.scss";
 
 @connect(
-  store => ({
-    store,
-    favs: store.member.favs,
-    homesearchfocus: store.home.homesearchfocus,
-    showhometabbar: store.home.showhometabbar,
-    innitShowPopupTempalte: store.home.innitShowPopupTempalte,
-    scrollTop: store.home.scrollTop,
-    showBuyPanel: store.guide.showBuyPanel,
-    goodsSkuInfo: store.guide.goodsSkuInfo   
+  ({ guide }) => ({
+    storeInfo: guide.storeInfo
   }),
   dispatch => ({
-    ontabSet: item => dispatch({ type: "home/tabSet", payload: { item } }),
-    onCloseCart: item => dispatch({ type: "guideCart/closeCart", payload: item })
+    updateStoreInfo: info =>
+      dispatch({ type: "guide/updateStoreInfo", payload: { info } })
   })
 )
+@withLogin()
 @withPager
 @withBackToTop
 export default class BaGuideHomeIndex extends Component {
@@ -64,46 +57,30 @@ export default class BaGuideHomeIndex extends Component {
       ba_info: null,
       shopList: [],
       defaultStore: null,
-      currentIndex: 0
+      currentIndex: 0,
+      guideInfo: null
     };
   }
 
-  componentDidShow(){
-    console.log('componentDidShow')
-  };
-  componentWillMount() {
-    console.log('componentWillMount')
-  }
+  // componentDidShow() {
+  //   console.log( "componentDidShow" );
+  // }
+  // componentWillMount() {
+  //   console.log("componentWillMount");
+  // }
 
   async componentDidMount() {
-    console.log('componentDidMount')
     const { version } = this.$router.params;
     // const res = await entry.entryLaunch(options, false);
 
-    let shops = [];
     //设置导购信息
-    const QwUserInfo = S.get("QwUserInfo", true);
-    console.log("首页设置导购信息-QwUserInfo", QwUserInfo);
-    this.setState({ QwUserInfo });
-    
-    
-    // let version = res.version;
-    this.fetchInfo(version);
-
-    let system = await Taro.getSystemInfoSync();
-    if (system && system.environment === "wxwork") {
-      //企业微信登录接口
-      // this.isAppWxWork();
-      await S.setQwUserInfo();
+    const guideInfo = S.get("GUIDE_INFO", true);
+    this.setState({ guideInfo }, () => {
+      this.fetchInfo(version);
       this.getStoreList();
-
-    }
-    //获取门店list
-    // setTimeout(() => {
-    //   this.getStoreList();
-    // }, 500);
-  
+    });
   }
+
   async isAppWxWork() {
     let _this = this;
 
@@ -123,30 +100,30 @@ export default class BaGuideHomeIndex extends Component {
       let newchatId = await _this.getNewQyChatId();
       S.set("qw_chatId", newchatId, true);
     }
-    
+
     this.getStoreList();
   }
-  checkSession() {
-    return new Promise((reslove, reject) => {
-      try {
-        wx.qy.checkSession({
-          success: res => {
-            reslove(res);
-          },
-          fail: err => {
-            reslove(err);
-          },
-          complete: err2 => {
-            reslove(err2);
-          }
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  }
+  // checkSession() {
+  //   return new Promise((reslove, reject) => {
+  //     try {
+  //       wx.qy.checkSession({
+  //         success: res => {
+  //           reslove(res);
+  //         },
+  //         fail: err => {
+  //           reslove(err);
+  //         },
+  //         complete: err2 => {
+  //           reslove(err2);
+  //         }
+  //       });
+  //     } catch (err) {
+  //       reject(err);
+  //     }
+  //   });
+  // }
   //客户群id
-  async getQyChatId() {    
+  async getQyChatId() {
     let ground = null;
     try {
       const context = await new Promise((reslove, reject) => {
@@ -206,15 +183,15 @@ export default class BaGuideHomeIndex extends Component {
     }
   }
   //初始化首页模版
-  async fetchInfo(version = 'v1.0.1') {
-    console.log('初始化首页模版-fetchInfo-version',version)
+  async fetchInfo(version = "v1.0.1") {
+    console.log("初始化首页模版-fetchInfo-version", version);
     // const url = `/pageparams/setting?template_name=yykweishopamore&version=${version}&page_name=dgindex`;
     let params = {
-      template_name: 'yykweishop',
+      template_name: "yykweishop",
       version: version,
-      page_name: 'custom_salesperson',
+      page_name: "custom_salesperson",
       company_id: 1
-    }
+    };
     const info = await api.guide.getHomeTmps(params);
 
     // if (!S.getAuthToken()) {
@@ -226,12 +203,12 @@ export default class BaGuideHomeIndex extends Component {
     const bkg_item = info.config.find(
       item => item.name === "background" && item.config.background
     );
-    const tabSet = info.config.find(item => item.name === "tabSet" && item);
+    // const tabSet = info.config.find(item => item.name === "tabSet" && item);
 
-    const { ontabSet, dispatch } = this.props;
-    const scrollInputConfig = info.config.find(
-      item => item.name === "scroll_input" && item
-    );
+    // const { ontabSet, dispatch } = this.props;
+    // const scrollInputConfig = info.config.find(
+    //   item => item.name === "scroll_input" && item
+    // );
 
     const sliderIndex = info.config.findIndex(
       item => item.name === "slider" || item.name === "slider-hotzone"
@@ -252,7 +229,7 @@ export default class BaGuideHomeIndex extends Component {
       }
     }
 
-    ontabSet(tabSet);
+    // ontabSet(tabSet);
 
     let tagnavIndex = -1;
     info.config.forEach(wgt_item => {
@@ -260,36 +237,30 @@ export default class BaGuideHomeIndex extends Component {
         tagnavIndex++;
         wgt_item.tagnavIndex = tagnavIndex;
       }
-    });
-    let QwUserInfo = S.get("QwUserInfo", true);
-
+    } );
+    
     this.setState({
       wgts: info.config,
       background: (bkg_item && bkg_item.config.background) || null,
-      scrollInputConfig,
-      ba_info: QwUserInfo ? QwUserInfo.ba_info : ""
+      // scrollInputConfig
     });
   }
+
   //获取门店列表
   async getStoreList(params = {}) {
-    let QwUserInfo = S.get("QwUserInfo", true),{currentIndex} = this.state
-    let storeId = QwUserInfo.ba_store ? QwUserInfo.ba_store.distributor_id : QwUserInfo.distributor_id
-    const  shops  = await api.guide.distributorlist({
+    const { list } = await api.guide.distributorlist({
       page: 1,
       pageSize: 10000,
-      store_type: "distributor",
-      store_name: params.store_name
+      store_type: "distributor"
     });
-    
-    shops.list.forEach((d,idx)=>{
-      if(d.distributor_id == storeId) currentIndex = idx
-    })
-    this.handleCurIndex(currentIndex)
+    const { guideInfo } = this.state;
+    const fd = list.find(
+      item => item.distributor_id == guideInfo.distributor_id
+    );
     this.setState({
-      shopList: shops.list,
-      defaultStore: shops.list[currentIndex]
+      shopList: list
     });
-    return shops;
+    this.props.updateStoreInfo(fd);
   }
 
   handleCloseCart = () => {
@@ -298,6 +269,7 @@ export default class BaGuideHomeIndex extends Component {
       onCloseCart(false);
     }, 0);
   };
+
   handlePageScroll = top => {
     const { scrollPageHeight, scrollTop } = this.state;
     let offsetTop = scrollPageHeight + top; //滑动距离+导航元素距离scrollview元素的距离=导航标签距离页面的距离
@@ -309,33 +281,25 @@ export default class BaGuideHomeIndex extends Component {
       scrollTop: offsetTop
     });
   };
+
   //点击Store
   handleOpenStore = val => {
-    console.log('点击Store-val',val)
     this.setState({
       showStore: val
     });
   };
-  handleStoreConfirm = () => {
-    const { shopList, currentIndex } = this.state;
 
-    this.setState({
-      defaultStore: shopList[currentIndex],
-      showStore: false
-    });
-    let QwUserInfo = S.get("QwUserInfo", true);
-
-    QwUserInfo.ba_store = shopList[currentIndex];
-    QwUserInfo.store_code = shopList[currentIndex].wxshop_bn;
-    console.log('变更门店选择',QwUserInfo)
-    S.set("QwUserInfo", QwUserInfo, true);
-  };
-  //修改当前门店下标
-  handleCurIndex = currentIndex => {
-    
-    this.setState({
-      currentIndex
-    });
+  handleStoreConfirm = (index) => {
+    const { shopList } = this.state;
+    this.setState(
+      {
+        currentIndex: index,
+        showStore: false
+      },
+      () => {
+        this.props.updateStoreInfo(shopList[index]);
+      }
+    );
   };
 
   render() {
@@ -343,31 +307,35 @@ export default class BaGuideHomeIndex extends Component {
       wgts,
       scrollTop,
       showStore,
-      defaultStore,
       shopList,
-      currentIndex
+      currentIndex,
+      guideInfo
     } = this.state;
-    const isLoading = !wgts || !this.props.store;
-    console.log('render-isLoading',isLoading)
-    const { homesearchfocus, showBuyPanel, goodsSkuInfo } = this.props;
+    const isLoading = !wgts 
+    const {
+      homesearchfocus,
+      showBuyPanel,
+      goodsSkuInfo,
+      storeInfo
+    } = this.props;
+
     const ipxClass = S.get("ipxClass");
     const n_ht = S.get("navbar_height");
-
-    // ${showhometabbar?'':'preventTouchMove'}
     return (
       <View className={!isLoading ? "page-index" : ""}>
         <BaNavBar
-          title='导购商城'
+          title="导购商城"
           fixed
-          jumpType='home'
-          icon='in-icon in-icon-backhome'
+          jumpType="home"
+          icon="in-icon in-icon-backhome"
         />
-        <View >
-         <BaStore
-           onClick={this.handleOpenStore}
-           defaultStore={defaultStore}
-         />
-              </View>
+        <View>
+          <BaStore
+            onClick={this.handleOpenStore}
+            guideInfo={guideInfo}
+            defaultStore={storeInfo}
+          />
+        </View>
         {isLoading ? (
           <Loading></Loading>
         ) : (
@@ -378,36 +346,34 @@ export default class BaGuideHomeIndex extends Component {
             scrollY
             style={styleNames({ top: n_ht + "PX" })}
           >
-            <View className='wgts-wrap__cont'>
+            <View className="wgts-wrap__cont">
               <BaHomeWgts
                 wgts={wgts}
-                source='bahome'
+                source="bahome"
                 onChangPageScroll={this.handlePageScroll}
               />
-
-             
             </View>
           </ScrollView>
         )}
+
         {homesearchfocus && <WgtSearchHome isShow={homesearchfocus} />}
-        <SpToast />
+
         <BaTabBar />
         {showBuyPanel && (
           <BaGoodsBuyPanel
             info={goodsSkuInfo}
-            type='cart'
+            type="cart"
             isOpened={showBuyPanel}
             onClose={this.handleCloseCart}
             onAddCart={this.handleCloseCart}
           />
         )}
+
         {showStore && (
           <BaStoreList
             shopList={shopList}
             currentIndex={currentIndex}
             onStoreConfirm={this.handleStoreConfirm}
-            onSearchStore={this.getStoreList.bind(this)}
-            onChangeCurIndex={this.handleCurIndex.bind(this)}
             onClose={this.handleOpenStore}
           />
         )}

@@ -5,7 +5,7 @@ import configStore from "@/store";
 import useHooks from "@/hooks";
 import req from "@/api/req";
 import api from "@/api";
-import { normalizeQuerys } from "@/utils";
+import { normalizeQuerys, log, isGoodsShelves } from "@/utils";
 import { FormIds, Tracker } from "@/service";
 import Index from "./pages/index";
 import LBS from "./utils/lbs";
@@ -68,13 +68,8 @@ class App extends Component {
   // eslint-disable-next-line react/sort-comp
   componentWillMount() {
     console.log("get - system", this.system);
-
     console.log( "get - system APP_TRACK", APP_TRACK );
-    
-    const system = Taro.getSystemInfoSync();
-    if ( ( system && system.environment && system.environment === "wxwork" ) ) {
-      S.set( 'isQW', true )
-    }
+  
 
     this.init();
   }
@@ -366,19 +361,19 @@ class App extends Component {
         console.log(e);
       }
     }
-    if ( S.getAuthToken() && !S.get( "isQW" )) {
+    if (S.getAuthToken() && !isGoodsShelves()) {
       api.member
         .favsList()
-        .then( ( { list } ) => {
-          if ( !list ) return;
-          store.dispatch( {
+        .then(({ list }) => {
+          if (!list) return;
+          store.dispatch({
             type: "member/favs",
             payload: list
-          } );
-        } )
-        .catch( e => {
-          console.info( e );
-        } );
+          });
+        })
+        .catch(e => {
+          console.info(e);
+        });
     }
     // H5定位
     if (APP_PLATFORM === "standard" && Taro.getEnv() === "WEB") {

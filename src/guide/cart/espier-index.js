@@ -105,7 +105,7 @@ export default class CartIndex extends Component {
   }
 
   handleClickItem = item => {
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`;
+    const url = `/guide/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`;
     Taro.navigateTo({
       url
     });
@@ -426,7 +426,7 @@ export default class CartIndex extends Component {
     }
     this.isTodetail = 1;
     Taro.navigateTo({
-      url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
+      url: `/guide/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
     });
   };
 

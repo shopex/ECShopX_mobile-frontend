@@ -1,7 +1,7 @@
 import Taro from "@tarojs/taro";
 import S from "@/spx";
 import qs from "qs";
-// import { getCurrentRoute } from '@/utils'
+import { isGoodsShelves } from "@/utils";
 
 function addQuery(url, query) {
   return url + (url.indexOf("?") >= 0 ? "&" : "?") + query;
@@ -80,8 +80,8 @@ class API {
       header["content-type"] =
         header["content-type"] || "application/x-www-form-urlencoded";
     }
+   
     const token = S.getAuthToken();
-
     if (token) {
       header["Authorization"] = `Bearer ${S.getAuthToken()}`;
     }
@@ -90,6 +90,11 @@ class API {
     if (process.env.TARO_ENV === "weapp") {
       if (appid) {
         header["authorizer-appid"] = appid;
+      }
+      // 企微货架
+      if (isGoodsShelves()) {
+        header["salesperson-type"] = "shopping_guide";
+        header["x-wxapp-session"] = S.getAuthToken();
       }
     }
 
@@ -210,7 +215,11 @@ class API {
           //   data.err_msg = data.err_msg || '登录过期正在重新登录'
           //   this.errorToast(data)
           // }
-          S.login(this, true);
+          if ( isGoodsShelves() ) {
+            S.loginQW(this, true);
+          } else {
+            S.login(this, true);
+          }
           return Promise.reject(this.reqError(resData));
         }
 

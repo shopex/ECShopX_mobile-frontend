@@ -147,29 +147,10 @@ export default class EspireCheckout extends Component {
       coupon_discount: -1 * coupon_discount,
       total_fee,
       items_count: totalItemNum,
-      goodsItems: items
+      goodsItems: items,
+      items_count: data.list.length
     };
-    // const info={
-    //     cart: [{
-    //         list: [
-    //           ...transformCartList(items),
-    //           ...transformCartList(gift_warning_item && gift_warning_item.length > 0 ? gift_warning_item : [], { disabled: true })
-    //         ],
-    //         cart_total_num: items.reduce((acc, item) => (+item.num) + acc, 0)
-    //       }]
-    // }
 
-    // let cartlist2 = [
-    //   ...transformCartList(items),
-    //   ...transformCartList(
-    //     gift_warning_item && gift_warning_item.length > 0
-    //       ? gift_warning_item
-    //       : [],
-    //     { disabled: true }
-    //   )
-    // ];
-
-    // let cartlist = await api.guide.cartdatalist(params);
     let cartlist = data.list;
     console.log("计算接口-cartlist", cartlist);
     let goodsllist = [];
@@ -256,9 +237,6 @@ export default class EspireCheckout extends Component {
         item_total = "2",
         gift_total = "3";
 
-      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
-      const userinfo = Taro.getStorageSync("userinfo");
-
       const {
         giftslist,
         total,
@@ -276,18 +254,18 @@ export default class EspireCheckout extends Component {
        * smid: 78,//导购id
        * distributor_id: 103,//门店id
        */
-      let qwUserInfo = S.get("QwUserInfo", true);
-      if (qwUserInfo && qwUserInfo.store_name) {
-        wxshop_name = qwUserInfo.store_name
+      let guideInfo = S.get("GUIDE_INFO", true);
+      if (guideInfo && guideInfo.store_name) {
+        wxshop_name = guideInfo.store_name;
       }
-      const qrcode_params = `appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout&cxdid=${cxdid}&company_id=${qwUserInfo.company_id}&smid=${qwUserInfo.salesperson_id}&distributor_id=${qwUserInfo.distributor_id}`
+      const qrcode_params = `appid=${APP_ID}&share_id=${share_id}&page=pages/cart/espier-checkout&cxdid=${cxdid}&company_id=${guideInfo.company_id}&smid=${guideInfo.salesperson_id}&distributor_id=${guideInfo.distributor_id}`;
       const host = req.baseURL.replace("/api/h5app/wxapp/", "");
       // https://ecshopx.shopex123.com/index.php/wechatAuth/wxapp/qrcode.png?temp_name=yykweishop&page=pages/cart/espier-checkout&company_id=1&cxdid=159&smid=78&distributor_id=103
-      const url = `${host}/wechatAuth/wxapp/qrcode.png?${qrcode_params}`
+      const url = `${host}/wechatAuth/wxapp/qrcode.png?${qrcode_params}`;
       const { path: qrcode } = await Taro.getImageInfo({ src: url });
       let avatar = null;
-      if (userinfo.avatar) {
-        let avatarImgInfo = await Taro.getImageInfo({ src: userinfo.avatar });
+      if (guideInfo.avatar) {
+        let avatarImgInfo = await Taro.getImageInfo({ src: guideInfo.avatar });
         avatar = avatarImgInfo.path;
       }
 
@@ -320,7 +298,7 @@ export default class EspireCheckout extends Component {
       ctx.restore();
       guideCanvasExp.textFill(
         ctx,
-        userinfo.username || "",
+        guideInfo.salesperson_name || "",
         75 * ratio,
         25 * ratio,
         14,
@@ -354,14 +332,14 @@ export default class EspireCheckout extends Component {
           "#666"
         );
       }
-      guideCanvasExp.drawImageFill(
-        ctx,
-        "https://bbc-espier-images.amorepacific.com.cn/image/2/2021/02/28/c82701f15f42ee1743d3a779d6a38327Z4zMvCPbp2FhYwf4zzfLBmmaHSVOUqcD",
-        224 * ratio,
-        32 * ratio,
-        98 * ratio,
-        18 * ratio
-      );
+      // guideCanvasExp.drawImageFill(
+      //   ctx,
+      //   "https://bbc-espier-images.amorepacific.com.cn/image/2/2021/02/28/c82701f15f42ee1743d3a779d6a38327Z4zMvCPbp2FhYwf4zzfLBmmaHSVOUqcD",
+      //   224 * ratio,
+      //   32 * ratio,
+      //   98 * ratio,
+      //   18 * ratio
+      // );
 
       // 总计
       guideCanvasExp.textFill(
@@ -423,16 +401,16 @@ export default class EspireCheckout extends Component {
         12,
         "#999"
       );
-      guideCanvasExp.textFill(
-        ctx,
-        "长按图片可立即转发",
-        (canvasWidth / 2) * ratio,
-        535 * ratio,
-        12,
-        "#666",
-        "",
-        "center"
-      );
+      // guideCanvasExp.textFill(
+      //   ctx,
+      //   "长按图片可立即转发",
+      //   (canvasWidth / 2) * ratio,
+      //   535 * ratio,
+      //   12,
+      //   "#666",
+      //   "",
+      //   "center"
+      // );
       console.log("guideCanvasExp", guideCanvasExp);
       // 商品信息
       guideCanvasExp.roundRect(
@@ -881,14 +859,14 @@ export default class EspireCheckout extends Component {
               <Image
                 onClick={e => e.stopPropagation()}
                 showMenuByLongpress
-                mode='widthFix'
-                style='width: 80%'
+                mode="widthFix"
+                style="width: 80%"
                 src={poster}
               />
               <View
-                className='at-button at-button--primary download-btn'
+                className="at-button at-button--primary download-btn"
                 onClick={this.handleDownloadImage}
-                type='primary'
+                type="primary"
               >
                 下载到相册
               </View>

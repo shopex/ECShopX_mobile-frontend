@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import api from "@/api";
-import { getCurrentRoute, log } from "@/utils";
+import { getCurrentRoute, log, isGoodsShelves } from "@/utils";
 
 const globalData = {};
 const TOKEN_IDENTIFIER = "auth_token";
@@ -51,6 +51,7 @@ class Spx {
 
     return await this.initGuideInfo(QwUserInfo);
   }
+
   //初始化导购身份
   async initGuideInfo(QwUserInfo) {
     console.log("初始化导购身份-initGuideInfo", QwUserInfo);
@@ -76,6 +77,7 @@ class Spx {
     );
     return QwUserInfo;
   }
+
   refreshQwUserinfo() {
     if (this._refreshSessionKeyTimer) {
       clearTimeout(this._refreshSessionKeyTimer);
@@ -191,25 +193,38 @@ class Spx {
     remove(fns, fn);
   }
 
-  async autoLogin(ctx, next) {
+  async autoLogin( ctx, next ) {
+    const IS_QW_GOODS_SHELVES = isGoodsShelves()
+    
     try {
       await this.trigger("autoLogin", ctx);
       // if (process.env.NODE_ENV === 'weapp') {
       //   await Taro.checkSession()
       // }
+      console.log('spx get auth token:', this.getAuthToken())
       if (!this.getAuthToken()) {
         throw new Error("auth token not found");
       }
 
-      let userInfo = await this.getUserInfo();
-      if (next) await next(userInfo);
-      if (!userInfo) throw new Error("userInfo is empty");
-
-      return userInfo;
+      if ( IS_QW_GOODS_SHELVES ) {
+        const guideInfo = this.get("GUIDE_INFO", true);
+        if (next) await next(guideInfo);
+        if (!guideInfo) throw new Error("guideInfo is empty");
+        return guideInfo;
+      } else {
+        let userInfo = await this.getUserInfo();
+        if (next) await next(userInfo);
+        if (!userInfo) throw new Error("userInfo is empty");
+        return userInfo;
+      }
     } catch (e) {
-      log.debug("[auth failed] redirect to login page: ", e);
-
-      this.login(ctx);
+      log.debug( "[auth failed] redirect to login page: ", e );
+      if ( IS_QW_GOODS_SHELVES ) {
+        await this.loginQW( ctx )
+        return true
+      } else {
+        this.login( ctx );
+      }
     }
   }
 
@@ -220,10 +235,36 @@ class Spx {
       return;
     }
     const authUrl = APP_AUTH_PAGE + `?redirect=${encodedRedirect}`;
-
     Taro[isRedirect ? "redirectTo" : "navigateTo"]({
       url: authUrl
     });
+  }
+
+  async loginQW( ctx ) {
+    let { code } = await this.getQyLoginCode();
+    const QwUserInfo = await api.user.getQwUserInfo({
+      appname: `${APP_NAME}`,
+      code
+    });
+    // this.set( "session3rd", QwUserInfo.session3rd );
+    this.setAuthToken( QwUserInfo.session3rd );
+    let { salesperson_id, distributor_id, employee_status } = QwUserInfo;
+    //employee_status:1内部导购,2编外导购
+    // if (employee_status == 1) {
+    // } else {
+    //   await api.guide.distributorlist();
+    // }
+    //查询当前导购门店信息是否有效
+    const { status } = await api.guide.is_valid({
+      salesperson_id,
+      distributor_id
+    });
+    console.log("查询当前导购门店信息是否有效-is_valid", status);
+    const _QwUserInfo = {
+      ...QwUserInfo,
+      store_isValid: status
+    };
+    this.set( "GUIDE_INFO", _QwUserInfo, true );
   }
 
   logout() {

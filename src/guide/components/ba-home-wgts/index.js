@@ -1,7 +1,21 @@
 import Taro, {PureComponent } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { WgtFilm, WgtSlider, WgtImgHotZone, WgtNavigation, WgtCoupon, WgtGoodsScroll, WgtGoodsGrid, WgtShowcase, WgtPointLuck,WgtTagNavigation,WgtSliderHotzone,WgtActivityZone} from '../wgts'
-import {  WgtSearchHome } from '@/pages/home/wgts'
+import {
+  WgtFilm,
+  WgtSlider,
+  WgtImgHotZone,
+  WgtNavigation,
+  WgtCoupon,
+  WgtGoodsScroll,
+  WgtGoodsGrid,
+  WgtShowcase,
+  WgtPointLuck,
+  WgtTagNavigation,
+  WgtSliderHotzone,
+  WgtActivityZone,
+  WgtSearchHome
+} from "../wgts";
+// import {  WgtSearchHome } from '@/pages/home/wgts'
 
 export default class HomeWgts extends PureComponent {
   state = {
