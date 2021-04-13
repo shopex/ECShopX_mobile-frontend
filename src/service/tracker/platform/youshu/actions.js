@@ -30,7 +30,7 @@ function resolveOrderInfo(params) {
   return baseData;
 }
 
-function resolveCartInfo(params, action_type) {
+function resolveCartInfo(params, action_type) {  
   const baseData = {
     sku: {
       sku_id: params.sku_id,
@@ -41,12 +41,12 @@ function resolveCartInfo(params, action_type) {
       spu_name: params.goods_title||params.item_name
     },
     sale: {
-      original_price: params.market_price / 100,
+      original_price: Number(params.market_price)?params.market_price / 100:params.price / 100,
       current_price: params.price / 100
     },
     goods_title: params.goods_title||params.item_name
   };
-  if (action_type) {
+  if (action_type) {     
     Object.assign(baseData, { action_type });
   }
   if (params.num) {
@@ -147,6 +147,22 @@ const actions = {
     });
     Tracker.trackEvents("custom_order", "用户发起支付", data);
   },
+  ["ORDER_PAYED"](params) {
+    const data = resolveOrderInfo({
+      order_id: params.trade_info.order_id,
+      order_time: params.timeStamp,
+      order_status: "payed",
+      //pay_time: new Date().getTime(),
+      sub_orders: [
+        {
+          sub_order_id: params.trade_info.order_id,
+          order_amt: params.item_fee / 100,
+          pay_amt: parseInt(params.total_fee) / 100
+        }
+      ]
+    });
+    Tracker.trackEvents("custom_order", "用户完成支付", data);
+  },
   // 用户发起退货退款
   ["ORDER_REFUND"](params) {
     const data = resolveOrderInfo({
@@ -185,7 +201,7 @@ const actions = {
   ["GOODS_SHARE_TO_CHANNEL_CLICK"](params) {
     const data = {
       from_type: params.from_type || "button",
-      share_title: params.item_name,
+      share_title: params.item_name || params.share_title,
       share_image_url: params.pics ? params.pics[0] : "",
       shareType: params.shareType
     };
@@ -270,7 +286,8 @@ const actions = {
       num,
       market_price,
       price,
-      title
+      title,
+      goods_id
     } = params;
     const data = resolveCartInfo(
       {
@@ -279,7 +296,7 @@ const actions = {
         num,
         market_price: parseInt(market_price * 100),
         price: parseInt(price * 100),
-        goods_id: sku_id,
+        goods_id: goods_id,
         goods_title: title
       },
       "remove_from_cart"
@@ -323,7 +340,8 @@ const actions = {
       num,
       market_price,
       price,
-      title
+      title,
+      goods_id
     } = params;
     const data = resolveCartInfo(
       {
@@ -332,7 +350,7 @@ const actions = {
         num,
         market_price: parseInt(market_price * 100),
         price: parseInt(price * 100),
-        goods_id: sku_id,
+        goods_id: goods_id,
         goods_title: title,
       },
       "remove_from_cart"

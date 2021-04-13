@@ -26,14 +26,15 @@ export function login (params) {
     auth_type: 'wxapp'
   }, { showError: false })
 }
-// export function wxworkLogin (params) {
-//   const appid = getAppId()
-//   return req.post('/workwechatlogin', {
-//     ...params,
-//     appid,
-//     auth_type: 'wxapp'
-//   }, { showError: false })
-// }
+
+export function prelogin(params) {
+  const appid = getAppId();
+  return req.post("/prelogin", {
+    ...params,
+    appid,
+    auth_type: "wxapp"
+  });
+}
 
 // export function prelogin (params) {
 //   const appid = getAppId()

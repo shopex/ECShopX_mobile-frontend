@@ -7,8 +7,9 @@ import req from "@/api/req";
 import api from "@/api";
 import { normalizeQuerys, log, isGoodsShelves } from "@/utils";
 import { FormIds, Tracker } from "@/service";
-import Index from "./pages/index";
-import LBS from "./utils/lbs";
+import Index from './pages/index'
+import LBS from './utils/lbs'
+import { youshuLogin } from '@/utils/youshu'
 // import entry from '@/utils/entry'
 
 import "./app.scss";
@@ -44,16 +45,15 @@ const getHomeSetting = async () => {
     disk_driver,
     nostores_status,
     youshu
-  });
-
-  const system = Taro.getSystemInfoSync();
-  console.log("----------------system--------------", system,system.environment);
-  if ((system && system.environment && system.environment === "wxwork")) {
-    console.log("----------------企业微信录入--------------");
-    //企业微信录入
-    // await S.setQwUserInfo()
-  } else if (APP_TRACK && youshu.appid) {
-    Tracker.use(APP_TRACK);
+  })
+  if (APP_TRACK) {
+    const system = Taro.getSystemInfoSync();
+    if (!(system && system.environment && system.environment === "wxwork") && (youshu.appid || youshu.sandbox_app_id)) {
+      console.log('----------------aa--------------')
+      console.log(Tracker)
+      Tracker.use(APP_TRACK);
+      youshuLogin();
+    }
   }
 };
 
@@ -170,9 +170,9 @@ class App extends Component {
         ],
         plugins: {
           "live-player-plugin": {
-            version: "1.2.6", // 填写该直播组件版本号
-            provider: "wx2b03c6e691cd7370" // 必须填该直播组件appid
-          }
+            "version": "1.2.10", // 填写该直播组件版本号
+            "provider": "wx2b03c6e691cd7370" // 必须填该直播组件appid
+          } 
           // "meiqia": {
           //   "version": "1.1.0",
           //   "provider": "wx2d2cd5fd79396601"
