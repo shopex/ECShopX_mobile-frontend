@@ -574,16 +574,39 @@ export default class EspireCheckout extends Component {
   handleDownloadImage = async () => {
     const { poster } = this.state;
     const res = await Taro.getSetting();
-    console.log(res);
     try {
       if (!res.authSetting["scope.writePhotosAlbum"]) {
-        await Taro.authorize({ scope: "scope.writePhotosAlbum" });
-        await Taro.saveImageToPhotosAlbum({ filePath: poster });
+        Taro.authorize({
+          scope: 'scope.writePhotosAlbum',
+          success: async () => {
+            await Taro.saveImageToPhotosAlbum({ filePath: poster });
+            Taro.showToast({ title: "保存成功" });
+          },
+          fail: () => {
+            Taro.showModal({
+              title: '提示',
+              content: '请打开保存到相册权限',
+              success: async resConfirm => {
+                if (resConfirm.confirm) {
+                  await Taro.openSetting();
+                  const setting = await Taro.getSetting();
+                  if (setting.authSetting["scope.writePhotosAlbum"]) {
+                    await Taro.saveImageToPhotosAlbum({ filePath: poster });
+                    Taro.showToast({ title: "保存成功" });
+                  } else {
+                    Taro.showToast({ title: "保存失败", icon: "none" });
+                  }
+                }
+              }
+            })
+          }
+        })
       } else {
         await Taro.saveImageToPhotosAlbum({ filePath: poster });
+        Taro.showToast({ title: "保存成功" });
       }
-      Taro.showToast({ title: "保存成功" });
     } catch (err) {
+      console.log(err)
       Taro.showToast({ title: "保存失败", icon: "none" });
     }
   };

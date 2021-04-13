@@ -409,7 +409,7 @@ export function isGoodsShelves() {
   if (system && system.environment && system.environment === "wxwork") {
     return true
   } else {
-    return true;
+    return false;
   }
 }
 
