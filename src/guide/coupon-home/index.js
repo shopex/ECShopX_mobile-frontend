@@ -70,7 +70,7 @@ export default class CouponHome extends Component {
   }
 
   async fetch(params) {
-    let { distributor_id } = S.get("QwUserInfo", true);
+    let { distributor_id } = S.get("GUIDE_INFO", true);
 
     params = {
       ...params,

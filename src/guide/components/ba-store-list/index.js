@@ -17,101 +17,75 @@ export default class BaStoreList extends Component {
     this.state = {
       keyWord: "",
       storeList: [],
-      setIdx:0
+      setIdx: 0
     };
   }
   //点击门店item
   handleClick = index => {
-    console.log("点击门店item-----", index);
-    const { onSearchStore, onChangeCurIndex } = this.props;
     this.setState({
-      setIdx:index
-    },()=>{
-      onChangeCurIndex(index);
-    })
-    
-
-  };
-  async componentWillMount() {
-    // this.setState({
-    //   storeList: await api.guide.distributorlist()
-    // },()=>{
-    //   console.log('componentWillMount-获取门店list',this.state.storeList)
-    // })
-  }
-  //搜索门店
-  hanldeConfirm = () => {
-    const { keyWord } = this.state;
-
-    const { onSearchStore, onChangeCurIndex } = this.props;
-    onSearchStore({ store_name: keyWord });
-    onChangeCurIndex(0);
-  };
-  //搜索框
-  hanldeInput = e => {
-    const {
-      detail: { value }
-    } = e;
-    this.setState({
-      keyWord: value
+      setIdx: index
     });
   };
+
+  //搜索框
+  hanldeInput = e => {
+    this.setState({
+      keyWord: e.detail.value
+    });
+  };
+
   //重制搜索框
   handleReset = () => {
-    //   debugger
     this.setState({
       keyWord: ""
     });
   };
+
   //提交当前选择
   hanldeStore = () => {
-    const { onStoreConfirm } = this.props;
-    const {setIdx} = this.state
-    onStoreConfirm(setIdx);
+    const { setIdx } = this.state;
+    this.props.onStoreConfirm(setIdx);
   };
 
   render() {
-    const { shopList, currentIndex } = this.props;
-    const { keyWord ,setIdx} = this.state;
-    console.log("门店list-storeList", shopList);
-    if(!shopList) return
+    const { shopList } = this.props;
+    const { keyWord, setIdx } = this.state;
+    if (!shopList) return;
+    const filterShopList = shopList.filter(item => {
+      return !keyWord || item.store_name.indexOf(keyWord) > -1;
+    });
+    console.log("filterShopList:", filterShopList);
     return (
       <View className="mask">
         <View className="ba-store-list">
           <View className="store-head">
             <View className="store-head__strname">切换门店</View>
             <Text
-              className="in-icon in-icon-close"
+              className="iconfont icon-close"
               onClick={() => this.props.onClose(false)}
             ></Text>
           </View>
+
           <Input
             className="store-search"
             value={keyWord}
             type="text"
             placeholder="搜索门店"
-            onConfirm={this.hanldeConfirm}
             onInput={this.hanldeInput}
           />
           <View className="store-main">
-            {shopList.map((item, index) => {
-              return (
-                <View
-                  className="store-item"
-                  key="index"
-                  onClick={this.handleClick.bind(this, index)}
-                >
-                  <View
-                    className={classNames(
-                      "store-item__name",
-                      currentIndex === index || setIdx === index? "active" : ""
-                    )}
-                  >
-                    {item.store_name + item.address}
-                  </View>
-                </View>
-              );
-            })}
+            {filterShopList.map((item, index) => (
+              <View
+                className={classNames("store-item", {
+                  active: index == setIdx
+                })}
+                key="index"
+                onClick={this.handleClick.bind(this, index)}
+              >
+                <View className="store-name">{item.store_name}</View>
+                <View className="store-address">{item.address}</View>
+              </View>
+            ))}
           </View>
           <View className="store-ft">
             <View className="btn reset_btn" onClick={this.handleReset}>

@@ -101,7 +101,7 @@ export default class BaGuideHomeIndex extends Component {
   }
   async init(entryData) {
     //设置导购信息
-    const QwUserInfo = S.get("QwUserInfo", true);
+    const QwUserInfo = S.get("GUIDE_INFO", true);
     console.log("首页设置导购信息-QwUserInfo", QwUserInfo);
     this.setState({ QwUserInfo });
     let version = entryData.version;
@@ -195,39 +195,6 @@ export default class BaGuideHomeIndex extends Component {
   async isAppWxWork() {
     let _this = this;
     return;
-    const checkSession = await this.checkSession();
-    console.log("=====checkSession检查结果返回====", checkSession);
-    if (checkSession.errMsg == "qy.checkSession:ok") {
-      const chatId = await _this.getQyChatId();
-
-      console.log("获取群信息------0", chatId);
-      let entry_form = S.get("entry_form", true);
-      if (chatId) {
-        S.set("qw_chatId", chatId, true);
-      } else if (
-        entry_form &&
-        entry_form.entry === "group_chat_tools" &&
-        !chatId
-      ) {
-        let newchatId = await _this.getNewQyChatId();
-        S.set("qw_chatId", newchatId, true);
-      }
-    } else {
-      S.setQwSession();
-      const chatId = await _this.getQyChatId();
-      let entry_form = S.get("entry_form", true);
-      console.log("获取群信息------1", chatId);
-      if (chatId) {
-        S.set("qw_chatId", chatId, true);
-      } else if (
-        entry_form &&
-        entry_form.entry === "group_chat_tools" &&
-        !chatId
-      ) {
-        let newchatId = await _this.getNewQyChatId();
-        S.set("qw_chatId", newchatId, true);
-      }
-    }
   }
   //客户群id
   async getQyChatId() {

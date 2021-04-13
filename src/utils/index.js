@@ -403,14 +403,24 @@ export function resolveFavsList (list, favs) {
     }
   })
 }
+
+export function isGoodsShelves() {
+  const system = Taro.getSystemInfoSync();
+  if (system && system.environment && system.environment === "wxwork") {
+    return true
+  } else {
+    return true;
+  }
+}
+
 export {
   classNames,
   styleNames,
   log,
   debounce,
-	throttle,
-	calCommonExp,
+  throttle,
+  calCommonExp,
   canvasExp,
   getQueryVariable,
   validColor
-}
+};
