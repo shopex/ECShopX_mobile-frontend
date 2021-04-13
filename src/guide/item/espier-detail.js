@@ -583,12 +583,14 @@ export default class Detail extends Component {
     //const { distributor_id,store_id } = Taro.getStorageSync('curStore')
     const { pics, item_id } = this.state.info;
     const pic = pics[0].replace( "http:", "https:" );
-    debugger
+    
     //const infoId = info.distributor_id
     const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=pages/item/espier-detail&appid=${APP_ID}&company_id=${GUIDE_INFO.company_id}&itemid=${item_id}&distributor_id=${GUIDE_INFO.distributor_id}&smid=${GUIDE_INFO.salesperson_id}&subtask_id=${GUIDE_INFO.subtask_id}`;
     console.log("wxappCode========>", wxappCode);
     try {
-      const avatarImg = await Taro.getImageInfo({ src: GUIDE_INFO.avatar });
+      const avatarImg = await Taro.getImageInfo({
+        src: GUIDE_INFO.avatar.replace("http:", "https:")
+      });
       const goodsImg = await Taro.getImageInfo({ src: pic });
       const codeImg = await Taro.getImageInfo({ src: wxappCode });
       if (avatarImg && goodsImg && codeImg) {
