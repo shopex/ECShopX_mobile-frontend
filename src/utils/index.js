@@ -404,9 +404,11 @@ export function resolveFavsList (list, favs) {
   })
 }
 
+// 判断是否在导购货架
 export function isGoodsShelves() {
   const system = Taro.getSystemInfoSync();
-  if (system && system.environment && system.environment === "wxwork") {
+  log.debug(`this system is: ${system.environment}`);
+  if ( system && system.environment && system.environment === "wxwork" ) {
     return true
   } else {
     return false;
