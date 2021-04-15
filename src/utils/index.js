@@ -341,11 +341,15 @@ export async function buriedPoint (data) {
     dtid = '',
     shop_code = '',
     item_id = '',
-    smid = ''
+    smid = '',
+    gu_user_id = ''
   } =  await normalizeQuerys(params)
   let employee_number = smid, store_bn = ''
   if (gu) {
     [employee_number, store_bn] = gu.split('_')
+  }
+  if (gu_user_id) {
+    employee_number = gu_user_id
   }
   // 任务埋点
   if (subtask_id) {
