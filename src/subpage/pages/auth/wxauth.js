@@ -74,10 +74,10 @@ export default class WxAuth extends Component {
       }
       
       let salesperson_id = Taro.getStorageSync('s_smid')
-      const gu_user_id = Taro.getStorageSync('gu_user_id')
-      if (gu_user_id) {
+      const work_userid = Taro.getStorageSync('work_userid')
+      if (work_userid) {
         api.user.bindSaleperson({
-          work_userid: gu_user_id
+          work_userid: work_userid
         })
       }
       if(!salesperson_id){
