@@ -9,6 +9,7 @@ import { Tracker } from "@/service";
 import api from '@/api'
 import S from '@/spx'
 import DetailItem from './comps/detail-item'
+import { TracksPayed } from '@/utils/youshu'
 
 
 import './detail.scss'
@@ -231,19 +232,19 @@ export default class TradeDetail extends Component {
       order_type
     }
     const config = await api.cashier.getPayment(paymentParams)
-
+ 
     this.setState({
       payLoading: false
     })
 
     let payErr
-    try {
-      
+    try { 
       Tracker.dispatch("ORDER_PAY", {
         ...info,
         item_fee: info.item_fee * 100,
         total_fee: info.item_fee * 100,
-        ...config
+        ...config,
+        timeStamp:config.order_info.create_time,
       }); 
       const payRes = await Taro.requestPayment(config)
       // 支付上报
@@ -256,17 +257,20 @@ export default class TradeDetail extends Component {
           title: e.err_desc || e.errMsg || '支付失败',
           icon: 'none'
         })
-      } else {
-     
+      } else { 
         Tracker.dispatch("CANCEL_PAY", {
           ...info,
           item_fee: parseInt(info.item_fee) * 100,
+          total_fee: parseInt(info.item_fee) * 100,
           ...config
         });
       }
     }
 
     if (!payErr) {
+
+      TracksPayed(info,config)
+
       await Taro.showToast({
         title: '支付成功',
         icon: 'success'
