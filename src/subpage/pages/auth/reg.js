@@ -180,11 +180,11 @@ export default class Reg extends Component {
         }
 
         // 新导购信息处理
-        const gu_user_id = Taro.getStorageSync('gu_user_id')
+        const work_userid = Taro.getStorageSync('work_userid')
 
-        if (gu_user_id) {
+        if (work_userid) {
           params.channel = 1
-          params.gu_user_id = gu_user_id 
+          params.work_userid = work_userid 
         }
 
         const res = await api.user.reg(params)

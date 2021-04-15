@@ -397,7 +397,7 @@ class App extends Component {
     // 欢迎语导购过期时间
     const guUserIdExp = Taro.getStorageSync("guUserIdExp");
     if (!guUserIdExp || Date.parse(new Date()) - guUserIdExp > treeDay) {
-      Taro.setStorageSync("gu_user_id", '');
+      Taro.setStorageSync("work_userid", '');
     }
     // 根据路由参数
     const { query } = this.$router.params;
@@ -415,12 +415,12 @@ class App extends Component {
       // 新导购埋点数据存储导购员工工号
       if (gu) {
         const [employee_number, store_bn] = gu.split("_")
-        Taro.setStorageSync("s_smid", employee_number)
+        Taro.setStorageSync("work_userid", employee_number)
         Taro.setStorageSync("store_bn", store_bn)
       }
       // 欢迎语小程序卡片分享参数处理
       if (gu_user_id) {
-        Taro.setStorageSync("gu_user_id", gu_user_id)
+        Taro.setStorageSync("work_userid", gu_user_id)
         // 如果是登录状态下打开分享且携带导购ID
         if (S.getAuthToken()) {
           api.user.bindSaleperson({
