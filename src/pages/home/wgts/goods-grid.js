@@ -42,7 +42,7 @@ export default class WgtGoodsGrid extends Component {
       if (res.intersectionRatio > 0) {
         const { id } = res.dataset;
         const { data } = this.state.info;
-        const curGoods = data.find( item => item.goodsId == id );
+        const curGoods = data.find(item => item.goodsId == id);
         Tracker.dispatch("EXPOSE_SKU_COMPONENT", curGoods);
       }
     });
@@ -60,7 +60,7 @@ export default class WgtGoodsGrid extends Component {
   render() {
     const { info, dis_id = '' } = this.props
     console.log(dis_id)
-    console.log('--goodsgridinfo--',info);
+    console.log('--goodsgridinfo--', info);
     if (!info) {
       return null
     }
@@ -109,7 +109,7 @@ export default class WgtGoodsGrid extends Component {
                 return (
                   <View
                     key={`${idx}1`}
-                    className={classNames('grid-item',{'grid-item-three': config.style=='grids'})}
+                    className={classNames('grid-item', { 'grid-item-three': config.style == 'grids' })}
                     onClick={this.navigateTo.bind(this, `/pages/item/espier-detail?id=${item.goodsId}&dtid=${item.distributor_id}`, item)}
                     data-id={item.goodsId}
                   >
@@ -127,19 +127,31 @@ export default class WgtGoodsGrid extends Component {
                         {config.brand && (
                           <SpImg
                             img-class='goods-brand'
-                            src={item.brand?item.brand:'https://fakeimg.pl/60x60/EFEFEF/CCC/?text=brand&font=lobster'}
+                            src={item.brand ? item.brand : 'https://fakeimg.pl/60x60/EFEFEF/CCC/?text=brand&font=lobster'}
                             mode='aspectFill'
                             width='300'
                           />
                         )}
                         {
                           item.type === '1' && <View className='nationalInfo'>
-                              <Image className='nationalFlag' src={item.origincountry_img_url} mode='aspectFill' lazyLoad />
-                              <Text className='nationalTitle'>
-                                { item.origincountry_name }
-                              </Text>
+                            <Image className='nationalFlag' src={item.origincountry_img_url} mode='aspectFill' lazyLoad />
+                            <Text className='nationalTitle'>
+                              {item.origincountry_name}
+                            </Text>
                           </View>
                         }
+                        {item.promotionActivity && item.promotionActivity.length > 0 && <View class="activity-label">
+                          {item.promotionActivity.map((s, index) => (
+                            <Text class="text">
+                              {s.tag_type == 'single_group' ? '团购' : ''}
+                              {s.tag_type == 'full_minus' ? '满减' : ''}
+                              {s.tag_type == 'full_discount' ? '满折' : ''}
+                              {s.tag_type == 'full_gift' ? '满赠' : ''}
+                              {s.tag_type == 'normal' ? '秒杀' : ''}
+                              {s.tag_type == 'limited_time_sale' ? '限时特惠' : ''}
+                              {s.tag_type == 'plus_price_buy' ? '换购' : ''}
+                            </Text>
+                          ))}</View>}
                         <View className={`goods-title ${!config.brand || !item.brand ? 'no-brand' : ''}`}>{item.title}</View>
                         {item.brief && <View className={`goods-brief ${!config.brand || !item.brand ? 'no-brand' : ''}`}>{item.brief}</View>}
                         {
@@ -147,7 +159,7 @@ export default class WgtGoodsGrid extends Component {
                           && <View className='goods-price'>
                             <Text className='cur'>¥</Text>{price}
                             {
-                              (marketPrice && marketPrice != 0)&&
+                              (marketPrice && marketPrice != 0) &&
                               <Text className='market-price'>{marketPrice}</Text>
                             }
                           </View>
