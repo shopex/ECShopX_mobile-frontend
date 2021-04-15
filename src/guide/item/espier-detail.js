@@ -152,11 +152,13 @@ export default class Detail extends Component {
   }
 
   onShareAppMessage() {
-    const { info, pageShareUrl } = this.state;
-    //console.log('pageShareUrl----->',pageShareUrl)
+    const { info } = this.state;
+    const { salesperson_id, distributor_id } = S.get("GUIDE_INFO", true);
+    const sharePath = `/pages/item/espier-detail?id=${info.item_id}&salesperson_id=${salesperson_id}&distributor_id=${distributor_id}`;
+    log.debug(`【guide/item/espier-detail】onShareAppMessage path: ${sharePath}`);
     return {
       title: info.item_name,
-      path: pageShareUrl,
+      path: sharePath,
       imageUrl: info.pics[0]
     };
   }
