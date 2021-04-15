@@ -8,10 +8,13 @@
     align-items: center;
     flex: 1;
     height: 180px;
+    .title {
+      font-size: 24px !important;
+    }
     [class^="icon-"] {
       padding: 0;
       margin-bottom: 20px;
-      font-size: 80px;
+      font-size: 70px;
       background: none;
       color: $color-gray;
       &::after {

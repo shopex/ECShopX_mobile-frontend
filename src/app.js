@@ -198,6 +198,8 @@ class App extends Component {
           'pages/auth/wxauth',
           'pages/auth/pclogin',
           'pages/auth/store-reg',
+          // 编辑分享
+          'pages/editShare/index'
         ]
       },
       // 团购

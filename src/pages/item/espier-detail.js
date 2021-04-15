@@ -910,6 +910,11 @@ export default class Detail extends Component {
     }
   }
 
+  // 判断是否可以分享
+  isCanShare = async () => {
+
+  }
+
   render() {
     const {
       info,
