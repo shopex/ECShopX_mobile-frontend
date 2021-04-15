@@ -68,13 +68,17 @@ export default class Detail extends Component {
       // 是否订阅
       isSubscribeGoods: false,
       is_open_store_status:null,
-      goodType:'normal'
+      goodType:'normal',
     }
   }
   
 
   async componentDidMount() {
-    const options = this.$router.params 
+    const options = await normalizeQuerys(this.$router.params)
+    console.log('options----->',options)
+    if (options.itemid && !options.id) {
+      options.id = options.itemid
+    }
     let id = options.id
     let uid = ''
     if(!S.getAuthToken()){
@@ -83,8 +87,8 @@ export default class Detail extends Component {
     const isOpenStore = await entry.getStoreStatus()
     this.setState({
       is_open_store_status:isOpenStore,
-      goodType:options.type==="pointitem"?"pointitem":"normal"
-    },async()=>{
+      goodType:options.type==="pointitem"?"pointitem":"normal",
+    }, async()=>{
       const { is_open_store_status } = this.state
       if (APP_PLATFORM === 'standard') {
        // const { distributor_id } = Taro.getStorageSync('curStore')
@@ -98,6 +102,7 @@ export default class Detail extends Component {
         }
       }
       const entryData = await entry.entryLaunch({...options}, true)
+      console.log('entryData---->',entryData)
       id = entryData.id
       uid = entryData.uid
       
@@ -105,7 +110,7 @@ export default class Detail extends Component {
         this.uid = uid
       }
       if (options.scene) {
-        const query = normalizeQuerys(options)
+        const query = await normalizeQuerys(options)
         if (query.id) {
           id = query.id
           uid = query.uid
@@ -133,7 +138,12 @@ export default class Detail extends Component {
     if (lnglat && !lnglat.city) {
       entry.InverseAnalysis(lnglat)
     }
-    this.getDetailShare()
+    // this.getDetailShare()
+    // 埋点处理
+    buriedPoint.call(this, {
+      item_id: id,
+      event_type: 'activeItemDetail'
+    })
   }
 
   static options = {
@@ -276,7 +286,7 @@ export default class Detail extends Component {
 
   async fetchInfo(itemId, goodsId) { 
     this.nextPage();
-    const { distributor_id,store_id } = Taro.getStorageSync('curStore') 
+    const { distributor_id, store_id } = Taro.getStorageSync('curStore') 
     const { is_open_store_status } = this.state
     //const isOpenStore = await entry.getStoreStatus()
     let id = ''
@@ -300,19 +310,20 @@ export default class Detail extends Component {
       } else {
         const options = this.$router.params
         if (options.scene) {
-          const query = normalizeQuerys(options)
+          const query = await normalizeQuerys(options)
           if (query.dtid) {
             param.distributor_id = query.dtid
           }
         }
       }
     }
+
     if(is_open_store_status){
       delete param.distributor_id
     }
     console.log('param',param)
     // 商品详情 
-    const info = await this.goodInfo(id,param);
+    const info = await this.goodInfo(id, param);
     console.log('---info----',info);
     // 是否订阅
     const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
@@ -939,7 +950,7 @@ export default class Detail extends Component {
       likeList,
       evaluationTotal,
       evaluationList,
-      isSubscribeGoods
+      isSubscribeGoods,
     } = this.state
 
     console.log("--info--",info)
@@ -1171,7 +1182,7 @@ export default class Detail extends Component {
             )}
             {/* 跨境商品 */}
             {info.type == "1" && !this.isPointitemGood() && (
-              <View className="nationalInfo"> 
+              <View className='nationalInfo'> 
                 <View>
                   跨境综合税:
                   <Price
@@ -1202,10 +1213,10 @@ export default class Detail extends Component {
               </View>
             )}
             {
-              this.isPointitemGood() && <View class="goods_point">
+              this.isPointitemGood() && <View class='goods_point'>
                     <PointLine 
-                        point={info.point} 
-                        plus
+                      point={info.point} 
+                      plus
                     /> 
               </View>
             }
@@ -1236,11 +1247,11 @@ export default class Detail extends Component {
           )}
 
           { !info.is_gift && !this.isPointitemGood() &&  <SpCell
-              className='goods-sec-specs'
-              title='领券'
-              isLink
-              onClick={this.handleCouponClick.bind(this)}
-            >
+            className='goods-sec-specs'
+            title='领券'
+            isLink
+            onClick={this.handleCouponClick.bind(this)}
+          >
               {coupon_list &&
                 new_coupon_list.map(kaquan_item => {
                   return (

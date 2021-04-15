@@ -54,7 +54,6 @@ export default class Reg extends Component {
     }
     
     this.fetch()
-    
   }
   componentDidShow(){
     this.checkWhite()
@@ -178,6 +177,14 @@ export default class Reg extends Component {
         if (salesperson_id) {
           params.distributor_id = Taro.getStorageSync('s_dtid')
           params.salesperson_id = salesperson_id
+        }
+
+        // 新导购信息处理
+        const gu_user_id = Taro.getStorageSync('gu_user_id')
+
+        if (gu_user_id) {
+          params.channel = 1
+          params.salesperson_id = gu_user_id 
         }
 
         const res = await api.user.reg(params)
