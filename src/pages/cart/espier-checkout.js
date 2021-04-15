@@ -819,10 +819,10 @@ export default class CartCheckout extends Component {
 
   // 处理导购
   dealGuidInfo (params) {
-    const smid = Taro.getStorageSync('s_smid')
+    const work_userid = Taro.getStorageSync('work_userid')
     const chatId = Taro.getStorageSync('chatId')
-    if (smid) {
-      params.salesman_id = smid 
+    if (work_userid) {
+      params.work_userid = work_userid 
     }
     if (chatId) {
       params.chat_id = chatId
