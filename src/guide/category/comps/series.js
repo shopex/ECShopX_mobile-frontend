@@ -60,7 +60,7 @@ export default class Series extends Component {
   handleCustomClick = (id) => {
     if (id) {
       Taro.navigateTo({
-        url: `/pages/custom/custom-page?id=${id}`
+        url: `/guide/custom/custom-page?id=${id}`
       })
     }
   }
