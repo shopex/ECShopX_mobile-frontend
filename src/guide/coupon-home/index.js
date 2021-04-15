@@ -5,7 +5,7 @@ import { connect } from "@tarojs/redux";
 import api from "@/api";
 import S from "@/spx";
 import { withPager } from "@/hocs";
-import { pickBy, formatTime, styleNames, classNames } from "@/utils";
+import { pickBy, formatTime, styleNames, classNames, normalizeQuerys } from "@/utils";
 import { Tracker } from "@/service";
 import { BaTabBar, BaNavBar } from "@/guide/components";
 import "./coupon.scss";
@@ -71,11 +71,12 @@ export default class CouponHome extends Component {
 
   async fetch(params) {
     let { distributor_id } = S.get("GUIDE_INFO", true);
-
+    let { card_id = '' } = await normalizeQuerys(this.$router.params)
     params = {
       ...params,
       end_date: 1,
       distributor_id,
+      card_id,
       item_id: this.$router.params
         ? this.$router.params.item_id
           ? this.$router.params.item_id
