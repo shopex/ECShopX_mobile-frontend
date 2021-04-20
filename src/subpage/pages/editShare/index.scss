@@ -31,4 +31,49 @@ page {
     box-sizing: border-box;
     padding: 10px;
   }
+  .images {
+    margin-top: 30px;
+    display: flex;
+    // justify-content: space-around;
+    flex-wrap: wrap;
+    .item {
+      width: 33%;
+      flex-shrink: 0;
+      padding: 5px;
+      position: relative;
+      .icon-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba($color: #000000, $alpha: 0.5);
+        color: #fff;
+        font-size: 32px;
+        border-radius: 100%;
+      }
+      .img {
+        width: 100%;
+        box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+  .btns {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 50px;
+    padding: 0 20%;
+    .btn {
+      padding: 10px 50px;
+      background: coral;
+      color: #fff;
+      border-radius: 30px;
+    }
+  }
+  .canvas {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: -100%;
+  }
 }

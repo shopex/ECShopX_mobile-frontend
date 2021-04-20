@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/item/comps/share-panel.js
  * @Date: 2021-04-01 17:21:58
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-04-14 15:20:22
+ * @LastEditTime: 2021-04-20 14:48:17
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
@@ -29,15 +29,8 @@ export default class SharePanel extends Component {
     console.log('onClickShareTimeline')
   }
 
-  // 编辑分享
-  goToEditShare = () => {
-    Taro.navigateTo({
-      url: `/subpage/pages/editShare/index`
-    })
-  }
-
   render () {
-    const { isOpen, onClose, onClick } = this.props
+    const { isOpen, onClose, onClick, onEditShare } = this.props
 
     return (
       <AtFloatLayout
@@ -48,14 +41,14 @@ export default class SharePanel extends Component {
         scrollY={false}
       >
         <View className='share-panel'>
-          <View className='share-panel__item' >
+          {/* <View className='share-panel__item' >
             <Button
               onClick={this.onClickShareTimeline.bind(this)}
               className='icon-weChart'
             >
             </Button>
             <View className='title'>分享到朋友圈</View>
-          </View>
+          </View> */}
           <View className='share-panel__item'>
             <Button
               openType='share'
@@ -68,7 +61,7 @@ export default class SharePanel extends Component {
             <View className='icon-picture1'></View>
             <View className='title'>海报分享</View>            
           </View>
-          <View className='share-panel__item' onClick={this.goToEditShare.bind(this)}>
+          <View className='share-panel__item' onClick={onEditShare}>
             <View className='icon-picture1'></View>
             <View className='title'>编辑分享</View>            
           </View>
