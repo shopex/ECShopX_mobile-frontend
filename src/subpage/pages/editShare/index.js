@@ -6,10 +6,11 @@
  * @FilePath: /unite-vshop/src/subpage/pages/editShare/index.js
  * @Date: 2021-04-14 15:06:18
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-04-20 14:45:29
+ * @LastEditTime: 2021-04-22 14:53:52
  */
 import Taro, { Component } from '@tarojs/taro'
-import { Textarea, View, Image, Canvas } from '@tarojs/components'
+import { Textarea, View, Image, Canvas, Button } from '@tarojs/components'
+import { AtModal, AtModalContent, AtModalAction } from 'taro-ui'
 import api from '@/api'
 import req from '@/api/req'
 import { connect } from '@tarojs/redux'
@@ -20,6 +21,14 @@ import './index.scss'
 const canvsW_H = 200
 // 小程序码宽高
 const wxCodeW_H = 70
+
+const steps = [{
+  title: '打开微信'
+}, {
+  title: '粘贴文案/上传图片'
+}, {
+  title: '发送朋友圈'
+}]
 
 @connect(({ colors }) => ({
   colors: colors.current
@@ -33,7 +42,8 @@ export default class EditShare extends Component {
       info: '',
       selectPics: [],
       wxappCode: '',
-      showPoster: []
+      showPoster: [],
+      showSuccess: false
     }
 
     this.copyPoster = []
@@ -97,10 +107,13 @@ export default class EditShare extends Component {
   insertInfo = (item) => {
     let { info } = this.state
     const { name, value } = item
-    info += `${name}: ${value}\n`
-    this.setState({
-      info: info
-    })
+    const newInsertData = `${name}: ${value}\n`
+    if (info.indexOf(newInsertData) === -1) {
+      info += newInsertData
+      this.setState({
+        info: info
+      })
+    }
   }
 
   // 生成图片canvas
@@ -156,7 +169,6 @@ export default class EditShare extends Component {
   // 重置分享海报
   resetShare = () => {
     this.setState({
-      info: '',
       showPoster: [...this.copyPoster]
     })
   }
@@ -177,8 +189,8 @@ export default class EditShare extends Component {
       await Taro.setClipboardData({
         data: info
       })
-      Taro.showToast({
-        title: '保存成功'
+      this.setState({
+        showSuccess: true
       })
     }
     Taro.getSetting().then(res => {
@@ -198,32 +210,40 @@ export default class EditShare extends Component {
     })
   }
 
+  closeModal = () => {
+    this.setState({
+      showSuccess: false
+    })
+  }
+
   render () {
-    const { insertData, info, selectPics, showPoster } = this.state
+    const { insertData, info, selectPics, showPoster, showSuccess } = this.state
     const { colors } = this.props
     
     return <View className='editShare'>
       <View className='content'>
-        <View>插入数据</View>
-        <View className='insertData'>
-          {
-            insertData.map((item, index) => <View
-              className='item'
-              key={`goodInfo${index}`}
-              style={`background: ${colors.data[0].primary}`}
-              onClick={this.insertInfo.bind(this, item)}
-            >
-              { item.name }
-            </View>)
-          }
-        </View>
         <Textarea
           value={info}
           className='textarea'
           maxlength='-1'
+          placeholder='我想要分享'
           onInput={this.inputInfo.bind(this)}
         >
         </Textarea>
+        <View className='textData'>
+          <View className='title'>插入数据</View>
+          <View className='insertData'>
+            {
+              insertData.map((item, index) => <View
+                className={`item ${info.indexOf(`${item.name}: ${item.value}\n`) !== -1 && 'disabled'}`}
+                key={`goodInfo${index}`}
+                onClick={this.insertInfo.bind(this, item)}
+              >
+                { item.name }
+              </View>)
+            }
+          </View>
+        </View>
       </View>
       <View className='images'>
         {
@@ -244,6 +264,37 @@ export default class EditShare extends Component {
       {
         selectPics.map((item, index) => <Canvas className='canvas' key={`canvas${index}`}  canvas-id={`canvas${index}`} style={`width: ${canvsW_H}px; height: ${canvsW_H}px`} />)
       }
+
+      <AtModal isOpened={showSuccess} className='successModal'>
+        <AtModalContent>
+          <View className='tip'>
+            <View className='iconfont icon-check'></View>
+            文字内容已经复制到剪切板
+          </View>
+          <View className='tip'>
+            <View className='iconfont icon-check'></View>
+            图片已保存到相册
+          </View>
+          <View className='sharetip'>
+            <View className='line'></View>
+            <View className='text'>去朋友圈分享</View>
+            <View className='line'></View>
+          </View>
+          <View className='steps'>
+            {
+              steps.map((item, index) => <View className='item' key={`step${index}`}>
+                <View className='title'>{ item.title }</View>
+                <View className={`stepIcon ${index === 1 && 'second'}`}>
+                  <View className='num'>{ index + 1 }</View>
+                </View>
+              </View>)
+            }
+          </View>
+        </AtModalContent>
+        <AtModalAction>
+          <Button className='btn' onClick={this.closeModal.bind(this)}>我知道了</Button>
+        </AtModalAction>
+      </AtModal>
     </View>
   }
 }
