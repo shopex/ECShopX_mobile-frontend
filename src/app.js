@@ -5,11 +5,11 @@ import configStore from "@/store";
 import useHooks from "@/hooks";
 import req from "@/api/req";
 import api from "@/api";
-import { normalizeQuerys, log, isGoodsShelves } from "@/utils";
+import { normalizeQuerys, isGoodsShelves } from "@/utils";
 import { FormIds, Tracker } from "@/service";
+import { youshuLogin } from '@/utils/youshu'
 import Index from './pages/index'
 import LBS from './utils/lbs'
-import { youshuLogin } from '@/utils/youshu'
 // import entry from '@/utils/entry'
 
 import "./app.scss";
@@ -25,7 +25,7 @@ const { store } = configStore();
 // 三天时间戳
 const treeDay = 86400000 * 3
 // 获取首页配置
-const getHomeSetting = async () => {
+const getHomeSetting = async () => { 
   const {
     echat = {},
     meiqia = {},
@@ -46,14 +46,15 @@ const getHomeSetting = async () => {
     nostores_status,
     youshu
   })
+  console.log("APP_TRACK",youshu)
   if (APP_TRACK) {
-    const system = Taro.getSystemInfoSync();
-    if (!(system && system.environment && system.environment === "wxwork") && (youshu.appid || youshu.sandbox_app_id)) {
-      console.log('----------------aa--------------')
-      console.log(Tracker)
-      Tracker.use(APP_TRACK);
-      youshuLogin();
-    }
+    // const system = Taro.getSystemInfoSync();   
+    // if (!(system && system.environment && system.environment === "wxwork") && (youshu.app_id || youshu.sandbox_app_id)) {
+    //   console.log('----------------aa--------------')
+    //   console.log(Tracker)
+    //   Tracker.use(APP_TRACK);
+    //   youshuLogin();
+    // }
   }
 };
 
@@ -67,6 +68,13 @@ class App extends Component {
 
   // eslint-disable-next-line react/sort-comp
   componentWillMount() {
+    if (APP_TRACK) {
+      const system = Taro.getSystemInfoSync();   
+      if (!(system && system.environment && system.environment === "wxwork")) { 
+        Tracker.use(APP_TRACK);
+        youshuLogin();
+      }
+    } 
     // 获取收藏列表
     if (process.env.TARO_ENV === "weapp") {
       FormIds.startCollectingFormIds();
@@ -267,7 +275,9 @@ class App extends Component {
           "pages/auth/forgotpwd",
           "pages/auth/wxauth",
           "pages/auth/pclogin",
-          "pages/auth/store-reg"
+          "pages/auth/store-reg",
+          // 编辑分享
+          'pages/editShare/index'
         ]
       },
       // 团购
