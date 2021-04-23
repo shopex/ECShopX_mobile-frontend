@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/subpage/pages/editShare/index.js
  * @Date: 2021-04-14 15:06:18
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-04-22 16:47:37
+ * @LastEditTime: 2021-04-23 13:55:44
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Textarea, View, Image, Canvas, Button } from '@tarojs/components'
@@ -277,7 +277,7 @@ export default class EditShare extends Component {
         selectPics.map((item, index) => <Canvas className='canvas' key={`canvas${index}`}  canvas-id={`canvas${index}`} style={`width: ${canvsW_H}px; height: ${canvsW_H}px`} />)
       }
 
-      <AtModal isOpened={showSuccess} className='successModal'>
+      <AtModal isOpened={showSuccess} closeOnClickOverlay={false} className='successModal'>
         <AtModalContent>
           <View className='tip'>
             <View className='iconfont icon-check'></View>
