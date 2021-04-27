@@ -5,12 +5,14 @@ import { tokenParse } from "@/utils";
 
 async function youshuLogin() {
     const { code } = await Taro.login()
+    console.log("youshuLogin",code)
     try {
         const { token } = await api.wx.login({ code })
         if (!token) throw new Error(`token is not defined: ${token}`)
         if (token) {
             // 通过token解析openid
             const userInfo = tokenParse(token);
+            console.log("userInfo.openid",userInfo.openid)
             Tracker.setVar({
                 user_id: userInfo.user_id,
                 open_id: userInfo.openid,
