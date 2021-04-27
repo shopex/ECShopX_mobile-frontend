@@ -47,9 +47,9 @@ export default class CouponHome extends Component {
   async onShareAppMessage(item) {
     const { info = {} } = item.target.dataset
     const res = this.state.shareInfo;
-    console.log('item.target.dataset',item)
-    console.log('info',info)
-    console.log('onShareAppMessage-item',res,info)
+    // console.log('item.target.dataset',item)
+    // console.log('info',info)
+    // console.log('onShareAppMessage-item',res,info)
     // const { userId } = Taro.getStorageSync("userinfo");
     const params = await normalizeQuerys(this.$router.params);
 
@@ -229,6 +229,7 @@ export default class CouponHome extends Component {
                     <View className='recommend-detail__bar'>
                       <Button
                         openType='share'
+                        dataInfo={item}
                         // style={"background: " + colors.data[0].primary}
                         className={classNames( 'shareCSS', {
                           disabled: (parseInt(item.quantity) - item.get_num) <= 0
