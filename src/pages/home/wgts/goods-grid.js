@@ -153,6 +153,18 @@ export default class WgtGoodsGrid extends Component {
                           </Text>
                         </View>
                       )}
+                      {item.promotionActivity && item.promotionActivity.length > 0 && <View class="activity-label">
+                          {item.promotionActivity.map((s, index) => (
+                            <Text class="text">
+                              {s.tag_type == 'single_group' ? '团购' : ''}
+                              {s.tag_type == 'full_minus' ? '满减' : ''}
+                              {s.tag_type == 'full_discount' ? '满折' : ''}
+                              {s.tag_type == 'full_gift' ? '满赠' : ''}
+                              {s.tag_type == 'normal' ? '秒杀' : ''}
+                              {s.tag_type == 'limited_time_sale' ? '限时特惠' : ''}
+                              {s.tag_type == 'plus_price_buy' ? '换购' : ''}
+                            </Text>
+                          ))}</View>}
                       <View
                         className={`goods-title ${
                           !config.brand || !item.brand ? "no-brand" : ""
