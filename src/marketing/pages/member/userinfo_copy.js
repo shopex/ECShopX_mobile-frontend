@@ -3,7 +3,7 @@ import { View, Text, Picker } from '@tarojs/components'
 import {AtButton, AtForm, AtInput, AtAvatar} from 'taro-ui'
 import { NavBar, SpToast, SpCheckbox } from '@/components'
 import api from '@/api'
-// import { withLogin } from '@/hocs'
+import { withLogin } from '@/hocs'
 import S from '@/spx'
 import azureUploader from '@/utils/azure-wry'
 import { classNames, isArray, isString } from '@/utils'
@@ -14,8 +14,7 @@ import './userinfo.scss'
 @connect(( { colors } ) => ({
   colors: colors.current
 }), () => ({}))
-// @withLogin()
-
+@withLogin()
 export default class UserInfo extends Component {
   constructor (props) {
     super(props)
@@ -32,7 +31,7 @@ export default class UserInfo extends Component {
   }
 
   componentDidMount () {
-    // this.fetch()
+    this.fetch()
   }
 
   async fetch () {

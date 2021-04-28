@@ -1,11 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View, Image, Button, Radio, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { AtButton } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
-import { tokenParse } from "@/utils";
-import { Tracker } from "@/service";
+import { tokenParse } from "@/utils"
+import { Tracker } from "@/service"
 
 import './wxauth.scss'
 
@@ -14,18 +13,15 @@ import './wxauth.scss'
 }))
 
 export default class WxAuth extends Component {
-  state = {
-    isAuthShow: false,
-    canIUseGetUserProfile: false
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      isAgree: false
+    }
   }
 
   componentDidMount () {
-    if (wx.getUserProfile) {
-      this.setState({
-        canIUseGetUserProfile: true
-      })
-    }
-    this.autoLogin()
   }
   componentDidShow (){
     this.checkWhite()
@@ -37,74 +33,6 @@ export default class WxAuth extends Component {
       setTimeout(() => {
         Taro.hideHomeButton()
       }, 1000)
-    }
-  }
-
-  async autoLogin () {
-    Taro.showLoading({
-      title: '登录中'
-    })
-    const { code } = await Taro.login()
-    try {
-      const { token } = await api.wx.login({ code })
-      if ( !token ) throw new Error( `token is not defined: ${token}` )
-      S.setAuthToken(token);
-      if (token) {
-        // 通过token解析openid
-        const userInfo = tokenParse(token);
-        Tracker.setVar({
-          user_id: userInfo.user_id,
-          open_id: userInfo.openid,
-          union_id: userInfo.unionid
-        });
-      }
-      const { source, redirect } = this.$router.params
-      if (source || redirect) {
-        const memberInfo = await api.member.memberInfo()
-        const userObj = {
-          username: memberInfo.memberInfo.nickname || memberInfo.memberInfo.username || memberInfo.memberInfo.mobile,
-          avatar: memberInfo.memberInfo.avatar,
-          userId: memberInfo.memberInfo.user_id,
-          isPromoter: memberInfo.is_promoter,
-          openid: memberInfo.memberInfo.open_id,
-          vip: memberInfo.vipgrade ? memberInfo.vipgrade.vip_type : '',
-          mobile: memberInfo.memberInfo.mobile
-        }
-        Taro.setStorageSync('userinfo', userObj)
-      }
-      
-      let salesperson_id = Taro.getStorageSync('s_smid')
-      const work_userid = Taro.getStorageSync('work_userid')
-      if (work_userid) {
-        api.user.bindSaleperson({
-          work_userid: work_userid
-        })
-      }
-      if(!salesperson_id){
-        return this.redirect()
-      }
-      let info = await api.member.getUsersalespersonrel({
-        salesperson_id
-      })
-      if(info.is_bind === '1'){
-        return this.redirect()
-      }
-      console.log("------a-----")
-      // 绑定导购
-      await api.member.setUsersalespersonrel({
-        salesperson_id
-      })
-      return this.redirect()
-    } catch (e) {
-      Taro.hideLoading()
-      if (e.res.data.error.code === 401002) {
-        setTimeout(() => {
-          Taro.navigateBack()
-        }, 1500)
-      }
-      this.setState({
-        isAuthShow: true
-      })
     }
   }
 
@@ -148,138 +76,152 @@ export default class WxAuth extends Component {
     }
   }
 
-  // getUserProfile 新事件
-  handleGetUserProfile = () => {
-    wx.getUserProfile({
-      desc: '用于完善会员资料',
-      success: data => {
-        const res = {
-          detail: data
-        }
-        this.handleGetUserInfo(res)
-      }
+  // 登录注册事件
+  login_reg = async (getParams) => {
+    const { code } = await Taro.login()
+    Taro.showLoading({
+      mask: true,
+      title: '正在加载...'
     })
+    try {
+      const uid = Taro.getStorageSync('distribution_shop_id')
+      const trackParams = Taro.getStorageSync('trackParams')
+      // 导购id
+      const salesperson_id = Taro.getStorageSync('s_smid')
+      // 新导购信息处理
+      const work_userid = Taro.getStorageSync('work_userid')
+      const params = {
+        code,
+        user_type: 'wechat',
+        auth_type: 'wxapp',
+        ...getParams
+      }
+
+      if (salesperson_id) {
+        params.distributor_id = Taro.getStorageSync('s_dtid')
+        params.salesperson_id = salesperson_id
+      }
+
+      if (work_userid) {
+        params.channel = 1
+        params.work_userid = work_userid 
+      }
+
+      if (trackParams) {
+        params.source_id = trackParams.source_id
+        params.monitor_id = trackParams.monitor_id
+      }
+      if (uid) {
+        params.inviter_id = uid
+        params.uid = uid
+      }
+
+      const { token } = await api.wx.login_reg(params)
+      if (token) {
+        S.setAuthToken(token)
+        Taro.showToast({
+          title: '登录成功',
+          icon: 'none',
+          mask: true,
+          duration: 2000
+        })
+        setTimeout(() => {
+          this.redirect()
+        }, 2000)
+        // 通过token解析openid
+        const userInfo = tokenParse(token)
+        Tracker.setVar({
+          user_id: userInfo.user_id,
+          open_id: userInfo.openid,
+          union_id: userInfo.unionid
+        })
+      }
+    } catch (e) {
+      Taro.showToast({
+        title: '授权失败，请稍后再试',
+        icon: 'none'
+      })
+    }
+    Taro.hideLoading()
   }
 
-
-  handleGetUserInfo = async (res) => {
-    const loginParams = res.detail
-    const { iv, encryptedData, rawData, signature, userInfo } = loginParams
-    if (!iv || !encryptedData) {
+  // 获取手机号登录注册
+  getPhoneNumber = async (res) => {
+    const { isAgree } = this.state
+    if (!isAgree) {
+      Taro.showToast({
+        title: '请勾选协议',
+        icon: 'none'
+      })
+      return
+    }
+    const { encryptedData, iv } = res.detail
+    if (!encryptedData || !iv) {
       Taro.showModal({
         title: '授权提示',
         content: `需要您的授权才能购物`,
         showCancel: false,
         confirmText: '知道啦'
       })
-
-      return
     }
-
-    const { code } = await Taro.login()
-
-    Taro.showLoading({
-      mask: true,
-      title: '正在加载...'
-    })
-
-    try {
-      const uid = Taro.getStorageSync('distribution_shop_id')
-      let params = {
-        code,
-        iv,
-        encryptedData,
-        rawData,
-        signature,
-        userInfo
-      }
-      const trackParams = Taro.getStorageSync('trackParams')
-      if (trackParams) {
-        Object.assign(params, {source_id: trackParams.source_id, monitor_id: trackParams.monitor_id})
-      }
-      if (uid) {
-        Object.assign(params, {inviter_id: uid})
-      }
-      const { token, open_id, union_id, user_id } = await api.wx.prelogin(params)
-
-      S.setAuthToken(token)
-      // 通过token解析openid
-      if ( token ) {
-        const userToken = tokenParse(token);
-        Tracker.setVar( {
-          user_id: userToken.user_id,
-          open_id: userToken.openid,
-          union_id: userToken.unionid  
-        });
-      }
-
-      Taro.showModal({
-        title: '提示',
-        content: '是否订阅注册成功通知？',
-        success: async confirmRes => {
-          if (confirmRes.confirm) {
-            await this.handleNews()
-          }
-          // 绑定过，跳转会员中心
-          if (user_id) {
-            await this.autoLogin()
-            return
-          }
-          const { source, redirect } = this.$router.params
-          const redirectUrl= encodeURIComponent(redirect)
-          // 跳转注册绑定
-          Taro.redirectTo({
-            url: `/subpage/pages/auth/reg?code=${code}&open_id=${open_id}&union_id=${union_id}&redirect=${redirectUrl}&source=${source}`
-          })
-        }
-      })
-    } catch (e) {
-      console.info(e)
-      Taro.showToast({
-        title: '授权失败，请稍后再试',
-        icon: 'none'
-      })
-    }
-
-    Taro.hideLoading()
+    this.login_reg({encryptedData, iv})
   }
 
+  // 点击回到首页
   handleBackHome = () => {
     Taro.navigateBack()
   }
 
+  // radio切换事件
+  changeAgreeRule = () => {
+    const { isAgree } = this.state
+    this.setState({
+      isAgree: !isAgree
+    })
+  }
+
+  jumpRule = async (type = '', e) => {
+    console.log(e)
+    e.stopPropagation()
+    Taro.navigateTo({
+      url: `/subpage/pages/auth/reg-rule?type=${type}`
+    })
+  }
+
   render () {
     const { colors } = this.props
-    const { isAuthShow, canIUseGetUserProfile } = this.state
-    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const { isAgree } = this.state
+    // const setCheckColor = isAgree ? colors.data[0].primary : '#fff'
     return (
       <View className='page-wxauth'>
-        {isAuthShow && (
-          <View className='sec-auth'>
-            <View className='auth-title'>用户授权</View>
-            <Text className='auth-hint'>{extConfig.wxa_name}申请获得你的公开信息（昵称、头像等）</Text>
-            <View className='auth-btns'>
-              {
-                canIUseGetUserProfile ? <AtButton
-                  type='primary'
-                  lang='zh_CN'
-                  customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  onClick={this.handleGetUserProfile.bind(this)}
-                >
-                  授权允许
-                </AtButton>
-                : <AtButton
-                  type='primary'
-                  lang='zh_CN'
-                  customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  openType='getUserInfo'
-                  onGetUserInfo={this.handleGetUserInfo}
-                >授权允许</AtButton>
-              }
-              <AtButton className='back-btn' type='default' onClick={this.handleBackHome.bind(this)}>拒绝</AtButton>
+        <View className='logo'>
+          <Image
+            className='img'
+            src='https://store-images.s-microsoft.com/image/apps.1081.13510798886607585.e5e9691e-c9bf-4ee0-ae21-cc7601c0cee5.03207cec-5f89-409c-aec9-3253099cfced?mode=scale&q=90&h=270&w=270&background=%230078D7'
+            mode='aspectFill'
+          />
+        </View>
+        <View className='bottom'>
+          <Button
+            className='btn'
+            openType='getPhoneNumber'
+            onGetPhoneNumber={this.getPhoneNumber.bind(this)}
+          >
+            微信授权手机号一键登录
+          </Button>
+          <View 
+            className='rule'
+            onClick={this.changeAgreeRule.bind(this)}
+          >
+            <Radio
+              checked={isAgree}
+            >
+            </Radio>
+            <View className='content' >
+              若微信号未注册则将进入注册流程，注册即为同意<Text onClick={this.jumpRule.bind(this, '')} style={`color: ${colors.data[0].primary}`} className='ruleName' >《用户注册协议》</Text>、<Text onClick={this.jumpRule.bind(this, 2)} style={`color: ${colors.data[0].primary}`} className='ruleName'>《隐私政策》</Text>
             </View>
           </View>
-        )}
+        </View>
       </View>
     )
   }
