@@ -6,12 +6,13 @@ import { AtCountdown } from 'taro-ui'
 import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell, GoodsEvaluation, FloatMenuMeiQia, GoodsItem ,PointLine} from '@/components'
 import api from '@/api'
 import req from '@/api/req'
-import { withPager, withBackToTop } from '@/hocs'
-import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys } from '@/utils'
+import { withPager, withBackToTop,withPointitem } from '@/hocs'
+import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys, buriedPoint } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from "@/service"
 import { GoodsBuyToolbar, ItemImg, ImgSpec, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem, GroupingItem } from './comps'
+import { linkPage } from '../home/wgts/helper'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -30,6 +31,7 @@ import './espier-detail.scss'
 }))
 @withPager
 @withBackToTop
+@withPointitem
 export default class Detail extends Component {
 
   constructor(props) {
@@ -67,13 +69,21 @@ export default class Detail extends Component {
       // 是否订阅
       isSubscribeGoods: false,
       is_open_store_status:null,
-      goodType:'normal'
+      goodType:'normal',
+      // 是否能够转发
+      canShareInfo: {
+        status: false
+      }
     }
   }
   
 
   async componentDidMount() {
-    const options = this.$router.params 
+    const options = await normalizeQuerys(this.$router.params)
+    console.log('options----->',options)
+    if (options.itemid && !options.id) {
+      options.id = options.itemid
+    }
     let id = options.id
     let uid = ''
     if(!S.getAuthToken()){
@@ -82,8 +92,8 @@ export default class Detail extends Component {
     const isOpenStore = await entry.getStoreStatus()
     this.setState({
       is_open_store_status:isOpenStore,
-      goodType:options.type==="pointitem"?"pointitem":"normal"
-    },async()=>{
+      goodType:options.type==="pointitem"?"pointitem":"normal",
+    }, async()=>{
       const { is_open_store_status } = this.state
       if (APP_PLATFORM === 'standard') {
        // const { distributor_id } = Taro.getStorageSync('curStore')
@@ -97,6 +107,7 @@ export default class Detail extends Component {
         }
       }
       const entryData = await entry.entryLaunch({...options}, true)
+      console.log('entryData---->',entryData)
       id = entryData.id
       uid = entryData.uid
       
@@ -104,7 +115,7 @@ export default class Detail extends Component {
         this.uid = uid
       }
       if (options.scene) {
-        const query = normalizeQuerys(options)
+        const query = await normalizeQuerys(options)
         if (query.id) {
           id = query.id
           uid = query.uid
@@ -132,7 +143,13 @@ export default class Detail extends Component {
     if (lnglat && !lnglat.city) {
       entry.InverseAnalysis(lnglat)
     }
-    this.getDetailShare()
+    // this.getDetailShare()
+    this.isCanShare()
+    // 埋点处理
+    buriedPoint.call(this, {
+      item_id: id,
+      event_type: 'activeItemDetail'
+    })
   }
 
   static options = {
@@ -275,7 +292,7 @@ export default class Detail extends Component {
 
   async fetchInfo(itemId, goodsId) { 
     this.nextPage();
-    const { distributor_id,store_id } = Taro.getStorageSync('curStore') 
+    const { distributor_id, store_id } = Taro.getStorageSync('curStore') 
     const { is_open_store_status } = this.state
     //const isOpenStore = await entry.getStoreStatus()
     let id = ''
@@ -299,19 +316,20 @@ export default class Detail extends Component {
       } else {
         const options = this.$router.params
         if (options.scene) {
-          const query = normalizeQuerys(options)
+          const query = await normalizeQuerys(options)
           if (query.dtid) {
             param.distributor_id = query.dtid
           }
         }
       }
     }
+
     if(is_open_store_status){
       delete param.distributor_id
     }
     console.log('param',param)
     // 商品详情 
-    const info = await this.goodInfo(id,param);
+    const info = await this.goodInfo(id, param);
     console.log('---info----',info);
     // 是否订阅
     const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
@@ -743,7 +761,18 @@ export default class Detail extends Component {
 
       return
     }
-
+    const { canShareInfo } = this.state
+    const { status, msg, page } = canShareInfo
+    if (!status) {
+      Taro.showToast({
+        title: msg,
+        icon: 'none'
+      })
+      setTimeout(() => {
+        linkPage(page.linkPage, page)
+      }, 1000)
+      return
+    }
     this.setState({
       showSharePanel: true
     })
@@ -790,6 +819,9 @@ export default class Detail extends Component {
           icon:'none',
           title: '保存成功'
         })
+        this.setState({
+          showPoster: false
+        })
       })
       .catch(() => {
         Taro.showToast({
@@ -831,9 +863,9 @@ export default class Detail extends Component {
     const curStore = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id :curStore.distributor_id : item.distributor_id
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${id}&type=pointitem`
+    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${id}`
     Taro.navigateTo({
-      url
+      url:this.transformUrl(url,this.isPointitem())
     })
   }
 
@@ -909,6 +941,29 @@ export default class Detail extends Component {
     }
   }
 
+  // 判断是否可以分享
+  isCanShare = async () => {
+    if (!S.getAuthToken()) return false
+    const info = await api.user.getIsCanShare()
+    if (!info.status) {
+      Taro.hideShareMenu()
+    }
+    this.setState({
+      canShareInfo: info
+    })
+  }
+
+  // 编辑分享
+  goToEditShare = () => {
+    const { distributor_id,store_id } = Taro.getStorageSync('curStore')
+    const { info,is_open_store_status } = this.state
+    const { company_id, item_id } = info
+    const dtid = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : info.distributor_id
+    Taro.navigateTo({
+      url: `/subpage/pages/editShare/index?id=${item_id}&dtid=${dtid}&company_id=${company_id}`
+    })
+  }
+
   render() {
     const {
       info,
@@ -938,7 +993,7 @@ export default class Detail extends Component {
       likeList,
       evaluationTotal,
       evaluationList,
-      isSubscribeGoods
+      isSubscribeGoods,
     } = this.state
 
     console.log("--info--",info)
@@ -1170,7 +1225,7 @@ export default class Detail extends Component {
             )}
             {/* 跨境商品 */}
             {info.type == "1" && !this.isPointitemGood() && (
-              <View className="nationalInfo"> 
+              <View className='nationalInfo'> 
                 <View>
                   跨境综合税:
                   <Price
@@ -1201,10 +1256,10 @@ export default class Detail extends Component {
               </View>
             )}
             {
-              this.isPointitemGood() && <View class="goods_point">
+              this.isPointitemGood() && <View class='goods_point'>
                     <PointLine 
-                        point={info.point} 
-                        plus
+                      point={info.point} 
+                      plus
                     /> 
               </View>
             }
@@ -1235,11 +1290,11 @@ export default class Detail extends Component {
           )}
 
           { !info.is_gift && !this.isPointitemGood() &&  <SpCell
-              className='goods-sec-specs'
-              title='领券'
-              isLink
-              onClick={this.handleCouponClick.bind(this)}
-            >
+            className='goods-sec-specs'
+            title='领券'
+            isLink
+            onClick={this.handleCouponClick.bind(this)}
+          >
               {coupon_list &&
                 new_coupon_list.map(kaquan_item => {
                   return (
@@ -1474,6 +1529,7 @@ export default class Detail extends Component {
             <SharePanel
               info={uid}
               isOpen={showSharePanel}
+              onEditShare={this.goToEditShare.bind(this)}
               onClose={() => this.setState({ showSharePanel: false })}
               onClick={this.handleShowPoster.bind(this)}
             />

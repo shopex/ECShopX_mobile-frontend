@@ -60,8 +60,8 @@ export function linkPage (type, data) {
       } else {
         url = ''
       }
-			break;
-		case 'tag':
+      break;
+    case 'tag':
       url = '/pages/item/list?tag_id=' + id
       break;
     case 'regactivity':
@@ -75,6 +75,9 @@ export function linkPage (type, data) {
       break;
     case 'custom':
       url = id
+      break;
+    case 'liverooms':
+      url = 'plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id='+id
       break;
     default:
   }
