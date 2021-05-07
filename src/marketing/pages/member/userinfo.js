@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-06 16:45:12
+ * @LastEditTime: 2021-05-07 14:45:19
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -73,16 +73,17 @@ export default class UserInfo extends Component {
 
   // 获取微信用户信息
   getWxUserInfo = (res) => {
-    const { userInfo } = res.detail
-    console.log(userInfo)
+    if (res.detail) {
+      const { userInfo } = res.detail
+      console.log(userInfo)
+    }
     this.setState({
       isGetWxInfo: true
     })
   }
 
   // 上传头像
-  handleAvatar = async (e) => {
-    e.stopPropagation()
+  handleAvatar = async () => {
     const { isGetWxInfo, userInfo } = this.state
     if (isGetWxInfo) {
       try {
@@ -118,14 +119,19 @@ export default class UserInfo extends Component {
     S.logout()
   }
 
-  // 保存用户信息
-  saveInfo = (e) => {
+  // 更换手机号
+  editPhone = (e) =>{
     e && e.stopPropagation()
-    // Taro.navigateBack()
     Taro.navigateTo({
       url: '/subpage/pages/auth/bindPhone'
     })
+  }
+
+  // 保存用户信息
+  saveInfo = (e) => {
+    e && e.stopPropagation()
     console.log('saveInfo')
+    Taro.navigateBack()
   }
 
   render () {
@@ -142,6 +148,12 @@ export default class UserInfo extends Component {
               <View className='left'>我的头像</View>
               <View className='right'>
                 <Image src={userInfo.avatar} mode='aspectFill' className='avatar' onClick={this.handleAvatar.bind(this)} />
+              </View>
+            </View>
+            <View className='item' onClick={this.editPhone.bind(this)}>
+              <View className='left'>手机号</View>
+              <View className='right'>
+                isGetWxInfo
               </View>
             </View>
             {

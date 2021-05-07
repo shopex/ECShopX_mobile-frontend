@@ -75,6 +75,12 @@ export default class MemberIndex extends Component {
   }
 
   componentDidMount() {
+  }
+
+  componentDidShow() {
+    if (S.getAuthToken()) {
+      this.getSalesperson();
+    }
     let sys = Taro.getSystemInfoSync();
     console.log("member - Taro.getSystemInfoSync().environment", sys);
     sys.environment == "wxwork" &&
@@ -85,19 +91,11 @@ export default class MemberIndex extends Component {
       backgroundColor: colors.data[0].marketing,
       frontColor: '#ffffff'
     })
-   
     this.fetch()
     this.getWheel()
     this.fetchBanner()
     this.fetchRedirect()
     this.getDefaultImg()
-    
-  }
-
-  componentDidShow() {
-    if (S.getAuthToken()) {
-      this.getSalesperson();
-    }
     this.getSettingCenter()
     this.getConfigPointitem()
   }
@@ -349,7 +347,7 @@ export default class MemberIndex extends Component {
   };
 
   handleLoginClick = () => {
-    S.login(this, true);
+    S.login(this, false);
   };
 
   viewAftersales = () => {

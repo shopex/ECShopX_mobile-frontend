@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/comps/getUserInfo.js
  * @Date: 2021-05-06 15:34:03
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-06 15:56:58
+ * @LastEditTime: 2021-05-07 14:44:26
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Button, View } from '@tarojs/components'
@@ -41,6 +41,9 @@ export default class GetUserInfoBtn extends Component {
           detail: data
         }
         this.handleGetUserInfo(res)
+      },
+      fail: () => {
+        this.handleGetUserInfo({})
       }
     })
   }
