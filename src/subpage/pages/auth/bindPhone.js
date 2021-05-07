@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/subpage/pages/auth/bindPhone.js
  * @Date: 2021-05-06 10:59:01
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-06 14:42:12
+ * @LastEditTime: 2021-05-07 14:13:52
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Input, Button } from '@tarojs/components'

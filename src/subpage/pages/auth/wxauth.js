@@ -55,14 +55,17 @@ export default class WxAuth extends Component {
         ? decodeURIComponent(redirect)
         : `/pages/cart/espier-checkout?source=${source}`
     } else if (source === 'loginout') {
-      Taro.navigateBack()
-      return
+      redirect_url = '/marketing/pages/member/userinfo'
     } else {
       redirect_url = redirect ? decodeURIComponent(redirect) : '/pages/member/index'
     }
-    Taro.redirectTo({
-      url: redirect_url
-    })
+    if (redirect_url === '/pages/member/index') {
+      Taro.navigateBack()
+    } else {
+      Taro.redirectTo({
+        url: redirect_url
+      })
+    }
   }
 
   handleNews = async () =>{
@@ -83,7 +86,7 @@ export default class WxAuth extends Component {
     const { code } = await Taro.login()
     Taro.showLoading({
       mask: true,
-      title: '正在加载...'
+      title: '正在登录...'
     })
     try {
       const uid = Taro.getStorageSync('distribution_shop_id')
@@ -121,6 +124,7 @@ export default class WxAuth extends Component {
       const { token } = await api.wx.login(params)
       if (token) {
         S.setAuthToken(token)
+        Taro.hideLoading()
         Taro.showToast({
           title: '登录成功',
           icon: 'none',
@@ -129,7 +133,7 @@ export default class WxAuth extends Component {
         })
         setTimeout(() => {
           this.redirect()
-        }, 2000)
+        }, 1500)
         // 通过token解析openid
         const userInfo = tokenParse(token)
         Tracker.setVar({
@@ -165,6 +169,7 @@ export default class WxAuth extends Component {
         showCancel: false,
         confirmText: '知道啦'
       })
+      return false
     }
     this.login_reg({encryptedData, iv, cloudID})
   }
