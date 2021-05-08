@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-07 14:45:19
+ * @LastEditTime: 2021-05-08 09:51:02
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -56,6 +56,7 @@ export default class UserInfo extends Component {
 
   componentDidMount () {
     this.getUserInfo()
+    this.getFormItem()
   }
 
   config = {
@@ -111,7 +112,8 @@ export default class UserInfo extends Component {
 
   // 获取表单字段
   getFormItem = async () => {
-    
+    const res = await api.user.regParam()
+    console.log(res)
   }
 
   // 退出登录
@@ -128,10 +130,18 @@ export default class UserInfo extends Component {
   }
 
   // 保存用户信息
-  saveInfo = (e) => {
+  saveInfo = async (e) => {
     e && e.stopPropagation()
-    console.log('saveInfo')
-    Taro.navigateBack()
+    const data = {}
+    await api.member.setMemberInfo(data)
+    Taro.showToast({
+      title: '修改成功',
+      mask: true,
+      duration: 1500
+    })
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 1500)
   }
 
   render () {

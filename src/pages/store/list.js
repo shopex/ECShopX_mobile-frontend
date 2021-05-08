@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-07 18:10:38
+ * @LastEditTime: 2021-05-08 09:59:41
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -147,7 +147,11 @@ export default class StoreList extends Component {
 
   // 选择门店
   handleClickItem = (info) => {
-    console.log(info)
+    if(info){
+      info.store_id = 0 //新增非门店自提，开启distributor_id 取值为store_id
+    }
+    Taro.setStorageSync('curStore', info)
+    Taro.navigateBack()
   }
 
   // 获取定位信息
