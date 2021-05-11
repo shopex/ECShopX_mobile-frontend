@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/subpage/pages/auth/bindPhone.js
  * @Date: 2021-05-06 10:59:01
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-07 14:13:52
+ * @LastEditTime: 2021-05-11 18:16:50
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Input, Button } from '@tarojs/components'
@@ -26,11 +26,16 @@ export default class BindPhone extends Component {
     super(props)
 
     this.state = {
+      countryCode: '+86',
+      oldCountryCode: '+86',
       currentMobile: '',
       mobile: '',
-      smsCode: '',
-      countDown: 0
+      smsCode: ''
     }
+  }
+
+  componentDidMount () {
+    this.getUserInfo()
   }
 
   config = {
@@ -39,8 +44,18 @@ export default class BindPhone extends Component {
 
   // 获取手机号
   getPhoneNumber = async (res) => {
-    // const { encryptedData, iv } = res.detail
-    console.log(res)
+    const { code } = await Taro.login()
+    const { encryptedData, iv} = res.detail
+    const { phoneNumber, countryCode } = await api.wx.decryptPhone({
+      encryptedData,
+      iv,
+      code
+    })
+    this.setState({
+      mobile: phoneNumber,
+      countryCode,
+      oldCountryCode: countryCode
+    })
   }
 
   // 获取验证码
@@ -54,7 +69,7 @@ export default class BindPhone extends Component {
       return false
     }
     const query = {
-      type: 'sign',
+      type: 'update',
       mobile: mobile,
     }
     try {
@@ -67,6 +82,15 @@ export default class BindPhone extends Component {
       return false
     }
     resolve()
+  }
+
+  // 获取用户信息
+  getUserInfo = async () => {
+    const { memberInfo } = await api.member.memberInfo()
+    this.setState({
+      currentMobile: memberInfo.mobile,
+      mobile: memberInfo.mobile
+    })
   }
 
   // 输入
@@ -84,9 +108,8 @@ export default class BindPhone extends Component {
   }
 
   // 确认修改
-  handleEdit = () => {
-    const { mobile, smsCode } = this.state
-
+  handleEdit = async () => {
+    const { mobile, smsCode, countryCode, currentMobile, oldCountryCode } = this.state
     if (!mobile || !smsCode) {
       const msg = !mobile ? '请输入手机号' : '请输入验证码'
       Taro.showToast({
@@ -95,8 +118,15 @@ export default class BindPhone extends Component {
       })
       return false
     } 
-    console.log(mobile)
-    console.log(smsCode)
+    await api.member.setMemberMobile({
+      old_mobile: currentMobile,
+      old_region_mobile: oldCountryCode + currentMobile,
+      old_country_code: oldCountryCode,
+      new_mobile: mobile,
+      new_region_mobile: countryCode + mobile,
+      new_country_code: countryCode,
+      smsCode
+    })
     Taro.showToast({
       title: '修改成功',
       mask: true,
@@ -108,7 +138,7 @@ export default class BindPhone extends Component {
   }
   
   render () {
-    const { currentMobile, mobile, smsCode } = this.state
+    const { currentMobile, mobile, smsCode, countryCode } = this.state
     const { colors } = this.props
 
     return <View className='bindPhone'>
@@ -119,7 +149,7 @@ export default class BindPhone extends Component {
           mode='aspectFill'
         />
         <View className='currentPhone'>
-          当前手机号：+86 { currentMobile }
+          当前手机号：{countryCode} { currentMobile }
         </View>
       </View>
       <View className='form'>
