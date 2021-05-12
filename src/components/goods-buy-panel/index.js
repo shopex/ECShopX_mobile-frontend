@@ -92,7 +92,12 @@ export default class GoodsBuyPanel extends Component {
 
     const skuDict = {};
     const originSpecIds = info.item_spec_desc.map(item => item.spec_id)
-    spec_items.forEach(t => {
+    const newSpceItems = spec_items.sort((a, b) => {
+      const first = a.item_spec[0].spec_value_id
+      const second = b.item_spec[0].spec_value_id
+      return first - second
+    })
+    newSpceItems.forEach(t => {
       const specValueId =  t.item_spec.map(s => s.spec_value_id)
       const specIds = t.item_spec.map(s => s.spec_id);
       const propsText = t.item_spec.map(s => s.spec_value_name).join(" ");
@@ -428,8 +433,8 @@ export default class GoodsBuyPanel extends Component {
         keyList.push(i)
       }
     }
-    const last = keyList.length - 1
-    for (let i = last; i >= 0; i--) {
+    const last = keyList.length
+    for (let i = 0; i < last; i++) {
       if (this.skuDict && this.skuDict[keyList[i]] && this.skuDict[keyList[i]].store > 0) {
         const selection = keyList[i].split('_')
         const curSku = this.skuDict[keyList[i]]
