@@ -1,16 +1,18 @@
 @import "@/style/imports";
 
 .store-item {
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
   padding: 24px 30px;
   background: #fff;
   position: relative;
   overflow: hidden;
+  z-index: 999;
   &::after {
     content: '';
     position: absolute;
     width: calc(100% - 60px);
+    height: 0;
     left: 0;
     bottom: 0;
     right: 0;
@@ -57,5 +59,6 @@
     font-size: 46px;
     color: $color-gray;
     flex-shrink: 0;
+    height: auto;
   }
 }

@@ -31,9 +31,13 @@ export default class RegRule extends Component {
       const { content, title = '充值协议' } = await api.member.depositPayRule()
       data = content
       navBarTitle = title
-    } else if (type === '2') {
+    } else if (type) {
       // 隐私政策
-
+      const { content, title = '充值协议' } = await api.shop.getRuleInfo({
+        type
+      })
+      data = content
+      navBarTitle = title
     } else {
       // 注册协议
       const { content, title = '注册协议' } = await api.user.regRule()
@@ -45,19 +49,19 @@ export default class RegRule extends Component {
       title: navBarTitle
     })
     this.setState({
-      info: data
+      info: data,
+      title: navBarTitle
     })
   }
 
 
   render () {
-    const { info } = this.state
-    const { type } = this.$router.params
+    const { info, title } = this.state
 
     return (
       <View className='page-member-integral'>
         <NavBar
-          title={`${type === '1' ? '充值协议' : '注册协议'}`}
+          title={title}
           leftIconType='chevron-left'
         />
         {

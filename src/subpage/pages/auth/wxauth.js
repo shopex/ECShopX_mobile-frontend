@@ -17,15 +17,27 @@ export default class WxAuth extends Component {
     super(props)
 
     this.state = {
-      isAgree: true
+      isAgree: true,
+      baseInfo: {
+        protocol: {}
+      }
     }
   }
 
   componentDidMount () {
+    this.getStoreSettingInfo()
   }
 
   componentDidShow (){
     this.checkWhite()
+  }
+
+  // 获取总店配置信息
+  async getStoreSettingInfo () {
+    const data = await api.shop.getStoreBaseInfo()
+    this.setState({
+      baseInfo: data
+    })
   }
 
   async checkWhite () {
@@ -188,7 +200,6 @@ export default class WxAuth extends Component {
   }
 
   jumpRule = async (type = '', e) => {
-    console.log(e)
     e.stopPropagation()
     Taro.navigateTo({
       url: `/subpage/pages/auth/reg-rule?type=${type}`
@@ -197,14 +208,14 @@ export default class WxAuth extends Component {
 
   render () {
     const { colors } = this.props
-    const { isAgree } = this.state
+    const { isAgree, baseInfo } = this.state
     // const setCheckColor = isAgree ? colors.data[0].primary : '#fff'
     return (
       <View className='page-wxauth'>
         <View className='logo'>
           <Image
             className='img'
-            src='https://store-images.s-microsoft.com/image/apps.1081.13510798886607585.e5e9691e-c9bf-4ee0-ae21-cc7601c0cee5.03207cec-5f89-409c-aec9-3253099cfced?mode=scale&q=90&h=270&w=270&background=%230078D7'
+            src={baseInfo.logo}
             mode='aspectFill'
           />
         </View>
@@ -232,7 +243,7 @@ export default class WxAuth extends Component {
             >
             </Radio>
             <View className='content' >
-              若微信号未注册则将进入注册流程，注册即为同意<Text onClick={this.jumpRule.bind(this, '')} style={`color: ${colors.data[0].primary}`} className='ruleName' >《用户注册协议》</Text>、<Text onClick={this.jumpRule.bind(this, 2)} style={`color: ${colors.data[0].primary}`} className='ruleName'>《隐私政策》</Text>
+              若微信号未注册则将进入注册流程，注册即为同意<Text onClick={this.jumpRule.bind(this, 'member_register')} style={`color: ${colors.data[0].primary}`} className='ruleName' >《{baseInfo.protocol.member_register}》</Text>、<Text onClick={this.jumpRule.bind(this, 'privacy')} style={`color: ${colors.data[0].primary}`} className='ruleName'>《{baseInfo.protocol.privacy}》</Text>
             </View>
           </View>
         </View>
