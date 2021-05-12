@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-11 18:39:31
+ * @LastEditTime: 2021-05-12 17:43:47
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -14,16 +14,16 @@ import { NavBar, SpCheckbox } from '@/components'
 import api from '@/api'
 import { connect } from "@tarojs/redux"
 import S from '@/spx'
+import { withLogin } from '@/hocs'
 import imgUploader from '@/utils/upload'
 import GetUserInfoBtn from './comps/getUserInfo'
-// import { withLogin } from '@/hocs'
 
 import './userinfo.scss'
 
 @connect(( { colors } ) => ({
   colors: colors.current
 }), () => ({}))
-// @withLogin()
+@withLogin()
 export default class UserInfo extends Component {
   constructor (props) {
     super(props)
@@ -119,22 +119,14 @@ export default class UserInfo extends Component {
       const item = data[key]
       if (item.is_open) {
         userInfo[key] = (() => {
-          if (!memberInfo[key]) {
-            return item.field_type === 5 ? [] : ''
-          } 
-          return memberInfo[key]
+          switch (item.field_type) {
+            case 4:
+            case 5:
+              return memberInfo.requestFields[key] || []
+            default:
+              return memberInfo.requestFields[key] || ''
+          }
         })()
-        if (item.field_type === 4 && userInfo[key]) {
-          userInfo[key] = data[key].select[userInfo[key]]
-        }
-        if (item.field_type === 5 && userInfo[key]) {
-          userInfo[key] = userInfo[key].map(itemCheckbox => {
-            return {
-              name: itemCheckbox,
-              ischecked: true
-            }
-          })
-        }
         if (key !== 'sex' && key !== 'username') {
           normalFiled.push({...item})
         } else {
@@ -145,6 +137,7 @@ export default class UserInfo extends Component {
     this.setState({
       formItems: normalFiled,
       copyOldFormItems: data,
+      isGetWxInfo: memberInfo.isGetWxInfo,
       userInfo,
       baseInfo
     })
@@ -188,21 +181,20 @@ export default class UserInfo extends Component {
 
   // 文字转下标
   textToIndex = (text, select) => {
-    const findIndex = select.map(item => item === text)
+    const findIndex = select.findIndex(item => item === text)
     return findIndex >= 0 ? findIndex : ''
   }
 
   handleShowCheckboxPanel = (checkItem) => {
     const { userInfo } = this.state
-    const { checkbox, key, is_edit } = checkItem
+    const { key, is_edit, checkbox } = checkItem
     if (!is_edit) return false
     this.optionsType = key
     const data = checkbox.map(item => {
-      const isHave = userInfo[key].some(i => (i.name === item.name && i.ischecked))
-      console.log(isHave)
+      const itemUserInfo = userInfo[key].find(i => i.name === item.name)
       return {
         name: item.name,
-        ischecked: isHave
+        ischecked: itemUserInfo ? itemUserInfo.ischecked : false
       }
     })
     this.setState({
@@ -237,7 +229,6 @@ export default class UserInfo extends Component {
     } else {
       const { option_list, userInfo } = this.state
       userInfo[this.optionsType] = [...option_list]
-      console.log(userInfo)
       this.setState({
         userInfo,
         option_list: []
@@ -261,7 +252,7 @@ export default class UserInfo extends Component {
   // 保存用户信息
   saveInfo = async (e) => {
     e && e.stopPropagation()
-    const { userInfo, copyOldFormItems } = this.state
+    const { userInfo, copyOldFormItems, isGetWxInfo } = this.state
     const data = { ...userInfo }
     for (let key in copyOldFormItems) {
       const item = copyOldFormItems[key]
@@ -276,20 +267,21 @@ export default class UserInfo extends Component {
         return false
       }
     }
-    await api.member.setMemberInfo(userInfo)
+    await api.member.setMemberInfo({
+      ...data,
+      isGetWxInfo
+    })
     Taro.showToast({
       title: '修改成功',
-      mask: true,
-      duration: 1500
+      mask: true
     })
-    setTimeout(() => {
-      Taro.navigateBack()
-    }, 1500)
+    this.getFormItem()
   }
 
   render () {
     const { formItems, userInfo, isGetWxInfo, baseInfo, showCheckboxPanel, option_list } = this.state
     const { colors } = this.props
+
     return (
       <View className='page-member-setting'>
         <NavBar
@@ -314,7 +306,7 @@ export default class UserInfo extends Component {
               <View className='right'>
                 {
                   isGetWxInfo
-                    ? <Input className='input' placeholder={`请输入${baseInfo.username.name}`} value={userInfo.username} onInput={this.handleInput.bind(this, 'username')} disabled={!baseInfo.username.name.is_edit} />
+                    ? <Input className='input' placeholder={`请输入${baseInfo.username.name}`} value={userInfo.username} onInput={this.handleInput.bind(this, 'username')} disabled={!baseInfo.username.is_edit} />
                     : userInfo.username 
                 }
               </View>
@@ -326,7 +318,7 @@ export default class UserInfo extends Component {
                   isGetWxInfo
                     ? <Picker
                       mode='selector'
-                      disabled={!baseInfo.sex.name.is_edit}
+                      disabled={!baseInfo.sex.is_edit}
                       value={this.textToIndex(userInfo.sex, baseInfo.sex.select)}
                       range={baseInfo.sex.select}
                       onChange={this.pickerChange.bind(this, baseInfo.sex)}

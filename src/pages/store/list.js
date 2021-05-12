@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-08 09:59:41
+ * @LastEditTime: 2021-05-12 16:16:43
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -59,9 +59,13 @@ export default class StoreList extends Component {
 
   // 定位并初始化处理位置信息
   init = async () => {
+    // 获取定位
     await entry.getLocal(true)
+    // 获取用户收货地址
+    const { query } = this.state
     const lnglat = Taro.getStorageSync('lnglat') || {}
     const address = lnglat.latitude ? `${lnglat.city}${lnglat.district}${lnglat.street}${lnglat.street_number}` : ''
+    query.area = [lnglat.province || '', lnglat.city || '', lnglat.district || '']
     this.setState({
       location: {
         ...lnglat,
@@ -87,8 +91,9 @@ export default class StoreList extends Component {
         ...query,
         area: value
       }
+    }, () => {
+      this.confirmSearch()
     })
-    console.log(region.detail)
   }
 
   // 搜索店铺名称
@@ -128,6 +133,7 @@ export default class StoreList extends Component {
     const { query: searchParam, location } = this.state
     const { latitude = '', longitude = '' } = location
     const { page_no: page, page_size: pageSize } = params
+    const area = [...searchParam.area].join(',')
     const query = {
       ...searchParam,
       page,
@@ -135,10 +141,14 @@ export default class StoreList extends Component {
       lat: latitude,
       lng: longitude
     }
-    const { list, total_count: total} = await api.shop.list(query)
+    const { list, total_count: total} = await api.shop.list({
+      ...query,
+      area: ''
+    })
     this.setState({
       list: [...this.state.list, ...list],
-      query
+      query,
+      isRecommedList: total <= 0
     })
     return {
       total

@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/comps/list-item.js
  * @Date: 2021-04-30 16:27:32
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-07 15:04:53
+ * @LastEditTime: 2021-05-12 11:31:43
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
@@ -26,7 +26,12 @@ export default class StoreListItem extends Component {
     addGlobalClass: true
   }
 
-  handleMap = (lat, lng) => {
+  handleClick = () => {
+    this.props.onClick && this.props.onClick()
+  }
+
+  handleMap = (lat, lng, e) => {
+    e.stopPropagation()
     Taro.openLocation({
       latitude: Number(lat),
       longitude: Number(lng),
@@ -35,15 +40,12 @@ export default class StoreListItem extends Component {
   }
 
   render () {
-    const { info, onClick,isStore, colors } = this.props
+    const { info, isStore, colors } = this.props
     if (!info) return null
     const distance = info.distance ? (info.distance*1).toFixed(2) : false
 
     return (
-      <View
-        className='store-item'
-        onClick={onClick}
-      >
+      <View className='store-item' onClick={this.handleClick.bind(this)}>
         <View className='store-content'>
           <View className='store-content_left'>
             <View className='store-name'>
@@ -64,7 +66,7 @@ export default class StoreListItem extends Component {
             <View className='store-address'>联系电话：{ info.mobile }</View>
           </View>
           {
-            !isStore && info.lat &&
+            (!isStore && info.lat) &&
               <View
                 className='store-location icon-periscope'
                 style={`color: ${colors.data[0].primary}`}

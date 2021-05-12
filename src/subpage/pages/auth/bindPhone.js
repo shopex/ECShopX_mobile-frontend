@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/subpage/pages/auth/bindPhone.js
  * @Date: 2021-05-06 10:59:01
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-11 18:16:50
+ * @LastEditTime: 2021-05-12 14:46:31
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Input, Button } from '@tarojs/components'
@@ -30,16 +30,26 @@ export default class BindPhone extends Component {
       oldCountryCode: '+86',
       currentMobile: '',
       mobile: '',
-      smsCode: ''
+      smsCode: '',
+      baseInfo: {}
     }
   }
 
   componentDidMount () {
+    this.getStoreSettingInfo()
     this.getUserInfo()
   }
 
   config = {
     navigationBarTitleText: '修改手机号'
+  }
+
+  // 获取总店配置信息
+  async getStoreSettingInfo () {
+    const data = await api.shop.getStoreBaseInfo()
+    this.setState({
+      baseInfo: data
+    })
   }
 
   // 获取手机号
@@ -138,14 +148,14 @@ export default class BindPhone extends Component {
   }
   
   render () {
-    const { currentMobile, mobile, smsCode, countryCode } = this.state
+    const { currentMobile, mobile, smsCode, countryCode, baseInfo } = this.state
     const { colors } = this.props
 
     return <View className='bindPhone'>
       <View className='logo'>
         <Image
           className='img'
-          src='https://store-images.s-microsoft.com/image/apps.1081.13510798886607585.e5e9691e-c9bf-4ee0-ae21-cc7601c0cee5.03207cec-5f89-409c-aec9-3253099cfced?mode=scale&q=90&h=270&w=270&background=%230078D7'
+          src={baseInfo.logo}
           mode='aspectFill'
         />
         <View className='currentPhone'>
