@@ -145,7 +145,7 @@ export default class WxAuth extends Component {
         })
         setTimeout(() => {
           this.redirect()
-        }, 1500)
+        }, 800)
         // 通过token解析openid
         const userInfo = tokenParse(token)
         Tracker.setVar({
@@ -160,7 +160,9 @@ export default class WxAuth extends Component {
         icon: 'none'
       })
     }
-    Taro.hideLoading()
+    setTimeout(() => {
+      Taro.hideLoading()
+    }, 1000)
   }
 
   // 获取手机号登录注册
