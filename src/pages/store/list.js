@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-13 15:11:03
+ * @LastEditTime: 2021-05-13 15:20:15
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -143,6 +143,8 @@ export default class StoreList extends Component {
         ...query,
         name: ''
       }
+    }, () => {
+      this.confirmSearch()
     })
   }
 
