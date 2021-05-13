@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-13 13:48:17
+ * @LastEditTime: 2021-05-13 15:11:03
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -66,23 +66,29 @@ export default class StoreList extends Component {
   }
 
   // 定位并初始化处理位置信息
+  // isUseDeliveryInfo 是否按收货地址定位
   init = async ( isUseDeliveryInfo = false) => {
     // 获取定位
-    await entry.getLocal(true)
-    const { query } = this.state
+    await entry.getLoc()
+    const { query, deliveryInfo } = this.state
     const lnglat = Taro.getStorageSync('lnglat') || {}
     const address = lnglat.latitude ? `${lnglat.city}${lnglat.district}${lnglat.street}${lnglat.street_number}` : ''
     query.province = lnglat.province || ''
     query.city = lnglat.city || ''
     query.area = lnglat.district || ''
+    if (isUseDeliveryInfo) {
+      const { province = '', city = '', county = '' } = deliveryInfo
+      query.province = province
+      query.city = city === '市辖区' && province
+      query.area = county
+    }
     query.from_default_address = isUseDeliveryInfo ? 1 : 0 
     this.setState({
       location: {
         ...lnglat,
         address
       },
-      query,
-      isRecommedList: (!S.getAuthToken() && !lnglat.latitude)
+      query
     }, () => {
       this.resetPage(() => {
         this.setState({
@@ -162,11 +168,12 @@ export default class StoreList extends Component {
       lat: latitude,
       lng: longitude
     }
-    const { list, total_count: total, default_address} = await api.shop.list(query)
+    const { list, total_count: total, defualt_address, is_recommend} = await api.shop.list(query)
     this.setState({
       query,
       list: [...this.state.list, ...list],
-      deliveryInfo: default_address
+      deliveryInfo: defualt_address,
+      isRecommedList: is_recommend === 1
     })
     return {
       total
@@ -183,9 +190,9 @@ export default class StoreList extends Component {
   }
 
   // 获取定位信息
-  getLocation = async () => {
+  getLocation = async (e) => {
+    e.stopPropagation()
     const { authSetting } = await Taro.getSetting()
-
     if (!authSetting['scope.userLocation']) {
       Taro.authorize({
         scope: 'scope.userLocation',
@@ -257,33 +264,39 @@ export default class StoreList extends Component {
             { (query.name && query.name.length > 0) && <View className='iconfont icon-close' onClick={this.clearName.bind(this)}></View> }
           </View>
         </View>
-        {
-          !isRecommedList ? <View className='content'>
-            <View className='location'>
-              <View className='title'>当前位置</View>
+        <View className='content'>
+          <View className='location'>
+            <View className='title'>当前位置</View>
+            <View className='locationData'>
+              <View className='lngName'>
+                { location.address || '无法获取您的位置信息'}
+              </View>
+              <View
+                className='resetLocal'
+                style={`color: ${colors.data[0].primary}`}
+                onClick={this.getLocation.bind(this)}
+              >
+                <View className='iconfont icon-target'></View>
+                重新定位
+              </View>
+            </View>
+          </View>
+          {
+            deliveryInfo.address_id && <View className='delivery' onClick={this.init.bind(this, true)}>
+              <View className='title'>按收货地址定位</View>
               <View className='locationData'>
                 <View className='lngName'>
-                  { location.address || '无法获取您的位置信息'}
-                </View>
-                <View
-                  className='resetLocal'
-                  style={`color: ${colors.data[0].primary}`}
-                  onClick={this.getLocation.bind(this)}
-                >
-                  <View className='iconfont icon-target'></View>
-                  重新定位
+                  { deliveryInfo.province }
+                  { deliveryInfo.city }
+                  { deliveryInfo.county }
+                  { deliveryInfo.adrdetail }
                 </View>
               </View>
             </View>
-            {
-              deliveryInfo.name && <View className='delivery' onClick={this.init.bind(this, true)}>
-                <View className='title'>按收货地址定位</View>
-                <View className='locationData'>
-                  <View className='lngName'>上海市浦东新区陆家嘴西路3888-1上海市浦东新区陆家嘴西路3888-1</View>
-                </View>
-              </View>
-            }
-          </View> : <View className='noContent'>
+          }
+        </View>
+        {
+          (isRecommedList && !deliveryInfo.address_id && !location.latitude) && <View className='noContent'>
             <Image
               className='img'
               src={baseInfo.logo}
@@ -294,11 +307,11 @@ export default class StoreList extends Component {
             </View>
           </View>
         }
-        <View className={`list ${!deliveryInfo.name && 'noDelivery'} ${isRecommedList && 'recommedList'}`}>
+        <View className={`list ${!deliveryInfo.address_id && 'noDelivery'} ${isRecommedList && 'recommedList'}`}>
           {
             !isRecommedList
               ? <View className='title'>
-                { (deliveryInfo.name || location.lnglat) ? '附近门店' : '全部门店' }
+                { (deliveryInfo.address_id || location.latitude) ? '附近门店' : '全部门店' }
               </View>
               : <View className='recommed'>
                 <View className='title'>推荐门店</View>

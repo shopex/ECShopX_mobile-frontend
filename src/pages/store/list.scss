@@ -3,14 +3,18 @@
 
 // 搜索栏高度
 $search-height: 90px;
+// 内容高度
 $content-height: 330px;
+// 定位高度
+$local-height: 162px;
+// 门店高度
+$store-height: 185px;
+// 头部高度
 $header-height: $content-height + $search-height;
 $bottom-height: 100px;
 
 // 收货地址高度
-$nodelivery-height: $header-height - 185px;
-// 无门店高度
-$noStore-height: 330px;
+$nodelivery-height: $header-height - $store-height;
 
 page {
   width: 100%;
@@ -79,7 +83,8 @@ page {
         color: #666;
       }
       .locationData {
-        margin-top: 40px;
+        margin-top: 30px;
+        margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -108,7 +113,7 @@ page {
     }
   }
   .noContent {
-    height: $noStore-height;
+    height: $content-height;
     text-align: center;
     background: #fff;
     .img {
@@ -131,7 +136,7 @@ page {
       height: calc(100% - #{$nodelivery-height} - #{$bottom-height} - 30px);
     }
     &.recommedList {
-      height: calc(100% - #{$noStore-height} - #{$search-height} - #{$bottom-height} - 30px);
+      height: calc(100% - #{$content-height} - #{$search-height} - #{$bottom-height} - #{$local-height} - 30px);
     }
     .title {
       height: 80px;
