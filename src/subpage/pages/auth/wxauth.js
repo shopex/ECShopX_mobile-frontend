@@ -95,7 +95,11 @@ export default class WxAuth extends Component {
 
   // 登录注册事件
   login_reg = async (getParams) => {
-    const { code } = await Taro.login()
+    let { code } = await Taro.login()
+    const isExpr = await Taro.checkSession()
+    if (isExpr.errMsg !== 'checkSession:ok') {
+      code = await Taro.login()
+    }
     Taro.showLoading({
       mask: true,
       title: '正在登录...'
