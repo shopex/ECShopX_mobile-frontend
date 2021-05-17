@@ -46,7 +46,8 @@ export default class AddressIndex extends Component {
   }
 
   async fetch (isDelete = false) {
-    if(this.$router.params.isPicker) {
+    const { isPicker, receipt_type = '', city = '' } = this.$router.params
+    if(isPicker) {
       this.setState({
         isPicker: true
       })
@@ -56,7 +57,13 @@ export default class AddressIndex extends Component {
     })
     const { list } = await api.member.addressList()
     Taro.hideLoading()
-
+    let newList = [...list]
+    if (receipt_type === 'dada' && city) {
+      newList = list.map(item => {
+        item.disabled = item.city !== city
+        return item
+      }).sort(first => first.disabled ? 1 : -1)
+    }
     let selectedId = null
     if (this.props.address) {
       selectedId = this.props.address[ADDRESS_ID]
@@ -67,7 +74,7 @@ export default class AddressIndex extends Component {
       this.props.onAddressChoose(null)
     }
     this.setState({
-      list,
+      list: newList,
       selectedId
     })
   }
@@ -166,9 +173,9 @@ export default class AddressIndex extends Component {
           {
             list.map(item => {
               return (
-                <View key={item[ADDRESS_ID]} className='address-item'>
+                <View key={item[ADDRESS_ID]} className={`address-item ${item.disabled ? 'disabled' : ''}`}>
                   {
-                    isPicker && <View className='address-item__check' onClick={this.handleClickChecked.bind(this, item)}>
+                    (isPicker && !item.disabled) && <View className='address-item__check' onClick={this.handleClickChecked.bind(this, item)}>
                       {
                         item[ADDRESS_ID] === selectedId
                           ? <Text className='icon-check address-item__checked' style={{color: colors.data[0].primary}}></Text>

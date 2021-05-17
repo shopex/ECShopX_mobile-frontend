@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpCell } from '@/components'
 import { connect } from '@tarojs/redux'
 
 
@@ -28,9 +27,13 @@ export default class AddressChoose extends Component {
   }
 
   clickTo = (choose) => {
-    Taro.navigateTo({
-      url: `/marketing/pages/member/address?isPicker=${choose}`
-    })
+    if (this.props.onCustomChosse) {
+      this.props.onCustomChosse(choose)
+    } else {
+      Taro.navigateTo({
+        url: `/marketing/pages/member/address?isPicker=${choose}`
+      })
+    }
   }
 
   render () {

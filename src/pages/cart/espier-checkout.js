@@ -241,8 +241,6 @@ export default class CartCheckout extends Component {
         total_fee: total_fee.toFixed(2)
       }
     });
-    // this.handleAddressChange(this.props.defaultAddress)
-
 
     this.props.onAddressChoose(null);
     this.props.onChangeZitiStore(null);
@@ -259,12 +257,14 @@ export default class CartCheckout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.address !== this.props.address) {
-      this.fetchAddress()
-    }
-    if (nextProps.zitiShop !== this.props.zitiShop) {
-      this.fetchZiTiShop()
-    }
+    setTimeout(() => {
+      if (this.props.address && (nextProps.address.id !== this.props.address.id)) {
+        this.fetchAddress()
+      }
+      if (nextProps.zitiShop !== this.props.zitiShop) {
+        this.fetchZiTiShop()
+      }
+    })
   }
   componentWillUnmount() {
     // teardown clean
@@ -361,12 +361,16 @@ export default class CartCheckout extends Component {
   }
 
   async fetchAddress(cb) {
-    const { list } = await api.member.addressList();
-    this.setState(
-      {
-        address_list: list
-      },
-      () => {
+    const { receiptType, curStore } = this.state
+    const query = {}
+    if (receiptType === 'dada') {
+      query.receipt_type = receiptType
+      query.city = curStore.city
+    }
+    const { list } = await api.member.addressList(query);
+    this.setState({ 
+      address_list: list
+    }, () => {
         this.changeSelection();
         cb && cb(list);
       }
@@ -443,12 +447,13 @@ export default class CartCheckout extends Component {
   changeSelection(params = {}) {
     const { address_list } = this.state;
     if (address_list.length === 0) {
-      this.props.onAddressChoose(null);
+      this.props.onAddressChoose(null)
       this.setState({
         address: null
-      });
-      this.calcOrder();
-      return;
+      }, () => {
+        this.calcOrder()
+      })
+      return
     }
 
     let address = this.props.address;
@@ -463,8 +468,8 @@ export default class CartCheckout extends Component {
     }
 
     log.debug("[address picker] selection: ", address);
-    this.props.onAddressChoose(address);
-    this.handleAddressChange(address);
+    this.props.onAddressChoose(address)
+    this.handleAddressChange(address)
   }
 
   async getParams() {
@@ -808,9 +813,14 @@ export default class CartCheckout extends Component {
 
   // 切换配送模式
   handleSwitchExpress = receiptType => {
-    this.clearPoint();
+    Taro.showLoading({
+      title: '加载中',
+      mask: true
+    })
+    this.clearPoint()
     this.setState({
-      receiptType
+      receiptType,
+      express: receiptType !== 'ziti'
     }, () => {
       if (receiptType !== 'ziti') {
         this.fetchAddress()
@@ -837,12 +847,10 @@ export default class CartCheckout extends Component {
       is_def: "is_def"
     });
     this.clearPoint();
-    this.setState(
-      {
+    this.setState({
         address
-      },
-      () => {
-        this.calcOrder();
+      }, () => {
+        this.calcOrder()
       }
     );
     if (!address) {
@@ -999,6 +1007,23 @@ export default class CartCheckout extends Component {
         payType: ''
       }, () => {
         this.calcOrder()
+      })
+    }
+    if (e.code === 201) {
+      Taro.hideLoading()
+      Taro.showModal({
+        content: e.message || '未知错误',
+        confirmText: '知道了',
+        showCancel: false,
+        success: res => {
+          if (res.confirm) {
+            this.setState({
+              address: null
+            }, () => {
+              this.calcOrder()
+            })
+          }
+        }
       })
     }
   }
