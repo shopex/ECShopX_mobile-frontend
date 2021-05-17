@@ -5,15 +5,13 @@ import { AtCountdown } from 'taro-ui'
 import { Loading, SpToast, NavBar, FloatMenuMeiQia } from '@/components'
 import { log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
-import { Tracker } from "@/service";
+import { Tracker } from "@/service"
 import api from '@/api'
-import S from '@/spx'
-import DetailItem from './comps/detail-item'
 import { TracksPayed } from '@/utils/youshu'
+import S from '@/spx'
+import { customName } from '@/utils/point'
+import DetailItem from './comps/detail-item'
 
-import {
-  customName
-} from '@/utils/point';
 
 import './detail.scss'
 

@@ -1,12 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
-import { connect } from "@tarojs/redux";
-import { Price } from '@/components'
+import { connect } from "@tarojs/redux"
 import { classNames,formatPriceToHundred } from '@/utils'
+import { customName } from '@/utils/point'
 import OrderItem from '../../../../components/orderItem/order-item'
-import {
-  customName
-} from '@/utils/point';
+
 import './item.scss'
 
 @connect(({ colors }) => ({
@@ -14,9 +12,6 @@ import './item.scss'
 }))
 
 export default class TradeItem extends Component {
-  static options = {
-    addGlobalClass: true
-  }
 
   static defaultProps = {
     customHeader: false,
@@ -30,6 +25,10 @@ export default class TradeItem extends Component {
     rateStatus: false,
     onClickBtn: () => {},
     onClick: () => {}
+  }
+  
+  static options = {
+    addGlobalClass: true
   }
 
   handleClickBtn (type) {
