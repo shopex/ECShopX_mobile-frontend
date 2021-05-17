@@ -248,7 +248,7 @@ export default class CartCheckout extends Component {
     this.getSalespersonNologin();
     this.tradeSetting()
     // this.getShop()
-    this.fetchAddress();
+    this.fetchAddress()
     this.fetchZiTiShop();
     // 埋点处理
     buriedPoint.call(this, {
@@ -257,14 +257,12 @@ export default class CartCheckout extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    setTimeout(() => {
-      if (this.props.address && (nextProps.address.id !== this.props.address.id)) {
-        this.fetchAddress()
-      }
-      if (nextProps.zitiShop !== this.props.zitiShop) {
-        this.fetchZiTiShop()
-      }
-    })
+    if (nextProps.address !== this.props.address) {
+      this.fetchAddress()
+    }
+    if (nextProps.zitiShop !== this.props.zitiShop) {
+      this.fetchZiTiShop()
+    }
   }
   componentWillUnmount() {
     // teardown clean
@@ -280,10 +278,7 @@ export default class CartCheckout extends Component {
       isPointOpen: false
     });
     if (this.state.shouldCalcOrder) {
-      this.setState(
-        {
-          shouldCalcOrder: false
-        },
+      this.setState({ shouldCalcOrder: false },
         () => {
           this.calcOrder();
         }
@@ -466,8 +461,6 @@ export default class CartCheckout extends Component {
         address_list[0] ||
         null;
     }
-
-    log.debug("[address picker] selection: ", address);
     this.props.onAddressChoose(address)
     this.handleAddressChange(address)
   }
@@ -823,7 +816,7 @@ export default class CartCheckout extends Component {
       express: receiptType !== 'ziti'
     }, () => {
       if (receiptType !== 'ziti') {
-        this.fetchAddress()
+        this.props.onAddressChoose(null)
       } else {
         this.calcOrder()
       }
