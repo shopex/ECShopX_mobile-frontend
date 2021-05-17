@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/cart/comps/deliver.js
  * @Date: 2021-05-13 17:41:16
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-14 17:10:06
+ * @LastEditTime: 2021-05-17 14:04:22
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -34,6 +34,8 @@ export default class Deliver extends Component {
 
   // 切换配送方式
   handleSwitchExpress = (type) => {
+    const { receiptType } = this.props
+    if (receiptType === type) return false
     this.props.onChangReceiptType && this.props.onChangReceiptType(type)
   }
 
@@ -49,6 +51,18 @@ export default class Deliver extends Component {
       latitude: Number(lat),
       longitude: Number(lng),
       scale: 18
+    })
+  }
+
+  // 自定义选择店铺跳转事件
+  handleChooseAddress = (choose) => {
+    const { receiptType, curStore } = this.props
+    let params = ''
+    if (receiptType === 'dada') {
+      params = `&city=${curStore.city}&receipt_type=${receiptType}`
+    }
+    Taro.navigateTo({
+      url: `/marketing/pages/member/address?isPicker=${choose}${params}`
     })
   }
 
@@ -111,7 +125,7 @@ export default class Deliver extends Component {
             </View>
           }
           { receiptType === 'dada' && <View className='cityDeliver'>
-            <AddressChoose isAddress={address} />
+            <AddressChoose isAddress={address} onCustomChosse={this.handleChooseAddress.bind(this)} />
             <View className='store'>配送门店: { curStore.name }</View>
           </View>}
     </View>
