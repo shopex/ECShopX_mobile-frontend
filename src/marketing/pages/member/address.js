@@ -45,7 +45,7 @@ export default class AddressIndex extends Component {
     })
   }
 
-  async fetch () {
+  async fetch (isDelete = false) {
     if(this.$router.params.isPicker) {
       this.setState({
         isPicker: true
@@ -63,7 +63,9 @@ export default class AddressIndex extends Component {
     } else {
       selectedId = list.find(addr => addr.is_def > 0) || null
     }
-
+    if (isDelete && list.length <= 0) {
+      this.props.onAddressChoose(null)
+    }
     this.setState({
       list,
       selectedId
@@ -112,7 +114,7 @@ export default class AddressIndex extends Component {
     await api.member.addressDelete(item.address_id)
     S.toast('删除成功')
     setTimeout(() => {
-      this.fetch()
+      this.fetch(true)
     }, 700)
   }
 
@@ -146,12 +148,12 @@ export default class AddressIndex extends Component {
         {
           is_open_crmAddress 
           ? <SpCell
-          isLink
-          iconPrefix='sp-icon'
-          icon='weixin'
-          title='获取CRM收货地址'
-          onClick={this.crmAddress.bind(this)}
-        />
+            isLink
+            iconPrefix='sp-icon'
+            icon='weixin'
+            title='获取CRM收货地址'
+            onClick={this.crmAddress.bind(this)}
+          />
         :null
         }
 
@@ -210,8 +212,10 @@ export default class AddressIndex extends Component {
         <View
           className='member-address-add'
           style={'background: ' + colors.data[0].primary}
-          onClick={this.handleClickToEdit.bind(this)}>添加新地址</View>
-
+          onClick={this.handleClickToEdit.bind(this)}
+        >
+          添加新地址
+        </View>
         <SpToast />
       </View>
     )
