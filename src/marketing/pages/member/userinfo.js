@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-12 17:43:47
+ * @LastEditTime: 2021-05-17 18:05:52
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -120,7 +120,6 @@ export default class UserInfo extends Component {
       if (item.is_open) {
         userInfo[key] = (() => {
           switch (item.field_type) {
-            case 4:
             case 5:
               return memberInfo.requestFields[key] || []
             default:
@@ -343,7 +342,7 @@ export default class UserInfo extends Component {
               <View className='left'>{ item.name }</View>
               <View className='right'>
                 { item.field_type === 1 && <Input className='input' value={userInfo[item.key]} placeholder={`请输入${item.name}`} onInput={this.handleInput.bind(this, item.key)} disabled={!item.is_edit} /> }
-                { item.field_type === 'number' && <Input className='input' value={userInfo[item.key]} type='number' max='10' min='5' onInput={this.handleInput.bind(this, item.key)} disabled={!item.is_edit} /> }
+                { item.field_type === 2 && <Input className='input' value={userInfo[item.key]} type='number' max={item.range.end} min={item.range.start} placeholder={`请输入${item.name}`} onInput={this.handleInput.bind(this, item.key)} disabled={!item.is_edit} /> }
                 { 
                   item.field_type === 3 && <Picker
                     mode='date'

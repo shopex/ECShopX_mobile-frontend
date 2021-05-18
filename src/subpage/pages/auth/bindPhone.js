@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/subpage/pages/auth/bindPhone.js
  * @Date: 2021-05-06 10:59:01
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-12 14:46:31
+ * @LastEditTime: 2021-05-18 17:34:35
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Input, Button } from '@tarojs/components'
@@ -54,18 +54,20 @@ export default class BindPhone extends Component {
 
   // 获取手机号
   getPhoneNumber = async (res) => {
-    const { code } = await Taro.login()
-    const { encryptedData, iv} = res.detail
-    const { phoneNumber, countryCode } = await api.wx.decryptPhone({
-      encryptedData,
-      iv,
-      code
-    })
-    this.setState({
-      mobile: phoneNumber,
-      countryCode,
-      oldCountryCode: countryCode
-    })
+    const { encryptedData, iv } = res.detail
+    if (encryptedData && iv) {
+      const { code } = await Taro.login()
+      const { phoneNumber, countryCode } = await api.wx.decryptPhone({
+        encryptedData,
+        iv,
+        code
+      })
+      this.setState({
+        mobile: phoneNumber,
+        countryCode,
+        oldCountryCode: countryCode
+      })
+    }
   }
 
   // 获取验证码
