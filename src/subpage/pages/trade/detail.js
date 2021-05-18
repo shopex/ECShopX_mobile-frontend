@@ -653,17 +653,6 @@ export default class TradeDetail extends Component {
               info={info}
               isPointitem={this.isPointitemGood()}
             />
-            {
-              !info.is_logistics &&
-              (!isDhPoint && info.status === "WAIT_BUYER_PAY" ||
-              (info.status === "WAIT_SELLER_SEND_GOODS" && 
-              info.order_status_des !== "PAYED_WAIT_PROCESS" && info.order_status_des !== "PAYED_PARTAIL")) && <Text
-                className='trade-detail__footer__btn'
-                onClick={this.handleClickBtn.bind(this, "cancel")}
-              >
-                取消订单
-              </Text>
-            }
           </View>
           {
             info.is_logistics && <View className='logConfirm'>
@@ -717,6 +706,18 @@ export default class TradeDetail extends Component {
                   <Text className='trade-money__num'>￥{ info.totalpayment }</Text>
               }
             </View>
+            {
+              !info.is_logistics &&
+              (!isDhPoint && info.status === "WAIT_BUYER_PAY" ||
+              (info.status === "WAIT_SELLER_SEND_GOODS" && 
+              info.order_status_des !== "PAYED_WAIT_PROCESS" && info.order_status_des !== "PAYED_PARTAIL")) && <View
+                className='cancel__btn'
+              >
+                <View className='btn' onClick={this.handleClickBtn.bind(this, "cancel")}>
+                  取消订单
+                </View>
+              </View>
+            }
           </View>
           {info.remark && (
             <View className='trade-detail-remark'>
