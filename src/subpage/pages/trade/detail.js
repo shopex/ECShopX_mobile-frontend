@@ -830,53 +830,48 @@ export default class TradeDetail extends Component {
             </View>
           }
         </ScrollView>
-        <View className='trade-detail__footer'>
-          
-        </View>
-        { info.status === "WAIT_BUYER_PAY" && (
-              <View className="trade-detail__footer">
-                {
-                  !info.is_logistics && <Text
-                    className='trade-detail__footer__btn'
-                    onClick={this.handleClickBtn.bind(this, "cancel",1)}
-                  >
-                    取消订单
-                  </Text>
-                }
-                <Button
-                  className="trade-detail__footer__btn trade-detail__footer_active"
-                  type="primary"
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  loading={payLoading}
-                  onClick={this.handleClickBtn.bind(this, "pay")}
-                >
-                  立即支付
-                </Button>
+        {
+          info.status !== 'TRADE_CLOSED' && <View className='trade-detail__footer'>
+            {
+              // 立即支付
+              info.status === 'WAIT_BUYER_PAY' && <Button
+                className='trade-detail__footer__btn trade-detail__footer_allWidthBtn'
+                type='primary'
+                style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                loading={payLoading}
+                onClick={this.handleClickBtn.bind(this, "pay")}
+              >
+              立即支付
+            </Button>
+            }
+            {
+              // 申请售后
+              info.status === 'WAIT_SELLER_SEND_GOODS' ||
+              info.status === "TRADE_SUCCESS" ||
+              (info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE'))) &&
+              info.can_apply_aftersales === 1 && <Button
+                className='trade-detail__footer__btn trade-detail__footer_allWidthBtn'
+                onClick={this.handleClickBtn.bind(this, "aftersales")}
+              >
+                申请售后
+              </Button>
+            }
+            {
+              // 继续购物
+              info.status === "WAIT_SELLER_SEND_GOODS" && <View
+                className={`trade-detail__footer__btn ${info.can_apply_aftersales !== 1 ? 'trade-detail__footer_allWidthBtn' : ''
+                  }`}
+                style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
+                onClick={this.handleClickBtn.bind(this, "home")}
+              >
+                继续购物
               </View>
-            )}
-            {isDhPoint && info.status === "WAIT_BUYER_PAY" && (
-              <View className="trade-detail__footer">
-                <Button
-                  className="trade-detail__footer__btn trade-detail__footer__btn-inline trade-detail__footer_active"
-                  type="primary"
-                  loading={payLoading}
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  onClick={this.handleClickBtn.bind(this, "pay")}
-                >
-                  立即支付
-                </Button>
-              </View>
-            )}
+            }
+          </View>
+        }
+
             {info.status === "WAIT_SELLER_SEND_GOODS" && (
               <View className="trade-detail__footer">
-                {info.order_status_des !== "PAYED_WAIT_PROCESS" && info.order_status_des !== "PAYED_PARTAIL" && !info.is_logistics && (
-                  <Text
-                    className="trade-detail__footer__btn"
-                    onClick={this.handleClickBtn.bind(this, "cancel",111)}
-                  >
-                    取消订单
-                  </Text>
-                )}
                 {
                   info.can_apply_aftersales === 1 && (
                     <Button
