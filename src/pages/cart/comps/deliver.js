@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/cart/comps/deliver.js
  * @Date: 2021-05-13 17:41:16
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-17 14:04:22
+ * @LastEditTime: 2021-05-19 16:38:33
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -87,7 +87,7 @@ export default class Deliver extends Component {
 
     return <View className='deliver'>
       {
-        (showSwitchDeliver && showSwitchDeliver.length > 1) && <View className='switch-tab'>
+        (showSwitchDeliver && showSwitchDeliver.length > 0) && <View className='switch-tab'>
         {
           showSwitchDeliver.map(item => <View
             key={item.type}
