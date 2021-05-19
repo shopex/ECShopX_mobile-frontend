@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-19 17:35:55
+ * @LastEditTime: 2021-05-19 18:34:33
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -310,7 +310,7 @@ export default class UserInfo extends Component {
                 {
                   isGetWxInfo
                     ? <Input className='input' placeholder={baseInfo.username.required_message} value={userInfo.username} onInput={this.handleInput.bind(this, 'username')} disabled={!baseInfo.username.is_edit} />
-                    : userInfo.username 
+                    : userInfo.username || '未知'
                 }
               </View>
             </View>
