@@ -38,7 +38,7 @@ export default class TradeItem extends Component {
 
   computeTotalPrice(){
     let total;
-    const {info:{point,order_class,freight_fee,freight_type,total_fee,payment},payType}=this.props;
+    const {info:{point,order_class,freight_fee,freight_type,total_fee,payment, receipt_type},payType}=this.props;
     console.log("---point---",point)
     console.log("---order_class---",order_class)
     console.log("---freight_fee---",freight_fee)
@@ -59,7 +59,15 @@ export default class TradeItem extends Component {
         total= `合计：￥${payment}`
       } 
     }
-    return <View className='trade-item__total'>{total}</View>
+    return <View className={`trade-item__total ${receipt_type === 'dada' && 'dadaTotal'}`}>
+      {
+        receipt_type === 'dada' && <View className='dada'>
+          <Text className='iconfont icon-peisongxiangguan'></Text>
+          达达同城配送
+        </View>
+      }
+      {total}
+    </View>
   }
 
   render () {
