@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 13:37:12
+ * @LastEditTime: 2021-05-20 14:18:49
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -259,9 +259,7 @@ export default class UserInfo extends Component {
     const data = { ...userInfo }
     for (let key in copyOldFormItems) {
       const item = copyOldFormItems[key]
-      if (!item.is_edit) {
-        delete data[key]
-      }
+      if (!item.is_edit) { continue }
       if (item.is_open && item.is_required && !data[key]) {
         Taro.showToast({
           title: `请完善${item.name}`,
