@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 11:39:07
+ * @LastEditTime: 2021-05-20 14:49:49
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -52,7 +52,9 @@ export default class StoreList extends Component {
       // 是否是推荐门店列表
       isRecommedList: false,
       // 门店列表
-      list: []
+      list: [],
+      // 是否需要定位
+      is_open_wechatapp_location: 0
     }
   }
 
@@ -68,8 +70,11 @@ export default class StoreList extends Component {
   // 定位并初始化处理位置信息
   // isUseDeliveryInfo 是否按收货地址定位
   init = async () => {
+    const { is_open_wechatapp_location } = Taro.getStorageSync('settingInfo')
     // 获取定位
-    await entry.getLoc()
+    if (is_open_wechatapp_location === 1) {
+      await entry.getLoc()
+    }
     const { query, deliveryInfo } = this.state
     const lnglat = Taro.getStorageSync('lnglat') || {}
     const address = lnglat.latitude ? `${lnglat.city}${lnglat.district}${lnglat.street}${lnglat.street_number}` : ''
@@ -87,6 +92,7 @@ export default class StoreList extends Component {
         ...lnglat,
         address
       },
+      is_open_wechatapp_location,
       query
     }, () => {
       this.resetPage(() => {
@@ -253,7 +259,8 @@ export default class StoreList extends Component {
       deliveryInfo,
       page,
       headquarters,
-      baseInfo
+      baseInfo,
+      is_open_wechatapp_location
     } = this.state
     const { province, city, area } = query
 
@@ -308,15 +315,17 @@ export default class StoreList extends Component {
                   { deliveryInfo.adrdetail }
                 </View>
               }
-              <View
-                className='resetLocal'
-                style={`color: ${colors.data[0].primary}`}
-                onClick={this.getLocation.bind(this)}
-              >
-                <View className='iconfont icon-target'></View>
-                重新定位
+              {
+                (is_open_wechatapp_location === 1) && <View
+                  className='resetLocal'
+                  style={`color: ${colors.data[0].primary}`}
+                  onClick={this.getLocation.bind(this)}
+                >
+                  <View className='iconfont icon-target'></View>
+                  重新定位
+                </View>
+              }
               </View>
-            </View>
           </View>
           {
             deliveryInfo.address_id && <View className='delivery' onClick={this.getDeliver.bind(this)}>
@@ -371,7 +380,7 @@ export default class StoreList extends Component {
             }
             {page.isLoading ? <Loading>正在加载...</Loading> : null}
             {
-              !page.isLoading && !page.hasNext && !list.length
+              !page.isLoading && !list.length
               && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
             }
           </ScrollView>

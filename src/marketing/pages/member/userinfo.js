@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 14:18:49
+ * @LastEditTime: 2021-05-20 14:33:19
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -312,26 +312,28 @@ export default class UserInfo extends Component {
                 }
               </View>
             </View>
-            <View className='item'>
-              <View className='left'>{ baseInfo.sex.name }</View>
-              <View className='right'>
-                {
-                  isGetWxInfo
-                    ? <Picker
-                      mode='selector'
-                      disabled={!baseInfo.sex.is_edit}
-                      value={this.textToIndex(userInfo.sex, baseInfo.sex.select)}
-                      range={baseInfo.sex.select}
-                      onChange={this.pickerChange.bind(this, baseInfo.sex)}
-                    >
-                      <View className='picker'>
-                        { userInfo.sex || baseInfo.sex.required_message }
-                      </View>
-                    </Picker>
-                    : `${userInfo.sex || baseInfo.sex.required_message}`
-                }
+            {
+              baseInfo.sex.is_open && <View className='item'>
+                <View className='left'>{ baseInfo.sex.name }</View>
+                <View className='right'>
+                  {
+                    isGetWxInfo
+                      ? <Picker
+                        mode='selector'
+                        disabled={!baseInfo.sex.is_edit}
+                        value={this.textToIndex(userInfo.sex, baseInfo.sex.select)}
+                        range={baseInfo.sex.select}
+                        onChange={this.pickerChange.bind(this, baseInfo.sex)}
+                      >
+                        <View className='picker'>
+                          { userInfo.sex || baseInfo.sex.required_message }
+                        </View>
+                      </Picker>
+                      : `${userInfo.sex || baseInfo.sex.required_message}`
+                  }
+                </View>
               </View>
-            </View>
+            }
           </GetUserInfoBtn>
         </View>
         <View className='basicInfo'>
