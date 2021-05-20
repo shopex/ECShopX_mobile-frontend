@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 10:10:51
+ * @LastEditTime: 2021-05-20 13:37:12
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -65,7 +65,7 @@ export default class UserInfo extends Component {
     if (res.detail) {
       const { userInfo: wxInfo } = res.detail
       userInfo.avatar = wxInfo.avatarUrl
-      userInfo.nickname = wxInfo.nickName
+      userInfo.username = wxInfo.nickName
       userInfo.country = wxInfo.country
       userInfo.city = wxInfo.city
       userInfo.province = wxInfo.province
