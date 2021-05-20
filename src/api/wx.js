@@ -3,7 +3,7 @@ import req from './req'
 import { getYoushuAppid } from '@/utils/youshu'
 
 const getAppId = () => {
- 
+  const { appid } = wx.getExtConfigSync? wx.getExtConfigSync(): {}
   return appid
 }
   
