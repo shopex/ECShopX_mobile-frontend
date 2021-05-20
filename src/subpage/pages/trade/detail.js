@@ -11,10 +11,36 @@ import { TracksPayed } from '@/utils/youshu'
 import S from '@/spx'
 import { customName } from '@/utils/point'
 import DetailItem from './comps/detail-item'
-
+// 图片引入
+import ErrorDaDa from '../../assets/dada0.png'
+import WaitStore from '../../assets/dada1.png'
+import WaitDaDa from '../../assets/dada2.png'
+import OnRoad from '../../assets/dada4.png'
+import Cancel from '../../assets/dada5.png'
+import Success from '../../assets/dada6.png'
+import DadaGoStore from '../../assets/dada7.png'
 
 import './detail.scss'
 
+// 订单状态和图片匹配
+const statusImg = {
+  // 等待商家接单
+  0: WaitStore,
+  // 等待骑手接单
+  1: WaitDaDa,
+  2: WaitDaDa,
+  // 配送中
+  3: OnRoad,
+  // 已完成
+  4: Success,
+  // 订单取消
+  5: Cancel,
+  // 投递异常
+  9: ErrorDaDa,
+  10: ErrorDaDa,
+  // 骑士到店
+  100: DadaGoStore,
+}
 @connect(({ colors }) => ({
   colors: colors.current
 }))
@@ -103,6 +129,7 @@ export default class TradeDetail extends Component {
     const info = pickBy(data.orderInfo, {
       tid: 'order_id',
       created_time_str: ({ create_time }) => formatDataTime(create_time * 1000, ),
+      update_time_str: ({ update_time }) => formatDataTime(update_time * 1000, ),
       auto_cancel_seconds: 'auto_cancel_seconds',
       receiver_name: 'receiver_name',
       receiver_mobile: 'receiver_mobile',
@@ -112,7 +139,11 @@ export default class TradeDetail extends Component {
       point_fee: ({ point_fee }) => (+point_fee / 100).toFixed(2),
       point_use: 'point_use',
       mobile: 'mobile',
-      dada: 'dada',
+      dada: ({ dada }) => {
+        console.log('dada')
+        console.log(dada)
+        return dada
+      },
       receiver_city: 'receiver_city',
       receiver_district: 'receiver_district',
       receiver_address: 'receiver_address',
@@ -493,6 +524,13 @@ export default class TradeDetail extends Component {
     })
   }
 
+  // 拨打电话
+  callDada = (mobile) => {
+    Taro.makePhoneCall({
+      phoneNumber: mobile
+    })
+  }
+
   // 复制orderid
   copyOrderId = (orderid) => {
     Taro.setClipboardData({
@@ -565,35 +603,40 @@ export default class TradeDetail extends Component {
                 </View>
               )}
               {info.status !== "WAIT_BUYER_PAY" && (
-                <View>
-                  <View className='delivery-infos'>
-                    <View className='delivery-infos__status'>
-                      <Text className='delivery-infos__text text-status'>
-                        {info.order_status_msg}
-                      </Text>
+                <View className='delivery-infos'>
+                  <View className='delivery-infos__status'>
+                    <View className='delivery-infos__text text-status'>
+                      {info.order_status_msg}
                       {
-                        (!info.dada || !info.dada.id) &&  <Text className='delivery-infos__text'>
-                          {info.status === "WAIT_SELLER_SEND_GOODS"
-                            ? "正在审核订单"
-                            : null}
-                          {info.status === "WAIT_BUYER_CONFIRM_GOODS"
-                            ? "正在派送中"
-                            : null}
-                          {info.status === "TRADE_CLOSED" ? "订单已取消" : null}
-                        </Text>
+                        (info.dada && info.dada.id && statusImg[info.dada.dada_status]) && <Image
+                          className='statusImg'
+                          src={statusImg[info.dada.dada_status]}
+                          mode='aspectFill'
+                        />
                       }
                     </View>
-                    </View>
+                    {
+                      (!info.dada || !info.dada.id) &&  <Text className='delivery-infos__text'>
+                        {info.status === "WAIT_SELLER_SEND_GOODS"
+                          ? "正在审核订单"
+                          : null}
+                        {info.status === "WAIT_BUYER_CONFIRM_GOODS"
+                          ? "正在派送中"
+                          : null}
+                        {info.status === "TRADE_CLOSED" ? "订单已取消" : null}
+                      </Text>
+                    }
                   </View>
+                </View>
               )}
             </View>
           </View>
           {
-            (info.dada && info.dada.id && (info.dada.dada_status > 1 && info.dada.dada_status < 5)) && <View className='dadaInfo'>
+            (info.dada && info.dada.id && (info.dada.dada_status > 1 && info.dada.dada_status !==4 && info.dada.dada_status !==5)) && <View className='dadaInfo'>
               <View className='name'>
                 <Image src={require('../../assets/dada3.png')} mode='aspectFill' className='avatar' />
                 <View>骑手：{ info.dada.dm_name } </View>
-                <View className='iconfont icon-dianhua'></View>
+                <View className='iconfont icon-dianhua' onClick={this.callDada.bind(this, info.dada.dm_mobile)}></View>
               </View>
               <View className='tip'>本单由达达同城为您服务</View>
             </View>
@@ -624,18 +667,22 @@ export default class TradeDetail extends Component {
           <View className='trade-detail-address'>
             {
               ((info.dada && info.dada.id) || (info.receipt_type === "ziti" && !info.is_logistics)) && <View className={`store ${info.dada && info.dada.id ? 'border' : ''}`}>
-                <Text className='iconfont icon-periscope'></Text>
+                <Text className='iconfont icon-shangjiadizhi-01'></Text>
                 <View>
                   <View className='storeName'>{ziti.store_name}</View>
                   <View className='storeAddress'>{ziti.store_address}</View>                    
                   <View className='storeHour'><Text className='title'>营业时间：</Text>{ziti.hour}</View>
-                  <View className='storeMobile'><Text className='title'>门店电话：</Text>{ziti.phone}</View>
+                  <View className='storeMobile'>
+                    <Text className='title'>门店电话：</Text>
+                    {ziti.phone}
+                    <View className='iconfont icon-dianhua' onClick={this.callDada.bind(this, ziti.phone)}></View>
+                    </View>
                 </View>
               </View>
             }
             {
               ((info.dada && info.dada.id) || (info.receipt_type === "logistics")) && <View className='address-receive'>
-                <Text className='iconfont icon-periscope'></Text>
+                <Text className='iconfont icon-shouhuodizhi-01'></Text>
                 <View className='info-trade'>
                   <Text className='address-detail'>
                     {info.receiver_state}{info.receiver_city}{info.receiver_district}{info.receiver_address}
@@ -741,31 +788,45 @@ export default class TradeDetail extends Component {
               </View>
             </View>
             {
-              (tradeInfo && tradeInfo.payDate) && <View className='line'>
+              info.status === 'TRADE_CLOSED' && <View className='line'>
+                <View className='left'>取消时间</View>
+                <View className='right'>
+                  { info.update_time_str }
+                </View>
+              </View>
+            }
+            {
+              (tradeInfo && tradeInfo.tradeState === 'SUCCESS') && <View className='line'>
                 <View className='left'>支付时间</View>
                 <View className='right'>
                   { tradeInfo.payDate }
                 </View>
               </View>
             }
-            <View className='line'>
-              <View className='left'>取货时间</View>
-              <View className='right'>
-                { info.created_time_str }
-              </View>
-            </View>            
-            <View className='line'>
-              <View className='left'>送达时间</View>
-              <View className='right'>
-                { info.created_time_str }
-              </View>
-            </View>            
-            <View className='line'>
-              <View className='left'>配送时长</View>
-              <View className='right'>
-                { info.created_time_str }
-              </View>
-            </View>            
+            {
+              (info.dada && info.dada.pickup_time) && <View className='line'>
+                <View className='left'>取货时间</View>
+                <View className='right'>
+                  { formatDataTime(Number(info.dada.pickup_time)) }
+                </View>
+              </View> 
+            }
+            {
+              (info.dada && info.dada.delivered_time) && <View className='line'>
+                <View className='left'>送达时间</View>
+                <View className='right'>
+                  { formatDataTime(Number(info.dada.delivered_time)) }
+                </View>
+              </View>            
+            }
+            {
+              (info.dada && info.dada.dada_status === 5) && <View className='line'>
+                <View className='left'>配送时长</View>
+                <View className='right'>
+                  { info.dada.delivery_length }
+                </View>
+              </View>            
+            }
             {
               info.invoice_content && <View className='line'>
                 <View className='left'>发票信息</View>
@@ -862,9 +923,9 @@ export default class TradeDetail extends Component {
             }
             {
               // 申请售后
-              ((info.status === 'WAIT_SELLER_SEND_GOODS' ||
+              (((info.status === 'WAIT_SELLER_SEND_GOODS')||
               info.status === "TRADE_SUCCESS" ||
-              (info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE')))) &&
+              (info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE')) && info.receipt_type !== 'dada')) &&
               info.can_apply_aftersales === 1) && <Button
                 className={`trade-detail__footer__btn ${info.is_logistics && 'trade-detail__footer_active trade-detail__footer_allWidthBtn'}`}
                 onClick={this.handleClickBtn.bind(this, "aftersales")}
@@ -874,8 +935,8 @@ export default class TradeDetail extends Component {
             }
             {
               // 继续购物
-              info.status === "WAIT_SELLER_SEND_GOODS" && <View
-                className={`trade-detail__footer__btn trade-detail__footer_active ${info.can_apply_aftersales !== 1 ? 'trade-detail__footer_allWidthBtn' : ''
+              (info.status === "WAIT_SELLER_SEND_GOODS" || (info.status === 'WAIT_BUYER_CONFIRM_GOODS' && info.receipt_type === 'dada')) && <View
+                className={`trade-detail__footer__btn trade-detail__footer_active ${(info.can_apply_aftersales !== 1 || (info.status === 'WAIT_BUYER_CONFIRM_GOODS' && info.receipt_type === 'dada')) ? 'trade-detail__footer_allWidthBtn' : ''
                   }`}
                 style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
                 onClick={this.handleClickBtn.bind(this, "home")}
@@ -885,7 +946,7 @@ export default class TradeDetail extends Component {
             }
             {
               // 确认收货
-              (!info.is_logistics && info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE'))) && <View
+              (info.receipt_type !== 'dada' && !info.is_logistics && info.status === "WAIT_BUYER_CONFIRM_GOODS" && (info.is_all_delivery || (!info.is_all_delivery && info.delivery_status === 'DONE'))) && <View
                 className={`trade-detail__footer__btn trade-detail__footer_active ${info.can_apply_aftersales === 0 && 'trade-detail__footer_allWidthBtn'}`}
                 style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                 onClick={this.handleClickBtn.bind(this, "confirm")}
