@@ -566,15 +566,17 @@ export default class TradeDetail extends Component {
                       <Text className='delivery-infos__text text-status'>
                         {info.order_status_msg}
                       </Text>
-                      <Text className='delivery-infos__text'>
-                        {info.status === "WAIT_SELLER_SEND_GOODS"
-                          ? "正在审核订单"
-                          : null}
-                        {info.status === "WAIT_BUYER_CONFIRM_GOODS"
-                          ? "正在派送中"
-                          : null}
-                        {info.status === "TRADE_CLOSED" ? "订单已取消" : null}
-                      </Text>
+                      {
+                        (!info.dada || !info.dada.id) &&  <Text className='delivery-infos__text'>
+                          {info.status === "WAIT_SELLER_SEND_GOODS"
+                            ? "正在审核订单"
+                            : null}
+                          {info.status === "WAIT_BUYER_CONFIRM_GOODS"
+                            ? "正在派送中"
+                            : null}
+                          {info.status === "TRADE_CLOSED" ? "订单已取消" : null}
+                        </Text>
+                      }
                     </View>
                     </View>
                   </View>
@@ -584,7 +586,7 @@ export default class TradeDetail extends Component {
           {
             (info.dada && info.dada.id && (info.dada.dada_status > 1 && info.dada.dada_status < 5)) && <View className='dadaInfo'>
               <View className='name'>
-                <Image src='https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4264181808,2128553240&fm=26&gp=0.jpg' mode='aspectFill' className='avatar' />
+                <Image src={require('../../assets/dada3.png')} mode='aspectFill' className='avatar' />
                 <View>骑手：{ info.dada.dm_name } </View>
               </View>
               <View className='tip'>本单由达达同城为您服务</View>
@@ -890,7 +892,7 @@ export default class TradeDetail extends Component {
                     info={{ orderId: info.order_id }}
                     isFloat={false}
                   >
-                      联系客服
+                    联系客服
                   </FloatMenuMeiQia> :
                   <Button openType='contact' className='contact'>
                     联系客服
