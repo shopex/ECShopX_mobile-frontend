@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 09:52:07
+ * @LastEditTime: 2021-05-20 10:34:52
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -40,7 +40,7 @@ export default class StoreList extends Component {
         area: '',
         lat: '',
         lng: '',
-        from_default_address: 0
+        type: 0
       },
       // 总店信息
       headquarters: {},
@@ -67,7 +67,7 @@ export default class StoreList extends Component {
 
   // 定位并初始化处理位置信息
   // isUseDeliveryInfo 是否按收货地址定位
-  init = async ( isUseDeliveryInfo = false) => {
+  init = async () => {
     // 获取定位
     await entry.getLoc()
     const { query, deliveryInfo } = this.state
@@ -76,13 +76,12 @@ export default class StoreList extends Component {
     query.province = lnglat.province || ''
     query.city = lnglat.city || ''
     query.area = lnglat.district || ''
-    if (isUseDeliveryInfo) {
+    if (query.type === 2) {
       const { province = '', city = '', county = '' } = deliveryInfo
       query.province = province
       query.city = (city === '市辖区' || !city) ? province : city
       query.area = county
     }
-    query.from_default_address = isUseDeliveryInfo ? 1 : 0 
     this.setState({
       location: {
         ...lnglat,
@@ -117,6 +116,7 @@ export default class StoreList extends Component {
     query.province = value[0]
     query.city = value[1]
     query.area = value[2]
+    query.type = 1
     this.setState({
       query
     }, () => {
@@ -220,8 +220,27 @@ export default class StoreList extends Component {
         }
       })
     } else {
-      this.init()
+      const { query } = this.state
+      query.name = ''
+      query.type = 0
+      this.setState({
+        query
+      }, () => {
+        this.init()
+      })
     }
+  }
+
+  // 根据收货地址搜索
+  getDeliver = () => {
+    const { query } = this.state
+    query.name = ''
+    query.type = 2
+    this.setState({
+      query
+    }, () => {
+      this.init()
+    })
   }
 
   render () {
@@ -284,7 +303,7 @@ export default class StoreList extends Component {
             </View>
           </View>
           {
-            deliveryInfo.address_id && <View className='delivery' onClick={this.init.bind(this, true)}>
+            deliveryInfo.address_id && <View className='delivery' onClick={this.getDeliver.bind(this)}>
               <View className='title'>按收货地址定位</View>
               <View className='locationData'>
                 <View className='lngName'>
