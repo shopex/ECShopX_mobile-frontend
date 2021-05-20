@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 10:34:52
+ * @LastEditTime: 2021-05-20 11:39:07
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -170,7 +170,7 @@ export default class StoreList extends Component {
       lat: latitude,
       lng: longitude
     }
-    const { list, total_count: total, defualt_address, is_recommend} = await api.shop.list(query)
+    const { list, total_count: total, defualt_address = {}, is_recommend} = await api.shop.list(query)
     this.setState({
       query,
       list: [...this.state.list, ...list],
@@ -256,7 +256,13 @@ export default class StoreList extends Component {
       baseInfo
     } = this.state
     const { province, city, area } = query
-    const areaData = [province, city, area]
+
+    let areaData = [province, city, area]
+    
+    if (query.type === 0 && (!location.address && deliveryInfo.address_id)) {
+      const { province: p = '', city: c = '', county: ct = '' } = deliveryInfo
+      areaData = [p, (c === '市辖区' || !c) ? province : city, ct]
+    }
 
     const { colors } = this.props
 
@@ -289,9 +295,19 @@ export default class StoreList extends Component {
           <View className='location'>
             <View className='title'>当前位置</View>
             <View className='locationData'>
-              <View className='lngName'>
-                { location.address || '无法获取您的位置信息'}
-              </View>
+              {
+                (query.type !== 2  && location.address) && <View className='lngName'>
+                  { location.address || '无法获取您的位置信息'}
+                </View>
+              }
+              {
+                (query.type === 2 || (!location.address && deliveryInfo.address_id)) && <View className='lngName'>
+                  { deliveryInfo.province }
+                  { deliveryInfo.city }
+                  { deliveryInfo.county }
+                  { deliveryInfo.adrdetail }
+                </View>
+              }
               <View
                 className='resetLocal'
                 style={`color: ${colors.data[0].primary}`}
