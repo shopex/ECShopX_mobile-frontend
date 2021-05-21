@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-20 14:33:19
+ * @LastEditTime: 2021-05-21 16:30:43
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -118,6 +118,7 @@ export default class UserInfo extends Component {
     const normalFiled = []
     for (let key in data) {
       const item = data[key]
+      // 是否有初始值
       if (item.is_open) {
         userInfo[key] = (() => {
           switch (item.field_type) {
@@ -127,10 +128,12 @@ export default class UserInfo extends Component {
               return memberInfo.requestFields[key] || ''
           }
         })()
+        // 是否拥有初始值
+        const isInitValue = Array.isArray(userInfo[key]) ? userInfo[key].length > 0 : !!userInfo[key]
         if (key !== 'sex' && key !== 'username' && key !== 'mobile') {
-          normalFiled.push({...item})
+          normalFiled.push({ ...item, isInitValue })
         } else {
-          baseInfo[key] = {...item}
+          baseInfo[key] = { ...item, isInitValue }
         }
       }
     }
@@ -190,8 +193,8 @@ export default class UserInfo extends Component {
 
   handleShowCheckboxPanel = (checkItem) => {
     const { userInfo } = this.state
-    const { key, is_edit, checkbox } = checkItem
-    if (!is_edit) return false
+    const { key, is_edit, checkbox, isInitValue } = checkItem
+    if (!is_edit && isInitValue) return false
     this.optionsType = key
     const data = checkbox.map(item => {
       const itemUserInfo = userInfo[key].find(i => i.name === item.name)
@@ -307,7 +310,13 @@ export default class UserInfo extends Component {
               <View className='right'>
                 {
                   isGetWxInfo
-                    ? <Input className='input' placeholder={baseInfo.username.required_message} value={userInfo.username} onInput={this.handleInput.bind(this, 'username')} disabled={!baseInfo.username.is_edit} />
+                    ? <Input
+                      className='input'
+                      placeholder={baseInfo.username.required_message}
+                      value={userInfo.username}
+                      onInput={this.handleInput.bind(this, 'username')}
+                      disabled={!baseInfo.username.is_edit && baseInfo.username.isInitValue}
+                    />
                     : userInfo.username || '未知'
                 }
               </View>
@@ -320,7 +329,7 @@ export default class UserInfo extends Component {
                     isGetWxInfo
                       ? <Picker
                         mode='selector'
-                        disabled={!baseInfo.sex.is_edit}
+                        disabled={!baseInfo.sex.is_edit && baseInfo.sex.isInitValue}
                         value={this.textToIndex(userInfo.sex, baseInfo.sex.select)}
                         range={baseInfo.sex.select}
                         onChange={this.pickerChange.bind(this, baseInfo.sex)}
@@ -342,12 +351,29 @@ export default class UserInfo extends Component {
             formItems.map(item => <View key={item.key} className='item'>
               <View className='left'>{ item.name }</View>
               <View className='right'>
-                { item.field_type === 1 && <Input className='input' value={userInfo[item.key]} placeholder={item.required_message} onInput={this.handleInput.bind(this, item.key)} disabled={!item.is_edit} /> }
-                { item.field_type === 2 && <Input className='input' value={userInfo[item.key]} type='number' max={item.range.end} min={item.range.start} placeholder={item.required_message} onInput={this.handleInput.bind(this, item.key)} disabled={!item.is_edit} /> }
+                { item.field_type === 1 && <Input
+                  className='input'
+                  value={userInfo[item.key]}
+                  placeholder={item.required_message}
+                  onInput={this.handleInput.bind(this, item.key)}
+                  disabled={!item.is_edit && item.isInitValue}
+                />
+                }
+                { item.field_type === 2 && <Input
+                  className='input'
+                  value={userInfo[item.key]}
+                  type='number'
+                  max={item.range.end}
+                  min={item.range.start}
+                  placeholder={item.required_message}
+                  onInput={this.handleInput.bind(this, item.key)}
+                  disabled={!item.is_edit && item.isInitValue}
+                />
+                }
                 { 
                   item.field_type === 3 && <Picker
                     mode='date'
-                    disabled={!item.is_edit}
+                    disabled={!item.is_edit && item.isInitValue}
                     value={userInfo[item.key]}
                     onChange={this.pickerChange.bind(this, item)}
                   >
@@ -359,7 +385,7 @@ export default class UserInfo extends Component {
                 { 
                   item.field_type === 4 && <Picker
                     mode='selector'
-                    disabled={!item.is_edit}
+                    disabled={!item.is_edit && item.isInitValue}
                     value={this.textToIndex(userInfo[item.key], item.select)}
                     range={item.select}
                     onChange={this.pickerChange.bind(this, item)}
