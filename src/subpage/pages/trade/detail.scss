@@ -7,7 +7,7 @@ $custabs: 80px;
   height: 100vh;
   overflow: hidden;
   &.paddingBottom {
-    padding-bottom: 84px;
+    padding-bottom: 100px;
   }
   /*  #ifdef  h5  */
   padding-top: $navigate-height-h5;
@@ -196,7 +196,7 @@ $custabs: 80px;
         color: #999;
       }
     }
-    .icon-shangjiadizhi-01, .icon-shouhuodizhi-01 {
+    .icon-shangjiadizhi-01, .icon-shouhuodizhi-01, .icon-dizhi-01 {
       margin-right: 10px;
       font-size: 42px;
       color: #999;
@@ -332,34 +332,51 @@ $custabs: 80px;
     position: fixed;
     left: 0;
     width: 100%;
-    height: 84px;
+    height: 100px;
     bottom: 0;
     display: flex;
+    background: #fff;
+    align-items: center;
     &__btn {
-      width: 50%;
-      display: inline-block;
-      vertical-align: middle;
-      height: 87px;
-      line-height: 87px;
+      width: 338px;
+      height: 84px;
+      flex-shrink: 0;
+      line-height: 84px;
       text-align: center;
-      background-color: #fafafa;
+      border-radius: 40px;
+      color: #333;
+      border: 2px solid #bbb;
+      overflow: hidden;
       font-size: 26px;
-      border-radius: 0;
-      &-inline {
-        width: 100%;
+      &.left {
+        margin-left: 50px;
+        width: 396px;
+        padding-right: 84px;
+        position: relative;
+        z-index: 9;
+        background: #fff;
+      }
+      &.right {
+        margin-right: 50px;
+        color: #fff;
+        border: none;
+        position: relative;
+        z-index: 99;
+        transform: translateX(-84px);
       }
       &:before {
         border: none;
       }
-    }
-    .at-button__icon {
-      vertical-align: middle;
     }
     &_active {
       color: #ffffff;
     }
     &_allWidthBtn {
       width: 100%;
+      height: 100px;
+      line-height: 100px;
+      transform: translateX(0) !important;
+      border-radius: 0;
     }
   }
   .allFooter_btn {
