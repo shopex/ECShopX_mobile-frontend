@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-21 16:30:43
+ * @LastEditTime: 2021-05-21 17:04:08
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -157,6 +157,8 @@ export default class UserInfo extends Component {
   // 更换手机号
   editPhone = (e) =>{
     e && e.stopPropagation()
+    const { baseInfo } = this.state
+    if (baseInfo.mobile && !baseInfo.mobile.is_edit) return false
     Taro.navigateTo({
       url: '/subpage/pages/auth/bindPhone'
     })
