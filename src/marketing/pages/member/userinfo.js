@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/marketing/pages/member/userinfo.js
  * @Date: 2021-04-28 14:13:43
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-19 17:35:55
+ * @LastEditTime: 2021-05-20 16:31:00
  */
 import Taro, { Component } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
@@ -65,7 +65,7 @@ export default class UserInfo extends Component {
     if (res.detail) {
       const { userInfo: wxInfo } = res.detail
       userInfo.avatar = wxInfo.avatarUrl
-      userInfo.nickname = wxInfo.nickName
+      userInfo.username = wxInfo.nickName
       userInfo.country = wxInfo.country
       userInfo.city = wxInfo.city
       userInfo.province = wxInfo.province
@@ -127,7 +127,7 @@ export default class UserInfo extends Component {
               return memberInfo.requestFields[key] || ''
           }
         })()
-        if (key !== 'sex' && key !== 'username') {
+        if (key !== 'sex' && key !== 'username' && key !== 'mobile') {
           normalFiled.push({...item})
         } else {
           baseInfo[key] = {...item}
@@ -176,6 +176,8 @@ export default class UserInfo extends Component {
     const { key, field_type, select } = selectItem
     if (field_type === 4) {      
       userInfo[key] = select[detail.value]
+    } else {
+      userInfo[key] = detail.value
     }
     this.setState({
       userInfo
@@ -259,9 +261,7 @@ export default class UserInfo extends Component {
     const data = { ...userInfo }
     for (let key in copyOldFormItems) {
       const item = copyOldFormItems[key]
-      if (!item.is_edit) {
-        delete data[key]
-      }
+      if (!item.is_edit) { continue }
       if (item.is_open && item.is_required && !data[key]) {
         Taro.showToast({
           title: `请完善${item.name}`,
@@ -310,30 +310,32 @@ export default class UserInfo extends Component {
                 {
                   isGetWxInfo
                     ? <Input className='input' placeholder={baseInfo.username.required_message} value={userInfo.username} onInput={this.handleInput.bind(this, 'username')} disabled={!baseInfo.username.is_edit} />
-                    : userInfo.username 
+                    : userInfo.username || '未知'
                 }
               </View>
             </View>
-            <View className='item'>
-              <View className='left'>{ baseInfo.sex.name }</View>
-              <View className='right'>
-                {
-                  isGetWxInfo
-                    ? <Picker
-                      mode='selector'
-                      disabled={!baseInfo.sex.is_edit}
-                      value={this.textToIndex(userInfo.sex, baseInfo.sex.select)}
-                      range={baseInfo.sex.select}
-                      onChange={this.pickerChange.bind(this, baseInfo.sex)}
-                    >
-                      <View className='picker'>
-                        { userInfo.sex || baseInfo.sex.required_message }
-                      </View>
-                    </Picker>
-                    : `${userInfo.sex || baseInfo.sex.required_message}`
-                }
+            {
+              baseInfo.sex.is_open && <View className='item'>
+                <View className='left'>{ baseInfo.sex.name }</View>
+                <View className='right'>
+                  {
+                    isGetWxInfo
+                      ? <Picker
+                        mode='selector'
+                        disabled={!baseInfo.sex.is_edit}
+                        value={this.textToIndex(userInfo.sex, baseInfo.sex.select)}
+                        range={baseInfo.sex.select}
+                        onChange={this.pickerChange.bind(this, baseInfo.sex)}
+                      >
+                        <View className='picker'>
+                          { userInfo.sex || baseInfo.sex.required_message }
+                        </View>
+                      </Picker>
+                      : `${userInfo.sex || baseInfo.sex.required_message}`
+                  }
+                </View>
               </View>
-            </View>
+            }
           </GetUserInfoBtn>
         </View>
         <View className='basicInfo'>

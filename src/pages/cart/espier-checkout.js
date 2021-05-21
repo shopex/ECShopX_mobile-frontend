@@ -747,6 +747,7 @@ export default class CartCheckout extends Component {
       item_point,
       freight_type
     };
+ 
 
     let info = this.state.info;
     let pointInfo = this.state.pointInfo;
@@ -1295,13 +1296,19 @@ export default class CartCheckout extends Component {
     console.log("-----configCheckout-----",config) 
     try {  
       const { total } = this.state; 
-      Tracker.dispatch("ORDER_PAY", {
-        ...total,
-        ...config,
-        timeStamp:config.order_created,
-      });
-
-      const payRes = await Taro.requestPayment(config); 
+      const notNeedPay=total.freight_type==='cash' && !config.package;
+      
+      let payRes; 
+      if(!notNeedPay){
+        Tracker.dispatch("ORDER_PAY", {
+          ...total,
+          ...config,
+          timeStamp:config.order_created,
+        });
+  
+        payRes = await Taro.requestPayment(config); 
+      }
+      
       // 支付上报
      
       log.debug(`[order pay]: `, payRes);

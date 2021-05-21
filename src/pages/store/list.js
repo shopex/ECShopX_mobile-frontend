@@ -6,7 +6,7 @@
  * @FilePath: /unite-vshop/src/pages/store/list.js
  * @Date: 2021-05-06 17:14:15
  * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-05-13 15:20:15
+ * @LastEditTime: 2021-05-20 14:49:49
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
@@ -40,7 +40,7 @@ export default class StoreList extends Component {
         area: '',
         lat: '',
         lng: '',
-        from_default_address: 0
+        type: 0
       },
       // 总店信息
       headquarters: {},
@@ -52,7 +52,9 @@ export default class StoreList extends Component {
       // 是否是推荐门店列表
       isRecommedList: false,
       // 门店列表
-      list: []
+      list: [],
+      // 是否需要定位
+      is_open_wechatapp_location: 0
     }
   }
 
@@ -67,27 +69,30 @@ export default class StoreList extends Component {
 
   // 定位并初始化处理位置信息
   // isUseDeliveryInfo 是否按收货地址定位
-  init = async ( isUseDeliveryInfo = false) => {
+  init = async () => {
+    const { is_open_wechatapp_location } = Taro.getStorageSync('settingInfo')
     // 获取定位
-    await entry.getLoc()
+    if (is_open_wechatapp_location === 1) {
+      await entry.getLoc()
+    }
     const { query, deliveryInfo } = this.state
     const lnglat = Taro.getStorageSync('lnglat') || {}
     const address = lnglat.latitude ? `${lnglat.city}${lnglat.district}${lnglat.street}${lnglat.street_number}` : ''
     query.province = lnglat.province || ''
     query.city = lnglat.city || ''
     query.area = lnglat.district || ''
-    if (isUseDeliveryInfo) {
+    if (query.type === 2) {
       const { province = '', city = '', county = '' } = deliveryInfo
       query.province = province
-      query.city = city === '市辖区' && province
+      query.city = (city === '市辖区' || !city) ? province : city
       query.area = county
     }
-    query.from_default_address = isUseDeliveryInfo ? 1 : 0 
     this.setState({
       location: {
         ...lnglat,
         address
       },
+      is_open_wechatapp_location,
       query
     }, () => {
       this.resetPage(() => {
@@ -117,6 +122,7 @@ export default class StoreList extends Component {
     query.province = value[0]
     query.city = value[1]
     query.area = value[2]
+    query.type = 1
     this.setState({
       query
     }, () => {
@@ -170,7 +176,7 @@ export default class StoreList extends Component {
       lat: latitude,
       lng: longitude
     }
-    const { list, total_count: total, defualt_address, is_recommend} = await api.shop.list(query)
+    const { list, total_count: total, defualt_address = {}, is_recommend} = await api.shop.list(query)
     this.setState({
       query,
       list: [...this.state.list, ...list],
@@ -220,8 +226,27 @@ export default class StoreList extends Component {
         }
       })
     } else {
-      this.init()
+      const { query } = this.state
+      query.name = ''
+      query.type = 0
+      this.setState({
+        query
+      }, () => {
+        this.init()
+      })
     }
+  }
+
+  // 根据收货地址搜索
+  getDeliver = () => {
+    const { query } = this.state
+    query.name = ''
+    query.type = 2
+    this.setState({
+      query
+    }, () => {
+      this.init()
+    })
   }
 
   render () {
@@ -234,10 +259,17 @@ export default class StoreList extends Component {
       deliveryInfo,
       page,
       headquarters,
-      baseInfo
+      baseInfo,
+      is_open_wechatapp_location
     } = this.state
     const { province, city, area } = query
-    const areaData = [province, city, area]
+
+    let areaData = [province, city, area]
+    
+    if (query.type === 0 && (!location.address && deliveryInfo.address_id)) {
+      const { province: p = '', city: c = '', county: ct = '' } = deliveryInfo
+      areaData = [p, (c === '市辖区' || !c) ? province : city, ct]
+    }
 
     const { colors } = this.props
 
@@ -270,21 +302,33 @@ export default class StoreList extends Component {
           <View className='location'>
             <View className='title'>当前位置</View>
             <View className='locationData'>
-              <View className='lngName'>
-                { location.address || '无法获取您的位置信息'}
+              {
+                (query.type !== 2  && location.address) && <View className='lngName'>
+                  { location.address || '无法获取您的位置信息'}
+                </View>
+              }
+              {
+                (query.type === 2 || (!location.address && deliveryInfo.address_id)) && <View className='lngName'>
+                  { deliveryInfo.province }
+                  { deliveryInfo.city }
+                  { deliveryInfo.county }
+                  { deliveryInfo.adrdetail }
+                </View>
+              }
+              {
+                (is_open_wechatapp_location === 1) && <View
+                  className='resetLocal'
+                  style={`color: ${colors.data[0].primary}`}
+                  onClick={this.getLocation.bind(this)}
+                >
+                  <View className='iconfont icon-target'></View>
+                  重新定位
+                </View>
+              }
               </View>
-              <View
-                className='resetLocal'
-                style={`color: ${colors.data[0].primary}`}
-                onClick={this.getLocation.bind(this)}
-              >
-                <View className='iconfont icon-target'></View>
-                重新定位
-              </View>
-            </View>
           </View>
           {
-            deliveryInfo.address_id && <View className='delivery' onClick={this.init.bind(this, true)}>
+            deliveryInfo.address_id && <View className='delivery' onClick={this.getDeliver.bind(this)}>
               <View className='title'>按收货地址定位</View>
               <View className='locationData'>
                 <View className='lngName'>
@@ -336,7 +380,7 @@ export default class StoreList extends Component {
             }
             {page.isLoading ? <Loading>正在加载...</Loading> : null}
             {
-              !page.isLoading && !page.hasNext && !list.length
+              !page.isLoading && !list.length
               && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
             }
           </ScrollView>
