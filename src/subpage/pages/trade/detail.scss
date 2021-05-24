@@ -309,6 +309,13 @@ $custabs: 80px;
       .right {
         color: #333;
         font-size: 26px;
+        &.red {
+          color: red;
+        }
+        .info-text-btn {
+          margin-left: 15px;
+          color: #0091ff;
+        }
       }
     }
     .icon-fuzhi {
