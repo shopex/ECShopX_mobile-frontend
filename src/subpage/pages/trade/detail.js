@@ -822,7 +822,7 @@ export default class TradeDetail extends Component {
             {
               (info.dada && (info.dada.dada_status === 10 || info.dada.dada_status === 4)) && <View className='line'>
                 <View className='left'>配送时长</View>
-                <View className='right'>
+                <View className='right red'>
                   { info.dada.delivery_length }
                 </View>
               </View>            
@@ -893,7 +893,7 @@ export default class TradeDetail extends Component {
                 <View className='right'>
                   <Text className='info-text'>{info.delivery_code}</Text>
                   <Text className='info-text-btn' onClick={this.handleClickDelivery.bind(this)}>查看物流</Text>
-                  <Text className='info-text-btn' onClick={this.handleClickCopy.bind(this, info.delivery_code)}>复制</Text>
+                  <Text className='iconfont icon-fuzhi info-text-btn' onClick={this.handleClickCopy.bind(this, info.delivery_code)}></Text>
                 </View>
               </View>
             }

@@ -188,10 +188,12 @@ export default class TradeItem extends Component {
               className='trade-item__acts'
               onClick={this.props.onActionBtnClick.bind(this)}
             >更多</Text> */}
-            <View className={classNames('trade-item__dropdown', { 'is-active': showActions })}>
-              <Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'confirm-receive')}>确认收货</Text>
-              <Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'view-express')}>查看物流</Text>
-            </View>
+            {
+              info.receipt_type !== 'dada' && <View className={classNames('trade-item__dropdown', { 'is-active': showActions })}>
+                <Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'confirm-receive')}>确认收货</Text>
+                <Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'view-express')}>查看物流</Text>
+              </View>
+            }
           </View>
           <View className='trade-item__ft-bd'>
             <Text className='trade-item__status'>{info.status_desc}</Text>
@@ -210,11 +212,13 @@ export default class TradeItem extends Component {
               style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
               onClick={this.handleClickBtn.bind(this, 'aftersales')}
             >申请售后</Button> */}
-            <Button
-              className='btn-action'
-              style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
-              onClick={this.handleClickBtn.bind(this, 'confirm')}
-            >确认收货</Button>
+            {
+              info.receipt_type !== 'dada' && <Button
+                className='btn-action'
+                style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
+                onClick={this.handleClickBtn.bind(this, 'confirm')}
+              >确认收货</Button>
+            }
             <Button
               className='btn-action'
               style={`background: ${colors.data[0].primary}`}
