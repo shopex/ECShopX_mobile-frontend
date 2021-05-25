@@ -711,7 +711,9 @@ export default class CartCheckout extends Component {
       is_open_deduct_point,
       deduct_point_rule,
       real_use_point,
-      invoice_status
+      invoice_status,
+      // 额外提示信息
+      extraTips = ''
     } = data;
 
     //const { items, item_fee, totalItemNum, member_discount = 0, coupon_discount = 0, discount_fee, freight_fee = 0, freight_point = 0, point = 0, total_fee, remainpt, deduction,third_params, coupon_info,point_fee=0,point_use, user_point = 0,max_point = 0 ,is_open_deduct_point,deduct_point_rule,real_use_point } = data      // 测试数据
@@ -782,7 +784,7 @@ export default class CartCheckout extends Component {
     }
     //console.warn('third_params',third_params)
 
-    Taro.hideLoading();
+    Taro.hideLoading()
     this.setState({
       total,
       info,
@@ -793,7 +795,15 @@ export default class CartCheckout extends Component {
         identity_name
       },
       pointInfo
-    });
+    }, () => {
+      // 额外信息展示
+      if (extraTips) {
+        Taro.showToast({
+          title: extraTips,
+          icon: 'none'
+        })
+      }
+    })
   }
 
   // 处理导购
@@ -820,7 +830,11 @@ export default class CartCheckout extends Component {
       express: receiptType !== 'ziti'
     }, () => {
       if (receiptType !== 'ziti') {
-        this.fetchAddress()
+        if (this.props.address) {
+          this.props.onAddressChoose(null)
+        } else {
+          this.fetchAddress()
+        }
       } else {
         this.calcOrder()
       }
