@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { Loading, Price } from '@/components'
+import { Loading } from '@/components'
 import api from '@/api'
 import { withLogin } from '@/hocs'
 import { connect } from "@tarojs/redux"
@@ -10,10 +10,10 @@ import imgUploader from '@/utils/upload'
 
 import './rate.scss'
 
-@withLogin()
 @connect(( { colors } ) => ({
   colors: colors.current
 }), () => ({}))
+@withLogin()
 export default class TradeRate extends Component {
   constructor (props) {
     super(props)
