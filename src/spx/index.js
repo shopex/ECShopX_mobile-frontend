@@ -37,46 +37,7 @@ class Spx {
       this.refreshQwUserinfo();
     }
   }
-  //写入企业微信用户详细身份
-  async setQwUserInfo() {
-    console.log("---------------SPX-企业微信录入--------------");
-    let { code } = await this.getQyLoginCode();
-
-    const QwUserInfo = await api.user.getQwUserInfo({
-      appname: `${APP_NAME}`,
-      code
-    });
-    this.set( "session3rd", QwUserInfo.session3rd );
-    this.setAuthToken(QwUserInfo.session3rd);
-
-    return await this.initGuideInfo(QwUserInfo);
-  }
-
-  //初始化导购身份
-  async initGuideInfo(QwUserInfo) {
-    console.log("初始化导购身份-initGuideInfo", QwUserInfo);
-
-    if (!QwUserInfo) return;
-    let { salesperson_id, distributor_id, employee_status } = QwUserInfo;
-    //employee_status:1内部导购,2编外导购
-    if (employee_status == 1) {
-    } else {
-      await api.guide.distributorlist();
-    }
-    //查询当前导购门店信息是否有效
-    const res = await api.guide.is_valid({ salesperson_id, distributor_id });
-    console.log("查询当前导购门店信息是否有效-is_valid", res);
-    QwUserInfo.store_isValid = res;
-    QwUserInfo.ba_info = {...QwUserInfo}
-    this.set(
-      "QwUserInfo",
-      {
-        ...QwUserInfo
-      },
-      true
-    );
-    return QwUserInfo;
-  }
+  
 
   refreshQwUserinfo() {
     if (this._refreshSessionKeyTimer) {
@@ -195,21 +156,11 @@ class Spx {
 
   async autoLogin( ctx, next ) {
     const IS_QW_GOODS_SHELVES = isGoodsShelves()
-    
     try {
       await this.trigger("autoLogin", ctx);
-      // if (process.env.NODE_ENV === 'weapp') {
-      //   await Taro.checkSession()
-      // }
-      console.log('spx get auth token:', this.getAuthToken())
-      if (!this.getAuthToken()) {
-        throw new Error("auth token not found");
-      }
-
       if ( IS_QW_GOODS_SHELVES ) {
-        const guideInfo = this.get("GUIDE_INFO", true);
-        if (next) await next(guideInfo);
-        if (!guideInfo) throw new Error("guideInfo is empty");
+        await this.loginQW( ctx )
+        const  guideInfo = this.get("GUIDE_INFO", true);
         return guideInfo;
       } else {
         let userInfo = await this.getUserInfo();
@@ -246,20 +197,13 @@ class Spx {
       appname: `${APP_NAME}`,
       code
     });
-    // this.set( "session3rd", QwUserInfo.session3rd );
-    this.setAuthToken( QwUserInfo.session3rd );
-    let { salesperson_id, distributor_id, employee_status } = QwUserInfo;
-    //employee_status:1内部导购,2编外导购
-    // if (employee_status == 1) {
-    // } else {
-    //   await api.guide.distributorlist();
-    // }
+    let { salesperson_id, distributor_id, session3rd } = QwUserInfo;
+    this.setAuthToken( session3rd );
     //查询当前导购门店信息是否有效
     const { status } = await api.guide.is_valid({
       salesperson_id,
       distributor_id
     });
-    console.log("查询当前导购门店信息是否有效-is_valid", status);
     const _QwUserInfo = {
       ...QwUserInfo,
       store_isValid: status
@@ -268,9 +212,10 @@ class Spx {
   }
 
   logout() {
-    Taro.removeStorageSync(TOKEN_IDENTIFIER);
-    delete globalData[TOKEN_IDENTIFIER];
-    this.trigger("logout");
+    Taro.removeStorageSync(TOKEN_TIMESTAMP)
+    this.delete(TOKEN_IDENTIFIER, true)
+    Taro.removeStorageSync('userinfo')
+    this.trigger("logout")
   }
 
   globalData() {
