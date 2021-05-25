@@ -258,7 +258,7 @@ export default class TradeRate extends Component {
             style={`background: ${colors.data[0].primary}`}
             onClick={this.handleClickSubmit.bind(this)}
           >
-            发表评价
+            立即评价
           </View>
         </View>
       </View>
