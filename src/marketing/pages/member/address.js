@@ -70,9 +70,6 @@ export default class AddressIndex extends Component {
     } else {
       selectedId = list.find(addr => addr.is_def > 0) || null
     }
-    if (isDelete && list.length <= 0) {
-      this.props.onAddressChoose(null)
-    }
     this.setState({
       list: newList,
       selectedId
@@ -118,8 +115,12 @@ export default class AddressIndex extends Component {
   }
 
   handleDelete = async (item) => {
+    const { selectedId } = this.state
     await api.member.addressDelete(item.address_id)
     S.toast('删除成功')
+    if (selectedId === item.address_id) {
+      this.props.onAddressChoose(null)
+    }
     setTimeout(() => {
       this.fetch(true)
     }, 700)
