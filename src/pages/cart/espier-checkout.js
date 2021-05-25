@@ -3,6 +3,9 @@ import { View, Text, ScrollView, Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { AtButton, AtInput } from "taro-ui";
 import {
+  customName
+} from '@/utils/point';
+import {
   Loading,
   Price,
   SpCell,
@@ -769,6 +772,7 @@ export default class CartCheckout extends Component {
       item_point,
       freight_type
     };
+ 
 
     let info = this.state.info;
     let pointInfo = this.state.pointInfo;
@@ -795,7 +799,7 @@ export default class CartCheckout extends Component {
         pointInfo.real_use_point &&
         pointInfo.real_use_point < pointInfo.point_use
       ) {
-        S.toast("积分有调整");
+        S.toast(customName("积分有调整"));
       }
 
       this.params.items = items;
@@ -1117,10 +1121,10 @@ export default class CartCheckout extends Component {
       try {
         const content =
           payType === "point"
-            ? `确认使用${total.point}积分全额抵扣商品总价吗`
+            ? `${customName(`确认使用${total.point}积分全额抵扣商品总价吗`)}`
             : "确认使用余额支付吗？";
         const { confirm } = await Taro.showModal({
-          title: payType === "point" ? "积分支付" : "余额支付",
+          title: payType === "point" ? `${customName("积分支付")}` : "余额支付",
           content,
           confirmColor: "#0b4137",
           confirmText: "确认使用",
@@ -1303,13 +1307,19 @@ export default class CartCheckout extends Component {
     console.log("-----configCheckout-----",config) 
     try {  
       const { total } = this.state; 
-      Tracker.dispatch("ORDER_PAY", {
-        ...total,
-        ...config,
-        timeStamp:config.order_created,
-      });
-
-      const payRes = await Taro.requestPayment(config); 
+      const notNeedPay=total.freight_type==='cash' && !config.package;
+      
+      let payRes; 
+      if(!notNeedPay){
+        Tracker.dispatch("ORDER_PAY", {
+          ...total,
+          ...config,
+          timeStamp:config.order_created,
+        });
+  
+        payRes = await Taro.requestPayment(config); 
+      }
+      
       // 支付上报
      
       log.debug(`[order pay]: `, payRes);
@@ -1579,7 +1589,7 @@ export default class CartCheckout extends Component {
   render() {
     // 支付方式文字
     const payTypeText = {
-      point: '积分支付',
+      point: customName('积分支付'),
       wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',
@@ -1613,9 +1623,7 @@ export default class CartCheckout extends Component {
       pack,
       isOpenStore,
       defalutPaytype
-    } = this.state;
-    console.log("---total---",total);
-    console.log("---info---",info);
+    } = this.state; 
     // let curStore = {}
     // if (shopData) {
     //   curStore = shopData
@@ -1626,9 +1634,6 @@ export default class CartCheckout extends Component {
     // const { curStore } = this.state
     const { type, goodType, bargain_id } = this.$router.params;
     const isDrug = type === "drug";
-
-    console.log("----cart.list-----",goodType,pointInfo,bargain_id)
-
     if (!info) {
       return <Loading />;
     }
@@ -1809,7 +1814,7 @@ export default class CartCheckout extends Component {
                               <View className="order-item__ft">
                                 {
                                   this.isPointitemGood() ?
-                                    <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={item.item_point}></Price>
+                                    <Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={item.item_point}></Price>
                                     : <Price
                                       className="order-item__price"
                                       value={item.price}
@@ -1889,7 +1894,7 @@ export default class CartCheckout extends Component {
             <SpCell
               isLink
               className="trade-invoice"
-              title="积分抵扣"
+              title={customName("积分抵扣")}
               onClick={this.handlePointShow}
             >
               <View className="invoice-title">
@@ -1902,8 +1907,8 @@ export default class CartCheckout extends Component {
                 {payType === "point"
                   ? "全额抵扣"
                   : pointInfo.point_use > 0
-                    ? `已使用${pointInfo.real_use_point}积分`
-                    : "使用积分"}
+                    ? `${customName(`已使用${pointInfo.real_use_point}积分`)}`
+                    : `${customName("使用积分")}`}
               </View>
             </SpCell>
           )}
@@ -1918,14 +1923,14 @@ export default class CartCheckout extends Component {
               >
                 {total.deduction && (
                   <Text className="trade-payment__hint">
-                    {total.remainpt}积分可用
+                    {total.remainpt}{customName("积分可用")}
                   </Text>
                 )}
                 <Text>{payTypeText[payType]}</Text>
               </SpCell>
               {total.deduction && (
                 <View className="trade-payment__hint">
-                  可用{total.point}积分，抵扣{" "}
+                  可用{total.point}{customName("积分")}，抵扣{" "}
                   <Price unit="cent" value={total.deduction} /> (包含运费{" "}
                   <Price unit="cent" value={total.freight_fee}></Price>)
                 </View>
@@ -1968,7 +1973,7 @@ export default class CartCheckout extends Component {
               <Price unit="cent" value={total.discount_fee} />
             </SpCell>
             {goodType !== "cross" && pointInfo.is_open_deduct_point && (
-              <SpCell className="trade-sub-total__item" title="积分抵扣：">
+              <SpCell className="trade-sub-total__item" title={customName("积分抵扣：")}>
                 <Price unit="cent" value={total.point_fee} />
               </SpCell>
             )}
@@ -1987,11 +1992,11 @@ export default class CartCheckout extends Component {
 
           {this.isPointitemGood() && <View className="sec trade-sub-total">
           
-            <SpCell className="trade-sub-total__item" title="积分消费：">
-              <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.item_point}></Price> 
+            <SpCell className="trade-sub-total__item" title={customName("积分消费：")}>
+              <Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={total.item_point}></Price> 
             </SpCell>
             <SpCell className="trade-sub-total__item" title="运费：">
-              {total.freight_type==="point"?<Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.freight_fee} />:<Price unit="cent" value={total.freight_fee} />}
+              {total.freight_type==="point"?<Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={total.freight_fee} />:<Price unit="cent" value={total.freight_fee} />}
             </SpCell>
           </View>}
 
@@ -2023,7 +2028,7 @@ export default class CartCheckout extends Component {
             ) : (
                 total.point && (
                   <View class="last_price">
-                    <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.point} />
+                    <Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={total.point} />
                     {!total.freight_fee==0 && total.freight_type==="cash" && this.isPointitemGood() && <Price unit="cent" plus value={total.freight_fee} className='order-item__plus'/>}
                   </View>
                 )
