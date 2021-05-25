@@ -60,27 +60,22 @@ export default class BaGuideHomeIndex extends Component {
       guideInfo: null
     };
   }
-
   componentDidShow() {
-    
+    console.log('[componentDidShow] ---- ',)
   }
-
-  async componentDidMount() {
+  componentDidMount() {
+    console.log('[componentDidMount] ---- ',)
     const { version } = this.$router.params;
     console.log('[挂件包] this.state.wgts',this.state.wgts)
-    console.log('version',version)
     //设置导购信息
-    if(!this.state.wgts){
-      this.guideInit(version)
-    }
+    this.guideInit(version)
   }
 
   guideInit(version){
     const guideInfo = S.get("GUIDE_INFO", true);
-    console.log('导购 - componentDidShow - index ',guideInfo)
-    console.log('导购 - componentDidShow - version ',version)
-    if(!guideInfo) return this.guideInit(version)
+    console.log('导购 - guideInit - guideInfo ',guideInfo)
     this.setState({ guideInfo }, () => {
+      console.log('导购 - guideInit - fetchInfo ',version)
       this.fetchInfo(version);
       this.getStoreList();
     });
@@ -217,7 +212,7 @@ export default class BaGuideHomeIndex extends Component {
     this.setState({
       shopList: list
     });
-    console.log('获取门店列表getStoreList',this.props.storeInfo)
+    console.log('[获取门店列表]-getStoreList',this.props.storeInfo)
     if(!this.props.storeInfo)
       this.props.updateStoreInfo(fd);
   }
@@ -279,63 +274,78 @@ export default class BaGuideHomeIndex extends Component {
     } = this.props;
     const ipxClass = S.get("ipxClass");
     const n_ht = S.get("navbar_height");
-    return (
-      <View className={!isLoading ? "page-index" : ""}>
-        <BaNavBar
+    return (<View>
+      <BaNavBar
           title="导购商城"
           fixed
           jumpType="home"
           icon="in-icon in-icon-backhome"
         />
-        <View>
-          {guideInfo && <BaStore
-            onClick={this.handleOpenStore}
-            guideInfo={guideInfo}
-            defaultStore={storeInfo}
-          />}
-        </View>
-        {isLoading ? (
-          <Loading></Loading>
-        ) : (
-          <ScrollView
-            className={`wgts-wrap wgts-wrap__fixed `}
-            scrollTop={scrollTop}
-            onScroll={this.handleHomeScroll}
-            scrollY
-            style={styleNames({ top: n_ht + "PX" })}
-          >
-            <View className="wgts-wrap__cont">
-              <BaHomeWgts
-                wgts={wgts}
-                source="bahome"
-                onChangPageScroll={this.handlePageScroll}
-              />
-            </View>
-          </ScrollView>
-        )}
+       <View>测试文本</View>  
+        <View>测试文本</View>  
+        <View>测试文本</View>  
+        <View>测试文本</View>  
+        <View>测试文本</View>  
+        <View>测试文本</View>  
+         <BaTabBar />
+    </View>)
+    // return (
+    //   <View className={!isLoading ? "page-index" : ""}>
+    //     <BaNavBar
+    //       title="导购商城"
+    //       fixed
+    //       jumpType="home"
+    //       icon="in-icon in-icon-backhome"
+    //     />
+    //     <View>
+    //       {guideInfo && <BaStore
+    //         onClick={this.handleOpenStore}
+    //         guideInfo={guideInfo}
+    //         defaultStore={storeInfo}
+    //       />}
+    //     </View>
+    //     {isLoading ? (
+    //       <Loading></Loading>
+    //     ) : (
+    //       <ScrollView
+    //         className={`wgts-wrap wgts-wrap__fixed `}
+    //         scrollTop={scrollTop}
+    //         onScroll={this.handleHomeScroll}
+    //         scrollY
+    //         style={styleNames({ top: n_ht + "PX" })}
+    //       >
+    //         <View className="wgts-wrap__cont">
+    //           <BaHomeWgts
+    //             wgts={wgts}
+    //             source="bahome"
+    //             onChangPageScroll={this.handlePageScroll}
+    //           />
+    //         </View>
+    //       </ScrollView>
+    //     )}
 
-        {homesearchfocus && <WgtSearchHome isShow={homesearchfocus} />}
+    //     {homesearchfocus && <WgtSearchHome isShow={homesearchfocus} />}
 
-        <BaTabBar />
-        {showBuyPanel && (
-          <BaGoodsBuyPanel
-            info={goodsSkuInfo}
-            type="cart"
-            isOpened={showBuyPanel}
-            onClose={this.handleCloseCart}
-            onAddCart={this.handleCloseCart}
-          />
-        )}
+    //     <BaTabBar />
+    //     {showBuyPanel && (
+    //       <BaGoodsBuyPanel
+    //         info={goodsSkuInfo}
+    //         type="cart"
+    //         isOpened={showBuyPanel}
+    //         onClose={this.handleCloseCart}
+    //         onAddCart={this.handleCloseCart}
+    //       />
+    //     )}
 
-        {showStore && (
-          <BaStoreList
-            shopList={shopList}
-            currentIndex={currentIndex}
-            onStoreConfirm={this.handleStoreConfirm}
-            onClose={this.handleOpenStore}
-          />
-        )}
-      </View>
-    );
+    //     {showStore && (
+    //       <BaStoreList
+    //         shopList={shopList}
+    //         currentIndex={currentIndex}
+    //         onStoreConfirm={this.handleStoreConfirm}
+    //         onClose={this.handleOpenStore}
+    //       />
+    //     )}
+    //   </View>
+    // );
   }
 }
