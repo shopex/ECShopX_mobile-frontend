@@ -3,6 +3,9 @@ import { View, Text, ScrollView, Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import { AtButton, AtInput } from "taro-ui";
 import {
+  customName
+} from '@/utils/point';
+import {
   Loading,
   Price,
   SpCell,
@@ -21,7 +24,8 @@ import {
   isArray,
   authSetting,
   normalizeQuerys,
-  redirectUrl
+  redirectUrl,
+  buriedPoint
 } from "@/utils";
 import { lockScreen } from "@/utils/dom";
 import { Tracker } from "@/service";
@@ -30,7 +34,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import CheckoutItems from "./checkout-items";
 import PaymentPicker from "./comps/payment-picker";
 import SelectPackage from "./comps/selectPackage";
-
+import { TracksPayed } from '@/utils/youshu'
 import PointUse from "./comps/point-use";
 // import DrugInfo from './drug-info'
 import OrderItem from "../../components/orderItem/order-item";
@@ -141,22 +145,19 @@ export default class CartCheckout extends Component {
       isNeedPackage: false,
       pick: {},
       isOpenStore: null
-    };
+    }
+
+    // 路由参数缓存
+    this.routerParams = {}
   }
 
-
-  isPointitemGood() { 
-    const options = this.$router.params;
-    return options.type === 'pointitem';
-  }
-
-  componentDidMount() {
-    // this.fetchAddress()
+  async componentDidMount() {
     if (this.$router.params.scene) {
-
+      const data = await normalizeQuerys(this.$router.params)
+      this.routerParams = data
       Taro.setStorageSync(
         "espierCheckoutData",
-        normalizeQuerys(this.$router.params)
+        data
       );
     }
 
@@ -253,14 +254,18 @@ export default class CartCheckout extends Component {
     // this.getShop()
     this.fetchAddress();
     this.fetchZiTiShop();
+    // 埋点处理
+    buriedPoint.call(this, {
+      event_type: 'orderPaymentSuccess'
+    })
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.address !== this.props.address) {
-      this.fetchAddress();
+      this.fetchAddress()
     }
     if (nextProps.zitiShop !== this.props.zitiShop) {
-      this.fetchZiTiShop();
+      this.fetchZiTiShop()
     }
   }
   componentWillUnmount() {
@@ -288,15 +293,20 @@ export default class CartCheckout extends Component {
     }
   }
 
+  isPointitemGood() { 
+    const options = this.$router.params;
+    return options.type === 'pointitem';
+  }
+
   async fetchZiTiShop() {
     const { shop_id, scene, cart_type, seckill_id = null, ticket = null, order_type } = this.$router.params;
     //const { zitiShop } = this.props;
-    const params = this.getParams()
+    const params = await this.getParams()
     const selectShop = Taro.getStorageSync('selectShop')
     let id = shop_id;
     let ztparams = {}
     if (scene) {
-      const { dtid } = normalizeQuerys(this.$router.params);
+      const { dtid } = this.routerParams
       id = dtid;
     }
     const isOpenStore = await entry.getStoreStatus()
@@ -396,7 +406,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       salesperson_id = espierCheckoutData.smid;
     }
@@ -425,7 +435,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       distributor_id = espierCheckoutData.dtid;
     }
@@ -439,14 +449,14 @@ export default class CartCheckout extends Component {
     this.setState({ shopData });
   }
 
-  getShopId() {
+  async getShopId() {
     const { source, scene } = this.$router.params;
     if (source === "other_pay" || scene) {
       let espierCheckoutData = {};
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       return espierCheckoutData.dtid;
     }
@@ -486,7 +496,8 @@ export default class CartCheckout extends Component {
     this.handleAddressChange(address);
   }
 
-  getParams() {
+  async getParams() {
+    // console.log('/////////////////')
     let { isNeedPackage, pack } = this.state
 
     const {
@@ -500,8 +511,7 @@ export default class CartCheckout extends Component {
       scene,
       goodType,
       bargain_id = ""
-    } = this.$router.params;
-    console.log("---this.$router.params---", this.$router.params)
+    } = this.$router.params
     let cxdid = null;
     let dtid = null;
     let smid = null;
@@ -510,7 +520,7 @@ export default class CartCheckout extends Component {
       if (source === "other_pay") {
         espierCheckoutData = Taro.getStorageSync("espierCheckoutData");
       } else {
-        espierCheckoutData = normalizeQuerys(this.$router.params);
+        espierCheckoutData = this.routerParams
       }
       cxdid = espierCheckoutData.cxdid;
       dtid = espierCheckoutData.dtid;
@@ -584,6 +594,7 @@ export default class CartCheckout extends Component {
         drug: drugInfo
       });
     }
+    const getShopId = await this.getShopId()
     let params = {
       ...this.params,
       ...receiver,
@@ -606,14 +617,15 @@ export default class CartCheckout extends Component {
             ? zitiShop.distributor_id
             : curStore
               ? curStore.distributor_id
-              : this.getShopId() || (shop_id === "undefined" ? 0 : shop_id)
-        : this.getShopId() || (shop_id === "undefined" ? curStorageStore.distributor_id : shop_id),
+              : getShopId || (shop_id === "undefined" ? 0 : shop_id)
+        : getShopId || (shop_id === "undefined" ? curStorageStore.distributor_id : shop_id),
       ...drugInfo,
       point_use: point_use
     };
     if (isNeedPackage) {
       params.pack = pack
     }
+    // 处理导购数据(旧)
     if (cxdid) {
       params.cxdid = cxdid;
       params.distributor_id = dtid;
@@ -621,6 +633,9 @@ export default class CartCheckout extends Component {
       params.order_type = "normal_shopguide";
       params.salesman_id = smid;
     }
+
+    // 处理导购数据（新）
+    this.dealGuidInfo(params)
 
     if (this.isPointitemGood()) {
       params.order_type = "normal_pointsmall";
@@ -657,6 +672,7 @@ export default class CartCheckout extends Component {
     this.params = params;
     return _cloneDeep(params);
   }
+
   async tradeSetting() {
     let res = await api.trade.tradeSetting()
     let { is_open, packName, packDes } = res
@@ -670,12 +686,13 @@ export default class CartCheckout extends Component {
 
     console.log(res, 'res');
   }
+
   async calcOrder() {
     Taro.showLoading({
       title: "加载中",
       mask: true
     });
-    const params = this.getParams();
+    const params = await this.getParams();
 
     let salesperson_id = Taro.getStorageSync("s_smid");
     if (salesperson_id) {
@@ -755,6 +772,7 @@ export default class CartCheckout extends Component {
       item_point,
       freight_type
     };
+ 
 
     let info = this.state.info;
     let pointInfo = this.state.pointInfo;
@@ -781,7 +799,7 @@ export default class CartCheckout extends Component {
         pointInfo.real_use_point &&
         pointInfo.real_use_point < pointInfo.point_use
       ) {
-        S.toast("积分有调整");
+        S.toast(customName("积分有调整"));
       }
 
       this.params.items = items;
@@ -801,6 +819,18 @@ export default class CartCheckout extends Component {
       },
       pointInfo
     });
+  }
+
+  // 处理导购
+  dealGuidInfo (params) {
+    const work_userid = Taro.getStorageSync('work_userid')
+    const chatId = Taro.getStorageSync('chatId')
+    if (work_userid) {
+      params.work_userid = work_userid 
+    }
+    if (chatId) {
+      params.chat_id = chatId
+    }
   }
 
   handleSwitchExpress = key => {
@@ -857,9 +887,9 @@ export default class CartCheckout extends Component {
       scale: 18
     });
   };
-  handleEditZitiClick = (id) => {
+  handleEditZitiClick = async (id) => {
     const { cart_type, seckill_id = null, ticket = null, goodType } = this.$router.params;
-    const params = this.getParams()
+    const params = await this.getParams()
     Taro.navigateTo({
       url: `/pages/store/ziti-list?shop_id=${id}&cart_type=${cart_type}&order_type=${params.order_type}&seckill_id=${seckill_id}&ticket=${ticket}&goodType=${goodType}&bargain_id=${params.bargain_id || ''}`
     })
@@ -1091,10 +1121,10 @@ export default class CartCheckout extends Component {
       try {
         const content =
           payType === "point"
-            ? `确认使用${total.point}积分全额抵扣商品总价吗`
+            ? `${customName(`确认使用${total.point}积分全额抵扣商品总价吗`)}`
             : "确认使用余额支付吗？";
         const { confirm } = await Taro.showModal({
-          title: payType === "point" ? "积分支付" : "余额支付",
+          title: payType === "point" ? `${customName("积分支付")}` : "余额支付",
           content,
           confirmColor: "#0b4137",
           confirmText: "确认使用",
@@ -1126,11 +1156,12 @@ export default class CartCheckout extends Component {
 
     let order_id, config, payErr;
     try {
-      let params = this.getParams();
+      let params = await this.getParams();
+      const getShopId = await this.getShopId()
 
       if (APP_PLATFORM === "standard" && cart_type !== "cart") {
         const { distributor_id, store_id } = Taro.getStorageSync("curStore");
-        params.distributor_id = isOpenStore ? receiptType === 'ziti' ? curStore.distributor_id : store_id : this.getShopId() || distributor_id;
+        params.distributor_id = isOpenStore ? receiptType === 'ziti' ? curStore.distributor_id : store_id : getShopId || distributor_id;
       }
       delete params.items;
       // 积分不开票
@@ -1189,13 +1220,15 @@ export default class CartCheckout extends Component {
       // 提交订单埋点 
       Tracker.dispatch("CREATE_ORDER", {
         ...total,
-        ...config
+        ...config,
+        timeStamp:config.order_created,
       });
 
-      this.cancelpay = () => { 
+      this.cancelpay = () => {  
         Tracker.dispatch("CANCEL_PAY", {
           ...total,
-          ...config
+          ...config,
+          timeStamp:config.order_created,
         });
       };
     } catch (e) {
@@ -1237,8 +1270,7 @@ export default class CartCheckout extends Component {
       submitLoading: false
     }); 
 
-    const isExtraPoint=this.isPointitemGood() && this.state.total.freight_type==="point";
- 
+    const isExtraPoint=this.isPointitemGood() && this.state.total.freight_type==="point"; 
     // 积分流程
     if (payType === "point" || payType === "deposit" || isExtraPoint ) { 
       if (!payErr) {
@@ -1254,6 +1286,14 @@ export default class CartCheckout extends Component {
         if(isExtraPoint){
           url+="&type=pointitem";
         }
+ 
+        if(type==="group"){
+          const groupUrl=`/marketing/pages/item/group-detail?team_id=${config.team_id}`
+          Taro.redirectTo({
+            url:groupUrl
+          });
+          return ;
+        }
   
         Taro.redirectTo({
           url
@@ -1264,19 +1304,24 @@ export default class CartCheckout extends Component {
     }
 
     payErr = null;
-    console.log("-----configCheckout-----",config)
-    try {
-
-      const { total } = this.state;
-      Tracker.dispatch("ORDER_PAY", {
-        ...total,
-        ...config
-      });
-
-      const payRes = await Taro.requestPayment(config); 
+    console.log("-----configCheckout-----",config) 
+    try {  
+      const { total } = this.state; 
+      const notNeedPay=total.freight_type==='cash' && !config.package;
+      
+      let payRes; 
+      if(!notNeedPay){
+        Tracker.dispatch("ORDER_PAY", {
+          ...total,
+          ...config,
+          timeStamp:config.order_created,
+        });
+  
+        payRes = await Taro.requestPayment(config); 
+      }
+      
       // 支付上报
-    
-
+     
       log.debug(`[order pay]: `, payRes);
     } catch (e) {
       payErr = e;
@@ -1288,7 +1333,9 @@ export default class CartCheckout extends Component {
       // });
     }
 
-    if (!payErr) {
+    if (!payErr) { 
+      TracksPayed(total,config,"espier-checkout")
+
       await Taro.showToast({
         title: "支付成功",
         icon: "success"
@@ -1300,8 +1347,7 @@ export default class CartCheckout extends Component {
 
       if(this.isPointitemGood()){
         purl+="&type=pointitem";
-      } 
-      
+      }  
       Taro.redirectTo({
         url:
           type === "group"
@@ -1342,7 +1388,7 @@ export default class CartCheckout extends Component {
     };
   };
 
-  handleCouponsClick = () => {
+  handleCouponsClick = async () => {
     // if (this.state.payType === 'point'){
     //   return
     // }
@@ -1379,7 +1425,7 @@ export default class CartCheckout extends Component {
       id = shop_id;
     }
     if (scene) {
-      const espierCheckoutData = normalizeQuerys(this.$router.params);
+      const espierCheckoutData = this.routerParams
       id = espierCheckoutData.dtid;
     }
     this.clearPoint();
@@ -1543,7 +1589,7 @@ export default class CartCheckout extends Component {
   render() {
     // 支付方式文字
     const payTypeText = {
-      point: '积分支付',
+      point: customName('积分支付'),
       wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',
@@ -1577,9 +1623,7 @@ export default class CartCheckout extends Component {
       pack,
       isOpenStore,
       defalutPaytype
-    } = this.state;
-    console.log("---total---",total);
-    console.log("---info---",info);
+    } = this.state; 
     // let curStore = {}
     // if (shopData) {
     //   curStore = shopData
@@ -1590,9 +1634,6 @@ export default class CartCheckout extends Component {
     // const { curStore } = this.state
     const { type, goodType, bargain_id } = this.$router.params;
     const isDrug = type === "drug";
-
-    console.log("----cart.list-----",info)
-
     if (!info) {
       return <Loading />;
     }
@@ -1773,7 +1814,7 @@ export default class CartCheckout extends Component {
                               <View className="order-item__ft">
                                 {
                                   this.isPointitemGood() ?
-                                    <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={item.item_point}></Price>
+                                    <Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={item.item_point}></Price>
                                     : <Price
                                       className="order-item__price"
                                       value={item.price}
@@ -1849,11 +1890,11 @@ export default class CartCheckout extends Component {
             value='[快递免邮]'
           >
           </SpCell>*/}
-          {goodType !== "cross" && !this.isPointitemGood() && pointInfo.is_open_deduct_point && !bargain_id && (
+          {goodType !== "cross" && !this.isPointitemGood() && pointInfo.is_open_deduct_point && (
             <SpCell
               isLink
               className="trade-invoice"
-              title="积分抵扣"
+              title={customName("积分抵扣")}
               onClick={this.handlePointShow}
             >
               <View className="invoice-title">
@@ -1866,8 +1907,8 @@ export default class CartCheckout extends Component {
                 {payType === "point"
                   ? "全额抵扣"
                   : pointInfo.point_use > 0
-                    ? `已使用${pointInfo.real_use_point}积分`
-                    : "使用积分"}
+                    ? `${customName(`已使用${pointInfo.real_use_point}积分`)}`
+                    : `${customName("使用积分")}`}
               </View>
             </SpCell>
           )}
@@ -1882,14 +1923,14 @@ export default class CartCheckout extends Component {
               >
                 {total.deduction && (
                   <Text className="trade-payment__hint">
-                    {total.remainpt}积分可用
+                    {total.remainpt}{customName("积分可用")}
                   </Text>
                 )}
                 <Text>{payTypeText[payType]}</Text>
               </SpCell>
               {total.deduction && (
                 <View className="trade-payment__hint">
-                  可用{total.point}积分，抵扣{" "}
+                  可用{total.point}{customName("积分")}，抵扣{" "}
                   <Price unit="cent" value={total.deduction} /> (包含运费{" "}
                   <Price unit="cent" value={total.freight_fee}></Price>)
                 </View>
@@ -1932,7 +1973,7 @@ export default class CartCheckout extends Component {
               <Price unit="cent" value={total.discount_fee} />
             </SpCell>
             {goodType !== "cross" && pointInfo.is_open_deduct_point && (
-              <SpCell className="trade-sub-total__item" title="积分抵扣：">
+              <SpCell className="trade-sub-total__item" title={customName("积分抵扣：")}>
                 <Price unit="cent" value={total.point_fee} />
               </SpCell>
             )}
@@ -1951,11 +1992,11 @@ export default class CartCheckout extends Component {
 
           {this.isPointitemGood() && <View className="sec trade-sub-total">
           
-            <SpCell className="trade-sub-total__item" title="积分消费：">
-              <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.item_point}></Price> 
+            <SpCell className="trade-sub-total__item" title={customName("积分消费：")}>
+              <Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={total.item_point}></Price> 
             </SpCell>
             <SpCell className="trade-sub-total__item" title="运费：">
-              {total.freight_type==="point"?<Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.freight_fee} />:<Price unit="cent" value={total.freight_fee} />}
+              {total.freight_type==="point"?<Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={total.freight_fee} />:<Price unit="cent" value={total.freight_fee} />}
             </SpCell>
           </View>}
 
@@ -1987,7 +2028,7 @@ export default class CartCheckout extends Component {
             ) : (
                 total.point && (
                   <View class="last_price">
-                    <Price className='order-item__price' appendText='积分' noSymbol noDecimal value={total.point} />
+                    <Price className='order-item__price' appendText={customName("积分")} noSymbol noDecimal value={total.point} />
                     {!total.freight_fee==0 && total.freight_type==="cash" && this.isPointitemGood() && <Price unit="cent" plus value={total.freight_fee} className='order-item__plus'/>}
                   </View>
                 )

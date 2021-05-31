@@ -4,19 +4,25 @@ export function memberInfo () {
   return req.get('/member')
 }
 
+// 修改用户信息
 export function setMemberInfo (params = {}) {
   return req.put('/member', params)
+}
+
+// 更新会员手机号
+export function setMemberMobile (params = {}) {
+  return req.put('/member/mobile', params)
 }
 
 export function pointDetail () {
   return req.get('/member.point.detail')
 }
 
-export function favsList (params = {}) {
+export function favsList( params = {} ) {
   return req.get('/member/collect/item', params,null, { showError: false })
 }
 
-export function addFav (item_id,params) {
+export function addFav( item_id, params ) {
   return req.post(`/member/collect/item/${item_id}`,params)
 }
 
