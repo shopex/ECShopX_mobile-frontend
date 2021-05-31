@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-25 10:54:19
- * @LastEditTime: 2021-02-24 16:56:29
+ * @LastEditTime: 2021-04-08 15:52:04
  * @LastEditors: PrendsMoi
  * @Description: In User Settings Edit
  * @FilePath: /unite-vshop/src/service/tracker/platform/youshu/index.js
@@ -19,23 +19,22 @@ export default class Youshu extends Base {
 
   constructor(options = {}) {
     super(options);
-
-    console.log('---------init--------')
+    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
     const { youshu = {} } =  Taro.getStorageSync('otherSetting') || {}
-    //后台配置的APP_ID是微信小程序需要用到的token 
-    config.token = youshu.app_id  
-     
-    console.log('---------config--------',config)
-    
+
+    config.token = youshu.app_id || youshu.sandbox_app_id
+    config.appid = youshu.weapp_app_id || extConfig.appid
+
     sr.init(config);
 
     this.actions = actions;
     this.sr = sr;
 
     const token = S.getAuthToken();
+    
     if (token) {
       const userInfo = tokenParse(token);
-      console.log("------useInfo------")
+      console.log("[有数埋点]------useInfo------")
       console.log(userInfo)
       this.setVar({
         user_id: userInfo.user_id,

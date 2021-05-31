@@ -336,8 +336,7 @@ export default class CartIndex extends Component {
           skuInfo = sitem;
         }
       })
-    })
-
+    }) 
     // 从购物车彻底移除
     Tracker.dispatch("REMOVE_FROM_CART", {
       ...skuInfo
@@ -367,17 +366,17 @@ export default class CartIndex extends Component {
     this.updateCart()
 
     // 购物车追加
-    if (item.num < parseInt(num)) {  
+    if (item.num < parseInt(num)) {   
       Tracker.dispatch("APPEND_TO_CART_IN_CART", {
         ...item,
         goods_id:item.goods_id||item.item_id,
         num: parseInt(num) - item.num,
         goods_num: num
       });
-    }else{ 
-      
+    }else{   
       Tracker.dispatch("REMOVE_FROM_CART_NUM", {
         ...item,
+        goods_id:item.goods_id||item.item_id,
         num: item.num-parseInt(num),
         goods_num: num
       });
@@ -803,15 +802,16 @@ export default class CartIndex extends Component {
 
             {
               (!groups.length || this.state.error) && (
-                <View>
+                <View style={{textAlign:'center'}}>
                   <View style='margin-bottom: 20px'>
                     <SpNote img='cart_empty.png'>快去给我挑点宝贝吧~</SpNote>
                   </View>
-                  <AtButton
-                    className='btn-rand'
-                    type='primary'
-                    onClick={this.navigateTo.bind(this, APP_HOME_PAGE, true)}
-                  >随便逛逛</AtButton>
+                  <View className='custom_botton_wrapper'  style={`background: ${colors.data[0].primary};border-color:${colors.data[0].primary}`}>
+                    <AtButton
+                      className='btn-rand inherit' 
+                      onClick={this.navigateTo.bind(this, APP_HOME_PAGE, true)}
+                    >随便逛逛</AtButton>
+                  </View>
                 </View>
               )
             }
@@ -845,7 +845,7 @@ export default class CartIndex extends Component {
           {
             !isDrug && likeList.length && showLikeList
               ? <View className='cart-list cart-list__disabled'>
-                <View className='cart-list__hd like__hd'><Text className='cart-list__title'>猜你喜欢</Text></View>
+                <View className='cart-list__hd like__hd'><Text className='cart-list__title'  style={{color: colors.data[0].primary,borderColor:colors.data[0].primary}}>猜你喜欢</Text></View>
                 <View className='goods-list goods-list__type-grid'>
                   {
                     likeList.map(item => {

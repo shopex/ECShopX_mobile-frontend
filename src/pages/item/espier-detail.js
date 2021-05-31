@@ -6,12 +6,13 @@ import { AtCountdown } from 'taro-ui'
 import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell, GoodsEvaluation, FloatMenuMeiQia, GoodsItem ,PointLine} from '@/components'
 import api from '@/api'
 import req from '@/api/req'
-import { withPager, withBackToTop } from '@/hocs'
-import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys } from '@/utils'
+import { withPager, withBackToTop,withPointitem } from '@/hocs'
+import { log, calcTimer, isArray, pickBy, canvasExp, normalizeQuerys, buriedPoint } from '@/utils'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from "@/service"
 import { GoodsBuyToolbar, ItemImg, ImgSpec, StoreInfo, ActivityPanel, SharePanel, VipGuide, ParamsItem, GroupingItem } from './comps'
+import { linkPage } from '../home/wgts/helper'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -30,6 +31,7 @@ import './espier-detail.scss'
 }))
 @withPager
 @withBackToTop
+@withPointitem
 export default class Detail extends Component {
 
   constructor(props) {
@@ -67,13 +69,21 @@ export default class Detail extends Component {
       // 是否订阅
       isSubscribeGoods: false,
       is_open_store_status:null,
-      goodType:'normal'
+      goodType:'normal',
+      // 是否能够转发
+      canShareInfo: {
+        status: false
+      }
     }
   }
   
 
   async componentDidMount() {
-    const options = this.$router.params 
+    const options = await normalizeQuerys(this.$router.params)
+    console.log('options----->',options)
+    if (options.itemid && !options.id) {
+      options.id = options.itemid
+    }
     let id = options.id
     let uid = ''
     if(!S.getAuthToken()){
@@ -82,8 +92,8 @@ export default class Detail extends Component {
     const isOpenStore = await entry.getStoreStatus()
     this.setState({
       is_open_store_status:isOpenStore,
-      goodType:options.type==="pointitem"?"pointitem":"normal"
-    },async()=>{
+      goodType:options.type==="pointitem"?"pointitem":"normal",
+    }, async()=>{
       const { is_open_store_status } = this.state
       if (APP_PLATFORM === 'standard') {
        // const { distributor_id } = Taro.getStorageSync('curStore')
@@ -97,6 +107,7 @@ export default class Detail extends Component {
         }
       }
       const entryData = await entry.entryLaunch({...options}, true)
+      console.log('entryData---->',entryData)
       id = entryData.id
       uid = entryData.uid
       
@@ -104,7 +115,7 @@ export default class Detail extends Component {
         this.uid = uid
       }
       if (options.scene) {
-        const query = normalizeQuerys(options)
+        const query = await normalizeQuerys(options)
         if (query.id) {
           id = query.id
           uid = query.uid
@@ -132,7 +143,13 @@ export default class Detail extends Component {
     if (lnglat && !lnglat.city) {
       entry.InverseAnalysis(lnglat)
     }
-    this.getDetailShare()
+    // this.getDetailShare()
+    this.isCanShare()
+    // 埋点处理
+    buriedPoint.call(this, {
+      item_id: id,
+      event_type: 'activeItemDetail'
+    })
   }
 
   static options = {
@@ -275,7 +292,7 @@ export default class Detail extends Component {
 
   async fetchInfo(itemId, goodsId) { 
     this.nextPage();
-    const { distributor_id,store_id } = Taro.getStorageSync('curStore') 
+    const { distributor_id, store_id } = Taro.getStorageSync('curStore') 
     const { is_open_store_status } = this.state
     //const isOpenStore = await entry.getStoreStatus()
     let id = ''
@@ -299,20 +316,21 @@ export default class Detail extends Component {
       } else {
         const options = this.$router.params
         if (options.scene) {
-          const query = normalizeQuerys(options)
+          const query = await normalizeQuerys(options)
           if (query.dtid) {
             param.distributor_id = query.dtid
           }
         }
       }
     }
+
     if(is_open_store_status){
       delete param.distributor_id
     }
     console.log('param',param)
     // 商品详情 
-    const info = await this.goodInfo(id,param);
-    console.log('---info----',info);
+    const info = await this.goodInfo(id, param);
+
     // 是否订阅
     const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
     const { intro: desc, promotion_activity: promotion_activity } = info
@@ -607,7 +625,7 @@ export default class Detail extends Component {
   downloadPosterImg = async () => {
     let userinfo = Taro.getStorageSync('userinfo')
     if (S.getAuthToken() && (!userinfo || !userinfo.userId)) {
-      const res = await api.member.memberInfo()
+      const res = await api.member.memberInfo();
       const userObj = {
         username: res.memberInfo.nickname || res.memberInfo.username || res.memberInfo.mobile,
         avatar: res.memberInfo.avatar,
@@ -630,22 +648,30 @@ export default class Detail extends Component {
     const infoId = info.distributor_id
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
     const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&dtid=${id}&uid=${userId}`
-    const avatarImg = await Taro.getImageInfo({src: avatar})
-    const goodsImg = await Taro.getImageInfo({src: pic})
-    const codeImg = await Taro.getImageInfo({src: wxappCode})
+    let avatarImg;
+    if (avatar) {
+      avatarImg = await Taro.getImageInfo({src: avatar})
+    }
 
-    if (avatarImg && goodsImg && codeImg) {
+    const goodsImg = await Taro.getImageInfo({src: pic})
+    console.log('-------------------goodsImg:',goodsImg);
+    const codeImg = await Taro.getImageInfo({src: wxappCode})
+    console.log('-------------------codeImg:',codeImg);
+
+
+    if (avatarImg?(avatarImg && goodsImg && codeImg):goodsImg&&codeImg) {
       const posterImgs = {
-        avatar: avatarImg.path,
+        avatar: avatarImg.path || null,
         goods: goodsImg.path,
         code: codeImg.path
       }
-
       await this.setState({
         posterImgs
+      
       }, () => {
         this.drawImage()
       })
+      
       return posterImgs
     } else {
       return null
@@ -704,7 +730,10 @@ export default class Detail extends Component {
     canvasExp.textFill(ctx, username, 90, 45, 18, '#333')
     canvasExp.textFill(ctx, '给你推荐好货好物', 90, 65, 14, '#999')
     canvasExp.drawImageFill(ctx, goods, 15, 95, 345, 345)
-    canvasExp.imgCircleClip(ctx, avatar, 15, 15, 65, 65)
+    if (avatar) {
+      canvasExp.imgCircleClip(ctx, avatar, 15, 15, 65, 65)
+    }
+    
     canvasExp.textMultipleOverflowFill(ctx, item_name, 22, 2, 15, 470, 345, 18, '#333')
     if (type == '1') {
       canvasExp.textFill(ctx, '含税售价:', 15, 565, 16, '#666')
@@ -743,7 +772,18 @@ export default class Detail extends Component {
 
       return
     }
-
+    const { canShareInfo } = this.state
+    const { status, msg, page } = canShareInfo
+    if (!status) {
+      Taro.showToast({
+        title: msg,
+        icon: 'none'
+      })
+      setTimeout(() => {
+        linkPage(page.linkPage, page)
+      }, 1000)
+      return
+    }
     this.setState({
       showSharePanel: true
     })
@@ -790,6 +830,9 @@ export default class Detail extends Component {
           icon:'none',
           title: '保存成功'
         })
+        this.setState({
+          showPoster: false
+        })
       })
       .catch(() => {
         Taro.showToast({
@@ -801,8 +844,10 @@ export default class Detail extends Component {
 
   handleShowPoster = async () => {
     const { posterImgs } = this.state
+    console.log(posterImgs);
     if (!posterImgs || !posterImgs.avatar || !posterImgs.code || !posterImgs.goods) {
       const imgs = await this.downloadPosterImg()
+      console.log(imgs);
       if (imgs && imgs.avatar && imgs.code && imgs.goods) {
         this.setState({
           showPoster: true
@@ -831,9 +876,9 @@ export default class Detail extends Component {
     const curStore = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id :curStore.distributor_id : item.distributor_id
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${id}&type=pointitem`
+    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${id}`
     Taro.navigateTo({
-      url
+      url:this.transformUrl(url,this.isPointitem())
     })
   }
 
@@ -870,6 +915,12 @@ export default class Detail extends Component {
   
   //订阅通知
   handleSubscription = async () => {
+
+    if(this.isPointitemGood()){
+      console.log("this.isPointitemGood()")
+      return ;
+    }
+
     const { isSubscribeGoods, info } = this.state
     if (isSubscribeGoods) return false
     await api.user.subscribeGoods(info.item_id)
@@ -909,6 +960,29 @@ export default class Detail extends Component {
     }
   }
 
+  // 判断是否可以分享
+  isCanShare = async () => {
+    if (!S.getAuthToken()) return false
+    const info = await api.user.getIsCanShare()
+    if (!info.status) {
+      Taro.hideShareMenu()
+    }
+    this.setState({
+      canShareInfo: info
+    })
+  }
+
+  // 编辑分享
+  goToEditShare = () => {
+    const { distributor_id,store_id } = Taro.getStorageSync('curStore')
+    const { info,is_open_store_status } = this.state
+    const { company_id, item_id } = info
+    const dtid = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : info.distributor_id
+    Taro.navigateTo({
+      url: `/subpage/pages/editShare/index?id=${item_id}&dtid=${dtid}&company_id=${company_id}`
+    })
+  }
+
   render() {
     const {
       info,
@@ -938,10 +1012,8 @@ export default class Detail extends Component {
       likeList,
       evaluationTotal,
       evaluationList,
-      isSubscribeGoods
+      isSubscribeGoods,
     } = this.state
-
-    console.log("--info--",info)
 
     const { showLikeList, colors } = this.props
     const meiqia = Taro.getStorageSync('meiqia')
@@ -1104,13 +1176,13 @@ export default class Detail extends Component {
                 <Text className='goods-title'>{info.item_name}</Text>
                 <Text className='goods-title__desc'>{info.brief}</Text>
               </View>
-              {Taro.getEnv() !== 'WEB' && (
+              {Taro.getEnv() !== 'WEB' && !this.isPointitem() && (
                 <View
                   className='goods-share__wrap'
                   onClick={this.handleShare.bind(this)}
                 >
                   <View className='icon-share'></View>
-                  <View className='share-label'>分享</View>
+                 <View className='share-label'>分享</View> 
                 </View>
               )}
             </View>
@@ -1170,7 +1242,7 @@ export default class Detail extends Component {
             )}
             {/* 跨境商品 */}
             {info.type == "1" && !this.isPointitemGood() && (
-              <View className="nationalInfo"> 
+              <View className='nationalInfo'> 
                 <View>
                   跨境综合税:
                   <Price
@@ -1201,10 +1273,10 @@ export default class Detail extends Component {
               </View>
             )}
             {
-              this.isPointitemGood() && <View class="goods_point">
+              this.isPointitemGood() && <View class='goods_point'>
                     <PointLine 
-                        point={info.point} 
-                        plus
+                      point={info.point} 
+                      plus
                     /> 
               </View>
             }
@@ -1235,11 +1307,11 @@ export default class Detail extends Component {
           )}
 
           { !info.is_gift && !this.isPointitemGood() &&  <SpCell
-              className='goods-sec-specs'
-              title='领券'
-              isLink
-              onClick={this.handleCouponClick.bind(this)}
-            >
+            className='goods-sec-specs'
+            title='领券'
+            isLink
+            onClick={this.handleCouponClick.bind(this)}
+          >
               {coupon_list &&
                 new_coupon_list.map(kaquan_item => {
                   return (
@@ -1442,12 +1514,12 @@ export default class Detail extends Component {
               ) : (
                 <View
                   style={`background: ${
-                    !isSubscribeGoods ? colors.data[0].primary : 'inherit'
+                    this.isPointitemGood()?'grey':!isSubscribeGoods ? colors.data[0].primary : 'inherit'
                   }`}
-                  className={`arrivalNotice ${isSubscribeGoods && 'noNotice'}`}
+                  className={`arrivalNotice ${isSubscribeGoods && 'noNotice'} ${this.isPointitemGood() && 'good_disabled'}`}
                   onClick={this.handleSubscription.bind(this)}
                 >
-                  {isSubscribeGoods ? "已订阅到货通知" : "到货通知"}
+                  {this.isPointitemGood()?'已兑完':isSubscribeGoods ? "已订阅到货通知" : "到货通知"}
                 </View>
               )}
             </View>
@@ -1474,6 +1546,7 @@ export default class Detail extends Component {
             <SharePanel
               info={uid}
               isOpen={showSharePanel}
+              onEditShare={this.goToEditShare.bind(this)}
               onClose={() => this.setState({ showSharePanel: false })}
               onClick={this.handleShowPoster.bind(this)}
             />
