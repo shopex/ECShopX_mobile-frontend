@@ -44,17 +44,17 @@ export default class CouponHome extends Component {
     });
   }
 
-  async onShareAppMessage(item) {
+  onShareAppMessage(item) {
     const { info = {} } = item.target.dataset
     const res = this.state.shareInfo;
     // console.log('item.target.dataset',item)
     // console.log('info',info)
     // console.log('onShareAppMessage-item',res,info)
     // const { userId } = Taro.getStorageSync("userinfo");
-    const params = await normalizeQuerys(this.$router.params);
+    const params = this.$router.params;
 
     const { salesperson_id, distributor_id } = S.get("GUIDE_INFO", true);
-    const query = `?smid=${salesperson_id}&card_id=${info.card_id}&distributor_id=${distributor_id}&subtask_id=${params.subtask_id || ''}&gu=${params.gu || ''}`;    
+    const query = `?smid=${salesperson_id}&card_id=${info.card_id}&distributor_id=${distributor_id}&subtask_id=${params.subtask_id || ''}&gu=${params.gu || ''}`;
     console.log(`/others/pages/home/coupon-home${query}`)
     return {
       title: info.title+'优惠券',
@@ -208,7 +208,7 @@ export default class CouponHome extends Component {
             {list.map((item, idx) => {
               return (
                 <CouponItem info={item} className='home_coupon-list_item'  key={item.card_id}>
-                  <View className='home_coupon-list_item__quantity'>剩余{parseInt(item.quantity) - item.get_num}张</View>   
+                  <View className='home_coupon-list_item__quantity'>剩余{parseInt(item.quantity) - item.get_num}张</View>
                   {/* <Text
                       className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
                       onClick={this.handleGetCard.bind(this, item, idx)}
@@ -226,7 +226,7 @@ export default class CouponHome extends Component {
                     // style={`background: ${colors.data[0].primary}`}
                     onClick={this.handleClickNews.bind(this, item, idx)}
                   >
-                    
+
                     <View className='recommend-detail__bar'>
                       <Button
                         openType='share'
@@ -241,8 +241,8 @@ export default class CouponHome extends Component {
                       </Button>
                     </View>
                   </View>}
-                  
-                  
+
+
                 </CouponItem>
               );
             })}
