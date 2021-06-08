@@ -105,3 +105,8 @@ export function interactiveReportData (params) {
     ...params
   })
 }
+
+// 刷新token
+export function refreshToken() {
+  return req.get("/token/refresh");
+}
