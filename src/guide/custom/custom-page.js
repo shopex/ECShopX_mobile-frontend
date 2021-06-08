@@ -52,7 +52,7 @@ export default class HomeIndex extends Component {
     });
     // 埋点处理
     buriedPoint.call(this, {
-      event_type: "activeSeedingDetail"
+      event_type: "activeCustomPage"
     });
   }
 
@@ -75,9 +75,12 @@ export default class HomeIndex extends Component {
   async onShareAppMessage() {
     const { shareInfo } = this.state;
     const { id } = this.$router.params;
-    const { salesperson_id, distributor_id } = S.get("GUIDE_INFO", true);
+    const { salesperson_id, distributor_id } = S.get( "GUIDE_INFO", true );
+    const gu_user_id = Taro.getStorageSync("work_userid");
     // const { userId } = Taro.getStorageSync("userinfo");
-    const query = salesperson_id ? `?smid=${salesperson_id}&dtid${distributor_id}&id=${id}` : `?id=${id}`;
+    const query = salesperson_id
+      ? `?smid=${salesperson_id}&dtid${distributor_id}&id=${id}&gu_user_id=${gu_user_id}`
+      : `?id=${id}&gu_user_id=${gu_user_id}`;
     console.log(query);
     return {
       title: shareInfo.page_share_title,

@@ -164,3 +164,10 @@ export function updateUserInfo (params) {
     ...params
   })
 }
+
+//记录导购被访问的UV
+export function uniquevisito(params) {
+  return req.post("/member/salesperson/uniquevisito", {
+    ...params
+  });
+}

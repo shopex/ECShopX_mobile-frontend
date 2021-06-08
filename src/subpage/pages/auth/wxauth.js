@@ -125,7 +125,10 @@ export default class WxAuth extends Component {
 
       if (work_userid) {
         params.channel = 1
-        params.work_userid = work_userid 
+        params.work_userid = work_userid
+        api.user.uniquevisito({
+          work_userid: work_userid
+        });
       }
 
       if (trackParams) {

@@ -4,7 +4,7 @@ import api from '@/api'
 import {  withPager } from "@/hocs";
 import { BaNavBar } from '../components'
 import { connect } from '@tarojs/redux'
-import { formatTime, log } from '@/utils'
+import { formatTime, log, buriedPoint } from "@/utils";
 import S from '@/spx'
 import { Tracker } from "@/service";
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../components/wgts'
@@ -48,6 +48,11 @@ export default class recommendDetail extends Component {
     }
     this.setState({
       jumpType
+    } );
+    
+    // 埋点处理
+    buriedPoint.call(this, {
+      event_type: "activeSeedingDetail"
     });
   }
 
@@ -73,12 +78,12 @@ export default class recommendDetail extends Component {
     // const { salesperson_id } = QwUserInfo;
     // const guideid = salesperson_id ? `&salesperson_id=${salesperson_id}` : "";
     
-
+    const gu_user_id = Taro.getStorageSync("work_userid");
     Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
       ...info,
       shareType: "分享给好友"
     } );
-    const sharePath = `/subpage/pages/recommend/detail?id=${info.article_id}&smid=${salesperson_id}&dtid=${distributor_id}`;
+    const sharePath = `/subpage/pages/recommend/detail?id=${info.article_id}&smid=${salesperson_id}&dtid=${distributor_id}&gu_user_id=${gu_user_id}`;
     log.debug(`【guide/recommend/detail】onShareAppMessage path: ${sharePath}` )
     return {
       title: info.title,

@@ -34,8 +34,8 @@ export default class HomeIndex extends Component {
     })
     // 埋点处理
     buriedPoint.call(this, {
-      event_type: 'activeSeedingDetail'
-    })
+      event_type: "activeCustomPage"
+    });
   }
 
   async fetchInfo () {
