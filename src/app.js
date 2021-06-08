@@ -435,7 +435,11 @@ class App extends Component {
         if (S.getAuthToken()) {
           api.user.bindSaleperson({
             work_userid: gu_user_id
-          })
+          } )
+          // uv 埋点
+          api.user.uniquevisito({
+            work_userid: gu_user_id
+          });
         }
       }
       // 存储群id
