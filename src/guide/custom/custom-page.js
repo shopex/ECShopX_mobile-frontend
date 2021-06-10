@@ -78,7 +78,7 @@ export default class HomeIndex extends Component {
     const { salesperson_id, distributor_id } = S.get("GUIDE_INFO", true);
     // const { userId } = Taro.getStorageSync("userinfo");
     const query = salesperson_id ? `?smid=${salesperson_id}&dtid${distributor_id}&id=${id}` : `?id=${id}`;
-    console.log(query);
+    
     return {
       title: shareInfo.page_share_title,
       imageUrl: shareInfo.page_share_imageUrl,

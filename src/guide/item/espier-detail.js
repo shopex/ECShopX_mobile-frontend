@@ -142,6 +142,7 @@ export default class Detail extends Component {
   }
 
   async componentDidMount() {
+    await S.autoLogin(this)
     const { id, subtask_id } = this.$router.params;
     this.fetchInfo(id);
     console.log("subtask_id,subtask_id", subtask_id);

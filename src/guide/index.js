@@ -67,15 +67,10 @@ export default class BaGuideHomeIndex extends Component {
     const res = await entry.entryLaunch(options, true);
     console.log('[entry.entryLaunch]',res)
   }
-  async componentDidMount() {
-    console.log('[componentDidMount] ---- ',)    
+  async componentDidMount() {       
     await S.autoLogin(this)
-
     const { version } = this.$router.params;
     console.log('[挂件包] this.state.wgts',this.state.wgts)
-
-
-
     //设置导购信息
     this.guideInit(version)
   }

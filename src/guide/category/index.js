@@ -28,7 +28,8 @@ export default class BaCategory extends Component {
     }
   }
 
-  componentDidMount () {
+  async componentDidMount () {
+    await S.autoLogin(this)
     this.fetch()
   }
   config ={
