@@ -64,7 +64,8 @@ export default class CartIndex extends Component {
     this.lastCartId = null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await S.autoLogin(this)
     if (this.$router.params && this.$router.params.path === "qrcode") {
       this.setState({
         isPathQrcode: true

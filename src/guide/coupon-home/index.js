@@ -27,8 +27,9 @@ export default class CouponHome extends Component {
       shareInfo: {}
     };
   }
-
-  componentDidMount() {
+  
+  async componentDidMount() {
+    await S.autoLogin(this)
     this.nextPage();
     api.wx.shareSetting({ shareindex: "coupon" }).then(res => {
       this.setState({
@@ -52,10 +53,11 @@ export default class CouponHome extends Component {
     // console.log('onShareAppMessage-item',res,info)
     // const { userId } = Taro.getStorageSync("userinfo");
     const params = this.$router.params;
-
+    
     const { salesperson_id, distributor_id } = S.get("GUIDE_INFO", true);
     const query = `?smid=${salesperson_id}&card_id=${info.card_id}&distributor_id=${distributor_id}&subtask_id=${params.subtask_id || ''}&gu=${params.gu || ''}`;
-    console.log(`/others/pages/home/coupon-home${query}`)
+    console.log('[guide/coupon-home/index:onShareAppMessage]',`/pages/custom/custom-page${query}`);
+    console.log('params',params)
     return {
       title: info.title+'优惠券',
       imageUrl: res.imageUrl,

@@ -21,7 +21,8 @@ export default class RecommendList extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await S.autoLogin(this)
     this.nextPage();
   }
 

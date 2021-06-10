@@ -30,7 +30,8 @@ export default class recommendDetail extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await S.autoLogin(this)
     Taro.getSystemInfo().then(res => {
       this.setState({
         screenWidth: res.screenWidth
