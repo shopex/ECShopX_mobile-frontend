@@ -98,7 +98,7 @@ export default class GroupDetail extends Component {
         num: 1
       } )
       Taro.navigateTo({
-        url: `/pages/cart/espier-checkout?type=group&team_id=${team_info.team_id}&group_id=${activity_info.groups_activity_id}`
+        url: `/pages/cart/espier-checkout?type=group&team_id=${team_info.team_id}&group_id=${activity_info.groups_activity_id}&shop_id=${distributor_id}`
       });
     } catch (e) {
       console.log(e)
