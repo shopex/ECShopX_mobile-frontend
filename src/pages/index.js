@@ -554,8 +554,7 @@ export default class Home extends Component {
       is_open_official_account,
       is_open_scan_qrcode,
       is_open_store_status,
-      show_official,
-      is_open_wechatapp_location
+      show_official
     } = this.state;
 
     const pages = Taro.getCurrentPages()
@@ -568,37 +567,23 @@ export default class Home extends Component {
     // 否是fixed
     const isFixed = positionStatus;
 
-    let isHeader = is_open_official_account === 1 && show_official
-    let styles = {}
-    if (isHeader && !isStandard) {
-      styles = { paddingTop: Taro.pxTransform(150) }
-    } else if (isStandard && !isHeader) {
-      styles = { paddingTop: Taro.pxTransform(90) }
-    } else if (isHeader && isStandard) {
-      styles = { paddingTop: Taro.pxTransform(240) }
-    } else {
-      styles = { paddingTop: Taro.pxTransform(0) }
-    }
     return (
       <View className="page-index">
-        <View>
-          {isHeader && (
-            <AccountOfficial
-              isClose
-              onHandleError={this.handleOfficialError.bind(this)}
-              onClick={this.handleOfficialClose.bind(this)}
-            ></AccountOfficial>
-          )}
-          {isStandard && (
-            <HeaderHome
-              store={curStore}
-              isOpenOfficialAccount={isHeader}
-              onClickItem={this.goStore.bind(this)}
-              isOpenScanQrcode={is_open_scan_qrcode}
-              isOpenStoreStatus={is_open_wechatapp_location === 1}
-            />
-          )}
-        </View>
+        {is_open_official_account === 1 && show_official && (
+          <AccountOfficial
+            isClose
+            onHandleError={this.handleOfficialError.bind(this)}
+            onClick={this.handleOfficialClose.bind(this)}
+          ></AccountOfficial>
+        )}
+        {isStandard && curStore && (
+          <HeaderHome
+            store={curStore}
+            onClickItem={this.goStore.bind(this)}
+            isOpenScanQrcode={is_open_scan_qrcode}
+            isOpenStoreStatus={is_open_store_status}
+          />
+        )}
         <View
           className={classNames(
             "wgts-wrap",
@@ -609,7 +594,6 @@ export default class Home extends Component {
             !curStore && "wgts-wrap-nolocation",
             !isFixed && !isStandard && "platform"
           )}
-          style={styles}
         >
           {/* 挂件内容和猜你喜欢 */}
           <View className="wgts-wrap__cont">
