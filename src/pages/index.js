@@ -570,12 +570,12 @@ export default class Home extends Component {
     let isHeader = is_open_official_account === 1 && show_official
     let isAccount = isStandard && curStore
     let styles = {}
-    if (isHeader) {
-      styles = { paddingTop: '153rpx' }
-    } else if (isAccount) {
-      styles = { paddingTop: '87rpx' }
+    if (isHeader && !isAccount) {
+      styles = { paddingTop: Taro.pxTransform(150) }
+    } else if (isAccount && !isHeader) {
+      styles = { paddingTop: Taro.pxTransform(90) }
     } else if (isHeader && isAccount) {
-      styles = { paddingTop: '240rpx' }
+      styles = { paddingTop: Taro.pxTransform(240) }
     }
     return (
       <View className="page-index">
