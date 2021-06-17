@@ -70,26 +70,15 @@ export default class HeaderHome extends Component {
   }
 
   render () {
-    const { store, isOpenScanQrcode,isOpenStoreStatus, isOpenOfficialAccount } = this.props
-    let tops = {
-      position: 'fixed',
-      left: 0,
-      top: '153rpx',
-      zIndex: 333
-    }
-    let notops = {
-      position: 'fixed',
-      left: 0,
-      top: 0,
-      zIndex: 333
-    }
+    const { store, isOpenScanQrcode,isOpenStoreStatus } = this.props
+    const isNoStores = isOpenStoreStatus ? false : true    
     return (
-      <View className='home-header' style={isOpenOfficialAccount ? tops : notops}>
+      <View className='home-header'>
 
             <View className='nearly-shop'>
              
                 {
-                  isOpenStoreStatus
+                    isNoStores && store.name
                      ?  <View className="shop-view view-flex-item view-flex view-flex-middle"  onClick={this.handlePickStore.bind(this)}>
                      <View className='icon-periscope'></View>
                      <View className='shop-name'>{store.name || '选择店铺'}</View>
