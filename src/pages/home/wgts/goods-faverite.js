@@ -47,7 +47,7 @@ export default class WgtGoodsFaverite extends Component {
           <View className="wgt-body with-padding">
             <View className="grid-goods out-padding grid-goods__type-grid">
               {info.map(item => (
-                <View className="goods-list__item">
+                <View key={item.item_id} className="goods-list__item">
                   <GoodsItem
                     key={item.item_id}
                     info={item}
