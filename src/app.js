@@ -411,7 +411,6 @@ class App extends Component {
     }
     // 根据路由参数
     const { query } = this.$router.params;
-
     // 初始化清楚s_smid
     Taro.setStorageSync( "s_smid", '' );
     Taro.setStorageSync("gu_user_id", "");

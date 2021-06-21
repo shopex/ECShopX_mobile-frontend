@@ -3,7 +3,10 @@ import req from './req'
 import { getYoushuAppid } from '@/utils/youshu'
 
 const getAppId = () => {
-  const { appid } = wx.getExtConfigSync? wx.getExtConfigSync(): {}
+  const { appid } = wx.getExtConfigSync
+    ? wx.getExtConfigSync()
+    : {};
+
   return appid
 }
   
@@ -15,10 +18,11 @@ export function code (code) {
   return req.get('/wx.code', { code })
 }
 
-export function getYoushuOpenid (params) {
+export function getYoushuOpenid( params ) {
+  const appid = getAppId();
   return req.post('/getopenid', {
     ...params, 
-    appid:getYoushuAppid()
+    appid
   }, { showError: false })
 }
 
