@@ -319,11 +319,13 @@ async function InverseAnalysis(locationData) {
   const { latitude, longitude } = locationData;
   const cityInfo = await Taro.request({
     url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${latitude},${longitude}&key=${APP_MAP_KEY}`
-  });
-  Taro.setStorageSync("lnglat", {
-    ...locationData,
-    ...cityInfo.data.result.address_component
-  });
+  } );
+  if ( cityInfo.data.result ) {
+    Taro.setStorageSync( "lnglat", {
+      ...locationData,
+      ...cityInfo.data.result.address_component
+    } );
+  }
 }
 
 export default {
