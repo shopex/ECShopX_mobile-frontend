@@ -73,6 +73,8 @@ export default class WgtGoodsScroll extends Component {
     const { base, data, config } = info;
     const { timer } = this.state;
 
+    console.log("goodsScrollInfo",info)
+
     return (
       <View className={`wgt ${base.padded ? "wgt__padded" : null}`}>
         {base.title && (
