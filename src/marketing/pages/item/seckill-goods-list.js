@@ -109,6 +109,8 @@ export default class SeckillGoodsList extends Component {
 
 		const { items: list, total_count: total, ad_pic: imgurl, last_seconds, status} = await api.seckill.seckillGoodsList(query)
 
+    debugger;
+
     let timer = null
     timer = this.calcTimer(last_seconds)
 
