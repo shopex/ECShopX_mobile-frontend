@@ -95,7 +95,7 @@ export default class WgtGoodsScroll extends Component {
                         minutes={timer.mm}
                         seconds={timer.ss}
                       />
-                      {"后结束"}
+                      {config.status==="in_the_notice"?"后开始":"后结束"}
                     </View>
                   ) : (
                     <View className="countdown__time">活动已结束</View>
