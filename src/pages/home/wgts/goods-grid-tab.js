@@ -131,9 +131,9 @@ export default class WgtGoodsGridTab extends Component {
                             </Text>
                           </View>
                         }
-                        {item.promotionActivity && item.promotionActivity.length > 0 && <View class="activity-label">
+                        {item.promotionActivity && item.promotionActivity.length > 0 && <View className="activity-label">
                           {item.promotionActivity.map((s, index) => (
-                            <Text class="text">
+                            <Text key={index} className="text">
                               {s.tag_type == 'single_group' ? '团购' : ''}
                               {s.tag_type == 'full_minus' ? '满减' : ''}
                               {s.tag_type == 'full_discount' ? '满折' : ''}
