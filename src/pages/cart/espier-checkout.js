@@ -672,6 +672,7 @@ export default class CartCheckout extends Component {
     let salesperson_id = Taro.getStorageSync("s_smid");
     if (salesperson_id) {
       params.salesperson_id = salesperson_id;
+      params.distributor_id = Taro.getStorageSync("s_dtid")||'';
     }
     let data;
     try {

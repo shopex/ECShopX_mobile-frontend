@@ -413,6 +413,7 @@ class App extends Component {
     const { query } = this.$router.params;
     // 初始化清楚s_smid
     Taro.setStorageSync( "s_smid", '' );
+    Taro.setStorageSync("s_dtid", '');
     Taro.setStorageSync("gu_user_id", "");
     if ((query && query.scene) || query.gu_user_id || query.smid) {
       const { smid, dtid, id, aid, cid, gu, chatId, gu_user_id = ''} = await normalizeQuerys(
