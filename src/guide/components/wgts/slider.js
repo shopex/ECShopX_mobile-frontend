@@ -55,23 +55,23 @@ export default class WgtSlider extends Component {
     return (
       <View className={`wgt ${base.padded ? "wgt__padded" : null}`}>
         {base.title && (
-          <View className="wgt__header">
-            <View className="wgt__title">{base.title}</View>
-            <View className="wgt__subtitle">{base.subtitle}</View>
+          <View className='wgt__header'>
+            <View className='wgt__title'>{base.title}</View>
+            <View className='wgt__subtitle'>{base.subtitle}</View>
           </View>
         )}
         {config ? (
           <View className={`slider-wrap ${config.padded ? "padded" : ""}`}>
             {data[0] && (
               <Image
-                mode="widthFix"
-                className="scale-placeholder"
+                mode='widthFix'
+                className='scale-placeholder'
                 lazyLoad
                 src={data[0].imgUrl}
               />
             )}
             <Swiper
-              className="slider-img"
+              className='slider-img'
               circular
               autoplay
               current={curIdx}
@@ -80,6 +80,7 @@ export default class WgtSlider extends Component {
               onChange={this.handleSwiperChange}
             >
               {data.map((item, idx) => {
+                // console.log('Swiper-item',item)
                 return (
                   <SwiperItem
                     key={`${idx}1`}
@@ -94,6 +95,7 @@ export default class WgtSlider extends Component {
                       onClick={this.handleClickItem.bind(
                         this,
                         item.linkPage,
+                        item.id,
                         item
                       )}
                     >
@@ -104,10 +106,10 @@ export default class WgtSlider extends Component {
                         base={base}
                       />
                       <SpImg
-                        img-class="slider-item__img"
+                        img-class='slider-item__img'
                         src={item.imgUrl}
-                        mode="widthFix"
-                        width="750"
+                        mode='widthFix'
+                        width='750'
                         lazyLoad
                       />
                     </View>
@@ -151,7 +153,7 @@ export default class WgtSlider extends Component {
           </View>
         ) : null}
         {config.content && curContent && (
-          <View className="slider-caption">{curContent}</View>
+          <View className='slider-caption'>{curContent}</View>
         )}
       </View>
     );
