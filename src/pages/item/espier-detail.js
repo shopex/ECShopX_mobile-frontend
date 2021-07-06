@@ -104,7 +104,7 @@ export default class Detail extends Component {
             options.dtid = curStore.distributor_id 
           }
         }else{
-          delete options.dtid
+          //delete options.dtid
         }
       }
       const entryData = await entry.entryLaunch({...options}, true)
