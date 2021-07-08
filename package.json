@@ -1,7 +1,7 @@
 {
 	"name": "espier-taro-fenxiao",
 	"app_name": "ecshopx",
-	"version": "3.5.0",
+	"version": "3.6.0",
 	"private": true,
 	"description": "taro app for bbc",
 	"scripts": {
@@ -12,7 +12,7 @@
 		"build:h5": "taro build --type h5",
 		"build:rn": "taro build --type rn",
 		"dev:weapp": "npm run build:weapp -- --watch",
-    "dev:weapp:prd": "cross-env BUILD_ENV=prd npm run build:weapp -- --watch",
+		"dev:weapp:prd": "cross-env BUILD_ENV=prd npm run build:weapp -- --watch",
 		"dev:swan": "npm run build:swan -- --watch",
 		"dev:alipay": "npm run build:alipay -- --watch",
 		"dev:tt": "npm run build:tt -- --watch",
