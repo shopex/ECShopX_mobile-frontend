@@ -35,17 +35,7 @@ export default class DetailPluspriceList extends Component {
   componentDidMount () {
     this.nextPage()
   }
-
-  // onShareAppMessage () {
-  //   const res = this.state.shareInfo
-  //   const { userId } = Taro.getStorageSync('userinfo')
-  //   const query = userId ? `?uid=${userId}` : ''    
-  //   return {
-  //     title: res.title,
-  //     imageUrl: res.imageUrl,
-  //     path: `/pages/item/seckill-goods-list${query}`
-  //   }
-  // }
+ 
   handleClickItem (item) {
 		Taro.navigateTo({
 			url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`

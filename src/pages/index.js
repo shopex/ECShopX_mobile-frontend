@@ -153,15 +153,7 @@ export default class Home extends Component {
       }
     );
   };
-
-  // 页面滚动
-  // onPageScroll = (res) => {
-  //   const { scrollTop } = res
-  //   this.setState({
-  //     top: scrollTop
-  //   })
-  // }
-
+ 
   // 触底事件
   onReachBottom = () => {
     this.nextPage();
@@ -169,13 +161,7 @@ export default class Home extends Component {
 
   // 分享
   onShareAppMessage(params) {
-    const shareInfo = this.shareInfo()
-
-    console.log("--onShareAppMessage--") 
-    // Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
-    //   from_type: params.from_type,
-    //   share_title: "分享给好友"
-    // });
+    const shareInfo = this.shareInfo() 
     return {
       ...shareInfo
     };
@@ -183,11 +169,7 @@ export default class Home extends Component {
 
   // 分享朋友圈
   onShareTimeline(params) {
-    const shareInfo = this.shareInfo('time')
-    // Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
-    //   from_type: params.from_type,
-    //   share_title: "分享到朋友圈"
-    // });
+    const shareInfo = this.shareInfo('time') 
     return {
       ...shareInfo
     };
@@ -557,8 +539,7 @@ export default class Home extends Component {
       is_open_store_status,
       show_official
     } = this.state;
-
-    console.log("likeList",likeList)
+ 
 
     const pages = Taro.getCurrentPages()
    

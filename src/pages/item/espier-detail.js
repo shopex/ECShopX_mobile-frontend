@@ -144,7 +144,7 @@ export default class Detail extends Component {
     if (lnglat && !lnglat.city) {
       entry.InverseAnalysis(lnglat)
     }
-    // this.getDetailShare()
+    
     this.isCanShare()    
     // 埋点处理
     buriedPoint.call(this, {
@@ -155,21 +155,7 @@ export default class Detail extends Component {
 
   static options = {
     addGlobalClass: true
-  }
-  
-  async getDetailShare(){
-    const options = this.$router.params
-    let id = options.dtid
-    let salesperson_id = Taro.getStorageSync('s_smid')
-    if(salesperson_id){
-        const params = {
-          salesperson_id:salesperson_id,
-          type:'item',
-          id:id
-        }
-      await api.item.getDetailShare(params)
-    }    
-  }
+  } 
 
   async componentDidShow() {
     const userInfo = Taro.getStorageSync('userinfo')
@@ -205,8 +191,7 @@ export default class Detail extends Component {
     })
   }
 
-  onShareAppMessage(res) {
-    console.log("--onShareAppMessage---",res)
+  onShareAppMessage(res) { 
     const { from }=res;
     const { info } = this.state
     const curStore = Taro.getStorageSync('curStore')
@@ -214,14 +199,10 @@ export default class Detail extends Component {
     const infoId = info.distributor_id
     const { is_open_store_status} = this.state
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
-    // Tracker.dispatch("GOODS_SHARE_TO_CHANNEL_CLICK", {
-    //   ...info,
-    //   from_type:from,
-    //   shareType: "分享给好友"
-    // });
+ 
     return {
       title: info.item_name,
-      path: '/pages/item/espier-detail?id='+ info.item_id + '&dtid=' + id + (userId && '&uid=' + userId),
+      path: '/pages/item/espier-detail?id='+ info.item_id + (userId && '&uid=' + userId),
       imageUrl: info.pics[0]
     }
   }
@@ -235,7 +216,7 @@ export default class Detail extends Component {
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId
     return {
       title: info.item_name,
-      query: `id=${info.item_id}&dtid=${id}&uid=${userId}`,
+      query: `id=${info.item_id}&uid=${userId}`,
       imageUrl: info.pics[0]
     }
   }
@@ -400,9 +381,7 @@ export default class Detail extends Component {
       sessionFrom += `"nickName": "${Taro.getStorageSync('userinfo').username}", `
     }
     sessionFrom += `"商品": "${info.item_name}"`
-    sessionFrom += '}'
-
-    console.log("---GOODS_DETAIL_VIEW---",info);
+    sessionFrom += '}' 
 
     Tracker.dispatch("GOODS_DETAIL_VIEW", info);
 
@@ -649,17 +628,15 @@ export default class Detail extends Component {
     const pic = pics[0].replace('http:', 'https:')
     const infoId = info.distributor_id
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
-    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&dtid=${id}&uid=${userId}`
+    const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&uid=${userId}`
     let avatarImg;
     if (avatar) {
       avatarImg = await Taro.getImageInfo({src: avatar})
     }
 
-    const goodsImg = await Taro.getImageInfo({src: pic})
-    console.log('-------------------goodsImg:',goodsImg);
+    const goodsImg = await Taro.getImageInfo({src: pic}) 
 
-    const codeImg = await Taro.getImageInfo({src: wxappCode})
-    console.log('-------------------codeImg:',codeImg);
+    const codeImg = await Taro.getImageInfo({src: wxappCode}) 
 
 
     if (avatarImg?(avatarImg && goodsImg && codeImg):goodsImg&&codeImg) {
@@ -667,8 +644,7 @@ export default class Detail extends Component {
         avatar: avatarImg?avatarImg.path : null,
         goods: goodsImg.path,
         code: codeImg.path
-      }
-      console.log('------------posterImgs-----------',posterImgs);
+      } 
 
       await this.setState({
         posterImgs
@@ -857,7 +833,7 @@ export default class Detail extends Component {
     console.log(posterImgs);
     if (!posterImgs || !posterImgs.avatar || !posterImgs.code || !posterImgs.goods) {
       const imgs = await this.downloadPosterImg()
-      console.log(imgs);
+      console.log("---imgs---",imgs);
       if (imgs && imgs.avatar && imgs.code && imgs.goods) {
         this.setState({
           showPoster: true

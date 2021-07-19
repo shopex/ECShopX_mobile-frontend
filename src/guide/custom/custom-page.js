@@ -84,7 +84,7 @@ export default class HomeIndex extends Component {
     // const gu_user_id = Taro.getStorageSync("work_userid");
     // const { userId } = Taro.getStorageSync("userinfo");
     const query = salesperson_id
-      ? `?smid=${salesperson_id}&dtid${distributor_id}&id=${id}&gu=${gu}`
+      ? `?smid=${salesperson_id}&id=${id}&gu=${gu}`
       : `?id=${id}&gu=${gu}`;
     console.log(query);
     return {

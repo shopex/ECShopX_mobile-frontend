@@ -72,8 +72,7 @@ export default class WgtGoodsGridTab extends Component {
       return null;
     }
     const { config, base } = info;
-    const { goodsList, moreLink } = this.state;
-    console.log("goods-gridlist", goodsList);
+    const { goodsList, moreLink } = this.state; 
     return (
       <View className={`wgt wgt-grid ${base.padded ? "wgt__padded" : null}`}>
         {base.title && (

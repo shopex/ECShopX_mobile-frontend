@@ -72,7 +72,7 @@ export default class recommendDetail extends Component {
 
   onShareAppMessage() {
     const { info } = this.state;
-    const { salesperson_id, distributor_id, work_userid, shop_code } = S.get(
+    const { salesperson_id, work_userid, shop_code } = S.get(
       "GUIDE_INFO",
       true
     );
@@ -82,7 +82,7 @@ export default class recommendDetail extends Component {
     //   ...info,
     //   shareType: "分享给好友"
     // } );
-    const sharePath = `/subpage/pages/recommend/detail?id=${info.article_id}&smid=${salesperson_id}&dtid=${distributor_id}&gu=${gu}`;
+    const sharePath = `/subpage/pages/recommend/detail?id=${info.article_id}&smid=${salesperson_id}&gu=${gu}`;
     log.debug(`【guide/recommend/detail】onShareAppMessage path: ${sharePath}` )
     return {
       title: info.title,

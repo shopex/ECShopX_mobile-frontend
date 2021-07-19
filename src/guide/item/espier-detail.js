@@ -170,7 +170,7 @@ export default class Detail extends Component {
     // const gu_user_id = Taro.getStorageSync( "work_userid" )
     const sharePath = `/pages/item/espier-detail?id=${
       info.item_id
-    }&smid=${salesperson_id}&dtid=${distributor_id}&subtask_id=${query.subtask_id ||
+    }&smid=${salesperson_id}&subtask_id=${query.subtask_id ||
       ""}&gu=${gu}`;
     log.debug(
       `【guide/item/espier-detail】onShareAppMessage path: ${sharePath}`
