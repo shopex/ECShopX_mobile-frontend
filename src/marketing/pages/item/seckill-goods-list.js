@@ -59,8 +59,7 @@ export default class SeckillGoodsList extends Component {
     const { userId } = Taro.getStorageSync('userinfo')
     let query = userId ? `?uid=${userId}` : '' 
     query=seckill_id?query?`${query}&seckill_id=${seckill_id}`:`${query}?seckill_id=${seckill_id}`:'';
-
-    console.log("query",query)
+ 
     return {
       title: res.title,
       imageUrl: res.imageUrl,
