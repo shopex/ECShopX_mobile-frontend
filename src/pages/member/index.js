@@ -6,8 +6,12 @@ import { TabBar, SpCell, AccountOfficial, SpLogin } from "@/components";
 import api from "@/api";
 import S from "@/spx";
 import req from "@/api/req";
-import { withLogin } from '@/hocs'
-import { navigateTo, getThemeStyle, OAuthWxUserProfile } from "@/utils";
+import {
+  navigateTo,
+  getThemeStyle,
+  OAuthWxUserProfile,
+  classNames
+} from "@/utils";
 import {
   customName
 } from '@/utils/point';
@@ -16,49 +20,35 @@ import MemberBanner from "./comps/member-banner";
 import "./index.scss";
 
 @connect(
-  ({ colors }) => ({
-    colors: colors.current
+  ({ colors, member }) => ({
+    colors: colors.current,
+    memberData: member.member
   }),
   dispatch => ({
     onFetchFavs: favs => dispatch({ type: "member/favs", payload: favs })
   })
 )
-@withLogin()
 export default class MemberIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
       turntable_open: 0,
-      info: {
-        deposit: "",
-        point: "",
-        coupon: "",
-        luckdraw: "",
-        username: "",
-        user_card_code: ""
-      },
-      vipgrade: {
-        grade_name: "",
-        end_date: "",
-        is_vip: "",
-        vip_type: "",
-        is_open: "",
-        background_pic_url: ""
-      },
       gradeInfo: {
         user_card_code: "",
         grade_name: "",
         background_pic_url: ""
       },
-      memberBanner: [],
+
       redirectInfo: {},
-      orderCount: "",
-      memberDiscount: "",
+      orderCount: null,
+      memberDiscount: null,
       isOpenPopularize: false,
       salespersonData: null,
-      memberAssets: {},
+      memberAssets: null,
       // 是否开启储值
       rechargeStatus: true,
+      // banner配置
+      bannerSetting: {},
       // 菜单配置
       menuSetting: {
         activity: false,
@@ -76,6 +66,7 @@ export default class MemberIndex extends Component {
         score_menu: false
       },
       imgUrl: "",
+      // 积分商城菜单
       score_menu_open: false
     };
   }
@@ -88,20 +79,25 @@ export default class MemberIndex extends Component {
     navigationStyle: "custom"
   };
 
-  componentDidMount() {}
-
-  componentDidShow() {
-    if (S.getAuthToken()) {
-      this.getSalesperson();
-    }
-
+  componentWillMount() {
     this.fetch();
-    this.getWheel();
-    this.fetchBanner();
-    this.fetchRedirect();
-    this.getDefaultImg();
-    this.getSettingCenter();
-    this.getConfigPointitem();
+    this.getSetting()
+    // this.getWheel();
+    // this.fetchBanner();
+    // this.fetchRedirect();
+    
+    // this.getSettingCenter();
+    // this.getConfigPointitem();
+  }
+
+  async onShareAppMessage() {
+    const { share_title = "震惊！这店绝了！", share_pic_wechatapp } = await req.get( `/memberCenterShare/getInfo` );
+    const { logo } = await req.get(`/distributor/getDistributorInfo?distributor_id=0`);
+    return {
+      title: share_title,
+      imageUrl: share_pic_wechatapp || logo,
+      path: "/pages/index"
+    };
   }
 
   onPullDownRefresh() {
@@ -111,17 +107,9 @@ export default class MemberIndex extends Component {
   onRefresh() {
     Taro.showNavigationBarLoading();
     //显示 loading 提示框。需主动调用 wx.hideLoading 才能关闭提示框
-    Taro.showLoading({
+    Taro.showLoading( {
       title: "刷新中..."
-    });
-  }
-
-  async getDefaultImg() {
-    const url = `/distributor/getDistributorInfo?distributor_id=0`;
-    const { logo } = await req.get(url);
-    this.setState({
-      imgUrl: logo
-    });
+    } );
   }
 
   navigateTo = navigateTo;
@@ -129,101 +117,147 @@ export default class MemberIndex extends Component {
   OAuthWxUserProfile = OAuthWxUserProfile;
 
   async fetch() {
-    if (!S.getAuthToken()) return;
-
-    let resUser = null;
-    if (Taro.getStorageSync("userinfo")) {
-      resUser = Taro.getStorageSync("userinfo");
+    if ( S.getAuthToken() ) {
+      const [
+        salesPerson,
+        orderCount,
+        { list: memberDiscount },
+        assets,
+        wheelData
+      ] = await Promise.all([
+        api.member.getSalesperson(),
+        api.trade.getCount(),
+        api.vip.getList(),
+        api.member.memberAssets(),
+        api.wheel.getTurntableconfig()
+      ] );
+      const { memberData } = this.props;
       this.setState({
-        info: {
-          username: resUser.username,
-          avatar: resUser.avatar,
-          isPromoter: resUser.isPromoter,
-          mobile: resUser.mobile,
-          vip: resUser.vipgrade ? resUser.vipgrade.vip_type : ""
-        }
+        salespersonData: salesPerson,
+        orderCount,
+        memberDiscount: memberDiscount.length > 0 ? memberDiscount[memberDiscount.length - 1].privileges.discount_desc: '',
+        memberAssets: {
+          ...assets,
+          deposit: memberData.deposit
+        },
+        turntable_open: wheelData.turntable_open
       });
-    }
-    const [
-      res,
-      { list: favs },
-      orderCount,
-      { list: memberDiscount },
-      assets
-    ] = await Promise.all([
-      api.member.memberInfo(),
-      api.member.favsList(),
-      api.trade.getCount(),
-      api.vip.getList(),
-      api.member.memberAssets()
-    ]);
-    this.props.onFetchFavs(favs);
-    this.setState({
-      isOpenPopularize: res.is_open_popularize
-    });
-    const userObj = {
-      username:
-        res.memberInfo.nickname ||
-        res.memberInfo.username ||
-        res.memberInfo.mobile,
-      avatar: res.memberInfo.avatar,
-      userId: res.memberInfo.user_id,
-      isPromoter: res.is_promoter,
-      mobile: res.memberInfo.mobile,
-      openid: res.memberInfo.open_id,
-      vip: res.vipgrade ? res.vipgrade.vip_type : ""
     };
-    if (
-      !resUser ||
-      resUser.username !== userObj.username ||
-      resUser.avatar !== userObj.avatar
-    ) {
-      Taro.setStorageSync("userinfo", userObj);
-      this.setState({
-        info: {
-          username:
-            res.memberInfo.nickname ||
-            res.memberInfo.username ||
-            res.memberInfo.mobile,
-          avatar: res.memberInfo.avatar,
-          mobile: res.memberInfo.mobile,
-          isPromoter: res.is_promoter,
-          openid: res.memberInfo.open_id,
-          vip: res.vipgrade ? res.vipgrade.vip_type : ""
-        }
-      });
-    }
-    this.setState({
-      vipgrade: {
-        grade_name: res.vipgrade.grade_name,
-        end_date: res.vipgrade.end_time,
-        is_vip: res.vipgrade.is_vip,
-        vip_type: res.vipgrade.vip_type,
-        is_open: res.vipgrade.is_open,
-        background_pic_url: res.vipgrade.background_pic_url
-      },
-      gradeInfo: {
-        user_card_code: res.memberInfo.user_card_code,
-        grade_name: res.memberInfo.gradeInfo.grade_name,
-        background_pic_url: res.memberInfo.gradeInfo.background_pic_url
-      },
-      rechargeStatus: res.is_recharge_status,
-      orderCount,
-      memberDiscount:
-        memberDiscount.length > 0
-          ? memberDiscount[memberDiscount.length - 1].privileges.discount_desc
-          : "",
-      memberAssets: { ...assets, deposit: res.deposit }
-    });
+    
+    
+
+    // let data = await api.member.getSalesperson();
+    // this.setState({
+    //   salespersonData: Array.isArray(data) ? false : data
+    // });
+
+
+
+    // let resUser = null;
+    // if (Taro.getStorageSync("userinfo")) {
+    //   resUser = Taro.getStorageSync("userinfo");
+    //   this.setState({
+    //     info: {
+    //       username: resUser.username,
+    //       avatar: resUser.avatar,
+    //       isPromoter: resUser.isPromoter,
+    //       mobile: resUser.mobile,
+    //       vip: resUser.vipgrade ? resUser.vipgrade.vip_type : ""
+    //     }
+    //   });
+    // }
+    // const [
+    //   res,
+    //   { list: favs },
+    //   orderCount,
+    //   { list: memberDiscount },
+    //   assets
+    // ] = await Promise.all([
+    //   api.member.memberInfo(),
+    //   api.member.favsList(),
+    //   api.trade.getCount(),
+    //   api.vip.getList(),
+    //   api.member.memberAssets()
+    // ]);
+    // this.props.onFetchFavs(favs);
+    // this.setState({
+    //   isOpenPopularize: res.is_open_popularize
+    // });
+    // const userObj = {
+    //   username:
+    //     res.memberInfo.nickname ||
+    //     res.memberInfo.username ||
+    //     res.memberInfo.mobile,
+    //   avatar: res.memberInfo.avatar,
+    //   userId: res.memberInfo.user_id,
+    //   isPromoter: res.is_promoter,
+    //   mobile: res.memberInfo.mobile,
+    //   openid: res.memberInfo.open_id,
+    //   vip: res.vipgrade ? res.vipgrade.vip_type : ""
+    // };
+    // if (
+    //   !resUser ||
+    //   resUser.username !== userObj.username ||
+    //   resUser.avatar !== userObj.avatar
+    // ) {
+    //   Taro.setStorageSync("userinfo", userObj);
+    //   this.setState({
+    //     info: {
+    //       username:
+    //         res.memberInfo.nickname ||
+    //         res.memberInfo.username ||
+    //         res.memberInfo.mobile,
+    //       avatar: res.memberInfo.avatar,
+    //       mobile: res.memberInfo.mobile,
+    //       isPromoter: res.is_promoter,
+    //       openid: res.memberInfo.open_id,
+    //       vip: res.vipgrade ? res.vipgrade.vip_type : ""
+    //     }
+    //   });
+    // }
+    // this.setState({
+    //   vipgrade: {
+    //     grade_name: res.vipgrade.grade_name,
+    //     end_date: res.vipgrade.end_time,
+    //     is_vip: res.vipgrade.is_vip,
+    //     vip_type: res.vipgrade.vip_type,
+    //     is_open: res.vipgrade.is_open,
+    //     background_pic_url: res.vipgrade.background_pic_url
+    //   },
+    //   gradeInfo: {
+    //     user_card_code: res.memberInfo.user_card_code,
+    //     grade_name: res.memberInfo.gradeInfo.grade_name,
+    //     background_pic_url: res.memberInfo.gradeInfo.background_pic_url
+    //   },
+    //   rechargeStatus: res.is_recharge_status,
+    //   orderCount,
+    //   memberDiscount:
+    //     memberDiscount.length > 0
+    //       ? memberDiscount[memberDiscount.length - 1].privileges.discount_desc
+    //       : "",
+    //   memberAssets: { ...assets, deposit: res.deposit }
+    // });
     Taro.stopPullDownRefresh();
   }
 
-  // 获取banner
-  async fetchBanner() {
-    const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=member_center_setting`;
-    const { list } = await req.get(url);
+  async getSetting() {
+    const [bannerSetting, menuSetting, pointItemSetting] = await Promise.all([
+      // 会员中心banner
+      await api.shop.getPageParamsConfig({
+        page_name: "member_center_setting"
+      }),
+      // 菜单自定义
+      await api.shop.getPageParamsConfig({
+        page_name: "member_center_menu_setting"
+      }),
+      // 积分商城
+      await api.pointitem.getPointitemSetting()
+    ]);
+
     this.setState({
-      memberBanner: list
+      bannerSetting: bannerSetting.list[0].params.data,
+      menuSetting: menuSetting.list[0].params.data,
+      score_menu_open: pointItemSetting.entrance.mobile_openstatus
     });
   }
 
@@ -236,24 +270,6 @@ export default class MemberIndex extends Component {
         redirectInfo: list[0].params
       });
     }
-  }
-
-  // 获取导购信息
-  async getSalesperson() {
-    let data = await api.member.getSalesperson();
-    this.setState({
-      salespersonData: Array.isArray(data) ? false : data
-    });
-  }
-
-  // 转盘抽奖
-  async getWheel() {
-    if (!S.getAuthToken()) return false;
-    const data = await api.wheel.getTurntableconfig();
-    this.setState({
-      turntable_open: data.turntable_open
-    });
-    console.log("大转盘", data.turntable_open);
   }
 
   handleClickRecommend = async () => {
@@ -399,65 +415,35 @@ export default class MemberIndex extends Component {
     }
   };
 
-  // 获取个人中心配置
-  getSettingCenter = async () => {
-    const { list = [] } = await api.shop.getPageParamsConfig({
-      page_name: "member_center_menu_setting"
-    });
-    if (list[0] && list[0].params && list[0].params.data) {
-      this.setState({
-        menuSetting: {
-          ...list[0].params.data
-        }
-      });
-    }
-  };
-
-  getConfigPointitem = async () => {
-    const {
-      entrance: { mobile_openstatus }
-    } = await api.pointitem.getPointitemSetting();
-    this.setState({
-      score_menu_open: mobile_openstatus
-    });
-  };
-
-  async onShareAppMessage() {
-    const url = `/memberCenterShare/getInfo`;
-    const { share_title, share_pic_wechatapp } = await req.get(url);
-    return {
-      title: share_title ? share_title : "震惊！这店绝了！",
-      imageUrl: share_pic_wechatapp ? share_pic_wechatapp : this.state.imgUrl,
-      path: "/pages/index"
-    };
-  }
-
   render() {
-    const { colors } = this.props;
+    const { colors, memberData } = this.props;
     const {
       score_menu_open,
-      vipgrade,
       gradeInfo,
       orderCount,
       memberDiscount,
       memberAssets,
-      info,
       isOpenPopularize,
       salespersonData,
       turntable_open,
-      memberBanner,
+      bannerSetting,
       menuSetting,
       rechargeStatus
     } = this.state;
-    const is_open_official_account = Taro.getStorageSync("isOpenOfficial");
-    const bannerInfo = memberBanner.length ? memberBanner[0].params : null;
+    let memberInfo = null, vipgrade = null
+    if (memberData) {
+      memberInfo = memberData.memberInfo;
+      vipgrade = memberData.vipgrade;
+    }
+    // const is_open_official_account = Taro.getStorageSync("isOpenOfficial");
+    
     return (
       <View className="page-member-index" style={getThemeStyle()}>
         {S.getAuthToken() ? (
           <View
-            className={`page-member-header ${
-              memberDiscount === "" ? "no-card" : ""
-            }`}
+            className={classNames("page-member-header", {
+              "no-card": !memberDiscount
+            })}
           >
             <View className="user-info">
               <View
@@ -467,17 +453,19 @@ export default class MemberIndex extends Component {
                 <View className="avatar">
                   <Image
                     className="avatar-img"
-                    src={info.avatar || userIcon}
+                    src={memberInfo.avatar || userIcon}
                     mode="aspectFill"
                   />
                 </View>
                 <View>
-                  <View className="nickname">Hi, {info.username}</View>
-                  {!vipgrade.is_vip ? (
-                    <View className="gradename">{gradeInfo.grade_name}</View>
-                  ) : (
-                    <View className="gradename">{vipgrade.grade_name}</View>
-                  )}
+                  <View className="nickname">
+                    Hi, {memberInfo.username || memberInfo.mobile}
+                  </View>
+                  <View className="gradename">{`${
+                    !vipgrade.is_vip
+                      ? memberInfo.gradeInfo.grade_name
+                      : vipgrade.grade_name
+                  }`}</View>
                 </View>
               </View>
               {menuSetting.member_code && (
@@ -487,6 +475,7 @@ export default class MemberIndex extends Component {
                 ></View>
               )}
             </View>
+
             <View className="member-assets view-flex">
               <View
                 className="view-flex-item"
@@ -501,6 +490,7 @@ export default class MemberIndex extends Component {
                   {memberAssets.discount_total_count}
                 </View>
               </View>
+
               <View className="view-flex-item" onClick={this.handleClickPoint}>
                 <View className="member-assets__label">
                   {customName("积分")}
@@ -509,6 +499,7 @@ export default class MemberIndex extends Component {
                   {memberAssets.point_total_count}
                 </View>
               </View>
+
               {rechargeStatus && (
                 <View
                   className="view-flex-item"
@@ -524,6 +515,7 @@ export default class MemberIndex extends Component {
                   </View>
                 </View>
               )}
+
               <View
                 className="view-flex-item"
                 onClick={this.handleClick.bind(
@@ -606,7 +598,8 @@ export default class MemberIndex extends Component {
               )}
             </View>
           )}
-        {is_open_official_account === 1 && (
+
+        {/* {is_open_official_account === 1 && (
           <View className="page-member-section">
             <AccountOfficial
               onHandleError={this.handleOfficialError.bind(this)}
@@ -614,7 +607,7 @@ export default class MemberIndex extends Component {
               isClose={false}
             />
           </View>
-        )}
+        )} */}
 
         <View className="page-member-section order-box">
           <View className="section-title view-flex view-flex-middle">
@@ -648,7 +641,9 @@ export default class MemberIndex extends Component {
           <View className="member-trade">
             <View
               className="member-trade__item"
-              onClick={() => S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 5))}
+              onClick={() =>
+                S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 5))
+              }
             >
               <View className="icon-wallet">
                 {orderCount.normal_notpay_notdelivery > 0 && (
@@ -710,9 +705,9 @@ export default class MemberIndex extends Component {
           </View>
         </View>
 
-        {bannerInfo && bannerInfo.data.is_show && (
+        {bannerSetting && bannerSetting.is_show && (
           <View className="page-member-section">
-            <MemberBanner info={bannerInfo.data} />
+            <MemberBanner info={bannerSetting} />
           </View>
         )}
 
@@ -725,6 +720,7 @@ export default class MemberIndex extends Component {
               onClick={this.beDistributor.bind(this)}
             ></SpCell>
           )}
+
           {Taro.getEnv() !== "WEB" && (
             <View>
               {menuSetting.group && (
@@ -753,6 +749,7 @@ export default class MemberIndex extends Component {
               )}
             </View>
           )}
+
           {Taro.getEnv() !== "WEB" && (
             <View>
               {menuSetting.boost_activity && (

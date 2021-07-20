@@ -25,7 +25,7 @@ import {
   favs: member.favs,
   colors: colors.current
 }))
-@withPager 
+@withPager
 export default class List extends Component {
   constructor(props) {
     super(props)
@@ -75,7 +75,7 @@ export default class List extends Component {
       isHome: false,
       filterDom: null,
       filterActive: false,
-      inputValue:'',
+      inputValue: '',
       sortOrder: null,
     }
   }
@@ -124,7 +124,7 @@ export default class List extends Component {
       })
     }
   }
- 
+
 
   getWechatNavBarHeight = () => {
     //statusBarHeight为状态栏高度
@@ -144,7 +144,7 @@ export default class List extends Component {
     this.fetchUserInfo()
 
     const options = this.$router.params;
-     
+
   }
 
   async fetchUserInfo() {
@@ -379,19 +379,19 @@ export default class List extends Component {
     let sortOrder = null
 
     if (item.sort) {
-        sortOrder = idx === this.state.curFilterIdx ? this.state.sortOrder * -1 : item.sort
+      sortOrder = idx === this.state.curFilterIdx ? this.state.sortOrder * -1 : item.sort
     }
 
     this.setState({
-        curFilterIdx: idx,
-        sortOrder
+      curFilterIdx: idx,
+      sortOrder
     })
 
     this.handleFilterChange({
-        current: idx,
-        sort: sortOrder
+      current: idx,
+      sort: sortOrder
     })
-}
+  }
 
 
   handleClickItem = (item) => {
@@ -439,7 +439,7 @@ export default class List extends Component {
   }
 
 
-  handleClickFilterBlock = ({ id, type, start, end,active }) => {
+  handleClickFilterBlock = ({ id, type, start, end, active }) => {
     const { filterParams } = this.state;
     let newFilterParams;
     if (type === 'brand') {
@@ -448,41 +448,41 @@ export default class List extends Component {
           ...filterParams,
           brand: [],
         }
-      }else{
+      } else {
         newFilterParams = {
           ...filterParams,
           brand: [id],
         }
       }
-     
+
     } else if (type === 'category') {
       if (filterParams.category[0] === id) {
         newFilterParams = {
           ...filterParams,
           category: [],
         }
-      }else{
+      } else {
         newFilterParams = {
           ...filterParams,
           category: [id],
         }
       }
-     
-    } else if (type === 'point') { 
-      if(active){
+
+    } else if (type === 'point') {
+      if (active) {
         newFilterParams = {
           ...filterParams,
           start_price: undefined,
           end_price: undefined
         }
-      }else{
+      } else {
         newFilterParams = {
           ...filterParams,
           start_price: start,
           end_price: end
         }
       }
-      
+
     }
     this.setState({
       filterParams: newFilterParams
@@ -536,7 +536,7 @@ export default class List extends Component {
             paddindTop: top > 0 ? diffTop : topOffset
           })
         }
-      }  else if (paddindTop !== 0){
+      } else if (paddindTop !== 0) {
         this.setState({
           paddindTop: 0
         })
@@ -576,23 +576,42 @@ export default class List extends Component {
     })
   }
 
-  handleInputChange=()=>{
+  handleInputChange = (e) => {
     let value;
     if (this.activeRef) {
-        value = e;
+      value = e;
     } else {
-        value = "";
+      value = "";
     }
     this.setState({
-        inputValue: value
+      inputValue: value
     })
-  } 
+  }
 
   scrollBackToTop = () => {
     Taro.pageScrollTo({
       scrollTop: 0
     })
   }
+
+  // 清除搜索
+  handleClear = (e) => {
+    e.preventDefault && e.preventDefault()
+    e.stopPropagation && e.stopPropagation() 
+    
+    this.resetPage()
+    const query = {
+      ...this.state.query,
+      keywords: ''
+    }
+    this.setState({
+      query,
+      list: [], 
+    }, () => { 
+      this.nextPage()
+    })
+  }
+
 
   render() {
     const {
@@ -627,14 +646,14 @@ export default class List extends Component {
       sortOrder
     } = this.state
 
-    const isHidden=!brandVisible && !categoryVisible && !pointVisible;
+    const isHidden = !brandVisible && !categoryVisible && !pointVisible;
 
     const {
       colors
-    } =this.props;
+    } = this.props;
     const { isTabBar = '' } = this.$router.params
     const noData = !page.isLoading && !page.hasNext && !list.length;
-    const searchTop=paddindTop!=0?`${paddindTop+20}px`:'50%';
+    const searchTop = paddindTop != 0 ? `${paddindTop + 20}px` : '50%';
 
     console.log('-----sortOrder----', sortOrder)
     // console.log('-----useInfo----', useInfo)
@@ -655,10 +674,10 @@ export default class List extends Component {
           <Header useInfo={useInfo} />
         </View>
 
-        <View className={classNames('filter-bar', { 'active': filterActive }, `goods-list__tabs filter`)} id="filter" style={`padding-top: ${paddindTop}px; transition: padding ${paddindTop > 20 ? paddindTop * 3.5 : 300 }ms linear;`}>
+        <View className={classNames('filter-bar', { 'active': filterActive }, `goods-list__tabs filter`)} id="filter" style={`padding-top: ${paddindTop}px; transition: padding ${paddindTop > 20 ? paddindTop * 3.5 : 300}ms linear;`}>
           {/* <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon> */}
           <View class="text">
-            { 
+            {
               filterList.map((item, idx) => {
                 const isCurrent = curFilterIdx === idx
 
@@ -683,17 +702,28 @@ export default class List extends Component {
             </View>
 
           </View>
-          <View className={classNames('searchInput','searchInput-P',[{'isHidden':isHidden}])} style={`top:${searchTop}; transition: top ${paddindTop > 20 ? paddindTop * 3.5 : 300 }ms linear;`}>
+          <View className={classNames('searchInput', 'searchInput-P', [{ 'isHidden': isHidden },{'active':filterActive}])} style={`top:${searchTop}; transition: top ${paddindTop > 20 ? paddindTop * 3.5 : 300}ms linear;`}>
+            {/* <View
+              className='iconfont icon-search'
+            >
+              <Text className='txt'></Text>
+            </View> */}
+            <AtInput placeholder={filterActive?'搜索积分商品':undefined} clear value={inputValue} onFocus={this.handleFocus} onBlur={this.handleBlur} onConfirm={this.handleInputConfirm} onChange={this.handleInputChange} />
 
-            <AtInput value={inputValue} onFocus={this.handleFocus} onBlur={this.handleBlur} onConfirm={this.handleInputConfirm} onChange={this.handleInputChange} />
+            {<Icon className={classNames('iconfont','icon-search',{
+              [`show`]:filterActive
+            }) }type='search' size='14' color='#999999'></Icon>}
 
-            {!filterActive && <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon>}
+            {filterActive && <View
+              className={`at-icon at-icon-close-circle ${inputValue && 'show'}`}
+              onClick={this.handleClear.bind(this)} 
+            ></View>}
           </View>
           {this.props.children}
         </View>
 
-        <View className={classNames('main',[
-          {'noData':noData}
+        <View className={classNames('main', [
+          { 'noData': noData }
         ])}  >
           {
             list.map(item => {
@@ -716,7 +746,7 @@ export default class List extends Component {
           }
           {
             page.isLoading
-              ? <Loading  className='loadingContent'>正在加载...</Loading>
+              ? <Loading className='loadingContent'>正在加载...</Loading>
               : null
           }
           {
@@ -731,7 +761,7 @@ export default class List extends Component {
           width={`${Taro.pxTransform(630)}`}
           onClose={this.filterOpen.bind(false)}
           class='custom_drawer'
-        > 
+        >
           {
             <View class="wrapper-filter">
               {brandVisible && <View class="brand" >
@@ -768,7 +798,7 @@ export default class List extends Component {
                 {
                   scoreInternel.map((item, index) => {
                     return (
-                      <FilterBlock info={item} type="score" active={start_price == item[0] && end_price == item[1]} onClickItem={this.handleClickFilterBlock.bind(this, { type: "point", start: item[0], end: item[1],active:start_price == item[0] && end_price == item[1]})} />
+                      <FilterBlock info={item} type="score" active={start_price == item[0] && end_price == item[1]} onClickItem={this.handleClickFilterBlock.bind(this, { type: "point", start: item[0], end: item[1], active: start_price == item[0] && end_price == item[1] })} />
                     )
                   })
                 }
@@ -779,15 +809,15 @@ export default class List extends Component {
           <View className='drawer-footer'>
             <Text className='drawer-footer__btn' onClick={this.handleResetFilter}>重置</Text>
             <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定并筛选</Text>
-          </View> 
+          </View>
         </AtDrawer>
 
- 
+
         <BackToTop
           show={showBackToTop}
           onClick={this.scrollBackToTop}
           bottom={30}
-        /> 
+        />
       </View>
     )
   }
