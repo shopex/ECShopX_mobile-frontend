@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import api from "@/api";
-import { getCurrentRoute, log, isGoodsShelves } from "@/utils";
+import { getCurrentRoute, log, isGoodsShelves, showToast } from "@/utils";
 import configStore from "@/store";
 
 const globalData = {};
@@ -156,7 +156,8 @@ class Spx {
     remove(fns, fn);
   }
 
-  async OAuthWxUserProfile(fn) {
+  async OAuthWxUserProfile( fn ) {
+    console.log( store );
     debugger
     const wxUserInfo = this.get("wxUserInfo", true);
     if (wxUserInfo) {
@@ -223,6 +224,8 @@ class Spx {
     if ( token ) {
       this.setAuthToken( token, true )
       await this.getMemberInfo()
+    } else {
+      showToast('登录失败')
     }
     // const { path, fullPath } = getCurrentRoute(ctx.$router);
     // const encodedRedirect = encodeURIComponent(fullPath);

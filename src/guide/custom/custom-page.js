@@ -34,6 +34,7 @@ export default class HomeIndex extends Component {
 
   async componentDidMount() {
     const { id } = this.$router.params;
+    console.log('[guide/custom/custom-page-componentDidMount-params]',this.$router.params)
     const url = `/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=custom_${id}&name=search`;
     const fixSetting = await req.get(url);
 
@@ -119,20 +120,20 @@ export default class HomeIndex extends Component {
     }
 
     return (
-      <View className="page-index-custom">
-        <NavBar title="微商城" />
+      <View className='page-index-custom'>
+        <NavBar title='微商城' />
         <ScrollView
           className={`wgts-wrap ${positionStatus ? "wgts-wrap__fixed" : ""}`}
           scrollTop={scrollTop}
           scrollY
         >
-          <View className="wgts-wrap__cont">
+          <View className='wgts-wrap__cont'>
             <BaHomeWgts wgts={wgts} />
           </View>
 
-          <View className="recommend-detail__bar">
+          <View className='recommend-detail__bar'>
             <Button
-              openType="share"
+              openType='share'
               style={"background: " + colors.data[0].primary}
             >
               分享给顾客

@@ -4,9 +4,17 @@ import { connect } from "@tarojs/redux";
 import { AtButton } from 'taro-ui'
 import S from "@/spx";
 import api from "@/api";
-import { showToast, classNames } from "@/utils";
+import { showToast, classNames, tokenParse } from "@/utils";
+import { Tracker } from "@/service";
 import "./index.scss";
 
+@connect(
+  () => ({}),
+  dispatch => ({
+    setMemberInfo: memberInfo =>
+      dispatch({ type: "member/init", payload: memberInfo })
+  })
+)
 export default class SpLogin extends Component {
   static options = {
     addGlobalClass: true
@@ -28,18 +36,73 @@ export default class SpLogin extends Component {
     });
   };
 
-  async handleBindPhone( e ) {
+  async handleBindPhone(e) {
     const { encryptedData, iv, cloudID } = e.detail;
-    if (!encryptedData || !iv) {
-      Taro.showModal({
-        title: "授权提示",
-        content: `需要您的授权才能购物`,
-        showCancel: false,
-        confirmText: "知道啦"
-      });
-      return false;
+    if (encryptedData && iv) {
+      // 推广用户uid
+      const uid = Taro.getStorageSync("distribution_shop_id");
+      const trackParams = Taro.getStorageSync("trackParams");
+      // 导购id
+      const salesperson_id = Taro.getStorageSync("s_smid");
+      // 新导购信息处理
+      const work_userid = Taro.getStorageSync("work_userid");
+      const { code } = await Taro.login();
+      const params = {
+        code,
+        encryptedData,
+        iv,
+        cloudID,
+        user_type: "wechat",
+        auth_type: "wxapp"
+      };
+
+      if (salesperson_id) {
+        params.distributor_id = Taro.getStorageSync("s_dtid");
+        params.salesperson_id = salesperson_id;
+      }
+
+      if (work_userid) {
+        params.channel = 1;
+        params.work_userid = work_userid;
+      }
+
+      if (trackParams) {
+        params.source_id = trackParams.source_id;
+        params.monitor_id = trackParams.monitor_id;
+      }
+
+      if (uid) {
+        params.inviter_id = uid;
+        params.uid = uid;
+      }
+
+      const { token, is_new } = await api.wx.newlogin(params);
+      if (token) {
+        S.setAuthToken(token);
+        if (work_userid) {
+          api.user.uniquevisito({
+            work_userid: work_userid
+          });
+          const gu_user_id = Taro.getStorageSync("gu_user_id");
+          if (gu_user_id) {
+            api.user.bindSaleperson({
+              work_userid: work_userid
+            });
+          }
+        }
+
+        // 通过token解析openid
+        const { user_id, openid, unionid } = tokenParse(token);
+        Tracker.setVar({
+          user_id: user_id,
+          open_id: openid,
+          union_id: unionid
+        });
+
+        const memberInfo = await api.member.memberInfo();
+        this.props.setMemberInfo(memberInfo)
+      }
     }
-    debugger
   }
 
   handleOnChange() {
