@@ -140,6 +140,7 @@ async function entryLaunch(data, isNeedLocate) {
 
 async function logScene(data){
     if(data.scene){
+      //扫码进来时
       let logParams={}
       const scene = decodeURIComponent(data.scene);
       //格式化二维码参数
@@ -147,6 +148,19 @@ async function logScene(data){
       const resIds=await getOpenId();
       logParams={
         ...logParams,
+        ...resIds,
+        ...({storageUid:Taro.getStorageSync("distribution_shop_id")}),
+        type:'in'
+      }
+      console.log("【logParams】",logParams)
+      await api.promotion.logQrcode(logParams)
+    }
+    if(data.register){
+      //当用户注册时
+      let logParams={}
+      const resIds=await getOpenId();
+      logParams={
+        ...({type:'register'}),
         ...resIds,
         ...({storageUid:Taro.getStorageSync("distribution_shop_id")})
       }
@@ -356,5 +370,6 @@ export default {
   getLocalSetting,
   getWebLocal,
   InverseAnalysis,
-  getStoreStatus
+  getStoreStatus,
+  logScene
 };

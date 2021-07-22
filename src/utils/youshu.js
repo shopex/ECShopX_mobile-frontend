@@ -24,7 +24,8 @@ export async function getOpenId(){
   let code;
   try{
     let logRes = await Taro.login();
-    let res = await api.wx.getYoushuOpenid({ code:logRes.code });
+    code=logRes.code;
+    let res = await api.wx.getYoushuOpenid({ code });
     openid=res.openid;
     unionid=res.unionid;
   }catch(e){}
