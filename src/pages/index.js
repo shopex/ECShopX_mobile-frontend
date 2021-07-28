@@ -359,12 +359,15 @@ export default class Home extends Component {
   // 获取挂件配置
   getWgts = async () => {
     const { curStore, is_open_store_status, is_open_recommend } = this.state;
-    const curdis_id =
+    let curdis_id =
       curStore && is_open_store_status
         ? curStore.store_id
         : curStore.distributor_id;
     if (!curStore.distributor_id && curStore.distributor_id !== 0) {
       return;
+    }
+    if (APP_PLATFORM === 'platform') {
+      curdis_id=0;
     }
     const url = `/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=${curdis_id}`;
     const info = await req.get(url);
