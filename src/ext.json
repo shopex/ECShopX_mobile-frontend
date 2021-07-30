@@ -1,11 +1,10 @@
 {
   "extEnable": true,
-  "extAppid": "wx912913df9fef6ddd",
+  "extAppid": "wx155f5d44a24d2d50",
   "ext": {
     "company_id": "1",
-    "appid": "wx912913df9fef6ddd",
-    "wxa_name": "通用小程序",
-    "youshutoken":"bi00767d7c82c547c1"
+    "appid": "wx155f5d44a24d2d50",
+    "wxa_name": "通用小程序"
   },
   "window": {
       "backgroundTextStyle": "light",
