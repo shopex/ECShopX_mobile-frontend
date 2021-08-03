@@ -56,7 +56,6 @@ const member = createReducer(initState, {
     };
   },
   ["member/init"](state, { payload }) {
-    Taro.setStorageSync("MEMBERINFO", payload);
     return {
       ...state,
       member: payload
