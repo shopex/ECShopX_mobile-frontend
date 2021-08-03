@@ -557,18 +557,26 @@ export default class Home extends Component {
      })
   };
 
-  handleLoadMore=async (currentIndex,compType)=>{
-    const { id }=this.state.wgtsList.find((item,index)=>currentIndex===index)||{}
+  handleLoadMore=async (currentIndex,compType,currentTabIndex)=>{
+    const { id }=this.state.wgtsList.find((_,index)=>currentIndex===index)||{}
     this.currentLoadIndex=currentIndex;
     let params={template_name:'yykweishop',weapp_pages:'index',page:1,page_size:100,weapp_setting_id:id,...this.getDistributionId()};
+    let loadData;
     if(compType==='good-grid'||compType==='good-scroll'){ 
-      const loadData=await api.wx.loadMoreGoods(params) 
+      loadData=await api.wx.loadMoreGoods(params);
       this.state.wgts.splice(this.currentLoadIndex,1,loadData.config[0])
-      this.setState({
-        wgts:[...this.state.wgts]
-      })
+    }else if(compType==='good-grid-tab'){
+      params.goods_grid_tab_id=currentTabIndex;
+      loadData=await api.wx.loadMoreGoods(params);
+      let allGridGoods=this.state.wgts[currentIndex].list;
+      let changeGoods=loadData.config[0].list[0];
+      allGridGoods.splice(currentTabIndex,1,changeGoods);
+      this.state.wgts.splice(this.currentLoadIndex,1,{...loadData.config[0],list:allGridGoods})
     }
     
+    this.setState({
+      wgts:[...this.state.wgts]
+    }) 
   }
 
   render() {

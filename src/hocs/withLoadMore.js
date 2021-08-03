@@ -8,7 +8,7 @@ export default function withLoadMore(Component) {
             
         }
 
-        componentDidMount() {
+        componentDidMount() { 
             this.startWrapperTrack();
         }
 
@@ -19,10 +19,10 @@ export default function withLoadMore(Component) {
             });
             const { type } = this.props;
             let direction=type==='good-scroll'?'right':'bottom';
-            observer.relativeToViewport({ [direction]: 0}).observe(".lastItem", res => {
+            observer.relativeToViewport({ [direction]: 0}).observe(".lastItem", res => { 
                 if (res.intersectionRatio > 0) {
                     const { info: { data }, onLoadMore = () => { },index } = this.props;
-                    if (data.length === 50) {  
+                    if (data.length === 50) {   
                         onLoadMore(index,type); 
                     }
                 }
