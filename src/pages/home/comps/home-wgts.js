@@ -82,9 +82,9 @@ export default class HomeWgts extends PureComponent {
     }
   }
 
-  handleLoadMore=(idx,goodType)=>{ 
+  handleLoadMore=(idx,goodType,currentTabIndex)=>{ 
     const { loadMore=()=>{} }=this.props;
-    loadMore(idx,goodType)
+    loadMore(idx,goodType,currentTabIndex)
   }
 
   render() {
@@ -111,7 +111,7 @@ export default class HomeWgts extends PureComponent {
                 {item.name === 'imgHotzone' && <WgtImgHotZone info={item} />}
                 {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} index={idx} type={'good-scroll'} onLoadMore={this.handleLoadMore} />}
                 {item.name === 'goodsGrid' && <WgtGoodsGrid info={item} index={idx} type={'good-grid'} onLoadMore={this.handleLoadMore} />}
-                {item.name === 'goodsGridTab' && <WgtGoodsGridTab info={item} index={idx} type={'good-grid-tab'} />}
+                {item.name === 'goodsGridTab' && <WgtGoodsGridTab info={item} index={idx} type={'good-grid-tab'} onLoadMore={this.handleLoadMore} />}
                 {item.name === 'showcase' && <WgtShowcase info={item} />}
                 {item.name === 'headline' && <WgtHeadline info={item} />}
                 {item.name === 'img-gif' && <WgtImgGif info={item} />}
