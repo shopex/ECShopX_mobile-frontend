@@ -436,6 +436,13 @@ export async function OAuthWxUserProfile( fn ) {
   fn()
 }
 
+export function showToast(title) {
+  Taro.showToast({
+    title,
+    icon: "none"
+  });
+}
+
 export {
   classNames,
   styleNames,

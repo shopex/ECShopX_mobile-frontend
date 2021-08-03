@@ -25,7 +25,8 @@ import "./index.scss";
     memberData: member.member
   }),
   dispatch => ({
-    onFetchFavs: favs => dispatch({ type: "member/favs", payload: favs })
+    onFetchFavs: favs => dispatch({ type: "member/favs", payload: favs }),
+    setMemberInfo: memberInfo => dispatch({ type: "member/init", payload: memberInfo })
   })
 )
 export default class MemberIndex extends Component {
@@ -33,11 +34,6 @@ export default class MemberIndex extends Component {
     super(props);
     this.state = {
       turntable_open: 0,
-      gradeInfo: {
-        user_card_code: "",
-        grade_name: "",
-        background_pic_url: ""
-      },
       redirectInfo: {},
       orderCount: null,
       memberDiscount: null,
@@ -79,19 +75,24 @@ export default class MemberIndex extends Component {
   };
 
   componentWillMount() {
-    this.fetch();
-    this.getSetting()
+    this.fetch()
+    this.getSetting();
     // this.getWheel();
     // this.fetchBanner();
     // this.fetchRedirect();
-    
+
     // this.getSettingCenter();
     // this.getConfigPointitem();
   }
 
   async onShareAppMessage() {
-    const { share_title = "震惊！这店绝了！", share_pic_wechatapp } = await req.get( `/memberCenterShare/getInfo` );
-    const { logo } = await req.get(`/distributor/getDistributorInfo?distributor_id=0`);
+    const {
+      share_title = "震惊！这店绝了！",
+      share_pic_wechatapp
+    } = await req.get(`/memberCenterShare/getInfo`);
+    const { logo } = await req.get(
+      `/distributor/getDistributorInfo?distributor_id=0`
+    );
     return {
       title: share_title,
       imageUrl: share_pic_wechatapp || logo,
@@ -106,9 +107,9 @@ export default class MemberIndex extends Component {
   onRefresh() {
     Taro.showNavigationBarLoading();
     //显示 loading 提示框。需主动调用 wx.hideLoading 才能关闭提示框
-    Taro.showLoading( {
+    Taro.showLoading({
       title: "刷新中..."
-    } );
+    });
   }
 
   navigateTo = navigateTo;
@@ -116,7 +117,7 @@ export default class MemberIndex extends Component {
   OAuthWxUserProfile = OAuthWxUserProfile;
 
   async fetch() {
-    if ( S.getAuthToken() ) {
+    if (S.getAuthToken()) {
       const [
         salesPerson,
         orderCount,
@@ -128,114 +129,26 @@ export default class MemberIndex extends Component {
         api.trade.getCount(),
         api.vip.getList(),
         api.member.memberAssets(),
+        // 大转盘
         api.wheel.getTurntableconfig()
-      ] );
+      ]);
       const { memberData } = this.props;
       this.setState({
         salespersonData: salesPerson,
         orderCount,
-        memberDiscount: memberDiscount.length > 0 ? memberDiscount[memberDiscount.length - 1].privileges.discount_desc: '',
+        memberDiscount:
+          memberDiscount.length > 0
+            ? memberDiscount[memberDiscount.length - 1].privileges.discount_desc
+            : "",
         memberAssets: {
           ...assets,
           deposit: memberData.deposit
         },
         turntable_open: wheelData.turntable_open
       });
-    };
-    
-    
-
-    // let data = await api.member.getSalesperson();
-    // this.setState({
-    //   salespersonData: Array.isArray(data) ? false : data
-    // });
-
-
-
-    // let resUser = null;
-    // if (Taro.getStorageSync("userinfo")) {
-    //   resUser = Taro.getStorageSync("userinfo");
-    //   this.setState({
-    //     info: {
-    //       username: resUser.username,
-    //       avatar: resUser.avatar,
-    //       isPromoter: resUser.isPromoter,
-    //       mobile: resUser.mobile,
-    //       vip: resUser.vipgrade ? resUser.vipgrade.vip_type : ""
-    //     }
-    //   });
-    // }
-    // const [
-    //   res,
-    //   { list: favs },
-    //   orderCount,
-    //   { list: memberDiscount },
-    //   assets
-    // ] = await Promise.all([
-    //   api.member.memberInfo(),
-    //   api.member.favsList(),
-    //   api.trade.getCount(),
-    //   api.vip.getList(),
-    //   api.member.memberAssets()
-    // ]);
-    // this.props.onFetchFavs(favs);
-    // this.setState({
-    //   isOpenPopularize: res.is_open_popularize
-    // });
-    // const userObj = {
-    //   username:
-    //     res.memberInfo.nickname ||
-    //     res.memberInfo.username ||
-    //     res.memberInfo.mobile,
-    //   avatar: res.memberInfo.avatar,
-    //   userId: res.memberInfo.user_id,
-    //   isPromoter: res.is_promoter,
-    //   mobile: res.memberInfo.mobile,
-    //   openid: res.memberInfo.open_id,
-    //   vip: res.vipgrade ? res.vipgrade.vip_type : ""
-    // };
-    // if (
-    //   !resUser ||
-    //   resUser.username !== userObj.username ||
-    //   resUser.avatar !== userObj.avatar
-    // ) {
-    //   Taro.setStorageSync("userinfo", userObj);
-    //   this.setState({
-    //     info: {
-    //       username:
-    //         res.memberInfo.nickname ||
-    //         res.memberInfo.username ||
-    //         res.memberInfo.mobile,
-    //       avatar: res.memberInfo.avatar,
-    //       mobile: res.memberInfo.mobile,
-    //       isPromoter: res.is_promoter,
-    //       openid: res.memberInfo.open_id,
-    //       vip: res.vipgrade ? res.vipgrade.vip_type : ""
-    //     }
-    //   });
-    // }
-    // this.setState({
-    //   vipgrade: {
-    //     grade_name: res.vipgrade.grade_name,
-    //     end_date: res.vipgrade.end_time,
-    //     is_vip: res.vipgrade.is_vip,
-    //     vip_type: res.vipgrade.vip_type,
-    //     is_open: res.vipgrade.is_open,
-    //     background_pic_url: res.vipgrade.background_pic_url
-    //   },
-    //   gradeInfo: {
-    //     user_card_code: res.memberInfo.user_card_code,
-    //     grade_name: res.memberInfo.gradeInfo.grade_name,
-    //     background_pic_url: res.memberInfo.gradeInfo.background_pic_url
-    //   },
-    //   rechargeStatus: res.is_recharge_status,
-    //   orderCount,
-    //   memberDiscount:
-    //     memberDiscount.length > 0
-    //       ? memberDiscount[memberDiscount.length - 1].privileges.discount_desc
-    //       : "",
-    //   memberAssets: { ...assets, deposit: res.deposit }
-    // });
+      const memberInfo = await S.getMemberInfo();
+      this.props.setMemberInfo(memberInfo);
+    }
     Taro.stopPullDownRefresh();
   }
 
@@ -260,9 +173,16 @@ export default class MemberIndex extends Component {
     });
   }
 
-  onChangeLoginSuccess = () => {
-    this.fetch()
-  }
+  onChangeLoginSuccess = async () => {
+    const { switch_first_auth_force_validation } = await api.user.getIsMustOauth( { module_type: 1 } );
+    if (switch_first_auth_force_validation == 1) {
+      Taro.navigateTo({
+        url: "/marketing/pages/member/userinfo"
+      });
+    } else {
+      this.fetch();
+    }
+  };
 
   // 获取积分个人信息跳转
   async fetchRedirect() {
@@ -291,37 +211,6 @@ export default class MemberIndex extends Component {
 
     Taro.navigateTo({
       url: "/pages/member/recommend"
-    });
-  };
-
-  handleClick = (url, isLogin = false) => {
-    if (!S.getAuthToken() && isLogin) {
-      Taro.showToast({
-        title: "请先登录",
-        icon: "none"
-      });
-      return false;
-    }
-    Taro.navigateTo({ url });
-  };
-
-  handleListClick = e => {
-    e.stopPropagation();
-    Taro.navigateTo({
-      url: "/pages/cart/espier-index?type=drug"
-    });
-  };
-
-  handleTradePickClick = () => {
-    if (!S.getAuthToken()) {
-      Taro.showToast({
-        title: "请先登录",
-        icon: "none"
-      });
-      return false;
-    }
-    Taro.navigateTo({
-      url: "/subpage/pages/trade/customer-pickup-list"
     });
   };
 
@@ -371,28 +260,10 @@ export default class MemberIndex extends Component {
 
   // 订单查看
   async handleTradeClick(type) {
-    debugger;
     Taro.navigateTo({
       url: `/subpage/pages/trade/list?status=${type}`
     });
   }
-
-  // 售后查看
-  async viewAftersales() {
-    Taro.navigateTo({
-      url: `/subpage/pages/trade/after-sale`
-    });
-  }
-
-  // 会员卡查看
-  handleCodeClick = () => {
-    Taro.navigateTo({
-      url: `/marketing/pages/member/member-code`
-    });
-  };
-
-  handleOfficialError = () => {};
-  handleOfficialClose = () => {};
 
   // 积分查看
   handleClickPoint = () => {
@@ -405,7 +276,6 @@ export default class MemberIndex extends Component {
     }
   };
 
-  //
   handleClickInfo = () => {
     const { redirectInfo } = this.state;
     if (redirectInfo.data && redirectInfo.data.info_url_is_open) {
@@ -414,7 +284,9 @@ export default class MemberIndex extends Component {
         path: redirectInfo.data.info_page
       });
     } else {
-      this.handleClick("/marketing/pages/member/userinfo", true);
+      Taro.navigateTo({
+        url: "/marketing/pages/member/userinfo"
+      });
     }
   };
 
@@ -433,13 +305,14 @@ export default class MemberIndex extends Component {
       menuSetting,
       rechargeStatus
     } = this.state;
-    let memberInfo = null, vipgrade = null
+    let memberInfo = null,
+      vipgrade = null;
     if (memberData) {
       memberInfo = memberData.memberInfo;
       vipgrade = memberData.vipgrade;
     }
     // const is_open_official_account = Taro.getStorageSync("isOpenOfficial");
-    
+
     return (
       <View className="page-member-index" style={getThemeStyle()}>
         {S.getAuthToken() ? (
@@ -451,7 +324,9 @@ export default class MemberIndex extends Component {
             <View className="user-info">
               <View
                 className="view-flex view-flex-middle"
-                onClick={this.handleClickInfo}
+                onClick={() => {
+                  S.OAuthWxUserProfile(this.handleClickInfo.bind(this));
+                }}
               >
                 <View className="avatar">
                   <Image
@@ -474,7 +349,14 @@ export default class MemberIndex extends Component {
               {menuSetting.member_code && (
                 <View
                   className="icon-qrcode"
-                  onClick={this.handleCodeClick.bind(this)}
+                  onClick={() => {
+                    S.OAuthWxUserProfile(
+                      this.navigateTo.bind(
+                        this,
+                        "/marketing/pages/member/member-code"
+                      )
+                    );
+                  }}
                 ></View>
               )}
             </View>
@@ -482,11 +364,11 @@ export default class MemberIndex extends Component {
             <View className="member-assets view-flex">
               <View
                 className="view-flex-item"
-                onClick={this.handleClick.bind(
-                  this,
-                  "/marketing/pages/member/coupon",
-                  true
-                )}
+                onClick={() => {
+                  S.OAuthWxUserProfile(
+                    this.navigateTo.bind(this, "/marketing/pages/member/coupon")
+                  );
+                }}
               >
                 <View className="member-assets__label">优惠券</View>
                 <View className="member-assets__value">
@@ -494,7 +376,12 @@ export default class MemberIndex extends Component {
                 </View>
               </View>
 
-              <View className="view-flex-item" onClick={this.handleClickPoint}>
+              <View
+                className="view-flex-item"
+                onClick={() => {
+                  S.OAuthWxUserProfile(this.handleClickPoint.bind(this));
+                }}
+              >
                 <View className="member-assets__label">
                   {customName("积分")}
                 </View>
@@ -506,11 +393,11 @@ export default class MemberIndex extends Component {
               {rechargeStatus && (
                 <View
                   className="view-flex-item"
-                  onClick={this.handleClick.bind(
-                    this,
-                    `/others/pages/recharge/index`,
-                    true
-                  )}
+                  onClick={() => {
+                    S.OAuthWxUserProfile(
+                      this.navigateTo.bind(this, "/others/pages/recharge/index")
+                    );
+                  }}
                 >
                   <View className="member-assets__label">储值</View>
                   <View className="member-assets__value">
@@ -521,11 +408,11 @@ export default class MemberIndex extends Component {
 
               <View
                 className="view-flex-item"
-                onClick={this.handleClick.bind(
-                  this,
-                  "/pages/member/item-fav",
-                  true
-                )}
+                onClick={() => {
+                  S.OAuthWxUserProfile(
+                    this.navigateTo.bind(this, "/pages/member/item-fav")
+                  );
+                }}
               >
                 <View className="member-assets__label">收藏</View>
                 <View className="member-assets__value">
@@ -537,7 +424,7 @@ export default class MemberIndex extends Component {
         ) : (
           <View className="page-member-header view-flex view-flex-vertical view-flex-middle view-flex-center">
             <Image className="user-icon" src={userIcon} mode="widthFix" />
-              <SpLogin onChange={ this.onChangeLoginSuccess.bind(this) }>
+            <SpLogin onChange={this.onChangeLoginSuccess.bind(this)}>
               <View className="unlogin">请登录</View>
             </SpLogin>
           </View>
@@ -547,11 +434,11 @@ export default class MemberIndex extends Component {
           memberDiscount !== "" && (
             <View
               className="member-card"
-              onClick={this.handleClick.bind(
-                this,
-                "/subpage/pages/vip/vipgrades",
-                true
-              )}
+              onClick={() => {
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(this, "/subpage/pages/vip/vipgrades")
+                );
+              }}
             >
               {vipgrade.is_open && !vipgrade.is_vip && (
                 <View className="vip-btn">
@@ -578,10 +465,10 @@ export default class MemberIndex extends Component {
                     会员卡
                   </View>
                   <View className="member-card-no">
-                    NO. {gradeInfo.user_card_code}
+                    NO. {memberInfo.user_card_code}
                   </View>
                   <View className="member-card-period">
-                    {vipgrade.end_date} 到期
+                    {vipgrade.end_time} 到期
                   </View>
                 </View>
               )}
@@ -595,7 +482,7 @@ export default class MemberIndex extends Component {
               {vipgrade.is_open && !vipgrade.is_vip && (
                 <Image
                   className="member-info-bg"
-                  src={gradeInfo.background_pic_url}
+                  src={memberInfo.gradeInfo.background_pic_url}
                   mode="widthFix"
                 />
               )}
@@ -617,7 +504,9 @@ export default class MemberIndex extends Component {
             <View className="view-flex-item">订单</View>
             <View
               class="section-more"
-              onClick={this.handleTradeClick.bind(this)}
+              onClick={() => {
+                S.OAuthWxUserProfile(this.handleTradeClick.bind(this));
+              }}
             >
               全部订单<Text className="forward-icon icon-arrowRight"></Text>
             </View>
@@ -626,7 +515,14 @@ export default class MemberIndex extends Component {
           {menuSetting.ziti_order && (
             <View
               className="member-trade__ziti"
-              onClick={this.handleTradePickClick.bind(this)}
+              onClick={() => {
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(
+                    this,
+                    "/subpage/pages/trade/customer-pickup-list"
+                  )
+                );
+              }}
             >
               <View className="view-flex-item">
                 <View className="member-trade__ziti-title">自提订单</View>
@@ -641,6 +537,7 @@ export default class MemberIndex extends Component {
               <View className="icon-arrowRight item-icon-go"></View>
             </View>
           )}
+
           <View className="member-trade">
             <View
               className="member-trade__item"
@@ -659,7 +556,9 @@ export default class MemberIndex extends Component {
             </View>
             <View
               className="member-trade__item"
-              onClick={this.handleTradeClick.bind(this, 1)}
+              onClick={() => {
+                S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 1));
+              }}
             >
               <View className="icon-delivery">
                 {orderCount.normal_payed_notdelivery > 0 && (
@@ -672,7 +571,9 @@ export default class MemberIndex extends Component {
             </View>
             <View
               className="member-trade__item"
-              onClick={this.handleTradeClick.bind(this, 3)}
+              onClick={() => {
+                S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 3));
+              }}
             >
               <View className="icon-office-box">
                 {orderCount.normal_payed_delivered > 0 && (
@@ -686,7 +587,9 @@ export default class MemberIndex extends Component {
             {orderCount.rate_status && (
               <View
                 className="member-trade__item"
-                onClick={this.handleTradeClick.bind(this, 3)}
+                onClick={() => {
+                  S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 3));
+                }}
               >
                 <View className="icon-message"></View>
                 <Text className="trade-status">待评价</Text>
@@ -695,7 +598,12 @@ export default class MemberIndex extends Component {
             <View
               className="member-trade__item"
               onClick={() =>
-                this.OAuthWxUserProfile(this.viewAftersales.bind(this))
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(
+                    this,
+                    "/subpage/pages/trade/after-sale"
+                  )
+                )
               }
             >
               <View className="icon-repeat">
@@ -720,7 +628,9 @@ export default class MemberIndex extends Component {
               title={!info.isPromoter ? "我要推广" : "推广管理"}
               isLink
               img={require("../../assets/imgs/store.png")}
-              onClick={this.beDistributor.bind(this)}
+              onClick={() =>
+                S.OAuthWxUserProfile(this.beDistributor.bind(this))
+              }
             ></SpCell>
           )}
 
@@ -731,11 +641,14 @@ export default class MemberIndex extends Component {
                   title="我的拼团"
                   isLink
                   img={require("../../assets/imgs/group.png")}
-                  onClick={this.handleClick.bind(
-                    this,
-                    "/marketing/pages/member/group-list",
-                    true
-                  )}
+                  onClick={() =>
+                    S.OAuthWxUserProfile(
+                      this.navigateTo.bind(
+                        this,
+                        "/marketing/pages/member/group-list"
+                      )
+                    )
+                  }
                 ></SpCell>
               )}
               {menuSetting.community_order && (
@@ -743,11 +656,14 @@ export default class MemberIndex extends Component {
                   title="我的社区团购"
                   isLink
                   img={require("../../assets/imgs/group.png")}
-                  onClick={this.handleClick.bind(
-                    this,
-                    "/groupBy/pages/orderList/index",
-                    true
-                  )}
+                  onClick={() =>
+                    S.OAuthWxUserProfile(
+                      this.navigateTo.bind(
+                        this,
+                        "/groupBy/pages/orderList/index"
+                      )
+                    )
+                  }
                 ></SpCell>
               )}
             </View>
@@ -760,11 +676,11 @@ export default class MemberIndex extends Component {
                   title="助力活动"
                   isLink
                   img={require("../../assets/imgs/group.png")}
-                  onClick={this.handleClick.bind(
-                    this,
-                    "/boost/pages/home/index",
-                    true
-                  )}
+                  onClick={() =>
+                    S.OAuthWxUserProfile(
+                      this.navigateTo.bind(this, "/boost/pages/home/index")
+                    )
+                  }
                 ></SpCell>
               )}
               {menuSetting.boost_order && (
@@ -772,11 +688,11 @@ export default class MemberIndex extends Component {
                   title="助力订单"
                   isLink
                   img={require("../../assets/imgs/group.png")}
-                  onClick={this.handleClick.bind(
-                    this,
-                    "/boost/pages/order/index",
-                    true
-                  )}
+                  onClick={() =>
+                    S.OAuthWxUserProfile(
+                      this.navigateTo.bind(this, "/boost/pages/order/index")
+                    )
+                  }
                 ></SpCell>
               )}
             </View>
@@ -786,11 +702,11 @@ export default class MemberIndex extends Component {
               title="线下订单关联"
               isLink
               img={require("../../assets/imgs/group.png")}
-              onClick={this.handleClick.bind(
-                this,
-                "/others/pages/bindOrder/index",
-                true
-              )}
+              onClick={() =>
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(this, "/others/pages/bindOrder/index")
+                )
+              }
             ></SpCell>
           )}
           {menuSetting.complaint &&
@@ -800,11 +716,14 @@ export default class MemberIndex extends Component {
                 title="投诉记录"
                 isLink
                 img={require("../../assets/imgs/group.png")}
-                onClick={this.handleClick.bind(
-                  this,
-                  "/marketing/pages/member/complaint-record",
-                  true
-                )}
+                onClick={() =>
+                  S.OAuthWxUserProfile(
+                    this.navigateTo.bind(
+                      this,
+                      "/marketing/pages/member/complaint-record"
+                    )
+                  )
+                }
               ></SpCell>
             )}
           {menuSetting.activity && (
@@ -812,11 +731,14 @@ export default class MemberIndex extends Component {
               title="活动预约"
               isLink
               img={require("../../assets/imgs/buy.png")}
-              onClick={this.handleClick.bind(
-                this,
-                "/marketing/pages/member/item-activity",
-                true
-              )}
+              onClick={() =>
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(
+                    this,
+                    "/marketing/pages/member/item-activity"
+                  )
+                )
+              }
             ></SpCell>
           )}
           {score_menu_open && (
@@ -824,11 +746,11 @@ export default class MemberIndex extends Component {
               title={customName("积分商城")}
               isLink
               img={require("../../assets/imgs/score.png")}
-              onClick={this.handleClick.bind(
-                this,
-                "/pointitem/pages/list",
-                true
-              )}
+              onClick={() =>
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(this, "/pointitem/pages/list")
+                )
+              }
             ></SpCell>
           )}
           {/* {
@@ -858,26 +780,28 @@ export default class MemberIndex extends Component {
           <SpCell
             title="地址管理"
             isLink
-            onClick={this.handleClick.bind(
-              this,
-              "/marketing/pages/member/address",
-              true
-            )}
+            onClick={() =>
+              S.OAuthWxUserProfile(
+                this.navigateTo.bind(this, "/marketing/pages/member/address")
+              )
+            }
           ></SpCell>
           <SpCell
             title="个人信息"
             isLink
-            onClick={this.handleClickInfo.bind(this)}
+            onClick={() =>
+              S.OAuthWxUserProfile(this.handleClickInfo.bind(this))
+            }
           ></SpCell>
           {process.env.TARO_ENV === "h5" && (
             <SpCell
               title="设置"
               isLink
-              onClick={this.handleClick.bind(
-                this,
-                "/marketing/pages/member/setting",
-                false
-              )}
+              onClick={() =>
+                S.OAuthWxUserProfile(
+                  this.navigateTo.bind(this, "/marketing/pages/member/setting")
+                )
+              }
             ></SpCell>
           )}
         </View>
@@ -885,11 +809,11 @@ export default class MemberIndex extends Component {
         {turntable_open === "1" ? (
           <View
             className="wheel-to"
-            onClick={this.handleClick.bind(
-              this,
-              "/marketing/pages/wheel/index",
-              true
-            )}
+            onClick={() =>
+              S.OAuthWxUserProfile(
+                this.navigateTo.bind(this, "/marketing/pages/wheel/index")
+              )
+            }
           >
             <Image src="/assets/imgs/wheel_modal_icon.png" />
           </View>

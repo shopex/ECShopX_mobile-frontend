@@ -7,13 +7,12 @@ import api from '@/api'
 
 import './member-code.scss'
 
-@withLogin()
 export default class MemberCode extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      info: {}
+      info: null
     }
   }
 
@@ -32,6 +31,7 @@ export default class MemberCode extends Component {
     this.setState({
       info: {
         ...res,
+        memberInfo: memberInfo,
         userCardCode: memberInfo.user_card_code,
         vipType: vipgrade.is_vip && vipgrade.vip_type
       }
@@ -39,8 +39,12 @@ export default class MemberCode extends Component {
   }
 
   render () {
-    const { username, avatar } = Taro.getStorageSync('userinfo')
-    const { info = {} } = this.state
+    const { info } = this.state
+    if ( !info ) {
+      return null
+    }
+
+    const { username, avatar } = info.memberInfo;
 
     return (
       <View className="member-code-wrap">

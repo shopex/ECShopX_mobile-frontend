@@ -156,20 +156,29 @@ class Spx {
     remove(fns, fn);
   }
 
-  async OAuthWxUserProfile( fn ) {
-    const { member } = store.getState().member
+  async OAuthWxUserProfile( fn, require ) {
+    if ( !this.getAuthToken() ) {
+      showToast('请先登录')
+      return
+    }
+    const { member } = store.getState().member;
     const { avatar, username } = member.memberInfo;
-    if ( avatar && username ) {
-      fn()
+    if (avatar && username && !require) {
+      fn && fn();
     } else {
       return new Promise((reslove, reject) => {
         wx.getUserProfile({
           desc: "用于完善会员资料",
-          success: data => {
+          success: async data => {
             const { userInfo } = data;
-            debugger
-            this.set("wxUserInfo", userInfo, true);
-            reslove(userInfo);
+            // debugger
+            // this.set("wxUserInfo", userInfo, true);
+            await api.member.updateMemberInfo({
+              username: userInfo.nickName,
+              avatar: userInfo.avatarUrl
+            });
+            await this.getMemberInfo();
+            reslove();
             fn && fn();
           },
           fail: e => {
