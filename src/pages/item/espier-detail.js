@@ -206,11 +206,16 @@ export default class Detail extends Component {
     const { is_open_store_status} = this.state
     const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id: curStore.distributor_id : infoId 
 
-    console.log("getDtidIdUrl",getDtidIdUrl('/pages/item/espier-detail?id='+ info.item_id ,userId || id))
+    console.log("getDtidIdUrl",getDtidIdUrl('/pages/item/espier-detail?id='+ info.item_id ,id))
+
+    Taro.showToast({
+      icon: 'none',
+      title: getDtidIdUrl('/pages/item/espier-detail?id='+ info.item_id ,id)
+    })
  
     return {
       title: info.item_name,
-      path: getDtidIdUrl('/pages/item/espier-detail?id='+ info.item_id ,userId || id),
+      path: getDtidIdUrl('/pages/item/espier-detail?id='+ info.item_id ,id),
       imageUrl: info.pics[0]
     }
   }
