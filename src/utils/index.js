@@ -431,11 +431,6 @@ export function getThemeStyle() {
   }
 }
 
-export async function OAuthWxUserProfile( fn ) {
-  await S.getUserProfile()
-  fn()
-}
-
 export function showToast(title) {
   Taro.showToast({
     title,

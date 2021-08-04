@@ -1,15 +1,21 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, ScrollView, Text, Image, Button } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
-import { TabBar, SpCell, AccountOfficial, SpLogin } from "@/components";
+import {
+  TabBar,
+  SpCell,
+  AccountOfficial,
+  SpLogin,
+  SpFloatPrivacy
+} from "@/components";
 // import ExclusiveCustomerService from './comps/exclusive-customer-service'
 import api from "@/api";
 import S from "@/spx";
 import req from "@/api/req";
+import { withLogin } from "@/hocs";
 import {
   navigateTo,
   getThemeStyle,
-  OAuthWxUserProfile,
   classNames
 } from "@/utils";
 import {
@@ -26,9 +32,11 @@ import "./index.scss";
   }),
   dispatch => ({
     onFetchFavs: favs => dispatch({ type: "member/favs", payload: favs }),
-    setMemberInfo: memberInfo => dispatch({ type: "member/init", payload: memberInfo })
+    setMemberInfo: memberInfo =>
+      dispatch({ type: "member/init", payload: memberInfo })
   })
 )
+@withLogin()
 export default class MemberIndex extends Component {
   constructor(props) {
     super(props);
@@ -62,7 +70,10 @@ export default class MemberIndex extends Component {
       },
       imgUrl: "",
       // 积分商城菜单
-      score_menu_open: false
+      score_menu_open: false,
+      // 是否显示隐私协议
+      showPrivacy: false,
+      showTimes: 0
     };
   }
 
@@ -75,7 +86,7 @@ export default class MemberIndex extends Component {
   };
 
   componentWillMount() {
-    this.fetch()
+    this.fetch();
     this.getSetting();
     // this.getWheel();
     // this.fetchBanner();
@@ -113,8 +124,6 @@ export default class MemberIndex extends Component {
   }
 
   navigateTo = navigateTo;
-
-  OAuthWxUserProfile = OAuthWxUserProfile;
 
   async fetch() {
     if (S.getAuthToken()) {
@@ -164,7 +173,7 @@ export default class MemberIndex extends Component {
       }),
       // 积分商城
       await api.pointitem.getPointitemSetting()
-    ]);
+    ] );
 
     this.setState({
       bannerSetting: bannerSetting.list[0].params.data,
@@ -173,15 +182,8 @@ export default class MemberIndex extends Component {
     });
   }
 
-  onChangeLoginSuccess = async () => {
-    const { switch_first_auth_force_validation } = await api.user.getIsMustOauth( { module_type: 1 } );
-    if (switch_first_auth_force_validation == 1) {
-      Taro.navigateTo({
-        url: "/marketing/pages/member/userinfo"
-      });
-    } else {
-      this.fetch();
-    }
+  onChangeLoginSuccess = () => {
+    this.fetch();
   };
 
   // 获取积分个人信息跳转
@@ -290,6 +292,21 @@ export default class MemberIndex extends Component {
     }
   };
 
+  handleClickWxOAuth( fn ) {
+    if ( this.state.showTimes >= 1 ) {
+      fn && fn();
+    } else {
+      const { avatar, username } = this.props.memberData.memberInfo;
+      if (avatar && username) {
+        fn && fn();
+      } else {
+        this.setState({
+          showPrivacy: true
+        });
+      }
+    }  
+  }
+
   render() {
     const { colors, memberData } = this.props;
     const {
@@ -303,7 +320,9 @@ export default class MemberIndex extends Component {
       turntable_open,
       bannerSetting,
       menuSetting,
-      rechargeStatus
+      rechargeStatus,
+      showPrivacy,
+      showTimes
     } = this.state;
     let memberInfo = null,
       vipgrade = null;
@@ -325,7 +344,7 @@ export default class MemberIndex extends Component {
               <View
                 className="view-flex view-flex-middle"
                 onClick={() => {
-                  S.OAuthWxUserProfile(this.handleClickInfo.bind(this));
+                  this.handleClickWxOAuth(this.handleClickInfo.bind(this));
                 }}
               >
                 <View className="avatar">
@@ -350,7 +369,7 @@ export default class MemberIndex extends Component {
                 <View
                   className="icon-qrcode"
                   onClick={() => {
-                    S.OAuthWxUserProfile(
+                    this.handleClickWxOAuth(
                       this.navigateTo.bind(
                         this,
                         "/marketing/pages/member/member-code"
@@ -365,7 +384,7 @@ export default class MemberIndex extends Component {
               <View
                 className="view-flex-item"
                 onClick={() => {
-                  S.OAuthWxUserProfile(
+                  this.handleClickWxOAuth(
                     this.navigateTo.bind(this, "/marketing/pages/member/coupon")
                   );
                 }}
@@ -379,7 +398,7 @@ export default class MemberIndex extends Component {
               <View
                 className="view-flex-item"
                 onClick={() => {
-                  S.OAuthWxUserProfile(this.handleClickPoint.bind(this));
+                  this.handleClickWxOAuth(this.handleClickPoint.bind(this));
                 }}
               >
                 <View className="member-assets__label">
@@ -394,7 +413,7 @@ export default class MemberIndex extends Component {
                 <View
                   className="view-flex-item"
                   onClick={() => {
-                    S.OAuthWxUserProfile(
+                    this.handleClickWxOAuth(
                       this.navigateTo.bind(this, "/others/pages/recharge/index")
                     );
                   }}
@@ -409,7 +428,7 @@ export default class MemberIndex extends Component {
               <View
                 className="view-flex-item"
                 onClick={() => {
-                  S.OAuthWxUserProfile(
+                  this.handleClickWxOAuth(
                     this.navigateTo.bind(this, "/pages/member/item-fav")
                   );
                 }}
@@ -435,7 +454,7 @@ export default class MemberIndex extends Component {
             <View
               className="member-card"
               onClick={() => {
-                S.OAuthWxUserProfile(
+                this.handleClickWxOAuth(
                   this.navigateTo.bind(this, "/subpage/pages/vip/vipgrades")
                 );
               }}
@@ -505,7 +524,7 @@ export default class MemberIndex extends Component {
             <View
               class="section-more"
               onClick={() => {
-                S.OAuthWxUserProfile(this.handleTradeClick.bind(this));
+                this.handleClickWxOAuth(this.handleTradeClick.bind(this));
               }}
             >
               全部订单<Text className="forward-icon icon-arrowRight"></Text>
@@ -516,7 +535,7 @@ export default class MemberIndex extends Component {
             <View
               className="member-trade__ziti"
               onClick={() => {
-                S.OAuthWxUserProfile(
+                this.handleClickWxOAuth(
                   this.navigateTo.bind(
                     this,
                     "/subpage/pages/trade/customer-pickup-list"
@@ -542,7 +561,7 @@ export default class MemberIndex extends Component {
             <View
               className="member-trade__item"
               onClick={() =>
-                S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 5))
+                this.handleClickWxOAuth(this.handleTradeClick.bind(this, 5))
               }
             >
               <View className="icon-wallet">
@@ -557,7 +576,7 @@ export default class MemberIndex extends Component {
             <View
               className="member-trade__item"
               onClick={() => {
-                S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 1));
+                this.handleClickWxOAuth(this.handleTradeClick.bind(this, 1));
               }}
             >
               <View className="icon-delivery">
@@ -572,7 +591,7 @@ export default class MemberIndex extends Component {
             <View
               className="member-trade__item"
               onClick={() => {
-                S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 3));
+                this.handleClickWxOAuth(this.handleTradeClick.bind(this, 3));
               }}
             >
               <View className="icon-office-box">
@@ -588,7 +607,7 @@ export default class MemberIndex extends Component {
               <View
                 className="member-trade__item"
                 onClick={() => {
-                  S.OAuthWxUserProfile(this.handleTradeClick.bind(this, 3));
+                  this.handleClickWxOAuth(this.handleTradeClick.bind(this, 3));
                 }}
               >
                 <View className="icon-message"></View>
@@ -598,11 +617,8 @@ export default class MemberIndex extends Component {
             <View
               className="member-trade__item"
               onClick={() =>
-                S.OAuthWxUserProfile(
-                  this.navigateTo.bind(
-                    this,
-                    "/subpage/pages/trade/after-sale"
-                  )
+                this.handleClickWxOAuth(
+                  this.navigateTo.bind(this, "/subpage/pages/trade/after-sale")
                 )
               }
             >
@@ -629,7 +645,7 @@ export default class MemberIndex extends Component {
               isLink
               img={require("../../assets/imgs/store.png")}
               onClick={() =>
-                S.OAuthWxUserProfile(this.beDistributor.bind(this))
+                this.handleClickWxOAuth(this.beDistributor.bind(this))
               }
             ></SpCell>
           )}
@@ -642,7 +658,7 @@ export default class MemberIndex extends Component {
                   isLink
                   img={require("../../assets/imgs/group.png")}
                   onClick={() =>
-                    S.OAuthWxUserProfile(
+                    this.handleClickWxOAuth(
                       this.navigateTo.bind(
                         this,
                         "/marketing/pages/member/group-list"
@@ -657,7 +673,7 @@ export default class MemberIndex extends Component {
                   isLink
                   img={require("../../assets/imgs/group.png")}
                   onClick={() =>
-                    S.OAuthWxUserProfile(
+                    this.handleClickWxOAuth(
                       this.navigateTo.bind(
                         this,
                         "/groupBy/pages/orderList/index"
@@ -677,7 +693,7 @@ export default class MemberIndex extends Component {
                   isLink
                   img={require("../../assets/imgs/group.png")}
                   onClick={() =>
-                    S.OAuthWxUserProfile(
+                    this.handleClickWxOAuth(
                       this.navigateTo.bind(this, "/boost/pages/home/index")
                     )
                   }
@@ -689,7 +705,7 @@ export default class MemberIndex extends Component {
                   isLink
                   img={require("../../assets/imgs/group.png")}
                   onClick={() =>
-                    S.OAuthWxUserProfile(
+                    this.handleClickWxOAuth(
                       this.navigateTo.bind(this, "/boost/pages/order/index")
                     )
                   }
@@ -703,7 +719,7 @@ export default class MemberIndex extends Component {
               isLink
               img={require("../../assets/imgs/group.png")}
               onClick={() =>
-                S.OAuthWxUserProfile(
+                this.handleClickWxOAuth(
                   this.navigateTo.bind(this, "/others/pages/bindOrder/index")
                 )
               }
@@ -717,7 +733,7 @@ export default class MemberIndex extends Component {
                 isLink
                 img={require("../../assets/imgs/group.png")}
                 onClick={() =>
-                  S.OAuthWxUserProfile(
+                  this.handleClickWxOAuth(
                     this.navigateTo.bind(
                       this,
                       "/marketing/pages/member/complaint-record"
@@ -732,7 +748,7 @@ export default class MemberIndex extends Component {
               isLink
               img={require("../../assets/imgs/buy.png")}
               onClick={() =>
-                S.OAuthWxUserProfile(
+                this.handleClickWxOAuth(
                   this.navigateTo.bind(
                     this,
                     "/marketing/pages/member/item-activity"
@@ -747,7 +763,7 @@ export default class MemberIndex extends Component {
               isLink
               img={require("../../assets/imgs/score.png")}
               onClick={() =>
-                S.OAuthWxUserProfile(
+                this.handleClickWxOAuth(
                   this.navigateTo.bind(this, "/pointitem/pages/list")
                 )
               }
@@ -781,7 +797,7 @@ export default class MemberIndex extends Component {
             title="地址管理"
             isLink
             onClick={() =>
-              S.OAuthWxUserProfile(
+              this.handleClickWxOAuth(
                 this.navigateTo.bind(this, "/marketing/pages/member/address")
               )
             }
@@ -790,7 +806,7 @@ export default class MemberIndex extends Component {
             title="个人信息"
             isLink
             onClick={() =>
-              S.OAuthWxUserProfile(this.handleClickInfo.bind(this))
+              this.handleClickWxOAuth(this.handleClickInfo.bind(this))
             }
           ></SpCell>
           {process.env.TARO_ENV === "h5" && (
@@ -798,7 +814,7 @@ export default class MemberIndex extends Component {
               title="设置"
               isLink
               onClick={() =>
-                S.OAuthWxUserProfile(
+                this.handleClickWxOAuth(
                   this.navigateTo.bind(this, "/marketing/pages/member/setting")
                 )
               }
@@ -810,7 +826,7 @@ export default class MemberIndex extends Component {
           <View
             className="wheel-to"
             onClick={() =>
-              S.OAuthWxUserProfile(
+              this.handleClickWxOAuth(
                 this.navigateTo.bind(this, "/marketing/pages/wheel/index")
               )
             }
@@ -819,6 +835,16 @@ export default class MemberIndex extends Component {
           </View>
         ) : null}
         <TabBar />
+
+        <SpFloatPrivacy
+          isOpened={showPrivacy}
+          onClose={() =>
+            this.setState({
+              showPrivacy: false,
+              showTimes: this.state.showTimes + 1
+            })
+          }
+        />
       </View>
     );
   }

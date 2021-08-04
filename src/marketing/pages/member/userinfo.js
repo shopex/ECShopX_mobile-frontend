@@ -1,11 +1,11 @@
 import Taro, { Component } from "@tarojs/taro";
 import { Input, View, Picker, Image } from "@tarojs/components";
-import { NavBar, SpCheckbox } from "@/components";
+import { NavBar, SpCheckbox, SpFloatPrivacy } from "@/components";
 import api from "@/api";
 import { connect } from "@tarojs/redux";
 import S from "@/spx";
 import { withLogin } from "@/hocs";
-import { showToast } from "@/utils";
+import { showToast, getThemeStyle } from "@/utils";
 import userIcon from "@/assets/imgs/user-icon.png";
 import imgUploader from "@/utils/upload";
 import GetUserInfoBtn from "./comps/getUserInfo";
@@ -33,7 +33,10 @@ export default class UserInfo extends Component {
       // 是否获取过微信信息
       isGetWxInfo: true,
       avatarClickNum: 0,
-      showCheckboxPanel: false
+      showCheckboxPanel: false,
+      // 是否显示隐私协议
+      showPrivacy: false,
+      showTimes: 0
     };
 
     // option的type
@@ -48,39 +51,44 @@ export default class UserInfo extends Component {
     navigationBarTitleText: "个人信息"
   };
 
+  uploadImage = async () => {
+    try {
+      const { tempFiles = [] } = await Taro.chooseImage({
+        count: 1
+      });
+      if (tempFiles.length > 0) {
+        const imgFiles = tempFiles.slice(0, 1).map(item => {
+          return {
+            file: item,
+            url: item.path
+          };
+        });
+        const res = await imgUploader.uploadImageFn(imgFiles);
+        userInfo.avatar = res[0].url;
+        this.setState({
+          userInfo
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   // 上传头像
   handleAvatar = async () => {
-    const { avatarClickNum, userInfo } = this.state;
-    if (avatarClickNum == 0) {
-      S.OAuthWxUserProfile( () => {
-        this.getFormItem();
-      }, true);
+    const { showTimes, userInfo } = this.state;
+    if ( showTimes >= 1 ) {
+      this.uploadImage()
     } else {
-      try {
-        const { tempFiles = [] } = await Taro.chooseImage({
-          count: 1
+      const { avatar, username } = this.props.memberData.memberInfo;
+      if (avatar && username) {
+        this.uploadImage();
+      } else {
+        this.setState({
+          showPrivacy: true
         });
-        if (tempFiles.length > 0) {
-          const imgFiles = tempFiles.slice(0, 1).map(item => {
-            return {
-              file: item,
-              url: item.path
-            };
-          });
-          const res = await imgUploader.uploadImageFn(imgFiles);
-          userInfo.avatar = res[0].url;
-          this.setState({
-            userInfo
-          });
-        }
-      } catch (err) {
-        console.log(err);
       }
     }
-
-    this.setState({
-      avatarClickNum: this.state.avatarClickNum + 1
-    });
   };
 
   // 获取表单字段
@@ -255,7 +263,8 @@ export default class UserInfo extends Component {
       userInfo,
       regParams,
       showCheckboxPanel,
-      option_list
+      option_list,
+      showPrivacy
     } = this.state;
     const { colors, memberData } = this.props;
 
@@ -265,7 +274,7 @@ export default class UserInfo extends Component {
     }
 
     return (
-      <View className="page-member-setting">
+      <View className="page-member-setting" style={getThemeStyle()}>
         <NavBar title="用户信息" />
         <View className="baseInfo">
           <View className="item">
@@ -440,6 +449,19 @@ export default class UserInfo extends Component {
             </View>
           </View>
         ) : null}
+
+        <SpFloatPrivacy
+          isOpened={showPrivacy}
+          onClose={() =>
+            this.setState({
+              showPrivacy: false,
+              showTimes: this.state.showTimes + 1
+            })
+          }
+          onChange={() => {
+            this.getFormItem()
+          }}
+        />
       </View>
     );
   }
