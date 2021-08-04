@@ -47,13 +47,13 @@ export default class WgtGoodsGridTab extends Component {
       observeAll: true
     });
     
-    const { type,info: { data }, onLoadMore = () => { }, index } = this.props;
+    const { type,info: { list,data,more }, onLoadMore = () => { }, index } = this.props;
     const { goodsList,current}=this.state;
     let direction = type === 'good-scroll' ? 'right' : 'bottom'; 
     observer.relativeToViewport({ [direction]: 0 }).observe(".lastItem", res => { 
       if (res.intersectionRatio > 0) {  
-        if (goodsList.length === 50) {
-          onLoadMore(index, type,current);
+        if (list[current].more) { 
+          onLoadMore(index, type,current,goodsList.length);
         }
       }
     });

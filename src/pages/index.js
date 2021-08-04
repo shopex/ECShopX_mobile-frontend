@@ -557,10 +557,10 @@ export default class Home extends Component {
      })
   };
 
-  handleLoadMore=async (currentIndex,compType,currentTabIndex)=>{
+  handleLoadMore=async (currentIndex,compType,currentTabIndex,currentLength)=>{
     const { id }=this.state.wgtsList.find((_,index)=>currentIndex===index)||{}
     this.currentLoadIndex=currentIndex;
-    let params={template_name:'yykweishop',weapp_pages:'index',page:1,page_size:100,weapp_setting_id:id,...this.getDistributionId()};
+    let params={template_name:'yykweishop',weapp_pages:'index',page:1,page_size:currentLength+50,weapp_setting_id:id,...this.getDistributionId()};
     let loadData;
     if(compType==='good-grid'||compType==='good-scroll'){ 
       loadData=await api.wx.loadMoreGoods(params);
