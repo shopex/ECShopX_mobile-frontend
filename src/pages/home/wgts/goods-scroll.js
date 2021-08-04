@@ -48,8 +48,7 @@ export default class WgtGoodsScroll extends Component {
     });
   }
 
-  navigateToList = (type, seckillId) => {
-    const { dis_id = "" } = this.props;
+  navigateToList = (type, seckillId) => { 
     if (type === "goods") {
       this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ""}`);
     } else if (type === "limitTimeSale") {
@@ -81,7 +80,7 @@ export default class WgtGoodsScroll extends Component {
       return null;
     }
 
-    const { base, data, config } = info;
+    const { base, data, config,more } = info;
     const { timer } = this.state;  
  
     return (
