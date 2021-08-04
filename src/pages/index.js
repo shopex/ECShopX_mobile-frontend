@@ -28,7 +28,7 @@ import entry from "@/utils/entry";
 import { withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
 import { Tracker } from "@/service"
-import wgts, { WgtGoodsFaverite, HeaderHome } from './home/wgts'
+import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
 import HomeWgts from './home/comps/home-wgts'
 import Automatic from './home/comps/automatic'
 
