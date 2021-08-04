@@ -17,7 +17,7 @@ import debounce from 'lodash/debounce'
 import api from '@/api'
 import S from '@/spx'
 import { Tracker } from "@/service";
-import { withPager } from '@/hocs'
+import { withPager, withLogin } from '@/hocs'
 import entry from '@/utils/entry'
 import CartItem from './comps/cart-item'
 
@@ -36,6 +36,7 @@ import './espier-index.scss'
       dispatch({ type: "cart/updateCount", payload: count })
   })
 )
+@withLogin()
 @withPager
 export default class CartIndex extends Component {
   static defaultProps = {

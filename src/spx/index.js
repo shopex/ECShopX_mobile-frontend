@@ -171,8 +171,6 @@ class Spx {
           desc: "用于完善会员资料",
           success: async data => {
             const { userInfo } = data;
-            // debugger
-            // this.set("wxUserInfo", userInfo, true);
             await api.member.updateMemberInfo({
               username: userInfo.nickName,
               avatar: userInfo.avatarUrl
@@ -222,7 +220,7 @@ class Spx {
         await this.loginQW(ctx);
         return true;
       } else {
-        this.login(ctx);
+        return await this.login(ctx);
       }
     }
   }
@@ -232,7 +230,8 @@ class Spx {
     const { token } = await api.wx.login( { code } )
     if ( token ) {
       this.setAuthToken( token, true )
-      await this.getMemberInfo()
+      const userInfo = await this.getMemberInfo();
+      return userInfo
     } else {
       showToast('登录失败')
     }

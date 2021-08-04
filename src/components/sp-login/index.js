@@ -22,19 +22,12 @@ export default class SpLogin extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      token: S.getAuthToken()
+    };
   }
 
   componentDidMount() {}
-
-  handleGetUserProfile = () => {
-    wx.getUserProfile({
-      desc: "用于完善会员资料",
-      success: data => {
-        this.handleGetUserInfo(data);
-      }
-    });
-  };
 
   async handleBindPhone(e) {
     const { encryptedData, iv, cloudID } = e.detail;
@@ -101,7 +94,18 @@ export default class SpLogin extends Component {
 
         const memberInfo = await api.member.memberInfo();
         this.props.setMemberInfo( memberInfo )
-        this.props.onChange && this.props.onChange()
+
+        this.setState({
+          token
+        });
+
+        const { switch_first_auth_force_validation } = await api.user.getIsMustOauth( { module_type: 1 } );
+        if ( switch_first_auth_force_validation == 1 ) {
+          Taro.navigateTo( {
+            url: "/marketing/pages/member/userinfo"
+          } );
+        }
+        this.props.onChange && this.props.onChange();
       }
     }
   }
@@ -111,7 +115,7 @@ export default class SpLogin extends Component {
   }
 
   render() {
-    const token = S.getAuthToken();
+    const { token } = this.state;
     return (
       <View className={classNames("sp-login", this.props.className)}>
         {token && (
