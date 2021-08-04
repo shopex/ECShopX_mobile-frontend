@@ -80,14 +80,9 @@ export default class UserInfo extends Component {
     if ( showTimes >= 1 ) {
       this.uploadImage()
     } else {
-      const { avatar, username } = this.props.memberData.memberInfo;
-      if (avatar && username) {
-        this.uploadImage();
-      } else {
-        this.setState({
-          showPrivacy: true
-        });
-      }
+      this.setState({
+        showPrivacy: true
+      });
     }
   };
 
