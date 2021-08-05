@@ -155,8 +155,8 @@ export default class MemberIndex extends Component {
         },
         turntable_open: wheelData.turntable_open
       });
-      const memberInfo = await S.getMemberInfo();
-      this.props.setMemberInfo(memberInfo);
+      await S.getMemberInfo();
+      // this.props.setMemberInfo(memberInfo);
     }
     Taro.stopPullDownRefresh();
   }
@@ -217,9 +217,8 @@ export default class MemberIndex extends Component {
   };
 
   beDistributor = async () => {
-    const { info } = this.state;
-    const { username, avatar, isPromoter, mobile, openid } = info;
-    if (isPromoter) {
+    const { is_promoter } = this.props.memberData;
+    if (is_promoter) {
       Taro.navigateTo({
         url: "/marketing/pages/distribution/index"
       });
@@ -243,19 +242,6 @@ export default class MemberIndex extends Component {
         content: "已成为推广员",
         showCancel: false,
         confirmText: "好"
-      });
-      let userinfo = {
-        username,
-        avatar,
-        mobile,
-        isPromoter: true,
-        openid,
-        vip: info.vipgrade ? info.vipgrade.vip_type : ""
-      };
-      // console.log(userinfo)
-      Taro.setStorageSync("userinfo", userinfo);
-      this.setState({
-        info: userinfo
       });
     }
   };
@@ -639,9 +625,9 @@ export default class MemberIndex extends Component {
         )}
 
         <View className="page-member-section">
-          {isOpenPopularize && (
+          {memberData.is_open_popularize && (
             <SpCell
-              title={!info.isPromoter ? "我要推广" : "推广管理"}
+              title={!memberData.is_promoter ? "我要推广" : "推广管理"}
               isLink
               img={require("../../assets/imgs/store.png")}
               onClick={() =>

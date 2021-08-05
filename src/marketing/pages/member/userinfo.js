@@ -234,10 +234,10 @@ export default class UserInfo extends Component {
       });
       showToast("修改成功");
 
-      const memberInfo = await S.getMemberInfo();
-      this.props.setMemberInfo({
-        ...memberInfo
-      });
+      await S.getMemberInfo();
+      // this.props.setMemberInfo({
+      //   ...memberInfo
+      // });
     } catch ( e ) {
       showToast(`请完善${e}`);
     }
