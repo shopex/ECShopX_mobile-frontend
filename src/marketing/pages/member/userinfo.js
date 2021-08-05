@@ -51,34 +51,30 @@ export default class UserInfo extends Component {
     navigationBarTitleText: "个人信息"
   };
 
-  uploadImage = async () => {
-    try {
-      const { tempFiles = [] } = await Taro.chooseImage({
-        count: 1
-      });
-      if (tempFiles.length > 0) {
-        const imgFiles = tempFiles.slice(0, 1).map(item => {
-          return {
-            file: item,
-            url: item.path
-          };
-        });
-        const res = await imgUploader.uploadImageFn(imgFiles);
-        userInfo.avatar = res[0].url;
-        this.setState({
-          userInfo
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   // 上传头像
   handleAvatar = async () => {
     const { showTimes, userInfo } = this.state;
     if ( showTimes >= 1 ) {
-      this.uploadImage()
+      try {
+        const { tempFiles = [] } = await Taro.chooseImage({
+          count: 1
+        });
+        if (tempFiles.length > 0) {
+          const imgFiles = tempFiles.slice(0, 1).map(item => {
+            return {
+              file: item,
+              url: item.path
+            };
+          });
+          const res = await imgUploader.uploadImageFn(imgFiles);
+          userInfo.avatar = res[0].url;
+          this.setState({
+            userInfo
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       this.setState({
         showPrivacy: true
