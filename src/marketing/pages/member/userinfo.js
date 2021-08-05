@@ -40,7 +40,7 @@ export default class UserInfo extends Component {
       // 是否获取微信用户信息授权
       wxUserInfo: true,
       // 是否同意隐私协议
-      isAgree: false
+      isAgree: Taro.getStorageSync("Privacy_agress")
     };
 
     // option的type
@@ -57,7 +57,7 @@ export default class UserInfo extends Component {
 
   // 上传头像
   handleAvatar = async () => {
-    const { showTimes, userInfo } = this.state;
+    const { showTimes, userInfo, isAgree } = this.state;
     if (showTimes >= 1) {
       try {
         const { tempFiles = [] } = await Taro.chooseImage({
@@ -80,10 +80,19 @@ export default class UserInfo extends Component {
         console.log(err);
       }
     } else {
-      this.setState({
-        showPrivacy: true,
-        wxUserInfo: true
-      });
+      if ( isAgree == 1 ) {
+        S.OAuthWxUserProfile( () => {
+          this.setState({
+            showTimes: this.state.showTimes + 1
+          });
+          this.getFormItem();
+        }, true);
+      } else {
+        this.setState({
+          showPrivacy: true,
+          wxUserInfo: true
+        });
+      }
     }
   };
 
@@ -227,7 +236,7 @@ export default class UserInfo extends Component {
   saveInfo = async e => {
     // e && e.stopPropagation();
     const { userInfo, regParams, isAgree } = this.state;
-    if (isAgree) {
+    if (isAgree == 1) {
       try {
         Object.keys(regParams).forEach(key => {
           if (regParams[key].is_required) {

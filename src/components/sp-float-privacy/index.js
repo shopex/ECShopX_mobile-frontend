@@ -62,6 +62,7 @@ export default class SpFloatPrivacy extends Component {
     } else {
       this.props.onChange();
     }
+    Taro.setStorageSync('Privacy_agress', "1")
   }
 
   render() {
