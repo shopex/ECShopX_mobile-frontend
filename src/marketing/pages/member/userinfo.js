@@ -258,11 +258,14 @@ export default class UserInfo extends Component {
   };
 
   privacyOnChange() {
-    if ( this.state.wxUserInfo ) {
-      this.getFormItem()
-    }
     this.setState({
       isAgree: true
+    }, () => {
+      if (this.state.wxUserInfo) {
+        this.getFormItem();
+      } else {
+        this.saveInfo();
+      }
     });
   }
 
