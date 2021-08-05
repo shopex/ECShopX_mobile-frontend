@@ -36,7 +36,11 @@ export default class UserInfo extends Component {
       showCheckboxPanel: false,
       // 是否显示隐私协议
       showPrivacy: false,
-      showTimes: 0
+      showTimes: 0,
+      // 是否获取微信用户信息授权
+      wxUserInfo: true,
+      // 是否同意隐私协议
+      isAgree: false
     };
 
     // option的type
@@ -54,7 +58,7 @@ export default class UserInfo extends Component {
   // 上传头像
   handleAvatar = async () => {
     const { showTimes, userInfo } = this.state;
-    if ( showTimes >= 1 ) {
+    if (showTimes >= 1) {
       try {
         const { tempFiles = [] } = await Taro.chooseImage({
           count: 1
@@ -77,7 +81,8 @@ export default class UserInfo extends Component {
       }
     } else {
       this.setState({
-        showPrivacy: true
+        showPrivacy: true,
+        wxUserInfo: true
       });
     }
   };
@@ -105,7 +110,7 @@ export default class UserInfo extends Component {
         }
       }
     }
-    this.setState( {
+    this.setState({
       regParams: data,
       formItems,
       userInfo
@@ -116,10 +121,10 @@ export default class UserInfo extends Component {
   editPhone = e => {
     e && e.stopPropagation();
     const { regParams } = this.state;
-    if ( regParams.mobile.is_edit ) {
-      Taro.navigateTo( {
+    if (regParams.mobile.is_edit) {
+      Taro.navigateTo({
         url: "/subpage/pages/auth/bindPhone"
-      } );
+      });
     }
   };
 
@@ -157,13 +162,15 @@ export default class UserInfo extends Component {
   handleShowCheckboxPanel = checkItem => {
     const { userInfo } = this.state;
     const { key, checkbox } = checkItem;
-    this.optionsType = key
+    this.optionsType = key;
     const data = checkbox.map(item => {
-      const optionValue = userInfo[key].find(i => i.name == item.name && i.ischecked);
+      const optionValue = userInfo[key].find(
+        i => i.name == item.name && i.ischecked
+      );
       return {
         name: item.name,
         ischecked: !!optionValue
-      }
+      };
     });
     this.setState({
       option_list: data,
@@ -219,34 +226,48 @@ export default class UserInfo extends Component {
   // 保存用户信息
   saveInfo = async e => {
     // e && e.stopPropagation();
-    const { userInfo, regParams } = this.state;
-    try {
-      Object.keys(regParams).forEach(key => {
-        if (regParams[key].is_required) {
-          if (!userInfo[key]) {
-            throw regParams[key].name;
+    const { userInfo, regParams, isAgree } = this.state;
+    if (isAgree) {
+      try {
+        Object.keys(regParams).forEach(key => {
+          if (regParams[key].is_required) {
+            if (!userInfo[key]) {
+              throw regParams[key].name;
+            }
           }
-        }
-      } );
+        });
 
-      await api.member.setMemberInfo({
-        ...userInfo
+        await api.member.setMemberInfo({
+          ...userInfo
+        });
+        showToast("修改成功");
+
+        await S.getMemberInfo();
+        // this.props.setMemberInfo({
+        //   ...memberInfo
+        // });
+      } catch (e) {
+        showToast(`请完善${e}`);
+      }
+    } else {
+      this.setState({
+        showPrivacy: true,
+        wxUserInfo: false
       });
-      showToast("修改成功");
-
-      await S.getMemberInfo();
-      // this.props.setMemberInfo({
-      //   ...memberInfo
-      // });
-    } catch ( e ) {
-      showToast(`请完善${e}`);
     }
-    
-    
-    
-
-    // this.getFormItem();
   };
+
+  privacyOnChange() {
+    this.setState({
+      isAgree: true
+    }, () => {
+      if (this.state.wxUserInfo) {
+        this.getFormItem();
+      } else {
+        this.saveInfo();
+      }
+    });
+  }
 
   render() {
     const {
@@ -255,7 +276,8 @@ export default class UserInfo extends Component {
       regParams,
       showCheckboxPanel,
       option_list,
-      showPrivacy
+      showPrivacy,
+      wxUserInfo
     } = this.state;
     const { colors, memberData } = this.props;
 
@@ -443,15 +465,14 @@ export default class UserInfo extends Component {
 
         <SpFloatPrivacy
           isOpened={showPrivacy}
+          wxUserInfo={wxUserInfo}
           onClose={() =>
             this.setState({
               showPrivacy: false,
               showTimes: this.state.showTimes + 1
             })
           }
-          onChange={() => {
-            this.getFormItem()
-          }}
+          onChange={this.privacyOnChange.bind(this)}
         />
       </View>
     );
