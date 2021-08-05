@@ -92,8 +92,9 @@ export default class SpLogin extends Component {
           union_id: unionid
         });
 
-        const memberInfo = await api.member.memberInfo();
-        this.props.setMemberInfo( memberInfo )
+        await S.getMemberInfo();
+        // const memberInfo = await api.member.memberInfo();
+        // this.props.setMemberInfo( memberInfo )
 
         this.setState({
           token

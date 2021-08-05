@@ -189,12 +189,22 @@ class Spx {
 
   // 获取会员信息
   async getMemberInfo() {
-    const memberInfo = await api.member.memberInfo();
+    const userInfo = await api.member.memberInfo();
     store.dispatch({
       type: "member/init",
-      payload: memberInfo
-    } );
-    return memberInfo
+      payload: userInfo
+    });
+    const { username, avatar, user_id, mobile, open_id } = userInfo.memberInfo;
+    Taro.setStorageSync("userinfo", {
+      username: username,
+      avatar: avatar,
+      userId: user_id,
+      isPromoter: userInfo.is_promoter,
+      mobile: mobile,
+      openid: open_id,
+      vip: userInfo.vipgrade ? userInfo.vipgrade.vip_type : ""
+    });
+    return userInfo;
   }
 
   async autoLogin(ctx, next) {
