@@ -34,6 +34,9 @@ const getHomeSetting = async () => {
     whitelist_status = false,
     nostores_status = false
   } = await api.shop.homeSetting();
+
+  console.log("getHomeSetting1",echat);
+ 
   // 美洽客服配置
   Taro.setStorageSync("meiqia", meiqia);
   // 一洽客服配置
@@ -45,17 +48,7 @@ const getHomeSetting = async () => {
     disk_driver,
     nostores_status,
     youshu
-  })
-  console.log("APP_TRACK",youshu)
-  if (APP_TRACK) {
-    // const system = Taro.getSystemInfoSync();   
-    // if (!(system && system.environment && system.environment === "wxwork") && (youshu.app_id || youshu.sandbox_app_id)) {
-    //   console.log('----------------aa--------------')
-    //   console.log(Tracker)
-    //   Tracker.use(APP_TRACK);
-    //   youshuLogin();
-    // }
-  }
+  })  
 };
 
 useHooks();
@@ -68,9 +61,11 @@ class App extends Component {
 
   // eslint-disable-next-line react/sort-comp
   componentWillMount() {
+    console.log("componentWillMount",APP_TRACK)
     if (APP_TRACK) {
       const system = Taro.getSystemInfoSync();   
       if (!(system && system.environment && system.environment === "wxwork")) { 
+        console.log("Tracker",Tracker.use)
         Tracker.use(APP_TRACK);
         youshuLogin();
       }
@@ -410,11 +405,14 @@ class App extends Component {
       Taro.setStorageSync("work_userid", '');
     }
     // 根据路由参数
-    const { query } = this.$router.params;
+    const { query={} } = this.$router.params;
     // 初始化清楚s_smid
     Taro.setStorageSync( "s_smid", '' );
     Taro.setStorageSync("s_dtid", '');
     Taro.setStorageSync("gu_user_id", "");
+
+    console.log('query',query);
+
     if ((query && query.scene) || query.gu_user_id || query.smid) {
       const { smid, dtid, id, aid, cid, gu, chatId, gu_user_id = ''} = await normalizeQuerys(
         query

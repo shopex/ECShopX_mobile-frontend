@@ -260,7 +260,7 @@ export default class EspireCheckout extends Component {
       if (guideInfo && guideInfo.store_name) {
         wxshop_name = guideInfo.store_name;
       }
-      const extConfig = ( Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync ) ? wx.getExtConfigSync() : {}
+      const extConfig = ( Taro.getEnv() === 'WEAPP' && Taro.getExtConfigSync ) ? Taro.getExtConfigSync() : {}
       const gu_user_id = Taro.getStorageSync( "work_userid" );
       const gu = `${guideInfo.work_userid}_${guideInfo.shop_code}`; 
       const qrcode_params = `appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout&cxdid=${cxdid}&company_id=${guideInfo.company_id}&smid=${guideInfo.salesperson_id}&distributor_id=${guideInfo.distributor_id}&gu=${gu}`;

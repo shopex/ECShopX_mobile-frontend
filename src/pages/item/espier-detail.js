@@ -643,7 +643,7 @@ export default class Detail extends Component {
     const { info,is_open_store_status } = this.state
     const { pics, company_id, item_id } = info
     const host = req.baseURL.replace('/api/h5app/wxapp/', '')
-    const extConfig = (Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
+    const extConfig = (Taro.getEnv() === 'WEAPP' && Taro.getExtConfigSync) ? Taro.getExtConfigSync() : {}
     const { distributor_id,store_id } = Taro.getStorageSync('curStore')
     
     const pic = pics[0].replace('http:', 'https:')

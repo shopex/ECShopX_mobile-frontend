@@ -34,7 +34,7 @@ export default class Index extends Component {
 
 
     // onShareAppMessage () {
-    //     const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    //     const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
     //     const { username, userId } = Taro.getStorageSync('userinfo')
     //     const { info } = this.state
 
