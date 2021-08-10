@@ -17,7 +17,7 @@ class API {
 
     options.company_id = APP_COMPANY_ID;
     if (process.env.TARO_ENV === "weapp") {
-      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
+      const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {};
       options.appid = extConfig.appid;
       if (extConfig.company_id) {
         options.company_id = extConfig.company_id;

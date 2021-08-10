@@ -577,7 +577,7 @@ export default class CartIndex extends Component {
         entrySource:entry_form.entry,
         ...params
       })
-      const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+      const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
       const userinfo = Taro.getStorageSync('userinfo')
       const url = `https://${API_HOST}/wechatAuth/wxapp/qrcode.png?appid=${extConfig.appid}&share_id=${share_id}&page=pages/cart/espier-checkout`
       const { path: qrcode } = await Taro.getImageInfo({ src: url })

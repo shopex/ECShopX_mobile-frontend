@@ -58,7 +58,7 @@ export default class DistributionDashboard extends Component {
   onShareAppMessage() {
     console.log("--onShareAppMessage---",res)
     const { from }=res;
-    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
     const { username, userId } = Taro.getStorageSync('userinfo')
     const { info } = this.state
 
@@ -75,7 +75,7 @@ export default class DistributionDashboard extends Component {
   }
 
   // onShareTimeline () {
-  //   const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+  //   const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
   //   const { userId } = Taro.getStorageSync('userinfo')
   //   const { info } = this.state
 
