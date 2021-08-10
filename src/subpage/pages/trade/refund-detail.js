@@ -127,8 +127,11 @@ export default class TradeRefundDetail extends Component {
           {
             (progress == 1 || progress == 2) && info.aftersales_address && <View className='aftersalesAddress'>
               {
-                info.aftersales_address.aftersales_address ?  <View className='address'>
-                寄回地址: { info.aftersales_address.aftersales_address} <Text className='copy' onClick={this.onCopy}> 复制</Text>
+                info.aftersales_address.aftersales_address ?  <View className='contact'>
+                  <View className='site'>
+                    寄回地址: { info.aftersales_address.aftersales_address} 
+                  </View>
+                  <View className='copy' onClick={this.onCopy}> 复制</View>
               </View>: <View className='address'>
                 寄回地址: 请联系客服
               </View>
