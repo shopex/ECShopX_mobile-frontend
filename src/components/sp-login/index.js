@@ -30,7 +30,7 @@ export default class SpLogin extends Component {
   componentDidMount() { }
 
   /** 设置导购id */
-  setSalespersonId=(params)=>{
+  setSalespersonId = (params) => {
     // 导购id
     const salesperson_id = Taro.getStorageSync("s_smid");
     if (salesperson_id) {
@@ -39,7 +39,7 @@ export default class SpLogin extends Component {
     }
   }
 
-  afterNewLogin=async ({token,work_userid})=>{
+  afterNewLogin = async ({ token, work_userid }) => {
     if (token) {
       S.setAuthToken(token);
       if (work_userid) {
@@ -87,7 +87,7 @@ export default class SpLogin extends Component {
       // 推广用户uid
       const uid = Taro.getStorageSync("distribution_shop_id");
       const trackParams = Taro.getStorageSync("trackParams");
-     
+
       // 新导购信息处理
       const work_userid = Taro.getStorageSync("work_userid");
       const { code } = await Taro.login();
@@ -118,33 +118,44 @@ export default class SpLogin extends Component {
       }
 
       const { token, is_new } = await api.wx.newlogin(params);
-      this.afterNewLogin({token,work_userid})
+      this.afterNewLogin({ token, work_userid })
     }
   }
 
-  alipayBindPhone=async (e)=>{ 
-    const res=await my.getPhoneNumber();
-    
-    const encryptedData=res.response; 
+  alipayBindPhone = async (e) => {
 
-    const { authCode }=await my.getAuthCode({scopes: ['auth_user']});
+    my.getPhoneNumber({
+      success:async  (res) => {
+        const encryptedData = res.response;
 
-    const params={
-      encryptedData,
-      code:authCode
-    }
-    this.setSalespersonId(params);
+        const { authCode } = await my.getAuthCode({ scopes: ['auth_base'] });
 
-    const { token } = await api.alipay.newlogin(params); 
+        console.log("---authCode--", authCode)
 
-    this.afterNewLogin({token,work_userid:''});
+        const params = {
+          encryptedData,
+          code: authCode
+        }
+        this.setSalespersonId(params);
+
+        const { token } = await api.alipay.newlogin(params);
+
+        this.afterNewLogin({ token, work_userid: '' });
+      },
+      fail: (res) => {
+        console.log(res);
+        console.log('getPhoneNumber_fail');
+      }
+    });
+
+
   }
 
 
   async handleBindPhone(e) {
-    if(isWeixin){
+    if (isWeixin) {
       this.wexinBindPhone(e);
-    }else if(isAlipay){
+    } else if (isAlipay) {
       this.alipayBindPhone(e);
     }
   }
