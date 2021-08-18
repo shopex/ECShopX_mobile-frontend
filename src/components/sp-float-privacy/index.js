@@ -81,13 +81,13 @@ export default class SpFloatPrivacy extends Component {
         fail: (res) => {
         },
         success: async (res) => {
-          let userInfo = JSON.parse(res.response).response // 以下方的报文格式解析两层 response
-          console.log("userInfo",userInfo)
+          let userInfo = JSON.parse(res.response).response ;
           await api.member.updateMemberInfo({
             username: userInfo.nickName,
             avatar: userInfo.avatar
           });
           await S.getMemberInfo();
+          this.props.onChange();
         }
       });
     });
