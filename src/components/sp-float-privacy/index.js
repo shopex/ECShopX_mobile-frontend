@@ -4,7 +4,7 @@ import { connect } from "@tarojs/redux";
 import { AtButton, AtFloatLayout } from "taro-ui";
 import S from "@/spx";
 import api from "@/api";
-import { showToast, classNames, navigateTo } from "@/utils";
+import { isWeixin, isAlipay, classNames, showToast, navigateTo } from "@/utils";
 import { Tracker } from "@/service";
 import "./index.scss";
 
@@ -23,10 +23,10 @@ export default class SpFloatPrivacy extends Component {
   static defaultProps = {
     isOpened: false,
     wxUserInfo: true,
-    callback: () => {},
-    onClose: () => {},
-    onConfirm: () => {},
-    onChange: () => {}
+    callback: () => { },
+    onClose: () => { },
+    onConfirm: () => { },
+    onChange: () => { }
   };
 
   constructor(props) {
@@ -53,16 +53,44 @@ export default class SpFloatPrivacy extends Component {
     this.props.onClose();
   }
 
-  handleConfirm() {
+  handleValidate = (fn) => {
     this.handleCancel();
-    if ( this.props.wxUserInfo ) {
-      S.OAuthWxUserProfile( () => {
-        this.props.onChange();
-      }, true );
+    if (this.props.wxUserInfo) {
+      fn && fn();
     } else {
       this.props.onChange();
     }
     Taro.setStorageSync('Privacy_agress', "1")
+  }
+
+  handleConfirm() {
+    this.handleValidate(() => {
+      S.OAuthWxUserProfile(() => {
+        this.props.onChange();
+      }, true);
+    });
+  }
+
+  handleConfirmAlipay = (e) => {
+    this.handleValidate(() => {
+      if (!S.getAuthToken()) {
+        showToast('请先登录')
+        return
+      }
+      my.getOpenUserInfo({
+        fail: (res) => {
+        },
+        success: async (res) => {
+          let userInfo = JSON.parse(res.response).response // 以下方的报文格式解析两层 response
+          console.log("userInfo",userInfo)
+          await api.member.updateMemberInfo({
+            username: userInfo.nickName,
+            avatar: userInfo.avatar
+          });
+          await S.getMemberInfo();
+        }
+      });
+    });
   }
 
   render() {
@@ -113,9 +141,8 @@ export default class SpFloatPrivacy extends Component {
               <AtButton onClick={this.handleCancel.bind(this)}>不同意</AtButton>
             </View>
             <View className="btn-wrap">
-              <AtButton type="primary" onClick={this.handleConfirm.bind(this)}>
-                同意
-              </AtButton>
+              {isWeixin && <AtButton type="primary" onClick={this.handleConfirm.bind(this)}>同意</AtButton>}
+              {isAlipay && <Button className='ali-button' openType="getAuthorize" scope='userInfo' onGetAuthorize={this.handleConfirmAlipay}>同意</Button>}
             </View>
           </View>
         </View>

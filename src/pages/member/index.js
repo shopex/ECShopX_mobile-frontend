@@ -281,8 +281,7 @@ export default class MemberIndex extends Component {
   handleClickWxOAuth( fn ) {
     if ( this.state.showTimes >= 1 ) {
       fn && fn();
-    } else {
-      console.log("this.props.memberData",this.props.memberData);
+    } else { 
       const { avatar, username } = this.props.memberData.memberInfo;
       if (avatar && username) {
         fn && fn();
@@ -317,6 +316,8 @@ export default class MemberIndex extends Component {
       memberInfo = memberData.memberInfo;
       vipgrade = memberData.vipgrade;
     }
+
+    console.log("memberData",memberData)
     // const is_open_official_account = Taro.getStorageSync("isOpenOfficial");
 
     return (
