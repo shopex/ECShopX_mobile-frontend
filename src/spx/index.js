@@ -155,34 +155,36 @@ class Spx {
 
     remove(fns, fn);
   }
-
+ 
   async OAuthWxUserProfile(fn, require) {
     if (!this.getAuthToken()) {
       showToast('请先登录')
       return
     }
     const { member } = store.getState().member;
-    const { avatar, username } = member.memberInfo;
+    const { avatar, username } = member.memberInfo; 
     if (avatar && username && !require) {
       fn && fn();
     } else {
       return new Promise((reslove, reject) => {
-        wx.getUserProfile({
-          desc: "用于完善会员资料",
-          success: async data => {
-            const { userInfo } = data;
-            await api.member.updateMemberInfo({
-              username: userInfo.nickName,
-              avatar: userInfo.avatarUrl
-            });
-            await this.getMemberInfo();
-            reslove();
-            fn && fn();
-          },
-          fail: e => {
-            reject(e);
-          }
-        });
+        if (isWeixin) {
+          wx.getUserProfile({
+            desc: "用于完善会员资料",
+            success: async data => {
+              const { userInfo } = data;
+              await api.member.updateMemberInfo({
+                username: userInfo.nickName,
+                avatar: userInfo.avatarUrl
+              });
+              await this.getMemberInfo();
+              reslove();
+              fn && fn();
+            },
+            fail: e => {
+              reject(e);
+            }
+          });
+        }  
       });
     }
   }
@@ -239,16 +241,16 @@ class Spx {
     let code, token;
     if (isWeixin) {
       const resLogin = await Taro.login() || {};
-      code=resLogin.code;
+      code = resLogin.code;
       const tokenLogin = await api.wx.login({ code }) || {}
-      token=tokenLogin.token;
+      token = tokenLogin.token;
     } else if (isAlipay) {
-      const authLogin=await my.getAuthCode({scopes: ['auth_base']});
-      code=authLogin.authCode; 
-      console.log("code",code)
-      const tokenLogin=await api.alipay.login({ code })
-      token=tokenLogin.token;
-    } 
+      const authLogin = await my.getAuthCode({ scopes: ['auth_base'] });
+      code = authLogin.authCode;
+      console.log("code", code)
+      const tokenLogin = await api.alipay.login({ code })
+      token = tokenLogin.token;
+    }
     if (token) {
       this.setAuthToken(token, true)
       const userInfo = await this.getMemberInfo();

@@ -55,12 +55,15 @@ export default class SpLogin extends Component {
       }
 
       // 通过token解析openid
-      const { user_id, openid, unionid } = tokenParse(token);
-      Tracker.setVar({
-        user_id: user_id,
-        open_id: openid,
-        union_id: unionid
-      });
+      if(isWeixin){
+        const { user_id, openid, unionid } = tokenParse(token);
+        Tracker.setVar({
+          user_id: user_id,
+          open_id: openid,
+          union_id: unionid
+        });
+      }
+     
 
       await S.getMemberInfo();
       // const memberInfo = await api.member.memberInfo();
@@ -124,7 +127,14 @@ export default class SpLogin extends Component {
 
   alipayBindPhone = async (e) => {
 
+    let testData='{"response":"3/ba2T4FZHNLp0vOp3pb+pmvMFKqReYdcyM6bSH9BPgSAdjJIsV8yRlXH0EH3pLXZYDAHdbfv8jw9CAJGtHcZg==","sign":"piHr2CZEE2SinxtZYIjTT2pUCkwonFFridKmkg1El1On+H8W8E8dHLwEwkb0n1X+6M7BPe8CZckZI036vjtC2pf176FodzODbfy2yDsFL+CZXaXsbhRsxF1Sl+TldOivXTQbkQZJeYExg9iI26MR+dx3Em+qTP9oMLxMqWxW9TnCzWHZperYQh3+78jNu/MAfqRYxkzk3kvs5s7cvYrKuhYZ4IlJFmXo2nczMtBpn35bgPPZy/KriNOnkeGwPqpWAEtfe+cXqsNRDTYqvNB4UQYLQK/51t2a9cK/3WntJxYlW7+PW6noZLyAjaVItCPMWcnTgQPkZ4fLCOwHbGUX0w=="}'
+    let testCode='f20cd6a6517e437d951b45da3994UX45';
+
     my.getPhoneNumber({
+      protocols: {
+        // 小程序模板所属的三方应用appId        
+        isvAppId: '2021002170619146'  
+      },
       success:async  (res) => {
         const encryptedData = res.response;
 
