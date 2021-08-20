@@ -4,7 +4,7 @@ import { connect } from "@tarojs/redux";
 import { AtButton, AtInput } from "taro-ui";
 import {
   customName
-} from '@/utils/point';
+} from '@/utils/point'; 
 import {
   Loading,
   Price,
@@ -23,7 +23,8 @@ import {
   normalizeQuerys,
   redirectUrl,
   buriedPoint,
-  isAlipay
+  isAlipay,
+  isWexin
 } from "@/utils";
 import { lockScreen } from "@/utils/dom";
 import { Tracker } from "@/service";
@@ -1597,7 +1598,7 @@ export default class CartCheckout extends Component {
     // 支付方式文字
     const payTypeText = {
       point: customName('积分支付'),
-      wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
+      wxpay: isWexin ? '微信支付' : isAlipay ? '支付宝支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',
       hfpay: '微信支付'
@@ -1653,6 +1654,7 @@ export default class CartCheckout extends Component {
     //const isBtnDisabled = !address
     const isBtnDisabled = express ? !address : false;
 
+    console.log("--payType--",payType)
 
     return (
       <View className="page-checkout">
@@ -1812,7 +1814,7 @@ export default class CartCheckout extends Component {
             })}
           </View>
  
-          {process.env.TARO_ENV === "weapp" && !this.isPointitemGood() && !bargain_id &&  total.invoice_status && (
+          {isWexin && !this.isPointitemGood() && !bargain_id &&  total.invoice_status && (
             <SpCell
               isLink
               className="trade-invoice"
@@ -1858,7 +1860,7 @@ export default class CartCheckout extends Component {
           {!bargain_id && !this.isPointitemGood() && (
             <View className="trade-payment">
               <SpCell
-                isLink
+                isLink={isAlipay}
                 border={false}
                 title="支付方式"
                 onClick={this.handlePaymentShow}

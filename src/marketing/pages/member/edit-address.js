@@ -5,7 +5,7 @@ import { AtForm, AtInput } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import { SpCell, SpToast, NavBar } from '@/components'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { pickBy,isAlipay } from '@/utils'
 import S from '@/spx'
 
 import './edit-address.scss'
@@ -238,6 +238,13 @@ export default class AddressIndex extends Component {
     if (!data.adrdetail) {
       return S.toast('请输入详细地址')
     }
+
+    if(isAlipay){ 
+      data.city='上海市';
+      data.province='上海市';
+      data.postalCode=100010;
+      data.county='徐汇';
+    }
     console.log(data)
     Taro.showLoading({
       title: '正在提交',
@@ -246,7 +253,7 @@ export default class AddressIndex extends Component {
 
     this.setState({
       submitLoading: true
-    })
+    }) 
     try {
       await api.member.addressCreateOrUpdate(data)
       if(data.address_id) {
@@ -307,7 +314,7 @@ export default class AddressIndex extends Component {
             > */}
               <View className='picker'>
                 <View className='picker__title'>所在区域</View>
-                {
+                {/* {
                   info.address_id || (this.$router.params.isWechatAddress && info.province)
                     ? `${info.province}${info.city}${info.county}`
                     : <View>
@@ -317,7 +324,7 @@ export default class AddressIndex extends Component {
                           : null
                       }
                     </View>
-                }
+                } */}
               </View>
             {/* </Picker> */}
 
