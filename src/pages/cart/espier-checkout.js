@@ -965,6 +965,7 @@ export default class CartCheckout extends Component {
   }
 
   handlePaymentShow = () => {
+    if(isAlipay) return ;
     this.setState({
       isPaymentOpend: true,
       isDrugInfoOpend: false,
@@ -1091,6 +1092,10 @@ export default class CartCheckout extends Component {
   };
 
   async createByType(params){  
+    console.log("--createByType--",params)
+    if(isAlipay){
+      params.pay_type='alipaymini';
+    }
     let info;
     if(this.isPointitemGood()){
       info = await api.trade.create({
@@ -1860,7 +1865,7 @@ export default class CartCheckout extends Component {
           {!bargain_id && !this.isPointitemGood() && (
             <View className="trade-payment">
               <SpCell
-                isLink={isAlipay}
+                isLink={!isAlipay}
                 border={false}
                 title="支付方式"
                 onClick={this.handlePaymentShow}
