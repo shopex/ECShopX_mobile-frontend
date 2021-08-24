@@ -17,38 +17,42 @@ import { pickBy, classNames, isArray } from "@/utils";
 import entry from "@/utils/entry";
 import { withLogin, withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
-import { Tracker } from "@/service"
-import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
-import HomeWgts from './home/comps/home-wgts'
-import Automatic from './home/comps/automatic'
+import { Tracker } from "@/service";
+import { WgtGoodsFaverite, HeaderHome } from "./home/wgts";
+import HomeWgts from "./home/comps/home-wgts";
+import Automatic from "./home/comps/automatic";
 
+import "./home/index.scss";
 
-import './home/index.scss'
+@connect(
+  ({ cart, member, store }) => ({
+    store,
+    list: cart.list,
+    cartIds: cart.cartIds,
+    cartCount: cart.cartCount,
+    showLikeList: cart.showLikeList,
+    showAdv: member.showAdv,
+    favs: member.favs
+  }),
+  dispatch => ({
+    onUpdateLikeList: show_likelist =>
+      dispatch({ type: "cart/updateLikeList", payload: show_likelist }),
+    onUpdateCartCount: count =>
+      dispatch({ type: "cart/updateCount", payload: count })
+  })
+)
 
-@connect(({ cart, member, store }) => ({
-  store,
-  list: cart.list,
-  cartIds: cart.cartIds,
-  cartCount: cart.cartCount,
-  showLikeList: cart.showLikeList,
-  showAdv: member.showAdv,
-  favs: member.favs
-}), (dispatch) => ({
-  onUpdateLikeList: (show_likelist) => dispatch({ type: 'cart/updateLikeList', payload: show_likelist }),
-  onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
-} ) )
-// @withLogin()
 @withPager
 @withBackToTop
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.autoCloseTipId = null;
-    this.currentLoadIndex=-1;
+    this.currentLoadIndex = -1;
     this.state = {
       ...this.state,
       wgts: [],
-      wgtsList:[],
+      wgtsList: [],
       likeList: [],
       isShowAddTip: false,
       curStore: {
@@ -74,14 +78,14 @@ export default class Home extends Component {
       isGoStore: false,
       show_tabBar: true,
       advertList: [],
-      currentShowAdvert: 0, 
+      currentShowAdvert: 0
     };
   }
 
-  componentDidMount() { 
+  componentDidMount() {
     this.getHomeSetting();
     this.getShareSetting();
-    this.isShowTips(); 
+    this.isShowTips();
   }
 
   // 检测收藏变化
@@ -125,7 +129,7 @@ export default class Home extends Component {
       {
         likeList: [],
         wgts: [],
-        wgtsList:[]
+        wgtsList: []
       },
       () => {
         let { curStore } = this.state;
@@ -147,18 +151,18 @@ export default class Home extends Component {
       }
     );
   };
- 
+
   // 触底事件
   onReachBottom = () => {
     this.nextPage();
   };
 
   // 分享
-  onShareAppMessage(params) { 
-    const shareInfo = this.shareInfo()
+  onShareAppMessage(params) {
+    const shareInfo = this.shareInfo();
 
-    console.log("--onShareAppMessage--",shareInfo) 
- 
+    console.log("--onShareAppMessage--", shareInfo);
+
     return {
       ...shareInfo
     };
@@ -166,8 +170,8 @@ export default class Home extends Component {
 
   // 分享朋友圈
   onShareTimeline(params) {
-    const shareInfo = this.shareInfo('time')  
-   
+    const shareInfo = this.shareInfo("time");
+
     return {
       ...shareInfo
     };
@@ -186,7 +190,7 @@ export default class Home extends Component {
       title: res.title,
       imageUrl: res.imageUrl,
       [path]: query,
-      share_title:res.title
+      share_title: res.title
     };
     return params;
   };
@@ -197,14 +201,14 @@ export default class Home extends Component {
     this.setState({
       shareInfo: res
     });
-  }; 
-  
+  };
+
   //获取积分配置
-  getPointSetting=()=>{
-    api.pointitem.getPointSetting().then((pointRes)=>{ 
+  getPointSetting = () => {
+    api.pointitem.getPointSetting().then(pointRes => {
       Taro.setStorageSync("custom_point_name", pointRes.name);
-    })
-  }
+    });
+  };
 
   // show显示初始化
   showInit = () => {
@@ -214,6 +218,7 @@ export default class Home extends Component {
     const localdis_id = is_open_store_status
       ? curStoreLocal.store_id
       : curStoreLocal.distributor_id;
+
     // 是否切换店铺
     if (!isArray(curStoreLocal) && isGoStore) {
       if (!curStore || localdis_id != curStore.distributor_id) {
@@ -223,7 +228,7 @@ export default class Home extends Component {
             curStore: curStoreLocal,
             likeList: [],
             wgts: [],
-            wgtsList:[]
+            wgtsList: []
           },
           () => {
             this.getWgts();
@@ -311,7 +316,7 @@ export default class Home extends Component {
   };
 
   // 获取首页配置
-  getHomeSetting = async () => { 
+  getHomeSetting = async () => {
     const is_open_store_status = await entry.getStoreStatus();
     const {
       is_open_recommend,
@@ -321,10 +326,10 @@ export default class Home extends Component {
     } = Taro.getStorageSync("settingInfo");
     const isNeedLoacate = is_open_wechatapp_location == 1;
     const options = this.$router.params;
-    options.isStore = is_open_store_status; 
+    options.isStore = is_open_store_status;
     const res = await entry.entryLaunch(options, isNeedLoacate);
-    const { store } = res; 
- 
+    const { store } = res;
+
     if (!isArray(store)) {
       this.setState(
         {
@@ -344,7 +349,7 @@ export default class Home extends Component {
   };
 
   //获取店铺id
-  getDistributionId=()=>{
+  getDistributionId = () => {
     const { curStore, is_open_store_status, is_open_recommend } = this.state;
     let curdis_id =
       curStore && is_open_store_status
@@ -353,11 +358,11 @@ export default class Home extends Component {
     if (!curStore.distributor_id && curStore.distributor_id !== 0) {
       return;
     }
-    if (APP_PLATFORM === 'platform') {
-      curdis_id=0;
+    if (process.env.APP_PLATFORM === "platform") {
+      curdis_id = 0;
     }
-    return {distributor_id:curdis_id}
-  }
+    return { distributor_id: curdis_id };
+  };
 
   // 获取挂件配置
   getWgts = async () => {
@@ -369,13 +374,13 @@ export default class Home extends Component {
     if (!curStore.distributor_id && curStore.distributor_id !== 0) {
       return;
     }
-    if (APP_PLATFORM === 'platform') {
-      curdis_id=0;
+    if (process.env.APP_PLATFORM === "platform") {
+      curdis_id = 0;
     }
     const url = `/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=${curdis_id}`;
     const info = await req.get(url);
     const wgts = isArray(info) ? [] : info.config;
-    const wgtsList=isArray(info)? [] : info.list;
+    const wgtsList = isArray(info) ? [] : info.list;
     this.setState(
       {
         wgts: wgts.length > 5 ? wgts.slice(0, 5) : wgts,
@@ -421,7 +426,9 @@ export default class Home extends Component {
       register_type: "all"
     });
 
-    let openAdvertList = [general, membercard].filter(item => item.is_open === 'true').map(item=>({adPic:item.ad_pic,title:item.ad_title})); 
+    let openAdvertList = [general, membercard]
+      .filter(item => item.is_open === "true")
+      .map(item => ({ adPic: item.ad_pic, title: item.ad_title }));
 
     this.setState({
       advertList: openAdvertList
@@ -473,7 +480,6 @@ export default class Home extends Component {
       console.log(e);
     }
   }
-  
 
   // 跳转选择店铺
   goStore = () => {
@@ -483,7 +489,7 @@ export default class Home extends Component {
   };
 
   // 订阅错误事件
-  handleOfficialError = () => { };
+  handleOfficialError = () => {};
 
   // 关闭订阅公众号
   handleOfficialClose = () => {
@@ -516,15 +522,15 @@ export default class Home extends Component {
     const { featuredshop } = this.state;
     Taro.navigateTo({
       url: `/marketing/pages/distribution/shop-home?featuredshop=${featuredshop}`
-    })
-  }
+    });
+  };
 
   handleClickShop2 = () => {
-    const { featuredshop } = this.state
+    const { featuredshop } = this.state;
     Taro.navigateTo({
       url: `/pages/pointitem/list`
-    })
-  }
+    });
+  };
 
   // 显示浮窗广告
   handleAutoClick = () => {
@@ -534,33 +540,49 @@ export default class Home extends Component {
     });
   };
 
-  handleSwitchAdvert = (showIdx) => {
-     this.setState({
-       currentShowAdvert:++showIdx
-     })
+  handleSwitchAdvert = showIdx => {
+    this.setState({
+      currentShowAdvert: ++showIdx
+    });
   };
 
-  handleLoadMore=async (currentIndex,compType,currentTabIndex,currentLength)=>{
-    const { id }=this.state.wgtsList.find((_,index)=>currentIndex===index)||{}
-    this.currentLoadIndex=currentIndex;
-    let params={template_name:'yykweishop',weapp_pages:'index',page:1,page_size:currentLength+50,weapp_setting_id:id,...this.getDistributionId()};
+  handleLoadMore = async (
+    currentIndex,
+    compType,
+    currentTabIndex,
+    currentLength
+  ) => {
+    const { id } =
+      this.state.wgtsList.find((_, index) => currentIndex === index) || {};
+    this.currentLoadIndex = currentIndex;
+    let params = {
+      template_name: "yykweishop",
+      weapp_pages: "index",
+      page: 1,
+      page_size: currentLength + 50,
+      weapp_setting_id: id,
+      ...this.getDistributionId()
+    };
     let loadData;
-    if(compType==='good-grid'||compType==='good-scroll'){ 
-      loadData=await api.wx.loadMoreGoods(params);
-      this.state.wgts.splice(this.currentLoadIndex,1,loadData.config[0])
-    }else if(compType==='good-grid-tab'){
-      params.goods_grid_tab_id=currentTabIndex;
-      loadData=await api.wx.loadMoreGoods(params);
-      let allGridGoods=this.state.wgts[currentIndex].list;
-      let changeGoods=loadData.config[0].list[0];
-      allGridGoods.splice(currentTabIndex,1,changeGoods);
-      this.state.wgts.splice(this.currentLoadIndex,1,{...loadData.config[0],list:allGridGoods})
+    if (compType === "good-grid" || compType === "good-scroll") {
+      loadData = await api.wx.loadMoreGoods(params);
+      this.state.wgts.splice(this.currentLoadIndex, 1, loadData.config[0]);
+    } else if (compType === "good-grid-tab") {
+      params.goods_grid_tab_id = currentTabIndex;
+      loadData = await api.wx.loadMoreGoods(params);
+      let allGridGoods = this.state.wgts[currentIndex].list;
+      let changeGoods = loadData.config[0].list[0];
+      allGridGoods.splice(currentTabIndex, 1, changeGoods);
+      this.state.wgts.splice(this.currentLoadIndex, 1, {
+        ...loadData.config[0],
+        list: allGridGoods
+      });
     }
-    
+
     this.setState({
-      wgts:[...this.state.wgts]
-    }) 
-  }
+      wgts: [...this.state.wgts]
+    });
+  };
 
   render() {
     const {
@@ -583,20 +605,19 @@ export default class Home extends Component {
       is_open_store_status,
       show_official
     } = this.state;
- 
 
-    
-
-    const pages = Taro.getCurrentPages() 
+    const pages = Taro.getCurrentPages();
     // 广告屏
     const { showAdv } = this.props;
     // 是否是标准版
-    const isStandard = APP_PLATFORM === "standard" && !is_open_store_status;
+    const isStandard =
+      process.env.APP_PLATFORM === "standard" && !is_open_store_status;
     // 否是fixed
     const isFixed = positionStatus;
 
     return (
       <View className="page-index">
+        {/* 公众号关注组件 */}
         {is_open_official_account === 1 && show_official && (
           <AccountOfficial
             isClose
@@ -604,6 +625,7 @@ export default class Home extends Component {
             onClick={this.handleOfficialClose.bind(this)}
           ></AccountOfficial>
         )}
+
         {isStandard && curStore && (
           <HeaderHome
             store={curStore}
@@ -612,6 +634,9 @@ export default class Home extends Component {
             isOpenStoreStatus={is_open_store_status}
           />
         )}
+
+        <View className="header-block"></View>
+
         <View
           className={classNames(
             "wgts-wrap",
@@ -623,9 +648,11 @@ export default class Home extends Component {
             !isFixed && !isStandard && "platform"
           )}
         >
-          {/* 挂件内容和猜你喜欢 */}
           <View className="wgts-wrap__cont">
+            {/* 挂件内容 */}
             <HomeWgts wgts={wgts} loadMore={this.handleLoadMore} />
+
+            {/* 猜你喜欢 */}
             {likeList.length > 0 && is_open_recommend == 1 && (
               <View className="faverite-list">
                 <WgtGoodsFaverite info={likeList} />
@@ -637,6 +664,7 @@ export default class Home extends Component {
             )}
           </View>
         </View>
+
         {/* 浮动按钮 */}
         <FloatMenus>
           {show_tabBar && featuredshop && (
@@ -645,26 +673,32 @@ export default class Home extends Component {
               src="/assets/imgs/gift_mini.png"
               mode="widthFix"
               onClick={this.handleClickShop.bind(this)}
-            />)
-          }
-          {
-            advertList && advertList.length && !S.getAuthToken() &&
-            (<FloatMenuItem
+            />
+          )}
+          {advertList && advertList.length && !S.getAuthToken() && (
+            <FloatMenuItem
               iconPrefixClass="icon"
               icon="present"
-              onClick={this.handleSwitchAdvert.bind(this,-1)}
+              onClick={this.handleSwitchAdvert.bind(this, -1)}
             />
           )}
         </FloatMenus>
+
         {/* 浮窗广告 */}
-        {advertList && advertList.length && !S.getAuthToken() && advertList.map((item,index) => { 
-          return (<Automatic
-            info={item}
-            isShow={currentShowAdvert===index}
-            onClick={this.handleGift.bind(this)}
-            onClose={this.handleSwitchAdvert.bind(this,index)}
-          />)
-        })}
+        {advertList &&
+          advertList.length &&
+          !S.getAuthToken() &&
+          advertList.map((item, index) => {
+            return (
+              <Automatic
+                info={item}
+                isShow={currentShowAdvert === index}
+                onClick={this.handleGift.bind(this)}
+                onClose={this.handleSwitchAdvert.bind(this, index)}
+              />
+            );
+          })}
+
         {/* 返回顶部 */}
         <BackToTop
           show={showBackToTop}
@@ -684,10 +718,12 @@ export default class Home extends Component {
             </View>
           </View>
         )}
-        {/* tabBar */}
-        <TabBar showbar={show_tabBar} />
+
         {/* 开屏广告 */}
         {showAdv && <ScreenAd />}
+
+        {/* tabBar */}
+        <TabBar showbar={show_tabBar} />
       </View>
     );
   }

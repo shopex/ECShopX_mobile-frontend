@@ -7,7 +7,9 @@ import req from "@/api/req";
 import api from "@/api";
 import { normalizeQuerys, isGoodsShelves } from "@/utils";
 import { FormIds, Tracker } from "@/service";
+import entryLaunch from "@/utils/entryLaunch";
 import { youshuLogin } from '@/utils/youshu'
+import { DEFAULT_TABS } from '@/consts'
 import Index from './pages/index'
 import LBS from './utils/lbs'
 
@@ -50,16 +52,6 @@ const getHomeSetting = async () => {
   })
   // 分享时是否携带参数
   Taro.setStorageSync("distributor_param_status", distributor_param_status);
-  console.log("APP_TRACK",youshu)
-  if (APP_TRACK) {
-    // const system = Taro.getSystemInfoSync();   
-    // if (!(system && system.environment && system.environment === "wxwork") && (youshu.app_id || youshu.sandbox_app_id)) {
-    //   console.log('----------------aa--------------')
-    //   console.log(Tracker)
-    //   Tracker.use(APP_TRACK);
-    //   youshuLogin();
-    // }
-  }
 };
 
 useHooks();
@@ -68,14 +60,12 @@ useHooks();
 getHomeSetting();
 
 class App extends Component {
-  //Taro.getSystemInfoSync().environment == "wxwork"
-
   // eslint-disable-next-line react/sort-comp
   componentWillMount() {
-    if (APP_TRACK) {
+    if (process.env.APP_TRACK) {
       const system = Taro.getSystemInfoSync();   
       if (!(system && system.environment && system.environment === "wxwork")) { 
-        Tracker.use(APP_TRACK);
+        Tracker.use(process.env.APP_TRACK);
         youshuLogin();
       }
     } 
@@ -137,7 +127,7 @@ class App extends Component {
         });
     }
     // H5定位
-    if (APP_PLATFORM === "standard" && Taro.getEnv() === "WEB") {
+    if (process.env.APP_PLATFORM === "standard" && Taro.getEnv() === "WEB") {
       new LBS();
     }
     // 设置购物车默认类型
@@ -366,11 +356,6 @@ class App extends Component {
         desc: "您的位置信息将用于定位附近门店"
       }
     },
-    navigateToMiniProgramAppIdList: [
-      "wx4721629519a8f25b",
-      "wx2fb97cb696f68d22",
-      "wxf91925e702efe3e3"
-    ]
     // plugins: {
     //   contactPlugin: {
     //     version: "1.3.0",
@@ -413,131 +398,104 @@ class App extends Component {
     if (!guUserIdExp || Date.parse(new Date()) - guUserIdExp > treeDay) {
       Taro.setStorageSync("work_userid", '');
     }
+
     // 根据路由参数
     const { query } = this.$router.params;
     // 初始化清楚s_smid
     Taro.setStorageSync( "s_smid", '' );
     Taro.setStorageSync("s_dtid", '');
-    Taro.setStorageSync("gu_user_id", "");
-    if ((query && query.scene) || query.gu_user_id || query.smid) {
-      const { smid, dtid, id, aid, cid, gu, chatId, gu_user_id = ''} = await normalizeQuerys(
-        query
-      )
-      // 旧导购存放
-      if (smid) {
-        Taro.setStorageSync( "s_smid", smid );
-      } 
-      if (dtid) {
-        Taro.setStorageSync("s_dtid", dtid);
-      }
-      // 新导购埋点数据存储导购员工工号
-      if (gu) {
-        const [employee_number, store_bn] = gu.split("_")
-        Taro.setStorageSync("work_userid", employee_number)
-        Taro.setStorageSync("store_bn", store_bn)
-      }
-      // 欢迎语小程序卡片分享参数处理
-      if (gu_user_id) {
-        Taro.setStorageSync( "work_userid", gu_user_id )
-        Taro.setStorageSync("gu_user_id", gu_user_id);
-        // 如果是登录状态下打开分享且携带导购ID
-        if (S.getAuthToken()) {
-          api.user.bindSaleperson({
-            work_userid: gu_user_id
-          } )
-        }
-      }
+    Taro.setStorageSync( "gu_user_id", "" );
+
+    // 缓存路由参数
+    entryLaunch.init(this.$router.params);
+    
+    // if ((query && query.scene) || query.gu_user_id || query.smid) {
+    //   const { smid, dtid, id, aid, cid, gu, chatId, gu_user_id = ''} = await normalizeQuerys(
+    //     query
+    //   )
+    //   // 旧导购存放
+    //   if (smid) {
+    //     Taro.setStorageSync( "s_smid", smid );
+    //   } 
+    //   if (dtid) {
+    //     Taro.setStorageSync("s_dtid", dtid);
+    //   }
+    //   // 新导购埋点数据存储导购员工工号
+    //   if (gu) {
+    //     const [employee_number, store_bn] = gu.split("_")
+    //     Taro.setStorageSync("work_userid", employee_number)
+    //     Taro.setStorageSync("store_bn", store_bn)
+    //   }
+    //   // 欢迎语小程序卡片分享参数处理
+    //   if (gu_user_id) {
+    //     Taro.setStorageSync( "work_userid", gu_user_id )
+    //     Taro.setStorageSync("gu_user_id", gu_user_id);
+    //     // 如果是登录状态下打开分享且携带导购ID
+    //     if (S.getAuthToken()) {
+    //       api.user.bindSaleperson({
+    //         work_userid: gu_user_id
+    //       } )
+    //     }
+    //   }
       
-      if ( Taro.getStorageSync( "work_userid" ) && S.getAuthToken() ) {
-        // uv 埋点
-        api.user.uniquevisito({
-          work_userid: Taro.getStorageSync("work_userid")
-        });
-      }
-      // 存储群id
-      if (chatId) {
-        Taro.setStorageSync("chatId", chatId);
-      }
-      // 设置保存时间
-      if (chatId || smid || gu) {
-        Taro.setStorageSync("guideExp", Date.parse(new Date()));
-      }
-      if (gu_user_id) {
-        Taro.setStorageSync("guUserIdExp", Date.parse(new Date()));
-      }
-      // 如果id、aid、cid同时存在则为团购分享详情
-      if (id && aid && cid) {
-        Taro.redirectTo({
-          url: `/groupBy/pages/shareDetail/index?aid=${aid}&itemId=${id}&cid=${cid}`
-        });
-      }
-    }
+    //   if ( Taro.getStorageSync( "work_userid" ) && S.getAuthToken() ) {
+    //     // uv 埋点
+    //     api.user.uniquevisito({
+    //       work_userid: Taro.getStorageSync("work_userid")
+    //     });
+    //   }
+    //   // 存储群id
+    //   if (chatId) {
+    //     Taro.setStorageSync("chatId", chatId);
+    //   }
+    //   // 设置保存时间
+    //   if (chatId || smid || gu) {
+    //     Taro.setStorageSync("guideExp", Date.parse(new Date()));
+    //   }
+    //   if (gu_user_id) {
+    //     Taro.setStorageSync("guUserIdExp", Date.parse(new Date()));
+    //   }
+    //   // 如果id、aid、cid同时存在则为团购分享详情
+    //   if (id && aid && cid) {
+    //     Taro.redirectTo({
+    //       url: `/groupBy/pages/shareDetail/index?aid=${aid}&itemId=${id}&cid=${cid}`
+    //     });
+    //   }
+    // }
     // 初始化tabbar
     this.fetchTabs();
     // 获取主题配色
     this.fetchColors();
   }
 
-  fetchTabs() {
+  async fetchTabs() {
     Taro.setStorageSync("initTabBar", false);
-    const defaultTabs = {
-      config: {
-        backgroundColor: "#ffffff",
-        color: "#333333",
-        selectedColor: "#E33420"
-      },
-      data: [
-        {
-          name: "home",
-          pagePath: "/pages/index",
-          text: "首页"
-        },
-        {
-          name: "category",
-          pagePath: "/pages/category/index",
-          text: "分类"
-        },
-        {
-          name: "cart",
-          pagePath: "/pages/cart/espier-index",
-          text: "购物车"
-        },
-        {
-          name: "member",
-          pagePath: "/pages/member/index",
-          text: "我"
-        }
-      ],
-      name: "tabs"
-    };
-
-    const setUrl = "/pagestemplate/setInfo";
-    req
-      .get(setUrl)
-      .then(
-        ({
-          tab_bar,
-          is_open_recommend,
-          is_open_scan_qrcode,
-          is_open_wechatapp_location,
-          is_open_official_account
-        }) => {
-          store.dispatch({
-            type: "tabBar",
-            payload:
-              tab_bar && this.system.environment != "wxwork"
-                ? JSON.parse(tab_bar)
-                : defaultTabs
-          });
-          Taro.setStorageSync("initTabBar", true);
-          Taro.setStorageSync("settingInfo", {
-            is_open_recommend,
-            is_open_scan_qrcode,
-            is_open_wechatapp_location,
-            is_open_official_account
-          });
-        }
-      );
+    const {
+      tab_bar,
+      is_open_recommend,
+      is_open_scan_qrcode,
+      is_open_wechatapp_location,
+      is_open_official_account
+    } = await api.shop.getAppConfig()
+    
+    let tabbar = null
+    try {
+      tabbar = JSON.parse(tab_bar)
+    } catch (error) {
+      console.log(error)
+    }
+    store.dispatch({
+      type: "tabBar",
+      payload: tabbar || DEFAULT_TABS
+    } );
+    
+    Taro.setStorageSync("initTabBar", true);
+    Taro.setStorageSync("settingInfo", {
+      is_open_recommend,  // 猜你喜欢
+      is_open_scan_qrcode,  // 扫码
+      is_open_wechatapp_location, // 定位
+      is_open_official_account  // 公众号组件
+    });
   }
 
   async fetchColors() {
@@ -563,14 +521,6 @@ class App extends Component {
       colorMarketing: themeColor.data[0].marketing,
       colorAccent: themeColor.data[0].accent
     });
-
-
-    // req.get(`/pageparams/setting?template_name=yykweishop&version=v1.0.1&page_name=color_style`).then(info => {
-    //   store.dispatch({
-    //     type: "colors",
-    //     payload: info.list.length ? info.list[0].params : defaultColors
-    //   });
-    // });
   }
 
   componentDidCatchError() {}

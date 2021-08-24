@@ -110,7 +110,7 @@ export default class List extends Component {
       pageSize
     }
 
-    if (APP_PLATFORM === 'standard') {
+    if (process.env.APP_PLATFORM === 'standard') {
       query.distributor_id =  distributor_id 
     }
 

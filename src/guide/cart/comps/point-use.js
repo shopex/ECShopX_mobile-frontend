@@ -174,7 +174,7 @@ export default class PointUse extends Component {
         </View>
       </AtFloatLayout>
         <AtModal isOpened={isOpenRule}>
-        <AtModalHeader>{customName("积分使用规则")</AtModalHeader>
+          <AtModalHeader>{customName( "积分使用规则" )}</AtModalHeader>
         <AtModalContent>
            <View>
             使用条件

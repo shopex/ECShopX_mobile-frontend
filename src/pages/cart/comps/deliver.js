@@ -96,7 +96,7 @@ export default class Deliver extends Component {
             <View className='addr-detail'>
               <View className='address'>{ curStore.store_address }</View>
               {
-                isOpenStore && (APP_PLATFORM === 'standard')
+                isOpenStore && (process.env.APP_PLATFORM === 'standard')
                 ? <View
                   className='iconfont icon-edit'
                   onClick={this.handleEditZitiClick.bind(this, curStore.distributor_id)}

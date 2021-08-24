@@ -21,7 +21,7 @@ import {
   log,
   authSetting,
   normalizeQuerys,
-  redirectUrl,
+  // redirectUrl,
   buriedPoint
 } from "@/utils";
 import { lockScreen } from "@/utils/dom";
@@ -343,7 +343,7 @@ export default class CartCheckout extends Component {
         }
       }
     }
-    if (APP_PLATFORM === 'platform') {
+    if (process.env.APP_PLATFORM === 'platform') {
       delete ztparams.isNostores
     }
     const shopInfo = await api.shop.getShop(ztparams);
@@ -618,7 +618,7 @@ export default class CartCheckout extends Component {
     if (payType === "point") {
       delete params.point_use;
     }
-    if (APP_PLATFORM === 'platform') {
+    if (process.env.APP_PLATFORM === 'platform') {
       delete params.isNostores
     }
     if (coupon) {
@@ -1164,7 +1164,7 @@ export default class CartCheckout extends Component {
       let params = await this.getParams();
       const getShopId = await this.getShopId()
 
-      if (APP_PLATFORM === "standard" && cart_type !== "cart") {
+      if (process.env.APP_PLATFORM === "standard" && cart_type !== "cart") {
         const { distributor_id, store_id } = Taro.getStorageSync("curStore");
         params.distributor_id = isOpenStore ? receiptType === 'ziti' ? curStore.distributor_id : store_id : getShopId || distributor_id;
       }
@@ -1210,7 +1210,7 @@ export default class CartCheckout extends Component {
           ...params,
           pay_type:this.state.total.freight_type==="point"?'point':'wxpay'
         });
-        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`)
+        // redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`)
         // Taro.redirectTo({
         //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}`
         // });
@@ -1424,7 +1424,7 @@ export default class CartCheckout extends Component {
 
     // S.set('point_use',point_use)
     let id = "";
-    if (APP_PLATFORM === "standard" && cart_type !== "cart") {
+    if (process.env.APP_PLATFORM === "standard" && cart_type !== "cart") {
       const { distributor_id } = Taro.getStorageSync("curStore");
       id = distributor_id;
     } else {

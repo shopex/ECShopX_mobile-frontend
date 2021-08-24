@@ -17,6 +17,5 @@ export { default as WgtTagNavigation } from './tag-navigation'
 export { default as WgtScrollInput } from './scroll-input'
 export { default as WgtFixedInput } from './fixed-input'
 export { default as WgtSliderHotzone } from './slider-hotzone'
-export { default as WgtActivityZone } from './activityZone'
 
 export default {}

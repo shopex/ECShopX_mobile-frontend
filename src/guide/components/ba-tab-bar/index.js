@@ -188,7 +188,7 @@ export default class TabBar extends Component {
       localCurrent
     } = this.state;
     
-    if (APP_INTEGRATION) {
+    if (process.env.APP_INTEGRATION) {
       return <View></View>;
     }
 

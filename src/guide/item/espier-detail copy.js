@@ -118,7 +118,7 @@ export default class Detail extends Component {
       is_open_store_status:isOpenStore
     },async()=>{
       const { is_open_store_status } = this.state
-      if (APP_PLATFORM === 'standard') {
+      if (process.env.APP_PLATFORM === 'standard') {
        // const { distributor_id } = Taro.getStorageSync('curStore')
         const curStore = Taro.getStorageSync('curStore')
         if(is_open_store_status){
@@ -301,7 +301,7 @@ export default class Detail extends Component {
 
     const param = { goods_id: goodsId }
 
-    // if (APP_PLATFORM === 'standard') {
+    // if (process.env.APP_PLATFORM === 'standard') {
     //   param.distributor_id = is_open_store_status ? store_id : distributor_id 
     // } else {
     //   if (this.$router.params.dtid) {
@@ -319,7 +319,7 @@ export default class Detail extends Component {
     if(!param.goods_id){
       delete param.goods_id
     }
-    if (APP_PLATFORM === 'standard') {
+    if (process.env.APP_PLATFORM === 'standard') {
       param.distributor_id = distributor_id 
     } else {
       if (this.$router.params.dtid) {
@@ -549,7 +549,7 @@ export default class Detail extends Component {
     const { info,is_open_store_status } = this.state
     let { distributor_id } = info
     const curStore = Taro.getStorageSync('curStore')
-    if (APP_PLATFORM === 'standard') {
+    if (process.env.APP_PLATFORM === 'standard') {
       //distributor_id = Taro.getStorageSync('curStore').distributor_id
       distributor_id = is_open_store_status ? curStore.store_id : curStore.distributor_id
     }
@@ -619,7 +619,7 @@ export default class Detail extends Component {
     const { info } = this.state
     const { pics, item_id } = info
     const extConfig = (Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync) ? wx.getExtConfigSync() : {}
-    //const id = APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
+    //const id = process.env.APP_PLATFORM === 'standard' ? is_open_store_status ? store_id : distributor_id : infoId
       //新增导购信息
       const QwUserInfo = S.get('QwUserInfo',true)
       const qrcode_params =`page=pages/item/espier-detail
@@ -842,7 +842,7 @@ export default class Detail extends Component {
   handleClickItem = (item) => {
     const curStore = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
-    const id = APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id :curStore.distributor_id : item.distributor_id
+    const id = process.env.APP_PLATFORM === 'standard' ? is_open_store_status ? curStore.store_id :curStore.distributor_id : item.distributor_id
     const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${id}`
     Taro.navigateTo({
       url
@@ -853,7 +853,7 @@ export default class Detail extends Component {
     // const { distributor_id } = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
     let id = ''
-    if (APP_PLATFORM === 'standard') {
+    if (process.env.APP_PLATFORM === 'standard') {
       const { distributor_id,store_id } = Taro.getStorageSync('curStore')
       id = is_open_store_status ? store_id : distributor_id
     } else {
@@ -1287,7 +1287,7 @@ export default class Detail extends Component {
             />
           )}
 
-          {APP_PLATFORM !== "standard" && !isArray(info.distributor_info) && (
+          {process.env.APP_PLATFORM !== "standard" && !isArray(info.distributor_info) && (
             <StoreInfo info={info.distributor_info} />
           )}
 

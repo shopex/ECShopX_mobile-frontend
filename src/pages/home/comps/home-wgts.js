@@ -117,7 +117,7 @@ export default class HomeWgts extends PureComponent {
                 {item.name === 'img-gif' && <WgtImgGif info={item} />}
                 {item.name === 'hotTopic' && <WgtHotTopic info={item} />}
                 {item.name === 'floorImg' && <WgtFloorImg info={item} />}
-                {APP_PLATFORM !== 'standard' && item.name === 'store' && <WgtStore info={item} />}
+                {process.env.APP_PLATFORM !== 'standard' && item.name === 'store' && <WgtStore info={item} />}
               </View>
             )
           })

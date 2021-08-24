@@ -151,7 +151,7 @@ export default class WgtGoods extends Component {
         const isOpenStore = await entry.getStoreStatus();
         const { distributor_id, store_id } = Taro.getStorageSync("curStore");
         let id = Number(item_data.distributor_id) || 0;
-        if (APP_PLATFORM === "standard" && !id) {
+        if (process.env.APP_PLATFORM === "standard" && !id) {
           id = isOpenStore ? store_id : distributor_id;
         }
 

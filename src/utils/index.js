@@ -354,7 +354,7 @@ export async function buriedPoint (data) {
   // 任务埋点
   if (subtask_id) {
     const { distributor_id: shopId } = Taro.getStorageSync('curStore') 
-    if (APP_PLATFORM === 'standard') {
+    if (process.env.APP_PLATFORM === 'standard') {
       dtid= shopId
     }
     const newData = {
