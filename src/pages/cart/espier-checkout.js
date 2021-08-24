@@ -1284,6 +1284,8 @@ export default class CartCheckout extends Component {
     }); 
 
     const isExtraPoint=this.isPointitemGood() && this.state.total.freight_type==="point"; 
+
+    let tradeDetailUrl=`/subpage/pages/trade/detail?id=${order_id}`;
     // 积分流程
     if (payType === "point" || payType === "deposit" || isExtraPoint ) { 
       if (!payErr) {
@@ -1349,6 +1351,10 @@ export default class CartCheckout extends Component {
         });
 
         payErr='用户取消支付'
+
+        Taro.redirectTo({
+          url:tradeDetailUrl
+        });
       }
       
       // 支付上报

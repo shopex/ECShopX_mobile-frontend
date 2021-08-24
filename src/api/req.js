@@ -1,7 +1,7 @@
 import Taro from "@tarojs/taro";
 import S from "@/spx";
 import qs from "qs";
-import { isGoodsShelves } from "@/utils";
+import { isGoodsShelves,isAlipay } from "@/utils";
 import api from '@/api'
 
 function addQuery(url, query) {
@@ -126,7 +126,16 @@ class API {
       delete options.data;
     } else {
       // nest data
-      options.data = qs.stringify(options.data);
+      if(isAlipay && options.method==='DELETE'){
+        options.data=options.data;
+        options.dataType='json';
+        options.headers=options.header;
+        options.responseType='text';
+        options.responseCharset='utf-8';
+      }else{
+        options.data = qs.stringify(options.data);
+      }
+      
     }
     const workEnv = S.get("workEnv", true);
     let ba_params = S.get("ba_params", true);
@@ -148,6 +157,7 @@ class API {
     let resData = {};
     let isRefreshing = false;
     let requests = [];
+    console.log("---options---",options)
     return Taro.request(options)
       .then(res => {
         resData = res;

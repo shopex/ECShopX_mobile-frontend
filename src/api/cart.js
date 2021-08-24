@@ -34,6 +34,7 @@ export function fastBuy (params,isPointitem) {
 }
 
 export function del ({ cart_id }) {
+  console.log("---api.del---",cart_id)
   return req.delete('/cartdel', { cart_id })
 }
 
