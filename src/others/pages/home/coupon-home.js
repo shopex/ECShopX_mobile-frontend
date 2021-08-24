@@ -7,7 +7,6 @@ import S from '@/spx'
 import { withPager } from '@/hocs'
 import { pickBy, formatTime, buriedPoint, normalizeQuerys } from '@/utils'
 import { Tracker } from "@/service";
-import banner from '@/assets/imgs/banner_coupon.png'
 
 import '../home/coupon-home.scss'
 
@@ -189,7 +188,7 @@ export default class CouponHome extends Component {
           fixed='true'
         />
         <View className='coupon-top'>
-          <Image className='banner' src={banner} />
+          <Image className='banner' src={`${APP_IMAGE_CDN}/banner_coupon.png`} />
         </View>
         <ScrollView
           scrollY

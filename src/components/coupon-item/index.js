@@ -2,8 +2,6 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { classNames } from '@/utils'
-import arrowUp from '@/assets/imgs/coupon_arrow_up.png'
-import arrowDown from '@/assets/imgs/coupon_arrow_down.png'
 import './index.scss'
 
 @connect(({ colors }) => ({
@@ -161,7 +159,7 @@ export default class CouponItem extends Component {
                 <View className='coupon-item__content__bf'>
                   <View className='coupon-item__content__bottom' onClick={this.changeExpand}>
                       <View className='text'>详细信息</View>
-                      <Image className='arrow' src={isExpanded ? arrowUp : arrowDown} />
+                      <Image className='arrow' src={`${APP_IMAGE_CDN}${isExpanded ? '/coupon_arrow_up.png' : '/coupon_arrow_down.png'}`} />
                   </View>
                   <View className='coupon-item__content__count'>{count}</View>
                 </View>
