@@ -22,3 +22,7 @@ export const checkClassName=isWeixin?'at-icon at-icon-check':'iconfont icon-chec
 export const rightClassName=isWeixin?'at-icon at-icon-chevron-right':'iconfont icon-arrowRight';
 
 export const copy=isWeixin?(text)=>Taro.setClipboardData({data:text}):(text)=>{console.log('alipay支付成功');my.setClipboard({text,success:(e)=>console.log("粘贴成功",e),fail:(e)=>console.log("粘贴失败",e)})}
+
+export const showLoading=isWeixin?Taro.showLoading:my.showLoading;
+
+export const hideLoading=isWeixin?Taro.hideLoading:my.hideLoading;

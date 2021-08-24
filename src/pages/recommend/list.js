@@ -5,7 +5,7 @@ import { connect } from '@tarojs/redux'
 import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, RecommendItem, SearchBar, TabBar, SpNote, FilterBar } from '@/components'
 import api from '@/api'
-import { classNames, pickBy } from '@/utils'
+import { classNames, pickBy,showLoading,hideLoading } from '@/utils'
 import S from '@/spx'
 
 import './list.scss'
@@ -58,14 +58,14 @@ export default class RecommendList extends Component {
         }
       })
     } 
-    Taro.showLoading()
+    showLoading();
     this.resetPage()
     this.setState({
       list: [],
     })
     setTimeout(()=>{
       this.nextPage()
-      Taro.hideLoading()
+      hideLoading()
     }, 200)
 
     // this.praiseNum()

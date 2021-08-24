@@ -14,6 +14,7 @@
  **/
 import showdown from './showdown.js';
 import HtmlToJson from './html2json.js';
+import Taro, { Component } from '@tarojs/taro'
 /**
  * 配置及公有属性
  **/
