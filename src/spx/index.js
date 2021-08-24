@@ -2,6 +2,7 @@ import Taro from "@tarojs/taro";
 import api from "@/api";
 import { getCurrentRoute, log, isGoodsShelves, showToast } from "@/utils";
 import configStore from "@/store";
+import qs from 'qs'
 
 const globalData = {};
 const TOKEN_IDENTIFIER = "auth_token";
@@ -156,10 +157,10 @@ class Spx {
     remove(fns, fn);
   }
 
-  async OAuthWxUserProfile( fn, require ) {
-    if ( !this.getAuthToken() ) {
-      showToast('请先登录')
-      return
+  async OAuthWxUserProfile(fn, require) {
+    if (!this.getAuthToken()) {
+      showToast("请先登录");
+      return;
     }
     const { member } = store.getState().member;
     const { avatar, username } = member.memberInfo;
@@ -236,14 +237,14 @@ class Spx {
   }
 
   async login(ctx, isRedirect = false) {
-    const { code } = await Taro.login()
-    const { token } = await api.wx.login( { code } )
-    if ( token ) {
-      this.setAuthToken( token, true )
+    const { code } = await Taro.login();
+    const { token } = await api.wx.login({ code });
+    if (token) {
+      this.setAuthToken(token, true);
       const userInfo = await this.getMemberInfo();
-      return userInfo
+      return userInfo;
     } else {
-      showToast('登录失败')
+      showToast("登录失败");
     }
     // const { path, fullPath } = getCurrentRoute(ctx.$router);
     // const encodedRedirect = encodeURIComponent(fullPath);
@@ -304,6 +305,8 @@ class Spx {
       });
     });
   }
+
+
   setUvTimeStamp() {
     let uvstamp = Taro.getStorageSync("userVisitTime");
     let today = formatDataTime(new Date());
@@ -313,6 +316,7 @@ class Spx {
       Taro.setStorageSync("userVisitTime", uvstamp);
     }
   }
+
   toast(...args) {
     Taro.eventCenter.trigger.apply(Taro.eventCenter, [
       "sp-toast:show",

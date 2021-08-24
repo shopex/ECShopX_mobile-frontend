@@ -32,6 +32,7 @@ async function entryLaunch(data, isNeedLocate) {
     store = await handleDistributorId(options.dtid);
     dtidValid = store.status ? false : true;
   }
+  debugger
 
   // 如果需要定位,并且店铺无效，
   if (!dtidValid) {
@@ -252,7 +253,7 @@ async function getLoc() {
       }
     );
   } else {
-    if (APP_PLATFORM === "standard") {
+    if (process.env.APP_PLATFORM === "standard") {
       return getWebLocal().catch(() => "定位错误");
     } else {
       return null;
@@ -262,7 +263,7 @@ async function getLoc() {
 
 async function getStoreStatus() {
   const { nostores_status } = Taro.getStorageSync("otherSetting");
-  if (APP_PLATFORM === "standard") {
+  if (process.env.APP_PLATFORM === "standard") {
     if (nostores_status === true) {
       return true;
     } else {
@@ -277,7 +278,7 @@ async function getStoreStatus() {
 function getWebLocal(isSetStorage = true) {
   const { qq } = window;
   // let geolocation = new qq.maps.Geolocation('PVUBZ-E24HK-7SXJY-AGQZC-DN3IT-6EB6V', 'oneX新零售门店定位')
-  let geolocation = new qq.maps.Geolocation(APP_MAP_KEY, APP_MAP_NAME);
+  let geolocation = new qq.maps.Geolocation(process.env.APP_MAP_KEY, process.env.APP_MAP_NAME);
   return new Promise((resolve, reject) => {
     geolocation.getLocation(
       r => {
@@ -353,7 +354,7 @@ function parseUrlStr(urlStr) {
 async function InverseAnalysis(locationData) {
   const { latitude, longitude } = locationData;
   let cityInfo = await Taro.request({
-    url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${latitude},${longitude}&key=${APP_MAP_KEY}`
+    url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${latitude},${longitude}&key=${process.env.APP_MAP_KEY}`
   } );
   if ( cityInfo.data.result ) {
     Taro.setStorageSync( "lnglat", {

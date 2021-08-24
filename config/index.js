@@ -1,35 +1,31 @@
 import path, { join } from "path";
-import dotenvFlow from "dotenv-flow";
-import { name as _name, app_name, version } from "../package.json";
+import pkg from "../package.json";
+const { getEnvs, getDefineConstants } = require("./utils");
 
-dotenvFlow.config();
+require("dotenv-flow").config();
 
-const {
-  TARO_ENV = "weapp",
-  NODE_ENV = "development",
-  APP_BASE_URL,
-  APP_WEBSOCKET,
-  APP_COMPANY_ID,
-  APP_PLATFORM,
-  APP_CUSTOM_SERVER,
-  APP_HOME_PAGE,
-  INTEGRATION_APP,
-  APP_MAP_KEY,
-  APP_MAP_NAME,
-  APP_TRACK,
-  APP_ID,
-  APP_YOUSHU_TOKEN
-} = process.env
+const DIST_PATH = `dist/${process.env.TARO_ENV}`;
+const APP_ENVS = getEnvs();
 
-// 是否为web
-const isWeb = TARO_ENV === "h5";
+const CONST_ENVS = {
+  APP_NAME: pkg.app_name,
+  APP_AUTH_PAGE:
+    process.env.TARO_ENV == "h5"
+      ? "/subpage/pages/auth/login"
+      : "/subpage/pages/auth/wxauth",
+  ...APP_ENVS
+};
+
 // 是否为生产模式
-const isPro = NODE_ENV === "production";
-const APP_AUTH_PAGE = !isWeb
-  ? "/subpage/pages/auth/wxauth"
-  : "/subpage/pages/auth/login";
+const IS_PROD = process.env.NODE_ENV === "production";
+
+const copyPatterns = [{ from: "src/assets", to: `${DIST_PATH}/assets` }];
+if (process.env.TARO_ENV != "h5") {
+  copyPatterns.push({ from: "src/ext.json", to: `${DIST_PATH}/ext.json` });
+}
+
 const config = {
-  projectName: _name,
+  projectName: pkg.name,
   date: "2019-7-31",
   designWidth: 750,
   deviceRatio: {
@@ -38,7 +34,7 @@ const config = {
     "828": 1.81 / 2
   },
   sourceRoot: "src",
-  outputRoot: `dist/${TARO_ENV}`,
+  outputRoot: DIST_PATH,
   babel: {
     sourceMap: true,
     presets: [
@@ -69,34 +65,12 @@ const config = {
     resource: path.resolve(__dirname, "..", "src/style/imports.scss"),
     projectDirectory: path.resolve(__dirname, "..")
   },
-  defineConstants: {
-    APP_NAME: `'${app_name}'`,
-    APP_VERSION: `'${version}'`,
-    API_HOST: isWeb ? `'${APP_BASE_URL}'` : APP_BASE_URL,
-    APP_BASE_URL: isWeb ? `'${APP_BASE_URL}'` : APP_BASE_URL,
-    APP_WEBSOCKET_URL: isWeb ? `'${APP_WEBSOCKET}'` : APP_WEBSOCKET,
-    APP_INTEGRATION: INTEGRATION_APP,
-    APP_COMPANY_ID: isWeb ? `'${APP_COMPANY_ID}'` : APP_COMPANY_ID,
-    APP_PLATFORM: isWeb ? `'${APP_PLATFORM}'` : APP_PLATFORM,
-    APP_CUSTOM_SERVER: isWeb ? `'${APP_CUSTOM_SERVER}'` : APP_CUSTOM_SERVER,
-    APP_HOME_PAGE: isWeb ? `'${APP_HOME_PAGE}'` : APP_HOME_PAGE,
-    APP_AUTH_PAGE: isWeb ? `'${APP_AUTH_PAGE}'` : APP_AUTH_PAGE,
-    APP_TRACK: `${APP_TRACK}`,
-    APP_ID: `${APP_ID}`,
-    APP_YOUSHU_TOKEN: `${APP_YOUSHU_TOKEN}`,
-    APP_MAP_KEY: isWeb ? `'${APP_MAP_KEY}'` : APP_MAP_KEY,
-    APP_MAP_NAME: `'${APP_MAP_NAME}'`
-  },
+  defineConstants: getDefineConstants(CONST_ENVS),
   alias: {
     "@": join(__dirname, "../src")
   },
   copy: {
-    patterns: [
-      { from: "src/assets", to: `dist/${TARO_ENV}/assets` },
-      ...(!isWeb
-        ? [{ from: "src/ext.json", to: `dist/${TARO_ENV}/ext.json` }]
-        : [])
-    ]
+    patterns: copyPatterns
   },
   plugins: [
     path.join(__dirname, "./modify-taro.js"),
@@ -105,12 +79,12 @@ const config = {
   ],
   // 开启压缩
   uglify: {
-    enable: isPro,
+    enable: IS_PROD,
     config: {
       // 配置项同 https://github.com/mishoo/UglifyJS2#minify-options
       compress: {
-        drop_console: isPro,
-        drop_debugger: isPro
+        drop_console: IS_PROD,
+        drop_debugger: IS_PROD
       }
     }
   },
@@ -255,7 +229,7 @@ const config = {
 };
 
 module.exports = function(merge) {
-  if (!isPro) {
+  if (!IS_PROD) {
     return merge({}, config, require("./dev"));
   }
   return merge({}, config, require("./prod"));

@@ -48,3 +48,9 @@ export function getPageParamsConfig({
     version
   });
 }
+
+
+// 获取tabbars和小程序配置
+export function getAppConfig() {
+  return req.get("/pagestemplate/setInfo");
+}
