@@ -104,7 +104,7 @@ APP_YOUSHU_TOKEN=bi281e87ab2424481a
 APP_ID=wx912913df9fef6ddd
 APP_MAP_KEY='${map_key}'
 APP_MAP_NAME='${map_name}'
-APP_IMAGE_CDN='${image_cdn}
+APP_IMAGE_CDN='${image_cdn}'
 ' > ./.env
 
 echo "请选择编译方式"
