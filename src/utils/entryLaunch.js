@@ -58,7 +58,19 @@ class EntryLaunch {
       if ( process.env.TARO_ENV === 'weapp' ) {
         
       } else {
-        const geolocation = new qq.maps.Geolocation( process.env.APP_MAP_KEY, process.env.APP_MAP_NAME );
+        console.log(process.env.APP_MAP_KEY, process.env.APP_MAP_NAME);
+        const geolocation = new qq.maps.Geolocation(
+          process.env.APP_MAP_KEY,
+          "ecshopx-saas"
+        );
+        geolocation.getIpLocation(
+          res => {
+            debugger;
+          },
+          error => {
+            debugger;
+          }
+        );
         geolocation.getLocation( res => {
           debugger
         }, error => {
