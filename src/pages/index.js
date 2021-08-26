@@ -13,7 +13,7 @@ import {
 } from "@/components";
 import req from "@/api/req";
 import api from "@/api";
-import { pickBy, classNames, isArray } from "@/utils";
+import { pickBy, classNames, isArray, entryLaunch } from "@/utils";
 import entry from "@/utils/entry";
 import { withLogin, withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
@@ -316,6 +316,9 @@ export default class Home extends Component {
 
   // 获取首页配置
   getHomeSetting = async () => {
+    entryLaunch.getLocationInfo()
+    debugger
+
     const is_open_store_status = await entry.getStoreStatus();
     const {
       is_open_recommend,
