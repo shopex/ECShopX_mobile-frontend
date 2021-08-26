@@ -985,12 +985,12 @@ export default class Detail extends Component {
     const { info } = this.state
     const { distributor_id } = Taro.getStorageSync('curStore')
     const { itemId: item_id } = info
-    const { user_card_id } = this.$router.params
+    const { user_card_id, card_id, code } = this.$router.params
     const params = {distributor_id, item_id, user_card_id }
     const res = await api.cart.exchangeGood(params)
     if (res.status == true) {
       Taro.navigateTo({
-        url: `/marketing/pages/member/qrcode?user_card_id=${user_card_id}`
+        url: `/marketing/pages/member/qrcode?user_card_id=${user_card_id}&card_id=${card_id}&code${code}`
       })
     }
   }

@@ -9,29 +9,23 @@ export default class QRcode extends Component {
     super(props)
 
     this.state = {
-      result: '',
-      code: '',
-      card_id: '',
-      user_card_id: ''
+      result: ''
     }
   }
 
   async componentDidMount () {
-    const {user_card_id, card_id, code} = this.$router.params
+    const {user_card_id} = this.$router.params
     let result = await api.member.getQRcode({user_card_id})
     this.setState({
-      result,
-      card_id,
-      code,
-      user_card_id
+      result
     })
   }
 
   handleClick = () => {
-    const {card_id, user_card_id, code} = this.state
+    const {card_id, user_card_id, code} = this.$router.params
+    console.log('🚀', this.$router.params)
     Taro.redirectTo({
       url: `/pages/item/list?card_id=${card_id}&code=${code}&user_card_id=${user_card_id}&isNewGift=true`
-      // url: `/marketing/pages/member/new-gift-list?card_id=${card_id}&code=${code}&user_card_id=${user_card_id}`
     })
   }
 

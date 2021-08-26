@@ -368,7 +368,7 @@ export default class List extends Component {
   }
 
   handleClickItem = ( item ) => {
-    const {user_card_id, isNewGift = null} = this.$router.params
+    const {user_card_id, isNewGift = null, card_id , code} = this.$router.params
     if (isNewGift && item.store == 0 ) return
     const { item_id, title, market_price, price, img } = item;
     Tracker.dispatch("TRIGGER_SKU_COMPONENT", {
@@ -380,7 +380,7 @@ export default class List extends Component {
     });
     let url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
     if (isNewGift) {
-      url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}&isNewGift=true&user_card_id=${user_card_id}`
+      url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}&isNewGift=true&user_card_id=${user_card_id}&card_id=${card_id}&code${code}`
     }
     Taro.navigateTo({
       url
@@ -578,26 +578,27 @@ export default class List extends Component {
           <View className='store' onClick={this.setStore.bind(this, true)}>
             当前门店: <View className='name'>{currentShop.name}</View>
           </View>
-          <View style={{display: 'flex', position: 'relative'}}>
-            <FilterBar
-              className='goods-list__tabs1'
-              custom
-              current={curFilterIdx}
-              list={filterList}
-              onChange={this.handleFilterChange}
-            />
-            <View className='goods-list__search1'>
-              <SearchBar
-                _placeholder
-                keyword={query ? query.keywords : ''}
-                onFocus={this.handleSearchOn}
-                onChange={this.handleSearchChange}
-                onClear={this.handleSearchClear}
-                onCancel={this.handleSearchOff}
-                onConfirm={this.handleConfirm.bind(this)}
+          {list.length && 
+            <View style={{display: 'flex', position: 'relative'}}>
+              <FilterBar
+                className='goods-list__tabs1'
+                custom
+                current={curFilterIdx}
+                list={filterList}
+                onChange={this.handleFilterChange}
               />
-            </View>
-          </View>
+              <View className='goods-list__search1'>
+                <SearchBar
+                  _placeholder
+                  keyword={query ? query.keywords : ''}
+                  onFocus={this.handleSearchOn}
+                  onChange={this.handleSearchChange}
+                  onClear={this.handleSearchClear}
+                  onCancel={this.handleSearchOff}
+                  onConfirm={this.handleConfirm.bind(this)}
+                />
+              </View>
+          </View>}
         </View>) :
         (<View className='goods-list__toolbar'>
         <View className={`goods-list__search ${(query && query.keywords && !isShowSearch) ? 'on-search' : null}`}>
