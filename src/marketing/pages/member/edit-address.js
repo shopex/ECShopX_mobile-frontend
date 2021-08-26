@@ -272,10 +272,7 @@ export default class AddressIndex extends Component {
       title: '正在提交',
       mask: true
     })
-
-    this.setState({
-      submitLoading: true
-    }) 
+ 
     try {
       await api.member.addressCreateOrUpdate(data)
       if(data.address_id) {
@@ -286,15 +283,11 @@ export default class AddressIndex extends Component {
       setTimeout(()=>{
         Taro.navigateBack()
       }, 700)
-    } catch (error) {
-      this.setState({
-        submitLoading: false
-      })
+    } catch (error) { 
+      hideLoading()
       return false
-    }
-    this.setState({
-      submitLoading: false
-    })
+    } 
+    hideLoading()
   }
 
   handleSelectArea=()=>{
@@ -409,7 +402,7 @@ export default class AddressIndex extends Component {
                 </Button>
                 : <Button
                   type='primary'
-                  onClick={this.handleSubmit}
+                  // onClick={this.handleSubmit}
                   formType='submit'
                   style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
                 >提交</Button>
