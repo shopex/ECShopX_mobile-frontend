@@ -206,7 +206,6 @@ async function getLocalSetting() {
 async function getLocal(isNeedLocate) {
   let store = null;
   const positionStatus = await getLocalSetting();
-  debugger
   if (!positionStatus) {
     store = await api.shop.getShop();
   } else {
@@ -219,6 +218,7 @@ async function getLocal(isNeedLocate) {
       }
       store = await api.shop.getShop(param);
     } else {
+      debugger
       const locationData = await getLoc();
       if (locationData !== null && locationData !== "") {
         let param = {};

@@ -47,7 +47,6 @@ const getHomeSetting = async () => {
     whitelist_status,
     nostores_status,
     disk_driver,
-    nostores_status,
     youshu
   })
   // 分享时是否携带参数
