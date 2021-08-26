@@ -13,7 +13,7 @@ import {
 } from "@/components";
 import req from "@/api/req";
 import api from "@/api";
-import { pickBy, classNames, isArray } from "@/utils";
+import { pickBy, classNames, isArray,isAlipay } from "@/utils";
 import entry from "@/utils/entry";
 import { withLogin, withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
@@ -369,7 +369,7 @@ export default class Home extends Component {
     if (!curStore.distributor_id && curStore.distributor_id !== 0) {
       return;
     }
-    if (APP_PLATFORM === 'platform') {
+    if (APP_PLATFORM === 'platform'||isAlipay) {
       curdis_id=0;
     }
     const url = `/pagestemplate/detail?template_name=yykweishop&weapp_pages=index&distributor_id=${curdis_id}`;
@@ -541,9 +541,13 @@ export default class Home extends Component {
   };
 
   handleLoadMore=async (currentIndex,compType,currentTabIndex,currentLength)=>{
+    if(isAlipay) return ;
     const { id }=this.state.wgtsList.find((_,index)=>currentIndex===index)||{}
     this.currentLoadIndex=currentIndex;
     let params={template_name:'yykweishop',weapp_pages:'index',page:1,page_size:currentLength+50,weapp_setting_id:id,...this.getDistributionId()};
+    if(isAlipay){
+      delete params.weapp_setting_id
+    }
     let loadData;
     if(compType==='good-grid'||compType==='good-scroll'){ 
       loadData=await api.wx.loadMoreGoods(params);

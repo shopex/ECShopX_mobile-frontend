@@ -438,65 +438,7 @@ export default class MemberIndex extends Component {
           </View>
         )}
 
-        {(vipgrade.is_open || (!vipgrade.is_open && vipgrade.is_vip)) &&
-          memberDiscount !== "" && (
-            <View
-              className="member-card"
-              onClick={() => {
-                this.handleClickWxOAuth(
-                  this.navigateTo.bind(this, "/subpage/pages/vip/vipgrades")
-                );
-              }}
-            >
-              {vipgrade.is_open && !vipgrade.is_vip && (
-                <View className="vip-btn">
-                  <View className="vip-btn__title">
-                    开通VIP会员 <Text className="icon-arrowRight"></Text>
-                  </View>
-                  {memberDiscount && (
-                    <View className="vip-btn__desc">
-                      即可享受最高{memberDiscount}折会员优惠
-                    </View>
-                  )}
-                </View>
-              )}
-              {vipgrade.is_vip && (
-                <View className="grade-info">
-                  <View className="member-card-title">
-                    <Text className="vip-sign">
-                      {vipgrade.vip_type === "svip" ? (
-                        <Text>SVIP</Text>
-                      ) : (
-                        <Text>VIP</Text>
-                      )}
-                    </Text>
-                    会员卡
-                  </View>
-                  <View className="member-card-no">
-                    NO. {memberInfo.user_card_code}
-                  </View>
-                  <View className="member-card-period">
-                    {vipgrade.end_time} 到期
-                  </View>
-                </View>
-              )}
-              {vipgrade.is_vip && (
-                <Image
-                  className="member-info-bg"
-                  src={vipgrade.background_pic_url}
-                  mode="widthFix"
-                />
-              )}
-              {vipgrade.is_open && !vipgrade.is_vip && (
-                <Image
-                  className="member-info-bg"
-                  src={memberInfo.gradeInfo.background_pic_url}
-                  mode="widthFix"
-                />
-              )}
-            </View>
-          )}
-
+    
         {/* {is_open_official_account === 1 && (
           <View className="page-member-section">
             <AccountOfficial
@@ -621,11 +563,11 @@ export default class MemberIndex extends Component {
           </View>
         </View>
 
-        {bannerSetting && bannerSetting.is_show && (
+        {/* {bannerSetting && bannerSetting.is_show && (
           <View className="page-member-section">
             <MemberBanner info={bannerSetting} />
           </View>
-        )}
+        )} */}
 
         {!isAlipay && <View className="page-member-section">
           {memberData.is_open_popularize && (

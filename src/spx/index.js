@@ -247,8 +247,7 @@ class Spx {
       token = tokenLogin.token;
     } else if (isAlipay) {
       const authLogin = await my.getAuthCode({ scopes: ['auth_base'] });
-      code = authLogin.authCode;
-      console.log("code", code)
+      code = authLogin.authCode; 
       const tokenLogin = await api.alipay.login({ code })
       token = tokenLogin.token;
     }
