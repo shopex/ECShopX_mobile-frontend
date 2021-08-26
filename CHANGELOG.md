@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.5](https://git.ishopex.cn/onex/ecshopx-vshop/compare/v3.6.1...v4.0.5) (2021-08-26)
+
+
+### Bug Fixes
+
+* goodsGridTab bug ([67270b7](https://git.ishopex.cn/onex/ecshopx-vshop/commit/67270b7761521fb08a7e11de74d1ada4a44ef151))
+* 个人信息头像更新 ([2aeca0d](https://git.ishopex.cn/onex/ecshopx-vshop/commit/2aeca0d18586120ec0029cc79d305d62e0e7c52b))
+* 修复从导购助手跳转过来，导购店铺信息不对，修复商品详情页购买组件逻辑判断 ([6eed805](https://git.ishopex.cn/onex/ecshopx-vshop/commit/6eed8056cff52722e7bee0d455d24092a73a99f2))
+* 修改授权 ([bf6a80d](https://git.ishopex.cn/onex/ecshopx-vshop/commit/bf6a80d4bfd0f2cb44f19549bbbc92d2e5859a8b))
+* 授权优化 ([42e1901](https://git.ishopex.cn/onex/ecshopx-vshop/commit/42e190125c6838666944d10bf63ce0b66a582217))
+* 授权信息 ([5bb77ec](https://git.ishopex.cn/onex/ecshopx-vshop/commit/5bb77ec3a14d716e41543182f5b5b088134588a8))
+* 授权微信用户信息 ([7b036d9](https://git.ishopex.cn/onex/ecshopx-vshop/commit/7b036d9b75443c509d11ffaee4cae7b8958f447e))
+* 有数埋点添加会员价 ([c884378](https://git.ishopex.cn/onex/ecshopx-vshop/commit/c8843781c1d488066e6f4a63c9247b2dea5da998))
+* 购物车loading ([b386a63](https://git.ishopex.cn/onex/ecshopx-vshop/commit/b386a63edc8899eddf275772ead37c7ab6c39ccb))
+
 ### [3.6.1](https://git.ishopex.cn/onex/ecshopx-vshop/compare/v3.6.0...v3.6.1) (2021-07-08)
 
 ## 3.6.0 (2021-07-08)
