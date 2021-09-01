@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, Button } from "@tarojs/components";
-import { Price, NavBar, SpCell } from "@/components";
+import { Price, SpNavBar, SpCell } from "@/components";
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from "taro-ui";
 import api from "@/api";
@@ -187,7 +187,7 @@ export default class VipIndex extends Component {
     };
     return (
       <View className="vipgrades">
-        <NavBar title="会员购买" leftIconType="chevron-left" fixed="true" />
+        <SpNavBar title="会员购买" leftIconType="chevron-left" fixed="true" />
         <View
           className="header"
           style={"background: " + colors.data[0].marketing}

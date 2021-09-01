@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
-import { Loading, SpToast, NavBar } from '@/components'
+import { Loading, SpToast, SpNavBar } from '@/components'
 import { log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute } from '@/utils'
 import { Tracker } from "@/service";
 import api from '@/api'
@@ -537,7 +537,7 @@ export default class TradeDetail extends Component {
 
     return (
       <View className={`trade-detail ${info.is_logistics && 'islog'}`}>
-        <NavBar title='售后详情' leftIconType='chevron-left' fixed='true' />
+        <SpNavBar title='售后详情' leftIconType='chevron-left' fixed='true' />
         {
           info.is_logistics && <View className='custabs'>
             <View

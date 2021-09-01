@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button, Image, Input } from '@tarojs/components'
 import { AtTabBar } from 'taro-ui'
-import { BackToTop, Loading, NavBar, SpImg, SpNote } from '@/components'
+import { BackToTop, Loading, SpNavBar, SpImg, SpNote } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 import throttle from 'lodash/throttle'
@@ -429,7 +429,7 @@ export default class DistributionShopHome extends Component {
     return (
       <View className='page-distribution-shop'>
         <CustomHeader isWhite={paddindTop > 0} isHome={isHome} statusBarHeight={statusBarHeight} />
-        <NavBar
+        <SpNavBar
           title='小店'
           leftIconType='chevron-left'
           fixed='true'

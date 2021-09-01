@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import { Loading, SpNote, NavBar } from '@/components'
+import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
 import { classNames, pickBy } from '@/utils'
@@ -82,7 +82,7 @@ export default class DistributionSubordinate extends Component {
 
     return (
       <View className="page-distribution-subordinate">
-        <NavBar
+        <SpNavBar
           title='我的会员'
           leftIconType='chevron-left'
           fixed='true'

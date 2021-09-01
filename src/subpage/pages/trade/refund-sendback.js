@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Picker } from '@tarojs/components'
 import { AtInput, AtButton } from 'taro-ui'
-import { NavBar, SpToast } from '@/components'
+import { SpNavBar, SpToast } from '@/components'
 import api from '@/api'
 import S from '@/spx'
 
@@ -97,7 +97,7 @@ export default class TradeRefundSendback extends Component {
     const { express, logi_no, curExpressIdx } = this.state
     return (
       <View className='page-refund-sendback'>
-        <NavBar
+        <SpNavBar
           title='售后填写物流公司'
           leftIconType='chevron-left'
           fixed='true'

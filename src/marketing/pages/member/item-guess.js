@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, GoodsItem, NavBar, SpNote } from '@/components'
+import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
 
@@ -66,7 +66,7 @@ export default class ItemGuess extends Component {
     return (
       <View className='page-goods-list page-goods-guess'>
         <View className='goods-list__toolbar'>
-          <NavBar
+          <SpNavBar
             leftIconType='chevron-left'
             fixed='true'
           />

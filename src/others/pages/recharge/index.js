@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 充值余额
- * @FilePath: /unite-vshop/src/others/pages/recharge/index.js
- * @Date: 2020-01-13 17:38:42
- * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-04-01 09:45:09
- */
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, Text, Input } from "@tarojs/components";
-import { NavBar, SpCell } from "@/components";
+import { SpNavBar, SpCell } from "@/components";
 import { connect } from "@tarojs/redux";
 import { withLogin } from "@/hocs";
 import S from "@/spx";
@@ -279,8 +269,7 @@ export default class Recharge extends Component {
     }
     return (
       <View className="recharge">
-        {/* NavBar */}
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType="chevron-left"
         />

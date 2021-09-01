@@ -19,7 +19,6 @@ import {
   FloatMenuItem,
   SpHtmlContent,
   SpToast,
-  NavBar,
   GoodsBuyPanel,
   SpCell,
   GoodsEvaluation,
@@ -956,11 +955,7 @@ export default class Detail extends Component {
           onClick={this.toCart}
           className="iconfont icon-cart toCart"
         ></View>
-        {/* <NavBar
-          title={info.item_name}
-          leftIconType="chevron-left"
-          fixed="true"
-        /> */}
+
 
         <ScrollView
           className="goods-detail__wrap"

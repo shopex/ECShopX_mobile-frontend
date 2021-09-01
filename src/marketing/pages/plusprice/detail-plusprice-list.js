@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, SpNote, GoodsItem, NavBar } from '@/components'
+import { BackToTop, Loading, SpNote, GoodsItem, SpNavBar } from '@/components'
 import { AtCountdown } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import api from '@/api'
@@ -150,7 +150,7 @@ export default class DetailPluspriceList extends Component {
         className='page-plusprice'
         style={{backgroundImage: `url(${isSetBackground})`, backgroundSize:isSetBackground?'cover':'contain'}}
       >
-        <NavBar
+        <SpNavBar
           title='微商城'
         />
         <View className='plusprice-goods__info'>

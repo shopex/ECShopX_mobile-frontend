@@ -13,7 +13,6 @@ import {
   TabBar,
   Loading,
   Price,
-  NavBar,
   GoodsItem
 } from "@/components";
 import { log, navigateTo, pickBy, classNames } from "@/utils";
@@ -737,9 +736,7 @@ export default class CartIndex extends Component {
     return (
       <View className={classNames("page-cart-index", isDrug && "is-drug")}>
         <BaNavBar title="购物车" fixed jumpType={"home"} />
-        {/* {isDrug && (
-          <NavBar title="购物车" leftIconType="chevron-left" fixed="true" />
-        )} */}
+
         {!S.getAuthToken() ? (
           <View className="login-header">
             <View>授权登录后同步购物车的商品</View>

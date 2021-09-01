@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { SpCell, SpToast, NavBar } from '@/components'
+import { SpCell, SpToast, SpNavBar } from '@/components'
 import { connect } from '@tarojs/redux'
 import S from '@/spx'
 import api from '@/api'
@@ -78,7 +78,7 @@ export default class TradeCancel extends Component {
 
     return (
       <View className='page-trade-cancel'>
-        <NavBar
+        <SpNavBar
           title='取消订单'
           leftIconType='chevron-left'
           fixed='true'

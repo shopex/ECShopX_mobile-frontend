@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Form, Button, Text, Picker, Image } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { AtInput, AtButton } from 'taro-ui'
-import { SpToast, Timer, NavBar, SpCheckbox,AccountOfficial } from '@/components'
+import { SpToast, Timer, SpNavBar, SpCheckbox,AccountOfficial } from '@/components'
 import { classNames, isString, isArray, tokenParse } from "@/utils";
 import { Tracker } from "@/service";
 import S from '@/spx'
@@ -441,7 +441,7 @@ export default class Reg extends Component {
             onClick={this.handleOfficialClose.bind(this)}
           />
         )}
-        <NavBar title="注册" leftIconType="chevron-left" />
+        <SpNavBar title="注册" leftIconType="chevron-left" />
         <Form onSubmit={this.handleSubmit}>
           <View className="sec auth-reg__form">
             {process.env.TARO_ENV === "weapp" && (

@@ -5,7 +5,7 @@ import { AtTabs, AtTabsPane } from 'taro-ui'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
 import { pickBy } from '@/utils'
-import { BackToTop, Loading, GoodsItem, NavBar, SpNote, RecommendItem } from '@/components'
+import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote, RecommendItem } from '@/components'
 import StoreFavItem from './comps/store-fav-item'
 
 import './item-fav.scss'
@@ -169,7 +169,7 @@ export default class ItemFav extends Component {
     return (
       <View className='page-goods-list page-goods-fav'>
         <View className='goods-list__toolbar'>
-          <NavBar
+          <SpNavBar
             title='收藏'
             leftIconType='chevron-left'
             fixed='true'

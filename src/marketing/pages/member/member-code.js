@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import { withLogin } from '@/hocs'
 import userIcon from "@/assets/imgs/user-icon.png";
 import api from '@/api'
@@ -48,7 +48,7 @@ export default class MemberCode extends Component {
 
     return (
       <View className="member-code-wrap">
-        <NavBar title="我的二维码" leftIconType="chevron-left" />
+        <SpNavBar title="我的二维码" leftIconType="chevron-left" />
         <View className="member-code">
           <View className="avatar">
             <Image

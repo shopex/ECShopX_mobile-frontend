@@ -1,17 +1,7 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 说明
- * @FilePath: /unite-vshop/src/marketing/pages/member/setting.js
- * @Date: 2020-03-25 16:31:52
- * @LastEditors: Arvin
- * @LastEditTime: 2020-07-14 18:01:19
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
-import { SpCell, NavBar } from '@/components'
+import { SpCell, SpNavBar } from '@/components'
 import { goToPage } from '@/utils'
 import { connect } from '@tarojs/redux'
 import { withLogin } from '@/hocs'
@@ -49,7 +39,7 @@ export default class MemberSetting extends Component {
   render () {
     return (
       <View className='page-member-setting'>
-        <NavBar
+        <SpNavBar
           title='设置'
           fixed={false}
         />

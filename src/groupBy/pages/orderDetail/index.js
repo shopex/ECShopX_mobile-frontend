@@ -12,7 +12,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import api from '@/api'
 import { formatDataTime } from '@/utils'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 
 import './index.scss'
 
@@ -256,7 +256,7 @@ export default class OrderDetail extends Component {
     } = this.state
     return (
       <View className='orderDetail'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text, Image } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
-import { BackToTop, Loading, SpNote, GoodsItem, NavBar } from '@/components'
+import { BackToTop, Loading, SpNote, GoodsItem, SpNavBar } from '@/components'
 import { AtCountdown } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import api from '@/api'
@@ -148,7 +148,7 @@ export default class SeckillGoodsList extends Component {
     const { list, imgurl, showBackToTop, scrollTop, page, timer, status } = this.state
     return (
       <View className='page-seckill-goods'>
-        <NavBar
+        <SpNavBar
           title='微商城'
         />
         <ScrollView

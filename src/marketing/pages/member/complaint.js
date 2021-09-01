@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtAvatar, AtTextarea, AtButton, AtImagePicker } from 'taro-ui'
-import { Loading, NavBar } from '@/components'
+import { Loading, SpNavBar } from '@/components'
 import api from '@/api'
 import imgUploader from '@/utils/upload'
 
@@ -116,7 +116,7 @@ export default class Complaint extends Component {
 
     return (
       <View className='page-complaint'>
-        <NavBar
+        <SpNavBar
           title='投诉'
           leftIconType='chevron-left'
           fixed='true'

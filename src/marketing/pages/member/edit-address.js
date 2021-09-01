@@ -3,7 +3,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Switch, Text, Picker, Button } from '@tarojs/components'
 import { AtForm, AtInput } from 'taro-ui'
 import { connect } from '@tarojs/redux'
-import { SpCell, SpToast, NavBar } from '@/components'
+import { SpCell, SpToast, SpNavBar } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import S from '@/spx'
@@ -276,7 +276,7 @@ export default class AddressIndex extends Component {
           {/*address={this.$router.params.address}*/}
           {/*addressID={this.$router.params.address_id}*/}
         {/*/>*/}
-        <NavBar 
+        <SpNavBar 
           title='编辑地址'
           leftIconType='chevron-left'
           fixed='true'

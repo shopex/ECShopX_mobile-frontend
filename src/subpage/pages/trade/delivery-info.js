@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtTimeline } from 'taro-ui'
-import { Loading, NavBar, SpNote } from '@/components'
+import { Loading, SpNavBar, SpNote } from '@/components'
 import { pickBy } from '@/utils'
 import api from '@/api'
 
@@ -60,7 +60,7 @@ export default class TradeDetail extends Component {
 
     return (
       <View className='delivery-detail'>
-        <NavBar
+        <SpNavBar
           title='物流信息'
           leftIconType='chevron-left'
           fixed='true'

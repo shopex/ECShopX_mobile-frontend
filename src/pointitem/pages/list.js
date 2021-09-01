@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer, AtInput } from 'taro-ui'
-import { BackToTop, Loading, SpNote, NavBar, TabBar, HomeCapsule } from '@/components'
+import { BackToTop, Loading, SpNote, TabBar, HomeCapsule } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
 import { classNames } from '@/utils'
@@ -659,99 +659,139 @@ export default class List extends Component {
     // console.log('-----useInfo----', useInfo)
     // console.log('-----filterConfig----', this.state.filterConfig)
     return (
-      <View className='page-pointitem-home'>
+      <View className="page-pointitem-home">
+        <CustomHeader
+          isWhite={paddindTop > 0}
+          isHome={true}
+          statusBarHeight={statusBarHeight}
+        />
 
-        <CustomHeader isWhite={paddindTop > 0} isHome={true} statusBarHeight={statusBarHeight} />
-
-        <View className='pointitem-banner'>
-          <View className='pointitem-def'>
+        <View className="pointitem-banner">
+          <View className="pointitem-def">
             <Image
-              mode='aspectFill'
-              className='banner-img'
-              src={require('../../assets/imgs/black.png')}
+              mode="aspectFill"
+              className="banner-img"
+              src={`${process.env.APP_IMAGE_CDN}/pointmall_bg.png`}
             />
           </View>
           <Header useInfo={useInfo} />
         </View>
 
-        <View className={classNames('filter-bar', { 'active': filterActive }, `goods-list__tabs filter`)} id="filter" style={`padding-top: ${paddindTop}px; transition: padding ${paddindTop > 20 ? paddindTop * 3.5 : 300}ms linear;`}>
+        <View
+          className={classNames(
+            "filter-bar",
+            { active: filterActive },
+            `goods-list__tabs filter`
+          )}
+          id="filter"
+          style={`padding-top: ${paddindTop}px; transition: padding ${
+            paddindTop > 20 ? paddindTop * 3.5 : 300
+          }ms linear;`}
+        >
           {/* <Icon className='iconfont search-icon' type='search' size='14' color='#999999'></Icon> */}
           <View class="text">
-            {
-              filterList.map((item, idx) => {
-                const isCurrent = curFilterIdx === idx
+            {filterList.map((item, idx) => {
+              const isCurrent = curFilterIdx === idx;
 
-                return (
-                  <View
-                    className={classNames('filter-bar__item', isCurrent && 'filter-bar__item-active', item.key && `filter-bar__item-${item.key}`, item.sort ? `filter-bar__item-sort filter-bar__item-sort-${sortOrder > 0 ? 'asc' : 'desc'}` : null)}
-                    style={isCurrent ? 'color: #d42f29' : 'color: #666'}
-                    onClick={this.handleClickItemF.bind(this, idx)}
-                    key={item.title}
-                  >
-                    <Text className='filter-bar__item-text'>{item.title}</Text>
-                    {/* <View className='active-bar' style={'background: ' + colors.data[0].primary}></View> */}
-                  </View>
-                )
-              })
-            }
+              return (
+                <View
+                  className={classNames(
+                    "filter-bar__item",
+                    isCurrent && "filter-bar__item-active",
+                    item.key && `filter-bar__item-${item.key}`,
+                    item.sort
+                      ? `filter-bar__item-sort filter-bar__item-sort-${
+                          sortOrder > 0 ? "asc" : "desc"
+                        }`
+                      : null
+                  )}
+                  style={isCurrent ? "color: #d42f29" : "color: #666"}
+                  onClick={this.handleClickItemF.bind(this, idx)}
+                  key={item.title}
+                >
+                  <Text className="filter-bar__item-text">{item.title}</Text>
+                  {/* <View className='active-bar' style={'background: ' + colors.data[0].primary}></View> */}
+                </View>
+              );
+            })}
           </View>
-          <View class='action' >
-            {!isHidden && <View class="filter" onClick={this.handleOpenFilter}><View class="textFilter">筛选</View><View className={"iconfont icon-filter"}></View></View>}
-            <View class="searchInput">
-
-            </View>
-
+          <View class="action">
+            {!isHidden && (
+              <View class="filter" onClick={this.handleOpenFilter}>
+                <View class="textFilter">筛选</View>
+                <View className={"iconfont icon-filter"}></View>
+              </View>
+            )}
+            <View class="searchInput"></View>
           </View>
-          <View className={classNames('searchInput', 'searchInput-P', [{ 'isHidden': isHidden },{'active':filterActive}])} style={`top:${searchTop}; transition: top ${paddindTop > 20 ? paddindTop * 3.5 : 300}ms linear;`}>
+          <View
+            className={classNames("searchInput", "searchInput-P", [
+              { isHidden: isHidden },
+              { active: filterActive }
+            ])}
+            style={`top:${searchTop}; transition: top ${
+              paddindTop > 20 ? paddindTop * 3.5 : 300
+            }ms linear;`}
+          >
             {/* <View
               className='iconfont icon-search'
             >
               <Text className='txt'></Text>
             </View> */}
-            <AtInput placeholder={filterActive?'搜索积分商品':undefined} clear value={inputValue} onFocus={this.handleFocus} onBlur={this.handleBlur} onConfirm={this.handleInputConfirm} onChange={this.handleInputChange} />
+            <AtInput
+              placeholder={filterActive ? "搜索积分商品" : undefined}
+              clear
+              value={inputValue}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              onConfirm={this.handleInputConfirm}
+              onChange={this.handleInputChange}
+            />
 
-            {<Icon className={classNames('iconfont','icon-search',{
-              [`show`]:filterActive
-            }) }type='search' size='14' color='#999999'></Icon>}
+            {
+              <Icon
+                className={classNames("iconfont", "icon-search", {
+                  [`show`]: filterActive
+                })}
+                type="search"
+                size="14"
+                color="#999999"
+              ></Icon>
+            }
 
-            {filterActive && <View
-              className={`at-icon at-icon-close-circle ${inputValue && 'show'}`}
-              onClick={this.handleClear.bind(this)} 
-            ></View>}
+            {filterActive && (
+              <View
+                className={`at-icon at-icon-close-circle ${inputValue &&
+                  "show"}`}
+                onClick={this.handleClear.bind(this)}
+              ></View>
+            )}
           </View>
           {this.props.children}
         </View>
 
-        <View className={classNames('main', [
-          { 'noData': noData }
-        ])}  >
-          {
-            list.map(item => {
-              return (
-                <View
-                  className="goods-list__item"
+        <View className={classNames("main", [{ noData: noData }])}>
+          {list.map(item => {
+            return (
+              <View
+                className="goods-list__item"
+                key={item.item_id}
+                data-id={item.item_id}
+              >
+                <GoodsItem
                   key={item.item_id}
-                  data-id={item.item_id}
-                >
-                  <GoodsItem
-                    key={item.item_id}
-                    info={item}
-                    isStoreOut={item.goods_store == 0}
-                    onClick={() => this.handleClickItem(item)}
-                    onStoreClick={() => this.handleClickStore(item)}
-                  />
-                </View>
-              );
-            })
-          }
-          {
-            page.isLoading
-              ? <Loading className='loadingContent'>正在加载...</Loading>
-              : null
-          }
-          {
-            noData && (<SpNote img='trades_empty.png'>暂无数据~</SpNote>)
-          }
+                  info={item}
+                  isStoreOut={item.goods_store == 0}
+                  onClick={() => this.handleClickItem(item)}
+                  onStoreClick={() => this.handleClickStore(item)}
+                />
+              </View>
+            );
+          })}
+          {page.isLoading ? (
+            <Loading className="loadingContent">正在加载...</Loading>
+          ) : null}
+          {noData && <SpNote img="trades_empty.png">暂无数据~</SpNote>}
         </View>
 
         <AtDrawer
@@ -760,58 +800,95 @@ export default class List extends Component {
           mask
           width={`${Taro.pxTransform(630)}`}
           onClose={this.filterOpen.bind(false)}
-          class='custom_drawer'
+          class="custom_drawer"
         >
           {
             <View class="wrapper-filter">
-              {brandVisible && <View class="brand" >
-                <View class="title">品牌</View>
-                <View class="content-filter">
-                  {
-                    brandList.map((item, index) => {
+              {brandVisible && (
+                <View class="brand">
+                  <View class="title">品牌</View>
+                  <View class="content-filter">
+                    {brandList.map((item, index) => {
                       return (
-                        <FilterBlock info={item} type="brand" active={brand.indexOf(item.attribute_id) > -1} onClickItem={this.handleClickFilterBlock} />
-                      )
-                    })
-                  }
+                        <FilterBlock
+                          info={item}
+                          type="brand"
+                          active={brand.indexOf(item.attribute_id) > -1}
+                          onClickItem={this.handleClickFilterBlock}
+                        />
+                      );
+                    })}
+                  </View>
                 </View>
-              </View>}
-              {categoryVisible && <View class="category">
-                <View class="title">分类</View>
-                <View class="content-filter">
-                  {
-                    categoryList.map((item, index) => {
+              )}
+              {categoryVisible && (
+                <View class="category">
+                  <View class="title">分类</View>
+                  <View class="content-filter">
+                    {categoryList.map((item, index) => {
                       return (
-                        <FilterBlock info={item} type="category" active={category.indexOf(item.category_id) > -1} onClickItem={this.handleClickFilterBlock} />
-                      )
-                    })
-                  }
+                        <FilterBlock
+                          info={item}
+                          type="category"
+                          active={category.indexOf(item.category_id) > -1}
+                          onClickItem={this.handleClickFilterBlock}
+                        />
+                      );
+                    })}
+                  </View>
                 </View>
-              </View>}
-              {pointVisible && <View class="score">
-                <View class="title">{customName("积分区间")}</View>
-                <View class="input-wrap">
-                  <AtInput placeholder={customName("最低积分值")} value={start_price} onChange={this.handleChangeStartprice} />
-                  <View class='text'>~</View>
-                  <AtInput placeholder={customName("最高积分值")} value={end_price} onChange={this.handleChangeEndprice} />
-                </View>
-                {
-                  scoreInternel.map((item, index) => {
+              )}
+              {pointVisible && (
+                <View class="score">
+                  <View class="title">{customName("积分区间")}</View>
+                  <View class="input-wrap">
+                    <AtInput
+                      placeholder={customName("最低积分值")}
+                      value={start_price}
+                      onChange={this.handleChangeStartprice}
+                    />
+                    <View class="text">~</View>
+                    <AtInput
+                      placeholder={customName("最高积分值")}
+                      value={end_price}
+                      onChange={this.handleChangeEndprice}
+                    />
+                  </View>
+                  {scoreInternel.map((item, index) => {
                     return (
-                      <FilterBlock info={item} type="score" active={start_price == item[0] && end_price == item[1]} onClickItem={this.handleClickFilterBlock.bind(this, { type: "point", start: item[0], end: item[1], active: start_price == item[0] && end_price == item[1] })} />
-                    )
-                  })
-                }
-              </View>}
+                      <FilterBlock
+                        info={item}
+                        type="score"
+                        active={start_price == item[0] && end_price == item[1]}
+                        onClickItem={this.handleClickFilterBlock.bind(this, {
+                          type: "point",
+                          start: item[0],
+                          end: item[1],
+                          active: start_price == item[0] && end_price == item[1]
+                        })}
+                      />
+                    );
+                  })}
+                </View>
+              )}
             </View>
           }
 
-          <View className='drawer-footer'>
-            <Text className='drawer-footer__btn' onClick={this.handleResetFilter}>重置</Text>
-            <Text className='drawer-footer__btn drawer-footer__btn_active' onClick={this.handleClickSearchParams.bind(this, 'submit')}>确定并筛选</Text>
+          <View className="drawer-footer">
+            <Text
+              className="drawer-footer__btn"
+              onClick={this.handleResetFilter}
+            >
+              重置
+            </Text>
+            <Text
+              className="drawer-footer__btn drawer-footer__btn_active"
+              onClick={this.handleClickSearchParams.bind(this, "submit")}
+            >
+              确定并筛选
+            </Text>
           </View>
         </AtDrawer>
-
 
         <BackToTop
           show={showBackToTop}
@@ -819,6 +896,6 @@ export default class List extends Component {
           bottom={30}
         />
       </View>
-    )
+    );
   }
 }

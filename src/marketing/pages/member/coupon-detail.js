@@ -1,7 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Input } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-// import { Loading, SpNote, NavBar } from '@/components'
 import api from '@/api'
 // import { classNames, pickBy } from '@/utils'
 

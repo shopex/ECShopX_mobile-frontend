@@ -1,17 +1,7 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 商品详情
- * @FilePath: /unite-vshop/src/groupBy/pages/goodDetail/index.js
- * @Date: 2020-05-07 09:58:08
- * @LastEditors: Arvin
- * @LastEditTime: 2020-11-09 16:54:42
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text, Canvas } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
-import { NavBar, SpHtmlContent } from '@/components'
+import { SpNavBar, SpHtmlContent } from '@/components'
 import api from '@/api'
 import { formatCountTime } from '../../utils/index'
 import CanvasUtil from '../../utils/canvas'
@@ -215,7 +205,7 @@ export default class GoodDetail extends Component {
 
     return (
       <View className='goodDetail'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

@@ -3,7 +3,7 @@ import { View, ScrollView } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import _mapKeys from 'lodash/mapKeys'
-import { Loading, SpNote, NavBar } from '@/components'
+import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, getCurrentRoute } from '@/utils'
@@ -264,7 +264,7 @@ export default class TradeList extends Component {
 
     return (
       <View className='page-trade-list'>
-        <NavBar
+        <SpNavBar
           title='订单列表'
           leftIconType='chevron-left'
           fixed='true'

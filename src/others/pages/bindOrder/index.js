@@ -1,19 +1,9 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 绑定大屏订单
- * @FilePath: /unite-vshop/src/others/pages/bindOrder/index.js
- * @Date: 2020-12-28 09:46:33
- * @LastEditors: Arvin
- * @LastEditTime: 2020-12-28 14:17:42
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Input, Image } from '@tarojs/components'
 import { AtModal, AtModalContent, AtModalAction } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import api from '@/api'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 
 
 import './index.scss'
@@ -96,7 +86,7 @@ export default class BindOrder extends Component {
     
     return (
       <View className='bindOrder'>
-        <NavBar
+        <SpNavBar
           title='线下订单关联'
           leftIconType='chevron-left'
           fixed='true'

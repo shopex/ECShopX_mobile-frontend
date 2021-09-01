@@ -1,13 +1,3 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 底部菜单栏
- * @FilePath: /unite-vshop/src/groupBy/component/tabBar/index.js
- * @Date: 2020-04-29 17:00:48
- * @LastEditors: Arvin
- * @LastEditTime: 2020-07-06 18:17:14
- */
 import Taro, { Component } from '@tarojs/taro'
 import { AtTabBar } from 'taro-ui'
 

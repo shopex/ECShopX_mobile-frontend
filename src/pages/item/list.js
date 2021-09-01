@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
-import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote, NavBar, TabBar } from '@/components'
+import { BackToTop, Loading, TagsBar, FilterBar, SearchBar, GoodsItem, SpNote, SpNavBar, TabBar } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
 import { pickBy, classNames } from '@/utils'
@@ -487,7 +487,7 @@ export default class List extends Component {
 		return (
 			<View className='page-goods-list'>
         {
-          !isTabBar && <NavBar
+          !isTabBar && <SpNavBar
             title='商品列表'
             leftIconType='chevron-left'
             fixed='true'

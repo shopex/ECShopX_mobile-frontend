@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, Image} from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { SpToast, Timer, NavBar } from '@/components'
+import { SpToast, Timer, SpNavBar } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 
@@ -34,7 +34,6 @@ export default class Forgotpwd extends Component {
       })
     } catch (error) {
       return false
-      console.log(error)
     }
   }
 
@@ -74,7 +73,6 @@ export default class Forgotpwd extends Component {
       }, 700)
     } catch (error) {
       return false
-      console.log(error)
     }
   }
 
@@ -127,7 +125,6 @@ export default class Forgotpwd extends Component {
       S.toast('发送成功')
     } catch (error) {
       return false
-      console.log(error)
     }
 
     resolve()
@@ -151,7 +148,7 @@ export default class Forgotpwd extends Component {
 
     return (
       <View className='auth-forgotpwd'>
-        <NavBar
+        <SpNavBar
           title='忘记密码'
           leftIconType='chevron-left'
         />

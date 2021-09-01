@@ -1,16 +1,6 @@
-/*
- * @Author: PrendsMoi
- * @GitHub: https://github.com/PrendsMoi
- * @Blog: https://liuhgxu.com
- * @Description: 说明
- * @FilePath: /unite-vshop/src/marketing/pages/distribution/setting.js
- * @Date: 2020-09-24 14:25:07
- * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-03-09 14:38:33
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 
 import './setting.scss'
@@ -65,7 +55,7 @@ export default class DistributionSetting extends Component {
 
     return (
       <View className='page-distribution-setting'>
-        <NavBar
+        <SpNavBar
           title='会员资料'
           leftIconType='chevron-left'
         />	          

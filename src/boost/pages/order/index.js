@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 订单列表
- * @FilePath: /unite-vshop/src/boost/pages/order/index.js
- * @Date: 2020-09-27 14:08:06
- * @LastEditors: Arvin
- * @LastEditTime: 2020-09-29 17:49:04
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Image } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 import { connect } from "@tarojs/redux"
 import { debounce, pickBy, formatDataTime } from '@/utils'
@@ -125,7 +115,7 @@ export default class Order extends Component {
     const { colors } = this.props
     return (
       <View className='order'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

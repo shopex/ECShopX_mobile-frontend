@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text } from '@tarojs/components'
-import { SpToast, SearchBar, BackToTop, NavBar } from '@/components'
+import { SpToast, SearchBar, BackToTop, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import entry from '@/utils/entry'
@@ -159,7 +159,7 @@ export default class StoreList extends Component {
 
     return (
       <View className='page-store-list'>
-        <NavBar
+        <SpNavBar
           title='选择店铺'
           leftIconType='chevron-left'
         />

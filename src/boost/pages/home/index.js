@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 助力详情
- * @FilePath: /unite-vshop/src/boost/pages/home/index.js
- * @Date: 2020-09-22 14:08:32
- * @LastEditors: Arvin
- * @LastEditTime: 2020-10-12 11:44:26
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 import { debounce, pickBy } from '@/utils'
 import LoadingMore from '../../component/loadingMore'
@@ -110,7 +100,7 @@ export default class Home extends Component {
     } = this.state
     return (
       <View className='home'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

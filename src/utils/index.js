@@ -27,6 +27,10 @@ export function isFunction (val) {
 export function isNumber (val) {
   return isPrimitiveType(val, '[object Number]')
 }
+
+export function isPointerEvent(val) {
+  return isPrimitiveType(val, "[object PointerEvent]");
+}
 /**
  * 保留两个位小数，不足补0 
  * @param { Number } value 
@@ -135,9 +139,9 @@ export function pickBy (arr, keyMaps = {}) {
   }
 }
 
-export function navigateTo (url, isRedirect) {
-  if (isObject(isRedirect)) {
-    isRedirect = false
+export function navigateTo( url, isRedirect ) {
+  if (isObject(isRedirect) || isPointerEvent(isRedirect)) {
+    isRedirect = false;
   }
 
   if (isRedirect) {

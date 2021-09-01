@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { NavBar, Loading } from "@/components";
+import { SpNavBar, Loading } from "@/components";
 import api from '@/api'
 import { pickBy } from '@/utils'
 import userIcon from "@/assets/imgs/user-icon.png";
@@ -124,7 +124,7 @@ export default class DistributionDashboard extends Component {
     }
     return (
       <View className="page-distribution-index">
-        <NavBar title="推广管理" leftIconType="chevron-left" />
+        <SpNavBar title="推广管理" leftIconType="chevron-left" />
         <View
           className="header"
           style={"background: " + colors.data[0].marketing}

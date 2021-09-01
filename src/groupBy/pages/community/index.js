@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 社区列表
- * @FilePath: /unite-vshop/src/groupBy/pages/community/index.js
- * @Date: 2020-06-11 11:39:49
- * @LastEditors: Arvin
- * @LastEditTime: 2020-07-20 15:41:16
- */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Input } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import { debounce } from '@/utils'
 import api from '@/api'
 import entry from '../../../utils/entry'
@@ -185,7 +175,7 @@ export default class Community extends Component {
     } = this.state
     return (
       <View className='community'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

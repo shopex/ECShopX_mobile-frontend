@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
-import { Loading, NavBar, FloatMenuMeiQia } from '@/components'
+import { Loading, SpNavBar, FloatMenuMeiQia } from '@/components'
 import { log, pickBy, formatDataTime, resolveOrderStatus, copyText, getCurrentRoute } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { Tracker } from "@/service"
@@ -562,7 +562,7 @@ export default class TradeDetail extends Component {
 
     return (
       <View className={`trade-detail ${info.is_logistics && 'islog'} ${info.status !== 'TRADE_CLOSED' && 'paddingBottom'}`}>
-        <NavBar title='订单详情' leftIconType='chevron-left' fixed='true' />
+        <SpNavBar title='订单详情' leftIconType='chevron-left' fixed='true' />
         {
           info.is_logistics && <View className='custabs'>
             <View

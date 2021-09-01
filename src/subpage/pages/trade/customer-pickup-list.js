@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { Loading, SpNote, NavBar } from '@/components'
+import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, getCurrentRoute } from '@/utils'
@@ -154,7 +154,7 @@ export default class TradePickList extends Component {
 
     return (
       <View className='page-trade-list'>
-        <NavBar
+        <SpNavBar
           title='自提订单'
           leftIconType='chevron-left'
           fixed='true'

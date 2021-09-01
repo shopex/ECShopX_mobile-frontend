@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Picker, Image } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { AtForm, AtInput, AtButton,AtIcon } from 'taro-ui'
-import { SpToast, Timer, NavBar } from '@/components'
+import { SpToast, Timer, SpNavBar } from '@/components'
 import {RGCheckbox } from './comps'
 import { classNames, styleNames,isString,tokenParse,getQueryVariable } from '@/utils'
 import S from '@/spx'
@@ -159,22 +159,6 @@ export default class Reg extends Component {
 
         }
         return
-        const { token } = await api.wx.login(loginParams)
-        S.setAuthToken(token)
-        let parseToken=tokenParse(token)
-        let guide_code=parseToken.guide_code
-        let ba_params=S.get('ba_params',true)
-        if(guide_code){//b端的导购编号
-          let ba_info=await api.user.getGuideInfo({
-            guide_code:guide_code,
-            wxshop_bn:ba_params&&ba_params.store_code||''
-          })
-          S.set('ba_params',{
-            guide_code,
-            ba_info,
-            store_code:ba_info.wxshop_bn
-          },true)
-        }
      
       } else {
         const res = await api.user.reg(data)
@@ -196,7 +180,6 @@ export default class Reg extends Component {
       }, 700)
     } catch (error) {
       return false
-      console.log(error)
     }
   }
 
@@ -301,7 +284,6 @@ export default class Reg extends Component {
       S.toast('发送成功')
     } catch (error) {
       return false
-      console.log(error)
     }
 
     resolve()
@@ -355,7 +337,7 @@ export default class Reg extends Component {
    
     return (
       <View className='auth-reg'>
-        <NavBar
+        <SpNavBar
           title='注册'
           leftIconType='chevron-left'
         />

@@ -19,7 +19,7 @@ import {
   FloatMenuItem,
   SpHtmlContent,
   SpToast,
-  NavBar,
+  SpNavBar,
   GoodsBuyPanel,
   SpCell,
   GoodsEvaluation,
@@ -1210,7 +1210,7 @@ export default class Detail extends Component {
 
     return (
       <View className="page-goods-detail">
-        <NavBar title={info.item_name} leftIconType="chevron-left" fixed />
+        <SpNavBar title={info.item_name} leftIconType="chevron-left" fixed />
 
         <ScrollView
           className="goods-detail__wrap"
