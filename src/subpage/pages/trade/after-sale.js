@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import { Loading, SpNote, NavBar } from '@/components'
+import { Loading, SpNote, SpNavBar } from '@/components'
 import { pickBy, log } from '@/utils'
 import api from '@/api'
 import { withLogin, withPager } from '@/hocs'
@@ -118,7 +118,7 @@ export default class AfterSale extends Component {
 
     return (
       <View className='page-after-sale trade-list'>
-        <NavBar
+        <SpNavBar
           title='售后订单列表'
           leftIconType='chevron-left'
           fixed='true'

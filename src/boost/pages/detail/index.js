@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 助力详情
- * @FilePath: /unite-vshop/src/boost/pages/detail/index.js
- * @Date: 2020-09-22 14:08:32
- * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-02-22 18:18:35
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
-import { NavBar, SpHtmlContent } from '@/components'
+import { SpNavBar, SpHtmlContent } from '@/components'
 import { pickBy, calcTimer } from '@/utils'
 import { AtCountdown, AtIcon } from 'taro-ui'
 import api from '@/api'
@@ -314,7 +304,7 @@ export default class Detail extends Component {
 
     return (
       <View className='detail'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

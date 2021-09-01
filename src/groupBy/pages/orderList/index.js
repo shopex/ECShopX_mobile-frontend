@@ -10,7 +10,7 @@
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 import { formatOrder } from '../../utils'
 import OrderItem from '../../component/orderItem'
@@ -120,7 +120,7 @@ export default class OrderList extends Component {
     const { list, param, isRefresh, isLoading, isEnd, isEmpty } = this.state
     return (
       <View className='orderList'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

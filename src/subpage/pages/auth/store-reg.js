@@ -1,7 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Form, Text } from "@tarojs/components";
 import { AtInput, AtSwitch, AtButton } from "taro-ui";
-import { SpToast, NavBar, TimePicker } from "@/components";
+import { SpToast, SpNavBar, TimePicker } from "@/components";
 import { classNames, isString } from "@/utils";
 import S from "@/spx";
 import api from "@/api";
@@ -81,7 +81,7 @@ export default class StoreReg extends Component {
 
     return (
       <View className="auth-reg">
-        <NavBar title="申请店铺入驻" leftIconType="chevron-left" />
+        <SpNavBar title="申请店铺入驻" leftIconType="chevron-left" />
         <Form>
           <View className="sec auth-reg__form">
             <View className="store-reg__input">

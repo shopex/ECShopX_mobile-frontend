@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { Input, View, Picker, Image } from "@tarojs/components";
-import { NavBar, SpCheckbox, SpFloatPrivacy } from "@/components";
+import { SpNavBar, SpCheckbox, SpFloatPrivacy } from "@/components";
 import api from "@/api";
 import { connect } from "@tarojs/redux";
 import S from "@/spx";
@@ -297,7 +297,7 @@ export default class UserInfo extends Component {
 
     return (
       <View className="page-member-setting" style={getThemeStyle()}>
-        <NavBar title="用户信息" />
+        <SpNavBar title="用户信息" />
         <View className="baseInfo">
           <View className="item">
             <View className="left">我的头像</View>

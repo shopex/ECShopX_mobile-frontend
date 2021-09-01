@@ -10,7 +10,7 @@ import {
   Price,
   SpCell,
   SpToast,
-  NavBar,
+  SpNavBar,
   SpHtmlContent
 } from "@/components";
 import api from "@/api";
@@ -1656,7 +1656,7 @@ export default class CartCheckout extends Component {
     return (
       <View className="page-checkout">
         {showAddressPicker === false ? (
-          <NavBar
+          <SpNavBar
             title="填写订单信息"
             leftIconType="chevron-left"
             fixed="true"

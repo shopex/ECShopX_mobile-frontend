@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, ScrollView } from "@tarojs/components";
-import { Loading, SpNote, NavBar, SpToast, CouponItem } from "@/components";
+import { Loading, SpNote, SpToast, CouponItem } from "@/components";
 import { connect } from "@tarojs/redux";
 import api from "@/api";
 import S from "@/spx";
@@ -207,12 +207,6 @@ export default class CouponHome extends Component {
     return (
       <View className="coupon-list">
         <BaNavBar title="优惠券列表" fixed />
-        {/* <NavBar
-          title='优惠券列表'
-          leftIconType='chevron-left'
-          fixed='true'
-        /> */}
-
         <ScrollView
           style={styleNames({ top: `${n_ht}px` })}
           scrollY

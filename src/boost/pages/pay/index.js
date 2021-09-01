@@ -1,19 +1,9 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 结算页面
- * @FilePath: /unite-vshop/src/boost/pages/pay/index.js
- * @Date: 2020-09-23 16:49:53
- * @LastEditors: Arvin
- * @LastEditTime: 2020-09-28 11:03:54
- */
 import Taro, { Component } from '@tarojs/taro'
 import { Textarea, View, Image, Text, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { pickBy } from '@/utils'
 import api from '@/api'
-import { NavBar, AddressChoose } from '@/components'
+import { SpNavBar, AddressChoose } from '@/components'
 
 import './index.scss'
 
@@ -186,7 +176,7 @@ export default class Pay extends Component {
     const { cur_address, remark, goodInfo, purchasePrice, isLoading } = this.state
     return (
       <View className='pay'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

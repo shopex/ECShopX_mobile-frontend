@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 import userIcon from "@/assets/imgs/user-icon.png";
 
@@ -56,7 +56,7 @@ export default class DistributionQrcode extends Component {
         className="page-distribution-qrcode"
         style={"background: " + colors.data[0].marketing}
       >
-        <NavBar title="二维码" leftIconType="chevron-left" />
+        <SpNavBar title="二维码" leftIconType="chevron-left" />
         <View className="qrcode-bg">
           <View className="title">邀请卡</View>
           <Image

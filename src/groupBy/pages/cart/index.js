@@ -1,17 +1,7 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 团购购物车
- * @FilePath: /unite-vshop/src/groupBy/pages/cart/index.js
- * @Date: 2020-04-23 16:38:16
- * @LastEditors: Arvin
- * @LastEditTime: 2020-06-24 16:23:22
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 import S from '@/spx'
 import { formatGood } from '../../utils'
@@ -142,7 +132,7 @@ export default class GroupByIndex extends Component {
     const isEmpty = list.length <= 0 && failureList.length <= 0
     return (
       <View className={`groupByCart ${isEmpty && 'noGood'}`}>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

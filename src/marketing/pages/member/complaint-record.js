@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { Loading, NavBar } from '@/components'
+import { Loading, SpNavBar } from '@/components'
 import { AtAvatar, AtButton } from 'taro-ui'
 import api from '@/api'
 import ComplaintRecordItem from './comps/complaint-record-item'
@@ -71,7 +71,7 @@ export default class ComplaintRecord extends Component {
 
     return (
       <View className='page-complaint-record'>
-        <NavBar
+        <SpNavBar
           title='投诉记录'
           leftIconType='chevron-left'
           fixed='true'

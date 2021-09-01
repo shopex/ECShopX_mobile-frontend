@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 下期预告
- * @FilePath: /unite-vshop/src/groupBy/pages/nextNotice/index.js
- * @Date: 2020-06-22 15:22:59
- * @LastEditors: Arvin
- * @LastEditTime: 2020-06-28 18:30:37
- */ 
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import api from '@/api'
 import { debounce } from '@/utils'
 import { formatGood, formatCountTime } from '../../utils'
@@ -164,7 +154,7 @@ export default class nextNotice extends Component {
     } = this.state
     return (
       <View className='nextNotice'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

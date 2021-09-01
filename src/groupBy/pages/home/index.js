@@ -1,18 +1,8 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 团购首页
- * @FilePath: /unite-vshop/src/groupBy/pages/home/index.js
- * @Date: 2020-04-23 16:38:16
- * @LastEditors: Arvin
- * @LastEditTime: 2021-02-02 13:51:45
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
 import { debounce } from '@/utils'
 import api from '@/api'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import S from '@/spx'
 import { formatGood } from '../../utils'
 import GroupGood from '../../component/grouoGood'
@@ -265,7 +255,7 @@ export default class GroupByIndex extends Component {
 
     return (
       <View className='groupByHome' >
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

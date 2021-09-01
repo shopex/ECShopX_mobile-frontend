@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import api from '@/api'
-import { Loading, NavBar, SpToast } from '@/components'
+import { Loading, SpNavBar, SpToast } from '@/components'
 import { pickBy, browser } from '@/utils'
 import { withLogin } from '@/hocs'
 import { AlipayPay, WeH5Pay, WePay } from './comps'
@@ -77,7 +77,7 @@ export default class Cashier extends Component {
 
     return (
       <View className='page-cashier-index'>
-        <NavBar
+        <SpNavBar
           title='收银台'
           onClickLeftIcon={this.handleClickBack}
         />

@@ -1,17 +1,7 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 支付订单
- * @FilePath: /unite-vshop/src/groupBy/pages/payOrder/index.js
- * @Date: 2020-05-08 15:07:31
- * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-04-01 09:44:54
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import api from '@/api'
-import { NavBar,SpCell } from '@/components'
+import { SpNavBar,SpCell } from '@/components'
 import PaymentPicker from '@/pages/cart/comps/payment-picker'
 import './index.scss'
 import {
@@ -157,7 +147,7 @@ export default class PayOrder extends Component {
     } 
     return (
       <View className='payOrder'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
           fixed='true'

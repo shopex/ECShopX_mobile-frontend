@@ -1,7 +1,7 @@
 
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { NavBar, SpHtmlContent } from '@/components'
+import { SpNavBar, SpHtmlContent } from '@/components'
 import { withPager } from '@/hocs'
 import api from '@/api'
 
@@ -60,7 +60,7 @@ export default class RegRule extends Component {
 
     return (
       <View className='page-member-integral'>
-        <NavBar
+        <SpNavBar
           title={title}
           leftIconType='chevron-left'
         />

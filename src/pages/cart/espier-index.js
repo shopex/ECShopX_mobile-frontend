@@ -8,7 +8,7 @@ import {
   TabBar,
   Loading,
   Price,
-  NavBar,
+  SpNavBar,
   GoodsItem,
   SpLogin
 } from "@/components";
@@ -596,7 +596,7 @@ export default class CartIndex extends Component {
     return (
       <View className={classNames("page-cart-index", isDrug && "is-drug")}>
         {isDrug && (
-          <NavBar title="购物车" leftIconType="chevron-left" fixed="true" />
+          <SpNavBar title="购物车" leftIconType="chevron-left" fixed="true" />
         )}
 
         {!S.getAuthToken() && (

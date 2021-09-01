@@ -17,7 +17,7 @@ export { default as FloatMenuItem } from './float-menus/item'
 export { default as FormIdCollector } from './form-id-collector'
 
 export { default as SearchBar } from './search-bar'
-export { default as NavBar } from './nav-bar'
+export { default as SpNavBar } from './sp-nav-bar'
 export { default as Timer } from './timer'
 
 export { default as SpCheckbox } from './checkbox'

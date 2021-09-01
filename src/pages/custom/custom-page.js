@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { SpToast, Loading, BackToTop, NavBar } from '@/components'
+import { SpToast, Loading, BackToTop, SpNavBar } from '@/components'
 import req from '@/api/req'
 import { withBackToTop } from '@/hocs'
 import S from "@/spx";
@@ -91,7 +91,7 @@ export default class HomeIndex extends Component {
 
     return (
       <View className='page-index-custom'>
-        <NavBar 
+        <SpNavBar 
           title='微商城'
         />
         <ScrollView

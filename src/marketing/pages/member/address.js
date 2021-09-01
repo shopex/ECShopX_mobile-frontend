@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 // import AddressList from '@/components/new-address/address'
 import { connect } from "@tarojs/redux";
-import { SpToast, SpCell, NavBar } from '@/components'
+import { SpToast, SpCell, SpNavBar } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 
@@ -165,7 +165,7 @@ export default class AddressIndex extends Component {
         :null
         }
 
-        <NavBar 
+        <SpNavBar 
           title='收货地址'
           leftIconType='chevron-left'
           fixed='true'

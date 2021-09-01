@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView, Text,Picker } from '@tarojs/components'
-import { SpToast, SearchBar, BackToTop, NavBar,SpCheckbox,SpNote } from '@/components'
+import { SpToast, SearchBar, BackToTop, SpNavBar,SpCheckbox,SpNote } from '@/components'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
 import entry from '@/utils/entry'
@@ -372,7 +372,7 @@ bindMultiPickerColumnChange = (e) => {
     const { list, scrollTop, showBackToTop, loading, current, query,is_open_store_status,areaList,multiIndex,page,info } = this.state
     return (
       <View className='page-store-list'>
-        <NavBar
+        <SpNavBar
           title='选择自提门店'
           leftIconType='chevron-left'
         />

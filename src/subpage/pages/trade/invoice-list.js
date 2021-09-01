@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import _mapKeys from 'lodash/mapKeys'
-import { Loading, SpNote, NavBar } from '@/components'
+import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, authSetting } from '@/utils'
@@ -126,7 +126,7 @@ export default class InvoiceList extends Component {
 
     return (
       <View className='page-trade-list page-invoice-list'>
-        <NavBar
+        <SpNavBar
           title='发票管理'
           leftIconType='chevron-left'
           fixed='true'

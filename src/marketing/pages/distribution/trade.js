@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import { Loading, SpNote, NavBar } from '@/components'
+import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
@@ -82,7 +82,7 @@ export default class DistributionTrade extends Component {
 
     return (
       <View className="page-distribution-trade">
-        <NavBar
+        <SpNavBar
           title='订单'
           leftIconType='chevron-left'
         />        

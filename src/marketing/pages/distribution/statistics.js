@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Navigator } from '@tarojs/components'
 import api from '@/api'
-import { NavBar } from '@/components'
+import { SpNavBar } from '@/components'
 import { pickBy } from '@/utils'
 
 import './statistics.scss'
@@ -44,7 +44,7 @@ export default class DistributionStatistics extends Component {
 
     return (
       <View className="page-distribution-statistics">
-        <NavBar
+        <SpNavBar
           title='推广费'
           leftIconType='chevron-left'
         />                

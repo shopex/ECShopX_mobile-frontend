@@ -11,7 +11,7 @@ import {
   SearchBar,
   GoodsItem,
   SpNote,
-  NavBar,
+  SpNavBar,
   TabBar
 } from "@/components";
 import api from "@/api";

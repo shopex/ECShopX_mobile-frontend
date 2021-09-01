@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View, ScrollView, Text} from '@tarojs/components'
-import { Loading, SpImg, SpNote, NavBar} from '@/components'
+import { Loading, SpImg, SpNote, SpNavBar} from '@/components'
 import { classNames, pickBy,getCurrentRoute } from '@/utils'
 import {AtTabBar} from "taro-ui"
 import S from '@/spx'
@@ -193,7 +193,7 @@ export default class DistributionShopCategory extends Component {
     const isHaveLeft = list.length > 0
     return (
       <View className='page-category-index'>
-        <NavBar
+        <SpNavBar
           title='分类'
           leftIconType='chevron-left'
           fixed='true'

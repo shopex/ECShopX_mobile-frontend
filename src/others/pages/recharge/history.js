@@ -1,16 +1,6 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 充值记录
- * @FilePath: /unite-vshop/src/others/pages/recharge/history.js
- * @Date: 2020-06-30 10:11:18
- * @LastEditors: Arvin
- * @LastEditTime: 2020-06-30 15:28:24
- */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { NavBar, Loading, SpNote } from '@/components'
+import { SpNavBar, Loading, SpNote } from '@/components'
 import { connect } from '@tarojs/redux'
 import { formatTime } from '@/utils'
 import { Tracker } from "@/service";
@@ -108,7 +98,7 @@ export default class History extends Component {
     const { colors } = this.props
     return (
       <View className='history'>
-        <NavBar
+        <SpNavBar
           title={this.config.navigationBarTitleText}
           leftIconType='chevron-left'
         />

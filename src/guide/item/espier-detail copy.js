@@ -3,7 +3,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Swiper, SwiperItem, Image, Video, Canvas } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
-import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, NavBar, GoodsBuyPanel, SpCell, GoodsEvaluation, FloatMenuMeiQia, GoodsItem } from '@/components'
+import { Loading, Price, FloatMenus, FloatMenuItem, SpHtmlContent, SpToast, SpNavBar, GoodsBuyPanel, SpCell, GoodsEvaluation, FloatMenuMeiQia, GoodsItem } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
 import { withLogin, withPager, withBackToTop } from '@/hocs'
@@ -977,11 +977,7 @@ export default class Detail extends Component {
         style={`padding-top:${navbar_height}PX`}
       >
         <BaNavBar title='导购商城' fixed jumpType={jumpType} />
-        {/* <NavBar
-          title={info.item_name}
-          leftIconType="chevron-left"
-          fixed="true"
-        /> */}
+
 
         <ScrollView
           className='goods-detail__wrap'

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { AtTabBar } from "taro-ui";
-import { SpToast, Loading, FilterBar, SpNote, NavBar, SearchBar } from '@/components'
+import { SpToast, Loading, FilterBar, SpNote, SpNavBar, SearchBar } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs' 
@@ -289,7 +289,7 @@ export default class DistributionGoods extends Component {
 
     return (
       <View className='page-distribution-shop'>
-        <NavBar
+        <SpNavBar
           title='推广商品'
           leftIconType='chevron-left'
           fixed='true'
