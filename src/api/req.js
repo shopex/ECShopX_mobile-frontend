@@ -280,7 +280,8 @@ class API {
           if (
             showError &&
             data.error.message !== "当前余额不足以支付本次订单费用，请充值！" &&
-            data.error.code !== 201
+            data.error.code !== 201 &&
+            data.error.code !== 450
           ) {
             this.errorToast(data);
           }

@@ -37,7 +37,7 @@ import './espier-index.scss'
       dispatch({ type: "cart/updateCount", payload: count })
   })
 )
-@withLogin()
+@withLogin(()=>{},1)
 @withPager
 export default class CartIndex extends Component {
   static defaultProps = {
@@ -67,6 +67,13 @@ export default class CartIndex extends Component {
     this.lastCartId = null;
   }
 
+  autoLoginFail=()=>{
+    console.log("---autoLoginFail---")
+    this.setState({ 
+      loading:false
+    })
+  }
+
   componentDidMount() {
     console.log(this.$router.params, 48);
     if (this.$router.params && this.$router.params.path === "qrcode") {
@@ -75,10 +82,8 @@ export default class CartIndex extends Component {
       });
     }
     this.getRemind();
-    this.nextPage();
-
-    if (!S.getAuthToken()) return;
-
+    this.nextPage(); 
+    if (!S.getAuthToken()) return; 
     this.fetchCart(list => {
       const groups = this.resolveActivityGroup(list);
       // this.props.list 此时为空数组

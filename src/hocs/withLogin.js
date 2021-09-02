@@ -40,7 +40,11 @@ export default function withLogin (nextFn, lifeCycle = LIFE_CYCLE_TYPES.WILL_MOU
         if (lifeCycle === LIFE_CYCLE_TYPES.DID_MOUNT) {
           console.log("DID_MOUNT")
           const res = await this.$__autoLogin()
-          if (!res) return
+
+          if (!res) { 
+            this.autoLoginFail();
+            return
+          } 
 
           if (super.componentDidMount) {
             super.componentDidMount()
