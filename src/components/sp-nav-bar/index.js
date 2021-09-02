@@ -1,13 +1,14 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
 import { AtNavBar } from "taro-ui";
+import { classNames } from '@/utils'
 
 import "./index.scss";
 
 export default class SpNavBar extends Component {
   static defaultProps = {
     leftIconType: "chevron-left",
-    fixed: true,
+    fixed: false,
     title: ""
   };
 
@@ -24,7 +25,11 @@ export default class SpNavBar extends Component {
     const { title, leftIconType, fixed } = this.props;
     return (
       process.env.TARO_ENV == "h5" && (
-        <View className={`sp-nav-bar nav-bar-height ${fixed !== false && "fiexd"}`}>
+        <View
+          className={classNames( `sp-nav-bar nav-bar-height`, {
+            fixed
+          })}
+        >
           <AtNavBar
             fixed={fixed}
             color="#000"

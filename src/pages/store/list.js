@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, ScrollView, Picker, Input, Image } from "@tarojs/components";
-import { SpNavBar, Loading, SpNote, SpPageNote } from "@/components";
+import { View, Text, ScrollView, Picker, Input, Image } from "@tarojs/components";
+import { SpNavBar, SpLoading, SpNote, SpPageNote } from "@/components";
 import api from "@/api";
 import { connect } from "@tarojs/redux";
 import { withPager, withBackToTop } from "@/hocs";
@@ -32,8 +32,8 @@ export default class StoreList extends Component {
       // 默认店铺
       defaultStore: null,
       baseInfo: null,
-      // 当前位置信息
-      location: {},
+      // 当前位置
+      formattedAddress: '',
       // 收货地址信息
       deliveryInfo: {},
       // 是否是推荐门店列表
@@ -59,51 +59,20 @@ export default class StoreList extends Component {
   //   navigationBarTitleText: '店铺列表'
   // }
 
-  // 定位并初始化处理位置信息
-  // isUseDeliveryInfo 是否按收货地址定位
   init = async () => {
-    const { is_open_wechatapp_location } = Taro.getStorageSync("settingInfo");
-    // 获取定位
-    // if (is_open_wechatapp_location === 1) {
-    //   await entry.getLoc();
-    // }
-    const { query, deliveryInfo } = this.state;
-    const lnglat = Taro.getStorageSync("lnglat") || {};
-    const address = lnglat.latitude
-      ? `${lnglat.city}${lnglat.district}${lnglat.street}${lnglat.street_number}`
-      : "";
-    query.province = lnglat.province || "";
-    query.city = lnglat.city || "";
-    query.area = lnglat.district || "";
-    if (query.type === 2) {
-      const { province = "", city = "", county = "" } = deliveryInfo;
-      query.province = province;
-      query.city = city === "市辖区" || !city ? province : city;
-      query.area = county;
+    const { is_open_wechatapp_location } = Taro.getStorageSync( "settingInfo" );
+    
+    const { formattedAddress } = Taro.getStorageSync( "locationAddress" );
+    let addressList
+    if ( S.getAuthToken() ) {
+      addressList = await api.member.addressList()
     }
-
-    this.setState(
-      {
-        location: {
-          ...lnglat,
-          address
-        },
-        is_open_wechatapp_location,
-        query
-      },
-      () => {
-        this.resetPage(() => {
-          this.setState(
-            {
-              list: []
-            },
-            () => {
-              this.nextPage();
-            }
-          );
-        });
-      }
-    );
+    debugger
+    this.setState({
+      formattedAddress
+    });
+    
+    return
   };
 
   // 获取总店信息
@@ -221,46 +190,7 @@ export default class StoreList extends Component {
       addressComponent,
       formattedAddress
     } = await entryLaunch.getAddressByLnglat(lng, lat);
-    debugger;
-    // e.stopPropagation();
-    // const { authSetting } = await Taro.getSetting();
-    // if (!authSetting["scope.userLocation"]) {
-    //   Taro.authorize({
-    //     scope: "scope.userLocation",
-    //     success: () => {
-    //       this.init();
-    //     },
-    //     fail: () => {
-    //       Taro.showModal({
-    //         title: "提示",
-    //         content: "请打开定位权限",
-    //         success: async resConfirm => {
-    //           if (resConfirm.confirm) {
-    //             await Taro.openSetting();
-    //             const setting = await Taro.getSetting();
-    //             if (setting.authSetting["scope.userLocation"]) {
-    //               this.init();
-    //             } else {
-    //               Taro.showToast({ title: "获取定位权限失败", icon: "none" });
-    //             }
-    //           }
-    //         }
-    //       });
-    //     }
-    //   });
-    // } else {
-    //   const { query } = this.state;
-    //   query.name = "";
-    //   query.type = 0;
-    //   this.setState(
-    //     {
-    //       query
-    //     },
-    //     () => {
-    //       this.init();
-    //     }
-    //   );
-    // }
+
   };
 
   // 根据收货地址搜索
@@ -290,16 +220,17 @@ export default class StoreList extends Component {
       defaultStore,
       baseInfo,
       is_open_wechatapp_location,
-      pageTitle
+      pageTitle,
+      formattedAddress
     } = this.state;
     const { province, city, area } = query;
 
     let areaData = [province, city, area];
 
-    if (query.type === 0 && !location.address && deliveryInfo.address_id) {
-      const { province: p = "", city: c = "", county: ct = "" } = deliveryInfo;
-      areaData = [p, c === "市辖区" || !c ? province : city, ct];
-    }
+    // if (query.type === 0 && !location.address && deliveryInfo.address_id) {
+    //   const { province: p = "", city: c = "", county: ct = "" } = deliveryInfo;
+    //   areaData = [p, c === "市辖区" || !c ? province : city, ct];
+    // }
 
     // const  = defaultStore.is_valid === "true";
 
@@ -320,6 +251,7 @@ export default class StoreList extends Component {
                 <View className="iconfont icon-arrowDown"></View>
               </View>
             </Picker>
+
             <Input
               className="searchInput"
               placeholder="请输入想搜索的店铺"
@@ -337,7 +269,30 @@ export default class StoreList extends Component {
           </View>
         </View>
 
-        <View className="content">
+        <View className="block-content">
+          <View className="block-hd">当前位置</View>
+          <View className="block-bd location-wrap">
+            <View className="location-address">{formattedAddress}</View>
+            <View className="btn-location">
+              <Text className="iconfont icon-target"></Text>
+              重新定位
+            </View>
+          </View>
+        </View>
+
+        <View className="block-content">
+          <View className="block-hd">按收货地址定位</View>
+          <View className="block-bd">
+            <View className="receive-address"></View>
+          </View>
+        </View>
+
+        <View className="block-content">
+          <View className="block-hd">附近门店</View>
+          <View className="block-bd"></View>
+        </View>
+
+        {/* <View className="content">
           <View className="location">
             <View className="title">当前位置</View>
             <View className="locationData">
@@ -388,13 +343,13 @@ export default class StoreList extends Component {
             <Image className="img" src={baseInfo.logo} mode="aspectFill" />
             <View className="tip">您想要地区的店铺暂时未入驻网上商城</View>
           </View>
-        )}
+        )} */}
 
         <View
           className={`list ${!deliveryInfo.address_id &&
             "noDelivery"} ${isRecommedList && "recommedList"}`}
         >
-          {!isRecommedList ? (
+          {/* {!isRecommedList ? (
             <View className="title">
               {deliveryInfo.address_id || location.latitude
                 ? "附近门店"
@@ -404,7 +359,7 @@ export default class StoreList extends Component {
             <View className="recommed">
               <View className="title">推荐门店</View>
             </View>
-          )}
+          )} */}
 
           <ScrollView
             className={classNames("scroll", {
