@@ -128,7 +128,7 @@ class App extends Component {
     }
     // H5定位
     if (process.env.APP_PLATFORM === "standard" && Taro.getEnv() === "WEB") {
-      new LBS();
+      // new LBS();
     }
     // 设置购物车默认类型
     if (Taro.getStorageSync("cartType")) {

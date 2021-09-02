@@ -7,6 +7,7 @@ import tabBar from './tab-bar'
 import colors from './colors'
 import home from './home'
 import guide from './guide'
+import shop from "./shop";
 
 export default combineReducers({
   cart,
@@ -16,5 +17,6 @@ export default combineReducers({
   tabBar,
   colors,
   guide,
-  home
-})
+  home,
+  shop
+});
