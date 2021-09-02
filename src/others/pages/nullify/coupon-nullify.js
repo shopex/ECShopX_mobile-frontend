@@ -151,7 +151,7 @@ export default class CouponNullify extends Component {
                     info={item}
                     key={item.id}
                   >
-                    <View>
+                    <View  style={{fontSize: '22rpx'}}>
                       {/* {item.status == 2 ? '已使用' : item.status == 3 ? '已过期' : '' } */}
                       {item.status == 2 ? '已使用' : '' }
                       {item.tagClass == 'overdue' ? '已过期' : '' }

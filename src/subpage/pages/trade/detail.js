@@ -884,7 +884,7 @@ export default class TradeDetail extends Component {
               !isDhPoint && !isDeposit && <View className='line'>
                 <View className='left'>支付</View>
                 <View className='right'>
-                  ¥{info.payment} {'微信支付'}
+                  ¥{info.payment} {info.order_class !== 'excard' ? '微信支付' : ''}
                 </View>
               </View>
             }
