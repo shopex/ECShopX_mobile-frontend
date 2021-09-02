@@ -217,6 +217,7 @@ export default class CouponHome extends Component {
                       {(item.getted !== 2 && item.getted !== 1) ? '立即领取' : ''}
                     </Text> */}
                     <View
+                      style={{fontSize: '22rpx'}}
                       // className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
                       // style={`background: ${colors.data[0].primary}`}
                       onClick={this.handleClickNews.bind(this, item, idx)}
