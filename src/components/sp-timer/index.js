@@ -4,7 +4,7 @@ import { classNames } from '@/utils'
 
 import './index.scss'
 
-export default class Timer extends Component {
+export default class SpTimer extends Component {
   static options = {
     addGlobalClass: true
   }

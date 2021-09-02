@@ -909,7 +909,7 @@ export default class CartIndex extends Component {
                 >
                   <AtButton
                     className="btn-rand inherit"
-                    onClick={this.navigateTo.bind(this, APP_HOME_PAGE, true)}
+                    onClick={this.navigateTo.bind(this, process.env.APP_HOME_PAGE, true)}
                   >
                     随便逛逛
                   </AtButton>

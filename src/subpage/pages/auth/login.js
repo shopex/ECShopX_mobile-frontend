@@ -2,11 +2,10 @@ import Taro, { Component } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import { AtForm, AtInput, AtButton } from "taro-ui";
 
-import { SpToast, SpNavBar } from "@/components";
-
+import { SpNavBar, SpTimer } from "@/components";
 import S from "@/spx";
 import api from "@/api";
-import { tokenParse } from "@/utils";
+import { getThemeStyle, styleNames, tokenParse, navigateTo } from "@/utils";
 import { Tracker } from "@/service";
 
 import "./login.scss";
@@ -21,81 +20,32 @@ export default class Login extends Component {
     };
   }
 
-  handleClickReg = () => {
-    Taro.navigateTo({
-      url: `/subpage/pages/auth/reg`
+  componentDidMount() { }
+  
+  navigateTo = navigateTo
+
+  handleTimerStart = async resolve => {
+    const { mobile } = this.state.info;
+    if (!validate.isMobileNum(mobile)) {
+      showToast("请输入正确的手机号");
+      return;
+    }
+    await api.operator.sendCode({
+      mobile
     });
-  };
-  componentDidMount() {}
-
-  handleSubmit = async e => {
-    const { value } = e.detail || e[0].detail;
-    const data = {
-      ...this.state.info,
-      ...value
-    };
-
-    if (!data.username || !/1\d{10}/.test(data.username)) {
-      return S.toast("请输入正确的手机号");
-    }
-
-    if (!data.password) {
-      return S.toast("请输入密码");
-    }
-
-    try {
-      const { token } = await api.user.login(data);
-      S.setAuthToken(token);
-      // 通过token解析openid
-      if ( token ) {
-        const userInfo = tokenParse( token );
-        Tracker.setVar( {
-          user_id: userInfo.user_id,
-          open_id: userInfo.openid,
-          union_id: userInfo.unionid
-        } );
-      }
-
-      const redirect = decodeURIComponent(
-        this.$router.params.redirect || APP_HOME_PAGE
-      );
-      Taro.redirectTo({
-        url: redirect
-      });
-    } catch (error) {
-      return false;
-    }
+    showToast("验证码已发送");
+    resolve();
   };
 
-  handleChange(name, val) {
+  handleTimerStop() {}
+
+  handleInputChange(name, val) {
     const { info } = this.state;
     info[name] = val;
+    this.setState({
+      info
+    });
   }
-
-  handleBlurMobile = val => {
-    this.setState({
-      info: {
-        username: val
-      }
-    });
-  };
-
-  handleClickIconpwd = () => {
-    const { isVisible } = this.state;
-    this.setState({
-      isVisible: !isVisible
-    });
-  };
-
-  handleErrorToastClose = () => {
-    // S.closeToast()
-  };
-
-  handleClickForgtPwd = () => {
-    Taro.navigateTo({
-      url: `/subpage/pages/auth/forgotpwd`
-    });
-  };
 
   handleNavLeftItemClick = () => {
     // const { redirect } = this.$router.params
@@ -107,70 +57,94 @@ export default class Login extends Component {
     //
     // Taro.navigateBack()、
     Taro.redirectTo({
-      url: APP_HOME_PAGE
+      url: process.env.APP_HOME_PAGE
     });
   };
 
+  handleToggleLogin = () => {}
+
+  async handleSubmit() {
+    const { mobile, code } = this.state.info;
+    if (!validate.isMobileNum(mobile)) {
+      showToast("请输入正确的手机号");
+      return;
+    }
+    if (!validate.isRequired(mobile)) {
+      showToast("请输入验证码");
+      return;
+    }
+    await api.operator.smsLogin({
+      mobile,
+      code,
+      logintype: "smsstaff"
+    });
+  }
+
   render() {
     const { info, isVisible } = this.state;
-
     return (
-      <View className="auth-login">
+      <View className="page-auth-login" style={styleNames(getThemeStyle())}>
         <SpNavBar onClickLeftIcon={this.handleNavLeftItemClick} title="登录" />
-        <View className="auth-login__reg">
-          <Text onClick={this.handleClickReg}>快速注册</Text>
+        <View className="auth-hd">
+          <View className="title">欢迎登录</View>
+          {/* <View className="desc">未注册的手机号验证后自动创建账号</View> */}
         </View>
-        <AtForm>
-          <View className="sec auth-login__form">
-            <AtInput
-              title="手机号码"
-              name="username"
-              maxLength={11}
-              type="tel"
-              value={info.username}
-              placeholder="请输入手机号码"
-              onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, "username")}
-              onBlur={this.handleBlurMobile.bind(this)}
-            />
-            <AtInput
-              title="密码"
-              name="password"
-              type={isVisible ? "text" : "password"}
-              value={info.password}
-              placeholder="请输入密码"
-              onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, "password")}
-            >
-              {isVisible ? (
-                <View
-                  className="sp-icon sp-icon-yanjing icon-pwd"
-                  onClick={this.handleClickIconpwd}
-                >
-                  {" "}
-                </View>
-              ) : (
-                <View
-                  className="sp-icon sp-icon-icon6 icon-pwd"
-                  onClick={this.handleClickIconpwd}
-                >
-                  {" "}
-                </View>
-              )}
-              <Text className="forgotPwd" onClick={this.handleClickForgtPwd}>
-                忘记密码
+        <View className="auth-bd">
+          <View className="form-title">中国大陆 +86</View>
+          <AtForm className="form">
+            <View className="form-field">
+              <AtInput
+                clear
+                name="mobile"
+                maxLength={11}
+                type="tel"
+                value={info.mobile}
+                placeholder="请输入您的手机号码"
+                onChange={this.handleInputChange.bind(this, "mobile")}
+              />
+            </View>
+            <View className="form-field">
+              <View className="input-field">
+                <AtInput
+                  clear
+                  name="vcode"
+                  value={info.vcode}
+                  placeholder="请输入验证码"
+                  onChange={this.handleInputChange.bind(this, "vcode")}
+                />
+              </View>
+              <View className="btn-field">
+                <SpTimer
+                  onStart={this.handleTimerStart.bind(this)}
+                  onStop={this.handleTimerStop}
+                />
+              </View>
+            </View>
+            <View className="btn-text-group">
+              <Text
+                className="btn-text"
+                onClick={this.handleToggleLogin.bind(this)}
+              >
+                密码登录
               </Text>
-            </AtInput>
-          </View>
-
-          <View className="btns">
-            <AtButton type="primary" onClick={this.handleSubmit.bind(this)}>
-              登录
-            </AtButton>
-          </View>
-        </AtForm>
-
-        <SpToast />
+              <Text className="btn-text" onClick={this.navigateTo.bind(this, '`/subpage/pages/auth/reg`')}>
+                注册
+              </Text>
+            </View>
+            <View className="form-submit">
+              <AtButton
+                circle
+                type="primary"
+                onClick={this.handleSubmit.bind(this)}
+              >
+                登录
+              </AtButton>
+            </View>
+          </AtForm>
+        </View>
+        {/* <View className="auth-ft">
+          <Image className="logo" mode="widthFix" src={LOGO} />
+        </View> */}
       </View>
     );
   }

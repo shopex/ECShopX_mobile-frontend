@@ -518,7 +518,7 @@ class App extends Component {
     store.dispatch({
       type: "colors",
       payload: themeColor
-    });
+    } );
     S.set("SYSTEM_THEME", {
       colorPrimary: themeColor.data[0].primary,
       colorMarketing: themeColor.data[0].marketing,

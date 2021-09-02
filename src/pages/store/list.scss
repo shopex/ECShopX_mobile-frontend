@@ -64,110 +64,34 @@ $nodelivery-height: $header-height - $store-height;
       }
     }
   }
-  .content {
-    max-height: $content-height;
-    overflow: hidden;
-    .location, .delivery {
-      background: #fff;
-      padding: 15px 20px;
-      border-top: 2px solid #efefef;
-      .title {
-        font-size: 30px;
-        color: #666;
-      }
-      .locationData {
-        margin-top: 30px;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .lngName {
-          width: 470px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 28px;
-          color: #111;
-        }
-        .resetLocal {
-          display: flex;
-          align-items: center;
-          .icon-target {
-            font-size: 32px;
-          }
-        }
-      }
-    }
-    .delivery {
-      margin-top: 30px;
-      .lngName {
-        width: 100% !important;
-      }
-    }
-  }
-  .noContent {
-    height: $content-height;
-    text-align: center;
-    background: #fff;
-    .img {
-      width: 150px;
-      height: 150px;
-      border-radius: 8px;
-      margin-top: 57px;
-    }
-    .tip {
-      font-size: 28px;
-      color: #666;
-      margin-top: 32px;
-    }
-  }
-  .list {
-    width: 100%;
-    height: calc(100% - #{$header-height} - #{$bottom-height} - 30px);
-    margin-top: 30px;
-    &.noDelivery {
-      height: calc(100% - #{$nodelivery-height} - #{$bottom-height} - 30px);
-    }
-    &.recommedList {
-      height: calc(100% - #{$content-height} - #{$search-height} - #{$bottom-height} - #{$local-height} - 30px);
-    }
-    .title {
-      height: 80px;
-      padding: 16px 30px 30px;
-      font-size: 30px;
-      color: #666;
-      background: #fff;
-    }
-    .recommed{
-      display: flex;
-      justify-content: center;
-      .title {
-        background: transparent;
-        position: relative;
-        &::before, &::after {
-          content: '';
-          width: 60px;
-          border-top: 2px solid #666;
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-        &::before {
-          left: -40px;
-        }
-        &::after {
-          right: -40px;
-        }
-      }
-    }
-    .scroll {
-      height: calc(100% - 80px);
 
-      &.notHaveShop{
-        height: 100%;
-      }
+  .block-content {
+    padding: 20px 40px;
+    background-color: #fff;
+    margin-bottom: 30px;
+    .block-hd {
+      color: #666;
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    .location-wrap {
+      display:flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .location-address {
+      color: #111;
+      font-size: 28px;
+      padding-right: 40px;
+    }
+    .btn-location {
+      width: 260px;
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
     }
   }
+
   .bottom {
     position: fixed;
     width: 100%;
