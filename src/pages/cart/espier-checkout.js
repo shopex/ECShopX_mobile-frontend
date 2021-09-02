@@ -1093,9 +1093,14 @@ export default class CartCheckout extends Component {
 
   async createByType(params){  
     console.log("--createByType--",params)
+    const {payType}=this.state;
     if(isAlipay){
       params.pay_type='alipaymini';
     }
+    if(payType==='point'){
+      params.pay_type='point';
+    }
+
     let info;
     if(this.isPointitemGood()){
       info = await api.trade.create({
