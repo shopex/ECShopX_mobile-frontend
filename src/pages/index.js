@@ -17,7 +17,7 @@ import req from "@/api/req";
 import api from "@/api";
 import { pickBy, classNames, isArray, entryLaunch } from "@/utils";
 import entry from "@/utils/entry";
-import { withLogin, withPager, withBackToTop } from "@/hocs";
+import { withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
 import { Tracker } from "@/service";
 import { WgtGoodsFaverite, HeaderHome } from "./home/wgts";
@@ -91,7 +91,7 @@ export default class Home extends Component {
   };
 
   componentDidMount() {
-    this.getWgts()
+    // this.getWgts()
     this.getHomeSetting();
     // this.getShareSetting();
     // this.isShowTips();
@@ -355,7 +355,7 @@ export default class Home extends Component {
 
   async getWgts(id) {
     const { config } = await api.shop.getShopTemplate({
-      distributor_id: id || 0
+      distributor_id: id
     });
     this.setState({
       wgts: config

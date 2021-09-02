@@ -1,10 +1,14 @@
 import Taro from "@tarojs/taro";
 import api from "@/api";
 import qs from "qs";
+import configStore from "@/store";
 import { showToast, log } from "@/utils";
 
 class EntryLaunch {
-  constructor() {}
+  constructor() {
+    const { store } = configStore();
+    this.store = store;
+  }
 
   init(params) {
     const { query, scene } =
@@ -25,12 +29,30 @@ class EntryLaunch {
 
     Taro.setStorageSync("launch_params", options);
     this.sence_params = options;
+    this.initAMap();
     return options;
   }
 
   /**
+   * @function 初始化高德地图配置
+   */
+  initAMap() {
+    AMap.plugin(["AMap.Geolocation", "AMap.Geocoder"], () => {
+      this.geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true, //是否使用高精度定位，默认:true
+        timeout: 10000, //超过10秒后停止定位，默认：5s
+        position: "RB", //定位按钮的停靠位置
+        buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+        zoomToAccuracy: true //定位成功后是否自动调整地图视野到定位点
+      });
+      this.geocoder = new AMap.Geocoder({
+        radius: 1000 //范围，默认：500
+      });
+    });
+  }
+
+  /**
    * @function 获取当前店铺
-   *
    */
   async getCurrentStore() {
     const { is_open_wechatapp_location } = Taro.getStorageSync("settingInfo");
@@ -43,19 +65,33 @@ class EntryLaunch {
         distributor_id: dtid
       };
     } else {
-      // 小程序开启定位
+      // 开启定位
       if (is_open_wechatapp_location == 1) {
-        await this.getLocationInfo()
-          .then(res => {
-            debugger;
-          })
-          .catch(e => {
-            log.debug(e);
-          });
+        const { position } = await this.getLocationInfo();
+        storeQuery = {
+          ...storeQuery,
+          lat: position.lat,
+          lng: position.lng
+        };
+        const {
+          addressComponent,
+          formattedAddress
+        } = await this.getAddressByLnglat([position.lng, position.lat]);
+        Taro.setStorageSync("locationAddress", {
+          ...addressComponent,
+          formattedAddress,
+          lat: position.lat,
+          lng: position.lng
+        } );
+        showToast(formattedAddress);
       }
     }
     const storeInfo = await api.shop.getShop(storeQuery);
     Taro.setStorageSync("curStore", storeInfo);
+    this.store.dispatch({
+      type: "shop/setShop",
+      payload: storeInfo
+    });
     return storeInfo;
   }
 
@@ -65,20 +101,12 @@ class EntryLaunch {
   getLocationInfo() {
     if (process.env.TARO_ENV === "weapp") {
     } else {
-      AMap.plugin("AMap.Geolocation", function() {
-        var geolocation = new AMap.Geolocation({
-          enableHighAccuracy: true, //是否使用高精度定位，默认:true
-          timeout: 10000, //超过10秒后停止定位，默认：5s
-          position: "RB", //定位按钮的停靠位置
-          buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-          zoomToAccuracy: true //定位成功后是否自动调整地图视野到定位点
-        });
-        geolocation.getCurrentPosition( function ( status, result ) {
-          debugger
+      return new Promise((reslove, reject) => {
+        this.geolocation.getCurrentPosition(function(status, result) {
           if (status == "complete") {
-            // onComplete(result);
+            reslove(result);
           } else {
-            // onError(result);
+            reject(result.message);
           }
         });
       });
@@ -97,6 +125,21 @@ class EntryLaunch {
       //   );
       // });
     }
+  }
+
+  /**
+   * @function 根据经纬度解析地址
+   */
+  getAddressByLnglat(lnglat) {
+    return new Promise((reslove, reject) => {
+      this.geocoder.getAddress(lnglat, function(status, result) {
+        if (status === "complete" && result.regeocode) {
+          reslove(result.regeocode);
+        } else {
+          reject(status);
+        }
+      });
+    });
   }
 
   /**
