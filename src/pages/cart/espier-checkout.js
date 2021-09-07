@@ -1134,6 +1134,7 @@ export default class CartCheckout extends Component {
     // const { payType, total,point_use } = this.state
     // const { type } = this.$router.params
     const isDrug = type === "drug";
+
     if (payType === "point" || payType === "deposit") {
       try {
         const content =
@@ -1227,8 +1228,7 @@ export default class CartCheckout extends Component {
         //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}`
         // });
         return;
-      } else {
-        console.log("----this.state.total---",this.state.total)
+      } else { 
         config = await this.createByType({
           ...params,
           pay_type:this.state.total.freight_type==="point"?'point':payType
@@ -1277,13 +1277,6 @@ export default class CartCheckout extends Component {
       });
       return;
     }
-    // 支付流程
-    const paymentParams = {
-      order_id,
-      pay_type: this.state.payType,
-      order_type: config.order_type
-    };
-
     this.setState({
       submitLoading: false
     }); 
@@ -1291,8 +1284,12 @@ export default class CartCheckout extends Component {
     const isExtraPoint=this.isPointitemGood() && this.state.total.freight_type==="point"; 
 
     let tradeDetailUrl=`/subpage/pages/trade/detail?id=${order_id}`;
+
+    // 支付宝小程序积分商城支付
+    const pointPay= this.isPointitemGood() && isAlipay;
     // 积分流程
-    if (payType === "point" || payType === "deposit" || isExtraPoint ) { 
+    if (payType === "point" || payType === "deposit" || isExtraPoint || pointPay) { 
+      console.log("你猜我猜不猜",payType)
       if (!payErr) {
         Taro.showToast({
           title: "支付成功",
