@@ -111,7 +111,7 @@ export default class SpFloatPrivacy extends Component {
       >
         <View className="sp-float-privacy__overlay"></View>
         <View className="sp-float-privacy__wrap">
-          <View className="privacy-hd">个人隐私保护1指引</View>
+          <View className="privacy-hd">个人隐私保护指引</View>
 
           {isWeixin && <View className="privacy-bd">
             请您务必审慎阅读、充分理解“服务协议”和“隐私政策”各条款，包括但不限于：为了向您提供更好的服务，我们须向您收集设备信息、操作日志等个人信息。您可以在“设置”中查看、变更、删除个人授权信息。
