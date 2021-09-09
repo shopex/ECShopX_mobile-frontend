@@ -356,7 +356,7 @@ export default class MemberIndex extends Component {
                   <View className="gradename">{`${
                     !vipgrade.is_vip
                       ? memberInfo.gradeInfo.grade_name
-                      : vipgrade.grade_name
+                      : vipgrade.grade_name || '会员'
                   }`}</View>
                 </View>
               </View>
