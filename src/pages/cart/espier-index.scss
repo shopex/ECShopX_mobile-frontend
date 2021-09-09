@@ -1,6 +1,3 @@
-@import "../../style/imports";
-// @import "../../style/layout.scss";
-
 .page-cart-index {
 
   .custom_botton_wrapper{
@@ -62,7 +59,7 @@
   }
 
   .cart-list {
-		padding: $edge-size;
+		padding: 20px;
 		&__shop {
 			margin: 0 0 20px;
 			padding: 0 0 4px;
@@ -343,12 +340,13 @@
   }
   .changeCross {
     .content {
-      padding: 20px; 
+      padding: 0 20px; 
+      margin-top: 20px;
       display: flex;
       justify-content: flex-end;
       align-items: center;
       .iconfont {
-        font-size: 52px;
+        font-size: 40px;
         color: #666;
         padding: 0 5px;
       }

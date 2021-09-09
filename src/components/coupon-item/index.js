@@ -134,7 +134,10 @@ export default class CouponItem extends Component {
             </View>
           }
           <View className='coupon-item'>
-            <View className='coupon-item__content'>
+            <View
+              className='coupon-item__content'
+              style={`background-image: url(${APP_IMAGE_CDN}${'/coupon_FFF.png'})`}
+            >
                 <View className='coupon-item___description'>
                   <View>
                     <View className='tag'
@@ -155,7 +158,8 @@ export default class CouponItem extends Component {
                 {info.end_date && (
                     <View className='coupon-item___time'><Text>有效期{begin_date} - {end_date}</Text></View>
                   )}
-                <View className='radius-view radius-right-top'> </View>
+                {/* <View className='radius-view radius-right-top'> </View>
+                <View className='radius-view radius-right-bottom'> </View> */}
                 <View className='coupon-item__content__bf'>
                   <View className='coupon-item__content__bottom' onClick={this.changeExpand}>
                       <View className='text'>详细信息</View>
@@ -169,24 +173,22 @@ export default class CouponItem extends Component {
                 ? <View
                   className={classNames('coupon-item__name', isDisabled ? 'coupon-item__name-not' : null)}
                   style={
-                    isDisabled ?
-                    `background: #d7d7d7` :
-                    `background: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidBg : obj.bg}`
+                    `background-image: url(${APP_IMAGE_CDN}${(info.tagClass === 'used' || info.tagClass === 'overdue') ? '/coupon_inval.png' : '/coupon_mj.png'})`
                   }
                 >
                     <View className='coupon-item___number'>￥<Text className='coupon-item___number_text'>{info.reduce_cost/100}</Text></View>
-                    <View className='coupon-item___info'>满{info.least_cost > 0 ? info.least_cost/100 : 0.01}可用</View>
+                    <View className='coupon-item___info' style={{marginBottom: '10rpx'}}>满{info.least_cost > 0 ? info.least_cost/100 : 0.01}可用</View>
                     <View
                       className={`${!isExist && 'coupon-item___status'}`}
                       style={
-                        `color: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidFc : obj.fc}; opacity: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.opacity : 1}`
+                        `color: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidFc : obj.fc}; margin-bottom: 13px; opacity: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.opacity : 1}`
                       }
                       onClick={this.handleClickChecked1.bind(this)}
                     >
                       {this.props.children}
                     </View>
-                    <View className='radius-view radius-left-top'> </View>
-                    <View className='radius-view radius-left-bottom'> </View>
+                    {/* <View className='radius-view radius-left-top'> </View>
+                    <View className='radius-view radius-left-bottom'> </View> */}
                   </View>
                   : null
             }
@@ -197,8 +199,8 @@ export default class CouponItem extends Component {
                   style={isDisabled ? `background: #d7d7d7` : `background: ${colors.data[0].primary}`}
                 >
                     <View className='coupon-item___number'>兑换券</View>
-                    <View className='radius-view radius-left-top'> </View>
-                    <View className='radius-view radius-left-bottom'> </View>
+                    {/* <View className='radius-view radius-left-top'> </View>
+                    <View className='radius-view radius-left-bottom'> </View> */}
                   </View>
                   : null
             }
@@ -207,9 +209,7 @@ export default class CouponItem extends Component {
                 ? <View
                   className={classNames('coupon-item__name', isDisabled ? 'coupon-item__name-not' : null)}
                   style={
-                    isDisabled ?
-                    `background: #d7d7d7` :
-                    `background: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidBg : obj.bg}`
+                    `background-image: url(${APP_IMAGE_CDN}${(info.tagClass === 'used' || info.tagClass === 'overdue') ? '/coupon_inval.png' : '/coupon_dh.png'})`
                   }
                 >
                     <View className='coupon-item___number'>兑换券</View>
@@ -222,8 +222,8 @@ export default class CouponItem extends Component {
                     >
                       {this.props.children}
                     </View>
-                    <View className='radius-view radius-left-top'> </View>
-                    <View className='radius-view radius-left-bottom'> </View>
+                    {/* <View className='radius-view radius-left-top'> </View>
+                    <View className='radius-view radius-left-bottom'> </View> */}
                   </View>
                   : null
             }
@@ -232,26 +232,24 @@ export default class CouponItem extends Component {
                 ? <View
                   className={classNames('coupon-item__name', isDisabled ? 'coupon-item__name-not' : null)}
                   style={
-                    isDisabled ?
-                    `background: #d7d7d7` :
-                    `background: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidBg : obj.bg}`
+                    `background-image: url(${APP_IMAGE_CDN}${(info.tagClass === 'used' || info.tagClass === 'overdue') ? '/coupon_inval.png' : '/coupon_zk.png'})`
                   }
                 >
                   <View className='coupon-item___number'><Text className='coupon-item___number_text'>{(100-info.discount)/10}</Text>折</View>
-                  <View className='coupon-item___info'>
+                  <View className='coupon-item___info' style={{marginBottom: '10rpx'}}>
                     满{info.least_cost > 0 ? info.least_cost/100 : 0.01}可用
                   </View>
                   <View
                     className={`${!isExist && 'coupon-item___status'}`}
                     style={
-                      `color: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidFc : obj.fc}; opacity: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.opacity : 1}`
+                      `color: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.invalidFc : obj.fc}; margin-bottom: 13px; opacity: ${(info.tagClass === 'used' || info.tagClass === 'overdue')  ? obj.opacity : 1}`
                     }
                     onClick={this.handleClickChecked1.bind(this)}
                   >
                     {this.props.children}
                   </View>
-                  <View className='radius-view radius-left-top'> </View>
-                  <View className='radius-view radius-left-bottom'> </View>
+                  {/* <View className='radius-view radius-left-top'> </View>
+                  <View className='radius-view radius-left-bottom'> </View> */}
                 </View>
                 : null
             }
@@ -262,8 +260,8 @@ export default class CouponItem extends Component {
                   style={isDisabled ? `background: #d7d7d7` : `background: ${colors.data[0].primary}`}
                 >
                   <View className='coupon-item___number'><Text className='coupon-item___number_text'>会员折扣</Text></View>
-                  <View className='radius-view radius-left-top'> </View>
-                  <View className='radius-view radius-left-bottom'> </View>
+                  {/* <View className='radius-view radius-left-top'> </View>
+                  <View className='radius-view radius-left-bottom'> </View> */}
                 </View>
               )
             }

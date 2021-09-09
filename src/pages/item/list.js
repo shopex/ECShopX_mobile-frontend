@@ -290,11 +290,19 @@ export default class List extends Component {
           const { id } = res.dataset;
           const { list } = this.state
           const curGoods = list.find( item => item.item_id == id );
-          const { item_id, title, market_price, price, img } = curGoods;
+          const {
+            item_id,
+            title,
+            market_price,
+            price,
+            img,
+            member_price
+          } = curGoods;
           Tracker.dispatch("EXPOSE_SKU_COMPONENT", {
             goodsId: item_id,
             title: title,
             market_price: market_price * 100,
+            member_price: member_price * 100,
             price: price * 100,
             imgUrl: img
           });
@@ -370,11 +378,12 @@ export default class List extends Component {
   handleClickItem = ( item ) => {
     const {user_card_id, isNewGift = null, card_id , code} = this.$router.params
     if (isNewGift && item.store == 0 ) return
-    const { item_id, title, market_price, price, img } = item;
+    const { item_id, title, market_price, price, img, member_price } = item;
     Tracker.dispatch("TRIGGER_SKU_COMPONENT", {
       goodsId: item_id,
       title: title,
       market_price: market_price * 100,
+      member_price: member_price * 100,
       price: price * 100,
       imgUrl: img
     });
@@ -576,10 +585,11 @@ export default class List extends Component {
         {isNewGift ? 
         (<View className='goods-list__toolbar1'>
           <View className='store' onClick={this.setStore.bind(this, true)}>
-            当前门店: <View className='name'>{currentShop.name}</View>
+            <View className='title'>当前门店: </View>
+            <View className='name'>{currentShop.name}</View>
+            <View style={{lineHeight: '88rpx'}} className="icon-arrowRight item-icon-go"></View>
           </View>
-          {list.length && 
-            <View style={{display: 'flex', position: 'relative'}}>
+            <View style={{display: `${!page.isLoading && !page.hasNext && !list.length ? 'none' : 'flex'}`, position: 'relative'}}>
               <FilterBar
                 className='goods-list__tabs1'
                 custom
@@ -598,7 +608,7 @@ export default class List extends Component {
                   onConfirm={this.handleConfirm.bind(this)}
                 />
               </View>
-          </View>}
+            </View>
         </View>) :
         (<View className='goods-list__toolbar'>
         <View className={`goods-list__search ${(query && query.keywords && !isShowSearch) ? 'on-search' : null}`}>
@@ -707,7 +717,7 @@ export default class List extends Component {
                         data-id={item.item_id}
                       >
                         <GoodsItem
-                          showFav={!isNewGift}
+                          showNewGift={isNewGift}
                           key={item.item_id}
                           info={item}
                           onClick={() => this.handleClickItem(item)}
@@ -729,7 +739,7 @@ export default class List extends Component {
                       >
                         <GoodsItem
                           key={item.item_id}
-                          showFav={!isNewGift}
+                          showNewGift={isNewGift}
                           info={item}
                           onClick={() => this.handleClickItem(item)}
                           onStoreClick={() => this.handleClickStore(item)}
@@ -749,7 +759,7 @@ export default class List extends Component {
                   return (
                     <View className='goods-list__item' key={item.item_id}>
                       <GoodsItem
-                        showFav={!isNewGift}
+                        showNewGift={isNewGift}
                         info={item}
                         onClick={() => this.handleClickItem(item)}
                         onStoreClick={() => this.handleClickStore(item)}
@@ -767,9 +777,9 @@ export default class List extends Component {
           }
           {
             !page.isLoading && !page.hasNext && !list.length
-            && (<SpNote img={`${process.env.APP_IMAGE_CDN}/no_exist_product.png`} isUrl>此店铺不参加此次活动，看看别的吧</SpNote>)
+            && (<SpNote img={isNewGift ? `${APP_IMAGE_CDN}/no_exist_product.png` : `trades_empty.png`} isUrl={isNewGift}>{`${ isNewGift ? '此店铺不参加此次活动，看看别的吧' : '暂无数据～'}`}</SpNote>)
           }
-          {!page.isLoading && !page.hasNext && !list.length && (
+          {isNewGift && !page.isLoading && !page.hasNext && !list.length && (
               <View className='coupon-tab'>
                 {couponTab.map((item, idx)=>{
                   let {title, val} = item
