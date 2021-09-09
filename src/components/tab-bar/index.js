@@ -180,6 +180,8 @@ export default class TabBar extends Component {
       return <View></View>
     }
 
+    console.log("-----tabList----",tabList)
+
     return (
       <AtTabBar
         fixed
