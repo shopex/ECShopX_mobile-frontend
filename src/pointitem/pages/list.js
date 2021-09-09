@@ -6,9 +6,8 @@ import { AtDrawer, AtInput } from 'taro-ui'
 import { BackToTop, Loading, SpNote, NavBar, TabBar, HomeCapsule } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
-import { classNames } from '@/utils'
-import Header from './comps/header'
-import Tabs from './comps/tabs'
+import { classNames,isWeixin } from '@/utils'
+import Header from './comps/header' 
 import GoodsItem from './comps/goods_item'
 import FilterBlock from './comps/filter-block'
 import throttle from 'lodash/throttle'
@@ -660,7 +659,7 @@ export default class List extends Component {
     return (
       <View className='page-pointitem-home'>
 
-        <CustomHeader isWhite={paddindTop > 0} isHome={true} statusBarHeight={statusBarHeight} />
+        {isWeixin && <CustomHeader isWhite={paddindTop > 0} isHome={true} statusBarHeight={statusBarHeight} />}
 
         <View className='pointitem-banner'>
           <View className='pointitem-def'>
