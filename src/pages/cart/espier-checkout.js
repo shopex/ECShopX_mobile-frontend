@@ -1090,6 +1090,11 @@ export default class CartCheckout extends Component {
     const { freight_type,freight_fee }=this.state.total; 
 
     const { payType }=this.state; 
+ 
+    //alipaymini只是针对支付宝支付 积分支付不适用
+    if(isAlipay){
+      params.pay_type='alipaymini';
+    }
 
     const isPointPay=payType==='point' || (this.isPointitemGood() && (freight_type==='point' || (freight_type==='cash' && freight_fee==0 )))
 
@@ -1097,9 +1102,6 @@ export default class CartCheckout extends Component {
       params.pay_type='point';
     } 
 
-    if(isAlipay){
-      params.pay_type='alipaymini';
-    }
 
     let info;
     if(this.isPointitemGood()){
