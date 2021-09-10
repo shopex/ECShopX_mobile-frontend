@@ -110,11 +110,15 @@ export default class SpGoodsItem extends Component {
     return (
       <View className={classNames("sp-goods-item")}>
         <View className="goods-item__hd">
-
+          <SpImg
+            img-class="order-item__img"
+            src={img}
+            mode="aspectFill"
+            width="300"
+            lazyLoad
+          />
         </View>
-        <View className="goods-item__bd">
-
-        </View>
+        <View className="goods-item__bd"></View>
         <View className="goods-item__ft">{this.props.renderFooter}</View>
       </View>
     );
