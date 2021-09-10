@@ -4,7 +4,7 @@ import { AtInput, AtButton } from 'taro-ui'
 import { NavBar, SpToast } from '@/components'
 import { getThemeStyle } from "@/utils";
 import api from '@/api'
-import S from '@/spx'
+import S from '@/spx' 
 
 import './refund-sendback.scss'
 
@@ -96,8 +96,8 @@ export default class TradeRefundSendback extends Component {
 
   render () {
     const { express, logi_no, curExpressIdx } = this.state
-    return (
-      <View className='page-refund-sendback'  style={getThemeStyle()}>
+    return ( 
+      <View className='page-refund-sendback' style={getThemeStyle()} >
         <NavBar
           title='售后填写物流公司'
           leftIconType='chevron-left'
