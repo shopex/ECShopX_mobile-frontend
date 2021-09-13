@@ -648,12 +648,12 @@ export default class TradeDetail extends Component {
                     <Image className='ziti-qrcode' src={qrcode} />
                     {info.pickupcode_status && (
                       <View>
-                        <View
+                        {/* <View
                           className='sendCode'
                           onClick={this.sendCode.bind(this)}
                         >
                           发送提货码
-                        </View>
+                        </View> */}
                         <View className='sendCodeTips'>
                           提货时请出告知店员提货验证码
                         </View>
