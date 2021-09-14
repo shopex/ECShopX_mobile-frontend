@@ -6,4 +6,4 @@ export function setPageTitle(title) {
   });
 }
 
-export const platformTemplateName = "onexshop";
+export const platformTemplateName = "yykweishop";

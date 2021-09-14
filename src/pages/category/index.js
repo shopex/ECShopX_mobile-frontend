@@ -3,8 +3,8 @@ import { View } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import {AtTabs, AtTabsPane} from "taro-ui"
 import api from '@/api'
-import { pickBy, platformTemplateName } from '@/utils'
-import { setPageTitle } from "@/utils/platform";
+import { pickBy } from '@/utils'
+import { setPageTitle, platformTemplateName } from "@/utils/platform";
 import { TabBar } from '@/components'
 import Series from './comps/series'
 

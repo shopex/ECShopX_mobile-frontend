@@ -18,3 +18,5 @@ export function setPageTitle(title) {
   }
 }
 
+export const platformTemplateName = "onexshop"
+

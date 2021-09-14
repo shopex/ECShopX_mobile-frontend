@@ -5,7 +5,8 @@ import { connect } from "@tarojs/redux";
 import req from '@/api/req'
 import { withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
-import { buriedPoint,platformTemplateName,transformPlatformUrl } from '@/utils' 
+import { buriedPoint, transformPlatformUrl } from '@/utils'
+import { platformTemplateName } from "@/utils/platform";
 import { getDtidIdUrl } from '@/utils/helper'
 import {
   BaHomeWgts

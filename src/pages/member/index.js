@@ -19,9 +19,9 @@ import {
   classNames,
   isAlipay,
   isWeixin,
-  platformTemplateName,
   transformPlatformUrl
 } from "@/utils";
+import { setPageTitle, platformTemplateName } from "@/utils/platform";
 import qs from 'qs';
 import {
   customName

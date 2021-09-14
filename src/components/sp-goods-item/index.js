@@ -5,6 +5,7 @@ import api from "@/api";
 import { connect } from "@tarojs/redux";
 
 import { isObject, classNames } from "@/utils";
+import { PROMOTION_TAG } from '@/consts'
 
 import "./index.scss";
 
@@ -119,7 +120,13 @@ export default class SpGoodsItem extends Component {
           />
         </View>
         <View className="goods-item__bd">
-          
+          <View className="promotions">
+            {info.promotions.map((item, index) => (
+              <Text className="promotion-tag" key={`promotion-tag__${index}`}>
+                {PROMOTION_TAG[item.tag_type]}
+              </Text>
+            ))}
+          </View>
         </View>
         <View className="goods-item__ft">{this.props.renderFooter}</View>
       </View>
