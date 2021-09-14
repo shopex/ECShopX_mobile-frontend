@@ -121,11 +121,11 @@ export default class SpGoodsItem extends Component {
         </View>
         <View className="goods-item__bd">
           <View className="promotions">
-            {info.promotions.map((item, index) => (
+            {/* {info.promotions.map((item, index) => (
               <Text className="promotion-tag" key={`promotion-tag__${index}`}>
                 {PROMOTION_TAG[item.tag_type]}
               </Text>
-            ))}
+            ))} */}
           </View>
         </View>
         <View className="goods-item__ft">{this.props.renderFooter}</View>
