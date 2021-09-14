@@ -25,6 +25,17 @@ export const REFUND_STATUS = {
   "7": "售后关闭"
 };
 
+export const PROMOTION_TAG = {
+  "single_group": "团购",
+  "full_minus": "满减",
+  "full_discount": "满折",
+  "full_gift": "满赠",
+  "normal": "秒杀",
+  "limited_time_sale": "限时特惠",
+  "plus_price_buy": "换购",
+  "member_preference" : "会员限购" 
+}
+
 export const WGTS_NAV_MAP = {
   luckdraw: "/pages/member/point-draw"
 };

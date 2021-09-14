@@ -1,7 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from "@tarojs/redux"
-import { pickBy,platformTemplateName } from '@/utils'
+import { pickBy } from '@/utils'
+import { setPageTitle, platformTemplateName } from "@/utils/platform";
 import api from '@/api'
 import {AtTabs, AtTabsPane} from "taro-ui"
 import Series from './comps/series'

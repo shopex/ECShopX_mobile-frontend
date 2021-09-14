@@ -22,7 +22,6 @@ import {
   isArray,
   isAlipay,
   payTypeField,
-  platformTemplateName,
   styleNames,
   getThemeStyle,
   entryLaunch
@@ -31,7 +30,7 @@ import entry from "@/utils/entry";
 import { withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
 import { Tracker } from "@/service";
-import { setPageTitle } from "@/utils/platform";
+import { setPageTitle, platformTemplateName } from "@/utils/platform";
 import { WgtGoodsFaverite, HeaderHome } from "./home/wgts";
 import HomeWgts from "./home/comps/home-wgts";
 import Automatic from "./home/comps/automatic";
@@ -737,7 +736,11 @@ export default class Home extends Component {
           <View className="wgts-wrap__cont">
             {/* 挂件内容 */}
             <HomeWgts wgts={wgts} loadMore={this.handleLoadMore} />
-            {!isAlipay && likeList.length > 0 && is_open_recommend == 1 && (
+
+            {/* 猜你喜欢 */}
+            {recommendList && <SpRecommend info={recommendList} />}
+
+            {/* {!isAlipay && likeList.length > 0 && is_open_recommend == 1 && (
               <View className="faverite-list">
                 <WgtGoodsFaverite info={likeList} />
                 {page.isLoading ? <Loading>正在加载...</Loading> : null}
@@ -745,8 +748,7 @@ export default class Home extends Component {
                   <SpNote img="trades_empty.png">暂无数据~</SpNote>
                 )}
               </View>
-            )}{" "}
-            */}
+            )} */}
           </View>
         </View>
 

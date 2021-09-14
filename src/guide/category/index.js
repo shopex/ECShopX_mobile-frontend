@@ -4,7 +4,8 @@ import { connect } from "@tarojs/redux";
 import {AtTabs, AtTabsPane} from "taro-ui"
 import api from '@/api'
 import S from '@/spx'
-import { pickBy, styleNames,platformTemplateName } from '@/utils'
+import { pickBy, styleNames } from '@/utils'
+import { platformTemplateName } from "@/utils/platform";
 import { BaTabBar,BaNavBar } from '../components'
 import Series from './comps/series'
 

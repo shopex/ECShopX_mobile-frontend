@@ -3,7 +3,8 @@ import { View } from '@tarojs/components'
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane, AtTabBar } from "taro-ui"
 import api from '@/api'
-import { pickBy, getCurrentRoute ,platformTemplateName} from '@/utils'
+import { pickBy, getCurrentRoute} from '@/utils'
+import { platformTemplateName } from "@/utils/platform";
 import Series from './comps/series'
 
 import './category.scss'

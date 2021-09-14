@@ -61,8 +61,13 @@ export async function payPlatform(order = {}) {
     payErr
   };
 }
-//平台模版名称
-export const platformTemplateName = isAlipay ? "onexshop" : "yykweishop";
+
+
+// //平台模版名称
+// export const platformTemplateName = isAlipay ? "onexshop" : "yykweishop";
+
+
+
 //平台添加字段
 export const payTypeField = isAlipay ? { page_type: "alipay" } : {};
 

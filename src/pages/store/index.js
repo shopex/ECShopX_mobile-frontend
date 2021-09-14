@@ -5,7 +5,8 @@ import { SpToast, Loading, BackToTop } from '@/components'
 import { AtTabBar } from 'taro-ui'
 import req from '@/api/req'
 import api from '@/api'
-import { pickBy, normalizeQuerys, getCurrentRoute,platformTemplateName } from '@/utils'
+import { pickBy, normalizeQuerys, getCurrentRoute } from '@/utils'
+import { setPageTitle, platformTemplateName } from "@/utils/platform";
 import { withBackToTop } from '@/hocs'
 import qs from 'qs';
 import S from "@/spx";

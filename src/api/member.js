@@ -1,5 +1,7 @@
 import req from './req'
-import { platformTemplateName,transformPlatformUrl } from '@/utils'
+import { transformPlatformUrl } from '@/utils'
+import { platformTemplateName } from "@/utils/platform";
+
 
 export function memberInfo () {
   return req.get('/member')
