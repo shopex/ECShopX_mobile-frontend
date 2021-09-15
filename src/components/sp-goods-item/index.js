@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
-import { SpImg, PointLine } from "@/components";
+import { SpImg, SpPoint, SpPrice } from "@/components";
 import api from "@/api";
 import { connect } from "@tarojs/redux";
 
@@ -120,6 +120,20 @@ export default class SpGoodsItem extends Component {
           />
         </View>
         <View className="goods-item__bd">
+          {/* 跨境商品 */}
+          {info.type === "1" && (
+            <View className="national-info">
+              <Image
+                className="nationalFlag"
+                src={info.origincountry_img_url}
+                mode="aspectFill"
+                lazyLoad
+              />
+              <Text className="nationalTitle">{info.origincountry_name}</Text>
+            </View>
+          )}
+
+          {/* 促销活动标签 */}
           <View className="promotions">
             {/* {info.promotions.map((item, index) => (
               <Text className="promotion-tag" key={`promotion-tag__${index}`}>
@@ -127,6 +141,25 @@ export default class SpGoodsItem extends Component {
               </Text>
             ))} */}
           </View>
+
+          <View className="goods-info">
+            <View className="goods-title"></View>
+            <View className="goods-desc"></View>
+          </View>
+
+          {/* 商品价格、积分 */}
+          {info.is_point && (
+            <View className="goods-price">
+              <SpPoint value={info.point} />
+            </View>
+          )}
+
+          {!info.is_point && (
+            <View className="goods-price">
+              <SpPrice value={100}></SpPrice>
+              <SpPrice lineThrough value={200}></SpPrice>
+            </View>
+          )}
         </View>
         <View className="goods-item__ft">{this.props.renderFooter}</View>
       </View>

@@ -52,6 +52,9 @@ import SpPageNote from "./sp-pagenote";
 import SpTimer from "./sp-timer";
 import SpRecommend from "./sp-recommend";
 import SpGoodsItem from "./sp-goods-item";
+import SpPoint from "./sp-point";
+import SpPrice from "./sp-price";
+
 import SpImgPicker from "./img-picker";
 
 export default {};
@@ -69,5 +72,7 @@ export {
   SpTimer,
   SpRecommend,
   SpGoodsItem,
+  SpPoint,
+  SpPrice,
   SpImgPicker
 };

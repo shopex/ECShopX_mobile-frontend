@@ -36,6 +36,8 @@ export const PROMOTION_TAG = {
   "member_preference" : "会员限购" 
 }
 
+export const DEFAULT_POINT_NAME = '积分'
+
 export const WGTS_NAV_MAP = {
   luckdraw: "/pages/member/point-draw"
 };
