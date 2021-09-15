@@ -118,7 +118,7 @@ export default class TradeItem extends Component {
           <View className='trade-item__ft-bd'>
             <Text className='trade-item__status'>{info.status_desc}</Text>
             {
-              (info.order_status_des === 'PAYED' || info.order_status_des === 'NOTPAY') && !info.is_logistics &&
+              (info.order_status_des === 'PAYED' || info.order_status_des === 'NOTPAY') && !info.is_logistics && info.can_apply_cancel != 0 &&
               (info.receipt_type !== 'dada' || (info.dada && info.dada.dada_status === 0))
                 ? <Button
                   className='btn-action'
@@ -139,7 +139,7 @@ export default class TradeItem extends Component {
           <View className='trade-item__ft-bd'>
             <Text className='trade-item__status'>{info.status_desc}</Text>
             {
-              (info.order_status_des === 'PAYED' || info.order_status_des === 'NOTPAY') &&
+              (info.order_status_des === 'PAYED' || info.order_status_des === 'NOTPAY') && info.can_apply_cancel != 0 &&
               !info.is_logistics && (info.receipt_type !== 'dada' || (info.dada && info.dada.dada_status === 0))
                 ? <Button
                   className='btn-action'
