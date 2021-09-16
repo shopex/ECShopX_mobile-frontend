@@ -644,6 +644,7 @@ export default class CartCheckout extends Component {
       params.bargain_id = bargain_id;
     }
     this.params = params;
+    Taro.setStorageSync("payment_list_dtid", params.distributor_id);
     return _cloneDeep({
       ...params,
       items: []
