@@ -55,10 +55,11 @@ export default class PaymentPicker extends Component {
       typeList: res
     }, () => {
       if (res[0]) {
-        console.log(111);
-        this.handlePaymentChange(res[0].pay_type_code)
-        this.handleChange(res[0].pay_type_code)
-        this.props.onInitDefaultPayType(res[0].pay_type_code)
+        console.log( 111 );
+        const channel = res[0].pay_channel || "";
+        this.handlePaymentChange(res[0].pay_type_code, channel);
+        this.handleChange( res[0].pay_type_code )
+        this.props.onInitDefaultPayType(res[0].pay_type_code, channel);
       }
     })
   }
@@ -79,7 +80,10 @@ export default class PaymentPicker extends Component {
   };
 
   handleChange = type => {
-    this.props.onChange(type);
+    const { typeList } = this.state
+    const payItem = typeList.find( item => item.pay_type_code == type );
+    const channel = payItem.pay_channel || "";
+    this.props.onChange(type, channel);
   };
 
   render() {
