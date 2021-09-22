@@ -1,10 +1,17 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, Progress, Text, Button } from '@tarojs/components'
 import { pickBy, normalizeQuerys } from '@/utils'
-import { SpNavBar } from '@/components'
+import { SpNavBar, SpLogin, SpFloatPrivacy } from '@/components'
 import api from '@/api'
+import S from "@/spx";
+import { connect } from "@tarojs/redux";
 import './index.scss'
 
+@connect(
+  ({ member }) => ({
+    memberData: member.member
+  })
+)
 export default class Flop extends Component {
   constructor (props) {
     super(props)
@@ -16,12 +23,14 @@ export default class Flop extends Component {
       userInfo: {},
       // isJoin: false,
       isDiscount: false,
-      cutPercent: 0
+      cutPercent: 0,
+      showPrivacy: false
     }
   }
 
   componentDidMount () {
     this.getBoostDetail()
+    S.getAuthToken() && this.handleClickWxOAuth()
   }
 
   config = {
@@ -36,6 +45,9 @@ export default class Flop extends Component {
       const query = await normalizeQuerys(this.$router.params)
       if (query.bid) {
         bargain_id = query.bid
+      }
+      if (query.uid) {
+        user_id = query.uid
       }
     }
     const {
@@ -127,8 +139,22 @@ export default class Flop extends Component {
     }
   }
 
+  onChangeLoginSuccess = () => {
+    this.handleClickWxOAuth()
+  };
+
+  handleClickWxOAuth() {
+    const { avatar, username } = this.props.memberData.memberInfo;
+    if (!avatar && !username) {
+      this.setState({
+        showPrivacy: true
+      });
+    }
+  }
+  
+
   render () {
-    const { info, boostList, isDisabled, cutPercent } = this.state
+    const { info, boostList, isDisabled, cutPercent, showPrivacy } = this.state
     return (
       <View className='flop'>
         <SpNavBar
@@ -159,11 +185,21 @@ export default class Flop extends Component {
             <View>帮助好友领取随机折扣优惠</View>
           </View>
           {
-            (info.help_pics && info.help_pics.length > 0 )&& <View className='discountImg'>
-              {
-                info.help_pics.map((item, index) => <Image key={`${item}${index}`}  src={item} mode='aspectFill' className='img' onClick={this.handleDiscount.bind(this)} />)
-              }
-            </View>
+            S.getAuthToken() ?
+              (info.help_pics && info.help_pics.length > 0 ) &&
+              <View className='discountImg'>
+                {
+                  info.help_pics.map((item, index) => <Image key={`${item}${index}`}  src={item} mode='aspectFill' className='img' onClick={this.handleDiscount.bind(this)} />)
+                }
+              </View> :
+              (info.help_pics && info.help_pics.length > 0 ) &&
+              <SpLogin onChange={this.onChangeLoginSuccess.bind(this)}>
+                <View className='discountImg'>
+                  {
+                    info.help_pics.map((item, index) => <Image key={`${item}${index}`}  src={item} mode='aspectFill' className='img' onClick={this.handleDiscount.bind(this)} />)
+                  }
+                </View>
+              </SpLogin>
           }
         </View>
         <View className='boostMain'>
@@ -197,6 +233,14 @@ export default class Flop extends Component {
         >
           我也要参加
         </Button>               
+        <SpFloatPrivacy
+          isOpened={showPrivacy}
+          onClose={() =>
+            this.setState({
+              showPrivacy: false,
+            })
+          }
+        />
       </View>
     )
   }  
