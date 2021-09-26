@@ -1,0 +1,52 @@
+.liveroom-page {
+  &-bck {
+    width: 100%;
+    display: block;
+  }
+  &-title {
+    padding: 15px 20px;
+    background: #fff;
+  }
+  &-state {
+    position: absolute;
+    left: 5%;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .live, .content {
+    padding: 0px 15px;
+    padding-right: 10px;
+    height: 45px;
+    line-height: 45px;
+    font-size: 24px;
+    border-radius: 80px 0px 0px 80px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+  }
+  .content {
+    border-radius: 0px 80px 80px 0px;
+    padding-left: 10px;
+    .at-countdown__item {
+      align-items: baseline;
+    }
+    .at-countdown__time-box {
+      font-size: 26px;
+      color: #fff;
+      font-family: PingFangSC-Medium, PingFang SC;
+    }
+    .at-countdown__separator {
+      font-size: 24px;
+    }
+  }
+  .live {
+    background: rgba(149, 242, 4, 1);
+  }
+  .notice {
+    background: rgba(129, 211, 248, 1);
+  }
+  .return {
+    background: rgba(130, 175, 215, 1);
+  }
+}
