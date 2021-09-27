@@ -12,10 +12,20 @@
     .left-img {
       width: 100%;
     }
+    .left-mengceng {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 88;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(360deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+    }
     .left-state {
       position: absolute;
       left: 7%;
       top: 4%;
+      z-index: 99;
       display: flex;
       align-items: center;
       justify-content: center;
