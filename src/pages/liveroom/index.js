@@ -155,15 +155,15 @@ export default class LiveRoomList extends Component {
                 {
                   notStarted &&
                   <View className='right-count'>
-                    <Text>直播时间：</Text>
+                    <View className='fs'>直播时间：</View>
                     <AtCountdown
-                      isShowDay={this.timeStamp(1632991411).dd != 0}
-                      isShowHour={this.timeStamp(1632991411).hh != 0}
+                      isShowDay={this.timeStamp(item.start_time).dd != 0}
+                      isShowHour={this.timeStamp(item.start_time).hh != 0}
                       format={{ day: '天', hours: '时', minutes: '分', seconds: '' }}
-                      day={this.timeStamp(1632991411).dd}
-                      hours={this.timeStamp(1632991411).hh}
-                      minutes={this.timeStamp(1632991411).mm}
-                      seconds={this.timeStamp(1632991411).ss}
+                      day={this.timeStamp(item.start_time).dd}
+                      hours={this.timeStamp(item.start_time).hh}
+                      minutes={this.timeStamp(item.start_time).mm}
+                      seconds={this.timeStamp(item.start_time).ss}
                     />
                   </View>
                 }
