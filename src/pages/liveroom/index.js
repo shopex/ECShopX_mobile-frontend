@@ -118,7 +118,8 @@ export default class LiveRoomList extends Component {
           return (
             <View className='liveroom-page-box' key={item.roomid}>
               <View className='liveroom-page-left'>
-                <Image className='left-img' mode='widthFix' src={item.cover_img} />
+                <Image className='left-img' mode='widthFix' src={item.share_img} />
+                <View className='left-mengceng'></View>
                 <View className='left-state'>
                   <View className={classNames('lives', notStarted && 'notice' || (other || playback) && 'return')}>
                     {
@@ -203,7 +204,7 @@ export default class LiveRoomList extends Component {
       {/* 加载更多 */}
       <LoadingMore isLoading={isLoading} isEnd={isEnd} isEmpty={isEmpty} />
       {/* 防止子内容无法支撑scroll-view下拉刷新 */}
-      <View style='width:2rpx;height:2rpx;bottom:-2rpx;position:absolute;' />
+      <View style='width:50rpx;height:50rpx;bottom:-50rpx;position:absolute;' />
     </ScrollView>
   )}
 }
