@@ -1,4 +1,8 @@
+//tabbar高度 
+$tabBarHeight: 110px;
+
 .liveroom-page {
+  padding-bottom: $tabBarHeight;
   &-box {
     display: flex;
     margin: 25px 0px;
