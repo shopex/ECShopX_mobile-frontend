@@ -19,7 +19,7 @@ export { default as FormIdCollector } from "./form-id-collector";
 
 
 export { default as SpCheckbox } from "./checkbox";
-export { default as SpCell } from "./cell";
+
 export { default as SpToast } from "./toast";
 export { default as SpIconMenu } from "./icon-menu";
 export { default as SpNote } from "./note";
@@ -57,6 +57,7 @@ import SpPrice from "./sp-price";
 import SpDefault from "./sp-default";
 
 import SpImgPicker from "./img-picker";
+import SpCell from "./sp-cell";
 
 export default {};
 
@@ -76,5 +77,6 @@ export {
   SpPoint,
   SpPrice,
   SpDefault,
-  SpImgPicker
+  SpImgPicker,
+  SpCell
 };

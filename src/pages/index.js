@@ -132,7 +132,7 @@ export default class Home extends Component {
     // this.isShoppingGuide();
     // this.getDistributionInfo();
     // 检测白名单
-    // this.checkWhite();
+    this.checkWhite();
     // 购物车数量
     // this.fetchCartCount();
     // this.getPointSetting();
@@ -323,7 +323,7 @@ export default class Home extends Component {
   checkWhite = () => {
     const setting = Taro.getStorageSync("otherSetting");
     if (!S.getAuthToken()) {
-      if (setting.whitelist_status == true) {
+      if (setting.whitelist_status) {
         this.setState({
           show_tabBar: false
         });

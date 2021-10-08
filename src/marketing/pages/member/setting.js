@@ -46,7 +46,7 @@ export default class MemberSetting extends Component {
 
         <View className='sec'>
           {/* <SpCell title='用户设置' isLink onClick={this.handleClickSetting}> </SpCell> */}
-          <SpCell title='版本' value={APP_VERSION}> </SpCell>
+          <SpCell title='版本' value={process.env.APP_VERSION}> </SpCell>
         </View>
 
         <View className='btns'>
