@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Image, Button } from "@tarojs/components";
+import { View, Image, Button, Text } from "@tarojs/components";
 import { Price, NavBar, SpCell } from "@/components";
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from "taro-ui";
@@ -186,30 +186,30 @@ export default class VipIndex extends Component {
       hfpay: "微信支付"
     };
     return (
-      <View className="vipgrades">
-        <NavBar title="会员购买" leftIconType="chevron-left" fixed="true" />
+      <View className='vipgrades'>
+        <NavBar title='会员购买' leftIconType='chevron-left' fixed='true' />
         <View
-          className="header"
-          style={"background: " + colors.data[0].marketing}
+          className='header'
+          style={'background: ' + colors.data[0].marketing}
         >
-          <View className="header-isauth">
+          <View className='header-isauth'>
             <Image
-              className="header-isauth__avatar"
+              className='header-isauth__avatar'
               src={userInfo.avatar || userIcon}
-              mode="aspectFill"
+              mode='aspectFill'
             />
-            <View className="header-isauth__info">
-              <View className="nickname">
+            <View className='header-isauth__info'>
+              <View className='nickname'>
                 {userInfo.username}
-                <Image className="icon-vip" src="/assets/imgs/svip.png" />
+                <Image className='icon-vip' src='/assets/imgs/svip.png' />
               </View>
-              <View className="mcode">
+              <View className='mcode'>
                 {userVipInfo.end_time} 到期，购买后有效期将延续
               </View>
             </View>
           </View>
           <AtTabs
-            className="header-tab"
+            className='header-tab'
             current={curTabIdx}
             tabList={tabList}
             onClick={this.handleClickTab}
@@ -223,15 +223,15 @@ export default class VipIndex extends Component {
             ))}
           </AtTabs>
         </View>
-        <View className="section">
-          <View className="section-body">
+        <View className='section'>
+          <View className='section-body'>
             {cur && cur.rate && cur.rate != 1 && (
-              <View className="text-muted">
-                <text className="icon-info"></text> 货币汇率：1{cur.title} ={" "}
+              <View className='text-muted'>
+                <text className='icon-info'></text> 货币汇率：1{cur.title} ={' '}
                 {cur.rate}RMB
               </View>
             )}
-            <View className="grade-list">
+            <View className='grade-list'>
               {list[curTabIdx] &&
                 list[curTabIdx].price_list.map((item, index) => {
                   return (
@@ -239,13 +239,13 @@ export default class VipIndex extends Component {
                     item.price != null && (
                       <View
                         className={`grade-item ${index == curCellIdx &&
-                          "active"}`}
+                          'active'}`}
                         key={`${index}1`}
                         onClick={this.checkHandle.bind(this, index)}
                       >
-                        <View className="item-content">
-                          <View className="desc">{item.desc}</View>
-                          <View className="amount">
+                        <View className='item-content'>
+                          <View className='desc'>{item.desc}</View>
+                          <View className='amount'>
                             <Price primary value={Number(item.price)} />
                           </View>
                         </View>
@@ -268,16 +268,16 @@ export default class VipIndex extends Component {
             {!isAlipay && <SpCell
               isLink
               border={false}
-              title="支付方式"
+              title='支付方式'
               onClick={this.handlePaymentShow}
             >
               <Text>{payTypeText[payType]}</Text>
             </SpCell>}
-            <Button className="pay-btn" onClick={this.handleCharge}>
+            <Button className='pay-btn' onClick={this.handleCharge}>
               立即支付
             </Button>
-            <View className="content-v-padded">会员权益</View>
-            <View className="text-muted">
+            <View className='content-v-padded'>会员权益</View>
+            <View className='text-muted'>
               {list[curTabIdx] &&
                 list[curTabIdx].description &&
                 list[curTabIdx].description.split("\n").map((item, index) => {
