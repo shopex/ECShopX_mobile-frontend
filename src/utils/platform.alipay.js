@@ -9,9 +9,5 @@ export function setPageTitle(title) {
 export const platformTemplateName = "yykweishop";
 
 export const transformPlatformUrl = url => {
-  return isWeixin ? url.replace("/alipay", "") : url;
-};
-
-export const transformPlatformUrl = url => {
   return `/alipay${url}`;
 };
