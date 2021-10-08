@@ -1,15 +1,20 @@
-import Taro, { Component } from "@tarojs/taro";
-import { View, Text, ScrollView, Picker, Input, Image } from "@tarojs/components";
-import { SpNavBar, SpLoading, SpNote, SpPageNote } from "@/components";
-import api from "@/api";
-import { connect } from "@tarojs/redux";
-import { withPager, withBackToTop } from "@/hocs";
-import S from "@/spx";
-import StoreListItem from "./comps/list-item";
-import { classNames, getThemeStyle, entryLaunch } from "@/utils";
+import Taro, { Component } from '@tarojs/taro'
+import { View, ScrollView, Picker, Input, Image } from '@tarojs/components'
+import { SpNavBar, Loading, SpNote } from '@/components'
+import api from '@/api'
+import { connect } from '@tarojs/redux'
+import { withPager, withBackToTop } from '@/hocs'
+import S from "@/spx"
+import entry from '@/utils/entry'
+import StoreListItem from './comps/list-item'
+import { classNames } from '@/utils'
 
-import "./list.scss";
+import './list.scss'
 
+
+@connect(({ colors }) => ({
+  colors: colors.current || { data: [{}] }
+}))
 @withPager
 @withBackToTop
 export default class StoreList extends Component {
@@ -42,8 +47,9 @@ export default class StoreList extends Component {
       list: [],
       // 是否需要定位
       is_open_wechatapp_location: 0,
+      loading: false,
       pageTitle: "店铺列表"
-    };
+    }
   }
 
   componentDidMount() {
@@ -67,13 +73,27 @@ export default class StoreList extends Component {
     if ( S.getAuthToken() ) {
       addressList = await api.member.addressList()
     }
-    debugger
     this.setState({
-      formattedAddress
-    });
-    
-    return
-  };
+      location: {
+        ...lnglat,
+        address
+      },
+      is_open_wechatapp_location,
+      query
+    }, () => {
+      this.resetPage(() => {
+        this.setState(
+          {
+            list: [],
+            loading: true
+          },
+          () => {
+            this.nextPage();
+          }
+        );
+      })
+    })
+  }
 
   // 获取总店信息
   getHeadquarters = async () => {
@@ -167,7 +187,8 @@ export default class StoreList extends Component {
       query,
       list: [...this.state.list, ...list],
       deliveryInfo: defualt_address,
-      isRecommedList: is_recommend === 1
+      isRecommedList: is_recommend === 1,
+      loading: false
     });
     return {
       total
@@ -184,14 +205,47 @@ export default class StoreList extends Component {
   };
 
   // 获取定位信息
-  getLocationInfo = async () => {
-    const { lng, lat } = await entryLaunch.getLocationInfo();
-    const {
-      addressComponent,
-      formattedAddress
-    } = await entryLaunch.getAddressByLnglat(lng, lat);
-
-  };
+  getLocation = async ( e ) => {
+    if ( this.state.loading ) {
+      return false  
+    }
+    e.stopPropagation();
+    const { authSetting } = await Taro.getSetting()
+    if (!authSetting['scope.userLocation']) {
+      Taro.authorize({
+        scope: 'scope.userLocation',
+        success: () => {
+          this.init()
+        },
+        fail: () => {
+          Taro.showModal({
+            title: '提示',
+            content: '请打开定位权限',
+            success: async resConfirm => {
+              if (resConfirm.confirm) {
+                await Taro.openSetting()
+                const setting = await Taro.getSetting()
+                if (setting.authSetting['scope.userLocation']) {
+                  this.init()
+                } else {
+                  Taro.showToast({ title: "获取定位权限失败", icon: "none" })
+                }
+              }
+            }
+          })
+        }
+      })
+    } else {
+      const { query } = this.state
+      query.name = ''
+      query.type = 0
+      this.setState({
+        query
+      }, () => {
+        this.init()
+      })
+    }
+  }
 
   // 根据收货地址搜索
   getDeliver = () => {

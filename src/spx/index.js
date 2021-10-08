@@ -233,7 +233,7 @@ class Spx {
         await this.loginQW(ctx);
         return true;
       } else {
-        await this.login(ctx);
+        await this.login( ctx );
         return true;
       }
     }

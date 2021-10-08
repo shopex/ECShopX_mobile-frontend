@@ -17,17 +17,15 @@ import {
   navigateTo,
   getThemeStyle,
   classNames,
-  isAlipay,
+  showModal,
   isWeixin,
-  transformPlatformUrl
+  transformPlatformUrl,
+  styleNames
 } from "@/utils";
 import { setPageTitle, platformTemplateName } from "@/utils/platform";
-import qs from 'qs';
-import {
-  customName
-} from '@/utils/point';
-import userIcon from '@/assets/imgs/user-icon.png'
-import MemberBanner from "./comps/member-banner";
+import qs from "qs";
+import { customName } from "@/utils/point";
+import userIcon from "@/assets/imgs/user-icon.png";
 import "./index.scss";
 
 @connect(
@@ -80,7 +78,8 @@ export default class MemberIndex extends Component {
       score_menu_open: false,
       // 是否显示隐私协议
       showPrivacy: false,
-      showTimes: 0
+      showTimes: 0,
+      marketingMenus: []
     };
   }
 
@@ -162,6 +161,7 @@ export default class MemberIndex extends Component {
         },
         turntable_open: wheelData.turntable_open
       });
+
       await S.getMemberInfo();
       // this.props.setMemberInfo(memberInfo);
     }
@@ -180,12 +180,14 @@ export default class MemberIndex extends Component {
       }),
       // 积分商城
       await api.pointitem.getPointitemSetting()
-    ] );
+    ]);
 
-    console.log("--pointItemSetting--",pointItemSetting)
+    console.log("--pointItemSetting--", pointItemSetting);
 
     this.setState({
-      bannerSetting: bannerSetting.list[0] ? bannerSetting.list[0].params.data :{},
+      bannerSetting: bannerSetting.list[0]
+        ? bannerSetting.list[0].params.data
+        : {},
       menuSetting: menuSetting.list[0] ? menuSetting.list[0].params.data : {},
       score_menu_open: pointItemSetting.entrance.mobile_openstatus
     });
@@ -197,12 +199,14 @@ export default class MemberIndex extends Component {
 
   // 获取积分个人信息跳转
   async fetchRedirect() {
-    const pathparams=qs.stringify({
-      template_name:platformTemplateName,
-      version:'v1.0.1',
-      page_name:'member_center_redirect_setting'
-    })
-    const url = transformPlatformUrl(`/alipay/pageparams/setting?${pathparams}`);
+    const pathparams = qs.stringify({
+      template_name: platformTemplateName,
+      version: "v1.0.1",
+      page_name: "member_center_redirect_setting"
+    });
+    const url = transformPlatformUrl(
+      `/alipay/pageparams/setting?${pathparams}`
+    );
     const { list = [] } = await req.get(url);
     if (list[0].params) {
       this.setState({
@@ -238,7 +242,7 @@ export default class MemberIndex extends Component {
       });
       return;
     }
-    const { confirm } = await Taro.showModal({
+    const { confirm } = await showModal({
       title: "邀请推广",
       content: "确定申请成为推广员？",
       showCancel: true,
@@ -292,15 +296,15 @@ export default class MemberIndex extends Component {
     }
   };
 
-  handleClickWxOAuth( fn,need=true ) {
-    if ( this.state.showTimes >= 1 ) {
-      if(need){
+  handleClickWxOAuth(fn, need = true) {
+    if (this.state.showTimes >= 1) {
+      if (need) {
         fn && fn();
-      } 
-    } else { 
+      }
+    } else {
       const { avatar, username } = this.props.memberData.memberInfo;
       if (avatar && username) {
-        if(need){
+        if (need) {
           fn && fn();
         }
       } else {
@@ -308,7 +312,165 @@ export default class MemberIndex extends Component {
           showPrivacy: true
         });
       }
-    }  
+    }
+  }
+
+  renderMarketingNavs() {
+    const { is_open_popularize, is_promoter } = this.props.memberData;
+    const {
+      group,
+      community_order,
+      boost_activity,
+      boost_order,
+      offline_order,
+      complaint,
+      activity
+    } = this.state.menuSetting;
+    const { score_menu_open, salespersonData } = this.state;
+    let navs = [];
+    if (is_open_popularize && Taro.getEnv() == "WEAPP") {
+      navs.push({
+        title: is_promoter ? "我要推广" : "推广管理",
+        icon: "../../assets/imgs/store.png",
+        action: this.beDistributor
+      });
+    }
+
+    if (group && Taro.getEnv() == "WEAPP") {
+      navs.push({
+        title: "我的拼团",
+        icon: `${process.env.APP_IMAGE_CDN}/group.png`,
+        action: () => {
+          this.navigateTo("/marketing/pages/member/group-list");
+        }
+      });
+    }
+
+    if (community_order && Taro.getEnv() == "WEAPP") {
+      navs.push({
+        title: "我的社区团购",
+        icon: `${process.env.APP_IMAGE_CDN}/group.png`,
+        action: () => {
+          this.navigateTo("/groupBy/pages/orderList/index");
+        }
+      });
+    }
+
+    if (boost_activity && Taro.getEnv() == "WEAPP") {
+      navs.push({
+        title: "助力活动",
+        icon: `${process.env.APP_IMAGE_CDN}/group.png`,
+        action: () => {
+          this.navigateTo("/boost/pages/home/index");
+        }
+      });
+    }
+
+    if (boost_order && Taro.getEnv() == "WEAPP") {
+      navs.push({
+        title: "助力订单",
+        icon: `${process.env.APP_IMAGE_CDN}/group.png`,
+        action: () => {
+          this.navigateTo("/boost/pages/order/index");
+        }
+      });
+    }
+
+    if (offline_order) {
+      navs.push({
+        title: "线下订单关联",
+        icon: `${process.env.APP_IMAGE_CDN}/group.png`,
+        action: () => {
+          this.navigateTo("/others/pages/bindOrder/index");
+        }
+      });
+    }
+
+    if (complaint && salespersonData && salespersonData.distributor ) {
+      navs.push({
+        title: "投诉记录",
+        icon: `${process.env.APP_IMAGE_CDN}/group.png`,
+        action: () => {
+          this.navigateTo("/marketing/pages/member/complaint-record");
+        }
+      });
+    }
+
+    if (activity) {
+      navs.push({
+        title: "活动预约",
+        icon: "../../assets/imgs/buy.png",
+        action: () => {
+          this.navigateTo("/marketing/pages/member/item-activity");
+        }
+      });
+    }
+
+    if (score_menu_open) {
+      navs.push({
+        title: "积分商城",
+        icon: "../../assets/imgs/score.png",
+        action: () => {
+          this.navigateTo("/pointitem/pages/list");
+        }
+      });
+    }
+
+    return (
+      <View>
+        {navs.map((nav, index) => (
+          <SpCell
+            title={nav.title}
+            isLink
+            border
+            img={nav.icon}
+            onClick={() =>
+              this.handleClickWxOAuth(() => {
+                nav.action();
+              })
+            }
+          ></SpCell>
+        ))}
+      </View>
+    );
+  }
+
+  renderNormalNavs() {
+    const { memberinfo_enable } = this.state.menuSetting;
+    let navs = [];
+    navs.push({
+      title: "地址管理",
+      action: () => {
+        this.navigateTo("/marketing/pages/member/address");
+      }
+    });
+    if (memberinfo_enable) {
+      navs.push({
+        title: "个人信息",
+        action: this.handleClickInfo
+      });
+    }
+    if (Taro.getEnv() == "WEB") {
+      navs.push({
+        title: "设置",
+        action: () => {
+          this.navigateTo("/marketing/pages/member/setting");
+        }
+      });
+    }
+
+    return (
+      <View>
+        {navs.map((nav, index) => (
+          <SpCell
+            title={nav.title}
+            isLink
+            border
+            onClick={() => this.handleClickWxOAuth(nav.action)}
+          ></SpCell>
+        ))}
+      </View>
+    );
   }
 
   render() {
@@ -328,16 +490,16 @@ export default class MemberIndex extends Component {
       showPrivacy,
       showTimes
     } = this.state;
-    console.log("---score_menu_open---",score_menu_open)
+    console.log("---score_menu_open---", score_menu_open);
     let memberInfo = null,
       vipgrade = null;
     if (memberData) {
       memberInfo = memberData.memberInfo;
       vipgrade = memberData.vipgrade;
     }
- 
+
     return (
-      <View className="page-member-index" style={getThemeStyle()}>
+      <View className="page-member-index" style={styleNames(getThemeStyle())}>
         {S.getAuthToken() ? (
           <View className={classNames("page-member-header")}>
             <View className="user-info">
@@ -391,7 +553,7 @@ export default class MemberIndex extends Component {
               >
                 <View className="member-assets__label">优惠券</View>
                 <View className="member-assets__value">
-                  {memberAssets.discount_total_count || 0}
+                  {(memberAssets && memberAssets.discount_total_count) || 0}
                 </View>
               </View>
 
@@ -405,7 +567,7 @@ export default class MemberIndex extends Component {
                   {customName("积分")}
                 </View>
                 <View className="member-assets__value">
-                  {memberAssets.point_total_count || 0}
+                  {(memberAssets && memberAssets.point_total_count) || 0}
                 </View>
               </View>
 
@@ -424,7 +586,7 @@ export default class MemberIndex extends Component {
                 >
                   <View className="member-assets__label">储值</View>
                   <View className="member-assets__value">
-                    {(memberAssets.deposit || 0) / 100}
+                    {((memberAssets && memberAssets.deposit) || 0) / 100}
                   </View>
                 </View>
               )}
@@ -439,7 +601,7 @@ export default class MemberIndex extends Component {
               >
                 <View className="member-assets__label">收藏</View>
                 <View className="member-assets__value">
-                  {memberAssets.fav_total_count || 0}
+                  {(memberAssets && memberAssets.fav_total_count) || 0}
                 </View>
               </View>
             </View>
@@ -464,17 +626,14 @@ export default class MemberIndex extends Component {
         )} */}
 
         <View className="page-member-section order-box">
-          <View className="section-title view-flex view-flex-middle">
-            <View className="view-flex-item">订单</View>
-            <View
-              class="section-more"
-              onClick={() => {
-                this.handleClickWxOAuth(this.handleTradeClick.bind(this));
-              }}
-            >
-              全部订单<Text className="forward-icon icon-arrowRight"></Text>
-            </View>
-          </View>
+          <SpCell
+            title="订单"
+            isLink
+            value="全部订单"
+            onClick={() =>
+              this.handleClickWxOAuth(this.handleTradeClick.bind(this))
+            }
+          ></SpCell>
 
           {menuSetting.ziti_order && (
             <View
@@ -493,7 +652,7 @@ export default class MemberIndex extends Component {
                 <View className="member-trade__ziti-desc">
                   您有
                   <Text className="mark">
-                    {orderCount.normal_payed_daiziti || 0}
+                    {(orderCount && orderCount.normal_payed_daiziti) || 0}
                   </Text>
                   个等待自提的订单
                 </View>
@@ -510,7 +669,7 @@ export default class MemberIndex extends Component {
               }
             >
               <View className="icon-wallet">
-                {orderCount.normal_notpay_notdelivery > 0 && (
+                {orderCount && orderCount.normal_notpay_notdelivery > 0 && (
                   <View className="trade-num">
                     {orderCount.normal_notpay_notdelivery}
                   </View>
@@ -525,7 +684,7 @@ export default class MemberIndex extends Component {
               }}
             >
               <View className="icon-delivery">
-                {orderCount.normal_payed_notdelivery > 0 && (
+                {orderCount && orderCount.normal_payed_notdelivery > 0 && (
                   <View className="trade-num">
                     {orderCount.normal_payed_notdelivery}
                   </View>
@@ -540,7 +699,7 @@ export default class MemberIndex extends Component {
               }}
             >
               <View className="icon-office-box">
-                {orderCount.normal_payed_delivered > 0 && (
+                {orderCount && orderCount.normal_payed_delivered > 0 && (
                   <View className="trade-num">
                     {orderCount.normal_payed_delivered}
                   </View>
@@ -548,7 +707,7 @@ export default class MemberIndex extends Component {
               </View>
               <Text>已完成</Text>
             </View>
-            {orderCount.rate_status && (
+            {orderCount && orderCount.rate_status && (
               <View
                 className="member-trade__item"
                 onClick={() => {
@@ -568,7 +727,7 @@ export default class MemberIndex extends Component {
               }
             >
               <View className="icon-repeat">
-                {orderCount.aftersales > 0 && (
+                {orderCount && orderCount.aftersales > 0 && (
                   <View className="trade-num">{orderCount.aftersales}</View>
                 )}
               </View>
@@ -577,201 +736,23 @@ export default class MemberIndex extends Component {
           </View>
         </View>
 
-        {/* {bannerSetting && bannerSetting.is_show && (
-          <View className="page-member-section">
-            <MemberBanner info={bannerSetting} />
-          </View>
-        )} */}
+        {/* 菜单 */}
+        <View className="page-member-section">
+          {this.renderMarketingNavs()}
+        </View>
 
-        {
-          <View className="page-member-section">
-            {memberData.is_open_popularize && (
-              <SpCell
-                title={!memberData.is_promoter ? "我要推广" : "推广管理"}
-                isLink
-                img={require("../../assets/imgs/store.png")}
-                onClick={() =>
-                  this.handleClickWxOAuth(this.beDistributor.bind(this))
-                }
-              ></SpCell>
-            )}
-
-            {Taro.getEnv() !== "WEB" && (
-              <View>
-                {menuSetting.group && (
-                  <SpCell
-                    title="我的拼团"
-                    isLink
-                    img={require("../../assets/imgs/group.png")}
-                    onClick={() =>
-                      this.handleClickWxOAuth(
-                        this.navigateTo.bind(
-                          this,
-                          "/marketing/pages/member/group-list"
-                        )
-                      )
-                    }
-                  ></SpCell>
-                )}
-                {menuSetting.community_order && (
-                  <SpCell
-                    title="我的社区团购"
-                    isLink
-                    img={require("../../assets/imgs/group.png")}
-                    onClick={() =>
-                      this.handleClickWxOAuth(
-                        this.navigateTo.bind(
-                          this,
-                          "/groupBy/pages/orderList/index"
-                        )
-                      )
-                    }
-                  ></SpCell>
-                )}
-              </View>
-            )}
-
-            {Taro.getEnv() !== "WEB" && (
-              <View>
-                {menuSetting.boost_activity && (
-                  <SpCell
-                    title="助力活动"
-                    isLink
-                    img={require("../../assets/imgs/group.png")}
-                    onClick={() =>
-                      this.handleClickWxOAuth(
-                        this.navigateTo.bind(this, "/boost/pages/home/index")
-                      )
-                    }
-                  ></SpCell>
-                )}
-                {menuSetting.boost_order && (
-                  <SpCell
-                    title="助力订单"
-                    isLink
-                    img={require("../../assets/imgs/group.png")}
-                    onClick={() =>
-                      this.handleClickWxOAuth(
-                        this.navigateTo.bind(this, "/boost/pages/order/index")
-                      )
-                    }
-                  ></SpCell>
-                )}
-              </View>
-            )}
-            {menuSetting.offline_order && (
-              <SpCell
-                title="线下订单关联"
-                isLink
-                img={require("../../assets/imgs/group.png")}
-                onClick={() =>
-                  this.handleClickWxOAuth(
-                    this.navigateTo.bind(this, "/others/pages/bindOrder/index")
-                  )
-                }
-              ></SpCell>
-            )}
-            {menuSetting.complaint &&
-              salespersonData &&
-              salespersonData.distributor && (
-                <SpCell
-                  title="投诉记录"
-                  isLink
-                  img={require("../../assets/imgs/group.png")}
-                  onClick={() =>
-                    this.handleClickWxOAuth(
-                      this.navigateTo.bind(
-                        this,
-                        "/marketing/pages/member/complaint-record"
-                      )
-                    )
-                  }
-                ></SpCell>
-              )}
-            {menuSetting.activity && (
-              <SpCell
-                title="活动预约"
-                isLink
-                img={require("../../assets/imgs/buy.png")}
-                onClick={() =>
-                  this.handleClickWxOAuth(
-                    this.navigateTo.bind(
-                      this,
-                      "/marketing/pages/member/item-activity"
-                    )
-                  )
-                }
-              ></SpCell>
-            )}
-            {score_menu_open && (
-              <SpCell
-                title={customName("积分商城")}
-                isLink
-                img={require("../../assets/imgs/score.png")}
-                onClick={() =>
-                  this.handleClickWxOAuth(
-                    this.navigateTo.bind(this, "/pointitem/pages/list")
-                  )
-                }
-              ></SpCell>
-            )}
-            {/* {
-              menuSetting.activity && <SpCell
-                title='活动预约'
-                isLink
-                img={require('../../assets/imgs/buy.png')}
-                onClick={this.handleClick.bind(this, '/marketing/pages/member/coupon')}
-              >
-              </SpCell>
-            }  */}
-            {/* <SpCell
-              title='入驻申请'
-              isLink
-              img='/assets/imgs/buy.png'
-              onClick={this.handleClick.bind(this, '/subpage/pages/auth/store-reg')}
-            >
-            </SpCell>*/}
-          </View>
-        }
-
+        {/* 菜单 */}
         <View className="page-member-section">
           {Taro.getEnv() !== "WEB" && menuSetting.share_enable && (
             <SpCell title="我要分享" isLink>
               <Button className="btn-share" open-type="share"></Button>
             </SpCell>
           )}
-          <SpCell
-            title="地址管理"
-            isLink
-            onClick={() =>
-              this.handleClickWxOAuth(
-                this.navigateTo.bind(this, "/marketing/pages/member/address")
-              )
-            }
-          ></SpCell>
-          {menuSetting.memberinfo_enable && (
-            <SpCell
-              title="个人信息"
-              isLink
-              onClick={() =>
-                this.handleClickWxOAuth(this.handleClickInfo.bind(this))
-              }
-            ></SpCell>
-          )}
-          {process.env.TARO_ENV === "h5" && (
-            <SpCell
-              title="设置"
-              isLink
-              onClick={() =>
-                this.handleClickWxOAuth(
-                  this.navigateTo.bind(this, "/marketing/pages/member/setting")
-                )
-              }
-            ></SpCell>
-          )}
+          {this.renderNormalNavs()}
         </View>
 
-        {turntable_open === "1" ? (
+        {/* 大转盘 */}
+        {turntable_open === "1" && (
           <View
             className="wheel-to"
             onClick={() =>
@@ -782,7 +763,8 @@ export default class MemberIndex extends Component {
           >
             <Image src={`${process.env.APP_IMAGE_CDN}/wheel_modal_icon.png`} />
           </View>
-        ) : null}
+        )}
+
         <TabBar />
 
         <SpFloatPrivacy

@@ -8,6 +8,7 @@ import copy from 'copy-to-clipboard'
 import S from '@/spx'
 import { STATUS_TYPES_MAP } from '@/consts'
 import api from '@/api'
+import configStore from "@/store";
 import _get from 'lodash/get'
 import _findKey from 'lodash/findKey'
 import _pickBy from 'lodash/pickBy'
@@ -18,8 +19,10 @@ import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
 import entryLaunch from './entryLaunch'
 import validate from "./validate";
+import { isWeixin,isAlipay } from './platform';
 
-const isPrimitiveType = (val, type) => Object.prototype.toString.call(val) === type
+const isPrimitiveType = ( val, type ) => Object.prototype.toString.call( val ) === type
+const { store } = configStore();
 
 export function isFunction (val) {
   return isPrimitiveType(val, '[object Function]')
@@ -67,7 +70,7 @@ export function normalizeArray (...args) {
 }
 
 export function getCurrentRoute (router) {
-  if (process.env.TARO_ENV === 'weapp') {
+  if (isWeixin || isAlipay) {
     // eslint-disable-next-line
     const page = getCurrentPages().pop()
     router = page.$component.$router
@@ -451,6 +454,8 @@ export function isGoodsShelves() {
 
 export function getThemeStyle() {
   const systemTheme = S.get( "SYSTEM_THEME" );
+  const res = store.getState()
+  debugger
   if ( systemTheme ) {
     const { colorPrimary, colorMarketing, colorAccent } = systemTheme;
     return {

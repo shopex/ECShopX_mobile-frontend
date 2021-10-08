@@ -18,6 +18,7 @@
   &__no-border {
     &:before {
       border: none;
+      background: transparent;
     }
   }
   &__bd {
