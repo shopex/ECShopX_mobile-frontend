@@ -223,7 +223,7 @@ export default class VipIndex extends Component {
             ))}
           </AtTabs>
         </View>
-        <View className='section'>
+        <View className='section' style={{ boxShadow: '0rpx 5rpx 16rpx 0rpx #DDDDDD' }}>
           <View className='section-body'>
             {cur && cur.rate && cur.rate != 1 && (
               <View className='text-muted'>
@@ -247,7 +247,7 @@ export default class VipIndex extends Component {
                         onClick={this.checkHandle.bind(this, index)}
                       >
                         <View className='item-content'>
-                          <View className='desc'>{item.name === 'monthly' && '连续包月' || item.name === 'quarter' && '连续包季' || item.name === 'year' && '连续包年'}{(item.desc)}</View>
+                          <View className='desc'>{item.name === 'monthly' && '连续包月' || item.name === 'quarter' && '连续包季' || item.name === 'year' && '连续包年'}（{item.desc}）</View>
                           <View className='amount'>
                             <Price primary value={Number(item.price)} />
                           </View>
@@ -273,12 +273,35 @@ export default class VipIndex extends Component {
               border={false}
               title='支付方式'
               onClick={this.handlePaymentShow}
+              className='cus-sp-cell'
             >
               <Text>{payTypeText[payType]}</Text>
             </SpCell>}
-            <Button className='pay-btn' onClick={this.handleCharge}>
-              立即支付
-            </Button>
+            <View className='pay-btn' onClick={this.handleCharge}>
+            立即支付
+            </View>
+          </View>
+        </View>
+        <View className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
+          <Text className='content-v-padded'>会员专享券包</Text>
+          <Text className='content-v-subtitle'>优惠券共计102张</Text>
+          <ScrollView scrollX className='scroll-box'>
+            <View className='coupon'>
+              <View className='top'>
+                <Price primary value={Number(220.00)} noDecimal />
+                <View className='coupon-desc'>满99元可用</View>
+              </View>
+              <View className='bottom'>
+                <View className='coupon-line'></View>
+                <View className='coupon-circle circle-left'></View>
+                <View className='coupon-quan'>满减券</View>
+                <View className='coupon-circle circle-right'></View>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+        <View className='section' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
+          <View className='section-body'>
             <View className='content-v-padded'>会员权益</View>
             <View className='text-muted'>
               {list[curTabIdx] &&
