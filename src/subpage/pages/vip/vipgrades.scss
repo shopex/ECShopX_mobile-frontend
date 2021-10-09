@@ -10,12 +10,11 @@
   /*  #endif  */
   .header {
     position: relative;
-    padding: 30px 30px 10px 30px;
     color: #ffffff;
     .header-isauth {
       display: flex;
       align-items: center;
-      padding: 20px;
+      padding: 50px 50px 30px 50px;
       &__avatar {
         width: 100px;
         height: 100px;
@@ -40,19 +39,29 @@
       }
     }
     .header-tab {
+      height: auto !important;
       &.at-tabs {
         position: relative;
+        box-shadow: none;
       }
       .at-tabs__item-underline {
-        height: 8px;
-        background: #eac18b;
+        height: 0px;
+        background: none;
       }
       .at-tabs__header {
-        background: transparent;
+        // background: transparent;
+        background: #DDD;
+        border-radius: 50px 50px 0px 0px;
+        color: #666;
+        overflow: hidden;
         .at-tabs__item {
           color: #7a7867;
+          height: 80px;
+          line-height: 80px;
           &.at-tabs__item--active {
-            color: #eac18b;
+            color: #222;
+            font-weight: bold;
+            background: #fff;
           }
         }
       }
@@ -92,23 +101,32 @@
   }
 
   .grade-list {
-    display: flex;
+    // display: flex;
     padding: 30px 0;
+    width: 100%;
+    white-space: nowrap;
     .grade-item {
-      flex: 1;
-      padding: 0 10px;
+      // flex: 1;
+      // padding: 0 10px;
+      display: inline-block;
+      text-align: center;
+      padding-right: 25px;
       .item-content {
+        // box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 240px;
+        // height: 230px;
+        width: 260px;
         border: 1px solid #f8f8f8;
-        border-radius: 10px;
+        border-radius: 15px;
+        padding: 35px 0px;
         .desc {
           font-size: 30px;
           color: #555;
-          font-weight: 500;
+          font-weight: bold;
+          padding-bottom: 30px;
         }
         .amount {
           font-family: "Helvetica Neue";
@@ -116,6 +134,13 @@
           font-size: 55px;
           color: #b86c53;
           letter-spacing: 0;
+          .price__primary {
+            font-size: 50px;
+            font-weight: bold;
+            .price__symbol {
+              font-size: 28px;
+            }
+          }
         }
       }
       &.active {
@@ -124,6 +149,9 @@
           background: #fffff2;
         }
       }
+    }
+    .grade-item:last-child{
+      padding-right: 0px;
     }
   }
   .pay-btn {
