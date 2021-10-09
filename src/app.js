@@ -9,7 +9,7 @@ import { normalizeQuerys, isGoodsShelves,payTypeField } from "@/utils";
 import { FormIds, Tracker } from "@/service";
 import entryLaunch from "@/utils/entryLaunch";
 import { youshuLogin } from '@/utils/youshu'
-import { DEFAULT_TABS } from '@/consts'
+import { DEFAULT_TABS, DEFAULT_THEME } from "@/consts";
 import qs from 'qs';
 import Index from './pages/index'
 import LBS from './utils/lbs'
@@ -477,68 +477,143 @@ class App extends Component {
     //     });
     //   }
     // }
-    // 初始化tabbar
-    this.fetchTabs();
-    // 获取主题配色
-    this.fetchColors();
+    // 初始化系统配置
+    this.getSystemConfig()
+    // // 初始化tabbar
+    // this.fetchTabs();
+    // // 获取主题配色
+    // this.fetchColors();
   }
 
-  async fetchTabs() {
-    Taro.setStorageSync("initTabBar", false);
+  async getSystemConfig() {
+    const [appConfig, colorConfig, pointConfig] = await Promise.all([
+      api.shop.getAppConfig(),
+      api.shop.getPageParamsConfig({
+        page_name: "color_style"
+      } ),
+      api.pointitem.getPointSetting()
+    ] );
+    
     const {
       tab_bar,
       is_open_recommend,
       is_open_scan_qrcode,
       is_open_wechatapp_location,
       is_open_official_account
-    } = await api.shop.getAppConfig()
-    
-    let tabbar = null
+    } = appConfig;
+    let tabbar = null;
     try {
-      tabbar = JSON.parse(tab_bar)
+      tabbar = JSON.parse(tab_bar);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
     store.dispatch({
       type: "tabBar",
       payload: tabbar || DEFAULT_TABS
+    });
+
+    Taro.setStorageSync("settingInfo", {
+      is_open_recommend, // 猜你喜欢
+      is_open_scan_qrcode, // 扫码
+      is_open_wechatapp_location, // 定位
+      is_open_official_account // 公众号组件
     } );
     
-    Taro.setStorageSync("initTabBar", true);
-    Taro.setStorageSync("settingInfo", {
-      is_open_recommend,  // 猜你喜欢
-      is_open_scan_qrcode,  // 扫码
-      is_open_wechatapp_location, // 定位
-      is_open_official_account  // 公众号组件
-    });
-  }
-
-  async fetchColors() {
+    const { colorPrimary, colorMarketing, colorAccent } = DEFAULT_THEME;
     const defaultColors = {
       data: [
         {
-          primary: "#d42f29",
-          accent: "#fba629",
-          marketing: "#2e3030"
+          primary: colorPrimary,
+          accent: colorMarketing,
+          marketing: colorAccent
         }
       ],
       name: "base"
     };
-    const info = await api.shop.getPageParamsConfig({
-      page_name: "color_style"
-    });
-    const themeColor = info.list.length ? info.list[0].params : defaultColors;
+    const themeColor = colorConfig.list.length
+      ? colorConfig.list[0].params
+      : defaultColors;
     // 兼容老的主题
     store.dispatch({
       type: "colors",
       payload: themeColor
+    } );
+    
+    // S.set("SYSTEM_THEME", {
+    //   colorPrimary: themeColor.data[0].primary,
+    //   colorMarketing: themeColor.data[0].marketing,
+    //   colorAccent: themeColor.data[0].accent
+    // } );
+    
+    store.dispatch({
+      type: "system/config",
+      payload: {
+        colorPrimary: themeColor.data[0].primary,
+        colorMarketing: themeColor.data[0].marketing,
+        colorAccent: themeColor.data[0].accent,
+        pointName: pointConfig.name
+      }
     });
-    S.set("SYSTEM_THEME", {
-      colorPrimary: themeColor.data[0].primary,
-      colorMarketing: themeColor.data[0].marketing,
-      colorAccent: themeColor.data[0].accent
-    });
+
+
   }
+
+  // async fetchTabs() {
+  //   Taro.setStorageSync("initTabBar", false);
+  //   const {
+  //     tab_bar,
+  //     is_open_recommend,
+  //     is_open_scan_qrcode,
+  //     is_open_wechatapp_location,
+  //     is_open_official_account
+  //   } = await api.shop.getAppConfig()
+    
+  //   let tabbar = null
+  //   try {
+  //     tabbar = JSON.parse(tab_bar)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  //   store.dispatch({
+  //     type: "tabBar",
+  //     payload: tabbar || DEFAULT_TABS
+  //   } );
+    
+  //   Taro.setStorageSync("initTabBar", true);
+  //   Taro.setStorageSync("settingInfo", {
+  //     is_open_recommend,  // 猜你喜欢
+  //     is_open_scan_qrcode,  // 扫码
+  //     is_open_wechatapp_location, // 定位
+  //     is_open_official_account  // 公众号组件
+  //   });
+  // }
+
+  // async fetchColors() {
+  //   const defaultColors = {
+  //     data: [
+  //       {
+  //         primary: "#d42f29",
+  //         accent: "#fba629",
+  //         marketing: "#2e3030"
+  //       }
+  //     ],
+  //     name: "base"
+  //   };
+  //   const info = await api.shop.getPageParamsConfig({
+  //     page_name: "color_style"
+  //   });
+  //   const themeColor = info.list.length ? info.list[0].params : defaultColors;
+  //   // 兼容老的主题
+  //   store.dispatch({
+  //     type: "colors",
+  //     payload: themeColor
+  //   });
+  //   S.set("SYSTEM_THEME", {
+  //     colorPrimary: themeColor.data[0].primary,
+  //     colorMarketing: themeColor.data[0].marketing,
+  //     colorAccent: themeColor.data[0].accent
+  //   });
+  // }
 
   componentDidCatchError() {}
 

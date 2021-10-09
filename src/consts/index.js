@@ -38,6 +38,12 @@ export const PROMOTION_TAG = {
 
 export const DEFAULT_POINT_NAME = '积分'
 
+export const DEFAULT_THEME = {
+  colorPrimary: "#d42f29",
+  colorMarketing: "#fba629",
+  colorAccent: "#2e3030"
+};
+
 export const WGTS_NAV_MAP = {
   luckdraw: "/pages/member/point-draw"
 };
