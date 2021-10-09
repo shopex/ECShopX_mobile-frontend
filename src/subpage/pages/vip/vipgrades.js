@@ -297,6 +297,7 @@ export default class VipIndex extends Component {
                 <View className='coupon-quan'>满减券</View>
                 <View className='coupon-circle circle-right'></View>
               </View>
+              <View className='coupon-mark'>X2</View>
             </View>
           </ScrollView>
         </View>
