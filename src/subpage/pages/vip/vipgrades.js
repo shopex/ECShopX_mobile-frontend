@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Image, Button, Text } from "@tarojs/components";
+import { View, Image, Button, Text, ScrollView } from "@tarojs/components";
 import { Price, NavBar, SpCell } from "@/components";
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from "taro-ui";
@@ -231,7 +231,10 @@ export default class VipIndex extends Component {
                 {cur.rate}RMB
               </View>
             )}
-            <View className='grade-list'>
+            <ScrollView
+              scrollX
+              className='grade-list'
+            >
               {list[curTabIdx] &&
                 list[curTabIdx].price_list.map((item, index) => {
                   return (
@@ -244,7 +247,7 @@ export default class VipIndex extends Component {
                         onClick={this.checkHandle.bind(this, index)}
                       >
                         <View className='item-content'>
-                          <View className='desc'>{item.desc}</View>
+                          <View className='desc'>{item.name === 'monthly' && '连续包月' || item.name === 'quarter' && '连续包季' || item.name === 'year' && '连续包年'}{(item.desc)}</View>
                           <View className='amount'>
                             <Price primary value={Number(item.price)} />
                           </View>
@@ -253,7 +256,7 @@ export default class VipIndex extends Component {
                     )
                   );
                 })}
-            </View>
+            </ScrollView>
 
             <PaymentPicker
               isOpened={isPaymentOpend}
