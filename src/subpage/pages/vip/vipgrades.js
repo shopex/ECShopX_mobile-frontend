@@ -5,9 +5,8 @@ import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from "taro-ui";
 import api from "@/api";
 import S from "@/spx";
-import { pickBy,showLoading,hideLoading,isAlipay } from "@/utils";
+import { pickBy,showLoading,hideLoading,isAlipay, getPointName } from "@/utils";
 import PaymentPicker from "@/pages/cart/comps/payment-picker";
-import { customName } from "@/utils/point";
 import userIcon from "@/assets/imgs/user-icon.png";
 
 import "./vipgrades.scss";
@@ -179,7 +178,7 @@ export default class VipIndex extends Component {
       isPaymentOpend
     } = this.state;
     const payTypeText = {
-      point: customName("积分支付"),
+      point: `${getPointName()}支付`,
       wxpay: process.env.TARO_ENV === "weapp" ? "微信支付" : "现金支付",
       deposit: "余额支付",
       delivery: "货到付款",

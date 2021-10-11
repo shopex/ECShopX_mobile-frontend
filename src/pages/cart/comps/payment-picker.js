@@ -4,10 +4,7 @@ import { connect } from "@tarojs/redux";
 import { AtFloatLayout } from "taro-ui";
 import { SpCheckbox } from "@/components";
 import api from "@/api";
-import {
-  customName
-} from '@/utils/point';
-import { closeClassName } from '@/utils';
+import { closeClassName, getPointName } from '@/utils';
 import "./payment-picker.scss";
 
 @connect(({ colors }) => ({
@@ -124,12 +121,12 @@ export default class PaymentPicker extends Component {
               >
                 <View className="payment-item__bd">
                   <Text className="payment-item__title">
-                    {customName("积分支付")}
+                    {`${getPointName()}支付`}
                   </Text>
                   <Text className="payment-item__desc">
                     {disabledPayment && disabledPayment["point"]
                       ? disabledPayment["point"]
-                      : customName("使用积分支付")}
+                      : `使用${getPointName()}支付`}
                   </Text>
                 </View>
                 <View className="payment-item__ft">

@@ -5,6 +5,8 @@ import { maxBy } from "lodash";
 export const isAlipay = Taro.getEnv() == Taro.ENV_TYPE.ALIPAY;
 /** 在微信平台 */
 export const isWeixin = Taro.getEnv() == Taro.ENV_TYPE.WEAPP;
+/** 在H5平台 */
+export const isWeb = Taro.getEnv() == Taro.ENV_TYPE.WEB;
 /* 获取小程序 */
 export const getAppId = () => {
   const { appid } = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {};

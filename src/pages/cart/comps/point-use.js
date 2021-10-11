@@ -3,11 +3,8 @@ import { View, Text, Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtFloatLayout,AtInput,AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 import { SpCheckbox } from '@/components'
-import { closeClassName } from '@/utils';
+import { closeClassName, getPointName } from '@/utils';
 import './point-use.scss'
-import {
-  customName
-} from '@/utils/point';
 @connect(({ colors }) => ({
   colors: colors.current
 }))
@@ -111,7 +108,7 @@ export default class PointUse extends Component {
         
         <View className='point-use'>
           <View className='point-use__hd'>
-            <Text>{customName("积分")}</Text>
+            <Text>{getPointName()}</Text>
             <Text className='rule-title' onClick={this.handleRuleOpen}>使用规则</Text>
             <View
               className={closeClassName}
@@ -121,7 +118,7 @@ export default class PointUse extends Component {
           <View className='point-use__bd'>
            <View className='point-item'>
               <View className='point-item__title'>
-                {customName("用户可用积分：")}
+                {`用户可用${getPointName()}：`}
               </View>
               <View className='point-item__desc'>
                   {info.user_point}
@@ -129,7 +126,7 @@ export default class PointUse extends Component {
            </View>
            <View className='point-item border'>
               <View className='point-item__title'>
-                {customName("本单最大可用积分：")}
+                {`本单最大可用${getPointName()}：`}
               </View>
               <View className='point-item__desc'>
                   {info.max_point}
@@ -137,7 +134,7 @@ export default class PointUse extends Component {
            </View>
            <View className='point-item'>
               <View className='point-item__title'>
-              {customName("请输入抵扣积分")}
+              {`请输入抵扣${getPointName()}`}
               </View>
               <View className='point-item__desc'>
                 <AtInput
@@ -182,13 +179,13 @@ export default class PointUse extends Component {
             使用条件
            </View>
            <View>
-           {customName(`1.积分支付不得超出订单应付总金额的 ${deduct_point_rule.deduct_proportion_limit}%；`)}
+           {`1.${getPointName()}支付不得超出订单应付总金额的 ${deduct_point_rule.deduct_proportion_limit}%；`}
            </View>
            <View>
            使用数量
            </View>
            <View>
-           {customName(`2.${deduct_point_rule.deduct_point} 积分抵 1 元；`)}
+           {`2.${deduct_point_rule.deduct_point} ${getPointName()}抵 1 元；`}
            </View>
         </AtModalContent>
         <AtModalAction>

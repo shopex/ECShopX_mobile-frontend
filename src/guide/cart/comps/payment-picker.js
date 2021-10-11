@@ -5,8 +5,8 @@ import { AtFloatLayout } from "taro-ui";
 import { SpCheckbox } from "@/components";
 import api from "@/api";
 import {
-  customName
-} from '@/utils/point';
+  getPointName
+} from '@/utils';
 import "./payment-picker.scss";
 
 @connect(({ colors }) => ({
@@ -109,11 +109,13 @@ export default class PaymentPicker extends Component {
                 onClick={this.handlePaymentChange.bind(this, "point")}
               >
                 <View className="payment-item__bd">
-                  <Text className="payment-item__title">{customName("积分支付")}</Text>
+                  <Text className="payment-item__title">
+                    {`${getPointName()}支付`}
+                  </Text>
                   <Text className="payment-item__desc">
                     {disabledPayment && disabledPayment["point"]
                       ? disabledPayment["point"]
-                      : customName("使用积分支付")}
+                      : `使用${getPointName()}支付`}
                   </Text>
                 </View>
                 <View className="payment-item__ft">

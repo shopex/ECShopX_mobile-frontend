@@ -1,12 +1,34 @@
 import Taro from "@tarojs/taro";
 import S from "@/spx";
 import qs from "qs";
-import { isGoodsShelves, isAlipay } from "@/utils";
+import { isGoodsShelves, isAlipay, log } from "@/utils";
 import api from "@/api";
 
 function addQuery(url, query) {
   return url + (url.indexOf("?") >= 0 ? "&" : "?") + query;
 }
+
+class RequestQueue {
+  constructor() {
+    this.requestList = [];
+  }
+
+  push(req) {
+    this.requestList.push(req);
+  }
+
+  async run() {
+    const request = this.requestList.shift();
+    if (request) {
+      await request();
+      if (this.requestList.length > 0) {
+        this.run();
+      }
+    }
+  }
+}
+
+const requestQueue = new RequestQueue();
 
 class API {
   constructor(options = {}) {
@@ -233,41 +255,53 @@ class API {
               S.loginQW(this, true);
             } else {
               // 刷新token
-              const config = options;
-              if (isRefreshing) {
-                return new Promise(resolve => {
-                  requests.push(token => {
-                    resolve(API.makeReq(config));
-                  });
-                });
-              } else {
-                isRefreshing = true;
-                const token = S.getAuthToken();
-                return Taro.request({
-                  header: {
-                    Authorization: `Bearer ${token}`
-                  },
-                  method: "get",
-                  url: process.env.APP_BASE_URL + "/token/refresh"
+              S.set( 'refreshToken', true )
+              log.debug( 'refreshing token...' )
+              requestQueue.push( () => {
+                return new Promise( ( resolve, reject ) => {
+                  resolve(_this.makeReq(config))
                 })
-                  .then(data => {
-                    console.log("/token/refresh", data);
-                    if (data.statusCode == 401) {
-                      S.logout();
-                      S.login(this, true);
-                    }
-                    S.setAuthToken(data.header.Authorization.split(" ")[1]);
-                    requests.forEach(cb => cb());
-                    requests = [];
-                    return API.makeReq(config);
-                  })
-                  .catch(e => {
-                    console.log(e);
-                  })
-                  .finally(() => {
-                    isRefreshing = false;
-                  });
-              }
+              } )
+              debugger
+              api.wx.refreshToken().then( res => {
+                debugger
+                S.setAuthToken()
+              })
+              // const config = options;
+              // if (isRefreshing) {
+              //   return new Promise(resolve => {
+              //     requests.push(token => {
+              //       resolve(API.makeReq(config));
+              //     });
+              //   });
+              // } else {
+              //   isRefreshing = true;
+              //   const token = S.getAuthToken();
+              //   return Taro.request({
+              //     header: {
+              //       Authorization: `Bearer ${token}`
+              //     },
+              //     method: "get",
+              //     url: process.env.APP_BASE_URL + "/token/refresh"
+              //   })
+              //     .then(data => {
+              //       console.log("/token/refresh", data);
+              //       if (data.statusCode == 401) {
+              //         S.logout();
+              //         S.login(this, true);
+              //       }
+              //       S.setAuthToken(data.header.Authorization.split(" ")[1]);
+              //       requests.forEach(cb => cb());
+              //       requests = [];
+              //       return API.makeReq(config);
+              //     })
+              //     .catch(e => {
+              //       console.log(e);
+              //     })
+              //     .finally(() => {
+              //       isRefreshing = false;
+              //     });
+              // }
             }
           }
           return Promise.reject(this.reqError(resData));

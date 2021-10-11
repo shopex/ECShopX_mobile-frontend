@@ -6,8 +6,8 @@ import api from '@/api'
 
 import './point-deposit.scss'
 import {
-  customName
-} from '@/utils/point';
+  getPointName
+} from '@/utils';
 
 export default class PointDepositBtn extends Component {
   static options = {
@@ -71,22 +71,24 @@ export default class PointDepositBtn extends Component {
     const { isOpened } = this.state
 
     return (
-      <View className='point-deposit-index'>
+      <View className="point-deposit-index">
         <View
-          className='pay-mode'
+          className="pay-mode"
           onClick={this.handleClickPayment.bind(this, payType)}
-        >{payType === 'deposit' ? '预存款支付' : customName('积分支付')}</View>
+        >
+          {payType === "deposit" ? "预存款支付" : `${getPointName()}支付`}
+        </View>
 
         <AtModal
           isOpened={isOpened}
-          cancelText='取消'
-          confirmText='确认'
+          cancelText="取消"
+          confirmText="确认"
           onClose={this.handleClosePay}
           onCancel={this.handleClosePay}
           onConfirm={this.handleConfirmPay}
-          content='请确认是否支付此订单'
+          content="请确认是否支付此订单"
         />
       </View>
-    )
+    );
   }
 }
