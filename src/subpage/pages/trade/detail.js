@@ -3,13 +3,12 @@ import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
 import { Loading, SpNavBar, FloatMenuMeiQia } from "@/components";
-import { log, pickBy, formatDataTime,payPlatform, resolveOrderStatus, copyText, getCurrentRoute,copy,isAlipay } from '@/utils'
+import { log, pickBy, formatDataTime,payPlatform, resolveOrderStatus, copyText, getCurrentRoute,copy,isAlipay, getPointName } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { Tracker } from "@/service"
 import api from '@/api'
 import { TracksPayed } from '@/utils/youshu' 
 import S from '@/spx'
-import { customName } from '@/utils/point'
 import DetailItem from './comps/detail-item'
 // 图片引入
 import ErrorDaDa from '../../assets/dada0.png'
@@ -763,7 +762,7 @@ export default class TradeDetail extends Component {
               {
                 this.isPointitemGood() ?
                   <Text className='trade-money__point'>
-                    { info.point } { customName("积分") } 
+                    { info.point } {getPointName()} 
                     {
                       (info.order_class==='pointsmall') &&
                       info.freight_fee!=0 &&
@@ -859,7 +858,7 @@ export default class TradeDetail extends Component {
             <View className='line'>
               <View className='left'>运费</View>
               <View className='right'>
-                { info.freight_type!=="point"?`¥ ${info.freight_fee}`:`${info.freight_fee*100}${customName("积分")}` }
+                { info.freight_type!=="point"?`¥ ${info.freight_fee}`:`${info.freight_fee*100}${getPointName()}` }
               </View>
             </View>
             {
@@ -880,9 +879,9 @@ export default class TradeDetail extends Component {
             }            
             {
               info.point_use > 0 && <View className='line'>
-                <View className='left'>{ customName("积分支付") }</View>
+                <View className='left'>{`${getPointName()}支付`}</View>
                 <View className='right'>
-                  { info.point_use}{customName("积分")}，抵扣：¥{info.point_fee }
+                  { info.point_use}{getPointName()}，抵扣：¥{info.point_fee }
                 </View>
               </View>
             }

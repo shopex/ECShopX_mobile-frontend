@@ -6,7 +6,7 @@ import { AtDrawer, AtInput } from 'taro-ui'
 import { BackToTop, Loading, SpNote, TabBar, HomeCapsule } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
-import { classNames,isWeixin } from '@/utils'
+import { classNames,isWeixin, getPointName } from '@/utils'
 import Header from './comps/header' 
 import GoodsItem from './comps/goods_item'
 import FilterBlock from './comps/filter-block'
@@ -14,9 +14,6 @@ import throttle from 'lodash/throttle'
 import CustomHeader from './comps/headerContainer'
 import S from '@/spx'
 import './list.scss'
-import {
-  customName
-} from '@/utils/point';
 @connect(({
   member,
   colors
@@ -657,9 +654,14 @@ export default class List extends Component {
     // console.log('-----useInfo----', useInfo)
     // console.log('-----filterConfig----', this.state.filterConfig)
     return (
-      <View className='page-pointitem-home'>
-
-        {isWeixin && <CustomHeader isWhite={paddindTop > 0} isHome={true} statusBarHeight={statusBarHeight} />}
+      <View className="page-pointitem-home">
+        {isWeixin && (
+          <CustomHeader
+            isWhite={paddindTop > 0}
+            isHome={true}
+            statusBarHeight={statusBarHeight}
+          />
+        )}
 
         <View className="pointitem-banner">
           <View className="pointitem-def">
@@ -835,16 +837,16 @@ export default class List extends Component {
               )}
               {pointVisible && (
                 <View class="score">
-                  <View class="title">{customName("积分区间")}</View>
+                  <View class="title">{`${getPointName()}区间`}</View>
                   <View class="input-wrap">
                     <AtInput
-                      placeholder={customName("最低积分值")}
+                      placeholder={`最低${getPointName()}值`}
                       value={start_price}
                       onChange={this.handleChangeStartprice}
                     />
                     <View class="text">~</View>
                     <AtInput
-                      placeholder={customName("最高积分值")}
+                      placeholder={`最高${getPointName()}值`}
                       value={end_price}
                       onChange={this.handleChangeEndprice}
                     />

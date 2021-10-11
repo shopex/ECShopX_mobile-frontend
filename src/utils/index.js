@@ -19,7 +19,8 @@ import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
 import entryLaunch from './entryLaunch'
 import validate from "./validate";
-import { isWeixin,isAlipay } from './platform';
+import { getPointName } from './point'
+
 
 const isPrimitiveType = ( val, type ) => Object.prototype.toString.call( val ) === type
 const { store } = configStore();
@@ -70,10 +71,10 @@ export function normalizeArray (...args) {
 }
 
 export function getCurrentRoute (router) {
-  if (isWeixin || isAlipay) {
+  if (Taro.getEnv() == "WEAPP" || Taro.getEnv() == "ALIPAY") {
     // eslint-disable-next-line
-    const page = getCurrentPages().pop()
-    router = page.$component.$router
+    const page = getCurrentPages().pop();
+    router = page.$component.$router;
   }
   const { path, params: origParams } = router
   const params = _pickBy(origParams, val => val !== '')
@@ -453,11 +454,10 @@ export function isGoodsShelves() {
 }
 
 export function getThemeStyle() {
-  const systemTheme = S.get( "SYSTEM_THEME" );
-  const res = store.getState()
-  debugger
-  if ( systemTheme ) {
-    const { colorPrimary, colorMarketing, colorAccent } = systemTheme;
+  // const systemTheme = S.get( "SYSTEM_THEME" );
+  const result = store.getState();
+  if (typeof result.system != 'undefined') {
+    const { colorPrimary, colorMarketing, colorAccent } = result.system;
     return {
       "--color-primary": colorPrimary,
       "--color-marketing": colorMarketing,
@@ -484,7 +484,8 @@ export {
   getQueryVariable,
   validColor,
   entryLaunch,
-  validate
+  validate,
+  getPointName
 };
 
-export * from './platforms';
+export * from "./platforms";

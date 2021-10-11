@@ -3,11 +3,10 @@ import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtCountdown } from 'taro-ui'
 import { Loading, SpToast, SpNavBar } from "@/components";
-import { log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute,showLoading,hideLoading } from '@/utils'
+import { log, pickBy, formatTime, resolveOrderStatus, copyText, getCurrentRoute,showLoading,getPointName } from '@/utils'
 import { Tracker } from "@/service";
 import api from '@/api'
 import S from '@/spx'
-import { customName } from '@/utils/point'
 import AfterDetailItem from './comps/after-detail-item'
 import './after-sale-detail.scss'
 
@@ -704,7 +703,7 @@ export default class TradeDetail extends Component {
           }
           <View className="trade-money">
             {info.is_has_normal && <View>总计金额：<Text className="trade-money__num">￥{(info.total_normal_money/100).toFixed(2)}</Text></View>}
-            {info.is_has_point && <View>{customName("总计积分")}：<Text className="trade-money__num">￥{info.total_point_money}</Text></View>}
+            {info.is_has_point && <View>{`总计${getPointName()}`}：<Text className="trade-money__num">￥{info.total_point_money}</Text></View>}
           </View>
         </ScrollView>
         

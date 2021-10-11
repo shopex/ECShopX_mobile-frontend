@@ -1,8 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { connect } from "@tarojs/redux"
-import { classNames,formatPriceToHundred } from '@/utils'
-import { customName } from '@/utils/point'
+import { classNames,formatPriceToHundred, getPointName } from '@/utils'
 import OrderItem from '../../../../components/orderItem/order-item'
 
 import './item.scss'
@@ -42,13 +41,13 @@ export default class TradeItem extends Component {
    
     if(order_class==="pointsmall"){
       if(freight_type==="point" ||  (freight_type==="cash" && freight_fee==0)){
-        total= `合计：${point} ${customName("积分")}`
+        total = `合计：${point} ${getPointName()}`;
       }else if(freight_type==="cash" && freight_fee!=0){
-        total= `合计：${point} ${customName("积分")} + ￥${formatPriceToHundred(total_fee)}`
+        total= `合计：${point} ${getPointName()} + ￥${formatPriceToHundred(total_fee)}`
       }
     }else{
       if(payType==="dhpoint"){
-        total= `合计：${total_fee}${customName("积分")}`
+        total = `合计：${total_fee}${getPointName()}`;
       }else{
         total= `合计：￥${payment}`
       } 

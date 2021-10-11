@@ -17,14 +17,14 @@ import {
   navigateTo,
   getThemeStyle,
   classNames,
+  showToast,
   showModal,
+  styleNames,
   isWeixin,
-  transformPlatformUrl,
-  styleNames
+  getPointName
 } from "@/utils";
-import { setPageTitle, platformTemplateName } from "@/utils/platform";
+import { transformPlatformUrl, platformTemplateName } from "@/utils/platform";
 import qs from "qs";
-import { customName } from "@/utils/point";
 import userIcon from "@/assets/imgs/user-icon.png";
 import "./index.scss";
 
@@ -34,9 +34,7 @@ import "./index.scss";
     memberData: member.member
   }),
   dispatch => ({
-    onFetchFavs: favs => dispatch({ type: "member/favs", payload: favs }),
-    setMemberInfo: memberInfo =>
-      dispatch({ type: "member/init", payload: memberInfo })
+    onFetchFavs: favs => dispatch({ type: "member/favs", payload: favs })
   })
 )
 @withLogin()
@@ -163,7 +161,6 @@ export default class MemberIndex extends Component {
       });
 
       await S.getMemberInfo();
-      // this.props.setMemberInfo(memberInfo);
     }
     Taro.stopPullDownRefresh();
   }
@@ -293,6 +290,10 @@ export default class MemberIndex extends Component {
   };
 
   handleClickWxOAuth(fn, need = true) {
+    if (!S.getAuthToken()) {
+      showToast("请登录后再操作");
+      return;
+    }
     if (this.state.showTimes >= 1) {
       if (need) {
         fn && fn();
@@ -312,7 +313,9 @@ export default class MemberIndex extends Component {
   }
 
   renderMarketingNavs() {
-    const { is_open_popularize, is_promoter } = this.props.memberData;
+    const { memberData } = this.props
+    const { score_menu_open, salespersonData, menuSetting } = this.state;
+    const { is_open_popularize, is_promoter } = memberData;
     const {
       group,
       community_order,
@@ -321,10 +324,9 @@ export default class MemberIndex extends Component {
       offline_order,
       complaint,
       activity
-    } = this.state.menuSetting;
-    const { score_menu_open, salespersonData } = this.state;
+    } = menuSetting;
     let navs = [];
-    if (is_open_popularize && Taro.getEnv() == "WEAPP") {
+    if (is_open_popularize && isWeixin) {
       navs.push({
         title: is_promoter ? "我要推广" : "推广管理",
         icon: "../../assets/imgs/store.png",
@@ -332,7 +334,7 @@ export default class MemberIndex extends Component {
       });
     }
 
-    if (group && Taro.getEnv() == "WEAPP") {
+    if (group && isWeixin) {
       navs.push({
         title: "我的拼团",
         icon: `${process.env.APP_IMAGE_CDN}/group.png`,
@@ -342,7 +344,7 @@ export default class MemberIndex extends Component {
       });
     }
 
-    if (community_order && Taro.getEnv() == "WEAPP") {
+    if (community_order && isWeixin) {
       navs.push({
         title: "我的社区团购",
         icon: `${process.env.APP_IMAGE_CDN}/group.png`,
@@ -352,7 +354,7 @@ export default class MemberIndex extends Component {
       });
     }
 
-    if (boost_activity && Taro.getEnv() == "WEAPP") {
+    if (boost_activity && isWeixin) {
       navs.push({
         title: "助力活动",
         icon: `${process.env.APP_IMAGE_CDN}/group.png`,
@@ -362,7 +364,7 @@ export default class MemberIndex extends Component {
       });
     }
 
-    if (boost_order && Taro.getEnv() == "WEAPP") {
+    if (boost_order && isWeixin) {
       navs.push({
         title: "助力订单",
         icon: `${process.env.APP_IMAGE_CDN}/group.png`,
@@ -382,7 +384,7 @@ export default class MemberIndex extends Component {
       });
     }
 
-    if (complaint && salespersonData && salespersonData.distributor ) {
+    if (complaint && salespersonData && salespersonData.distributor) {
       navs.push({
         title: "投诉记录",
         icon: `${process.env.APP_IMAGE_CDN}/group.png`,
@@ -404,7 +406,7 @@ export default class MemberIndex extends Component {
 
     if (score_menu_open) {
       navs.push({
-        title: "积分商城",
+        title: `${getPointName()}商城`,
         icon: "../../assets/imgs/score.png",
         action: () => {
           this.navigateTo("/pointitem/pages/list");
@@ -432,7 +434,8 @@ export default class MemberIndex extends Component {
   }
 
   renderNormalNavs() {
-    const { memberinfo_enable } = this.state.menuSetting;
+    const { menuSetting } = this.state
+    const { memberinfo_enable } = menuSetting;
     let navs = [];
     navs.push({
       title: "地址管理",
@@ -495,126 +498,130 @@ export default class MemberIndex extends Component {
 
     return (
       <View className="page-member-index" style={styleNames(getThemeStyle())}>
-        {S.getAuthToken() ? (
-          <View
-            className={classNames("page-member-header", {
-              "no-card": !memberDiscount
-            })}
-          >
-            <View className="user-info">
-              <View
-                className="view-flex view-flex-middle"
-                onClick={() => {
-                  this.handleClickWxOAuth(this.handleClickInfo.bind(this));
-                }}
-              >
-                <View className="avatar">
+        <View className="page-member-header">
+          {S.getAuthToken() && (
+            <View className="header-con">
+              <View className="user-info">
+                <View
+                  className="user-info__hd"
+                  onClick={() => {
+                    this.handleClickWxOAuth(this.handleClickInfo.bind(this));
+                  }}
+                >
                   <Image
                     className="avatar-img"
                     src={memberInfo.avatar || userIcon}
-                    mode="aspectFill"
+                    mode="widthFix"
                   />
-                </View>
-                <View>
-                  <View className="nickname">
-                    Hi, {memberInfo.username || memberInfo.mobile}
+                  <View className="avatar-info">
+                    <View className="nickname">
+                      Hi, {memberInfo.username || memberInfo.mobile}
+                    </View>
+                    <View className="gradename">{`${
+                      !vipgrade.is_vip
+                        ? memberInfo.gradeInfo.grade_name
+                        : vipgrade.grade_name || "会员"
+                    }`}</View>
                   </View>
-                  <View className="gradename">{`${
-                    !vipgrade.is_vip
-                      ? memberInfo.gradeInfo.grade_name
-                      : vipgrade.grade_name || "会员"
-                  }`}</View>
+                </View>
+
+                <View className="user-info__ft">
+                  {menuSetting.member_code && (
+                    <Text
+                      className="iconfont icon-qrcode"
+                      onClick={() => {
+                        this.handleClickWxOAuth(
+                          this.navigateTo.bind(
+                            this,
+                            "/marketing/pages/member/member-code"
+                          )
+                        );
+                      }}
+                    ></Text>
+                  )}
                 </View>
               </View>
-              {menuSetting.member_code && (
+
+              <View className="member-assets">
                 <View
-                  className="icon-qrcode"
+                  className="member-assets-item"
                   onClick={() => {
                     this.handleClickWxOAuth(
                       this.navigateTo.bind(
                         this,
-                        "/marketing/pages/member/member-code"
+                        "/marketing/pages/member/coupon"
                       )
                     );
                   }}
-                ></View>
-              )}
-            </View>
-
-            <View className="member-assets view-flex">
-              <View
-                className="view-flex-item"
-                onClick={() => {
-                  this.handleClickWxOAuth(
-                    this.navigateTo.bind(this, "/marketing/pages/member/coupon")
-                  );
-                }}
-              >
-                <View className="member-assets__label">优惠券</View>
-                <View className="member-assets__value">
-                  {(memberAssets && memberAssets.discount_total_count) || 0}
+                >
+                  <View className="member-assets__label">优惠券</View>
+                  <View className="member-assets__value">
+                    {(memberAssets && memberAssets.discount_total_count) || 0}
+                  </View>
                 </View>
-              </View>
 
-              <View
-                className="view-flex-item"
-                onClick={() => {
-                  this.handleClickWxOAuth(this.handleClickPoint.bind(this));
-                }}
-              >
-                <View className="member-assets__label">
-                  {customName("积分")}
-                </View>
-                <View className="member-assets__value">
-                  {(memberAssets && memberAssets.point_total_count) || 0}
-                </View>
-              </View>
-
-              {rechargeStatus && (
                 <View
-                  className="view-flex-item"
+                  className="member-assets-item"
+                  onClick={() => {
+                    this.handleClickWxOAuth(this.handleClickPoint.bind(this));
+                  }}
+                >
+                  <View className="member-assets__label">
+                    {getPointName()}
+                  </View>
+                  <View className="member-assets__value">
+                    {(memberAssets && memberAssets.point_total_count) || 0}
+                  </View>
+                </View>
+
+                {rechargeStatus && (
+                  <View
+                    className="member-assets-item"
+                    onClick={() => {
+                      this.handleClickWxOAuth(
+                        this.navigateTo.bind(
+                          this,
+                          "/others/pages/recharge/index"
+                        )
+                      );
+                    }}
+                  >
+                    <View className="member-assets__label">储值</View>
+                    <View className="member-assets__value">
+                      {((memberAssets && memberAssets.deposit) || 0) / 100}
+                    </View>
+                  </View>
+                )}
+
+                <View
+                  className="member-assets-item"
                   onClick={() => {
                     this.handleClickWxOAuth(
-                      this.navigateTo.bind(
-                        this,
-                        "/others/pages/recharge/index"
-                      ),
-                      isWeixin
+                      this.navigateTo.bind(this, "/pages/member/item-fav")
                     );
                   }}
                 >
-                  <View className="member-assets__label">储值</View>
+                  <View className="member-assets__label">收藏</View>
                   <View className="member-assets__value">
-                    {((memberAssets && memberAssets.deposit) || 0) / 100}
+                    {(memberAssets && memberAssets.fav_total_count) || 0}
                   </View>
-                </View>
-              )}
-
-              <View
-                className="view-flex-item"
-                onClick={() => {
-                  this.handleClickWxOAuth(
-                    this.navigateTo.bind(this, "/pages/member/item-fav")
-                  );
-                }}
-              >
-                <View className="member-assets__label">收藏</View>
-                <View className="member-assets__value">
-                  {(memberAssets && memberAssets.fav_total_count) || 0}
                 </View>
               </View>
             </View>
-          </View>
-        ) : (
-          <View className="page-member-header view-flex view-flex-vertical view-flex-middle view-flex-center">
-            <Image className="user-icon" src={userIcon} mode="widthFix" />
-            <SpLogin onChange={this.onChangeLoginSuccess.bind(this)}>
-              <View className="unlogin">请登录</View>
-            </SpLogin>
-          </View>
-        )}
+          )}
 
-        {(vipgrade.is_open || (!vipgrade.is_open && vipgrade.is_vip)) &&
+          {!S.getAuthToken() && (
+            <View className="header-con">
+              <Image className="user-icon" src={userIcon} mode="widthFix" />
+              <SpLogin onChange={this.onChangeLoginSuccess.bind(this)}>
+                <View className="unlogin">请登录</View>
+              </SpLogin>
+            </View>
+          )}
+        </View>
+
+        {vipgrade &&
+          (vipgrade.is_open || (!vipgrade.is_open && vipgrade.is_vip)) &&
           memberDiscount !== "" && (
             <View
               className="member-card"

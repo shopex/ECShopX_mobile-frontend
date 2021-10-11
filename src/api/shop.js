@@ -1,6 +1,5 @@
 import req from "./req";
-import { transformPlatformUrl } from '@/utils'
-import { platformTemplateName } from "@/utils/platform";
+import { platformTemplateName, transformPlatformUrl } from "@/utils/platform";
 
 export function getShop(params = {}) {
   return req.get("/distributor/is_valid", params);

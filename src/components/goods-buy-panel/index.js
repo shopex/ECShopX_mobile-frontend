@@ -6,14 +6,11 @@ import { connect } from "@tarojs/redux";
 // import find from 'lodash/find'
 import { Price } from "@/components";
 import InputNumber from "@/components/input-number";
-import { classNames, pickBy, log,closeClassName } from "@/utils";
+import { classNames, pickBy, log,closeClassName, getPointName } from "@/utils";
 import { Tracker } from "@/service";
 import api from "@/api";
 import { floor } from "lodash";
 import entry from '@/utils/entry'
-import {
-  customName
-} from '@/utils/point';
 import "./index.scss";
 
 @connect(({ colors }) => ({
@@ -599,7 +596,7 @@ export default class GoodsBuyPanel extends Component {
                 <View className="number">
                   {curSku ? curSku.point : info.point}
                 </View>
-                <View className="text">{customName("积分")}</View>
+                <View className="text">{getPointName()}</View>
               </View>
             )}
             {!isPointitem && (
