@@ -1,35 +1,45 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from "taro-ui"
-import { debounce, calcTimer, classNames } from '@/utils'
+import { calcTimer, classNames } from '@/utils'
 import api from '@/api'
-import { TabBar } from '@/components'
+import { withPager, withBackToTop } from "@/hocs"
+import { Tracker } from "@/service"
+import { TabBar, Loading, SpNote } from '@/components'
 
 import './index.scss'
 
+@withPager
+@withBackToTop
 export default class LiveRoomList extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      scrollTop: 0,
-      isRefresh: false,
-      liveList: [],
-      isLoading: false,
-      isEnding: false,
-      param: {
-        page: 1,
-        pageSize: 10
-      }
+      ...this.state,
+      liveList: []
     }
   }
 
   componentDidMount () {
-    this.setState({ scrollTop: 0 })
+    this.nextPage()
   }
 
-  componentDidShow () {
-    this.getList()
-    // this.setState({ scrollTop: 0 })
+  async fetch (params) {
+    const { page_no: page, page_size } = params
+    const query = {
+      page,
+      page_size
+    }
+    const { list, total_count: total } = await api.liveroom.getLiveRoomList(query)
+    this.setState({
+      liveList: [...this.state.liveList, ...list]
+    })
+    // await api.liveroom.getLiveRoomList(query).then(res => {
+    //   const { list, total_count: total } = res
+    // })
+    return {
+      total
+    }
   }
 
   timeStamp = (time) => {
@@ -38,65 +48,69 @@ export default class LiveRoomList extends Component {
     return second
   }
 
-  getList = async (isRefrsh = false) => {
-    const { param, liveList } = this.state
-    await api.liveroom.getLiveRoomList({ page: param.page, page_size: param.pageSize }).then(res => {
-      const { list, total_count } = res
-      let listlength = liveList.concat(list).length || list.length
-      this.setState({
-        liveList: isRefrsh ? liveList.concat(list) : list,
-        isRefresh: false,
-        isLoading: false,
-        isEnding: listlength == total_count
-      })
-    })
-  }
-
   // 滚动事件
-  onScroll = debounce((e) => {
-    const { scrollTop } = e.detail
-    this.setState({
-      scrollTop
-    })
-  }, 1000)
+  // onScroll = debounce((e) => {
+  //   const { scrollTop } = e.detail
+  //   this.setState({
+  //     scrollTop
+  //   })
+  // }, 1000)
 
-  // 下拉刷新
-  handleRefresh = () => {
-    const { param } = this.state
-    param.page = 1
-    this.setState({
-      isRefresh: true,
-      param
-    })
-    this.getList()
-  }
+  // 下拉更新数据
+  // handleRefresh = () => {
+  //   const { param } = this.state
+  //   param.page = 1
+  //   this.setState({
+  //     isRefresh: true,
+  //     param
+  //   })
+  //   this.getList(1)
+  // }
 
-  // 滚动到底部
-  onScrollToLower = () => {
-    const { isLoading, param, isEnding } = this.state
-    if (isLoading || isEnding) return
-    this.setState({
-      param: {
-        page: ++param.page,
-        pageSize: param.pageSize
-      },
-      isLoading: true
-    })
-    this.getList(true)
-  }
+  // // 滚动到底部
+  // onScrollToLower = () => {
+  //   let that = this
+  //   const { isLoading, param, isLastPage, isLoadInterface } = that.state
+  //   let isLastVal = isLastPage
+  //   if (!isLoadInterface) {
+  //     if (!isLastVal) {
+  //       this.setState({ isLoadInterface: true })
+  //       let page = param.page * 1 + 1
+  //       param.page = page
+  //       this.setState({ param })
+  //       this.getList(page)
+  //     }
+  //   }
+  // }
 
-  // 上拉加载
-  onScrollToUpper = () => {
-    const { isLoading, param, isEnding } = this.state
-    if (isLoading || isEnding) return
-    this.setState({
-      param: {
-        page: 1,
-        pageSize: param.pageSize
-      },
-      isLoading: true
+  // // 上拉加载
+  // onScrollToUpper = () => {
+  //   let that = this
+  //   const { isLoading, param, isLastPage, isLoadInterface } = that.state
+  //   let isLastVal = isLastPage
+  //   if (!isLoadInterface) {
+  //     if (!isLastVal) {
+  //       this.setState({ isLoadInterface: true })
+  //       let page = 1
+  //       param.page = page
+  //       this.setState({ param })
+  //       this.getList(page)
+  //     }
+  //   }
+  // }
+
+  onPullDownRefresh = () => {
+    Tracker.dispatch("PAGE_PULL_DOWN_REFRESH")
+    
+    // Taro.showLoading({
+    //   title: '加载中',
+    //   icon: 'none',
+    // })
+    this.resetPage(() => {
+      this.nextPage()
+      this.setState({ liveList: [] })
+      // Taro.hideLoading()
     })
-    this.getList()
   }
 
   onLocation = (item) => {
@@ -110,24 +124,18 @@ export default class LiveRoomList extends Component {
   }
 
   render () {
-    const { liveList, scrollTop, isRefresh, isLoading, isEnding } = this.state
+    const { liveList, scrollTop, page } = this.state
     return (
       <View>
         <ScrollView
           className='liveroom-page'
           scrollY
-          scrollAnchoring
-          refresherEnabled
+          scroll-anchoring
           scrollWithAnimation
-          lowerThreshold='100px'
-          upperThreshold='100px'
           scrollTop={scrollTop}
-          onScroll={this.onScroll}
-          refresherTriggered={isRefresh}
-          onRefresherRefresh={this.handleRefresh}
-          onScrollToUpper={this.onScrollToUpper}
-          onScrollToLower={this.onScrollToLower}
-          style={{ height: '100vh' }}
+          onScroll={this.handleScroll}
+          onScrollToLower={this.nextPage}
+          onScrollToUpper={this.onPullDownRefresh.bind(this)}
         >
           {liveList.map(item => {
             let liveing = item.live_status == 101 // 直播中
@@ -220,10 +228,14 @@ export default class LiveRoomList extends Component {
             )
           })
         }
-        <View style='text-align: center;margin: 10px;'>
+        {page.isLoading ? <Loading>正在加载...</Loading> : null}
+          {!page.isLoading && !page.hasNext && !liveList.length && (
+            <SpNote>暂无数据~</SpNote>
+          )}
+        {/* <View style='text-align: center;margin: 10px;'>
           { isLoading && <View style={{ color: '#ccc', fontSize: '12px' }}>加载中...</View> }
-          { isEnding && <View style={{ color: '#ccc', fontSize: '12px' }}>-- 我也是有底线的 --</View> }
-        </View>
+          { isLastPage && <View style={{ color: '#ccc', fontSize: '12px' }}>-- 我也是有底线的 --</View> }
+        </View> */}
       </ScrollView>
       <TabBar />
     </View>
