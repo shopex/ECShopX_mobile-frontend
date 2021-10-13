@@ -56,13 +56,12 @@ export default class DistributionWithdraw extends Component {
     });
 
 
-    if (cashWithdrawalRebate) {
+    // if (cashWithdrawalRebate) {
       this.setState({
         cashWithdrawalRebate,
-        payList,
-        
+        payList
       })
-    }
+    // }
 
     const { alipay_account, config } = await api.distribution.info()
     //const dataInfo = await api.distribution.info()

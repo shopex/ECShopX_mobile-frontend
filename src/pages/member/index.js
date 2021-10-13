@@ -17,7 +17,7 @@ import {
   navigateTo,
   getThemeStyle,
   classNames,
-  isAlipay,
+  showModal,
   isWeixin,
   platformTemplateName,
   transformPlatformUrl
@@ -71,7 +71,9 @@ export default class MemberIndex extends Component {
         recharge: false,
         ziti_order: false,
         //是否开启积分链接
-        score_menu: false
+        score_menu: false,
+        share_enable: false,
+        memberinfo_enable: false
       },
       imgUrl: "",
       // 积分商城菜单
@@ -180,11 +182,9 @@ export default class MemberIndex extends Component {
       await api.pointitem.getPointitemSetting()
     ] );
 
-    console.log("--pointItemSetting--",pointItemSetting)
-
     this.setState({
-      bannerSetting: bannerSetting.list[0] ? bannerSetting.list[0].params.data :{},
-      menuSetting: menuSetting.list[0] ? menuSetting.list[0].params.data : {},
+      bannerSetting: bannerSetting.list[0].params.data,
+      menuSetting: menuSetting.list[0].params.data,
       score_menu_open: pointItemSetting.entrance.mobile_openstatus
     });
   }
@@ -326,19 +326,20 @@ export default class MemberIndex extends Component {
       showPrivacy,
       showTimes
     } = this.state;
-    console.log("---score_menu_open---",score_menu_open)
     let memberInfo = null,
       vipgrade = null;
     if (memberData) {
       memberInfo = memberData.memberInfo;
       vipgrade = memberData.vipgrade;
     }
- 
+
     return (
       <View className="page-member-index" style={getThemeStyle()}>
         {S.getAuthToken() ? (
           <View
-            className={classNames("page-member-header")}
+            className={classNames("page-member-header", {
+              "no-card": !memberDiscount
+            })}
           >
             <View className="user-info">
               <View
@@ -361,7 +362,7 @@ export default class MemberIndex extends Component {
                   <View className="gradename">{`${
                     !vipgrade.is_vip
                       ? memberInfo.gradeInfo.grade_name
-                      : vipgrade.grade_name || '会员'
+                      : vipgrade.grade_name || "会员"
                   }`}</View>
                 </View>
               </View>
@@ -391,7 +392,7 @@ export default class MemberIndex extends Component {
               >
                 <View className="member-assets__label">优惠券</View>
                 <View className="member-assets__value">
-                  {memberAssets.discount_total_count}
+                  {memberAssets.discount_total_count || 0}
                 </View>
               </View>
 
@@ -405,7 +406,7 @@ export default class MemberIndex extends Component {
                   {customName("积分")}
                 </View>
                 <View className="member-assets__value">
-                  {memberAssets.point_total_count}
+                  {memberAssets.point_total_count || 0}
                 </View>
               </View>
 
@@ -414,7 +415,11 @@ export default class MemberIndex extends Component {
                   className="view-flex-item"
                   onClick={() => {
                     this.handleClickWxOAuth(
-                      this.navigateTo.bind(this, "/others/pages/recharge/index"),isWeixin
+                      this.navigateTo.bind(
+                        this,
+                        "/others/pages/recharge/index"
+                      ),
+                      isWeixin
                     );
                   }}
                 >
@@ -435,7 +440,7 @@ export default class MemberIndex extends Component {
               >
                 <View className="member-assets__label">收藏</View>
                 <View className="member-assets__value">
-                  {memberAssets.fav_total_count}
+                  {memberAssets.fav_total_count || 0}
                 </View>
               </View>
             </View>
@@ -449,7 +454,65 @@ export default class MemberIndex extends Component {
           </View>
         )}
 
-    
+        {(vipgrade.is_open || (!vipgrade.is_open && vipgrade.is_vip)) &&
+          memberDiscount !== "" && (
+            <View
+              className="member-card"
+              onClick={() => {
+                this.handleClickWxOAuth(
+                  this.navigateTo.bind(this, "/subpage/pages/vip/vipgrades")
+                );
+              }}
+            >
+              {vipgrade.is_open && !vipgrade.is_vip && (
+                <View className="vip-btn">
+                  <View className="vip-btn__title">
+                    开通VIP会员 <Text className="icon-arrowRight"></Text>
+                  </View>
+                  {memberDiscount && (
+                    <View className="vip-btn__desc">
+                      即可享受最高{memberDiscount}折会员优惠
+                    </View>
+                  )}
+                </View>
+              )}
+              {vipgrade.is_vip && (
+                <View className="grade-info">
+                  <View className="member-card-title">
+                    <Text className="vip-sign">
+                      {vipgrade.vip_type === "svip" ? (
+                        <Text>SVIP</Text>
+                      ) : (
+                        <Text>VIP</Text>
+                      )}
+                    </Text>
+                    会员卡
+                  </View>
+                  <View className="member-card-no">
+                    NO. {memberInfo.user_card_code}
+                  </View>
+                  <View className="member-card-period">
+                    {vipgrade.end_time} 到期
+                  </View>
+                </View>
+              )}
+              {vipgrade.is_vip && (
+                <Image
+                  className="member-info-bg"
+                  src={vipgrade.background_pic_url}
+                  mode="widthFix"
+                />
+              )}
+              {vipgrade.is_open && !vipgrade.is_vip && (
+                <Image
+                  className="member-info-bg"
+                  src={memberInfo.gradeInfo.background_pic_url}
+                  mode="widthFix"
+                />
+              )}
+            </View>
+          )}
+
         {/* {is_open_official_account === 1 && (
           <View className="page-member-section">
             <AccountOfficial
@@ -580,8 +643,8 @@ export default class MemberIndex extends Component {
           </View>
         )} */}
 
-        {<View className="page-member-section">
-          {memberData.is_open_popularize && (
+        <View className="page-member-section">
+          {memberData.is_open_popularize && isWeixin && (
             <SpCell
               title={!memberData.is_promoter ? "我要推广" : "推广管理"}
               isLink
@@ -712,25 +775,25 @@ export default class MemberIndex extends Component {
             ></SpCell>
           )}
           {/* {
-              menuSetting.activity && <SpCell
-                title='活动预约'
-                isLink
-                img={require('../../assets/imgs/buy.png')}
-                onClick={this.handleClick.bind(this, '/marketing/pages/member/coupon')}
-              >
-              </SpCell>
-            }  */}
-          {/* <SpCell
-              title='入驻申请'
+            menuSetting.activity && <SpCell
+              title='活动预约'
               isLink
-              img='/assets/imgs/buy.png'
-              onClick={this.handleClick.bind(this, '/subpage/pages/auth/store-reg')}
+              img={require('../../assets/imgs/buy.png')}
+              onClick={this.handleClick.bind(this, '/marketing/pages/member/coupon')}
             >
-            </SpCell>*/}
-        </View>}
+            </SpCell>
+          }  */}
+          {/* <SpCell
+            title='入驻申请'
+            isLink
+            img='/assets/imgs/buy.png'
+            onClick={this.handleClick.bind(this, '/subpage/pages/auth/store-reg')}
+          >
+          </SpCell>*/}
+        </View>
 
         <View className="page-member-section">
-          {Taro.getEnv() !== "WEB" && (
+          {Taro.getEnv() !== "WEB" && menuSetting.share_enable && (
             <SpCell title="我要分享" isLink>
               <Button className="btn-share" open-type="share"></Button>
             </SpCell>
@@ -744,13 +807,15 @@ export default class MemberIndex extends Component {
               )
             }
           ></SpCell>
-          <SpCell
-            title="个人信息"
-            isLink
-            onClick={() =>
-              this.handleClickWxOAuth(this.handleClickInfo.bind(this))
-            }
-          ></SpCell>
+          {menuSetting.memberinfo_enable && (
+            <SpCell
+              title="个人信息"
+              isLink
+              onClick={() =>
+                this.handleClickWxOAuth(this.handleClickInfo.bind(this))
+              }
+            ></SpCell>
+          )}
           {process.env.TARO_ENV === "h5" && (
             <SpCell
               title="设置"
