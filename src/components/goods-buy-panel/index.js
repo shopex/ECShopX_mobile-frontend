@@ -241,15 +241,19 @@ export default class GoodsBuyPanel extends Component {
 
   handleImgClick = () => {
     const { curSku, info } = this.state;
-    if (!curSku) return;
-
-    const { item_spec } = curSku;
-    const { item_image_url, spec_image_url } = item_spec[0];
     const { pics } = info;
-
+    // if (!curSku) return;
     let imgs = [];
-    if (item_image_url.length || spec_image_url) {
-      imgs = item_image_url.length > 0 ? item_image_url : [spec_image_url];
+
+    if (curSku) {
+      const { item_spec } = curSku;
+      const { item_image_url, spec_image_url } = item_spec[0];
+  
+      if (item_image_url.length || spec_image_url) {
+        imgs = item_image_url.length > 0 ? item_image_url : [spec_image_url];
+      } else {
+        imgs = pics;
+      }
     } else {
       imgs = pics;
     }
@@ -464,12 +468,13 @@ export default class GoodsBuyPanel extends Component {
   getMaxNum=()=>{
     const { curSku }=this.state;
     const { info,marketing }=this.props;
-    const curSkus = this.noSpecs ? info : curSku; 
+    const curSkus = this.noSpecs ? info : curSku;  
+
     const maxStore = +( curSkus ? curSkus.store : info.store || 99999 ); 
     if(marketing==='group'){
       return 1;
     }else if(marketing==='seckill'){
-      return info.limit_num;
+      return curSkus?curSkus.limit_num:info.limit_num;
     }
     return maxStore;
   }

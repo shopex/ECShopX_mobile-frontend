@@ -12,9 +12,9 @@ import {
 } from "@/components";
 import req from "@/api/req";
 import api from "@/api";
-import { pickBy, classNames, isWeixin,isArray,isAlipay,payTypeField,platformTemplateName } from "@/utils";
+import { pickBy, classNames,isArray,isAlipay,payTypeField,platformTemplateName } from "@/utils";
 import entry from "@/utils/entry";
-import { withLogin, withPager, withBackToTop } from "@/hocs";
+import { withPager, withBackToTop } from "@/hocs";
 import S from "@/spx";
 import { Tracker } from "@/service"
 import { WgtGoodsFaverite, HeaderHome } from './home/wgts'
