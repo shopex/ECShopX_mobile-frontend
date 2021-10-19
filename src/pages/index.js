@@ -372,14 +372,15 @@ export default class Home extends Component {
     const { list } = await api.cart.likeList({
       page: 1,
       pageSize: 6
-    });
+    } );
     this.setState({ recommendList: list });
   };
 
   async getWgts(id) {
     const { config } = await api.shop.getShopTemplate({
       distributor_id: id
-    });
+    } );
+  
     this.setState({
       wgts: config
     });

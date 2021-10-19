@@ -27,25 +27,17 @@ export default class WgtSlider extends Component {
 
   handleClickItem = linkPage;
 
-  // handleSwiperChange = (e) => {
-  //   const { current  } = e.detail
-
-  //   this.setState({
-  //     curIdx: current
-  //   })
-  // }
-  handleSwiperChange = e => {
+  handleSwiperChange(e) {
     const { current } = e.detail;
     this.setState({
-      curIdx: current,
-      // index: e.target.current
+      curIdx: current
     });
   };
 
   render() {
     const { info } = this.props;
     const { curIdx, index } = this.state;
-
+    console.log("curIdx:", curIdx);
     if (!info) {
       return null;
     }
@@ -77,7 +69,7 @@ export default class WgtSlider extends Component {
               current={curIdx}
               interval={config.interval}
               duration={300}
-              onChange={this.handleSwiperChange}
+              onChange={this.handleSwiperChange.bind(this)}
             >
               {data.map((item, idx) => {
                 return (

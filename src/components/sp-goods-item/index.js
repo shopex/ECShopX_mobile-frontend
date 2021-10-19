@@ -41,8 +41,9 @@ export default class SpGoodsItem extends Component {
   };
 
   handleClick = () => {
-    const { item_id, distributor_id } = this.props.info;
-    const url = `/pages/item/espier-detail?id=${item_id}&dtid=${distributor_id}`;
+    // const { item_id, distributor_id } = this.props.info;
+    const { itemId, distributor_id } = this.props.info;
+    const url = `/pages/item/espier-detail?id=${itemId}&dtid=${distributor_id}`;
     Taro.navigateTo({
       url
     });

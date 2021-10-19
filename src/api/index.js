@@ -21,6 +21,7 @@ import * as wx from './wx'
 import * as alipay from './alipay'
 import * as wheel from './wheel'
 import * as pointitem from './pointitem'
+import * as liveroom from './liveroom'
 
 import * as guide from './guide'
 
@@ -48,5 +49,6 @@ export default {
   boost,
   pointitem,
   guide,
-  alipay
+  alipay,
+  liveroom
 }

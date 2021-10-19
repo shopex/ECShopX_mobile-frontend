@@ -1319,8 +1319,8 @@ export default class EspierDetail extends Component {
               <View className="goods-title__wrap">
                 <Text className="goods-title">{info.item_name}</Text>
                 <Text className="goods-title__desc">{info.brief}</Text>
-              </View>
-              {!isNewGift && !isWeixin && !this.isPointitem() && !isAlipay && (
+              </View> 
+              {!isNewGift && !this.isPointitem() && !isAlipay && (
                 <View
                   className="goods-share__wrap"
                   onClick={this.handleShare.bind(this)}

@@ -5,7 +5,7 @@ import { connect } from "@tarojs/redux";
 import { SpToast, SpCell, SpNavBar } from '@/components'
 import S from '@/spx'
 import api from '@/api'
-import { pickBy,isAlipay,showLoading,hideLoading } from '@/utils'
+import { showLoading,hideLoading } from '@/utils'
 
 import './address.scss'
 

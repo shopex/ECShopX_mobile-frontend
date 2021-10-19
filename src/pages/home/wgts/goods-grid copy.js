@@ -8,7 +8,7 @@ import { getDistributorId } from "@/utils/helper";
 import { withLoadMore } from '@/hocs';
 import "./goods-grid.scss";
 
-@withLoadMore
+// @withLoadMore
 export default class WgtGoodsGrid extends Component {
   static options = {
     addGlobalClass: true

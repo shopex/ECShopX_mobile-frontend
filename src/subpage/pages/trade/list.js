@@ -126,6 +126,7 @@ export default class TradeList extends Component {
       delivery_id: 'delivery_id',
       orders_delivery_id: 'orders_delivery_id',
       order_type: 'order_type',
+      can_apply_cancel: 'can_apply_cancel',
       order: ({ items }) => pickBy(items, {
         order_id: 'order_id',
         item_id: 'item_id',
