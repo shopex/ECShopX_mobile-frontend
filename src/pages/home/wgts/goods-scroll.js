@@ -9,7 +9,7 @@ import { withLoadMore } from '@/hocs';
 
 import "./goods-scroll.scss";
 
-@withLoadMore
+// @withLoadMore
 export default class WgtGoodsScroll extends Component {
   static options = {
     addGlobalClass: true,

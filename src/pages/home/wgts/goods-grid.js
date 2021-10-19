@@ -1,7 +1,7 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Text, Image } from "@tarojs/components";
 import { SpGoodsItem } from "@/components";
-import { pickBy, classNames } from "@/utils";
+import { pickBy, classNames, log } from "@/utils";
 import { linkPage } from "./helper";
 import { Tracker } from "@/service";
 import { getDistributorId } from "@/utils/helper";
@@ -37,19 +37,31 @@ export default class WgtGoodsGrid extends Component {
 
   startTrack() {
     this.endTrack();
-    const observer = Taro.createIntersectionObserver({
-      observeAll: true
-    });
-    observer.relativeToViewport({ bottom: 0 }).observe(".grid-item", res => {
-      if (res.intersectionRatio > 0) {
-        const { id } = res.dataset;
-        const { data } = this.state.info;
-        const curGoods = data.find(item => item.goodsId == id);
-        Tracker.dispatch("EXPOSE_SKU_COMPONENT", curGoods);
+    // const observer = Taro.createIntersectionObserver({
+    //   observeAll: true
+    // });
+    // observer.relativeToViewport({ bottom: 0 }).observe(".grid-item", res => {
+    //   if (res.intersectionRatio > 0) {
+    //     const { id } = res.dataset;
+    //     const { data } = this.state.info;
+    //     const curGoods = data.find(item => item.goodsId == id);
+    //     Tracker.dispatch("EXPOSE_SKU_COMPONENT", curGoods);
+    //   }
+    // });
+    const observer = new IntersectionObserver(
+      res => {
+        console.log("observer:", res);
+      },
+      {
+        // root: document.querySelector(".home-wgts"),
+        threshold: [0, 0.5, 1]
       }
-    });
+    );
 
+    observer.observe(document.querySelector(".wgt-grid__goods-wrap"));
+    
     this.observe = observer;
+
   }
 
   endTrack() {
@@ -86,9 +98,11 @@ export default class WgtGoodsGrid extends Component {
       pics: ({ imgUrl }) => {
         return [imgUrl];
       },
+      itemId: 'goodsId',
       itemName: "title",
       brief: "brief",
       promotion_activity: "promotion_activity",
+      distributor_id: 'distributor_id',
       is_point: "is_point",
       price: ({ act_price, member_price, price }) => {
         if (act_price > 0) {
@@ -101,7 +115,7 @@ export default class WgtGoodsGrid extends Component {
       },
       market_price: "market_price"
     });
-    console.log("goods-grid:", goods);
+    log.debug("goods-grid:", goods);
 
     return (
       <View className={`wgt wgt-grid ${base.padded ? "wgt__padded" : null}`}>
@@ -117,20 +131,11 @@ export default class WgtGoodsGrid extends Component {
           </View>
         )}
         <View className="wgt__body with-padding">
-          <View className="grid-goods out-padding grid-goods__type-grid">
+          <View className="grid-goods out-padding grid-goods__type-grid wgt-grid__goods-wrap">
             {goods.map((item, idx) => (
               <View className="goods-item-wrap" key={`goods-item-wrap__${idx}`}>
                 <SpGoodsItem info={item} />
               </View>
-              // const price = (
-              //   (item.act_price
-              //     ? item.act_price
-              //     : item.member_price
-              //     ? item.member_price
-              //     : item.price) / 100
-              // ).toFixed(2);
-              // const marketPrice = (item.market_price / 100).toFixed(2);
-              // return
             ))}
           </View>
         </View>

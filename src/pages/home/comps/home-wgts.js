@@ -1,4 +1,4 @@
-import Taro, { PureComponent } from "@tarojs/taro";
+import Taro, { PureComponent, Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
 import { Tracker } from "@/service";
 import {
@@ -20,7 +20,7 @@ import {
   WgtFloorImg
 } from "../wgts";
 
-export default class HomeWgts extends PureComponent {
+export default class HomeWgts extends Component {
   static defaultProps = {
     wgts: []
   };
