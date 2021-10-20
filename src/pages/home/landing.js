@@ -1,14 +1,3 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 说明
- * @FilePath: /unite-vshop/src/pages/home/landing.js
- * @Date: 2020-11-19 14:22:17
- * @LastEditors: PrendsMoi
- * @LastEditTime: 2021-03-26 13:59:19
- */
-
 import Taro, { Component } from '@tarojs/taro'
 import {View } from '@tarojs/components'
 import { connect } from "@tarojs/redux";

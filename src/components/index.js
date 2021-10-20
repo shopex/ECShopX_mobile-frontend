@@ -47,6 +47,8 @@ import SpGoodsItem from "./sp-goods-item";
 import SpPoint from "./sp-point";
 import SpPrice from "./sp-price";
 import SpDefault from "./sp-default";
+import SpSearch from "./sp-search";
+import SpFilterBar from "./sp-filter-bar";
 
 import SpImgPicker from "./img-picker";
 import SpCell from "./sp-cell";
@@ -70,6 +72,8 @@ export {
   SpPoint,
   SpPrice,
   SpDefault,
+  SpSearch,
+  SpFilterBar,
   SpImgPicker,
   SpCell,
   FloatMenuMeiQia

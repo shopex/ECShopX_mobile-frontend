@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-01-25 10:54:19
- * @LastEditTime: 2021-04-08 15:52:04
- * @LastEditors: PrendsMoi
- * @Description: In User Settings Edit
- * @FilePath: /unite-vshop/src/service/tracker/platform/youshu/index.js
- */
 import Taro from '@tarojs/taro'
 import sr from "sr-sdk-wxapp";
 import S from "@/spx";

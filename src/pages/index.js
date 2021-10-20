@@ -11,7 +11,8 @@ import {
   ScreenAd,
   SpStorePicker,
   SpScancode,
-  SpRecommend
+  SpRecommend,
+  SpSearch
 } from "@/components";
 import req from "@/api/req";
 import api from "@/api";
@@ -65,6 +66,7 @@ export default class Home extends Component {
       ...this.state,
       wgts: [],
       wgtsList: [],
+      searchWgt: null,
       likeList: [],
       isShowAddTip: false,
       curStore: {
@@ -336,36 +338,6 @@ export default class Home extends Component {
   getHomeSetting = async () => {
     const { distributor_id } = await entryLaunch.getCurrentStore();
     this.getWgts(distributor_id);
-
-    // const is_open_store_status = await entry.getStoreStatus();
-    // const {
-    //   is_open_recommend,
-    //   is_open_scan_qrcode,
-    //   is_open_wechatapp_location,
-    //   is_open_official_account
-    // } = Taro.getStorageSync("settingInfo");
-    // const isNeedLoacate = is_open_wechatapp_location == 1;
-    // const options = this.$router.params;
-    // options.isStore = is_open_store_status;
-    // const res = await entry.entryLaunch(options, isNeedLoacate);
-    // const { store } = res;
-
-    // if (!isArray(store)) {
-    //   this.setState(
-    //     {
-    //       curStore: store,
-    //       is_open_recommend,
-    //       is_open_scan_qrcode,
-    //       is_open_store_status,
-    //       is_open_wechatapp_location,
-    //       is_open_official_account
-    //     },
-    //     () => {
-    //       this.getWgts();
-    //       this.getAutoMatic();
-    //     }
-    //   );
-    // }
   };
 
   getLikeList = async () => {
@@ -382,7 +354,8 @@ export default class Home extends Component {
     } );
   
     this.setState({
-      wgts: config
+      wgts: config,
+      searchWgt: config.find(item => item.name == "search")
     });
   }
 
@@ -685,6 +658,7 @@ export default class Home extends Component {
       showAuto,
       featuredshop,
       wgts,
+      searchWgt,
       positionStatus,
       curStore,
       is_open_recommend,
@@ -720,14 +694,21 @@ export default class Home extends Component {
             ></AccountOfficial>
           )}
 
-        {(openStore || is_open_scan_qrcode) && (
-          <View className="header-block">
-            <View className="block-bd">{openStore && <SpStorePicker />}</View>
-            <View className="block-bd">
-              {is_open_scan_qrcode && <SpScancode />}
+        <View className="header-block">
+          {openStore && (
+            <View className="block-hd">
+              <SpStorePicker />
             </View>
+          )}
+          <View className="block-bd">
+            <SpSearch info={searchWgt} />
           </View>
-        )}
+          {is_open_scan_qrcode && (
+            <View className="block-fd">
+              <SpScancode />
+            </View>
+          )}
+        </View>
 
         <View
           className={classNames("wgts-wrap", {
@@ -763,7 +744,7 @@ export default class Home extends Component {
               onClick={this.handleClickShop.bind(this)}
             />
           )}
-          
+
           {advertList && advertList.length && !S.getAuthToken() && (
             <FloatMenuItem
               iconPrefixClass="icon"

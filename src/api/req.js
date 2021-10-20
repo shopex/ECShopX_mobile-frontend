@@ -3,6 +3,7 @@ import S from "@/spx";
 import qs from "qs";
 import { isGoodsShelves, isAlipay, log } from "@/utils";
 import api from "@/api";
+import { isWeb } from '@/utils/platforms';
 
 function addQuery(url, query) {
   return url + (url.indexOf("?") >= 0 ? "&" : "?") + query;
@@ -109,7 +110,7 @@ class API {
       header["Authorization"] = `Bearer ${token}`;
     }
 
-    if (process.env.TARO_ENV) {
+    if (!isWeb) {
       header["source"] = process.env.TARO_ENV;
     }
 

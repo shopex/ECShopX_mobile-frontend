@@ -1,13 +1,3 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 说明
- * @FilePath: /unite-vshop/src/pages/home/wgts/header-home.js
- * @Date: 2020-10-26 11:03:06
- * @LastEditors: Arvin
- * @LastEditTime: 2020-10-29 16:55:56
- */
 import Taro, { Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
 import { toggleTouchMove } from "@/utils/dom";

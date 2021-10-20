@@ -1,0 +1,76 @@
+import Taro, { Component } from "@tarojs/taro";
+import { View, Text } from "@tarojs/components";
+import { connect } from "@tarojs/redux";
+import { classNames } from "@/utils";
+
+import "./index.scss";
+
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
+export default class SpFilterBar extends Component {
+  static options = {
+    addGlobalClass: true
+  };
+
+  static defaultProps = {
+    sort: {},
+    current: 0,
+    list: []
+  };
+
+  constructor(props) {
+    super(props);
+
+    const { current } = props;
+    this.state = {
+      curIdx: current,
+      sortOrder: null
+    };
+  }
+
+  handleClickItem(idx) {
+    const item = this.props.list[idx];
+    let sortOrder = null;
+
+    if (item.sort) {
+      sortOrder =
+        idx === this.state.curIdx ? this.state.sortOrder * -1 : item.sort;
+    }
+
+    this.setState({
+      curIdx: idx,
+      sortOrder
+    });
+
+    this.props.onChange({
+      current: idx,
+      sort: sortOrder
+    });
+  }
+
+  render() {
+    const { list, className, custom, colors } = this.props;
+    const { sortOrder, curIdx } = this.state;
+
+    return (
+      <View className={classNames("sp-filter-bar", className)}>
+        {custom &&
+          list.map((item, idx) => (
+            <View
+              className={classNames("filter-bar__item", {
+                'active': curIdx === idx,
+                "sort-asc": item.sort && sortOrder > 0,
+                "sort-desc": item.sort && sortOrder < 0
+              })}
+              onClick={this.handleClickItem.bind(this, idx)}
+              key={`filter-bar-item__${idx}`}
+            >
+              <Text className="filter-bar__item-text">{item.title}</Text>
+            </View>
+          ))}
+        {this.props.children}
+      </View>
+    );
+  }
+}

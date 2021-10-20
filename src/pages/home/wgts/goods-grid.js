@@ -5,6 +5,7 @@ import { pickBy, classNames, log } from "@/utils";
 import { linkPage } from "./helper";
 import { Tracker } from "@/service";
 import { getDistributorId } from "@/utils/helper";
+import { CreateIntersectionObserver } from "@/utils/platform";
 import { withLoadMore } from "@/hocs";
 import "./goods-grid.scss";
 
@@ -36,6 +37,13 @@ export default class WgtGoodsGrid extends Component {
   };
 
   startTrack() {
+    const observer = new CreateIntersectionObserver({
+      el: ".wgt-grid__loader-more"
+    });
+    observer.on( 'on-observer', () => {
+      debugger
+    })
+
     this.endTrack();
     // const observer = Taro.createIntersectionObserver({
     //   observeAll: true
@@ -48,20 +56,21 @@ export default class WgtGoodsGrid extends Component {
     //     Tracker.dispatch("EXPOSE_SKU_COMPONENT", curGoods);
     //   }
     // });
-    const observer = new IntersectionObserver(
-      res => {
-        console.log("observer:", res);
-      },
-      {
-        // root: document.querySelector(".home-wgts"),
-        threshold: [0, 0.5, 1]
-      }
-    );
+    // const observer = new IntersectionObserver(
+    //   res => {
+    //     const { isIntersecting } = res[0]
+    //     if ( isIntersecting ) {
+          
+    //     }
+    //   },
+    //   {
+    //     // root: document.querySelector(".home-wgts"),
+    //     // threshold: [0, 0.8]
+    //   }
+    // );
 
-    observer.observe(document.querySelector(".wgt-grid__goods-wrap"));
-    
-    this.observe = observer;
-
+    // observer.observe(document.querySelector(".wgt-grid__loader-more"));
+    // this.observe = observer;
   }
 
   endTrack() {
@@ -138,6 +147,7 @@ export default class WgtGoodsGrid extends Component {
               </View>
             ))}
           </View>
+          <View className="wgt-grid__loader-more"></View>
         </View>
       </View>
     );

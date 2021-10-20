@@ -10,8 +10,7 @@ export default class SpScancode extends Component {
   render() {
     return (
       <View className={"sp-scan-code"}>
-        <Text className="iconfont icon-scan"></Text>
-        <Text className="scancode-txt">扫码</Text>
+        <Text className="iconfont icon-saoma-01"></Text>
       </View>
     );
   }
