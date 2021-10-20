@@ -24,3 +24,56 @@ export const transformPlatformUrl = url => {
   return url;
 };
 
+class CreateIntersectionObserver {
+  constructor(options) {
+    this.options = options;
+    this["on-observer"] = () => { };
+    this.init();
+  }
+
+  init() {
+    const { el } = this.options;
+    if (!el) {
+      throw new Error("createIntersectionObserver options el is null");
+    }
+    this.observer = new IntersectionObserver(
+      res => {
+        const { isIntersecting } = res[0];
+        if ( isIntersecting ) {
+          this["on-observer"]();
+        }
+      },
+      {
+        // root: document.querySelector(".home-wgts"),
+        // threshold: [0, 0.8]
+      }
+    );
+    this.observer.observe(document.querySelector(el));
+    return this
+  }
+
+  on(event, fn) {
+    this[event] = fn;
+  }
+}
+
+export { CreateIntersectionObserver }; 
+
+export const createIntersectionObserver = (el) => {
+  return new Promise( ( reslove, reject ) => {
+    const observer = new IntersectionObserver(
+      res => {
+        const { isIntersecting } = res[0];
+        if (isIntersecting) {
+        }
+      },
+      {
+        // root: document.querySelector(".home-wgts"),
+        // threshold: [0, 0.8]
+      }
+    );
+    observer.observe(document.querySelector(el));
+    this.observe = observer;
+  });
+  
+}

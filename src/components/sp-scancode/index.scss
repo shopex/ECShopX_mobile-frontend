@@ -1,6 +1,7 @@
 .sp-scan-code {
-  color: $color-secondary-text;
   .icon-scan {
-    margin-right: 6px;
+    margin: 0 6px;
+    font-size: 40px;
+    color: var(--color-primary);
   }
 }

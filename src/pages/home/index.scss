@@ -14,9 +14,16 @@
     height: 80px;
     background: #fff;
     z-index: 1000;
-    .block-bd {
+    .block-hd,
+    .block-fd {
       display: flex;
       align-items: center;
+    }
+    .block-bd {
+      flex: 1;
+      padding: 10px;
+      // display: flex;
+      // align-items: center;
     }
   }
 
@@ -29,9 +36,12 @@
     top: 0;
     right: 0;
     left: 0;
-    height: 80px;
+    height: 60px;
+    padding: 16px 24px;
     background: #fff;
     z-index: 1000;
+    display: flex;
+    align-items: center;
     .block-bd {
       display: flex;
       align-items: center;

@@ -7,7 +7,7 @@ import {
   BackToTop,
   Loading,
   TagsBar,
-  SpFilterBar,
+  FilterBar,
   SearchBar,
   GoodsItem,
   SpNote,
@@ -37,8 +37,7 @@ export default class List extends Component {
       filterList: [
         { title: "综合" },
         { title: "销量" },
-        { title: "价格" },
-        { title: "价格" }
+        { title: "价格", sort: -1 }
       ],
       query: null,
       list: [],
@@ -625,13 +624,85 @@ export default class List extends Component {
       <View className="page-goods-list">
         <SpNavBar title="商品列表" leftIconType="chevron-left" fixed />
 
-        <SpFilterBar
-          className="goods-list__tabs"
-          custom
-          current={curFilterIdx}
-          list={filterList}
-          onChange={this.handleFilterChange}
-        />
+        {isNewGift ? (
+          <View className="goods-list__toolbar1">
+            <View className="store" onClick={this.setStore.bind(this, true)}>
+              <View className="title">当前门店: </View>
+              <View className="name">{currentShop.name}</View>
+              <View
+                style={{ lineHeight: "88rpx" }}
+                className="icon-arrowRight item-icon-go"
+              ></View>
+            </View>
+            <View
+              style={{
+                display: `${
+                  !page.isLoading && !page.hasNext && !list.length
+                    ? "none"
+                    : "flex"
+                }`,
+                position: "relative"
+              }}
+            >
+              <FilterBar
+                className="goods-list__tabs1"
+                custom
+                current={curFilterIdx}
+                list={filterList}
+                onChange={this.handleFilterChange}
+              />
+              <View className="goods-list__search1">
+                <SearchBar
+                  _placeholder
+                  keyword={query ? query.keywords : ""}
+                  onFocus={this.handleSearchOn}
+                  onChange={this.handleSearchChange}
+                  onClear={this.handleSearchClear}
+                  onCancel={this.handleSearchOff}
+                  onConfirm={this.handleConfirm.bind(this)}
+                />
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View className="goods-list__toolbar">
+            <View
+              className={`goods-list__search ${
+                query && query.keywords && !isShowSearch ? "on-search" : null
+              }`}
+            >
+              <SearchBar
+                keyword={query ? query.keywords : ""}
+                onFocus={this.handleSearchOn}
+                onChange={this.handleSearchChange}
+                onClear={this.handleSearchClear}
+                onCancel={this.handleSearchOff}
+                onConfirm={this.handleConfirm.bind(this)}
+              />
+            </View>
+            {tagsList.length && (
+              <TagsBar
+                current={curTagId}
+                list={tagsList}
+                onChange={this.handleTagChange.bind(this)}
+              />
+            )}
+            <FilterBar
+              className="goods-list__tabs"
+              custom
+              current={curFilterIdx}
+              list={filterList}
+              onChange={this.handleFilterChange}
+            >
+              {/*
+            <View className='filter-bar__item' onClick={this.handleClickFilter.bind(this)}>
+              <View className='icon-filter'></View>
+              <Text>筛选</Text>
+            </View>
+          */}
+            </FilterBar>
+          </View>
+        )}
 
         <AtDrawer
           show={showDrawer}
