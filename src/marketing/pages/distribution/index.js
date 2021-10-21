@@ -1,11 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Navigator, Button } from '@tarojs/components'
+import { View, Text, Image, Navigator, Button, Canvas } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { NavBar, Loading } from "@/components";
-import api from '@/api'
-import { pickBy } from '@/utils'
+import { pickBy, canvasExp } from '@/utils'
+import { getDtidIdUrl } from "@/utils/helper"
 import userIcon from "@/assets/imgs/user-icon.png";
-import { Tracker } from "@/service";
+import req from '@/api/req'
+import api from '@/api'
+import S from '@/spx'
 import './index.scss'
 
 @connect(({ colors }) => ({
@@ -16,14 +18,14 @@ export default class DistributionDashboard extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      info: null
-      
+      info: null,
+      showPoster: false,
+      poster: null,
+      posterImgs: null
     }
   }
-  config = {
-    navigationBarTitleText: '推广管理'
-  }
-  componentDidMount () {   
+
+  componentDidMount () {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -32,49 +34,8 @@ export default class DistributionDashboard extends Component {
     this.fetch()
   }
 
-  handleOpenApply() {
-    Taro.showModal({
-      title: '申请开店',
-      content: '是否申请开启小店推广',
-      cancelText: '取消',
-      confirmText: '确定'
-    })
-      .then(res => {
-        if (res.confirm) {
-          api.distribution.update({ shop_status: 2 }).then(res => {
-            if (res.status) {
-              Taro.showToast({
-                title: '申请成功等待审核',
-                icon: 'success',
-                duration: 2000
-              })
-                .then(res => this.fetch())
-            }
-          })
-        }
-      })
-
-  }
-
-  onShareAppMessage() {
-  
-    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
-    const { username, userId } = Taro.getStorageSync('userinfo')
-    const { info } = this.state
- 
-    return {
-      title: extConfig.wxa_name,
-      imageUrl: info.shop_pic,
-      path: `/pages/index?uid=${userId}`
-    }
-  }
- 
-
-  handleClick = () => {
-    let { isOpenShop, shop_status } = this.state.info
-    Taro.navigateTo({
-      url: `/marketing/pages/distribution/qrcode?isOpenShop=${isOpenShop}&status=${shop_status === 1}`
-    })
+  config = {
+    navigationBarTitleText: '推广管理'
   }
 
   async fetch() {
@@ -109,16 +70,199 @@ export default class DistributionDashboard extends Component {
         })
     const res3 = await api.member.getIsHf()
     let isHf=res3.hfpay_version_status
-    const info = { username, avatar, ...base, ...pInfo, ...userInfo,isHf }
-   
+    const info = { username, avatar, ...base, ...pInfo, ...userInfo, isHf }
+    
+    this.setState({ info })
+  }
+
+  handleOpenApply() {
+    Taro.showModal({
+      title: '申请开店',
+      content: '是否申请开启小店推广',
+      cancelText: '取消',
+      confirmText: '确定'
+    }).then(res => {
+      if (res.confirm) {
+        api.distribution.update({ shop_status: 2 }).then(res => {
+          if (res.status) {
+            Taro.showToast({
+              title: '申请成功等待审核',
+              icon: 'success',
+              duration: 2000
+            })
+            .then(res => this.fetch())
+          }
+        })
+      }
+    })
+  }
+
+  onShareAppMessage() {
+    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const { userId } = Taro.getStorageSync('userinfo')
+    const { info } = this.state
+    return {
+      title: extConfig.wxa_name,
+      imageUrl: info.shop_pic,
+      path: `/pages/index?uid=${userId}`
+    }
+  }
+ 
+
+  handleClick = async () => {
+    const { posterImgs } = this.state
+    if (!posterImgs || !posterImgs.avatar || !posterImgs.code || !posterImgs.username) {
+      const imgs = await this.downloadPosterImg()
+      if (imgs && imgs.avatar && imgs.code && imgs.username) {
+        this.setState({
+          showPoster: true
+        })
+      }
+    } else {
+      this.setState({
+        showPoster: true
+      })
+    }
+  }
+
+  downloadPosterImg = async () => { // 处理海报信息以及太阳码
+    let { info: { username, isOpenShop, shop_status } } = this.state
+    let userinfo = Taro.getStorageSync('userinfo')
+    const { avatar, userId } = userinfo
+    if (S.getAuthToken() && (!userinfo || !userId)) {
+      const res = await api.member.memberInfo();
+      const userObj = {
+        avatar: res.memberInfo.avatar,
+        userId: res.memberInfo.user_id
+      }
+      Taro.setStorageSync('userinfo', userObj)
+      userinfo = userObj
+    }
+    const extConfig = Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+
+    shop_status = JSON.parse(shop_status === 1)
+    const url = isOpenShop && shop_status ? `marketing/pages/distribution/shop-home` : `pages/index`
+    const wxappCode = `${req.baseURL}promoter/qrcode.png?path=${url}&appid=${extConfig.appid}&company_id=${extConfig.company_id}&user_id=${userId}`
+
+    let avatarImg
+    if (avatar) { // 头像
+      avatarImg = await Taro.getImageInfo({src: avatar})
+    }
+    const bck = await Taro.getImageInfo({src: `${APP_IMAGE_CDN}/distribution_bck.png`}) // 背景图片
+    const codeImg = await Taro.getImageInfo({src: wxappCode}) // 二维码
+    if (avatarImg) {
+      const posterImgs = {
+        avatar: avatarImg ? avatarImg.path : null,
+        code: codeImg.path,
+        bck: bck.path,
+        username
+      }
+      await this.setState({
+        posterImgs
+      }, () => {
+        this.drawImage()
+      })
+      
+      return posterImgs
+    } else {
+      return null
+    }
+  }
+
+  drawImage = () => { // 分享海报
+    const { posterImgs } = this.state
+    if (!posterImgs) return
+    const { avatar, code, bck, username } = posterImgs
+    const ctx = Taro.createCanvasContext('myCanvas')
+
+    canvasExp.roundRect(ctx, "#fff", 0, 0, 375, 640, 5)
+    canvasExp.drawImageFill(ctx, bck, 0, 0, 375, 640)
+    canvasExp.textFill(ctx, username, 180, 50, 18, "#222")
+    canvasExp.drawImageFill(ctx, code, 100, 325, 180, 180)
+    canvasExp.imgCircleClip(ctx, avatar, 100, 15, 65, 65)
+    ctx.draw(true, () => {
+      Taro.canvasToTempFilePath({
+        x: 0,
+        y: 0,
+        canvasId: 'myCanvas'
+      }).then(res => {
+        const shareImg = res.tempFilePath;
+        this.setState({
+          poster: shareImg
+        },()=>{
+          this.setState({
+            showPoster:true
+          })
+        })
+      })
+    })
+  }
+
+  /** 点击保存按钮 */
+  handleSavePoster = () => {
+    const { poster } = this.state
+    Taro.getSetting().then(res => {
+      if (!res.authSetting['scope.writePhotosAlbum']) {
+        Taro.authorize({
+          scope: 'scope.writePhotosAlbum',
+          success: async () => {
+            await this.savePoster(poster)
+          },
+          fail: () => {
+            Taro.showModal({
+              title: '提示',
+              content: '请打开保存到相册权限',
+              success: async resConfirm => {
+                if (resConfirm.confirm) {
+                  await Taro.openSetting()
+                  const setting = await Taro.getSetting();
+                  if (setting.authSetting["scope.writePhotosAlbum"]) {
+                    await this.savePoster(poster)
+                  } else {
+                    Taro.showToast({ title: "保存失败", icon: "none" })
+                  }
+                }
+              }
+            })
+          }
+        })
+      } else {
+        this.savePoster(poster)
+      }
+    })
+  }
+
+  /** 保存图片 */
+  savePoster = (poster) => {
+    Taro.saveImageToPhotosAlbum({
+      filePath: poster
+    }).then(() => {
+      Taro.showToast({
+        icon:'none',
+        title: '保存成功'
+      })
+      this.setState({
+        showPoster: false
+      })
+    })
+    .catch((res) => {
+      console.log(res)
+      Taro.showToast({
+        icon:'none',
+        title: '保存失败'
+      })
+    })
+  }
+
+  handleHidePoster = () => {
     this.setState({
-      info
+      showPoster: false
     })
   }
 
   render() {
     const { colors } = this.props
-    const { info } = this.state
+    const { info, showPoster, poster } = this.state
     if ( !info ) {
       return <Loading />
     }
@@ -293,7 +437,23 @@ export default class DistributionDashboard extends Component {
             </Navigator>
           )}
         </View>
+        {showPoster && (
+          <View className='poster-modal'>
+            <Image className='poster' src={poster} mode='aspectFit' />
+            <View
+              className='icon-download poster-save-btn'
+              onClick={this.handleSavePoster.bind(this)}
+            >
+              保存图片
+            </View>
+            <View
+              className='icon-close poster-close-btn'
+              onClick={this.handleHidePoster.bind(this)}
+            ></View>
+          </View>
+        )}
+        <Canvas className='canvas' canvas-id='myCanvas'></Canvas>
       </View>
-    );
+    )
   }
 }
