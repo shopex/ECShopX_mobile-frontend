@@ -30,6 +30,7 @@ export { default as RecommendItem } from './recommend-item'
 
 export { default as AddressChoose } from './address/choose-address'
 export { default as CouponItem } from './coupon-item'
+export { default as CouponModal } from './coupon-modal'
 export { default as TimePicker } from './time-picker/index.js'
 
 
