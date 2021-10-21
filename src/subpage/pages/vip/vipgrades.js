@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View, Image, Button, Text, ScrollView } from "@tarojs/components";
-import { Price, NavBar, SpCell } from "@/components";
+import { Price, NavBar, SpCell, CouponModal } from "@/components";
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from "taro-ui";
 import api from "@/api";
@@ -10,9 +10,7 @@ import PaymentPicker from "@/pages/cart/comps/payment-picker";
 import { customName } from "@/utils/point";
 import userIcon from "@/assets/imgs/user-icon.png"
 
-import FloatModal from './com'
-
-import "./vipgrades.scss";
+import "./vipgrades.scss"
 
 @connect(({ colors }) => ({
   colors: colors.current
@@ -37,7 +35,8 @@ export default class VipIndex extends Component {
       payType: "",
       isPaymentOpend: false,
       visible: false,
-      couponList: []
+      couponList: [],
+      couponModalList: []
     }
   }
 
@@ -86,6 +85,79 @@ export default class VipIndex extends Component {
 
     console.log(res, list, '----')
     this.setState({ couponList: list })
+  }
+
+
+  fetchCouponCardList () {
+    const { all_card_list } = api.vip.getShowCardPackage({ type: 'vip_grade' })
+    console.log(all_card_list, '-all_card_list-')
+    this.setState({ couponModalList: [
+      {
+        status: 'status',
+        reduce_cost: '120',
+        least_cost: '10000',
+        begin_date: formatTime(1634572800 * 1000),
+        end_date: formatTime(1638201600 * 1000),
+        fixed_term: null,
+        card_type: 'cash',
+        tagClass: 'tagClass',
+        title: '三联折扣活动',
+        discount: '10',
+        get_limit: '1',
+        user_get_num: 0,
+        quantity: '100',
+        get_num: 2,
+        card_id: '841',
+        description:'三联折扣活动description',
+        use_bound:'0',
+        send_begin_time: null,
+        send_end_time: null
+      },
+      {
+        status: 'status',
+        reduce_cost: '0',
+        least_cost: '10000',
+        begin_date: formatTime(1634572800 * 1000),
+        end_date: formatTime(1638201600 * 1000),
+        fixed_term: null,
+        card_type: 'new_gift',
+        tagClass: 'tagClass',
+        title: '三联折扣活动',
+        discount: '10',
+        get_limit: '1',
+        user_get_num: 0,
+        quantity: '100',
+        get_num: 2,
+        card_id: '841',
+        description:'三联折扣活动description',
+        use_bound:'0',
+        send_begin_time: null,
+        send_end_time: null
+      },
+      {
+        status: 'status',
+        reduce_cost: '0',
+        least_cost: '10000',
+        begin_date: formatTime(1634572800 * 1000),
+        end_date: formatTime(1638201600 * 1000),
+        fixed_term: null,
+        card_type: 'discount',
+        tagClass: 'tagClass',
+        title: '三联折扣活动',
+        discount: '10',
+        get_limit: '1',
+        user_get_num: 0,
+        quantity: '100',
+        get_num: 2,
+        card_id: '841',
+        description:'三联折扣活动description',
+        use_bound:'0',
+        send_begin_time: null,
+        send_end_time: null
+      }
+    ] }, () => {
+      return true
+    })
   }
 
   handleClickTab = idx => {
@@ -142,9 +214,11 @@ export default class VipIndex extends Component {
           content: "支付成功",
           showCancel: false,
           success: function(res) {
-            console.log("success");
+            console.log("success")
           }
-        });
+        })
+        // this.fetchCouponCardList()
+        // this.handleChange(true)
       },
       fail: function(res) {
         wx.showModal({
@@ -161,16 +235,19 @@ export default class VipIndex extends Component {
       userVipInfo
     });
   }
+
   handlePaymentShow = () => {
     this.setState({
       isPaymentOpend: true
-    });
-  };
+    })
+  }
+
   handleLayoutClose = () => {
     this.setState({
       isPaymentOpend: false
-    });
-  };
+    })
+  }
+
   handlePaymentChange = async payType => {
     this.setState(
       {
@@ -178,7 +255,7 @@ export default class VipIndex extends Component {
         isPaymentOpend: false
       },
       () => {}
-    );
+    )
   }
 
   handleChange = (visible) => {
@@ -187,7 +264,7 @@ export default class VipIndex extends Component {
 
   render() {
     const { colors } = this.props;
-    const {
+    let {
       userInfo,
       list,
       cur,
@@ -198,9 +275,10 @@ export default class VipIndex extends Component {
       payType,
       isPaymentOpend,
       visible,
-      couponList
+      couponList,
+      couponModalList
     } = this.state;
-    let arrListcouponList = [
+    couponList = [
       {
         status: 'status',
         reduce_cost: '120',
@@ -349,14 +427,14 @@ export default class VipIndex extends Component {
         send_end_time: null
       }
     ]
-    console.log(arrListcouponList, 'arrListcouponList')
+    console.log(couponList, couponModalList, 'couponList')
     const payTypeText = {
       point: customName("积分支付"),
       wxpay: process.env.TARO_ENV === "weapp" ? "微信支付" : "现金支付",
       deposit: "余额支付",
       delivery: "货到付款",
       hfpay: "微信支付"
-    };
+    }
     return (
       <View className='vipgrades'>
         <NavBar title='会员购买' leftIconType='chevron-left' fixed='true' />
@@ -449,20 +527,22 @@ export default class VipIndex extends Component {
             <Text>{payTypeText[payType]}</Text>
           </SpCell>}
           <View className='pay-btn' onClick={this.handleCharge}>
-          立即支付
+            立即支付
           </View>
         </View>
-        <View  onClick={this.handleChange.bind(this, true)} className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
+        <View
+          onClick={this.handleChange.bind(this, true)} className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}
+        >
           <Text className='content-v-padded'>会员专享券包</Text>
-          <Text className='content-v-subtitle'>优惠券共计{arrListcouponList[0].quantity}张</Text>
+          <Text className='content-v-subtitle'>优惠券共计{couponList[0].quantity}张</Text>
           <ScrollView scrollX className='scroll-box'>
             {
-              arrListcouponList.map(items => (
-                <View key={items.card_id}>
+              couponList.map(items => (
+                <View className='coupon' key={items.card_id}>
+                  <Image className='img' src={`${APP_IMAGE_CDN}/coupon_bck.png`} />
                   {
                     items.card_type === 'cash' &&
-                    <View className='coupon'>
-                      <Image className='img' src='/assets/imgs/coupon_bck.png' />
+                    <View>
                       <View className='coupon-price'>
                         <Price primary value={items.reduce_cost / 100} noDecimal />
                       </View>
@@ -473,8 +553,7 @@ export default class VipIndex extends Component {
                   }
                   {
                     (items.card_type === 'gift' || items.card_type === 'new_gift') &&
-                    <View className='coupon'>
-                      <Image className='img' src='/assets/imgs/coupon_bck.png' />
+                    <View>
                       <View className='coupon-price'>
                         <View className='coupon-font'>兑换券</View>
                       </View>
@@ -485,8 +564,7 @@ export default class VipIndex extends Component {
                   }
                   {
                     items.card_type === 'discount' &&
-                    <View className='coupon'>
-                      <Image className='img' src='/assets/imgs/coupon_bck.png' />
+                    <View>
                       <View className='coupon-price'>
                         <Text className='coupon-font'>{(100 - items.discount) / 10}</Text>
                         <Text className='coupon-size'>折</Text>
@@ -513,7 +591,7 @@ export default class VipIndex extends Component {
             </View>
           </View>
         </View>
-        <FloatModal visible={visible} list={couponList} onChange={this.handleChange} />
+        <CouponModal visible={visible} list={couponModalList} onChange={this.handleChange} />
       </View>
     )
   }
