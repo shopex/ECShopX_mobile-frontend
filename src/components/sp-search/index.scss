@@ -1,11 +1,12 @@
 .sp-search {
   display: flex;
   align-items: center;
-  height: 40px;
+  height: 60px;
   background: #F5F5F5;
   border-radius: 30px;
   padding: 10px 20px;
-  .icon-search1 {
+  box-sizing: border-box;
+  .icon-sousuo-01 {
     font-size: 38px;
     color: var(--color-primary);
   }

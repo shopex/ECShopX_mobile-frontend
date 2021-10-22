@@ -679,7 +679,8 @@ export default class Home extends Component {
     // 否是fixed
     const isFixed = positionStatus;
 
-    const { is_open_scan_qrcode } = Taro.getStorageSync("settingInfo");
+    const { is_open_scan_qrcode } = Taro.getStorageSync( "settingInfo" );
+    console.log(Taro.getStorageSync( "settingInfo" ))
     const { openStore } = Taro.getStorageSync("otherSetting");
     return (
       <View className="page-index" style={styleNames(getThemeStyle())}>
@@ -703,7 +704,8 @@ export default class Home extends Component {
           <View className="block-bd">
             <SpSearch info={searchWgt} />
           </View>
-          {is_open_scan_qrcode && (
+          {is_open_scan_qrcode}
+          {is_open_scan_qrcode == 1 && (
             <View className="block-fd">
               <SpScancode />
             </View>
