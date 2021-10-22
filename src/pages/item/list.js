@@ -14,11 +14,20 @@ import {
   SpSearchBar,
   SpNote,
   SpNavBar,
+  SpTagBar,
   TabBar
 } from "@/components";
 import api from "@/api";
 import { Tracker } from "@/service";
-import { pickBy, classNames, isWeixin, isWeb, getBrowserEnv } from "@/utils";
+import {
+  pickBy,
+  classNames,
+  isWeixin,
+  isWeb,
+  getBrowserEnv,
+  styleNames,
+  getThemeStyle
+} from "@/utils";
 import entry from "../../utils/entry";
 
 import "./list.scss";
@@ -48,8 +57,8 @@ export default class List extends Component {
       evenList: [],
       tagsList: [
         {
-          id: 0,
-          title: "全部"
+          tag_id: 0,
+          tag_name: "全部"
         }
       ],
       paramsList: [],
@@ -215,12 +224,10 @@ export default class List extends Component {
       card_id
     };
 
-    if (process.env.APP_PLATFORM === "standard") {
-      if (isNewGift) {
-        query.distributor_id = distributor_id;
-      } else {
-        query.distributor_id = isOpenStore ? store_id : distributor_id;
-      }
+    if (isNewGift) {
+      query.distributor_id = distributor_id;
+    } else {
+      query.distributor_id = isOpenStore ? store_id : distributor_id;
     }
 
     if (cardId) {
@@ -233,41 +240,7 @@ export default class List extends Component {
       item_params_list = [],
       select_tags_list = []
     } = await api.item.search(query);
-    const { favs } = this.props;
 
-    // item_params_list.map(item => {
-    //   if (selectParams.length < 4) {
-    //     selectParams.push({
-    //       attribute_id: item.attribute_id,
-    //       attribute_value_id: "all"
-    //     });
-    //   }
-    //   item.attribute_values.unshift({
-    //     attribute_value_id: "all",
-    //     attribute_value_name: "全部",
-    //     isChooseParams: true
-    //   });
-    // });
-
-    // const nList = pickBy(list, {
-    //   img: ({ pics }) =>
-    //     pics ? (typeof pics !== "string" ? pics[0] : JSON.parse(pics)[0]) : "",
-    //   item_id: "item_id",
-    //   title: ({ itemName, item_name }) => (itemName ? itemName : item_name),
-    //   desc: "brief",
-    //   distributor_id: "distributor_id",
-    //   distributor_info: "distributor_info",
-    //   promotion_activity_tag: "promotion_activity",
-    //   origincountry_name: "origincountry_name",
-    //   origincountry_img_url: "origincountry_img_url",
-    //   type: "type",
-    //   price: ({ price }) => (price / 100).toFixed(2),
-    //   member_price: ({ member_price }) => (member_price / 100).toFixed(2),
-    //   market_price: ({ market_price }) => (market_price / 100).toFixed(2),
-    //   is_fav: ({ item_id }) => Boolean(favs[item_id]),
-    //   store: "store"
-    // } );
-    
     const nList = pickBy(list, {
       origincountry_img_url: {
         key: "origincountry_img_url",
@@ -292,21 +265,11 @@ export default class List extends Component {
       market_price: "market_price"
     });
 
-    // let odd = [],
-    //   even = [];
-    // nList.map((item, idx) => {
-    //   if (idx % 2 == 0) {
-    //     odd.push(item);
-    //   } else {
-    //     even.push(item);
-    //   }
-    // });
-
     this.setState(
       {
         list: [...this.state.list, ...nList],
-        showDrawer: false,
-        query
+        query,
+        tagsList: [...this.state.tagsList, ...select_tags_list]
       },
       () => {
         if (isWeixin) {
@@ -314,26 +277,6 @@ export default class List extends Component {
         }
       }
     );
-
-    // if (this.firstStatus) {
-    //   this.setState({
-    //     paramsList: item_params_list,
-    //     selectParams
-    //   });
-    //   this.firstStatus = false;
-    // }
-
-    // if (tagsList.length === 0) {
-    //   let tags = select_tags_list;
-    //   tags.unshift({
-    //     tag_id: 0,
-    //     tag_name: "全部"
-    //   });
-    //   this.setState({
-    //     //curTagId: 0,
-    //     tagsList: tags
-    //   });
-    // }
 
     return {
       total
@@ -600,35 +543,24 @@ export default class List extends Component {
       couponTab
     } = this.state;
     const { isTabBar = "guide", isNewGift } = this.$router.params;
-
+    const leftList = list.filter( ( item, index ) => {
+      if ( index % 2 == 1 ) {
+        return item
+      }
+    });
+    const rightList = list.filter((item, index) => {
+      if (index % 2 == 0) {
+        return item;
+      }
+    });
     return (
       <View
         className={classNames("page-goods-list", {
           "has-navbar": isWeb && !getBrowserEnv().weixin
         })}
+        style={styleNames(getThemeStyle())}
       >
         <SpNavBar title="商品列表" leftIconType="chevron-left" fixed />
-
-        <View className="search-wrap">
-          <View></View>
-          <SpSearchBar />
-        </View>
-
-        <View className="tag-block">
-          <View className="tag-container"></View>
-          <View className="filter-btn">
-            <Text className="filter-text">刷选</Text>
-            <Text className="iconfont icon-shaixuan-01"></Text>
-          </View>
-        </View>
-
-        <SpFilterBar
-          className="goods-tabs"
-          custom
-          current={curFilterIdx}
-          list={filterList}
-          onChange={this.handleFilterChange}
-        />
 
         <ScrollView
           className={classNames("scroll-view")}
@@ -638,12 +570,44 @@ export default class List extends Component {
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
         >
+          <View className="search-wrap">
+            <View></View>
+            <SpSearchBar />
+          </View>
+
+          <View className="tag-block">
+            <View className="tag-container">
+              <SpTagBar list={tagsList} />
+            </View>
+            <View className="filter-btn">
+              <Text className="filter-text">刷选</Text>
+              <Text className="iconfont icon-shaixuan-01"></Text>
+            </View>
+          </View>
+
+          <SpFilterBar
+            className="goods-tabs"
+            custom
+            current={curFilterIdx}
+            list={filterList}
+            onChange={this.handleFilterChange}
+          />
+
           <View className="goods-list">
-            {list.map(item => (
-              <View className="goods-list-wrap" key={item.item_id}>
-                <SpGoodsItem info={item} />
-              </View>
-            ))}
+            <View className="left-container">
+              {leftList.map(item => (
+                <View className="goods-list-wrap" key={item.item_id}>
+                  <SpGoodsItem info={item} />
+                </View>
+              ))}
+            </View>
+            <View className="right-container">
+              {rightList.map(item => (
+                <View className="goods-list-wrap" key={item.item_id}>
+                  <SpGoodsItem info={item} />
+                </View>
+              ))}
+            </View>
           </View>
 
           {/* {page.isLoading ? <Loading>正在加载...</Loading> : null}

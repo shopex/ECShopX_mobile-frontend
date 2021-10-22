@@ -1,19 +1,15 @@
-@import "../../style/imports";
-
-.tags {
+.sp-tag-bar {
   width: 100%;
   white-space: nowrap;
   background: #fff;
-  border-bottom: 1PX solid #efefef;
   .tag-item {
     display: inline-block;
-    padding: 0 20px;
-    height: $tags-height;
-    line-height: $tags-height;
     font-size: 26px;
-    color: #666;
+    color: $color-hint-text ;
+    margin: 0 10px;
     &.active {
-      color: $color-link;
+      color: $color-primary-text;
+      font-size: 30px;
       font-weight: 600;
     }
   }

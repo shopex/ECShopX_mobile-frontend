@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { classNames, navigateTo } from '@/utils'
-import SpLoading from '../sw-loading'
-import SpNote from '../sw-note'
+import SpLoading from '../sp-loading'
+import SpNote from '../sp-note'
 
 import './index.scss'
 
@@ -26,15 +26,15 @@ export default class SpPageNote extends Component {
       return null
     }
     return (
-      <View className={classNames('sp-page-note', className)}>
-        {page.isLoading && <SwLoading>正在加载...</SwLoading>}
+      <View className={classNames("sp-page-note", className)}>
+        {page.isLoading && <SpLoading>正在加载...</SpLoading>}
         {page.done && page.total == 0 && (
-          <SwNote icon title='没有查询到数据' button btnText='去逛逛' to={to} />
+          <SpNote icon title="没有查询到数据" button btnText="去逛逛" to={to} />
         )}
         {!page.isLoading && !page.hasNext && page.total > 0 && (
-          <SwNote className='no-more' title='--没有更多数据了--'></SwNote>
+          <SpNote className="no-more" title="--没有更多数据了--"></SpNote>
         )}
       </View>
-    )
+    );
   }
 }

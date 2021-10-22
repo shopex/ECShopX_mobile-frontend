@@ -3,6 +3,7 @@
   .search-wrap {
     padding: 16px 24px;
     background: #fff;
+
   }
 
   .goods-tabs {
@@ -28,30 +29,36 @@
       flex: 1;
     }
     .filter-btn {
+      display: flex;
+      align-items: center;
       .filter-text {
         color: var(--color-primary);
       }
       .icon-shaixuan-01 {
         color: var(--color-primary);
+        font-size: 32px;
+        position: relative;
+        top: 2px;
       }
     }
   }
 
   &.has-navbar {
     .scroll-view {
-      @include page-scroll($navigate-height-h5 + 260px, 0);
+      @include page-scroll($navigate-height-h5, 0);
     }
   }
 
   .scroll-view {
-    @include page-scroll(260px, 0);
+    @include page-scroll(0, 0);
   }
 
   .goods-list {
-    column-count: 2;
-    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
     .goods-list-wrap {
-      page-break-inside: avoid;
+      // page-break-inside: avoid;
       width: 345px;
       margin-bottom: 28px;
       box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.1);

@@ -141,7 +141,9 @@ class App extends Component {
       Taro.setStorageSync("cartType", "normal");
     }
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.init();
+  }
 
   system = Taro.getSystemInfoSync();
 
@@ -375,7 +377,6 @@ class App extends Component {
   };
 
   componentDidShow(options) {
-    this.init();
     const { referrerInfo } = options || {};
     if (referrerInfo) {
       console.log(referrerInfo);
@@ -487,14 +488,7 @@ class App extends Component {
   }
 
   async getSystemConfig() {
-    const [appConfig, colorConfig, pointConfig] = await Promise.all([
-      api.shop.getAppConfig(),
-      api.shop.getPageParamsConfig({
-        page_name: "color_style"
-      } ),
-      api.pointitem.getPointSetting()
-    ] );
-    
+    const appConfig = await api.shop.getAppConfig()
     const {
       tab_bar,
       is_open_recommend,
@@ -502,6 +496,20 @@ class App extends Component {
       is_open_wechatapp_location,
       is_open_official_account
     } = appConfig;
+    Taro.setStorageSync("settingInfo", {
+      is_open_recommend, // 猜你喜欢
+      is_open_scan_qrcode, // 扫码
+      is_open_wechatapp_location, // 定位
+      is_open_official_account // 公众号组件
+    } );
+    
+    const [colorConfig, pointConfig] = await Promise.all([
+      api.shop.getPageParamsConfig({
+        page_name: "color_style"
+      } ),
+      api.pointitem.getPointSetting()
+    ] );
+
     let tabbar = null;
     try {
       tabbar = JSON.parse(tab_bar);
@@ -513,12 +521,7 @@ class App extends Component {
       payload: tabbar || DEFAULT_TABS
     });
 
-    Taro.setStorageSync("settingInfo", {
-      is_open_recommend, // 猜你喜欢
-      is_open_scan_qrcode, // 扫码
-      is_open_wechatapp_location, // 定位
-      is_open_official_account // 公众号组件
-    } );
+    
     
     const { colorPrimary, colorMarketing, colorAccent } = DEFAULT_THEME;
     const defaultColors = {

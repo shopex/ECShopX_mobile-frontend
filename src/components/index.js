@@ -14,7 +14,7 @@ export { default as SpCheckbox } from "./checkbox";
 
 export { default as SpToast } from "./toast";
 export { default as SpIconMenu } from "./icon-menu";
-export { default as SpNote } from "./note";
+
 export { default as SpHtmlContent } from "./html-content";
 export { default as RecommendItem } from "./recommend-item";
 
@@ -40,6 +40,7 @@ import SpStorePicker from "./sp-store-picker";
 import SpFloatPrivacy from "./sp-float-privacy";
 import SearchBar from "./search-bar";
 import SpNavBar from "./sp-nav-bar";
+import SpNote from "./sp-note";
 import SpPageNote from "./sp-pagenote";
 import SpTimer from "./sp-timer";
 import SpRecommend from "./sp-recommend";
@@ -50,6 +51,8 @@ import SpDefault from "./sp-default";
 import SpSearch from "./sp-search";
 import SpSearchBar from "./sp-search-bar";
 import SpFilterBar from "./sp-filter-bar";
+import SpTagBar from "./sp-tag-bar";
+
 
 import SpImgPicker from "./img-picker";
 import SpCell from "./sp-cell";
@@ -66,6 +69,7 @@ export {
   SpFloatPrivacy,
   SearchBar,
   SpNavBar,
+  SpNote,
   SpPageNote,
   SpTimer,
   SpRecommend,
@@ -76,6 +80,7 @@ export {
   SpSearch,
   SpSearchBar,
   SpFilterBar,
+  SpTagBar,
   SpImgPicker,
   SpCell,
   FloatMenuMeiQia

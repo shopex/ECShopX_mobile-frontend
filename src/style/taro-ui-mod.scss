@@ -120,15 +120,35 @@
   }
 }
 
-.at-search-bar__action {
-  background-color: $color-search-cancel-bg;
-  color: $color-primary-text;
-  margin-left: 0;
+.at-search-bar {
+  height: 60px;
+  padding: 0;
+  &__input-cnt {
+    background-color: #f5f5f5;
+  }
+  &__placeholder-wrap {
+    justify-content: flex-start;
+  }
+  &__action {
+    background-color: transparent;
+    color: #333;
+  }
+  .at-icon-search {
+    color: var(--color-primary);
+  }
+  &:after {
+    border-color: transparent;
+  }
 }
+// .at-search-bar__action {
+//   background-color: $color-search-cancel-bg;
+//   color: $color-primary-text;
+//   margin-left: 0;
+// }
 
-.at-search-bar::after {
-  border: 0;
-}
+// .at-search-bar::after {
+//   border: 0;
+// }
 
 .taro__toast {
   font-size: $font-size !important;
@@ -182,55 +202,55 @@
 //   }
 // }
 
-.search-input__bar.at-search-bar {
-  padding: 0 35px 0 30px !important;
-  height: 65px;
+// .search-input__bar.at-search-bar {
+//   padding: 0 35px 0 30px !important;
+//   height: 65px;
 
-  .at-search-bar__input-cnt {
-    border-radius: 0;
-    height: 65px;
-    line-height: 65px;
-    background-color: #eff0f0;
-  }
+//   .at-search-bar__input-cnt {
+//     border-radius: 0;
+//     height: 65px;
+//     line-height: 65px;
+//     background-color: #f5f5f5;
+//   }
 
-  .at-search-bar__placeholder-wrap {
-    justify-content: flex-start;
-    padding-left: 23px;
-  }
+//   .at-search-bar__placeholder-wrap {
+//     justify-content: flex-start;
+//     padding-left: 23px;
+//   }
 
-  .at-search-bar__placeholder-wrap .at-icon {
-    font-size: 17PX;
-  }
-}
+//   .at-search-bar__placeholder-wrap .at-icon {
+//     font-size: 17PX;
+//   }
+// }
 
-.home-search__bar.at-search-bar {
-  position: relative;
-  padding: 20px 0 20px 20px !important;
-  height: 54px;
-  z-index: 99;
-  background: transparent !important;
+// .home-search__bar.at-search-bar {
+//   position: relative;
+//   padding: 20px 0 20px 20px !important;
+//   height: 54px;
+//   z-index: 99;
+//   background: transparent !important;
 
-  .at-search-bar__input-cnt {
-    height: 54px;
-    line-height: 54px;
-  }
+//   .at-search-bar__input-cnt {
+//     height: 54px;
+//     line-height: 54px;
+//   }
 
-  .at-search-bar__placeholder-wrap {
-    justify-content: flex-start;
-    align-items: center;
-    padding-left: 23px;
-    height: 54px;
-  }
+//   .at-search-bar__placeholder-wrap {
+//     justify-content: flex-start;
+//     align-items: center;
+//     padding-left: 23px;
+//     height: 54px;
+//   }
 
-  .at-search-bar__placeholder-wrap .at-icon {
-    font-size: 17PX;
-  }
+//   .at-search-bar__placeholder-wrap .at-icon {
+//     font-size: 17PX;
+//   }
 
-  .at-search-bar__input {
-    height: 54px;
-    padding: 0 30PX;
-  }
-}
+//   .at-search-bar__input {
+//     height: 54px;
+//     padding: 0 30PX;
+//   }
+// }
 
 .at-button {
   &--secondary {
