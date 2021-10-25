@@ -1,5 +1,5 @@
 import Taro, { Component } from "@tarojs/taro";
-import { View, Image, Button, Text, ScrollView } from "@tarojs/components";
+import { View, Image, Text, ScrollView } from "@tarojs/components";
 import { Price, NavBar, SpCell, CouponModal } from "@/components";
 import { connect } from "@tarojs/redux";
 import { AtTabs, AtTabsPane } from "taro-ui";
@@ -35,8 +35,10 @@ export default class VipIndex extends Component {
       payType: "",
       isPaymentOpend: false,
       visible: false,
-      couponList: [],
-      couponModalList: []
+      total_count: 0,
+      couponList: [], // 待领取券包列表
+      all_card_list: [], // 放入券包弹框列表
+      receive_record_list: []
     }
   }
 
@@ -54,123 +56,84 @@ export default class VipIndex extends Component {
       () => {
         this.fetchInfo();
         this.fetchUserVipInfo();
-        this.fetchCouponList()
       }
     );
   }
 
   async fetchInfo() {
-    const { cur, list } = await api.vip.getList();
-    const { grade_name } = this.$router.params;
+    const { cur, list } = await api.vip.getList()
+    const { grade_name: name } = this.$router.params;
 
     const tabList = pickBy(list, {
-      title: ({ grade_name }) => grade_name
+      title: ({ grade_name }) => grade_name,
+      is_default: ({ is_default }) => is_default,
     });
 
-    const curTabIdx = tabList.findIndex(item => item.title === grade_name);
+    const curTabIdx = tabList.findIndex(item => item.title === name)
 
     this.setState({
       tabList,
       cur,
       list,
       curTabIdx: curTabIdx === -1 ? 0 : curTabIdx
-    });
-  }
-
-  async fetchCouponList () {
-    let list = []
-    this.setState({ couponList: list })
-    // const [one, two] = await Promise.all([api.member.memberInfo(), api.vip.getBindCardList({ type: 'vip_grade', grade_id: 12 })])
-    const res = await api.vip.getBindCardList({ type: 'vip_grade', grade_id: 7 })
-
-    console.log(res, list, '----')
-    this.setState({ couponList: list })
-  }
-
-
-  fetchCouponCardList () {
-    const { all_card_list } = api.vip.getShowCardPackage({ type: 'vip_grade' })
-    console.log(all_card_list, '-all_card_list-')
-    this.setState({ couponModalList: [
-      {
-        status: 'status',
-        reduce_cost: '120',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'cash',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'new_gift',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'discount',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      }
-    ] }, () => {
-      return true
+    }, () => {
+      this.onGetsBindCardList(list)
     })
   }
 
+  async onGetsBindCardList (item) {
+    const { curTabIdx } = this.state
+    await api.vip.getBindCardList({ type: 'vip_grade', grade_id: item[curTabIdx].vip_grade_id })
+    .then((res) => {
+      const { list, total_count } = res
+      this.setState({ couponList: list, total_count })
+    })
+
+  }
+
+  async fetchCouponCardList () {
+    api.vip.getShowCardPackage({ receive_type: 'vip_grade' })
+    .then(({ all_card_list, receive_record_list }) => {
+      if (all_card_list && all_card_list.length > 0) {
+        this.setState({ visible: true })
+      }
+      this.setState({ all_card_list, receive_record_list })
+    })
+  }
+
+  handleCouponChange = (visible, type) => {
+    if (type === 'jump') {
+      Taro.navigateTo({
+        url: `/marketing/pages/member/coupon`
+      })
+    }
+    if (!visible) {
+      this.fetchgetCouponList()
+    }
+    this.setState({ visible })
+  }
+
+  async fetchgetCouponList () {
+    const { receive_record_list } = this.state
+    let receive_ids = receive_record_list.map(el => el.package_id)
+
+    api.vip.getConfirmPackageShow({ receive_ids })
+  }
+
   handleClickTab = idx => {
+    const { list } = this.state
     this.setState({
       curTabIdx: idx
-    });
+    }, () => {
+      this.onGetsBindCardList(list)
+    })
   };
 
   checkHandle = index => {
     this.setState({
       curCellIdx: index
-    });
-  };
+    })
+  }
 
   async handleCharge() {
     if (!S.getAuthToken()) {
@@ -215,10 +178,9 @@ export default class VipIndex extends Component {
           showCancel: false,
           success: function(res) {
             console.log("success")
+            this.fetchCouponCardList()
           }
         })
-        // this.fetchCouponCardList()
-        // this.handleChange(true)
       },
       fail: function(res) {
         wx.showModal({
@@ -258,8 +220,11 @@ export default class VipIndex extends Component {
     )
   }
 
-  handleChange = (visible) => {
-    this.setState({ visible })
+  handleCouponBox = () => {
+    Taro.showModal({
+      content: '开通会员，立享优惠',
+      showCancel: false
+    })
   }
 
   render() {
@@ -276,158 +241,9 @@ export default class VipIndex extends Component {
       isPaymentOpend,
       visible,
       couponList,
-      couponModalList
+      all_card_list,
+      total_count
     } = this.state;
-    couponList = [
-      {
-        status: 'status',
-        reduce_cost: '120',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'cash',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'gift',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'new_gift',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'discount',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'new_gift',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '0',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'discount',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      },
-      {
-        status: 'status',
-        reduce_cost: '100',
-        least_cost: '10000',
-        begin_date: formatTime(1634572800 * 1000),
-        end_date: formatTime(1638201600 * 1000),
-        fixed_term: null,
-        card_type: 'discount',
-        tagClass: 'tagClass',
-        title: '三联折扣活动',
-        discount: '10',
-        get_limit: '1',
-        user_get_num: 0,
-        quantity: '100',
-        get_num: 2,
-        card_id: '841',
-        description:'三联折扣活动description',
-        use_bound:'0',
-        send_begin_time: null,
-        send_end_time: null
-      }
-    ]
-    console.log(couponList, couponModalList, 'couponList')
     const payTypeText = {
       point: customName("积分支付"),
       wxpay: process.env.TARO_ENV === "weapp" ? "微信支付" : "现金支付",
@@ -530,55 +346,56 @@ export default class VipIndex extends Component {
             立即支付
           </View>
         </View>
-        <View
-          onClick={this.handleChange.bind(this, true)} className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}
-        >
-          <Text className='content-v-padded'>会员专享券包</Text>
-          <Text className='content-v-subtitle'>优惠券共计{couponList[0].quantity}张</Text>
-          <ScrollView scrollX className='scroll-box'>
-            {
-              couponList.map(items => (
-                <View className='coupon' key={items.card_id}>
-                  <Image className='img' src={`${APP_IMAGE_CDN}/coupon_bck.png`} />
-                  {
-                    items.card_type === 'cash' &&
-                    <View>
-                      <View className='coupon-price'>
-                        <Price primary value={items.reduce_cost / 100} noDecimal />
+        {
+          couponList && couponList.length > 0 &&
+          <View className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }} >
+            <Text className='content-v-padded'>会员专享券包</Text>
+            <Text className='content-v-subtitle'>优惠券共计{total_count}张</Text>
+            <ScrollView scrollX className='scroll-box'>
+              {
+                couponList.map(items => (
+                  <View className='coupon' key={items.card_id} onClick={this.handleCouponBox.bind(this)}>
+                    <Image className='img' src={`${APP_IMAGE_CDN}/coupon_bck.png`} />
+                    {
+                      items.card_type === 'cash' &&
+                      <View>
+                        <View className='coupon-price'>
+                          <Price primary value={items.reduce_cost / 100} noDecimal />
+                        </View>
+                        <View className='coupon-desc'>满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}可用</View>
+                        <View className='coupon-quan'>代金券</View>
+                        <View className='coupon-mark'>{items.get_num > 0 ? `x${items.get_num}` : null}</View>
                       </View>
-                      <View className='coupon-desc'>满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}可用</View>
-                      <View className='coupon-quan'>代金券</View>
-                      <View className='coupon-mark'>x{items.get_num}</View>
-                    </View>
-                  }
-                  {
-                    (items.card_type === 'gift' || items.card_type === 'new_gift') &&
-                    <View>
-                      <View className='coupon-price'>
-                        <View className='coupon-font'>兑换券</View>
+                    }
+                    {
+                      (items.card_type === 'gift' || items.card_type === 'new_gift') &&
+                      <View>
+                        <View className='coupon-price'>
+                          <View className='coupon-font'>兑换券</View>
+                        </View>
+                        <View className='coupon-desc'>{items.description}</View>
+                        <View className='coupon-quan'>兑换券</View>
+                        <View className='coupon-mark'>{items.get_num > 0 ? `x${items.get_num}` : null}</View>
                       </View>
-                      <View className='coupon-desc'>会员使用</View>
-                      <View className='coupon-quan'>{(items.card_type === 'gift' && '兑换券') || (items.card_type === 'new_gift' && '兑换券(新)')}</View>
-                      <View className='coupon-mark'>x{items.get_num}</View>
-                    </View>
-                  }
-                  {
-                    items.card_type === 'discount' &&
-                    <View>
-                      <View className='coupon-price'>
-                        <Text className='coupon-font'>{(100 - items.discount) / 10}</Text>
-                        <Text className='coupon-size'>折</Text>
+                    }
+                    {
+                      items.card_type === 'discount' &&
+                      <View>
+                        <View className='coupon-price'>
+                          <Text className='coupon-font'>{(100 - items.discount) / 10}</Text>
+                          <Text className='coupon-size'>折</Text>
+                        </View>
+                        <View className='coupon-desc'>满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}使用</View>
+                        <View className='coupon-quan'>折扣券</View>
+                        <View className='coupon-mark'>{items.get_num > 0 ? `x${items.get_num}` : null}</View>
                       </View>
-                      <View className='coupon-desc'>满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}使用</View>
-                      <View className='coupon-quan'>折扣券</View>
-                      <View className='coupon-mark'>x{items.get_num}</View>
-                    </View>
-                  }
-                </View>
-              ))
-            }
-          </ScrollView>
-        </View>
+                    }
+                  </View>
+                ))
+              }
+            </ScrollView>
+          </View>
+        }
         <View className='section' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
           <View className='section-body'>
             <View className='content-v-padded'>会员权益</View>
@@ -591,7 +408,7 @@ export default class VipIndex extends Component {
             </View>
           </View>
         </View>
-        <CouponModal visible={visible} list={couponModalList} onChange={this.handleChange} />
+        <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
       </View>
     )
   }

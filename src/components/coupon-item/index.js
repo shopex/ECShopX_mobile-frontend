@@ -199,7 +199,6 @@ export default class CouponItem extends Component {
                   style={
                     `background-image: url(${APP_IMAGE_CDN}${(info.tagClass === 'used' || info.tagClass === 'overdue') ? '/coupon_inval.png' : '/coupon_dh.png'})`
                   }
-                  // style={isDisabled ? `background: #d7d7d7` : `background: ${colors.data[0].primary}`}
                 >
                     <View className='coupon-item___number'>兑换券</View>
                     {/* <View className='radius-view radius-left-top'> </View>

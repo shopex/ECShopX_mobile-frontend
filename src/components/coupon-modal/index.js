@@ -6,14 +6,9 @@ import { withPager } from '@/hocs'
 
 import './index.scss'
 
-@withPager
 export default class CouponModal extends PureComponent {
   defaultProps = {
     visible: false
-  }
-
-  state = {
-    ...this.state
   }
 
   static options = {
@@ -22,20 +17,18 @@ export default class CouponModal extends PureComponent {
 
   render () {
     const { list, visible, onChange } = this.props
-    console.log(list, visible)
 
     return (
       <View className='coupon-modal'>
         <AtModal
           isOpened={visible}
           closeOnClickOverlay={false}
-          onClose={() => onChange(false)}
         >
           <View className='title'>
             福利专享券
             <View
               className='icon-close poster-close-btn'
-              onClick={() => onChange(false)}
+              onClick={() => onChange(false, 'close')}
             ></View>
           </View>
           <ScrollView
@@ -44,7 +37,7 @@ export default class CouponModal extends PureComponent {
           >
             <View className='coupon-list-ticket'>
               {
-                list.map((item, idx) => {
+                list && list.map((item, idx) => {
                   let time = parseInt(new Date().getTime() / 1000)
                   return (
                     <CouponItem
@@ -76,7 +69,7 @@ export default class CouponModal extends PureComponent {
               }
             </View>
           </ScrollView>
-          <View className='button'>放入券包</View>
+          <View onClick={() => onChange(false, 'jump')} className='button'>放入券包</View>
         </AtModal>
       </View>
     )
