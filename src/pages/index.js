@@ -8,7 +8,8 @@ import {
   FloatMenus,
   FloatMenuItem,
   AccountOfficial,
-  ScreenAd
+  ScreenAd,
+  CouponModal
 } from "@/components";
 import req from "@/api/req";
 import api from "@/api";
@@ -73,7 +74,10 @@ export default class Home extends Component {
       isGoStore: false,
       show_tabBar: true,
       advertList: [],
-      currentShowAdvert: 0, 
+      currentShowAdvert: 0,
+      all_card_list: [],
+      receive_record_list: [],
+      visible: false
     };
   }
 
@@ -107,6 +111,9 @@ export default class Home extends Component {
     // 购物车数量
     this.fetchCartCount();
     this.getPointSetting();
+    if (S.getAuthToken()) {
+      this.fetchCouponCardList()
+    }
   }
 
   // 配置信息
@@ -567,10 +574,38 @@ export default class Home extends Component {
       allGridGoods.splice(currentTabIndex,1,changeGoods);
       this.state.wgts.splice(this.currentLoadIndex,1,{...loadData.config[0],list:allGridGoods})
     }
-    
+
     this.setState({
       wgts:[...this.state.wgts]
     }) 
+  }
+
+  async fetchCouponCardList () {
+    api.vip.getShowCardPackage({ receive_type: 'grade' })
+    .then(({ all_card_list, receive_record_list }) => {
+      if (all_card_list && all_card_list.length > 0) {
+        this.setState({ visible: true })
+      }
+      this.setState({ all_card_list, receive_record_list })
+    })
+  }
+
+  handleCouponChange = (visible, type) => {
+    if (type === 'jump') {
+      Taro.navigateTo({
+        url: `/marketing/pages/member/coupon`
+      })
+    }
+    if (!visible) {
+      this.fetchgetCouponList()
+    }
+    this.setState({ visible })
+  }
+
+  async fetchgetCouponList () {
+    const { receive_record_list } = this.state
+    let receive_ids = receive_record_list.map(el => el.package_id)
+    api.vip.getConfirmPackageShow({ receive_ids })
   }
 
   render() {
@@ -592,7 +627,9 @@ export default class Home extends Component {
       is_open_official_account,
       is_open_scan_qrcode,
       is_open_store_status,
-      show_official
+      show_official,
+      visible,
+      all_card_list
     } = this.state;
  
 
@@ -699,6 +736,7 @@ export default class Home extends Component {
         <TabBar showbar={show_tabBar} />
         {/* 开屏广告 */}
         {showAdv && <ScreenAd />}
+        <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
       </View>
     );
   }

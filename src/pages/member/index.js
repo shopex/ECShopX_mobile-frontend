@@ -6,7 +6,8 @@ import {
   SpCell,
   AccountOfficial,
   SpLogin,
-  SpFloatPrivacy
+  SpFloatPrivacy,
+  CouponModal
 } from "@/components";
 // import ExclusiveCustomerService from './comps/exclusive-customer-service'
 import api from "@/api";
@@ -80,7 +81,10 @@ export default class MemberIndex extends Component {
       score_menu_open: false,
       // 是否显示隐私协议
       showPrivacy: false,
-      showTimes: 0
+      showTimes: 0,
+      all_card_list: [],
+      receive_record_list: [],
+      visible: false
     };
   }
 
@@ -101,6 +105,12 @@ export default class MemberIndex extends Component {
 
     // this.getSettingCenter();
     // this.getConfigPointitem();
+  }
+
+  componentDidShow () {
+    if (S.getAuthToken()) {
+      this.fetchCouponCardList()
+    }
   }
 
   async onShareAppMessage() {
@@ -309,6 +319,34 @@ export default class MemberIndex extends Component {
     }  
   }
 
+  async fetchCouponCardList () {
+    api.vip.getShowCardPackage({ receive_type: 'grade' })
+    .then(({ all_card_list, receive_record_list }) => {
+      if (all_card_list && all_card_list.length > 0) {
+        this.setState({ visible: true })
+      }
+      this.setState({ all_card_list, receive_record_list })
+    })
+  }
+
+  handleCouponChange = (visible, type) => {
+    if (type === 'jump') {
+      Taro.navigateTo({
+        url: `/marketing/pages/member/coupon`
+      })
+    }
+    if (!visible) {
+      this.fetchgetCouponList()
+    }
+    this.setState({ visible })
+  }
+
+  async fetchgetCouponList () {
+    const { receive_record_list } = this.state
+    let receive_ids = receive_record_list.map(el => el.package_id)
+    api.vip.getConfirmPackageShow({ receive_ids })
+  }
+
   render() {
     const { colors, memberData } = this.props;
     const {
@@ -324,7 +362,9 @@ export default class MemberIndex extends Component {
       menuSetting,
       rechargeStatus,
       showPrivacy,
-      showTimes
+      showTimes,
+      visible,
+      all_card_list
     } = this.state;
     let memberInfo = null,
       vipgrade = null;
@@ -852,6 +892,7 @@ export default class MemberIndex extends Component {
             })
           }
         />
+        <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
       </View>
     );
   }
