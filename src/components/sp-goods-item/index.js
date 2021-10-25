@@ -141,17 +141,6 @@ export default class SpGoodsItem extends Component {
             </View>
           )}
 
-          {/* 促销活动标签 */}
-          {info.promotion_activity && info.promotion_activity.length > 0 && (
-            <View className="promotions">
-              {info.promotion_activity.map((item, index) => (
-                <Text className="promotion-tag" key={`promotion-tag__${index}`}>
-                  {PROMOTION_TAG[item.tag_type]}
-                </Text>
-              ))}
-            </View>
-          )}
-
           <View className="goods-info">
             <View className="goods-title">{info.itemName}</View>
             <View className="goods-desc">{info.brief}</View>
@@ -166,12 +155,23 @@ export default class SpGoodsItem extends Component {
 
           {!info.is_point && (
             <View className="goods-price">
-              <View className='gd-price'>
+              <View className="gd-price">
                 <SpPrice value={info.price / 1000}></SpPrice>
               </View>
               <View className="mk-price">
                 <SpPrice lineThrough value={info.market_price / 1000}></SpPrice>
               </View>
+            </View>
+          )}
+
+          {/* 促销活动标签 */}
+          {info.promotion_activity && info.promotion_activity.length > 0 && (
+            <View className="promotions">
+              {info.promotion_activity.map((item, index) => (
+                <Text className="promotion-tag" key={`promotion-tag__${index}`}>
+                  {PROMOTION_TAG[item.tag_type]}
+                </Text>
+              ))}
             </View>
           )}
         </View>

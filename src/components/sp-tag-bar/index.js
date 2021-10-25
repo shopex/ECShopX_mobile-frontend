@@ -37,8 +37,8 @@ export default class SpTagBar extends Component {
 
     return (
       <ScrollView className="sp-tag-bar" scrollX>
-        <View className="tag-bar-container">
-          {list.map((item, idx) => (
+        {/* <View className="tag-bar-container"> */}
+          {list.map(item => (
             <View
               className={classNames("tag-item", {
                 active: curId === item.tag_id
@@ -49,7 +49,7 @@ export default class SpTagBar extends Component {
               {item.tag_name}
             </View>
           ))}
-        </View>
+        {/* </View> */}
       </ScrollView>
     );
   }
