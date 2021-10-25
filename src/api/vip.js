@@ -13,14 +13,18 @@ export function getUserVipInfo (params) {
 }
 
 /** 券包api */
-export function getBindCardList (params) { // 卡券展示
+export function getBindCardList (params) {
 	return req.get('/user/getBindCardList', params)
 }
 
-export function getShowCardPackage (params) { // 未读卡券
+export function getShowCardPackage (params) {
 	return req.get('/user/showCardPackage', params)
 }
 
-export function getCouponList (params) { // 领取卡券
+export function getConfirmPackageShow (params) {
 	return req.post('/user/confirmPackageShow', params)
+}
+
+export function getReceiveCardPackage (params) {
+	return req.post('/user/receiveCardPackage', params)
 }
