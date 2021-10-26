@@ -44,24 +44,12 @@ export default class CouponModal extends PureComponent {
                       info={item}
                       key={item.card_id}
                     >
-                      {/* <Text
-                        className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
-                        onClick={this.handleGetCard.bind(this, item, idx)}
-                      >
-                        {item.getted === 1 ? '已领取' : ''}
+                      <View style={{fontSize: '22rpx'}} onClick={this.handleClickNews.bind(this, item, idx)}>
+                        待领取
+                        {/* {item.getted === 1 ? '已领取' : ''}
                         {item.getted === 2 ? '已领完' : ''}
-                        {(item.getted !== 2 && item.getted !== 1) ? '立即领取' : ''}
-                      </Text> */}
-                      <View
-                        style={{fontSize: '22rpx'}}
-                        // className={`coupon-btn ${(item.getted === 2 || item.getted === 1) ? 'coupon-btn__done' : ''}`}
-                        // style={`background: ${colors.data[0].primary}`}
-                        onClick={this.handleClickNews.bind(this, item, idx)}
-                      >
-                        {item.getted === 1 ? '已领取' : ''}
-                        {item.getted === 2 ? '已领完' : ''}
-                        {(time > item.send_begin_time && item.getted !== 2 && item.getted !== 1) ? '待领取' : ''}
-                        {(item.card_type === 'new_gift' && time < item.send_begin_time) ? '未开始' : ''}
+                        {(time > parseInt(new Date(item.begin_date).getTime() / 1000) && item.getted !== 2 && item.getted !== 1) ? '待领取' : ''}
+                        {(item.card_type === 'new_gift' && time < parseInt(new Date(item.begin_date).getTime() / 1000)) ? '未开始' : ''} */}
                       </View>
                     </CouponItem>
                   )
