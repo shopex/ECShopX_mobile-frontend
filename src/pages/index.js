@@ -76,7 +76,6 @@ export default class Home extends Component {
       advertList: [],
       currentShowAdvert: 0,
       all_card_list: [],
-      receive_record_list: [],
       visible: false
     };
   }
@@ -112,7 +111,7 @@ export default class Home extends Component {
     this.fetchCartCount();
     this.getPointSetting();
     if (S.getAuthToken()) {
-      this.fetchCouponCardList()
+      this.getCurrentGrad()
     }
   }
 
@@ -122,6 +121,12 @@ export default class Home extends Component {
     backgroundTextStyle: "dark",
     onReachBottomDistance: 50
   };
+
+  getCurrentGrad = () => {
+    api.vip.getCurrentGradList().then((res)=> {
+      this.fetchCouponCardList(res.type)
+    })
+  }
 
   // 下拉刷新
   onPullDownRefresh = () => {
@@ -580,13 +585,13 @@ export default class Home extends Component {
     }) 
   }
 
-  fetchCouponCardList () {
-    api.vip.getShowCardPackage({ receive_type: 'grade' })
-    .then(({ all_card_list, receive_record_list }) => {
+  fetchCouponCardList (receive_type) {
+    api.vip.getShowCardPackage({ receive_type })
+    .then(({ all_card_list }) => {
       if (all_card_list && all_card_list.length > 0) {
         this.setState({ visible: true })
       }
-      this.setState({ all_card_list, receive_record_list })
+      this.setState({ all_card_list })
     })
   }
 
@@ -596,16 +601,7 @@ export default class Home extends Component {
         url: `/marketing/pages/member/coupon`
       })
     }
-    if (!visible) {
-      this.fetchgetCouponList()
-    }
     this.setState({ visible })
-  }
-
-  fetchgetCouponList () {
-    const { receive_record_list } = this.state
-    let receive_ids = receive_record_list && receive_record_list.map(el => el.receive_id)
-    api.vip.getConfirmPackageShow({ receive_ids })
   }
 
   render() {

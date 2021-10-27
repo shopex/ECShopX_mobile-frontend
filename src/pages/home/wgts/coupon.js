@@ -20,8 +20,7 @@ export default class WgtCoupon extends Component {
 
   state = {
     all_card_list: [],
-    visible: false,
-    receive_record_list: []
+    visible: false
   }
 
   constructor(props) {
@@ -106,11 +105,11 @@ export default class WgtCoupon extends Component {
 
   fetchCouponCardList () {
     api.vip.getShowCardPackage({ receive_type: 'template' })
-    .then(({ all_card_list, receive_record_list }) => {
+    .then(({ all_card_list }) => {
       if (all_card_list && all_card_list.length > 0) {
         this.setState({ visible: true })
       }
-      this.setState({ all_card_list, receive_record_list })
+      this.setState({ all_card_list })
     })
   }
 
@@ -120,16 +119,7 @@ export default class WgtCoupon extends Component {
         url: `/marketing/pages/member/coupon`
       })
     }
-    if (!visible) {
-      this.fetchgetCouponList()
-    }
     this.setState({ visible })
-  }
-
-  fetchgetCouponList () {
-    const { receive_record_list } = this.state
-    let receive_ids = receive_record_list && receive_record_list.map(el => el.receive_id)
-    api.vip.getConfirmPackageShow({ receive_ids })
   }
 
   render() {
