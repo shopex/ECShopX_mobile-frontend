@@ -21,10 +21,10 @@ export function getShowCardPackage (params) {
 	return req.get('/user/showCardPackage', params)
 }
 
-export function getConfirmPackageShow (params) {
-	return req.post('/user/confirmPackageShow', params)
-}
-
 export function getReceiveCardPackage (params) {
 	return req.post('/user/receiveCardPackage', params)
+}
+
+export function getCurrentGradList () {
+	return req.post('/user/currentGardCardPackage')
 }
