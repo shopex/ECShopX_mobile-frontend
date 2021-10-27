@@ -37,8 +37,7 @@ export default class VipIndex extends Component {
       visible: false,
       total_count: 0,
       couponList: [], // 待领取券包列表
-      all_card_list: [], // 放入券包弹框列表
-      receive_record_list: []
+      all_card_list: [] // 放入券包弹框列表
     }
   }
 
@@ -92,11 +91,11 @@ export default class VipIndex extends Component {
 
   fetchCouponCardList () {
     api.vip.getShowCardPackage({ receive_type: 'vip_grade' })
-    .then(({ all_card_list, receive_record_list }) => {
+    .then(({ all_card_list }) => {
       if (all_card_list && all_card_list.length > 0) {
         this.setState({ visible: true })
       }
-      this.setState({ all_card_list, receive_record_list })
+      this.setState({ all_card_list })
     })
   }
 
@@ -106,16 +105,7 @@ export default class VipIndex extends Component {
         url: `/marketing/pages/member/coupon`
       })
     }
-    if (!visible) {
-      this.fetchgetCouponList()
-    }
     this.setState({ visible })
-  }
-
-  fetchgetCouponList () {
-    const { receive_record_list } = this.state
-    let receive_ids = receive_record_list && receive_record_list.map(el => el.receive_id)
-    api.vip.getConfirmPackageShow({ receive_ids })
   }
 
   handleClickTab = idx => {
