@@ -28,3 +28,7 @@ export function getConfirmPackageShow (params) {
 export function getReceiveCardPackage (params) {
 	return req.post('/user/receiveCardPackage', params)
 }
+
+export function getCurrentGradList () {
+	return req.post('/user/currentGardCardPackage')
+}
