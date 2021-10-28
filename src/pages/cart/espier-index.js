@@ -23,7 +23,8 @@ import {
   hideLoading,
   getThemeStyle,
   styleNames,
-  getBrowserEnv
+  getBrowserEnv,
+  isNavbar
 } from "@/utils";
 import debounce from 'lodash/debounce'
 import api from '@/api'
@@ -604,13 +605,13 @@ export default class CartIndex extends Component {
     return (
       <View
         className={classNames("page-cart-index", {
-          "has-navbar": process.env.TARO_ENV == "h5" && !getBrowserEnv().weixin,
+          "has-navbar": isNavbar,
           "has-loginbar": !S.getAuthToken()
         })}
         style={styleNames(getThemeStyle())}
       >
         <SpNavBar title="购物车" leftIconType="chevron-left" fixed />
-
+        
         {!S.getAuthToken() && (
           <View className="login-header">
             <View>授权登录后同步购物车的商品</View>

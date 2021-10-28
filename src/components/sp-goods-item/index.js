@@ -146,23 +146,33 @@ export default class SpGoodsItem extends Component {
             <View className="goods-desc">{info.brief}</View>
           </View>
 
-          {/* 商品价格、积分 */}
-          {info.is_point && (
-            <View className="goods-price">
-              <SpPoint value={info.point} />
-            </View>
-          )}
+          <View className="bd-block">
+            <View className="bd-block-lf">
+              {/* 商品价格、积分 */}
+              {info.is_point && (
+                <View className="goods-price">
+                  <SpPoint value={info.point} />
+                </View>
+              )}
 
-          {!info.is_point && (
-            <View className="goods-price">
-              <View className="gd-price">
-                <SpPrice value={info.price / 1000}></SpPrice>
-              </View>
-              <View className="mk-price">
-                <SpPrice lineThrough value={info.market_price / 1000}></SpPrice>
-              </View>
+              {!info.is_point && (
+                <View className="goods-price">
+                  <View className="gd-price">
+                    <SpPrice value={info.price / 1000}></SpPrice>
+                  </View>
+                  <View className="mk-price">
+                    <SpPrice
+                      lineThrough
+                      value={info.market_price / 1000}
+                    ></SpPrice>
+                  </View>
+                </View>
+              )}
             </View>
-          )}
+            <View className="bd-block-rg">
+              <Text className="iconfont icon-shoucang-01"></Text>
+            </View>
+          </View>
 
           {/* 促销活动标签 */}
           {info.promotion_activity && info.promotion_activity.length > 0 && (
