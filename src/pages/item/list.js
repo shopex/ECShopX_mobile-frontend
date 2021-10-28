@@ -25,6 +25,7 @@ import {
   isWeixin,
   isWeb,
   getBrowserEnv,
+  isNavbar,
   styleNames,
   getThemeStyle
 } from "@/utils";
@@ -247,7 +248,7 @@ export default class List extends Component {
         default: []
       },
       pics: "pics",
-      itemId: "goodsId",
+      itemId: "itemId",
       itemName: "itemName",
       brief: "brief",
       promotion_activity: "promotion_activity",
@@ -544,19 +545,19 @@ export default class List extends Component {
     } = this.state;
     const { isTabBar = "guide", isNewGift } = this.$router.params;
     const leftList = list.filter( ( item, index ) => {
-      if ( index % 2 == 1 ) {
+      if ( index % 2 == 0 ) {
         return item
       }
     });
     const rightList = list.filter((item, index) => {
-      if (index % 2 == 0) {
+      if (index % 2 == 1) {
         return item;
       }
     });
     return (
       <View
         className={classNames("page-goods-list", {
-          "has-navbar": isWeb && !getBrowserEnv().weixin
+          "has-navbar": isNavbar
         })}
         style={styleNames(getThemeStyle())}
       >

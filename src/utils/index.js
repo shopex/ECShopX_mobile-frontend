@@ -19,6 +19,7 @@ import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
 import entryLaunch from './entryLaunch'
 import validate from "./validate";
+import { isWeb } from "./platforms";
 import { getPointName } from './point'
 
 
@@ -471,6 +472,10 @@ export function showToast(title) {
     title,
     icon: "none"
   });
+}
+
+export function isNavbar() {
+  return isWeb && !getBrowserEnv().weixin;
 }
 
 export {
