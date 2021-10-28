@@ -11,3 +11,20 @@ export function charge (params) {
 export function getUserVipInfo (params) {
 	return req.get('/vipgrades/uservip',params)
 }
+
+/** 券包api */
+export function getBindCardList (params) {
+	return req.get('/user/getBindCardList', params)
+}
+
+export function getShowCardPackage (params) {
+	return req.get('/user/showCardPackage', params)
+}
+
+export function getReceiveCardPackage (params) {
+	return req.post('/user/receiveCardPackage', params)
+}
+
+export function getCurrentGradList () {
+	return req.post('/user/currentGardCardPackage')
+}
