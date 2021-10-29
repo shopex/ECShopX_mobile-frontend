@@ -401,7 +401,7 @@ export default class DistributionDashboard extends Component {
               url='/marketing/pages/distribution/point-platform/index'>
               <View className='icon-jifen'></View>
               <View className='label'>推广积分</View>
-              <View className='mark'>{info.pointTotal}</View>
+              <View className='mark'>{info.pointTotal || 0}</View>
             </Navigator>
           </View>
         </View>
