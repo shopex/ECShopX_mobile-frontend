@@ -169,10 +169,15 @@ export default class DistributionDashboard extends Component {
       // 头像
       avatarImg = await Taro.getImageInfo({ src: avatar });
     }
+<<<<<<< HEAD
     const bck = await Taro.getImageInfo({
       src: `${APP_IMAGE_CDN}/distribution_bck.png`,
     }); // 背景图片
     const codeImg = await Taro.getImageInfo({ src: wxappCode }); // 二维码
+=======
+    const bck = await Taro.getImageInfo({src: 'https://b-img-cdn.yuanyuanke.cn/image/21/2021/10/21/9c8cbb5f6b6a346641fe151b5e1604118H6zDVOajmkASVYKgPePOYXIeFpc55Ta'}) // 背景图片
+    const codeImg = await Taro.getImageInfo({src: wxappCode}) // 二维码
+>>>>>>> develop
     if (avatarImg) {
       const posterImgs = {
         avatar: avatarImg ? avatarImg.path : null,
