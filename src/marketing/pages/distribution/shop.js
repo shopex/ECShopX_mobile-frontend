@@ -28,7 +28,7 @@ export default class DistributionShop extends Component {
   }
 
   async fetch() {
-    const { turnover } = this.$router.params
+    const { turnover,point } = this.$router.params;
     const { userId } = Taro.getStorageSync('userinfo')
     const param = {
       user_id: userId
@@ -56,7 +56,8 @@ export default class DistributionShop extends Component {
         shop_pic,
         turnover,
         share_title,
-        applets_share_img
+        applets_share_img,
+        point
       }
     })
   }
@@ -132,6 +133,10 @@ export default class DistributionShop extends Component {
           <View className='content-padded-b shop-achievement'>
             <View className='achievement-label'>小店营业额</View>
             <View className='achievement-amount'><Text className='amount-cur'>¥</Text> {info.turnover}</View>
+          </View>
+          <View className='content-padded-b shop-achievement'>
+            <View className='achievement-label'>营业积分</View>
+            <View className='achievement-amount'>{info.point || 0} <Text className='amount-cur'>分</Text> </View>
           </View>
         </View>
         <View className='grid two-in-row'>
