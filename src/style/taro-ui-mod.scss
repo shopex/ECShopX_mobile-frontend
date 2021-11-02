@@ -261,7 +261,7 @@
 
   &--small {
     height: 42px;
-    line-height: 38px;
+    line-height: 42px;
     padding: 0 22px;
     font-size: 22px;
 
@@ -269,13 +269,10 @@
       font-size: 22px;
     }
 
-    &.at-button--circle {
-      border-radius: 8px;
-    }
   }
   &--primary {
     background: var(--color-primary);
-    border:1px solid var(--color-primary)!important;
+    border-color: var(--color-primary);
   }
 }
 

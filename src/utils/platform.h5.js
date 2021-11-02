@@ -1,3 +1,6 @@
+import Taro, { useRouter } from "@tarojs/taro";
+
+
 export function setPageTitle(title) {
   document.title = title;
   var mobile = navigator.userAgent.toLowerCase();
@@ -24,10 +27,20 @@ export const transformPlatformUrl = url => {
   return url;
 };
 
+// 授权页面
+export const goToAuthPage = () => {
+  const router = useRouter();
+  const { path } = router;
+  debugger;
+  Taro.navigateTo({
+    url: `/pages/auth/login?redirect=`
+  });
+};
+
 class CreateIntersectionObserver {
   constructor(options) {
     this.options = options;
-    this["on-observer"] = () => { };
+    this["on-observer"] = () => {};
     this.init();
   }
 
@@ -39,7 +52,7 @@ class CreateIntersectionObserver {
     this.observer = new IntersectionObserver(
       res => {
         const { isIntersecting } = res[0];
-        if ( isIntersecting ) {
+        if (isIntersecting) {
           this["on-observer"]();
         }
       },
@@ -49,7 +62,7 @@ class CreateIntersectionObserver {
       }
     );
     this.observer.observe(document.querySelector(el));
-    return this
+    return this;
   }
 
   on(event, fn) {
@@ -57,10 +70,10 @@ class CreateIntersectionObserver {
   }
 }
 
-export { CreateIntersectionObserver }; 
+export { CreateIntersectionObserver };
 
-export const createIntersectionObserver = (el) => {
-  return new Promise( ( reslove, reject ) => {
+export const createIntersectionObserver = el => {
+  return new Promise((reslove, reject) => {
     const observer = new IntersectionObserver(
       res => {
         const { isIntersecting } = res[0];
@@ -75,5 +88,4 @@ export const createIntersectionObserver = (el) => {
     observer.observe(document.querySelector(el));
     this.observe = observer;
   });
-  
-}
+};

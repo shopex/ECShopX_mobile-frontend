@@ -1,7 +1,8 @@
 import Taro from "@tarojs/taro";
 import S from "@/spx";
 import qs from "qs";
-import { isGoodsShelves, isAlipay, log } from "@/utils";
+import { isGoodsShelves, isAlipay, log, } from "@/utils";
+import { goToAuthPage } from '@/utils/platform';
 import api from "@/api";
 import { isWeb } from '@/utils/platforms';
 
@@ -22,7 +23,7 @@ class RequestQueue {
     const request = this.requestList.shift();
     if (request) {
       await request();
-      if (this.requestList.length > 0) {
+      if (this.requestList.length > 0 && !API.isRefreshing) {
         this.run();
       }
     }
@@ -51,6 +52,8 @@ class API {
     this.baseURL = baseURL;
     this.genMethods(["get", "post", "delete", "put"]);
   }
+
+  static isRefreshing = false;
 
   genMethods(methods) {
     methods.forEach(method => {
@@ -182,26 +185,20 @@ class API {
       console.log(ba_params);
     }
     let resData = {};
-    let isRefreshing = false;
-    let requests = [];
-
+    
     return Taro.request(options)
       .then(res => {
         resData = res;
       })
       .catch(err => {
         resData.statusCode = err.status;
-
         resData.header = {};
-
         err.headers.forEach((val, key) => {
           resData.header[key] = val;
         });
-
         if (config.responseType === "arraybuffer") {
           return err.arrayBuffer();
         }
-
         if (
           config.dataType === "json" ||
           typeof config.dataType === "undefined"
@@ -212,7 +209,6 @@ class API {
         if (config.responseType === "text") {
           return err.text();
         }
-
         return Promise.resolve(null);
       })
       .then(res => {
@@ -242,8 +238,8 @@ class API {
             return Promise.reject(this.reqError(resData));
           }
         }
-
-        if (statusCode === 401) {
+        debugger
+        if ( statusCode === 401 ) {
           if (data.error && data.error.code === 401002) {
             this.errorToast({
               msg: "帐号已被禁用"
@@ -256,18 +252,23 @@ class API {
               S.loginQW(this, true);
             } else {
               // 刷新token
-              S.set( 'refreshToken', true )
-              log.debug( 'refreshing token...' )
-              requestQueue.push( () => {
-                return new Promise( ( resolve, reject ) => {
-                  resolve(_this.makeReq(config))
-                })
-              } )
-              debugger
-              api.wx.refreshToken().then( res => {
+              log.debug("refreshing token...");
+              requestQueue.push(() => {
+                return new Promise((resolve, reject) => {
+                  resolve(_this.makeReq(config));
+                });
+              });
+              if ( !API.isRefreshing ) {
+                API.isRefreshing = true
                 debugger
-                S.setAuthToken()
-              })
+                api.wx.refreshToken().then(res => {
+                  debugger;
+                  S.setAuthToken();
+                } ).finally( () => {
+                  API.isRefreshing = false
+                });
+              }
+              
               // const config = options;
               // if (isRefreshing) {
               //   return new Promise(resolve => {
@@ -305,7 +306,12 @@ class API {
               // }
             }
           }
-          return Promise.reject(this.reqError(resData));
+          // token刷新失败, 重新登录
+          if ( data.status_code == 401 ) {
+            debugger
+            // goToAuthPage()
+          }
+          return Promise.reject( this.reqError( resData ) );
         }
 
         if (statusCode >= 400) {

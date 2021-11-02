@@ -4,35 +4,33 @@ import { connect } from "@tarojs/redux";
 import { classNames, navigateTo } from "@/utils";
 import "./index.scss";
 
-export default class SpTabs extends Component {
-  static options = {
-    addGlobalClass: true
-  };
+function SpTabs(props) {
+  let { tablist, current, onChange } = this.props;
 
-  static defaultProps = {
-    tablist: []
-  };
+  console.log( "current", current );
 
-  navigateTo = navigateTo;
-
-  render() {
-    const { tablist } = this.props;
-    return (
-      <View className={"sp-tabs"}>
-        <View className="sp-tab-hd">
-          {tablist.map((tab, index) => (
-            <View key={`tab-item__${index}`}>
-              {tab.icon && (
-                <Text className={classNames(`iconfont`, tab.icon)}></Text>
-              )}
-              <Text>{tab.title}</Text>
-            </View>
-          ))}
-        </View>
-        <View className="sp-tab-bd">
-          {this.props.children}
-        </View>
+  return (
+    <View className={"sp-tabs"}>
+      <View className="sp-tabs-hd">
+        {tablist.map((tab, index) => (
+          <View
+            className={classNames({
+              "tab-item": true,
+              "tab-item-active": current == index
+            })}
+            key={`tab-item__${index}`}
+            onClick={onChange.bind(this, index)}
+          >
+            {tab.icon && (
+              <Text className={classNames(`iconfont`, tab.icon)}></Text>
+            )}
+            <Text>{tab.title}</Text>
+          </View>
+        ))}
       </View>
-    );
-  }
+      <View className="sp-tabs-bd">{this.props.children}</View>
+    </View>
+  );
 }
+
+export default SpTabs;

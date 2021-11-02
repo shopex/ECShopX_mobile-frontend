@@ -169,7 +169,7 @@ class EntryLaunch {
    * @returns Boolean
    * @description 标准版有门店，并且根据后台设置是否展示门店；平台版不显示门店
    */
-  isOpenStores() {
+  isOpenStore() {
     const { nostores_status } = Taro.getStorageSync("otherSetting");
     if (process.env.APP_PLATFORM === "standard") {
       return !nostores_status;
