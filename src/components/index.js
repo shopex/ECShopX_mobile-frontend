@@ -10,13 +10,14 @@ export { default as FloatMenus } from "./float-menus";
 export { default as FloatMenuItem } from "./float-menus/item";
 export { default as FormIdCollector } from "./form-id-collector";
 
-export { default as SpCheckbox } from "./checkbox";
+
 
 export { default as SpToast } from "./toast";
 export { default as SpIconMenu } from "./icon-menu";
 
 export { default as SpHtmlContent } from "./html-content";
 export { default as RecommendItem } from "./recommend-item";
+export { default as SpCheckbox } from './checkbox';
 
 export { default as AddressChoose } from "./address/choose-address";
 export { default as CouponItem } from "./coupon-item";
@@ -52,7 +53,11 @@ import SpSearch from "./sp-search";
 import SpSearchBar from "./sp-search-bar";
 import SpFilterBar from "./sp-filter-bar";
 import SpTagBar from "./sp-tag-bar";
-
+import SpTabs from "./sp-tabs";
+import SpTabsPane from "./sp-tabs-pane";
+import SpImage from "./sp-image";
+import SpCheckboxNew from "./sp-checkbox";
+import SpInputNumber from "./sp-input-number";
 
 import SpImgPicker from "./img-picker";
 import SpCell from "./sp-cell";
@@ -83,5 +88,10 @@ export {
   SpTagBar,
   SpImgPicker,
   SpCell,
-  FloatMenuMeiQia
+  FloatMenuMeiQia,
+  SpTabs,
+  SpTabsPane,
+  SpImage,
+  SpCheckboxNew,
+  SpInputNumber
 };

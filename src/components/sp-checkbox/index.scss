@@ -1,0 +1,15 @@
+.sp-checkbox-new {
+  display: flex;
+  align-items: center;
+  &__label {
+    margin-left: 16px;
+  }
+  .icon-roundcheckfill {
+    font-size: 40px;
+    color: var(--color-primary);
+  }
+  .icon-round {
+    font-size: 40px;
+    color: #CCC;
+  }
+}

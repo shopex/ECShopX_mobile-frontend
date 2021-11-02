@@ -1,15 +1,18 @@
 .sp-default {
   text-align: center;
-  &-img {
-    width:220px;
+  margin: 60px 0 100px;
+  &-hd {
+    .default-img {
+      width: 300px;
+    }
+    margin-bottom: 50px;
   }
-  &-text {
-    color: #999;
-    margin-top: 20px;
+  &-bd {
+    margin-bottom: 30px;
+    color: #666;
   }
-  &-btns {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
+  &-ft {
+    width: 300px;
+    margin: 0 auto;
   }
 }
