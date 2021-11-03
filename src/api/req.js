@@ -238,7 +238,6 @@ class API {
             return Promise.reject(this.reqError(resData));
           }
         }
-        debugger
         if ( statusCode === 401 ) {
           if (data.error && data.error.code === 401002) {
             this.errorToast({
@@ -308,7 +307,6 @@ class API {
           }
           // token刷新失败, 重新登录
           if ( data.status_code == 401 ) {
-            debugger
             // goToAuthPage()
           }
           return Promise.reject( this.reqError( resData ) );

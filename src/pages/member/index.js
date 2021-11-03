@@ -1,4 +1,4 @@
-import Taro, { Component } from "@tarojs/taro";
+import Taro, { Component, useState } from "@tarojs/taro";
 import { View, ScrollView, Text, Image, Button } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import {
