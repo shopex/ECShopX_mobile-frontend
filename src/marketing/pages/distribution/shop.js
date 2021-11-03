@@ -132,7 +132,7 @@ export default class DistributionShop extends Component {
         <View className='section content-center'>
           <View className='content-padded-b shop-achievement'>
             <View className='achievement-label'>小店营业额</View>
-            <View className='achievement-amount'><Text className='amount-cur'>¥</Text> {info.turnover}</View>
+            <View className='achievement-amount'><Text className='amount-cur'>¥</Text> {info.turnover / 100}</View>
           </View>
           <View className='content-padded-b shop-achievement'>
             <View className='achievement-label'>营业积分</View>
