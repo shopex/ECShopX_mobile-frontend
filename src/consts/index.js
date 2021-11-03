@@ -26,17 +26,17 @@ export const REFUND_STATUS = {
 };
 
 export const PROMOTION_TAG = {
-  "single_group": "团购",
-  "full_minus": "满减",
-  "full_discount": "满折",
-  "full_gift": "满赠",
-  "normal": "秒杀",
-  "limited_time_sale": "限时特惠",
-  "plus_price_buy": "换购",
-  "member_preference" : "会员限购" 
-}
+  single_group: "团购",
+  full_minus: "满减",
+  full_discount: "满折",
+  full_gift: "满赠",
+  normal: "秒杀",
+  limited_time_sale: "限时特惠",
+  plus_price_buy: "换购",
+  member_preference: "会员限购"
+};
 
-export const DEFAULT_POINT_NAME = '积分'
+export const DEFAULT_POINT_NAME = "积分";
 
 export const DEFAULT_THEME = {
   colorPrimary: "#d42f29",
