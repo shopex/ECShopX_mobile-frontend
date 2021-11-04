@@ -1,8 +1,8 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { classNames } from '@/utils'
-import './index.scss'
+import Taro, { Component } from "@tarojs/taro";
+import { View, Text, Image } from "@tarojs/components";
+import { connect } from "@tarojs/redux";
+import { classNames } from "@/utils";
+import "./index.scss";
 
 @connect(({ colors }) => ({
   colors: colors.current
@@ -10,7 +10,7 @@ import './index.scss'
 export default class CouponItem extends Component {
   static options = {
     addGlobalClass: true
-  }
+  };
 
   static defaultProps = {
     onClick: () => {},
@@ -18,105 +18,117 @@ export default class CouponItem extends Component {
     isShowCheckout: false,
     isDisabled: false,
     showDetail: false
-  }
+  };
 
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     //this.transitionCloseDetail=null;
     this.state = {
       isItemChecked: false,
-      isExpanded:false, 
-    }
+      isExpanded: false
+    };
   }
 
-  handleClickChecked = (index) => {
-    if(this.props.curKey === index) {
+  handleClickChecked = index => {
+    if (this.props.curKey === index) {
       this.setState({
         isItemChecked: !this.state.isItemChecked
-      })
+      });
     } else {
       this.setState({
         isItemChecked: true
-      })
+      });
     }
-    this.props.onClickBtn(index)
-  }
+    this.props.onClickBtn(index);
+  };
 
   // 切换详情状态
-  changeDetail = (e) => {
-    e.stopPropagation()
-    const { showDetail } = this.state
+  changeDetail = e => {
+    e.stopPropagation();
+    const { showDetail } = this.state;
     this.setState({
       showDetail: !showDetail
-    })
-  }
+    });
+  };
 
-  changeExpand=(e)=>{
-    e.stopPropagation()
-    const { isExpanded }=this.state; 
+  changeExpand = e => {
+    e.stopPropagation();
+    const { isExpanded } = this.state;
     this.setState({
-      isExpanded:!isExpanded
-    })
-  }
+      isExpanded: !isExpanded
+    });
+  };
 
-  handleType (e) {
+  handleType(e) {
     let type = [
       {
-        tag: '兑换券', 
-        bg: 'linear-gradient(122deg, #F4C486 0%, #D4A570 100%)', 
-        fc: '#AC8050',
-        invalidBg: 'linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)',  
-        invalidFc: '#888888',
-        opacity: '0.4'
+        tag: "兑换券",
+        bg: "linear-gradient(122deg, #F4C486 0%, #D4A570 100%)",
+        fc: "#AC8050",
+        invalidBg: "linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)",
+        invalidFc: "#888888",
+        opacity: "0.4"
       },
       {
-        tag: '满减券', 
-        bg: 'linear-gradient(299deg, #679BDD 0%, #9AC5FF 100%)', 
-        fc: '#4979B7',
-        invalidBg: 'linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)',  
-        invalidFc: '#888888',
-        opacity: '0.4'
+        tag: "满减券",
+        bg: "linear-gradient(299deg, #679BDD 0%, #9AC5FF 100%)",
+        fc: "#4979B7",
+        invalidBg: "linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)",
+        invalidFc: "#888888",
+        opacity: "0.4"
       },
       {
-        tag: '折扣券', 
-        bg: 'linear-gradient(126deg, #CCC0EF 0%, #7E6FA9 100%)', 
-        fc: '#64578D',
-        invalidBg: 'linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)',  
-        invalidFc: '#888888',
-        opacity: '0.4'
+        tag: "折扣券",
+        bg: "linear-gradient(126deg, #CCC0EF 0%, #7E6FA9 100%)",
+        fc: "#64578D",
+        invalidBg: "linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)",
+        invalidFc: "#888888",
+        opacity: "0.4"
       }
-    ]
-    switch(e) {
-      case 'new_gift':
-      return type[0]
-      case 'cash':
-      return type[1]
-      case 'discount':
-      return type[2]
-      default: 
-      return null
+    ];
+    switch (e) {
+      case "new_gift":
+        return type[0];
+      case "cash":
+        return type[1];
+      case "discount":
+        return type[2];
+      default:
+        return null;
     }
   }
 
   handleClickChecked1 = () => {
-    this.props.onHandleClick && this.props.onHandleClick()
-  }
+    this.props.onHandleClick && this.props.onHandleClick();
+  };
 
-  render () {
-    const { info, isShowCheckout, isChoosed, onClick, colors, isExist, invalidCouponColor, count } = this.props
-    const { isItemChecked, showDetail, isExpanded } = this.state
+  render() {
+    const {
+      info,
+      isShowCheckout,
+      isChoosed,
+      onClick,
+      colors,
+      isExist,
+      invalidCouponColor,
+      count
+    } = this.props;
+    const { isItemChecked, showDetail, isExpanded } = this.state;
 
     if (!info) {
-      return null
+      return null;
     }
 
-    const isDisabled = info.status === '2' || info.tagClass === 'overdue' || this.props.isDisabled
-    const req = new RegExp("-","g")
-    const obj = this.handleType(info.card_type)
-    const content = info.description.split('\n') || []
-    const begin_date = info.begin_date.replace(req, '.')
-    const end_date = info.end_date.replace(req, '.')
-    const time = parseInt(new Date().getTime() / 1000)
+    const isDisabled =
+      info.status === "2" ||
+      info.tagClass === "overdue" ||
+      this.props.isDisabled;
+    const req = new RegExp("-", "g");
+    const obj = this.handleType(info.card_type);
+    const content = info.description.split("\n") || [];
+    const begin_date = info.begin_date.replace(req, ".");
+    const end_date = info.end_date.replace(req, ".");
+    const time = parseInt(new Date().getTime() / 1000);
     return (
       <View className="coupon-item-index" onClick={this.props.onClick}>
         <View className="content">
@@ -135,9 +147,7 @@ export default class CouponItem extends Component {
           <View className="coupon-item">
             <View
               className="coupon-item__content"
-              style={`background-image: url(${
-                process.env.APP_IMAGE_CDN
-              }${"/coupon_FFF.png"})`}
+              style={`background-image: url(${APP_IMAGE_CDN}${"/coupon_FFF.png"})`}
             >
               <View className="coupon-item___description">
                 <View>
@@ -178,7 +188,7 @@ export default class CouponItem extends Component {
                   <View className="text">详细信息</View>
                   <Image
                     className="arrow"
-                    src={`${process.env.APP_IMAGE_CDN}${
+                    src={`${APP_IMAGE_CDN}${
                       isExpanded
                         ? "/coupon_arrow_up.png"
                         : "/coupon_arrow_down.png"
@@ -194,7 +204,7 @@ export default class CouponItem extends Component {
                   "coupon-item__name",
                   isDisabled ? "coupon-item__name-not" : null
                 )}
-                style={`background-image: url(${process.env.APP_IMAGE_CDN}${
+                style={`background-image: url(${APP_IMAGE_CDN}${
                   info.tagClass === "used" || info.tagClass === "overdue"
                     ? "/coupon_inval.png"
                     : "/coupon_mj.png"
@@ -237,11 +247,11 @@ export default class CouponItem extends Component {
                   "coupon-item__name",
                   isDisabled ? "coupon-item__name-not" : null
                 )}
-                style={
-                  isDisabled
-                    ? `background: #d7d7d7`
-                    : `background: ${colors.data[0].primary}`
-                }
+                style={`background-image: url(${APP_IMAGE_CDN}${
+                  info.tagClass === "used" || info.tagClass === "overdue"
+                    ? "/coupon_inval.png"
+                    : "/coupon_dh.png"
+                })`}
               >
                 <View className="coupon-item___number">兑换券</View>
                 {/* <View className='radius-view radius-left-top'> </View>
@@ -254,7 +264,7 @@ export default class CouponItem extends Component {
                   "coupon-item__name",
                   isDisabled ? "coupon-item__name-not" : null
                 )}
-                style={`background-image: url(${process.env.APP_IMAGE_CDN}${
+                style={`background-image: url(${APP_IMAGE_CDN}${
                   info.tagClass === "used" || info.tagClass === "overdue"
                     ? "/coupon_inval.png"
                     : "/coupon_dh.png"
@@ -289,7 +299,7 @@ export default class CouponItem extends Component {
                   "coupon-item__name",
                   isDisabled ? "coupon-item__name-not" : null
                 )}
-                style={`background-image: url(${process.env.APP_IMAGE_CDN}${
+                style={`background-image: url(${APP_IMAGE_CDN}${
                   info.tagClass === "used" || info.tagClass === "overdue"
                     ? "/coupon_inval.png"
                     : "/coupon_zk.png"

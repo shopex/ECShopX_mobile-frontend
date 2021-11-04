@@ -8,7 +8,8 @@ import {
   SpLogin,
   SpImage,
   SpPrice,
-  SpFloatPrivacy
+  SpFloatPrivacy,
+  CouponModal
 } from "@/components";
 import api from "@/api";
 import S from "@/spx";

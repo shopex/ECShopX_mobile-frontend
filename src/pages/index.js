@@ -12,7 +12,8 @@ import {
   SpStorePicker,
   SpScancode,
   SpRecommend,
-  SpSearch
+  SpSearch,
+  CouponModal
 } from "@/components";
 import req from "@/api/req";
 import api from "@/api";
@@ -93,7 +94,9 @@ export default class Home extends Component {
       show_tabBar: true,
       advertList: [],
       currentShowAdvert: 0,
-      recommendList: null
+      recommendList: null,
+      all_card_list: [],
+      visible: false
     };
   }
 
@@ -136,8 +139,24 @@ export default class Home extends Component {
     // 检测白名单
     this.checkWhite();
     // 购物车数量
-    // this.fetchCartCount();
-    // this.getPointSetting();
+    this.fetchCartCount();
+    this.getPointSetting();
+    if (S.getAuthToken()) {
+      this.getCurrentGrad()
+    }
+  }
+
+  // 配置信息
+  config = {
+    enablePullDownRefresh: true,
+    backgroundTextStyle: "dark",
+    onReachBottomDistance: 50
+  };
+
+  getCurrentGrad = () => {
+    api.vip.getCurrentGradList().then((res)=> {
+      this.fetchCouponCardList(res.type)
+    })
   }
 
   // 下拉刷新
@@ -647,6 +666,25 @@ export default class Home extends Component {
     });
   };
 
+  fetchCouponCardList (receive_type) {
+    api.vip.getShowCardPackage({ receive_type })
+    .then(({ all_card_list }) => {
+      if (all_card_list && all_card_list.length > 0) {
+        this.setState({ visible: true })
+      }
+      this.setState({ all_card_list })
+    })
+  }
+
+  handleCouponChange = (visible, type) => {
+    if (type === 'jump') {
+      Taro.navigateTo({
+        url: `/marketing/pages/member/coupon`
+      })
+    }
+    this.setState({ visible })
+  }
+
   render() {
     const {
       show_tabBar,
@@ -667,7 +705,9 @@ export default class Home extends Component {
       is_open_official_account,
       is_open_store_status,
       show_official,
-      recommendList
+      recommendList,
+      visible,
+      all_card_list
     } = this.state;
 
     const pages = Taro.getCurrentPages();
@@ -793,10 +833,8 @@ export default class Home extends Component {
 
         {/* 开屏广告 */}
         {showAdv && <ScreenAd />}
+<<<<<<< HEAD
 
         {/* tabBar */}
-        <TabBar showbar={show_tabBar} />
-      </View>
-    );
   }
 }
