@@ -134,10 +134,10 @@ export default class DistributionShop extends Component {
             <View className='achievement-label'>小店任务返佣额 </View>
             <View className='achievement-amount'><Text className='amount-cur'>¥</Text> {info.turnover / 100}</View>
           </View>
-          <View className='content-padded-b shop-achievement'>
+          {/* <View className='content-padded-b shop-achievement'>
             <View className='achievement-label'>小店返佣积分</View>
             <View className='achievement-amount'>{info.point || 0} <Text className='amount-cur'>分</Text> </View>
-          </View>
+          </View> */}
         </View>
         <View className='grid two-in-row'>
           <View className='grid-item shop-nav-item' onClick={this.handleClick.bind(this, 'achievement')}>

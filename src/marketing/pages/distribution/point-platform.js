@@ -97,14 +97,14 @@ export default class PointPlatform extends Component {
               </View>
             </View>
           </View>
-          <View className="section section-card analysis">
+          {/* <View className="section section-card analysis">
             <View className="content-padded-b">
               <View>
                 <View className="data-label">小店提成</View>
                 <View className="data-amount">{info.rebate_point}</View>
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
     )
