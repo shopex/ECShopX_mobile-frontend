@@ -19,17 +19,17 @@ export default class SpLoading extends Component {
 
     return (
       <View
-        className={classNames("loading", type && `loading__${type}`, className)}
+        className={classNames("sp-loading", type && `sp-loading__${type}`, className)}
       >
         {img ? (
-          <Image src={img} className="loading-img" />
+          <Image src={img} className="sp-loading-img" />
         ) : (
           <View
             className="spiner"
             style={`${size ? `width: ${size}, height: ${size}` : ""}`}
           />
         )}
-        <Text className="loading-text">{this.props.children}</Text>
+        <Text className="sp-loading-text">{this.props.children}</Text>
       </View>
     );
   }
