@@ -39,10 +39,7 @@ export default class PrivateConfirmModal extends Component {
               />
               <View className='container'>
                 <View className='top'>
-                  <Image
-                    src={`${APP_IMAGE_CDN}/private_tips.png`}
-                    className='tips'
-                  />
+                  <Image src={`${APP_IMAGE_CDN}/private_tips.png`} className='tips' />
                   <View>个人隐私保护指引</View>
                 </View>
                 <View className='content'>
@@ -55,7 +52,7 @@ export default class PrivateConfirmModal extends Component {
                   >
                     《用户协议》
                   </Text>
-                  <Text>,</Text>
+                  <Text>、</Text>
                   <Text
                     className='link'
                     onClick={this.handleClickAgreement.bind(this, 'privacy')}
