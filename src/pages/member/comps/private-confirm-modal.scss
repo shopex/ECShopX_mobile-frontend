@@ -10,14 +10,14 @@
   z-index: 9999;
   .block {
     padding: 10px;
-    height: 860px;
-    width: 80%;
+    height: 770px;
+    width: 83%;
     position: relative;
     top: 15%;
     left: 10%;
   }
   .background {
-    height: 860px;
+    height: 770px;
     border-radius: 16px;
   }
   .container {
@@ -28,6 +28,7 @@
   .top {
     display: flex;
     margin-bottom: 40px;
+    font-weight: bold;
   }
   .tips {
     height: 36px;
@@ -38,6 +39,7 @@
     padding: 35px 40px;
     background-color: #fff;
     margin-bottom: 10px;
+    line-height: 48px;
   }
   .link {
     color: rgba(219, 105, 42, 1);
@@ -51,11 +53,12 @@
   }
   .bottom {
     display: flex;
+    margin-top: 37px;
   }
   .cancel {
     background: #ffffff;
     border-radius: 8px;
-    padding: 0 70px;
+    padding: 0 90px;
     margin: 0 -25px;
 
   }
@@ -63,7 +66,7 @@
     color: #fff;
     background: #db692a;
     border-radius: 8px;
-    padding: 0 70px;
+    padding: 0 90px;
     margin: 0 -25px;
   }
 }
