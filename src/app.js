@@ -2,7 +2,6 @@ import Taro, { Component } from "@tarojs/taro";
 import S from "@/spx";
 import { Provider } from "@tarojs/redux";
 import configStore from "@/store";
-import useHooks from "@/hooks";
 import req from "@/api/req";
 import api from "@/api";
 import { normalizeQuerys, isGoodsShelves,payTypeField } from "@/utils";
@@ -58,7 +57,6 @@ const getHomeSetting = async () => {
   Taro.setStorageSync("distributor_param_status", distributor_param_status);
 };
 
-useHooks();
 
 // 获取基础配置
 getHomeSetting();

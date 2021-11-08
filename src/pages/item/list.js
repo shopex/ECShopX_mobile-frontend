@@ -15,6 +15,7 @@ import {
   SpNote,
   SpNavBar,
   SpTagBar,
+  SpLoadMore,
   TabBar
 } from "@/components";
 import api from "@/api";
@@ -28,7 +29,7 @@ import {
   styleNames,
   getThemeStyle
 } from "@/utils";
-import { usePage } from "@/sphooks";
+import { usePage } from "@/hooks";
 import entry from "../../utils/entry";
 
 import "./list.scss";
@@ -52,6 +53,7 @@ function ItemList() {
     rightList: []
   });
   const { leftList, rightList } = list;
+
   const fetch = async ({ pageIndex, pageSize }) => {
     console.log("fetch.........");
     const params = {
@@ -60,36 +62,34 @@ function ItemList() {
     };
     const {
       list,
-      total_count: total,
+      total_count,
       item_params_list = [],
       select_tags_list = []
     } = await api.item.search(params);
-    const leftList = list.filter((item, index) => {
+    const resLeftList = list.filter((item, index) => {
       if (index % 2 == 0) {
         return item;
       }
     });
-    const rightList = list.filter((item, index) => {
+    const resRightList = list.filter((item, index) => {
       if (index % 2 == 1) {
         return item;
       }
     });
     setList({
-      leftList,
-      rightList
+      leftList: [...leftList, ...resLeftList],
+      rightList: [...rightList, ...resRightList]
     });
+    setTotal(total_count);
   };
 
-  const { nextPage } = usePage({ fetch });
+  const { loading, hasNext, total, setTotal, nextPage, resetPage } = usePage({
+    fetch
+  });
+  
+  // resetPage()
 
-  // useEffect(() => {
-  //   nextPage();
-  // });
-
-  // useEffect( async () => {
-
-  // }, [])
-
+  console.log("usePage loading:", loading, hasNext, total);
   return (
     <View
       className={classNames("page-goods-list", {
@@ -144,6 +144,9 @@ function ItemList() {
             ))}
           </View>
         </View>
+
+        {/* 分页loading */}
+        <SpLoadMore loading={loading} hasNext={hasNext} total={total} />
       </ScrollView>
 
       {/* <BackToTop

@@ -58,6 +58,8 @@ import SpTabsPane from "./sp-tabs-pane";
 import SpImage from "./sp-image";
 import SpCheckboxNew from "./sp-checkbox";
 import SpInputNumber from "./sp-input-number";
+import SpLoadMore from "./sp-load-more";
+import SpLoading from "./sp-loading";
 
 import SpImgPicker from "./img-picker";
 import SpCell from "./sp-cell";
@@ -93,5 +95,7 @@ export {
   SpTabsPane,
   SpImage,
   SpCheckboxNew,
-  SpInputNumber
+  SpInputNumber,
+  SpLoadMore,
+  SpLoading
 };
