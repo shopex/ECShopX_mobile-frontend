@@ -18,17 +18,15 @@ import {
   navigateTo,
   getThemeStyle,
   classNames,
-  showModal,
   isWeixin,
   platformTemplateName,
   transformPlatformUrl
 } from "@/utils";
 import qs from 'qs';
-import {
-  customName
-} from '@/utils/point';
+import { customName } from '@/utils/point';
 import userIcon from '@/assets/imgs/user-icon.png'
-import MemberBanner from "./comps/member-banner";
+import MemberBanner from "./comps/member-banner"
+
 import "./index.scss";
 
 @connect(
@@ -87,14 +85,6 @@ export default class MemberIndex extends Component {
     };
   }
 
-  config = {
-    navigationBarTitleText: "",
-    enablePullDownRefresh: true,
-    onReachBottomDistance: 50,
-    backgroundTextStyle: "dark",
-    navigationStyle: "custom"
-  };
-
   componentWillMount() {
     this.fetch();
     this.getSetting();
@@ -110,6 +100,14 @@ export default class MemberIndex extends Component {
     if (S.getAuthToken()) {
       this.fetchCouponCardList()
     }
+  }
+
+  config = {
+    navigationBarTitleText: "",
+    enablePullDownRefresh: true,
+    onReachBottomDistance: 50,
+    backgroundTextStyle: "dark",
+    navigationStyle: "custom"
   }
 
   async onShareAppMessage() {

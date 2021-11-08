@@ -1,0 +1,69 @@
+@import "@/style/imports";
+
+.private-confirm-modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  .block {
+    padding: 10px;
+    height: 860px;
+    width: 80%;
+    position: relative;
+    top: 15%;
+    left: 10%;
+  }
+  .background {
+    height: 860px;
+    border-radius: 16px;
+  }
+  .container {
+    position: absolute;
+    top: 5%;
+    padding: 40px;
+  }
+  .top {
+    display: flex;
+    margin-bottom: 40px;
+  }
+  .tips {
+    height: 36px;
+    width: 36px;
+    margin-right: 19px;
+  }
+  .content {
+    padding: 35px 40px;
+    background-color: #fff;
+    margin-bottom: 10px;
+  }
+  .link {
+    color: rgba(219, 105, 42, 1);
+  }
+  .confirm {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  .at-checkbox {
+    background: transparent !important;
+  }
+  .bottom {
+    display: flex;
+  }
+  .cancel {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0 70px;
+    margin: 0 -25px;
+
+  }
+  .agree {
+    color: #fff;
+    background: #db692a;
+    border-radius: 8px;
+    padding: 0 70px;
+    margin: 0 -25px;
+  }
+}
