@@ -9,16 +9,6 @@ export default class PrivateConfirmModal extends Component {
     super(props)
   }
 
-  onClose = () => {
-    const { onCancel } = this.props
-    onCancel && onCancel()
-  }
-
-  onAgree = () => {
-    this.onClose()
-    this.props.onLoginChange(true)
-  }
-
   handleClickAgreement = type => {
     Taro.navigateTo({
       url: "/subpage/pages/auth/reg-rule?type=" + type
@@ -26,11 +16,11 @@ export default class PrivateConfirmModal extends Component {
   }
 
   render() {
-    const { isOpenModal } = this.props
+    const { visible, onChange } = this.props
 
     return (
       <View>
-        {isOpenModal && (
+        {visible && (
           <View className='privacy-confirm-modal'>
             <View className='block'>
               <Image
@@ -64,10 +54,10 @@ export default class PrivateConfirmModal extends Component {
                   </Text>
                 </View>
                 <View className='bottom'>
-                  <Button onClick={this.onClose.bind(this)}>
+                  <Button onClick={() => onChange('reject')}>
                     <View className='cancel'>拒绝</View>
                   </Button>
-                  <Button onClick={this.onAgree.bind(this)}>
+                  <Button onClick={() => onChange('agree')}>
                     <View className='agree'>同意</View>
                   </Button>
                 </View>
