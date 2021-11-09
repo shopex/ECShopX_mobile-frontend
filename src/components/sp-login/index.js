@@ -6,6 +6,8 @@ import S from "@/spx";
 import api from "@/api";
 import { isWeixin, isAlipay, classNames, tokenParse } from "@/utils";
 import { Tracker } from "@/service";
+import PrivacyConfirmModal from '@/components'
+
 import "./index.scss";
 
 @connect(
@@ -23,11 +25,10 @@ export default class SpLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      token: S.getAuthToken()
+      token: S.getAuthToken(),
+      privacyVisible: false
     };
   }
-
-  componentDidMount() { }
 
   /** 设置导购id */
   setSalespersonId = (params) => {
@@ -164,9 +165,21 @@ export default class SpLogin extends Component {
     this.props.onChange && this.props.onChange();
   }
 
+  onPrivateChange = async (type) => {
+    console.log(type, '--')
+    if (type == 'agree')  Taro.setStorageSync("isPrivacy", true)
+    this.setState({ privacyVisible: false })
+  }
+
+  onClickChange = () => {
+    this.setState({ privacyVisible: true })
+  }
+
 
   render() {
-    const { token } = this.state;
+    const { token, privacyVisible } = this.state;
+    let policy = Taro.getStorageSync("isPrivacy")
+    console.log(policy, 'policy', privacyVisible)
     return (
       <View className={classNames("sp-login", this.props.className)}>
         {token && (
@@ -175,13 +188,18 @@ export default class SpLogin extends Component {
           </View>
         )}
 
-        {!token && isWeixin && <AtButton
+        {!token && policy && isWeixin && <AtButton
           className="login-btn"
           openType="getPhoneNumber"
           onGetPhoneNumber={this.handleBindPhone.bind(this)}
         >
           {this.props.children}
         </AtButton>}
+
+        {
+          !token && !policy && isWeixin &&
+          <View onClick={this.onClickChange.bind(this)}>{this.props.children}</View>
+        }
 
         {!token && isAlipay && <Button
           className="login-btn ali-button"
@@ -193,6 +211,7 @@ export default class SpLogin extends Component {
         </Button>
         }
 
+        <PrivacyConfirmModal visible={privacyVisible} onChange={this.onPrivateChange}  />
       </View>
     );
   }

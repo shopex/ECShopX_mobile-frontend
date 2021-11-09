@@ -431,6 +431,7 @@ export default class Home extends Component {
         }
       }
     );
+    // Taro.setStorageSync("isPrivacy", false);
   };
 
   // 获取弹窗广告配置
