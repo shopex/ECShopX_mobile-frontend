@@ -1,7 +1,7 @@
 import Taro, { Component } from "@tarojs/taro"
 import { View, Image, Button, Text } from "@tarojs/components"
 
-import "./private-confirm-modal.scss"
+import "./privacy-confirm-modal.scss"
 
 export default class PrivateConfirmModal extends Component {
   static defaultProps = {}
@@ -31,15 +31,15 @@ export default class PrivateConfirmModal extends Component {
     return (
       <View>
         {isOpenModal && (
-          <View className='private-confirm-modal'>
+          <View className='privacy-confirm-modal'>
             <View className='block'>
               <Image
-                src={`${APP_IMAGE_CDN}/private_bck.png`}
+                src={`${APP_IMAGE_CDN}/privacy_bck.png`}
                 className='background'
               />
               <View className='container'>
                 <View className='top'>
-                  <Image src={`${APP_IMAGE_CDN}/private_tips.png`} className='tips' />
+                  <Image src={`${APP_IMAGE_CDN}/privacy_tips.png`} className='tips' />
                   <View>个人隐私保护指引</View>
                 </View>
                 <View className='content'>
