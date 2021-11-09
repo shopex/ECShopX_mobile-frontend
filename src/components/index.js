@@ -46,6 +46,7 @@ export { default as PointTag } from './point-tag'
 export { default as SpMoreImg } from './more-img'
 export { default as SpLogin } from "./sp-login";
 export { default as SpFloatPrivacy } from "./sp-float-privacy";
+export { default as PrivacyConfirmModal } from "./privacy-confirm-modal";
 export { default as SpImgPicker } from "./img-picker";
 
 

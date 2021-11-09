@@ -1,9 +1,9 @@
 import Taro, { Component } from "@tarojs/taro"
 import { View, Image, Button, Text } from "@tarojs/components"
+import { SpLogin } from '@/components'
+import "./index.scss"
 
-import "./privacy-confirm-modal.scss"
-
-export default class PrivateConfirmModal extends Component {
+export default class PrivacyConfirmModal extends Component {
   static defaultProps = {}
   constructor(props) {
     super(props)
@@ -57,9 +57,14 @@ export default class PrivateConfirmModal extends Component {
                   <Button onClick={() => onChange('reject')}>
                     <View className='cancel'>拒绝</View>
                   </Button>
-                  <Button onClick={() => onChange('agree')}>
+                  <SpLogin>
+                    <Button onClick={() => onChange('agree')}>
+                      <View className='agree'>同意</View>
+                    </Button>
+                  </SpLogin>
+                  {/* <Button onClick={() => onChange('agree')}>
                     <View className='agree'>同意</View>
-                  </Button>
+                  </Button> */}
                 </View>
               </View>
             </View>

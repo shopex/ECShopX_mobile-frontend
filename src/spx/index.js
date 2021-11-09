@@ -241,6 +241,10 @@ class Spx {
   async login(ctx, isRedirect = false) {
     let code, token;
     if (isWeixin) {
+      let policy = Taro.getStorageSync("isPrivacy")
+      if (!policy) {
+        return true
+      }
       const resLogin = await Taro.login() || {};
       code = resLogin.code;
       const tokenLogin = await api.wx.login({ code }) || {}
