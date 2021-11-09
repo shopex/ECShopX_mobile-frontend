@@ -12,9 +12,10 @@
     padding: 10px;
     height: 770px;
     width: 83%;
-    position: relative;
-    top: 15%;
-    left: 10%;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .background {
     height: 770px;
