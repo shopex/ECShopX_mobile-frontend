@@ -149,8 +149,6 @@ export default class SpLogin extends Component {
         console.log('getPhoneNumber_fail');
       }
     });
-
-
   }
 
 

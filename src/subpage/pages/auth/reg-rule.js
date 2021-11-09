@@ -31,6 +31,11 @@ export default class RegRule extends Component {
       const { content, title = '充值协议' } = await api.member.depositPayRule()
       data = content
       navBarTitle = title
+    } else if (type === 'privacyAndregister') {
+      const { content: privacyContent, title: privactTitle } = await api.shop.getRuleInfo({ type: 'privacy' })
+      const { content: registerContent, title: registerTitle } = await api.user.regRule()
+      data = privacyContent + registerContent
+      navBarTitle = `${privactTitle}和${registerTitle}`
     } else if (type) {
       // 隐私政策
       const { content, title = '充值协议' } = await api.shop.getRuleInfo({
@@ -57,8 +62,6 @@ export default class RegRule extends Component {
 
   render () {
     const { info, title } = this.state
-
-    console.log("---info--",info)
 
     return (
       <View className='page-member-integral'>
