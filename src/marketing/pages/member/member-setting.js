@@ -3,6 +3,7 @@ import { View, Button } from "@tarojs/components";
 import req from "@/api/req";
 import { SpCell } from "@/components";
 import S from "@/spx";
+import DestoryConfirm from './comps/destory-comfirm-modal';
 
 import "./member-setting.scss";
 
@@ -10,8 +11,12 @@ export default class SettingIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      redirectInfo: {}
-    };
+      redirectInfo: {},
+      visible: false,
+      title: '',
+      content: '',
+      confirmBtnContent: ''
+    }
   }
 
   componentDidShow() {
@@ -67,9 +72,12 @@ export default class SettingIndex extends Component {
   }
 
   async handleCancelMenber() {
-    console.log('注销会员')
-    this.handleClickWxOAuth("/marketing/pages/member/destroy-member", true)
-    //
+    this.setState({
+      visible: true,
+      title: '注销账号',
+      content: '有未完成的订单点击注销账号，弹出弹窗，弹窗内容为后台配置',
+      confirmBtnContent: '我知道了'
+    })
     // Taro.showLoading()
     // const url = `/member`
     // req.delete(url).then(res => {
@@ -116,7 +124,17 @@ export default class SettingIndex extends Component {
     // Taro.hideLoading();
   }
 
+  handCancel = (parmas) => {
+    console.log(parmas)
+    if (parmas === 'confirm') {
+      // 我知道了
+      this.handleClickWxOAuth("/marketing/pages/member/destroy-member", true)
+    }
+    this.setState({ visible: false })
+  }
+
   render() {
+    const { visible, content, title, confirmBtnContent } = this.state
     return (
       <View className='member-setting'>
         <View className='page-member-section'>
@@ -140,6 +158,7 @@ export default class SettingIndex extends Component {
             </Button>
           )}
         </View>
+        <DestoryConfirm visible={visible} content={content} title={title} confirmBtn={confirmBtnContent} onCancel={this.handCancel} />
       </View>
     );
   }
