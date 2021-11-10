@@ -193,10 +193,9 @@ export default class SpLogin extends Component {
     const { token, privacyVisible, update_time } = this.state;
     let pritecy_time = Taro.getStorageSync("PrivacyUpdate_time")
     let policy = true
-    if (!pritecy_time || pritecy_time <= update_time) {
+    if (!pritecy_time || pritecy_time != update_time) {
       policy = false
     }
-    // console.log(pritecy_time, update_time, 'pritecy_time', privacyVisible)
     return (
       <View className={classNames("sp-login", this.props.className)}>
         {token && (
