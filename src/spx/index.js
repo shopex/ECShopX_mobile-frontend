@@ -243,7 +243,7 @@ class Spx {
     if (isWeixin) {
       let { update_time } = await api.wx.getPrivacyTime()
       let policy = Taro.getStorageSync("PrivacyUpdate_time")
-      if (!policy || policy <= update_time) {
+      if (!policy || policy != update_time) {
         return true
       }
 
