@@ -192,7 +192,7 @@ export default class MemberIndex extends Component {
     ] );
 
     this.setState({
-      bannerSetting: bannerSetting.list[0].params.data,
+      bannerSetting: bannerSetting.list.length > 0 ? bannerSetting.list[0].params.data : null,
       menuSetting: menuSetting.list[0].params.data,
       score_menu_open: pointItemSetting.entrance.mobile_openstatus
     });
@@ -667,11 +667,11 @@ export default class MemberIndex extends Component {
           </View>
         </View>
 
-        {/* {bannerSetting && bannerSetting.is_show && (
+        {bannerSetting && bannerSetting.is_show && (
           <View className="page-member-section">
             <MemberBanner info={bannerSetting} />
           </View>
-        )} */}
+        )}
 
         <View className="page-member-section">
           {memberData.is_open_popularize && isWeixin && (
