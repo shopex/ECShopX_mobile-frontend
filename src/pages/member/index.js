@@ -190,7 +190,7 @@ export default class MemberIndex extends Component {
     ] );
 
     this.setState({
-      bannerSetting: bannerSetting.list[0].params.data,
+      bannerSetting: bannerSetting.list.length > 0 ? bannerSetting.list[0].params.data : null,
       menuSetting: menuSetting.list[0].params.data,
       score_menu_open: pointItemSetting.entrance.mobile_openstatus
     });
