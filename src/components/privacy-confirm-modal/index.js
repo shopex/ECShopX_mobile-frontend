@@ -1,16 +1,32 @@
 import Taro, { Component } from "@tarojs/taro"
 import { View, Image, Button, Text } from "@tarojs/components"
+import api from "@/api"
+
 import "./index.scss"
 
 export default class PrivacyConfirmModal extends Component {
   static defaultProps = {}
   constructor(props) {
     super(props)
+    this.state = {
+      info: null
+    }
+  }
+
+  componentDidMount() {
+    this.fetch()
   }
 
   handleClickAgreement = type => {
     Taro.navigateTo({
       url: "/subpage/pages/auth/reg-rule?type=" + type
+    })
+  }
+
+  async fetch() {
+    const data = await api.shop.getStoreBaseInfo()
+    this.setState({
+      info: data
     })
   }
 
@@ -24,6 +40,7 @@ export default class PrivacyConfirmModal extends Component {
   }
 
   render() {
+    const { info } = this.state
     const { visible, onChange } = this.props
 
     return (
@@ -48,14 +65,14 @@ export default class PrivacyConfirmModal extends Component {
                     className='link'
                     onClick={this.handleClickAgreement.bind(this, 'privacy')}
                   >
-                    《用户协议》
+                    《{info.protocol.member_register}》
                   </Text>
                   <Text>、</Text>
                   <Text
                     className='link'
                     onClick={this.handleClickAgreement.bind(this, 'privacy')}
                   >
-                    《隐私政策》
+                    《{info.protocol.privacy}》
                   </Text>
                   <Text>
                     了解详细信息。如您同意，请点击”同意“开始接受我们的服务。
