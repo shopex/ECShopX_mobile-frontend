@@ -119,7 +119,7 @@
   .wgts-wrap {
     $self: &;
     padding-top: $home-header-height;
-    // padding-bottom: $tabbar-height;
+    padding-bottom: $tabbar-height;
     background: #fff;
     &.has-header-block {
       padding-top: 80px;

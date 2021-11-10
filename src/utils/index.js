@@ -456,7 +456,6 @@ export function isGoodsShelves() {
 }
 
 export function getThemeStyle() {
-  // const systemTheme = S.get( "SYSTEM_THEME" );
   const result = store.getState();
   if (typeof result.system != 'undefined') {
     const { colorPrimary, colorMarketing, colorAccent } = result.system;

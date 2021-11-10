@@ -85,16 +85,18 @@ export default class CouponItem extends Component {
         invalidFc: "#888888",
         opacity: "0.4"
       }
-    ];
-    switch (e) {
-      case "new_gift":
-        return type[0];
-      case "cash":
-        return type[1];
-      case "discount":
-        return type[2];
-      default:
-        return null;
+    ]
+    switch(e) {
+      case 'new_gift':
+        return type[0]
+      case 'gift':
+        return type[0]
+      case 'cash':
+        return type[1]
+      case 'discount':
+        return type[2]
+      default: 
+        return null
     }
   }
 

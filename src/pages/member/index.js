@@ -28,6 +28,8 @@ import {
 import { transformPlatformUrl, platformTemplateName } from "@/utils/platform";
 import qs from "qs";
 import userIcon from "@/assets/imgs/user-icon.png";
+import CompsVipCard from './comps/comp-vipcard'
+import CompsPanel from './comps/comp-panel'
 import "./index.scss";
 
 // @connect(
@@ -42,7 +44,6 @@ import "./index.scss";
 //   @withLogin()
 
 function MemberIndex( props ) {
-  // const []
   const [menu, setMenu] = useState({
     activity: false,
     offline_order: false,
@@ -89,7 +90,7 @@ function MemberIndex( props ) {
         })}
       >
         <View className="header-hd">
-          <SpImage className="usericon" src="default_user.png" />
+          <SpImage className="usericon" src="default_user.png" width="110" />
           <View>
             <View className="username-wrap">
               <Text className="username">获取昵称</Text>
@@ -120,26 +121,42 @@ function MemberIndex( props ) {
             <View className="bd-item-value">0</View>
           </View>
         </View>
-        <View className="header-ft"></View>
+        <View className="header-ft">
+          <CompsVipCard />
+        </View>
       </View>
-
-      <View className="kt-vip">
-        <View className="lf-con">
-          <View className="vip-title">
-            开通VIP会员<Text className="iconfont icon-qianwang-01"></Text>
+      <View className="body-block">
+        <CompsPanel title="订单" extra="查看全部订单">
+          <View className="ziti-order">
+            <View>
+              <View>自提订单</View>
+              <View className="ziti-">您有0个等待自提的订单</View>
+            </View>
+            <Text className='iconfont'></Text>
           </View>
-          <View className="vip-desc">即刻享受最高1折会员优惠</View>
-        </View>
-        <View className="rg-con">
-          <View className="vip-xf">
-            续费<Text className="iconfont icon-qianwang-01"></Text>
+          <View className="order-con">
+            <View className="order-item">
+              <SpImage src="" />
+              <Text className=""></Text>
+            </View>
+            <View className="order-item">
+              <SpImage src="" />
+              <Text className=""></Text>
+            </View>
+            <View className="order-item">
+              <SpImage src="" />
+              <Text className=""></Text>
+            </View>
+            <View className="order-item">
+              <SpImage src="" />
+              <Text className=""></Text>
+            </View>
           </View>
-          <View className="xs-price">限时特价</View>
-        </View>
+        </CompsPanel>
       </View>
 
       <View className="order-block">
-        <View className="block-hd"></View>
+        <View className="block-hd">订单</View>
         <View className="block-bd"></View>
       </View>
 
