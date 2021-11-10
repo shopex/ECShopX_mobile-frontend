@@ -1,20 +1,20 @@
 .pages-member-index {
   .header-block {
-    height: 420px;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+  }
+  .usericon {
+    border: 4px solid #fff;
+    width: 110px;
+    height: 110px;
+    border-radius: 50px;
+    margin-right: 20px;
+    overflow: hidden;
   }
   .header-hd {
     padding: 32px;
     display: flex;
     align-items: center;
-    .usericon {
-      border: 4px solid #fff;
-      width: 110px;
-      height: 110px;
-      border-radius: 50px;
-      margin-right: 30px;
-    }
     .username {
       font-size: 32px;
       color: #222;
@@ -33,21 +33,10 @@
   .header-bd {
     display: flex;
     align-items: center;
+    justify-content: center;
     .bd-item {
       flex: 1;
       text-align: center;
-      position: relative;
-      :not(:last-child) {
-        &:after {
-          content: "";
-          width: 1px;
-          height: 48px;
-          background: #ccc;
-          position: absolute;
-          top: 20px;
-          right: 0;
-        }
-      }
     }
     .bd-item-label {
       color: #666;
@@ -58,50 +47,17 @@
       font-size: 36px;
     }
   }
-  .kt-vip {
-    margin: 24px 36px;
-    border: 1px solid #f5a623;
-    border-radius: 20px;
-    background-color: #fff2df;
-    padding: 16px 24px;
-    display: flex;
-    .lf-con {
-      flex: 1;
-      position: relative;
-      &:after {
-        content: " ";
-        position: absolute;
-        width: 1PX;
-        height: 60px;
-        background: #F5A623;
-        top: 20px;
-        right: 30px;
-      }
-    }
-    // .rg-con {
-    //   wi
-    // }
-    .vip-title,
-    .vip-xf {
-      font-size: 30px;
-      color: #725320;
-      font-weight: bold;
-    }
-    .vip-desc,
-    .xs-price {
-      color: #725320;
-      font-size: 24px;
-    }
-    .icon-qianwang-01 {
-      font-size: 28px;
-      color: #725320;
-      font-weight: normal;
-    }
+  .header-ft {
+
+  }
+
+  .body-block {
+    padding: 24px 16px;
   }
 
   .service-block {
     background: #fff;
-    box-shadow: 0px 2px 10px 0px rgba(234,231,224,1);
+    box-shadow: 0px 2px 10px 0px rgba(234, 231, 224, 1);
     margin: 0 16px 24px;
     .block-hd {
       color: #333;

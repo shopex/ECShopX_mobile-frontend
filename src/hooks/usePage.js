@@ -28,6 +28,9 @@ export default props => {
     });
   };
 
+  /**
+   * @function 分页重置
+   */
   const resetPage = () => {
     setPage({
       ...page,
@@ -38,7 +41,6 @@ export default props => {
     setHasNext(true);
   };
 
-  console.log("setTotal:", total);
 
   return {
     total,

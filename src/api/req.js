@@ -259,9 +259,9 @@ class API {
               });
               if ( !API.isRefreshing ) {
                 API.isRefreshing = true
-                debugger
+                // debugger
                 api.wx.refreshToken().then(res => {
-                  debugger;
+                  // debugger;
                   S.setAuthToken();
                 } ).finally( () => {
                   API.isRefreshing = false

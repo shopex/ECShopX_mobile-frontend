@@ -21,8 +21,7 @@ import {
   redirectUrl,
   buriedPoint,
   isAlipay,
-  isWeixin,
-  getPointName
+  isWeixin
 } from "@/utils";
 import { lockScreen } from "@/utils/dom";
 import { Tracker } from "@/service";
@@ -1716,12 +1715,12 @@ export default class CartCheckout extends Component {
   render() {
     // 支付方式文字
     const payTypeText = {
-      point: `${getPointName()}支付`,
-      wxpay: isWeixin ? "微信支付" : isAlipay ? "支付宝支付" : "现金支付",
-      deposit: "余额支付",
-      delivery: "货到付款",
-      hfpay: "微信支付"
-    };
+      point: customName('积分支付'),
+      wxpay: isWeixin ? '微信支付' : isAlipay ? '支付宝支付' : '现金支付',
+      deposit: '余额支付',
+      delivery: '货到付款',
+      hfpay: '微信支付'
+    }
 
     const { coupon, colors } = this.props;
     const {
@@ -1933,35 +1932,48 @@ export default class CartCheckout extends Component {
               );
             })}
           </View>
+ 
+          {isWeixin && !this.isPointitemGood() && !bargain_id &&  total.invoice_status && (
+            <SpCell
+              isLink
+              className="trade-invoice"
+              title="开发票"
+              onClick={this.handleInvoiceClick}
+            >
+              <View className="invoice-title">
+                {invoiceTitle && (
+                  <View
+                    className="icon-close invoice-guanbi"
+                    onClick={this.resetInvoice.bind(this)}
+                  ></View>
+                )}
+                {invoiceTitle || "否"}
+              </View>
+            </SpCell>
+          )}
+          {(isPackage && express) && <SelectPackage isPointitem={this.isPointitemGood()} isChecked={isNeedPackage} onHanleChange={this.changeNeedPackage.bind(this)} packInfo={pack} />}
 
-          {isWeixin &&
-            !this.isPointitemGood() &&
-            !bargain_id &&
-            total.invoice_status && (
-              <SpCell
-                isLink
-                className="trade-invoice"
-                title="开发票"
-                onClick={this.handleInvoiceClick}
-              >
-                <View className="invoice-title">
-                  {invoiceTitle && (
-                    <View
-                      className="icon-close invoice-guanbi"
-                      onClick={this.resetInvoice.bind(this)}
-                    ></View>
-                  )}
-                  {invoiceTitle || "否"}
-                </View>
-              </SpCell>
-            )}
-          {isPackage && express && (
-            <SelectPackage
-              isPointitem={this.isPointitemGood()}
-              isChecked={isNeedPackage}
-              onHanleChange={this.changeNeedPackage.bind(this)}
-              packInfo={pack}
-            />
+          {goodType !== "cross" && !this.isPointitemGood() && pointInfo.is_open_deduct_point && (
+            <SpCell
+              isLink
+              className="trade-invoice"
+              title={customName("积分抵扣")}
+              onClick={this.handlePointShow}
+            >
+              <View className="invoice-title">
+                {(pointInfo.point_use > 0 || payType === "point") && (
+                  <View
+                    className="icon-close invoice-guanbi"
+                    onClick={this.resetPoint.bind(this)}
+                  ></View>
+                )}
+                {payType === "point"
+                  ? "全额抵扣"
+                  : pointInfo.point_use > 0
+                    ? `${customName(`已使用${pointInfo.real_use_point}积分`)}`
+                    : `${customName("使用积分")}`}
+              </View>
+            </SpCell>
           )}
 
           {goodType !== "cross" &&

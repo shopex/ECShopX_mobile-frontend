@@ -40,4 +40,8 @@ function SpImage( props ) {
   );
 }
 
+SpImage.options = {
+  addGlobalClass: true
+};
+
 export default SpImage;
