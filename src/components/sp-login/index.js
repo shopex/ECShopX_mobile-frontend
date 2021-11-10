@@ -26,8 +26,18 @@ export default class SpLogin extends Component {
     super(props);
     this.state = {
       token: S.getAuthToken(),
-      privacyVisible: false
+      privacyVisible: false,
+      update_time: null
     };
+  }
+
+  componentDidShow () {
+    this.onGetTimes()
+  }
+
+  onGetTimes = async () => {
+    const { update_time } = await api.wx.getPrivacyTime()
+    this.setState({ update_time })
   }
 
   /** 设置导购id */
@@ -166,10 +176,13 @@ export default class SpLogin extends Component {
   }
 
   onPrivateChange = async (type, e) => {
-    this.setState({ privacyVisible: false })
     if (type == 'agree' && e) {
       this.wexinBindPhone(e)
     }
+    if (type === 'reject') {
+      Taro.removeStorageSync('PrivacyUpdate_time')
+    }
+    this.setState({ privacyVisible: false })
   }
 
   onClickChange = () => {
@@ -177,9 +190,13 @@ export default class SpLogin extends Component {
   }
 
   render() {
-    const { token, privacyVisible } = this.state;
-    let policy = Taro.getStorageSync("PrivacyUpdate_time")
-    console.log(policy, 'policy', privacyVisible)
+    const { token, privacyVisible, update_time } = this.state;
+    let pritecy_time = Taro.getStorageSync("PrivacyUpdate_time")
+    let policy = true
+    if (!pritecy_time || pritecy_time <= update_time) {
+      policy = false
+    }
+    // console.log(pritecy_time, update_time, 'pritecy_time', privacyVisible)
     return (
       <View className={classNames("sp-login", this.props.className)}>
         {token && (
