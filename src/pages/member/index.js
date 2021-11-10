@@ -18,17 +18,15 @@ import {
   navigateTo,
   getThemeStyle,
   classNames,
-  showModal,
   isWeixin,
   platformTemplateName,
   transformPlatformUrl
 } from "@/utils";
 import qs from 'qs';
-import {
-  customName
-} from '@/utils/point';
+import { customName } from '@/utils/point';
 import userIcon from '@/assets/imgs/user-icon.png'
-import MemberBanner from "./comps/member-banner";
+import MemberBanner from "./comps/member-banner"
+
 import "./index.scss";
 
 @connect(
@@ -80,20 +78,12 @@ export default class MemberIndex extends Component {
       // 积分商城菜单
       score_menu_open: false,
       // 是否显示隐私协议
-      showPrivacy: false,
-      showTimes: 0,
+      // showPrivacy: false,
+      // showTimes: 0,
       all_card_list: [],
       visible: false
     };
   }
-
-  config = {
-    navigationBarTitleText: "",
-    enablePullDownRefresh: true,
-    onReachBottomDistance: 50,
-    backgroundTextStyle: "dark",
-    navigationStyle: "custom"
-  };
 
   componentWillMount() {
     this.fetch();
@@ -110,6 +100,14 @@ export default class MemberIndex extends Component {
     if (S.getAuthToken()) {
       this.fetchCouponCardList()
     }
+  }
+
+  config = {
+    navigationBarTitleText: "",
+    enablePullDownRefresh: true,
+    onReachBottomDistance: 50,
+    backgroundTextStyle: "dark",
+    navigationStyle: "custom"
   }
 
   async onShareAppMessage() {
@@ -203,20 +201,20 @@ export default class MemberIndex extends Component {
   };
 
   // 获取积分个人信息跳转
-  async fetchRedirect() {
-    const pathparams=qs.stringify({
-      template_name:platformTemplateName,
-      version:'v1.0.1',
-      page_name:'member_center_redirect_setting'
-    })
-    const url = transformPlatformUrl(`/alipay/pageparams/setting?${pathparams}`);
-    const { list = [] } = await req.get(url);
-    if (list[0].params) {
-      this.setState({
-        redirectInfo: list[0].params
-      });
-    }
-  }
+  // async fetchRedirect() {
+  //   const pathparams=qs.stringify({
+  //     template_name:platformTemplateName,
+  //     version:'v1.0.1',
+  //     page_name:'member_center_redirect_setting'
+  //   })
+  //   const url = transformPlatformUrl(`/alipay/pageparams/setting?${pathparams}`);
+  //   const { list = [] } = await req.get(url);
+  //   if (list[0].params) {
+  //     this.setState({
+  //       redirectInfo: list[0].params
+  //     });
+  //   }
+  // }
 
   handleClickRecommend = async () => {
     const { info } = this.state;
@@ -300,22 +298,32 @@ export default class MemberIndex extends Component {
   };
 
   handleClickWxOAuth( fn,need=true ) {
-    if ( this.state.showTimes >= 1 ) {
+    const { avatar, username } = this.props.memberData.memberInfo;
+    if (avatar && username) {
       if(need){
-        fn && fn();
-      } 
-    } else { 
-      const { avatar, username } = this.props.memberData.memberInfo;
-      if (avatar && username) {
-        if(need){
-          fn && fn();
-        }
-      } else {
-        this.setState({
-          showPrivacy: true
-        });
+        fn && fn()
       }
-    }  
+    } else {
+      S.OAuthWxUserProfile(() => {
+        this.fetch()
+      }, true)
+    }
+    // if ( this.state.showTimes >= 1 ) {
+    //   if(need){
+    //     fn && fn();
+    //   }
+    // } else { 
+    //   const { avatar, username } = this.props.memberData.memberInfo;
+    //   if (avatar && username) {
+    //     if(need){
+    //       fn && fn();
+    //     }
+    //   } else {
+    //     this.setState({
+    //       showPrivacy: true
+    //     });
+    //   }
+    // }  
   }
 
   fetchCouponCardList () {
@@ -351,8 +359,8 @@ export default class MemberIndex extends Component {
       bannerSetting,
       menuSetting,
       rechargeStatus,
-      showPrivacy,
-      showTimes,
+      // showPrivacy,
+      // showTimes,
       visible,
       all_card_list
     } = this.state;
@@ -828,7 +836,7 @@ export default class MemberIndex extends Component {
               <Button className="btn-share" open-type="share"></Button>
             </SpCell>
           )}
-          <SpCell
+          {/* <SpCell
             title="地址管理"
             isLink
             onClick={() =>
@@ -845,7 +853,28 @@ export default class MemberIndex extends Component {
                 this.handleClickWxOAuth(this.handleClickInfo.bind(this))
               }
             ></SpCell>
-          )}
+          )} */}
+          {
+            process.env.TARO_ENV === 'weapp' &&
+            <SpCell
+              title='设置'
+              isLink
+              onClick={() =>
+                this.handleClickWxOAuth(
+                  this.navigateTo.bind(this, "/marketing/pages/member/member-setting")
+                )
+              }
+            ></SpCell>
+          }
+          <SpCell
+            title='用户协议和隐私政策'
+            isLink
+            onClick={() =>
+              this.handleClickWxOAuth(
+                this.navigateTo.bind(this, `/subpage/pages/auth/reg-rule?type=privacyAndregister`)
+              )
+            }
+          ></SpCell>
           {process.env.TARO_ENV === "h5" && (
             <SpCell
               title="设置"
@@ -873,7 +902,7 @@ export default class MemberIndex extends Component {
         ) : null}
         <TabBar />
 
-        <SpFloatPrivacy
+        {/* <SpFloatPrivacy
           isOpened={showPrivacy}
           onClose={() =>
             this.setState({
@@ -881,9 +910,9 @@ export default class MemberIndex extends Component {
               showTimes: this.state.showTimes + 1
             })
           }
-        />
+        /> */}
         <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
       </View>
-    );
+    )
   }
 }

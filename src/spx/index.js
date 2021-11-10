@@ -241,6 +241,12 @@ class Spx {
   async login(ctx, isRedirect = false) {
     let code, token;
     if (isWeixin) {
+      let { update_time } = await api.wx.getPrivacyTime()
+      let policy = Taro.getStorageSync("PrivacyUpdate_time")
+      if (!policy || policy <= update_time) {
+        return true
+      }
+
       const resLogin = await Taro.login() || {};
       code = resLogin.code;
       const tokenLogin = await api.wx.login({ code }) || {}
