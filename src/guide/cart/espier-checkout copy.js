@@ -844,11 +844,7 @@ export default class EspireCheckout extends Component {
             </View>
           </Batoolbar>
           {isShowQrcode && (
-            <View
-              className='qrcode-index'
-              onClick={this.handleClickHideImage}
-              catchtouchmove
-            >
+            <View className='qrcode-index' onClick={this.handleClickHideImage} catchtouchmove>
               <Image
                 onClick={(e) => e.stopPropagation()}
                 showMenuByLongpress
