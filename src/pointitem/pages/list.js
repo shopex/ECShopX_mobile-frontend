@@ -761,74 +761,74 @@ export default class List extends Component {
           class='custom_drawer'
         >
           <View class='wrapper-filter'>
-              {brandVisible && (
-                <View class='brand'>
-                  <View class='title'>品牌</View>
-                  <View class='content-filter'>
-                    {brandList.map((item, index) => {
-                      return (
-                        <FilterBlock
-                          info={item}
-                          type='brand'
-                          active={brand.indexOf(item.attribute_id) > -1}
-                          onClickItem={this.handleClickFilterBlock}
-                        />
-                      )
-                    })}
-                  </View>
-                </View>
-              )}
-              {categoryVisible && (
-                <View class='category'>
-                  <View class='title'>分类</View>
-                  <View class='content-filter'>
-                    {categoryList.map((item, index) => {
-                      return (
-                        <FilterBlock
-                          info={item}
-                          type='category'
-                          active={category.indexOf(item.category_id) > -1}
-                          onClickItem={this.handleClickFilterBlock}
-                        />
-                      )
-                    })}
-                  </View>
-                </View>
-              )}
-              {pointVisible && (
-                <View class='score'>
-                  <View class='title'>{`${getPointName()}区间`}</View>
-                  <View class='input-wrap'>
-                    <AtInput
-                      placeholder={`最低${getPointName()}值`}
-                      value={start_price}
-                      onChange={this.handleChangeStartprice}
-                    />
-                    <View class='text'>~</View>
-                    <AtInput
-                      placeholder={`最高${getPointName()}值`}
-                      value={end_price}
-                      onChange={this.handleChangeEndprice}
-                    />
-                  </View>
-                  {scoreInternel.map((item, index) => {
+            {brandVisible && (
+              <View class='brand'>
+                <View class='title'>品牌</View>
+                <View class='content-filter'>
+                  {brandList.map((item, index) => {
                     return (
                       <FilterBlock
                         info={item}
-                        type='score'
-                        active={start_price == item[0] && end_price == item[1]}
-                        onClickItem={this.handleClickFilterBlock.bind(this, {
-                          type: 'point',
-                          start: item[0],
-                          end: item[1],
-                          active: start_price == item[0] && end_price == item[1]
-                        })}
+                        type='brand'
+                        active={brand.indexOf(item.attribute_id) > -1}
+                        onClickItem={this.handleClickFilterBlock}
                       />
                     )
                   })}
                 </View>
-              )}
-            </View>
+              </View>
+            )}
+            {categoryVisible && (
+              <View class='category'>
+                <View class='title'>分类</View>
+                <View class='content-filter'>
+                  {categoryList.map((item, index) => {
+                    return (
+                      <FilterBlock
+                        info={item}
+                        type='category'
+                        active={category.indexOf(item.category_id) > -1}
+                        onClickItem={this.handleClickFilterBlock}
+                      />
+                    )
+                  })}
+                </View>
+              </View>
+            )}
+            {pointVisible && (
+              <View class='score'>
+                <View class='title'>{`${getPointName()}区间`}</View>
+                <View class='input-wrap'>
+                  <AtInput
+                    placeholder={`最低${getPointName()}值`}
+                    value={start_price}
+                    onChange={this.handleChangeStartprice}
+                  />
+                  <View class='text'>~</View>
+                  <AtInput
+                    placeholder={`最高${getPointName()}值`}
+                    value={end_price}
+                    onChange={this.handleChangeEndprice}
+                  />
+                </View>
+                {scoreInternel.map((item, index) => {
+                  return (
+                    <FilterBlock
+                      info={item}
+                      type='score'
+                      active={start_price == item[0] && end_price == item[1]}
+                      onClickItem={this.handleClickFilterBlock.bind(this, {
+                        type: 'point',
+                        start: item[0],
+                        end: item[1],
+                        active: start_price == item[0] && end_price == item[1]
+                      })}
+                    />
+                  )
+                })}
+              </View>
+            )}
+          </View>
 
           <View className='drawer-footer'>
             <Text className='drawer-footer__btn' onClick={this.handleResetFilter}>
