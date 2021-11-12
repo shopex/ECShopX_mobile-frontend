@@ -60,7 +60,8 @@
 		"regenerator-runtime": "^0.11.1",
 		"sr-sdk-wxapp": "^1.3.12",
 		"stylenames": "^1.1.6",
-		"taro-ui": "^2.2.1"
+		"taro-ui": "^2.2.1",
+		"use-immer": "^0.6.0"
 	},
 	"devDependencies": {
 		"@shopex/taro-plugin-modules": "^1.0.5",

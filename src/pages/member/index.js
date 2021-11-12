@@ -22,38 +22,49 @@ import {
   getPointName
 } from "@/utils";
 import { useLogin } from "@/hooks";
+import { useImmer } from 'use-immer'
 import CompsVipCard from "./comps/comp-vipcard";
 import CompsPanel from "./comps/comp-panel";
 import CompMenu from './comps/comp-menu'
 import "./index.scss";
 
+const initConfig = {
+  banner: {
+    loginBanner: "",
+    noLoginBanner: "",
+    pageUrl: "",
+    urlOpen: false,
+    appId: null
+  },
+  menu: {
+    pointMenu: false, // 积分菜单
+    activity: false, // 活动预约
+    offline_order: false, // 线下订单
+    boost_activity: false, // 助力活动
+    boost_order: false, // 助力订单
+    complaint: false, // 投诉记录
+    community_order: false, // 社区团购
+    ext_info: false,
+    group: false, // 我的拼团
+    member_code: false, // 会员二维码
+    recharge: false, // 储值
+    ziti_order: false, // 自提
+    share_enable: false, // 分享
+    memberinfo_enable: false // 个人信息
+  }
+};
+
 function MemberIndex(props) {
   const { isLogin, showPolicy } = useLogin();
-  const [config, setConfig] = useState({
-    banner: {
-      loginBanner: "",
-      noLoginBanner: "",
-      pageUrl: "",
-      urlOpen: false,
-      appId: null
-    },
-    menu: {
-      pointMenu: false, // 积分菜单
-      activity: false, // 活动预约
-      offline_order: false, // 线下订单
-      boost_activity: false, // 助力活动
-      boost_order: false, // 助力订单
-      complaint: false, // 投诉记录
-      community_order: false, // 社区团购
-      ext_info: false,
-      group: false, // 我的拼团
-      member_code: false, // 会员二维码
-      recharge: false, // 储值
-      ziti_order: false, // 自提
-      share_enable: false, // 分享
-      memberinfo_enable: false // 个人信息
-    }
-  });
+  const [counter, setcounter] = useState( 0 );
+  
+  function handleClick() {
+    setTimeout(() => {
+      console.log('counter:', counter);
+    }, 3000);
+  }
+  
+  const [config, setConfig] = useState(initConfig);
 
   useEffect(async () => {
     console.log(`isLogin:`, isLogin);
@@ -92,7 +103,7 @@ function MemberIndex(props) {
       // 积分商城
       await api.pointitem.getPointitemSetting()
     ]);
-    let _config = { ...config };
+    let banner, menu;
     if (bannerRes.list.length > 0) {
       const {
         app_id,
@@ -102,27 +113,25 @@ function MemberIndex(props) {
         page,
         url_is_open
       } = bannerRes.list[0].params.data;
-      Object.assign(_config, {
-        banner: {
-          isShow: is_show,
-          loginBanner: login_banner,
-          noLoginBanner: no_login_banner,
-          pageUrl: page,
-          urlOpen: url_is_open,
-          appId: app_id
-        }
-      });
+      banner = {
+        isShow: is_show,
+        loginBanner: login_banner,
+        noLoginBanner: no_login_banner,
+        pageUrl: page,
+        urlOpen: url_is_open,
+        appId: app_id
+      };
     }
-    if (menuRes.list.length > 0) {
-      Object.assign(_config, {
-        menu: {
-          ..._config.menu,
-          ...menuRes.list[0].params.data
-        }
-      });
+    if ( menuRes.list.length > 0 ) {
+      menu = menuRes.list[0].params.data;
     }
-    _config.menu.pointMenu = pointShopRes.entrance.mobile_openstatus;
-    setConfig(_config);
+    setConfig( (state) => {
+      state.banner = banner;
+      state.menu = {
+        ...menu,
+        pointMenu: pointShopRes.entrance.mobile_openstatus
+      };
+    })
   };
 
   const handleCloseModal = () => {
@@ -221,7 +230,13 @@ function MemberIndex(props) {
         <CompsPanel title="帮助中心"></CompsPanel>
       </View>
 
-      <SpModal type="policy" onCancel={handleCloseModal} onConfirm={handleConfirmModal} />
+      <SpModal
+        type="policy"
+        open={ }
+        onCancel={handleCloseModal}
+        onConfirm={handleConfirmModal}
+      />
+
       <TabBar />
     </View>
   );
