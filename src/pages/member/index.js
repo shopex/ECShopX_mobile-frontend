@@ -81,13 +81,15 @@ export default class MemberIndex extends Component {
       // showPrivacy: false,
       // showTimes: 0,
       all_card_list: [],
-      visible: false
+      visible: false,
+      protocol: { member_register: '注册协议', privacy: '隐私政策' }
     };
   }
 
   componentWillMount() {
     this.fetch();
     this.getSetting();
+    this.getPrivacyTitle();
     // this.getWheel();
     // this.fetchBanner();
     // this.fetchRedirect();
@@ -355,6 +357,12 @@ export default class MemberIndex extends Component {
     this.setState({ visible })
   }
 
+  async getPrivacyTitle () {
+    const data = await api.shop.getStoreBaseInfo()
+    this.setState({ protocol: data.protocol })
+  }
+
+
   render() {
     const { colors, memberData } = this.props;
     const {
@@ -372,7 +380,8 @@ export default class MemberIndex extends Component {
       // showPrivacy,
       // showTimes,
       visible,
-      all_card_list
+      all_card_list,
+      protocol
     } = this.state;
     let memberInfo = null,
       vipgrade = null;
@@ -381,9 +390,8 @@ export default class MemberIndex extends Component {
       vipgrade = memberData.vipgrade;
     }
     let privacyTitle = ''
-    let privacy_info = Taro.getStorageSync('privacy_info')
-    if (privacy_info && privacy_info.brand_name) {
-      privacyTitle =  privacy_info.protocol.member_register + '和' + privacy_info.protocol.privacy
+    if (protocol) {
+      privacyTitle =  protocol.member_register + '和' + protocol.privacy
     }
 
     return (
