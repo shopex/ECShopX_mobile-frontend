@@ -1,36 +1,11 @@
 import Taro from '@tarojs/taro'
 import S from '@/spx'
 import qs from 'qs'
-import { isGoodsShelves, isAlipay, log } from '@/utils'
-import { goToAuthPage } from '@/utils/platform'
-import api from '@/api'
-import { isWeb } from '@/utils/platforms'
+import { isGoodsShelves, isAlipay } from '@/utils'
 
 function addQuery(url, query) {
   return url + (url.indexOf('?') >= 0 ? '&' : '?') + query
 }
-
-class RequestQueue {
-  constructor() {
-    this.requestList = []
-  }
-
-  push(req) {
-    this.requestList.push(req)
-  }
-
-  async run() {
-    const request = this.requestList.shift()
-    if (request) {
-      await request()
-      if (this.requestList.length > 0 && !API.isRefreshing) {
-        this.run()
-      }
-    }
-  }
-}
-
-const requestQueue = new RequestQueue()
 
 class API {
   constructor(options = {}) {
@@ -39,7 +14,7 @@ class API {
       baseURL = baseURL + '/'
     }
 
-    options.company_id = process.env.APP_COMPANY_ID
+    options.company_id = APP_COMPANY_ID
     if (process.env.TARO_ENV === 'weapp' || isAlipay) {
       const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
       options.appid = extConfig.appid
@@ -52,8 +27,6 @@ class API {
     this.baseURL = baseURL
     this.genMethods(['get', 'post', 'delete', 'put'])
   }
-
-  static isRefreshing = false
 
   genMethods(methods) {
     methods.forEach((method) => {
@@ -100,7 +73,7 @@ class API {
       header['Authorization'] = `Bearer ${token}`
     }
 
-    if (!isWeb) {
+    if (process.env.TARO_ENV) {
       header['source'] = process.env.TARO_ENV
     }
 
@@ -172,6 +145,8 @@ class API {
       console.log(ba_params)
     }
     let resData = {}
+    let isRefreshing = false
+    let requests = []
 
     return Taro.request(options)
       .then((res) => {
@@ -179,13 +154,17 @@ class API {
       })
       .catch((err) => {
         resData.statusCode = err.status
+
         resData.header = {}
+
         err.headers.forEach((val, key) => {
           resData.header[key] = val
         })
+
         if (config.responseType === 'arraybuffer') {
           return err.arrayBuffer()
         }
+
         if (config.dataType === 'json' || typeof config.dataType === 'undefined') {
           return err.json()
         }
@@ -193,6 +172,7 @@ class API {
         if (config.responseType === 'text') {
           return err.text()
         }
+
         return Promise.resolve(null)
       })
       .then((res) => {
@@ -219,6 +199,7 @@ class API {
             return Promise.reject(this.reqError(resData))
           }
         }
+
         if (statusCode === 401) {
           if (data.error && data.error.code === 401002) {
             this.errorToast({
@@ -232,66 +213,42 @@ class API {
               S.loginQW(this, true)
             } else {
               // 刷新token
-              log.debug('refreshing token...')
-              requestQueue.push(() => {
-                return new Promise((resolve, reject) => {
-                  resolve(_this.makeReq(config))
+              const config = options
+              if (isRefreshing) {
+                return new Promise((resolve) => {
+                  requests.push((token) => {
+                    resolve(API.makeReq(config))
+                  })
                 })
-              })
-              if (!API.isRefreshing) {
-                API.isRefreshing = true
-                // debugger
-                api.wx
-                  .refreshToken()
-                  .then((res) => {
-                    // debugger;
-                    S.setAuthToken()
+              } else {
+                isRefreshing = true
+                const token = S.getAuthToken()
+                return Taro.request({
+                  header: {
+                    Authorization: `Bearer ${token}`
+                  },
+                  method: 'get',
+                  url: APP_BASE_URL + '/token/refresh'
+                })
+                  .then((data) => {
+                    console.log('/token/refresh', data)
+                    if (data.statusCode == 401) {
+                      S.logout()
+                      S.login(this, true)
+                    }
+                    S.setAuthToken(data.header.Authorization.split(' ')[1])
+                    requests.forEach((cb) => cb())
+                    requests = []
+                    return API.makeReq(config)
+                  })
+                  .catch((e) => {
+                    console.log(e)
                   })
                   .finally(() => {
-                    API.isRefreshing = false
+                    isRefreshing = false
                   })
               }
-
-              // const config = options;
-              // if (isRefreshing) {
-              //   return new Promise(resolve => {
-              //     requests.push(token => {
-              //       resolve(API.makeReq(config));
-              //     });
-              //   });
-              // } else {
-              //   isRefreshing = true;
-              //   const token = S.getAuthToken();
-              //   return Taro.request({
-              //     header: {
-              //       Authorization: `Bearer ${token}`
-              //     },
-              //     method: "get",
-              //     url: process.env.APP_BASE_URL + "/token/refresh"
-              //   })
-              //     .then(data => {
-              //       console.log("/token/refresh", data);
-              //       if (data.statusCode == 401) {
-              //         S.logout();
-              //         S.login(this, true);
-              //       }
-              //       S.setAuthToken(data.header.Authorization.split(" ")[1]);
-              //       requests.forEach(cb => cb());
-              //       requests = [];
-              //       return API.makeReq(config);
-              //     })
-              //     .catch(e => {
-              //       console.log(e);
-              //     })
-              //     .finally(() => {
-              //       isRefreshing = false;
-              //     });
-              // }
             }
-          }
-          // token刷新失败, 重新登录
-          if (data.status_code == 401) {
-            // goToAuthPage()
           }
           return Promise.reject(this.reqError(resData))
         }
@@ -323,7 +280,7 @@ class API {
 }
 
 export default new API({
-  baseURL: process.env.APP_BASE_URL
+  baseURL: APP_BASE_URL
 
   // interceptor (chain) {
   //   const { requestParams } = chain
