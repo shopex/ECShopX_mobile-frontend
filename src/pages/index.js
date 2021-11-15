@@ -52,7 +52,6 @@ import './home/index.scss'
     onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
   })
 )
-
 @withPager
 @withBackToTop
 export default class Home extends Component {
