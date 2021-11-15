@@ -765,7 +765,7 @@ export default class Home extends Component {
           )}
           {advertList && advertList.length && !S.getAuthToken() && (
             <FloatMenuItem
-              iconPrefixClass='icon'
+              iconPrefixClass='iconfont icon'
               icon='present'
               onClick={this.handleSwitchAdvert.bind(this, -1)}
             />
