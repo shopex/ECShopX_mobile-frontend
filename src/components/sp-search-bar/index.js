@@ -124,11 +124,7 @@ export default class SpSearchBar extends Component {
     const { showSearchDailog, historyList, isShowAction, searchValue } = this.state
     return (
       <View
-        className={classNames('sp-search-bar', {
-          fixed: isFixed
-        })}
-
-        // isFixed ? 'sp-search-bar-fixed' : null, showSearchDailog ? 'sp-search-bar__focus' : null, !showDailog && 'without-dialog' )}
+        className={classNames('sp-search-bar', isFixed ? 'sp-search-bar-fixed' : null, showSearchDailog ? 'sp-search-bar__focus' : null, !showDailog && 'without-dialog')}
       >
         <Form className='sp-search-bar__form'>
           <AtSearchBar
@@ -152,7 +148,7 @@ export default class SpSearchBar extends Component {
             )}
           >
             <View className='sp-search-bar__history-title'>
-              <Text>最近搜索</Text>
+              <Text className='title'>最近搜索</Text>
               <Text
                 className='icon-trash icon-del'
                 onClick={this.handleClickDelete.bind(this)}
@@ -163,6 +159,7 @@ export default class SpSearchBar extends Component {
                 <View
                   className='sp-search-bar__history-list__btn'
                   key={`${index}1`}
+                  style={{ border: `1px solid var(--color-primary)`, color: 'var(--color-primary)' }}
                   onClick={this.handleClickTag.bind(this, item)}
                 >
                   {item}
