@@ -6,7 +6,7 @@ import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, TagsBar, FilterBar, SpSearchBar, GoodsItem, SpNote, SpNavBar, TabBar } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
-import { pickBy, classNames } from '@/utils'
+import { pickBy, classNames, isWeixin } from '@/utils'
 import entry from "../../utils/entry";
 
 import './list.scss'
