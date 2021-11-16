@@ -226,7 +226,7 @@ export default class GoodsItem extends Component {
                 <View className='goods-item__actions'>
                   {type === 'item' && (
                     <View
-                      className={`${info.is_fav ? 'icon-star-on' : 'icon-star'}`}
+                      className={classNames('iconfont', info.is_fav ? 'icon-star-on' : 'icon-star')}
                       onClick={this.handleFavClick}
                       style={info.is_fav ? { color: colors.data[0].primary } : {}}
                     />
@@ -246,7 +246,7 @@ export default class GoodsItem extends Component {
                 <View className='goods-item__store' onClick={onStoreClick}>
                   {info.distributor_info.name}{' '}
                   <Text class='goods-item__store-entry'>
-                    进店<Text className='icon-arrowRight'></Text>
+                    进店<Text className='iconfont icon-arrowRight'></Text>
                   </Text>
                 </View>
               )}
