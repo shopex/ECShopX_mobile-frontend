@@ -27,16 +27,6 @@ if ( process.env.TARO_ENV != "h5" ) {
   copyPatterns.push({ from: 'src/files/', to: `dist/${process.env.TARO_ENV}` })
 }
 
-const plugins = []
-if ( process.env.TARO_ENV == "weapp" ) {
-  plugins.push('@shopex/taro-plugin-modules')
-}
-
-plugins.push(path.join(__dirname, "./modify-taro.js"))
-plugins.push("@tarojs/plugin-sass")
-plugins.push( "@tarojs/plugin-uglify" )
-
-
 const config = {
   projectName: pkg.name,
   date: '2019-7-31',
@@ -85,59 +75,81 @@ const config = {
   copy: {
     patterns: copyPatterns
   },
-  plugins: plugins,
+  plugins: [
+    '@shopex/taro-plugin-modules',
+    path.join(__dirname, "./modify-taro.js"),
+    "@tarojs/plugin-sass",
+    "@tarojs/plugin-terser"
+  ],
   // 开启压缩
-  uglify: {
-    enable: IS_PROD,
-    config: {
-      // 配置项同 https://github.com/mishoo/UglifyJS2#minify-options
-      compress: {
-        drop_console: IS_PROD,
-        drop_debugger: IS_PROD
-      }
-    }
-  },
+  // uglify: {
+  //   enable: IS_PROD,
+  //   config: {
+  //     // 配置项同 https://github.com/mishoo/UglifyJS2#minify-options
+  //     compress: {
+  //       drop_console: IS_PROD,
+  //       drop_debugger: IS_PROD
+  //     }
+  //   }
+  // },
   mini: {
     webpackChain(chain, webpack) {
-      chain.merge({
-        optimization: {
-          splitChunks: {
-            cacheGroups: {
-              lodash: {
-                name: 'lodash',
-                priority: 1000,
-                test(module) {
-                  return /node_modules[\\/]lodash/.test(module.context)
-                }
-              },
-              moment: {
-                name: 'date-fns',
-                priority: 1000,
-                test(module) {
-                  return /node_modules[\\/]date-fns/.test(module.context)
-                }
-              }
-            }
-          }
-        }
-      })
+      // chain.merge({
+      //   optimization: {
+      //     splitChunks: {
+      //       cacheGroups: {
+      //         lodash: {
+      //           name: 'lodash',
+      //           priority: 1000,
+      //           test(module) {
+      //             return /node_modules[\\/]lodash/.test(module.context)
+      //           }
+      //         },
+      //         // moment: {
+      //         //   name: 'date-fns',
+      //         //   priority: 1000,
+      //         //   test(module) {
+      //         //     return /node_modules[\\/]date-fns/.test(module.context)
+      //         //   }
+      //         // }
+      //       }
+      //     }
+      //   }
+      // })
+      debugger
+
+      // use cache-loader
+      chain.module
+          .rule('script')
+            .use('cacheLoader')
+              .loader('cache-loader')
+            .before('0')
+
+      chain.module
+        .rule('template')
+          .use('cacheLoader')
+            .loader('cache-loader')
+          .before('0')
+
+      chain.plugin('analyzer')
+        .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
       // if (isPro) {
       //   chain.plugin('analyzer')
       //     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
       // }
-      chain.plugin('IgnorePlugin').use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/])
-      chain.plugin('LodashModuleReplacementPlugin').use(require('lodash-webpack-plugin'), [
-        {
-          coercions: true,
-          paths: true
-        }
-      ])
+      // chain.plugin('IgnorePlugin').use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/])
+      // chain.plugin('LodashModuleReplacementPlugin').use(require('lodash-webpack-plugin'), [
+      //   {
+      //     coercions: true,
+      //     paths: true
+      //   }
+      // ])
     },
-    commonChunks(commonChunks) {
-      commonChunks.push('lodash')
-      commonChunks.push('date-fns')
-      return commonChunks
-    },
+    // commonChunks(commonChunks) {
+    //   commonChunks.push('lodash')
+    //   commonChunks.push('date-fns')
+    //   return commonChunks
+    // },
     // 图片转换base64
     imageUrlLoaderOption: {
       limit: 0
@@ -196,43 +208,44 @@ const config = {
         resolve: {
           alias: {
             react$: 'nervjs',
-            'react-dom$': 'nervjs'
+            'react-dom$': 'nervjs',
+            'lodash': 'lodash-es'
           }
         }
       })
-      chain.merge({
-        optimization: {
-          splitChunks: {
-            cacheGroups: {
-              lodash: {
-                name: 'lodash',
-                priority: 1000,
-                test(module) {
-                  return /node_modules[\\/]lodash/.test(module.context)
-                }
-              },
-              moment: {
-                name: 'date-fns',
-                priority: 1000,
-                test(module) {
-                  return /node_modules[\\/]date-fns/.test(module.context)
-                }
-              }
-            }
-          }
-        }
-      })
+      // chain.merge({
+      //   optimization: {
+      //     splitChunks: {
+      //       cacheGroups: {
+      //         lodash: {
+      //           name: 'lodash',
+      //           priority: 1000,
+      //           test(module) {
+      //             return /node_modules[\\/]lodash/.test(module.context)
+      //           }
+      //         },
+      //         // moment: {
+      //         //   name: 'date-fns',
+      //         //   priority: 1000,
+      //         //   test(module) {
+      //         //     return /node_modules[\\/]date-fns/.test(module.context)
+      //         //   }
+      //         // }
+      //       }
+      //     }
+      //   }
+      // })
       // if (!isPro) {
       //   chain.plugin('analyzer')
       //     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
       // }
-      chain.plugin('IgnorePlugin').use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/])
-      chain.plugin('LodashModuleReplacementPlugin').use(require('lodash-webpack-plugin'), [
-        {
-          coercions: true,
-          paths: true
-        }
-      ])
+      // chain.plugin('IgnorePlugin').use(webpack.IgnorePlugin, [/^\.\/locale$/, /date-fns$/])
+      // chain.plugin('LodashModuleReplacementPlugin').use(require('lodash-webpack-plugin'), [
+      //   {
+      //     coercions: true,
+      //     paths: true
+      //   }
+      // ])
     }
   }
 }
