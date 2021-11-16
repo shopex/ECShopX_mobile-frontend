@@ -165,9 +165,10 @@ $item-img-size: 240px !default;
     color: #d0d0d0;
     font-size: $font-size-small;
     text-align: right;
-    [class^="icon-"] {
+    font-size: 18px;
+    [class^="icon-"], .iconfont {
       color: #d0d0d0;
-      font-size: 36px;
+      font-size: 46px;
       &:before {
         margin-left: 8px;
       }
