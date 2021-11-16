@@ -37,7 +37,6 @@ export default class WgtSlider extends Component {
   render() {
     const { info } = this.props
     const { curIdx, index } = this.state
-    console.log('curIdx:', curIdx)
     if (!info) {
       return null
     }
