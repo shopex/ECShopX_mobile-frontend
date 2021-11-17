@@ -4,7 +4,8 @@ import { connect } from '@tarojs/redux'
 import { AtFloatLayout } from 'taro-ui'
 import { SpCheckbox } from '@/components'
 import api from '@/api'
-import { closeClassName, getPointName,payment_platform } from '@/utils'
+import { closeClassName, getPointName } from '@/utils'
+import { payment_platform } from '@/utils/platform'
 import './payment-picker.scss'
 
 @connect(({ colors }) => ({
