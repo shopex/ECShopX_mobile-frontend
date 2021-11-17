@@ -208,8 +208,8 @@ class API {
         return Promise.reject(this.reqError(data))
       }
       return Promise.reject(this.reqError(data, `API error: ${statusCode}`))
-    }).catch( e => { 
-      return Promise.reject(this.reqError( {
+    } ).catch( e => {
+      return Promise.reject( this.reqError( {
         message: e.statusText,
         statusCode: e.status
       }))
