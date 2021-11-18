@@ -11,7 +11,7 @@ import {
   log,
   authSetting,
   normalizeQuerys,
-  redirectUrl,
+  getPointName,
   buriedPoint,
   isAlipay,
   isWeixin,
