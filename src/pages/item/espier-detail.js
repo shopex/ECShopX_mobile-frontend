@@ -1084,6 +1084,12 @@ export default class EspierDetail extends Component {
     })
   }
 
+  onTimeUp=()=>{
+    this.setState({
+      timer:null
+    })
+  }
+
   // 编辑分享
   goToEditShare = () => {
     const { distributor_id, store_id } = Taro.getStorageSync('curStore')
@@ -1284,6 +1290,7 @@ export default class EspierDetail extends Component {
                   hours={timer.hh}
                   minutes={timer.mm}
                   seconds={timer.ss}
+                  onTimeUp={this.onTimeUp}
                 />
               </View>
             </View>
