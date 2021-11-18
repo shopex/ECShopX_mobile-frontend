@@ -159,14 +159,18 @@ class App extends Component {
       'pages/recommend/list',
       'pages/member/index',
       'pages/member/item-fav',
-      'pages/store/index',
-      'pages/store/list',
-      'pages/store/ziti-list',
+      // 'pages/store/index',
+      // 'pages/store/list',
+      // 'pages/store/ziti-list',
 
       'pages/custom/custom-page',
       'pages/liveroom/index'
     ],
     subPackages: [
+      {
+        root: 'pages/store/',
+        pages: ['index', 'list', 'ziti-list']
+      },
       {
         root: 'marketing',
         pages: [
