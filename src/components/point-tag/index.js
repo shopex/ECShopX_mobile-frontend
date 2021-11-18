@@ -12,6 +12,6 @@ export default class PointTag extends Component {
     const { className } = this.props
     const classes = classNames('point-tag', className)
 
-    return <View className={classes}>{getPointName()}</View>
+    return <View className={classes}>{getPointName('积')}</View>
   }
 }

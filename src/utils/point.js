@@ -14,7 +14,10 @@ export const customName = name => {
   }
 };
 
-export const getPointName = function() {
+export const getPointName = function(name) {
+  if(name){
+    return customName(name)
+  }
   const { system } = store.getState()
   return system.pointName
 }
