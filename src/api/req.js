@@ -149,64 +149,57 @@ class API {
       }
       const { statusCode } = res
       const { data } = res.data
-      if (statusCode >= 200 && statusCode < 300) {
-        if (options.url.indexOf('token/refresh') >= 0) {
-          data['token'] = res.header.Authorization.replace('Bearer ', '')
-        }
-        return data
-      }
-      console.log('options:', options)
-      if (statusCode === 401) {
-        // 刷新token失败
-        if ( !data.code && API.isRefreshing ) {
-          S.setAuthToken('')
-          Taro.redirectTo({ url: '/pages/member/index' })
-        }
-        if (data.code === 401002) {
-          this.errorToast({
-            msg: '帐号已被禁用'
-          })
-          return Promise.reject(this.reqError(data, '帐号已被禁用'))
-        }
-        if (data.code === 401001) {
-          requestQueue.push(() => {
-            return new Promise((resolve, reject) => {
-              resolve(_this.makeReq(config))
-            })
-          })
-          if (!API.isRefreshing) {
-            API.isRefreshing = true
-            api.wx
-              .refreshToken()
-              .then( ( res ) => {
-                log.debug(`token refresh success: ${res.token}`)
-                API.isRefreshing = false
-                S.setAuthToken(res.token)
-                requestQueue.run()
-              })
-              .catch((e) => {
-                API.isRefreshing = false
-                Taro.redirectTo({ url: '/pages/member/index' })
-              })
-              .finally(() => {
-                API.isRefreshing = false
-              })
+      if ( statusCode >= 200 && statusCode < 300 ) {
+        const { status_code, message, code } = data
+        if ( status_code ) {
+          if ( status_code == 401 ) {
+            if ( code == 401001 ) {
+              requestQueue.push( () => {
+                return new Promise( ( resolve, reject ) => {
+                  resolve( _this.makeReq( config ) )
+                } )
+              } )
+              if ( !API.isRefreshing ) {
+                API.isRefreshing = true
+                api.wx
+                  .refreshToken()
+                  .then( ( res ) => {
+                    // log.debug( `token refresh success: ${res.token}` )
+                    API.isRefreshing = false
+                    S.setAuthToken( res.token )
+                    requestQueue.run()
+                  } )
+                  .catch( ( e ) => {
+                    API.isRefreshing = false
+                    Taro.redirectTo( { url: '/pages/member/index' } )
+                  } )
+                  .finally( () => {
+                    API.isRefreshing = false
+                  } )
+              }
+            } else if ( code == 401002 ) {
+              this.errorToast( {
+                msg: '帐号已被禁用'
+              } )
+              return Promise.reject( this.reqError( data, '帐号已被禁用' ) )
+            } else {
+              S.setAuthToken( '' )
+              Taro.redirectTo( { url: '/pages/member/index' } )
+            }
+            
+          } else {
+            this.errorToast( data )
+            return Promise.reject( this.reqError( data ) )
           }
+        } else {
+          if ( options.url.indexOf( 'token/refresh' ) >= 0 ) {
+            data['token'] = res.header.Authorization.replace( 'Bearer ', '' )
+          }
+          return data
         }
-        return Promise.reject(this.reqError(data))
+      } else {
+        return Promise.reject( this.reqError( data, `API error: ${statusCode}` ) )
       }
-      if (statusCode >= 400) { 
-        if (
-          showError &&
-          data.message !== '当前余额不足以支付本次订单费用，请充值！' &&
-          data.code !== 201 &&
-          data.code !== 450
-        ) {
-          this.errorToast(data)
-        }
-        return Promise.reject(this.reqError(data))
-      }
-      return Promise.reject(this.reqError(data, `API error: ${statusCode}`))
     } ).catch( e => {
       return Promise.reject( this.reqError( {
         message: e.statusText,
