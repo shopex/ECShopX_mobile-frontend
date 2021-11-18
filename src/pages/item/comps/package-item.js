@@ -343,8 +343,8 @@ export default class PackageItem extends Component {
       // packageTotalPrice += Number(mainItem.price * 100)
       selected.map((id) => {
         packageTotalPrice +=
-          Number(packagePrices[id] && packagePrices[id].price) ||
-          Number(mainPackagePrice[id] && mainPackagePrice[id].price)
+          Number((packagePrices[id] && packagePrices[id].price)||0) ||
+          Number((mainPackagePrice[id] && mainPackagePrice[id].price)||0)
       })
     }
     this.setState({
@@ -370,6 +370,9 @@ export default class PackageItem extends Component {
       mainPackagePrice,
       mainItem
     } = this.state
+
+
+    console.log("===packageTotalPrice===",packageTotalPrice)
 
     const { package_id, package_name } = info
     return (
