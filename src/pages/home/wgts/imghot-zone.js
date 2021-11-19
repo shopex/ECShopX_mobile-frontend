@@ -36,11 +36,13 @@ export default class WgtImgHotZone extends Component {
     const curContent = (data[curIdx] || {}).content
 
     return (
-      <View className={`wgt  ${base.padded ? 'wgt__padded' : null}`}>
+      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
         {base.title && (
           <View className='wgt__header'>
-            <View className='wgt__title'>{base.title}</View>
-            <View className='wgt__subtitle'>{base.subtitle}</View>
+            <View className='wgt__title'>
+              <Text>{base.title}</Text>
+              <View className='wgt__subtitle'>{base.subtitle}</View>
+            </View>
           </View>
         )}
         <View className={`slider-wra img-hotzone ${config.padded ? 'padded' : ''}`}>
