@@ -1,9 +1,9 @@
 @import "@/style/imports";
 
-.coupon-list {
-  /*  #ifdef  h5  */
-  padding-top: $navigate-height-h5;
-  /*  #endif  */
+.coupon-home {
+  // /*  #ifdef  h5  */
+  // padding-top: $navigate-height-h5;
+  // /*  #endif  */
   .at-tabs__header {
     position: absolute;
     top: $navigate-height;
@@ -13,9 +13,9 @@
     width: 100%;
     z-index: $z-index-toolbar;
   }
-  .home_coupon-list__scroll {
+  .home_coupon-home__scroll {
     height: 100vh;
-    padding: 20px 0;
+    padding: 15px 0;
     box-sizing: border-box;
   }
   &__tabs {
