@@ -4,6 +4,9 @@
   height: 100vh;
   /*  #ifdef  h5  */
   padding-top: $navigate-height-h5;
+  &.inWeixin{
+    padding-top:0;
+  }
   /*  #endif  */
   position: relative;
   box-sizing: border-box;
