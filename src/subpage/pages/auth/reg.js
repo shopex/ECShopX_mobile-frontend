@@ -3,7 +3,7 @@ import { View, Form, Button, Text, Picker, Image } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import { AtInput, AtButton } from 'taro-ui'
 import { SpToast, SpTimer, SpNavBar, SpCheckbox, AccountOfficial } from '@/components'
-import { classNames, isString, isArray, tokenParse } from '@/utils'
+import { classNames, isString, isArray, tokenParse,getBrowserEnv } from '@/utils'
 import { Tracker } from '@/service'
 import S from '@/spx'
 import api from '@/api'
@@ -432,8 +432,7 @@ export default class Reg extends Component {
   render() {
     const { colors } = this.props
     const {
-      info,
-      isHasValue,
+      info, 
       isVisible,
       isHasData,
       list,
@@ -443,10 +442,10 @@ export default class Reg extends Component {
       showCheckboxPanel,
       show_official,
       show_kuangkuang
-    } = this.state
+    } = this.state;
 
     return (
-      <View className='auth-reg'>
+      <View className={classNames('auth-reg',{'inWeixin':getBrowserEnv().weixin})}>
         {show_official && (
           <AccountOfficial
             onHandleError={this.handleOfficialError.bind(this)}

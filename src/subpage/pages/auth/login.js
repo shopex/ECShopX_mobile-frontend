@@ -5,7 +5,7 @@ import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { SpNavBar, SpTimer } from '@/components'
 import api from '@/api'
 import S from '@/spx'
-import { getThemeStyle, styleNames, tokenParse, navigateTo, validate, showToast } from '@/utils' 
+import { getThemeStyle, styleNames, classNames,getBrowserEnv, navigateTo, validate, showToast } from '@/utils' 
 
 import './login.scss'
 
@@ -128,7 +128,7 @@ export default class Login extends Component {
   render() {
     const { info, isVisible, loginType, imgInfo } = this.state
     return (
-      <View className='page-auth-login' style={styleNames(getThemeStyle())}>
+      <View  className={classNames('page-auth-login',{'inWeixin':getBrowserEnv().weixin})} style={styleNames(getThemeStyle())}>
         <SpNavBar onClickLeftIcon={this.handleNavLeftItemClick} title='登录' />
         <View className='auth-hd'>
           <View className='title'>欢迎登录</View>

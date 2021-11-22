@@ -297,6 +297,7 @@ export const getBrowserEnv = () => {
       isAlipay: ua.match(/AlipayClient/i)
     }
   }
+  return {}
 }
 
 // 注入美洽客服插件
