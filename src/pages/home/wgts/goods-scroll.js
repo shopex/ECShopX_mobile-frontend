@@ -115,9 +115,9 @@ export default class WgtGoodsScroll extends Component {
                 </View>
               )}
             </View>
-            <View className='wgt__more' onClick={this.handleClickMore}>
+            {/* <View className='wgt__more' onClick={this.handleClickMore}>
               <View className='three-dot'></View>
-            </View>
+            </View> */}
           </View>
         )}
         <View className='wgt-body'>

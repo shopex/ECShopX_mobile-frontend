@@ -34,9 +34,9 @@ export default class WgtShowCase extends Component {
               <Text>{base.title}</Text>
               <View className='wgt__subtitle'>{base.subtitle}</View>
             </View>
-            <View className='wgt__more' onClick={this.navigateTo.bind(this, '/pages/item/list')}>
+            {/* <View className='wgt__more' onClick={this.navigateTo.bind(this, '/pages/item/list')}>
               <View className='three-dot'></View>
-            </View>
+            </View> */}
           </View>
         )}
         <View className={`showcase-scheme-${config.style}`}>

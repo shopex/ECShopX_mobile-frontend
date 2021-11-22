@@ -134,9 +134,9 @@ export default class WgtGoodsGrid extends Component {
               <Text>{base.title}</Text>
               <View className='wgt__subtitle'>{base.subtitle}</View>
             </View>
-            <View className='wgt__more' onClick={this.handleClickMore}>
+            {/* <View className='wgt__more' onClick={this.handleClickMore}>
               <View className='three-dot'></View>
-            </View>
+            </View> */}
           </View>
         )}
         <View className='wgt__body with-padding'>
