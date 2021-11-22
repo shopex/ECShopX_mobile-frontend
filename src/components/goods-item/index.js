@@ -4,7 +4,7 @@ import { SpImg, PointLine } from '@/components'
 import api from '@/api'
 import { connect } from '@tarojs/redux'
 
-import { isObject, classNames } from '@/utils'
+import { isObject, classNames,isWeb } from '@/utils'
 
 import './index.scss'
 
@@ -120,7 +120,7 @@ export default class GoodsItem extends Component {
     const isShow = info.store && info.store == 0
 
     return (
-      <View className={classNames('goods-item', 'classes',{'cart':cart})}>
+      <View className={classNames('goods-item', 'classes',{'cart':cart && isWeb})}>
         <View className='goods-item__hd'>{this.props.renderCheckbox}</View>
         <View className='goods-item__bd'>
           {/* 库存判断 */}

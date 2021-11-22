@@ -2,7 +2,7 @@
 
 $custabs: 80px;
 
-/*  #ifdef  h5  */
+/*  #ifdef h5  */
 *{
   box-sizing: border-box;
 }
@@ -11,7 +11,7 @@ $custabs: 80px;
    
  }
 }
-/*  #ifdef  h5  */
+/*  endif */
 
 .trade-detail {
   box-sizing: border-box;

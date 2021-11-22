@@ -15,7 +15,8 @@ import {
   buriedPoint,
   isAlipay,
   isWeixin,
-  isWeb
+  isWeb,
+  redirectUrl
 } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import { Tracker } from '@/service'
@@ -1256,10 +1257,11 @@ export default class CartCheckout extends Component {
           ...params,
           pay_type: this.state.total.freight_type === 'point' ? 'point' : 'wxpay'
         })
-        //redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`)
-        Taro.redirectTo({
-          url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}`
-        });
+        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`) 
+
+        // Taro.redirectTo({
+        //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}&type=pointitem`
+        // });
         return
       } else {
         config = await this.createByType({
