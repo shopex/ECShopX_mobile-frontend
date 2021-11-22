@@ -58,13 +58,13 @@ $item-img-size: 240px !default;
     }
   }
 
-  /*  #ifdef  h5  */
-  &.cart{
+  
+  &.cart{ 
     .goods-item__img {
       position: relative;
-    }
+    } 
   } 
-  /*  #endif  */
+  
    
   &__caption {
     padding-bottom: 20px;
