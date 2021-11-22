@@ -13,7 +13,9 @@ import {
   getCurrentRoute,
   copy,
   isAlipay,
-  getPointName
+  getPointName,
+  classNames,
+  isNavbar
 } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { Tracker } from '@/service'
@@ -604,22 +606,14 @@ export default class TradeDetail extends Component {
 
     return (
       <View
-        className={`trade-detail ${info.is_logistics && 'islog'} ${info.status !== 'TRADE_CLOSED' &&
-          'paddingBottom'}`}
+        className={classNames('page-trade-detail trade-detail', {
+          'islog': info.is_logistics,
+          'trade-close': info.status == 'TRADE_CLOSED',
+          'has-navbar': isNavbar()
+        })}
       >
-        {showQRcode && (
-          <View
-            className='qrcode-page'
-            onClick={() => {
-              this.handleImgClick(false)
-            }}
-          >
-            <View className='qrcode-bgc'>
-              <Image className='qrcode' src={qrcode} />
-            </View>
-          </View>
-        )}
         <SpNavBar title='订单详情' leftIconType='chevron-left' fixed='true' />
+
         {info.is_logistics && (
           <View className='custabs'>
             <View
@@ -638,7 +632,8 @@ export default class TradeDetail extends Component {
             </View>
           </View>
         )}
-        <ScrollView scroll-y className='content' scrollIntoView={scrollIntoView}>
+
+        <ScrollView scroll-y className='scroll-view' scrollIntoView={scrollIntoView}>
           <View className='trade-detail-header' id='order-0'>
             <View className='trade-detail-waitdeliver'>
               {info.is_logistics && <View className='oneline'>线上订单</View>}
@@ -969,6 +964,7 @@ export default class TradeDetail extends Component {
             </View>
           )}
         </ScrollView>
+
         {info.status !== 'TRADE_CLOSED' && (
           <View className='trade-detail__footer'>
             {// 立即支付
@@ -1065,6 +1061,19 @@ export default class TradeDetail extends Component {
                   )}
                 </View>
               )}
+          </View>
+        )}
+
+        {showQRcode && (
+          <View
+            className='qrcode-page'
+            onClick={() => {
+              this.handleImgClick(false)
+            }}
+          >
+            <View className='qrcode-bgc'>
+              <Image className='qrcode' src={qrcode} />
+            </View>
           </View>
         )}
       </View>
