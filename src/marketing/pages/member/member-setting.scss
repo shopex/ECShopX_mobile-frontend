@@ -2,6 +2,10 @@
 
 .member-setting {
   padding-top: 30px;
+  /*  #ifdef  h5  */
+  padding-top: 0px;
+  height: 100vh;
+  /*  #endif  */
   .page-member-section {
     width: 92vw;
     margin: 0 auto 25px auto;

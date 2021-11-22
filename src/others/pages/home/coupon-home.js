@@ -183,13 +183,13 @@ export default class CouponHome extends Component {
     const { list, page } = this.state
 
     return (
-      <View className='coupon-list'>
+      <View className='coupon-home'>
         <SpNavBar title='优惠券列表' leftIconType='chevron-left' fixed='true' />
         {/* <View className='coupon-top'>
           <Image className='banner' src={`${process.env.APP_IMAGE_CDN}/banner_coupon.png`} />
         </View> */}
-        <ScrollView scrollY className='home_coupon-list__scroll' onScrollToLower={this.nextPage}>
-          <View className='coupon-list-ticket'>
+        <ScrollView scrollY className='home_coupon-home__scroll' onScrollToLower={this.nextPage}>
+          <View className='coupon-home-ticket'>
             {list.map((item, idx) => {
               let time = parseInt(new Date().getTime() / 1000)
               return (

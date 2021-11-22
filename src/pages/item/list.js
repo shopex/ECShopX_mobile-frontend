@@ -521,7 +521,7 @@ export default class List extends Component {
             }
           </View>
           {
-            tagsList.length &&
+            tagsList.length > 0 &&
             <TagsBar
               current={curTagId}
               list={tagsList}
