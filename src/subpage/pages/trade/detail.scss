@@ -1,23 +1,13 @@
-@import "@/style/imports";
-
 $custabs: 80px;
 
-.trade-detail {
+.page-trade-detail {
   box-sizing: border-box;
   height: 100vh;
   overflow: hidden;
   &.paddingBottom {
     padding-bottom: 100px;
   }
-  /*  #ifdef  h5  */
-  padding-top: $navigate-height-h5;
-  /*  #endif  */
-  &.islog {
-    padding-top: $custabs;
-    /*  #ifdef  h5  */
-    padding-top: calc(#{$navigate-height-h5} + #{$custabs});
-    /*  #endif  */
-  }
+
   .custabs {
     display: flex;
     position: fixed;
@@ -25,9 +15,6 @@ $custabs: 80px;
     background: #fff;
     top: 0;
     z-index: 99;
-    /*  #ifdef  h5  */
-    top: $navigate-height-h5;
-    /*  #endif  */
     .online,
     .offline {
       height: $custabs;
@@ -36,11 +23,36 @@ $custabs: 80px;
       text-align: center;
     }
   }
-  .content {
-    height: 100%;
+
+  .scroll-view {
+    @include page-scroll(0, $tabbar-height);
   }
-  &-header {
-    width: 100%;
+
+  &.has-navbar {
+    .scroll-view {
+      top: $navigate-height; 
+    }
+  }
+
+  &.islog {
+    .scroll-view {
+      top: $custabs; 
+    }
+  }
+
+  &.has-navbar.islog {
+    .scroll-view {
+      top: $navigate-height + $custabs; 
+    }
+  }
+
+  &.trade-close {
+    .scroll-view {
+      bottom: 0;
+    }
+  }
+
+  .trade-detail-header {
     padding: 30px 20px;
     background: #c4c4c4;
     margin-bottom: 20px;
@@ -61,7 +73,7 @@ $custabs: 80px;
       font-family: $font-family;
     }
   }
-  &-waitdeliver {
+  .trade-detail-waitdeliver {
     box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
@@ -152,7 +164,7 @@ $custabs: 80px;
       color: #666;
     }
   }
-  &-address {
+  .trade-detail-address {
     margin: 0 20px 20px 20px;
     padding: 30px;
     border-radius: 6px;
@@ -170,7 +182,7 @@ $custabs: 80px;
         padding-bottom: 24px;
         border-bottom: 2px solid #ddd;
       }
-      .storeName{
+      .storeName {
         font-size: 32px;
         color: #333;
         font-weight: bold;
@@ -199,11 +211,13 @@ $custabs: 80px;
         color: #999;
       }
     }
-    .icon-shangjiadizhi-01, .icon-shouhuodizhi-01, .icon-dizhi-01 {
+    .icon-shangjiadizhi-01,
+    .icon-shouhuodizhi-01,
+    .icon-dizhi-01 {
       margin-right: 10px;
       font-size: 42px;
       color: #999;
-    }      
+    }
     .address-receive {
       display: flex;
       justify-content: flex-start;
@@ -229,7 +243,7 @@ $custabs: 80px;
       font-weight: bold;
     }
   }
-  &-goods {
+  .trade-detail-goods {
     margin: 0 20px;
     min-height: 100px;
     background: #fff;
@@ -244,7 +258,6 @@ $custabs: 80px;
         color: #28a1ff;
       }
     }
-
   }
   .order-item__pay-type {
     display: none;
@@ -267,8 +280,7 @@ $custabs: 80px;
       font-size: 36px;
       color: $color-brand-primary;
 
-
-      .cash{
+      .cash {
         font-size: 30px;
         color: $color-brand-accent;
       }
@@ -289,7 +301,7 @@ $custabs: 80px;
       }
     }
   }
-  &-info {
+  .trade-detail-info {
     margin: 20px 20px 0 20px;
     box-sizing: border-box;
     font-size: $font-size-small;
@@ -322,7 +334,7 @@ $custabs: 80px;
       margin-left: 20px;
     }
   }
-  &-remark {
+  .trade-detail-remark {
     margin: 0 20px 20px 20px;
     border-radius: 6px;
     padding-top: 21px;
@@ -338,7 +350,7 @@ $custabs: 80px;
       background: #fff;
     }
   }
-  &__footer {
+  .trade-detail__footer {
     position: fixed;
     left: 0;
     width: 100%;
@@ -510,7 +522,7 @@ $custabs: 80px;
 
   // 商品样式重置
   .detail-item {
-    padding: 0; 
+    padding: 0;
     .detail-item__title {
       padding: 10px 0;
     }
@@ -532,14 +544,14 @@ $custabs: 80px;
     top: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 9;
     .qrcode-bgc {
       width: 640px;
       height: 640px;
       min-width: 440px;
       min-height: 440px;
-      background: #FFF;
+      background: #fff;
       position: absolute;
       padding: 20px;
       top: 50%;
