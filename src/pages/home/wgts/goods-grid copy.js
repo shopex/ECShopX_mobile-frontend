@@ -96,10 +96,10 @@ export default class WgtGoodsGrid extends Component {
             <View className='wgt__title'>
               <Text>{base.title}</Text>
               <View className='wgt__subtitle'>{base.subtitle}</View>
-            </View>
+            {/* </View>
             <View className='wgt__more' onClick={this.handleClickMore}>
               <View className='three-dot'></View>
-            </View>
+            </View> */}
             {/* <View
               className='wgt__goods__more'
               onClick={this.navigateTo.bind(this, `/pages/item/list?dis_id=${dis_id}`)}

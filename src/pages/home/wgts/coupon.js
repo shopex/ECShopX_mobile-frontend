@@ -131,7 +131,7 @@ export default class WgtCoupon extends Component {
       return null
     }
 
-    const { base, data, voucher_package } = info
+    const { base, data, voucher_package } = info 
 
     return (
       <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
@@ -141,7 +141,7 @@ export default class WgtCoupon extends Component {
               <Text>{base.title}</Text>
               <View className='wgt__subtitle'>{base.subtitle}</View>
             </View>
-            <View
+            {/* <View
               className='wgt__more'
               onClick={this.navigateTo.bind(
                 this,
@@ -149,7 +149,7 @@ export default class WgtCoupon extends Component {
               )}
             >
               <View className='three-dot'></View>
-            </View>
+            </View> */}
           </View>
         )}
         <View className='wgt__body with-padding'>
