@@ -33,6 +33,10 @@
       border-radius: 50%;
       overflow: hidden;
     }
+    &__flex {
+      display: flex;
+      align-items: center;
+    }
     &__checked {
       margin-top: 25px;
       color: $color-brand-primary;
@@ -246,9 +250,9 @@
     }
 
     &.show {
-      max-height: 400rpx;  
-      padding-top:26rpx;
-      padding-bottom:16rpx;
+      max-height: 400px;  
+      padding-top:26px;
+      padding-bottom:16px;
     }
  
   }

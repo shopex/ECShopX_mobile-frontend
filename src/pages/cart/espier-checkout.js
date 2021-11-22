@@ -15,7 +15,8 @@ import {
   buriedPoint,
   isAlipay,
   isWeixin,
-  isWeb
+  isWeb,
+  redirectUrl
 } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import { Tracker } from '@/service'
@@ -665,7 +666,7 @@ export default class CartCheckout extends Component {
     console.log(res, 'res')
   }
 
-  async calcOrder() {
+  async calcOrder(init) {
     Taro.showLoading({
       title: '加载中',
       mask: true
@@ -682,7 +683,19 @@ export default class CartCheckout extends Component {
       data = await api.cart.total(params)
     } catch (e) {
       this.resolvePayError(e)
-      Taro.navigateBack()
+      // let pages = pages = Taro.getCurrentPages()
+      // let currentPage = pages[pages.length - 2]
+      // let option = currentPage.options
+      // console.log(pages, 'page', currentPage.route, currentPage.options)
+      // let arr = []
+      // Object.keys(option).forEach((key) => {
+      //   arr.push(key+ '=' + option[key])
+      // })
+      // console.log(arr, 'att', currentPage.route + '?' + arr.join('&'))
+      // Taro.redirectTo({
+      //   url: currentPage.route + '?' + arr.join('&')
+      // })
+      if (init) Taro.navigateBack()
     }
 
     if (!data) return
@@ -872,7 +885,7 @@ export default class CartCheckout extends Component {
         address
       },
       () => {
-        this.calcOrder()
+        this.calcOrder(true)
       }
     )
     if (!address) {
@@ -1145,15 +1158,13 @@ export default class CartCheckout extends Component {
   }
 
   handlePay = async () => {
-    /*  */
-    // if (!this.state.address) {
+    /* 大于50字提示  */
+    // if (this.params.remark && this.params.remark.length>50) {
     //   return S.toast('请选择地址')
     // }
     const { payType, total, identity, isOpenStore, curStore, receiptType, channel } = this.state
     const { type, goodType, cart_type } = this.$router.params
-
-    // const { payType, total,point_use } = this.state
-    // const { type } = this.$router.params
+ 
     const isDrug = type === 'drug'
 
     if (payType === 'point' || payType === 'deposit') {
@@ -1246,10 +1257,11 @@ export default class CartCheckout extends Component {
           ...params,
           pay_type: this.state.total.freight_type === 'point' ? 'point' : 'wxpay'
         })
-        //redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`)
-        Taro.redirectTo({
-          url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}`
-        });
+        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`) 
+
+        // Taro.redirectTo({
+        //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}&type=pointitem`
+        // });
         return
       } else {
         config = await this.createByType({

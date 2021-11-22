@@ -1,11 +1,12 @@
 $custabs: 80px;
+$paddingBottom:100px;
 
 .page-trade-detail {
   box-sizing: border-box;
   height: 100vh;
   overflow: hidden;
   &.paddingBottom {
-    padding-bottom: 100px;
+    padding-bottom: $paddingBottom;
   }
 
   .custabs {

@@ -15,7 +15,8 @@ import {
   isAlipay,
   getPointName,
   classNames,
-  isNavbar
+  isNavbar,
+  isWbWechat
 } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { Tracker } from '@/service'
@@ -603,6 +604,8 @@ export default class TradeDetail extends Component {
     const echat = Taro.getStorageSync('echat')
     // TODO: orders 多商铺
     // const tradeOrders = resolveTradeOrders(info)
+
+    console.log("===isWebWechat==",isWbWechat);
 
     return (
       <View

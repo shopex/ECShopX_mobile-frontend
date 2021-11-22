@@ -4,7 +4,7 @@ import { SpImg, PointLine } from '@/components'
 import api from '@/api'
 import { connect } from '@tarojs/redux'
 
-import { isObject, classNames } from '@/utils'
+import { isObject, classNames,isWeb } from '@/utils'
 
 import './index.scss'
 
@@ -54,7 +54,7 @@ export default class GoodsItem extends Component {
   render() {
     const {
       info,
-      showMarketPrice,
+      cart,
       showFav,
       noCurSymbol,
       noCurDecimal,
@@ -120,7 +120,7 @@ export default class GoodsItem extends Component {
     const isShow = info.store && info.store == 0
 
     return (
-      <View className={classNames('goods-item', 'classes')}>
+      <View className={classNames('goods-item', 'classes',{'cart':cart && isWeb})}>
         <View className='goods-item__hd'>{this.props.renderCheckbox}</View>
         <View className='goods-item__bd'>
           {/* 库存判断 */}
@@ -226,7 +226,7 @@ export default class GoodsItem extends Component {
                 <View className='goods-item__actions'>
                   {type === 'item' && (
                     <View
-                      className={classNames('iconfont', info.is_fav ? 'icon-star-on' : 'icon-star')}
+                      className={classNames('iconfont', info.is_fav ? 'icon-star_on' : 'icon-star')}
                       onClick={this.handleFavClick}
                       style={info.is_fav ? { color: colors.data[0].primary } : {}}
                     />
