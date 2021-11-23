@@ -43,7 +43,7 @@ export default class MemberIndex extends Component {
       salespersonData: null,
       memberAssets: {},
       // 是否开启储值
-      rechargeStatus: true,
+      rechargeStatus: false,
       // banner配置
       bannerSetting: {},
       // 菜单配置
@@ -372,7 +372,7 @@ export default class MemberIndex extends Component {
     let memberInfo = null,
       vipgrade = {}
     if (memberData) {
-      memberInfo = memberData.memberInfo
+      memberInfo = memberData.memberInfo||{}
       vipgrade = memberData.vipgrade||{}
     }
     let privacyTitle = ''
@@ -406,7 +406,7 @@ export default class MemberIndex extends Component {
                   <View className='nickname'>Hi, {memberInfo.username || memberInfo.mobile}</View>
                   <View className='gradename'>{`${
                     !vipgrade.is_vip
-                      ? memberInfo.gradeInfo.grade_name
+                      ? memberInfo.gradeInfo?memberInfo.gradeInfo.grade_name:''
                       : vipgrade.grade_name || '会员'
                   }`}</View>
                 </View>
