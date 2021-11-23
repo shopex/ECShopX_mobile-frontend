@@ -160,8 +160,7 @@ export default class VipIndex extends Component {
       distributor_id: Taro.getStorageSync('trackIdentity').distributor_id || '',
       pay_type: payType
     }
- 
-
+  
     showLoading({ mask: true })
 
     const data = await api.vip.charge(params)
