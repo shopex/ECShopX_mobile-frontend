@@ -14,8 +14,9 @@ import {
   copy,
   isAlipay,
   getPointName,
-  isWbWechat,
-  classNames
+  classNames,
+  isNavbar,
+  isWbWechat
 } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { Tracker } from '@/service'
@@ -442,7 +443,7 @@ export default class TradeDetail extends Component {
     if (!webSocketIsOpen) {
       const token = S.getAuthToken()
       Taro.connectSocket({
-        url: APP_WEBSOCKET_URL,
+        url: process.env.APP_WEBSOCKET,
         header: {
           'content-type': 'application/json',
           'authorization': `Bearer ${token}`,
@@ -518,7 +519,7 @@ export default class TradeDetail extends Component {
       () => {
         const token = S.getAuthToken()
         Taro.connectSocket({
-          url: APP_WEBSOCKET_URL,
+          url: process.env.APP_WEBSOCKET,
           header: {
             'content-type': 'application/json',
             'x-wxapp-session': token,
@@ -608,22 +609,14 @@ export default class TradeDetail extends Component {
 
     return (
       <View
-        className={classNames(`trade-detail ${info.is_logistics && 'islog'} ${info.status !== 'TRADE_CLOSED' &&
-        'paddingBottom'}`,{isWbWechat})}
+        className={classNames('page-trade-detail trade-detail', {
+          'islog': info.is_logistics,
+          'trade-close': info.status == 'TRADE_CLOSED',
+          'has-navbar': isNavbar()
+        })}
       >
-        {showQRcode && (
-          <View
-            className='qrcode-page'
-            onClick={() => {
-              this.handleImgClick(false)
-            }}
-          >
-            <View className='qrcode-bgc'>
-              <Image className='qrcode' src={qrcode} />
-            </View>
-          </View>
-        )}
         <SpNavBar title='订单详情' leftIconType='chevron-left' fixed='true' />
+
         {info.is_logistics && (
           <View className='custabs'>
             <View
@@ -642,7 +635,8 @@ export default class TradeDetail extends Component {
             </View>
           </View>
         )}
-        <ScrollView scroll-y className='content' scrollIntoView={scrollIntoView}>
+
+        <ScrollView scroll-y className='scroll-view' scrollIntoView={scrollIntoView}>
           <View className='trade-detail-header' id='order-0'>
             <View className='trade-detail-waitdeliver'>
               {info.is_logistics && <View className='oneline'>线上订单</View>}
@@ -973,6 +967,7 @@ export default class TradeDetail extends Component {
             </View>
           )}
         </ScrollView>
+
         {info.status !== 'TRADE_CLOSED' && (
           <View className='trade-detail__footer'>
             {// 立即支付
@@ -1069,6 +1064,19 @@ export default class TradeDetail extends Component {
                   )}
                 </View>
               )}
+          </View>
+        )}
+
+        {showQRcode && (
+          <View
+            className='qrcode-page'
+            onClick={() => {
+              this.handleImgClick(false)
+            }}
+          >
+            <View className='qrcode-bgc'>
+              <Image className='qrcode' src={qrcode} />
+            </View>
           </View>
         )}
       </View>

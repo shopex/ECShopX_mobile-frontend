@@ -714,14 +714,14 @@ export default class List extends Component {
             />
 
             {
-              <Icon
+              <Text
                 className={classNames('iconfont', 'icon-search', {
                   [`show`]: filterActive
                 })}
                 type='search'
                 size='14'
                 color='#999999'
-              ></Icon>
+              ></Text>
             }
 
             {filterActive && (

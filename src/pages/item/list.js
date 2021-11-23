@@ -451,27 +451,26 @@ export default class List extends Component {
     })
   }
 
-  handleConfirm = (val) => {
-
+  handleConfirm = ( val ) => {
     Tracker.dispatch("SEARCH_RESULT", {
       keywords: val
-    });
-    this.setState({
-      isShowSearch: false,
-      query: {
-        ...this.state.query,
-        keywords: val,
-      }
-    }, () => {
-      this.resetPage()
-      this.setState({
+    } );
+    this.resetPage()
+    this.setState(
+      {
         list: [],
         oddList: [],
-        evenList: []
-      }, () => {
+        evenList: [],
+        isShowSearch: false,
+        query: {
+          ...this.state.query,
+          keywords: val
+        }
+      },
+      () => {
         this.nextPage()
-      })
-    })
+      }
+    )
   }
 
   render() {
@@ -522,7 +521,7 @@ export default class List extends Component {
             }
           </View>
           {
-            tagsList.length &&
+            tagsList.length > 0 &&
             <TagsBar
               current={curTagId}
               list={tagsList}

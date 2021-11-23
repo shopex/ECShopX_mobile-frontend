@@ -502,7 +502,7 @@ export function isWebWechat() {
 } 
   
 /** 在微信h5中 */
-export const isWbWechat=isWebWechat();
+export const isWbWechat= isWebWechat();
 
 export {
   classNames,
