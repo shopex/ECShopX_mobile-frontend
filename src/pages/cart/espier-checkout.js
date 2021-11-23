@@ -683,19 +683,6 @@ export default class CartCheckout extends Component {
       data = await api.cart.total(params)
     } catch (e) {
       this.resolvePayError(e)
-      // let pages = pages = Taro.getCurrentPages()
-      // let currentPage = pages[pages.length - 2]
-      // let option = currentPage.options
-      // console.log(pages, 'page', currentPage.route, currentPage.options)
-      // let arr = []
-      // Object.keys(option).forEach((key) => {
-      //   arr.push(key+ '=' + option[key])
-      // })
-      // console.log(arr, 'att', currentPage.route + '?' + arr.join('&'))
-      // Taro.redirectTo({
-      //   url: currentPage.route + '?' + arr.join('&')
-      // })
-      if (init) Taro.navigateBack()
     }
 
     if (!data) return
@@ -1006,7 +993,6 @@ export default class CartCheckout extends Component {
   }
 
   resolvePayError(e) {
-    console.log("===resolvePayError",e)
     const { payType, disabledPayment, defalutPaytype } = this.state
     if (payType === 'point' || payType === 'deposit') {
       const disabledPaymentMes = {}
@@ -1069,6 +1055,8 @@ export default class CartCheckout extends Component {
           }
         }
       })
+    } else if (e.res.status_code === 422) {
+      Taro.navigateBack()
     }
   }
 
