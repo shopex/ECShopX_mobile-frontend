@@ -63,56 +63,48 @@ export default class AddressIndex extends Component {
 
     let res = await api.member.areaList()
 
-    if (isAlipay) {
-      this.setState({
-        areaListAli: traverseData(res)
-      })
-    }
-
-    if (isWeixin) {
-      const nList = pickBy(res, {
-        label: 'label',
-        children: 'children'
-      })
-      console.log('---api.member.areaList2---', nList)
-      this.nList = nList
-      let arrProvice = []
-      let arrCity = []
-      let arrCounty = []
-      nList.map((item, index) => {
-        arrProvice.push(item.label)
-        if (index === 0) {
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if (c_index === 0) {
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-        }
-      })
-      this.setState({
-        areaList: [arrProvice, arrCity, arrCounty]
-        // areaList: [['北京'], ['北京'], ['东城']],
-      })
-
-      if (this.$router.params.isWechatAddress) {
-        const resAddress = await Taro.chooseAddress()
-        const query = {
-          province: resAddress.provinceName,
-          city: resAddress.cityName,
-          county: resAddress.countyName,
-          adrdetail: resAddress.detailInfo,
-          is_def: 0,
-          postalCode: resAddress.postalCode,
-          telephone: resAddress.telNumber,
-          username: resAddress.userName
-        }
-        this.setState({
-          info: query
+    const nList = pickBy(res, {
+      label: 'label',
+      children: 'children'
+    })
+    console.log('---api.member.areaList2---', nList)
+    this.nList = nList
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+    nList.map((item, index) => {
+      arrProvice.push(item.label)
+      if (index === 0) {
+        item.children.map((c_item, c_index) => {
+          arrCity.push(c_item.label)
+          if (c_index === 0) {
+            c_item.children.map((cny_item) => {
+              arrCounty.push(cny_item.label)
+            })
+          }
         })
       }
+    })
+    this.setState({
+      areaList: [arrProvice, arrCity, arrCounty]
+      // areaList: [['北京'], ['北京'], ['东城']],
+    })
+
+    if (this.$router.params.isWechatAddress) {
+      const resAddress = await Taro.chooseAddress()
+      const query = {
+        province: resAddress.provinceName,
+        city: resAddress.cityName,
+        county: resAddress.countyName,
+        adrdetail: resAddress.detailInfo,
+        is_def: 0,
+        postalCode: resAddress.postalCode,
+        telephone: resAddress.telNumber,
+        username: resAddress.userName
+      }
+      this.setState({
+        info: query
+      })
     }
 
     hideLoading()
@@ -289,24 +281,9 @@ export default class AddressIndex extends Component {
     hideLoading()
   }
 
-  handleSelectArea = () => {
-    const { areaListAli } = this.state
-    console.log('--areaList--', areaListAli)
-    my.multiLevelSelect({
-      title: '请选择省市县区域',
-      list: areaListAli,
-      success: (res) => {
-        console.log('----handleSelectArea---', res.result)
-        this.setState({
-          selectedListAli: [res.result[0].name, res.result[1].name, res.result[2].name]
-        })
-      }
-    })
-  }
-
   render() {
     const { colors } = this.props
-    const { info, multiIndex, selectedListAli } = this.state
+    const { info, multiIndex, areaList } = this.state
 
     return (
       <View className='page-address-edit'>
@@ -330,44 +307,31 @@ export default class AddressIndex extends Component {
               value={info.telephone}
               onChange={this.handleChange.bind(this, 'telephone')}
             />
-
-            {isAlipay && (
-              <View className='picker' onClick={this.handleSelectArea}>
+            <Picker
+              mode='multiSelector'
+              onClick={this.handleClickPicker}
+              onChange={this.bindMultiPickerChange}
+              onColumnChange={this.bindMultiPickerColumnChange}
+              value={multiIndex}
+              range={areaList}
+            >
+              <View className='picker'>
                 <View className='picker__title'>所在区域</View>
-                {selectedListAli.length && (
-                  <Text>{`${selectedListAli[0]}${selectedListAli[1]}${selectedListAli[2]}`}</Text>
+                {info.address_id || (this.$router.params.isWechatAddress && info.province) ? (
+                  `${info.province}${info.city}${info.county}`
+                ) : (
+                  <View>
+                    {multiIndex.length > 0 ? (
+                      <Text>
+                        {areaList[0][multiIndex[0]]}
+                        {areaList[1][multiIndex[1]]}
+                        {areaList[2][multiIndex[2]]}
+                      </Text>
+                    ) : null}
+                  </View>
                 )}
               </View>
-            )}
-
-            {isWeixin && (
-              <Picker
-                mode='multiSelector'
-                onClick={this.handleClickPicker}
-                onChange={this.bindMultiPickerChange}
-                onColumnChange={this.bindMultiPickerColumnChange}
-                value={multiIndex}
-                range={areaList}
-              >
-                <View className='picker'>
-                  <View className='picker__title'>所在区域</View>
-                  {info.address_id || (this.$router.params.isWechatAddress && info.province) ? (
-                    `${info.province}${info.city}${info.county}`
-                  ) : (
-                    <View>
-                      {multiIndex.length > 0 ? (
-                        <Text>
-                          {areaList[0][multiIndex[0]]}
-                          {areaList[1][multiIndex[1]]}
-                          {areaList[2][multiIndex[2]]}
-                        </Text>
-                      ) : null}
-                    </View>
-                  )}
-                </View>
-              </Picker>
-            )}
-
+            </Picker>
             <AtInput
               title='详细地址'
               name='adrdetail'

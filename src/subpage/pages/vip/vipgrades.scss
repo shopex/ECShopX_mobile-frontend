@@ -1,13 +1,13 @@
-@import "@/style/imports";
-
 .vipgrades {
   .sp-cell__bd {
     display: flex;
     justify-content: flex-end;
   }
-  /*  #ifdef  h5  */
-  padding-top: $navigate-height-h5;
-  /*  #endif  */
+  .has-navbar {
+    .header {
+      margin-top: $navigate-height;
+    }
+  }
   .header {
     position: relative;
     color: #ffffff;

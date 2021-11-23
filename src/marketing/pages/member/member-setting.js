@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button } from '@tarojs/components'
 import req from '@/api/req'
-import { SpCell } from '@/components'
+import { SpCell, SpNavBar } from '@/components'
 import S from '@/spx'
 import { connect } from '@tarojs/redux'
 import DestoryConfirm from './comps/destory-comfirm-modal'
@@ -103,6 +103,7 @@ export default class SettingIndex extends Component {
     const { colors } = this.props
     return (
       <View className='member-setting'>
+        <SpNavBar title='设置' />
         <View className='page-member-section'>
           <SpCell title='个人信息' isLink onClick={this.handleClickInfo.bind(this)}></SpCell>
           <SpCell

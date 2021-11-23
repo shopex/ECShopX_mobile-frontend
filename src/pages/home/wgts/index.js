@@ -1,9 +1,10 @@
+import WgtCoupon from './coupon'
+
 export { default as HeaderHome } from './header-home'
 export { default as WgtSlider } from './slider'
 export { default as WgtPlateType } from './plate-type'
 export { default as WgtLimittimeSlider } from './limittime-slider'
 export { default as WgtNavigation } from './navigation'
-export { default as WgtCoupon } from './coupon'
 export { default as WgtGoodsScroll } from './goods-scroll'
 export { default as WgtGoodsGrid } from './goods-grid'
 export { default as WgtGoodsGridTab } from './goods-grid-tab'
@@ -21,4 +22,9 @@ export { default as WgtHeadline } from './headline'
 export { default as WgtImgGif } from './img-gif'
 export { default as WgtHotTopic } from './hot-topic'
 export { default as WgtFloorImg } from './floor-img'
-export default {}
+
+
+
+export {
+  WgtCoupon
+}

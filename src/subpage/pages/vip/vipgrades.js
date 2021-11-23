@@ -5,7 +5,15 @@ import { connect } from '@tarojs/redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
-import { pickBy, showLoading, hideLoading, isAlipay, getPointName, formatTime } from '@/utils'
+import {
+  pickBy,
+  classNames, showLoading,
+  hideLoading,
+  isAlipay,
+  getPointName,
+  isNavbar,
+  formatTime
+} from '@/utils'
 import PaymentPicker from '@/pages/cart/comps/payment-picker'
 import { customName } from '@/utils/point'
 import userIcon from '@/assets/imgs/user-icon.png'
@@ -247,7 +255,11 @@ export default class VipIndex extends Component {
       hfpay: '微信支付'
     }
     return (
-      <View className='vipgrades'>
+      <View
+        className={classNames('page-vip-vipgrades', 'vipgrades', {
+          'has-navbar': isNavbar()
+        })}
+      >
         <SpNavBar title='会员购买' leftIconType='chevron-left' fixed='true' />
         <View className='header' style={'background: ' + colors.data[0].marketing}>
           <View className='header-isauth'>
@@ -263,7 +275,7 @@ export default class VipIndex extends Component {
               </View>
               <View className='mcode'>
                 {userVipInfo.grade_name
-                  ? userVipInfo.grade_name + ' : 有效期至' + userVipInfo.end_time
+                  ? userVipInfo.grade_name + ' : 有效期至' + (userVipInfo.end_time || '')
                   : '暂未开通'}
               </View>
             </View>
