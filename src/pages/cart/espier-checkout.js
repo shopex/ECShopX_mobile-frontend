@@ -1006,6 +1006,7 @@ export default class CartCheckout extends Component {
   }
 
   resolvePayError(e) {
+    console.log("===resolvePayError",e)
     const { payType, disabledPayment, defalutPaytype } = this.state
     if (payType === 'point' || payType === 'deposit') {
       const disabledPaymentMes = {}
