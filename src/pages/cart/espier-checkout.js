@@ -1006,6 +1006,7 @@ export default class CartCheckout extends Component {
   }
 
   resolvePayError(e) {
+    console.log("===resolvePayError",e)
     const { payType, disabledPayment, defalutPaytype } = this.state
     if (payType === 'point' || payType === 'deposit') {
       const disabledPaymentMes = {}
@@ -1257,7 +1258,7 @@ export default class CartCheckout extends Component {
           ...params,
           pay_type: this.state.total.freight_type === 'point' ? 'point' : 'wxpay'
         })
-        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}&type=pointitem`) 
+        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}`) 
 
         // Taro.redirectTo({
         //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}&type=pointitem`
