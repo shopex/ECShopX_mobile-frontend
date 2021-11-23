@@ -137,7 +137,6 @@ export default class AddressIndex extends Component {
   }
 
   bindMultiPickerChange = async (e) => {
-    console.log('=========')
     const { info } = this.state
     this.nList.map((item, index) => {
       if (index === e.detail.value[0]) {
