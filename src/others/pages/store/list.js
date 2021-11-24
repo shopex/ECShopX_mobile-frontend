@@ -519,7 +519,7 @@ export default class List extends Component {
               ></View>
             )}
           </View>
-          {tagsList.length && (
+          {tagsList.length > 0 && (
             <TagsBar
               current={curTagId}
               list={tagsList}
@@ -650,7 +650,7 @@ export default class List extends Component {
             </View>
           )}
           {page.isLoading ? <Loading>正在加载...</Loading> : null}
-          {!page.isLoading && !page.hasNext && !list.length && (
+          {!page.isLoading && !page.hasNext && !list.length > 0 && (
             <SpNote img='trades_empty.png'>暂无数据~</SpNote>
           )}
         </ScrollView>
