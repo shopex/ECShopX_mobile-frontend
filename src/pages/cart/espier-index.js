@@ -832,7 +832,7 @@ export default class CartIndex extends Component {
                           <CartItem
                             isDisabled
                             num
-                            key={item.item.item_id}
+                            key={item.item_id}
                             info={item}
                           ></CartItem>
                         );

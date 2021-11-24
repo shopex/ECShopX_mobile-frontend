@@ -6,7 +6,7 @@ import { BackToTop, Loading, SpNote, GoodsItem, SpNavBar, SpCheckbox } from '@/c
 import { connect } from '@tarojs/redux'
 import api from '@/api'
 import { getDistributorId } from '@/utils/helper'
-import { pickBy } from '@/utils'
+import { pickBy, isWebWechat, classNames } from '@/utils'
 
 import './plusprice.scss'
 
@@ -125,7 +125,7 @@ export default class DetailPluspriceList extends Component {
       >
         <SpNavBar title='微商城' />
         <ScrollView
-          className='plusprice-goods__scroll'
+          className={classNames(`plusprice-goods__scroll ${!isWebWechat() && 'cus-padding' : ''}`)}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
