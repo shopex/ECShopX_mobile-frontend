@@ -122,6 +122,9 @@
   .plusprice-footer {
     position: fixed;
     width: 100%;
+    /*  #ifdef  h5  */
+    width: 96%;
+    /*  #endif  */
     bottom: 0;
     left: 0;
     height: 130px;
@@ -163,8 +166,14 @@
 }
 .cart-page-plusprice {
   // background: #FC7239;
+    /*  #ifdef  h5  */
+    padding-top: 0px;
+    /*  #endif  */
+    .cus-padding {
+      padding-top: $navigate-height-h5;
+    }
   .plusprice-goods__scroll {
-    top: 0;
+    top: 23%;
     bottom: 0;
     box-sizing: border-box;
     padding-bottom: 120px;
