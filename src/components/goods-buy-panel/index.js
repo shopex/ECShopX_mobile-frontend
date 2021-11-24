@@ -294,7 +294,7 @@ export default class GoodsBuyPanel extends Component {
   }
 
   handleBuyClick = async (type, skuInfo, num) => {
-    debugger;
+ 
     console.warn(this.props)
     if (this.state.busy) return
     const isOpenStore = await entry.getStoreStatus()

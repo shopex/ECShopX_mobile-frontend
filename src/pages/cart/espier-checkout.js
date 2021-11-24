@@ -16,6 +16,7 @@ import {
   isAlipay,
   isWeixin,
   isWeb,
+  isWbWechat,
   redirectUrl,
   isObjectValueEqual
 } from '@/utils'
@@ -110,7 +111,7 @@ export default class CartCheckout extends Component {
         freight_type: ''
       },
       // 默认支付方式
-      defalutPaytype: 'wxpay',
+      defalutPaytype:isWbWechat? 'wxpayjs':isWeb?'wxpayh5':'wxpay',
       payType: '',
       disabledPayment: null,
       isPaymentOpend: false,
