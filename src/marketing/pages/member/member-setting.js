@@ -63,8 +63,16 @@ export default class SettingIndex extends Component {
     console.log(process.env.APP_HOME_PAGE);
     if (process.env.TARO_ENV === 'h5' && Taro.getEnv() !== 'SAPP') {
       // eslint-disable-next-line
+      Taro.showToast({
+        title: '退出登录成功',
+        icon: 'none'
+      })
       goToPage(process.env.APP_HOME_PAGE)
     } else {
+      Taro.showToast({
+        title: '退出登录成功',
+        icon: 'none'
+      })
       Taro.redirectTo({
         url: process.env.APP_HOME_PAGE
       })
