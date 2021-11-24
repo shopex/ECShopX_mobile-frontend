@@ -1165,7 +1165,7 @@ export default class CartCheckout extends Component {
     // }
     const { payType, total, identity, isOpenStore, curStore, receiptType, channel } = this.state
     const { type, goodType, cart_type } = this.$router.params
- 
+
     const isDrug = type === 'drug'
 
     if (payType === 'point' || payType === 'deposit') {
@@ -1258,7 +1258,7 @@ export default class CartCheckout extends Component {
           ...params,
           pay_type: this.state.total.freight_type === 'point' ? 'point' : 'wxpay'
         })
-        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}`) 
+        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}`)
 
         // Taro.redirectTo({
         //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}&type=pointitem`
@@ -1467,6 +1467,44 @@ export default class CartCheckout extends Component {
       ...this.params,
       remark: val
     }
+  }
+
+  // 键盘挡输入框
+  getElementOffsetTop (el) {
+    let top = el.offsetTop
+    let cur = el.offsetParent
+    while(cur != null){
+      top += cur.offsetTop
+      cur = cur.offsetParent
+   }
+   return top
+  }
+
+  handleRemarkFocus = (value, event) => {
+    if (!isWeb) {
+      return
+    }
+    const ua = navigator.userAgent;
+    const ios = /iPad|iPhone|iPod/.test(ua);
+    const dom = event.target
+    setTimeout(() => {
+      if (ios) {
+        document.body.scrollTop = document.body.scrollHeight
+      } else {
+        // dom.scrollIntoView(false)
+        const body = document.getElementsByTagName('body')[0] // 兼容获取body
+        const regDom = document.querySelector('.taro_router') // 获取页面根元素
+        const clientHeight = body.clientHeight //可见高
+        const fixHeight = clientHeight/3
+        const offsetTop = this.getElementOffsetTop(dom)
+        regDom.style.top = '-' + (offsetTop - fixHeight) + 'px'
+      }
+    }, 300);
+  }
+
+  handleRemarkBlur = () => {
+    const regDom = document.querySelector('.taro_router')
+    regDom.style.top = 0
   }
 
   handleCouponsClick = async () => {
@@ -1708,7 +1746,8 @@ export default class CartCheckout extends Component {
       isPackage,
       pack,
       isOpenStore,
-      defalutPaytype
+      defalutPaytype,
+      fixInput
     } = this.state
     const { type, goodType, bargain_id } = this.$router.params
     const isDrug = type === 'drug'
@@ -1870,9 +1909,11 @@ export default class CartCheckout extends Component {
                   <View className='sec cart-group__cont'>
                     <SpCell className='sec trade-remark' border={false}>
                       <AtInput
-                        className='trade-remark__input'
+                        className={`trade-remark__input` }
                         placeholder='给商家留言：选填（50字以内）'
                         onChange={this.handleRemarkChange.bind(this)}
+                        onFocus={this.handleRemarkFocus.bind(this)}
+                        onBlur={this.handleRemarkBlur.bind(this)}
                         maxLength={50}
                       />
                     </SpCell>
