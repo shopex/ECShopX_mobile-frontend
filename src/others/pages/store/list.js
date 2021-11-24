@@ -91,6 +91,20 @@ export default class List extends Component {
     )
   }
 
+  componentWillReceiveProps (next) {
+    if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
+      setTimeout(() => {
+        const list = this.state.list.map(item => {
+          item.is_fav = Boolean(next.favs[item.item_id])
+          return item
+        })
+        this.setState({
+          list
+        })
+      })
+    }
+  }
+
   onShareAppMessage() {
     const res = this.state.shareInfo
     const { userId } = Taro.getStorageSync('userinfo')
@@ -237,6 +251,11 @@ export default class List extends Component {
     const query = {
       ...this.state.query,
       goodsSort: current === 0 ? null : current === 1 ? 1 : sort > 0 ? 3 : 2
+    }
+
+    /** 当不需要排序且点击一致时 */
+    if(current === this.state.curFilterIdx && !sort){
+      return
     }
 
     if (
@@ -500,7 +519,7 @@ export default class List extends Component {
               ></View>
             )}
           </View>
-          {tagsList.length && (
+          {tagsList.length > 0 && (
             <TagsBar
               current={curTagId}
               list={tagsList}
@@ -631,7 +650,7 @@ export default class List extends Component {
             </View>
           )}
           {page.isLoading ? <Loading>正在加载...</Loading> : null}
-          {!page.isLoading && !page.hasNext && !list.length && (
+          {!page.isLoading && !page.hasNext && !list.length > 0 && (
             <SpNote img='trades_empty.png'>暂无数据~</SpNote>
           )}
         </ScrollView>
