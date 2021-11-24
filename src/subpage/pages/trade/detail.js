@@ -301,10 +301,10 @@ export default class TradeDetail extends Component {
     }
 
     if(isWeb){
-      redirectUrl(api, `/subpage/pages/cashier/index?order_id=${order_id}`) 
+      redirectUrl(api, `/subpage/pages/cashier/index?order_id=${order_id}`)
       return ;
     }
-    
+
     const config = await api.cashier.getPayment(paymentParams)
 
     this.setState({
