@@ -90,19 +90,18 @@ export default class Home extends Component {
     setPageTitle('微商城')
     this.protocolUpdateTime();
     this.getShareSetting();
-    this.isShowTips(); 
-  
+    this.isShowTips();
   }
 
   // 获取隐私政策时间
   async protocolUpdateTime() {
-    const isLocal = await entry.getLocalSetting() 
+    const isLocal = await entry.getLocalSetting()
 
-    const time = Taro.getStorageSync('PrivacyUpdate_time')
+    const privacy_time = Taro.getStorageSync('PrivacyUpdate_time')
     const result = await api.wx.getPrivacyTime()
     const { update_time } = result
 
-    if ((!time || time != update_time) && isLocal) {
+    if ((!String(privacy_time) || privacy_time != update_time) && isLocal) {
       this.setState({
         PrivacyConfirmModalVisible: true
       })
@@ -164,7 +163,7 @@ export default class Home extends Component {
     }
   }
 
-  componentDidShow() { 
+  componentDidShow() {
     this.showInit()
     this.isShoppingGuide()
     this.getDistributionInfo()
@@ -175,7 +174,7 @@ export default class Home extends Component {
     this.getPointSetting()
     if (S.getAuthToken()) {
       this.getCurrentGrad()
-    } 
+    }
   }
 
   // 配置信息
