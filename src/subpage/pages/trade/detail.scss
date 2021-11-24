@@ -31,19 +31,19 @@ $paddingBottom:100px;
 
   &.has-navbar {
     .scroll-view {
-      top: $navigate-height; 
+      top: $navigate-height;
     }
   }
 
   &.islog {
     .scroll-view {
-      top: $custabs; 
+      top: $custabs;
     }
   }
 
   &.has-navbar.islog {
     .scroll-view {
-      top: $navigate-height + $custabs; 
+      top: $navigate-height + $custabs;
     }
   }
 
@@ -230,6 +230,7 @@ $paddingBottom:100px;
     }
     .user-info-trade {
       display: flex;
+      justify-content: flex-start;
       font-size: 28px;
       color: #666;
       align-items: center;
