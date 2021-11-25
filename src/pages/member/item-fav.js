@@ -35,6 +35,20 @@ export default class ItemFav extends Component {
     this.nextPage()
   }
 
+  componentWillReceiveProps (next) {
+    if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
+      setTimeout(() => {
+        const list = this.state.list.map(item => {
+          item.is_fav = Boolean(next.favs[item.item_id])
+          return item
+        })
+        this.setState({
+          list
+        })
+      })
+    }
+  }
+
   async fetch(params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
