@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components' 
-import { classNames, checkClassName } from '@/utils'
+import { classNames, checkClassName,styleNames,getThemeStyle } from '@/utils'
 import './index.scss'
  
 export default class SpCheckbox extends Component {
@@ -47,6 +47,7 @@ export default class SpCheckbox extends Component {
       <View
         className={classNames('sp-checkbox__wrap', isChecked ? 'sp-checkbox__checked' : null)}
         onClick={this.handleClick.bind(this)}
+        style={styleNames(getThemeStyle())}
       >
         <View
           className='sp-checkbox' 
