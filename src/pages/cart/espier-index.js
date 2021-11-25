@@ -12,7 +12,7 @@ import {
   GoodsItem,
   SpLogin
 } from "@/components";
-import { log, navigateTo, pickBy, classNames, showLoading, hideLoading } from '@/utils'
+import { log, navigateTo, pickBy, classNames, showLoading, hideLoading,styleNames,getThemeStyle } from '@/utils'
 import { setPageTitle } from '@/utils/platform'
 import debounce from 'lodash/debounce'
 import api from '@/api'
@@ -593,7 +593,7 @@ export default class CartIndex extends Component {
       remindInfo
     } = this.state;
     const { list, showLikeList, colors } = this.props;
-    console.log("==likeList==",likeList)
+     
     // if (loading) {
     //   return <Loading />;
     // }
@@ -601,7 +601,7 @@ export default class CartIndex extends Component {
     const isDrug = type === "drug";
     const isEmpty = !list.length;
     return (
-      <View className={classNames("page-cart-index", isDrug && "is-drug")}>
+      <View className={classNames("page-cart-index", isDrug && "is-drug")}    style={styleNames(getThemeStyle())}>
         {isDrug && (
           <SpNavBar title="购物车" leftIconType="chevron-left" fixed="true" />
         )}
