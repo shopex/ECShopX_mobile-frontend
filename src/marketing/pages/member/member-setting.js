@@ -3,7 +3,7 @@ import { View, Button } from '@tarojs/components'
 import req from '@/api/req'
 import { SpCell, SpNavBar } from '@/components'
 import S from '@/spx'
-import { goToPage } from '@/utils'
+import { goToPage, isWeb } from '@/utils'
 import { connect } from '@tarojs/redux'
 import DestoryConfirm from './comps/destory-comfirm-modal'
 
@@ -147,13 +147,16 @@ export default class SettingIndex extends Component {
           ></SpCell>
           {S.getAuthToken() && (
             <View className='btn'>
-              <Button
+              {
+                isWeb &&  <Button
                 className='button'
                 style={`color: ${colors.data[0].primary}; border: 1px solid ${colors.data[0].primary}`}
                 onClick={this.handleClickLogout}
               >
                 退出登录
               </Button>
+              }
+
               <Button
                 className='button'
                 style={`color: ${colors.data[0].primary}; border: 1px solid ${colors.data[0].primary}`}

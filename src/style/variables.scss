@@ -79,9 +79,3 @@ $z-index-dropdown: $z-index-level-3 !default;
 $z-index-modal: $z-index-level-5 !default;
 $z-index-toast: $z-index-level-6 !default;
 
-body {
-  position: inherit !important;
-}
-.taro__modal {
-  transition: opacity 0s linear 0s !important;
-}
