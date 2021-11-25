@@ -71,7 +71,7 @@ export default class MemberIndex extends Component {
       score_menu_open: false,
       // 是否显示隐私协议
       // showPrivacy: false,
-      // showTimes: 0,
+      showTimes: 0,
       all_card_list: [],
       visible: false,
       protocol: { member_register: '注册协议', privacy: '隐私政策' }
@@ -293,7 +293,6 @@ export default class MemberIndex extends Component {
   }
 
   handleClickWxOAuth(fn, need = true) {
-    const { memberData } = this.props
     if (!S.getAuthToken()) {
       Taro.showToast({
         icon: 'none',
@@ -301,12 +300,36 @@ export default class MemberIndex extends Component {
       })
       return
     }
-    if (memberData && memberData.memberInfo) {
-      const { avatar, username } = memberData.memberInfo
+    // const { memberData } = this.props
+    // if (memberData && memberData.memberInfo) {
+    //   const { avatar, username } = memberData.memberInfo
+    //   if (isWeixin) {
+    //     if (avatar && username && need) {
+    //       fn && fn()
+    //     } else {
+    //       S.OAuthWxUserProfile(() => {
+    //         this.fetch()
+    //       }, true)
+    //     }
+    //   } else {
+    //     fn && fn()
+    //   }
+    // }
+    if ( this.state.showTimes >= 1 ) {
+      if (need) {
+        fn && fn()
+      }
+    } else {
+      const { avatar, username } = this.props.memberData.memberInfo;
       if (isWeixin) {
-        if (avatar && username && need) {
-          fn && fn()
+        if (avatar && username) {
+          if(need){
+            fn && fn()
+          }
         } else {
+          this.setState({
+            showTimes: this.state.showTimes + 1
+          })
           S.OAuthWxUserProfile(() => {
             this.fetch()
           }, true)
@@ -315,22 +338,6 @@ export default class MemberIndex extends Component {
         fn && fn()
       }
     }
-    // if ( this.state.showTimes >= 1 ) {
-    //   if(need){
-    //     fn && fn();
-    //   }
-    // } else {
-    //   const { avatar, username } = this.props.memberData.memberInfo;
-    //   if (avatar && username) {
-    //     if(need){
-    //       fn && fn();
-    //     }
-    //   } else {
-    //     this.setState({
-    //       showPrivacy: true
-    //     });
-    //   }
-    // }
   }
 
   fetchCouponCardList() {
