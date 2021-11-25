@@ -607,10 +607,7 @@ export default class CartIndex extends Component {
       remindInfo
     } = this.state;
     const { list, showLikeList, colors } = this.props;
-     
-    // if (loading) {
-    //   return <Loading />;
-    // }
+    
     const { type = "distributor" } = this.$router.params;
     const isDrug = type === "drug";
     const isEmpty = !list.length;
