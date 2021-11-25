@@ -74,7 +74,7 @@ export default class SpLogin extends Component {
         })
       }
       
-      // await api.wx.newMarketing()
+      await api.wx.newMarketing()
       await S.getMemberInfo()
       // const memberInfo = await api.member.memberInfo();
       // this.props.setMemberInfo( memberInfo )
