@@ -35,6 +35,7 @@ import PointUse from './comps/point-use'
 import Deliver from './comps/deliver'
 // import DrugInfo from './drug-info'
 import OrderItem from '../../components/orderItem/order-item'
+import { PAYTYPE } from '@/consts'
 
 import './espier-checkout.scss'
 import entry from '../../utils/entry'
@@ -1260,8 +1261,14 @@ export default class CartCheckout extends Component {
         config = await this.h5CreateByType({
           ...params,
           pay_type: this.state.total.freight_type === 'point' ? 'point' : 'wxpay'
-        })
-        redirectUrl(api, `/subpage/pages/cashier/index?order_id=${config.order_id}`) 
+        })   
+        let redirectPath=`/subpage/pages/cashier/index?order_id=${config.order_id}`;
+
+        if(payType===PAYTYPE.WXH5||payType===PAYTYPE.ALIH5){
+          redirectPath+=`&pay_type=${payType}`;
+        }
+        
+        redirectUrl(api, redirectPath) 
 
         // Taro.redirectTo({
         //   url: `/subpage/pages/cashier/index?order_id=${config.order_id}&payType=${payType}&type=pointitem`
