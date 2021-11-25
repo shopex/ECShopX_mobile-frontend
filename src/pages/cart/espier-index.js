@@ -26,11 +26,12 @@ import { getDistributorId } from "@/utils/helper";
 import './espier-index.scss'
 
 @connect(
-  ({ cart, colors }) => ({
+  ({ cart, colors, member }) => ({
     list: cart.list,
     cartIds: cart.cartIds,
     showLikeList: cart.showLikeList,
-    colors: colors.current
+    colors: colors.current,
+    favs: member.favs
   }),
   dispatch => ({
     onUpdateCart: list => dispatch({ type: "cart/update", payload: list }),
@@ -115,6 +116,17 @@ export default class CartIndex extends Component {
     this.setState({
       groups
     });
+    if (Object.keys(this.props.favs).length !== Object.keys(nextProps.favs).length) {
+      setTimeout(() => {
+        const likeList = this.state.likeList.map(item => {
+          item.is_fav = Boolean(nextProps.favs[item.item_id])
+          return item
+        })
+        this.setState({
+          likeList
+        })
+      })
+    }
   }
 
   componentDidShow() {
@@ -140,7 +152,8 @@ export default class CartIndex extends Component {
   };
 
   async fetch(params) {
-    const { page_no: page, page_size: pageSize } = params;
+    const { page_no: page, page_size: pageSize } = params
+    const { favs } = this.props;
     const query = {
       page,
       pageSize
@@ -155,7 +168,8 @@ export default class CartIndex extends Component {
       member_price: ({ member_price }) => (member_price / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
       title: "itemName",
-      desc: "brief"
+      desc: "brief",
+      is_fav: ({ item_id }) => Boolean(favs[item_id])
     });
 
     this.setState({
@@ -622,6 +636,7 @@ export default class CartIndex extends Component {
 
         <ScrollView
           className={`${isEmpty ? "hidden-scroll" : "cart-list__scroll"}`}
+          style={isDrug && isNavbar() ? { top: '2rem' } : { top: 0 }}
           onScrollToLower={this.nextPage}
           scrollY
         >
