@@ -35,6 +35,7 @@ import OrderItem from '../../components/orderItem/order-item'
 
 import './espier-checkout.scss'
 import entry from '../../utils/entry'
+import { copySync } from 'fs-extra'
 
 const transformCartList = (list) => {
   return pickBy(list, {
@@ -1480,31 +1481,41 @@ export default class CartCheckout extends Component {
    return top
   }
 
+  getDevice () {
+    const ua = navigator.userAgent
+    const ios = /iPad|iPhone|iPod/.test(ua)
+    return ios
+  }
+
   handleRemarkFocus = (value, event) => {
     if (!isWeb) {
       return
     }
-    const ua = navigator.userAgent;
-    const ios = /iPad|iPhone|iPod/.test(ua);
+    const ios = this.getDevice()
     const dom = event.target
     setTimeout(() => {
       if (ios) {
         document.body.scrollTop = document.body.scrollHeight
       } else {
-        // dom.scrollIntoView(false)
-        const body = document.getElementsByTagName('body')[0] // 兼容获取body
-        const regDom = document.querySelector('.taro_router') // 获取页面根元素
-        const clientHeight = body.clientHeight //可见高
-        const fixHeight = clientHeight/3
+        // dom.scrollIntoView(false) 微信x5内核不支持
+        const body = document.getElementsByTagName('body')[0]
+        const clientHeight = body.clientHeight // 可见高
+        const fixHeight = clientHeight / 3 // 自定义位置
         const offsetTop = this.getElementOffsetTop(dom)
-        regDom.style.top = '-' + (offsetTop - fixHeight) + 'px'
+        body.scrollTop = offsetTop - fixHeight
       }
     }, 300);
   }
 
   handleRemarkBlur = () => {
-    const regDom = document.querySelector('.taro_router')
-    regDom.style.top = 0
+    if (!isWeb) {
+      return
+    }
+    const ios = this.getDevice()
+    if (!ios) {
+      const body = document.getElementsByTagName('body')[0]
+      body.scrollTop = 0
+    }
   }
 
   handleCouponsClick = async () => {
