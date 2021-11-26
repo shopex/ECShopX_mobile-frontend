@@ -6,9 +6,14 @@ import req from '@/api/req'
 import DestoryConfirm from './comps/destory-comfirm-modal'
 import './destroy-member.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
-}))
+@connect(
+  ({ colors }) => ({
+    colors: colors.current
+  }),
+  (dispatch) => ({
+    onUpdateCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
+  })
+)
 export default class SettingIndex extends Component {
   constructor(props) {
     super(props)
@@ -55,6 +60,8 @@ export default class SettingIndex extends Component {
         if (res.status) {
           Taro.removeStorageSync('auth_token')
           Taro.removeStorageSync('PrivacyUpdate_time')
+          // 清除购物车数据
+          this.props.onUpdateCount(0)
           Taro.reLaunch({
             url: '/pages/index'
           })

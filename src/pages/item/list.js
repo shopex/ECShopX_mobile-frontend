@@ -6,7 +6,7 @@ import { AtDrawer } from 'taro-ui'
 import { BackToTop, Loading, TagsBar, FilterBar, SpSearchBar, GoodsItem, SpNote, SpNavBar, TabBar } from '@/components'
 import api from '@/api'
 import { Tracker } from "@/service";
-import { pickBy, classNames, isWeixin, isNavbar, isWebWechat } from '@/utils'
+import { pickBy, classNames, isWeixin, isNavbar, isWebWechat, isEmojiCharacter, showToast } from '@/utils'
 import { setPageTitle } from '@/utils/platform'
 import entry from "@/utils/entry";
 
@@ -147,7 +147,7 @@ export default class List extends Component {
     item_params_list.map(item => {
       if (selectParams.length < 4) {
         selectParams.push({
-          attribute_id: item.attribute_id,
+          attribute_id: item.attribute_id,  
           attribute_value_id: 'all'
         })
       }
@@ -457,6 +457,11 @@ export default class List extends Component {
   }
 
   handleConfirm = ( val ) => {
+    if ( isEmojiCharacter( val ) ) {
+      showToast('请输入正确的关键字查询')
+      return
+    }
+
     Tracker.dispatch("SEARCH_RESULT", {
       keywords: val
     } );
