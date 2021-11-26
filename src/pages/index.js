@@ -222,9 +222,9 @@ export default class Home extends Component {
   }
 
   // 触底事件
-  onReachBottom = () => {
-    this.nextPage()
-  }
+  // onReachBottom = () => {
+  //   this.nextPage()
+  // }
 
   // 分享
   onShareAppMessage(params) {
@@ -503,7 +503,7 @@ export default class Home extends Component {
   }
 
   // 获取猜你喜欢
-  fetch = async (params) => {
+  fetch = async (params) => { 
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,

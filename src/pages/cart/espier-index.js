@@ -634,7 +634,7 @@ export default class CartIndex extends Component {
         <ScrollView
           className={`${isEmpty ? "hidden-scroll" : "cart-list__scroll"}`}
           style={isDrug && isNavbar() ? { top: '2rem' } : { top: 0 }}
-          onScrollToLower={this.nextPage}
+          // onScrollToLower={this.nextPage}
           scrollY
         >
           {
