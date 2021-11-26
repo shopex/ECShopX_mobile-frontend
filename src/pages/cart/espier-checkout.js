@@ -1267,7 +1267,7 @@ export default class CartCheckout extends Component {
 
         if(payType===PAYTYPE.WXH5||payType===PAYTYPE.ALIH5){
           redirectPath+=`&pay_type=${payType}`;
-        }
+        } 
 
         redirectUrl(api, redirectPath)
 
