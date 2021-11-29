@@ -10,7 +10,7 @@ import {
 } from '@/components'
 import api from '@/api'
 import { withBackToTop, withPager } from '@/hocs'
-import { normalizeQuerys } from '@/utils'
+import { normalizeQuerys,isNavbar,classNames } from '@/utils'
 import entry from '@/utils/entry'
 
 import './espier-evaluation.scss'
@@ -159,7 +159,9 @@ export default class Evaluation extends Component {
     }
 
     return (
-      <View className='page-goods-evaluation'>
+      <View className={classNames('page-goods-evaluation',{
+        'has-navbar':isNavbar()
+      })} >
         <SpNavBar title='评论列表' leftIconType='chevron-left' />
         <ScrollView className='goods-detail__scroll' onScrollToLower={this.nextPage} scrollY>
           <View className='goods-evaluation-wrap'>
