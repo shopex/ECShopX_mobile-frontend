@@ -194,9 +194,7 @@ export default class StoreIndex extends Component {
       showBackToTop,
       scrollTop,
       tabList,
-      localCurrent,
-      isShowAddTip,
-      authStatus
+      localCurrent, 
     } = this.state
     const user = Taro.getStorageSync('userinfo')
     const isPromoter = user && user.isPromoter
@@ -207,7 +205,7 @@ export default class StoreIndex extends Component {
     return (
       <View className='page-store-index'>
         <ScrollView
-          className='wgts-wrap wgts-wrap__fixed'
+          className='wgts-wrap wgts-wrap__fixed__page'
           scrollTop={scrollTop}
           onScroll={this.handleScroll}
           onScrollToLower={this.nextPage}
