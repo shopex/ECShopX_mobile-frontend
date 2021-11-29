@@ -59,7 +59,7 @@ import {
 } from './comps'
 import { linkPage } from '../home/wgts/helper'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
-import { getDtidIdUrl } from '@/utils/helper'
+import { getDtidIdUrl } from '@/utils/helper' 
 
 import './espier-detail.scss'
 
@@ -347,13 +347,22 @@ export default class EspierDetail extends Component {
     return info
   }
 
-  componentWillReceiveProps (next) {
+  componentWillReceiveProps (next) { 
     if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
       let is_fav = null
       setTimeout(() => {
         is_fav = Boolean(next.favs[this.state.info.item_id])
         this.setState({
           info: {...this.state.info, is_fav}
+        })
+        setTimeout(() => {
+          const likeList = this.state.likeList.map((item) => {
+            item.is_fav = Boolean(next.favs[item.item_id])
+            return item
+          })
+          this.setState({
+            likeList
+          })
         })
       }, 100)
     }
@@ -540,6 +549,7 @@ export default class EspierDetail extends Component {
   }
 
   async fetch(params) {
+    console.log("====favs",this.props.favs)
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -560,7 +570,8 @@ export default class EspierDetail extends Component {
       },
       member_price: ({ member_price }) => (member_price / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
-      desc: "brief"
+      desc: "brief",
+      is_fav: ({ item_id }) => Boolean(this.props.favs[item_id])
     });
 
     this.setState({
@@ -1548,8 +1559,7 @@ export default class EspierDetail extends Component {
             <View>
               {desc && <SpHtmlContent className='goods-detail__content' content={desc} />}
             </View>
-          )}
-
+          )} 
           {/* 猜你喜欢 */}
           {likeList.length && showLikeList ? (
             <View className="cart-list cart-list__disabled">
@@ -1572,7 +1582,6 @@ export default class EspierDetail extends Component {
                         key={item.item_id}
                         info={item}
                         onClick={this.handleClickItem.bind(this, item)}
-                  
                       />
                     </View>
                   );

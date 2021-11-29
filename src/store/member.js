@@ -48,7 +48,9 @@ const member = createReducer(initState, {
 
     return {
       ...state,
-      favs
+      favs:{
+        ...favs
+      }
     }
   },
   ['member/closeAdv'](state) {
