@@ -78,12 +78,12 @@ export default class HeaderHome extends Component {
             <View className='shop-view view-flex-item view-flex view-flex-middle'></View>
           )}
 
-          {Taro.getEnv() !== 'WEB' && isOpenScanQrcode == 1 && (
+          {/* {Taro.getEnv() !== 'WEB' && isOpenScanQrcode == 1 && (
             <View className='scancode' onClick={this.handleScanCode.bind(this)}>
               <View className='iconfont icon-scan'></View>
               <View>扫码</View>
             </View>
-          )}
+          )} */}
         </View>
       </View>
     )
