@@ -9,7 +9,8 @@ const SpNewFilterbar = (props) => {
         filterText = '筛选',
         filterData,
         value,
-        onClickLabel
+        onClickLabel=()=>{},
+        onClickFilter=()=>{}
     } = props;
 
     return (
@@ -31,9 +32,9 @@ const SpNewFilterbar = (props) => {
                 }
             </View>
             <View className={'sp-component-newfilterbar-filter'}>
-                <View className={'sp-component-newfilterbar-filter-wrapper'}>
+                <View className={'sp-component-newfilterbar-filter-wrapper'} onClick={onClickFilter}>
                     <View className={'filtertext'}>{filterText}</View>
-                    <Text className={'iconfont icon-shaixuan-01'}></Text>
+                    <Text className={'iconfont icon-shaixuan-01'} ></Text>
                 </View>
             </View>
         </View>

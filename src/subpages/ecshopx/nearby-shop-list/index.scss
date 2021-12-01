@@ -14,7 +14,8 @@ $input-horizontal-padding:24px;
     }
 
     &-scrollview{
-        @include page-scroll(0, 0);
+        @include page-scroll(0, 0); 
+        background: white; 
     }
     
 }
