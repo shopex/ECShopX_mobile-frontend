@@ -29,6 +29,12 @@ export default {
       pages: [
         'index'
       ]
+    },
+    {
+      root: 'subpages/auth',
+      pages: [
+        'login'
+      ]
     }
   //   {
   //     root: 'pages/store/',

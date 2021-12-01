@@ -26,18 +26,6 @@ export const getDtidIdUrl = (url, distributor_id) => {
   }
   return url;
 };
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 说明
- * @FilePath: /unite-vshop/src/pages/home/wgts/helper.js
- * @Date: 2020-04-30 17:12:45
- * @LastEditors: Arvin
- * @LastEditTime: 2021-02-01 14:00:21
- */
-
-// import { WGTS_NAV_MAP } from '@/consts'
 
 export function linkPage(type, data) {
   const { id, title } = data;

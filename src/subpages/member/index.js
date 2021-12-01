@@ -1,5 +1,5 @@
-import { useShareAppMessage, useDidShow } from '@tarojs/taro'
-import Taro, {
+import Taro, { useShareAppMessage, useDidShow } from '@tarojs/taro'
+import {
   useState,
   useEffect,
   useCallback,
@@ -16,7 +16,8 @@ import {
   CouponModal,
   SpModal,
   SpPrivacyModal,
-  SpTabbar
+  SpTabbar,
+  SpPage
 } from '@/components'
 import api from '@/api'
 import {
@@ -30,7 +31,6 @@ import {
   getPointName
 } from '@/utils'
 import { useLogin } from '@/hooks'
-import { SG_USER_INFO } from '@/consts/localstorage'
 import CompVipCard from './comps/comp-vipcard'
 import CompBanner from './comps/comp-banner'
 import CompsPanel from './comps/comp-panel'
@@ -306,7 +306,7 @@ function MemberIndex(props) {
   console.log(`member page:`, userInfo)
 
   return (
-    <View className='pages-member-index'>
+    <SpPage className='pages-member-index'>
       <View
         className='header-block'
         style={styleNames({
@@ -319,7 +319,7 @@ function MemberIndex(props) {
             src={(userInfo && userInfo.avatar) || 'default_user.png'}
             width='110'
           />
-          <View>
+          <View className="header-hd__body">
             <View className='username-wrap'>
               <Text className='username'>
                 {(userInfo && (userInfo.username || userInfo.mobile)) || '获取昵称'}
@@ -406,7 +406,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=5')}
             >
               <SpImage src='daizhifu.png' width='70' />
-              {data.waitPayNum && <View className='order-bradge'>{data.waitPayNum}</View>}
+              <View className='order-bradge'>{data.waitPayNum && <Text>{ data.waitPayNum}</Text>}</View>
               <Text className='order-txt'>待支付</Text>
             </View>
             <View
@@ -414,7 +414,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=3')}
             >
               <SpImage src='daifahuo.png' width='70' />
-              {data.waitSendNum && <View className='order-bradge'>{data.waitSendNum}</View>}
+              <View className='order-bradge'>{data.waitSendNum && <Text>{ data.waitSendNum}</Text>}</View>
               <Text className='order-txt'>待发货</Text>
             </View>
             <View
@@ -422,7 +422,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=1')}
             >
               <SpImage src='daishouhuo.png' width='70' />
-              {data.waitRecevieNum && <View className='order-bradge'>{data.waitRecevieNum}</View>}
+              <View className='order-bradge'>{data.waitRecevieNum && <Text>{ data.waitRecevieNum}</Text>}</View>
               <Text className='order-txt'>待收货</Text>
             </View>
             <View
@@ -437,7 +437,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/after-sale')}
             >
               <SpImage src='daishouhuo.png' width='70' />
-              {data.afterSalesNum && <View className='order-bradge'>{data.afterSalesNum}</View>}
+              <View className='order-bradge'>{data.afterSalesNum && <Text>{ data.afterSalesNum}</Text>}</View>
               <Text className='order-txt'>售后</Text>
             </View>
           </View>
@@ -468,7 +468,7 @@ function MemberIndex(props) {
         onConfirm={handleConfirmModal}
       /> */}
       <SpTabbar />
-    </View>
+    </SpPage>
   )
 }
 

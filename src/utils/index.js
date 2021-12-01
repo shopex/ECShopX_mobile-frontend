@@ -17,12 +17,11 @@ import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
 import entryLaunch from './entryLaunch'
 import validate from "./validate";
-import { isWeb } from "./platforms";
 import { getPointName } from './point'
 
+export * from "./platforms";
 
 const isPrimitiveType = ( val, type ) => Object.prototype.toString.call( val ) === type
-const store = configStore()
 
 export function isFunction (val) {
   return isPrimitiveType(val, '[object Function]')
@@ -35,24 +34,7 @@ export function isNumber (val) {
 export function isPointerEvent(val) {
   return isPrimitiveType(val, "[object PointerEvent]");
 }
-/**
- * 保留两个位小数，不足补0
- * @param { Number } value
- */
-export const returnFloat = value => {
-	var value = Math.round(parseFloat(value)*100)/100;
-	var s = value.toString().split(".");
-	if(s.length == 1){
-		value=value.toString()+".00";
-		return value;
-	}
-	if(s.length > 1){
-		if(s[1].length < 2){
-			value=value.toString()+"0";
-		}
-		return value;
-	}
-}
+
 export function isObject (val) {
   return isPrimitiveType(val, '[object Object]')
 }
@@ -65,35 +47,19 @@ export function isString (val) {
   return typeof val === 'string'
 }
 
-export function normalizeArray (...args) {
-  return args.reduce((ret, item) => ret.concat(item), [])
+/** 在支付宝平台 */
+export const isAlipay = Taro.getEnv() == Taro.ENV_TYPE.ALIPAY;
+
+/** 在微信平台 */
+export const isWeixin = Taro.getEnv() == Taro.ENV_TYPE.WEAPP;
+
+/** 在H5平台 */
+export const isWeb = Taro.getEnv() == Taro.ENV_TYPE.WEB;
+
+/** 在H5平台(微信浏览器) */
+export function isWxWeb() {
+  return isWeb && !getBrowserEnv().weixin;
 }
-
-// export function getCurrentRoute (router) {
-//   if (Taro.getEnv() == "WEAPP" || Taro.getEnv() == "ALIPAY") {
-//     // eslint-disable-next-line
-//     const page = getCurrentPages().pop();
-//     console.info()
-//     debugger
-//     router = page.$component?.$router;
-//     if (!router) {
-//       const { ...routerParams, $taroTimestamp } = page.$taroParams
-//       router = {
-//         path: page.path, item
-//       }
-//     }
-//   }
-//   const { path, params: origParams } = router
-//   const params = _pickBy(origParams, val => val !== '')
-
-//   const fullPath = `${path}${Object.keys(params).length > 0 ? '?' + qs.stringify(params) : ''}`
-
-//   return {
-//     path,
-//     fullPath,
-//     params
-//   }
-// }
 
 // TODO: 验证方法在h5及边界情况稳定性
 export function getCurrentRoute () {
@@ -518,6 +484,12 @@ export function getThemeStyle() {
   // }
 }
 
+export function isNavbar() {
+  return isWeb && !getBrowserEnv().weixin
+}
+
+export const hasNavbar = isWeb && !getBrowserEnv().weixin
+
 export function showToast(title) {
   Taro.showToast({
     title,
@@ -525,9 +497,7 @@ export function showToast(title) {
   });
 }
 
-export function isNavbar() {
-  return isWeb && !getBrowserEnv().weixin;
-}
+
 
 export {
   classNames,
@@ -543,4 +513,4 @@ export {
   getPointName
 };
 
-export * from "./platforms";
+

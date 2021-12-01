@@ -1,4 +1,4 @@
-import Taro, { useState, useEffect } from '@tarojs/taro'
+import { useState, useEffect } from 'react'
 import { View, Image, Button, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { SpImage } from '@/components'
