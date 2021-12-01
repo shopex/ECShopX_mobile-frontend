@@ -4,7 +4,7 @@
   padding: 25px 15px;
   background: #fff;
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   margin-bottom: 4px;
   .list-left {
     width: 100px;
@@ -19,6 +19,7 @@
   }
   .list-center {
     width: 66%;
+    margin-left: 25px;
     .list-title {
       white-space: nowrap;
       text-overflow:ellipsis;
