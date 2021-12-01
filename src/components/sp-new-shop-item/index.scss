@@ -1,6 +1,146 @@
  
 @import "../../style/iconfont.scss";
 
+$img-width:120px;
+
 .sp-component-newshopitem{
     
+    padding:0 16px;
+    background-color: white;
+    display: flex;
+
+
+    &.in-shoplist{
+        margin-top:24px;
+    }
+
+    &.in-shoplist-last{
+        margin-bottom: 48px;
+    }
+
+    &-left{
+        width:$img-width;
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin-right:24px;
+
+        .img{
+            width:$img-width;
+            height: $img-width;
+            display: block;
+            border-radius: 16px;
+            @include hairline(#DDDDDD,0,left,right,top,bottom);
+            overflow: hidden;
+        }
+    }
+
+    &-right{
+
+        flex:1;
+        padding-top:2px;
+
+        &-top{ 
+
+            .lineone{ 
+                
+                display: flex;
+                justify-content: space-between;
+
+                .title{
+                    width:454px;
+                    @include multi-ellipsis(1);
+                    font-size: 30px;
+                    font-weight: 600;
+                    color: #222222;
+                }
+
+                .distance{
+                    font-size: 28px;
+                    font-weight: 400;
+                    color: #666666;
+                }
+            }
+
+            .linetwo{
+
+                margin-top:16px;
+                display: flex;
+                justify-content: space-between;
+                
+                .info{
+                    font-size: 22px;
+                    font-weight: 400;
+                    color: #666666;
+
+                    .sale{
+                        margin-left:16px;
+                    }
+                }
+
+                .distribute{
+                    line-height: 1;
+                }
+            }
+
+            
+        }
+
+        &-bottom{
+            .activity-line-one{
+                margin-top:14px;
+                .right{
+                    flex:1;
+                    .right-arrow{
+                        height: 40px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        .iconfont{
+                            font-size: 20px;
+                        } 
+                    }
+                }
+            }
+            .activity-line-one, .activity-line-two{
+                display: flex;
+                
+                .left{
+                    width: 480px;
+                    flex-shrink: 0;
+                    flex-grow: 0;
+                }
+                
+            } 
+            .discount{
+                .label{ 
+
+                    display: flex;
+                    
+                    .name{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 66px;
+                        height: 34px;
+                        background: linear-gradient(174deg, #F31346 0%, #FF4A4A 100%);
+                        color:white;
+                        font-size: 22px;
+                        font-weight: 600;
+                        border-radius: 2px;
+                    }
+
+                    .msg{ 
+                        flex:1;
+                        @include multi-ellipsis(1);
+                        font-size: 24px;
+                        font-weight: 400;
+                        color: #999999;
+                        margin-left: 8px;
+                    }
+
+                }
+            }
+        }
+        
+    }
 }

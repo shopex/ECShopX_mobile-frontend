@@ -1,0 +1,58 @@
+@import "../../style/iconfont.scss";
+
+$primary-color:rgb(244, 129, 31);
+$primary-color-bg:rgba(244, 129, 31, 0.1);
+
+$padding-top:120px;
+$padding-bottom:60px;
+
+.sp-new-filter-drawer{
+    padding-top:$padding-top;
+    padding-bottom:$padding-bottom;
+    position: relative;
+    height: 100%;
+
+
+    &-container{
+        padding:0 24px;
+        @include page-scroll($padding-top , 80 + $padding-bottom);
+
+        &-block{
+
+            .title{
+                font-size: 32px;
+                font-weight: 600;
+                color: #111111;
+                margin-bottom:24px;
+            }
+
+            .label{
+                height: 60px;
+                background: #F5F5F5;
+                border-radius: 16px;
+                padding:0 24px;
+                display: inline-flex;
+                align-items: center;
+                color: #222222;
+                font-size: 24px;
+                font-weight: 400;
+                margin-right:24px;
+                margin-bottom: 24px;
+
+                &.checked{
+                    color:$primary-color;
+                    background-color: $primary-color-bg;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    &-action{
+        position: absolute;
+        bottom:$padding-bottom;
+        left:0;
+        right: 0;
+        padding:0 58px;
+    }
+}

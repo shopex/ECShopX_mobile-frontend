@@ -2,4 +2,83 @@ export const FILTER_DATA=[
     {value:0,label:'综合排序'},
     {value:1,label:'销量'},
     {value:2,label:'距离'},
+];
+
+export const FILTER_DRAWER_DATA=[
+    {
+        value:'type',
+        label:'商家类型',
+        children:[
+            {
+                value:'1',
+                label:'商家类型',
+            },
+            {
+                value:'2',
+                label:'超市',
+            },
+            {
+                value:'3',
+                label:'商家类型',
+            },
+            {
+                value:'4',
+                label:'美妆',
+            },
+            {
+                value:'5',
+                label:'外框左右空24px',
+            },
+            {
+                value:'6',
+                label:'商家类型商家类型商家类',
+            },
+            {
+                value:'7',
+                label:'商家类型',
+            },
+            {
+                value:'8',
+                label:'母婴',
+            },
+            {
+                value:'9',
+                label:'商家类型商家类型商家',
+            },
+            {
+                value:'10',
+                label:'商家类型',
+            },
+            {
+                value:'11',
+                label:'商家类型',
+            },
+            {
+                value:'12',
+                label:'商家类型',
+            },
+            {
+                value:'13',
+                label:'商家类型',
+            },
+        ]
+    },
+    {
+        value:'service',
+        label:'商家服务',
+        children:[
+            {
+                value:'1',
+                label:'自提',
+            },
+            {
+                value:'2',
+                label:'快递',
+            },
+            {
+                value:'3',
+                label:'同城配',
+            }
+        ]
+    }, 
 ]

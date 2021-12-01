@@ -33,6 +33,10 @@ import SpNewNavbar from './sp-new-navbar';
 import SpNewInput from './sp-new-input';
 import SpNewFilterbar from './sp-new-filterbar';
 import SpNewShopItem from './sp-new-shop-item';
+import SpNewCoupon from './sp-new-coupon';
+import SpNewDrawer from './sp-new-drawer';
+import SpPopup from './sp-popup';
+import SpNewFilterDrawer from './sp-new-filter-drawer';
 
 import SpImgPicker from './img-picker'
 import SpCell from './sp-cell'
@@ -114,5 +118,9 @@ export {
   SpNewNavbar,
   SpNewInput,
   SpNewFilterbar,
-  SpNewShopItem
+  SpNewShopItem,
+  SpNewCoupon,
+  SpNewDrawer,
+  SpPopup,
+  SpNewFilterDrawer
 }
