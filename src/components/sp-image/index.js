@@ -1,22 +1,19 @@
-import React, { Component } from 'react';
+import Taro, { Component } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { classNames, styleNames } from '@/utils'
 import './index.scss'
 
-const Fn = () => {}
-  
 function SpImage(props) {
   const {
     src,
     className,
     mode = 'widthFix',
     width = 'auto',
-    onError = Fn,
-    onLoad = Fn,
-    lazyLoad = Fn
+    onError = () => {},
+    onLoad = () => {},
+    lazyLoad = () => {}
   } = props
-  const imgUrl = `${process.env.APP_IMAGE_CDN}/${src}`
- 
+  const imgUrl = /^http/.test(src) ? src : `${process.env.APP_IMAGE_CDN}/${src}`
   return (
     <View
       className={classNames(
@@ -26,16 +23,16 @@ function SpImage(props) {
         className
       )}
       style={styleNames({
-        width: `${width}rpx`
+        width: `${width / 2}px`
       })}
     >
       <Image
         className='sp-image-img'
         src={imgUrl}
         mode={mode}
-        onError={onError}
-        onLoad={onLoad}
-        lazyLoad={lazyLoad}
+        // onError={onError}
+        // onLoad={onLoad}
+        // lazyLoad={lazyLoad}
       />
     </View>
   )

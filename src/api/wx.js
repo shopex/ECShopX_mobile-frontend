@@ -126,4 +126,6 @@ export function loadMoreGoods (params) {
 }
 
 
-export function getPrivacyTime (params) {}
+export function getPrivacyTime( params ) {
+  return req.get(`/shops/protocolUpdateTime`)
+}

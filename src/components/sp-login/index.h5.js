@@ -1,26 +1,20 @@
-import React, { Component } from 'react';
  import Taro, { getCurrentInstance } from '@tarojs/taro';
-import { View } from '@tarojs/components'
-import { connect } from 'react-redux'
-import { AtButton } from 'taro-ui'
+import { View, Button } from '@tarojs/components'
 import S from '@/spx'
 import api from '@/api'
 import { showToast, classNames, navigateTo } from '@/utils'
+import { useLogin } from '@/hooks'
 import qs from 'qs';
 import './index.scss'
 
-// @connect(
-//   () => ( {} ),
-//   dispatch => ( {
-//     setMemberInfo: memberInfo =>
-//       dispatch( { type: "member/init", payload: memberInfo } )
-//   } )
-// )
 
 function SpLogin(props) {
-  const { className, children, size = 'normal', circle = false, onChange } = this.props
-  const isLogin = S.getAuthToken()
-
+  const { className, children, size = 'normal', circle = false, onChange } = props
+  const { isLogin, login, updatePolicyTime, setToken } = useLogin({
+    policyUpdateHook: () => {
+      setPolicyModal(true)
+    }
+  })
   /**
    *
    */
@@ -35,7 +29,7 @@ function SpLogin(props) {
   const handleOAuthLogin = () => { 
     const { path,params} = getCurrentInstance() 
     let pathC=`${path}?${qs.stringify(params)}`
-    let url=`/subpage/pages/auth/login?redirect=${encodeURIComponent(pathC)}`
+    let url=`/subpage/auth/login?redirect=${encodeURIComponent(pathC)}`
   
     Taro.navigateTo({
       url
@@ -44,16 +38,11 @@ function SpLogin(props) {
 
   return (
     <View
-      className={classNames(
-        {
-          'sp-login': true
-        },
-        className
-      )}
+      className={classNames('sp-login', className)}
     >
       {isLogin && children}
       {!isLogin && (
-        <AtButton
+        <Button
           className='login-btn'
           type='primary'
           size={size}
@@ -61,7 +50,7 @@ function SpLogin(props) {
           onClick={handleOAuthLogin}
         >
           {children}
-        </AtButton>
+        </Button>
       )}
     </View>
   )

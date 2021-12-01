@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Image, Text } from '@tarojs/components'
+import { View, Image, Button, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { SpImage } from '@/components'
 import { classNames, styleNames } from '@/utils'
@@ -35,10 +35,10 @@ function CompHelpCenter(props) {
       {MENUS.map((item, index) => (
         <View className='menu-item' key={`menu-item__${index}`}>
           {item.key == 'share' && (
-            <AtButton className='btn-share' open-type='share'>
+            <Button className='btn-share' open-type='share'>
               <Text className={classNames('iconfont', item.icon)}></Text>
               <Text className='menu-name'>{item.name}</Text>
-            </AtButton>
+            </Button>
           )}
           {item.key !== 'share' && (
             <View className='item-wrap' onClick={onLink.bind(this, item)}>

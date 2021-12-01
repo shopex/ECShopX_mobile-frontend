@@ -16,6 +16,13 @@
     padding: 32px;
     display: flex;
     align-items: center;
+    &__body {
+      line-height: 40px;
+      /*  #ifdef  h5  */  
+      line-height: 20px;
+      margin-top: 20px;
+      /*  #endif  */  
+    }
     .username {
       font-size: 32px;
       color: #222;
@@ -27,8 +34,7 @@
     }
     .join-us-txt {
       color: var(--color-primary);
-      // text-decoration: underline;
-      // text-underline-offset: 2px;
+      font-size: 28px;
     }
   }
   .header-bd {

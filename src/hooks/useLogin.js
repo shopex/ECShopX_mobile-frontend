@@ -1,23 +1,121 @@
-import { useState, useEffect } from 'react';
- import Taro, { getCurrentInstance } from '@tarojs/taro';
-import { STORAGE_TOKEN, STORAGE_POLICY_UPDATETIME } from '@/consts/localstorage'
+import Taro from '@tarojs/taro'
+import { useState, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { updateUserInfo } from '@/store/slices/user'
+import api from '@/api'
+import { isWeixin, showToast } from '@/utils'
+import S from '@/spx'
+import { SG_POLICY_UPDATETIME, SG_USER_INFO } from '@/consts/localstorage'
 
-export default (props) => {
+export default (props = {}) => {
+  const { autoLogin = false, policyUpdateHook = () => {} } = props
   const [isLogin, setIsLogin] = useState(false)
-  const [showPolicy, setShowPolicy] = useState(false)
+  const dispatch = useDispatch()
+  const { userInfo } = useSelector((state) => state.user)
+  const policyTime = useRef(0)
 
   useEffect(() => {
-    const STORAGE_POLICY_UPDATETIME = Taro.getStorageSync(STORAGE_POLICY_UPDATETIME)
-    // 隐私政策没有点击过同意
-    if (!STORAGE_POLICY_UPDATETIME) {
-      setShowPolicy(true)
+    const token = S.getAuthToken()
+    if (!token) {
+      autoLogin && login()
+    } else {
+      setIsLogin(true)
     }
-    //   const token = Taro.getStorageSync(STORAGE_TOKEN);
-    // setIsLogin(!!token)
   }, [])
+
+  const login = async () => {
+    if (isWeixin) {
+      // 隐私协议
+      const checkResult = await checkPolicyChange()
+      if (!checkResult ) {
+        policyUpdateHook()
+        return
+      } else {
+        const { code } = await Taro.login()
+        try {
+          const { token } = await api.wx.login({ code })
+          setToken(token)
+        } catch (e) {
+          console.error('[hooks useLogin] auto login is failed: ', e)
+        }
+      }
+    }
+  }
+
+  const setToken = (token) => {
+    S.setAuthToken(token)
+    setIsLogin(true)
+    getUserInfo()
+  }
+
+  const getUserInfo = async () => {
+    const userInfo = await api.member.memberInfo()
+    dispatch(updateUserInfo(userInfo))
+  }
+
+  /**
+   * @function 检查隐私协议是否变更
+   * @return false: 协议已变更
+   */
+  const checkPolicyChange = async () => {
+    const { update_time } = await api.wx.getPrivacyTime()
+    policyTime.current = update_time
+    console.log( Taro.getStorageSync( SG_POLICY_UPDATETIME ) )
+    console.log( update_time )
+    console.log(Taro.getStorageSync(SG_POLICY_UPDATETIME) === update_time)
+    return Taro.getStorageSync( SG_POLICY_UPDATETIME ) === update_time
+  }
+
+  /**
+   * @function 更新隐私协议同意时间
+   */
+  const updatePolicyTime = () => {
+    Taro.setStorageSync(SG_POLICY_UPDATETIME, policyTime.current)
+  }
+
+  /**
+   * @function 获取用户信息授权（小程序）
+   */
+  const getUserInfoAuth = () => {
+    return new Promise( ( resolve, reject ) => {
+      console.log('getUserInfoAuth:获取用户信息授权（小程序）')
+      const token = S.getAuthToken()
+      if (!token) {
+        showToast( '请先登录' )
+        reject()
+      }
+      if (isWeixin) {
+        const { avatar, username } = userInfo
+        if (avatar && username) {
+          resolve()
+        } else {
+          wx.getUserProfile({
+            desc: '用于完善会员资料',
+            success: async (data) => {
+              const { userInfo } = data
+              await api.member.updateMemberInfo({
+                username: userInfo.nickName,
+                avatar: userInfo.avatarUrl
+              })
+              await getUserInfo()
+              resolve()
+            },
+            fail: (e) => {
+              console.error(e)
+            }
+          })
+        }
+      }
+    })
+  }
 
   return {
     isLogin,
-    showPolicy
+    login,
+    updatePolicyTime,
+    setToken,
+    getUserInfoAuth,
+    getUserInfo,
+    checkPolicyChange
   }
 }

@@ -10,6 +10,8 @@ import SpGoodsItem from './sp-goods-item'
 import SpPrice from './sp-price'
 import SpMoreImg from './more-img'
 import SpPoint from './sp-point'
+import SpPage from './sp-page'
+import SpNavBar from './sp-nav-bar'
 
 export default {}
 
@@ -25,5 +27,7 @@ export {
   SpGoodsItem,
   SpPrice,
   SpMoreImg,
-  SpPoint
+  SpPoint,
+  SpPage,
+  SpNavBar
 }
