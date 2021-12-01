@@ -11,9 +11,15 @@ import CusStoreListItem from './comps/cus-list-item'
 
 import './list.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current || { data: [{}] }
-}))
+@connect(
+  ({ colors, address }) => ({
+    colors: colors.current || { data: [{}] },
+    address: address.current
+  }),
+  (dispatch) => ({
+    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
+  })
+)
 @withPager
 @withBackToTop
 export default class StoreList extends Component {
@@ -61,6 +67,13 @@ export default class StoreList extends Component {
     })
     this.init()
     this.getHeadquarters()
+  }
+
+  componentDidShow () {
+    this.init()
+    if (this.props.address) {
+      this.setState({ deliveryInfo: this.props.address })
+    }
   }
 
   config = {
@@ -362,7 +375,6 @@ export default class StoreList extends Component {
           <View className='block-hd'>附近门店</View>
           <View className='block-bd'></View>
         </View> */}
-
         <View className="block-content">
           <View className="location">
             <View className="block-hd">当前定位地址</View>
@@ -393,13 +405,14 @@ export default class StoreList extends Component {
               {/* )} */}
             </View>
           </View>
-        </View>
-
-          {deliveryInfo.address_id &&
-            <View className="block-content">
-              <View className="location" onClick={this.getDeliver.bind(this)}>
-                <View className="block-hd">我的收货地址</View>
-                <View className="block-bd">
+            <View className="currentadress">
+              <View className="block-hd flex-header">
+                <View>我的收货地址</View>
+                {deliveryInfo.address_id && <View className='arrow' onClick={() => Taro.navigateTo({ url: '/marketing/pages/member/address?isPicker=choose'})}>选择其他地址<View className='iconfont icon-qianwang-01'></View></View>}
+              </View>
+              {
+                deliveryInfo.address_id &&
+                <View className="block-bd" onClick={this.getDeliver.bind(this)}>
                   <View className="lngName">
                     {deliveryInfo.province}
                     {deliveryInfo.city}
@@ -407,9 +420,15 @@ export default class StoreList extends Component {
                     {deliveryInfo.adrdetail}
                   </View>
                 </View>
-              </View>
+              }
+              {
+                !deliveryInfo.address_id &&
+                <View className='address-btn' onClick={() => Taro.navigateTo({ url: '/marketing/pages/member/edit-address' })}>添加新地址</View>
+              }
             </View>
-          }
+        </View>
+
+          
 
         {isRecommedList && !deliveryInfo.address_id && !location.latitude && (
           <View className="block-content">
