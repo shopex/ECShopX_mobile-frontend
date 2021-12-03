@@ -124,5 +124,5 @@ export {
   SpNewDrawer,
   SpPopup,
   SpNewFilterDrawer,
-  SpNewPrice
+  SpNewPrice,
 }

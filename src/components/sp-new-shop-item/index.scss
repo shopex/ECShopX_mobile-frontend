@@ -102,8 +102,13 @@ $img-width:120px;
                         display: flex;
                         align-items: center;
                         justify-content: flex-end;
+                        transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
                         .iconfont{
                             font-size: 20px;
+                            
+                            &.expand{
+                               transform:rotate(7edg);
+                            }
                         } 
                     }
                 }

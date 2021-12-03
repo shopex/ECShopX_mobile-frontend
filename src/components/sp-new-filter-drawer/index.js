@@ -49,4 +49,8 @@ const SpNewFilterDrawer = (props) => {
     )
 }
 
+SpNewFilterDrawer.options={
+    addGlobalClass:true
+}
+
 export default memo(SpNewFilterDrawer);
