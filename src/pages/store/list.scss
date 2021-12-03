@@ -17,21 +17,22 @@ $nodelivery-height: $header-height - $store-height;
 .page-store-list {
   height: 100%;
   box-sizing: border-box;
+  padding: 0px 20px;
   // /*  #ifdef  h5  */  
   // padding-top: $navigate-height-h5;
   // /*  #endif  */   
   .search-block {
-    background: #fff;
-    padding: 15px 20px;
+    padding: 25px 0px;
+    margin-bottom: 5px;
     .main {
-      background: #eff0f1;
+      background: #fff;
       display: flex;
       align-items: center;
       height: 60px;
       padding: 0 38px;
       border-radius: 30px;
       .filterArea {
-        width: 210px;
+        width: 230px;
         flex-shrink: 0;
         position: relative;
         display: flex;
@@ -39,12 +40,12 @@ $nodelivery-height: $header-height - $store-height;
         justify-content: space-around;
         padding-right: 27px;
         .areaName {
-          width: 140px;
+          width: 180px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          font-size: 28px;
-          color: #111;
+          font-size: 26px;
+          color: #222;
         }
         .icon-arrowDown {
           color: #666;
@@ -61,18 +62,47 @@ $nodelivery-height: $header-height - $store-height;
       }
       .searchInput {
         flex: 1;
+        font-size: 24px;
+        color: #AAAAAA;
       }
     }
   }
 
   .block-content {
-    padding: 20px 40px;
+    padding: 20px 30px;
     background-color: #fff;
     margin-bottom: 30px;
+    border-radius: 16px;
     .block-hd {
-      color: #666;
-      font-size: 30px;
-      margin-bottom: 10px;
+      color: #999999;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    .flex-header {
+      display: flex;
+      justify-content: space-between;
+    }
+    .address-btn {
+      width: 40%;
+      border-radius: 30px;
+      border: 1px solid var(--color-primary);;
+      color: var(--color-primary);;
+      text-align: center;
+      margin: 38px auto 30px;
+      padding: 10px 0px;
+    }
+    .arrow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: #222222;
+    }
+    .currentadress {
+      padding-top: 25px;
+      border-top: 1px solid #DDD;
+    }
+    .location {
+      padding-bottom: 25px;
     }
     .location-wrap {
       display:flex;
@@ -85,7 +115,7 @@ $nodelivery-height: $header-height - $store-height;
       padding-right: 40px;
     }
     .btn-location {
-      width: 260px;
+      // width: 260px;
       color: var(--color-primary);
       display: flex;
       align-items: center;
@@ -112,5 +142,24 @@ $nodelivery-height: $header-height - $store-height;
     .iconfont {
       margin-left: 32px;
     }
+  }
+  .tip {
+    text-align: center;
+  }
+  .iconcss {
+    font-size: 30px;
+    color: var(--color-primary);
+    margin-right: 5px;
+  }
+  .title {
+    color: #111;
+    font-weight: bold;
+    font-size: 32px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    margin-top: 40px;
+  }
+  .no-more {
+    text-align: center;
   }
 }
