@@ -17,7 +17,8 @@ import {
   WgtHeadline,
   WgtImgGif,
   WgtHotTopic,
-  WgtFloorImg
+  WgtFloorImg,
+  WgtNearbyShop,
 } from '../wgts'
 
 export default class HomeWgts extends Component {
@@ -139,6 +140,7 @@ export default class HomeWgts extends Component {
             {process.env.APP_PLATFORM !== 'standard' && item.name === 'store' && (
               <WgtStore info={item} />
             )}
+            {item.name === "nearbyShop" && <WgtNearbyShop info={item}/>}
           </View>
         ))}
       </View>
