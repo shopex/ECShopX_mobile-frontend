@@ -1,8 +1,17 @@
+//plusValue 代表正序 minusValue代表倒序
+const TIME_SORT=0;
+const SALE_PLUS_SORT=4;
+const SALE_MINUS_SORT=3;
+const DISTANCE_PLUS_SORT=1;
+const DISTANCE_MINUS_SORT=2;
+
 export const FILTER_DATA=[
-    {value:0,label:'综合排序'},
-    {value:1,label:'销量'},
-    {value:2,label:'距离'},
+    {value:TIME_SORT,label:'综合排序'},
+    {label:'销量',plusValue:SALE_PLUS_SORT,minusValue:SALE_MINUS_SORT},
+    {label:'距离',plusValue:DISTANCE_PLUS_SORT,minusValue:DISTANCE_MINUS_SORT}
 ];
+
+export const DEFAULT_SORT_VALUE=DISTANCE_PLUS_SORT;
 
 export const FILTER_DRAWER_DATA=[
     {

@@ -15,6 +15,37 @@ const SpNewFilterbar = (props) => {
         borderRadius=false
     } = props;
 
+    //默认是升序
+    const [ plus,setPlus ]=useState(true);
+
+    const isChecked=(item)=>{
+        return item.value===value || item.plusValue===value || item.minusValue===value;
+    }
+
+    const handleClickLabel=(item)=>{
+        console.log("item===>",item)
+        const sortFunc=(item)=>{
+            if(item.value||item.value==0){
+                res=item.value
+            }else{
+                if(plus){
+                    res=item.minusValue
+                }else{
+                    res=item.plusValue
+                }
+            } 
+        }
+        let res=0;
+        //如果是选中的
+        if(isChecked(item)){
+            sortFunc(item)
+        }else{
+            sortFunc(item)
+        }
+        setPlus(!plus);
+        onClickLabel(res)
+    }
+
     return (
         <View
             className={classNames('sp-component-newfilterbar',{
@@ -27,9 +58,9 @@ const SpNewFilterbar = (props) => {
                     filterData.map(item=>(
                         <View 
                             className={classNames('label',{
-                                ['checked']:item.value===value
+                                ['checked']:isChecked(item)
                             })}
-                            onClick={()=>onClickLabel(item)}
+                            onClick={()=>handleClickLabel(item)}
                         >
                             {item.label}
                         </View>

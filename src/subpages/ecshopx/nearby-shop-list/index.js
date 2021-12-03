@@ -1,11 +1,13 @@
 import Taro, { useState, useEffect, useCallback } from '@tarojs/taro';
 import { View, ScrollView } from '@tarojs/components';
 import { SpNavBar, SpNewInput, SpNewFilterbar, SpNewShopItem, SpNewFilterDrawer } from '@/components'
-import { classNames,isNavbar } from '@/utils';
-import { FILTER_DATA, FILTER_DRAWER_DATA } from '../consts/index';
+import { classNames, isNavbar } from '@/utils';
+import { FILTER_DATA, FILTER_DRAWER_DATA,DEFAULT_SORT_VALUE } from '../consts/index';
+import api from '@/api'
+import { usePage,useFirstMount } from '@/hooks';
 import './index.scss';
 
-const NavbarTitle='附近商家';
+const NavbarTitle = '附近商家';
 
 // const { navbarHeight }=getNavbarHeight();
 
@@ -13,15 +15,15 @@ const NavbarTitle='附近商家';
 // const top=`${pxTransform(navbarHeight)+ 92 + 92}rpx`;
 
 const NearbyShopList = (props) => {
-
-    const [filterData] = useState(FILTER_DATA);
-
-    const [filterValue, setFilterValue] = useState(FILTER_DATA[0]);
+ 
+    const [filterValue, setFilterValue] = useState(DEFAULT_SORT_VALUE);
 
     const [filterVisible, setFilterVisible] = useState(false);
 
+    const [list,setList]=useState([]); 
+
     const handleClickFilterLabel = useCallback(
-        (item) => {
+        (item) => { 
             setFilterValue(item);
         },
         [],
@@ -31,27 +33,62 @@ const NearbyShopList = (props) => {
         () => {
             setFilterVisible(true)
         },
-        [],
+        []
     );
 
     const handleClickInput = useCallback(
         () => {
             Taro.navigateTo({
-                url:'/subpages/ecshopx/nearby-shop-search/index'
+                url: '/subpages/ecshopx/nearby-shop-search/index'
             })
         },
         []
     );
 
-    useEffect(() => {
+    const firstMount=useFirstMount();
 
-    }, []);
+    const fetch = async ({ pageIndex, pageSize }) => {
+        const params = {
+            page: pageIndex,
+            pageSize,
+            // province:'上海市',
+            // city:'上海市', 
+            // area:'徐汇区',
+            type:0,
+            // name:'',
+            // card_id:'',
+            // isToken:false,
+            show_discount:1,
+            show_marketing_activity:1,
+            // lng:121.4177321,
+            // lat:31.175441,
+            // sort_type:filterValue
+        }
+        const {
+            list,
+            total_count
+        } = await api.shop.list(params);
+
+        setList(list);
+        setTotal(total_count);
+    };
+
+    const { loading, hasNext, total, setTotal, nextPage, resetPage } = usePage({
+        fetch
+    });
+
+    useEffect(() => {
+        if(firstMount){
+            resetPage()
+        }
+    }, [filterValue]);
+ 
 
     return (
         <View className={classNames(
             'sp-page-nearbyshoplist',
             {
-                'has-navbar':isNavbar()
+                'has-navbar': isNavbar()
             }
         )}>
 
@@ -62,15 +99,15 @@ const NearbyShopList = (props) => {
             />
 
             <View className={'sp-page-nearbyshoplist-input'}>
-                <SpNewInput 
+                <SpNewInput
                     isStatic
                     onClick={handleClickInput}
                 />
             </View>
 
             <SpNewFilterbar
-                filterData={filterData}
-                value={filterValue.value}
+                filterData={FILTER_DATA}
+                value={filterValue}
                 onClickLabel={handleClickFilterLabel}
                 onClickFilter={handleClickFilter}
             />
@@ -78,16 +115,18 @@ const NearbyShopList = (props) => {
             <ScrollView
                 className={classNames('sp-page-nearbyshoplist-scrollview')}
                 scrollY
-                scrollWithAnimation 
+                scrollWithAnimation
+                
             >
                 {
-                    new Array(100).fill('1').map((item, index) => (
+                    list.map((item, index) => (
                         <SpNewShopItem
                             className={classNames(
                                 'in-shoplist',
                                 { 'in-shoplist-last': index === 99 }
-                            )
-                            } />
+                            )} 
+                            info={item}
+                        />
                     ))
                 }
             </ScrollView>
@@ -97,6 +136,9 @@ const NearbyShopList = (props) => {
                 filterData={FILTER_DRAWER_DATA}
             />
 
+            {/* 分页loading */}
+            {/* <SpLoadMore loading={loading} hasNext={hasNext} total={total} /> */}
+
         </View>
     )
 }
@@ -105,5 +147,5 @@ export default NearbyShopList;
 
 NearbyShopList.config = {
     // navigationStyle: 'custom'
-    navigationBarTitleText:NavbarTitle
+    navigationBarTitleText: NavbarTitle
 }
