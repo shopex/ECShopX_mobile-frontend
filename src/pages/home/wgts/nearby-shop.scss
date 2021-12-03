@@ -1,0 +1,34 @@
+@import '@/style/imports';
+
+.see_more {
+  padding: 0px 10px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid #f4811f;
+  color: #f4811f;
+  font-size: 20px;
+}
+.nearby_shop_wrap {
+  padding: 20px;
+  overflow: hidden;
+  .tagList {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .tag {
+    display: inline-block;
+    margin-right: 20px;
+    padding: 4px 12px;
+    background-color: #eee;
+    border-radius: 23px;
+    height: 46px;
+    min-width: 80px;
+    color: #444444;
+    text-align: center;
+    &.active {
+      color: #f4811f;
+      background: #FEF0E4;
+    }
+  }
+}
