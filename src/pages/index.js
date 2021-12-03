@@ -90,6 +90,10 @@ export default class Home extends Component {
     this.protocolUpdateTime();
     this.getShareSetting();
     this.isShowTips();
+    Taro.eventCenter.on('lnglat-success', () => {
+      // console.log(Taro.getStorageSync('lnglat'))
+    })
+
   }
 
   // 获取隐私政策时间
@@ -697,12 +701,15 @@ export default class Home extends Component {
     // 广告屏
     const { showAdv } = this.props
     // 是否是标准版
-    const isStandard = process.env.APP_PLATFORM === 'standard' && !is_open_store_status
+    const isStandard = !is_open_store_status
     // 否是fixed
     const isFixed = positionStatus
 
+    // 是否同意获取位置信息
+    const location_detail = Taro.getStorageSync('lnglat') || {}
+
     return (
-      <View className='page-index'>
+      <View className={classNames('page-index', location_detail.latitude && 'padtop')}>
         {is_open_official_account === 1 && show_official && (
           <AccountOfficial
             isClose
@@ -710,9 +717,9 @@ export default class Home extends Component {
             onClick={this.handleOfficialClose.bind(this)}
           ></AccountOfficial>
         )}
-        {isStandard && curStore && (
+        {isStandard && location_detail && location_detail.latitude && (
           <HeaderHome
-            store={curStore}
+            store={location_detail}
             onClickItem={this.goStore.bind(this)}
             isOpenScanQrcode={is_open_scan_qrcode}
             isOpenStoreStatus={is_open_store_status}
