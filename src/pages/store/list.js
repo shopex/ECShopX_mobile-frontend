@@ -6,9 +6,10 @@ import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import S from '@/spx'
 import entry from '@/utils/entry'
-import entryLaunch from '@/utils/entryLaunch'
-import { classNames, getThemeStyle, styleNames } from '@/utils'
+import entryLaunchFun from '@/utils/entryLaunch'
+import { classNames, getThemeStyle, styleNames, isOpenPosition } from '@/utils'
 import CusStoreListItem from './comps/cus-list-item'
+import CusNoPosition from './comps/cus-no-position'
 
 import './list.scss'
 
@@ -235,47 +236,10 @@ export default class StoreList extends Component {
     if (this.state.loading) {
       return false
     }
-    e.stopPropagation()
-    if (process.env.TARO_ENV === 'weapp') {
-      const { authSetting } = await Taro.getSetting()
-      if (!authSetting['scope.userLocation']) {
-        Taro.authorize({
-          scope: 'scope.userLocation',
-          success: () => {
-            this.init()
-          },
-          fail: () => {
-            Taro.showModal({
-              title: '提示',
-              content: '请打开定位权限',
-              success: async (resConfirm) => {
-                if (resConfirm.confirm) {
-                  await Taro.openSetting()
-                  const setting = await Taro.getSetting()
-                  if (setting.authSetting['scope.userLocation']) {
-                    this.init()
-                  } else {
-                    Taro.showToast({ title: '获取定位权限失败', icon: 'none' })
-                  }
-                }
-              }
-            })
-          }
-        })
-      }
-      await entry.getLoc()
-    }
-    if (process.env.TARO_ENV == 'h5') { // h5获取经纬度
-      await entryLaunch.initAMap()
-      let location = await entryLaunch.getLocationInfo()
-      await entry.InverseAnalysisGaode(location) // 根据经纬度去解析出地址
-      console.log(location, '===============location=============')
-      // const data = await entryLaunch.getAddressByLnglat(location.longitude, location.latitude)
-      // console.log(data, '======data======')
-    }
     // Taro.eventCenter.on('lnglat-success', () => {
     //   console.log(Taro.getStorageSync('lnglat'), 'getStorageSyncgetStorageSync')
     // })
+    await entryLaunchFun.isOpenPosition()
     const { query } = this.state
     query.name = ''
     query.type = 0
@@ -332,97 +296,51 @@ export default class StoreList extends Component {
     // const  = defaultStore.is_valid === "true";
 
     return (
-      <View className='page-store-list' style={styleNames(getThemeStyle())}>
-        <SpNavBar title={pageTitle} leftIconType='chevron-left' />
-        <View className='search-block'>
-          <View className='main'>
-            <Picker mode='region' value={areaData} onChange={this.regionChange.bind(this)}>
-              <View className='filterArea'>
-                <View className='areaName'>{areaData.join('') || '筛选地区'}</View>
-                <View className='iconfont icon-arrowDown'></View>
-              </View>
-            </Picker>
-
-            <Input
-              className='searchInput'
-              placeholder='输入收货地址寻找周边门店'
-              confirmType='search'
-              value={query.name}
-              onInput={this.inputStoreName.bind(this)}
-              onConfirm={this.confirmSearch.bind(this)}
-            />
-            {query.name && query.name.length > 0 && (
-              <View className='iconfont icon-close' onClick={this.clearName.bind(this)}></View>
-            )}
-          </View>
-        </View>
-
-        {/* <View className='block-content'>
-          <View className='block-hd'>当前位置</View>
-          <View className='block-bd location-wrap'>
-            <View className='location-address'>
-              {
-                (query.type !== 2 && location.addressdetail) && <View className='lngName'>
-                  {location.addressdetail || '无法获取您的位置信息'}
+      ((location && location.addressdetail) || (deliveryInfo && deliveryInfo.addressdetail))
+      ? <View className='page-store-list' style={styleNames(getThemeStyle())}>
+          <SpNavBar title={pageTitle} leftIconType='chevron-left' />
+          <View className='search-block'>
+            <View className='main'>
+              <Picker mode='region' value={areaData} onChange={this.regionChange.bind(this)}>
+                <View className='filterArea'>
+                  <View className='areaName'>{areaData.join('') || '筛选地区'}</View>
+                  <View className='iconfont icon-arrowDown'></View>
                 </View>
-              }
-              {
-                (query.type === 2 || (!location.addressdetail && deliveryInfo.address_id)) && <View className='lngName'>
-                  {deliveryInfo.province}
-                  {deliveryInfo.city}
-                  {deliveryInfo.county}
-                  {deliveryInfo.adrdetail}
-                </View>
-              }
-            </View>
-            <View className='btn-location'>
-              <Text className='iconfont icon-target'></Text>
-              重新定位
-            </View>
-          </View>
-        </View>
+              </Picker>
 
-        <View className='block-content'>
-          <View className='block-hd'>按收货地址定位</View>
-          <View className='block-bd'>
-            <View className='receive-address'></View>
-          </View>
-        </View>
-
-        <View className='block-content'>
-          <View className='block-hd'>附近门店</View>
-          <View className='block-bd'></View>
-        </View> */}
-        <View className="block-content">
-          <View className="location">
-            <View className="block-hd">当前定位地址</View>
-            <View className='block-bd location-wrap'>
-              {query.type !== 2 && location && location.addressdetail && (
-                <View className="lngName" onClick={this.onLocationChange.bind(this, location)} style={{ width: '77%', fontWeight: 'bold' }}>
-                  {location.addressdetail || "无法获取您的位置信息"}
-                </View>
+              <Input
+                className='searchInput'
+                placeholder='输入收货地址寻找周边门店'
+                confirmType='search'
+                value={query.name}
+                onInput={this.inputStoreName.bind(this)}
+                onConfirm={this.confirmSearch.bind(this)}
+              />
+              {query.name && query.name.length > 0 && (
+                <View className='iconfont icon-close' onClick={this.clearName.bind(this)}></View>
               )}
-              {/* {(query.type === 2 ||
-                (location && !location.address && deliveryInfo && deliveryInfo.address_id)) && (
-                <View className="lngName">
-                  {deliveryInfo.province}
-                  {deliveryInfo.city}
-                  {deliveryInfo.county}
-                  {deliveryInfo.adrdetail}
-                </View>
-              )} */}
-
-              {/* {is_open_wechatapp_location === 1 && ( */}
-              <View
-                className="btn-location'"
-                onClick={this.getLocation.bind(this)}
-              >
-                <View className="iconfont icon-zhongxindingwei iconcss"></View>
-                重新定位
-              </View>
-              {/* )} */}
             </View>
           </View>
+
+          <View className="block-content">
+            <View className="location">
+              <View className="block-hd">当前定位地址</View>
+              <View className='block-bd location-wrap'>
+                {query.type !== 2 && location && location.addressdetail && (
+                  <View className="lngName" onClick={this.onLocationChange.bind(this, location)} style={{ width: '77%', fontWeight: 'bold' }}>
+                    {location.addressdetail || "无法获取您的位置信息"}
+                  </View>
+                )}
+                <View
+                  className="btn-location'"
+                  onClick={this.getLocation.bind(this)}
+                >
+                  <View className="iconfont icon-zhongxindingwei iconcss"></View>
+                  重新定位
+                </View>
+                {/* )} */}
+              </View>
+            </View>
             <View className="currentadress">
               <View className="block-hd flex-header">
                 <View>我的收货地址</View>
@@ -444,65 +362,70 @@ export default class StoreList extends Component {
                 <View className='address-btn' onClick={() => Taro.navigateTo({ url: '/marketing/pages/member/edit-address' })}>添加新地址</View>
               }
             </View>
-        </View>
-
-          
-
-        {isRecommedList && !deliveryInfo.address_id && !location.latitude && (
-          <View className="block-content">
-            <Image className="img" src={baseInfo.logo} mode="aspectFill" />
-            <View className="tip">您想要地区的店铺暂时未入驻网上商城</View>
           </View>
-        )}
 
-        <View
-          className={`list ${!deliveryInfo.address_id && 'noDelivery'} ${isRecommedList &&
-            'recommedList'}`}
-        >
-          {!isRecommedList ? (
-            <View className="title">
-              {(deliveryInfo && deliveryInfo.address_id) || (location && location.latitude)
-                ? "附近商家"
-                : "全部商家"}
-            </View>
-          ) : (
-            <View className="recommed">
-              <View className="title">推荐商家</View>
+            
+
+          {isRecommedList && !deliveryInfo.address_id && !location.latitude && (
+            <View className="block-content">
+              <Image className="img" src={baseInfo.logo} mode="aspectFill" />
+              <View className="tip">您想要地区的店铺暂时未入驻网上商城</View>
             </View>
           )}
 
-          <ScrollView
-            className={classNames('scroll', {
-              'has-default-shop': defaultStore
-            })}
-            scrollY
-            scrollTop={scrollTop}
-            scrollWithAnimation
-            onScroll={this.handleScroll.bind(this)}
-            onScrollToLower={this.nextPage.bind(this)}
+          <View
+            className={`list ${!deliveryInfo.address_id && 'noDelivery'} ${isRecommedList &&
+              'recommedList'}`}
           >
-            {list.map((item) => (
-              <CusStoreListItem
-                info={item}
-                key={item.distributor_id}
-                onClick={this.handleClickItem.bind(this, item)}
-              />
-            ))}
-            {/* {page.isLoading ? <Loading>正在加载...</Loading> : null}
-            {!page.isLoading && !list.length && (
-              <SpNote img="trades_empty.png">暂无数据~</SpNote>
-            )} */}
-            <SpPageNote info={page}></SpPageNote>
-          </ScrollView>
-        </View>
+            {!isRecommedList ? (
+              <View className="title">
+                {(deliveryInfo && deliveryInfo.address_id) || (location && location.latitude)
+                  ? "附近商家"
+                  : "全部商家"}
+              </View>
+            ) : (
+              <View className="recommed">
+                <View className="title">推荐商家</View>
+              </View>
+            )}
 
-        {/* {defaultStore && (
-          <View className='bottom' onClick={this.handleClickItem.bind(this)}>
-            <Image className='img' src={baseInfo.logo} mode='aspectFill' />
-            {defaultStore.store_name}
-            <View className='iconfont icon-arrowRight'></View>
+            <ScrollView
+              className={classNames('scroll', {
+                'has-default-shop': defaultStore
+              })}
+              scrollY
+              scrollTop={scrollTop}
+              scrollWithAnimation
+              onScroll={this.handleScroll.bind(this)}
+              onScrollToLower={this.nextPage.bind(this)}
+            >
+              {list.map((item) => (
+                <CusStoreListItem
+                  info={item}
+                  key={item.distributor_id}
+                  onClick={this.handleClickItem.bind(this, item)}
+                />
+              ))}
+              {/* {page.isLoading ? <Loading>正在加载...</Loading> : null}
+              {!page.isLoading && !list.length && (
+                <SpNote img="trades_empty.png">暂无数据~</SpNote>
+              )} */}
+              <SpPageNote info={page}></SpPageNote>
+            </ScrollView>
           </View>
-        )} */}
+
+          {/* {defaultStore && (
+            <View className='bottom' onClick={this.handleClickItem.bind(this)}>
+              <Image className='img' src={baseInfo.logo} mode='aspectFill' />
+              {defaultStore.store_name}
+              <View className='iconfont icon-arrowRight'></View>
+            </View>
+          )} */}
+        </View>
+      : <View className='page-store-list' style={styleNames(getThemeStyle())}>
+        <CusNoPosition onClick={this.getLocation}>
+          <Image className='position-imgs' src={`${process.env.APP_IMAGE_CDN}/no-position-img.png`}></Image>
+        </CusNoPosition>
       </View>
     )
   }
