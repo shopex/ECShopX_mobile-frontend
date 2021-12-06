@@ -123,7 +123,7 @@ class API {
   }
 
   intereptorReq (params) {
-    const { url, data, header = {}, method = 'GET' } = params
+    const { url, data, header = {}, method = 'GET' } = params 
     const { company_id, appid } = this.options
     const methodIsGet = method.toLowerCase() === 'get'
 
@@ -138,7 +138,7 @@ class API {
     }
 
     const token = S.getAuthToken()
-    if (token) {
+    if (token && (params||{data:{}}).data.isToken!==false) {
       header['Authorization'] = `Bearer ${token}`
     }
 
