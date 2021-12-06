@@ -91,19 +91,9 @@ export default class Home extends Component {
     this.protocolUpdateTime();
     this.getShareSetting();
     this.isShowTips();
-    if (process.env.TARO_ENV == 'h5') { // h5获取经纬度
-      await entryLaunch.initAMap()
-      let location = await entryLaunch.getLocationInfo()
-      // 处理定位
-      await entry.InverseAnalysisGaode(location)
-      console.log(location, '===============location=============')
-      // const data = await entryLaunch.getAddressByLnglat(location.longitude, location.latitude)
-      // console.log(data, '======data======')
-    }
     Taro.eventCenter.on('lnglat-success', () => {
       // console.log(Taro.getStorageSync('lnglat'))
     })
-
   }
 
   // 获取隐私政策时间
@@ -727,14 +717,14 @@ export default class Home extends Component {
             onClick={this.handleOfficialClose.bind(this)}
           ></AccountOfficial>
         )}
-        {isStandard && location_detail && location_detail.latitude && (
+        {/* {isStandard && location_detail && location_detail.latitude && ( */}
           <HeaderHome
             store={location_detail}
             onClickItem={this.goStore.bind(this)}
             isOpenScanQrcode={is_open_scan_qrcode}
             isOpenStoreStatus={is_open_store_status}
           />
-        )}
+        {/* )} */}
         <View
           className={classNames(
             'wgts-wrap',

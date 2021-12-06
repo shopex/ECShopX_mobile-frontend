@@ -4,6 +4,8 @@ import { Provider } from '@tarojs/redux'
 import configStore from '@/store' 
 import api from '@/api'
 import { normalizeQuerys, isGoodsShelves,setSystemInfo } from '@/utils'
+import entryLaunch from '@/utils/entryLaunch'
+import LBS from '@/utils/lbs'
 import { FormIds, Tracker } from '@/service' 
 import { youshuLogin } from '@/utils/youshu'
 import { DEFAULT_TABS, DEFAULT_THEME } from '@/consts' 
@@ -122,8 +124,9 @@ class App extends Component {
         })
     }
     // H5定位
-    if (process.env.APP_PLATFORM === 'standard' && Taro.getEnv() === 'WEB') {
-      // new LBS();
+    if (Taro.getEnv() === 'WEB') {
+      new LBS();
+      entryLaunch.initAMap()
     }
     // 设置购物车默认类型
     if (Taro.getStorageSync('cartType')) {

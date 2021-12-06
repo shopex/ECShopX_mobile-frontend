@@ -4,6 +4,7 @@ import req from '@/api/req'
 import S from '@/spx'
 import { getOpenId } from '@/utils/youshu'
 import { payTypeField } from '@/utils'
+import entryLaunchFun from '@/utils/entryLaunch'
 import qs from 'qs'
 
 // 请在onload 中调用此函数，保证千人千码跟踪记录正常
@@ -207,7 +208,9 @@ async function getLocal(isNeedLocate) {
       }
       store = await api.shop.getShop(param)
     } else {
-      const locationData = await getLoc()
+      // const locationData = await getLoc()
+      const locationData = await entryLaunchFun.getLocationInfo()
+      await InverseAnalysisGaode(locationData)
       if (locationData !== null && locationData !== '') {
         let param = {}
         if (isNeedLocate && positionStatus) {
@@ -245,7 +248,7 @@ async function getLoc() {
     )
   } else {
     // if (process.env.APP_PLATFORM === 'standard') {
-    return getWebLocal().catch(() => '定位错误')
+    // return getWebLocal().catch(() => '定位错误')
     // } else {
     //   return null
     // }
