@@ -727,14 +727,14 @@ export default class Home extends Component {
             onClick={this.handleOfficialClose.bind(this)}
           ></AccountOfficial>
         )}
-        {isStandard && location_detail && location_detail.latitude && (
+        {/* {isStandard && location_detail && location_detail.latitude && ( */}
           <HeaderHome
             store={location_detail}
             onClickItem={this.goStore.bind(this)}
             isOpenScanQrcode={is_open_scan_qrcode}
             isOpenStoreStatus={is_open_store_status}
           />
-        )}
+        {/* )} */}
         <View
           className={classNames(
             'wgts-wrap',
