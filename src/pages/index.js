@@ -91,12 +91,10 @@ export default class Home extends Component {
     this.protocolUpdateTime();
     this.getShareSetting();
     this.isShowTips();
-    if (process.env.TARO_ENV == 'h5') { // h5获取经纬度
-      await entryLaunch.initAMap()
-      let location = await entryLaunch.getLocationInfo()
-      // 处理定位
-      await entry.InverseAnalysisGaode(location)
-    }
+    // if (process.env.TARO_ENV == 'h5') { // h5获取经纬度
+    //   let location = await entryLaunch.getLocationInfo()
+    //   await entry.InverseAnalysisGaode(location) // 根据经纬度获取地址
+    // }
     Taro.eventCenter.on('lnglat-success', () => {
       // console.log(Taro.getStorageSync('lnglat'))
     })
