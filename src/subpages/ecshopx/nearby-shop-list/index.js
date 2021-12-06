@@ -14,6 +14,8 @@ const NavbarTitle = '附近商家';
 //微信小程序顶部距离=导航栏距离+输入框距离+筛选tab距离
 // const top=`${pxTransform(navbarHeight)+ 92 + 92}rpx`;
 
+const lnglat=Taro.getStorageInfoSync('lnglat')||{};
+
 const NearbyShopList = (props) => {
 
     const [filterValue, setFilterValue] = useState(DEFAULT_SORT_VALUE);
@@ -74,9 +76,9 @@ const NearbyShopList = (props) => {
         const params = {
             page: pageIndex,
             pageSize,
-            // province:'上海市',
+            province:lnglat.province,
             // city:'上海市', 
-            // area:'徐汇区',
+            area:lnglat.district,
             type: 0,
             // name:'',
             // card_id:'',
