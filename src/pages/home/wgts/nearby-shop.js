@@ -30,7 +30,11 @@ const WgtNearbyShop = (props) => {
         setNearbyShop(result.list)
     }, [activeIndex])
 
-
+    const showMore=()=>{
+        Taro.navigateTo({
+            url:'/subpages/ecshopx/nearby-shop-list/index'
+        })
+    }
 
 
 
@@ -40,7 +44,7 @@ const WgtNearbyShop = (props) => {
                 <View className='wgt__header' style={{ justifyContent: 'space-between' }}>
                     <View className='wgt__title'>{base.title}</View>
                     <View className='wgt__more' style={{ width: 'auto' }}>
-                        <View className='see_more'>查看更多</View>
+                        <View className='see_more' onClick={showMore}>查看更多</View>
                     </View>
                 </View>
             )}
