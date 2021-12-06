@@ -64,7 +64,7 @@ export default class WgtStore extends Component {
         {data.map((item) => (
           <View className='store-wrap' key={item.id} style={{ backgroundColor: base.backgroundColor || '#FFF' }}>
             <View className='store-info' onClick={this.handleStoreClick.bind(this, item.id)}>
-              <Image className='store-logo' src={item.logo} lazyLoad mode='scaleToFill' />
+              <Image className='store-logo' src={item.logo} mode='widthFix' />
               <View className='store-title'>
                 <View className='store-name'>{item.name}</View>
                 <View className='store-tags'>
@@ -77,7 +77,7 @@ export default class WgtStore extends Component {
               </View>
             </View>
             {
-              base.imgUrl && <Image className='store-banner' src={base.imgUrl} lazyLoad mode='widthFix' />
+              base.imgUrl && <Image className='store-banner' src={base.imgUrl}  mode='widthFix' />
             }
             <ScrollView scrollX className='store-goods'>
               {item.items.map((goods) => (
@@ -91,8 +91,8 @@ export default class WgtStore extends Component {
                     className='store-goods__item-thumbnail'
                     src={goods.imgUrl}
                     style={{ borderColor: base.borderColor || 'none' }}
-                    mode='scaleToFill'
-                    lazyLoad
+                    mode='widthFix'
+                    
                   />
                   <View className='store-goods__item-price'>¥{(goods.price / 100).toFixed(2)}</View>
                 </View>
