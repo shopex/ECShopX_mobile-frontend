@@ -1,4 +1,4 @@
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text, Image,Button } from '@tarojs/components'
 import Taro, { memo, useState, useEffect } from '@tarojs/taro'
 import api from '@/api'
 import entryLaunchFun from '@/utils/entryLaunch'
