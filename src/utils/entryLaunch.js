@@ -3,6 +3,7 @@ import api from '@/api'
 import qs from 'qs'
 import configStore from '@/store'
 import { showToast, log } from '@/utils'
+import entry from '@/utils/entry'
 
 class EntryLaunch {
   constructor() {
@@ -173,6 +174,42 @@ class EntryLaunch {
       return false
     }
   }
+
+  /**
+   * 判断是否开启定位，去获取经纬度，根据经纬度去获取地址
+   */
+  async isOpenPosition () {
+    if (process.env.TARO_ENV === 'weapp') {
+      const { authSetting } = await Taro.getSetting()
+      if (!authSetting['scope.userLocation']) {
+        Taro.authorize({
+          scope: 'scope.userLocation',
+          success: () => {
+          },
+          fail: () => {
+            Taro.showModal({
+              title: '提示',
+              content: '请打开定位权限',
+              success: async (resConfirm) => {
+                if (resConfirm.confirm) {
+                  await Taro.openSetting()
+                  const setting = await Taro.getSetting()
+                  if (setting.authSetting['scope.userLocation']) {
+                    this.init()
+                  } else {
+                    Taro.showToast({ title: '获取定位权限失败', icon: 'none' })
+                  }
+                }
+              }
+            })
+          }
+        })
+      }
+    }
+    const locationData = await this.getLocationInfo()
+    await entry.InverseAnalysisGaode(locationData)
+  }
 }
+
 
 export default new EntryLaunch()

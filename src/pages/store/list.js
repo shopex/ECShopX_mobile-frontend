@@ -6,8 +6,8 @@ import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
 import S from '@/spx'
 import entry from '@/utils/entry'
-import entryLaunch from '@/utils/entryLaunch'
-import { classNames, getThemeStyle, styleNames } from '@/utils'
+import entryLaunchFun from '@/utils/entryLaunch'
+import { classNames, getThemeStyle, styleNames, isOpenPosition } from '@/utils'
 import CusStoreListItem from './comps/cus-list-item'
 import CusNoPosition from './comps/cus-no-position'
 
@@ -236,48 +236,10 @@ export default class StoreList extends Component {
     if (this.state.loading) {
       return false
     }
-    if (process.env.TARO_ENV === 'weapp') {
-      const { authSetting } = await Taro.getSetting()
-      if (!authSetting['scope.userLocation']) {
-        Taro.authorize({
-          scope: 'scope.userLocation',
-          success: () => {
-            this.init()
-          },
-          fail: () => {
-            Taro.showModal({
-              title: '提示',
-              content: '请打开定位权限',
-              success: async (resConfirm) => {
-                if (resConfirm.confirm) {
-                  await Taro.openSetting()
-                  const setting = await Taro.getSetting()
-                  if (setting.authSetting['scope.userLocation']) {
-                    this.init()
-                  } else {
-                    Taro.showToast({ title: '获取定位权限失败', icon: 'none' })
-                  }
-                }
-              }
-            })
-          }
-        })
-      }
-      // await entry.getLoc()
-    }
-    const locationData = await entryLaunch.getLocationInfo()
-    await entry.InverseAnalysisGaode(locationData)
-    // if (process.env.TARO_ENV == 'h5') { // h5获取经纬度
-    //   await entryLaunch.initAMap()
-    //   let location = await entryLaunch.getLocationInfo()
-    //   await entry.InverseAnalysisGaode(location) // 根据经纬度去解析出地址
-    //   console.log(location, '===============location=============')
-    //   // const data = await entryLaunch.getAddressByLnglat(location.longitude, location.latitude)
-    //   // console.log(data, '======data======')
-    // }
     // Taro.eventCenter.on('lnglat-success', () => {
     //   console.log(Taro.getStorageSync('lnglat'), 'getStorageSyncgetStorageSync')
     // })
+    await entryLaunchFun.isOpenPosition()
     const { query } = this.state
     query.name = ''
     query.type = 0
