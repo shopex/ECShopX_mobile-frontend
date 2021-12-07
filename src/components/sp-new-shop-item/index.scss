@@ -4,14 +4,50 @@
 $img-width:120px;
 $primary-color:rgba(244, 129, 31, 1);
 
-.sp-component-newshopitem{
+$prefixCls:'sp-component-newshopitem';
+
+.#{$prefixCls}{
     
     padding:0 16px;
     background-color: white;
     display: flex;
 
     &.in-shoplist{
-        margin-top:24px;
+
+        flex-direction: column;
+        padding:16px;
+
+        .#{$prefixCls}-top{
+            display: flex;
+        }
+        .#{$prefixCls}-good-list{
+            margin-top:18px; 
+            white-space: nowrap; 
+            overflow-y: auto;
+            font-size:0;//解决inline-block空白间隙问题
+    
+            .good-item{
+                display: inline-block;
+                margin-right: 16px;
+                .img{
+                    width: 218px;
+                    height: 218px;
+                    border-radius: 16px;
+                    border: 1px solid #DDDDDD;
+                    display: block;
+                    min-width: 100%;
+                }
+                .price{
+                    margin-top:12px;
+                    display: flex;  
+                    align-items: flex-start;
+    
+                    .margin{
+                        width:8px;
+                    }
+                }
+            }
+        }
     }
 
     &.in-shoplist-last{
@@ -160,6 +196,7 @@ $primary-color:rgba(244, 129, 31, 1);
     &-header{
 
         display: flex;
+        flex:1;
 
         .left{
             width:100px;
@@ -181,6 +218,7 @@ $primary-color:rgba(244, 129, 31, 1);
             flex:1;
             padding:4px 24px;
             padding-left:0;
+            text-align: left;
             .name{
                 font-weight: 600;
                 color: #111111;
@@ -248,32 +286,6 @@ $primary-color:rgba(244, 129, 31, 1);
         }
     }
 
-    &-good-list{
-        margin-top:18px; 
-        white-space: nowrap; 
-        overflow-y: auto;
-        font-size:0;//解决inline-block空白间隙问题
-
-        .good-item{
-            display: inline-block;
-            margin-right: 16px;
-            .img{
-                width: 218px;
-                height: 218px;
-                border-radius: 16px;
-                border: 1px solid #DDDDDD;
-                display: block;
-            }
-            .price{
-                margin-top:12px;
-                display: flex;  
-                align-items: flex-start;
-
-                .margin{
-                    width:8px;
-                }
-            }
-        }
-    }
+    
 
 }

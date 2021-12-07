@@ -58,6 +58,7 @@ const SpNewFilterDrawer = (props) => {
     return (
         <SpNewDrawer
             visible={visible}
+            onClose={onCloseDrawer}
         >
             <View className={
                 classNames(
