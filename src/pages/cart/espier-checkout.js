@@ -214,7 +214,11 @@ export default class CartCheckout extends Component {
     this.setState({
       curStore,
       info,
-      payType: payType || this.state.payType
+      payType: payType || this.state.payType,
+      headShop:{
+        ...res,
+        is_current:router_shop_id==0
+      }
     })
 
     let total_fee = 0
@@ -1777,6 +1781,7 @@ export default class CartCheckout extends Component {
       pack,
       isOpenStore,
       defalutPaytype, 
+      headShop
     } = this.state
     const { type, goodType, bargain_id } = this.$router.params
     const isDrug = type === 'drug'
@@ -1806,6 +1811,7 @@ export default class CartCheckout extends Component {
             receiptType={receiptType}
             curStore={curStore}
             isOpenStore={isOpenStore}
+            headShop={headShop}
             address={address}
             onChangReceiptType={this.handleSwitchExpress.bind(this)}
             onEidtZiti={this.handleEditZitiClick.bind(this)}
