@@ -126,7 +126,7 @@ export default class StoreList extends Component {
 
   // 获取总店信息
   getHeadquarters = async () => {
-    const data = await api.shop.getHeadquarters()
+    const data = await api.shop.getDefaultShop()
     const baseInfo = await api.shop.getStoreBaseInfo()
     this.setState({
       defaultStore: data,

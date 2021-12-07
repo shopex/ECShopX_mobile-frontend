@@ -18,6 +18,6 @@ export function JumpGoodDetail(itemId,distributor_id){
 
 //获取总店
 export async function getHeadShop(){
-    const res = await api.shop.getShop({ distributor_id: 0 });
+    const res = await api.shop.getHeadquarters();
     return res;
 }
