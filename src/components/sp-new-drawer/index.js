@@ -10,7 +10,8 @@ const SpNewDrawer = (props) => {
         className,
         visible,
         width = '84%',
-        children
+        children,
+        onClose=()=>{}
     } = props;
 
     const [loaded,setLoaded]=useState(false); 
@@ -25,6 +26,7 @@ const SpNewDrawer = (props) => {
             right
             width={width}
             borderRadius
+            onClose={onClose}
         >
             <View
                 className={

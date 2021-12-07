@@ -24,6 +24,9 @@ const NearbyShopList = (props) => {
 
     const [filterVisible, setFilterVisible] = useState(false);
 
+    //筛选名称
+    const [name,setName]=useState('');
+
     const [dataList, setDataList] = useState([]); 
 
     //物流
@@ -44,16 +47,7 @@ const NearbyShopList = (props) => {
             setFilterValue(item);
         },
         [],
-    );
-
-    const handleClickInput = useCallback(
-        () => {
-            Taro.navigateTo({
-                url: '/subpages/ecshopx/nearby-shop-search/index'
-            })
-        },
-        []
-    );
+    ); 
 
     const handleDrawer=useCallback(
         (flag) => (selectedValue) => {
@@ -92,7 +86,9 @@ const NearbyShopList = (props) => {
             lat:lnglat.latitude,
             //是否展示积分
             show_score:1,
-            sort_type:filterValue
+            sort_type:filterValue,
+            show_items:1,
+            name
         }
         const {
             list,
@@ -112,6 +108,14 @@ const NearbyShopList = (props) => {
         fetch
     });
 
+     //点击搜索框搜索
+     const handleConfirm = useCallback(
+        (item) => {
+            setName(item);
+        },
+        [],
+    );
+
     useEffect(() => {
         if (mounted) {
             resetPage();
@@ -125,6 +129,13 @@ const NearbyShopList = (props) => {
             setDataList([]);
         }
     }, [tag,logistics]);  
+
+    useEffect(() => {
+        if (mounted) {
+            resetPage();
+            setDataList([]);
+        }
+    }, [name]);  
 
     return (
         <View className={classNames(
@@ -143,6 +154,7 @@ const NearbyShopList = (props) => {
             <View className={'sp-page-nearbyshoplist-input'}>
                 <SpNewInput  
                     placeholder={'输入商家、商品'}
+                    onConfirm={handleConfirm}
                 />
             </View>
 
@@ -167,6 +179,8 @@ const NearbyShopList = (props) => {
                                 { 'in-shoplist-last': index === 99 }
                             )}
                             info={item}
+                            isShowGoods={!!name}
+                            logoCanJump
                         />
                     ))
                 }

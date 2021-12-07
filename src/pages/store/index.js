@@ -6,7 +6,7 @@ import { AtTabBar } from 'taro-ui'
 import req from '@/api/req'
 import api from '@/api'
 import { pickBy, normalizeQuerys, getCurrentRoute,classNames } from '@/utils'
-import { setPageTitle, platformTemplateName } from '@/utils/platform'
+import { platformTemplateName } from '@/utils/platform'
 import { withBackToTop } from '@/hocs'
 import qs from 'qs'
 import S from '@/spx'
@@ -94,10 +94,12 @@ export default class StoreIndex extends Component {
     } else {
       id = await Taro.getStorageSync('curStore').distributor_id
     }
-    const { name, logo } = await api.shop.getShop({ distributor_id: id })
+    const { name, logo,scoreList,distributor_id } = await api.shop.getShop({ distributor_id: id,show_score:1 })
     storeInfo = {
       name,
-      brand: logo
+      brand: logo,
+      scoreList,
+      distributor_id
     }
     const pathparams = qs.stringify({
       template_name: platformTemplateName,
