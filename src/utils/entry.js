@@ -209,7 +209,7 @@ async function getLocal(isNeedLocate) {
     } else {
       // const locationData = await getLoc()
       const locationData = await entryLaunchFun.getLocationInfo()
-      await InverseAnalysisGaode(locationData)
+      // await InverseAnalysisGaode(locationData)
       if (locationData !== null && locationData !== '') {
         let param = {}
         if (isNeedLocate && positionStatus) {
