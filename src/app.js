@@ -148,10 +148,10 @@ class App extends Component {
       'pages/category/index',
       'pages/floorguide/index',
 
-      'pages/item/list',
-      'pages/item/espier-detail',
-      'pages/item/item-params',
-      'pages/item/package-list',
+      // 'pages/item/list',
+      // 'pages/item/espier-detail',
+      // 'pages/item/item-params',
+      // 'pages/item/package-list',
 
       'pages/cart/espier-index',
       'pages/cart/espier-checkout',
@@ -162,12 +162,15 @@ class App extends Component {
       'pages/member/item-fav',
       // 'pages/store/index',
       // 'pages/store/list',
-      // 'pages/store/ziti-list',
-
+      // 'pages/store/ziti-list', 
       'pages/custom/custom-page',
       'pages/liveroom/index'
     ],
     subPackages: [
+      {
+        root: 'pages/item/',
+        pages: ['list', 'espier-detail', 'item-params','package-list']
+      },
       {
         root: 'pages/store/',
         pages: ['index', 'list', 'ziti-list']
