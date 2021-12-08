@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Picker, Input, Image } from '@tarojs/components'
-import { SpNavBar, Loading, SpPageNote } from '@/components'
+import { SpNavBar, Loading, SpPageNote,CusNoPosition } from '@/components'
 import api from '@/api'
 import { connect } from '@tarojs/redux'
 import { withPager, withBackToTop } from '@/hocs'
@@ -9,7 +9,6 @@ import entry from '@/utils/entry'
 import entryLaunchFun from '@/utils/entryLaunch'
 import { classNames, getThemeStyle, styleNames } from '@/utils'
 import CusStoreListItem from './comps/cus-list-item'
-import CusNoPosition from './comps/cus-no-position'
 
 import './list.scss'
 
