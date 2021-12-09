@@ -16,11 +16,7 @@ import './list.scss'
   ({ colors, address }) => ({
     colors: colors.current || { data: [{}] },
     address: address.current
-  }),
-  (dispatch) => ({
-    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
-  })
-)
+  }))
 @withPager
 @withBackToTop
 export default class StoreList extends Component {
@@ -69,7 +65,12 @@ export default class StoreList extends Component {
       backgroundColor: '#F5F5F5'
     })
     this.init()
+    this.initAdress()
     this.getHeadquarters()
+  }
+
+  componentDidShow () {
+    this.init()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -85,23 +86,50 @@ export default class StoreList extends Component {
   config = {
     navigationBarBackgroundColor: '#F5F5F5'
   }
+  
+  initAdress = async () => {
+    let res = await api.member.areaList()
+    const addList = pickBy(res, {
+      label: 'label',
+      children: 'children'
+    })
+    this.addList = addList
+    let arrProvice = []
+    let arrCity = []
+    let arrCounty = []
+
+    addList.map((item, index) => {
+      arrProvice.push(item.label)
+      if (index === 0) {
+        item.children.map((c_item, c_index) => {
+          arrCity.push(c_item.label)
+          if (c_index === 0) {
+            c_item.children.map((cny_item) => {
+              arrCounty.push(cny_item.label)
+            })
+          }
+        })
+      }
+    })
+    this.setState({
+      areaList: [arrProvice, arrCity, arrCounty],
+    })
+  }
 
   init = async () => {
     const { is_open_wechatapp_location } = Taro.getStorageSync('settingInfo')
     const { query, deliveryInfo } = this.state
     const lnglat = Taro.getStorageSync('lnglat') || {}
 
-    // const address = `${lnglat.province}${(Array.isArray(lnglat.city) ? lnglat.city.length : lnglat.city) ? `${lnglat.city}` : ''}${lnglat.district}${lnglat.township}`
-    // const address = lnglat.latitude ? `${lnglat.city}${lnglat.district}${lnglat.street}${lnglat.street_number}` : ''
     const addressdetail = lnglat.latitude ? lnglat.addressdetail : null
     query.province = lnglat.province || ''
-    query.city = lnglat.city || ''
+    query.city = Array.isArray(lnglat.city) ? lnglat.province: lnglat.city,
     query.area = lnglat.district || ''
     if (query.type === 2) {
       let adress_detail = !!this.props.address ? this.props.address : deliveryInfo
       const { province = '', city = '', county = '' } = adress_detail
       query.province = province
-      query.city = (city === '市辖区' || !city) ? province : city
+      query.city = city
       query.area = county
     }
 
@@ -155,12 +183,9 @@ export default class StoreList extends Component {
         })
       }
     })
-    query.type = 1
+    // query.type = 1
     this.setState({
       query
-    },
-    () => {
-      this.confirmSearch()
     })
   }
 
@@ -222,7 +247,9 @@ export default class StoreList extends Component {
     this.setState({
       query: {
         ...query,
-        name: detail.value
+        name: detail.value,
+        type: 1,
+        search_type: 2
       }
     })
   }
@@ -247,7 +274,6 @@ export default class StoreList extends Component {
   confirmSearch = (e) => {
     const { query } = this.state
     if (e && e.detail.value) {
-      query.type = 2
       query.name = e.detail.value
       this.setState({
         ...this.state.query,
@@ -270,32 +296,9 @@ export default class StoreList extends Component {
 
   async fetch(params) {
     const { card_id = null } = this.$router.params
-    const { query: searchParam, location, areaList } = this.state
+    const { query: searchParam, location } = this.state
     const { latitude = '', longitude = '' } = location
     const { page_no: page, page_size: pageSize } = params
-    let res = await api.member.areaList()
-    const addList = pickBy(res, {
-      label: 'label',
-      children: 'children'
-    })
-    this.addList = addList
-    let arrProvice = []
-    let arrCity = []
-    let arrCounty = []
-
-    addList.map((item, index) => {
-      arrProvice.push(item.label)
-      if (index === 0) {
-        item.children.map((c_item, c_index) => {
-          arrCity.push(c_item.label)
-          if (c_index === 0) {
-            c_item.children.map((cny_item) => {
-              arrCounty.push(cny_item.label)
-            })
-          }
-        })
-      }
-    })
     const query = {
       ...searchParam,
       page,
@@ -311,7 +314,6 @@ export default class StoreList extends Component {
     let addressdetail = province + city + county + adrdetail
     this.setState({
       query,
-      areaList: [arrProvice, arrCity, arrCounty],
       list: [...this.state.list, ...list],
       deliveryInfo: !!this.props.address ? {...this.props.address, addressdetail} : {...defualt_address, addressdetail},
       isRecommedList: is_recommend === 1,
@@ -338,7 +340,8 @@ export default class StoreList extends Component {
     //   return false
     // }
     // Taro.eventCenter.on('lnglat-success', () => {
-      // })
+    //   console.log(Taro.getStorageSync('lnglat'))
+    //   })
     await entryLaunchFun.isOpenPosition(() => {
       const { query } = this.state
       query.name = ''
