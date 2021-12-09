@@ -90,13 +90,14 @@ export default class SpLogin extends Component {
         token
       })
 
+      this.props.onChange && this.props.onChange()
+
       const { switch_first_auth_force_validation } = await api.user.getIsMustOauth({ module_type: 1 })
       if (switch_first_auth_force_validation == 1) {
         Taro.navigateTo({
           url: '/marketing/pages/member/userinfo'
         })
       }
-      this.props.onChange && this.props.onChange()
     }
   }
 
@@ -189,10 +190,15 @@ export default class SpLogin extends Component {
         const { update_time } = result
   
         Taro.setStorageSync('PrivacyUpdate_time', update_time)
-        // setTimeout(() => {
-        // }, 1000)
-        S.login(this)
-        this.props.onChange && this.props.onChange()
+        try {
+          const token = await api.wx.login({ code: this.state.code }) || {}
+          Taro.setStorageSync('auth_token', token)
+          Taro.setStorageSync('refresh_token_time', Date.now() + 55 * 60 * 1000)
+          Taro.eventCenter.trigger('login-success')
+          this.props.onChange && this.props.onChange()
+        } catch(e) {
+          console.error(e, 'e')
+        }
       }
     }
     if (type === 'reject') {
