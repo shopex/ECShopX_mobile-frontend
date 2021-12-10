@@ -1,6 +1,9 @@
 $cell-prefix:'sp-cell';
 
 .sp-components-cellcoupon{
+
+    display: flex;
+
     .#{$cell-prefix}__hd{
         width: 120px;
     }
