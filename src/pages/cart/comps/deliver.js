@@ -82,6 +82,8 @@ export default class Deliver extends Component {
     ]
     const showSwitchDeliver = deliveryList.filter((item) => item.isopen)
 
+    console.log("===headShop===>",headShop)
+
     return (
       <View className='deliver'>
         {showSwitchDeliver && showSwitchDeliver.length > 1 && (
@@ -132,7 +134,7 @@ export default class Deliver extends Component {
               isAddress={address}
               onCustomChosse={this.handleChooseAddress.bind(this)}
             />
-            <View className='store'>配送门店: {curStore.name}</View>
+            <View className='store'>配送门店: {headShop.is_current ? headShop.name : curStore.name}</View>
           </View>
         )}
       </View>
