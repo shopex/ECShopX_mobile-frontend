@@ -112,28 +112,14 @@ const NearbyShopList = (props) => {
             setName(item);
         },
         [],
-    );
+    ); 
 
     useEffect(() => {
         if (mounted) {
             resetPage();
             setDataList([]);
         }
-    }, [filterValue]);
-
-    useEffect(() => {
-        if (mounted) {
-            resetPage();
-            setDataList([]);
-        }
-    }, [tag, logistics]);
-
-    useEffect(() => {
-        if (mounted) {
-            resetPage();
-            setDataList([]);
-        }
-    }, [name]);
+    }, [name,filterValue,tag, logistics]);
 
     //没有物流
     const noLogistics = Object.values(logistics).every(item => !item);
