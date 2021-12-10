@@ -216,8 +216,7 @@ export default class StoreIndex extends Component {
       localCurrent, 
       couponList
     } = this.state
-    const user = Taro.getStorageSync('userinfo')
-    const isPromoter = user && user.isPromoter
+    const user = Taro.getStorageSync('userinfo') 
 
     if (!wgts || !this.props.store) {
       return <Loading />
@@ -244,6 +243,7 @@ export default class StoreIndex extends Component {
 
             <SpCellCoupon 
               couponList={couponList}
+              info={storeInfo}
             />
 
             {wgts.map((item, idx) => {

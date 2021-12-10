@@ -16,6 +16,10 @@ $primary-color-bg:rgba(244, 129, 31, 0.1);
     position: relative;
     overflow: hidden;
 
+    &.margin-right-8{
+        margin-right: 8px;
+    }
+
     &.receiveed{
         background-color:$primary-color-bg ;
     }
