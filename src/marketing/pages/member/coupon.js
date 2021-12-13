@@ -5,7 +5,7 @@ import { Loading, SpNote, SpNavBar, CouponItem } from '@/components'
 import api from '@/api'
 import { connect } from '@tarojs/redux'
 import { withPager } from '@/hocs'
-import { pickBy, classNames, isNavbar } from '@/utils'
+import { pickBy, classNames, isNavbar,JumpStoreIndex } from '@/utils'
 
 import './coupon.scss'
 
@@ -49,22 +49,22 @@ export default class Coupon extends Component {
   // }
 
   componentDidShow() {
-    this.setState({
-      list: []
-    })
-    const { curTabIdx, tabList } = this.state
-    const status = tabList[curTabIdx].status
-    const card_type = tabList[curTabIdx].type
-    const params = {
-      card_type: card_type,
-      page: 1,
-      pageSize: 10,
-      page_no: 1,
-      page_size: 10,
-      status: status
-    }
-    this.fetch(params)
-    // this.nextPage()
+    // this.setState({
+    //   list: []
+    // })
+    // const { curTabIdx, tabList } = this.state
+    // const status = tabList[curTabIdx].status
+    // const card_type = tabList[curTabIdx].type
+    // const params = {
+    //   card_type: card_type,
+    //   page: 1,
+    //   pageSize: 10,
+    //   page_no: 1,
+    //   page_size: 10,
+    //   status: status
+    // }
+    // this.fetch(params)
+    this.nextPage()
   }
 
   async fetch(params) {
@@ -105,7 +105,9 @@ export default class Coupon extends Component {
       discount: 'discount',
       use_condition: 'use_condition',
       description: 'description',
-      use_bound: 'use_bound'
+      use_bound: 'use_bound',
+      source_type:'source_type',
+      source_id:'source_id'
     })
 
     this.setState({
@@ -116,6 +118,7 @@ export default class Coupon extends Component {
   }
 
   handleClickTab = (idx) => {
+    console.log("====handleClickTab===>",idx, this.state.curTabIdx)
     if (this.state.page.isLoading) return
 
     if (idx !== this.state.curTabIdx) {
@@ -129,7 +132,7 @@ export default class Coupon extends Component {
       {
         curTabIdx: idx
       },
-      () => {
+      () => { 
         this.nextPage()
       }
     )
@@ -138,21 +141,23 @@ export default class Coupon extends Component {
   handleClick = (item) => {
     let time = parseInt(new Date().getTime() / 1000)
     let begin_date = new Date(item.begin_date) / 1000
-    const { card_id, code, card_type, status, tagClass, id } = item
+    const { card_id, code, card_type, status, tagClass, id,source_type,source_id } = item
+    console.log("===item===",item)
+    
     if (status === '2' || tagClass === 'overdue' || tagClass == 'notstarted' || time < begin_date) {
       return false
     }
-    let url = `/pages/item/list?cardId=${card_id}`
-    if (card_type === 'new_gift') {
-      if (status == 1) {
-        url = `/pages/item/list?card_id=${card_id}&code=${code}&user_card_id=${id}&isNewGift=true`
-      } else {
-        url = `/marketing/pages/member/qrcode?card_id=${card_id}&code=${code}&user_card_id=${id}`
+
+    let distributor_id=0;
+
+    //如果有admin或者没有值则跳转到首页，否则跳转到对应店铺
+    if(source_type==='distributor'){
+      if(source_id>0){
+        distributor_id=source_id;
       }
     }
-    Taro.navigateTo({
-      url
-    })
+
+    return JumpStoreIndex({distributor_id}) 
   }
 
   handleCouponClick = () => {
