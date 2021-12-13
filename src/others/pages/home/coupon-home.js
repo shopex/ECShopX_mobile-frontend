@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Image } from '@tarojs/components'
+import { View, ScrollView } from '@tarojs/components'
 import { Loading, SpNote, SpNavBar, SpToast, CouponItem } from '@/components'
 import { connect } from '@tarojs/redux'
 import api from '@/api'
