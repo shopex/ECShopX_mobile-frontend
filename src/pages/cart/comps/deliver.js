@@ -45,10 +45,11 @@ export default class Deliver extends Component {
 
   // 自定义选择店铺跳转事件
   handleChooseAddress = (choose) => {
-    const { receiptType, curStore } = this.props
+    const { receiptType, curStore,headShop } = this.props
+    let city=headShop.is_current?headShop.city:curStore.city;
     let params = ''
     if (receiptType === 'dada') {
-      params = `&city=${curStore.city}&receipt_type=${receiptType}`
+      params = `&city=${city}&receipt_type=${receiptType}`
     }
     Taro.navigateTo({
       url: `/marketing/pages/member/address?isPicker=${choose}${params}`
@@ -56,7 +57,8 @@ export default class Deliver extends Component {
   }
 
   render() {
-    const { curStore, receiptType, address, isOpenStore, colors } = this.props
+    const { curStore, receiptType, address, isOpenStore, colors,headShop={} } = this.props 
+   
     const { goodType, type } = this.$router.params
     // 收货方式[快递，同城，自提]
     const deliveryList = [
@@ -71,7 +73,7 @@ export default class Deliver extends Component {
       {
         type: 'dada',
         name: '同城配送',
-        isopen: curStore.is_dada && goodType !== 'cross'
+        isopen: headShop.is_current ? headShop.is_dada : curStore.is_dada && goodType !== 'cross'
       },
       {
         type: 'ziti',
@@ -80,6 +82,8 @@ export default class Deliver extends Component {
       }
     ]
     const showSwitchDeliver = deliveryList.filter((item) => item.isopen)
+
+    console.log("===headShop===>",headShop)
 
     return (
       <View className='deliver'>
@@ -131,7 +135,7 @@ export default class Deliver extends Component {
               isAddress={address}
               onCustomChosse={this.handleChooseAddress.bind(this)}
             />
-            <View className='store'>配送门店: {curStore.name}</View>
+            <View className='store'>配送门店: {headShop.is_current ? headShop.name : curStore.name}</View>
           </View>
         )}
       </View>
