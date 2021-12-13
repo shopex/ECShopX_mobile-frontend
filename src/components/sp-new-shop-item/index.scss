@@ -21,14 +21,16 @@ $prefixCls:'sp-component-newshopitem';
             display: flex;
         }
         .#{$prefixCls}-good-list{
+
             margin-top:18px; 
             white-space: nowrap; 
             overflow-y: auto;
             font-size:0;//解决inline-block空白间隙问题
+            display: flex;
+            justify-content: space-between;
     
             .good-item{
-                display: inline-block;
-                margin-right: 16px;
+                display: inline-block; 
                 .img{
                     width: 218px;
                     height: 218px;
