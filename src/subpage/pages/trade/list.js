@@ -321,7 +321,7 @@ export default class TradeList extends Component {
           })}
           {page.isLoading && <Loading>正在加载...</Loading>}
           {!page.isLoading && !page.hasNext && !list.length && (
-            <SpNote img='trades_empty.png'>赶快去添加吧~</SpNote>
+            <SpNote isUrl img={`${process.env.APP_IMAGE_CDN}/empty_order.png`}>您还没有商城订单呦~</SpNote>
           )}
           {!!curItemActionsId && <View className='layer' onClick={this.hideLayer} />}
         </ScrollView>
