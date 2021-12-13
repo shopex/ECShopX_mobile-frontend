@@ -1,4 +1,4 @@
-import { View, Text, Image, Button } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import Taro, { memo, useState, useEffect } from '@tarojs/taro'
 import api from '@/api'
 import entryLaunchFun from '@/utils/entryLaunch'
@@ -16,7 +16,7 @@ const WgtNearbyShop = (props) => {
     const [nearbyShop, setNearbyShop] = useState([])
     const [isLocal, setIsLocal] = useState(false);
 
-    useEffect(async () => {
+    useEffect(() => {
         init();
     }, [activeIndex])
 
@@ -53,10 +53,8 @@ const WgtNearbyShop = (props) => {
 
     const getLocation = async () => {
         await entryLaunchFun.isOpenPosition(() => {
-            console.log('=======dasla=-========');
             init();
             refreshHeaderHome();
-
         })
     }
 
@@ -93,10 +91,10 @@ const WgtNearbyShop = (props) => {
                                 (
                                     <View className='shop' key={item.distributor_id} onClick={e => handleStoreClick(item.distributor_id)}>
                                         <View className='shopbg'>
-                                            <Image mode='widthFix' className='shop_img'
+                                            <Image mode='scaleToFill' className='shop_img'
                                                 src={item.banner || `${process.env.APP_IMAGE_CDN}/shop_default_bg.png`} width={200}></Image>
 
-                                            <Image mode='widthFix' className='shop_logo'
+                                            <Image mode='scaleToFill' className='shop_logo'
                                                 src={item.logo || `${process.env.APP_IMAGE_CDN}/shop_default_logo.png`} width={70}></Image>
 
                                         </View>
