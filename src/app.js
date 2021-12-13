@@ -405,7 +405,7 @@ class App extends Component {
     if (Date.parse(new Date()) - promoterExp > treeDay) {
       Taro.setStorageSync('distribution_shop_id', '')
       Taro.setStorageSync('distribution_shop_exp', '')
-    }
+    } 
 
     // 导购数据过期时间
     const guideExp = Taro.getStorageSync('guideExp')
