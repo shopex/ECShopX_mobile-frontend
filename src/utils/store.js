@@ -5,8 +5,7 @@ import api from '@/api';
 export function JumpStoreIndex(info){ 
     //distributor_id 代表总店 如果点击总店 直接跳转到首页
     if(info.distributor_id==0){
-        JumpPageIndex()
-        return;
+        return JumpPageIndex();
     }
     Taro.navigateTo({ url: `/pages/store/index?id=${info.distributor_id}` })
 }
