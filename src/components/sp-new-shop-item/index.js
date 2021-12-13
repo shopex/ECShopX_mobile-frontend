@@ -164,7 +164,9 @@ const SpNewShopItem = (props) => {
                 <View className={'sp-component-newshopitem-right'}>
                     <View className={'sp-component-newshopitem-right-top'}>
                         <View className={'lineone'}>
-                            <View className={'title'}>{info.store_name}</View>
+                            <View className={'title'} onClick={handleClickName}>
+                                {info.store_name} 
+                            </View>
                             <View className={'distance'}>{distance}</View>
                         </View>
                         <View className={'linetwo'}>
