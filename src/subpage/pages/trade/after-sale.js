@@ -62,7 +62,7 @@ export default class AfterSale extends Component {
         ...params,
         aftersales_status: tabList[curTabIdx].status
       },
-      function(val, key) {
+      function (val, key) {
         if (key === 'page_no') return 'page'
         if (key === 'page_size') return 'pageSize'
 
@@ -153,11 +153,11 @@ export default class AfterSale extends Component {
                   key={`${idx}1`}
                   payType={item.pay_type}
                   customHeader
-                  renderHeader={
-                    <View className='trade-item__hd-cont trade-cont'>
-                      <Text className='trade-item__shop'>退款单号：{item.id}&#12288;</Text>
-                      <Text className='more'>{item.status_desc}</Text>
-                    </View>
+                  renderHeader={ 
+                      <View className='trade-item__hd-cont trade-cont'>
+                        <Text className='trade-item__shop'>退款单号：{item.id}&#12288;</Text>
+                        <Text className='more'>{item.status_desc}</Text>
+                      </View> 
                   }
                   customFooter
                   renderFooter={<View></View>}
