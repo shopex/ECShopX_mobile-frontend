@@ -37,7 +37,9 @@ const SpNewShopItem = (props) => {
         //是否有店铺logo
         hasLogo = true,
         //是否展示产品
-        isShowGoods:isShowGoodsProps = true
+        isShowGoods:isShowGoodsProps = true,
+        //显示几个产品
+        goodCount=3
     } = props;
 
     const distance = useMemo(() => {
@@ -164,7 +166,9 @@ const SpNewShopItem = (props) => {
                 <View className={'sp-component-newshopitem-right'}>
                     <View className={'sp-component-newshopitem-right-top'}>
                         <View className={'lineone'}>
-                            <View className={'title'}>{info.store_name}</View>
+                            <View className={'title'} onClick={handleClickName}>
+                                {info.store_name} 
+                            </View>
                             <View className={'distance'}>{distance}</View>
                         </View>
                         <View className={'linetwo'}>
@@ -218,7 +222,7 @@ const SpNewShopItem = (props) => {
             </View> 
             {isShowGoods && <View className={'sp-component-newshopitem-good-list'}>
                 {
-                    info.itemList.map(item => {
+                    info.itemList.slice(0,goodCount).map(item => {
                         return (
                             <View className={'good-item'} onClick={()=>JumpGoodDetail(item.item_id,info.distributor_id)}>
                                 <Image className='img' src={item.pics}></Image>
