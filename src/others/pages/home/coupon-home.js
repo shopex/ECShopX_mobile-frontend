@@ -118,7 +118,7 @@ export default class CouponHome extends Component {
     return { total }
   }
 
-  handleClickNews = (card_item, idx) => {
+  handleClickNews = (card_item, idx) => { 
     let time = parseInt(new Date().getTime() / 1000)
     if (time < card_item.send_begin_time) return
 
@@ -155,8 +155,7 @@ export default class CouponHome extends Component {
     }
   }
 
-  handleGetCard = async (card_item, idx) => {
-    console.log("===handleGetCard===>",card_item,idx)
+  handleGetCard = async (card_item, idx) => { 
     // return ;
     const { list } = this.state
 
