@@ -373,7 +373,7 @@ export default class TradeDetail extends Component {
         return
       }
       Taro.redirectTo({
-        url: APP_HOME_PAGE
+        url: process.env.APP_HOME_PAGE
       })
       return
     }
