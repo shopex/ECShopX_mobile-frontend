@@ -76,9 +76,7 @@ export default class TradeItem extends Component {
             colors,
             rateStatus
         } = this.props
-
-        console.log("====newItem===>",info)
-
+ 
         if (!info) {
             return null
         }
