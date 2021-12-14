@@ -185,6 +185,7 @@ const NearbyShopList = (props) => {
                             info={item}
                             isShowGoods={!!name}
                             logoCanJump
+                            canJump
                         />
                     ))
                 }

@@ -61,7 +61,7 @@ export default class WgtStore extends Component {
         {data.map((item) => (
           <View className='store-wrap' key={item.id} style={{ backgroundColor: base.backgroundColor || '#FFF' }}>
             <View className='store-info' onClick={this.handleStoreClick.bind(this, item.id)}>
-              <Image className='store-logo' src={item.logo} mode='widthFix' />
+              <Image className='store-logo' src={item.logo} mode='scaleToFill' />
               <View className='store-title'>
                 <View className='store-name'>{item.name}</View>
                 <View className='store-tags'>
