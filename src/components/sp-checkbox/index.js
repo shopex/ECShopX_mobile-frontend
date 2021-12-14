@@ -5,7 +5,7 @@ import { classNames, checkClassName } from '@/utils'
 import './index.scss'
 
 function SpCheckboxNew(props) {
-  const { className, children, isChecked = false, label, onChange = () => {} } = this.props
+  const { className, children, isChecked = false, label, onChange = () => {} } = props
 
   const onChangeCheckbox = () => {
     onChange(!isChecked)

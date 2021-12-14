@@ -1,48 +1,31 @@
-.wgt-grid {
-  &__header {
-    display: block !important;
-    text-align: center;
-    margin-bottom: 44px;
+.wgt-goods-grid {
+  .wgt-head {
+    padding: 10px 16px;
+    .wgt-title {
+      color: #333;
+      font-weight: bold;
+      font-size: 32px;
+    }
+    .wgt-subtitle {
+      color: #999;
+      font-size: 28px;
+      margin-left: 8px;
+    }
   }
-  &__title {
-    font-size: 32px;
-    line-height: 40px;
-    padding-bottom: 5px;
-    border-bottom: 1PX solid $color-brand-primary;
-    color: $color-brand-primary;
-  }
-  
-  .grid-goods {
+  .wgt-goods-grid-list {
+    padding: 0 16px;
     display: flex;
     flex-wrap: wrap;
-    &.out-padding {
-      margin: 0 -6px;
+  }
+  .goods-item-wrap {
+    width: 50%;
+    margin-bottom: 28px;
+    box-sizing: border-box;
+    &:nth-child(2n + 1) {
+      padding-right: 14px;
     }
-    .goods-item-wrap {
-      width: 50%;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-      &:nth-child(2n + 1) {
-        padding: 0 10px 0 20px;
-      }
-      &:nth-child(2n + 2) {
-        padding: 0 20px 0 10px;
-      }
+    &:nth-child(2n) {
+      padding-left: 14px;
     }
-  
-    // 跨境
-    .nationalInfo {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      font-size: 24px;
-      padding-top: 10px;
-      .nationalFlag {
-        width: 45px;
-        height: 45px;
-        border-radius: 100%;
-        margin-right: 15px;
-      }
-    }  
   }
 }

@@ -1,19 +1,48 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import api from '@/api'
 
 const initialState = {
-  cartCount: 0
+  cartCount: 0,
+  validCart: [],
+  invalidCart: []
 }
+
+export const fetchCartList = createAsyncThunk( 'cart/fetchCartList', async ( params ) => {
+  const { valid_cart, invalid_cart } = await api.cart.get( params )
+  return {
+    valid_cart,
+    invalid_cart
+  }
+} )
+
+export const deleteCartItem = createAsyncThunk( 'cart/deleteCartItem', async ( params ) => {
+  await api.cart.del( params )
+  debugger
+})
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    updateUserInfo: (state, { payload }) => {
-      state.userInfo = payload
+    addCart: ( state, { payload } ) => {
+
+    },
+    deleteCart: ( state, { payload } ) => {
+      
+    },
+    updateCart: ( state, { payload } ) => {
+      
     }
+  },
+  extraReducers: ( builder ) => {
+    builder.addCase( fetchCartList.fulfilled, ( state, action ) => {
+      const { valid_cart,  invalid_cart } = action.payload
+      state.validCart = valid_cart
+      state.invalidCart = invalid_cart
+    })
   }
 })
 
-export const { updateUserInfo } = cartSlice.actions
+export const { addCart, deleteCart, updateCart } = cartSlice.actions
 
 export default cartSlice.reducer

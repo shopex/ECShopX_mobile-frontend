@@ -50,10 +50,10 @@ const sysSlice = createSlice({
   name: 'sys',
   initialState,
   reducers: {
-    setSysConfig: (state, { payload }) => {
+    setSysConfig: ( state, { payload } ) => {
       return {
         ...state,
-        tabbar: payload
+        ...payload
       }
     }
   }

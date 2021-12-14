@@ -146,7 +146,7 @@ export default class DetailPluspriceList extends Component {
                         key={item.item_id}
                         info={item}
                         showFav={false}
-                        onClick={this.handleClickItem.bind(this)}
+                        onClick={this.handleClickItem.bind(this,item)}
                       ></GoodsItem>
                     </View>
                   </View>

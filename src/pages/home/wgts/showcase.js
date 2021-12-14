@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from '@tarojs/components'
 import { SpImg } from '@/components'
-import { navigateTo } from '@/utils'
-import { linkPage } from './helper'
+import { navigateTo, linkPage } from "@/utils";
 import './showcase.scss'
 
 export default class WgtShowCase extends Component {
@@ -43,7 +42,7 @@ export default class WgtShowCase extends Component {
           <View className='scheme-item'>
             <View
               className='layout layout-1'
-              onClick={this.handleClickItem.bind(this, data[0].linkPage, data[0])}
+              onClick={this.handleClickItem.bind(this, data[0])}
             >
               <SpImg
                 img-class='show-img'
@@ -57,7 +56,7 @@ export default class WgtShowCase extends Component {
           <View className='scheme-item'>
             <View
               className='layout layout-2'
-              onClick={this.handleClickItem.bind(this, data[1].linkPage, data[1])}
+              onClick={this.handleClickItem.bind(this, data[1])}
             >
               <SpImg
                 img-class='show-img'
@@ -69,7 +68,7 @@ export default class WgtShowCase extends Component {
             </View>
             <View
               className='layout layout-3'
-              onClick={this.handleClickItem.bind(this, data[2].linkPage, data[2])}
+              onClick={this.handleClickItem.bind(this, data[2])}
             >
               <SpImg
                 img-class='show-img'

@@ -17,7 +17,9 @@ import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
 import entryLaunch from './entryLaunch'
 import validate from "./validate";
-import { getPointName } from './point'
+import checkAppVersion from './updateManager'
+import linkPage from './linkPage'
+import loadingGif from '@/assets/imgs/loading.gif'
 
 export * from "./platforms";
 
@@ -60,6 +62,49 @@ export const isWeb = Taro.getEnv() == Taro.ENV_TYPE.WEB;
 export function isWxWeb() {
   return isWeb && !getBrowserEnv().weixin;
 }
+
+export const isIphoneX = () => {
+  if (isWeixin) {
+    try {
+      const {
+        model,
+        system,
+        windowWidth,
+        windowHeight,
+        screenHeight,
+        screenWidth,
+        pixelRatio,
+        brand
+      } = Taro.getSystemInfoSync();
+      const { networkType } = Taro.getNetworkType();
+
+      let px = screenWidth / 750; //rpx换算px iphone5：1rpx=0.42px
+
+      Taro.$systemSize = {
+        windowWidth,
+        windowHeight,
+        screenHeight,
+        screenWidth,
+        model,
+        px,
+        pixelRatio,
+        brand,
+        system,
+        networkType
+      };
+      if (system.indexOf("iOS") !== -1) {
+        Taro.$system = "iOS";
+      }
+      S.set(
+        "ipxClass",
+        model.toLowerCase().indexOf("iphone x") >= 0 ? "is-ipx" : ""
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
 
 // TODO: 验证方法在h5及边界情况稳定性
 export function getCurrentRoute () {
@@ -510,7 +555,8 @@ export {
   validColor,
   entryLaunch,
   validate,
-  getPointName
+  checkAppVersion,
+  linkPage,
 };
 
 

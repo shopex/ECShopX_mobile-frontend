@@ -81,8 +81,7 @@ export default class HeaderHome extends Component {
 
           {Taro.getEnv() !== 'WEB' && isOpenScanQrcode == 1 && (
             <View className='scancode' onClick={this.handleScanCode.bind(this)}>
-              <View className='iconfont icon-scan'></View>
-              <View>扫码</View>
+              <Text className='iconfont icon-scan'></Text>
             </View>
           )}
         </View>

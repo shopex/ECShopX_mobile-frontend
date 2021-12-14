@@ -4,3 +4,6 @@ export const SG_SHARER_UID = 'distribution_shop_id' // 推广用户uid
 export const SG_TRACK_PARAMS = 'trackParams'
 export const SG_QW_USERID = 'work_userid' // 企业微信用户id
 export const SG_USER_INFO = 'userinfo' // 用户信息
+export const SG_MEIQIA = 'meiqia' // 客户美洽配置
+export const SG_YIQIA = 'echat' // 客户一洽配置
+export const SG_APP_CONFIG = 'settingInfo' // APP基础信息配置

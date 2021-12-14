@@ -12,9 +12,11 @@ import {
 import { SpCheckbox } from '@/components'
 import { closeClassName, getPointName } from '@/utils'
 import './point-use.scss'
+import { DEFAULT_POINT_NAME } from '@/consts';
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ sys, colors }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class PointUse extends Component {
   static defaultProps = {
@@ -102,7 +104,7 @@ export default class PointUse extends Component {
   }
 
   render() {
-    const { info, isOpened, loading, colors } = this.props
+    const { info, isOpened, loading, colors, pointName } = this.props
     const { point, isOpenRule, disabledPoint, localType } = this.state
     if (!info) {
       return null
@@ -113,7 +115,7 @@ export default class PointUse extends Component {
         <AtFloatLayout isOpened={isOpened}>
           <View className='point-use'>
             <View className='point-use__hd'>
-              <Text>{getPointName()}</Text>
+              <Text>{pointName}</Text>
               <Text className='rule-title' onClick={this.handleRuleOpen}>
                 使用规则
               </Text>
@@ -121,15 +123,15 @@ export default class PointUse extends Component {
             </View>
             <View className='point-use__bd'>
               <View className='point-item'>
-                <View className='point-item__title'>{`用户可用${getPointName()}：`}</View>
+                <View className='point-item__title'>{`用户可用${pointName}：`}</View>
                 <View className='point-item__desc'>{info.user_point}</View>
               </View>
               <View className='point-item border'>
-                <View className='point-item__title'>{`本单最大可用${getPointName()}：`}</View>
+                <View className='point-item__title'>{`本单最大可用${pointName}：`}</View>
                 <View className='point-item__desc'>{info.max_point}</View>
               </View>
               <View className='point-item'>
-                <View className='point-item__title'>{`请输入抵扣${getPointName()}`}</View>
+                <View className='point-item__title'>{`请输入抵扣${pointName}`}</View>
                 <View className='point-item__desc'>
                   <AtInput
                     type='number'
@@ -177,12 +179,12 @@ export default class PointUse extends Component {
           <AtModalContent>
             <View>使用条件</View>
             <View>
-              {`1.${getPointName()}支付不得超出订单应付总金额的 ${
+              {`1.${DEFAULT_POINT_NAME}支付不得超出订单应付总金额的 ${
                 deduct_point_rule.deduct_proportion_limit
               }%；`}
             </View>
             <View>使用数量</View>
-            <View>{`2.${deduct_point_rule.deduct_point} ${getPointName()}抵 1 元；`}</View>
+            <View>{`2.${deduct_point_rule.deduct_point} ${pointName}抵 1 元；`}</View>
           </AtModalContent>
           <AtModalAction>
             <Button onClick={this.handleRuleClose}>我知道了</Button>

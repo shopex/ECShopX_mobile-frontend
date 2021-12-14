@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View } from '@tarojs/components'
-import { linkPage } from './helper'
 
 import './writing.scss'
 
@@ -20,8 +19,6 @@ export default class WgtWriting extends Component {
       curIdx: 0
     }
   }
-
-  handleClickItem = linkPage
 
   handleSwiperChange = (e) => {
     const { current } = e.detail

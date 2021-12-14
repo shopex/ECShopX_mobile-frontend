@@ -1,18 +1,8 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 全屏广告组件
- * @FilePath: /unite-vshop/src/components/screenAd/index.js
- * @Date: 2020-12-21 11:03:55
- * @LastEditors: Arvin
- * @LastEditTime: 2021-02-01 14:00:53
- */
 import React, { Component } from 'react';
 import { View, Image, Video } from '@tarojs/components'
 import api from '@/api'
 import { connect } from 'react-redux'
-import { linkPage } from '@/pages/home/wgts/helper'
+import { linkPage } from '@/utils'
 
 import './index.scss'
 
@@ -86,7 +76,7 @@ export default class ScreenAd extends Component {
     e && e.stopPropagation()
     const { jumpUrl } = this.state
     if (jumpUrl && jumpUrl.linkPage) {
-      linkPage(jumpUrl.linkPage, jumpUrl)
+      linkPage(jumpUrl)
       setTimeout(() => {
         this.jumpAd()
       })

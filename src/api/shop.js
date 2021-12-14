@@ -13,14 +13,11 @@ export function getStoreStatus(params = {}) {
   return req.get("/nostores/getstatus", params);
 }
 
-// 获取首页配置
-export function homeSetting(
-  params = {
-    type: "frontend"
-  }
-) {
-  return req.get("common/setting", params);
+export function getNearbyShop(params) {
+  return req.get("/distributor/list", params);
 }
+
+
 
 // 总店店铺信息及协议
 export function getStoreBaseInfo(params = {}) {
@@ -55,6 +52,29 @@ export function getAppConfig() {
   return req.get("/pagestemplate/setInfo");
 }
 
+
+
+// 获取首页配置
+export function homeSetting() {
+  return req.get("common/setting", {
+    type: "frontend"
+  });
+}
+
+/**
+ * @function APP启动获取全局配置
+ */
+export function getAppBaseInfo() {
+  return req.get( `pagestemplate/baseinfo`, {
+    page_name: "color_style",
+    template_name: platformTemplateName,
+    version: "v1.0.1"
+  })
+}
+
+/**
+ * @function 首页模版配置
+ */
 export function getShopTemplate(params) {
   return req.get( `/pagestemplate/detail`, {
     template_name: 'yykweishop',

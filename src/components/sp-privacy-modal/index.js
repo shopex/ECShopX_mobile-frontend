@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { View, Image, Button, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
+import { useImmer } from 'use-immer'
 import { SpImage } from '@/components'
 import api from '@/api'
 import { classNames, styleNames } from '@/utils'
+import { useLogin } from '@/hooks'
 
 import './index.scss'
 
@@ -13,22 +15,28 @@ const initState = {
   privacy: ''
 }
 
-function SpPrivacyModal(props) {
+function SpPrivacyModal( props ) {
+  const { login, updatePolicyTime, getUserInfoAuth } = useLogin()
   const { open = false, onCancel = () => {}, onConfirm = () => {} } = props
-  const [info, setInfo] = useState(initState)
-  useEffect(async () => {
+  const [info, setInfo] = useImmer(initState)
+  useEffect(() => {
+    fetchPrivacyData()
+  }, [] )
+  
+  const fetchPrivacyData = async () => {
     const { logo, protocol } = await api.shop.getStoreBaseInfo()
     const { member_register, privacy } = protocol
 
-    setInfo({
-      logo,
-      member_register,
-      privacy
+    setInfo( v => {
+      v.logo = logo
+      v.member_register = member_register
+      v.privacy = privacy
     })
-    
-  }, [])
+  }
 
   const handleConfirm = () => {
+    updatePolicyTime()
+    login()
     onConfirm()
   }
 

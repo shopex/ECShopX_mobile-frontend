@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import {
@@ -27,7 +26,8 @@ import {
   FloatMenuMeiQia,
   GoodsItem,
   PointLine,
-  SpRecommend
+  SpRecommend,
+  SpPage
 } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
@@ -41,12 +41,13 @@ import {
   normalizeQuerys,
   buriedPoint,
   isAlipay,
-  isWeixin
-} from '@/utils'
+  isWeixin,
+  linkPage,
+} from "@/utils";
 import { setPageTitle } from '@/utils/platform'
 import entry from '@/utils/entry'
 import S from '@/spx'
-// import { Tracker } from '@/service'
+import { Tracker } from '@/service'
 import {
   GoodsBuyToolbar,
   ItemImg,
@@ -58,17 +59,16 @@ import {
   ParamsItem,
   GroupingItem
 } from './comps'
-import { linkPage } from '../home/wgts/helper'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 import { getDtidIdUrl } from '@/utils/helper'
 
 import './espier-detail.scss'
 
 @connect(
-  ({ cart, member, colors }) => ({
+  ({ cart, user, colors }) => ({
     cart,
     colors: colors.current,
-    favs: member.favs,
+    favs: user.favs,
     showLikeList: cart.showLikeList
   }),
   (dispatch) => ({
@@ -468,7 +468,7 @@ export default class EspierDetail extends Component {
     }) : []
     itemParams = itemParams && itemParams.slice(0, 5)
 
-    info.is_fav = Boolean(this.props.favs[info.item_id])
+    // info.is_fav = Boolean(this.props.favs[info.item_id])
     const specImgsDict = this.resolveSpecImgs(info.item_spec_desc)
     const sixSpecImgsDict = pickBy(info.spec_images, {
       url: 'spec_image_url',
@@ -892,7 +892,7 @@ export default class EspierDetail extends Component {
         icon: 'none'
       })
       setTimeout(() => {
-        linkPage(page.linkPage, page)
+        linkPage(page)
       }, 1000)
       return
     }
@@ -1198,9 +1198,7 @@ export default class EspierDetail extends Component {
     console.log("==likeList==",likeList)
 
     return (
-      <View className='page-goods-detail'>
-        <SpNavBar title={info.item_name} leftIconType='chevron-left' fixed />
-
+      <SpPage className='page-goods-detail'>
         <ScrollView
           className={`goods-detail__wrap ${isNewGift ? 'goods-detail__bottom' : null}`}
           scrollY
@@ -1530,7 +1528,7 @@ export default class EspierDetail extends Component {
               </View>
             </View>
           )}
-
+{/* 
           {isArray(desc) ? (
             <View className='wgts-wrap__cont'>
               {info.videos_url && <Video src={info.videos} controls style='width:100%'></Video>}
@@ -1550,7 +1548,7 @@ export default class EspierDetail extends Component {
             <View>
               {desc && <SpHtmlContent className='goods-detail__content' content={desc} />}
             </View>
-          )}
+          )} */}
 
           {/* 猜你喜欢 */}
           {likeList.length && showLikeList ? (
@@ -1732,7 +1730,7 @@ export default class EspierDetail extends Component {
         <Canvas className='canvas' canvas-id='myCanvas'></Canvas>
 
         <SpToast />
-      </View>
+      </SpPage>
     )
   }
 }

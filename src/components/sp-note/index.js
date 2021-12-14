@@ -27,7 +27,7 @@ export default class SpNote extends Component {
     const { icon, className, title, button, value, btnText, to } = this.props
 
     return (
-      <View className={classNames('sw-note', className)}>
+      <View className={classNames('sp-note', className)}>
         {/* {icon && <AtIcon prefixClass='sw-icon' value={value} size='60' color='#cdcdcd' />} */}
         <Text className='sp-note__text'>{title}</Text>
         {button && to && (

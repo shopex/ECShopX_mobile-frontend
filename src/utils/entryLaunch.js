@@ -1,13 +1,12 @@
 import Taro,{getCurrentInstance} from "@tarojs/taro";
 import api from "@/api";
 import qs from "qs";
-import configStore from "@/store";
 import { showToast, log } from "@/utils";
 
+const geocodeUrl = 'https://restapi.amap.com/v3/geocode'
 class EntryLaunch {
   constructor() {
-    const store = configStore();
-    this.store = store;
+    this.init()
   }
 
   init(params) {
@@ -27,10 +26,14 @@ class EntryLaunch {
       };
     }
 
-    Taro.setStorageSync("launch_params", options);
-    this.sence_params = options;
+    // Taro.setStorageSync("launch_params", options);
+    this.routeParams = options;
     process.env.TARO_ENV == "h5" && this.initAMap();
     return options;
+  }
+
+  getRouteParams() {
+    return this.routeParams; 
   }
 
   /**
@@ -131,23 +134,49 @@ class EntryLaunch {
           }
         });
       });
-
-      // const geolocation = new qq.maps.Geolocation();
-      // return new Promise((resolve, reject) => {
-      //   geolocation.getLocation(
-      //     res => {
-      //       showToast(JSON.stringify(res));
-      //       resolve(res);
-      //     },
-      //     error => {
-      //       reject(`qq maps geolocation fail... ,`, error);
-      //     },
-      //     { timeout: 9000 }
-      //   );
-      // });
     }
   }
 
+  async getCurrentAddressInfo() {
+    const { lng, lat } = await this.getLocationInfo()
+    const res = await this.getAddressByLnglatWebAPI( lng, lat )
+    return res
+  }
+
+  /**
+   * @function 根据地址解析经纬度
+   */
+  async getLnglatByAddress(address) {
+    const res = await Taro.request({
+      url: `${geocodeUrl}/geo`,
+      data:{
+        key: process.env.APP_MAP_KEY,
+        address
+      }
+    } );
+    if ( res.data.status == 1 ) {
+      const { geocodes } = res.data
+      if ( geocodes.length > 0 ) {
+        return {
+          // address: geocodes[0].formatted_address,
+          // province: geocodes[0].province,
+          // city: geocodes[0].city,
+          // district: geocodes[0].district,
+          lng: geocodes[0].location.split( ',' )[0],
+          lat: geocodes[0].location.split( ',' )[1]
+        }
+      } else {
+        return {
+          error: '没有搜索到地址'
+        }
+      }
+    } else {
+      return {
+        error: '地址解析错误'
+      }
+    }
+  }
+  
   /**
    * @function 根据经纬度解析地址
    * @params lnglat Array
@@ -163,6 +192,33 @@ class EntryLaunch {
       });
     });
   }
+
+  async getAddressByLnglatWebAPI( lng, lat ) {
+    const res = await Taro.request({
+      url: `${geocodeUrl}/regeo`,
+      data:{
+        key: process.env.APP_MAP_KEY,
+        location:`${lng},${lat}`, 
+      }
+    }); 
+    if ( res.data.status == 1 ) {
+      const { formatted_address, addressComponent } = res.data.regeocode
+      return {
+        lng,
+        lat,
+        address: formatted_address,
+        province: addressComponent.province,
+        city: addressComponent.township,
+        district: addressComponent.district
+      }
+    } else {
+      return {
+        error: '地址解析错误'
+      }
+    }
+  }
+
+
 
   /**
    * @function 是否开启店铺

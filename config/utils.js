@@ -17,7 +17,6 @@ module.exports = {
       val[`process.env.${k}`] = `'${consts[k]}'`
       return val;
     }, {});
-    console.log('consts',consts)
     return consts;
   }
 };

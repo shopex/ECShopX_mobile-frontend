@@ -8,7 +8,8 @@ import qs from 'qs';
 import './index.scss'
 
 
-function SpLogin(props) {
+function SpLogin( props ) {
+  console.log('getCurrentInstance:', getCurrentInstance)
   const { className, children, size = 'normal', circle = false, onChange } = props
   const { isLogin, login, updatePolicyTime, setToken } = useLogin({
     policyUpdateHook: () => {
@@ -26,10 +27,10 @@ function SpLogin(props) {
   /**
    *
    */
-  const handleOAuthLogin = () => { 
-    const { path,params} = getCurrentInstance() 
-    let pathC=`${path}?${qs.stringify(params)}`
-    let url=`/subpage/auth/login?redirect=${encodeURIComponent(pathC)}`
+  const handleOAuthLogin = () => {
+    const $instance = getCurrentInstance();
+    const { params, path } = $instance.router
+    let url=`/subpages/auth/login?redirect=${encodeURIComponent(`${path}?${qs.stringify(params)}`)}`
   
     Taro.navigateTo({
       url

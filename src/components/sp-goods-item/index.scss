@@ -2,6 +2,15 @@
   background-color: #f5f5f5;
   .goods-item {
     &__hd {
+      padding-top: 100%;
+      position: relative;
+      .sp-image {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
     }
     &__bd {
       border-radius: 0;

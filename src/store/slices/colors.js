@@ -9,8 +9,11 @@ const colorsSlice = createSlice({
   initialState,
   reducers: {
     setColor: ( state, { payload } ) => {
-      debugger
-      state.userInfo = payload
+      state.current = {
+        data: [{
+          ...payload
+        }]
+      }
     }
   }
 })
@@ -18,3 +21,4 @@ const colorsSlice = createSlice({
 export const { setColor } = colorsSlice.actions
 
 export default colorsSlice.reducer
+
