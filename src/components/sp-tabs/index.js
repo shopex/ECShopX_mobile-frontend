@@ -5,7 +5,7 @@ import { classNames, navigateTo } from '@/utils'
 import './index.scss'
 
 function SpTabs(props) {
-  let { tablist = [], current, onChange } = this.props
+  let { tablist = [], current, onChange, children } = props
 
   console.log('current', current)
 
@@ -26,7 +26,7 @@ function SpTabs(props) {
           </View>
         ))}
       </View>
-      <View className='sp-tabs-bd'>{this.props.children}</View>
+      <View className='sp-tabs-bd'>{children}</View>
     </View>
   )
 }

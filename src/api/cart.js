@@ -71,10 +71,10 @@ export function coupons (params) {
 
 export function likeList (params) {
    
-  const distributor_id=getDistributorId();
+  // const distributor_id=getDistributorId();
 
   return req.get('/promotions/recommendlike', {
-    distributor_id,
+    // distributor_id,
     ...params,
   })
 }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
  import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import { classNames, linkPage } from "@/utils";
 
 import './limittime-slider.scss'
 
@@ -75,7 +74,7 @@ export default class WgtLimittimeSlider extends Component {
                 >
                   <View
                     style={`padding: 0 ${Taro.pxTransform(config.sliderSpace || 0)}`}
-                    onClick={this.handleClickItem.bind(this, item.linkPage, item.id)}
+                    onClick={this.handleClickItem.bind(this, item)}
                   >
                     <Image
                       mode='widthFix'

@@ -8,6 +8,7 @@ import { withLogin } from '@/hocs'
 import { AlipayPay, WeH5Pay, WePay } from './comps'
 // import { getPaymentList } from '@/utils/payment'
 import { PAYTYPE } from '@/consts'
+import { deleteForm } from './util';
 
 import './index.scss'
 
@@ -22,7 +23,8 @@ export default class Cashier extends Component {
   }
 
   componentDidShow() {
-    this.fetch()
+    this.fetch();
+    deleteForm();
   }
 
   async componentDidMount(){ 

@@ -5,7 +5,7 @@ import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import { setPageTitle, platformTemplateName } from '@/utils/platform'
-import { TabBar } from '@/components'
+import { TabBar, SpTabbar } from '@/components'
 import Series from './comps/series'
 
 import './index.scss'
@@ -144,7 +144,7 @@ export default class Category extends Component {
         >
           <Series isChanged={isChanged} info={list} />
         </View>
-        <TabBar />
+        <SpTabbar />
       </View>
     )
   }

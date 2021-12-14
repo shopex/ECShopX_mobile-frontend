@@ -60,14 +60,14 @@ function CartIndex(props) {
 
   const isLogin = S.getAuthToken()
 
-  useEffect(async () => {
+  useEffect(() => {
     console.log('useEffect...')
     if (isLogin) {
       getCartList()
     }
   }, [state])
 
-  useEffect(async () => {
+  useEffect(() => {
     getLikeList()
   }, [])
 

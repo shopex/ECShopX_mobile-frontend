@@ -1,4 +1,6 @@
-export default function withPointitem(Component) {
+import Taro, { getCurrentInstance } from '@tarojs/taro';
+
+export default function withPointitem( Component ) {
   return class WithPointitemComponent extends Component {
     constructor(props) {
       super(props)
@@ -6,7 +8,7 @@ export default function withPointitem(Component) {
 
     isPointitem() {
       const options = getCurrentInstance().params
-      return options.type === 'pointitem'
+      return options && options.type === 'pointitem'
     }
 
     transformUrl(url, isPointitem = false) {

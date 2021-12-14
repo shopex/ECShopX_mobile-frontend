@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
 import { SpImg } from '@/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import { classNames, linkPage } from "@/utils";
 import { WgtPlateType } from './index'
 
 import './slider.scss'
@@ -75,7 +74,7 @@ export default class WgtSlider extends Component {
                     <View
                       style={`padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
                       className='wrapper-img'
-                      onClick={this.handleClickItem.bind(this, item.linkPage, item)}
+                      onClick={this.handleClickItem.bind(this, item)}
                     >
                       {/* <WgtPlateType
                         info={item}

@@ -1,0 +1,113 @@
+.wgt-nearbyshop {
+  background: #fff;
+  border-radius: 16px;
+  margin: 0 16px 28px;
+  .wgt-head {
+    padding: 10px 16px;
+    .wgt-title {
+      color: #333;
+      font-weight: bold;
+      font-size: 32px;
+    }
+    .wgt-subtitle {
+      color: #999;
+      font-size: 28px;
+      margin-left: 8px;
+    }
+  }
+
+  .nearby_shop_wrap {
+    padding: 0 16px 16px;
+  }
+
+  .scroll-tab {
+    white-space: nowrap;
+    margin: 10px 0 20px;
+  }
+
+  .tag {
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 20px;
+    padding: 4px 12px;
+    background-color: #eee;
+    border-radius: 23px;
+    height: 46px;
+    min-width: 80px;
+    font-size: 26px;
+    color: #444;
+    text-align: center;
+    &.active {
+      color: #f4811f;
+      background: #fef0e4;
+    }
+  }
+
+  .scroll-list {
+    white-space: nowrap;
+  }
+    
+  .shop {
+    width: 200px;
+    height: 269px;
+    display: inline-block;
+    vertical-align: bottom;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+    .shop-image {
+      height: 130px;
+      .sp-image {
+        height: 100%;
+      }
+    }
+    .shop-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 40px;
+      overflow: hidden;
+      position: absolute;
+      background: #fff;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      .sp-image {
+        height: 74px;
+        margin: 4px;
+      }
+      .sp-image-img {
+        border-radius: 40px;
+      }
+    }
+    .shop-info-block {
+      background: #F5F5F5;
+      overflow: hidden;
+      padding-bottom: 20px;
+    }
+    .shop-name {
+      margin-top: 40px;
+      font-size: 28px;
+      text-align: center;
+      color: #000;
+    }
+    .shop-ft {
+      height:40px;
+      margin-top: 10px 0 20px;
+      text-align: center;
+    }
+    .shop-coupon {
+      @include text-overflow();
+      padding: 0px 4px;
+      margin: 0 auto;
+      max-width: 140px;
+      color: var(--color-primary);
+      border-radius: 8px;
+      /* prettier-ignore */
+      border: 1PX solid var(--color-primary);
+      font-size: 22px;
+    }
+  }
+}

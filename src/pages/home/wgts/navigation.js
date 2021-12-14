@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from '@tarojs/components'
 import { SpImg } from '@/components'
-import { linkPage } from './helper'
+import { linkPage } from '@/utils'
 
 import './navigation.scss'
 
@@ -34,7 +34,7 @@ export default class WgtNavigation extends Component {
                 <View
                   className='nav-item'
                   key={`${idx}1`}
-                  onClick={this.handleClickItem.bind(this, item.linkPage, item)}
+                  onClick={this.handleClickItem.bind(this, item)}
                 >
                   <View className='nav-img-wrap'>
                     <SpImg

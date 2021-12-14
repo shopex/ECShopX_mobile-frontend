@@ -1,268 +1,94 @@
-import React, { Component } from 'react';
- import Taro, { getCurrentInstance } from '@tarojs/taro';
-import { View, Image, Text } from '@tarojs/components'
-import { AtTabslist, SpImg } from '@/components'
-import { connect } from 'react-redux'
-import { getDistributorId } from '@/utils/helper'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
-import { withLoadMore } from '@/hocs'
-import './goods-grid-tab.scss'
+import React, { useState } from "react";
+import Taro, { getCurrentInstance } from "@tarojs/taro";
+import { View, ScrollView, Text } from "@tarojs/components";
+import { SpGoodsItem, SpImage } from "@/components";
+import { getDistributorId } from "@/utils/helper";
+import { classNames, pickBy, linkPage } from "@/utils";
+import doc from '@/doc'
+import "./goods-grid-tab.scss";
 
-@connect(({ colors }) => ({
-  colors: colors.current
-}))
-export default class WgtGoodsGridTab extends Component {
-  static options = {
-    addGlobalClass: true
+function WgtGoodsGridTab(props) {
+  const { info } = props;
+  if (!info) {
+    return null;
   }
 
-  static defaultProps = {
-    info: {}
-  }
+  const [current, setCurrent] = useState(0)
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      current: 0,
-      goodsList: [],
-      moreLink: {}
-    }
-  }
+  const { base, config, list } = info;
 
-  componentDidMount() {
-    const { info = {} } = this.props
-    let { current } = this.state
-    this.setState(
-      {
-        goodsList: info.list[current] ? info.list[current].goodsList : [],
-        moreLink: info.config.moreLink
-      },
-      () => {
-        this.startWrapperTrack()
-      }
-    )
-  }
 
-  startWrapperTrack() {
-    this.endWrapperTrack()
-    // const observer = Taro.createIntersectionObserver({
-    //   observeAll: true
-    // })
 
-    // const {
-    //   type,
-    //   info: { list, data, more },
-    //   onLoadMore = () => {},
-    //   index
-    // } = this.props
-    // const { goodsList, current } = this.state
-    // let direction = type === 'good-scroll' ? 'right' : 'bottom'
-    // observer.relativeToViewport({ [direction]: 0 }).observe('.lastItem', (res) => {
-    //   if (res.intersectionRatio > 0) {
-    //     if (list[current].more) {
-    //       onLoadMore(index, type, current, goodsList.length)
-    //     }
-    //   }
-    // })
-    // this.wrapperobserver = observer
-  }
-
-  endWrapperTrack() {
-    if (this.wrapperobserver) {
-      this.wrapperobserver.disconnect()
-      this.wrapperobserver = null
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { info = {} } = nextProps
-    let { current } = this.state
-    this.setState(
-      {
-        goodsList: info.list[current] ? info.list[current].goodsList : [],
-        moreLink: info.config.moreLink
-      },
-      () => {
-        this.startWrapperTrack()
-      }
-    )
-  }
-
-  handleClick(value) {
-    const { info } = this.props
-    this.setState(
-      {
-        goodsList: info.list[value].goodsList
-      },
-      () => {
-        this.startWrapperTrack()
-      }
-    )
-  }
-
-  handleClickMore = () => {
-    const { moreLink } = this.props.info.config
-    if (moreLink) {
-      linkPage(moreLink.linkPage, moreLink)
-    } else {
-      this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
-    }
-  }
-  // navigateTo(url) {
-  //   Taro.navigateTo({ url });
-  // }
-
-  handleClickItem(item) {
-    const { distributor_id } = item
-    const dtid = distributor_id ? distributor_id : getDistributorId()
-    Taro.navigateTo({
-      url: `/pages/item/espier-detail?id=${item.goodsId}&dtid=${dtid}`
-    })
-  }
-
-  render() {
-    const { info, colors } = this.props
-    if (!info) {
-      return null
-    }
-    const { config, base } = info
-    const { goodsList, moreLink } = this.state
-
-    return (
-      <View className={`wgt wgt-grid ${base.padded ? 'wgt__padded' : null}`}>
-        {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>
-              <Text>{base.title}</Text>
-              <View className='wgt__subtitle'>{base.subtitle}</View>
+  return (
+    <View
+      className={classNames("wgt", "wgt-goods-grid-tab", {
+        wgt__padded: base.padded,
+      })}
+    >
+      {base.title && (
+        <View className="wgt-head">
+          <Text className="wgt-title">{base.title}</Text>
+          <Text className="wgt-subtitle">{base.subtitle}</Text>
+        </View>
+      )}
+      <View className="wgt-body">
+        <ScrollView className="scroll-tab" scrollX>
+          {list.map((item, index) => (
+            <View
+              className={classNames("tab-item", {
+                active: current == index,
+              })}
+              key={`tab-item__${index}`}
+              onClick={() => {
+                setCurrent(index);
+              }}
+            >
+              {item.tabTitle}
             </View>
-            {/* <View
-                      className='wgt__more'
-                      onClick={this.handleClickMore}
-                    >
-                      <View className='three-dot'></View>
-                    </View> */}
-            {/* <View
-                      className='wgt__goods__more'
-                      onClick={this.navigateTo.bind(this, `/pages/item/list?dis_id=${dis_id}`)}
-                    >
-                      <View className='all-goods'>全部商品{dis_id}</View>
-                    </View> */}
-          </View>
-        )}
-        {/* <AtTabslist tabList={info.list} onClick={this.handleClick.bind(this)}></AtTabslist> */}
-
-        <View className='wgt__body with-padding'>
-          <View className='grid-goods out-padding grid-goods__type-grid'>
-            {goodsList.map((item, idx) => {
-              const price = (
-                (item.act_price
-                  ? item.act_price
-                  : item.member_price
-                  ? item.member_price
-                  : item.price) / 100
-              ).toFixed(2)
-              //const marketPrice = ((item.act_price ? item.price : item.member_price ? item.price : item.market_price)/100).toFixed(2)
-              const marketPrice = ((item.market_price || 0) / 100).toFixed(2)
-              return (
-                <View
-                  key={`${idx}1`}
-                  className={classNames('grid-item', {
-                    'grid-item-three': config && config.style == 'grids',
-                    'lastItem': idx === goodsList.length - 1
-                  })}
-                  onClick={() => this.handleClickItem(item)}
-                  data-id={item.goodsId}
-                >
-                  {/* {item.distributor_id} */}
-                  <View className='goods-wrap'>
-                    <View className='thumbnail'>
-                      <SpImg
-                        img-class='goods-img'
-                        src={item.imgUrl}
-                        mode='aspectFill'
-                        width='400'
-                        lazyLoad
-                      />
-                    </View>
-                    <View className='caption'>
-                      {config && config.brand && item.brand && (
-                        <SpImg
-                          img-class='goods-brand'
-                          src={item.brand}
-                          mode='aspectFill'
-                          width='300'
-                        />
-                      )}
-                      {item.type === '1' && (
-                        <View className='nationalInfo'>
-                          <Image
-                            className='nationalFlag'
-                            src={item.origincountry_img_url}
-                            mode='aspectFill'
-                            lazyLoad
-                          />
-                          <Text className='nationalTitle'>{item.origincountry_name}</Text>
-                        </View>
-                      )}
-                      {item.promotionActivity && item.promotionActivity.length > 0 && (
-                        <View className='activity-label'>
-                          {item.promotionActivity.map((s, index) => (
-                            <Text key={index} className='text'>
-                              {s.tag_type == 'single_group' ? '团购' : ''}
-                              {s.tag_type == 'full_minus' ? '满减' : ''}
-                              {s.tag_type == 'full_discount' ? '满折' : ''}
-                              {s.tag_type == 'full_gift' ? '满赠' : ''}
-                              {s.tag_type == 'normal' ? '秒杀' : ''}
-                              {s.tag_type == 'limited_time_sale' ? '限时特惠' : ''}
-                              {s.tag_type == 'plus_price_buy' ? '换购' : ''}
-                            </Text>
-                          ))}
-                        </View>
-                      )}
+          ))}
+        </ScrollView>
+        <View className="tabs-container">
+          {list.map(
+            (item, index) =>
+              current == index && (
+                <View className="tab-body" key={`tab-body__${index}`}>
+                  {item.goodsList.map((good, index) => {
+                    const data = pickBy(good, doc.goods.WGT_GOODS_GRID_TAB);
+                    return (
                       <View
-                        className={`goods-title ${!config.brand || !item.brand ? 'no-brand' : ''}`}
+                        className="goodgrid-item"
+                        key={`goods-item__${index}`}
                       >
-                        {item.title}
+                        <SpGoodsItem info={data} />
+                        {config.brand && (
+                          <View className="brand-info">
+                            <SpImage src={data.brand} width={60} />
+                          </View>
+                        )}
                       </View>
-                      {item.brief && (
-                        <View
-                          className={`goods-brief ${
-                            !config.brand || !item.brand ? 'no-brand' : ''
-                          }`}
-                        >
-                          {item.brief}
-                        </View>
-                      )}
-
-                      {config.showPrice && (
-                        <View className='goods-price'>
-                          <Text className='cur'>¥</Text>
-                          {price}
-                          {marketPrice && marketPrice != 0 && (
-                            <Text className='market-price'>{marketPrice}</Text>
-                          )}
-                        </View>
-                      )}
-                    </View>
-                  </View>
+                    );
+                  })}
                 </View>
               )
-            })}
-          </View>
+          )}
         </View>
-        {moreLink.id && (
-          <View className='btn' onClick={this.handleClickMore}>
-            <Text
-              className='more'
-              style={`border-color:${colors.data[0].primary};color:${colors.data[0].primary}`}
-            >
-              查看更多
-            </Text>
+        {config.moreLink.id && (
+          <View
+            className="btn-more"
+            onClick={() =>
+              linkPage(config.moreLink)
+            }
+          >
+            查看更多
           </View>
         )}
       </View>
-    )
-  }
+    </View>
+  );
 }
+
+WgtGoodsGridTab.options = {
+  addGlobalClass: true,
+};
+
+export default WgtGoodsGridTab;

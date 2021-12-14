@@ -3,7 +3,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components'
 import { connect } from 'react-redux'
 import { AtButton, AtInput } from 'taro-ui'
-import { Loading, Price, SpCell, SpToast, SpNavBar, SpHtmlContent } from '@/components'
+import { Loading, Price, SpCell, SpToast, SpNavBar, SpHtmlContent, SpPage } from '@/components'
 import api from '@/api'
 import S from '@/spx'
 // import { withLogin } from '@/hocs'
@@ -24,9 +24,8 @@ import {
   styleNames
 } from '@/utils'
 import { lockScreen } from '@/utils/dom'
-// import { Tracker } from '@/service'
+import { Tracker } from '@/service'
 import { TracksPayed } from '@/utils/youshu'
-import { customName } from '@/utils/point'
 import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
 import CheckoutItems from './checkout-items'
@@ -62,12 +61,13 @@ const transformCartList = (list) => {
 }
 
 @connect(
-  ({ address, cart, colors }) => ({
-    address: address.current,
+  ({ user, cart, colors, sys }) => ({
+    address: user.address,
     coupon: cart.coupon,
     drugInfo: cart.drugInfo,
     colors: colors.current,
-    zitiShop: cart.zitiShop
+    zitiShop: cart.zitiShop,
+    pointName: sys.pointName
   }),
   (dispatch) => ({
     onClearFastbuy: () => dispatch({ type: 'cart/clearFastbuy' }),
@@ -795,7 +795,7 @@ export default class CartCheckout extends Component {
         point_use: point_use
       }
       if (pointInfo.real_use_point && pointInfo.real_use_point < pointInfo.point_use) {
-        S.toast(`${getPointName()}有调整`)
+        S.toast(`${this.props.pointName}有调整`)
       }
 
       this.params.items = items
@@ -1694,7 +1694,7 @@ export default class CartCheckout extends Component {
   render() {
     // 支付方式文字
     const payTypeText = {
-      point: customName('积分支付'),
+      point: `${this.props.pointName}支付`,
       wxpay: isWeixin ? '微信支付' : isAlipay ? '支付宝支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',
@@ -1748,10 +1748,7 @@ export default class CartCheckout extends Component {
     //const isBtnDisabled = !address
     const isBtnDisabled = express ? !address : false
     return (
-      <View className='page-checkout' style={styleNames(getThemeStyle())}>
-        {showAddressPicker === false ? (
-          <SpNavBar title='填写订单信息' leftIconType='chevron-left' fixed='true' />
-        ) : null}
+      <SpPage className='page-checkout'>
         {shoppingGuideData ? (
           <View className='shopping-guide-header'>
             此订单商品来自“{shoppingGuideData.store_name}”导购“
@@ -2140,7 +2137,7 @@ export default class CartCheckout extends Component {
         ></PointUse>
 
         <SpToast />
-      </View>
+      </SpPage>
     )
   }
 }

@@ -12,7 +12,7 @@ function SpNavBar(props) {
   const title = page.config?.navigationBarTitleText
 
   const handleClickLeftIcon = function () {
-    
+    Taro.navigateBack()
   }
 
   return (

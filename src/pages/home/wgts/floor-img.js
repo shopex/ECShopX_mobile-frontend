@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import { classNames, linkPage } from "@/utils";
 import './floor-img.scss'
 
 export default class WgtFloorImg extends Component {
@@ -54,7 +53,7 @@ export default class WgtFloorImg extends Component {
                   <View
                     className='lis'
                     key={item.id}
-                    onClick={this.onRoute.bind(this, item.linkPage, item)}
+                    onClick={this.onRoute.bind(this, item)}
                   >
                     <Image lazyLoad className='img' src={item.imgUrl}></Image>
                     <View className='title' style={'color:' + base && base.WordColor}>

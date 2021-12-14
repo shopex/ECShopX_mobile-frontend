@@ -1,0 +1,68 @@
+.comp-shopitem {
+  padding: 24px 16px;
+  background: #fff;
+  display: flex;
+  .shopitem-hd {
+    padding: 0 10px;
+    .shop-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 16px;
+      /* prettier-ignore */
+      border: 1PX solid #ddd;
+      overflow: hidden;
+    }
+  }
+  .shopitem-bd {
+    flex: 1;
+    
+  }
+  .shop-info {
+    display: flex;
+    
+    .name {
+      font-size: 30px;
+      color: #222;
+      font-weight: bold;
+      flex: 1;
+    }
+    .distance {
+      color: #666;
+    }
+  }
+
+  .business-hours {
+    font-size: 24px;
+    color: #999;
+    .icon-clock1 {
+      font-size: 24px;
+      margin-right: 4px;
+    }
+  }
+
+  .shop-address {
+    font-size: 24px;
+    color: #999;
+    .icon-dizhiguanli-01 {
+      font-size: 26px;
+      margin-right: 4px;
+    }
+  }
+
+  .shop-tag {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .tag {
+    /* prettier-ignore */
+    border: 1PX solid var(--color-primary);
+    padding: 0 4px;
+    border-radius: 6px;
+    margin: 0 10px 10px 0;
+    font-size: 22px;
+    color: var(--color-primary);
+  }
+  
+}

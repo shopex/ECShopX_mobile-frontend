@@ -5,12 +5,16 @@ import { SpPrice, SpInputNumber } from '@/components'
 import InputNumber from '@/components/input-number'
 import { isObject, classNames } from '@/utils'
 
-import './cart-goodsitem.scss'
+import './comp-goodsitem.scss'
 
-function CartGoodsItem(props) {
-  const { info, onDelete = () => {} } = this.props
+function CompGoodsItem(props) {
+  const { info, onDelete = () => {}, onChange = () => {}} = props
   const onDeleteGoodsItem = () => {
     onDelete(info)
+  }
+
+  const onChangeGoodsItem = (e) => {
+    onChange(e)
   }
 
   if (!info) {
@@ -18,7 +22,7 @@ function CartGoodsItem(props) {
   }
 
   return (
-    <View className='cart-goods-item'>
+    <View className='comp-goodsitem'>
       <View className='goods-item-hd'>
         <Image className='goods-image' mode='widthFix' src={info.pics} />
       </View>
@@ -32,11 +36,11 @@ function CartGoodsItem(props) {
         </View>
         <View className='item-ft'>
           <SpPrice value={info.price / 100} />
-          <SpInputNumber value={info.num} />
+          <SpInputNumber value={info.num} onChange={ onChangeGoodsItem}/>
         </View>
       </View>
     </View>
   )
 }
 
-export default CartGoodsItem
+export default CompGoodsItem

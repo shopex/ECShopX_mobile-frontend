@@ -2,9 +2,8 @@ import React, { Component } from 'react';
  import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
-import { calcTimer, classNames } from '@/utils'
-import { SpImg, SpMoreImg } from '@/components'
-import { linkPage } from './helper'
+import { calcTimer, classNames, linkPage } from "@/utils";
+import { SpImg } from '@/components'
 import { getDistributorId } from '@/utils/helper'
 import { withLoadMore } from '@/hocs'
 
@@ -73,7 +72,7 @@ export default class WgtGoodsScroll extends Component {
     const { config } = this.props.info
     const { moreLink = {} } = config
     if (moreLink) {
-      linkPage(moreLink.linkPage, moreLink)
+      linkPage(moreLink)
     } else {
       this.navigateToList(config.type, config.seckillId)
     }
@@ -182,8 +181,6 @@ export default class WgtGoodsScroll extends Component {
                 </View>
               )
             })}
-
-            <SpMoreImg dataLength={data.length} config={config} base={base} more={more} />
           </ScrollView>
         </View>
       </View>

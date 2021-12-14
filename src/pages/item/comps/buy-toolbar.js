@@ -76,7 +76,6 @@ export default class GoodsBuyToolbar extends Component {
       colors,
       isPointitem
     } = this.props
-
     if (!info) {
       return null
     }
@@ -129,17 +128,17 @@ export default class GoodsBuyToolbar extends Component {
             {info.approve_status === 'onsale' ? (
               <View className='goods-buy-toolbar__btns'>
                 {(type === 'normal' || type === 'limited_time_sale') && !isPointitem && (
-                  <FormIdCollector sync onClick={onClickAddCart}>
+                  <View sync onClick={onClickAddCart}>
                     <View
                       className={`goods-buy-toolbar__btn btn-add-cart ${isDrug && 'drug-btn'}`}
                       style={'background: ' + colors.data[0].accent}
                     >
                       {isDrug ? '加入药品清单' : '添加至购物车'}
                     </View>
-                  </FormIdCollector>
+                  </View>
                 )}
                 {!isDrug && (
-                  <FormIdCollector sync onClick={onClickFastBuy}>
+                  <View sync onClick={onClickFastBuy}>
                     <View
                       className={`goods-buy-toolbar__btn btn-fast-buy ${type !== 'normal' &&
                         type !== 'limited_time_sale' &&
@@ -148,7 +147,7 @@ export default class GoodsBuyToolbar extends Component {
                     >
                       {fastBuyText}
                     </View>
-                  </FormIdCollector>
+                  </View>
                 )}
               </View>
             ) : (

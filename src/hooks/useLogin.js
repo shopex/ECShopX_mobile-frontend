@@ -19,9 +19,16 @@ export default (props = {}) => {
     if (!token) {
       autoLogin && login()
     } else {
-      setIsLogin(true)
+      setIsLogin( true )
+      getUserInfo()
     }
   }, [])
+
+  useEffect( () => {
+    if ( userInfo ) {
+      setIsLogin( true )
+    }
+  }, [userInfo])
 
   const login = async () => {
     if (isWeixin) {
@@ -34,7 +41,7 @@ export default (props = {}) => {
         const { code } = await Taro.login()
         try {
           const { token } = await api.wx.login({ code })
-          setToken(token)
+          setToken( token )
         } catch (e) {
           console.error('[hooks useLogin] auto login is failed: ', e)
         }
@@ -49,8 +56,10 @@ export default (props = {}) => {
   }
 
   const getUserInfo = async () => {
-    const userInfo = await api.member.memberInfo()
-    dispatch(updateUserInfo(userInfo))
+    if ( !userInfo ) {
+      const _userInfo = await api.member.memberInfo()
+      dispatch(updateUserInfo(_userInfo))
+    }
   }
 
   /**

@@ -93,22 +93,23 @@ function MemberIndex(props) {
   })
   const [policyModal, setPolicyModal] = useState(false)
   const { userInfo, vipInfo } = useSelector((state) => state.user)
-
-  useEffect(async () => {
+  console.log('store userInfo', userInfo)
+  useEffect(() => {
     if (isLogin) {
       getMemberCenterData()
     }
   }, [isLogin])
 
-  useEffect(async () => {
+  useEffect(() => {
     getMemberCenterConfig()
   }, [])
 
-  useDidShow(() => {
-    if (isLogin) {
-      getUserInfo()
-    }
-  })
+  // useDidShow( () => {
+  //   debugger
+  //   if (isLogin) {
+  //     getUserInfo()
+  //   }
+  // })
 
   // 分享
   useShareAppMessage(async (res) => {
@@ -406,7 +407,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=5')}
             >
               <SpImage src='daizhifu.png' width='70' />
-              <View className='order-bradge'>{data.waitPayNum && <Text>{ data.waitPayNum}</Text>}</View>
+              { data.waitPayNum > 0 && <View className='order-bradge'><Text>{ data.waitPayNum}</Text></View>}
               <Text className='order-txt'>待支付</Text>
             </View>
             <View
@@ -414,7 +415,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=3')}
             >
               <SpImage src='daifahuo.png' width='70' />
-              <View className='order-bradge'>{data.waitSendNum && <Text>{ data.waitSendNum}</Text>}</View>
+              {data.waitSendNum > 0 && <View className='order-bradge'><Text>{ data.waitSendNum}</Text></View>}
               <Text className='order-txt'>待发货</Text>
             </View>
             <View
@@ -422,7 +423,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=1')}
             >
               <SpImage src='daishouhuo.png' width='70' />
-              <View className='order-bradge'>{data.waitRecevieNum && <Text>{ data.waitRecevieNum}</Text>}</View>
+              {data.waitRecevieNum > 0 && <View className='order-bradge'><Text>{ data.waitRecevieNum}</Text></View>}
               <Text className='order-txt'>待收货</Text>
             </View>
             <View
@@ -437,7 +438,7 @@ function MemberIndex(props) {
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/after-sale')}
             >
               <SpImage src='daishouhuo.png' width='70' />
-              <View className='order-bradge'>{data.afterSalesNum && <Text>{ data.afterSalesNum}</Text>}</View>
+              {data.afterSalesNum > 0 && <View className='order-bradge'><Text>{ data.afterSalesNum}</Text></View>}
               <Text className='order-txt'>售后</Text>
             </View>
           </View>

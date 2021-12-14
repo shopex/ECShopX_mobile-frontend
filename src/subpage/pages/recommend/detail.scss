@@ -6,29 +6,7 @@
   /*  #endif  */
   background: #fff;
   height: 100vh;
-  .wgt {
-    &__padded {
-      padding: 40px 0;
-    }
-    &__header {
-      display: flex;
-      align-items: center;
-      padding: 0 20px 10px 20px;
-    }
 
-    &__title {
-      display: flex;
-      align-items: flex-end;
-      flex: 1;
-      font-size: 32px;
-    }
-
-    &__subtitle {
-      padding-left: 10px;
-      font-size: 24px;
-      color: #999;
-    }
-  }
   .recommend-detail {
     padding-bottom: 100px;
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import { classNames, linkPage } from '@/utils'
 import './hot-topic.scss'
 
 export default class WgtHotTopic extends Component {
@@ -46,7 +45,7 @@ export default class WgtHotTopic extends Component {
               <View
                 key={item.id}
                 className={classNames('gambit', idx === current ? 'checked' : '')}
-                onClick={this.handleClick.bind(this, idx, item.linkPage, item)}
+                onClick={this.handleClick.bind(this, idx, item)}
               >
                 {item.topic}
               </View>

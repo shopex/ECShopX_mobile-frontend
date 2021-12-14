@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const initialState = {
-  userInfo: {},
+  userInfo: null,
   cardInfo: {},
   vipInfo: {
     isOpen: false,
@@ -11,7 +11,8 @@ const initialState = {
   },
   showAdv: false,
   fav: {},
-  address: null
+  address: null,
+  location: {}
 }
 
 const userSlice = createSlice({
@@ -20,7 +21,7 @@ const userSlice = createSlice({
   reducers: {
     updateUserInfo: (state, { payload }) => {
       const { memberInfo, cardInfo, vipgrade, is_open_popularize, is_promoter } = payload
-      console.log(vipgrade)
+      console.log( vipgrade )
       state.userInfo = {
         ...memberInfo,
         popularize: is_open_popularize,
@@ -37,10 +38,14 @@ const userSlice = createSlice({
 
     updateAddress: (state, { payload }) => {
       state.address = payload
+    },
+
+    updateLocation: ( state, { payload } ) => {
+      state.location = payload
     }
   }
 })
 
-export const { updateUserInfo, updateAddress } = userSlice.actions
+export const { updateUserInfo, updateAddress, updateLocation } = userSlice.actions
 
 export default userSlice.reducer

@@ -7,8 +7,8 @@ import { rightClassName } from '@/utils'
 import './address.scss'
 
 @connect(
-  ({ address }) => ({
-    address: address.current
+  ({ user }) => ({
+    address: user.address,
   }),
   (dispatch) => ({
     onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })

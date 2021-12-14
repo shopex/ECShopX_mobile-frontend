@@ -12,7 +12,7 @@ import { useLogin } from '@/hooks'
 import './index.scss'
 
 function SpLogin( props ) {
-  const { children } = props
+  const { children, className } = props
   const { isLogin, login, updatePolicyTime, setToken } = useLogin({
     policyUpdateHook: () => {
       setPolicyModal(true)
@@ -63,17 +63,17 @@ function SpLogin( props ) {
    }, [])
   
   return (
-    <View className={classNames('sp-login')}>
+    <View className={classNames('sp-login', className)}>
       {isLogin && <View onClick={handleOnChange}>{children}</View>}
 
       {!isLogin && isNewUser && (
-        <AtButton
+        <Button
           className='login-btn'
           openType='getPhoneNumber'
           onGetPhoneNumber={handleBindPhone}
         >
           {children}
-        </AtButton>
+        </Button>
       )}
 
       {!isLogin && !isNewUser && <View onClick={handleClickLogin}>{children}</View>}
@@ -82,7 +82,7 @@ function SpLogin( props ) {
         open={policyModal}
         onCancel={handleCloseModal}
         onConfirm={handleConfirmModal}
-      />
+      />                                                        
     </View>
   )
 }

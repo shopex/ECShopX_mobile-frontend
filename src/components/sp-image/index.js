@@ -23,7 +23,7 @@ function SpImage(props) {
         className
       )}
       style={styleNames({
-        width: `${width / 2}px`
+        width: width == 'auto' ? 'auto' : `${width / 2}px`
       })}
     >
       <Image

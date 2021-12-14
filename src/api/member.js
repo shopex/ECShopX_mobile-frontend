@@ -337,7 +337,7 @@ export function hfpayBankInfo (params = {}) {
   return req.get('/hfpay/bankinfo', params)
 }
 // 获取获取支付方式
-export function getTradePaymentList (params = {}) {
+export function getTradePaymentList(params = {}) {
   return req.get('/trade/payment/list', params)
 }
 export function getIsHf (params = {}) {
