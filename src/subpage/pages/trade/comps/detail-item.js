@@ -109,8 +109,7 @@ export default class DetailItem extends Component {
                   </View>
                 ) : null}
               </View>
-              <OrderItem key={`${idx}1`} info={item} isShowNational isPointitemGood={isPointitem} onClick={()=>{
-                console.log("item",item)
+              <OrderItem key={`${idx}1`} info={item} isShowNational isPointitemGood={isPointitem} onClick={()=>{ 
                 JumpGoodDetail(item.good_id,item.distributor_id)}
               } 
               />
