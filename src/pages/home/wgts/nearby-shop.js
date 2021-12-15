@@ -1,5 +1,5 @@
 import { View, Text, Image, ScrollView } from '@tarojs/components'
-import Taro, { memo, useState, useEffect } from '@tarojs/taro'
+import Taro, { memo, useState, useEffect,useDidShow } from '@tarojs/taro'
 import api from '@/api'
 import entryLaunchFun from '@/utils/entryLaunch'
 import { SpNoShop, CusNoPosition } from '@/components'
@@ -7,6 +7,10 @@ import { getThemeStyle, styleNames } from '@/utils'
 import './nearby-shop.scss'
 
 const WgtNearbyShop = (props) => {
+    // 只会返回时执行一次 
+    useDidShow(()=>{
+        init();
+    },[])
 
     const { info = null, refreshHeaderHome } = props
     if (!info) return
@@ -93,10 +97,10 @@ const WgtNearbyShop = (props) => {
                                     <View className='shop' key={item.distributor_id} onClick={e => handleStoreClick(item.distributor_id)}>
                                         <View className='shopbg'>
                                             <Image mode='scaleToFill' className='shop_img'
-                                                src={item.banner || `${process.env.APP_IMAGE_CDN}/shop_default_bg.png`} width={200}></Image>
+                                                src={item.banner || `${process.env.APP_IMAGE_CDN}/shop_default_bg.png`}></Image>
 
                                             <Image mode='scaleToFill' className='shop_logo'
-                                                src={item.logo || `${process.env.APP_IMAGE_CDN}/shop_default_logo.png`} width={70}></Image>
+                                                src={item.logo || `${process.env.APP_IMAGE_CDN}/shop_default_logo.png`}></Image>
 
                                         </View>
 
