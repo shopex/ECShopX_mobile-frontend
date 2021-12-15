@@ -4,7 +4,18 @@
   background: #fff;
   height: 100%;
   box-sizing: border-box;
-
+ 
+ 
+    &.fixedSearch{
+      .wgts-wrap {
+        padding-top: 80px;
+        /*  #ifdef  h5  */
+        padding-top: 160px;
+        /*  #endif  */   
+      }  
+    }
+    
+ 
   .store-header { 
     text-align: center;
     padding:30px 0;
@@ -67,11 +78,7 @@
       box-shadow: 0 0 20px rgba(0,0,0,.2);
     }
   }
-  &.fixedSearch{
-    .wgts-wrap {
-      padding-top: 80px; 
-    }
-  }
+ 
 }
 
 .wgts-wrap {
