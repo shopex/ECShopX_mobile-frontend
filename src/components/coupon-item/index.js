@@ -111,7 +111,7 @@ export default class CouponItem extends Component {
     const { info,distributor_info }=this.props;
     console.log("getDistributorName==>",distributor_info,info);
     if(distributor_info.name) return distributor_info.name;
-    return (info.distributor_list||[]).reduce((total,current)=>total+current.name+',','')||''
+    return (info.distributor_list||[]).reduce((total,current,index)=>total+current.name+(info.distributor_list.length-1===index?'':','),'')||''
   }
 
   render() {

@@ -5,7 +5,7 @@ import { SpToast, Loading, BackToTop, SpNewShopItem, SpCellCoupon } from '@/comp
 import { AtTabBar } from 'taro-ui'
 import req from '@/api/req'
 import api from '@/api'
-import { pickBy, normalizeQuerys, getCurrentRoute, classNames } from '@/utils'
+import { pickBy, normalizeQuerys, getCurrentRoute, classNames,isNavbar } from '@/utils'
 import { platformTemplateName } from '@/utils/platform'
 import { withBackToTop,withPager } from '@/hocs'
 import qs from 'qs'
@@ -261,7 +261,8 @@ export default class StoreIndex extends Component {
      
     return (
       <View className={classNames('page-store-index',{
-        fixedSearch
+        fixedSearch,
+        'has-navbar':isNavbar()
       })}>
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed__page'
