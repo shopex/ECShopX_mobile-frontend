@@ -1,6 +1,6 @@
 .page-ecshopx-nearlyshop {
   .search-block {
-    padding: 15px 24px;
+    padding: 20px;
   }
   .search-bar {
     background: #fff;
@@ -15,7 +15,10 @@
   }
   .pick-title {
     display: flex;
-    align-items: center
+    align-items: center;
+    .icon-periscope, .icon-arrowDown {
+      font-size: 28px;
+    }
   }
   .pick-address {
     color: #333;
@@ -101,17 +104,17 @@
     .shop-item-wrapper {
       overflow: hidden;
       position: relative;
-      &:not(:last-child) {
-        &:after {
-          content: "";
-          height: 1PX;
-          background-color: #ddd;
-          position: absolute;
-          bottom: 0;
-          left: 20px;
-          right: 20px;
-        }
-      }
+      // &:not(:last-child) {
+      //   &:after {
+      //     content: "";
+      //     height: 1PX;
+      //     background-color: #ddd;
+      //     position: absolute;
+      //     bottom: 0;
+      //     left: 20px;
+      //     right: 20px;
+      //   }
+      // }
       &:first-child {
         border-radius: 16px 16px 0 0;
       }
