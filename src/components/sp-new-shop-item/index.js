@@ -131,6 +131,11 @@ const SpNewShopItem = (props) => {
         setFav(flag)
     }
 
+    const hasMore=useMemo(() => {
+        //如果优惠券数量大于默认数量/活动数量大于默认数量  即还有更多
+        return (info.discountCardList.length>discountCount)||(info.marketingActivityList>activityCount)
+    }, [info.discountCardList,info.marketingActivityList,discountCount,activityCount])
+
     return (inStore || inOrderList || inOrderDetail) ? (
         <View
             className={classNames('sp-component-newshopitem', className)}
@@ -197,11 +202,11 @@ const SpNewShopItem = (props) => {
                                 }
                             </View>
                             <View className={'right'}>
-                                <View className={'right-arrow'} onClick={handleExpand}>
+                                {hasMore && <View className={'right-arrow'} onClick={handleExpand}>
                                     <Text className={classNames('iconfont icon-arrowDown', {
                                         ['expand']: expand
                                     })}></Text>
-                                </View>
+                                </View>}
                             </View>
                         </View>}
                         {
