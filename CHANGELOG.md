@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v2.0.4...v2.1.0) (2021-12-16)
+
+
+### Features
+
+* 附近商家 ([3f6177f](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/3f6177f996ac29a72f82bf30f4f7372237135c9e))
+
 ### [2.0.5](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v2.0.4...v2.0.5) (2021-12-16)
 
 ### [2.0.4](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v2.0.3...v2.0.4) (2021-12-16)
