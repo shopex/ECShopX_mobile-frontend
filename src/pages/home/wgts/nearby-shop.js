@@ -111,8 +111,11 @@ const WgtNearbyShop = (props) => {
                                         <View className='shop_name'>{item.name}</View>
                                         {
                                             base.show_coupon ?
-                                                item.discountCardList[0] ? <View className='shop_coupon' style={{ border: '1PX solid #f4811f' }} >{item.discountCardList[0].title}</View>
-                                                    : <View className='shop_coupon' ></View> : ''
+                                                (item.discountCardList[0] ? 
+                                                    <View className='shop_coupon border'>{item.discountCardList[0].title}</View>
+                                                    : 
+                                                    <View className='shop_coupon'></View>)
+                                                : ''
                                         }
                                     </View>
                                 )

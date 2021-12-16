@@ -9,7 +9,12 @@
   //   color: #f4811f;
 }
 .nearby_shop_wrap {
-  padding: 20px 24px 0;
+  padding: 20px;
+  margin: 20px 20px 0;
+  background: #ffffff;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10rpx;
   overflow: hidden;
   .tagList {
     width: 100%;
@@ -42,6 +47,7 @@
     }
     .shop {
       display: inline-block;
+      vertical-align: top;
       width: 200px;
       padding-bottom: 10px;
       // height: 290px;
@@ -88,6 +94,9 @@
         line-height: 30px;
      
         font-size: 22px;
+      }
+      .border{
+        border: 1PX solid #f4811f
       }
     }
   }
