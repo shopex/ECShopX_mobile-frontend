@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { View, ScrollView, Image } from "@tarojs/components";
+import { View, ScrollView, Text } from "@tarojs/components";
 import { useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
@@ -9,12 +9,12 @@ import {
   SpFilterBar,
   SpShopItem,
   SpNewFilterDrawer,
-  SpLoadMore,
+  SpSearchBar,
   SpPage,
-  SpScrollView
+  SpScrollView,
 } from "@/components";
 import doc from '@/doc'
-import { classNames, pickBy, JumpPageIndex } from "@/utils";
+import { classNames, pickBy } from "@/utils";
 import api from "@/api";
 import "./shop-list.scss";
 
@@ -105,13 +105,21 @@ function shopList(props) {
 
   return (
     <SpPage className="page-shop-list">
-      <SpSearch />
-      <SpFilterBar
-        custom
-        current={curFilterIdx}
-        list={filterList}
-        onChange={handleFilterChange}
-      />
+      <View className="search-block">
+        <SpSearchBar placeholder="请输入商家、商品" />
+      </View>
+      <View className="filter-block">
+        <SpFilterBar
+          custom
+          current={curFilterIdx}
+          list={filterList}
+          onChange={handleFilterChange}
+        >
+          <View className="filter-btn">
+            筛选<Text className="iconfont icon-filter"></Text>
+          </View>
+        </SpFilterBar>
+      </View>
       <SpScrollView className="shoplist-block" fetch={fetch}>
         {list.map((item, index) => (
           <View className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
@@ -119,56 +127,6 @@ function shopList(props) {
           </View>
         ))}
       </SpScrollView>
-
-      {/* <View className={"sp-page-nearbyshoplist-input"}>
-        <SpNewInput placeholder={"输入商家、商品"} onConfirm={handleConfirm} />
-      </View>
-
-      {!noCompleteData && (
-        <SpNewFilterbar
-          filterData={FILTER_DATA}
-          value={filterValue}
-          onClickLabel={handleClickFilterLabel}
-          onClickFilter={handleDrawer(true)}
-        />
-      )}
-
-      <ScrollView
-        className={classNames("sp-page-nearbyshoplist-scrollview")}
-        scrollY
-        scrollWithAnimation
-        onScrollToLower={nextPage}
-      >
-        {dataList.map((item, index) => (
-          <SpNewShopItem
-            className={classNames("in-shoplist", {
-              "in-shoplist-last": index === 99,
-            })}
-            info={item}
-            isShowGoods={!!name}
-            logoCanJump
-          />
-        ))}
-        <SpLoadMore loading={loading} hasNext={hasNext} total={total} />
-        {!loading && noData && (
-          <View className={"sp-page-nearbyshoplist-nodata"}>
-            <Image
-              className="img"
-              src={`${process.env.APP_IMAGE_CDN}/empty_data.png`}
-            ></Image>
-            <View className="tips">更多商家接入中，尽情期待</View>
-            <View className="button" onClick={() => JumpPageIndex()}>
-              去首页逛逛
-            </View>
-          </View>
-        )}
-      </ScrollView>
-
-      <SpNewFilterDrawer
-        visible={filterVisible}
-        filterData={FILTER_DRAWER_DATA}
-        onCloseDrawer={handleDrawer(false)}
-      /> */}
     </SpPage>
   );
 };
