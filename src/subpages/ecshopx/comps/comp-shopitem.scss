@@ -2,67 +2,74 @@
   padding: 24px 16px;
   background: #fff;
   display: flex;
+  margin-bottom: 5px;
   .shopitem-hd {
-    padding: 0 10px;
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    /* prettier-ignore */
+    border: 1PX solid #ddd;
+    overflow: hidden;
     .shop-image {
-      width: 100px;
-      height: 100px;
-      border-radius: 16px;
-      /* prettier-ignore */
-      border: 1PX solid #ddd;
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
     }
   }
   .shopitem-bd {
-    flex: 1;
-    
+    width: 81%;
+    margin-left: 25px;
   }
   .shop-info {
     display: flex;
-    
+    justify-content: space-between;
+    .name, .distance {
+      @include text-overflow()
+    }
     .name {
+      width: 80%;
       font-size: 30px;
-      color: #222;
       font-weight: bold;
-      flex: 1;
+      color: #222;
     }
     .distance {
+      font-size: 26px;
       color: #666;
     }
   }
 
-  .business-hours {
-    font-size: 24px;
+  .business-hours, .shop-address {
+    font-size: 22px;
     color: #999;
-    .icon-clock1 {
-      font-size: 24px;
-      margin-right: 4px;
-    }
   }
 
-  .shop-address {
+  .icon-clock1 {
     font-size: 24px;
-    color: #999;
-    .icon-dizhiguanli-01 {
-      font-size: 26px;
-      margin-right: 4px;
-    }
+    margin-right: 10px;
+  }
+
+  .icon-dizhiguanli-01 {
+    font-size: 26px;
+    margin-right: 5px;
   }
 
   .shop-tag {
     display: flex;
-    flex-wrap: wrap;
-    margin-top: 20px;
+    align-items: center;
+    margin-top: 8px;
+    overflow: auto;
+    white-space: nowrap;
+    .tag {
+      /* prettier-ignore */
+      border: 1PX solid var(--color-primary);
+      padding: 2px 6px;
+      color: var(--color-primary);
+      font-size: 22px;
+      border-radius: 10px;
+      margin-right: 10px;
+    }
   }
-
-  .tag {
-    /* prettier-ignore */
-    border: 1PX solid var(--color-primary);
-    padding: 0 4px;
-    border-radius: 6px;
-    margin: 0 10px 10px 0;
-    font-size: 22px;
-    color: var(--color-primary);
+  .shop-tag::-webkit-scrollbar {
+    display: none;
   }
   
 }

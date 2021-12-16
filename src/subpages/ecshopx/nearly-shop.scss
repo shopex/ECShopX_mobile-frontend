@@ -1,21 +1,27 @@
 .page-ecshopx-nearlyshop {
   .search-block {
-    padding: 15px 24px;
+    padding: 20px;
   }
   .search-bar {
     background: #fff;
     height: 60px;
     border-radius: 30px;
     display: flex;
-    align-items: center
+    align-items: center;
+    padding: 0px 20px;
   }
   .region-picker {
-    width: 260px;
-    padding: 0 20px;
+		display: flex;
+    align-items: center;
+    width: 45%;
+    justify-content: flex-start;
   }
   .pick-title {
     display: flex;
-    align-items: center
+    align-items: center;
+    .icon-periscope, .icon-arrowDown {
+      font-size: 28px;
+    }
   }
   .pick-address {
     color: #333;
@@ -25,7 +31,10 @@
   .search-comp-wrap {
     flex: 1;
     display: flex;
-    align-items: center
+    align-items: center;
+    .icon-close {
+      font-size: 28px;
+		}
   }
   .icon-sousuo-01 {
     font-size: 32px;
@@ -101,17 +110,17 @@
     .shop-item-wrapper {
       overflow: hidden;
       position: relative;
-      &:not(:last-child) {
-        &:after {
-          content: "";
-          height: 1PX;
-          background-color: #ddd;
-          position: absolute;
-          bottom: 0;
-          left: 20px;
-          right: 20px;
-        }
-      }
+      // &:not(:last-child) {
+      //   &:after {
+      //     content: "";
+      //     height: 1PX;
+      //     background-color: #ddd;
+      //     position: absolute;
+      //     bottom: 0;
+      //     left: 20px;
+      //     right: 20px;
+      //   }
+      // }
       &:first-child {
         border-radius: 16px 16px 0 0;
       }

@@ -11,120 +11,179 @@ import CompShopItem from './comps/comp-shopitem'
 import { SG_APP_CONFIG } from '@/consts'
 import { usePage } from '@/hooks'
 import doc from '@/doc'
-import { entryLaunch, pickBy, classNames, showToast, log } from "@/utils";
+import { entryLaunch, pickBy, classNames, showToast, log, isArray } from "@/utils";
 
 import './nearly-shop.scss'
 
 const initialState = {
-  areaArray: [],
+  areaArray: [[], [], []],
   areaIndexArray: [0, 0, 0],
   areaData: [],
   shopList: [],
-  keyword: '',
   locationIng: false,
-  receiveAddress: {}
+  receiveAddress: {},
+  chooseValue: [],
+  keyword: '', // 参数
+  type: 0, // 参数
+  search_type: undefined // 参数
 }
 
 function NearlyShop( props ) {
   const { children } = props
   const [ state, setState ] = useImmer(initialState)
-  const { location } = useSelector( state => state.user )
+  const { location, address } = useSelector( state => state.user )
   const shopRef = useRef()
   
   const dispatch = useDispatch();
   // log.debug(`location: ${JSON.stringify(location)}`);
   useEffect( () => {
-    fetchAddressList()  
+    fetchAddressList()
   }, [])
 
   const fetchAddressList = async () => {
     const areaList = await api.member.areaList()
-    const arrProvice = []
-    const arrCity = []
-    const arrCounty = []
+    // let proviceArr = []
+    // let cityArr = []
+    // let countyArr = []
 
-    areaList.map((item, index) => {
-      arrProvice.push(item.label)
-      if (index === 0) {
-        item.children.map((c_item, c_index) => {
-          arrCity.push(c_item.label)
-          if (c_index === 0) {
-            c_item.children.map((cny_item) => {
-              arrCounty.push(cny_item.label)
-            })
-          }
-        })
-      }
-    })
+    // areaList.map((item, index) => {
+    //   proviceArr.push(item.label)
+    //   if (index === 0) {
+    //     item.children.map((c_item, c_index) => {
+    //       cityArr.push(c_item.label)
+    //       if (c_index === 0) {
+    //         c_item.children.map((cny_item) => {
+    //           countyArr.push(cny_item.label)
+    //         })
+    //       }
+    //     })
+    //   }
+    // })
     setState( v => {
-      v.areaArray = [arrProvice, arrCity, arrCounty]
+      // v.areaArray = [proviceArr, cityArr, countyArr]
       v.areaData = areaList
     })
   }
+
   const fetchShop = async ( params ) => {
     const { pageIndex: page, pageSize } = params;
+    const { keyword } = state
+    const [ chooseProvice, chooseCity, chooseDistrict ] = state.chooseValue
+    const { province, city, district } = location
     const query = {
       page,
       pageSize,
       lat: location.lat,
       lng: location.lng,
-      name: state.keyword
+      name: keyword,
+      province: chooseProvice || province,
+      city: chooseCity || city,
+      area: chooseDistrict || district,
+      type: state.type,
+      search_type: state.search_type,
+      sort_type: 1
     };
     const {
       list,
       total_count: total,
-      defualt_address = null,
+      defualt_address,
       is_recommend,
     } = await api.shop.list(query);
     setState((v) => {
       v.shopList = v.shopList.concat( pickBy( list, doc.shop.SHOP_ITEM ) );
-      v.receiveAddress = defualt_address;
-    });
+      v.receiveAddress = !isArray(defualt_address) ? defualt_address : {}
+    })
 
     return {
-      total,
-    };
+      total
+    }
   }
 
-
-  const handleClickPicker = () => {
+  const onInputChange = ({ detail }) => {
+    setState( v => {
+      v.keyword = detail.value
+    })
   }
 
-  const regionChange = async ( e ) => {
-
-  }
-
-
-  const confirmSearch = async ({ detail }) => {
-    const { lng, lat, error } = await entryLaunch.getLnglatByAddress( '上海市徐汇区宜山路' )
+  const onConfirmSearch = async ({ detail }) => {
+    const { lng, lat, error } = await entryLaunch.getLnglatByAddress('上海市徐汇区宜山路')
     if ( error ) {
       showToast(error)
     } else {
       setState((v) => {
         v.keyword = detail.value
         v.shopList = []
+        v.type = 1
+        v.search_type = 2
       })
       shopRef.current.reset()
     }
   }
 
-  const bindMultiPickerColumnChange = ( e ) => {
-    const { column, value } = e.detail
-    let arrCity = []
-    let arrCounty = []
-    if ( column == 0 ) {
-      arrCity = state.areaData[value].children.map(item => item.label)
-      arrCounty = state.areaData[value].children[0].children.map( item => item.label )
+  const onPickerClick = () => {
+    const [ chooseProvice, chooseCity, chooseDistrict ] = state.chooseValue
+    const { province, city, district } = location
+    const p_label = chooseProvice || province
+    const c_label = chooseCity || city
+    const d_label = chooseDistrict || district
+    let chooseIndex = []
+    let proviceArr = []
+    let cityArr = []
+    let countyArr = []
+    state.areaData.map((item, index) => {
+      proviceArr.push(item.label)
+      if (item.label == p_label) {
+        chooseIndex.push(index)
+        item.children.map((c_item, c_index) => {
+          cityArr.push(c_item.label)
+          if (c_item.label == c_label) {
+            chooseIndex.push(c_index)
+            c_item.children.map((cny_item, cny_index) => {
+              countyArr.push(cny_item.label)
+              if (cny_item.label == d_label) {
+                chooseIndex.push(cny_index)
+              }
+            })
+          }
+        })
+      }
+    })
+    setState(v => {
+      v.areaIndexArray = chooseIndex
+      v.areaArray = [proviceArr, cityArr, countyArr]
+    })
+  }
+
+  const onPickerChange = async ({ detail }) => {
+    const { value } = detail || {}
+    const [one, two, three] = areaArray
+    const chooseValue = [one[value[0]], two[value[1]], three[value[2]]]
+    setState(v => {
+      v.areaIndexArray = value
+      v.chooseValue = chooseValue
+    })
+  }
+
+  const onColumnChange = ({ detail }) => {
+    const { column, value } = detail
+    let cityArr = []
+    let countyArr = []
+    if (column == 0) {
+      cityArr = state.areaData[value].children.map(item => item.label)
+      countyArr = state.areaData[value].children[0].children.map( item => item.label )
       setState( v => {
         v.areaIndexArray[0] = value
-        v.areaArray[1] = arrCity
-        v.areaArray[2] = arrCounty
+        v.areaIndexArray[1] = 0
+        v.areaIndexArray[2] = 0
+        v.areaArray[1] = cityArr
+        v.areaArray[2] = countyArr
       })
-    } else if ( column == 1 ) {
-      arrCounty = state.areaData[state.areaIndexArray[0]].children[value].children.map( item => item.label )
+    } else if (column == 1) {
+      countyArr = state.areaData[state.areaIndexArray[0]].children[value].children.map( item => item.label )
       setState( v => {
         v.areaIndexArray[1] = value
-        v.areaArray[2] = arrCounty
+        v.areaIndexArray[2] = 0
+        v.areaArray[2] = countyArr
       })
     } else {
       setState( v => {
@@ -145,7 +204,23 @@ function NearlyShop( props ) {
     });
   }
 
-  const { receiveAddress } = state
+  const onClearValueChange = async () => {
+    await setState(v => {
+      v.shopList = []
+      v.keyword = ''
+      v.type = 0
+      v.search_type = undefined
+    })
+    shopRef.current.reset()
+  }
+
+  const handleClickItem = (item) => {
+    Taro.navigateTo({ url: `/pages/store/index?id=${item.distributor_id}` })
+  }
+
+  const { receiveAddress, areaIndexArray, areaArray, chooseValue } = state
+  const {province, city, district} = location
+  const locationValue = province + city + district
   return (
     <SpPage className="page-ecshopx-nearlyshop">
       <View className="search-block">
@@ -153,16 +228,16 @@ function NearlyShop( props ) {
           <View className="region-picker">
             <Picker
               mode="multiSelector"
-              onClick={handleClickPicker}
-              onChange={regionChange}
-              onColumnChange={bindMultiPickerColumnChange}
-              value={state.multiIndex}
-              range={state.areaArray}
+              onClick={onPickerClick}
+              onChange={onPickerChange}
+              onColumnChange={onColumnChange}
+              value={areaIndexArray}
+              range={areaArray}
+              style={{ width: '100%' }}
             >
               <View className="pick-title">
-                <Text className="pick-address">
-                  {"选择地区"}
-                </Text>
+                <View className='iconfont icon-periscope'></View>
+                <Text className="pick-address">{chooseValue.join('') || locationValue || '选择地区'}</Text>
                 <Text className="iconfont icon-arrowDown"></Text>
               </View>
             </Picker>
@@ -175,8 +250,12 @@ function NearlyShop( props ) {
               placeholder="输入收货地址寻找周边门店"
               confirmType="search"
               value={state.keyword}
-              onConfirm={confirmSearch}
+              onInput={onInputChange}
+              onConfirm={onConfirmSearch}
             />
+            {state.keyword && state.keyword.length > 0 && (
+              <View className='iconfont icon-close' onClick={onClearValueChange}></View>
+            )}
           </View>
         </View>
       </View>
@@ -196,7 +275,7 @@ function NearlyShop( props ) {
         </View>
         <View className="block-title">我的收货地址</View>
         <View className="receive-address">
-          {!receiveAddress && (
+          {JSON.stringify(receiveAddress) == "{}" && (
             <View
               className="btn-add-address"
               onClick={() =>
@@ -206,7 +285,7 @@ function NearlyShop( props ) {
               添加新地址
             </View>
           )}
-          {receiveAddress && (
+          {JSON.stringify(receiveAddress) != "{}" && (
             <View className="address-info-block">
               <View className="name-mobile">
                 <Text className="receive-name">{receiveAddress.username}</Text>
@@ -224,7 +303,7 @@ function NearlyShop( props ) {
         <View className="list-title">附近商家</View>
         <SpScrollView ref={shopRef} className="shoplist-block" fetch={fetchShop}>
           {state.shopList.map((item, index) => (
-            <View className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
+            <View onClick={() => handleClickItem(item)} className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
               <CompShopItem info={item} />
             </View>
           ))}
