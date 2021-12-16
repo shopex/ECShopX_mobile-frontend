@@ -1,7 +1,8 @@
-import Taro, { useCallback, memo, useState, useMemo } from "@tarojs/taro";
+import Taro from "@tarojs/taro";
+import React, { useCallback, useState, useMemo } from "react";
 import { View, ScrollView } from "@tarojs/components";
 import { classNames } from "@/utils";
-import { SpNewDrawer } from "@/components";
+// import { SpNewDrawer } from "@/components";
 // import CustomButton from "./comps/button";
 import "./index.scss";
 
@@ -47,38 +48,39 @@ const SpFilterDrawer = (props) => {
     onCloseDrawer(filterObject);
   }, [onCloseDrawer, filterObject]);
 
-  return (
-    <SpNewDrawer visible={visible} onClose={onCloseDrawer}>
-      <View className={classNames("sp-new-filter-drawer")}>
-        <ScrollView className={"sp-new-filter-drawer-container"}>
-          {filterData.map((item) => {
-            return (
-              <View className={"sp-new-filter-drawer-container-block"}>
-                <View className={"title"}>{item.label}</View>
-                {item.children.map((citem, index) => (
-                  <View
-                    className={classNames("sp-filter-block", {
-                      checked: selectedValue[item.value].includes(citem.value),
-                    })}
-                    onClick={() => handleClickLabel(citem, item.value)}
-                  >
-                    {citem.label}
-                  </View>
-                ))}
-              </View>
-            );
-          })}
-        </ScrollView>
-        <View className={"sp-new-filter-drawer-action"}>
-          {/* <CustomButton onConfirm={handleConfirm} onReset={handleReset} /> */}
-        </View>
-      </View>
-    </SpNewDrawer>
-  );
+  return null
+  // return (
+  //   <SpNewDrawer visible={visible} onClose={onCloseDrawer}>
+  //     <View className={classNames("sp-new-filter-drawer")}>
+  //       <ScrollView className={"sp-new-filter-drawer-container"}>
+  //         {filterData.map((item) => {
+  //           return (
+  //             <View className={"sp-new-filter-drawer-container-block"}>
+  //               <View className={"title"}>{item.label}</View>
+  //               {item.children.map((citem, index) => (
+  //                 <View
+  //                   className={classNames("sp-filter-block", {
+  //                     checked: selectedValue[item.value].includes(citem.value),
+  //                   })}
+  //                   onClick={() => handleClickLabel(citem, item.value)}
+  //                 >
+  //                   {citem.label}
+  //                 </View>
+  //               ))}
+  //             </View>
+  //           );
+  //         })}
+  //       </ScrollView>
+  //       <View className={"sp-new-filter-drawer-action"}>
+  //         <CustomButton onConfirm={handleConfirm} onReset={handleReset} />
+  //       </View>
+  //     </View>
+  //   </SpNewDrawer>
+  // );
 };
 
 SpFilterDrawer.options = {
   addGlobalClass: true,
 };
 
-export default memo(SpFilterDrawer);
+export default React.memo(SpFilterDrawer);

@@ -10,7 +10,6 @@ import {
   AtModalAction
 } from 'taro-ui'
 import { SpCheckbox } from '@/components'
-import { closeClassName, getPointName } from '@/utils'
 import './point-use.scss'
 import { DEFAULT_POINT_NAME } from '@/consts';
 
@@ -119,7 +118,7 @@ export default class PointUse extends Component {
               <Text className='rule-title' onClick={this.handleRuleOpen}>
                 使用规则
               </Text>
-              <View className={closeClassName} onClick={this.handleCancel}></View>
+              <View className="iconfont icon-close" onClick={this.handleCancel}></View>
             </View>
             <View className='point-use__bd'>
               <View className='point-item'>

@@ -12,12 +12,11 @@ import {
   log,
   authSetting,
   normalizeQuerys,
-  getPointName,
   buriedPoint,
   isAlipay,
   isWeixin,
   isWeb,
-  isWbWechat,
+  isWxWeb,
   redirectUrl,
   isObjectValueEqual,
   getThemeStyle,
@@ -116,7 +115,7 @@ export default class CartCheckout extends Component {
         freight_type: ''
       },
       // 默认支付方式
-      defalutPaytype:isWbWechat? 'wxpayjs':isWeb?'wxpayh5':'wxpay',
+      defalutPaytype:isWxWeb? 'wxpayjs':isWeb?'wxpayh5':'wxpay',
       payType: '',
       disabledPayment: null,
       isPaymentOpend: false,
@@ -1178,10 +1177,10 @@ export default class CartCheckout extends Component {
       try {
         const content =
           payType === 'point'
-            ? `确认使用${total.point}${getPointName()}全额抵扣商品总价吗`
+            ? `确认使用${total.point}${this.props.pointName}全额抵扣商品总价吗`
             : '确认使用余额支付吗？'
         const { confirm } = await Taro.showModal({
-          title: payType === 'point' ? `${getPointName()}支付` : '余额支付',
+          title: payType === 'point' ? `${this.props.pointName}支付` : '余额支付',
           content,
           confirmColor: '#0b4137',
           confirmText: '确认使用',
@@ -1858,7 +1857,7 @@ export default class CartCheckout extends Component {
                                 {this.isPointitemGood() ? (
                                   <Price
                                     className='order-item__price'
-                                    appendText={getPointName()}
+                                    appendText={this.props.pointName}
                                     noSymbol
                                     noDecimal
                                     value={item.item_point}
@@ -1955,7 +1954,7 @@ export default class CartCheckout extends Component {
             <SpCell
               isLink
               className='trade-invoice'
-              title={`${getPointName()}抵扣`}
+              title={`${this.props.pointName}抵扣`}
               onClick={this.handlePointShow}
             >
               <View className='invoice-title'>
@@ -1968,8 +1967,8 @@ export default class CartCheckout extends Component {
                 {payType === 'point'
                   ? '全额抵扣'
                   : pointInfo.point_use > 0
-                  ? `已使用${pointInfo.real_use_point}${getPointName()}`
-                  : `使用${getPointName()}`}
+                  ? `已使用${pointInfo.real_use_point}${this.props.pointName}`
+                  : `使用${this.props.pointName}`}
               </View>
             </SpCell>
           )}
@@ -1985,7 +1984,7 @@ export default class CartCheckout extends Component {
                 {total.deduction && (
                   <Text className='trade-payment__hint'>
                     {total.remainpt}
-                    {`${getPointName()}可用`}
+                    {`${this.props.pointName}可用`}
                   </Text>
                 )}
                 <Text>{payTypeText[payType]}</Text>
@@ -1993,7 +1992,7 @@ export default class CartCheckout extends Component {
               {total.deduction && (
                 <View className='trade-payment__hint'>
                   可用{total.point}
-                  {getPointName()}，抵扣 <Price unit='cent' value={total.deduction} /> (包含运费{' '}
+                  {this.props.pointName}，抵扣 <Price unit='cent' value={total.deduction} /> (包含运费{' '}
                   <Price unit='cent' value={total.freight_fee}></Price>)
                 </View>
               )}
@@ -2014,7 +2013,7 @@ export default class CartCheckout extends Component {
                 <Price unit='cent' value={total.discount_fee} />
               </SpCell>
               {goodType !== 'cross' && pointInfo.is_open_deduct_point && process.env.APP_PLATFORM !== 'platform' && (
-                <SpCell className='trade-sub-total__item' title={`${getPointName()}抵扣：`}>
+                <SpCell className='trade-sub-total__item' title={`${this.props.pointName}抵扣：`}>
                   <Price unit='cent' value={total.point_fee} />
                 </SpCell>
               )}
@@ -2031,10 +2030,10 @@ export default class CartCheckout extends Component {
 
           {this.isPointitemGood() && (
             <View className='sec trade-sub-total'>
-              <SpCell className='trade-sub-total__item' title={`${getPointName()}消费：`}>
+              <SpCell className='trade-sub-total__item' title={`${this.props.pointName}消费：`}>
                 <Price
                   className='order-item__price'
-                  appendText={getPointName()}
+                  appendText={this.props.pointName}
                   noSymbol
                   noDecimal
                   value={total.item_point}
@@ -2044,7 +2043,7 @@ export default class CartCheckout extends Component {
                 {total.freight_type === 'point' ? (
                   <Price
                     className='order-item__price'
-                    appendText={getPointName()}
+                    appendText={this.props.pointName}
                     noSymbol
                     noDecimal
                     value={total.freight_fee}
@@ -2084,7 +2083,7 @@ export default class CartCheckout extends Component {
                 <View class='last_price'>
                   <Price
                     className='order-item__price'
-                    appendText={getPointName()}
+                    appendText={this.props.pointName}
                     noSymbol
                     noDecimal
                     value={total.point}

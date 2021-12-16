@@ -27,8 +27,7 @@ import {
   classNames,
   showToast,
   showModal,
-  isWeixin,
-  getPointName
+  isWeixin
 } from '@/utils'
 import { useLogin } from '@/hooks'
 import CompVipCard from './comps/comp-vipcard'

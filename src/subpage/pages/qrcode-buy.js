@@ -6,13 +6,14 @@ import { withPager, withBackToTop } from '@/hocs'
 import { AtFloatLayout } from 'taro-ui'
 import { SpToast, CouponItem, SpCheckbox, SpHtmlContent } from '@/components'
 import api from '@/api'
-import { pickBy, normalizeQuerys, getPointName } from '@/utils'
+import { pickBy, normalizeQuerys } from '@/utils'
 import S from '@/spx'
 import entry from '@/utils/entry'
 import '../../pages/member/qrcode-buy.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 @withPager
 @withBackToTop
@@ -183,63 +184,88 @@ export default class QrcodeBuy extends Component {
     }
 
     return (
-      <View className='qrcode-buy'>
-        <View className='qrcode-buy__top'>
+      <View className="qrcode-buy">
+        <View className="qrcode-buy__top">
           {isLogin === true ? (
-            <View className='islogin_user'>
-              <View className='islogin_user__content'>
-                <Image src={bg_img} mode='widthFix' className='qrcode-buy__bgimg'></Image>
-                <View className='islogin_user_info'>
-                  <View className='islogin_user_left'>
+            <View className="islogin_user">
+              <View className="islogin_user__content">
+                <Image
+                  src={bg_img}
+                  mode="widthFix"
+                  className="qrcode-buy__bgimg"
+                ></Image>
+                <View className="islogin_user_info">
+                  <View className="islogin_user_left">
                     <View>{userInfo.username}</View>
                     <View>{userInfo.user_card_code}</View>
                   </View>
-                  <View className='islogin_user_right'>{getPointName()}</View>
+                  <View className="islogin_user_right">
+                    {this.props.pointName}
+                  </View>
                 </View>
               </View>
             </View>
           ) : (
-            <Image src={banner_img} mode='widthFix' className='qrcode-buy__img'></Image>
+            <Image
+              src={banner_img}
+              mode="widthFix"
+              className="qrcode-buy__img"
+            ></Image>
           )}
           <CouponItem info={couponData} />
-          <View className='scancode-view' onClick={this.handleCamera.bind(this)}>
+          <View
+            className="scancode-view"
+            onClick={this.handleCamera.bind(this)}
+          >
             <Image
-              src='/assets/imgs/bt_scanning.png'
-              mode='widthFix'
-              className='qrcode-buy__scanning'
+              src="/assets/imgs/bt_scanning.png"
+              mode="widthFix"
+              className="qrcode-buy__scanning"
             ></Image>
             <View>扫描商品条码</View>
           </View>
         </View>
 
         {isLogin === false ? (
-          <View className='wauth-btn'>
+          <View className="wauth-btn">
             <View
-              className='wauth-btn__btn'
+              className="wauth-btn__btn"
               onClick={this.handleLoginClick.bind(this)}
               style={`background: ${colors.data[0].primary}`}
             >
               立即授权
             </View>
-            <View className='wauth-btn__tips'>
+            <View className="wauth-btn__tips">
               <SpCheckbox checked={isCkeckTips} />
-              <Text className='wauth-btn__text' onClick={this.handleTips.bind(this)}>
+              <Text
+                className="wauth-btn__text"
+                onClick={this.handleTips.bind(this)}
+              >
                 用户协议
               </Text>
             </View>
           </View>
         ) : (
-          <View className='auth-btns'>
-            <View className='auth-btns__item' onClick={this.handleHome.bind(this)}>
-              <View className='icon icon-home'></View>
+          <View className="auth-btns">
+            <View
+              className="auth-btns__item"
+              onClick={this.handleHome.bind(this)}
+            >
+              <View className="icon icon-home"></View>
               <View>商城首页</View>
             </View>
-            <View className='auth-btns__item' onClick={this.handleCart.bind(this)}>
-              <View className='icon icon-cart'></View>
+            <View
+              className="auth-btns__item"
+              onClick={this.handleCart.bind(this)}
+            >
+              <View className="icon icon-cart"></View>
               <View>购物车</View>
             </View>
-            <View className='auth-btns__item' onClick={this.handleTrade.bind(this)}>
-              <View className='icon icon-home'></View>
+            <View
+              className="auth-btns__item"
+              onClick={this.handleTrade.bind(this)}
+            >
+              <View className="icon icon-home"></View>
               <View>我的订单</View>
             </View>
           </View>
@@ -247,13 +273,15 @@ export default class QrcodeBuy extends Component {
 
         <AtFloatLayout
           isOpened={tipsInfoShow}
-          title='用户协议'
+          title="用户协议"
           onClose={this.handleClose.bind(this)}
         >
-          {tipsInfo && <SpHtmlContent className='pay-rule-style' content={tipsInfo} />}
+          {tipsInfo && (
+            <SpHtmlContent className="pay-rule-style" content={tipsInfo} />
+          )}
         </AtFloatLayout>
         <SpToast />
       </View>
-    )
+    );
   }
 }

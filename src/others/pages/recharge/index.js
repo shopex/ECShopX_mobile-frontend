@@ -5,15 +5,16 @@ import { SpNavBar, SpCell } from '@/components'
 import { connect } from 'react-redux'
 import { withLogin } from '@/hocs'
 import S from '@/spx'
-import { classNames, getPointName } from '@/utils'
+import { classNames } from '@/utils'
 import api from '@/api'
 import PaymentPicker from '../../../pages/cart/comps/payment-picker'
 // /Users/zhangqing/projectTwo/ecshopx-vshop/src/pages/cart/comps/payment-picker.js
 import './index.scss'
 
-@connect(({ address, colors }) => ({
+@connect(({ address, colors, sys }) => ({
   address: address.current,
-  colors: colors.current
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 @withLogin()
 export default class Recharge extends Component {
@@ -95,7 +96,7 @@ export default class Recharge extends Component {
     let rule_id = ''
     // 判断是否点击其他金额
     if (index !== amounts.length - 1) {
-      const sendType = value.ruleType === 'money' ? '元' : getPointName()
+      const sendType = value.ruleType === 'money' ? '元' : this.props.pointName
       setValue = value.money
       rule_id = value.id
       ruleValue =
@@ -256,12 +257,12 @@ export default class Recharge extends Component {
     const { colors } = this.props
     const amountLength = amounts.length - 1
     const payTypeText = {
-      point: `${getPointName()}支付`,
-      wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
-      deposit: '余额支付',
-      delivery: '货到付款',
-      hfpay: '微信支付'
-    }
+      point: `${this.props.pointName}支付`,
+      wxpay: process.env.TARO_ENV === "weapp" ? "微信支付" : "现金支付",
+      deposit: "余额支付",
+      delivery: "货到付款",
+      hfpay: "微信支付",
+    };
     return (
       <View className='recharge'>
         <SpNavBar title={this.config.navigationBarTitleText} leftIconType='chevron-left' />

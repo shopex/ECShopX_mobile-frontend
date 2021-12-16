@@ -3,12 +3,13 @@ import { View, Text, Button } from '@tarojs/components'
 import { connect } from 'react-redux'
 import { AtFloatLayout } from 'taro-ui'
 import { SpCheckbox } from '@/components' 
-import { closeClassName, getPointName,isWeixin } from '@/utils' 
+import { isWeixin } from '@/utils' 
 // import { getPaymentList } from '@/utils/payment'
 import './payment-picker.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class PaymentPicker extends Component {
   static defaultProps = {
@@ -108,7 +109,7 @@ export default class PaymentPicker extends Component {
         <View className='payment-picker'>
           <View className='payment-picker__hd'>
             <Text>支付方式</Text>
-            <View className={closeClassName} onClick={this.handleCancel}></View>
+            <View className="iconfont icon-close" onClick={this.handleCancel}></View>
           </View>
           <View className='payment-picker__bd'>
             {isShowPoint && (
@@ -119,11 +120,11 @@ export default class PaymentPicker extends Component {
                 onClick={this.handlePaymentChange.bind(this, 'point')}
               >
                 <View className='payment-item__bd'>
-                  <Text className='payment-item__title'>{`${getPointName()}支付`}</Text>
+                  <Text className='payment-item__title'>{`${this.props.pointName}支付`}</Text>
                   <Text className='payment-item__desc'>
                     {disabledPayment && disabledPayment['point']
                       ? disabledPayment['point']
-                      : `使用${getPointName()}支付`}
+                      : `使用${this.props.pointName}支付`}
                   </Text>
                 </View>
                 <View className='payment-item__ft'>

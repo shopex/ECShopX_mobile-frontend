@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { SpToast, SpCell, SpNavBar } from '@/components'
 import S from '@/spx'
 import api from '@/api'
-import { showLoading, hideLoading } from '@/utils'
 
 import './address.scss'
 
@@ -44,11 +43,9 @@ export default class AddressIndex extends Component {
         isPicker: true
       })
     }
-    showLoading({
-      mask: true
-    })
+    Taro.showLoading()
     const { list } = await api.member.addressList()
-    hideLoading()
+    Taro.hideLoading();
     let newList = [...list]
     if (receipt_type === 'dada' && city) {
       newList = list

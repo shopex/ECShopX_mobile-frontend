@@ -7,7 +7,7 @@ import { AtDrawer, AtInput } from 'taro-ui'
 import { BackToTop, Loading, SpNote, TabBar, HomeCapsule } from '@/components'
 import api from '@/api'
 // import { Tracker } from '@/service'
-import { classNames, isWeixin, getPointName } from '@/utils'
+import { classNames, isWeixin } from '@/utils'
 import throttle from 'lodash/throttle'
 import Header from './comps/header'
 import GoodsItem from './comps/goods_item'
@@ -15,9 +15,10 @@ import FilterBlock from './comps/filter-block'
 import CustomHeader from './comps/headerContainer'
 import './list.scss'
 
-@connect(({ member, colors }) => ({
+@connect(({ member, colors, sys }) => ({
   favs: member.favs,
-  colors: colors.current
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 @withPager
 export default class List extends Component {
@@ -789,16 +790,16 @@ export default class List extends Component {
             )}
             {pointVisible && (
               <View className='score'>
-                <View className='title'>{`${getPointName()}区间`}</View>
+                <View className='title'>{`${this.props.pointName}区间`}</View>
                 <View className='input-wrap'>
                   <AtInput
-                    placeholder={`最低${getPointName()}值`}
+                    placeholder={`最低${this.props.pointName}值`}
                     value={start_price}
                     onChange={this.handleChangeStartprice}
                   />
                   <View className='text'>~</View>
                   <AtInput
-                    placeholder={`最高${getPointName()}值`}
+                    placeholder={`最高${this.props.pointName}值`}
                     value={end_price}
                     onChange={this.handleChangeEndprice}
                   />

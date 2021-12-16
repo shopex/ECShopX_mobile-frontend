@@ -58,9 +58,42 @@ export const isWeixin = Taro.getEnv() == Taro.ENV_TYPE.WEAPP;
 /** 在H5平台 */
 export const isWeb = Taro.getEnv() == Taro.ENV_TYPE.WEB;
 
+export const getBrowserEnv = () => {
+  const ua = navigator.userAgent;
+  // console.log( `user-agent:`, ua );
+  return {
+    trident: ua.indexOf("Trident") > -1, //IE内核
+    presto: ua.indexOf("Presto") > -1, //opera内核
+    webKit: ua.indexOf("AppleWebKit") > -1, //苹果、谷歌内核
+    gecko: ua.indexOf("Gecko") > -1 && ua.indexOf("KHTML") == -1, //火狐内核
+    mobile: !!ua.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+    ios: !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+    android: ua.indexOf("Android") > -1 || ua.indexOf("Adr") > -1, //android终端
+    weixin: ua.match(/MicroMessenger/i),
+    qq: ua.match(/\sQQ/i) == " qq", //是否QQ
+    isWeapp:
+      (ua.match(/MicroMessenger/i) && ua.match(/miniprogram/i)) ||
+      global.__wxjs_environment === "miniprogram",
+    isAlipay: ua.match(/AlipayClient/i),
+  };
+};
+
 /** 在H5平台(微信浏览器) */
-export function isWxWeb() {
-  return isWeb && !getBrowserEnv().weixin;
+export const isWxWeb = isWeb && !getBrowserEnv().weixin;
+
+export function isObjectValueEqual(a, b) {
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+  if (aProps.length != bProps.length) {
+    return false;
+  }
+  for (var i = 0; i < aProps.length; i++) {
+    var propName = aProps[i];
+    if (a[propName] !== b[propName]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 export const isIphoneX = () => {
@@ -204,7 +237,7 @@ export function formatTime (time, formatter = 'yyyy-MM-dd') {
   return format(newTime, formatter)
 }
 
-export function formatDataTime (time, formatter = 'yyyy-MM-dd HH:mm:ss') {
+export function formatDateTime (time, formatter = 'yyyy-MM-dd HH:mm:ss') {
   const newTime = time.toString().length < 13 ? time * 1000 : time
   return format(newTime, formatter)
 }
@@ -311,25 +344,7 @@ export const browser = (() => {
 } )()
 
 
-export const getBrowserEnv = () => {
-  const ua = navigator.userAgent;
-  // console.log( `user-agent:`, ua );
-  return {
-    trident: ua.indexOf("Trident") > -1, //IE内核
-    presto: ua.indexOf("Presto") > -1, //opera内核
-    webKit: ua.indexOf("AppleWebKit") > -1, //苹果、谷歌内核
-    gecko: ua.indexOf("Gecko") > -1 && ua.indexOf("KHTML") == -1, //火狐内核
-    mobile: !!ua.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
-    ios: !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-    android: ua.indexOf("Android") > -1 || ua.indexOf("Adr") > -1, //android终端
-    weixin: ua.match(/MicroMessenger/i),
-    qq: ua.match(/\sQQ/i) == " qq", //是否QQ
-    isWeapp:
-      (ua.match(/MicroMessenger/i) && ua.match(/miniprogram/i)) ||
-      global.__wxjs_environment === "miniprogram",
-    isAlipay: ua.match(/AlipayClient/i)
-  };
-}
+
 
 // 注入美洽客服插件
 export const meiqiaInit = () => {
@@ -345,6 +360,17 @@ export const meiqiaInit = () => {
     s.parentNode.insertBefore(j, s);
   })(window, document, 'script', '_MEIQIA');
 }
+
+export const redirectUrl = async (api, url, type = "redirectTo") => {
+  if (!browser.weixin) {
+    Taro[type]({ url });
+    return;
+  }
+  let newUrl = getUrl(url);
+  let { redirect_url } = await api.wx.getredirecturl({ url: newUrl });
+  global.location.href = redirect_url;
+};
+
 
 export function tokenParse(token) {
   var base64Url = token.split(".")[1];

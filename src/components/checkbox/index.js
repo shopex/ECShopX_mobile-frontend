@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View } from '@tarojs/components' 
-import { classNames, checkClassName } from '@/utils'
+import { classNames } from '@/utils'
 import './index.scss'
  
 export default class SpCheckbox extends Component {
@@ -45,16 +45,17 @@ export default class SpCheckbox extends Component {
 
     return (
       <View
-        className={classNames('sp-checkbox__wrap', isChecked ? 'sp-checkbox__checked' : null)}
+        className={classNames(
+          "sp-checkbox__wrap",
+          isChecked ? "sp-checkbox__checked" : null
+        )}
         onClick={this.handleClick.bind(this)}
       >
-        <View
-          className='sp-checkbox' 
-        >
-          <View className={checkClassName}></View>
+        <View className="sp-checkbox">
+          <View className="iconfont icon-check"></View>
         </View>
-        <View className='sp-checkbox__label'>{this.props.children}</View>
+        <View className="sp-checkbox__label">{this.props.children}</View>
       </View>
-    )
+    );
   }
 }
