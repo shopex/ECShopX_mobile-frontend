@@ -1,15 +1,15 @@
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import Taro, { getCurrentInstance } from "@tarojs/taro";
 import { View, Text, Picker, Input } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { SpPage, SpScrollView } from "@/components";
+import { SpPage, SpScrollView, SpLogin } from "@/components";
 import { updateLocation } from "@/store/slices/user";
 import api from '@/api'
 import CompShopItem from './comps/comp-shopitem'
 import { SG_APP_CONFIG } from '@/consts'
-import { usePage } from '@/hooks'
+import { usePage, useLogin } from '@/hooks'
 import doc from '@/doc'
 import { entryLaunch, pickBy, classNames, showToast, log, isArray } from "@/utils";
 
@@ -30,6 +30,9 @@ const initialState = {
 
 function NearlyShop( props ) {
   const { children } = props
+  const { isLogin } = useLogin({
+    autoLogin: false
+  })
   const [ state, setState ] = useImmer(initialState)
   const { location, address } = useSelector( state => state.user )
   const shopRef = useRef()
@@ -91,7 +94,7 @@ function NearlyShop( props ) {
     } = await api.shop.list(query);
     setState((v) => {
       v.shopList = v.shopList.concat( pickBy( list, doc.shop.SHOP_ITEM ) );
-      v.receiveAddress = !isArray(defualt_address) ? defualt_address : {}
+      v.receiveAddress = address ? address : !isArray(defualt_address) ? defualt_address : {}
     })
 
     return {
@@ -218,6 +221,21 @@ function NearlyShop( props ) {
     Taro.navigateTo({ url: `/pages/store/index?id=${item.distributor_id}` })
   }
 
+  const onAddChange = () => {
+    if (!isLogin) return
+    Taro.navigateTo({ url: "/marketing/pages/member/edit-address" })
+  }
+
+  const onChangeLoginSuccess = async () => {
+    await setState(v => {
+      v.shopList = []
+      v.keyword = ''
+      v.type = 0
+      v.search_type = undefined
+    })
+    shopRef.current.reset()
+  }
+
   const { receiveAddress, areaIndexArray, areaArray, chooseValue } = state
   const {province, city, district} = location
   const locationValue = province + city + district
@@ -273,28 +291,30 @@ function NearlyShop( props ) {
             {state.locationIng ? "定位中..." : "重新定位"}
           </View>
         </View>
-        <View className="block-title">我的收货地址</View>
+        <View className="block-title block-flex">
+          <View>我的收货地址</View>
+          { JSON.stringify(receiveAddress) != "{}" &&
+            <View
+              className='arrow'
+              onClick={() => Taro.navigateTo({ url: '/marketing/pages/member/address?isPicker=choose'})}
+            >
+            选择其他地址<View className='iconfont icon-qianwang-01'></View>
+            </View>
+          }
+        </View>
         <View className="receive-address">
           {JSON.stringify(receiveAddress) == "{}" && (
-            <View
-              className="btn-add-address"
-              onClick={() =>
-                Taro.navigateTo({ url: "/marketing/pages/member/edit-address" })
-              }
-            >
-              添加新地址
-            </View>
+            <SpLogin onChange={onChangeLoginSuccess}>
+              <View
+                className="btn-add-address"
+                onClick={onAddChange}
+              >
+                添加新地址
+              </View>
+            </SpLogin>
           )}
           {JSON.stringify(receiveAddress) != "{}" && (
-            <View className="address-info-block">
-              <View className="name-mobile">
-                <Text className="receive-name">{receiveAddress.username}</Text>
-                <Text className="receive-mobile">
-                  {receiveAddress.telephone}
-                </Text>
-              </View>
-              <View className="address">{`${receiveAddress.province}${receiveAddress.city}${receiveAddress.county}${receiveAddress.adrdetail}`}</View>
-            </View>
+            <View className="address">{`${receiveAddress.province}${receiveAddress.city}${receiveAddress.county}${receiveAddress.adrdetail}`}</View>
           )}
         </View>
       </View>
