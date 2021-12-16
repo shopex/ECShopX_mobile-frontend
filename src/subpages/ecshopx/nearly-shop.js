@@ -20,9 +20,12 @@ const initialState = {
   areaIndexArray: [0, 0, 0],
   areaData: [],
   shopList: [],
-  keyword: '',
   locationIng: false,
-  receiveAddress: {}
+  receiveAddress: {},
+  chooseValue: [],
+  keyword: '', // 参数
+  type: 0, // 参数
+  search_type: undefined // 参数
 }
 
 function NearlyShop( props ) {
@@ -64,12 +67,21 @@ function NearlyShop( props ) {
 
   const fetchShop = async ( params ) => {
     const { pageIndex: page, pageSize } = params;
+    const { keyword } = state
+    const [ chooseProvice, chooseCity, chooseDistrict ] = state.chooseValue
+    const { province, city, district } = location
     const query = {
       page,
       pageSize,
       lat: location.lat,
       lng: location.lng,
-      name: state.keyword
+      name: keyword,
+      province: chooseProvice || province,
+      city: chooseCity || city,
+      area: chooseDistrict || district,
+      type: state.type,
+      search_type: state.search_type,
+      sort_type: 1
     };
     const {
       list,
@@ -80,11 +92,11 @@ function NearlyShop( props ) {
     setState((v) => {
       v.shopList = v.shopList.concat( pickBy( list, doc.shop.SHOP_ITEM ) );
       v.receiveAddress = !isArray(defualt_address) ? defualt_address : {}
-    });
+    })
 
     return {
-      total,
-    };
+      total
+    }
   }
 
   const onInputChange = ({ detail }) => {
@@ -101,29 +113,34 @@ function NearlyShop( props ) {
       setState((v) => {
         v.keyword = detail.value
         v.shopList = []
+        v.type = 1
+        v.search_type = 2
       })
       shopRef.current.reset()
     }
   }
 
   const onPickerClick = () => {
-    const { areaData } = state
+    const [ chooseProvice, chooseCity, chooseDistrict ] = state.chooseValue
     const { province, city, district } = location
+    const p_label = chooseProvice || province
+    const c_label = chooseCity || city
+    const d_label = chooseDistrict || district
     let chooseIndex = []
     let proviceArr = []
     let cityArr = []
     let countyArr = []
-    areaData.map((item, index) => {
+    state.areaData.map((item, index) => {
       proviceArr.push(item.label)
-      if (item.label == province) {
+      if (item.label == p_label) {
         chooseIndex.push(index)
         item.children.map((c_item, c_index) => {
           cityArr.push(c_item.label)
-          if (c_item.label == city) {
+          if (c_item.label == c_label) {
             chooseIndex.push(c_index)
             c_item.children.map((cny_item, cny_index) => {
               countyArr.push(cny_item.label)
-              if (cny_item.label == district) {
+              if (cny_item.label == d_label) {
                 chooseIndex.push(cny_index)
               }
             })
@@ -138,8 +155,12 @@ function NearlyShop( props ) {
   }
 
   const onPickerChange = async ({ detail }) => {
+    const { value } = detail || {}
+    const [one, two, three] = areaArray
+    const chooseValue = [one[value[0]], two[value[1]], three[value[2]]]
     setState(v => {
-      v.areaIndexArray = detail.value
+      v.areaIndexArray = value
+      v.chooseValue = chooseValue
     })
   }
 
@@ -185,13 +206,19 @@ function NearlyShop( props ) {
 
   const onClearValueChange = async () => {
     await setState(v => {
-      v.keyword = ''
       v.shopList = []
+      v.keyword = ''
+      v.type = 0
+      v.search_type = undefined
     })
     shopRef.current.reset()
   }
 
-  const { receiveAddress, areaIndexArray, areaArray } = state
+  const handleClickItem = (item) => {
+    Taro.navigateTo({ url: `/pages/store/index?id=${item.distributor_id}` })
+  }
+
+  const { receiveAddress, areaIndexArray, areaArray, chooseValue } = state
   const {province, city, district} = location
   const locationValue = province + city + district
   return (
@@ -210,7 +237,7 @@ function NearlyShop( props ) {
             >
               <View className="pick-title">
                 <View className='iconfont icon-periscope'></View>
-                <Text className="pick-address">{locationValue || '选择地区'}</Text>
+                <Text className="pick-address">{chooseValue.join('') || locationValue || '选择地区'}</Text>
                 <Text className="iconfont icon-arrowDown"></Text>
               </View>
             </Picker>
@@ -276,7 +303,7 @@ function NearlyShop( props ) {
         <View className="list-title">附近商家</View>
         <SpScrollView ref={shopRef} className="shoplist-block" fetch={fetchShop}>
           {state.shopList.map((item, index) => (
-            <View className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
+            <View onClick={() => handleClickItem(item)} className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
               <CompShopItem info={item} />
             </View>
           ))}
