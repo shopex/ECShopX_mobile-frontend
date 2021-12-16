@@ -16,6 +16,7 @@ $prefixCls:'sp-component-newshopitem';
 
         flex-direction: column;
         padding:32px 16px;
+        @include hairline(#DDDDDD,0,bottom);
 
         .#{$prefixCls}-top{
             display: flex;
