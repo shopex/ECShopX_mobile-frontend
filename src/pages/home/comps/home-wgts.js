@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
- import Taro, { getCurrentInstance } from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View } from '@tarojs/components'
+import { SpSearch } from '@/components'
 // // import { Tracker } from '@/service'
 import {
   WgtSearchHome,
@@ -94,7 +95,8 @@ export default class HomeWgts extends Component {
             data-idx={idx}
             data-name={item.name}
           >
-            {item.name === "search" && <WgtSearchHome info={item} />}
+            {/* {item.name === "search" && <WgtSearchHome info={item} />} */}
+            {item.name === "search" && <SpSearch info={item} />}
             {item.name === "film" && <WgtFilm info={item} />}
             {item.name === "marquees" && <WgtMarquees info={item} />}
             {item.name === "slider" && (
