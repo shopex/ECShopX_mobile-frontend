@@ -146,6 +146,9 @@ function NearlyShop( props ) {
   }
 
   const { receiveAddress } = state
+  const {province, city, area} = location
+  const locationValue = province + city + area
+  console.log(receiveAddress, props, '--------------')
   return (
     <SpPage className="page-ecshopx-nearlyshop">
       <View className="search-block">
@@ -158,11 +161,11 @@ function NearlyShop( props ) {
               onColumnChange={bindMultiPickerColumnChange}
               value={state.multiIndex}
               range={state.areaArray}
+              style={{ width: '100%' }}
             >
               <View className="pick-title">
-                <Text className="pick-address">
-                  {"选择地区"}
-                </Text>
+                <View className='iconfont icon-periscope'></View>
+                <Text className="pick-address">{locationValue || '选择地区'}</Text>
                 <Text className="iconfont icon-arrowDown"></Text>
               </View>
             </Picker>
