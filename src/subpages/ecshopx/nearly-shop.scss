@@ -57,12 +57,25 @@
       color: #999;
       padding: 28px 0;
     }
+    .block-flex {
+      display: flex;
+      justify-content: space-between;
+      /* prettier-ignore */
+      border-top: 1PX solid #ddd;
+    }
+    .arrow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: #222222;
+    }
     .location-wrap {
       display: flex;
       justify-content: space-between;
+      margin-bottom: 20px;
     }
     .location-address {
-      width: 460px;
+      width: 480px;
       font-weight: bold;
     }
     .btn-location {
