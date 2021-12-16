@@ -94,7 +94,7 @@ function NearlyShop( props ) {
     } = await api.shop.list(query);
     setState((v) => {
       v.shopList = v.shopList.concat( pickBy( list, doc.shop.SHOP_ITEM ) );
-      v.receiveAddress = !isArray(defualt_address) ? defualt_address : {}
+      v.receiveAddress = address ? address : !isArray(defualt_address) ? defualt_address : {}
     })
 
     return {
@@ -291,7 +291,17 @@ function NearlyShop( props ) {
             {state.locationIng ? "定位中..." : "重新定位"}
           </View>
         </View>
-        <View className="block-title">我的收货地址</View>
+        <View className="block-title block-flex">
+          <View>我的收货地址</View>
+          { JSON.stringify(receiveAddress) != "{}" &&
+            <View
+              className='arrow'
+              onClick={() => Taro.navigateTo({ url: '/marketing/pages/member/address?isPicker=choose'})}
+            >
+            选择其他地址<View className='iconfont icon-qianwang-01'></View>
+            </View>
+          }
+        </View>
         <View className="receive-address">
           {JSON.stringify(receiveAddress) == "{}" && (
             <SpLogin onChange={onChangeLoginSuccess}>
@@ -304,15 +314,7 @@ function NearlyShop( props ) {
             </SpLogin>
           )}
           {JSON.stringify(receiveAddress) != "{}" && (
-            <View className="address-info-block">
-              <View className="name-mobile">
-                <Text className="receive-name">{receiveAddress.username}</Text>
-                <Text className="receive-mobile">
-                  {receiveAddress.telephone}
-                </Text>
-              </View>
-              <View className="address">{`${receiveAddress.province}${receiveAddress.city}${receiveAddress.county}${receiveAddress.adrdetail}`}</View>
-            </View>
+            <View className="address">{`${receiveAddress.province}${receiveAddress.city}${receiveAddress.county}${receiveAddress.adrdetail}`}</View>
           )}
         </View>
       </View>
