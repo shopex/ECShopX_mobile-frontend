@@ -133,7 +133,7 @@ const SpNewShopItem = (props) => {
 
     const hasMore = useMemo(() => {
         //如果优惠券数量大于默认数量/活动数量大于默认数量  即还有更多
-        return (info.discountCardList.length > discountCount) || (info.marketingActivityList.length > activityCount)
+        return ((info.discountCardList||[]).length > discountCount) || ((info.marketingActivityList||[]).length > activityCount)
     }, [info.discountCardList, info.marketingActivityList, discountCount, activityCount])
 
     return (inStore || inOrderList || inOrderDetail) ? (
