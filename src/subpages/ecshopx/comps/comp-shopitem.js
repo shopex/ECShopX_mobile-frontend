@@ -19,9 +19,7 @@ function CompShopItem( props ) {
   return (
     <View className="comp-shopitem" onClick={handleClick}>
       <View className="shopitem-hd">
-        <View className="shop-image">
-          <SpImage src={info.logo}></SpImage>
-        </View>
+        <Image className='shop-image' src={info.logo}></Image>
       </View>
       <View className="shopitem-bd">
         <View className="shop-info">
