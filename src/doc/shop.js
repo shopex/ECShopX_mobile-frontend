@@ -8,7 +8,7 @@ export const SHOP_ITEM = {
     return distance ? `${parseFloat(distance).toFixed(1)}${distance_unit}` : "";
   },
   cardList: "discountCardList",
-  
+  salesCount: "sales_count",
 };
 
 

@@ -46,6 +46,15 @@ $prefixCls: "sp-shop-item";
     line-height: 28px;
   }
 
+  .item-bd-bd {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    .sp-shop-coupon {
+      margin: 0 10px 10px 0;
+    }
+  }
+
   &-left {
     width: $img-width;
     height: $img-width;

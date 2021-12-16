@@ -47,6 +47,8 @@ import SpLoading from './sp-loading'
 import SpFilterBar from './sp-filter-bar'
 import SpShopItem from "./sp-shop-item"
 import SpShopCoupon from './sp-shop-coupon'
+import SpFilterDrawer from "./sp-filter-drawer";
+import SpButton from "./sp-button";
 
 export default {}
 
@@ -100,4 +102,6 @@ export {
   SpFilterBar,
   SpShopItem,
   SpShopCoupon,
+  SpFilterDrawer,
+  SpButton,
 };
