@@ -102,10 +102,11 @@ const WgtNearbyShop = (props) => {
                                         <View className='shopbg'>
                                             <Image mode='scaleToFill' className='shop_img'
                                                 src={item.banner || `${process.env.APP_IMAGE_CDN}/shop_default_bg.png`}></Image>
-
-                                            <Image mode='scaleToFill' className='shop_logo'
-                                                src={item.logo || `${process.env.APP_IMAGE_CDN}/shop_default_logo.png`}></Image>
-
+                                            <View className='logo'>
+                                                <Image mode='scaleToFill' className='shop_logo'
+                                                    src={item.logo || `${process.env.APP_IMAGE_CDN}/shop_default_logo.png`}></Image>
+                                            </View>
+                                            
                                         </View>
 
                                         <View className='shop_name'>{item.name}</View>
