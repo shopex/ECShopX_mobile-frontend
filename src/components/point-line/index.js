@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { View } from '@tarojs/components'
-import { classNames, getPointName } from '@/utils'
+import { classNames } from '@/utils'
+import configStore from "@/store";
+
 import './index.scss'
 
+const store = configStore();
 export default class HomeCapsule extends Component {
   static defaultProps = {
     url: ''
@@ -14,11 +17,14 @@ export default class HomeCapsule extends Component {
 
     return (
       <View
-        className={classNames(classes, [{ isGoodCard: isGoodCard }, { isStoreOut: isStoreOut }])}
+        className={classNames(classes, [
+          { isGoodCard: isGoodCard },
+          { isStoreOut: isStoreOut },
+        ])}
       >
-        <View className='number'>{point}</View>
-        <View className='text'>{getPointName()}</View>
+        <View className="number">{point}</View>
+        <View className="text">{store.getState().sys.pointName}</View>
       </View>
-    )
+    );
   }
 }

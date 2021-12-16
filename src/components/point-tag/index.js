@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { View } from '@tarojs/components'
-import { classNames, getPointName } from '@/utils'
+import { classNames } from '@/utils'
+import configStore from "@/store";
+
+
 import './index.scss'
 
+const store = configStore();
 export default class PointTag extends Component {
   static defaultProps = {
     url: ''
@@ -12,6 +16,6 @@ export default class PointTag extends Component {
     const { className } = this.props
     const classes = classNames('point-tag', className)
 
-    return <View className={classes}>{getPointName('积')}</View>
+    return <View className={classes}>{store.getState().sys.pointName}</View>;
   }
 }

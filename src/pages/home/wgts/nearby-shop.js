@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import { View, Text, ScrollView, Button } from "@tarojs/components";
-import { memo, useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer';
 import api from "@/api";

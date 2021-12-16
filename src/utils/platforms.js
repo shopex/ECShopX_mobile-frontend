@@ -10,17 +10,10 @@ export const getAppId = () => {
 };
 
 export const createIntersectionObserver = Taro.createIntersectionObserver
-// export const closeClassName = isWeixin
-//   ? "at-icon at-icon-close"
-//   : "iconfont icon-close";
 
-// export const checkClassName = isWeixin
-//   ? "at-icon at-icon-check"
-//   : "iconfont icon-check";
+/** 在支付宝平台 */
+export const isAlipay = Taro.getEnv() == Taro.ENV_TYPE.ALIPAY;
 
-// export const rightClassName = isWeixin
-//   ? "at-icon at-icon-chevron-right"
-//   : "iconfont icon-arrowRight";
 
 // export const copy = isWeixin
 //   ? text => Taro.setClipboardData({ data: text })
@@ -67,7 +60,7 @@ export async function payPlatform(order = {}) {
 
 
 //平台添加字段
-// export const payTypeField = isAlipay ? { page_type: "alipay" } : {};
+export const payTypeField = isAlipay ? { page_type: "alipay" } : {};
 
 // export const transformPlatformUrl = url => {
 //   console.log("---transformPlatformUrl---", url, isWeixin);

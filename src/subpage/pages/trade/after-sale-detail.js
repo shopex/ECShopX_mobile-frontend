@@ -11,18 +11,18 @@ import {
   resolveOrderStatus,
   copyText,
   getCurrentRoute,
-  showLoading,
   classNames,
-  isWebWechat
-} from '@/utils'
+  isWxWeb,
+} from "@/utils";
 // import { Tracker } from '@/service'
 import api from '@/api'
 import S from '@/spx'
 import AfterDetailItem from './comps/after-detail-item'
 import './after-sale-detail.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class TradeDetail extends Component {
   $instance = getCurrentInstance();
@@ -537,10 +537,7 @@ export default class TradeDetail extends Component {
 
   // 发送验证码
   sendCode = async () => {
-    showLoading({
-      title: '发送中',
-      mask: true
-    })
+    Taro.showLoading('发送中')
     const { info } = this.state
     const res = await api.trade.sendCode(info.tid)
     Taro.showToast({
@@ -563,10 +560,9 @@ export default class TradeDetail extends Component {
       return <Loading></Loading>
     }
 
-    console.log("===isWebWechat==",isWebWechat)
 
     return (
-      <View className={classNames(`trade-detail ${info.is_logistics && 'islog'}`,{isWebWechat})}>
+      <View className={classNames(`trade-detail ${info.is_logistics && 'islog'}`)}>
         <SpNavBar title='售后详情' leftIconType='chevron-left' fixed='true' />
         {info.is_logistics && (
           <View className='custabs'>
@@ -721,7 +717,7 @@ export default class TradeDetail extends Component {
             )}
             {info.is_has_point && (
               <View>
-                {`总计${getPointName()}`}：
+                {`总计${}`}：
                 <Text className='trade-money__num'>￥{info.total_point_money}</Text>
               </View>
             )}

@@ -14,7 +14,7 @@ import {
   FilterBar
 } from '@/components'
 import api from '@/api'
-import { classNames, pickBy, showLoading, hideLoading } from '@/utils'
+import { classNames, pickBy } from '@/utils'
 import S from '@/spx'
 
 import './list.scss'
@@ -65,14 +65,14 @@ export default class RecommendList extends Component {
         }
       })
     }
-    showLoading()
+    Taro.showLoading()
     this.resetPage()
     this.setState({
       list: []
     })
     setTimeout(() => {
       this.nextPage()
-      hideLoading()
+      Taro.hideLoading()
     }, 200)
 
     // this.praiseNum()

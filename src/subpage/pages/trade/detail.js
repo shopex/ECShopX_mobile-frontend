@@ -12,12 +12,10 @@ import {
   resolveOrderStatus,
   copyText,
   getCurrentRoute,
-  copy,
   isAlipay,
-  getPointName,
   classNames,
   isNavbar,
-  isWbWechat,
+  isWxWeb,
   isWeb,
   redirectUrl
 } from '@/utils'
@@ -57,8 +55,9 @@ const statusImg = {
   // 骑士到店
   100: DadaGoStore
 }
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class TradeDetail extends Component {
   $instance = getCurrentInstance();
@@ -576,7 +575,7 @@ export default class TradeDetail extends Component {
 
   // 复制orderid
   copyOrderId = (orderid) => {
-    copy(orderid)
+    copyText(orderid);
     Taro.showToast({
       title: '复制成功',
       icon: 'none'
@@ -631,7 +630,6 @@ export default class TradeDetail extends Component {
     // TODO: orders 多商铺
     // const tradeOrders = resolveTradeOrders(info)
 
-    console.log("===isWebWechat==",isWbWechat);
 
     return (
       <View
@@ -847,7 +845,7 @@ export default class TradeDetail extends Component {
               总计：
               {this.isPointitemGood() ? (
                 <Text className='trade-money__point'>
-                  {info.point} {getPointName()}
+                  {info.point} {this.props.pointName}
                   {info.order_class === 'pointsmall' &&
                     info.freight_fee != 0 &&
                     info.freight_fee > 0 &&
@@ -929,7 +927,7 @@ export default class TradeDetail extends Component {
               <View className='right'>
                 {info.freight_type !== 'point'
                   ? `¥ ${info.freight_fee}`
-                  : `${info.freight_fee * 100}${getPointName()}`}
+                  : `${info.freight_fee * 100}${this.props.pointName}`}
               </View>
             </View>
             {info.type == '1' && (
@@ -946,10 +944,10 @@ export default class TradeDetail extends Component {
             )}
             {info.point_use > 0 && (
               <View className='line'>
-                <View className='left'>{`${getPointName()}支付`}</View>
+                <View className='left'>{`${this.props.pointName}支付`}</View>
                 <View className='right'>
                   {info.point_use}
-                  {getPointName()}，抵扣：¥{info.point_fee}
+                  {this.props.pointName}，抵扣：¥{info.point_fee}
                 </View>
               </View>
             )}

@@ -17,6 +17,12 @@ import TagsBar from './tags-bar'
 import TabBar from './tab-bar'
 import AddressChoose from './address/choose-address'
 import PointTag from './point-tag'
+import CouponItem from './coupon-item'
+import CouponModal from './coupon-modal'
+import GoodsComment from './goods-comment'
+import SearchBar from './search-bar'
+import RecommendItem from './recommend-item'
+import TimePicker from './time-picker'
 import SpCheckbox from './sp-checkbox'
 /* old */
 
@@ -49,6 +55,7 @@ import SpShopItem from "./sp-shop-item"
 import SpShopCoupon from './sp-shop-coupon'
 import SpFilterDrawer from "./sp-filter-drawer";
 import SpButton from "./sp-button";
+import SpFloatPrivacy from './sp-float-privacy'
 
 export default {}
 
@@ -72,6 +79,12 @@ export {
   TabBar,
   AddressChoose,
   PointTag,
+  CouponItem,
+  CouponModal,
+  GoodsComment,
+  SearchBar,
+  RecommendItem,
+  TimePicker,
   SpCheckbox,
   /* old */
 
@@ -104,4 +117,5 @@ export {
   SpShopCoupon,
   SpFilterDrawer,
   SpButton,
+  SpFloatPrivacy,
 };

@@ -1,10 +1,13 @@
-import { getPointName } from "@/utils";
 import { Component } from 'react';
-import Taro,{getCurrentInstance} from "@tarojs/taro";
+import Taro, { getCurrentInstance } from "@tarojs/taro";
+import configStore from "@/store";
+
+const store = configStore()
+
 
 export const transformTextByPoint = (isPoint = false, money, point) => {
   if (isPoint) {
-    return ` ${point}${getPointName()}`;
+    return ` ${point}${store.getState().sys.pointName}`;
   }
   return ` ￥${money}`;
 };

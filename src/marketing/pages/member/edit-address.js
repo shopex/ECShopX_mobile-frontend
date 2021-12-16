@@ -6,7 +6,7 @@ import { AtForm, AtInput } from 'taro-ui'
 import { connect } from 'react-redux'
 import { SpCell, SpToast, SpNavBar } from '@/components'
 import api from '@/api'
-import { pickBy, isWeixin, isAlipay, showLoading, hideLoading, isWeb } from '@/utils'
+import { pickBy, isWeixin, isAlipay, isWeb } from '@/utils'
 import S from '@/spx'
 
 import './edit-address.scss'
@@ -49,7 +49,7 @@ export default class AddressIndex extends Component {
   }
 
   async fetch() {
-    showLoading()
+    Taro.showLoading()
     const { list } = await api.member.addressList()
     this.setState({
       listLength: list.length
@@ -109,7 +109,7 @@ export default class AddressIndex extends Component {
       })
     }
 
-    hideLoading()
+    Taro.hideLoading()
   }
 
   // 选定开户地区
@@ -261,10 +261,7 @@ export default class AddressIndex extends Component {
       return S.toast('请输入详细地址')
     }
 
-    showLoading({
-      title: '正在提交',
-      mask: true
-    })
+    Taro.showLoading('正在提交')
 
     try {
       await api.member.addressCreateOrUpdate(data)
@@ -277,10 +274,10 @@ export default class AddressIndex extends Component {
         Taro.navigateBack()
       }, 700)
     } catch (error) {
-      hideLoading()
+      Taro.hideLoading()
       return false
     }
-    hideLoading()
+    Taro.hideLoading()
   }
 
   render() {
