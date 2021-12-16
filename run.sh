@@ -92,7 +92,8 @@ echo '{
       "backgroundTextStyle": "light",
       "navigationBarBackgroundColor": "#fff",
       "navigationBarTitleText": "微商城",
-      "navigationBarTextStyle": "black"
+      "navigationBarTextStyle": "black",
+      "backgroundColor":"#f5f5f5"
   }
 }' > ./src/ext.json
 
