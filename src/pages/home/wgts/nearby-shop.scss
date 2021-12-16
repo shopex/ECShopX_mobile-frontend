@@ -60,17 +60,17 @@
         width: 197px;
         position: relative;
         .logo{
-          width: 70px;
+          width: 100%;
           height: 70px;
           border-radius: 50% !important;
           overflow: hidden;
           position: absolute;
-          top: 90%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          text-align: center;
+          bottom: -35px;
           .shop_logo {
             width: 70px;
             height: 70px;
+            border-radius: 50%;
           }
         }
       }
