@@ -17,7 +17,7 @@ const ADDRESS_ID = 'address_id'
     colors: colors.current
   }),
   (dispatch) => ({
-    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
+    updateAddress: (address) => dispatch({ type: 'user/updateAddress', payload: address })
   })
 )
 export default class AddressIndex extends Component {
@@ -72,7 +72,7 @@ export default class AddressIndex extends Component {
       selectedId: item[ADDRESS_ID]
     })
 
-    this.props.onAddressChoose(item)
+    this.props.updateAddress(item)
     setTimeout(() => {
       Taro.navigateBack()
     }, 700)
@@ -110,7 +110,7 @@ export default class AddressIndex extends Component {
     await api.member.addressDelete(item.address_id)
     S.toast('删除成功')
     if (selectedId === item.address_id) {
-      this.props.onAddressChoose(null)
+      this.props.updateAddress(null)
     }
     setTimeout(() => {
       this.fetch(true)
