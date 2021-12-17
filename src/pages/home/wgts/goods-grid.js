@@ -195,7 +195,7 @@ export default class WgtGoodsGrid extends Component {
                         </Text>
                       </View>
                     )}
-                    {item.promotionActivity && item.promotionActivity.length > 0 && <View className="activity-label">
+                    {item.promotionActivity && item.promotionActivity.length > 0 ? <View className="activity-label">
                         {item.promotionActivity.map((s, index) => (
                           <Text key={index} className="text">
                             {s.tag_type == 'single_group' ? '团购' : ''}
@@ -205,8 +205,9 @@ export default class WgtGoodsGrid extends Component {
                             {s.tag_type == 'normal' ? '秒杀' : ''}
                             {s.tag_type == 'limited_time_sale' ? '限时特惠' : ''}
                             {s.tag_type == 'plus_price_buy' ? '换购' : ''}
+                            
                           </Text>
-                        ))}</View>}
+                        ))}</View>:<View className="activity-label"><Text style={{height:'23px'}}></Text></View>}
                     <View
                       className={`goods-title ${
                         !config.brand || !item.brand ? "no-brand" : ""
