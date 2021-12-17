@@ -11,8 +11,8 @@ import StoreFavItem from './comps/store-fav-item'
 
 import './item-fav.scss'
 
-@connect(({ member }) => ({
-  favs: member.favs
+@connect(({ user }) => ({
+  favs: user.favs
 }))
 @withPager
 @withBackToTop
