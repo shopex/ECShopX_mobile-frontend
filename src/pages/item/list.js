@@ -15,7 +15,11 @@ import {
   SpGoodsItem,
   SpSearchBar,
   SpNote,
+<<<<<<< HEAD
   SpNavBar,
+=======
+  SpNavBar, 
+>>>>>>> 9685d175d6c29957b4d5cad69610ab46eca5fc3b
   SpLoadMore,
   TabBar,
   SpPage,
@@ -32,12 +36,20 @@ import "./list.scss";
 const initialState = {
   leftList: [],
   rightList: [],
+<<<<<<< HEAD
   brandList: [],
   filterList: [
     { title: "综合" },
     { title: "销量" },
     { title: "价格", icon: "icon-shengxu-01" },
     { title: "价格", icon: "icon-jiangxu-01" },
+=======
+  filterList: [
+    { title: '综合' },
+    { title: '销量' },
+    { title: '价格', icon: 'icon-shengxu-01' },
+    { title: '价格', icon: 'icon-jiangxu-01' }
+>>>>>>> 9685d175d6c29957b4d5cad69610ab46eca5fc3b
   ],
   curFilterIdx: 0,
   tagList: [],
