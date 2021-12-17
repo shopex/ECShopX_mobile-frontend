@@ -1,11 +1,11 @@
-import React, { useEffect, useCallback, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef, useDidShow } from "react";
 import Taro, { getCurrentInstance } from "@tarojs/taro";
 import { View, Text, Picker, Input } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import { SpPage, SpScrollView, SpLogin } from "@/components";
-import { updateLocation } from "@/store/slices/user";
+import { updateLocation, updateAddress } from "@/store/slices/user";
 import api from '@/api'
 import CompShopItem from './comps/comp-shopitem'
 import { SG_APP_CONFIG } from '@/consts'
@@ -21,7 +21,6 @@ const initialState = {
   areaData: [],
   shopList: [],
   locationIng: false,
-  receiveAddress: {},
   chooseValue: [],
   keyword: '', // 参数
   type: 0, // 参数
@@ -34,8 +33,7 @@ function NearlyShop( props ) {
     autoLogin: false
   })
   const [ state, setState ] = useImmer(initialState)
-  const { location } = useSelector( state => state.user )
-  const { address } = useSelector( state => state.address )
+  const { location, address } = useSelector( state => state.user )
   const shopRef = useRef()
   
   const dispatch = useDispatch();
@@ -90,12 +88,11 @@ function NearlyShop( props ) {
     const {
       list,
       total_count: total,
-      defualt_address,
-      is_recommend,
+      defualt_address = {},
     } = await api.shop.list(query);
+    dispatch(updateAddress(address || defualt_address))
     setState((v) => {
       v.shopList = v.shopList.concat( pickBy( list, doc.shop.SHOP_ITEM ) );
-      v.receiveAddress = address ? address : !isArray(defualt_address) ? defualt_address : {}
     })
 
     return {
@@ -113,6 +110,7 @@ function NearlyShop( props ) {
     const res = await entryLaunch.getLnglatByAddress(location.address)
     const { lng, lat, error } = res
     dispatch(updateLocation(res))
+
     if ( error ) {
       showToast(error)
     } else {
@@ -267,7 +265,18 @@ function NearlyShop( props ) {
     shopRef.current.reset()
   }
 
-  const { receiveAddress, areaIndexArray, areaArray, chooseValue } = state
+  // 根据收货地址搜索
+  const onLocationChange = async (info) => {
+    console.log(info)
+    let local = info.address || info.province + info.city + info.county + info.adrdetail
+    const res = await entryLaunch.getLnglatByAddress(local)
+    await dispatch(updateLocation(res))
+    Taro.navigateBack()
+  }
+
+  console.log(address, '---address--')
+
+  const { areaIndexArray, areaArray, chooseValue } = state
   const {province, city, district} = location
   const locationValue = province + city + district
   return (
@@ -312,7 +321,9 @@ function NearlyShop( props ) {
       <View className="location-block">
         <View className="block-title">当前定位地址</View>
         <View className="location-wrap">
-          <Text className="location-address">{location.address}</Text>
+          <Text className="location-address" onClick={() => onLocationChange(location)} >
+            {location.address || "无法获取您的位置信息"}
+          </Text>
           <View className="btn-location" onClick={getLocationInfo}>
             <Text
               className={classNames("iconfont icon-zhongxindingwei", {
@@ -324,7 +335,7 @@ function NearlyShop( props ) {
         </View>
         <View className="block-title block-flex">
           <View>我的收货地址</View>
-          { JSON.stringify(receiveAddress) != "{}" &&
+          { address &&
             <View
               className='arrow'
               onClick={() => Taro.navigateTo({ url: '/marketing/pages/member/address?isPicker=choose'})}
@@ -334,7 +345,7 @@ function NearlyShop( props ) {
           }
         </View>
         <View className="receive-address">
-          {JSON.stringify(receiveAddress) == "{}" && (
+          {!address && (
             <SpLogin onChange={onChangeLoginSuccess}>
               <View
                 className="btn-add-address"
@@ -344,8 +355,8 @@ function NearlyShop( props ) {
               </View>
             </SpLogin>
           )}
-          {JSON.stringify(receiveAddress) != "{}" && (
-            <View className="address">{`${receiveAddress.province}${receiveAddress.city}${receiveAddress.county}${receiveAddress.adrdetail}`}</View>
+          {address && (
+            <View className="address" onClick={() => onLocationChange(address)}>{`${address.province}${address.city}${address.county}${address.adrdetail}`}</View>
           )}
         </View>
       </View>
