@@ -139,7 +139,6 @@ class EntryLaunch {
   }
 
   async getCurrentAddressInfo() {
-    debugger
     const { lng, lat } = await this.getLocationInfo()
     let res = {}
     if (lat) {
