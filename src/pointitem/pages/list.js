@@ -15,8 +15,8 @@ import FilterBlock from './comps/filter-block'
 import CustomHeader from './comps/headerContainer'
 import './list.scss'
 
-@connect(({ member, colors, sys }) => ({
-  favs: member.favs,
+@connect(({ user, colors, sys }) => ({
+  favs: user.favs,
   colors: colors.current,
   pointName: sys.pointName
 }))

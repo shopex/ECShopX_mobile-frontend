@@ -36,14 +36,14 @@ import Automatic from "./home/comps/automatic";
 import "./home/index.scss";
 
 @connect(
-  ({ cart, member, store }) => ({
+  ({ cart, user, store }) => ({
     store,
     list: cart.list,
     cartIds: cart.cartIds,
     cartCount: cart.cartCount,
     showLikeList: cart.showLikeList,
-    // showAdv: member.showAdv,
-    // favs: member.favs
+    showAdv: user.showAdv,
+    favs: user.favs
   }),
   dispatch => ({
     onUpdateLikeList: show_likelist =>

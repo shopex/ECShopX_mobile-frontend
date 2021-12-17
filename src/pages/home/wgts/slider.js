@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
-import { SpImg } from '@/components'
+import { SpImage } from '@/components'
 import { classNames, linkPage } from "@/utils";
 import { WgtPlateType } from './index'
 
@@ -69,11 +69,15 @@ export default class WgtSlider extends Component {
                 return (
                   <SwiperItem
                     key={`${idx}1`}
-                    className={`slider-item ${config.rounded ? 'rounded' : null}`}
+                    className={`slider-item ${
+                      config.rounded ? "rounded" : null
+                    }`}
                   >
                     <View
-                      style={`padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
-                      className='wrapper-img'
+                      style={`padding: 0 ${
+                        config.padded ? Taro.pxTransform(20) : 0
+                      }`}
+                      className="wrapper-img"
                       onClick={this.handleClickItem.bind(this, item)}
                     >
                       {/* <WgtPlateType
@@ -82,16 +86,16 @@ export default class WgtSlider extends Component {
                         num={idx}
                         base={base}
                       /> */}
-                      <SpImg
-                        img-class='slider-item__img'
+                      <SpImage
+                        img-class="slider-item__img"
                         src={item.imgUrl}
-                        mode='widthFix'
-                        width='750'
+                        mode="widthFix"
+                        width="750"
                         lazyLoad
                       />
                     </View>
                   </SwiperItem>
-                )
+                );
               })}
             </Swiper>
 
