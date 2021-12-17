@@ -11,6 +11,7 @@ const initialState = {
   },
   showAdv: false,
   fav: {},
+  // 不是用户结算的默认地址，附近商家的收货地址
   address: null,
   location: {}
 }
@@ -36,7 +37,7 @@ const userSlice = createSlice({
       }
     },
 
-    updateAddress: (state, { payload }) => {
+    updateChooseAddress: (state, { payload }) => {
       state.address = payload
     },
 
@@ -46,6 +47,6 @@ const userSlice = createSlice({
   }
 })
 
-export const { updateUserInfo, updateAddress, updateLocation } = userSlice.actions
+export const { updateUserInfo, updateChooseAddress, updateLocation } = userSlice.actions
 
 export default userSlice.reducer
