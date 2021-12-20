@@ -53,20 +53,19 @@ function CartIndex( props ) {
       setPolicyModal(true)
     }
   })
-
   const $instance = useMemo( getCurrentInstance, [] );
   const { validCart, invalidCart } = useSelector( ( state ) => state.cart )
   const { colorPrimary } = useSelector( ( state ) => state.sys )
   const { userInfo, vipInfo } = useSelector((state) => state.user)
   
   const [policyModal, setPolicyModal] = useState( false )
-
   const [state, setState] = useState({
-    current: 0,
+    current: 0, // 0:普通商品  1:跨境商品
     itemCount: 0
   })
-  
+
   const [likeList, setLikeList] = useImmer([])
+  const [] = useImmer()
   
   const router = $instance.router
   const { current } = state
@@ -86,8 +85,8 @@ function CartIndex( props ) {
     const { type = 'distributor' } = router.params
     const isOpenStore = entryLaunch.isOpenStore()
     let params = {
-      // shop_type: type,
-      // isNostores: isOpenStore ? 0 : 1
+      shop_type: type,
+      // isNostores: isOpenStore ? 0 : 1 // 是否开启飞门店自提流程
     }
     // 跨境
     if (current == 1) {
@@ -150,12 +149,24 @@ function CartIndex( props ) {
 
   const onChangeCartGoodsItem = async (item, num) => {
     let { shop_id, cart_id } = item
-    await dispatch(updateCartItemNum({ shop_id, cart_id, num, shop_type: 'distributor' }))
+    const { type = 'distributor' } = router.params
+    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type }))
     getCartList()
   }
 
+  const onClickImgAndTitle = async (item) => {
+    Taro.navigateTo({
+      url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.shop_id}`
+    });
+  }
+
   const handleCheckout = (item) => {
-    console.log(item, '---')
+    const { type } = router.params
+    const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } = item
+    const cartType = current == 0 ? 'normal' : 'cross'
+    Taro.navigateTo({
+      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}&shop_id=${shop_id}&is_delivery=${is_delivery}&is_ziti=${is_ziti}&name=${shop_name}&store_address=${address}&lat=${lat}&lng=${lng}&hour=${hour}&phone=${mobile}&goodType=${cartType}`
+    })
   }
 
   return (
@@ -176,7 +187,10 @@ function CartIndex( props ) {
               const allChecked = !item.list.find((item) => !item.is_checked)
               return (
                 <View className='shop-cart-item' key={`shop-cart-item__${index}`}>
-                  <View className='shop-cart-item-hd'>{item.shop_name}</View>
+                  <View className='shop-cart-item-hd'>
+                    <Text className="iconfont icon-shop"/>
+                    {item.shop_name || '自营'}
+                  </View>
                   <View className='shop-cart-item-bd'>
                     <View className='shop-activity'></View>
                     {item.list.map((sitem, index) => (
@@ -189,6 +203,7 @@ function CartIndex( props ) {
                           info={sitem}
                           onDelete={onDeleteCartGoodsItem.bind(this, sitem)}
                           onChange={onChangeCartGoodsItem.bind(this, sitem)}
+                          onClickImgAndTitle={onClickImgAndTitle.bind(this, sitem)}
                         />
                       </View>
                     ))}
@@ -202,9 +217,18 @@ function CartIndex( props ) {
                       />
                     </View>
                     <View className='rg'>
-                      <View className='total-price-wrap'>
-                        合计：
-                        <SpPrice className='total-pirce' value={item.total_fee / 100} />
+                      <View>
+                        <View className='total-price-wrap'>
+                          合计：
+                          <SpPrice className='total-pirce' value={item.total_fee / 100} />
+                        </View>
+                        {
+                          item.discount_fee > 0 &&
+                          <View className='discount-price-wrap'>
+                            共优惠：
+                            <SpPrice className='total-pirce' value={item.discount_fee / 100} />
+                          </View>
+                        }
                       </View>
                       <AtButton
                         className='btn-calc'

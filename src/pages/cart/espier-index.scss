@@ -53,12 +53,13 @@
       }
     }
     &-hd-disabeld {
-      font-size: 36px;
+      font-size: 34px;
       color: #999;
       font-weight: bold;
       margin: 65px 0px 25px;
     }
   }
+
   .cart-item-wrap {
     padding: 16px;
     display: flex;
@@ -105,7 +106,31 @@
       color: #ccc;
     }
   }
+  .discount-price-wrap {
+    color: var(--color-primary);
+    line-height: 24px;
+    .total-pirce {
+      color: var(--color-primary);
+      font-weight: normal;
+      .price__symbol {
+        font-size: 28px;
+        font-weight: normal;
+        color: var(--color-primary);
+      }
+      .price__int {
+        font-size: 28px;
+        font-weight: normal;
+        color: var(--color-primary);
+      }
+      .price__decimal {
+        font-size: 28px;
+        font-weight: normal;
+        color: var(--color-primary);
+      }
+    }
+  }
   .total-pirce {
+    color: var(--color-primary);
     .price__symbol {
       font-size: 26px;
       color: var(--color-primary);
@@ -121,5 +146,9 @@
   }
   .recommend-block {
     margin-top: 65px;
+  }
+  .icon-shop {
+    font-size: 28px;
+    margin-right: 10px;
   }
 }
