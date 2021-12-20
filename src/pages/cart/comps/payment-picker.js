@@ -43,16 +43,15 @@ export default class PaymentPicker extends Component {
   }
   async fetch() {
 
-    // const { list }=await getPaymentList();  
-    const res = []; 
+    const { list }=await getPaymentList();  
+    const res = list;  
  
     this.setState(
       {
         typeList: res
       },
       () => {
-        if (res[0]) {
-          console.log(111) 
+        if (res[0]) { 
           this.handlePaymentChange(res[0].pay_type_code, channel)
           this.handleChange(res[0].pay_type_code) 
           let channel = ''
@@ -100,9 +99,7 @@ export default class PaymentPicker extends Component {
       isShowBalance = true,
       isShowDelivery = true
     } = this.props
-    const { localType, typeList } = this.state
-
-    console.log("===localType==",localType,typeList)
+    const { localType, typeList } = this.state 
 
     return (
       <AtFloatLayout isOpened={isOpened}>
