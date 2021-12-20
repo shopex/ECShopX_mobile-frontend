@@ -1,3 +1,5 @@
+$color: var(--color-primary);
+
 .sp-select {
   .select-item {
     height: 60px;
@@ -8,5 +10,9 @@
     color: #222;
     display: inline-block;
     margin: 0 24px 24px 0;
+    &.active {
+      color: var(--color-primary);
+      background-color: rgba(var(--color-rgb), 0.2);
+    }
   }
 }

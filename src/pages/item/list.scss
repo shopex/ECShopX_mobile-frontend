@@ -39,6 +39,26 @@
     }
   }
 
+  .goods-list {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    .goods-list-wrap {
+      width: 345px;
+      margin-bottom: 28px;
+      box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.1);
+    }
+    .left-container {
+      width: 50%;
+      padding-right: 14px;
+    }
+    .right-container {
+      width: 50%;
+      padding-left: 14px;
+    }
+  }
+
+
   // .goods-tabs {
   //   background: #fff;
   //   .sp-filter-bar__item {

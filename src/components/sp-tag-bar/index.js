@@ -5,20 +5,19 @@ import { classNames } from "@/utils";
 import "./index.scss";
 
 function SpTagBar(props) {
-  const { list, children } = props;
-  const [ curId, setCurId] = useState(0)
+  const { list, value, children, onChange = () => {} } = props;
 
   return (
     <View className="sp-tag-bar">
       <View className="tag-bar-hd">
-        <ScrollView className='tag-container' scrollX>
+        <ScrollView className="tag-container" scrollX>
           {list.map((item, index) => (
             <View
               className={classNames("tag-item", {
-                active: curId === item.id,
+                active: value === index
               })}
               onClick={() => {
-                setCurId(index);
+                onChange(index);
               }}
               key={`tag-item__${item.id}`}
             >
@@ -36,4 +35,4 @@ SpTagBar.options = {
   addGlobalClass: true,
 };
 
-export default React.memo(SpTagBar);
+export default SpTagBar;

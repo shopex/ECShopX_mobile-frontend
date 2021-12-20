@@ -24,4 +24,4 @@ SpSearch.options = {
   addGlobalClass: true,
 };
 
-export default React.memo(SpSearch);
+export default SpSearch;
