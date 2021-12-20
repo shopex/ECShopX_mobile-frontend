@@ -8,7 +8,14 @@ import { isObject, classNames } from '@/utils'
 import './comp-goodsitem.scss'
 
 function CompGoodsItem(props) {
-  const { info, onDelete = () => {}, onChange = () => {}, isShowAddInput = true} = props
+  const {
+    info,
+    onDelete = () => {},
+    onChange = () => {},
+    onClickImgAndTitle = () => {},
+    isShowAddInput = true,
+    children
+  } = props
   const onDeleteGoodsItem = () => {
     onDelete(info)
   }
@@ -23,8 +30,8 @@ function CompGoodsItem(props) {
 
   return (
     <View className='comp-goodsitem'>
-      <View className='goods-item-hd'>
-        <Image className='goods-image' mode='widthFix' src={info.pics} />
+      <View className='goods-item-hd' onClick={onClickImgAndTitle}>
+        <Image className='goods-image' mode='aspectFill' src={info.pics} />
       </View>
       <View className='goods-item-bd'>
         <View className='item-hd'>
