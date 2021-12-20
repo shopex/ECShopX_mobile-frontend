@@ -36,7 +36,7 @@ import S from '@/spx'
 // import { Tracker } from '@/service'
 import entry from '@/utils/entry'
 import { useLogin } from '@/hooks'
-import { fetchCartList, deleteCartItem } from '@/store/slices/cart'
+import { fetchCartList, deleteCartItem, updateCartItemNum } from '@/store/slices/cart'
 import CompGoodsItem from './comps/comp-goodsitem'
 import './espier-index.scss'
 
@@ -45,8 +45,6 @@ const tablist = [
   { title: '跨境商品', icon: 'icon-kuajingshangpin-01', type: 'cross' }
 ]
 
-
-
 function CartIndex( props ) {
   const dispatch = useDispatch()
   const { isLogin, updatePolicyTime, getUserInfoAuth } = useLogin({
@@ -54,7 +52,7 @@ function CartIndex( props ) {
     policyUpdateHook: () => {
       setPolicyModal(true)
     }
-  } )
+  })
 
   const $instance = useMemo( getCurrentInstance, [] );
   const { validCart, invalidCart } = useSelector( ( state ) => state.cart )
@@ -66,9 +64,9 @@ function CartIndex( props ) {
   const [state, setState] = useState({
     current: 0,
     itemCount: 0
-  } )
+  })
   
-  const [likeList, setLikeList] = useImmer( [] )
+  const [likeList, setLikeList] = useImmer([])
   
   const router = $instance.router
   const { current } = state
@@ -111,12 +109,12 @@ function CartIndex( props ) {
     setLikeList(list)
   }
 
-  const onChangeSpTab = (current) => {
-    setState({
-      ...state,
-      current
-    })
-  }
+  // const onChangeSpTab = (current) => {
+  //   setState({
+  //     ...state,
+  //     current
+  //   })
+  // }
 
   const onChangeGoodsItemCheck = async (item, e) => {
     await api.cart.select({
@@ -146,12 +144,18 @@ function CartIndex( props ) {
       confirmColor: colorPrimary
     })
     if (!res.confirm) return
-    await dispatch( deleteCartItem( { cart_id } ) )
+    await dispatch(deleteCartItem({ cart_id }))
     getCartList()
   }
 
-  const onChangeCartGoodsItem = async ( {}) => {
-    
+  const onChangeCartGoodsItem = async (item, num) => {
+    let { shop_id, cart_id } = item
+    await dispatch(updateCartItemNum({ shop_id, cart_id, num, shop_type: 'distributor' }))
+    getCartList()
+  }
+
+  const handleCheckout = (item) => {
+    console.log(item, '---')
   }
 
   return (
@@ -183,8 +187,8 @@ function CartIndex( props ) {
                         />
                         <CompGoodsItem
                           info={sitem}
-                          onDelete={onDeleteCartGoodsItem.bind( this, sitem )}
-                          onChange={onChangeCartGoodsItem}
+                          onDelete={onDeleteCartGoodsItem.bind(this, sitem)}
+                          onChange={onChangeCartGoodsItem.bind(this, sitem)}
                         />
                       </View>
                     ))}
@@ -200,13 +204,14 @@ function CartIndex( props ) {
                     <View className='rg'>
                       <View className='total-price-wrap'>
                         合计：
-                        <SpPrice className='total-pirce' value={item.total_fee / 1000} />
+                        <SpPrice className='total-pirce' value={item.total_fee / 100} />
                       </View>
                       <AtButton
                         className='btn-calc'
                         type='primary'
                         circle
-                        disabled={item.cart_total_num == 0}
+                        disabled={item.cart_total_num <= 0}
+                        onClick={() => handleCheckout(item)}
                       >
                         结算({item.cart_total_num})
                       </AtButton>
