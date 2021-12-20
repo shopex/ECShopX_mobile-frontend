@@ -41,4 +41,4 @@ SpShopCoupon.options = {
   addGlobalClass: true
 };
 
-export default React.memo(SpShopCoupon);
+export default SpShopCoupon;

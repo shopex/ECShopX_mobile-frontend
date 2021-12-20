@@ -9,12 +9,13 @@ import './index.scss'
 function SpPage( props ) {
   const { className, children } = props
   const sys = useSelector((state) => state.sys)
-  const { colorPrimary, colorMarketing, colorAccent } = sys
+  const { colorPrimary, colorMarketing, colorAccent, rgb } = sys;
   const pageTheme = {
-    '--color-primary': colorPrimary,
-    '--color-marketing': colorMarketing,
-    '--color-accent': colorAccent
-  }
+    "--color-primary": colorPrimary,
+    "--color-marketing": colorMarketing,
+    "--color-accent": colorAccent,
+    "--color-rgb": rgb,
+  };
   // console.log('hasNavbar:', hasNavbar, pageTheme)
   return (
     <View className={classNames( "sp-page", className, {

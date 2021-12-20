@@ -5,9 +5,6 @@ import { classNames } from '@/utils'
 
 import './index.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
-}))
 export default class SpFilterBar extends Component {
   static options = {
     addGlobalClass: true
@@ -49,7 +46,7 @@ export default class SpFilterBar extends Component {
   }
 
   render() {
-    const { list, className, custom, colors } = this.props
+    const { list, className, custom } = this.props
     const { sortOrder, curIdx } = this.state
 
     return (

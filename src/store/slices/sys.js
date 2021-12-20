@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DEFAULT_THEME, DEFAULT_POINT_NAME } from '@/consts'
+import { hex2rgb } from '@/utils'
 
 const { colorPrimary, colorMarketing, colorAccent } = DEFAULT_THEME
 const initialState = {
   colorPrimary: colorPrimary,
   colorMarketing: colorMarketing,
   colorAccent: colorAccent,
+  rgb: '',
   pointName: DEFAULT_POINT_NAME,
   tabbar: {
     config: {
@@ -51,10 +53,13 @@ const sysSlice = createSlice({
   initialState,
   reducers: {
     setSysConfig: ( state, { payload } ) => {
+      const { colorPrimary } = payload;
+      const rgb = hex2rgb(colorPrimary).join(',');
       return {
         ...state,
-        ...payload
-      }
+        ...payload,
+        rgb
+      };
     }
   }
 })

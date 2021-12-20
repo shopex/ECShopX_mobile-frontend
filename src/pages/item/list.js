@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
 import { connect } from "react-redux";
 import { useImmer } from "use-immer";
@@ -15,11 +15,7 @@ import {
   SpGoodsItem,
   SpSearchBar,
   SpNote,
-<<<<<<< HEAD
   SpNavBar,
-=======
-  SpNavBar, 
->>>>>>> 9685d175d6c29957b4d5cad69610ab46eca5fc3b
   SpLoadMore,
   TabBar,
   SpPage,
@@ -27,7 +23,7 @@ import {
   SpDrawer,
   SpSelect,
 } from "@/components";
-import doc from '@/doc'
+import doc from "@/doc";
 import api from "@/api";
 import { pickBy, classNames, isWeixin, isWeb } from "@/utils";
 
@@ -36,43 +32,68 @@ import "./list.scss";
 const initialState = {
   leftList: [],
   rightList: [],
-<<<<<<< HEAD
   brandList: [],
+  brandSelect: [],
   filterList: [
     { title: "综合" },
     { title: "销量" },
     { title: "价格", icon: "icon-shengxu-01" },
     { title: "价格", icon: "icon-jiangxu-01" },
-=======
-  filterList: [
-    { title: '综合' },
-    { title: '销量' },
-    { title: '价格', icon: 'icon-shengxu-01' },
-    { title: '价格', icon: 'icon-jiangxu-01' }
->>>>>>> 9685d175d6c29957b4d5cad69610ab46eca5fc3b
   ],
   curFilterIdx: 0,
   tagList: [],
+  curTagIdx: 0,
   keyword: "",
-  show: true,
+  show: false,
 };
 
 function ItemList() {
   const [state, setState] = useImmer(initialState);
+  const {
+    keyword,
+    leftList,
+    rightList,
+    brandList,
+    brandSelect,
+    curFilterIdx,
+    filterList,
+    tagList,
+    curTagIdx,
+    show,
+  } = state;
+
+  const goodsRef = useRef();
 
   useEffect(() => {}, []);
 
-  const fetch = async ({ pageIndex, pageSize }) => {
-    const params = {
+  const fetch = async ( { pageIndex, pageSize } ) => {
+    let params = {
       page: pageIndex,
       pageSize,
+      brand_id: brandSelect.map( ( item ) => item.id ).toString(),
     };
+
+    if ( curFilterIdx == 1 ) {
+      // 销量
+      params["goodsSort"] = 1;
+    } else if ( curFilterIdx == 2 ) {
+      // 价格升序
+      params["goodsSort"] = 3;
+    } else if ( curFilterIdx == 3 ) {
+      // 价格降序
+      params["goodsSort"] = 2;
+    }
+
+    if (curTagIdx) {
+      params["tag_id"] = tagList[curTagIdx].id;
+    }
+
     const {
       list,
       total_count,
       item_params_list = [],
       select_tags_list = [],
-      brand_list
+      brand_list,
     } = await api.item.search(params);
     const resLeftList = list.filter((item, index) => {
       if (index % 2 == 0) {
@@ -88,21 +109,15 @@ function ItemList() {
     setState((v) => {
       v.leftList = [...v.leftList, ...resLeftList];
       v.rightList = [...v.rightList, ...resRightList];
-      v.brandList = pickBy(brand_list?.list, doc.goods.WGT_GOODS_BRAND)
-      v.tagList = [
-        {
-          label: "全部",
-          id: 0,
-        },
-        {
-          label: "全部",
-          id: 1,
-        },
-        {
-          label: "全部",
-          id: 2,
-        },
-      ].concat(select_tags_list);
+      v.brandList = pickBy( brand_list?.list, doc.goods.WGT_GOODS_BRAND );
+      if ( select_tags_list.length > 0 ) {
+        v.tagList = [
+          {
+            label: "全部",
+            id: 0,
+          }
+        ].concat( select_tags_list );
+      }
     });
 
     return { total: total_count };
@@ -139,18 +154,49 @@ function ItemList() {
     nextPage();
   };
 
-  const handleFilterChange = () => {};
+  const onChangeTag = async (e) => {
+    await setState((draft) => {
+      draft.leftList = [];
+      draft.rightList = [];
+      draft.curTagIdx = e;
+    });
+    goodsRef.current.reset();
+  }
 
-  const {
-    keyword,
-    leftList,
-    rightList,
-    brandList,
-    curFilterIdx,
-    filterList,
-    tagList,
-    show,
-  } = state;
+  const handleFilterChange = async (e) => {
+    await setState((draft) => {
+      draft.leftList = [];
+      draft.rightList = [];
+      draft.curFilterIdx = e;
+    });
+    goodsRef.current.reset();
+  };
+
+  const onChangeBrand = (val) => {
+    setState((draft) => {
+      draft.brandSelect = val;
+    });
+  };
+
+  const onConfirmBrand = async () => {
+    await setState((draft) => {
+      draft.leftList = [];
+      draft.rightList = [];
+      draft.show = false;
+    });
+    goodsRef.current.reset();
+  };
+
+  const onResetBrand = async () => {
+    await setState((draft) => {
+      draft.brandSelect = [];
+      draft.leftList = [];
+      draft.rightList = [];
+      draft.show = false;
+    });
+    goodsRef.current.reset();
+  };
+
   return (
     <SpPage className={classNames("page-item-list")}>
       <View className="item-list-head">
@@ -165,7 +211,7 @@ function ItemList() {
             onConfirm={handleConfirm}
           />
         </View>
-        <SpTagBar className="tag-list" list={tagList}>
+        <SpTagBar className="tag-list" list={tagList} value={curTagIdx} onChange = {onChangeTag}>
           <View
             className="filter-btn"
             onClick={() => {
@@ -184,7 +230,7 @@ function ItemList() {
           onChange={handleFilterChange}
         />
       </View>
-      <SpScrollView fetch={fetch}>
+      <SpScrollView ref={goodsRef} fetch={fetch}>
         <View className="goods-list">
           <View className="left-container">
             {leftList.map((item, index) => (
@@ -210,9 +256,16 @@ function ItemList() {
             v.show = false;
           });
         }}
+        onConfirm={onConfirmBrand}
+        onReset={onResetBrand}
       >
         <View className="brand-title">品牌</View>
-        <SpSelect info={brandList} />
+        <SpSelect
+          multiple
+          info={brandList}
+          value={brandSelect}
+          onChange={onChangeBrand}
+        />
       </SpDrawer>
     </SpPage>
   );

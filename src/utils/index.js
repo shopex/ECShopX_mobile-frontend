@@ -1,52 +1,53 @@
-import Taro, { getCurrentInstance } from '@tarojs/taro'
-import classNames from 'classnames'
-import qs from 'qs'
-import copy from 'copy-to-clipboard'
-import S from '@/spx'
-import { STATUS_TYPES_MAP } from '@/consts'
-import api from '@/api'
+import Taro, { getCurrentInstance } from "@tarojs/taro";
+import classNames from "classnames";
+import qs from "qs";
+import copy from "copy-to-clipboard";
+import S from "@/spx";
+import { STATUS_TYPES_MAP } from "@/consts";
+import api from "@/api";
 import configStore from "@/store";
-import _get from 'lodash/get'
-import _findKey from 'lodash/findKey'
-import _pickBy from 'lodash/pickBy'
-import _keys from 'lodash/keys'
-import debounce from 'lodash/debounce'
-import throttle from 'lodash/throttle'
-import log from './log'
-import canvasExp from './canvasExp'
-import calCommonExp from './calCommonExp'
-import entryLaunch from './entryLaunch'
+import _get from "lodash/get";
+import _findKey from "lodash/findKey";
+import _pickBy from "lodash/pickBy";
+import _keys from "lodash/keys";
+import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
+import log from "./log";
+import canvasExp from "./canvasExp";
+import calCommonExp from "./calCommonExp";
+import entryLaunch from "./entryLaunch";
 import validate from "./validate";
-import checkAppVersion from './updateManager'
-import linkPage from './linkPage'
-import loadingGif from '@/assets/imgs/loading.gif'
+import checkAppVersion from "./updateManager";
+import linkPage from "./linkPage";
+import loadingGif from "@/assets/imgs/loading.gif";
 
 export * from "./platforms";
 
-const isPrimitiveType = ( val, type ) => Object.prototype.toString.call( val ) === type
+const isPrimitiveType = (val, type) =>
+  Object.prototype.toString.call(val) === type;
 
-export function isFunction (val) {
-  return isPrimitiveType(val, '[object Function]')
+export function isFunction(val) {
+  return isPrimitiveType(val, "[object Function]");
 }
 
-export function isNumber (val) {
-  return isPrimitiveType(val, '[object Number]')
+export function isNumber(val) {
+  return isPrimitiveType(val, "[object Number]");
 }
 
 export function isPointerEvent(val) {
   return isPrimitiveType(val, "[object PointerEvent]");
 }
 
-export function isObject (val) {
-  return isPrimitiveType(val, '[object Object]')
+export function isObject(val) {
+  return isPrimitiveType(val, "[object Object]");
 }
 
-export function isArray (arr) {
-  return Array.isArray(arr)
+export function isArray(arr) {
+  return Array.isArray(arr);
 }
 
-export function isString (val) {
-  return typeof val === 'string'
+export function isString(val) {
+  return typeof val === "string";
 }
 
 /** 在支付宝平台 */
@@ -107,7 +108,7 @@ export const isIphoneX = () => {
         screenHeight,
         screenWidth,
         pixelRatio,
-        brand
+        brand,
       } = Taro.getSystemInfoSync();
       const { networkType } = Taro.getNetworkType();
 
@@ -123,7 +124,7 @@ export const isIphoneX = () => {
         pixelRatio,
         brand,
         system,
-        networkType
+        networkType,
       };
       if (system.indexOf("iOS") !== -1) {
         Taro.$system = "iOS";
@@ -136,230 +137,231 @@ export const isIphoneX = () => {
       console.log(e);
     }
   }
-}
-
+};
 
 // TODO: 验证方法在h5及边界情况稳定性
-export function getCurrentRoute () {
-  const router = getCurrentInstance().router
+export function getCurrentRoute() {
+  const router = getCurrentInstance().router;
   // eslint-disable-next-line
-  const { $taroTimestamp, ...params } = router.params || {}
-  const path = router.path
-  const fullPath = `${path}${Object.keys(params).length > 0 ? '?' + qs.stringify(params) : ''}`
+  const { $taroTimestamp, ...params } = router.params || {};
+  const path = router.path;
+  const fullPath = `${path}${
+    Object.keys(params).length > 0 ? "?" + qs.stringify(params) : ""
+  }`;
 
   return {
     path,
     fullPath,
-    params
-  }
+    params,
+  };
 }
 
 // 除以100以后的千分符
-export function formatPriceToHundred (price) {
+export function formatPriceToHundred(price) {
   if (price) {
-    return (Number(price)/100).toFixed(2).toString().replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,')
+    return (Number(price) / 100)
+      .toFixed(2)
+      .toString()
+      .replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, "$&,");
   } else {
-    return 0
+    return 0;
   }
 }
 
-export async function normalizeQuerys (params = {}) {
-  const { scene, ...rest } = params
-  const queryStr = decodeURIComponent(scene)
-  const obj = qs.parse(queryStr)
+export async function normalizeQuerys(params = {}) {
+  const { scene, ...rest } = params;
+  const queryStr = decodeURIComponent(scene);
+  const obj = qs.parse(queryStr);
   if (obj.sid || obj.share_id) {
     const data = await api.wx.getShareId({
-      share_id: obj.sid || obj.share_id
-    })
+      share_id: obj.sid || obj.share_id,
+    });
     return {
       ...rest,
-      ...data
-    }
+      ...data,
+    };
   }
   const ret = {
     ...rest,
-    ...obj
-  }
+    ...obj,
+  };
 
-  return ret
+  return ret;
 }
 
-export function pickBy (arr, keyMaps = {}) {
+export function pickBy(arr, keyMaps = {}) {
   const picker = (item) => {
-    const ret = {}
+    const ret = {};
 
-    Object.keys( keyMaps ).forEach( key => {
-      const val = keyMaps[key]
+    Object.keys(keyMaps).forEach((key) => {
+      const val = keyMaps[key];
 
-      if ( isString( val ) ) {
-        ret[key] = _get( item, val )
-      } else if ( isFunction( val ) ) {
-        ret[key] = val( item )
-      } else if ( isObject( val ) ) {
+      if (isString(val)) {
+        ret[key] = _get(item, val);
+      } else if (isFunction(val)) {
+        ret[key] = val(item);
+      } else if (isObject(val)) {
         ret[key] = _get(item, val.key) || val.default;
       } else {
-        ret[key] = val
+        ret[key] = val;
       }
-    })
+    });
 
-    return ret
-  }
+    return ret;
+  };
 
   if (isArray(arr)) {
-    return arr.map(picker)
+    return arr.map(picker);
   } else {
-    return picker(arr)
+    return picker(arr);
   }
 }
 
-export function navigateTo( url, isRedirect ) {
+export function navigateTo(url, isRedirect) {
   if (isObject(isRedirect) || isPointerEvent(isRedirect)) {
     isRedirect = false;
   }
 
   if (isRedirect) {
-    return Taro.redirectTo({ url })
+    return Taro.redirectTo({ url });
   }
 
-  return Taro.navigateTo({ url })
+  return Taro.navigateTo({ url });
 }
 
-export function resolvePath (baseUrl, params = {}) {
-  const queryStr = typeof params === 'string'
-    ? params
-    : qs.stringify(params)
+export function resolvePath(baseUrl, params = {}) {
+  const queryStr = typeof params === "string" ? params : qs.stringify(params);
 
-  return `${baseUrl}${baseUrl.indexOf('?') >= 0 ? '&' : '?'}${queryStr}`
+  return `${baseUrl}${baseUrl.indexOf("?") >= 0 ? "&" : "?"}${queryStr}`;
 }
 
-export function formatTime (time, formatter = 'yyyy-MM-dd') {
-  const newTime = time.toString().length < 13 ? time * 1000 : time
-  return format(newTime, formatter)
+export function formatTime(time, formatter = "yyyy-MM-dd") {
+  const newTime = time.toString().length < 13 ? time * 1000 : time;
+  return format(newTime, formatter);
 }
 
-export function formatDateTime (time, formatter = 'yyyy-MM-dd HH:mm:ss') {
-  const newTime = time.toString().length < 13 ? time * 1000 : time
-  return format(newTime, formatter)
+export function formatDateTime(time, formatter = "yyyy-MM-dd HH:mm:ss") {
+  const newTime = time.toString().length < 13 ? time * 1000 : time;
+  return format(newTime, formatter);
 }
 
-export function copyText (text, msg = '内容已复制') {
+export function copyText(text, msg = "内容已复制") {
   return new Promise((resolve, reject) => {
-    if (process.env.TARO_ENV === 'weapp') {
+    if (process.env.TARO_ENV === "weapp") {
       Taro.setClipboardData({
         data: text,
         success: resolve,
-        error: reject
-      })
+        error: reject,
+      });
     } else {
       if (copy(text)) {
-        S.toast(msg)
-        resolve(text)
+        S.toast(msg);
+        resolve(text);
       } else {
-        reject()
+        reject();
       }
     }
-  })
+  });
 }
 
-export function calcTimer (totalSec) {
-  let remainingSec = totalSec
-  const dd = Math.floor(totalSec / 24 / 3600)
-  remainingSec -= dd * 3600 * 24
-  const hh = Math.floor(remainingSec / 3600)
-  remainingSec -= hh * 3600
-  const mm = Math.floor(remainingSec / 60)
-  remainingSec -= mm * 60
-  const ss = Math.floor(remainingSec)
+export function calcTimer(totalSec) {
+  let remainingSec = totalSec;
+  const dd = Math.floor(totalSec / 24 / 3600);
+  remainingSec -= dd * 3600 * 24;
+  const hh = Math.floor(remainingSec / 3600);
+  remainingSec -= hh * 3600;
+  const mm = Math.floor(remainingSec / 60);
+  remainingSec -= mm * 60;
+  const ss = Math.floor(remainingSec);
 
   return {
     dd,
     hh,
     mm,
-    ss
-  }
+    ss,
+  };
 }
 
-export function resolveOrderStatus (status, isBackwards) {
+export function resolveOrderStatus(status, isBackwards) {
   if (isBackwards) {
-    return _findKey(STATUS_TYPES_MAP, o => o === status)
+    return _findKey(STATUS_TYPES_MAP, (o) => o === status);
   }
 
-  return STATUS_TYPES_MAP[status]
+  return STATUS_TYPES_MAP[status];
 }
 
-export function goToPage (page) {
+export function goToPage(page) {
   // eslint-disable-next-line
-  const loc = location
-  page = page.replace(/^\//, '')
-  const url = `${loc.protocol}//${loc.host}/${page}`
-  console.log(url)
-  loc.href = url
+  const loc = location;
+  page = page.replace(/^\//, "");
+  const url = `${loc.protocol}//${loc.host}/${page}`;
+  console.log(url);
+  loc.href = url;
 }
 
-export function maskMobile (mobile) {
-  return mobile.replace(/^(\d{2})(\d+)(\d{2}$)/, '$1******$3')
+export function maskMobile(mobile) {
+  return mobile.replace(/^(\d{2})(\d+)(\d{2}$)/, "$1******$3");
 }
 
 // 不可使用promise/async异步写法
-export function authSetting (scope, succFn, errFn) {
+export function authSetting(scope, succFn, errFn) {
   Taro.getSetting({
-    success (res) {
-      const result = res.authSetting[`scope.${scope}`]
+    success(res) {
+      const result = res.authSetting[`scope.${scope}`];
       if (result === undefined) {
         Taro.authorize({
-          scope: `scope.${scope}`
-        }).then(succFn, errFn)
+          scope: `scope.${scope}`,
+        }).then(succFn, errFn);
       } else if (!result) {
-        Taro.openSetting().then(succFn, errFn)
+        Taro.openSetting().then(succFn, errFn);
       } else {
-        succFn()
+        succFn();
       }
-    }
-  })
+    },
+  });
 }
 
-export function imgCompression (url) {
-  const rule = '?imageView2/1/w/80'
-  return url +  rule
+export function imgCompression(url) {
+  const rule = "?imageView2/1/w/80";
+  return url + rule;
 }
-
 
 export const browser = (() => {
-  if (process.env.TARO_ENV === 'h5') {
-    var ua = navigator.userAgent
+  if (process.env.TARO_ENV === "h5") {
+    var ua = navigator.userAgent;
     return {
-      trident: ua.indexOf('Trident') > -1, //IE内核
-      presto: ua.indexOf('Presto') > -1, //opera内核
-      webKit: ua.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-      gecko: ua.indexOf('Gecko') > -1 && ua.indexOf('KHTML') == -1,//火狐内核
+      trident: ua.indexOf("Trident") > -1, //IE内核
+      presto: ua.indexOf("Presto") > -1, //opera内核
+      webKit: ua.indexOf("AppleWebKit") > -1, //苹果、谷歌内核
+      gecko: ua.indexOf("Gecko") > -1 && ua.indexOf("KHTML") == -1, //火狐内核
       mobile: !!ua.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
       ios: !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-      android: ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1, //android终端
+      android: ua.indexOf("Android") > -1 || ua.indexOf("Adr") > -1, //android终端
       weixin: ua.match(/MicroMessenger/i),
       qq: ua.match(/\sQQ/i) == " qq", //是否QQ
-      isWeapp: (ua.match(/MicroMessenger/i) && ua.match(/miniprogram/i)) || global.__wxjs_environment === 'miniprogram',
-      isAlipay: ua.match(/AlipayClient/i)
-    }
+      isWeapp:
+        (ua.match(/MicroMessenger/i) && ua.match(/miniprogram/i)) ||
+        global.__wxjs_environment === "miniprogram",
+      isAlipay: ua.match(/AlipayClient/i),
+    };
   }
-} )()
-
-
-
+})();
 
 // 注入美洽客服插件
 export const meiqiaInit = () => {
-  (function(m, ei, q, i, a, j, s) {
-    m[i] = m[i] || function() {
-        (m[i].a = m[i].a || []).push(arguments)
-    };
-    j = ei.createElement(q),
-        s = ei.getElementsByTagName(q)[0];
+  (function (m, ei, q, i, a, j, s) {
+    m[i] =
+      m[i] ||
+      function () {
+        (m[i].a = m[i].a || []).push(arguments);
+      };
+    (j = ei.createElement(q)), (s = ei.getElementsByTagName(q)[0]);
     j.async = true;
-    j.charset = 'UTF-8';
-    j.src = 'https://static.meiqia.com/dist/meiqia.js?_=t';
+    j.charset = "UTF-8";
+    j.src = "https://static.meiqia.com/dist/meiqia.js?_=t";
     s.parentNode.insertBefore(j, s);
-  })(window, document, 'script', '_MEIQIA');
-}
+  })(window, document, "script", "_MEIQIA");
+};
 
 export const redirectUrl = async (api, url, type = "redirectTo") => {
   if (!browser.weixin) {
@@ -371,17 +373,16 @@ export const redirectUrl = async (api, url, type = "redirectTo") => {
   global.location.href = redirect_url;
 };
 
-
 export function tokenParse(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  console.log("Taro.base64ToArrayBuffer",Taro)
+  console.log("Taro.base64ToArrayBuffer", Taro);
   var arr_base64 = Taro.base64ToArrayBuffer(base64);
   arr_base64 = String.fromCharCode.apply(null, new Uint8Array(arr_base64));
   var jsonPayload = decodeURIComponent(
     arr_base64
       .split("")
-      .map(function(c) {
+      .map(function (c) {
         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       })
       .join("")
@@ -390,27 +391,28 @@ export function tokenParse(token) {
   return JSON.parse(jsonPayload);
 }
 
-
 // 解析字符串
-function  getQueryVariable(herf) {
-  const url = herf.split('?')
-  let query = {}
+function getQueryVariable(herf) {
+  const url = herf.split("?");
+  let query = {};
   if (url[1]) {
-      const str = url[1]
-      // const str = url.substr(1)
-      const pairs = str.split("&")
-      for(let i = 0; i < pairs.length; i ++) {
-          const pair = pairs[i].split("=")
-          query[pair[0]] = pair[1]
-      }
+    const str = url[1];
+    // const str = url.substr(1)
+    const pairs = str.split("&");
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i].split("=");
+      query[pair[0]] = pair[1];
+    }
   }
-  return query
+  return query;
 }
 /** 是否是合法的color */
 function validColor(color) {
-  var re1 = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i
-  var re2 = /^rgb\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\)$/i
-  var re3 = /^rgba\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,(1|1.0|0.[0-9])\)$/i
+  var re1 = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i;
+  var re2 =
+    /^rgb\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\)$/i;
+  var re3 =
+    /^rgba\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,(1|1.0|0.[0-9])\)$/i;
   return re2.test(color) || re1.test(color) || re3.test(color);
 }
 
@@ -426,29 +428,30 @@ function validColor(color) {
  * }
  * } data 新增上报数据
  */
-export async function buriedPoint (data) {
-  const params = getCurrentInstance().router.params
+export async function buriedPoint(data) {
+  const params = getCurrentInstance().router.params;
   let {
     gu,
-    subtask_id = '',
-    dtid = '',
-    shop_code = '',
-    item_id = '',
-    smid = '',
-    gu_user_id = ''
-  } =  await normalizeQuerys(params)
-  let employee_number = smid, store_bn = ''
+    subtask_id = "",
+    dtid = "",
+    shop_code = "",
+    item_id = "",
+    smid = "",
+    gu_user_id = "",
+  } = await normalizeQuerys(params);
+  let employee_number = smid,
+    store_bn = "";
   if (gu) {
-    [employee_number, store_bn] = gu.split('_')
+    [employee_number, store_bn] = gu.split("_");
   }
   if (gu_user_id) {
-    employee_number = gu_user_id
+    employee_number = gu_user_id;
   }
   // 任务埋点
   if (subtask_id) {
-    const { distributor_id: shopId } = Taro.getStorageSync('curStore')
-    if (process.env.APP_PLATFORM === 'standard') {
-      dtid= shopId
+    const { distributor_id: shopId } = Taro.getStorageSync("curStore");
+    if (process.env.APP_PLATFORM === "standard") {
+      dtid = shopId;
     }
     const newData = {
       employee_number,
@@ -457,19 +460,19 @@ export async function buriedPoint (data) {
       distributor_id: dtid,
       shop_code,
       item_id,
-      ...data
-    }
-    api.wx.taskReportData(newData)
+      ...data,
+    };
+    api.wx.taskReportData(newData);
   }
   if (data.event_type && S.getAuthToken() && employee_number) {
-    const { userId } = Taro.getStorageSync('userinfo')
+    const { userId } = Taro.getStorageSync("userinfo");
     api.wx.interactiveReportData({
       event_id: employee_number,
-      user_type: 'wechat',
+      user_type: "wechat",
       user_id: userId,
       event_type: data.event_type,
-      store_bn
-    })
+      store_bn,
+    });
   }
 }
 
@@ -478,69 +481,65 @@ export async function buriedPoint (data) {
  *
  */
 
-export function paramsSplice(params){
-  let str=''
-  let arr=[]
-  for(var key in params){
-    let p=`${key}=${params[key]}`
-    arr.push(p)
-
+export function paramsSplice(params) {
+  let str = "";
+  let arr = [];
+  for (var key in params) {
+    let p = `${key}=${params[key]}`;
+    arr.push(p);
   }
-  str=arr.join('&')
-  return str
-
+  str = arr.join("&");
+  return str;
 }
 
-export function resolveFavsList (list, favs) {
-  return list.map(t => {
-    const { item_id } = t
+export function resolveFavsList(list, favs) {
+  return list.map((t) => {
+    const { item_id } = t;
     return {
       ...t,
-      is_fav: Boolean(favs[item_id])
-    }
-  })
+      is_fav: Boolean(favs[item_id]),
+    };
+  });
 }
 
 // 判断是否在导购货架
 export function isGoodsShelves() {
   const system = Taro.getSystemInfoSync();
   log.debug(`this system is: ${system.environment}`);
-  if ( system && system.environment && system.environment === "wxwork" ) {
-    return true
+  if (system && system.environment && system.environment === "wxwork") {
+    return true;
   } else {
     return false;
   }
 }
 
-export function styleNames (styles) {
-  if (!styles || typeof styles !== 'object') {
-    return '""'
+export function styleNames(styles) {
+  if (!styles || typeof styles !== "object") {
+    return '""';
   }
-  let styleNames = ''
+  let styleNames = "";
   _keys(styles).forEach((key) => {
-    if (typeof styles[key] === 'string') {
-      styleNames += `${key}:${styles[key]};`
-      return
+    if (typeof styles[key] === "string") {
+      styleNames += `${key}:${styles[key]};`;
+      return;
     }
-    if (typeof styles[key] !== 'object' || styles[key].length === 0) {
-      return
+    if (typeof styles[key] !== "object" || styles[key].length === 0) {
+      return;
     }
-    let conditions = styles[key]
+    let conditions = styles[key];
 
     _keys(conditions).forEach((value) => {
       if (
-        (typeof conditions[value] !== 'function' && conditions[value]) ||
-        (typeof conditions[value] === 'function' && conditions[value]())
+        (typeof conditions[value] !== "function" && conditions[value]) ||
+        (typeof conditions[value] === "function" && conditions[value]())
       ) {
-        styleNames += `${key}:${value};`
-        return
+        styleNames += `${key}:${value};`;
+        return;
       }
-    })
-  })
-  return `${styleNames}`
+    });
+  });
+  return `${styleNames}`;
 }
-
-
 
 export function getThemeStyle() {
   // const systemTheme = S.get( "SYSTEM_THEME" );
@@ -556,19 +555,66 @@ export function getThemeStyle() {
 }
 
 export function isNavbar() {
-  return isWeb && !getBrowserEnv().weixin
+  return isWeb && !getBrowserEnv().weixin;
 }
 
-export const hasNavbar = isWeb && !getBrowserEnv().weixin
+export const hasNavbar = isWeb && !getBrowserEnv().weixin;
 
 export function showToast(title) {
   Taro.showToast({
     title,
-    icon: "none"
+    icon: "none",
   });
 }
 
+export function hex2rgb(hex) {
+  if (![4, 7].includes(hex.length)) {
+    throw new Error("格式错误");
+  }
+  let result = hex.slice(1);
+  // 如果是颜色叠值, 统一转换成6位颜色值
+  if (result.length === 3) {
+    result = result
+      .split("")
+      .map((a) => `${a}${a}`)
+      .join("");
+  }
+  const rgb = [];
+  // 计算hex值
+  for (let i = 0, len = result.length; i < len; i += 2) {
+    rgb[i / 2] = getHexVal(result[i]) * 16 + getHexVal(result[i + 1]);
+  }
+  function getHexVal(letter) {
+    let num = -1;
+    switch (letter.toUpperCase()) {
+      case "A":
+        num = 10;
+        break;
+      case "B":
+        num = 11;
+        break;
+      case "C":
+        num = 12;
+        break;
+      case "D":
+        num = 13;
+        break;
+      case "E":
+        num = 14;
+        break;
+      case "F":
+        num = 15;
+        break;
+    }
 
+    if (num < 0) {
+      num = Number(letter);
+    }
+
+    return num;
+  }
+  return rgb;
+}
 
 export {
   classNames,
@@ -584,5 +630,3 @@ export {
   checkAppVersion,
   linkPage,
 };
-
-
