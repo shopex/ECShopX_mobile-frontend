@@ -31,12 +31,15 @@ function CompGoodsItem(props) {
           <View className='goods-title'>{info.item_name}</View>
           <Text className='iconfont icon-shanchu-01' onClick={onDeleteGoodsItem}></Text>
         </View>
-        <View className='item-bd'>
-          <Text className='spec-desc'>{info.item_spec_desc}</Text>
-        </View>
+        {
+          info.item_spec_desc &&
+          <View className='item-bd'>
+            <Text className='spec-desc'>{info.item_spec_desc}</Text>
+          </View>
+        }
         <View className='item-ft'>
           <SpPrice value={info.price / 100} />
-          {isShowAddInput && <SpInputNumber value={info.num} onChange={ onChangeGoodsItem}/>}
+          {isShowAddInput && <SpInputNumber value={info.num} onChange={onChangeGoodsItem}/>}
         </View>
       </View>
     </View>

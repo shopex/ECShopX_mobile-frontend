@@ -94,13 +94,15 @@
       top: -2px;
     }
     &__btn {
-      color: #222;
+      color: var(--color-primary);
       padding: 0;
       width: 40px;
-      
     }
     &__btn-subtract{
       font-size: 26px;
+    }
+    .at-input-number--disabled {
+      color: #ccc;
     }
   }
   .total-pirce {
