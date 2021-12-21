@@ -13,8 +13,7 @@ export async function getPaymentList() {
             platform: isWbWechat?'wxPlatform':payment_platform
         }
     }
-    let list = await api.member.getTradePaymentList(params);
-    console.log("===list===",list)
+    let list = await api.member.getTradePaymentList(params); 
     const isHasAlipay=list.some(item=>item.pay_type_code==='alipayh5');
     return {
         list,

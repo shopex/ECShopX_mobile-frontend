@@ -36,7 +36,7 @@ export default class TabBar extends Component {
     if (nextProps.current) {
       this.setState({ localCurrent: nextProps.current })
     }
-    this.initTabbarData()
+    this.initTabbarData(nextProps)
   }
 
   componentDidShow() {
@@ -45,8 +45,9 @@ export default class TabBar extends Component {
     }
   }
 
-  initTabbarData() {
-    const { tabBar } = this.props 
+  initTabbarData(props) {
+    // debugger
+    const { tabBar } = Object.assign(this.props , props)
     let list = []
 
     if (tabBar) {
@@ -77,21 +78,21 @@ export default class TabBar extends Component {
         {
           title: '首页',
           iconType: 'home',
-          iconPrefixClass: 'iconfont',
+          iconPrefixClass: 'icon',
           url: '/pages/index',
           urlRedirect: true
         },
         {
           title: '分类',
           iconType: 'category',
-          iconPrefixClass: 'iconfont',
+          iconPrefixClass: 'icon',
           url: '/pages/category/index',
           urlRedirect: true
         },
         {
           title: '购物车',
           iconType: 'cart',
-          iconPrefixClass: 'iconfont',
+          iconPrefixClass: 'icon',
           url: '/pages/cart/espier-index',
           text: this.cartCount || '',
           max: '99',
@@ -100,7 +101,7 @@ export default class TabBar extends Component {
         {
           title: '我的',
           iconType: 'member',
-          iconPrefixClass: 'iconfont',
+          iconPrefixClass: 'icon',
           url: '/pages/member/index',
           urlRedirect: true
         }
