@@ -56,6 +56,13 @@ import SpShopCoupon from './sp-shop-coupon'
 import SpFilterDrawer from "./sp-filter-drawer";
 import SpButton from "./sp-button";
 import SpFloatPrivacy from './sp-float-privacy'
+import SpTagBar from './sp-tag-bar'
+import SpDrawer from './sp-drawer'
+import SpSelect from './sp-select'
+import SpCellCoupon from "./sp-cell-coupon";
+import SpNewShopItem from './sp-new-shop-item'
+import SpNewPrice from './sp-new-price'
+import SpNewCoupon from './sp-new-coupon'
 
 export default {}
 
@@ -118,4 +125,11 @@ export {
   SpFilterDrawer,
   SpButton,
   SpFloatPrivacy,
+  SpTagBar,
+  SpDrawer,
+  SpSelect,
+  SpCellCoupon,
+  SpNewShopItem,
+  SpNewPrice,
+  SpNewCoupon,
 };

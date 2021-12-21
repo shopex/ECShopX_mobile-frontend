@@ -1,57 +1,53 @@
-import React, { Component } from 'react';
-import { View, Text } from '@tarojs/components'
-import { SpImg } from '@/components'
-import { linkPage } from '@/utils'
+import React, { Component } from "react";
+import { View, Text } from "@tarojs/components";
+import { SpImage } from "@/components";
+import { linkPage, classNames } from "@/utils";
 
-import './navigation.scss'
+import "./navigation.scss";
 
 export default class WgtNavigation extends Component {
   static options = {
-    addGlobalClass: true
-  }
+    addGlobalClass: true,
+  };
 
   static defaultProps = {
-    info: null
-  }
+    info: null,
+  };
 
-  handleClickItem = linkPage
+  handleClickItem = linkPage;
 
   render() {
-    const { info } = this.props
+    const { info } = this.props;
 
     if (!info) {
-      return null
+      return null;
     }
 
-    const { base, data } = info
+    const { base, data } = info;
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
-        <View className='wgt__body with-padding'>
-          <View className='navigation'>
-            {data.map((item, idx) => {
-              return (
-                <View
-                  className='nav-item'
-                  key={`${idx}1`}
-                  onClick={this.handleClickItem.bind(this, item)}
-                >
-                  <View className='nav-img-wrap'>
-                    <SpImg
-                      img-class='nav-img'
-                      src={item.imgUrl}
-                      // mode='widthFix'
-                      width='200'
-                      lazyLoad
-                    />
-                  </View>
-                  <Text className='nav-name'>{item.content}</Text>
-                </View>
-              )
-            })}
-          </View>
+      <View
+        className={classNames("wgt wgt-navigation", {
+          wgt__padded: base.padded,
+        })}
+      >
+        <View className="navigation">
+          {data.map((item, idx) => (
+            <View
+              className="nav-item"
+              key={`nav-item__${idx}`}
+              onClick={this.handleClickItem.bind(this, item)}
+            >
+              <SpImage
+                src={item.imgUrl}
+                width={100}
+                lazyLoad
+              />
+              <Text className="nav-name">{item.content}</Text>
+            </View>
+          ))}
         </View>
       </View>
-    )
+    );
   }
 }

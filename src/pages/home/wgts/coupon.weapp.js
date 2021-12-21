@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
  import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text, Button } from '@tarojs/components'
-// import { SpImg, SpToast, CouponModal } from '@/components'
+import { CouponModal } from '@/components'
 import api from '@/api'
 import S from '@/spx'
-import { classNames } from '@/utils'
+import { classNames, showToast } from '@/utils'
 // import { Tracker } from '@/service'
 
 import './coupon.scss'
 
-// TODO: 用户信息验证
 export default class WgtCoupon extends Component {
   static options = {
     addGlobalClass: true
@@ -30,7 +29,7 @@ export default class WgtCoupon extends Component {
 
   handleClickNews = (card_item) => {
     if (!S.getAuthToken()) {
-      S.toast('请先登录再领取')
+      showToast("请先登录再领取");
 
       setTimeout(() => {
         S.login(this)
@@ -46,8 +45,7 @@ export default class WgtCoupon extends Component {
 
     let _this = this
     api.user.newWxaMsgTmpl(templeparams).then(
-      (tmlres) => {
-        console.log('templeparams---1', tmlres)
+      (tmlres) => { 
         if (tmlres.template_id && tmlres.template_id.length > 0) {
           wx.requestSubscribeMessage({
             tmplIds: tmlres.template_id,
@@ -68,8 +66,7 @@ export default class WgtCoupon extends Component {
     )
   }
 
-  handleGetCard = async (card_item) => {
-    console.log('card_item', card_item)
+  handleGetCard = async (card_item) => { 
     const query = {
       card_id: card_item.id
     }
@@ -208,7 +205,7 @@ export default class WgtCoupon extends Component {
               </View>
             )
           })}
-          {voucher_package.map((item, idx) => {
+          {voucher_package && voucher_package.map((item, idx) => {
             return (
               <View className={classNames('coupon-wgt', item.imgUrl && 'with-img')} key={`${idx}1`}>
                 {' '}
@@ -274,7 +271,6 @@ export default class WgtCoupon extends Component {
             )
           })}
         </View>*/}
-        <SpToast />
         <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
       </View>
     )

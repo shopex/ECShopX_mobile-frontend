@@ -1,6 +1,7 @@
 import Taro from "@tarojs/taro";
 import { View, ScrollView, Text } from "@tarojs/components";
-import { useEffect, useCallback } from 'react'
+import { AtDrawer } from 'taro-ui'
+import { useEffect, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import {
@@ -12,6 +13,7 @@ import {
   SpSearchBar,
   SpPage,
   SpScrollView,
+  SpButton
 } from "@/components";
 import doc from '@/doc'
 import { classNames, pickBy } from "@/utils";
@@ -31,7 +33,8 @@ const initialState = {
 
 
 function shopList(props) {
-  const [state, setState] = useImmer(initialState)
+  const [state, setState] = useImmer( initialState )
+  const [drawer, setDrawer] = useState(false)
 
   const { location } = useSelector( state => state.user )
 
@@ -115,7 +118,12 @@ function shopList(props) {
           list={filterList}
           onChange={handleFilterChange}
         >
-          <View className="filter-btn">
+          <View
+            className="filter-btn"
+            onClick={() => {
+              setDrawer(true);
+            }}
+          >
             筛选<Text className="iconfont icon-filter"></Text>
           </View>
         </SpFilterBar>
@@ -127,6 +135,22 @@ function shopList(props) {
           </View>
         ))}
       </SpScrollView>
+
+      <AtDrawer
+        show={drawer}
+        right
+        mask
+        onClose={() => {
+          setDrawer(false);
+        }}
+      >
+        <View className="drawer-content">
+          <View className="drawer-bd"></View>
+          <View className="drawer-ft">
+            <SpButton />
+          </View>
+        </View>
+      </AtDrawer>
     </SpPage>
   );
 };

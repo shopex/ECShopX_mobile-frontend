@@ -36,14 +36,14 @@ import Automatic from "./home/comps/automatic";
 import "./home/index.scss";
 
 @connect(
-  ({ cart, member, store }) => ({
+  ({ cart, user, store }) => ({
     store,
     list: cart.list,
     cartIds: cart.cartIds,
     cartCount: cart.cartCount,
     showLikeList: cart.showLikeList,
-    // showAdv: member.showAdv,
-    // favs: member.favs
+    showAdv: user.showAdv,
+    favs: user.favs
   }),
   dispatch => ({
     onUpdateLikeList: show_likelist =>
@@ -106,8 +106,7 @@ export default class Home extends Component {
 
   // 获取隐私政策时间
   async protocolUpdateTime() {
-    const isLocal = await entry.getLocalSetting()
-    console.log('=============isLocal', isLocal)
+    const isLocal = await entry.getLocalSetting() 
 
     const time = Taro.getStorageSync('PrivacyUpdate_time')
     const result = await api.wx.getPrivacyTime()
@@ -244,9 +243,7 @@ export default class Home extends Component {
   // 分享
   onShareAppMessage(params) {
     const shareInfo = this.shareInfo()
-
-    console.log('--onShareAppMessage--', shareInfo)
-
+ 
     return {
       ...shareInfo
     }
@@ -410,8 +407,7 @@ export default class Home extends Component {
     const options = getCurrentInstance().router.params
     options.isStore = is_open_store_status
     const res = await entry.entryLaunch(options, isNeedLoacate)
-    const { store } = res
-    console.log('store===========', store)
+    const { store } = res 
     if (!isArray(store)) {
       this.setState(
         {
@@ -719,6 +715,8 @@ export default class Home extends Component {
     // 否是fixed
     const isFixed = positionStatus
 
+    const { is_open_scan_qrcode } = Taro.getStorageSync('settingInfo') 
+    const { openStore } = Taro.getStorageSync('otherSetting')
     return (
       <View className='page-index'>
         {is_open_official_account === 1 && show_official && (
