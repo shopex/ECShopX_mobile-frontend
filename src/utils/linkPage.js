@@ -2,9 +2,8 @@ import Taro from "@tarojs/taro";
 // import { WGTS_NAV_MAP } from '@/consts'
 
 function linkPage(data) {
-  const { id, title, linkPage } = data;
+  const { id, title, linkPage, type } = data;
   let url = "";
-
   switch (linkPage) {
     case "goods":
       url = "/pages/item/espier-detail?id=" + id;
@@ -84,6 +83,8 @@ function linkPage(data) {
     url = "/pointitem/pages/list";
   }
 
+
+  
   if (type === "other_wxapp") {
     Taro.navigateToMiniProgram({
       appId: id,

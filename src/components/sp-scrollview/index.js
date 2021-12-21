@@ -88,4 +88,4 @@ SpScrollView.options = {
   addGlobalClass: true
 }
 
-export default React.memo(React.forwardRef(SpScrollView));
+export default React.forwardRef(SpScrollView);

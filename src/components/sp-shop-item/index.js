@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import { View, Image, Text } from "@tarojs/components";
-import { useMemo, memo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { classNames, JumpStoreIndex, JumpGoodDetail } from "@/utils";
 import { SpImage, SpShopCoupon } from "@/components";
 import api from "@/api";
@@ -46,4 +46,4 @@ SpShopItem.options = {
   addGlobalClass: true,
 };
 
-export default memo(SpShopItem);
+export default SpShopItem;

@@ -83,4 +83,4 @@ SpFilterDrawer.options = {
   addGlobalClass: true,
 };
 
-export default React.memo(SpFilterDrawer);
+export default SpFilterDrawer;
