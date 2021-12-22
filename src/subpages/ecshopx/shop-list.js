@@ -1,7 +1,7 @@
 import Taro from "@tarojs/taro";
 import { View, ScrollView, Text } from "@tarojs/components";
 import { AtDrawer } from 'taro-ui'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import {
@@ -13,12 +13,17 @@ import {
   SpSearchBar,
   SpPage,
   SpScrollView,
-  SpButton
+  SpButton,
+  SpTagBar,
+  SpDrawer,
+  SpSelect
 } from "@/components";
 import doc from '@/doc'
 import { classNames, pickBy } from "@/utils";
 import api from "@/api";
 import "./shop-list.scss";
+import {BUSINESS_LIST_SERVICES} from './consts/index'
+import { Tracker } from '@/service'
 
 const initialState = {
   filterList: [
@@ -28,14 +33,25 @@ const initialState = {
   ],
   curFilterIdx: 0,
   keywords: '',
-  list: []
+  list: [],
+  tagList: [],
+  brandSelect: [],
+  businessServices: [],
 }
 
 
 function shopList(props) {
   const [state, setState] = useImmer( initialState )
+  const {
+    brandSelect,
+    businessServices,
+    keywords,
+    curFilterIdx
+  } = state;
+  const goodsRef = useRef();
+  useEffect(() => {}, []);
   const [drawer, setDrawer] = useState(false)
-
+  const [isShowSearch, setIsShowSearch] = useState(false)
   const { location } = useSelector( state => state.user )
 
   // const handleClickFilterLabel = useCallback((item) => {
@@ -61,7 +77,7 @@ function shopList(props) {
   //   []
   // );
 
-  const fetch = useCallback( async ( params ) => {
+  const fetch = async ( params ) => {
     const { pageIndex: page, pageSize } = params;
     const query = {
       page,
@@ -69,7 +85,7 @@ function shopList(props) {
       // province: lnglat().province,
       // city: lnglat().city ? lnglat().city : lnglat().province,
       // area: lnglat().district,
-      type: 0,
+      type: curFilterIdx,
       show_discount: 1,
       show_marketing_activity: 1,
       // is_ziti: logistics.is_ziti,
@@ -82,14 +98,18 @@ function shopList(props) {
       show_score: 1,
       // sort_type: filterValue,
       show_items: 1,
+      brand_id: brandSelect.join(),
+      businessServices: businessServices.join(),
+      keywords: keywords
       // name
     };
-    const { list, total_count, tagList } = await api.shop.list( query );
-    
+    const { list, total_count, tagList } = await api.shop.list(query);
     const _list = pickBy(list, doc.shop.SHOP_ITEM);
+    const _tagList = pickBy(tagList, doc.goods.BUSINESS_LIST_TAG)
 
     setState( ( v ) => {
       v.list = v.list.concat(_list);
+      v.tagList = _tagList
     })
 
     return {
@@ -98,26 +118,98 @@ function shopList(props) {
     // setDataList([...dataList, ...list]);
     // setTotal(total_count);
     // fillFilterTag(tagList);
-  }, []);
+  };
 
-  const handleFilterChange = () => {
 
+  const handleFilterChange = async (e) => {
+    await setState((draft) => {
+      draft.curFilterIdx = e;
+    });
+    goodsRef.current.reset();
+  };
+
+  const handleOnFocus = () => {
+    setIsShowSearch(true);
+  };
+
+  const handleOnChange = (val) => {
+    setState(v => {
+      v.keywords = val
+    })
+  };
+
+  const handleOnClear = async () => {
+    await setState(v => {
+      v.keywords = ''
+    });
+    setIsShowSearch(false);
+    goodsRef.current.reset();
+  };
+
+  const handleSearchOff = () => {
+    setIsShowSearch(false);
+  };
+
+  const handleConfirm = async (val) => {
+    Tracker.dispatch("SEARCH_RESULT", {
+      keywords: val,
+    });
+    setIsShowSearch(false);
+    await setState(v => {
+      v.keywords = val
+    });
+    goodsRef.current.reset();
+  };
+
+  const { filterList, list,tagList,  } = state;
+  const onConfirmBrand = async () => {
+    await setState((draft) => {
+      draft.drawer = false;
+    });
+    setDrawer(false);
+    goodsRef.current.reset();
+  };
+
+  const onResetBrand = async () => {
+    await setState((draft) => {
+      draft.brandSelect = [];
+      draft.businessServices = []
+      draft.drawer = false;
+    });
+    goodsRef.current.reset();
+  };
+
+  const onChangeBrand = (val) => {
+    setState((draft) => {
+      draft.brandSelect = val;
+    });
+  };
+
+  const onChangeBusinessServices = (val) => {
+    setState((draft) => {
+      draft.businessServices = val;
+    });
+  };
+
+  const handleClickItem = (item) => {
+    Taro.navigateTo({ url: `/pages/store/index?id=${item.distributor_id}` })
   }
-
-  const { filterList, curFilterIdx, list } = state;
 
   return (
     <SpPage className="page-shop-list">
       <View className="search-block">
-        <SpSearchBar placeholder="请输入商家、商品" />
+        <SpSearchBar 
+          keyword={keywords}
+          _placeholder="请输入商家、商品"
+          onFocus={handleOnFocus}
+          onChange={handleOnChange}
+          onClear={handleOnClear}
+          onCancel={handleSearchOff}
+          onConfirm={handleConfirm}
+        />
       </View>
       <View className="filter-block">
-        <SpFilterBar
-          custom
-          current={curFilterIdx}
-          list={filterList}
-          onChange={handleFilterChange}
-        >
+        <SpTagBar className="tag-list" list={pickBy(filterList, doc.shop.BUSINESS_SORT)} value={curFilterIdx} onChange = {handleFilterChange}>
           <View
             className="filter-btn"
             onClick={() => {
@@ -126,31 +218,38 @@ function shopList(props) {
           >
             筛选<Text className="iconfont icon-filter"></Text>
           </View>
-        </SpFilterBar>
+        </SpTagBar>
       </View>
-      <SpScrollView className="shoplist-block" fetch={fetch}>
+      <SpScrollView className="shoplist-block" fetch={fetch} ref={goodsRef}>
         {list.map((item, index) => (
           <View className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
-            <SpShopItem info={item} />
+            <SpShopItem info={item} jumpToBusiness={() => handleClickItem(item)}/>
           </View>
         ))}
       </SpScrollView>
-
-      <AtDrawer
+      <SpDrawer
         show={drawer}
-        right
-        mask
         onClose={() => {
           setDrawer(false);
         }}
+        onConfirm={onConfirmBrand}
+        onReset={onResetBrand}
       >
-        <View className="drawer-content">
-          <View className="drawer-bd"></View>
-          <View className="drawer-ft">
-            <SpButton />
-          </View>
-        </View>
-      </AtDrawer>
+        <View className="brand-title">商家类型</View>
+        <SpSelect
+          multiple
+          info={tagList}
+          value={brandSelect}
+          onChange={onChangeBrand}
+        />
+        <View className="brand-title">商家服务</View>
+        <SpSelect
+          multiple
+          info={BUSINESS_LIST_SERVICES}
+          value={businessServices}
+          onChange={onChangeBusinessServices}
+        />
+      </SpDrawer>
     </SpPage>
   );
 };

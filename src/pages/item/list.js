@@ -65,8 +65,9 @@ function ItemList() {
   const goodsRef = useRef();
 
   useEffect(() => {}, []);
-
+  
   const fetch = async ( { pageIndex, pageSize } ) => {
+  
     let params = {
       page: pageIndex,
       pageSize,
@@ -196,7 +197,6 @@ function ItemList() {
     });
     goodsRef.current.reset();
   };
-
   return (
     <SpPage className={classNames("page-item-list")}>
       <View className="item-list-head">
