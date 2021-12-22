@@ -265,21 +265,6 @@ function CartIndex( props ) {
                     {all_item.shop_name || '自营'}
                   </View>
                   {
-                    cus_plus_buy_goods_list.map((plus_item, plus_index) => (
-                      <View className='cart-item-wrap' key={`cart-item-wrap__${plus_index}`}>
-                        <CompGoodsItem
-                          disabled
-                          info={plus_item}
-                          isShowAddInput={false}
-                          isShowDeleteIcon={false}
-                          // onDelete={onDeleteCartGoodsItem.bind(this, plus_item)}
-                          // onChange={onChangeCartGoodsItem.bind(this, plus_item)}
-                          // onClickImgAndTitle={onClickImgAndTitle.bind(this, plus_item)}
-                        />
-                      </View>
-                    ))
-                  }
-                  {
                     cus_plus_item_list.map((cus_item, cus_index) => {
                       const { discount_desc, activity_id, itemList } = cus_item
                       {/* allChecked = itemList.find((item) => !item.is_checked) */}
@@ -313,7 +298,7 @@ function CartIndex( props ) {
                             </View>
                           }
                           {/** 换购结束 */}
-                          <View className='shop-cart-item-bd'>
+                          <View className='shop-cart-item-bd' style={{ borderBottom: '1px solid #ddd' }}>
                             <View className='shop-activity'></View>
                             {itemList.map((c_sitem, c_index) => (
                               <View className='cart-item-wrap' key={`cart-item-wrap__${c_index}`}>
@@ -333,6 +318,21 @@ function CartIndex( props ) {
                         </View>
                       )
                     })
+                  }
+                  {
+                    cus_plus_buy_goods_list.map((plus_item, plus_index) => (
+                      <View className='cart-item-wrap plus_items_bck' key={`cart-item-wrap__${plus_index}`}>
+                        <CompGoodsItem
+                          disabled
+                          info={plus_item}
+                          isShowAddInput={false}
+                          isShowDeleteIcon={false}
+                          // onDelete={onDeleteCartGoodsItem.bind(this, plus_item)}
+                          // onChange={onChangeCartGoodsItem.bind(this, plus_item)}
+                          // onClickImgAndTitle={onClickImgAndTitle.bind(this, plus_item)}
+                        />
+                      </View>
+                    ))
                   }
                   <View className='shop-cart-item-ft'>
                     <View className='lf'>
