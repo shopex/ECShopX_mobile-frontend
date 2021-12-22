@@ -63,6 +63,10 @@ import SpCellCoupon from "./sp-cell-coupon";
 import SpNewShopItem from './sp-new-shop-item'
 import SpNewPrice from './sp-new-price'
 import SpNewCoupon from './sp-new-coupon'
+import SpScreenAd from './sp-screen-ad'
+import SpFloatMenus from "./sp-float-menus";
+import SpFloatMenuItem from "./sp-float-menu-item";
+import SpFloatAd from "./sp-float-ad";
 
 export default {}
 
@@ -132,4 +136,8 @@ export {
   SpNewShopItem,
   SpNewPrice,
   SpNewCoupon,
+  SpScreenAd,
+  SpFloatMenus,
+  SpFloatMenuItem,
+  SpFloatAd,
 };
