@@ -89,11 +89,11 @@ export default class WgtGoodsScroll extends Component {
     return (
       <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>
-              <Text>{base.title}</Text>
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
               {config.type === 'goods' ? (
-                <View className='wgt__subtitle'>{base.subtitle}</View>
+                <Text className='wgt-subtitle'>{base.subtitle}</Text>
               ) : (
                 <View>
                   {timer && config.lastSeconds != 0 ? (

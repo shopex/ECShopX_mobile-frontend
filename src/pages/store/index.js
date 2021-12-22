@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import Taro from "@tarojs/taro";
+import Taro,{ getCurrentInstance } from "@tarojs/taro";
 import { View, Image, ScrollView } from "@tarojs/components";
 import {
   SpToast,
@@ -20,7 +20,7 @@ import {
   isNavbar,
 } from "@/utils";
 import { platformTemplateName } from "@/utils/platform";
-import { withBackToTop, withPager } from "@/hocs";
+import {  withPager,withBackToTop } from "@/hocs";
 import qs from "qs";
 import S from "@/spx";
 import {
@@ -39,6 +39,7 @@ import {
   WgtGoodsGridTab,
   WgtGoodsFaverite,
 } from "../home/wgts";
+import CompHeader from './comps/comp-header'
 
 import "./index.scss";
 
@@ -78,8 +79,11 @@ export default class StoreIndex extends Component {
   }
 
   async componentDidMount() {
-    const options = await normalizeQuerys(this.$router.params);
-    const id = options.id || options.dtid;
+    const current = getCurrentInstance()
+    console.log('id==',current.router.params.id)
+    // const options = await normalizeQuerys(this.$router.params);
+    // const id = options.id || options.dtid;
+    const id = current.router.params.id
     if (id) {
       this.fetchInfo(id);
       this.fetchCouponList(id);
@@ -285,7 +289,8 @@ export default class StoreIndex extends Component {
     }
 
     console.log("===likeList==>", likeList);
-
+    const current = getCurrentInstance()
+    const id = current.router.params.id
     return (
       <View
         className={classNames("page-store-index", {
@@ -301,7 +306,12 @@ export default class StoreIndex extends Component {
           scrollY
         >
           <View className="wgts-wrap__cont">
-            <View className="store-header">
+            <CompHeader 
+              inStore 
+              info={storeInfo}
+              couponList={couponList}
+            />
+            {/* <View className="store-header">
               <SpNewShopItem
                 inStore
                 info={storeInfo}
@@ -309,7 +319,7 @@ export default class StoreIndex extends Component {
               />
             </View>
 
-            <SpCellCoupon couponList={couponList} info={storeInfo} />
+            <SpCellCoupon couponList={couponList} info={storeInfo} /> */}
 
             {wgts.map((item, idx) => {
               return (
@@ -323,7 +333,7 @@ export default class StoreIndex extends Component {
                   {item.name === "marquees" && <WgtMarquees info={item} />}
                   {item.name === "navigation" && <WgtNavigation info={item} />}
                   {item.name === "coupon" && (
-                    <WgtCoupon info={item} dis_id={this.$router.params.id} />
+                    <WgtCoupon info={item} dis_id={id} />
                   )}
                   {item.name === "imgHotzone" && <WgtImgHotZone info={item} />}
                   {item.name === "goodsScroll" && (
@@ -332,7 +342,7 @@ export default class StoreIndex extends Component {
                   {item.name === "goodsGrid" && (
                     <WgtGoodsGrid
                       info={item}
-                      dis_id={this.$router.params.id}
+                      dis_id={id}
                       index={idx}
                       type="good-grid"
                     />

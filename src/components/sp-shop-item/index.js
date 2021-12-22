@@ -11,7 +11,19 @@ function SpShopItem(props) {
   if (!info) {
     return null;
   }
-  const { logo, name, distance, cardList, salesCount,fullReduction = [{label:"满减",text:"好物狂欢节享满199减30"}]  } = info;
+  const distance = useMemo(() => {
+    const dis = info.distance;
+    //km为单位米
+    if(dis) {
+      if (dis < 1) {
+        return `${Math.round(dis * Math.pow(10, 3))}m`;
+      } else {
+        return `${Number(dis).toFixed(2)}km`;
+      }
+    }
+  }, [info.distance]);
+  const { logo, name, cardList, salesCount,fullReduction = [{label:"满减",text:"好物狂欢节享满199减30"}]  } = info;
+  console.log('cardList',cardList)
   return (
     <View className={classNames("sp-shop-item", className)} onClick={jumpToBusiness}>
       <View className="shop-item-hd">

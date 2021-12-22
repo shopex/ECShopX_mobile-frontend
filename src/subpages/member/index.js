@@ -103,13 +103,6 @@ function MemberIndex(props) {
     getMemberCenterConfig()
   }, [])
 
-  // useDidShow( () => {
-  //   debugger
-  //   if (isLogin) {
-  //     getUserInfo()
-  //   }
-  // })
-
   // 分享
   useShareAppMessage(async (res) => {
     const {
@@ -367,6 +360,7 @@ function MemberIndex(props) {
             <CompVipCard
               info={vipInfo}
               onLink={handleClickLink.bind(this, '/subpage/pages/vip/vipgrades')}
+              userInfo={userInfo}
             />
           )}
         </View>
@@ -405,7 +399,7 @@ function MemberIndex(props) {
               className='order-item'
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=5')}
             >
-              <SpImage src='daizhifu.png' width='70' />
+              <SpImage src='daizhifu.png' className="icon-style"/>
               { data.waitPayNum > 0 && <View className='order-bradge'><Text>{ data.waitPayNum}</Text></View>}
               <Text className='order-txt'>待支付</Text>
             </View>
@@ -413,7 +407,7 @@ function MemberIndex(props) {
               className='order-item'
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=3')}
             >
-              <SpImage src='daifahuo.png' width='70' />
+              <SpImage src='daifahuo.png' className="icon-style" />
               {data.waitSendNum > 0 && <View className='order-bradge'><Text>{ data.waitSendNum}</Text></View>}
               <Text className='order-txt'>待发货</Text>
             </View>
@@ -421,7 +415,7 @@ function MemberIndex(props) {
               className='order-item'
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=1')}
             >
-              <SpImage src='daishouhuo.png' width='70' />
+              <SpImage src='daishouhuo.png' className="icon-style" />
               {data.waitRecevieNum > 0 && <View className='order-bradge'><Text>{ data.waitRecevieNum}</Text></View>}
               <Text className='order-txt'>待收货</Text>
             </View>
@@ -429,14 +423,14 @@ function MemberIndex(props) {
               className='order-item'
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=3')}
             >
-              <SpImage src='pingjia.png' width='70' />
+              <SpImage src='pingjia.png' className="icon-style" />
               <Text className='order-txt'>待评价</Text>
             </View>
             <View
               className='order-item'
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/after-sale')}
             >
-              <SpImage src='daishouhuo.png' width='70' />
+              <SpImage src='daishouhuo.png' className="icon-style" />
               {data.afterSalesNum > 0 && <View className='order-bradge'><Text>{ data.afterSalesNum}</Text></View>}
               <Text className='order-txt'>售后</Text>
             </View>

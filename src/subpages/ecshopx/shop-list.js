@@ -163,9 +163,6 @@ function shopList(props) {
 
   const { filterList, list,tagList,  } = state;
   const onConfirmBrand = async () => {
-    await setState((draft) => {
-      draft.drawer = false;
-    });
     setDrawer(false);
     goodsRef.current.reset();
   };
@@ -174,7 +171,6 @@ function shopList(props) {
     await setState((draft) => {
       draft.brandSelect = [];
       draft.businessServices = []
-      draft.drawer = false;
     });
     goodsRef.current.reset();
   };
@@ -200,7 +196,7 @@ function shopList(props) {
       <View className="search-block">
         <SpSearchBar 
           keyword={keywords}
-          _placeholder="请输入商家、商品"
+          placeholder="请输入商家、商品"
           onFocus={handleOnFocus}
           onChange={handleOnChange}
           onClear={handleOnClear}

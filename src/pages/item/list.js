@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
 import { connect } from "react-redux";
 import { useImmer } from "use-immer";
@@ -26,6 +26,7 @@ import {
 import doc from "@/doc";
 import api from "@/api";
 import { pickBy, classNames, isWeixin, isWeb } from "@/utils";
+import { Tracker } from '@/service'
 
 import "./list.scss";
 
@@ -61,7 +62,7 @@ function ItemList() {
     curTagIdx,
     show,
   } = state;
-
+  const [isShowSearch, setIsShowSearch] = useState(false)
   const goodsRef = useRef();
 
   useEffect(() => {}, []);
@@ -72,6 +73,7 @@ function ItemList() {
       page: pageIndex,
       pageSize,
       brand_id: brandSelect.map( ( item ) => item.id ).toString(),
+      keyword: keyword
     };
 
     if ( curFilterIdx == 1 ) {
@@ -129,30 +131,32 @@ function ItemList() {
   };
 
   const handleOnChange = (val) => {
-    setQuery({ ...query, keywords: val });
+    setState(v => {
+      v.keyword = val
+    })
   };
 
-  const handleOnClear = () => {
-    setQuery({ ...query, keywords: "" });
+  const handleOnClear = async() => {
+    await setState(v => {
+      v.keyword = ''
+    });
     setIsShowSearch(false);
-    resetPage();
-    setList({ leftList: [], rightList: [] });
-    nextPage();
+    goodsRef.current.reset();
   };
 
   const handleSearchOff = () => {
     setIsShowSearch(false);
   };
 
-  const handleConfirm = (val) => {
+  const handleConfirm = async(val) => {
     Tracker.dispatch("SEARCH_RESULT", {
-      keywords: val,
+      keyword: val,
     });
     setIsShowSearch(false);
-    setQuery({ ...query, keywords: val });
-    resetPage();
-    setList({ leftList: [], rightList: [] });
-    nextPage();
+    await setState(v => {
+      v.keywords = val
+    });
+    goodsRef.current.reset();
   };
 
   const onChangeTag = async (e) => {
