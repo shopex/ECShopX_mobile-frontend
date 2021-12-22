@@ -35,16 +35,15 @@ import {
 import api from '@/api'
 import S from '@/spx'
 // import { Tracker } from '@/service'
-import entry from '@/utils/entry'
 import { useLogin } from '@/hooks'
 import { fetchCartList, deleteCartItem, updateCartItemNum } from '@/store/slices/cart'
 import CompGoodsItem from './comps/comp-goodsitem'
 import './espier-index.scss'
 
-const tablist = [
-  { title: '普通商品', icon: 'icon-putongshangpin-01', type: 'normal' },
-  { title: '跨境商品', icon: 'icon-kuajingshangpin-01', type: 'cross' }
-]
+// const tablist = [
+//   { title: '普通商品', icon: 'icon-putongshangpin-01', type: 'normal' },
+//   { title: '跨境商品', icon: 'icon-kuajingshangpin-01', type: 'cross' }
+// ]
 
 const initialState = {
   likeList: [],
@@ -109,28 +108,15 @@ function CartIndex( props ) {
         return { list: itemList, active }
       })
       cus_activity_list.push({ list: Object.values(tDict), active: null })
-
-      // 加购价选中的商品
-      // const cus_plus_buy_goods_list = []
-      // plus_buy_activity.map(pitem => {
-      //   const { plus_item } = pitem;
-      //   if (plus_item) {
-      //     const items = pickBy(plus_item, {...doc.cart.CART_GOODS_ITEM, activity_id: pitem.activity_id, })
-      //     cus_plus_buy_goods_list.push(items)
-      //   }
-      // })
-
       // 加购价
       let all_plus_active_items = []
       let no_active_item = []
-      // let cus_plus_buy_goods_list = []
       let cus_plus_item_list = plus_buy_activity.map((plusitem, index) => {
         const { plus_item, activity_item_ids, activity_id } = plusitem;
         // 加购价选中的商品
         let plus_goods = null
         if (plus_item) {
           plus_goods = pickBy(plus_item, {...doc.cart.CART_GOODS_ITEM, activity_id, })
-          // cus_plus_buy_goods_list.push(items)
         }
         all_plus_active_items.push(activity_item_ids)
         const result = list.filter(k => activity_item_ids.indexOf(k.item_id) > -1)
@@ -155,10 +141,8 @@ function CartIndex( props ) {
       return {
         ...item,
         cus_plus_item_list,
-        // cus_plus_buy_goods_list,
         cus_activity_list
       }
-      // return { goodsItemList: shopCart, plusBuyActivityList: [...plusBuyActivityList], activityList: activityList }
     })
     return groupsList || []
   }
@@ -266,65 +250,65 @@ function CartIndex( props ) {
             {groupsList.map((all_item, all_index) => {
               const { cus_plus_item_list = [], activityList = [] } = all_item || {}
               const allChecked = all_item.cart_total_count == all_item.list.length
-              {/* const allChecked = cus_plus_item_list.map(el.itemList.find((item) => !item.is_checked)) */}
               return (
                 <View className='shop-cart-item' key={`shop-cart-item__${all_index}`}>
                   <View className='shop-cart-item-hd'>
                     <Text className="iconfont icon-shop"/>
                     {all_item.shop_name || '自营'}
                   </View>
-                  {
-                    cus_plus_item_list.map((cus_item, cus_index) => {
-                      const { discount_desc, activity_id, itemList, cus_plus_buy_goods_list } = cus_item
-                      {/* allChecked = itemList.find((item) => !item.is_checked) */}
-                      {/** 换购开始 */}
-                      return (
-                        <View key={cus_index}>
-                          {
-                            discount_desc && 
-                            <View
-                              className="shop-cart-activity"
-                              key={activity_id}
-                            >
-                              <View className="shop-cart-activity-item">
-                                <View
-                                  className="shop-cart-activity-item-left"
-                                  onClick={() => Taro.navigateTo({ url: `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${activity_id}` })}
-                                >
-                                  <Text className="shop-cart-activity-label">
-                                    换购
-                                  </Text>
-                                  <Text>{discount_desc.info}</Text>
-                                </View>
-                                <View
-                                  className="shop-cart-activity-item-right"
-                                  onClick={() => Taro.navigateTo({ url: `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${activity_id}` })}
-                                >
-                                  去选择
-                                  <Text className="at-icon at-icon-chevron-right"></Text>
-                                </View>
+                  {cus_plus_item_list.map((cus_item, cus_index) => {
+                    const { discount_desc, activity_id, itemList, cus_plus_buy_goods_list } = cus_item
+                    return (
+                      <View key={cus_index}>
+                        {/** 换购开始 */}
+                        {discount_desc && 
+                          <View
+                            className="shop-cart-activity"
+                            key={activity_id}
+                          >
+                            <View className="shop-cart-activity-item">
+                              <View
+                                className="shop-cart-activity-item-left"
+                                onClick={() => Taro.navigateTo({ url: `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${activity_id}` })}
+                              >
+                                <Text className="shop-cart-activity-label">
+                                  换购
+                                </Text>
+                                <Text>{discount_desc.info}</Text>
+                              </View>
+                              <View
+                                className="shop-cart-activity-item-right"
+                                onClick={() => Taro.navigateTo({ url: `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${activity_id}` })}
+                              >
+                                去选择
+                                <Text className="at-icon at-icon-chevron-right"></Text>
                               </View>
                             </View>
-                          }
-                          {/** 换购结束 */}
-                          <View className='shop-cart-item-bd'>
-                            <View className='shop-activity'></View>
-                            {itemList.map((c_sitem, c_index) => (
-                              <View className='cart-item-wrap' key={`cart-item-wrap__${c_index}`}>
-                                <SpCheckboxNew
-                                  checked={c_sitem.is_checked}
-                                  onChange={onChangeGoodsItemCheck.bind(this, c_sitem)}
-                                />
-                                <CompGoodsItem
-                                  info={c_sitem}
-                                  onDelete={onDeleteCartGoodsItem.bind(this, c_sitem)}
-                                  onChange={onChangeCartGoodsItem.bind(this, c_sitem)}
-                                  onClickImgAndTitle={onClickImgAndTitle.bind(this, c_sitem)}
-                                />
-                              </View>
-                            ))}
                           </View>
-                          {cus_plus_buy_goods_list && <View className='cart-item-wrap plus_items_bck'>
+                        }
+                        {/** 换购结束 */}
+                        {/**普通商品开始 */}
+                        <View className='shop-cart-item-bd'>
+                          <View className='shop-activity'></View>
+                          {itemList.map((c_sitem, c_index) => (
+                            <View className='cart-item-wrap' key={`cart-item-wrap__${c_index}`}>
+                              <SpCheckboxNew
+                                checked={c_sitem.is_checked}
+                                onChange={onChangeGoodsItemCheck.bind(this, c_sitem)}
+                              />
+                              <CompGoodsItem
+                                info={c_sitem}
+                                onDelete={onDeleteCartGoodsItem.bind(this, c_sitem)}
+                                onChange={onChangeCartGoodsItem.bind(this, c_sitem)}
+                                onClickImgAndTitle={onClickImgAndTitle.bind(this, c_sitem)}
+                              />
+                            </View>
+                          ))}
+                        </View>
+                        {/**普通商品开始 */}
+                        {/**换购商品开始 */}
+                        {cus_plus_buy_goods_list &&
+                          <View className='cart-item-wrap plus_items_bck'>
                             <SpCheckboxNew disabled />
                             <CompGoodsItem
                               disabled
@@ -332,26 +316,13 @@ function CartIndex( props ) {
                               isShowAddInput={false}
                               isShowDeleteIcon={false}
                             />
-                          </View>}
-                        </View>
-                      )
-                    })
-                  }
-                  {/* {
-                    cus_plus_buy_goods_list.map((plus_item, plus_index) => (
-                      <View className='cart-item-wrap plus_items_bck' key={`cart-item-wrap__${plus_index}`}>
-                        <CompGoodsItem
-                          disabled
-                          info={plus_item}
-                          isShowAddInput={false}
-                          isShowDeleteIcon={false}
-                          // onDelete={onDeleteCartGoodsItem.bind(this, plus_item)}
-                          // onChange={onChangeCartGoodsItem.bind(this, plus_item)}
-                          // onClickImgAndTitle={onClickImgAndTitle.bind(this, plus_item)}
-                        />
+                          </View>
+                        }
+                        {/**换购商品开始 */}
                       </View>
-                    ))
-                  } */}
+                    )
+                  })}
+                  {/** 结算/全选操作开始 */}
                   <View className='shop-cart-item-ft'>
                     <View className='lf'>
                       <SpCheckboxNew
@@ -385,6 +356,7 @@ function CartIndex( props ) {
                       </AtButton>
                     </View>
                   </View>
+                  {/** 结算/全选操作开始 */}
                 </View>
               )
             })}
