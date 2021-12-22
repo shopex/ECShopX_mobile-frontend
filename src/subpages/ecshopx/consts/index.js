@@ -45,11 +45,26 @@ export function fillFilterTag(tagList){
     FILTER_DRAWER_DATA[0].children=tagList.map(item=>({value:item.tag_id,label:item.tag_name}));
 }
 
-export const SEARCH_DATA=[
-    '可乐',
-    '香氛蜡烛',
-    '收纳',
-    '坚果零食', 
-    '酸奶', 
-    '外框左右空24px', 
-]
+export const SEARCH_DATA = [
+  "可乐",
+  "香氛蜡烛",
+  "收纳",
+  "坚果零食",
+  "酸奶",
+  "外框左右空24px",
+];
+
+export const BUSINESS_LIST_SERVICES = [
+  {
+    id: "ziti",
+    name: "自提",
+  },
+  {
+    id: "delivery",
+    name: "快递",
+  },
+  {
+    id: "dada",
+    name: "同城配",
+  },
+];

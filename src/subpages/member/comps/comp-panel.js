@@ -1,10 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { classNames, styleNames } from '@/utils'
 
 import './comp-panel.scss'
 
-function CompsPanel(props) {
+function CompPanel(props) {
   const { title, extra, icon = 'icon-qianwang-01', children, className, onLink = () => {} } = props
   return (
     <View
@@ -36,8 +36,8 @@ function CompsPanel(props) {
   )
 }
 
-CompsPanel.options = {
+CompPanel.options = {
   addGlobalClass: true
 }
 
-export default CompsPanel
+export default CompPanel

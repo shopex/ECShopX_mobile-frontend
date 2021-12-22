@@ -1,4 +1,4 @@
-import Taro, { Component } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { styleNames } from '@/utils'
 

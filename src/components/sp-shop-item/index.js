@@ -2,21 +2,18 @@ import Taro from "@tarojs/taro";
 import { View, Image, Text } from "@tarojs/components";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { classNames, JumpStoreIndex, JumpGoodDetail } from "@/utils";
-import { SpImage, SpShopCoupon } from "@/components";
+import { SpImage, SpShopCoupon,SpShopFullReduction } from "@/components";
 import api from "@/api";
 import "./index.scss";
 
-
 function SpShopItem(props) {
-  const { className, info } = props;
+  const { className, info, jumpToBusiness } = props;
   if (!info) {
     return null;
   }
-
-  const { logo, name, distance, cardList, salesCount } = info;
-
+  const { logo, name, distance, cardList, salesCount,fullReduction = [{label:"满减",text:"好物狂欢节享满199减30"}]  } = info;
   return (
-    <View className={classNames("sp-shop-item", className)}>
+    <View className={classNames("sp-shop-item", className)} onClick={jumpToBusiness}>
       <View className="shop-item-hd">
         <SpImage className="shop-logo" src={logo} />
       </View>
@@ -36,7 +33,11 @@ function SpShopItem(props) {
             <SpShopCoupon info={item} key={`shop-coupon__${index}`} />
           ))}
         </View>
-        <View className="item-bd-ac"></View>
+        <View className='item-bd-fr'>
+          {fullReduction.map((item, index) => (
+            <SpShopFullReduction info={item} key={`shop-full-reduction__${index}`} />
+          ))}
+        </View>
       </View>
     </View>
   );
