@@ -59,6 +59,7 @@ import SpFloatPrivacy from './sp-float-privacy'
 import SpTagBar from './sp-tag-bar'
 import SpDrawer from './sp-drawer'
 import SpSelect from './sp-select'
+import SpShopFullReduction from './sp-shop-fullReduction'
 import SpCellCoupon from "./sp-cell-coupon";
 import SpNewShopItem from './sp-new-shop-item'
 import SpNewPrice from './sp-new-price'
@@ -132,6 +133,7 @@ export {
   SpTagBar,
   SpDrawer,
   SpSelect,
+  SpShopFullReduction,
   SpCellCoupon,
   SpNewShopItem,
   SpNewPrice,
