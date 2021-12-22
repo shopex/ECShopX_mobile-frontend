@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { SpGoodsItem ,GoodsItem,SpImg} from '@/components'
-import { pickBy, classNames, log } from '@/utils'
+import { pickBy, classNames, styleNames, getThemeStyle } from '@/utils'
 import { linkPage } from './helper'
 import { Tracker } from '@/service'
 import { getDistributorId } from '@/utils/helper'
