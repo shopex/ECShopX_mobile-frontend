@@ -5,13 +5,16 @@ import { styleNames } from '@/utils'
 import './comp-vipcard.scss'
 
 function CompVipCard( props ) {
-  const { info } = props
+  const { info,onLink,userInfo } = props
+  console.log('vip-info==',info,userInfo)
+  const vipGrade = userInfo.grade_id
   return (
     <View
       className='comp-vipcard'
       style={styleNames({
         'background-image': `url(${process.env.APP_IMAGE_CDN}/vip1.png)`
       })}
+      onClick={onLink}
     >
       <View className='lf-con'>
         <View className='vip-title'>

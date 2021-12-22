@@ -115,7 +115,7 @@ export default class SearchBar extends Component {
   }
 
   render() {
-    const { isFixed, keyword, showDailog, _placeholder } = this.props
+    const { isFixed, keyword, showDailog, placeholder } = this.props
     const { showSearchDailog, historyList, isShowAction, searchValue } = this.state
     return (
       <View
@@ -165,7 +165,7 @@ export default class SearchBar extends Component {
           <AtSearchBar
             className='search-input__bar'
             value={keyword}
-            placeholder={!_placeholder ? '请输入关键词' : _placeholder}
+            placeholder={!placeholder ? '请输入关键词' : placeholder}
             actionName='取消'
             showActionButton={isShowAction}
             onFocus={this.handleFocusSearchHistory.bind(this, true)}
@@ -184,9 +184,9 @@ export default class SearchBar extends Component {
             <View className='search-input__history-title'>
               <Text>最近搜索</Text>
               <Text
-                className='icon-trash icon-del'
+                className='clear-history'
                 onClick={this.handleClickDelete.bind(this)}
-              ></Text>
+              >清除搜索历史</Text>
             </View>
             <View className='search-input__history-list'>
               {historyList.map((item, index) => (

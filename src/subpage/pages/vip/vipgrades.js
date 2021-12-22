@@ -16,13 +16,20 @@ import {
 } from '@/utils'
 import PaymentPicker from '@/pages/cart/comps/payment-picker'
 import userIcon from '@/assets/imgs/user-icon.png'
+// import { useDispatch } from 'react-redux'
 
 import './vipgrades.scss'
+// import { updateUserInfo } from '@/store/slices/user'
+// const dispatch = useDispatch()
 
 @connect(({ colors, sys }) => ({
   colors: colors.current,
   pointName: sys.pointName,
-}))
+}),
+(dispatch) => ({
+  onFetchUser: (favs) => dispatch({ type: 'user', payload: favs })
+})
+)
 export default class VipIndex extends Component {
   $instance = getCurrentInstance();
   constructor(props) {
@@ -199,8 +206,9 @@ export default class VipIndex extends Component {
           showCancel: false,
           success: function (res) {
             console.log("success");
-            S.getMemberInfo();
+            // S.getMemberInfo();
             that.fetchCouponCardList();
+            that.fetchMemberInfo();
           },
         });
       },
@@ -212,6 +220,16 @@ export default class VipIndex extends Component {
       },
     });
   };
+
+  async fetchMemberInfo() {
+    const _userInfo = await api.member.memberInfo()
+    console.log('_userInfo==',_userInfo)
+    // dispatch(updateUserInfo(_userInfo))
+    this.props.onFetchUser(_userInfo)
+    Taro.navigateTo({
+      url: `/subpages/member/index`,
+    });
+  }
 
   async fetchUserVipInfo() {
     const userVipInfo = await api.vip.getUserVipInfo();

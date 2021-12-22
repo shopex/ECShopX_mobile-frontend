@@ -3,6 +3,9 @@ import api from "@/api";
 import { isWeixin, isAlipay, log, isGoodsShelves, showToast } from "@/utils";
 import { SG_TOKEN, SG_USER_INFO } from '@/consts/localstorage'
 import qs from 'qs'
+import configStore from '@/store'
+const { store } = configStore()
+
 
 const globalData = {}
 class Spx {
@@ -124,6 +127,7 @@ class Spx {
   // 获取会员信息
   async getMemberInfo() {
     const userInfo = await api.member.memberInfo()
+    console.log('store==',store)
     store.dispatch({
       type: 'member/init',
       payload: userInfo

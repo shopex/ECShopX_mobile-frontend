@@ -40,14 +40,22 @@ export default class WgtStore extends Component {
 
     return (
       <View className={`wgt ${base.padded ? "wgt__padded" : null}`}>
-        {base.title && (
-          <View className="wgt__header">
-            <View className="wgt__title">
+        {/* {base.title && (
+          <View className="wgt-head">
+            <View className="wgt-title">
               <Text>{base.title}</Text>
-              <View className="wgt__subtitle">{base.subtitle}</View>
+              <View className="wgt-subtitle">{base.subtitle}</View>
             </View>
           </View>
-        )}
+        )} */}
+        {base.title && (
+        <View className="wgt-head">
+          <View className="wgt-hd">
+            <Text className="wgt-title">{base.title}</Text>
+            <Text className="wgt-subtitle">{base.subtitle}</Text>
+          </View>
+        </View>
+      )}
         {data.map((item) => (
           <View
             className="store-wrap"

@@ -26,6 +26,13 @@ $prefixCls: "sp-shop-item";
     font-weight: bold;
   }
 
+  .shop-distance {
+    font-size: 28px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #666666;
+  }
+
   .score {
     font-size: 22px;
     color: #666;
@@ -61,6 +68,11 @@ $prefixCls: "sp-shop-item";
     .sp-shop-fullReduction {
       margin: 0 10px 10px 0;
     }
+  }
+  .item-bd-hd {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   &-left {
