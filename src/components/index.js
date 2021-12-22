@@ -59,10 +59,15 @@ import SpFloatPrivacy from './sp-float-privacy'
 import SpTagBar from './sp-tag-bar'
 import SpDrawer from './sp-drawer'
 import SpSelect from './sp-select'
+import SpShopFullReduction from './sp-shop-fullReduction'
 import SpCellCoupon from "./sp-cell-coupon";
 import SpNewShopItem from './sp-new-shop-item'
 import SpNewPrice from './sp-new-price'
 import SpNewCoupon from './sp-new-coupon'
+import SpScreenAd from './sp-screen-ad'
+import SpFloatMenus from "./sp-float-menus";
+import SpFloatMenuItem from "./sp-float-menu-item";
+import SpFloatAd from "./sp-float-ad";
 
 export default {}
 
@@ -128,8 +133,13 @@ export {
   SpTagBar,
   SpDrawer,
   SpSelect,
+  SpShopFullReduction,
   SpCellCoupon,
   SpNewShopItem,
   SpNewPrice,
   SpNewCoupon,
+  SpScreenAd,
+  SpFloatMenus,
+  SpFloatMenuItem,
+  SpFloatAd,
 };

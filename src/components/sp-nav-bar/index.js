@@ -2,7 +2,7 @@ import React, { Component } from 'react';
  import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View } from '@tarojs/components'
 import { AtNavBar } from 'taro-ui'
-import { classNames, isWeb } from '@/utils'
+import { classNames, isWeb, isNavbar } from '@/utils'
 
 import './index.scss'
 
@@ -15,15 +15,19 @@ function SpNavBar(props) {
     Taro.navigateBack()
   }
 
+  if ( !isNavbar() ) {
+    return null
+  }
+  
   return (
     <AtNavBar
       fixed
-      color='#000'
+      color="#000"
       title={title}
       leftIconType={leftIconType}
       onClickLeftIcon={handleClickLeftIcon}
     />
-  )
+  );
 }
 
 SpNavBar.options = {

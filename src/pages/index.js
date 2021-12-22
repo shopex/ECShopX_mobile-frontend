@@ -1,5 +1,5 @@
 import React, { useEffect, memo } from "react";
-import Taro, { getCurrentInstance } from "@tarojs/taro";
+import Taro, { useShareAppMessage, useShareTimeline } from "@tarojs/taro";
 import { View, Image } from "@tarojs/components";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -8,11 +8,13 @@ import {
   FloatMenus,
   FloatMenuItem,
   AccountOfficial,
-  ScreenAd,
+  SpScreenAd,
   CouponModal,
   SpPage,
   SpSearch,
   SpRecommend,
+  SpFloatMenus,
+  SpFloatMenuItem,
   SpTabbar,
 } from "@/components";
 
@@ -28,6 +30,7 @@ import HomeWgts from "./home/comps/home-wgts";
 import { WgtSearchHome, WgtHomeHeader } from "./home/wgts";
 import Automatic from "./home/comps/automatic";
 import CompAddTip from "./home/comps/comp-addtip";
+import CompFloatMenu from "./home/comps/comp-floatmenu";
 
 import "./home/index.scss";
 
@@ -35,12 +38,14 @@ const MCompAddTip = memo(CompAddTip);
 
 const initState = {
   wgts: [],
+  shareInfo: {},
 };
 
 function Home() {
   const [state, setState] = useImmer(initState);
   const [likeList, setLikeList] = useImmer([]);
-  const { openRecommend } = Taro.getStorageSync(SG_APP_CONFIG);
+  const { openRecommend } = Taro.getStorageSync( SG_APP_CONFIG );
+  const { wgts, shareInfo } = state
 
   const dispatch = useDispatch();
 
@@ -48,6 +53,7 @@ function Home() {
     fetchInit();
     fetchWgts();
     fetchAdConfig();
+    fetchShareInfo()
   }, []);
 
   const fetchInit = async () => {
@@ -88,22 +94,33 @@ function Home() {
     // });
   };
 
-  // const fetchShareConfig = async () => {
+  const fetchShareInfo = async () => {
+    const res = await api.wx.shareSetting({ shareindex: "index" });
+    setState( ( draft ) => {
+      draft.shareInfo = res
+    })
+  }
 
-  // }
+  useShareAppMessage(async (res) =>  {
+    return {
+      title: shareInfo.title,
+      imageUrl: shareInfo.imageUrl,
+      path: "/pages/index",
+    };
+  } )
+  
+  useShareTimeline( async ( res ) => {
+    return {
+      title: shareInfo.title,
+      imageUrl: shareInfo.imageUrl,
+      query: "/pages/index",
+    };
+  })
 
-  // const fetchAdConfig = async () => {
-  //   // 获取弹窗广告配置
-  //   const { general, membercard } = await api.promotion.automatic({
-  //     register_type: 'all'
-  //   })
-
-  // }
-
-  const searchComp = state.wgts.find((wgt) => wgt.name == "search");
-  let wgts = state.wgts;
+  const searchComp = wgts.find( ( wgt ) => wgt.name == "search" );
+  let filterWgts = []
   if (searchComp && searchComp.config.fixTop) {
-    wgts = state.wgts.filter((wgt) => wgt.name !== "search");
+    filterWgts = wgts.filter((wgt) => wgt.name !== "search");
   }
 
   return (
@@ -114,7 +131,7 @@ function Home() {
       </WgtHomeHeader>
 
       <View className="home-body">
-        <HomeWgts wgts={wgts} />
+        <HomeWgts wgts={filterWgts} />
       </View>
 
       {/* 猜你喜欢 */}
@@ -122,6 +139,12 @@ function Home() {
 
       {/* 小程序搜藏提示 */}
       {isWeixin && <MCompAddTip />}
+
+      {/* 开屏广告 */}
+      {isWeixin && <SpScreenAd />}
+
+      {/* 浮动菜单 */}
+      <CompFloatMenu />
 
       <SpTabbar />
     </SpPage>
