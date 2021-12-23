@@ -8,7 +8,7 @@ import { classNames, styleNames, hasNavbar } from "@/utils";
 import "./index.scss";
 
 function SpPage(props) {
-  const { className, children, renderFloat } = props;
+  const { className, children, renderFloat, scrollToTopBtn = false } = props;
   const sys = useSelector((state) => state.sys);
   const [showToTop, setShowToTop] = useState(false);
   const { colorPrimary, colorMarketing, colorAccent, rgb } = sys;
@@ -20,7 +20,6 @@ function SpPage(props) {
   };
 
   usePageScroll((res) => {
-    console.log(1, res.scrollTop);
     if (res.scrollTop > 300) {
       setShowToTop(true);
     } else {
@@ -29,8 +28,9 @@ function SpPage(props) {
   } );
   
   const scrollToTop = () => {
-    debugger
-    Taro.scrollToTop(0)
+    Taro.pageScrollTo({
+      scrollTop: 0,
+    });
   }
   // console.log('hasNavbar:', hasNavbar, pageTheme)
   return (
@@ -45,11 +45,12 @@ function SpPage(props) {
 
       {/* 浮动 */}
       <View className="float-container">
-        {showToTop && (
-          <SpFloatMenuItem onClick={scrollToTop}>
-            <Text className="iconfont icon-arrow-up"></Text>
-          </SpFloatMenuItem>
-        )}
+        {showToTop &&
+          scrollToTopBtn && (
+            <SpFloatMenuItem onClick={scrollToTop}>
+              <Text className="iconfont icon-arrow-up"></Text>
+            </SpFloatMenuItem>
+          )}
         {renderFloat}
       </View>
     </View>
