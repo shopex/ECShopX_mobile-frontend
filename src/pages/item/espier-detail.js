@@ -59,7 +59,7 @@ import {
 } from './comps'
 import { linkPage } from '../home/wgts/helper'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
-import { getDtidIdUrl } from '@/utils/helper' 
+import { getDtidIdUrl } from '@/utils/helper'
 
 import './espier-detail.scss'
 
@@ -126,6 +126,24 @@ export default class EspierDetail extends Component {
     }
   }
 
+  getGoodId = async () => {
+    const options = await normalizeQuerys(this.$router.params)
+    if (options.itemid && !options.id) {
+      options.id = options.itemid
+    }
+    let id = options.id
+    const entryData = await entry.entryLaunch({ ...options }, true)
+    console.log('entryData---->', entryData)
+    id = entryData.id  
+    if (options.scene) {
+      const query = await normalizeQuerys(options)
+      if (query.id) {
+        id = query.id 
+      }
+    }
+    return id;
+  }
+
   async componentDidMount() {
     const options = await normalizeQuerys(this.$router.params)
     // Taro.showLoading({
@@ -177,7 +195,7 @@ export default class EspierDetail extends Component {
             uid = query.uid
           }
         }
-        this.fetchInfo(id)
+       
         this.getEvaluationList(id)
         // 浏览记录
         if (S.getAuthToken()) {
@@ -233,6 +251,8 @@ export default class EspierDetail extends Component {
       Taro.setStorageSync('userinfo', userObj)
     }
     this.fetchCartCount()
+    const goodId=await this.getGoodId();
+    this.fetchInfo(goodId);
   }
 
   async getEvaluationList(id) {
@@ -347,13 +367,13 @@ export default class EspierDetail extends Component {
     return info
   }
 
-  componentWillReceiveProps (next) { 
+  componentWillReceiveProps(next) {
     if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
       let is_fav = null
       setTimeout(() => {
         is_fav = Boolean(next.favs[this.state.info.item_id])
         this.setState({
-          info: {...this.state.info, is_fav}
+          info: { ...this.state.info, is_fav }
         })
         setTimeout(() => {
           const likeList = this.state.likeList.map((item) => {
@@ -449,7 +469,7 @@ export default class EspierDetail extends Component {
       }
     }
 
-    if ( this.$router.path === '/pages/item/espier-detail' ) {
+    if (this.$router.path === '/pages/item/espier-detail') {
       setPageTitle(info.item_name)
       // Taro.setNavigationBarTitle({
       //   title: info.item_name
@@ -507,11 +527,12 @@ export default class EspierDetail extends Component {
         isSubscribeGoods: !!subscribe
       },
       async () => {
+        const vedioUrl = this.getVedioUrl();
         let contentDesc = ''
-
+        //说明没有值
         if (!isArray(desc)) {
-          if (info.videos_url) {
-            contentDesc += `<video src=${info.videos} controls style='width:100%'></video>` + desc
+          if (vedioUrl) {
+            contentDesc += `<video src=${vedioUrl} controls style='width:100%'></video>` + desc
           } else {
             contentDesc = desc
           }
@@ -549,7 +570,7 @@ export default class EspierDetail extends Component {
   }
 
   async fetch(params) {
-    console.log("====favs",this.props.favs)
+    console.log("====favs", this.props.favs)
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -755,7 +776,7 @@ export default class EspierDetail extends Component {
           : distributor_id
         : infoId
 
-    const wxappCode = getDtidIdUrl(`${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&uid=${userId}`,id)
+    const wxappCode = getDtidIdUrl(`${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&uid=${userId}`, id)
 
     console.log('wxappCode', wxappCode)
 
@@ -1109,9 +1130,9 @@ export default class EspierDetail extends Component {
     })
   }
 
-  onTimeUp=()=>{
+  onTimeUp = () => {
     this.setState({
-      timer:null
+      timer: null
     })
   }
 
@@ -1143,6 +1164,20 @@ export default class EspierDetail extends Component {
         url: `/marketing/pages/member/qrcode?user_card_id=${user_card_id}&card_id=${card_id}&code${code}`
       })
     }
+  }
+
+
+  getVedioUrl = () => {
+
+    const { info } = this.state;
+    //有本地视频
+    const localVedio = (info.video_type === 'local' && info.videos) ? info.videos : false;
+    //有微信视频
+    const wechatVedio = (info.video_type !== 'local' && info.videos_url) ? info.videos_url : false;
+    //展示视频
+    const vedioUrl = localVedio || wechatVedio || false;
+
+    return vedioUrl;
   }
 
   render() {
@@ -1204,7 +1239,10 @@ export default class EspierDetail extends Component {
     }
     let { isNewGift } = this.$router.params
 
-    console.log("==likeList==",likeList)
+
+    const vedioUrl = this.getVedioUrl();
+
+    console.log('==vedioUrl==', vedioUrl, desc);
 
     return (
       <View className='page-goods-detail'>
@@ -1540,9 +1578,10 @@ export default class EspierDetail extends Component {
             </View>
           )}
 
+          {/* 为数组说明为组件式 */}
           {isArray(desc) ? (
             <View className='wgts-wrap__cont'>
-              {info.videos_url && <Video src={info.videos} controls style='width:100%'></Video>}
+              {vedioUrl && <Video src={vedioUrl} controls style='width:100%'></Video>}
               {desc.map((item, idx) => {
                 return (
                   <View className='wgt-wrap' key={`${item.name}${idx}`}>
@@ -1559,7 +1598,7 @@ export default class EspierDetail extends Component {
             <View>
               {desc && <SpHtmlContent className='goods-detail__content' content={desc} />}
             </View>
-          )} 
+          )}
           {/* 猜你喜欢 */}
           {likeList.length && showLikeList ? (
             <View className="cart-list cart-list__disabled">
@@ -1588,9 +1627,9 @@ export default class EspierDetail extends Component {
                 })}
               </View>
             </View>
-          ):null}
+          ) : null}
 
-        
+
         </ScrollView>
 
         <FloatMenus>
@@ -1624,10 +1663,10 @@ export default class EspierDetail extends Component {
 
         {!isNewGift ? (
           info.distributor_sale_status &&
-          hasStock &&
-          startActivity &&
-          !info.is_gift &&
-          !vipLimit ? (
+            hasStock &&
+            startActivity &&
+            !info.is_gift &&
+            !vipLimit ? (
             <GoodsBuyToolbar
               info={info}
               type={marketing}
@@ -1657,13 +1696,12 @@ export default class EspierDetail extends Component {
                   </View>
                 ) : (
                   <View
-                    style={`background: ${
-                      this.isPointitemGood() || isAlipay
-                        ? 'grey'
-                        : !isSubscribeGoods
+                    style={`background: ${this.isPointitemGood() || isAlipay
+                      ? 'grey'
+                      : !isSubscribeGoods
                         ? colors.data[0].primary
                         : 'inherit'
-                    }`}
+                      }`}
                     className={`arrivalNotice ${isSubscribeGoods &&
                       'noNotice'} ${this.isPointitemGood() && 'good_disabled'}`}
                     onClick={this.handleSubscription.bind(this)}
@@ -1671,10 +1709,10 @@ export default class EspierDetail extends Component {
                     {this.isPointitemGood()
                       ? '已兑完'
                       : isSubscribeGoods
-                      ? '已订阅到货通知'
-                      : isAlipay
-                      ? '暂无可售'
-                      : '到货通知'}
+                        ? '已订阅到货通知'
+                        : isAlipay
+                          ? '暂无可售'
+                          : '到货通知'}
                   </View>
                 )}
               </View>

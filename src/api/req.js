@@ -361,9 +361,9 @@ if (process.env.NODE_ENV === 'production' && !isWeb) {
   Taro.addInterceptor(Taro.interceptors.logInterceptor)
 }
 
-console.log("===> process.env.APP_BASE_URL", process.env.APP_BASE_URL)
+console.log("===> process.env.APP_BASE_URL==>", process.env.APP_BASE_URL)
 
-console.log("===> process.env.APP_MAP_KEY", process.env.APP_MAP_KEY)
+console.log("===> process.env.APP_MAP_KEY==>", process.env.APP_MAP_KEY)
 
 export default new API({
   baseURL: process.env.APP_BASE_URL

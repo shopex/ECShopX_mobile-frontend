@@ -90,8 +90,7 @@ export default class Home extends Component {
   async componentDidMount() {
     this.protocolUpdateTime();
     this.getShareSetting();
-    this.isShowTips();
-    // this.refreshHeaderHome();
+    this.isShowTips(); 
   }
 
   // 获取隐私政策时间
@@ -106,10 +105,8 @@ export default class Home extends Component {
       this.setState({
         PrivacyVisible: true
       })
-    } else {
-      this.getHomeSetting()
     }
- 
+    this.getHomeSetting()
   }
   // 隐私协议
   onPrivacyChange = async (type) => {
@@ -117,7 +114,7 @@ export default class Home extends Component {
       const result = await api.wx.getPrivacyTime()
       const { update_time } = result
 
-      Taro.setStorageSync('PrivacyUpdate_time', update_time)
+      await Taro.setStorageSync('PrivacyUpdate_time', update_time)
       this.getHomeSetting()
     } else {
       Taro.removeStorageSync('PrivacyUpdate_time')
@@ -173,7 +170,8 @@ export default class Home extends Component {
     this.checkWhite()
     // 购物车数量
     this.fetchCartCount()
-    this.getPointSetting()
+    
+    
     this.refreshHeaderHome();
     if (S.getAuthToken()) {
       this.getCurrentGrad()
@@ -274,14 +272,8 @@ export default class Home extends Component {
       shareInfo: res
     })
   }
-
-  //获取积分配置
-  getPointSetting = () => {
-    api.pointitem.getPointSetting().then((pointRes) => {
-      Taro.setStorageSync('custom_point_name', pointRes.name)
-    })
-  }
-
+  
+ 
   // show显示初始化
   showInit = () => {
     const { curStore, is_open_store_status, isGoStore } = this.state
@@ -396,7 +388,8 @@ export default class Home extends Component {
     const isNeedLoacate = is_open_wechatapp_location == 1
     const options = this.$router.params
     options.isStore = is_open_store_status
-    const res = await entry.entryLaunch(options, isNeedLoacate)
+    const privacy_time = Taro.getStorageSync('PrivacyUpdate_time')
+    const res = await entry.entryLaunch(options, isNeedLoacate, privacy_time)
     Taro.eventCenter.trigger('lnglat-success')
     const { store } = res  
     if (!isArray(store)) {

@@ -24,7 +24,10 @@ import {
   WgtNearbyShop,
   WgtStore,
   WgtGoodsGridTab,
-  WgtGoodsFaverite
+  WgtGoodsFaverite,
+  WgtHeadline,
+  WgtFloorImg,
+  WgtHotTopic
 } from '../home/wgts'
 
 import './index.scss'
@@ -299,7 +302,7 @@ export default class StoreIndex extends Component {
                   {item.name === 'marquees' && <WgtMarquees info={item} />}
                   {item.name === 'navigation' && <WgtNavigation info={item} />}
                   {item.name === 'coupon' && (
-                    <WgtCoupon info={item} dis_id={this.$router.params.id} />
+                    <WgtCoupon info={item} dis_id={this.$router.params.id} hasToast={false} />
                   )}
                   {item.name === 'imgHotzone' && <WgtImgHotZone info={item} />}
                   {item.name === 'goodsScroll' && (
@@ -324,6 +327,11 @@ export default class StoreIndex extends Component {
                   {item.name === 'store' && (
                     <WgtStore info={item} />
                   )}
+                   {item.name === 'headline' && <WgtHeadline info={item} />}
+                   {item.name === 'hotTopic' && <WgtHotTopic info={item} />}
+                   {item.name === 'floorImg' && <WgtFloorImg info={item} />}
+
+
                 </View>
               )
             })}
