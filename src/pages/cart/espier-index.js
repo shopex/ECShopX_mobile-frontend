@@ -96,8 +96,8 @@ function CartIndex( props ) {
       // used_activity：满减  activity_grouping：满减&满折 gift_activity：满赠  plus_buy_activity:加价购
       const { list, used_activity = [], plus_buy_activity = [], activity_grouping = [], gift_activity = [] } = item
       // 使用活动商品
-      const tDict = reduceTransform(list, 'cart_id')
-      const activityGrouping = activity_grouping;
+      // const tDict = reduceTransform(list, 'cart_id')
+      // const activityGrouping = activity_grouping;
       // const cus_activity_list = used_activity.map(act => {
       //   const active = activityGrouping.find(a_item => String(a_item.activity_id) === String(act.activity_id))
       //   const cus_general_goods_list = active.cart_ids.map(id => {
@@ -127,8 +127,7 @@ function CartIndex( props ) {
           cus_plus_exchange_item_list: exchange_item
         }
       })
-      console.log(all_plus_itemid_list, 'all_plus_itemid_list')
-      // all_plus_itemid_list = all_plus_itemid_list.toString().split(',')
+      all_plus_itemid_list = all_plus_itemid_list.toString().split(',')
       const goodsMap = reduceTransform(list, 'cart_id')
       for (const key in goodsMap) {
         if (all_plus_itemid_list.indexOf(goodsMap[key].item_id) < 0) {
