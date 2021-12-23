@@ -1,21 +1,11 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 列表item
- * @FilePath: /unite-vshop/src/boost/component/bargainItem/index.js
- * @Date: 2020-09-22 18:21:25
- * @LastEditors: Arvin
- * @LastEditTime: 2020-09-29 10:02:39
- */
 import React, { Component } from 'react';
- import Taro, { getCurrentInstance } from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Image, Text, Button, Progress } from '@tarojs/components'
 
 import './index.scss'
 
 export default class BargainItem extends Component {
-  defaultProps = {
+  static defaultProps = {
     info: {}
   }
 

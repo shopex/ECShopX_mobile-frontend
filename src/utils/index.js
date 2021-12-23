@@ -22,6 +22,8 @@ import checkAppVersion from "./updateManager";
 import linkPage from "./linkPage";
 import loadingGif from "@/assets/imgs/loading.gif";
 
+const store = configStore()
+
 export * from "./platforms";
 
 const isPrimitiveType = (val, type) =>
@@ -545,16 +547,14 @@ export function styleNames(styles) {
 }
 
 export function getThemeStyle() {
-  // const systemTheme = S.get( "SYSTEM_THEME" );
-  // const result = store.getState();
-  // if (typeof result.system != 'undefined') {
-  //   const { colorPrimary, colorMarketing, colorAccent } = result.system;
-  //   return {
-  //     "--color-primary": colorPrimary,
-  //     "--color-marketing": colorMarketing,
-  //     "--color-accent": colorAccent
-  //   };
-  // }
+  const result = store.getState();
+  const { colorPrimary, colorMarketing, colorAccent, rgb } = result.sys;
+  return {
+    "--color-primary": colorPrimary,
+    "--color-marketing": colorMarketing,
+    "--color-accent": colorAccent,
+    "--color-rgb": rgb,
+  };
 }
 
 export function isNavbar() {
