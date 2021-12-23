@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { SpGoodsItem ,GoodsItem,SpImg} from '@/components'
-import { pickBy, classNames, log } from '@/utils'
+import { pickBy, classNames, styleNames, getThemeStyle } from '@/utils'
 import { linkPage } from './helper'
 import { Tracker } from '@/service'
 import { getDistributorId } from '@/utils/helper'
@@ -123,7 +123,7 @@ export default class WgtGoodsGrid extends Component {
       //   </View>
       // </View>
 
-      <View className={`wgt wgt-grid ${base.padded ? "wgt__padded" : null}`}>
+      <View className={`wgt wgt-grid ${base.padded ? "wgt__padded" : null}`} style={styleNames(getThemeStyle())}>
       {base.title && (
         <View className="wgt__header">
           <View className="wgt__title">
@@ -195,7 +195,7 @@ export default class WgtGoodsGrid extends Component {
                         </Text>
                       </View>
                     )}
-                    {item.promotionActivity && item.promotionActivity.length > 0 && <View className="activity-label">
+                    {item.promotionActivity && item.promotionActivity.length > 0 ? <View className="activity-label">
                         {item.promotionActivity.map((s, index) => (
                           <Text key={index} className="text">
                             {s.tag_type == 'single_group' ? '团购' : ''}
@@ -205,8 +205,9 @@ export default class WgtGoodsGrid extends Component {
                             {s.tag_type == 'normal' ? '秒杀' : ''}
                             {s.tag_type == 'limited_time_sale' ? '限时特惠' : ''}
                             {s.tag_type == 'plus_price_buy' ? '换购' : ''}
+                            
                           </Text>
-                        ))}</View>}
+                        ))}</View>:<View className="activity-label"><Text style={{height:'23px'}}></Text></View>}
                     <View
                       className={`goods-title ${
                         !config.brand || !item.brand ? "no-brand" : ""

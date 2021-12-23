@@ -48,6 +48,7 @@ function wxParse(bindName = 'wxParseData', type='html', data='<div class="color:
   bindData[bindName] = transData;
   that.setData(bindData);
   that.bindData = bindData;
+  console.log("==bindData==",bindData)
   that.wxParseImgLoad = wxParseImgLoad;
   that.wxParseImgTap = wxParseImgTap;
 }

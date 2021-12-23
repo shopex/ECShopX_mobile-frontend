@@ -119,7 +119,25 @@ export default class CouponHome extends Component {
     return { total }
   }
 
-  handleClickNews = (card_item, idx) => {
+  handleClickNews = (card_item, idx) => { 
+    console.log("===handleClickNews===>",card_item)
+    if(card_item.getted===1){
+      //已领取
+      Taro.showToast({
+        title:'优惠券领取机会已用完',
+        icon:'none'
+      })
+      return ;
+    }
+    if(card_item.getted===2){
+      //已领完
+      Taro.showToast({
+        title:'领取失败，优惠券已领完',
+        icon:'none'
+      })
+      return ;
+    }
+ 
     let time = parseInt(new Date().getTime() / 1000)
     if (time < card_item.send_begin_time) return
 
