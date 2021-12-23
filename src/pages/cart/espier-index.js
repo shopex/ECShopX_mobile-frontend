@@ -98,16 +98,17 @@ function CartIndex( props ) {
       // 使用活动商品
       const tDict = reduceTransform(list, 'cart_id')
       const activityGrouping = activity_grouping;
-      const cus_activity_list = used_activity.map(act => {
-        const active = activityGrouping.find(a_item => String(a_item.activity_id) === String(act.activity_id))
-        const cus_general_goods_list = active.cart_ids.map(id => {
-          const cartItem = tDict[id]
-          delete tDict[id]
-          return cartItem
-        })
-        return { list: cus_general_goods_list, active }
-      })
-      cus_activity_list.push({ list: Object.values(tDict), active: null })
+      // const cus_activity_list = used_activity.map(act => {
+      //   const active = activityGrouping.find(a_item => String(a_item.activity_id) === String(act.activity_id))
+      //   const cus_general_goods_list = active.cart_ids.map(id => {
+      //     const cartItem = tDict[id]
+      //     delete tDict[id]
+      //     return cartItem
+      //   })
+      //   return { list: cus_general_goods_list, active }
+      // })
+      // console.log(cus_activity_list, 'cus_activity_list')
+      // cus_activity_list.push({ list: Object.values(tDict), active: null })
       // 加购价
       let all_plus_itemid_list = [] // 加价购商品id
       let no_active_item = [] // 没有活动的商品
@@ -142,7 +143,7 @@ function CartIndex( props ) {
       return {
         ...item,
         cus_plus_item_list,
-        cus_activity_list
+        // cus_activity_list
       }
     })
     return groupsList || []
