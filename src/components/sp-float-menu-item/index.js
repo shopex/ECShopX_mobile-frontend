@@ -5,8 +5,12 @@ import { View } from "@tarojs/components";
 import "./index.scss";
 
 function SpFloatMenuItem(props) {
-  const { children } = props;
-  return <View className="sp-float-menu-item">{children}</View>;
+  const { children, onClick = () => {} } = props;
+  return (
+    <View className="sp-float-menu-item" onClick={onClick}>
+      {children}
+    </View>
+  );
 }
 
 SpFloatMenuItem.options = {

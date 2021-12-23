@@ -115,7 +115,11 @@ function Home() {
     filterWgts = wgts;
   }
   return (
-    <SpPage className="page-index" renderFloat={ <CompFloatMenu /> }>
+    <SpPage
+      scrollToTopBtn
+      className="page-index"
+      renderFloat={<CompFloatMenu />}
+    >
       {/* header-block */}
       <WgtHomeHeader>
         {searchComp && searchComp.config.fixTop && <SpSearch />}
@@ -133,9 +137,6 @@ function Home() {
 
       {/* 开屏广告 */}
       {isWeixin && <SpScreenAd />}
-
-      {/* 浮动菜单 */}
-      {/* <CompFloatMenu /> */}
 
       <SpTabbar />
     </SpPage>

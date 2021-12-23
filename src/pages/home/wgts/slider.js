@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
-import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Image, Text, Swiper, SwiperItem } from "@tarojs/components";
 import { SpImage } from '@/components'
 import { classNames, linkPage } from "@/utils";
 import { WgtPlateType } from './index'
@@ -44,20 +44,31 @@ export default class WgtSlider extends Component {
     const curContent = (data[curIdx] || {}).content
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View
+        className={classNames("wgt wgt-slider", {
+          wgt__padded: base.padded,
+        })}
+      >
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>{base.title}</View>
-            <View className='wgt__subtitle'>{base.subtitle}</View>
+          <View className="wgt-head">
+            <View className="wgt-hd">
+              <Text className="wgt-title">{base.title}</Text>
+              <Text className="wgt-subtitle">{base.subtitle}</Text>
+            </View>
           </View>
         )}
         {config ? (
-          <View className={`slider-wrap ${config.padded ? 'padded' : ''}`}>
+          <View className={`slider-wrap ${config.padded ? "padded" : ""}`}>
             {data[0] && (
-              <Image mode='widthFix' className='scale-placeholder' lazyLoad src={data[0].imgUrl} />
+              <Image
+                mode="widthFix"
+                className="scale-placeholder"
+                lazyLoad
+                src={data[0].imgUrl}
+              />
             )}
             <Swiper
-              className='slider-img'
+              className="slider-img"
               circular
               autoplay
               current={curIdx}
@@ -102,17 +113,17 @@ export default class WgtSlider extends Component {
             {data.length > 1 && config.dot && (
               <View
                 className={classNames(
-                  'slider-dot',
-                  { 'dot-size-switch': config.animation },
+                  "slider-dot",
+                  { "dot-size-switch": config.animation },
                   config.dotLocation,
-                  config.dotCover ? 'cover' : 'no-cover',
+                  config.dotCover ? "cover" : "no-cover",
                   config.dotColor,
                   config.shape
                 )}
               >
                 {data.map((dot, dotIdx) => (
                   <View
-                    className={classNames('dot', { active: curIdx === dotIdx })}
+                    className={classNames("dot", { active: curIdx === dotIdx })}
                     key={`${dotIdx}1`}
                   ></View>
                 ))}
@@ -122,7 +133,7 @@ export default class WgtSlider extends Component {
             {data.length > 1 && !config.dot && (
               <View
                 className={classNames(
-                  'slider-count',
+                  "slider-count",
                   config.dotLocation,
                   config.shape,
                   config.dotColor
@@ -133,8 +144,10 @@ export default class WgtSlider extends Component {
             )}
           </View>
         ) : null}
-        {config.content && curContent && <View className='slider-caption'>{curContent}</View>}
+        {config.content && curContent && (
+          <View className="slider-caption">{curContent}</View>
+        )}
       </View>
-    )
+    );
   }
 }

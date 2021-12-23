@@ -25,46 +25,49 @@ export default class WgtFloorImg extends Component {
     const { base, data } = info
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View
+        className={classNames("wgt wgt-floor-img", {
+          wgt__padded: base.padded,
+        })}
+      >
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>
-              <Text>{base.title}</Text>
-              <View className='wgt__subtitle'>{base.subtitle}</View>
+          <View className="wgt-head">
+            <View className="wgt-hd">
+              <Text className="wgt-title">{base.title}</Text>
+              <Text className="wgt-subtitle">{base.subtitle}</Text>
             </View>
-            {/* <View
-											className='wgt__more'
-											onClick={this.handleClickMore}
-										>
-											<View className='three-dot'></View>
-										</View> */}
           </View>
         )}
         <View
-          className={classNames('exclusive_list_two', 'exclusive_list')}
+          className={classNames("exclusive_list_two", "exclusive_list")}
           style={
-            base && base.openBackImg ? `background: url(${base && base.backgroundImg});` : null
+            base && base.openBackImg
+              ? `background: url(${base && base.backgroundImg});`
+              : null
           }
         >
-          <ScrollView scrollX className='img_list'>
+          <ScrollView scrollX className="img_list">
             {data &&
               data.map((item, idx) => {
                 return (
                   <View
-                    className='lis'
+                    className="lis"
                     key={item.id}
                     onClick={this.onRoute.bind(this, item)}
                   >
-                    <Image lazyLoad className='img' src={item.imgUrl}></Image>
-                    <View className='title' style={'color:' + base && base.WordColor}>
+                    <Image lazyLoad className="img" src={item.imgUrl}></Image>
+                    <View
+                      className="title"
+                      style={"color:" + base && base.WordColor}
+                    >
                       {item.ImgTitle}
                     </View>
                   </View>
-                )
+                );
               })}
           </ScrollView>
         </View>
       </View>
-    )
+    );
   }
 }
