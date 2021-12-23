@@ -30,7 +30,8 @@ function CompGoodsItem(props) {
     return null
   }
 
-  const curPromotion = info.promotions && info.activity_id && info.promotions.find((p) => p.marketing_id === info.activity_id)
+  // const curPromotion = info.promotions && info.activity_id && info.promotions.find((p) => p.marketing_id === info.activity_id)
+  // console.log(info, 'info.promotions')
 
   return (
     <View>
@@ -42,6 +43,7 @@ function CompGoodsItem(props) {
         <View className='goods-item-bd'>
           <View className='item-hd'>
             <View className='goods-title'>
+              {info.activity_type == 'package' && <Text className='goods-title__tag'>组合商品</Text>}
               {info.is_plus_buy && <Text className='goods-title__tag'>换购</Text>}
               {info.item_name}
             </View>
@@ -54,14 +56,18 @@ function CompGoodsItem(props) {
               <Text className='spec-desc'>{info.item_spec_desc}</Text>
             </View>
           }
-          {curPromotion && (
-            <View className='goods-title__promotion'>
+
+          {/* {curPromotion && (
+          )} */}
+          <View className='goods-title__promotion'>
+            {info.promotions && info.promotions.map((item) => (
               <View className='goods-title__tag'>
-                {curPromotion.promotion_tag}
+                {item.promotion_tag}
               </View>
-              <View className='titles'>{curPromotion.marketing_name}</View>
-            </View>
-          )}
+            ))}
+            {/* <View className='titles'>{item.marketing_name}</View> */}
+          </View>
+
           <View className='item-ft'>
             <SpPrice value={info.price / 100} />
             {
