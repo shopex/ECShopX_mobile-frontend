@@ -21,6 +21,9 @@
     display: flex;
     align-items: center;
     padding: 30px 20px;
+    /*  #ifdef  h5  */
+    padding: 20px 20px;
+    /*  #endif  */
     .title {
       font-size: 28px;
       font-weight: bold;

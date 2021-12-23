@@ -56,7 +56,7 @@ function SpPrivacyModal( props ) {
         })}
       >
         <View className='modal-hd'>
-          <SpImage src='privacy_tips.png' width='40' />
+          <SpImage src='privacy_tips.png' width={40} />
           <Text className='title'>个人隐私保护指引</Text>
         </View>
         <View className='modal-bd'>

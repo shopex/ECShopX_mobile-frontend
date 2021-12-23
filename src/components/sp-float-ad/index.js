@@ -11,12 +11,12 @@ import "./index.scss";
 
 const initialState = {
   list: [],
-  adIndex: 0
+  adIndex: 0,
 };
 
 function SpFloatAd(props) {
-  const [state, setState] = useImmer( initialState );
-  const { list, adIndex } = state
+  const [state, setState] = useImmer(initialState);
+  const { list, adIndex } = state;
 
   useEffect(() => {
     fetchAdList();
@@ -27,20 +27,20 @@ function SpFloatAd(props) {
       register_type: "all",
     });
 
-    setState( draft => {
+    setState((draft) => {
       draft.list = [{ ...general }, { ...membercard }];
-    })
+    });
   };
 
   const onCloseAd = () => {
-    let curIndex = adIndex + 1
+    let curIndex = adIndex + 1;
     setState((draft) => {
       draft.adIndex = curIndex;
     });
-  }
+  };
 
-  if ( S.getAuthToken() ) {
-    return null
+  if (S.getAuthToken()) {
+    return null;
   }
 
   return (
@@ -59,6 +59,7 @@ function SpFloatAd(props) {
           isOpened={index == adIndex}
           onClose={onCloseAd}
           closeBtnPosition="top"
+          key={`curtain-item__${index}`}
         >
           <SpLogin>
             <SpImage src={item.ad_pic} mode="widthFix" />

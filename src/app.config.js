@@ -19,7 +19,6 @@ export default {
 
     'pages/article/index',
     'pages/recommend/list',
-    // 'pages/member/index',
     'pages/member/item-fav',
 
     'pages/custom/custom-page',
@@ -34,14 +33,10 @@ export default {
       root: "subpages/member",
       pages: ["index"],
     },
-    {
-      root: "subpages/auth",
-      pages: ["login"],
-    },
-    //   {
-    //     root: 'pages/store/',
-    //     pages: ['index', 'list', 'ziti-list']
-    //   },
+    // {
+    //   root: "subpages/auth",
+    //   pages: ["login"],
+    // },
     {
       root: 'marketing',
       pages: [
@@ -194,11 +189,5 @@ export default {
     "scope.userLocation": {
       desc: "您的位置信息将用于定位附近门店",
     },
-  },
-  // plugins: {
-  //   contactPlugin: {
-  //     version: "1.3.0",
-  //     provider: "wx104a1a20c3f81ec2"
-  //   }
-  // }
+  }
 };

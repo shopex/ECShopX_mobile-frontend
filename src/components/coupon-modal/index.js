@@ -7,7 +7,7 @@ import { withPager } from '@/hocs'
 import './index.scss'
 
 export default class CouponModal extends PureComponent {
-  defaultProps = {
+  static defaultProps = {
     visible: false
   }
 
