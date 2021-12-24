@@ -23,7 +23,6 @@
     &__body {
       line-height: 40px;
       /*  #ifdef  h5  */  
-      line-height: 20px;
       margin-top: 20px;
       /*  #endif  */  
     }
@@ -103,19 +102,22 @@
       flex-direction: column;
       align-items: center;
       position: relative;
+      padding: 0px !important;
     }
     .order-bradge {
-      font-size: 22px;
-      background-color: var(--color-primary);
-      display: block;
-      border-radius: 12px 12px 12px 0;
-      color: #fff;
       position: absolute;
-      right: 20px;
-      top: 0;
-      width: 34px;
-      height: 24px;
-      line-height: 24px;
+      top: -8px;
+      right: 25px;
+      font-size: 22px;
+      display: block;
+      border: 3px solid #fff;
+      border-radius: 20px 20px 20px 0px;
+      color: #fff;
+      padding: 3px 10px;
+      min-width: 16px;
+      line-height: 1.2;
+      box-sizing: content-box;
+      background-color: var(--color-primary);
       text-align: center;
     }
     .order-txt {

@@ -71,7 +71,7 @@ function CompMenu( props ) {
     <View className='comp-menu'>
       {menus.map((item, index) => (
         <View className='menu-item' key={`menu-item__${index}`} onClick={onLink.bind(this, item)}>
-          <SpImage src={item.icon} width={120} />
+          <SpImage src={item.icon} width={100} />
           <Text className='menu-name'>
             {item.key == 'popularize' ? (isPromoter ? item.name : '我要推广') : item.name}
           </Text>
