@@ -93,7 +93,8 @@ export default (props = {}) => {
       const token = S.getAuthToken()
       if (!token) {
         showToast( '请先登录' )
-        reject()
+        return
+        // reject()
       }
       if (isWeixin) {
         const { avatar, username } = userInfo
@@ -116,6 +117,8 @@ export default (props = {}) => {
             }
           })
         }
+      } else {
+        resolve()
       }
     })
   }
