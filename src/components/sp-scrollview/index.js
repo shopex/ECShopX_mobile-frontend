@@ -1,5 +1,5 @@
 import Taro, { useDidShow } from "@tarojs/taro";
-import React, { useEffect, useImperativeHandle} from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState} from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { SpImg, SpNote, SpLoading } from "@/components";
 import api from '@/api'
@@ -16,7 +16,8 @@ function SpScrollView(props, ref) {
     fetch,
     auto,
   } );
-
+  const wrapRef = useRef(null)
+  const [loading, setLoading] = useState()
   useEffect(() => {
     let observer = null;
     if (isWeixin) {
@@ -42,13 +43,18 @@ function SpScrollView(props, ref) {
     if (isWeb) {
       observer = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (!entry.isIntersecting) {
             setLoading(false);
             observer.unobserve(entry.target);
           }
+          if (page.hasMore && !page.loading) {
+            nextPage();
+          }
         });
       });
-      observer.observe(ref.current);
+      console.log('wrapRef',wrapRef)
+      // observer.observe(ref.current);
+      observer.observe(wrapRef.current);
     }
 
     return () => {
@@ -70,7 +76,7 @@ function SpScrollView(props, ref) {
   
 
   return (
-    <View className={classNames("sp-scrollview", className)}>
+    <View className={classNames("sp-scrollview", className)} ref={wrapRef}>
       <View className="sp-scrollview-body">{children}</View>
       {page.loading && <SpLoading>正在加载...</SpLoading>}
       {!page.hasMore && getTotal() == 0 && (
