@@ -10,7 +10,7 @@ const initialState = {
     endTime: ''
   },
   showAdv: false,
-  fav: {},
+  favs: {},
   // 不是用户结算的默认地址，附近商家的收货地址
   address: null,
   location: {}
@@ -55,7 +55,7 @@ const userSlice = createSlice({
         endTime: ''
       }
       state.showAdv = false
-      state.fav = {}
+      state.favs = {}
       state.address = null
       state.location = {}
     }
