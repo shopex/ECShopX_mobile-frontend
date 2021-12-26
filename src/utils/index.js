@@ -191,7 +191,7 @@ export async function normalizeQuerys(params = {}) {
   return ret;
 }
 
-export function pickBy(arr, keyMaps = {}) {
+export function pickBy(arr = [], keyMaps = {}) {
   const picker = (item) => {
     const ret = {};
 
@@ -237,13 +237,13 @@ export function resolvePath(baseUrl, params = {}) {
   return `${baseUrl}${baseUrl.indexOf("?") >= 0 ? "&" : "?"}${queryStr}`;
 }
 
-export function formatTime(time, formatter = "yyyy-MM-dd") {
+export function formatTime(time, formatter = "YYYY-MM-DD") {
   const newTime = time.toString().length < 13 ? time * 1000 : time;
   return dayjs(newTime).format(formatter);
 
 }
 
-export function formatDateTime(time, formatter = "yyyy-MM-dd HH:mm:ss") {
+export function formatDateTime(time, formatter = "YYYY-MM-DD HH:mm:ss") {
   const newTime = time.toString().length < 13 ? time * 1000 : time;
   return dayjs(newTime).format(formatter);
 
