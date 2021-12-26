@@ -6,7 +6,7 @@ import { Loading, SpNote, SpNavBar, CouponItem } from '@/components'
 import api from '@/api'
 import { connect } from 'react-redux'
 import { withPager } from '@/hocs'
-import { pickBy, classNames, isNavbar,JumpStoreIndex } from '@/utils'
+import { pickBy, classNames, isNavbar,JumpStoreIndex, hasNavbar } from '@/utils'
 
 import './coupon.scss'
 
@@ -155,7 +155,7 @@ export default class Coupon extends Component {
       >
         <SpNavBar title='优惠券列表' leftIconType='chevron-left' fixed='true' />
         <AtTabs
-          className={`coupon-list__tabs ${colors.data[0].primary ? 'customTabsStyle' : ''}`}
+          className={`coupon-list__tabs ${hasNavbar && 'navbar_padtop'} ${colors.data[0].primary ? 'customTabsStyle' : ''}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}

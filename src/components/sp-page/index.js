@@ -9,7 +9,6 @@ import "./index.scss";
 
 function SpPage( props ) {
   const $instance = getCurrentInstance();
-  // debugger
   const { className, children, renderFloat, scrollToTopBtn = false } = props;
   const sys = useSelector( ( state ) => state.sys );
   const [showToTop, setShowToTop] = useState(false);
@@ -35,7 +34,6 @@ function SpPage( props ) {
     });
   }
 
-  // debugger
   // console.log('hasNavbar:', hasNavbar, pageTheme)
   return (
     <View
