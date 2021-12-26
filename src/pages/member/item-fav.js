@@ -11,6 +11,7 @@ import StoreFavItem from './comps/store-fav-item'
 
 import './item-fav.scss'
 
+
 @connect(({ user }) => ({
   favs: user.favs
 }))
@@ -63,7 +64,11 @@ export default class ItemFav extends Component {
             point: 'point',
             // price: ({ price }) => (price/100).toFixed(2),
             price: ({ price, item_price }) => ((price || item_price) / 100).toFixed(2),
-            is_fav: ({ item_id }) => Boolean(favs[item_id])
+            is_fav: ({ item_id }) => {
+              return (
+                favs && Boolean(favs[item_id])
+              )
+            }
           })
           total = res.total_count
           break

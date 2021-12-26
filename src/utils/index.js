@@ -20,7 +20,6 @@ import entryLaunch from "./entryLaunch";
 import validate from "./validate";
 import checkAppVersion from "./updateManager";
 import linkPage from "./linkPage";
-import loadingGif from "@/assets/imgs/loading.gif";
 
 const store = configStore()
 
