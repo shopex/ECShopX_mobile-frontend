@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { pickBy, hasNavbar, isWxWeb } from '@/utils'
 import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote, RecommendItem } from '@/components'
 import StoreFavItem from './comps/store-fav-item'
 
@@ -44,7 +44,7 @@ export default class ItemFav extends Component {
       pageSize
     }
 
-    const { favs } = this.props
+    const { favs = {} } = this.props
 
     const { list, total } = await (async () => {
       let list = []
@@ -53,7 +53,7 @@ export default class ItemFav extends Component {
       switch (this.state.curTabIdx) {
         case 0:
           res = await api.member.favsList(query)
-          list = res.list ? res.list && pickBy(res.list, {
+          list = pickBy(res.list || res, {
             img: 'item_image',
             fav_id: 'fav_id',
             item_id: 'item_id',
@@ -69,12 +69,12 @@ export default class ItemFav extends Component {
                 favs && Boolean(favs[item_id])
               )
             }
-          }) : []
+          })
           total = res.total_count
           break
         case 1:
           res = await api.article.totalCollectArticle(query)
-          list = res.list ? pickBy(res.list, {
+          list = pickBy(res.lsit || res, {
             img: 'image_url',
             fav_id: 'fav_id',
             item_id: 'article_id',
@@ -83,18 +83,18 @@ export default class ItemFav extends Component {
             head_portrait: 'head_portrait',
             author: 'author',
             item_type: 'item_type'
-          }) : []
+          })
           total = res.total_count
           break
         case 2:
           res = await api.member.storeFavList(query)
-          list = res.list ? res.list && pickBy(res.list, {
+          list = pickBy(res.list || res, {
             distributor_id: 'distributor_id',
             fav_num: 'fav_num',
             name: 'name',
             logo: 'logo',
             item_type: 'item_type'
-          }) : []
+          })
           total = res.total_count
           break
         default:
@@ -176,12 +176,12 @@ export default class ItemFav extends Component {
 
   render() {
     const { list, showBackToTop, scrollTop, page, curTabIdx, tabList } = this.state
-
+    console.log(isWxWeb, 'isWxWeb')
     return (
       <View className='page-goods-fav'>
         <SpNavBar title='收藏' leftIconType='chevron-left' fixed='true' />
         <AtTabs
-          className='trade-list__tabs'
+          className={`trade-list__tabs ${hasNavbar && 'navbar_padtop'}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
@@ -191,7 +191,7 @@ export default class ItemFav extends Component {
           ))}
         </AtTabs>
         <ScrollView
-          className='goods-list__scroll'
+          className={`goods-list__scroll ${isWxWeb && 'scroll_top'}`}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
