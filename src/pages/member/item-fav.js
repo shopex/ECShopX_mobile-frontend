@@ -191,7 +191,7 @@ export default class ItemFav extends Component {
           ))}
         </AtTabs>
         <ScrollView
-          className={`goods-list__scroll ${isWxWeb && 'scroll_top'}`}
+          className={`goods-list__scroll ${isWxWeb && 'goods_scroll_top'} `}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
