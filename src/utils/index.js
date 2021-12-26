@@ -82,7 +82,7 @@ export const getBrowserEnv = () => {
 };
 
 /** 在H5平台(微信浏览器) */
-export const isWxWeb = isWeb && !getBrowserEnv().weixin;
+export const isWxWeb = isWeb && !!getBrowserEnv().weixin;
 
 export function isObjectValueEqual(a, b) {
   var aProps = Object.getOwnPropertyNames(a);
