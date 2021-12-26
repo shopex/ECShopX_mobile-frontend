@@ -67,6 +67,12 @@ export default class StoreIndex extends Component {
           //iconfont icon-home"
         },
         {
+          title: "商品列表",
+          iconType: "list",
+          iconPrefixClass: "iconfont icon",
+          url: "/others/pages/store/list",
+        },
+        {
           title: "商品分类",
           iconType: "category",
           iconPrefixClass: "iconfont icon",
