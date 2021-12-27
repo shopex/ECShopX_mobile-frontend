@@ -27,6 +27,10 @@
         @include multi-ellipsis(2);
       }
 
+      .goods-info {
+        margin-bottom: 20px;
+      }
+
       .goods-price {
         line-height: 26px;
         margin-top: 10px;
@@ -54,7 +58,7 @@
 
         }
         &-rg {
-          .icon-shoucang-01 {
+          .iconfont {
             font-size: 44px;
             color: #666;
           }
