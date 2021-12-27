@@ -37,7 +37,7 @@ function NearlyShop( props ) {
 
   useEffect( () => {
     fetchAddressList()
-    onPickerClick()
+    // onPickerClick()
   }, [])
 
   const fetchAddressList = async () => {
@@ -109,7 +109,6 @@ function NearlyShop( props ) {
 
   const onPickerClick = () => {
     const [ chooseProvice, chooseCity, chooseDistrict ] = state.chooseValue
-    const { province, city, district } = location
     const p_label = chooseProvice
     const c_label = chooseCity
     const d_label = chooseDistrict
@@ -256,7 +255,7 @@ function NearlyShop( props ) {
               range={areaArray}
               style={{ width: '100%' }}
             >
-              <View className="pick-title">
+              <View className="pick-title" onClick={onPickerClick} >
                 <View className='iconfont icon-periscope'></View>
                 <Text className="pick-address">{chooseValue.join('') || '选择地区'}</Text>
                 <Text className="iconfont icon-arrowDown"></Text>
