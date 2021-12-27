@@ -44,14 +44,14 @@ const initialState = {
   curFilterIdx: 0,
   tagList: [],
   curTagIdx: 0,
-  keyword: "",
+  keywords: "",
   show: false,
 };
 
-function ItemList() {
+function ItemList(props) {
   const [state, setState] = useImmer(initialState);
   const {
-    keyword,
+    keywords,
     leftList,
     rightList,
     brandList,
@@ -66,14 +66,14 @@ function ItemList() {
   const goodsRef = useRef();
 
   useEffect(() => {}, []);
-  
+
   const fetch = async ( { pageIndex, pageSize } ) => {
   
     let params = {
       page: pageIndex,
       pageSize,
       brand_id: brandSelect.map( ( item ) => item.id ).toString(),
-      keyword: keyword,
+      keywords: keywords,
       approve_status: 'onsale,only_show',
       item_type: 'normal',
       is_point: 'false',
@@ -135,13 +135,13 @@ function ItemList() {
 
   const handleOnChange = (val) => {
     setState(v => {
-      v.keyword = val
+      v.keywords = val
     })
   };
 
   const handleOnClear = async() => {
     await setState(v => {
-      v.keyword = ''
+      v.keywords = ''
     });
     setIsShowSearch(false);
     goodsRef.current.reset();
@@ -153,7 +153,7 @@ function ItemList() {
 
   const handleConfirm = async(val) => {
     Tracker.dispatch("SEARCH_RESULT", {
-      keyword: val,
+      keywords: val,
     });
     setIsShowSearch(false);
     await setState(v => {
@@ -209,7 +209,7 @@ function ItemList() {
       <View className="item-list-head">
         <View className="search-wrap">
           <SpSearchBar
-            keyword={keyword}
+            keyword={keywords}
             placeholder="搜索"
             onFocus={handleOnFocus}
             onChange={handleOnChange}
@@ -242,14 +242,14 @@ function ItemList() {
           <View className="left-container">
             {leftList.map((item, index) => (
               <View className="goods-item-wrap" key={`goods-item__${index}`}>
-                <SpGoodsItem info={item} />
+                <SpGoodsItem showFav info={item} />
               </View>
             ))}
           </View>
           <View className="right-container">
             {rightList.map((item, index) => (
               <View className="goods-item-wrap" key={`goods-item__${index}`}>
-                <SpGoodsItem info={item} />
+                <SpGoodsItem showFav info={item} />
               </View>
             ))}
           </View>
