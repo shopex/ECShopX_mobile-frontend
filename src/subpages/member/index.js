@@ -88,11 +88,15 @@ const initialState = {
 
 function MemberIndex(props) {
   const { isLogin, updatePolicyTime, getUserInfoAuth } = useLogin({
-    autoLogin: true
-  })
+    autoLogin: true,
+    policyUpdateHook: () => {
+      setPolicyModal(true);
+    },
+  });
   const [config, setConfig] = useImmer(initialConfigState);
   const [state, setState] = useImmer(initialState);
-  
+  const [policyModal, setPolicyModal] = useState(false);
+
   const { userInfo, vipInfo = {} } = useSelector((state) => state.user)
   log.debug(`store userInfo: ${JSON.stringify(userInfo)}`);
   
@@ -289,49 +293,58 @@ function MemberIndex(props) {
   // console.log(`member page:`, state, config);
 
   return (
-    <SpPage className='pages-member-index'>
+    <SpPage className="pages-member-index">
       <View
-        className='header-block'
+        className="header-block"
         style={styleNames({
-          'background-image': `url(${process.env.APP_IMAGE_CDN}/m_bg.png)`
+          "background-image": `url(${process.env.APP_IMAGE_CDN}/m_bg.png)`,
         })}
       >
-        <View className='header-hd'>
+        <View className="header-hd">
           <SpImage
-            className='usericon'
-            src={(userInfo && userInfo.avatar) || 'default_user.png'}
-            width='110'
+            className="usericon"
+            src={(userInfo && userInfo.avatar) || "default_user.png"}
+            width="110"
           />
           <View className="header-hd__body">
-            <View className='username-wrap'>
-              <Text className='username'>
-                {(userInfo && (userInfo.username || userInfo.mobile)) || '获取昵称'}
+            <View className="username-wrap">
+              <Text className="username">
+                {(userInfo && (userInfo.username || userInfo.mobile)) ||
+                  "获取昵称"}
               </Text>
               {config.menu.member_code && (
                 <Text
-                  className='iconfont icon-erweima-01'
-                  onClick={handleClickLink.bind(this, '/marketing/pages/member/member-code')}
+                  className="iconfont icon-erweima-01"
+                  onClick={handleClickLink.bind(
+                    this,
+                    "/marketing/pages/member/member-code"
+                  )}
                 ></Text>
               )}
             </View>
-            <View className='join-us'>
+            <View className="join-us">
               <SpLogin>
-                <Text className='join-us-txt'>{isLogin ? '您好，欢迎' : '加入我们?'}</Text>
+                <Text className="join-us-txt">
+                  {isLogin ? "您好，欢迎" : "加入我们?"}
+                </Text>
               </SpLogin>
             </View>
           </View>
         </View>
-        <View className='header-bd'>
+        <View className="header-bd">
           <View
-            className='bd-item'
-            onClick={handleClickLink.bind(this, '/marketing/pages/member/coupon')}
+            className="bd-item"
+            onClick={handleClickLink.bind(
+              this,
+              "/marketing/pages/member/coupon"
+            )}
           >
-            <View className='bd-item-label'>优惠券(张)</View>
-            <View className='bd-item-value'>{state.couponCount}</View>
+            <View className="bd-item-label">优惠券(张)</View>
+            <View className="bd-item-value">{state.couponCount}</View>
           </View>
-          <View className='bd-item' onClick={handleClickPoint}>
-            <View className='bd-item-label'>积分(分)</View>
-            <View className='bd-item-value'>{state.point}</View>
+          <View className="bd-item" onClick={handleClickPoint}>
+            <View className="bd-item-label">积分(分)</View>
+            <View className="bd-item-value">{state.point}</View>
           </View>
           {/* <View className='bd-item'>
             <View className='bd-item-label'>储值(¥)</View>
@@ -339,116 +352,170 @@ function MemberIndex(props) {
               <SpPrice value={state.deposit} />
             </View>
           </View> */}
-          <View className='bd-item' onClick={handleClickLink.bind(this, '/pages/member/item-fav')}>
-            <View className='bd-item-label'>收藏(个)</View>
-            <View className='bd-item-value'>{state.favCount}</View>
+          <View
+            className="bd-item"
+            onClick={handleClickLink.bind(this, "/pages/member/item-fav")}
+          >
+            <View className="bd-item-label">收藏(个)</View>
+            <View className="bd-item-value">{state.favCount}</View>
           </View>
         </View>
-        <View className='header-ft'>
+        <View className="header-ft">
           {/* 会员卡等级 */}
           {vipInfo.isOpen && (
             <CompVipCard
               info={vipInfo}
-              onLink={handleClickLink.bind(this, '/subpage/pages/vip/vipgrades')}
+              onLink={handleClickLink.bind(
+                this,
+                "/subpage/pages/vip/vipgrades"
+              )}
               userInfo={userInfo}
             />
           )}
         </View>
       </View>
 
-      <View className='body-block'>
+      <View className="body-block">
         {config.banner.isShow && (
           <CompBanner
             info={config.banner}
-            src={isLogin ? config.banner.loginBanner : config.banner.noLoginBanner}
+            src={
+              isLogin ? config.banner.loginBanner : config.banner.noLoginBanner
+            }
           />
         )}
 
         <CompPanel
-          title='订单'
-          extra='查看全部订单'
-          onLink={handleClickLink.bind(this, '/subpage/pages/trade/list')}
+          title="订单"
+          extra="查看全部订单"
+          onLink={handleClickLink.bind(this, "/subpage/pages/trade/list")}
         >
           {config.menu.ziti_order && (
             <View
-              className='ziti-order'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/customer-pickup-list')}
+              className="ziti-order"
+              onClick={handleClickLink.bind(
+                this,
+                "/subpage/pages/trade/customer-pickup-list"
+              )}
             >
-              <View className='ziti-order-info'>
-                <View className='title'>自提订单</View>
-                <View className='ziti-txt'>
-                  您有<Text className='ziti-num'>{state.zitiNum}</Text>个等待自提的订单
+              <View className="ziti-order-info">
+                <View className="title">自提订单</View>
+                <View className="ziti-txt">
+                  您有<Text className="ziti-num">{state.zitiNum}</Text>
+                  个等待自提的订单
                 </View>
               </View>
-              <Text className='iconfont icon-qianwang-01'></Text>
+              <Text className="iconfont icon-qianwang-01"></Text>
             </View>
           )}
 
-          <View className='order-con'>
+          <View className="order-con">
             <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=5')}
+              className="order-item"
+              onClick={handleClickLink.bind(
+                this,
+                "/subpage/pages/trade/list?status=5"
+              )}
             >
-              <SpImage src='daizhifu.png' className="icon-style" />
-              { state.waitPayNum > 0 && <View className='order-bradge'><Text>{ state.waitPayNum}</Text></View>}
-              <Text className='order-txt'>待支付</Text>
+              <SpImage src="daizhifu.png" className="icon-style" />
+              {state.waitPayNum > 0 && (
+                <View className="order-bradge">
+                  <Text>{state.waitPayNum}</Text>
+                </View>
+              )}
+              <Text className="order-txt">待支付</Text>
             </View>
             <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=3')}
+              className="order-item"
+              onClick={handleClickLink.bind(
+                this,
+                "/subpage/pages/trade/list?status=3"
+              )}
             >
-              <SpImage src='daifahuo.png' className="icon-style" />
-              {state.waitSendNum > 0 && <View className='order-bradge'><Text>{ state.waitSendNum}</Text></View>}
-              <Text className='order-txt'>待发货</Text>
+              <SpImage src="daifahuo.png" className="icon-style" />
+              {state.waitSendNum > 0 && (
+                <View className="order-bradge">
+                  <Text>{state.waitSendNum}</Text>
+                </View>
+              )}
+              <Text className="order-txt">待发货</Text>
             </View>
             <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=1')}
+              className="order-item"
+              onClick={handleClickLink.bind(
+                this,
+                "/subpage/pages/trade/list?status=1"
+              )}
             >
-              <SpImage src='daishouhuo.png' className="icon-style" />
-              {state.waitRecevieNum > 0 && <View className='order-bradge'><Text>{ state.waitRecevieNum}</Text></View>}
-              <Text className='order-txt'>待收货</Text>
+              <SpImage src="daishouhuo.png" className="icon-style" />
+              {state.waitRecevieNum > 0 && (
+                <View className="order-bradge">
+                  <Text>{state.waitRecevieNum}</Text>
+                </View>
+              )}
+              <Text className="order-txt">待收货</Text>
             </View>
             <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=3')}
+              className="order-item"
+              onClick={handleClickLink.bind(
+                this,
+                "/subpage/pages/trade/list?status=3"
+              )}
             >
-              <SpImage src='pingjia.png' className="icon-style" />
-              <Text className='order-txt'>待评价</Text>
+              <SpImage src="pingjia.png" className="icon-style" />
+              <Text className="order-txt">待评价</Text>
             </View>
             <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/after-sale')}
+              className="order-item"
+              onClick={handleClickLink.bind(
+                this,
+                "/subpage/pages/trade/after-sale"
+              )}
             >
-              <SpImage src='daishouhuo.png' className="icon-style" />
-              {state.afterSalesNum > 0 && <View className='order-bradge'><Text>{ state.afterSalesNum}</Text></View>}
-              <Text className='order-txt'>售后</Text>
+              <SpImage src="daishouhuo.png" className="icon-style" />
+              {state.afterSalesNum > 0 && (
+                <View className="order-bradge">
+                  <Text>{state.afterSalesNum}</Text>
+                </View>
+              )}
+              <Text className="order-txt">售后</Text>
             </View>
           </View>
         </CompPanel>
 
-        <CompPanel title='我的服务'>
+        <CompPanel title="我的服务">
           <CompMenu
             accessMenu={{
               ...config.menu,
-              popularize: userInfo ? userInfo.popularize : false
+              popularize: userInfo ? userInfo.popularize : false,
             }}
             isPromoter={userInfo ? userInfo.isPromoter : false}
             onLink={handleClickService}
           />
         </CompPanel>
 
-        <CompPanel title='帮助中心'>
+        <CompPanel title="帮助中心">
           <CompHelpCenter onLink={handleClickService} />
         </CompPanel>
       </View>
-      <View className='dibiao-block'>
-        <SpImage mode='heightFix' src='dibiao.png' width='320' />
+      <View className="dibiao-block">
+        <SpImage mode="heightFix" src="dibiao.png" width="320" />
       </View>
+
+      {/* 隐私政策 */}
+      <SpPrivacyModal
+        open={policyModal}
+        onCancel={() => {
+          setPolicyModal(false);
+        }}
+        onConfirm={() => {
+          setPolicyModal(false);
+        }}
+      />
 
       <SpTabbar />
     </SpPage>
-  )
+  );
 }
 
 export default MemberIndex
