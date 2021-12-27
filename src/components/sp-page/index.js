@@ -14,7 +14,7 @@ function SpPage( props ) {
   const { className, children, renderFloat, scrollToTopBtn = false } = props;
   const sys = useSelector( ( state ) => state.sys );
   const [showToTop, setShowToTop] = useState(false);
-  const { colorPrimary, colorMarketing, colorAccent, rgb, tabbar } = sys;
+  const { colorPrimary, colorMarketing, colorAccent, rgb } = sys;
   const pageTheme = {
     "--color-primary": colorPrimary,
     "--color-marketing": colorMarketing,

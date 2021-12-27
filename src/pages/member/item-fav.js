@@ -5,11 +5,12 @@ import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { pickBy, hasNavbar, isWxWeb } from '@/utils'
 import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote, RecommendItem } from '@/components'
 import StoreFavItem from './comps/store-fav-item'
 
 import './item-fav.scss'
+
 
 @connect(({ user }) => ({
   favs: user.favs
@@ -43,7 +44,7 @@ export default class ItemFav extends Component {
       pageSize
     }
 
-    const { favs } = this.props
+    const { favs = {} } = this.props
 
     const { list, total } = await (async () => {
       let list = []
@@ -63,13 +64,17 @@ export default class ItemFav extends Component {
             point: 'point',
             // price: ({ price }) => (price/100).toFixed(2),
             price: ({ price, item_price }) => ((price || item_price) / 100).toFixed(2),
-            is_fav: ({ item_id }) => Boolean(favs[item_id])
+            is_fav: ({ item_id }) => {
+              return (
+                favs && Boolean(favs[item_id])
+              )
+            }
           })
           total = res.total_count
           break
         case 1:
           res = await api.article.totalCollectArticle(query)
-          list = pickBy(res.list, {
+          list = pickBy(res.lsit, {
             img: 'image_url',
             fav_id: 'fav_id',
             item_id: 'article_id',
@@ -171,12 +176,11 @@ export default class ItemFav extends Component {
 
   render() {
     const { list, showBackToTop, scrollTop, page, curTabIdx, tabList } = this.state
-
     return (
       <View className='page-goods-fav'>
         <SpNavBar title='收藏' leftIconType='chevron-left' fixed='true' />
         <AtTabs
-          className='trade-list__tabs'
+          className={`trade-list__tabs ${hasNavbar && 'navbar_padtop'}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
@@ -186,7 +190,7 @@ export default class ItemFav extends Component {
           ))}
         </AtTabs>
         <ScrollView
-          className='goods-list__scroll'
+          className={`goods-list__scroll ${isWxWeb && 'goods_scroll_top'} `}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
