@@ -35,17 +35,25 @@ export default class AddressIndex extends Component {
 
     this.state = {
       info: {},
-      areaList: [],
-      multiIndex: [],
       listLength: 0,
-      areaListAli: [],
-      selectedListAli: []
+      areaArray: [[], [], []],
+      areaIndexArray: [0, 0, 0],
+      areaData: [],
+      chooseValue: ['北京市', '北京市', '昌平区'],
       // ubmitLoading: false,
     }
   }
 
   componentDidMount() {
     this.fetch()
+    this.fetchAddressList()
+  }
+
+  fetchAddressList = async () => {
+    const areaData = await api.member.areaList()
+    this.setState({
+      areaData
+    })
   }
 
   async fetch() {
@@ -58,38 +66,10 @@ export default class AddressIndex extends Component {
     list.map((a_item) => {
       if (a_item.address_id === this.$instance.router.params.address_id) {
         this.setState({
-          info: a_item
+          info: a_item,
+          chooseValue: [a_item.province, a_item.city, a_item.county]
         })
       }
-    })
-
-    let res = await api.member.areaList()
-
-    const nList = pickBy(res, {
-      label: 'label',
-      children: 'children'
-    })
-    console.log('---api.member.areaList2---', nList)
-    this.nList = nList
-    let arrProvice = []
-    let arrCity = []
-    let arrCounty = []
-    nList.map((item, index) => {
-      arrProvice.push(item.label)
-      if (index === 0) {
-        item.children.map((c_item, c_index) => {
-          arrCity.push(c_item.label)
-          if (c_index === 0) {
-            c_item.children.map((cny_item) => {
-              arrCounty.push(cny_item.label)
-            })
-          }
-        })
-      }
-    })
-    this.setState({
-      areaList: [arrProvice, arrCity, arrCounty]
-      // areaList: [['北京'], ['北京'], ['东城']],
     })
 
     if (this.$instance.router.params.isWechatAddress) {
@@ -105,7 +85,8 @@ export default class AddressIndex extends Component {
         username: resAddress.userName
       }
       this.setState({
-        info: query
+        info: query,
+        chooseValue: [query.province, query.city, query.county]
       })
     }
 
@@ -113,98 +94,84 @@ export default class AddressIndex extends Component {
   }
 
   // 选定开户地区
-  handleClickPicker = () => {
-    let arrProvice = []
-    let arrCity = []
-    let arrCounty = []
-    if (this.nList) {
-      this.nList.map((item, index) => {
-        arrProvice.push(item.label)
-        if (index === 0) {
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if (c_index === 0) {
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-        }
-      })
-      this.setState({
-        areaList: [arrProvice, arrCity, arrCounty],
-        multiIndex: [0, 0, 0]
-      })
-    }
-  }
-
-  bindMultiPickerChange = async (e) => {
-    const { info } = this.state
-    this.nList.map((item, index) => {
-      if (index === e.detail.value[0]) {
-        info.province = item.label
-        item.children.map((s_item, sIndex) => {
-          if (sIndex === e.detail.value[1]) {
-            info.city = s_item.label
-            s_item.children.map((th_item, thIndex) => {
-              if (thIndex === e.detail.value[2]) {
-                info.county = th_item.label
+  onPickerClick = () => {
+    const { chooseValue, areaData } = this.state
+    const [ chooseProvice, chooseCity, chooseDistrict ] = chooseValue
+    const p_label = chooseProvice
+    const c_label = chooseCity
+    const d_label = chooseDistrict
+    let chooseIndex = []
+    let proviceArr = []
+    let cityArr = []
+    let countyArr = []
+    areaData.map((item, index) => {
+      proviceArr.push(item.label)
+      if (item.label == p_label) {
+        chooseIndex.push(index)
+        item.children.map((c_item, c_index) => {
+          cityArr.push(c_item.label)
+          if (c_item.label == c_label) {
+            chooseIndex.push(c_index)
+            c_item.children.map((cny_item, cny_index) => {
+              countyArr.push(cny_item.label)
+              if (cny_item.label == d_label) {
+                chooseIndex.push(cny_index)
               }
             })
           }
         })
       }
     })
-    this.setState({ info })
+    this.setState({
+      areaIndexArray: chooseIndex,
+      areaArray: [proviceArr, cityArr, countyArr]
+    })
   }
 
-  bindMultiPickerColumnChange = (e) => {
-    const { areaList, multiIndex } = this.state
-    if (e.detail.column === 0) {
+  onPickerChange = async ({ detail }) => {
+    const { value } = detail || {}
+    const [one, two, three] = this.state.areaArray
+    const chooseValue = [one[value[0]], two[value[1]], three[value[2]]]
+    this.setState({
+      areaIndexArray: value,
+      chooseValue
+    })
+  }
+
+  onColumnChange = async ({ detail }) => {
+    const { column, value } = detail
+    let { areaData, areaIndexArray, areaArray } = this.state
+    if (column == 0) {
       this.setState({
-        multiIndex: [e.detail.value, 0, 0]
+        areaIndexArray: [value, 0, 0],
       })
-      this.nList.map((item, index) => {
-        if (index === e.detail.value) {
-          let arrCity = []
-          let arrCounty = []
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if (c_index === 0) {
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-          areaList[1] = arrCity
-          areaList[2] = arrCounty
-          this.setState({ areaList })
-        }
+      let cityArr = []
+      let countyArr = []
+      cityArr = areaData[value].children.map(item => item.label)
+      countyArr = areaData[value].children[0].children.map( item => item.label )
+      areaArray[1] = cityArr
+      areaArray[2] = countyArr
+      this.setState({
+        areaArray:[...areaArray]
       })
-    } else if (e.detail.column === 1) {
-      multiIndex[1] = e.detail.value
-      multiIndex[2] = 0
-      this.setState(
-        {
-          multiIndex
-        },
-        () => {
-          this.nList[multiIndex[0]].children.map((c_item, c_index) => {
-            if (c_index === e.detail.value) {
-              let arrCounty = []
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-              areaList[2] = arrCounty
-              this.setState({ areaList })
-            }
-          })
-        }
-      )
+    } else if (column == 1) {
+      areaIndexArray[1] = value
+      areaIndexArray[2] = 0
+      this.setState({
+        areaIndexArray: [...areaIndexArray]
+      }, () => {
+        let countyArr = []
+        countyArr = areaData[areaIndexArray[0]].children[value].children.map( item => item.label )
+        areaArray[2] = countyArr
+        this.setState({
+          areaArray:[...areaArray]
+        })
+        
+      })
     } else {
-      multiIndex[2] = e.detail.value
+      areaIndexArray[2] = value
       this.setState({
-        multiIndex
+        areaIndexArray: [...areaIndexArray]
       })
     }
   }
@@ -228,7 +195,7 @@ export default class AddressIndex extends Component {
 
   handleSubmit = async (e) => {
     const { value } = e.detail || {}
-    const { selectedListAli } = this.state
+    const { chooseValue } = this.state
     const data = {
       ...this.state.info,
       ...value
@@ -252,9 +219,9 @@ export default class AddressIndex extends Component {
     }
 
     if (!data.province) {
-      data.province = selectedListAli[0]
-      data.city = selectedListAli[1]
-      data.county = selectedListAli[2]
+      data.province = chooseValue[0]
+      data.city = chooseValue[1]
+      data.county = chooseValue[2]
     }
 
     if (!data.adrdetail) {
@@ -282,7 +249,7 @@ export default class AddressIndex extends Component {
 
   render() {
     const { colors } = this.props
-    const { info, multiIndex, areaList } = this.state
+    const { info, areaIndexArray, areaArray, chooseValue } = this.state
     return (
       <View className='page-address-edit'>
         {/*<EditAddress*/}
@@ -307,47 +274,19 @@ export default class AddressIndex extends Component {
             />
             <Picker
               mode='multiSelector'
-              onClick={this.handleClickPicker}
-              onChange={this.bindMultiPickerChange}
-              onColumnChange={this.bindMultiPickerColumnChange}
-              value={multiIndex}
-              range={areaList}
+              onClick={this.onPickerClick}
+              onChange={this.onPickerChange}
+              onColumnChange={this.onColumnChange}
+              value={areaIndexArray}
+              range={areaArray}
             >
-              {isWeb ? (
-                <View className='picker' onClick={this.handleClickPicker}>
-                  <View className='picker__title'>所在区域</View>
-                  {info.address_id || (this.$instance.router.params.isWechatAddress && info.province) ? (
-                    `${info.province}${info.city}${info.county}`
-                  ) : (
-                    <View>
-                      {multiIndex.length > 0 ? (
-                        <Text>
-                          {areaList[0][multiIndex[0]]}
-                          {areaList[1][multiIndex[1]]}
-                          {areaList[2][multiIndex[2]]}
-                        </Text>
-                      ) : null}
-                    </View>
-                  )}
-                </View>
-              ) : (
-                <View className='picker'>
-                  <View className='picker__title'>所在区域</View>
-                  {info.address_id || (this.$instance.router.params.isWechatAddress && info.province) ? (
-                    `${info.province}${info.city}${info.county}`
-                  ) : (
-                    <View>
-                      {multiIndex.length > 0 ? (
-                        <Text>
-                          {areaList[0][multiIndex[0]]}
-                          {areaList[1][multiIndex[1]]}
-                          {areaList[2][multiIndex[2]]}
-                        </Text>
-                      ) : null}
-                    </View>
-                  )}
-                </View>
-              )}
+              <View className='picker' onClick={this.onPickerClick}>
+                <View className='picker__title'>所在区域</View>
+                {/* {areaArray[0][areaIndexArray[0]]}
+                {areaArray[1][areaIndexArray[1]]}
+                {areaArray[2][areaIndexArray[2]]} */}
+                <Text>{chooseValue.join('') || '选择地区'}</Text>
+              </View>
             </Picker>
             <AtInput
               title='详细地址'
