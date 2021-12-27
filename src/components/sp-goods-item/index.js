@@ -97,10 +97,10 @@ function SpGoodsItem( props ) {
                   <SpPrice value={info.price / 100}></SpPrice>
                 </View>
                 <View className="mk-price">
-                  {info.market_price / 100 > 0 && (
+                  {info.marketPrice / 100 > 0 && (
                     <SpPrice
                       lineThrough
-                      value={info.market_price / 100}
+                      value={info.marketPrice / 100}
                     ></SpPrice>
                   )}
                 </View>
@@ -124,9 +124,9 @@ function SpGoodsItem( props ) {
         </View>
 
         {/* 促销活动标签 */}
-        {info.promotion_activity && info.promotion_activity.length > 0 && (
+        {info.promotion && info.promotion.length > 0 && (
           <View className="promotions">
-            {info.promotion_activity.map((item, index) => (
+            {info.promotion.map((item, index) => (
               <Text className="promotion-tag" key={`promotion-tag__${index}`}>
                 {PROMOTION_TAG[item.tag_type]}
               </Text>
