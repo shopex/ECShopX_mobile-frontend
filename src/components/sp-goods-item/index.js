@@ -16,7 +16,7 @@ function SpGoodsItem( props ) {
     onClick = () => { },
     onStoreClick= () => {},
     showMarketPrice= true,
-    showFav= true,
+    showFav= false,
     showSku= false,
     noCurSymbol= false,
     info = null,
@@ -59,12 +59,9 @@ function SpGoodsItem( props ) {
   }
 
   return (
-    <View
-      className={classNames("sp-goods-item")}
-      onClick={handleClick.bind(this)}
-    >
-      <View className="goods-item__hd">
-        <SpImage src={info.pic} mode="aspectFill" />
+    <View className={classNames("sp-goods-item")}>
+      <View className="goods-item__hd" onClick={handleClick.bind(this)}>
+        <SpImage src={info.pic || info.pics[0]} mode="aspectFill" />
       </View>
       <View className="goods-item__bd">
         {/* 跨境商品 */}
@@ -115,6 +112,15 @@ function SpGoodsItem( props ) {
               <Text className='iconfont icon-shoucang-01'></Text>
             </View>
           } */}
+          {showFav && (
+            <View className='bd-block-rg'>
+              <View
+                className={classNames('iconfont', info.is_fav ? 'icon-star_on' : 'icon-star')}
+                onClick={handleFavClick}
+                style={info.is_fav ? { color: colors.data[0].primary } : {}}
+              />
+            </View>
+          )}
         </View>
 
         {/* 促销活动标签 */}
