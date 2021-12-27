@@ -1,6 +1,6 @@
 import path, { join } from "path";
 import pkg from "../package.json";
-const { getEnvs, getDefineConstants } = require("./utils");
+const { getEnvs, getDefineConstants, getCacheIdentifier } = require("./utils");
 
 require("dotenv-flow").config();
 
@@ -85,16 +85,19 @@ const config = {
   mini: {
     webpackChain(chain, webpack) {
       // use cache-loader both in dev & prod
+      const cacheIdentifier = getCacheIdentifier(CONST_ENVS)
       chain.module
         .rule('script')
           .use('cacheLoader')
             .loader('cache-loader')
+            .options({ cacheIdentifier })
           .before('0')
 
       chain.module
         .rule('template')
           .use('cacheLoader')
             .loader('cache-loader')
+            .options({ cacheIdentifier })
           .before('0')
     },
     // 图片转换base64
