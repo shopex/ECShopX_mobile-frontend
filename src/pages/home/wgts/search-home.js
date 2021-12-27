@@ -77,12 +77,12 @@ export default class WgtSearchHome extends Component {
               <View className='iconfont searchicon icon-search1'></View>
               <View>搜索</View>
           </View>
-          { isShowScan && (
+          {/* { isShowScan && (
               <View className='scancode' onClick={this.handleScanCode.bind(this)}>
                 <View className='iconfont icon-scan'></View>
                 <View>扫码</View>
               </View>
-            )}
+            )} */}
         </View>
       </View>
     )
