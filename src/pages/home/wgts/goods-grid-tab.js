@@ -62,7 +62,7 @@ function WgtGoodsGridTab(props) {
                         <SpGoodsItem info={data} />
                         {config.brand && (
                           <View className="brand-info">
-                            <SpImage src={data.brand} width={60} />
+                            <SpImage src={data.brand} />
                           </View>
                         )}
                       </View>

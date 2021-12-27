@@ -58,9 +58,14 @@ function SpGoodsItem( props ) {
     return null
   }
 
+  let tagsList = info.promotion_activity || info.promotion
+
   return (
-    <View className={classNames("sp-goods-item")}>
-      <View className="goods-item__hd" onClick={handleClick.bind(this)}>
+    <View
+      className={classNames("sp-goods-item")}
+      onClick={handleClick.bind(this)}
+    >
+      <View className="goods-item__hd">
         <SpImage src={info.pic || info.pics[0]} mode="aspectFill" />
       </View>
       <View className="goods-item__bd">
@@ -124,9 +129,9 @@ function SpGoodsItem( props ) {
         </View>
 
         {/* 促销活动标签 */}
-        {info.promotion_activity && info.promotion_activity.length > 0 && (
+        {tagsList && tagsList.length > 0 && (
           <View className="promotions">
-            {info.promotion_activity.map((item, index) => (
+            {tagsList.map((item, index) => (
               <Text className="promotion-tag" key={`promotion-tag__${index}`}>
                 {PROMOTION_TAG[item.tag_type]}
               </Text>
