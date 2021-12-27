@@ -62,9 +62,8 @@ function SpGoodsItem( props ) {
   return (
     <View
       className={classNames("sp-goods-item")}
-      onClick={handleClick.bind(this)}
     >
-      <View className="goods-item__hd">
+      <View className="goods-item__hd" onClick={handleClick.bind(this)}>
         <SpImage src={info.pic || info.pics[0]} mode="aspectFill" />
       </View>
       <View className="goods-item__bd">
@@ -137,6 +136,17 @@ function SpGoodsItem( props ) {
             ))}
           </View>
         )}
+        {
+          info.distributor_info &&
+          !Array.isArray(info.distributor_info) && (
+            <View className='goods__store' onClick={() => onStoreClick(info)}>
+              {info.distributor_info.name}{' '}
+              <Text className='goods__store-entry'>
+                进店<Text className='iconfont icon-arrowRight'></Text>
+              </Text>
+            </View>
+          )
+        }
       </View>
       <View className="goods-item__ft">{props.renderFooter}</View>
     </View>
