@@ -3,16 +3,18 @@ import { useSelector, useDispatch } from "react-redux";
 import Taro, { usePageScroll, getCurrentInstance } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import { SpNavBar, SpFloatMenuItem } from "@/components";
+import { TABBAR_PATH } from "@/consts";
 import { classNames, styleNames, hasNavbar } from "@/utils";
 
 import "./index.scss";
 
 function SpPage( props ) {
-  const $instance = getCurrentInstance();
+  const { page } = getCurrentInstance();
+  // debugger
   const { className, children, renderFloat, scrollToTopBtn = false } = props;
   const sys = useSelector( ( state ) => state.sys );
   const [showToTop, setShowToTop] = useState(false);
-  const { colorPrimary, colorMarketing, colorAccent, rgb, tabbar } = sys;
+  const { colorPrimary, colorMarketing, colorAccent, rgb } = sys;
   const pageTheme = {
     "--color-primary": colorPrimary,
     "--color-marketing": colorMarketing,
@@ -33,26 +35,26 @@ function SpPage( props ) {
       scrollTop: 0,
     });
   }
-
-  // console.log('hasNavbar:', hasNavbar, pageTheme)
+  const fidx = Object.values(TABBAR_PATH).findIndex((v) => v == page.path);
+  const isTabBarPage = fidx > -1;
+    
   return (
     <View
       className={classNames("sp-page", className, {
-        "has-navbar": hasNavbar,
+        "has-navbar": hasNavbar && !isTabBarPage,
       })}
       style={styleNames(pageTheme)}
     >
-      {hasNavbar && <SpNavBar />}
+      {hasNavbar && !isTabBarPage && <SpNavBar />}
       <View className="sp-page-body">{children}</View>
 
       {/* 浮动 */}
       <View className="float-container">
-        {showToTop &&
-          scrollToTopBtn && (
-            <SpFloatMenuItem onClick={scrollToTop}>
-              <Text className="iconfont icon-arrow-up"></Text>
-            </SpFloatMenuItem>
-          )}
+        {showToTop && scrollToTopBtn && (
+          <SpFloatMenuItem onClick={scrollToTop}>
+            <Text className="iconfont icon-arrow-up"></Text>
+          </SpFloatMenuItem>
+        )}
         {renderFloat}
       </View>
     </View>
