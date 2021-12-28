@@ -45,8 +45,8 @@ export default class AddressIndex extends Component {
   }
 
   componentDidMount() {
-    this.fetch()
     this.fetchAddressList()
+    this.fetch()
   }
 
   fetchAddressList = async () => {
@@ -179,10 +179,12 @@ export default class AddressIndex extends Component {
   handleChange = (name, val) => {
     const { info } = this.state
     info[name] = val
+    this.setState({
+      info
+    })
   }
 
   handleDefChange = (e) => {
-    console.log(e.detail.value)
     const info = {
       ...this.state.info,
       is_def: e.detail.value ? 1 : 0
@@ -218,11 +220,11 @@ export default class AddressIndex extends Component {
       return S.toast('请输入手机号')
     }
 
-    if (!data.province) {
-      data.province = chooseValue[0]
-      data.city = chooseValue[1]
-      data.county = chooseValue[2]
-    }
+    // if (!data.province) {
+    data.province = chooseValue[0]
+    data.city = chooseValue[1]
+    data.county = chooseValue[2]
+    // }
 
     if (!data.adrdetail) {
       return S.toast('请输入详细地址')
@@ -312,7 +314,7 @@ export default class AddressIndex extends Component {
             {process.env.TARO_ENV === 'weapp' ? (
               <Button
                 type='primary'
-                onClick={this.handleSubmit}
+                // onClick={this.handleSubmit}
                 formType='submit'
                 style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
               >
