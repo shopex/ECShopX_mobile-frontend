@@ -27,5 +27,9 @@
     &:nth-child(2n) {
       padding-left: 14px;
     }
+    .sp-goods-item {
+      border-radius: 16px;
+      overflow: hidden;
+    }
   }
 }

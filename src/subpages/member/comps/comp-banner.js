@@ -27,7 +27,7 @@ function CompsBanner(props) {
       )}
       onClick={handleClick}
     >
-      <SpImage src={src} />
+      <SpImage src={src} width="auto" />
     </View>
   )
 }

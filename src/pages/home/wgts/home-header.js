@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components'
 import { useSelector } from 'react-redux'
-import { SG_APP_CONFIG } from '@/consts'
 import { toggleTouchMove } from '@/utils/dom'
 import { getQueryVariable, isWeixin } from '@/utils'
 
@@ -10,9 +9,10 @@ import './home-header.scss'
 
 function WgtHomeHeader( props ) {
   const { children } = props
-  const { openScanQrcode } = Taro.getStorageSync( SG_APP_CONFIG );
   const { location = {} } = useSelector(state => state.user)
-
+  const sys = useSelector( state => state.sys );
+  const { openScanQrcode } = sys
+  
   const handlePickStore = () => {
     Taro.navigateTo( {
       url: '/subpages/ecshopx/nearly-shop'

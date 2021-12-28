@@ -68,26 +68,26 @@ class App extends Component {
       color_style: { primary, accent, marketing }
     } = await api.shop.getAppBaseInfo()
 
-    // 美洽客服配置
-    Taro.setStorageSync(SG_MEIQIA, meiqia);
-    // 一洽客服配置
-    Taro.setStorageSync(SG_YIQIA, echat);
-    // 白名单配置、门店配置、图片存储信息
-    Taro.setStorageSync(SG_APP_CONFIG, {
-      whitelist_status,
-      nostores_status,
-      openStore: !nostores_status,
-      disk_driver
-    })
+    // // 美洽客服配置
+    // Taro.setStorageSync(SG_MEIQIA, meiqia);
+    // // 一洽客服配置
+    // Taro.setStorageSync(SG_YIQIA, echat);
+    // // 白名单配置、门店配置、图片存储信息
+    // Taro.setStorageSync(SG_APP_CONFIG, {
+    //   whitelist_status,
+    //   nostores_status,
+    //   openStore: !nostores_status,
+    //   disk_driver
+    // })
     // 分享时是否携带参数
     Taro.setStorageSync("distributor_param_status", distributor_param_status);
 
-    Taro.setStorageSync(SG_APP_CONFIG, {
-      openRecommend, // 猜你喜欢
-      openScanQrcode, // 扫码
-      openLocation, // 定位
-      openOfficialAccount // 公众号组件
-    } );
+    // Taro.setStorageSync(SG_APP_CONFIG, {
+    //   openRecommend, // 猜你喜欢
+    //   openScanQrcode, // 扫码
+    //   openLocation, // 定位
+    //   openOfficialAccount // 公众号组件
+    // } );
 
     try {
       const tabBar = JSON.parse( tab_bar );
@@ -98,9 +98,14 @@ class App extends Component {
           colorMarketing: marketing,
           colorAccent: accent,
           pointName: point_rule_name,
-          tabbar: tabBar
+          tabbar: tabBar,
+          openRecommend, // 猜你喜欢
+          openScanQrcode, // 扫码
+          openLocation, // 定位
+          openOfficialAccount, // 公众号组件
+          diskDriver: disk_driver
         }
-      } );
+      });
       // 兼容老的主题方式
       store.dispatch( {
         type: 'colors/setColor',

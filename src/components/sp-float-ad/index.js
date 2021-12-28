@@ -26,9 +26,9 @@ function SpFloatAd(props) {
     const { general, membercard } = await api.promotion.automatic({
       register_type: "all",
     });
-
+    const list = [{ ...general }, { ...membercard }];
     setState((draft) => {
-      draft.list = [{ ...general }, { ...membercard }];
+      draft.list = list.filter((item => item.is_open == 'true'));
     });
   };
 

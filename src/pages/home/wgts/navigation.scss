@@ -1,10 +1,14 @@
 .wgt-navigation {
-  padding: 20px 40px;
+  padding: 20px 16px;
   background: #fff;
   margin-bottom: 20px;
   .navigation {
     display: flex;
     justify-content: space-around;
+  }
+  .nav-item {
+    width: 120px;
+    text-align: center;
   }
   .nav-name {
     font-size: 26px;

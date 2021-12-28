@@ -18,25 +18,24 @@ const MENUS = [
     icon: "m_menu_pintuan.png",
     link: "/marketing/pages/member/group-list",
   },
-  {
-    key: "pointMenu",
-    name: "积分商城",
-    icon: "m_menu_poin.png",
-    link: "/pointitem/pages/list",
-  },
-  {
-    key: "boost_activity",
-    name: "助力活动",
-    icon: "m_menu_zhulihuodong.png",
-    link: "/boost/pages/home/index",
-  },
-  {
-    key: "boost_order",
-    name: "助力订单",
-    icon: "m_menu_zhulidingdan.png",
-    link: "/boost/pages/order/index",
-  },
-
+  // {
+  //   key: "pointMenu",
+  //   name: "积分商城",
+  //   icon: "m_menu_poin.png",
+  //   link: "/pointitem/pages/list",
+  // },
+  // {
+  //   key: "boost_activity",
+  //   name: "助力活动",
+  //   icon: "m_menu_zhulihuodong.png",
+  //   link: "/boost/pages/home/index",
+  // },
+  // {
+  //   key: "boost_order",
+  //   name: "助力订单",
+  //   icon: "m_menu_zhulidingdan.png",
+  //   link: "/boost/pages/order/index",
+  // },
   {
     key: "offline_order",
     name: "线下订单",
@@ -67,17 +66,30 @@ function CompMenu( props ) {
 
   const menus = MENUS.filter( ( item ) => accessMenu[item.key] )
   return (
-    <View className='comp-menu'>
+    <View className="comp-menu">
       {menus.map((item, index) => (
-        <View className='menu-item' key={`menu-item__${index}`} onClick={onLink.bind(this, item)}>
-          <SpImage src={item.icon} width={100} />
-          <Text className='menu-name'>
-            {item.key == 'popularize' ? (isPromoter ? item.name : '我要推广') : item.name}
+        <View
+          className="menu-item"
+          key={`menu-item__${index}`}
+          onClick={onLink.bind(this, item)}
+        >
+          <SpImage
+            className="menu-image"
+            src={item.icon}
+            width={100}
+            height={100}
+          />
+          <Text className="menu-name">
+            {item.key == "popularize"
+              ? isPromoter
+                ? item.name
+                : "我要推广"
+              : item.name}
           </Text>
         </View>
       ))}
     </View>
-  )
+  );
 }
 
 export default CompMenu

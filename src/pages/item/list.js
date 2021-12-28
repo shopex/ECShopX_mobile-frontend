@@ -215,7 +215,7 @@ function ItemList(props) {
   }
 
   return (
-    <SpPage className={classNames("page-item-list")}>
+    <SpPage scrollToTopBtn className={classNames("page-item-list")}>
       <View className="item-list-head">
         <View className="search-wrap">
           <SpSearchBar
@@ -228,11 +228,16 @@ function ItemList(props) {
             onConfirm={handleConfirm}
           />
         </View>
-        <SpTagBar className="tag-list" list={tagList} value={curTagIdx} onChange = {onChangeTag}>
+        <SpTagBar
+          className="tag-list"
+          list={tagList}
+          value={curTagIdx}
+          onChange={onChangeTag}
+        >
           <View
             className="filter-btn"
             onClick={() => {
-              setState((v) => {
+              setState(v => {
                 v.show = true;
               });
             }}
@@ -247,19 +252,27 @@ function ItemList(props) {
           onChange={handleFilterChange}
         />
       </View>
-      <SpScrollView className='item-list-scroll' ref={goodsRef} fetch={fetch}>
+      <SpScrollView className="item-list-scroll" ref={goodsRef} fetch={fetch}>
         <View className="goods-list">
           <View className="left-container">
             {leftList.map((item, index) => (
               <View className="goods-item-wrap" key={`goods-item__${index}`}>
-                <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
+                <SpGoodsItem
+                  showFav
+                  onStoreClick={handleClickStore}
+                  info={item}
+                />
               </View>
             ))}
           </View>
           <View className="right-container">
             {rightList.map((item, index) => (
               <View className="goods-item-wrap" key={`goods-item__${index}`}>
-                <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
+                <SpGoodsItem
+                  showFav
+                  onStoreClick={handleClickStore}
+                  info={item}
+                />
               </View>
             ))}
           </View>
@@ -269,7 +282,7 @@ function ItemList(props) {
       <SpDrawer
         show={show}
         onClose={() => {
-          setState((v) => {
+          setState(v => {
             v.show = false;
           });
         }}
