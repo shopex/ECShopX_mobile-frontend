@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
+import Taro from '@tarojs/taro'
 import { connect } from "react-redux";
 import { useImmer } from "use-immer";
 import { withPager, withBackToTop } from "@/hocs";
@@ -101,12 +102,13 @@ function ItemList(props) {
       select_tags_list = [],
       brand_list,
     } = await api.item.search(params);
-    const resLeftList = list.filter((item, index) => {
+    const n_list = pickBy( list, doc.goods.ITEM_LIST_GOODS );
+    const resLeftList = n_list.filter((item, index) => {
       if (index % 2 == 0) {
         return item;
       }
     });
-    const resRightList = list.filter((item, index) => {
+    const resRightList = n_list.filter((item, index) => {
       if (index % 2 == 1) {
         return item;
       }
@@ -204,6 +206,14 @@ function ItemList(props) {
     });
     goodsRef.current.reset();
   };
+
+  const handleClickStore = (item) => {
+    const url = `/pages/store/index?id=${item.distributor_info.distributor_id}`
+    Taro.navigateTo({
+      url
+    })
+  }
+
   return (
     <SpPage className={classNames("page-item-list")}>
       <View className="item-list-head">
@@ -242,14 +252,14 @@ function ItemList(props) {
           <View className="left-container">
             {leftList.map((item, index) => (
               <View className="goods-item-wrap" key={`goods-item__${index}`}>
-                <SpGoodsItem showFav info={item} />
+                <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
               </View>
             ))}
           </View>
           <View className="right-container">
             {rightList.map((item, index) => (
               <View className="goods-item-wrap" key={`goods-item__${index}`}>
-                <SpGoodsItem showFav info={item} />
+                <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
               </View>
             ))}
           </View>

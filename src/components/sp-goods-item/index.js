@@ -58,14 +58,12 @@ function SpGoodsItem( props ) {
     return null
   }
 
-  let tagsList = info.promotion_activity || info.promotion
 
   return (
     <View
       className={classNames("sp-goods-item")}
-      onClick={handleClick.bind(this)}
     >
-      <View className="goods-item__hd">
+      <View className="goods-item__hd" onClick={handleClick.bind(this)}>
         <SpImage src={info.pic || info.pics[0]} mode="aspectFill" />
       </View>
       <View className="goods-item__bd">
@@ -102,10 +100,10 @@ function SpGoodsItem( props ) {
                   <SpPrice value={info.price / 100}></SpPrice>
                 </View>
                 <View className="mk-price">
-                  {info.market_price / 100 > 0 && (
+                  {info.marketPrice / 100 > 0 && (
                     <SpPrice
                       lineThrough
-                      value={info.market_price / 100}
+                      value={info.marketPrice / 100}
                     ></SpPrice>
                   )}
                 </View>
@@ -129,15 +127,26 @@ function SpGoodsItem( props ) {
         </View>
 
         {/* 促销活动标签 */}
-        {tagsList && tagsList.length > 0 && (
+        {info.promotion && info.promotion.length > 0 && (
           <View className="promotions">
-            {tagsList.map((item, index) => (
+            {info.promotion.map((item, index) => (
               <Text className="promotion-tag" key={`promotion-tag__${index}`}>
                 {PROMOTION_TAG[item.tag_type]}
               </Text>
             ))}
           </View>
         )}
+        {
+          info.distributor_info &&
+          !Array.isArray(info.distributor_info) && (
+            <View className='goods__store' onClick={() => onStoreClick(info)}>
+              {info.distributor_info.name}{' '}
+              <Text className='goods__store-entry'>
+                进店<Text className='iconfont icon-arrowRight'></Text>
+              </Text>
+            </View>
+          )
+        }
       </View>
       <View className="goods-item__ft">{props.renderFooter}</View>
     </View>
