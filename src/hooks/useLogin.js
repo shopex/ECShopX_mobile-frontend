@@ -80,8 +80,9 @@ export default (props = {}) => {
   /**
    * @function 更新隐私协议同意时间
    */
-  const updatePolicyTime = () => {
-    Taro.setStorageSync(SG_POLICY_UPDATETIME, policyTime.current)
+  const updatePolicyTime = async () => {
+    const { update_time } = await api.wx.getPrivacyTime()
+    Taro.setStorageSync(SG_POLICY_UPDATETIME, update_time)
   }
 
   /**
