@@ -40,7 +40,8 @@ import {
   normalizeQuerys,
   buriedPoint,
   isAlipay,
-  isWeixin
+  isWeixin,
+  isWeb
 } from '@/utils'
 import { setPageTitle } from '@/utils/platform'
 import entry from '@/utils/entry'
@@ -1071,7 +1072,7 @@ export default class EspierDetail extends Component {
 
   //订阅通知
   handleSubscription = async () => {
-    if (this.isPointitemGood() || isAlipay) {
+    if (this.isPointitemGood() || isAlipay || isWeb) {
       return
     }
 
@@ -1703,7 +1704,7 @@ export default class EspierDetail extends Component {
                         : 'inherit'
                       }`}
                     className={`arrivalNotice ${isSubscribeGoods &&
-                      'noNotice'} ${this.isPointitemGood() && 'good_disabled'}`}
+                      'noNotice'} ${(this.isPointitemGood() || isWeb)&& 'good_disabled'}`}
                     onClick={this.handleSubscription.bind(this)}
                   >
                     {this.isPointitemGood()
@@ -1711,7 +1712,7 @@ export default class EspierDetail extends Component {
                       : isSubscribeGoods
                         ? '已订阅到货通知'
                         : isAlipay
-                          ? '暂无可售'
+                          ? '暂无可售' : isWeb? '已售罄'
                           : '到货通知'}
                   </View>
                 )}
