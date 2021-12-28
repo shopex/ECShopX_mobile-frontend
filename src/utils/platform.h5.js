@@ -3,7 +3,6 @@ import Taro, { getCurrentInstance } from "@tarojs/taro";
 
 
 export function setPageTitle( title ) {
-  debugger
   Taro.eventCenter.trigger('set-pagetitle', title)
   // document.title = title;
   // var mobile = navigator.userAgent.toLowerCase();
