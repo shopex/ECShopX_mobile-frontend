@@ -10,6 +10,14 @@ const getAppId = () => {
   return appid
 }
 
+export function getOpenid ({ code }) {
+  return req.get('/oauth/getopenid', {code})
+}
+
+export function getredirecturl ({ url }) {
+  return req.get('/oauth/getredirecturl', {url})
+}
+
 export function info (data) {
   return req.post('/wx.info', data)
 }

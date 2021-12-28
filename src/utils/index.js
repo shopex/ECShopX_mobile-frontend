@@ -367,7 +367,7 @@ export const meiqiaInit = () => {
   })(window, document, "script", "_MEIQIA");
 };
 
-export const redirectUrl = async (api, url, type = "redirectTo") => {
+const redirectUrl = async (api, url, type = "redirectTo") => {
   if (!browser.weixin) {
     Taro[type]({ url });
     return;
@@ -376,6 +376,13 @@ export const redirectUrl = async (api, url, type = "redirectTo") => {
   let { redirect_url } = await api.wx.getredirecturl({ url: newUrl });
   global.location.href = redirect_url;
 };
+
+const getUrl = (url) => {
+  let href = global.location.href
+  let hrefList = href.split('/')
+
+  return `${hrefList[0]}//${hrefList[2]}${url}`
+}
 
 export function tokenParse(token) {
   var base64Url = token.split(".")[1];
@@ -631,7 +638,7 @@ export {
   validate,
   checkAppVersion,
   linkPage,
-  // redirectUrl
+  redirectUrl
 }
 
 export * from './platforms'

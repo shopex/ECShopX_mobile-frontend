@@ -70,7 +70,7 @@ export const ITEM_LIST_GOODS = {
   origincountry_img_url: "origincountry_img_url",
   type: "type",
   price: "price",
-  market_price: "market_price",
+  marketPrice: "market_price",
   // is_fav: ({ item_id }) => Boolean(favs[item_id]),
   store: "store"
 };
