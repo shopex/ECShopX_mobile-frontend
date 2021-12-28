@@ -22,7 +22,8 @@ function SpPage( props ) {
     "--color-rgb": rgb,
   };
 
-  usePageScroll((res) => {
+  usePageScroll( ( res ) => {
+    // console.log("res.scrollTop:", res.scrollTop);
     if (res.scrollTop > 300) {
       setShowToTop(true);
     } else {

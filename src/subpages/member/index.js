@@ -499,7 +499,7 @@ function MemberIndex(props) {
         </CompPanel>
       </View>
       <View className="dibiao-block">
-        <SpImage mode="heightFix" src="dibiao.png" width="320" />
+        <SpImage className="dibiao-image" src="dibiao.png" />
       </View>
 
       {/* 隐私政策 */}
