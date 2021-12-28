@@ -1,5 +1,6 @@
 export const SHOP_ITEM = {
   logo: "logo",
+  title: 'title',
   name: "store_name",
   hour: "hour",
   address: "store_address",
@@ -10,11 +11,15 @@ export const SHOP_ITEM = {
   },
   cardList: "discountCardList",
   salesCount: "sales_count",
+  rate: "rate",
+  scoreList: 'scoreList',
+  is_dada: "is_dada",
+  marketingActivityList: "marketingActivityList"
 };
 
 export const BUSINESS_SORT = {
   tag_name: 'title',
-  tag_id: 'sort'
+  tag_id: 'sort',
 }
 
 

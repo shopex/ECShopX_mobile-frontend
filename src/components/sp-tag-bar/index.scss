@@ -14,12 +14,12 @@
   }
   .tag-item {
     display: inline-block;
-    font-size: 26px;
+    font-size: 28px;
     color: $color-hint-text ;
     margin: 0 20px;
     &.active {
       color: $color-primary-text;
-      font-size: 30px;
+      font-size: 34px;
       font-weight: 600;
     }
   }

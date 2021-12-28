@@ -1,5 +1,6 @@
 $img-width: 120px;
 $primary-color: rgba(244, 129, 31, 1);
+$blue-color:#4980FF;
 
 $prefixCls: "sp-shop-item";
 
@@ -9,7 +10,7 @@ $prefixCls: "sp-shop-item";
     width: 120px;
     height: 120px;
     background: #FFFFFF;
-    border-radius: 16px;
+    border-radius: 30px;
     /* prettier-ignore */
     border: 1PX solid #DDD;
     overflow: hidden;
@@ -21,9 +22,11 @@ $prefixCls: "sp-shop-item";
   }
 
   .shop-name {
+    width: 454px;
+    @include multi-ellipsis(1);
     font-size: 30px;
-    color: #222;
-    font-weight: bold;
+    font-weight: 600;
+    color: #222222;
   }
 
   .shop-distance {
@@ -41,20 +44,24 @@ $prefixCls: "sp-shop-item";
   .item-bd-sb {
     display: flex;
     justify-content: space-between;
+    margin-top: 15px;
   }
 
   .express {
     // width: 85px;
+    @include hairline($blue-color,0,left,right,top,bottom);
     height: 30px;
-    background: #FFFFFF;
-    border: 1px solid #4980FF;
-    color: #4980FF;
+    padding: 1px 4px;
     font-size: 20px;
-    line-height: 28px;
+    font-weight: 400;
+    color: $blue-color;
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.8;
   }
 
   .item-bd-bd {
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
     .sp-shop-coupon {

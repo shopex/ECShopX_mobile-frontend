@@ -6,9 +6,9 @@ export const DISTANCE_PLUS_SORT=1;
 export const DISTANCE_MINUS_SORT=2;
 
 export const FILTER_DATA=[
-    {value:TIME_SORT,label:'综合排序'},
-    {label:'销量',plusValue:SALE_PLUS_SORT,minusValue:SALE_MINUS_SORT},
-    {label:'距离',plusValue:DISTANCE_PLUS_SORT,minusValue:DISTANCE_MINUS_SORT}
+  {value:TIME_SORT,tag_name:'综合排序'},
+  {tag_name:'销量',plusValue:SALE_PLUS_SORT,minusValue:SALE_MINUS_SORT},
+  {tag_name:'距离',plusValue:DISTANCE_PLUS_SORT,minusValue:DISTANCE_MINUS_SORT}
 ];
 
 export const DEFAULT_SORT_VALUE=DISTANCE_PLUS_SORT;
