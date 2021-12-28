@@ -22,30 +22,24 @@ import doc from '@/doc'
 import { classNames, pickBy } from "@/utils";
 import api from "@/api";
 import "./shop-list.scss";
-import {BUSINESS_LIST_SERVICES} from './consts/index'
+import { BUSINESS_LIST_SERVICES, FILTER_DATA, DISTANCE_PLUS_SORT, DISTANCE_MINUS_SORT, DEFAULT_SORT_VALUE } from './consts/index'
 import { Tracker } from '@/service'
 
 const initialState = {
-  filterList: [
-    { title: '综合' },
-    { title: '销量' },
-    { title: '距离', sort: -1 }
-  ],
   curFilterIdx: 0,
-  keywords: '',
+  name: '',
   list: [],
   tagList: [],
   brandSelect: [],
   businessServices: [],
 }
 
-
 function shopList(props) {
   const [state, setState] = useImmer( initialState )
   const {
     brandSelect,
     businessServices,
-    keywords,
+    name,
     curFilterIdx
   } = state;
   const goodsRef = useRef();
@@ -82,33 +76,30 @@ function shopList(props) {
     const query = {
       page,
       pageSize,
-      // province: lnglat().province,
-      // city: lnglat().city ? lnglat().city : lnglat().province,
-      // area: lnglat().district,
-      type: curFilterIdx,
+      province: location.lat ? location.province : '北京市',
+      city: location.lat ? location.city : '北京市',
+      area: location.lat ? location.district : '昌平区',
+      type: 0,
       show_discount: 1,
       show_marketing_activity: 1,
-      // is_ziti: logistics.is_ziti,
-      // is_delivery: logistics.is_delivery,
-      // is_dada: logistics.is_dada,
-      // distributor_tag_id: tag,
-      // lng: lnglat().longitude,
-      // lat: lnglat().latitude,
+      is_ziti: businessServices.includes('ziti') ? 1 : undefined,
+      is_delivery: businessServices.includes('delivery') ? 1 : undefined,
+      is_dada: businessServices.includes('dada') ? 1 : undefined,
+      distributor_tag_id: brandSelect.join(),
+      lng: location.lng,
+      lat: location.lat,
       //是否展示积分
       show_score: 1,
-      // sort_type: filterValue,
+      sort_type: curFilterIdx,
       show_items: 1,
-      brand_id: brandSelect.join(),
-      businessServices: businessServices.join(),
-      keywords: keywords
-      // name
+      name,
     };
     const { list, total_count, tagList } = await api.shop.list(query);
     const _list = pickBy(list, doc.shop.SHOP_ITEM);
     const _tagList = pickBy(tagList, doc.goods.BUSINESS_LIST_TAG)
 
-    setState( ( v ) => {
-      v.list = v.list.concat(_list);
+    await setState( ( v ) => {
+      v.list = [...v.list, ..._list];
       v.tagList = _tagList
     })
 
@@ -121,11 +112,23 @@ function shopList(props) {
   };
 
 
-  const handleFilterChange = async (e) => {
+  const handleFilterChange = async (item) => {
+    const lastDistanceFilter = curFilterIdx == DISTANCE_PLUS_SORT || curFilterIdx == DISTANCE_MINUS_SORT
+    const distanceFilter = item == DISTANCE_PLUS_SORT || item == DISTANCE_MINUS_SORT
+    // console.log("===curFilterIdx", curFilterIdx, item, lastDistanceFilter, distanceFilter)
+  
+    //如果从非距离tab切换回来距离tab  应该是由近到远
+    if (!lastDistanceFilter && distanceFilter) {
+      await setState((draft) => {
+        draft.curFilterIdx = DEFAULT_SORT_VALUE;
+      })
+      goodsRef.current.reset()
+      return
+    }
     await setState((draft) => {
-      draft.curFilterIdx = e;
-    });
-    goodsRef.current.reset();
+      draft.curFilterIdx = item;
+    })
+    goodsRef.current.reset()
   };
 
   const handleOnFocus = () => {
@@ -134,13 +137,13 @@ function shopList(props) {
 
   const handleOnChange = (val) => {
     setState(v => {
-      v.keywords = val
+      v.name = val
     })
   };
 
   const handleOnClear = async () => {
     await setState(v => {
-      v.keywords = ''
+      v.name = ''
     });
     setIsShowSearch(false);
     goodsRef.current.reset();
@@ -152,16 +155,16 @@ function shopList(props) {
 
   const handleConfirm = async (val) => {
     Tracker.dispatch("SEARCH_RESULT", {
-      keywords: val,
+      name: val,
     });
     setIsShowSearch(false);
     await setState(v => {
-      v.keywords = val
+      v.name = val
     });
     goodsRef.current.reset();
   };
 
-  const { filterList, list,tagList,  } = state;
+  const { list, tagList,  } = state;
   const onConfirmBrand = async () => {
     setDrawer(false);
     goodsRef.current.reset();
@@ -195,7 +198,7 @@ function shopList(props) {
     <SpPage className="page-shop-list">
       <View className="search-block">
         <SpSearchBar 
-          keyword={keywords}
+          keyword={name}
           placeholder="请输入商家、商品"
           onFocus={handleOnFocus}
           onChange={handleOnChange}
@@ -205,7 +208,7 @@ function shopList(props) {
         />
       </View>
       <View className="filter-block">
-        <SpTagBar className="tag-list" list={pickBy(filterList, doc.shop.BUSINESS_SORT)} value={curFilterIdx} onChange = {handleFilterChange}>
+        <SpTagBar className="tag-list" list={FILTER_DATA} value={curFilterIdx} onChange = {handleFilterChange}>
           <View
             className="filter-btn"
             onClick={() => {

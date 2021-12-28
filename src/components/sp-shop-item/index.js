@@ -11,22 +11,13 @@ function SpShopItem(props) {
   if (!info) {
     return null;
   }
-  const distance = useMemo(() => {
-    const dis = info.distance;
-    //km为单位米
-    if(dis) {
-      if (dis < 1) {
-        return `${Math.round(dis * Math.pow(10, 3))}m`;
-      } else {
-        return `${Number(dis).toFixed(2)}km`;
-      }
-    }
-  }, [info.distance]);
-  const { logo, name, cardList, salesCount,fullReduction = [{label:"满减",text:"好物狂欢节享满199减30"}]  } = info;
+  const { logo, name, cardList, salesCount, fullReduction, distance, is_dada, scoreList, marketingActivityList  } = info;
+  const rate = !!(scoreList || {}).avg_star ? <Text>评分：{(scoreList || {}).avg_star}</Text> : '';
+
   return (
     <View className={classNames("sp-shop-item", className)} onClick={jumpToBusiness}>
       <View className="shop-item-hd">
-        <SpImage className="shop-logo" src={logo} />
+        <SpImage className="shop-logo" src={logo || `${process.env.APP_IMAGE_CDN}/shop_default_logo.png`} />
       </View>
       <View className="shop-item-bd">
         <View className="item-bd-hd">
@@ -35,20 +26,40 @@ function SpShopItem(props) {
         </View>
         <View className="item-bd-sb">
           <View className="score">
-            评分：{5} 月销：{salesCount}
+            {rate} 月销：{salesCount}
           </View>
-          <View className="express">达达配送</View>
+          {is_dada && <View className="express">达达配送</View>}
         </View>
         <View className="item-bd-bd">
           {cardList.map((item, index) => (
             <SpShopCoupon info={item} key={`shop-coupon__${index}`} />
           ))}
         </View>
-        <View className='item-bd-fr'>
+        {/* {
+          marketingActivityList.map((m_item, m_index) => (
+            <View>
+              <View className={'left'} key={m_index}>
+                <View className={'label'}>
+                  <Text className={'name'}>{m_item.promotion_tag}</Text>
+                  <Text className={'msg'}>{m_item.marketing_name}</Text>
+                </View>
+              </View>
+              <View className={'right'}>
+                {true && m_index===0 && cardList.length===0 && <View className={'right-arrow'} onClick={handleExpand}>
+                  <Text className={classNames('iconfont icon-arrowDown', {
+                      ['expand']: expand
+                  })}></Text>
+                </View>}
+              </View>
+            </View>
+          ))
+        } */}
+
+        {/* <View className='item-bd-fr'>
           {fullReduction.map((item, index) => (
             <SpShopFullReduction info={item} key={`shop-full-reduction__${index}`} />
           ))}
-        </View>
+        </View> */}
       </View>
     </View>
   );
