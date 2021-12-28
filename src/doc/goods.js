@@ -1,7 +1,7 @@
 export const WGT_GOODS_GRID = {
   cross: {
     key: "origincountry_img_url",
-    default: [],
+    default: []
   },
   pic: ({ imgUrl }) => {
     return imgUrl;
@@ -21,7 +21,7 @@ export const WGT_GOODS_GRID = {
       return price;
     }
   },
-  marketPrice: "market_price",
+  marketPrice: "market_price"
 };
 
 export const WGT_GOODS_GRID_TAB = {
@@ -44,32 +44,33 @@ export const WGT_GOODS_GRID_TAB = {
     }
   },
   marketPrice: "market_price",
-  brand: "brand",
+  brand: "brand"
 };
 
 export const WGT_GOODS_BRAND = {
   id: "attribute_id",
-  name: "attribute_name",
+  name: "attribute_name"
 };
 
 export const BUSINESS_LIST_TAG = {
   id: "tag_id",
-  name: 'tag_name'
-}
+  name: "tag_name"
+};
 
 export const ITEM_LIST_GOODS = {
-  pic: ({ pics }) => pics ? typeof pics !== 'string' ? pics[0] : JSON.parse(pics)[0] : '',
-  item_id: 'item_id',
-  item_name: "item_name",
-  brief: 'brief',
-  distributor_id: 'distributor_id',
-  distributor_info: 'distributor_info',
-  promotion: 'promotion_activity',
-  origincountry_name: 'origincountry_name',
-  origincountry_img_url: 'origincountry_img_url',
-  type: 'type',
+  pic: ({ pics }) =>
+    pics ? (typeof pics !== "string" ? pics[0] : JSON.parse(pics)[0]) : "",
+  itemId: "item_id",
+  itemName: "item_name",
+  brief: "brief",
+  distributor_id: "distributor_id",
+  distributor_info: "distributor_info",
+  promotion: "promotion_activity",
+  origincountry_name: "origincountry_name",
+  origincountry_img_url: "origincountry_img_url",
+  type: "type",
   price: "price",
   market_price: "market_price",
   // is_fav: ({ item_id }) => Boolean(favs[item_id]),
-  store: 'store'
-}
+  store: "store"
+};

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { classNames, linkPage } from '@/utils'
 import './hot-topic.scss'
 
@@ -35,24 +35,38 @@ export default class WgtHotTopic extends Component {
   render() {
     const { current, list } = this.state
     const { info } = this.props
+    const { base } = info
 
     return (
-      <View className={`hot-topic ${info.base.padded ? 'wgt__padded' : null}`}>
-        <View className='title'> {info.base.title}</View>
-        <View className='list'>
+      <View
+        className={classNames("wgt", "wgt-hot-topic", {
+          wgt__padded: base.padded
+        })}
+      >
+        {base.title && (
+          <View className="wgt-head">
+            <View className="wgt-hd">
+              <Text className="wgt-title">{base.title}</Text>
+            </View>
+          </View>
+        )}
+        <View className="list">
           {list.map((item, idx) => {
             return (
               <View
                 key={item.id}
-                className={classNames('gambit', idx === current ? 'checked' : '')}
+                className={classNames(
+                  "gambit",
+                  idx === current ? "checked" : ""
+                )}
                 onClick={this.handleClick.bind(this, idx, item)}
               >
                 {item.topic}
               </View>
-            )
+            );
           })}
         </View>
       </View>
-    )
+    );
   }
 }

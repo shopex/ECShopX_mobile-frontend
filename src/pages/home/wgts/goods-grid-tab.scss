@@ -43,11 +43,15 @@
         padding-left: 14px;
       }
       .goods-item__hd {
-        border-radius: 16px 16px 0 0;
+        // border-radius: 16px 16px 0 0;
         overflow: hidden;
       }
       .goods-item__bd {
         padding-top: 65px;
+      }
+      .sp-goods-item {
+        border-radius: 16px;
+        overflow: hidden;
       }
     }
   }

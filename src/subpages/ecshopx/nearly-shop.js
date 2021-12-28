@@ -7,7 +7,6 @@ import { SpPage, SpScrollView, SpLogin } from "@/components";
 import { updateLocation, updateChooseAddress } from "@/store/slices/user";
 import api from '@/api'
 import CompShopItem from './comps/comp-shopitem'
-import { SG_APP_CONFIG } from '@/consts'
 import { usePage, useLogin } from '@/hooks'
 import doc from '@/doc'
 import { entryLaunch, pickBy, classNames, showToast, log, isArray } from "@/utils";
