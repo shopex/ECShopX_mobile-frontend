@@ -7,7 +7,7 @@ import { classNames, styleNames } from '@/utils'
 import './comp-helpcenter.scss'
 
 const MENUS = [
-  { key: 'share', name: '我要分享', icon: 'icon-fenxiang-01' },
+  // { key: 'share', name: '我要分享', icon: 'icon-fenxiang-01' },
   // {
   //   key: 'address',
   //   name: '地址管理',

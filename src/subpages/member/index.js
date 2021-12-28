@@ -305,6 +305,10 @@ function MemberIndex(props) {
             className="usericon"
             src={(userInfo && userInfo.avatar) || "default_user.png"}
             width="110"
+            onClick={handleClickLink.bind(
+              this,
+              "/marketing/pages/member/userinfo"
+              )}
           />
           <View className="header-hd__body">
             <View className="username-wrap">
@@ -499,7 +503,7 @@ function MemberIndex(props) {
         </CompPanel>
       </View>
       <View className="dibiao-block">
-        <SpImage mode="heightFix" src="dibiao.png" width="320" />
+        <SpImage className="dibiao-image" src="dibiao.png" />
       </View>
 
       {/* 隐私政策 */}

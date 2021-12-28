@@ -1,36 +1,51 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { useSelector } from "react-redux";
+import Taro, { Component } from "@tarojs/taro";
+import { View, Image } from "@tarojs/components";
 import { classNames, styleNames, isNumber } from "@/utils";
-import './index.scss'
+import "./index.scss";
 
 function SpImage(props) {
   let {
     src,
     className,
-    mode = 'widthFix',
-    width = 'auto',
+    mode = "widthFix",
+    width = "auto",
+    height,
     onClick = () => {},
     onError = () => {},
     onLoad = () => {},
-    lazyLoad = () => {}
-  } = props
-  if ( !src ) {
+    lazyLoad = false
+  } = props;
+  const { diskDriver } = useSelector(state => state.sys);
+  
+  if (!src) {
     src = "default_img.png";
   }
 
-  const imgUrl = /^http/.test(src) ? src : `${process.env.APP_IMAGE_CDN}/${src}`
+  let imgUrl = /^http/.test(src)
+    ? src
+    : `${process.env.APP_IMAGE_CDN}/${src}`;
+  
+  if ( diskDriver === "qiniu" ) {
+    if ( width != 'auto' ) {
+      imgUrl = `${imgUrl}?imageView2/1${width ? "/w/" + width : ""}${
+        height ? "/h/" + height : ""
+      }`;
+    }
+  }
+  
   return (
     <View
       className={classNames(
         {
-          "sp-image": true,
+          "sp-image": true
         },
         className
       )}
       style={styleNames({
-        width: isNumber(width) ? `${width / 2}px` : '',
-      } )}
-      onClick = { onClick }
+        width: isNumber(width) ? `${width / 2}px` : ""
+      })}
+      onClick={onClick}
     >
       <Image
         className="sp-image-img"
@@ -38,7 +53,7 @@ function SpImage(props) {
         mode={mode}
         // onError={onError}
         // onLoad={onLoad}
-        // lazyLoad={lazyLoad}
+        lazyLoad={lazyLoad}
       />
     </View>
   );
@@ -46,6 +61,6 @@ function SpImage(props) {
 
 SpImage.options = {
   addGlobalClass: true
-}
+};
 
-export default SpImage
+export default SpImage;

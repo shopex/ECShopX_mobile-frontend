@@ -17,7 +17,6 @@ import {
 import api from "@/api";
 import { isWeixin } from "@/utils";
 import entryLaunch from "@/utils/entryLaunch";
-import { SG_APP_CONFIG } from "@/consts";
 import { updateLocation } from "@/store/slices/user";
 import { useImmer } from "use-immer";
 import { useLogin } from "@/hooks";
@@ -43,9 +42,11 @@ function Home() {
     policyUpdateHook: () => {
       setPolicyModal(true);
     },
-  });
-  const [policyModal, setPolicyModal] = useState(false);
-  const { openRecommend } = Taro.getStorageSync( SG_APP_CONFIG );
+  } );
+  
+  const [policyModal, setPolicyModal] = useState( false );
+  const sys = useSelector(state => state.sys);
+  const { openRecommend } = sys;
   const { wgts, shareInfo } = state
 
   const dispatch = useDispatch();
@@ -124,7 +125,6 @@ function Home() {
   }
   return (
     <SpPage
-      scrollToTopBtn
       className="page-index"
       renderFloat={<CompFloatMenu />}
     >
