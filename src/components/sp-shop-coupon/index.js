@@ -7,8 +7,8 @@ import api from "@/api";
 import "./index.scss";
 
 function SpShopCoupon( props ) {
-  const { className, info } = props
-  const { card_type, discount, least_cost } = info;
+  const { className, info,fromStoreIndex=false } = props
+  const { card_type, discount, least_cost,title } = info;
   let couponText = ''
   // 折扣券
   if ( card_type == 'discount' ) {
@@ -28,10 +28,12 @@ function SpShopCoupon( props ) {
       )}
     >
       <View className='coupon-wrap'>
-        <Text className="coupon-text">{couponText}</Text>
-        <Text className="coupon-status">
-          {info.receive == 1 ? "已领" : "领取"}
-        </Text>
+        <Text className="coupon-text">{fromStoreIndex ? title : couponText}</Text>
+        {
+          !fromStoreIndex && <Text className="coupon-status">
+              {info.receive == 1 ? "已领" : "领取"}
+            </Text>
+        }
       </View>
     </View>
   );
