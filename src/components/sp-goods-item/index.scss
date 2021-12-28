@@ -68,4 +68,13 @@
     &__ft {
     }
   }
+  .goods__store {
+    padding-top: 10px;
+    color: $color-gray;
+    font-size: 20px;
+    letter-spacing: 0;
+    &-entry {
+      color: #333;
+    }
+  }
 }

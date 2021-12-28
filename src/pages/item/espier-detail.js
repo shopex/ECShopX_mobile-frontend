@@ -441,13 +441,7 @@ export default class EspierDetail extends Component {
         startActivity = info.activity_info.status === 'in_sale'
       }
     }
-
-    if ( this.$instance.router.path === '/pages/item/espier-detail' ) {
-      setPageTitle(info.item_name)
-      // Taro.setNavigationBarTitle({
-      //   title: info.item_name
-      // })
-    }
+    setPageTitle(info.item_name)
 
     if (marketing === 'group' || marketing === 'seckill' || marketing === 'limited_time_sale') {
       const { colors } = this.props
