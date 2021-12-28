@@ -58,13 +58,12 @@ function SpGoodsItem( props ) {
     return null
   }
 
-
   return (
     <View
       className={classNames("sp-goods-item")}
     >
       <View className="goods-item__hd" onClick={handleClick.bind(this)}>
-        <SpImage src={info.pic || info.pics[0]} mode="aspectFill" />
+        <SpImage src={info.pic && (info.pic || info.pics[0])} mode="aspectFill" />
       </View>
       <View className="goods-item__bd">
         {/* 跨境商品 */}
