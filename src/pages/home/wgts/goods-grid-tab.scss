@@ -22,9 +22,24 @@
     font-size: 32px;
     // font-weight: bold;
     display: inline-block;
+    position: relative;
     &.active {
       color: var(--color-primary);
       font-weight: bold;
+    }
+    &:not(:last-child) {
+      &:after {
+        content: '';
+        display: block;
+        /* prettier-ignore */
+        width: 1PX;
+        height: 30px;
+        background: #e4e4e4;
+        position: absolute;
+        right: 0;
+        top: 0;
+        top: 4px;
+      }
     }
   }
   .tab-body {
