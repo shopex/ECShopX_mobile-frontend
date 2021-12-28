@@ -19,10 +19,10 @@ export default {
 
     'pages/article/index', // 文章页面
     'pages/recommend/list', // 推荐软文列表
-    'pages/member/item-fav',
+    'pages/member/item-fav', // 收藏页面
 
     'pages/custom/custom-page', // 自定义页面
-    'pages/liveroom/index'
+    'pages/liveroom/index' // 直播间页面
   ],
   subPackages: [
     {
@@ -57,45 +57,45 @@ export default {
         'pages/distribution/shop-form', // 小店设置编辑页面
         'pages/distribution/qrcode', // 小店二维码
         'pages/distribution/shop-category', // 小店商品分类
-        'pages/distribution/good-category',
-        'pages/distribution/shop-goods',
-        'pages/distribution/shop-trade',
-        'pages/distribution/shop-achievement',
+        'pages/distribution/good-category', // 推广商品分类页面
+        'pages/distribution/shop-goods', // 小店商品页面
+        'pages/distribution/shop-trade', // 小店订单页面
+        'pages/distribution/shop-achievement', // 小店业绩页面
 
         'pages/distribution/point-platform',
 
-        'pages/verified-card/index',
-        'pages/verified-card/verified',
-        'pages/verified-card/card',
-        'pages/reservation/brand-list',
-        'pages/reservation/brand-detail',
-        'pages/reservation/brand-result',
-        'pages/reservation/reservation-list',
-        'pages/reservation/goods-reservate',
-        'pages/reservation/reservation-detail',
+        'pages/verified-card/index', // 实名认证以及绑定银行卡页面
+        'pages/verified-card/verified', // 实名认证页面
+        'pages/verified-card/card', // 绑定银行卡页面
+        'pages/reservation/brand-list', // 预约列表
+        'pages/reservation/brand-detail', // 预约详情
+        'pages/reservation/brand-result', // 预约结果
+        'pages/reservation/reservation-list', // 预约（代码逻辑显示）
+        'pages/reservation/goods-reservate', // 预约报名
+        'pages/reservation/reservation-detail', // 预约详情
 
-        'pages/member/item-activity',
-        'pages/member/activity-detail',
-        'pages/member/user-info',
-        'pages/member/complaint',
-        'pages/member/complaint-record',
-        'pages/member/coupon',
-        'pages/member/coupon-detail',
-        'pages/member/address',
-        'pages/member/edit-address',
-        'pages/member/crm-address-list',
-        'pages/member/setting',
-        'pages/member/userinfo',
-        'pages/member/item-history',
-        'pages/member/item-guess',
-        'pages/member/member-code',
-        'pages/member/group-list',
-        'pages/member/member-setting',
-        'pages/member/destroy-member',
+        'pages/member/item-activity', // 活动列表
+        'pages/member/activity-detail', // 活动详情
+        'pages/member/user-info', // 用户注册
+        'pages/member/complaint', // 投诉导购
+        'pages/member/complaint-record', // 投诉导购记录
+        'pages/member/coupon', // 我的优惠券列表
+        'pages/member/coupon-detail', // 我的优惠券详情
+        'pages/member/address', // 我的地址
+        'pages/member/edit-address', // 编辑地址
+        'pages/member/crm-address-list', // 收货地址
+        'pages/member/setting', // 设置页面
+        'pages/member/userinfo', // 用户信息
+        'pages/member/item-history', // 浏览记录
+        'pages/member/item-guess', // 猜你喜欢页面
+        'pages/member/member-code', // 用户二维码
+        'pages/member/group-list', // 我的拼团
+        'pages/member/member-setting', // 会员中心设置
+        'pages/member/destroy-member', // 会员注销页面
 
-        'pages/wheel/index',
-        'pages/item/espier-evaluation',
-        'pages/item/espier-evaluation-detail',
+        'pages/wheel/index', // 大转盘
+        'pages/item/espier-evaluation', // 商品评论列表
+        'pages/item/espier-evaluation-detail', // 商品评论详情
         'pages/item/rate', //订单评价
         'pages/item/success',//评价结果
 
