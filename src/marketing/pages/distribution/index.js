@@ -444,13 +444,13 @@ export default class DistributionDashboard extends Component {
           <View className='poster-modal'>
             <Image className='poster' src={poster} mode='aspectFit' />
             <View
-              className='icon-download poster-save-btn'
+              className='iconfont icon-download poster-save-btn'
               onClick={this.handleSavePoster.bind(this)}
             >
               保存图片
             </View>
             <View
-              className='icon-close poster-close-btn'
+              className='iconfont icon-close poster-close-btn'
               onClick={this.handleHidePoster.bind(this)}
             ></View>
           </View>
