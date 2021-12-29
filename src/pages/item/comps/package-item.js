@@ -287,8 +287,7 @@ export default class PackageItem extends Component {
     console.log(mainItem,'mainItemmainItemmainItem');
     // return
     const packageId = this.props.current
-    // if (!mainItem.checked_spec && mainItem.spec_items.length > 1) {
-    if (!mainItem.checked_spec) {
+    if (!mainItem.checked_spec && mainItem.spec_items.length > 0) {
       Taro.showToast({
         title: '请选择主商品规格',
         icon: 'none'
