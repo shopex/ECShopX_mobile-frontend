@@ -79,8 +79,8 @@ export default class myGroupList extends Component {
               </View>
               <View className='group-item__bd'>
                 <View className='group-item__cont'>
-                  {item.team_status == 2 && <View className='icon icon-over-group'></View>}
-                  {item.team_status == 3 && <View className='icon icon-ungroup'></View>}
+                  {item.team_status == 2 && <View className='iconfont icon-over-group'></View>}
+                  {item.team_status == 3 && <View className='iconfont icon-ungroup'></View>}
                   <Text className='group-item__title'>{item.itemName}</Text>
                   <View className='group-item__desc'>
                     <View className='group-item__tuan'>

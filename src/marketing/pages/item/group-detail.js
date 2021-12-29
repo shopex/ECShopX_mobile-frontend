@@ -178,8 +178,8 @@ export default class GroupDetail extends Component {
         <SpNavBar title='拼团详情' leftIconType='chevron-left' fixed='true' />
         <View
           className={classNames('status-icon', {
-            'success icon-over-group': detail && team_info.team_status == 2,
-            'fail icon-ungroup': detail && team_info.team_status == 3
+            'iconfont success icon-over-group': detail && team_info.team_status == 2,
+            'iconfontfail icon-ungroup': detail && team_info.team_status == 3
           })}
         ></View>
         {team_info.team_status == 1 && (
@@ -319,6 +319,7 @@ export default class GroupDetail extends Component {
         <AtCurtain isOpened={curtainStatus} onClose={this.handleCloseCurtain.bind(this)}>
           <Image
             mode='widthFix'
+            style={{ display: 'block', margin: '0 auto' }}
             src={`${process.env.APP_IMAGE_CDN}/pintuan_fail.png`}
             onClick={this.handleCloseCurtain.bind(this)}
           />

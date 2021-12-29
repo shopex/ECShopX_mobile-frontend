@@ -57,6 +57,17 @@ export default (props = {}) => {
   const getUserInfo = async (refresh) => {
     if (!userInfo || refresh) {
       const _userInfo = await api.member.memberInfo();
+      // 兼容老版本 后续优化
+      const { username, avatar, user_id, mobile, open_id } = _userInfo.memberInfo
+      Taro.setStorageSync('userinfo', {
+        username: username,
+        avatar: avatar,
+        userId: user_id,
+        isPromoter: _userInfo.is_promoter,
+        mobile: mobile,
+        openid: open_id,
+        vip: _userInfo.vipgrade ? _userInfo.vipgrade.vip_type : ''
+      })
       dispatch(updateUserInfo(_userInfo));
     }
   };
