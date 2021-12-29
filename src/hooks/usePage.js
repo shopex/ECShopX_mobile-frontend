@@ -60,9 +60,9 @@ export default (props) => {
   /**
    * @function 分页重置
    */
-  const resetPage = () => {
+  const resetPage = async () => {
     totalRef.current = 0
-    setPage( v => {
+    await setPage( v => {
       v.pageIndex = 1
       v.hasMore = true
     });

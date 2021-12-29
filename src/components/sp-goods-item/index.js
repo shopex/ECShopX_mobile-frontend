@@ -15,7 +15,7 @@ import "./index.scss";
 
 function SpGoodsItem( props ) {
   const dispatch = useDispatch();
-  const { favs } = useSelector(state => state.user);
+  const { favs = [] } = useSelector(state => state.user);
   const {
     onClick = () => {},
     onStoreClick = () => {},
@@ -27,7 +27,7 @@ function SpGoodsItem( props ) {
     isPointitem = false,
     renderFooter = null
   } = props;
-  
+
 
 
   const handleFavClick = async () => {
