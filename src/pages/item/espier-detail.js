@@ -1517,7 +1517,7 @@ export default class EspierDetail extends Component {
             />
           ) : null}
 
-          {promotion_package && !this.isPointitemGood() && (
+          {promotion_package && promotion_package.length>0 && !this.isPointitemGood() && (
             <SpCell
               className='goods-sec-specs'
               isLink
