@@ -99,6 +99,19 @@ $prefixCls: "sp-shop-item";
   .pick {
     max-height: 1000px;
   }
+  .pick-down {
+    height: 33px;
+    font-size: 24px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #444444;
+    line-height: 33px;
+    position: absolute;
+    right: 23px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
   .item-bd-hd {
     display: flex;
     flex-direction: row;
