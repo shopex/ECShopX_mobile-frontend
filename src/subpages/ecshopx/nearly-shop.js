@@ -254,6 +254,8 @@ function NearlyShop( props ) {
   const { areaIndexArray, areaArray, chooseValue, showType } = state
   const {province, city, district} = location
   const locationValue = province + city + district
+
+  console.log(areaArray, areaIndexArray, '----------')
   return (
     <SpPage className="page-ecshopx-nearlyshop">
       <View className="search-block">
