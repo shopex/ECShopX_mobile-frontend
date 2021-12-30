@@ -6,12 +6,12 @@ import { classNames, styleNames } from '@/utils'
 import './comp-menu.scss'
 
 const MENUS = [
-  {
-    key: "popularize",
-    name: "推广管理",
-    icon: "m_menu_tuiguang.png",
-    link: "/marketing/pages/distribution/index",
-  },
+  // {
+  //   key: "popularize",
+  //   name: "推广管理",
+  //   icon: "m_menu_tuiguang.png",
+  //   link: "/marketing/pages/distribution/index",
+  // },
   {
     key: "group",
     name: "我的拼团",

@@ -22,14 +22,32 @@
     align-items: center;
     &__body {
       line-height: 40px;
+      width: 80%;
       /*  #ifdef  h5  */  
       margin-top: 20px;
       /*  #endif  */  
     }
+    .username-wrap {
+      display: flex;
+      justify-content: space-between;
+    }
     .username {
       font-size: 32px;
       color: #222;
-      margin-right: 24px;
+      width: 90%;
+      font-weight: bold;
+      @include multi-ellipsis(1);
+    }
+    .gradename {
+      display: inline-block;
+      position: relative;
+      // padding: 0 20px;
+      z-index: 1;
+      font-size: 20px;
+      text-align: center;
+      color: #777;
+      // background: linear-gradient(to right bottom, #fca280, #e75fa9);
+      // border-radius: 50px;
     }
     .icon-erweima-01 {
       color: var(--color-primary);

@@ -14,7 +14,7 @@ const MENUS = [
   { key: 'offline_order', name: '线下订单', icon: 'm_menu_xianxiadingdan.png' },
   // community_order: { name: "社区团购", icon: "m_menu_tuangou.png" },
   { key: 'activity', name: '活动预约', icon: 'm_menu_baoming.png' },
-  { key: 'prorate', name: '推广管理', icon: 'm_menu_tuiguang.png' },
+  // { key: 'prorate', name: '推广管理', icon: 'm_menu_tuiguang.png' },
 
   { key: 'complaint', name: '投诉记录', icon: 'm_menu_toushu.png' }
 ]
