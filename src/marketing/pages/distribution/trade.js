@@ -4,7 +4,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { hasNavbar, pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
 
 import './trade.scss'
@@ -92,7 +92,7 @@ export default class DistributionTrade extends Component {
       <View className='page-distribution-trade'>
         <SpNavBar title='订单' leftIconType='chevron-left' />
         <AtTabs
-          className='trade-list__tabs'
+          className={`trade-list__tabs ${hasNavbar && 'trade-list__tabs_web'}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
@@ -102,7 +102,7 @@ export default class DistributionTrade extends Component {
           ))}
         </AtTabs>
         <ScrollView
-          className='trade-list__scroll'
+          className={`trade-list__scroll ${hasNavbar && 'trade-list__scroll_web'}`}
           scrollY
           scrollTop={scrollTop}
           onScrollToLower={this.nextPage}

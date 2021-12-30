@@ -5,7 +5,7 @@ import { Loading, SpNote, Price, SpNavBar } from '@/components'
 import _mapKeys from 'lodash/mapKeys'
 import api from '@/api'
 import { withPager } from '@/hocs'
-import { calcTimer } from '@/utils'
+import { calcTimer, hasNavbar } from '@/utils'
 import './group-list.scss'
 
 @withPager
@@ -64,7 +64,7 @@ export default class myGroupList extends Component {
     const { tabList, curTabIdx, list, page } = this.state
 
     return (
-      <View className='page-my-group-list'>
+      <View className={`page-my-group-list ${hasNavbar && 'group-list-top' }`}>
         <SpNavBar title='我的拼团' leftIconType='chevron-left' fixed='true' />
         {list.map((item, idx) => {
           const { remaining_time_obj } = item
