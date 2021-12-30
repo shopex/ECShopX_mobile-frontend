@@ -55,7 +55,8 @@ const userSlice = createSlice({
         isOpen: vipgrade.is_open,
         isVip: vipgrade.is_vip,
         vipType: vipgrade.lv_type,
-        endTime: vipgrade.end_time
+        endTime: vipgrade.end_time,
+        grade_name: vipgrade.grade_name
       };
     },
 

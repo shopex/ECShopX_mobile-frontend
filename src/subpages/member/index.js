@@ -327,11 +327,18 @@ function MemberIndex(props) {
               )}
             </View>
             <View className="join-us">
-              <SpLogin>
-                <Text className="join-us-txt">
-                  {isLogin ? "您好，欢迎" : "加入我们?"}
-                </Text>
+            {
+              isLogin ? 
+                <View className='gradename'>{`${
+                  !vipInfo.isVip
+                    ? userInfo.gradeInfo ? userInfo.gradeInfo.grade_name : ''
+                    : vipInfo.grade_name || '会员'
+                }`}</View>
+              : <SpLogin>
+                <Text className="join-us-txt">加入我们?</Text>
               </SpLogin>
+            }
+              
             </View>
           </View>
         </View>
