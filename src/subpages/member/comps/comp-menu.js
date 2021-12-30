@@ -1,17 +1,17 @@
 import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { SpImage } from '@/components'
-import { classNames, styleNames } from '@/utils'
+import { classNames, styleNames, isWeb } from '@/utils'
 
 import './comp-menu.scss'
 
 const MENUS = [
-  // {
-  //   key: "popularize",
-  //   name: "推广管理",
-  //   icon: "m_menu_tuiguang.png",
-  //   link: "/marketing/pages/distribution/index",
-  // },
+  {
+    key: "popularize",
+    name: "推广管理",
+    icon: "m_menu_tuiguang.png",
+    link: "/marketing/pages/distribution/index",
+  },
   {
     key: "group",
     name: "我的拼团",
@@ -64,7 +64,10 @@ function CompMenu( props ) {
     return null
   }
 
-  const menus = MENUS.filter( ( item ) => accessMenu[item.key] )
+  let menus = MENUS.filter( ( item ) => accessMenu[item.key] )
+  if (isWeb) {
+    menus = menus.filter(m_item => m_item.key != "popularize")
+  }
   return (
     <View className="comp-menu">
       {menus.map((item, index) => (
