@@ -625,6 +625,25 @@ export function hex2rgb(hex) {
   return rgb;
 }
 
+function isBase64(str){ 
+  if(str.indexOf('data:')!=-1 && str.indexOf('base64')!=-1 ){
+    return true;
+  }else{
+      return false;
+  }
+} 
+
+//判断是否是商家入驻
+const isMerchantModule=(()=>{
+  if(!isWeb) return false;
+  return /\/subpages\/merchant/.test(location.pathname);
+})();
+
+function isUndefined(val) {
+  return typeof val === 'undefined'
+}
+
+
 export {
   classNames,
   log,
@@ -638,7 +657,10 @@ export {
   validate,
   checkAppVersion,
   linkPage,
-  redirectUrl
+  redirectUrl,
+  isBase64,
+  isMerchantModule,
+  isUndefined
 }
 
 export * from './platforms'

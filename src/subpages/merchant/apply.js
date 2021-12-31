@@ -1,0 +1,450 @@
+import Taro, { useDidShow, useRouter } from '@tarojs/taro'
+import { useEffect, useState } from 'react'
+import { ScrollView, View, Text } from '@tarojs/components'
+import { isUndefined, getThemeStyle, styleNames, showToast,isArray } from '@/utils'
+import { MButton, MStep, MNavBar, MCell } from './comps'
+import { useArea, useUpdate } from './hook' 
+import { useSelector,useDispatch } from 'react-redux'
+import { updateState} from "@/store/slices/merchant";
+import { MERCHANT_TYPE,BUSINESS_SCOPE,STEPTWOTEXT,STEPTHREETEXT } from './consts'
+import { useImmer } from 'use-immer'
+import api from '@/api'
+import './apply.scss'
+import { useDepChange } from '@/hooks' 
+const StepOptions = ['入驻信息', '商户信息', '证照信息'];
+
+//const merchatTypeOptions = [{ value: 'enterprise', label: '企业' }, { value: 'soho', label: '个体户' }];
+
+const bankAccType = [{ value: 1, label: '对公' }, { value: 2, label: '对私' }];
+
+const initialState = {
+    //商户类型id/经营范围id
+    merchant_type_id: undefined,
+    //入驻类型
+    settled_type:undefined,
+    //商户名称
+    merchant_name:undefined,
+    //统一社会信用代码
+    social_credit_code_id:undefined,
+    //省市区编码
+    regions_id:[],
+    //省市区名称
+    regions:[],
+    //详细地址
+    address:undefined,
+    //法人姓名
+    legal_name:undefined,
+    //法人身份证号码
+    legal_cert_id:undefined,
+    //法人手机号码
+    legal_mobile:undefined,
+    //银行账户类型
+    bank_acct_type:0,
+    //结算银行卡号
+    card_id_mask:undefined,
+    //结算银行
+    bank_name:undefined,
+    //绑定手机号
+    bank_mobile:undefined,
+    //营业执照图片url
+    license_url:undefined,
+    //法人手持身份证正面url
+    legal_certid_front_url:undefined,
+    //法人手持身份证反面url
+    legal_cert_id_back_url:undefined,
+    //结算银行卡正面url
+    bank_card_front_url:undefined
+}
+
+const Apply = () => {
+
+    const update = useUpdate();
+
+    const dispatch = useDispatch();
+
+    const [state, setState] = useImmer(initialState); 
+
+    const { merchantType,businessScope } = useSelector((state) => state.merchant);  
+
+    const [ merchantOptions, setMerchantOptions ] = useState([]);
+
+    useEffect(()=>{ 
+        //必有经营范围 
+        if(businessScope.id){
+            setState((state) => {
+                state.merchant_type_id = businessScope.id;
+            })
+        }
+    },[businessScope]);
+
+    useDepChange(()=>{ 
+        if(merchantType.id){
+            dispatch(updateState({key:BUSINESS_SCOPE}))
+        }
+    },[merchantType])
+
+    //结算银行必填
+    const banknameRequired = state.bank_acct_type == 1;
+
+    //银行绑定手机号必填
+    const bankmobileRequired = state.bank_acct_type == 2;
+
+    const { params } = useRouter();
+
+    const {
+        areaList,
+        onColumnChange: onAreaColumnChange,
+        onChange: onAreaChange,
+        selectArea
+    } = useArea();
+
+    //当前正在第几步
+    const [step, setStep] = useState(1);
+
+    const [loading, setLoading] = useState(false);
+
+    //最后一步
+    const isSubmit = step === 3;
+
+    const handleChange = (key, key2) => (value) => {
+        if (key2) {
+            setState((state)=>{
+                state[key]=value[0];
+                state[key2]=value[1];
+            }) 
+        } else {
+            setState((state)=>{
+                state[key]=value; 
+            }) 
+        } 
+    }
+
+    useEffect(() => {
+        if (selectArea.length) {
+            setState((state)=>{
+                state.regions=selectArea.map(item => item.label);
+                state.regions_id=selectArea.map(item => item.value);
+            }) 
+        }
+    }, [selectArea]) 
+
+    const handleSubmit = async () => {
+
+        const {
+            settled_type,
+            merchant_type_id,
+            merchant_name,
+            social_credit_code_id,
+            regions,
+            regions_id,
+            address,
+            legal_name,
+            legal_cert_id,
+            legal_mobile,
+            bank_acct_type,
+            card_id_mask,
+            bank_name,
+            bank_mobile
+        }=state;
+
+        if (step === 3) {
+            const { confirm } = await Taro.showModal({
+                title: '提示',
+                content: '请确认是否提交审核',
+                showCancel: true,
+                cancel: '取消',
+                confirmText: '确认',
+                confirmColor: 'rgba(244, 129, 31, 1)'
+            })
+            if (!confirm) {
+                return;
+            }
+        }
+        setLoading(true);
+        let params = {};
+        //第一步
+        if (step === 1) {     
+            if (!merchantType.id && !businessScope.id && !state.settled_type) {
+                showToast('请填写信息');
+                return true;
+            }
+            if (!merchantType.id || !businessScope.id || !state.settled_type) {
+                showToast('请完善信息');
+                return true;
+            } 
+            params = {
+                step: 1,
+                settled_type,
+                merchant_type_id
+            }
+            //第二步保存
+        } else if (step === 2) { 
+
+            const currentStepData = [
+                merchant_name, 
+                social_credit_code_id, 
+                regions_id, 
+                regions,
+                address, 
+                legal_name, 
+                legal_cert_id, 
+                legal_mobile, 
+                bank_acct_type, 
+                card_id_mask,  
+            ];
+
+            const hasValues = currentStepData.every(item => (isArray(item) && item.length>0) || !!item ); 
+    
+            if (!hasValues) {
+                showToast('请完善信息');
+                return true;
+            }
+            params = {
+                step: 2,
+                merchant_name,
+                social_credit_code_id,
+                regions_id,
+                regions,
+                address,
+                legal_name,
+                legal_cert_id,
+                legal_mobile,
+                card_id_mask,
+                bank_acct_type,
+                bank_name,
+                bank_mobile
+            }
+        } else if (step === 3) {
+            const license_url = getLocal('license_url')[0];
+            const legal_certid_front_url = getLocal('legal_certid_front_url');
+            const legal_cert_id_back_url = getLocal('legal_cert_id_back_url');
+            const bank_card_front_url = getLocal('bank_card_front_url')[0];
+
+            const allData = [license_url, legal_certid_front_url, legal_cert_id_back_url, bank_card_front_url];
+
+            const hasEmpty = allData.find(item => !item);
+
+            if (!isUndefined(hasEmpty)) {
+                showToast('请完善信息');
+                return true;
+            }
+
+            params = {
+                step: 3,
+                license_url,
+                legal_certid_front_url,
+                legal_cert_id_back_url,
+                bank_card_front_url
+            }
+        }
+        try {
+            await api.merchant.save(params);
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+            return true;
+        }
+    }
+
+    //点击下一步/上一步
+    const handleStep = (direction) => async () => {
+        let end;
+        if (direction === 'next') {
+            end = await handleSubmit();
+            setLoading(false);
+            if (end) return;
+        }
+        let nextStep = direction === 'next' ? Math.min(step + 1, 3) : Math.max(step - 1, 1);
+        setStep(nextStep);
+    }
+
+    //获取当前哪一步
+    const getStep = async () => {
+        const { step } = await api.merchant.getStep()
+        setStep(2)
+    }
+
+    const getMerchatType = async () => {
+        if (merchantOptions.length === 2) return;
+        const { settled_type } = await api.merchant.getSetting();
+        const options = settled_type.map(item => {
+            if (item === 'enterprise') {
+                return { value: item, label: '企业' }
+            } else if (item === 'soletrader') {
+                return { value: item, label: '个体户' }
+            }
+        })
+        setMerchantOptions(options)
+    }
+
+    useEffect(() => {
+        getStep()
+        getMerchatType();
+    }, []);
+
+    const handleSwitchSelector = (type) => () => {
+        let url = `/subpages/merchant/selector?type=${type}`;
+        if (type === BUSINESS_SCOPE) {
+            url += `&parent_id=${merchantType.id}`
+        }
+        Taro.navigateTo({
+            url
+        })
+    } 
+ 
+
+    useDidShow(async () => {
+        const { id, name, parent_id } = params;
+        //decodeURIComponent 刷新浏览器会对字符串编码
+        let dName = decodeURIComponent(name);
+        //如果是从非选择页过来的 并且也没有缓存数据 
+        if (!id) return;
+       
+    });
+
+    console.log("===merchantType==>",merchantType,businessScope,state)
+
+    return (
+        <View className='page-merchant-apply' style={styleNames(getThemeStyle())}>
+
+            <MNavBar canBack={step !== 1} onBack={handleStep('back')} />
+
+            <MStep options={StepOptions} className='mt-40' step={step} />
+
+            <ScrollView scrollY className='apply-scroll'>
+                <View className='page-merchant-apply-content'>
+                    <View className='card'>
+                        {step === 1 && <View>
+                            <MCell
+                                title="商户类型"
+                                required
+                                value={merchantType.name}
+                                onClick={handleSwitchSelector(MERCHANT_TYPE)}
+                            />
+                            {merchantType.id && <MCell
+                                title="经营范围"
+                                required
+                                value={businessScope.name}
+                                onClick={handleSwitchSelector(BUSINESS_SCOPE)}
+                            />}
+                            <MCell
+                                title="入驻类型"
+                                required
+                                mode='radio'
+                                value={state.settled_type}
+                                radioOptions={merchantOptions}
+                                onRadioChange={handleChange('settled_type')}
+                            />
+                        </View>}
+                        {step === 2 && <View>
+                            <MCell
+                                title="企业名称"
+                                required
+                                mode='input'
+                                placeholder={"请输入企业名称"}
+                                value={state.merchant_name}
+                                onChange={handleChange('merchant_name')}
+                            />
+                            <MCell
+                                title="统一社会信用代码"
+                                required
+                                mode='input'
+                                placeholder={"请输入统一社会信用代码"}
+                                value={state.social_credit_code_id}
+                                onChange={handleChange('social_credit_code_id')}
+                            />
+                            <MCell
+                                title="所在省市"
+                                required
+                                mode='area'
+                                areaList={areaList}
+                                selectArea={state.regions}
+                                onColumnChange={onAreaColumnChange}
+                                onChange={onAreaChange}
+                            />
+                            <MCell
+                                title="详细地址"
+                                required
+                                mode='input'
+                                placeholder={"请输入街道门牌信息"}
+                                value={state.address}
+                                onChange={handleChange('address')}
+                            />
+                            <MCell
+                                title="法人姓名"
+                                required
+                                mode='input'
+                                placeholder={"请输入法人姓名"}
+                                value={state.legal_name}
+                                onChange={handleChange('legal_name')}
+                            />
+                            <MCell
+                                title="身份证号码"
+                                required
+                                mode='input'
+                                placeholder={"请输入身份证号码"}
+                                value={state.legal_cert_id}
+                                onChange={handleChange('legal_cert_id')}
+                            />
+                            <MCell
+                                title="手机号码"
+                                required
+                                mode='input'
+                                placeholder={"请输入手机号码"}
+                                value={state.legal_mobile}
+                                onChange={handleChange('legal_mobile')}
+                            />
+                            <MCell
+                                title="结算银行账号类型"
+                                required
+                                mode='radio'
+                                value={state.bank_acct_type}
+                                radioOptions={bankAccType}
+                                onRadioChange={handleChange('bank_acct_type')}
+                            />
+                            <MCell
+                                title="结算银行账号"
+                                required
+                                mode='input'
+                                placeholder={"请输入结算银行账号"}
+                                value={state.card_id_mask}
+                                onChange={handleChange('card_id_mask')}
+                            />
+                            {banknameRequired && <MCell
+                                title="结算银行"
+                                required 
+                                mode='input'
+                                placeholder={"请输入结算银行"}
+                                value={state.bank_name}
+                                onChange={handleChange('bank_name')}
+                            />}
+                            {bankmobileRequired && <MCell
+                                title="绑定手机号"
+                                required
+                                mode='input'
+                                placeholder={"请输入绑定手机号"}
+                                value={state.bank_mobile}
+                                onChange={handleChange('bank_mobile')}
+                            />} 
+                        </View>} 
+                     </View>
+                     {step !== 1 && <View className='info mt-24'>
+                        <Text className='icon-info'></Text>
+                        <Text className='text'>
+                            {step === 2 ? STEPTWOTEXT : STEPTHREETEXT }</Text>
+                    </View>}
+
+                </View>
+            </ScrollView> 
+
+            <View className='apply-bottom'>
+                <View className='apply-bottom-text'>《入驻协议》</View>
+                <MButton className='apply-bottom-button' onClick={handleStep('next')} loading={loading}>{isSubmit ? '提交' : '下一步'}</MButton>
+            </View>
+
+        </View>
+    )
+}
+
+
+export default Apply;

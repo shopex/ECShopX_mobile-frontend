@@ -36,7 +36,7 @@ export default class SearchBar extends Component {
   }
 
   handleFocusSearchHistory = (isOpened) => {
-    this.props.onFocus()
+    this.props.onFocus?.()
     this.setState({
       showSearchDailog: isOpened,
       isShowAction: true
