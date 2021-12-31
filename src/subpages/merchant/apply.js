@@ -2,7 +2,7 @@ import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { ScrollView, View, Text } from '@tarojs/components'
 import { isUndefined, getThemeStyle, styleNames, showToast,isArray } from '@/utils'
-import { MButton, MStep, MNavBar, MCell } from './comps'
+import { MButton, MStep, MNavBar, MCell,MImgPicker } from './comps'
 import { useArea, useUpdate } from './hook' 
 import { useSelector,useDispatch } from 'react-redux'
 import { updateState} from "@/store/slices/merchant";
@@ -144,7 +144,11 @@ const Apply = () => {
             bank_acct_type,
             card_id_mask,
             bank_name,
-            bank_mobile
+            bank_mobile,
+            license_url,
+            legal_certid_front_url,
+            legal_cert_id_back_url,
+            bank_card_front_url
         }=state;
 
         if (step === 3) {
@@ -157,7 +161,7 @@ const Apply = () => {
                 confirmColor: 'rgba(244, 129, 31, 1)'
             })
             if (!confirm) {
-                return;
+                return true;
             }
         }
         setLoading(true);
@@ -214,13 +218,9 @@ const Apply = () => {
                 bank_name,
                 bank_mobile
             }
-        } else if (step === 3) {
-            const license_url = getLocal('license_url')[0];
-            const legal_certid_front_url = getLocal('legal_certid_front_url');
-            const legal_cert_id_back_url = getLocal('legal_cert_id_back_url');
-            const bank_card_front_url = getLocal('bank_card_front_url')[0];
+        } else if (step === 3) { 
 
-            const allData = [license_url, legal_certid_front_url, legal_cert_id_back_url, bank_card_front_url];
+            const allData = [license_url[0], legal_certid_front_url, legal_cert_id_back_url, bank_card_front_url[0]];
 
             const hasEmpty = allData.find(item => !item);
 
@@ -231,10 +231,10 @@ const Apply = () => {
 
             params = {
                 step: 3,
-                license_url,
+                license_url:license_url[0],
                 legal_certid_front_url,
                 legal_cert_id_back_url,
-                bank_card_front_url
+                bank_card_front_url:bank_card_front_url[0]
             }
         }
         try {
@@ -261,7 +261,7 @@ const Apply = () => {
     //获取当前哪一步
     const getStep = async () => {
         const { step } = await api.merchant.getStep()
-        setStep(2)
+        setStep(step)
     }
 
     const getMerchatType = async () => {
@@ -293,13 +293,7 @@ const Apply = () => {
     } 
  
 
-    useDidShow(async () => {
-        const { id, name, parent_id } = params;
-        //decodeURIComponent 刷新浏览器会对字符串编码
-        let dName = decodeURIComponent(name);
-        //如果是从非选择页过来的 并且也没有缓存数据 
-        if (!id) return;
-       
+    useDidShow(async () => { 
     });
 
     console.log("===merchantType==>",merchantType,businessScope,state)
@@ -427,6 +421,29 @@ const Apply = () => {
                                 onChange={handleChange('bank_mobile')}
                             />} 
                         </View>} 
+                        {step === 3 && <View className='certificate-information'>
+                            <MImgPicker
+                                title={<Text>请根据提示上传<Text className='primary'>营业执照</Text>照片</Text>}
+                                value={state.license_url}
+                                onChange={handleChange('license_url')}
+                                info={['上传营业执照']}
+                            />
+                            <MImgPicker
+                                mode='idCard'
+                                title={<Text>请根据提示上传<Text className='primary'>法人手持身份证</Text>照片</Text>}
+                                value={[state.legal_certid_front_url, state.legal_cert_id_back_url]}
+                                onChange={handleChange('legal_certid_front_url', 'legal_cert_id_back_url')}
+                                info={['上传法人手持身份证正面', '上传法人手持身份证反面']}
+                            />
+                            <MImgPicker
+                                mode='bankCard'
+                                value={state.bank_card_front_url}
+                                onChange={handleChange('bank_card_front_url')}
+                                title={<Text>请根据提示上传<Text className='primary'>结算银行卡正面</Text>照片</Text>}
+                                info={['上传结算银行卡正面']}
+                            />
+                        </View>}
+
                      </View>
                      {step !== 1 && <View className='info mt-24'>
                         <Text className='icon-info'></Text>

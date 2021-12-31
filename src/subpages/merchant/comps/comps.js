@@ -1,58 +1,58 @@
 import Taro from '@tarojs/taro';
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { Text, View, Input,Picker } from '@tarojs/components';
+import { Text, View, Input, Picker } from '@tarojs/components';
 import { Loading } from '@/components';
 import { useDepChange } from '@/hooks';
 import S from '@/spx'
 import { isWeb } from '@/utils/platforms';
 import { classNames } from '@/utils';
-import './comps.scss'; 
+import './comps.scss';
 
-const Button=(props)=>{
-    const {  
+const Button = (props) => {
+    const {
         className,
         children,
-        onClick=()=>{},
+        onClick = () => { },
         loading
-    }=props; 
+    } = props;
     return (
-        <View className={classNames('comps-button',className,{loading})} onClick={onClick}>
+        <View className={classNames('comps-button', className, { loading })} onClick={onClick}>
             {loading ? <Loading>{children}</Loading> : children}
         </View>
     )
 }
 
-const Radio=(props)=>{
+const Radio = (props) => {
     const {
         checked,
-        onClick=()=>{}
-    }=props;  
+        onClick = () => { }
+    } = props;
     return (
-        <View className={classNames('comps-radio',{'is-checked':checked})} onClick={onClick}>
+        <View className={classNames('comps-radio', { 'is-checked': checked })} onClick={onClick}>
             {checked && <Text className="icon-gou"></Text>}
         </View>
     )
 }
 
-const RadioGroup=(props)=>{
+const RadioGroup = (props) => {
 
-    const { 
-        options=[],
+    const {
+        options = [],
         value,
-        onClick=()=>{}
-    }=props;  
+        onClick = () => { }
+    } = props;
 
     return (
         <View className={classNames('comps-radio-group')}  >
-            {options.map((item,index)=>(
-                <View className='comps-radio-group-item' onClick={()=>onClick(item)} key={index}>
-                    <Radio checked={value===item.value} />
+            {options.map((item, index) => (
+                <View className='comps-radio-group-item' onClick={() => onClick(item)} key={index}>
+                    <Radio checked={value === item.value} />
                     <Text className='comps-radio-group-item_text'>{item.label}</Text>
                 </View>
             ))}
         </View>
     )
-} 
+}
 
 const Cell = (props) => {
 
@@ -65,26 +65,26 @@ const Cell = (props) => {
         radioOptions = [],
         onRadioChange = () => { },
         placeholder,
-        areaList=[],
+        areaList = [],
         onColumnChange,
         onChange,
-        selectArea=[],
-        onClick=()=>{},
-        noselect=false,
+        selectArea = [],
+        onClick = () => { },
+        noselect = false,
         value,
-        disabled=false
+        disabled = false
     } = props;
-  
+
     const handleClick = (current) => {
         onRadioChange(current.value)
     }
 
-    const handleInput=({detail:{value}})=>{
+    const handleInput = ({ detail: { value } }) => {
         onChange(value)
     }
 
-    const renderSelectorContent = mode === 'selector' && !noselect && <View className='comps-cell_selector' onClick={disabled?()=>{}:onClick}>
-        {!value?<View className='view-flex view-flex-middle'><Text className='text'>请选择</Text><Text className='icon icon-qianwang-01'></Text></View>:value}
+    const renderSelectorContent = mode === 'selector' && !noselect && <View className='comps-cell_selector' onClick={disabled ? () => { } : onClick}>
+        {!value ? <View className='view-flex view-flex-middle'><Text className='text'>请选择</Text><Text className='icon icon-qianwang-01'></Text></View> : value}
     </View>;
     const renderRadioContent = mode === 'radio' && <View className='comps-cell_radio'>
         <RadioGroup options={radioOptions} value={value} onClick={handleClick} />
@@ -98,19 +98,19 @@ const Cell = (props) => {
         onChange={onChange}
         onColumnChange={onColumnChange}
     >
-        {selectArea.length===0 ? <View className='comps-cell_selector'> 
+        {selectArea.length === 0 ? <View className='comps-cell_selector'>
             <Text className='text'>请选择</Text><Text className='icon icon-qianwang-01'></Text>
         </View> : <View className='comps-cell_selector'>
             {`${selectArea[0]},${selectArea[1]},${selectArea[2]}`}
         </View>}
     </Picker>;
- 
+
 
     return (
-        <View className={classNames('comps-cell', className,{disabled})}>
+        <View className={classNames('comps-cell', className, { disabled })}>
             {required && <Text className={'comps-cell-required'}>*</Text>}
             <View className={classNames('comps-cell_title', { 'is-show': onlyShow })}>{title}</View>
-            <View className='comps-cell_flex' onClick={noselect?onClick:()=>{}}>
+            <View className='comps-cell_flex' onClick={noselect ? onClick : () => { }}>
                 {renderSelectorContent}
                 {renderRadioContent}
                 {renderInputContent}
@@ -120,39 +120,39 @@ const Cell = (props) => {
     )
 }
 
-const InputComponent=(props)=>{
-    const { 
-        prefix=null,
-        suffix=null,
-        placeholder='请输入...',
-        className='',
-        onChange=()=>{}
-    }=props;
+const InputComponent = (props) => {
+    const {
+        prefix = null,
+        suffix = null,
+        placeholder = '请输入...',
+        className = '',
+        onChange = () => { }
+    } = props;
 
-    const [ value,setValue ]=useState('');
+    const [value, setValue] = useState('');
 
-    const handleInput=({detail:{value}})=>{
+    const handleInput = ({ detail: { value } }) => {
         setValue(value)
-    } 
+    }
 
-    useDepChange(()=>{
+    useDepChange(() => {
         onChange(value)
-    },[value]);
+    }, [value]);
 
     return (
-        <View className={classNames('comps-input',className)}>
+        <View className={classNames('comps-input', className)}>
             <View className='comps-input-prefix'>
-                {typeof prefix==='function'?prefix(value):prefix}
+                {typeof prefix === 'function' ? prefix(value) : prefix}
             </View>
             <View className='comps-input-wrapper'>
-                <Input 
-                    className='real-input' 
-                    value={value} 
-                    onInput={handleInput} 
-                    placeholder={placeholder} 
+                <Input
+                    className='real-input'
+                    value={value}
+                    onInput={handleInput}
+                    placeholder={placeholder}
                 />
             </View>
-            <View  className='comps-input-suffix'>
+            <View className='comps-input-suffix'>
                 {suffix}
             </View>
         </View>
@@ -179,13 +179,12 @@ const NavBar = (props) => {
         if (!confirm) {
             return;
         }
-        S.logout() 
-        if (isWeb && Taro.getEnv() !== 'SAPP') {
-            // eslint-disable-next-line
-            Taro.redirectTo({
-                url:'/subpages/merchant/login'
-            })
-        } 
+        S.logout()
+
+        // eslint-disable-next-line
+        Taro.redirectTo({
+            url: '/subpages/merchant/login'
+        })
     }
 
     return (
@@ -207,27 +206,27 @@ const NavBar = (props) => {
     )
 }
 
-const Step=(props)=>{
+const Step = (props) => {
 
-    const {  
+    const {
         className,
-        options=[],
-        step=1
-    }=props; 
+        options = [],
+        step = 1
+    } = props;
 
-    const isActive=(index) => step===index+1;
+    const isActive = (index) => step === index + 1;
 
-    const isFinish=(index) => step > index+1;
+    const isFinish = (index) => step > index + 1;
 
     return (
-        <View className={classNames('comps-step',className)}>
+        <View className={classNames('comps-step', className)}>
             {
-                options.map((item,index)=>(
-                    <View className={classNames('comps-step-item',{'active':isActive(index)})} key={index}>
+                options.map((item, index) => (
+                    <View className={classNames('comps-step-item', { 'active': isActive(index) })} key={index}>
                         {item}
-                        {<View className={classNames('comps-step-item-line',{
-                            'is-active':isActive(index),
-                            'is-finish':isFinish(index)
+                        {<View className={classNames('comps-step-item-line', {
+                            'is-active': isActive(index),
+                            'is-finish': isFinish(index)
                         })}></View>}
                     </View>
                 ))
@@ -243,34 +242,34 @@ Cell.options = {
 };
 
 
-Button.options={
-    addGlobalClass:true
+Button.options = {
+    addGlobalClass: true
 };
 
-Radio.options={
-    addGlobalClass:true
-}; 
+Radio.options = {
+    addGlobalClass: true
+};
 
-RadioGroup.options={
-    addGlobalClass:true
-}; 
+RadioGroup.options = {
+    addGlobalClass: true
+};
 
-InputComponent.options={
-    addGlobalClass:true
+InputComponent.options = {
+    addGlobalClass: true
 };
 
 
 NavBar.options = {
     addGlobalClass: true
-}; 
-
-Step.options={
-    addGlobalClass:true
 };
 
- 
+Step.options = {
+    addGlobalClass: true
+};
 
-export { 
+
+
+export {
     Button as MButton,
     Radio as MRadio,
     RadioGroup as MRadioGroup,

@@ -191,7 +191,7 @@ export default {
         'login',
         'apply',
         'selector',
-        // 'audit'
+        'audit'
       ]
     }
 

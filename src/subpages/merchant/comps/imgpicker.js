@@ -1,9 +1,10 @@
-import Taro, { useState,useEffect } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import { useState ,useEffect} from 'react';
 import { classNames, styleNames, isNumber, isBase64 } from "@/utils";
-import SpImage from '../sp-image';
+import { SpImage } from '@/components';
 import imgUploader from '@/utils/upload'
-import './index.scss' 
+import './imgpicker.scss' 
 
 function SpImagePicker(props) {
 

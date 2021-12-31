@@ -24,3 +24,9 @@ export function save(params) {
 export function getSetting(params) {
   return req.get(`/merchant/basesetting`,params)
 } 
+
+//获取审核结果
+export function getAuditstatus(params) {
+  return req.get(`/merchant/settlementapply/auditstatus`,params)
+} 
+
