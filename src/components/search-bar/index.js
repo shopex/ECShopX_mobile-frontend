@@ -161,8 +161,12 @@ export default class SearchBar extends Component {
         {/*</View>*/}
         {/*</View>*/}
         {/*</View>*/}
-        <Form className='search-input__form'>
-          <AtSearchBar
+        {/* <View className='search-input__form'>
+          
+        </View> */}
+        {/* {微信浏览器form enter自动刷新页面} */}
+        <View className='search-input__form'>
+        <AtSearchBar
             className='search-input__bar'
             value={keyword}
             placeholder={!placeholder ? '请输入关键词' : placeholder}
@@ -174,7 +178,7 @@ export default class SearchBar extends Component {
             onConfirm={this.handleConfirm.bind(this)}
             onActionClick={this.handleClickCancel.bind(this, false)}
           />
-        </Form>
+        </View>
         {showDailog && (
           <View
             className={classNames(
