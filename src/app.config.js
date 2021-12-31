@@ -184,7 +184,17 @@ export default {
     {
       root: 'pointitem',
       pages: ['pages/list']
+    },
+    {
+      root: 'subpages/merchant',
+      pages: [
+        'login',
+        'apply',
+        'selector',
+        // 'audit'
+      ]
     }
+
   ],
   permission: {
     "scope.userLocation": {
