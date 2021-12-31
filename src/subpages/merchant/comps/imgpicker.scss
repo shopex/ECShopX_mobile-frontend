@@ -40,12 +40,12 @@ $prefixCls:'sp-image-picker';
             border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
-    
-            .taro-text{
-                color:white;
-                font-size:36px;
-            }
+            justify-content: center; 
+            
+            [class^=icon-]{
+                    font-size:36px;
+                    color: white;
+            } 
         }
     }
 }

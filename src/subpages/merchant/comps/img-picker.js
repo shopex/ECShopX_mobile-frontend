@@ -1,6 +1,7 @@
-import Taro, { Component, useState } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
+import { useState } from 'react';
 import { Text, View } from '@tarojs/components';
-import { SpImagePicker } from '@/components';
+import SpImagePicker from './imgpicker';
 import { classNames } from '@/utils';
 import { useDepChange } from '@/hooks';
 import './img-picker.scss'; 
