@@ -63,7 +63,7 @@ export const ITEM_LIST_GOODS = {
   itemId: "item_id",
   itemName: "item_name",
   brief: "brief",
-  distributor_id: "distributor_id",
+  distributorId: "distributor_id",
   distributor_info: "distributor_info",
   promotion: "promotion_activity",
   origincountry_name: "origincountry_name",
