@@ -160,7 +160,7 @@ export default class List extends Component {
       item_params_list = [],
       select_tags_list = [],
     } = await api.item.search(query);
-    const { favs } = this.props;
+    const { favs = [] } = this.props;
 
     item_params_list.map((item) => {
       if (selectParams.length < 4) {
@@ -504,8 +504,6 @@ export default class List extends Component {
       isShowSearch,
       query,
     } = this.state;
-    console.log('tagsList==',tagsList)
-    console.log('getBrowserEnv().weixin==',getBrowserEnv().weixin)
     return (
       <View className="page-goods-list">
         <SpNavBar title="商品列表" leftIconType="chevron-left" fixed="true" />
