@@ -52,9 +52,9 @@ export default class SearchBar extends Component {
       .catch(() => {})
   }
 
-  handleChangeSearch = (value) => {
+  handleChangeSearch = (value,event) => {
     // value = value.replace(/\s+/g,'')
-    this.props.onChange(value)
+    this.props.onChange(value,event)
   }
 
   handleClear = () => {

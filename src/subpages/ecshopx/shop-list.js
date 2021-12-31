@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
 import { View, ScrollView, Text } from "@tarojs/components";
-import { AtDrawer } from 'taro-ui'
+import { AtDrawer,AtSearchBar } from 'taro-ui'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
@@ -16,7 +16,8 @@ import {
   SpButton,
   SpTagBar,
   SpDrawer,
-  SpSelect
+  SpSelect,
+  SearchBar
 } from "@/components";
 import doc from '@/doc'
 import { classNames, pickBy } from "@/utils";
@@ -228,14 +229,14 @@ function shopList(props) {
     <SpPage className="page-shop-list">
       <View className="search-block">
         <SpSearchBar 
-          keyword={name}
-          placeholder="请输入商家、商品"
-          onFocus={handleOnFocus}
-          onChange={handleOnChange}
-          onClear={handleOnClear}
-          onCancel={handleSearchOff}
-          onConfirm={handleConfirm}
-        />
+            keyword={name}
+            placeholder="请输入商家、商品"
+            onFocus={handleOnFocus}
+            onChange={handleOnChange}
+            onClear={handleOnClear}
+            onCancel={handleSearchOff}
+            onConfirm={handleConfirm}
+          />
       </View>
       <View className="filter-block">
         <SpTagBar className="tag-list" list={FILTER_DATA} value={curFilterIdx} onChange={handleFilterChange}>
@@ -252,7 +253,7 @@ function shopList(props) {
       <SpScrollView className="shoplist-block" fetch={fetch} ref={goodsRef}>
         {list.map((item, index) => (
           <View className="shop-item-wrapper" key={`shopitem-wrap__${index}`}>
-            <SpShopItem info={item} jumpToBusiness={() => handleClickItem(item)} showGoods={name}/>
+            <SpShopItem info={item} jumpToBusiness={() => handleClickItem(item)} showGoods={name} key={`shopitem-wrap__${index.toString()}`}/>
           </View>
         ))}
       </SpScrollView>
