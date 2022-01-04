@@ -6,6 +6,12 @@ $prefixCls:'page-merchant-audit';
 
     box-sizing: border-box; 
 
+    &.fail{
+        .status-title{
+            color:rgba(236, 46, 61, 1);
+        } 
+    }
+
     .status-img{
         width:372px;
         height:286px;
@@ -45,6 +51,13 @@ $prefixCls:'page-merchant-audit';
                     margin-top:20px;
                 }
             }
-        }
+        } 
+    }
+    .status-form{
+        position: fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        padding:0 50px 60px; 
     }
 }
