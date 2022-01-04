@@ -37,7 +37,9 @@ const Audit = () => {
     }, [])
 
     return (
-        <View className={classNames('page-merchant-audit')}  style={styleNames(getThemeStyle())}>
+        <View className={classNames('page-merchant-audit',{
+            fail:status==AUDIT_FAIL
+        })}  style={styleNames(getThemeStyle())}>
            
            <MNavBar canBack={false}   />
 
@@ -49,6 +51,10 @@ const Audit = () => {
                 {status==AUDITING && renderIng}
                 {status==AUDIT_SUCCESS && renderSuccess}
                 {status==AUDIT_FAIL && renderFail}
+            </View>
+
+            <View className='status-form'>
+                <MButton>重新填写</MButton>
             </View>
 
         </View>
