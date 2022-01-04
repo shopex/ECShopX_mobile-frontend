@@ -21,6 +21,7 @@
 		"dev:h5": "npm run build:h5 -- --watch",
 		"dev:rn": "npm run build:rn -- --watch",
 		"release:h5": "RELEASE=h5 npm run build:h5",
+		"prepare": "husky install",
 		"lint": "prettier-eslint 'src/**/*.{js,jsx}' --write"
 	},
 	"author": "",
@@ -45,6 +46,8 @@
 		"classnames": "^2.2.6",
 		"copy-to-clipboard": "^3.0.8",
 		"dayjs": "^1.10.6",
+		"husky": "^6.0.0",
+		"lint-staged": "^12.1.5",
 		"lodash": "^4.17.11",
 		"qiniu-js": "^2.5.4",
 		"qs": "^6.6.0",
