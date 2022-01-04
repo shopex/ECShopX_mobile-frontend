@@ -1,10 +1,10 @@
 import Taro from '@tarojs/taro';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Text, View } from '@tarojs/components';
-import SpImagePicker from './imgpicker';
+import SpImagePicker from './comp-imgpicker';
 import { classNames } from '@/utils';
 import { useDepChange } from '@/hooks';
-import './img-picker.scss'; 
+import './comp-img-picker.scss'; 
 
 const IMG_MAP = {
     //营业执照
@@ -33,17 +33,14 @@ const ImgPicker = (props) => {
     const handleChange=(index)=>(imgurl)=>{
         imgs[index]=imgurl;
         setImgs([...imgs])
+        onChange(imgs)
     }
 
-    const uploadSuccess=(index)=>imgs[index]; 
+    const uploadSuccess=(index)=>imgs[index];  
 
-    useDepChange(()=>{
-        onChange(imgs)
-    },[imgs])
-
-    useDepChange(()=>{ 
+    useEffect(()=>{  
         setImgs(value)
-    },[value]); 
+    },[value]);  
 
     return (
         <View className={classNames('comps-img-picker', className)} onClick={onClick}>

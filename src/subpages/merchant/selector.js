@@ -3,7 +3,7 @@ import { ScrollView, View } from '@tarojs/components'
 import { useState } from 'react';
 import { MNavBar, MCell } from './comps'
 import { updateState} from "@/store/slices/merchant";
-import { SpSearchBar } from '@/components'
+import { SpSearchBar,SpPage } from '@/components'
 import api from '@/api'
 import { usePage, useDepChange } from '@/hooks'
 import { useSelector, useDispatch } from 'react-redux'
@@ -70,7 +70,7 @@ const Selector = () => {
     }
 
     return (
-        <View className='page-merchant-selector'>
+        <SpPage className='page-merchant-selector' needNavbar={false} >
             <MNavBar canLogout={false} onBack={handleBack} />
 
             <View className='page-merchant-selector-inputwrapper'>
@@ -99,7 +99,7 @@ const Selector = () => {
             </ScrollView>
 
 
-        </View>
+        </SpPage>
     )
 }
 

@@ -3,7 +3,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { ScrollView, View,Text } from '@tarojs/components'
 import { useState,useEffect } from 'react'; 
 import { updateState} from "@/store/slices/merchant";
-import { SpSearchBar } from '@/components'
+import { SpPage } from '@/components'
 import api from '@/api'
 import { usePage, useDepChange } from '@/hooks'
 import { useSelector, useDispatch } from 'react-redux'
@@ -44,9 +44,9 @@ const Audit = () => {
     }, [])
 
     return (
-        <View className={classNames('page-merchant-audit',{
+        <SpPage className={classNames('page-merchant-audit',{
             fail:status==AUDIT_FAIL
-        })}  style={styleNames(getThemeStyle())}>
+        })} needNavbar={false} >
            
            <MNavBar canBack={false}   />
 
@@ -64,7 +64,7 @@ const Audit = () => {
                 <MButton onClick={handleReset}>重新填写</MButton>
             </View>}
 
-        </View>
+        </SpPage>
     )
 }
 

@@ -6,7 +6,7 @@ import { useDepChange } from '@/hooks';
 import S from '@/spx'
 import { isWeb } from '@/utils/platforms';
 import { classNames } from '@/utils';
-import './comps.scss';
+import './comp-compnent.scss';
 
 const Button = (props) => {
     const {
@@ -164,7 +164,8 @@ const NavBar = (props) => {
         title = '',
         canBack = true,
         canLogout = true,
-        onBack = () => { }
+        onBack = () => { },
+        onLogout=()=>{}
     } = props;
 
     const handleLogout = async () => {
@@ -180,7 +181,7 @@ const NavBar = (props) => {
             return;
         }
         S.logout()
-
+        onLogout?.();
         // eslint-disable-next-line
         Taro.redirectTo({
             url: '/subpages/merchant/login'

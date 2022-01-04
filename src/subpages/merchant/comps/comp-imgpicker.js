@@ -4,7 +4,7 @@ import { useState ,useEffect} from 'react';
 import { classNames, styleNames, isNumber, isBase64 } from "@/utils";
 import { SpImage } from '@/components';
 import imgUploader from '@/utils/upload'
-import './imgpicker.scss' 
+import './comp-imgpicker.scss' 
 
 function SpImagePicker(props) {
 

@@ -33,6 +33,11 @@ $prefixCls:'page-merchant-audit';
             font-size: 24px;
             color:rgba(170, 170, 170, 1);
             text-align: center;
+
+            &.success{
+                width: 370px;
+                margin:0 auto;
+            }
         }
         .block{
             
