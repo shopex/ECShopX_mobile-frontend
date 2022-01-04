@@ -2,6 +2,7 @@ import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { ScrollView, View, Text } from '@tarojs/components'
 import { isUndefined, getThemeStyle, styleNames, showToast,isArray } from '@/utils'
+import { SpPage } from '@/components'
 import { MButton, MStep, MNavBar, MCell,MImgPicker } from './comps'
 import { useArea, useUpdate } from './hook' 
 import { useSelector,useDispatch } from 'react-redux'
@@ -47,13 +48,13 @@ const initialState = {
     //绑定手机号
     bank_mobile:undefined,
     //营业执照图片url
-    license_url:undefined,
+    license_url:[],
     //法人手持身份证正面url
     legal_certid_front_url:undefined,
     //法人手持身份证反面url
     legal_cert_id_back_url:undefined,
     //结算银行卡正面url
-    bank_card_front_url:undefined
+    bank_card_front_url:[]
 }
 
 const Apply = () => { 
@@ -244,11 +245,31 @@ const Apply = () => {
         }
         try {
             await api.merchant.save(params);
+            if(step===3){
+                updateStoreState({},true)
+                Taro.redirectTo({
+                    url:`/subpages/merchant/audit`
+                })
+            }  
             setLoading(false);
         } catch (e) {
             setLoading(false);
             return true;
         }
+    }
+
+    const updateStoreState=({merchantObj,businessObj},isReset=false)=>{
+        let newMerchantObj={ key:MERCHANT_TYPE };
+        let newBusinessObj={ key:BUSINESS_SCOPE };
+        if(isReset){
+            newMerchantObj={...newMerchantObj};
+            newBusinessObj={...newBusinessObj};
+        }else{
+            newMerchantObj={...newMerchantObj,...merchantObj};
+            newBusinessObj={...newBusinessObj,...businessObj}
+        }
+        dispatch(updateState(newMerchantObj));
+        dispatch(updateState(newBusinessObj));
     }
 
     const getDetail=async ()=>{
@@ -273,23 +294,24 @@ const Apply = () => {
             bank_name,
             bank_mobile,
             license_url,
-            bank_card_front_url
+            bank_card_front_url,
+            legal_certid_front_url,
+            legal_cert_id_back_url
         } = await api.merchant.detail();
         
         //有保存过才赋值
         if(merchant_type_id){
-            dispatch(updateState({
-                key:MERCHANT_TYPE,
-                id:merchant_type_parent_id,
-                name:merchant_type_parent_name,
-                parent_id:0
-            }));
-            dispatch(updateState({
-                key:BUSINESS_SCOPE,
-                id:merchant_type_id,
-                name:merchant_type_name,
-                parent_id:merchant_type_parent_id
-            }));
+            updateStoreState({
+                merchantObj:{
+                    id:merchant_type_parent_id,
+                    name:merchant_type_parent_name,
+                    parent_id:0
+                },
+                businessObj:{
+                    id:merchant_type_id,
+                    name:merchant_type_name,
+                    parent_id:merchant_type_parent_id
+            }})
             setState(state=>{
                 state.settled_type=settled_type;
                 state.merchant_type_id=merchant_type_id;
@@ -307,6 +329,8 @@ const Apply = () => {
                 state.bank_name=bank_name;
                 state.license_url=[license_url];
                 state.bank_card_front_url=[bank_card_front_url];
+                state.legal_certid_front_url=legal_certid_front_url;
+                state.legal_cert_id_back_url=legal_cert_id_back_url;
             })
         }
         
@@ -334,8 +358,12 @@ const Apply = () => {
             audit_status=auditStatus;
         }
         //如果是审核失败跳回第一步
-        setStep(audit_status===AUDIT_FAIL?1:step); 
-        getDetail();
+        setStep(audit_status===AUDIT_FAIL?1:step);
+        //大于1才调用详情
+        if(step>1) {
+            getDetail();
+        }
+        
     } 
 
     const getMerchatType = async () => {
@@ -370,12 +398,14 @@ const Apply = () => {
     };  
 
     useDidShow(async () => { 
-    }); 
+    });  
+
+    console.log("===>form===>",state)
 
     return (
-        <View className='page-merchant-apply' style={styleNames(getThemeStyle())}>
+        <SpPage className='page-merchant-apply' needNavbar={false}>
 
-            <MNavBar canBack={step !== 1} onBack={handleStep('back')} />
+            <MNavBar canBack={step !== 1} onBack={handleStep('back')} onLogout={()=>updateStoreState({},true)} />
 
             <MStep options={StepOptions} className='mt-40' step={step} />
 
@@ -533,7 +563,7 @@ const Apply = () => {
                 <MButton className='apply-bottom-button' onClick={handleStep('next')} loading={loading}>{isSubmit ? '提交' : '下一步'}</MButton>
             </View>
 
-        </View>
+        </SpPage>
     )
 }
 

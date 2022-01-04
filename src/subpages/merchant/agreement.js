@@ -1,6 +1,7 @@
  
 import Taro, { useRouter } from '@tarojs/taro'
-import { ScrollView, View,Text } from '@tarojs/components'
+import { ScrollView, View,RichText } from '@tarojs/components'
+import { SpPage } from '@/components'
 import { useState,useEffect } from 'react';  
 import api from '@/api'  
 import { MNavBar } from './comps' 
@@ -24,30 +25,29 @@ const Agreement = () => {
         {
             name: 'div',
             attrs: {
-              class: 'div_class',
-              style: 'line-height: 60px; color: red;'
+              class: 'content', 
             },
             children: [{
               type: 'text',
-              text: 'Hello World!'
+              text: content
             }]
           }
     ]
 
     return (
-        <View className={classNames('page-merchant-agreement')}  style={styleNames(getThemeStyle())}>
+        <SpPage className={classNames('page-merchant-agreement')} needNavbar={false} >
            
            <MNavBar canLogout={false}   /> 
 
            <ScrollView className='page-merchant-agreement-content'>
 
-                <View className='title'>商家入驻协议</View>
+                <View className='title'>商家入驻协议</View> 
 
-                <RichText nodes={nodes} />
+                <RichText nodes={nodes} className='main'/>
 
            </ScrollView>
 
-        </View>
+        </SpPage>
     )
 }
 

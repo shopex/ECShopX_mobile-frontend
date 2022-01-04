@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { Text, View } from '@tarojs/components'
 import { MButton, MInput, MRadio } from './comps'
 import { classNames, getThemeStyle, styleNames, validate, showToast } from '@/utils'
-import { SpImage } from '@/components'
+import { SpImage,SpPage } from '@/components'
 import { useTimer } from './hook'
 import api from '@/api'
 import S from '@/spx'
@@ -151,7 +151,7 @@ const Login = () => {
     const codeSuffix = <View className={classNames('code-suffix', { 'timing': time !== null })} onClick={handleGetCode}>{time === null ? '获取验证码' : time}</View>
 
     return (
-        <View className={classNames('page-merchant-login')} style={styleNames(getThemeStyle())}>
+        <SpPage className={classNames('page-merchant-login')} needNavbar={false}>
             <SpImage src={'black.png'} />
             <View className={'page-merchant-login-content'}>
                 <MInput
@@ -178,7 +178,7 @@ const Login = () => {
                     <MRadio checked={agree} onClick={() => setAgree(!agree)} /><View className={'ml-16 radio-text'}>阅读并同意<Text className='primary-color'>《入驻协议》</Text></View>
                 </View>
             </View>
-        </View>
+        </SpPage>
     )
 
 }

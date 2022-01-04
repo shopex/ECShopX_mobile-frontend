@@ -1,2 +1,2 @@
-export * from './comps';
-export { default as MImgPicker } from './img-picker'
+export * from './comp-compnent';
+export { default as MImgPicker } from './comp-img-picker'
