@@ -12,7 +12,7 @@ const merchantSlice = createSlice({
   initialState,
   reducers: {
       updateState:(state, { payload })=>{ 
-        state[payload.key] = payload
+        state[payload.key] = {...state[payload.key],...payload}
       }
   }
 });

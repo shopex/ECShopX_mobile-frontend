@@ -20,7 +20,7 @@ export function save(params) {
   return req.post(`/merchant/settlementapply/${params.step}`,params)
 } 
 
-//保存信息
+//获取基础设置
 export function getSetting(params) {
   return req.get(`/merchant/basesetting`,params)
 } 
@@ -29,4 +29,10 @@ export function getSetting(params) {
 export function getAuditstatus(params) {
   return req.get(`/merchant/settlementapply/auditstatus`,params)
 } 
+
+//获取申请详情
+export function detail() {
+  return req.get(`/merchant/settlementapply/detail`)
+} 
+
 

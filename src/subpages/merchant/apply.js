@@ -6,7 +6,7 @@ import { MButton, MStep, MNavBar, MCell,MImgPicker } from './comps'
 import { useArea, useUpdate } from './hook' 
 import { useSelector,useDispatch } from 'react-redux'
 import { updateState} from "@/store/slices/merchant";
-import { MERCHANT_TYPE,BUSINESS_SCOPE,STEPTWOTEXT,STEPTHREETEXT } from './consts'
+import { MERCHANT_TYPE,BUSINESS_SCOPE,STEPTWOTEXT,STEPTHREETEXT,AUDIT_FAIL,AUDIT_UNKNOWN } from './consts'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import './apply.scss'
@@ -56,9 +56,7 @@ const initialState = {
     bank_card_front_url:undefined
 }
 
-const Apply = () => {
-
-    const update = useUpdate();
+const Apply = () => { 
 
     const dispatch = useDispatch();
 
@@ -67,6 +65,13 @@ const Apply = () => {
     const { merchantType,businessScope } = useSelector((state) => state.merchant);  
 
     const [ merchantOptions, setMerchantOptions ] = useState([]);
+
+    //审核状态
+    const [status,setStatus]=useState(0)
+
+    const { params:{
+        isEdit
+    } } = useRouter();
 
     useEffect(()=>{ 
         //必有经营范围 
@@ -79,6 +84,7 @@ const Apply = () => {
 
     useDepChange(()=>{ 
         if(merchantType.id){
+            //显示
             dispatch(updateState({key:BUSINESS_SCOPE}))
         }
     },[merchantType])
@@ -89,7 +95,6 @@ const Apply = () => {
     //银行绑定手机号必填
     const bankmobileRequired = state.bank_acct_type == 2;
 
-    const { params } = useRouter();
 
     const {
         areaList,
@@ -246,6 +251,67 @@ const Apply = () => {
         }
     }
 
+    const getDetail=async ()=>{
+        const { 
+            merchant_type_id,
+            merchant_type_name,
+            merchant_type_parent_id,
+            merchant_type_parent_name, 
+            settled_type,
+            merchant_name,
+            social_credit_code_id,
+            regions_id,
+            province,
+            city,
+            area,
+            address,
+            legal_name,
+            legal_cert_id,
+            bank_acct_type,
+            card_id_mask,
+            legal_mobile,
+            bank_name,
+            bank_mobile,
+            license_url,
+            bank_card_front_url
+        } = await api.merchant.detail();
+        
+        //有保存过才赋值
+        if(merchant_type_id){
+            dispatch(updateState({
+                key:MERCHANT_TYPE,
+                id:merchant_type_parent_id,
+                name:merchant_type_parent_name,
+                parent_id:0
+            }));
+            dispatch(updateState({
+                key:BUSINESS_SCOPE,
+                id:merchant_type_id,
+                name:merchant_type_name,
+                parent_id:merchant_type_parent_id
+            }));
+            setState(state=>{
+                state.settled_type=settled_type;
+                state.merchant_type_id=merchant_type_id;
+                state.merchant_name=merchant_name;
+                state.social_credit_code_id=social_credit_code_id;
+                state.regions_id=JSON.parse(regions_id);
+                state.regions=[province,city,area];
+                state.address=address;
+                state.legal_name=legal_name;
+                state.legal_cert_id=legal_cert_id;
+                state.bank_acct_type=bank_acct_type;
+                state.card_id_mask=card_id_mask;
+                state.legal_mobile=legal_mobile;
+                state.bank_mobile=bank_mobile;
+                state.bank_name=bank_name;
+                state.license_url=[license_url];
+                state.bank_card_front_url=[bank_card_front_url];
+            })
+        }
+        
+    }
+
     //点击下一步/上一步
     const handleStep = (direction) => async () => {
         let end;
@@ -259,10 +325,18 @@ const Apply = () => {
     }
 
     //获取当前哪一步
-    const getStep = async () => {
-        const { step } = await api.merchant.getStep()
-        setStep(step)
-    }
+    const getStep = async () => { 
+        const { step } = await api.merchant.getStep();
+        const is_audit=step==4;
+        let audit_status=AUDIT_UNKNOWN;
+        if(is_audit){
+            const { audit_status:auditStatus } = await api.merchant.getAuditstatus();
+            audit_status=auditStatus;
+        }
+        //如果是审核失败跳回第一步
+        setStep(audit_status===AUDIT_FAIL?1:step); 
+        getDetail();
+    } 
 
     const getMerchatType = async () => {
         if (merchantOptions.length === 2) return;
@@ -275,12 +349,15 @@ const Apply = () => {
             }
         })
         setMerchantOptions(options)
-    }
-
-    useEffect(() => {
-        getStep()
-        getMerchatType();
+    } 
+  
+    useEffect(() => { 
+        getMerchatType(); 
     }, []);
+
+    useEffect(()=>{
+        getStep()
+    },[]);
 
     const handleSwitchSelector = (type) => () => {
         let url = `/subpages/merchant/selector?type=${type}`;
@@ -290,13 +367,10 @@ const Apply = () => {
         Taro.navigateTo({
             url
         })
-    } 
- 
+    };  
 
     useDidShow(async () => { 
-    });
-
-    console.log("===merchantType==>",merchantType,businessScope,state)
+    }); 
 
     return (
         <View className='page-merchant-apply' style={styleNames(getThemeStyle())}>

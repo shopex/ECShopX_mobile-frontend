@@ -46,7 +46,7 @@ const RadioGroup = (props) => {
         <View className={classNames('comps-radio-group')}  >
             {options.map((item, index) => (
                 <View className='comps-radio-group-item' onClick={() => onClick(item)} key={index}>
-                    <Radio checked={value === item.value} />
+                    <Radio checked={value == item.value} />
                     <Text className='comps-radio-group-item_text'>{item.label}</Text>
                 </View>
             ))}

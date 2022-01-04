@@ -32,6 +32,13 @@ const Audit = () => {
         <View className='text'>· 审批意见审批意见审批意见，审批意见审批意见，审批意见审批意见。</View>
     </View>
 
+    const handleReset=()=>{
+        const url=`/subpages/merchant/apply?isEdit=true`
+        Taro.redirectTo({
+            url
+        })
+    }
+
     useEffect(() => {
         getAuditStatus()
     }, [])
@@ -53,9 +60,9 @@ const Audit = () => {
                 {status==AUDIT_FAIL && renderFail}
             </View>
 
-            <View className='status-form'>
-                <MButton>重新填写</MButton>
-            </View>
+            {status==AUDIT_FAIL && <View className='status-form'>
+                <MButton onClick={handleReset}>重新填写</MButton>
+            </View>}
 
         </View>
     )
