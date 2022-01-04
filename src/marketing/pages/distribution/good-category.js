@@ -24,14 +24,14 @@ export default class DistributionShopCategory extends Component {
         {
           title: '推广商品',
           iconType: 'home',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/goods',
           urlRedirect: true
         },
         {
           title: '分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/good-category',
           urlRedirect: true
         }
