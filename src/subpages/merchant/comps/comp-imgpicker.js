@@ -1,28 +1,27 @@
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { useState ,useEffect} from 'react';
-import { classNames, styleNames, isNumber, isBase64 } from "@/utils";
-import { SpImage } from '@/components';
+import { useState, useEffect } from 'react'
+import { classNames, styleNames, isNumber, isBase64 } from '@/utils'
+import { SpImage } from '@/components'
 import imgUploader from '@/utils/upload'
-import './comp-imgpicker.scss' 
+import './comp-imgpicker.scss'
 
-function SpImagePicker(props) {
-
+function SpImagePicker (props) {
   let {
     className,
     backgroundSrc = '',
-    onChange = () => { },
+    onChange = () => {},
     size = 'default',
     children,
     uploadSuccess,
     value
-  } = props;
+  } = props
 
-  const [imgUrl, setImgUrl] = useState('');
+  const [imgUrl, setImgUrl] = useState('')
 
-  useEffect(()=>{
+  useEffect(() => {
     setImgUrl(value)
-  },[value])
+  }, [value])
 
   const handlePhoto = async () => {
     try {
@@ -38,16 +37,15 @@ function SpImagePicker(props) {
         })
         const res = await imgUploader.uploadImageFn(imgFiles)
         setImgUrl(res[0].url)
-        onChange(res[0].url);
+        onChange(res[0].url)
       }
     } catch (err) {
       console.log(err)
     }
   }
 
-  const handleClickInfo=()=>{
-    console.log("===handleClickInfo",uploadSuccess)
-    if(!uploadSuccess) return ;
+  const handleClickInfo = () => {
+    if (!uploadSuccess) return
     handlePhoto()
   }
 
@@ -55,25 +53,30 @@ function SpImagePicker(props) {
     <View
       className={classNames(
         {
-          "sp-image-picker": true,
+          'sp-image-picker': true,
           [`${size}`]: size
         },
         className
       )}
     >
       <View className='sp-image-picker-content'>
-        <SpImage src={imgUrl ? imgUrl : backgroundSrc} className="sp-image-picker-content-img" />
-        {!imgUrl && <View className='sp-image-picker-content-icon' onClick={handlePhoto}>
-          <Text className='icon-shangchuan-01'></Text>
-        </View>}
+        <SpImage
+          src={imgUrl ? imgUrl : backgroundSrc}
+          className='sp-image-picker-content-img'
+          lazyLoad={false}
+        />
+        {!imgUrl && (
+          <View className='sp-image-picker-content-icon' onClick={handlePhoto}>
+            <Text className='icon-shangchuan-01'></Text>
+          </View>
+        )}
       </View>
 
       <View className='sp-image-picker-info' onClick={handleClickInfo}>
         {children}
       </View>
-
     </View>
-  );
+  )
 }
 
 SpImagePicker.options = {
