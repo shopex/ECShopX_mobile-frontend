@@ -9,8 +9,8 @@ import './index.scss'
 
 function SpTabbar (props) {
   const { tabbar } = useSelector((state) => state.sys)
+  const { cartCount = 0 } = useSelector((state) => state.cart)
   const { className } = props
-  console.log('tabbar:', tabbar)
 
   const { color, backgroundColor, selectedColor } = tabbar.config
   const tabList = tabbar.data.map((item) => {
@@ -22,7 +22,9 @@ function SpTabbar (props) {
       image: item.iconPath,
       selectedImage: item.selectedIconPath,
       url: item.pagePath,
-      urlRedirect: true
+      urlRedirect: true,
+      text: item.text === '购物车' ? cartCount : '',
+      max: item.max
     }
   })
 
