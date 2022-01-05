@@ -1,55 +1,50 @@
- 
 import Taro, { useRouter } from '@tarojs/taro'
-import { ScrollView, View,RichText } from '@tarojs/components'
+import { ScrollView, View, RichText } from '@tarojs/components'
 import { SpPage } from '@/components'
-import { useState,useEffect } from 'react';  
-import api from '@/api'  
-import { MNavBar } from './comps' 
+import { isWeb , classNames, styleNames, getThemeStyle } from '@/utils'
+import { useState, useEffect } from 'react'
+import api from '@/api'
+import { MNavBar } from './comps'
 import './agreement.scss'
-import { classNames,styleNames,getThemeStyle } from '@/utils';
 
-const Agreement = () => { 
+const Agreement = () => {
+  const [content, setContent] = useState(0)
 
-    const [content,setContent]=useState(0)
+  const getContent = async () => {
+    const { content } = await api.merchant.getSetting()
+    setContent(content)
+  }
 
-    const getContent=async ()=>{
-        const { content } = await api.merchant.getSetting();
-        setContent(content)
-    }  
+  useEffect(() => {
+    getContent()
+  }, [])
 
-    useEffect(() => {
-        getContent()
-    }, []);
-
-    let nodes=[
+  let nodes = [
+    {
+      name: 'div',
+      attrs: {
+        class: 'content'
+      },
+      children: [
         {
-            name: 'div',
-            attrs: {
-              class: 'content', 
-            },
-            children: [{
-              type: 'text',
-              text: content
-            }]
-          }
-    ]
+          type: 'text',
+          text: content
+        }
+      ]
+    }
+  ]
 
-    return (
-        <SpPage className={classNames('page-merchant-agreement')} needNavbar={false} >
-           
-           <MNavBar canLogout={false}   /> 
+  return (
+    <SpPage className={classNames('page-merchant-agreement')} needNavbar={false}>
+      <MNavBar canLogout={false} />
 
-           <ScrollView className='page-merchant-agreement-content'>
+      <ScrollView className='page-merchant-agreement-content'>
+        <View className='title'>商家入驻协议</View>
 
-                <View className='title'>商家入驻协议</View> 
-
-                <RichText nodes={nodes} className='main'/>
-
-           </ScrollView>
-
-        </SpPage>
-    )
+        {isWeb && <View className='main' dangerouslySetInnerHTML={{ __html: content }} />}
+      </ScrollView>
+    </SpPage>
+  )
 }
 
-
-export default Agreement;
+export default Agreement

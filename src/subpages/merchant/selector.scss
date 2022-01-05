@@ -5,6 +5,19 @@ $input-height:92px;
 
     .selector-scroll{
         @include page-scroll($navbar-height+$input-height,0); 
+
+        .render-empty{
+            width:372px;
+            margin:155px auto 0;
+
+            .title{
+                font-size: 28px;
+                line-height: 50px;
+                color:#666666;
+                text-align: center;
+                margin-top: 65px;
+            }
+        }
     }
 
     &-content{  

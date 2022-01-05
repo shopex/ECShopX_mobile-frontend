@@ -1,87 +1,118 @@
 import Taro, { useRouter } from '@tarojs/taro'
 import { ScrollView, View } from '@tarojs/components'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { MNavBar, MCell } from './comps'
-import { updateState } from '@/store/slices/merchant'
-import { SpSearchBar, SpPage } from '@/components'
+import { SpSearchBar, SpPage, SpScrollView, SpImage } from '@/components'
 import api from '@/api'
 import { usePage, useDepChange } from '@/hooks'
 import { useSelector, useDispatch } from 'react-redux'
 import { MERCHANT_TYPE, BUSINESS_SCOPE } from './consts'
+import { useImmer } from 'use-immer'
 import { setMerchant } from './util'
 import './selector.scss'
 
+const initialState = {
+  list: [],
+  name: ''
+}
+
 const Selector = () => {
-  const [dataList, setDataList] = useState([])
-
-  const dispatch = useDispatch()
-
+  const [state, setState] = useImmer(initialState)
+  const selectsRef = useRef()
   const {
     params: { type, parent_id }
   } = useRouter()
-
-  const [name, setName] = useState('')
-
-  const fetch = async ({ pageIndex, pageSize }) => {
+  const fetch = async ({ pageIndex: page, pageSize }) => {
     const params = {
-      page: pageIndex,
+      page,
       page_size: pageSize,
       parent_id: type === MERCHANT_TYPE ? 0 : parent_id,
-      name
+      name: state.name
     }
     const { list, total_count } = await api.merchant.typeList(params)
 
-    setDataList([...dataList, ...list])
+    await setState((v) => {
+      v.list = [...v.list, ...list]
+    })
 
     return {
       total: total_count
     }
   }
 
-  const { resetPage } = usePage({
-    fetch
-  })
-
-  const handleBack = () => {
-    Taro.navigateBack()
-  }
-
   //点击搜索框搜索
-  const handleConfirm = (item) => {
-    setName(item)
+  const handleConfirm = async (val) => {
+    await setState((v) => {
+      v.list = []
+      v.name = val
+    })
+    selectsRef.current.reset()
   }
-
-  useDepChange(() => {
-    resetPage()
-    setDataList([])
-  }, [name])
 
   const handleClick = ({ id, name, parent_id }) => {
     setMerchant({ key: type, id, name, parent_id })
     Taro.navigateBack()
   }
 
+  const handleSearchOff = () => {
+    setState((v) => {
+      v.name = ''
+    })
+  }
+
+  const handleOnClear = async () => {
+    await setState((v) => {
+      v.name = ''
+      v.list = []
+    })
+    selectsRef.current.reset()
+  }
+
+  const handleOnChange = (val) => {
+    setState((v) => {
+      v.name = val
+    })
+  }
+
+  const renderEmpty = (
+    <View className='render-empty'>
+      <SpImage src='empty_goods.png' />
+      <View className='title'>暂无可选项～</View>
+    </View>
+  )
+  const { list, name } = state
+
   return (
     <SpPage className='page-merchant-selector' needNavbar={false}>
-      <MNavBar canLogout={false} onBack={handleBack} />
+      <MNavBar canLogout={false} />
 
       <View className='page-merchant-selector-inputwrapper'>
         <SpSearchBar
+          keyword={name}
           className='sp-page-selector-input'
           placeholder='请输入商家类型'
           onConfirm={handleConfirm}
+          onCancel={handleSearchOff}
+          onClear={handleOnClear}
+          onChange={handleOnChange}
         />
       </View>
 
-      <ScrollView scrollY className='selector-scroll'>
+      <SpScrollView
+        scrollY
+        fetch={fetch}
+        className='selector-scroll'
+        ref={selectsRef}
+        renderEmpty={renderEmpty}
+      >
         <View className='page-merchant-selector-content'>
           <View className='card'>
-            {dataList.map((item, index) => (
+            {list.map((item, index) => (
               <MCell key={index} title={item.name} noselect onClick={() => handleClick(item)} />
             ))}
           </View>
         </View>
-      </ScrollView>
+      </SpScrollView>
     </SpPage>
   )
 }
