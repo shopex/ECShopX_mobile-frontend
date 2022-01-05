@@ -560,12 +560,12 @@ const Apply = () => {
                   mode='idCard'
                   title={
                     <Text>
-                      请根据提示上传<Text className='primary'>法人手持身份证</Text>照片
+                      请根据提示上传<Text className='primary'>{`${fieldName}手持身份证`}</Text>照片
                     </Text>
                   }
                   value={[state.legal_certid_front_url, state.legal_cert_id_back_url]}
                   onChange={handleChange('legal_certid_front_url', 'legal_cert_id_back_url')}
-                  info={['上传法人手持身份证正面', '上传法人手持身份证反面']}
+                  info={[`上传${fieldName}手持身份证正面`, `上传${fieldName}手持身份证反面`]}
                 />
                 <MImgPicker
                   mode='bankCard'
@@ -584,7 +584,7 @@ const Apply = () => {
           {step !== 1 && (
             <View className='info mt-24'>
               <Text className='icon-info'></Text>
-              <Text className='text'>{step === 2 ? STEPTWOTEXT : STEPTHREETEXT}</Text>
+              <Text className='text'>{step === 2 ? STEPTWOTEXT(fieldName) : STEPTHREETEXT}</Text>
             </View>
           )}
         </View>
