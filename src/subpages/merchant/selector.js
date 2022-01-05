@@ -68,9 +68,15 @@ const Selector = () => {
     selectsRef.current.reset()
   }
 
-  const handleOnChange = (val) => {
-    setState((v) => {
+  const handleOnChange = async (val) => {
+    await setState((v) => {
       v.name = val
+    })
+  }
+
+  const handleBlur = () => {
+    setState((v) => {
+      v.name = ''
     })
   }
 
@@ -81,6 +87,8 @@ const Selector = () => {
     </View>
   )
   const { list, name } = state
+
+  console.log('name', name)
 
   return (
     <SpPage className='page-merchant-selector' needNavbar={false}>
@@ -95,6 +103,7 @@ const Selector = () => {
           onCancel={handleSearchOff}
           onClear={handleOnClear}
           onChange={handleOnChange}
+          onBlur={handleBlur}
         />
       </View>
 
