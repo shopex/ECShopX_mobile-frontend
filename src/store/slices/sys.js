@@ -36,7 +36,8 @@ const initialState = {
         name: 'home',
         pagePath: '/pages/cart/espier-index',
         selectedIconPath: '',
-        text: '购物车'
+        text: '购物车',
+        max: 99
       },
       {
         iconPath: '',
