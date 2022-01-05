@@ -90,7 +90,7 @@ export default class SearchBar extends Component {
   }
 
   handleClickCancel = (isOpened) => {
-    this.props.onCancel()
+    this.props.onCancel?.()
     this.setState({
       showSearchDailog: isOpened,
       isShowAction: false

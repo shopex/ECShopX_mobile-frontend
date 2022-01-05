@@ -118,10 +118,15 @@ const Cell = (props) => {
   )
 
   return (
-    <View className={classNames('comps-cell', className, { disabled })}>
+    <View className={classNames('comps-cell', className, { disabled, noselect })}>
       {required && <Text className='comps-cell-required'>*</Text>}
-      <View className={classNames('comps-cell_title', { 'is-show': onlyShow })}>{title}</View>
-      <View className='comps-cell_flex' onClick={noselect ? onClick : () => {}}>
+      <View
+        className={classNames('comps-cell_title', { 'is-show': onlyShow })}
+        onClick={noselect ? onClick : () => {}}
+      >
+        {title}
+      </View>
+      <View className='comps-cell_flex'>
         {renderSelectorContent}
         {renderRadioContent}
         {renderInputContent}

@@ -87,6 +87,14 @@ $left-button-border-color:rgba(88, 88, 88, 0.4);
         }
     }
 
+    &.noselect{
+        .comps-cell_title{
+            width: 100%;
+            @include multi-ellipsis(1);
+            display: flex;
+        }
+    }
+
     &-required{
         position: absolute;
         left:0;
@@ -115,11 +123,15 @@ $left-button-border-color:rgba(88, 88, 88, 0.4);
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        
     }
 
     &_selector{
+       
         display: flex;
         align-items: center;
+        @include multi-ellipsis(1);
+        
         .text{
             color: #A9B1C2;
             margin-right:8px;
