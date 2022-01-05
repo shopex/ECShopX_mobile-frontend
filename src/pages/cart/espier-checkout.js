@@ -293,7 +293,7 @@ export default class CartCheckout extends Component {
     }
   }
 
-  isPointitemGood() {
+  isPointitemGood () {
     const options = this.$instance.router?.params
     return options?.type === 'pointitem'
   }
@@ -1211,7 +1211,7 @@ export default class CartCheckout extends Component {
 
     let order_id, config, payErr
     try {
-      let params = await this.getParams() || {}
+      let params = (await this.getParams()) || {}
       const getShopId = await this.getShopId()
 
       if (process.env.APP_PLATFORM === 'standard' && cart_type !== 'cart') {

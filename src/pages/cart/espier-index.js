@@ -337,9 +337,9 @@ function CartIndex (props) {
                         {/** 换购结束 */}
                         {/**普通商品开始 */}
                         {cus_general_goods_list.map((c_sitem, c_index) => (
-                          <View className='shop-cart-item-bd'>
+                          <View className='shop-cart-item-bd' key={c_index}>
                             <View className='shop-activity'></View>
-                            <View className='cart-item-wrap' key={c_index}>
+                            <View className='cart-item-wrap'>
                               <SpCheckboxNew
                                 checked={c_sitem.is_checked}
                                 onChange={onChangeGoodsItemCheck.bind(this, c_sitem)}

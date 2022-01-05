@@ -88,8 +88,10 @@ function SpPrivacyModal (props) {
           <Text>了解详细信息。如您同意，请点击”同意“开始接受我们的服务。</Text>
         </View>
         <View className='modal-ft'>
-          <View className='btn-wrap'>
-            <AtButton onClick={handleCancel}>拒绝</AtButton>
+          <View className='btn-wrap '>
+            <AtButton className='cancel-btn' onClick={handleCancel}>
+              拒绝
+            </AtButton>
           </View>
           <View className='btn-wrap'>
             <AtButton type='primary' onClick={handleConfirm}>
