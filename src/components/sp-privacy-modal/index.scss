@@ -20,9 +20,9 @@
   .modal-hd {
     display: flex;
     align-items: center;
-    padding: 30px 20px;
+    padding: 25px 30px;
     /*  #ifdef  h5  */
-    padding: 20px 20px;
+    padding: 20px 30px;
     /*  #endif  */
     .title {
       font-size: 28px;
@@ -44,9 +44,22 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    /*  #ifdef  h5  */  
+    padding: 30px 20px 20px;
+    /*  #endif  */
+    .at-button {
+      // height: 70px;
+      // line-height: 70px;
+      font-size: 30px;
+    }
+
     .btn-wrap {
-      width:300px;
+      width: 300px;
       margin: 0 20px;
+    }
+    .cancel-btn {
+      background: #fff;
+      border: none;
     }
   }
 }

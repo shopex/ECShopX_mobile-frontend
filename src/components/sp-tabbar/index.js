@@ -23,7 +23,7 @@ function SpTabbar (props) {
       selectedImage: item.selectedIconPath,
       url: item.pagePath,
       urlRedirect: true,
-      text: item.text === '购物车' ? cartCount : '',
+      // text: item.text === '购物车' ? cartCount : null,
       max: item.max
     }
   })
