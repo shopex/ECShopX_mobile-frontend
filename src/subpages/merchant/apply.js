@@ -1,7 +1,7 @@
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { ScrollView, View, Text } from '@tarojs/components'
-import { isUndefined, getThemeStyle, styleNames, showToast, isArray } from '@/utils'
+import { showToast, isArray } from '@/utils'
 import { SpPage } from '@/components'
 import { MButton, MStep, MNavBar, MCell, MImgPicker } from './comps'
 import { useArea, useUpdate, usePrevious } from './hook'
@@ -9,6 +9,7 @@ import { navigateToAgreement, getMerchant, setMerchant, clearMerchant } from './
 import {
   MERCHANT_TYPE,
   BUSINESS_SCOPE,
+  BANG_NAME,
   STEPTWOTEXT,
   STEPTHREETEXT,
   MerchantStepKey
@@ -70,7 +71,7 @@ const initialState = {
 const Apply = () => {
   const [state, setState] = useImmer(initialState)
 
-  const { merchantType, businessScope } = getMerchant()
+  const { merchantType, businessScope, bankName } = getMerchant()
 
   const [merchantOptions, setMerchantOptions] = useState([])
 
@@ -127,6 +128,14 @@ const Apply = () => {
       })
     }
   }, [businessScope])
+
+  useEffect(() => {
+    if (bankName.name) {
+      setState((state) => {
+        state.bank_name = bankName.name
+      })
+    }
+  }, [bankName])
 
   useEffect(() => {
     if (selectArea.length) {
@@ -281,9 +290,9 @@ const Apply = () => {
       legal_name,
       legal_cert_id,
       bank_acct_type,
+      bank_name,
       card_id_mask,
       legal_mobile,
-      bank_name,
       bank_mobile,
       license_url,
       bank_card_front_url,
@@ -308,6 +317,12 @@ const Apply = () => {
           parent_id: merchant_type_parent_id
         })
       }
+      if (bank_name) {
+        setMerchant({
+          key: BANG_NAME,
+          name: bank_name
+        })
+      }
 
       setState((state) => {
         state.settled_type = settled_type
@@ -323,7 +338,6 @@ const Apply = () => {
         state.card_id_mask = card_id_mask
         state.legal_mobile = legal_mobile
         state.bank_mobile = bank_mobile
-        state.bank_name = bank_name
         state.license_url = license_url ? [license_url] : []
         state.bank_card_front_url = bank_card_front_url ? [bank_card_front_url] : []
         state.legal_certid_front_url = legal_certid_front_url || ''
@@ -525,10 +539,8 @@ const Apply = () => {
                   <MCell
                     title='结算银行'
                     required
-                    mode='input'
-                    placeholder='请输入结算银行'
-                    value={state.bank_name}
-                    onChange={handleChange('bank_name')}
+                    value={bankName.name}
+                    onClick={handleSwitchSelector(BANG_NAME)}
                   />
                 )}
                 {bankmobileRequired && (
