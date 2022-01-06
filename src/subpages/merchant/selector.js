@@ -1,19 +1,20 @@
 import Taro, { useRouter } from '@tarojs/taro'
-import { ScrollView, View } from '@tarojs/components'
-import { useState, useRef } from 'react'
+import { Text, View } from '@tarojs/components'
+import { useRef } from 'react'
 import { MNavBar, MCell } from './comps'
 import { SpSearchBar, SpPage, SpScrollView, SpImage } from '@/components'
 import api from '@/api'
-import { usePage, useDepChange } from '@/hooks'
-import { useSelector, useDispatch } from 'react-redux'
-import { MERCHANT_TYPE, BUSINESS_SCOPE } from './consts'
+import { MERCHANT_TYPE, BANG_NAME, PLACEHOLDER_SELECTOR } from './consts'
 import { useImmer } from 'use-immer'
-import { setMerchant } from './util'
+import { setMerchant, splitMatch } from './util'
+import { classNames } from '@/utils'
 import './selector.scss'
 
 const initialState = {
   list: [],
-  name: ''
+  name: '',
+  //表示正在搜索的词
+  searchingName: ''
 }
 
 const Selector = () => {
@@ -22,14 +23,29 @@ const Selector = () => {
   const {
     params: { type, parent_id }
   } = useRouter()
+  const isBank = type === BANG_NAME
   const fetch = async ({ pageIndex: page, pageSize }) => {
-    const params = {
+    let params = {
       page,
       page_size: pageSize,
-      parent_id: type === MERCHANT_TYPE ? 0 : parent_id,
-      name: state.name
+      parent_id: type === MERCHANT_TYPE ? 0 : parent_id
     }
-    const { list, total_count } = await api.merchant.typeList(params)
+    if (isBank) {
+      params.bank_name = name
+    } else {
+      params.name = name
+    }
+    let list = [],
+      total_count = 0
+    if (isBank) {
+      const res = await api.merchant.bank_list(params)
+      list = res.list
+      total_count = res.total_count
+    } else {
+      const res = await api.merchant.type_list(params)
+      list = res.list
+      total_count = res.total_count
+    }
 
     await setState((v) => {
       v.list = [...v.list, ...list]
@@ -45,12 +61,13 @@ const Selector = () => {
     await setState((v) => {
       v.list = []
       v.name = val
+      v.searchingName = val
     })
     selectsRef.current.reset()
   }
 
-  const handleClick = ({ id, name, parent_id }) => {
-    setMerchant({ key: type, id, name, parent_id })
+  const handleClick = ({ id, name, parent_id, bank_name }) => {
+    setMerchant({ key: type, id, name: isBank ? bank_name : name, parent_id })
     Taro.navigateBack()
   }
 
@@ -64,6 +81,7 @@ const Selector = () => {
     await setState((v) => {
       v.name = ''
       v.list = []
+      v.searchingName = ''
     })
     selectsRef.current.reset()
   }
@@ -86,9 +104,23 @@ const Selector = () => {
       <View className='title'>暂无可选项～</View>
     </View>
   )
-  const { list, name } = state
+  const { list, name, searchingName } = state
 
-  console.log('name', name)
+  const renderTitle = (item) => {
+    const title = isBank ? item.bank_name : item.name
+
+    if (!searchingName) return title
+
+    const matches = splitMatch(title, searchingName)
+
+    return (
+      <View className='flex'>
+        {matches.map((item) => (
+          <Text className={classNames({ 'primary-color': item.checked })}>{item.label}</Text>
+        ))}
+      </View>
+    )
+  }
 
   return (
     <SpPage className='page-merchant-selector' needNavbar={false}>
@@ -98,7 +130,7 @@ const Selector = () => {
         <SpSearchBar
           keyword={name}
           className='sp-page-selector-input'
-          placeholder='请输入商家类型'
+          placeholder={PLACEHOLDER_SELECTOR[type]}
           onConfirm={handleConfirm}
           onCancel={handleSearchOff}
           onClear={handleOnClear}
@@ -117,7 +149,12 @@ const Selector = () => {
         <View className='page-merchant-selector-content'>
           <View className='card'>
             {list.map((item, index) => (
-              <MCell key={index} title={item.name} noselect onClick={() => handleClick(item)} />
+              <MCell
+                key={index}
+                title={renderTitle(item)}
+                noselect
+                onClick={() => handleClick(item)}
+              />
             ))}
           </View>
         </View>

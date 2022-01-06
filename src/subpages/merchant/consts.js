@@ -1,6 +1,16 @@
+//商户类型
 export const MERCHANT_TYPE = 'merchantType'
 
+//经营范围
 export const BUSINESS_SCOPE = 'businessScope'
+
+export const BANG_NAME = 'bankName'
+
+export const PLACEHOLDER_SELECTOR = {
+  [MERCHANT_TYPE]: '请输入商家类型',
+  [BUSINESS_SCOPE]: '请输入经营范围',
+  [BANG_NAME]: '请输入结算银行名称'
+}
 
 export const STEPTWOTEXT = (field) => `结算银行卡持卡人姓名要与${field}姓名一致`
 
