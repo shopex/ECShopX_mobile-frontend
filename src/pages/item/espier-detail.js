@@ -59,7 +59,6 @@ import {
 } from './comps'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 import { getDtidIdUrl } from '@/utils/helper'
-
 import './espier-detail.scss'
 
 @connect(
@@ -548,6 +547,18 @@ export default class EspierDetail extends Component {
     )
 
     log.debug('fetch: done', info)
+  }
+
+  getVedioUrl = () => {
+    const { info } = this.state
+    //有本地视频
+    const localVedio = info.video_type === 'local' && info.videos ? info.videos : false
+    //有微信视频
+    const wechatVedio = info.video_type !== 'local' && info.videos_url ? info.videos_url : false
+    //展示视频
+    const vedioUrl = localVedio || wechatVedio || false
+
+    return vedioUrl
   }
 
   async goodLikeList (query) {
