@@ -111,7 +111,7 @@ export default class EspierDetail extends Component {
       sixSpecImgsDict: {},
       curSku: null,
       promotion_activity: [],
-      promotion_package: [],
+      promotion_package: null,
       itemParams: [],
       sessionFrom: '',
       posterImgs: null,
@@ -182,7 +182,7 @@ export default class EspierDetail extends Component {
             uid = query.uid
           }
         }
-        this.fetchInfo(id)
+
         this.getEvaluationList(id)
         // 浏览记录
         if (S.getAuthToken()) {
@@ -238,6 +238,8 @@ export default class EspierDetail extends Component {
       Taro.setStorageSync('userinfo', userObj)
     }
     this.fetchCartCount()
+    const goodId = await this.getGoodId()
+    this.fetchInfo(goodId)
   }
 
   async getEvaluationList (id) {
@@ -502,11 +504,12 @@ export default class EspierDetail extends Component {
         isSubscribeGoods: !!subscribe
       },
       async () => {
+        const vedioUrl = this.getVedioUrl()
         let contentDesc = ''
-
+        //说明没有值
         if (!isArray(desc)) {
-          if (info.videos_url) {
-            contentDesc += `<video src=${info.videos} controls style='width:100%'></video>` + desc
+          if (vedioUrl) {
+            contentDesc += `<video src=${vedioUrl} controls style='width:100%'></video>` + desc
           } else {
             contentDesc = desc
               .toString()
@@ -1035,7 +1038,7 @@ export default class EspierDetail extends Component {
 
   //订阅通知
   handleSubscription = async () => {
-    if (this.isPointitemGood() || isAlipay) {
+    if (this.isPointitemGood() || isAlipay || isWeb) {
       return
     }
 
@@ -1523,9 +1526,10 @@ export default class EspierDetail extends Component {
             </View>
           )}
 
+          {/* 为数组说明为组件式 */}
           {isArray(desc) ? (
             <View className='wgts-wrap__cont'>
-              {info.videos_url && <Video src={info.videos} controls style='width:100%'></Video>}
+              {vedioUrl && <Video src={vedioUrl} controls style='width:100%'></Video>}
               {desc.map((item, idx) => {
                 return (
                   <View className='wgt-wrap' key={`${item.name}${idx}`}>
@@ -1633,6 +1637,8 @@ export default class EspierDetail extends Component {
                       ? '已订阅到货通知'
                       : isAlipay
                       ? '暂无可售'
+                      : isWeb
+                      ? '已售罄'
                       : '到货通知'}
                   </View>
                 )}
