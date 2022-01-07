@@ -132,7 +132,7 @@ export default class EspierDetail extends Component {
   }
 
   getGoodId = async () => {
-    const options = await normalizeQuerys(this.$router.params)
+    const options = await normalizeQuerys(this.$instance.params || {})
     if (options.itemid && !options.id) {
       options.id = options.itemid
     }
@@ -1151,6 +1151,18 @@ export default class EspierDetail extends Component {
     }
   }
 
+  getVedioUrl = () => {
+    const { info } = this.state
+    //有本地视频
+    const localVedio = info.video_type === 'local' && info.videos ? info.videos : false
+    //有微信视频
+    const wechatVedio = info.video_type !== 'local' && info.videos_url ? info.videos_url : false
+    //展示视频
+    const vedioUrl = localVedio || wechatVedio || false
+
+    return vedioUrl
+  }
+
   render () {
     const {
       info,
@@ -1202,7 +1214,7 @@ export default class EspierDetail extends Component {
     if (info.activity_type === 'limited_buy') {
       ruleDay = JSON.parse(info.activity_info.rule.day)
     }
-
+    const vedioUrl = this.getVedioUrl()
     const { pics: imgs, kaquan_list: coupon_list } = info
     let new_coupon_list = []
     if (coupon_list && coupon_list.list.length >= 1) {
