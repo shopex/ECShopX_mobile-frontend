@@ -131,6 +131,24 @@ export default class EspierDetail extends Component {
     }
   }
 
+  getGoodId = async () => {
+    const options = await normalizeQuerys(this.$router.params)
+    if (options.itemid && !options.id) {
+      options.id = options.itemid
+    }
+    let id = options.id
+    const entryData = await entry.entryLaunch({ ...options }, true)
+    console.log('entryData---->', entryData)
+    id = entryData.id
+    if (options.scene) {
+      const query = await normalizeQuerys(options)
+      if (query.id) {
+        id = query.id
+      }
+    }
+    return id
+  }
+
   async componentDidMount () {
     const options = await normalizeQuerys(this.$instance.router.params)
     // Taro.showLoading({
