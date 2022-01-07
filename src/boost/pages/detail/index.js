@@ -1,10 +1,11 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text, Button, Progress, Canvas } from '@tarojs/components'
 import { SpNavBar, SpHtmlContent } from '@/components'
 import { pickBy, calcTimer } from '@/utils'
 import { AtCountdown, AtIcon } from 'taro-ui'
 import api from '@/api'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../../pages/home/wgts'
 
 import './index.scss'
@@ -16,7 +17,8 @@ import './index.scss'
   })
 )
 export default class Detail extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
     this.state = {
       adPic: '',
@@ -46,11 +48,11 @@ export default class Detail extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getBoostDetail()
   }
 
-  onShareAppMessage() {
+  onShareAppMessage () {
     const { userInfo, info } = this.state
     const userId = userInfo.user_id
 
@@ -61,14 +63,10 @@ export default class Detail extends Component {
     }
   }
 
-  config = {
-    navigationBarTitleText: '助力详情'
-  }
-
   // 获取助力详情wechat-taroturntable
   getBoostDetail = async () => {
     Taro.showLoading({ mask: true })
-    const { bargain_id } = this.$router.params
+    const { bargain_id } = this.$instance.router.params
 
     const {
       bargain_info = {},
@@ -144,18 +142,18 @@ export default class Detail extends Component {
         filePath,
         data: bodyData,
         encoding: 'base64',
-        success() {
+        success () {
           Taro.getImageInfo({
             src: filePath,
-            success(res) {
+            success (res) {
               resolve(res.path)
             },
-            fail(e) {
+            fail (e) {
               console.log(e)
             }
           })
         },
-        fail() {
+        fail () {
           reject(new Error('ERROR_BASE64SRC_WRITE'))
         }
       })
@@ -294,7 +292,7 @@ export default class Detail extends Component {
     }
   }
 
-  render() {
+  render () {
     const {
       adPic,
       info,

@@ -1,12 +1,13 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
 import { FloatMenus, FloatMenuItem, SpNavBar } from '@/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { formatTime, buriedPoint } from '@/utils'
 import S from '@/spx'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../../pages/home/wgts'
 import './detail.scss'
 
@@ -15,7 +16,8 @@ import './detail.scss'
 }))
 @withPager
 export default class recommendDetail extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     props = props || {}
     props.pageSize = 50
     super(props)
@@ -30,12 +32,12 @@ export default class recommendDetail extends Component {
     }
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.fetchContent()
     // this.praiseCheck()
   }
 
-  componentDidMount() {
+  componentDidMount () {
     Taro.getSystemInfo().then((res) => {
       this.setState({
         screenWidth: res.screenWidth
@@ -47,7 +49,7 @@ export default class recommendDetail extends Component {
     })
   }
 
-  onShareAppMessage(res) {
+  onShareAppMessage (res) {
     const { info } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `&uid=${userId}` : ''
@@ -59,7 +61,7 @@ export default class recommendDetail extends Component {
     }
   }
 
-  onShareTimeline() {
+  onShareTimeline () {
     const { info } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `&uid=${userId}` : ''
@@ -72,7 +74,7 @@ export default class recommendDetail extends Component {
 
   // 确认本人文章是否已收藏
   confirmCollectArticle = async () => {
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
     if (S.getAuthToken()) {
       const res = await api.article.collectArticleInfo({ article_id: id })
       if (res.length === 0) {
@@ -98,8 +100,8 @@ export default class recommendDetail extends Component {
     })
   }
 
-  async fetchContent() {
-    const { id } = this.$router.params
+  async fetchContent () {
+    const { id } = this.$instance.router.params
 
     // 关注数加1
     const resFocus = await api.article.focus(id)
@@ -137,7 +139,7 @@ export default class recommendDetail extends Component {
     if(!S.getAuthToken()){
       return false
     }
-    const { id } = this.$router.params
+    const { id } = getCurrentInstance().params
     const { status } = await api.article.praiseCheck(id)
     this.setState({
       praiseCheckStatus: status
@@ -145,7 +147,7 @@ export default class recommendDetail extends Component {
   }*/
 
   handleClickBar = async (type) => {
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
     if (type === 'like') {
       const { count } = await api.article.praise(id)
       this.detailInfo(id)
@@ -183,10 +185,10 @@ export default class recommendDetail extends Component {
     }
   }
 
-  handleShare() {}
+  handleShare () {}
 
   handleClickGoods = () => {
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
     this.detailInfo(id)
   }
 
@@ -194,14 +196,14 @@ export default class recommendDetail extends Component {
     Taro.navigateToMiniProgram({
       appId: APP_GIFT_APPID, // 要跳转的小程序的appid
       path: '/pages/index/index', // 跳转的目标页面
-      success(res) {
+      success (res) {
         // 打开成功
         console.log(res)
       }
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { info, praiseCheckStatus, screenWidth, collectArticleStatus, showBackToTop } = this.state
 
@@ -215,11 +217,11 @@ export default class recommendDetail extends Component {
         <View className='recommend-detail__title'>{info.title}</View>
         <View className='recommend-detail-info'>
           <View className='recommend-detail-info__time'>
-            <Text className={`icon-time ${info.is_like ? '' : ''}`}> </Text>
+            <Text className={`iconfont icon-31shijian ${info.is_like ? '' : ''}`}> </Text>
             {info.updated_str}
           </View>
           <View className='recommend-detail-info__time'>
-            <Text className={`icon-eye ${info.is_like ? '' : ''}`}> </Text>
+            <Text className={`iconfont icon-eye ${info.is_like ? '' : ''}`}> </Text>
             {info.articleFocusNum.count ? info.articleFocusNum.count : 0}关注
           </View>
         </View>
@@ -254,8 +256,8 @@ export default class recommendDetail extends Component {
             onClick={this.handleShare}
           />
           <FloatMenuItem
-            iconPrefixClass='icon'
-            icon='arrow-up'
+            iconPrefixClass='iconfont'
+            icon='icon-arrow-up'
             hide={!showBackToTop}
             onClick={this.scrollBackToTop}
           />
@@ -266,7 +268,7 @@ export default class recommendDetail extends Component {
             style={info.isPraise ? `color: ${colors.data[0].primary}` : 'color: inherit'}
             onClick={this.handleClickBar.bind(this, 'like')}
           >
-            <Text className='icon-like'> </Text>
+            <Text className='iconfont icon-like'> </Text>
             <Text>
               {info.isPraise ? '已赞' : '点赞'} ·{' '}
               {info.articlePraiseNum.count ? info.articlePraiseNum.count : 0}
@@ -277,7 +279,7 @@ export default class recommendDetail extends Component {
             style={collectArticleStatus ? `color: ${colors.data[0].primary}` : 'color: inherit'}
             onClick={this.handleClickBar.bind(this, 'mark')}
           >
-            <Text className='icon-star-on'> </Text>
+            <Text className='iconfont icon-star_on'> </Text>
             <Text>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
           </View>
           <Button
@@ -285,7 +287,7 @@ export default class recommendDetail extends Component {
             className='recommend-detail__bar-item'
             onClick={this.handleClickBar.bind(this, 'share')}
           >
-            <Text className='icon-article-share'> </Text>
+            <Text className='iconfont icon-share1'> </Text>
             <Text>分享</Text>
           </Button>
         </View>

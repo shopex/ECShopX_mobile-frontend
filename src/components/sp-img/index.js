@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro from '@tarojs/taro'
 import { Image } from '@tarojs/components'
 import { classNames } from '@/utils'
 import './index.scss'
@@ -15,7 +16,7 @@ export default class SpImg extends Component {
 
   static externalClasses = ['img-class']
 
-  render() {
+  render () {
     const { disk_driver = 'qiniu' } = Taro.getStorageSync('otherSetting') || {}
     const {
       src,
@@ -37,8 +38,8 @@ export default class SpImg extends Component {
       color,
       // 按比例
       p
-    } = this.props 
-    
+    } = this.props
+
     if (!src) return null
 
     let url = src

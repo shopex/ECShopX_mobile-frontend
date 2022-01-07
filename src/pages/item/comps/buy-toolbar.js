@@ -1,21 +1,20 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtBadge } from 'taro-ui'
 import api from '@/api'
+import configStore from '@/store'
+import { fetchUserFavs, addUserFav, deleteUserFav } from '@/store/slices/user'
 import { FormIdCollector, SpLogin } from '@/components'
-import { classNames,isWeb,isWeixin } from '@/utils'
+import { classNames, isWeb, showToast } from '@/utils'
 import './buy-toolbar.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
-  }),
-  (dispatch) => ({
-    onAddFav: ({ item_id, fav_id }) =>
-      dispatch({ type: 'member/addFav', payload: { item_id, fav_id } }),
-    onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
-  })
-)
+const store = configStore()
+@connect(({ colors, user }) => ({
+  colors: colors.current,
+  favs: user.favs
+}))
 export default class GoodsBuyToolbar extends Component {
   static options = {
     addGlobalClass: true
@@ -32,11 +31,11 @@ export default class GoodsBuyToolbar extends Component {
   }
 
   handleClickCart = (id, type) => {
-    if(isWeb){
+    if (isWeb) {
       Taro.redirectTo({
         url: `/pages/cart/espier-index?type=${type}`
       })
-    }else{
+    } else {
       Taro.reLaunch({
         url: `/pages/cart/espier-index?type=${type}`
       })
@@ -51,21 +50,18 @@ export default class GoodsBuyToolbar extends Component {
   }
 
   handleFavClick = async () => {
-    const { item_id, is_fav } = this.props.info
-    if (!is_fav) {
-      const favRes = await api.member.addFav(item_id)
-      this.props.onAddFav(favRes)
+    const { item_id } = this.props.info
+    const isFaved = this.props.favs.findIndex((item) => item.item_id == item_id) > -1
+    if (!isFaved) {
+      await store.dispatch(addUserFav(item_id))
     } else {
-      await api.member.delFav(item_id)
-      this.props.onDelFav(this.props.info)
+      await store.dispatch(deleteUserFav(item_id))
     }
-    Taro.showToast({
-      title: is_fav ? '已移出收藏' : '已加入收藏',
-      mask: true
-    })
+    await store.dispatch(fetchUserFavs())
+    showToast(isFaved ? '已移出收藏' : '已加入收藏')
   }
 
-  render() {
+  render () {
     const {
       onClickAddCart,
       onClickFastBuy,
@@ -73,9 +69,9 @@ export default class GoodsBuyToolbar extends Component {
       type,
       info,
       colors,
-      isPointitem
+      isPointitem,
+      favs = []
     } = this.props
-
     if (!info) {
       return null
     }
@@ -90,18 +86,20 @@ export default class GoodsBuyToolbar extends Component {
       : type === 'seckill'
       ? '立即抢购'
       : '我要开团'
-
+    const isFaved = favs.findIndex((item) => item.item_id == info.itemId) > -1
     return (
       <View className={classNames(isPointitem ? 'goods-isPointitem' : null, 'goods-buy-toolbar')}>
         <View className='goods-buy-toolbar__menus'>
           <SpLogin>
             <View className='goods-buy-toolbar__menu-item' onClick={this.handleFavClick}>
               <View
-                className={classNames('iconfont', info.is_fav ? 'icon-star_on' : 'icon-star')}
-                style={info.is_fav ? { color: colors.data[0].primary } : {}}
+                className={classNames(
+                  'iconfont',
+                  isFaved ? 'icon-shoucanghover-01' : 'icon-shoucang-01'
+                )}
               />
             </View>
-          </SpLogin> 
+          </SpLogin>
           {!isPointitem ? (
             <View
               className='goods-buy-toolbar__menu-item'
@@ -112,7 +110,7 @@ export default class GoodsBuyToolbar extends Component {
               )}
             >
               <AtBadge value={cartCount || null}>
-                <View className='icon-cart'></View>
+                <View className='iconfont icon-cart'></View>
               </AtBadge>
             </View>
           ) : (
@@ -128,26 +126,26 @@ export default class GoodsBuyToolbar extends Component {
             {info.approve_status === 'onsale' ? (
               <View className='goods-buy-toolbar__btns'>
                 {(type === 'normal' || type === 'limited_time_sale') && !isPointitem && (
-                  <FormIdCollector sync onClick={onClickAddCart}>
+                  <View sync onClick={onClickAddCart}>
                     <View
                       className={`goods-buy-toolbar__btn btn-add-cart ${isDrug && 'drug-btn'}`}
                       style={'background: ' + colors.data[0].accent}
                     >
                       {isDrug ? '加入药品清单' : '添加至购物车'}
                     </View>
-                  </FormIdCollector>
+                  </View>
                 )}
                 {!isDrug && (
-                  <FormIdCollector sync onClick={onClickFastBuy}>
+                  <View sync onClick={onClickFastBuy}>
                     <View
-                      className={`goods-buy-toolbar__btn btn-fast-buy ${type !== 'normal' &&
-                        type !== 'limited_time_sale' &&
-                        'marketing-btn'}`}
+                      className={`goods-buy-toolbar__btn btn-fast-buy ${
+                        type !== 'normal' && type !== 'limited_time_sale' && 'marketing-btn'
+                      }`}
                       style={'background: ' + colors.data[0].primary}
                     >
                       {fastBuyText}
                     </View>
-                  </FormIdCollector>
+                  </View>
                 )}
               </View>
             ) : (

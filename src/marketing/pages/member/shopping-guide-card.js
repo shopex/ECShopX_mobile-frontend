@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtButton, AtAvatar } from 'taro-ui'
 import S from '@/spx'
@@ -9,7 +10,8 @@ import { normalizeQuerys } from '@/utils'
 import './shopping-guide-card.scss'
 
 export default class ShoppingGuideCard extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -18,7 +20,7 @@ export default class ShoppingGuideCard extends Component {
     }
   }
 
-  async componentWillMount() {
+  async componentWillMount () {
     Taro.setNavigationBarTitle({
       title: '导购名片'
     })
@@ -29,7 +31,7 @@ export default class ShoppingGuideCard extends Component {
       token
     })
 
-    let { smid, dtid } = await normalizeQuerys(this.$router.params)
+    let { smid, dtid } = await normalizeQuerys(this.$instance.router.params)
 
     if (smid) {
       Taro.setStorageSync('s_smid', smid)
@@ -39,7 +41,7 @@ export default class ShoppingGuideCard extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     let token = S.getAuthToken()
 
     this.fetch(token)
@@ -48,7 +50,7 @@ export default class ShoppingGuideCard extends Component {
     this.getShop()
   }
 
-  async fetch(token) {
+  async fetch (token) {
     let salesperson_id = Taro.getStorageSync('s_smid')
 
     let info = null
@@ -74,7 +76,7 @@ export default class ShoppingGuideCard extends Component {
   /**
    * 获取店铺
    * */
-  async getShop() {
+  async getShop () {
     let distributor_id = Taro.getStorageSync('s_dtid')
 
     let store = await api.shop.getShop({ distributor_id })
@@ -85,12 +87,12 @@ export default class ShoppingGuideCard extends Component {
   /**
    * 绑定好友
    * */
-  handleClickBindFriend() {}
+  handleClickBindFriend () {}
 
   /**
    * 绑定导购
    * */
-  async handleClickBindShoppingGuide() {
+  async handleClickBindShoppingGuide () {
     Taro.showLoading({
       title: '绑定中',
       mask: true
@@ -141,7 +143,7 @@ export default class ShoppingGuideCard extends Component {
     )
   }
 
-  handleClickIndex() {
+  handleClickIndex () {
     Taro.redirectTo({
       url: '/pages/index'
     })
@@ -150,14 +152,14 @@ export default class ShoppingGuideCard extends Component {
   /**
    * 监听按钮点击事件执行开始时的回调
    * */
-  handleClickStartmessage(e) {
+  handleClickStartmessage (e) {
     console.log('监听按钮点击事件执行开始时的回调', e)
   }
 
   /**
    * 监听按钮点击事件执行完毕后的回调
    * */
-  handleClickCompletemessage(e) {
+  handleClickCompletemessage (e) {
     console.log('监听按钮点击事件执行完毕后的回调', e)
     // Taro.showToast({
     //   title: '以通过微信服务通知',
@@ -166,7 +168,7 @@ export default class ShoppingGuideCard extends Component {
     // })
   }
 
-  handleClickTo() {
+  handleClickTo () {
     Taro.setStorageSync('isShoppingGuideCard', 'true')
 
     Taro.redirectTo({
@@ -181,7 +183,7 @@ export default class ShoppingGuideCard extends Component {
     }
   }
 
-  render() {
+  render () {
     const { info, token } = this.state
 
     if (!info) {

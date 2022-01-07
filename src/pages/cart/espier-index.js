@@ -1,1043 +1,475 @@
-import Taro, { Component } from '@tarojs/taro'
+import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
+import React, { useState, useEffect, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { View, Text, Image, ScrollView, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { AtButton, AtActionSheet, AtActionSheetItem } from 'taro-ui'
+import { useImmer } from 'use-immer'
+import doc from '@/doc'
+import { AtButton, AtActionSheet, AtActionSheetItem, AtNoticebar } from 'taro-ui'
 import {
-  SpCheckbox, 
-  SpNote2,
-  TabBar,
+  SpNote,
+  SpPage,
+  SpTabbar,
   Loading,
-  Price,
+  SpPrice,
   SpNavBar,
   GoodsItem,
-  SpLogin
-} from "@/components";
-import { log, navigateTo, pickBy, classNames, showLoading, hideLoading,styleNames,getThemeStyle } from '@/utils'
-import { setPageTitle } from '@/utils/platform'
-import debounce from 'lodash/debounce'
+  SpRecommend,
+  SpLogin,
+  SpDefault,
+  SpTabs,
+  SpTabsPane,
+  SpImage,
+  SpCheckboxNew,
+  SpPrivacyModal
+} from '@/components'
+import {
+  log,
+  navigateTo,
+  classNames,
+  getThemeStyle,
+  styleNames,
+  isNavbar,
+  entryLaunch,
+  pickBy
+} from '@/utils'
 import api from '@/api'
 import S from '@/spx'
-import { Tracker } from "@/service";
-import { withPager, withLogin } from '@/hocs'
-import entry from '@/utils/entry'
-import CartItem from './comps/cart-item' 
-
+// import { Tracker } from '@/service'
+import { useLogin, useDepChange } from '@/hooks'
+import {
+  fetchCartList,
+  deleteCartItem,
+  updateCartItemNum,
+  updateCartNum,
+  updateCount
+} from '@/store/slices/cart'
+import qs from 'qs'
+import CompGoodsItem from './comps/comp-goodsitem'
 import './espier-index.scss'
 
-@connect(
-  ({ cart, colors, member }) => ({
-    list: cart.list,
-    cartIds: cart.cartIds,
-    showLikeList: cart.showLikeList,
-    colors: colors.current,
-    favs: member.favs
-  }),
-  dispatch => ({
-    onUpdateCart: list => dispatch({ type: "cart/update", payload: list }),
-    onUpdateCartCount: count =>
-      dispatch({ type: "cart/updateCount", payload: count })
+// const tablist = [
+//   { title: '普通商品', icon: 'icon-putongshangpin-01', type: 'normal' },
+//   { title: '跨境商品', icon: 'icon-kuajingshangpin-01', type: 'cross' }
+// ]
+
+const initialState = {
+  likeList: [],
+  current: 0, // 0:普通商品  1:跨境商品
+  itemCount: 0
+}
+
+function CartIndex (props) {
+  const dispatch = useDispatch()
+  const { isLogin, updatePolicyTime, getUserInfoAuth } = useLogin({
+    autoLogin: true,
+    policyUpdateHook: () => {
+      setPolicyModal(true)
+    }
   })
-)
-@withLogin(()=>{},1)
-@withPager
-export default class CartIndex extends Component {
-  static defaultProps = {
-    list: null
-  };
 
-  constructor(props) {
-    super(props);
+  const $instance = useMemo(getCurrentInstance, [])
+  const { validCart = [], invalidCart = [] } = useSelector((state) => state.cart)
+  const { colorPrimary } = useSelector((state) => state.sys)
+  const { userInfo, vipInfo } = useSelector((state) => state.user)
 
-    this.state = {
-      ...this.state,
-      loading: true,
-      cartMode: "default",
-      curPromotions: null,
-      groups: [],
-      likeList: [],
-      invalidList: [],
-      error: null,
-      isPathQrcode: false,
-      cartType: "normal",
-      crossborder_show: false,
-      // 消息通知
-      remindInfo: {},
-      token: S.getAuthToken()
-    };
+  const [state, setState] = useImmer(initialState)
+  const [policyModal, setPolicyModal] = useState(false)
 
-    this.updating = false;
-    this.lastCartId = null;
-  }
+  const router = $instance.router
+  const { current } = state
 
-  autoLoginFail=()=>{
-    console.log("---autoLoginFail---")
-    this.setState({ 
-      loading:false
-    })
-  }
+  useDepChange(() => {
+    fetch()
+  }, [isLogin])
 
-  componentDidMount() {
-    setPageTitle('购物车')
-    if (this.$router.params && this.$router.params.path === "qrcode") {
-      this.setState({
-        isPathQrcode: true
-      });
-    }
-    this.getRemind();
-    this.nextPage();
-    if (!this.state.token) return
-    this.fetchCart(list => {
-      const groups = this.resolveActivityGroup(list);
-      // this.props.list 此时为空数组
-      setTimeout(() => {
-        this.setState({
-          groups,
-          loading: false
-        });
-      }, 40);
-    });
-  }
+  useDidShow(() => {
+    fetch()
+  })
 
-  componentWillReceiveProps(nextProps) {
-    console.log(
-      "componentWillReceiveProps",
-      nextProps.list,
-      this.props.list,
-      nextProps.list !== this.props.list
-    );
-
-    // if (nextProps.list !== this.props.list) {
-    // 	const groups = this.resolveActivityGroup(nextProps.list)
-    // 		this.setState({
-    // 			groups
-    // 		})
-    // }
-    const groups = this.resolveActivityGroup(nextProps.list);
-    this.setState({
-      groups
-    });
-    if (Object.keys(this.props.favs).length !== Object.keys(nextProps.favs).length) {
-      setTimeout(() => {
-        const likeList = this.state.likeList.map(item => {
-          item.is_fav = Boolean(nextProps.favs[item.item_id])
-          return item
-        })
-        this.setState({
-          likeList
-        })
-      })
+  const fetch = () => {
+    getLikeList()
+    if (isLogin) {
+      getCartList()
     }
   }
 
-  componentDidShow() {
-    if (!S.getAuthToken() || this.state.loading) return;
-    this.updateCart()
+  const getCartList = async () => {
+    Taro.showLoading()
+    const { type = 'distributor' } = router.params
+    const params = {
+      shop_type: type
+    }
+    await dispatch(fetchCartList(params))
+    const {
+      payload: { item_count }
+    } = await dispatch(updateCount(params)) // 获取购物车数量接口
+    await dispatch(updateCartNum(item_count)) // 更新购物车数量
+    Taro.hideLoading()
   }
 
-  onChangeLoginSuccess = async () => {
-    this.updateCart();
-    Taro.eventCenter.on('login-success', () => {
-      this.setState({
-        token: S.getAuthToken()
+  const resolveActiveGroup = () => {
+    const groupsList = validCart.map((item) => {
+      // used_activity：满减  activity_grouping：满减&满折 gift_activity：满赠  plus_buy_activity:加价购
+      const {
+        list,
+        used_activity = [],
+        plus_buy_activity = [],
+        activity_grouping = [],
+        gift_activity = []
+      } = item
+      // 使用活动商品
+      // const tDict = reduceTransform(list, 'cart_id')
+      // const activityGrouping = activity_grouping;
+      // const cus_activity_list = used_activity.map(act => {
+      //   const active = activityGrouping.find(a_item => String(a_item.activity_id) === String(act.activity_id))
+      //   const cus_general_goods_list = active.cart_ids.map(id => {
+      //     const cartItem = tDict[id]
+      //     delete tDict[id]
+      //     return cartItem
+      //   })
+      //   return { list: cus_general_goods_list, active }
+      // })
+      // console.log(cus_activity_list, 'cus_activity_list')
+      // cus_activity_list.push({ list: Object.values(tDict), active: null })
+      // 加购价
+      let all_plus_itemid_list = [] // 加价购商品id
+      let no_active_item = [] // 没有活动的商品
+      let cus_plus_item_list = plus_buy_activity.map((plusitem, index) => {
+        const { plus_item, activity_item_ids, activity_id } = plusitem
+        // 加购价换购的商品
+        let exchange_item = null
+        if (plus_item) {
+          exchange_item = pickBy(plus_item, { ...doc.cart.CART_GOODS_ITEM, activity_id })
+        }
+        all_plus_itemid_list.push(activity_item_ids)
+        const general_goods = list.filter((k) => activity_item_ids.indexOf(k.item_id) > -1)
+        return {
+          ...plusitem,
+          cus_general_goods_list: general_goods,
+          cus_plus_exchange_item_list: exchange_item
+        }
       })
+      all_plus_itemid_list = all_plus_itemid_list.toString().split(',')
+      const goodsMap = reduceTransform(list, 'cart_id')
+      for (const key in goodsMap) {
+        if (all_plus_itemid_list.indexOf(goodsMap[key].item_id) < 0) {
+          no_active_item.push(goodsMap[key])
+        }
+      }
+      cus_plus_item_list.push({
+        discount_desc: null,
+        cus_general_goods_list: no_active_item,
+        cus_plus_exchange_item_list: null
+      })
+      return {
+        ...item,
+        cus_plus_item_list
+        // cus_activity_list
+      }
     })
-  };
+    return groupsList || []
+  }
 
-  // handleLoginClick = () => {
-  //   S.login(this, true)
+  const reduceTransform = (list, label) => {
+    const newList = list.reduce((acc, val) => {
+      acc[val[label]] = val
+      return acc
+    }, {})
+    return newList
+  }
+
+  const getLikeList = async () => {
+    const { list, total_count: total } = await api.cart.likeList({
+      page: 1,
+      pageSize: 10
+    })
+    setState((v) => {
+      v.likeList = list
+    })
+  }
+
+  // const onChangeSpTab = (current) => {
+  //   setState(v => {
+  //     v.current = current
+  //   })
+  //   // setState({
+  //   //   ...state,
+  //   //   current
+  //   // })
   // }
 
-  handleClickItem = (item) => {
-    const { distributor_id, item_id } = item;
-    // const dtid = distributor_id ? distributor_id : getDistributorId();
-    const url = `/pages/item/espier-detail?id=${item_id}&dtid=${distributor_id || 0}`
-    Taro.navigateTo({
-      url
-    });
-  };
-
-  async fetch(params) {
-    const { page_no: page, page_size: pageSize } = params
-    const { token } = this.state
-    const { favs } = this.props;
-    const query = {
-      page,
-      pageSize
-    };
-    const { list, total_count: total } = await api.cart.likeList(query);
-    const nList = pickBy(list, {
-      img: "pics[0]",
-      item_id: "item_id",
-      promotion_activity_tag: "promotion_activity",
-      distributor_id: "distributor_id",
-      price: ({ price }) => (price / 100).toFixed(2),
-      member_price: ({ member_price }) => (member_price / 100).toFixed(2),
-      market_price: ({ market_price }) => (market_price / 100).toFixed(2),
-      title: "itemName",
-      desc: "brief",
-      is_fav: ({ item_id }) => Boolean(favs[item_id])
-    });
-
-    this.setState({
-      likeList: [...this.state.likeList, ...nList]
-    });
-
-    if (!token) {
-      this.setState({
-        loading: false
-      });
-    }
-
-    return {
-      total
-    };
-  }
-
-  // 活动分组
-  resolveActivityGroup(cartList = []) {
-    console.log(cartList, 'cartList');
-    const groups = cartList.map(shopCart => {
-   
-      const { list, used_activity = [], plus_buy_activity = [] } = shopCart;
- 
-      const tDict = list.reduce((acc, val) => {
-        acc[val.cart_id] = val;
-        return acc;
-      }, {});
-      console.log(tDict, 'tDict')
-      const activityGrouping = shopCart.activity_grouping;
-      // 活动列表
-      const group = used_activity.map(act => {
-        const activity = activityGrouping.find(
-          a => String(a.activity_id) === String(act.activity_id)
-        );
-        const itemList = activity.cart_ids.map(id => {
-          const cartItem = tDict[id];
-          delete tDict[id];
-          return cartItem;
-        });
-        // return Object.assign({},shopCart,{list: itemList,activity})
-        return { list: itemList, activity };
-      });
-      //加价购商品
-      const plusBuyList = [];
-      plus_buy_activity.map(pitem => {
-        const { plus_item } = pitem;
-        if (plus_item) {
-          const items = pickBy(plus_item, {
-            item_id: "item_id",
-            activity_id: pitem.activity_id,
-            title: "item_name",
-            img: ({ pics }) => pics[0],
-            price: ({ price }) => (+price / 100).toFixed(2),
-            market_price: ({ market_price }) =>
-              (+market_price / 100).toFixed(2),
-            num: 1,
-            is_plus_buy: true, //加价购
-            desc: "item_spec_desc"
-          });
-          plusBuyList.push(items);
-        }
-      });
-      // 无活动列表
-      group.push({ activity: null, list: Object.values(tDict) });
-      return { shopInfo: shopCart, plusBuyList: [...plusBuyList], group };
-    });
-    return groups;
-  }
-
-  processCart({
-    valid_cart = [],
-    invalid_cart = [],
-    cartType,
-    crossborder_show,
-    item_count = 0
-  }) {
-    // const res = await api.cart.count({ shop_type: 'distributor' })
-    let cartCount = 0;
-    const list = valid_cart.map(shopCart => {
-      cartCount += shopCart.cart_total_num;
-      const tList = this.transformCartList(shopCart.list);
-      return {
-        ...shopCart,
-        list: tList
-      };
-    });
-
-    const invalidList = this.transformCartList(invalid_cart);
-    this.setState({
-      invalidList,
-      cartType: !crossborder_show ? "normal" : cartType,
-      crossborder_show
-    });
-
-    log.debug("[cart fetchCart]", list);
-    this.props.onUpdateCart(list);
-    this.props.onUpdateCartCount(item_count);
-
-    return list;
-  }
-
-  async fetchCart(cb) {
-    let valid_cart = [],
-      invalid_cart = [],
-      crossborder_show = false;
-    const cartTypeLocal = Taro.getStorageSync("cartType");
-    const { type = "distributor" } = this.$router.params;
-    const isOpenStore = await entry.getStoreStatus(); //非门店自提
-    const params = {
-      shop_type: type,
-      isNostores: isOpenStore ? 1 : 0 //是否开启非门店自提流程
-    };
-    if (process.env.APP_PLATFORM === "platform") {
-      delete params.isNostores;
-    }
-    if (cartTypeLocal === "cross") {
-      params.iscrossborder = 1;
-    } else {
-      delete params.iscrossborder;
-    }
-    try {
-      const res = await api.cart.get(params);
-      if (!res.crossborder_show && cartTypeLocal !== "normal") {
-        Taro.setStorageSync("cartType", "normal");
-        this.fetchCart(list => {
-          const groups = this.resolveActivityGroup(list);
-          // this.props.list 此时为空数组
-          setTimeout(() => {
-            this.setState({
-              groups,
-              loading: false
-            });
-          }, 40);
-        });
-        return false;
-      }
-      valid_cart = res.valid_cart || valid_cart;
-      invalid_cart = res.invalid_cart || invalid_cart;
-      crossborder_show = !!res.crossborder_show;
-    } catch (e) {
-      this.setState({
-        error: e.message
-      });
-    }
-    const { item_count } = await api.cart.count({ shop_type: "distributor" });
-    const list = this.processCart({
-      valid_cart,
-      invalid_cart,
-      item_count,
-      cartType: cartTypeLocal,
-      crossborder_show
-    });
-    cb && cb(list);
-  }
-
-  updateCart = async () => {
-    // showLoading({
-    //   mask: true
-    // });
-    this.updating = true;
-    try {
-      await this.fetchCart();
-    } catch (e) {
-      console.log(e);
-    }
-    this.updating = false;
-    // hideLoading();
-  };
-
-  asyncUpdateCart = debounce(async () => {
-    await this.updateCart();
-  }, 300);
-
-  toggleCartMode = () => {
-    const cartMode = this.state.cartMode !== "edit" ? "edit" : "default";
-    this.setState({
-      cartMode
-    });
-  };
-
-  // 获取购物车消息通知
-  async getRemind() {
-    const res = await api.cart.getCartRemind();
-    this.setState({
-      remindInfo: res
-    });
-  }
-
-  async handleSelectionChange(shopIndex, cart_id, checked) {
-    await api.cart.select({
-      cart_id,
-      is_checked: checked
-    });
-    this.updateCart();
-  }
-
-  handleDelect = async cart_id => {
-    console.log("---handleDelect---",cart_id)
-    const res = await Taro.showModal({
-      title: "提示",
-      content: "将当前商品移出购物车?",
-      showCancel: true,
-      cancel: "取消",
-      cancelText: "取消",
-      confirmText: "确认",
-      confirmColor: "#0b4137"
-    });
-    if (!res.confirm) return;
-
-    await api.cart.del({ cart_id });
-
-    const cartIds = this.props.cartIds.filter(t => t !== cart_id);
-
-    let skuInfo;
-    this.props.list.forEach(item => {
-      item.list.forEach(sitem => {
-        if (sitem.cart_id == cart_id) {
-          skuInfo = sitem;
-        }
-      });
-    });
-    // 从购物车彻底移除
-    Tracker.dispatch("REMOVE_FROM_CART", {
-      ...skuInfo
-    });
-
-    this.updateCart();
-  };
-
-  async changeCartNum(shop_id, cart_id, num) {
-    const { type = "distributor" } = this.$router.params;
-    try {
-      const res = await api.cart.updateNum(shop_id, cart_id, num, type);
-      this.processCart(res);
-    } catch (e) {
-      Taro.showToast({
-        icon: "none",
-        title: e.message,
-        duration: 5000
-      });
-    }
-    this.updateCart();
-  }
-
-  handleQuantityChange = async (shop_id, item, num, e) => {
-    const { type = "distributor" } = this.$router.params;
-    await api.cart.updateNum(shop_id, item.cart_id, num, type);
-    this.updateCart();
-
-    // 购物车追加
-    if ( item.num < parseInt( num ) ) {
-      Tracker.dispatch("APPEND_TO_CART_IN_CART", {
-        ...item,
-        goods_id: item.goods_id || item.item_id,
-        num: parseInt( num ) - item.num,
-        goods_num: num
-      });
-    } else {
-      Tracker.dispatch("REMOVE_FROM_CART_NUM", {
-        ...item,
-        goods_id: item.goods_id || item.item_id,
-        num: item.num - parseInt(num),
-        goods_num: num
-      });
-    }
-  };
-
-  handleAllSelect = async (checked, shopIndex) => {
-    const { cartIds } = this.props;
-
-    showLoading();
+  const onChangeGoodsItemCheck = async (item, checked) => {
+    Taro.showLoading()
     try {
       await api.cart.select({
-        cart_id: cartIds[shopIndex],
+        cart_id: item.cart_id,
         is_checked: checked
-      });
+      })
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
-    hideLoading();
-    this.updateCart();
-  };
+    getCartList()
+  }
 
-  handleClickPromotion = (cart_id, e) => {
-    return; // 活动不需要选择
-  };
+  const onChangeAllCheck = async (item, checked) => {
+    const cartIds = item.list.map((item) => item.cart_id)
+    await api.cart.select({
+      cart_id: cartIds,
+      is_checked: checked
+    })
+    getCartList()
+  }
 
-  handleClickToDetail = item => {
-    if (this.isTodetail === 0) {
-      return false;
-    }
-    this.isTodetail = 1;
+  const onDeleteCartGoodsItem = async ({ cart_id }) => {
+    const res = await Taro.showModal({
+      title: '提示',
+      content: '将当前商品移出购物车?',
+      showCancel: true,
+      cancel: '取消',
+      cancelText: '取消',
+      confirmText: '确认',
+      confirmColor: colorPrimary
+    })
+    if (!res.confirm) return
+    await dispatch(deleteCartItem({ cart_id }))
+    getCartList()
+  }
+
+  const onChangeCartGoodsItem = async (item, num) => {
+    let { shop_id, cart_id } = item
+    const { type = 'distributor' } = router.params
+    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type }))
+    getCartList()
+  }
+
+  const onClickImgAndTitle = async (item) => {
     Taro.navigateTo({
-      url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id}`
-    });
-  };
+      url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.shop_id}`
+    })
+  }
 
-  handleSelectPromotion = async item => {
-    const { marketing_id: activity_id, cart_id } = item;
-    showLoading({
-      mask: true
-    });
-    this.setState({
-      curPromotions: null
-    });
-    await api.cart.updatePromotion({
-      activity_id,
-      cart_id
-    });
-    await this.fetchCart();
-    hideLoading();
-  };
-
-  handleClosePromotions = () => {
-    this.setState({
-      curPromotions: null
-    });
-  };
-
-  handleCheckout = shopCart => {
-    const {
+  const handleCheckout = (item) => {
+    const { type } = router.params
+    const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } = item
+    const query = {
+      cart_type: 'cart',
+      type,
       shop_id,
       is_delivery,
       is_ziti,
-      shop_name,
-      address,
+      name: shop_name,
+      store_address: address,
       lat,
       lng,
       hour,
-      mobile
-    } = shopCart.shopInfo;
-    const { cartType } = this.state;
-    const { type } = this.$router.params;
-    if (this.updating) {
-      Taro.showToast({
-        title: "正在计算价格，请稍后",
-        icon: "none"
-      });
-      return;
+      phone: mobile,
+      goodType: current == 0 ? 'normal' : 'cross'
     }
     Taro.navigateTo({
-      url: `/pages/cart/espier-checkout?cart_type=cart&type=${type}&shop_id=${shop_id}&is_delivery=${is_delivery}&is_ziti=${is_ziti}&name=${shop_name}&store_address=${address}&lat=${lat}&lng=${lng}&hour=${hour}&phone=${mobile}&goodType=${cartType}`
-    });
-  };
-
-  transformCartList(list) {
-    return pickBy(list, {
-      item_id: "item_id",
-      cart_id: "cart_id",
-      activity_id: "activity_id",
-      title: "item_name",
-      desc: "brief",
-      is_checked: "is_checked",
-      store: "store",
-      curSymbol: "cur.symbol",
-      distributor_id: "shop_id",
-      type: "type",
-      goods_id: "goods_id",
-      origincountry_name: "origincountry_name",
-      origincountry_img_url: "origincountry_img_url",
-      promotions: ({ promotions = [], cart_id }) =>
-        promotions.map(p => {
-          p.cart_id = cart_id;
-          return p;
-        }),
-      img: ({ pics }) => pics,
-      price: ({ price }) => (+price / 100).toFixed(2),
-      market_price: ({ market_price }) => (+market_price / 100).toFixed(2),
-      member_price: "member_price",
-      num: "num",
-      packages: item =>
-        item.packages &&
-        item.packages.length &&
-        this.transformCartList(item.packages),
-      item_spec_desc: "item_spec_desc"
-    });
+      url: `/pages/cart/espier-checkout?${qs.stringify(query)}`
+    })
   }
 
-  navigateTo = (...args) => {
-    navigateTo.apply(this, args);
-  };
+  const groupsList = resolveActiveGroup()
+  console.log(groupsList, 'list')
 
-  handleToQrcode = () => {
-    Taro.navigateBack();
-  };
-
-  // 切换购物车类型
-  onChangeCartType = () => {
-    let { cartType } = this.state;
-    if (cartType === "cross") {
-      cartType = "normal";
-    } else {
-      cartType = "cross";
-    }
-    Taro.setStorageSync("cartType", cartType);
-    this.setState(
-      {
-        cartType
-      },
-      async () => {
-        showLoading({ mask: true });
-        await this.fetchCart();
-        hideLoading();
-        // console.log(111)
-      }
-    );
-  };
-  //加价购
-  handleSelectPlusprice = marketing_id => {
-    const url = `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${marketing_id}`;
-    Taro.navigateTo({
-      url: url
-    });
-  };
-
-  handleLookPlusprice = marketing_id => {
-    const url = `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${marketing_id}`;
-    Taro.navigateTo({
-      url: url
-    });
-  };
-
-  render() {
-    const {
-      groups,
-      invalidList,
-      cartMode,
-      loading,
-      curPromotions,
-      likeList,
-      page,
-      isPathQrcode,
-      cartType,
-      crossborder_show,
-      remindInfo,
-      token
-    } = this.state;
-    const { list, showLikeList, colors } = this.props;
-
-    console.log(groups, 'groups------')
-    
-    const { type = "distributor" } = this.$router.params;
-    const isDrug = type === "drug";
-    const isEmpty = !list.length;
-    return (
-      <View className={classNames("page-cart-index", isDrug && "is-drug")}    style={styleNames(getThemeStyle())}>
-        {isDrug && (
-          <SpNavBar title="购物车" leftIconType="chevron-left" fixed="true" />
-        )}
-
-        {!token && (
-          <View className="login-header">
-            <View>授权登录后同步购物车的商品</View>
-            <SpLogin onChange={this.onChangeLoginSuccess.bind(this)}>
-              <View
-                className="btn-login"
-                style={`background: ${colors.data[0].primary}`}
-              >
-                授权登录
-              </View>
-            </SpLogin>
-          </View>
-        )}
-
-        <ScrollView
-          className={`${isEmpty ? "hidden-scroll" : "cart-list__scroll"}`}
-          style={isDrug && isNavbar() ? { top: '2rem' } : { top: 0 }}
-          // onScrollToLower={this.nextPage}
-          scrollY
-        >
-          {
-            // !isEmpty && (
-            //   <View className='cart-list__actions'>
-            //     <Text
-            //       clasName='btn-cart-mode'
-            //       onClick={this.toggleCartMode}
-            //     >{cartMode === 'edit' ? '完成' : '编辑'}</Text>
-            //   </View>
-            // )
-          }
-          {/* {remindInfo.is_open && (
-            <View
-              className={`${!token && "paddingTop"}`}
-              style={`background: ${colors.data[0].primary}`}
-            >
-              <AtNoticebar marquee icon="volume-plus" className="notice" single>
-                {remindInfo.remind_content}
-              </AtNoticebar>
-            </View>
-          )} */}
-
-          {/* {crossborder_show && (
-            <View className="changeCross">
-              <View className="content">
-                <View
-                  className={`iconfont ${
-                    cartType === "cross" ? "icon-flight" : "icon-shop-cart-1"
-                  }`}
-                ></View>
-                <View
-                  className="iconfont icon-repeat"
-                  onClick={this.onChangeCartType.bind(this)}
-                ></View>
-              </View>
-            </View>
-          )} */}
-          
-          <View className="cart-list">
-            {groups.map((shopCart, shopIndex) => {
-              // console.log('shopCart---->',shopCart)
-              const checked_all =
-                shopCart.shopInfo.cart_total_count ==
-                shopCart.shopInfo.list.length;
+  return (
+    <SpPage className='page-cart-index'>
+      {!isLogin && (
+        <View className='login-header'>
+          <View className='login-txt'>授权登录后同步购物车的商品</View>
+          <SpLogin onChange={() => {}}>
+            <View className='btn-login'>授权登录</View>
+          </SpLogin>
+        </View>
+      )}
+      {isLogin && (
+        <View>
+          {/* <SpTabs current={current} tablist={tablist} onChange={onChangeSpTab} /> */}
+          <View className='valid-cart-block'>
+            {groupsList.map((all_item, all_index) => {
+              const { cus_plus_item_list = [], activityList = [] } = all_item || {}
+              const allChecked = all_item.cart_total_count == all_item.list.length
               return (
-                <View className="cart-list__shop" key={`${shopIndex}1`}>
-                  {shopCart.shopInfo.shop_name ? (
-                    <View className="shop__name">
-                      <Text className="icon-shop"></Text>
-                      {shopCart.shopInfo.shop_name}
-                    </View>
-                  ) : <View className="shop__name">
-                  <Text className="icon-shop"></Text>
-                  {'自营'}
-                </View>}
-                  {shopCart.shopInfo.plus_buy_activity &&
-                    shopCart.shopInfo.plus_buy_activity.map(plus_item => {
-                      const { discount_desc, activity_id } = plus_item;
-                      return (
-                        <View
-                          className="cart-group__activity"
-                          style="background:#ffffff;"
-                          key={activity_id}
-                        >
-                          <View className="cart-group__activity-item">
-                            <View
-                              className="cart-group__activity-item-left"
-                              onClick={this.handleLookPlusprice.bind(
-                                this,
-                                plus_item.activity_id
-                              )}
-                            >
-                              <Text className="cart-group__activity-label">
-                                换购
-                              </Text>
-                              <Text>{discount_desc.info}</Text>
-                            </View>
-                            <View
-                              className="cart-group__activity-item-right"
-                              onClick={this.handleSelectPlusprice.bind(
-                                this,
-                                plus_item.activity_id
-                              )}
-                            >
-                              去选择
-                              <Text className="at-icon at-icon-chevron-right"></Text>
+                <View className='shop-cart-item' key={`shop-cart-item__${all_index}`}>
+                  <View className='shop-cart-item-hd'>
+                    <Text className='iconfont icon-shop' />
+                    {all_item.shop_name || '自营'}
+                  </View>
+                  {cus_plus_item_list.map((cus_item, cus_index) => {
+                    const {
+                      discount_desc,
+                      activity_id,
+                      cus_general_goods_list,
+                      cus_plus_exchange_item_list
+                    } = cus_item
+                    return (
+                      <View key={cus_index}>
+                        {/** 换购开始 */}
+                        {discount_desc && (
+                          <View className='shop-cart-activity' key={activity_id}>
+                            <View className='shop-cart-activity-item'>
+                              <View
+                                className='shop-cart-activity-item-left'
+                                onClick={() =>
+                                  Taro.navigateTo({
+                                    url: `/marketing/pages/plusprice/detail-plusprice-list?marketing_id=${activity_id}`
+                                  })
+                                }
+                              >
+                                <Text className='shop-cart-activity-label'>换购</Text>
+                                <Text>{discount_desc.info}</Text>
+                              </View>
+                              <View
+                                className='shop-cart-activity-item-right'
+                                onClick={() =>
+                                  Taro.navigateTo({
+                                    url: `/marketing/pages/plusprice/cart-plusprice-list?marketing_id=${activity_id}`
+                                  })
+                                }
+                              >
+                                去选择
+                                <Text className='at-icon at-icon-chevron-right'></Text>
+                              </View>
                             </View>
                           </View>
-                        </View>
-                      );
-                    })}
-                  <View className="shop__wrap">
-                    {shopCart.group.map(activityGroup => {
-                      // console.log('activityGroup---->',activityGroup)
-                      const { activity } = activityGroup;
-
-                      return (
-                        activityGroup.list.length > 0 && (
-                          <View
-                            className="cart-group"
-                            key={shopCart.shopInfo.shop_id}
-                          >
-                            {activity && (
-                              <View className="cart-group__activity">
-                                <View className="cart-group__activity-item">
-                                  <Text className="cart-group__activity-label">
-                                    {activity.activity_tag}
-                                  </Text>
-                                  <Text>{activity.activity_name}</Text>
-                                </View>
-                              </View>
-                            )}
-                            {activityGroup.list.map(item => {
-                              // console.log('item',item)
-                              return (
-                                <View
-                                  className="cart-group__item-wrap"
-                                  key={item.cart_id}
-                                >
-                                  <CartItem
-                                    key={item.cart_id}
-                                    info={item}
-                                    onNumChange={this.handleQuantityChange.bind(
-                                      this,
-                                      shopCart.shopInfo.shop_id,
-                                      item
-                                    )}
-                                    onClickPromotion={this.handleClickPromotion.bind(
-                                      this,
-                                      item.cart_id
-                                    )}
-                                    onClickImgAndTitle={this.handleClickToDetail.bind(
-                                      this,
-                                      item
-                                    )}
-                                  >
-                                    <View className="cart-item__act">
-                                      <SpCheckbox
-                                        key={item.item_id}
-                                        checked={item.is_checked}
-                                        onChange={this.handleSelectionChange.bind(
-                                          this,
-                                          shopIndex,
-                                          item.cart_id
-                                        )}
-                                      />
-                                      <View
-                                        className="icon-close"
-                                        onClick={this.handleDelect.bind(
-                                          this,
-                                          item.cart_id,
-                                          shopIndex
-                                        )}
-                                      />
-                                    </View>
-                                  </CartItem>
-                                  {item.packages && item.packages.length && (
-                                    <View class="cart-item__packages">
-                                      {item.packages.map(pack => {
-                                        return (
-                                          <CartItem
-                                            isDisabled
-                                            num
-                                            key={pack.package_id}
-                                            info={pack}
-                                          ></CartItem>
-                                        );
-                                      })}
-                                    </View>
-                                  )}
-                                </View>
-                              );
-                            })}
-                            {activity && activity.gifts && (
-                              <View className="cart-group__gifts">
-                                <View className="cart-group__gifts-hd">
-                                  赠品
-                                </View>
-                                <View className="cart-group__gifts-bd">
-                                  {activity.gifts.map(gift => {
-                                    return (
-                                      <View
-                                        className="gift-item"
-                                        key={gift.item_id}
-                                      >
-                                        <Image
-                                          className="gift-item__img"
-                                          src={gift.pics[0]}
-                                          mode="aspectFill"
-                                        />
-                                        <View className="gift-item__title">
-                                          {gift.item_name}
-                                        </View>
-                                        <Text className="gift-item__num">
-                                          x{gift.gift_num}
-                                        </Text>
-                                      </View>
-                                    );
-                                  })}
-                                </View>
-                              </View>
-                            )}
-                          </View>
-                        )
-                      );
-                    })}
-                    {shopCart.plusBuyList &&
-                      shopCart.plusBuyList.map(item => {
-                        return (
-                          <CartItem
-                            isDisabled
-                            num
-                            key={item.item_id}
-                            info={item}
-                          ></CartItem>
-                        );
-                      })}
-
-                    <View></View>
-                    <View
-                      className={`toolbar cart-toolbar ${isEmpty && "hidden"}`}
-                    >
-                      <View className="cart-toolbar__hd">
-                        <SpCheckbox
-                          // checked={this.isTotalChecked[shopIndex]}
-                          checked={checked_all}
-                          onChange={this.handleAllSelect.bind(
-                            this,
-                            !checked_all,
-                            shopIndex
-                          )}
-                        >
-                          全选
-                        </SpCheckbox>
-                      </View>
-                      {cartMode !== "edit" ? (
-                        <View className="cart-toolbar__bd">
-                          <View className="cart-total">
-                            {list.length && shopCart.shopInfo.discount_fee > 0 && (
-                              <View className="cart-total__discount">
-                                <Text className="cart-total__hint">优惠：</Text>
-                                <Price
-                                  primary
-                                  value={
-                                    -1 * Number(shopCart.shopInfo.discount_fee)
-                                  }
-                                  unit="cent"
-                                />
-                              </View>
-                            )}
-                            <View className="cart-total__total">
-                              <Text className="cart-total__hint">总计：</Text>
-                              <Price
-                                primary
-                                value={Number(shopCart.shopInfo.total_fee)}
-                                unit="cent"
+                        )}
+                        {/** 换购结束 */}
+                        {/**普通商品开始 */}
+                        {cus_general_goods_list.map((c_sitem, c_index) => (
+                          <View className='shop-cart-item-bd' key={c_index}>
+                            <View className='shop-activity'></View>
+                            <View className='cart-item-wrap'>
+                              <SpCheckboxNew
+                                checked={c_sitem.is_checked}
+                                onChange={onChangeGoodsItemCheck.bind(this, c_sitem)}
+                              />
+                              <CompGoodsItem
+                                info={c_sitem}
+                                onDelete={onDeleteCartGoodsItem.bind(this, c_sitem)}
+                                onChange={onChangeCartGoodsItem.bind(this, c_sitem)}
+                                onClickImgAndTitle={onClickImgAndTitle.bind(this, c_sitem)}
                               />
                             </View>
+                            {/**组合商品开始 */}
+                            {c_sitem.packages &&
+                              c_sitem.packages.map((pack_sitem, pack_index) => (
+                                <View className='cart-item-wrap plus_items_bck' key={pack_index}>
+                                  <CompGoodsItem
+                                    disabled
+                                    info={pack_sitem}
+                                    isShowAddInput={false}
+                                    isShowDeleteIcon={false}
+                                  />
+                                </View>
+                              ))}
+                            {/**组合商品开始 */}
                           </View>
-                          <Button
-                            type="primary"
-                            className="btn-checkout"
-                            style={`background: ${colors.data[0].primary}`}
-                            disabled={shopCart.shopInfo.cart_total_count <= 0}
-                            onClick={this.handleCheckout.bind(this, shopCart)}
-                          >
-                            {isDrug ? "立即预约" : "结算"}
-                          </Button>
+                        ))}
+                        {/**普通商品开始 */}
+                        {/**换购商品开始 */}
+                        {cus_plus_exchange_item_list && (
+                          <View className='cart-item-wrap plus_items_bck'>
+                            <CompGoodsItem
+                              disabled
+                              info={cus_plus_exchange_item_list}
+                              isShowAddInput={false}
+                              isShowDeleteIcon={false}
+                            />
+                          </View>
+                        )}
+                        {/**换购商品开始 */}
+                      </View>
+                    )
+                  })}
+                  {/** 结算/全选操作开始 */}
+                  <View className='shop-cart-item-ft'>
+                    <View className='lf'>
+                      <SpCheckboxNew
+                        checked={allChecked}
+                        label='全选'
+                        onChange={onChangeAllCheck.bind(this, all_item)}
+                      />
+                    </View>
+                    <View className='rg'>
+                      <View>
+                        <View className='total-price-wrap'>
+                          合计：
+                          <SpPrice className='total-pirce' value={all_item.total_fee / 100} />
                         </View>
-                      ) : (
-                        <View className="cart-toolbar__bd">
-                          <AtButton
-                            type="primary"
-                            className="btn-checkout"
-                            onClick={this.handleDelect}
-                          >
-                            删除
-                          </AtButton>
-                        </View>
-                      )}
+                        {all_item.discount_fee > 0 && (
+                          <View className='discount-price-wrap'>
+                            共优惠：
+                            <SpPrice className='total-pirce' value={all_item.discount_fee / 100} />
+                          </View>
+                        )}
+                      </View>
+                      <AtButton
+                        className='btn-calc'
+                        type='primary'
+                        circle
+                        disabled={all_item.cart_total_num <= 0}
+                        onClick={() => handleCheckout(all_item)}
+                      >
+                        结算({all_item.cart_total_num})
+                      </AtButton>
                     </View>
                   </View>
+                  {/** 结算/全选操作开始 */}
                 </View>
-              );
+              )
             })}
-
-            {(!groups.length || this.state.error) && (
-              <View style={{ textAlign: "center" }}>
-                <View style="margin-bottom: 20px">
-                  <SpNote2 img="cart_empty.png">快去给我挑点宝贝吧~</SpNote2>
-                </View>
-                <View
-                  className="custom_botton_wrapper"
-                  style={`background: ${colors.data[0].primary};border-color:${colors.data[0].primary}`}
-                >
-                  <AtButton
-                    className="btn-rand inherit"
-                    onClick={this.navigateTo.bind(this, process.env.APP_HOME_PAGE, true)}
-                  >
-                    随便逛逛
-                  </AtButton>
-                </View>
-              </View>
-            )}
           </View>
-
-          {invalidList.length > 0 && (
-            <View className="cart-list cart-list__disabled">
-              <View className="cart-list__hd">
-                <Text>已失效</Text>
-              </View>
-              <View className="cart-list__bd">
-                {invalidList.map(item => {
-                  return (
-                    <CartItem isDisabled key={item.cart_id} info={item}>
-                      <View className="cart-item__act">
-                        <View></View>
-                        <View
-                          className="icon-close"
-                          onClick={this.handleDelect.bind(this, item.cart_id)}
-                        />
-                      </View>
-                    </CartItem>
-                  );
-                })}
+          {invalidCart.length > 0 && (
+            <View className='invalid-cart-block'>
+              <View className='shop-cart-item'>
+                <View className='shop-cart-item-hd-disabeld'>已失效商品</View>
+                <View className='shop-cart-item-bd'>
+                  <View className='shop-activity'></View>
+                  {invalidCart.map((sitem, sindex) => (
+                    <View
+                      className='cart-item-warp-disabled'
+                      key={`cart-item-warp-disabled__${sindex}`}
+                    >
+                      <SpCheckboxNew disabled />
+                      <CompGoodsItem
+                        info={sitem}
+                        isShowAddInput={false}
+                        onDelete={onDeleteCartGoodsItem.bind(this, sitem)}
+                      />
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
           )}
+        </View>
+      )}
 
-          {!isDrug && likeList.length && showLikeList ? (
-            <View className="cart-list cart-list__disabled">
-              <View className="cart-list__hd like__hd">
-                <Text
-                  className="cart-list__title"
-                  style={{
-                    color: colors.data[0].primary,
-                    borderColor: colors.data[0].primary
-                  }}
-                >
-                  猜你喜欢
-                </Text>
-              </View>
-              <View className="goods-list goods-list__type-grid">
-                {likeList.map(item => {
-                  return (
-                    <View className="goods-list__item" key={item.item_id}>
-                      <GoodsItem
-                        key={item.item_id}
-                        info={item}
-                        onClick={this.handleClickItem.bind(this, item)}
-                        cart
-                      />
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-          ) : null}
-          {page.isLoading ? <Loading>正在加载...</Loading> : null}
-        </ScrollView>
-        {isPathQrcode && (
-          <View className="qrcode-bg" onClick={this.handleToQrcode.bind(this)}>
-            <Image
-              mode="widthFix"
-              src="/assets/imgs/ic_scanning.png"
-              className="qrcode-bg__img"
-            ></Image>
-            <Text>继续添加</Text>
-          </View>
-        )}
-        <AtActionSheet
-          title="请选择商品优惠"
-          isOpened={Boolean(curPromotions)}
-          onClose={this.handleClosePromotions}
-        >
-          {curPromotions &&
-            curPromotions.map(item => {
-              return (
-                <AtActionSheetItem
-                  key={item.marketing_id}
-                  onClick={this.handleSelectPromotion.bind(this, item)}
-                >
-                  <Text className="cart-promotion__label">
-                    {item.promotion_tag}
-                  </Text>
-                  <Text>{item.marketing_name}</Text>
-                </AtActionSheetItem>
-              );
-            })}
-        </AtActionSheet>
-        {!isDrug && <TabBar />}
-      </View>
-    );
-  }
+      {validCart.length == 0 && invalidCart.length == 0 && (
+        <SpDefault type='cart' message='购物车内暂无商品～'>
+          <AtButton type='primary' circle onClick={navigateTo.bind(this, '/pages/index')}>
+            去选购
+          </AtButton>
+        </SpDefault>
+      )}
+
+      {/* 猜你喜欢 */}
+      {<SpRecommend className='recommend-block' info={state.likeList} />}
+
+      <SpPrivacyModal
+        open={policyModal}
+        onCancel={() => {
+          setPolicyModal(false)
+        }}
+        onConfirm={() => {
+          setPolicyModal(false)
+        }}
+      />
+
+      <SpTabbar />
+    </SpPage>
+  )
 }
+
+export default CartIndex

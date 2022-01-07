@@ -48,43 +48,24 @@ export const WGTS_NAV_MAP = {
   luckdraw: '/pages/member/point-draw'
 }
 
-export const DEFAULT_TABS = {
-  config: {
-    backgroundColor: '#ffffff',
-    color: '#333333',
-    selectedColor: '#E33420'
-  },
-  data: [
-    {
-      name: 'home',
-      pagePath: '/pages/index',
-      text: '首页'
-    },
-    {
-      name: 'category',
-      pagePath: '/pages/category/index',
-      text: '分类'
-    },
-    {
-      name: 'cart',
-      pagePath: '/pages/cart/espier-index',
-      text: '购物车'
-    },
-    {
-      name: 'member',
-      pagePath: '/pages/member/index',
-      text: '我'
-    }
-  ],
-  name: 'tabs'
+export const TABBAR_PATH = {
+  home: '/pages/index',
+  category: '/pages/category/index',
+  cart: '/pages/cart/espier-index',
+  member: '/subpages/member/index',
+  article: '/pages/recommend/list',
+  liveroom: '/pages/liveroom/index',
+  allGoods: '/pages/item/list?isTabBar=true'
 }
 
-export const PAYTYPE={
+export const PAYTYPE = {
   /** h5环境下 */
-  WXH5:'wxpayh5',
-  ALIH5:'alipayh5',
+  WXH5: 'wxpayh5',
+  ALIH5: 'alipayh5',
   /** 微信H5环境下 */
-  WXH5JS:'wxpayjs' 
+  WXH5JS: 'wxpayjs'
 }
+
+export * from './localstorage'
 
 export default {}

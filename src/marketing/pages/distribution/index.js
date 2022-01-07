@@ -1,7 +1,8 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Button, Canvas } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { SpNavBar, Loading } from '@/components'
+import { connect } from 'react-redux'
+import { SpNavBar, Loading, SpPage } from '@/components'
 import api from '@/api'
 import { pickBy, canvasExp } from '@/utils'
 import { getDtidIdUrl } from '@/utils/helper'
@@ -14,7 +15,7 @@ import './index.scss'
   colors: colors.current
 }))
 export default class DistributionDashboard extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       info: null,
@@ -24,7 +25,7 @@ export default class DistributionDashboard extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -33,11 +34,7 @@ export default class DistributionDashboard extends Component {
     this.fetch()
   }
 
-  config = {
-    navigationBarTitleText: '推广管理'
-  }
-
-  async fetch() {
+  async fetch () {
     const resUser = Taro.getStorageSync('userinfo')
     const { username, avatar } = resUser
 
@@ -76,7 +73,7 @@ export default class DistributionDashboard extends Component {
     this.setState({ info })
   }
 
-  handleOpenApply() {
+  handleOpenApply () {
     Taro.showModal({
       title: '申请开店',
       content: '是否申请开启小店推广',
@@ -97,8 +94,10 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  onShareAppMessage() {
-    const extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+  onShareAppMessage () {
+    const extConfig = wx.getExtConfigSync
+      ? wx.getExtConfigSync()
+      : { wxa_name: process.env.APP_MAP_NAME }
     const { userId } = Taro.getStorageSync('userinfo')
     const { info } = this.state
     return {
@@ -125,6 +124,7 @@ export default class DistributionDashboard extends Component {
   }
 
   downloadPosterImg = async () => {
+    console.log('-----down')
     // 处理海报信息以及太阳码
     let {
       info: { username, isOpenShop, shop_status }
@@ -140,22 +140,30 @@ export default class DistributionDashboard extends Component {
       Taro.setStorageSync('userinfo', userObj)
       userinfo = userObj
     }
-    const extConfig = Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync ? wx.getExtConfigSync() : {}
+    const extConfig =
+      Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync
+        ? wx.getExtConfigSync()
+        : {
+            appid: process.env.APP_ID,
+            company_id: process.env.APP_COMPANY_ID
+          }
 
     shop_status = JSON.parse(shop_status === 1)
     const url = isOpenShop && shop_status ? `marketing/pages/distribution/shop-home` : `pages/index`
     const wxappCode = `${req.baseURL}promoter/qrcode.png?path=${url}&appid=${extConfig.appid}&company_id=${extConfig.company_id}&user_id=${userId}`
-
     let avatarImg
+    console.log('wxappCode==', wxappCode)
+    console.log('avatar==', avatar)
     if (avatar) {
       // 头像
       avatarImg = await Taro.getImageInfo({ src: avatar })
     }
+    console.log('avatarImg==', avatarImg)
     const bck = await Taro.getImageInfo({
-      src:
-        'https://b-img-cdn.yuanyuanke.cn/image/21/2021/10/21/9c8cbb5f6b6a346641fe151b5e1604118H6zDVOajmkASVYKgPePOYXIeFpc55Ta'
+      src: 'https://b-img-cdn.yuanyuanke.cn/image/21/2021/10/21/9c8cbb5f6b6a346641fe151b5e1604118H6zDVOajmkASVYKgPePOYXIeFpc55Ta'
     }) // 背景图片
     const codeImg = await Taro.getImageInfo({ src: wxappCode }) // 二维码
+    console.log('codeImg==', codeImg)
     if (avatarImg) {
       const posterImgs = {
         avatar: avatarImg ? avatarImg.path : null,
@@ -274,7 +282,7 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { info, showPoster, poster } = this.state
     console.log(info)
@@ -282,7 +290,7 @@ export default class DistributionDashboard extends Component {
       return <Loading />
     }
     return (
-      <View className='page-distribution-index'>
+      <SpPage className='page-distribution-index'>
         <SpNavBar title='推广管理' leftIconType='chevron-left' />
         <View className='header' style={'background: ' + colors.data[0].marketing}>
           <View className='view-flex view-flex-middle'>
@@ -295,7 +303,7 @@ export default class DistributionDashboard extends Component {
               className='view-flex view-flex-middle'
               url='/marketing/pages/distribution/setting'
             >
-              <Text className='icon-info'></Text>
+              <Text className='iconfont icon-info'></Text>
             </Navigator>
           </View>
           {info.isOpenShop && info.shop_status === 0 ? (
@@ -347,7 +355,7 @@ export default class DistributionDashboard extends Component {
               hover-class='none'
               url='/marketing/pages/distribution/trade?type=order'
             >
-              <View className='icon-list3'></View>
+              <View className='iconfont icon-list3 icon-fontsize'></View>
               <View className='label'>提成订单</View>
               <View>{info.promoter_order_count}</View>
             </Navigator>
@@ -356,7 +364,7 @@ export default class DistributionDashboard extends Component {
               hover-class='none'
               url='/marketing/pages/distribution/trade?type=order_team'
             >
-              <View className='icon-list2'></View>
+              <View className='iconfont icon-list2 icon-fontsize'></View>
               <View className='label'>津贴订单</View>
               <View>{info.promoter_grade_order_count}</View>
             </Navigator>
@@ -365,7 +373,7 @@ export default class DistributionDashboard extends Component {
               hover-class='none'
               url='/marketing/pages/distribution/statistics'
             >
-              <View className='icon-money'></View>
+              <View className='iconfont icon-money icon-fontsize'></View>
               <View className='label'>推广费</View>
               <View className='mark'>{info.rebateTotal / 100}</View>
             </Navigator>
@@ -374,7 +382,7 @@ export default class DistributionDashboard extends Component {
               hover-class='none'
               url='/marketing/pages/distribution/point-platform'
             >
-              <View className='icon-jifen'></View>
+              <View className='iconfont icon-jifen icon-fontsize'></View>
               <View className='label'>推广积分</View>
               <View className='mark'>{info.pointTotal || 0}</View>
             </Navigator>
@@ -386,7 +394,7 @@ export default class DistributionDashboard extends Component {
             url={`/marketing/pages/distribution/subordinate?hasBuy=${info.isbuy_promoter}&noBuy=${info.notbuy_promoter}`}
           >
             <View className='view-flex-item'>我的会员</View>
-            <View className='section-more icon-arrowRight'></View>
+            <View className='iconfont icon-arrowRight'></View>
           </Navigator>
           <View className='content-padded-b view-flex content-center member'>
             <View className='view-flex-item'>
@@ -399,36 +407,37 @@ export default class DistributionDashboard extends Component {
         </View>
         <View className='section list share'>
           <View className='list-item' onClick={this.handleClick}>
-            <View className='item-icon icon-qrcode1'></View>
+            <View className='iconfont icon-qrcode1 icon-fontsize'></View>
             <View className='list-item-txt'>我的二维码</View>
-            <View className='icon-arrowRight item-icon-go'></View>
+            <View className='iconfont icon-arrowRight icon-right'></View>
           </View>
           <Navigator
             className='list-item'
-            open-type='navigateTo'
-            url={`/marketing/pages/distribution/goods?status=${info.isOpenShop &&
-              info.shop_status === 1}`}
+            // open-type='navigateTo'
+            url={`/marketing/pages/distribution/goods?status=${
+              info.isOpenShop && info.shop_status === 1
+            }`}
           >
-            <View className='item-icon icon-weChat'></View>
+            <View className='iconfont icon-weChat icon-fontsize'></View>
             <View className='list-item-txt'>推广商品</View>
-            <View className='icon-arrowRight item-icon-go'></View>
+            <View className='iconfont icon-arrowRight icon-right'></View>
           </Navigator>
           {info.isOpenShop && info.shop_status === 1 && (
             <Navigator
               className='list-item'
-              open-type='navigateTo'
+              // open-type='navigateTo'
               url={`/marketing/pages/distribution/shop?turnover=${info.taskBrokerageItemTotalFee}&point=${info.taskBrokerageItemTotalPoint}`}
             >
-              <View className='item-icon icon-shop'></View>
+              <View className='iconfont icon-shop icon-fontsize'></View>
               <View className='list-item-txt'>我的小店</View>
-              <View className='icon-arrowRight item-icon-go'></View>
+              <View className='iconfont icon-arrowRight icon-right'></View>
             </Navigator>
           )}
           {Taro.getEnv() !== 'WEB' && info.shop_status !== 1 && (
             <Button className='share-btn list-item' open-type='share'>
-              <View className='item-icon icon-share1'></View>
+              <View className='iconfont icon-share1 icon-fontsize'></View>
               <View className='list-item-txt'>分享给好友</View>
-              <View className='icon-arrowRight item-icon-go'></View>
+              <View className='iconfont icon-arrowRight icon-right'></View>
             </Button>
           )}
           {info.isHf && (
@@ -439,7 +448,7 @@ export default class DistributionDashboard extends Component {
             >
               <View className='item-icon icon-weChart'></View>
               <View className='list-item-txt'>实名认证以及绑卡</View>
-              <View className='icon-arrowRight item-icon-go'></View>
+              <View className='iconfont icon-arrowRight'></View>
             </Navigator>
           )}
         </View>
@@ -447,19 +456,19 @@ export default class DistributionDashboard extends Component {
           <View className='poster-modal'>
             <Image className='poster' src={poster} mode='aspectFit' />
             <View
-              className='icon-download poster-save-btn'
+              className='iconfont icon-download poster-save-btn'
               onClick={this.handleSavePoster.bind(this)}
             >
               保存图片
             </View>
             <View
-              className='icon-close poster-close-btn'
+              className='iconfont icon-close poster-close-btn'
               onClick={this.handleHidePoster.bind(this)}
             ></View>
           </View>
         )}
         <Canvas className='canvas' canvas-id='myCanvas'></Canvas>
-      </View>
+      </SpPage>
     )
   }
 }

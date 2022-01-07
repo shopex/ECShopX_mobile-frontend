@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtCountdown } from 'taro-ui'
 import { Loading, SpNavBar, FloatMenuMeiQia, SpNewShopItem } from '@/components'
 import {
@@ -11,9 +12,7 @@ import {
   resolveOrderStatus,
   copyText,
   getCurrentRoute,
-  copy,
   isAlipay,
-  getPointName,
   classNames,
   isNavbar,
   isWeb,
@@ -56,11 +55,13 @@ const statusImg = {
   // 骑士到店
   100: DadaGoStore
 }
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class TradeDetail extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -80,20 +81,20 @@ export default class TradeDetail extends Component {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     clearInterval(this.state.interval)
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.fetch()
   }
 
-  isPointitemGood() {
-    const options = this.$router.params
+  isPointitemGood () {
+    const options = this.$instance.router.params
     return options.type === 'pointitem'
   }
 
-  calcTimer(totalSec) {
+  calcTimer (totalSec) {
     let remainingSec = totalSec
     const dd = Math.floor(totalSec / 24 / 3600)
     remainingSec -= dd * 3600 * 24
@@ -111,8 +112,8 @@ export default class TradeDetail extends Component {
     }
   }
 
-  async fetch() {
-    const { id } = this.$router.params
+  async fetch () {
+    const { id } = this.$instance.router.params
     const data = await api.trade.detail(id)
     let sessionFrom = ''
     const pickItem = {
@@ -290,7 +291,7 @@ export default class TradeDetail extends Component {
     await copyText(msg)
   }
 
-  async handlePay() {
+  async handlePay () {
     const { info } = this.state
 
     this.setState({
@@ -306,7 +307,7 @@ export default class TradeDetail extends Component {
 
     if (isWeb) {
       redirectUrl(api, `/subpage/pages/cashier/index?order_id=${order_id}&pay_type=${pay_type}`)
-      return;
+      return
     }
 
     const config = await api.cashier.getPayment(paymentParams)
@@ -357,14 +358,14 @@ export default class TradeDetail extends Component {
         icon: 'success'
       })
 
-      const { fullPath } = getCurrentRoute(this.$router)
+      const { fullPath } = getCurrentRoute(this.$instance.router)
       Taro.redirectTo({
         url: fullPath
       })
     }
   }
 
-  async handleClickBtn(type, e) {
+  async handleClickBtn (type, e) {
     e.stopPropagation()
     const { info } = this.state
     if (type === 'home') {
@@ -399,7 +400,7 @@ export default class TradeDetail extends Component {
       })
       if (confirm) {
         await api.trade.confirm(info.tid)
-        const { fullPath } = getCurrentRoute(this.$router)
+        const { fullPath } = getCurrentRoute(this.$instance.router)
         Taro.redirectTo({
           url: fullPath
         })
@@ -414,7 +415,7 @@ export default class TradeDetail extends Component {
     }
   }
 
-  async handleClickRefund(type, item_id) {
+  async handleClickRefund (type, item_id) {
     const {
       info: { tid: order_id }
     } = this.state
@@ -449,7 +450,7 @@ export default class TradeDetail extends Component {
   }
 
   zitiWebsocket = () => {
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
     const { webSocketIsOpen, restartOpenWebsoect } = this.state
     // websocket 开始
     if (!webSocketIsOpen) {
@@ -487,7 +488,7 @@ export default class TradeDetail extends Component {
               () => {
                 setTimeout(() => {
                   Taro.redirectTo({
-                    url: '/pages/member/index'
+                    url: '/subpages/member/index'
                   })
                 }, 700)
               }
@@ -578,7 +579,7 @@ export default class TradeDetail extends Component {
 
   // 复制orderid
   copyOrderId = (orderid) => {
-    copy(orderid)
+    copyText(orderid)
     Taro.showToast({
       title: '复制成功',
       icon: 'none'
@@ -592,7 +593,9 @@ export default class TradeDetail extends Component {
   }
 
   computedPayType = () => {
-    const { info: { pay_type } } = this.state;
+    const {
+      info: { pay_type }
+    } = this.state
     if (isAlipay) {
       return '支付宝'
     } else if (pay_type === PAYTYPE.ALIH5) {
@@ -602,7 +605,7 @@ export default class TradeDetail extends Component {
     }
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const {
       info,
@@ -622,10 +625,10 @@ export default class TradeDetail extends Component {
       return <Loading></Loading>
     }
 
-    console.log("==tradeInfo==>", tradeInfo)
+    console.log('==tradeInfo==>', tradeInfo)
 
     //订单未支付
-    const NOT_PAY = tradeInfo && tradeInfo.tradeState === "NOTPAY";
+    const NOT_PAY = tradeInfo && tradeInfo.tradeState === 'NOTPAY'
 
     //const isDhPoint = info.point_fee!=0?'point':''
     const isDhPoint = info.pay_type === 'point'
@@ -636,7 +639,7 @@ export default class TradeDetail extends Component {
     const meiqia = Taro.getStorageSync('meiqia')
     const echat = Taro.getStorageSync('echat')
     // TODO: orders 多商铺
-    // const tradeOrders = resolveTradeOrders(info) 
+    // const tradeOrders = resolveTradeOrders(info)
 
     return (
       <View
@@ -688,9 +691,9 @@ export default class TradeDetail extends Component {
                 <View className='delivery-infos'>
                   <View className='delivery-infos__status'>
                     <View
-                      className={`delivery-infos__text text-status ${info.receipt_type === 'dada' &&
-                        info.dada.dada_status === 9 &&
-                        'red'}`}
+                      className={`delivery-infos__text text-status ${
+                        info.receipt_type === 'dada' && info.dada.dada_status === 9 && 'red'
+                      }`}
                     >
                       {info.order_status_msg}
                       {info.dada && info.dada.id && statusImg[info.dada.dada_status] && (
@@ -758,34 +761,36 @@ export default class TradeDetail extends Component {
           <View className='trade-detail-address'>
             {((info.dada && info.dada.id) ||
               (info.receipt_type === 'ziti' && !info.is_logistics)) && (
-                <View className={`store ${info.dada && info.dada.id ? 'border' : ''}`}>
-                  <Text
-                    className={`iconfont ${info.receipt_type === 'dada' ? 'icon-shangjiadizhi-01' : 'icon-dizhi-01'
-                      }`}
-                  ></Text>
-                  <View>
-                    <View className='storeName'>{ziti.store_name}</View>
-                    <View className='storeAddress'>{ziti.store_address}</View>
-                    <View className='storeHour'>
-                      <Text className='title'>营业时间：</Text>
-                      {ziti.hour}
-                    </View>
-                    <View className='storeMobile'>
-                      <Text className='title'>门店电话：</Text>
-                      {ziti.phone}
-                      <View
-                        className='iconfont icon-dianhua'
-                        onClick={this.callDada.bind(this, ziti.phone)}
-                      ></View>
-                    </View>
+              <View className={`store ${info.dada && info.dada.id ? 'border' : ''}`}>
+                <Text
+                  className={`iconfont ${
+                    info.receipt_type === 'dada' ? 'icon-shangjiadizhi-01' : 'icon-dizhi-01'
+                  }`}
+                ></Text>
+                <View>
+                  <View className='storeName'>{ziti.store_name}</View>
+                  <View className='storeAddress'>{ziti.store_address}</View>
+                  <View className='storeHour'>
+                    <Text className='title'>营业时间：</Text>
+                    {ziti.hour}
+                  </View>
+                  <View className='storeMobile'>
+                    <Text className='title'>门店电话：</Text>
+                    {ziti.phone}
+                    <View
+                      className='iconfont icon-dianhua'
+                      onClick={this.callDada.bind(this, ziti.phone)}
+                    ></View>
                   </View>
                 </View>
-              )}
+              </View>
+            )}
             {((info.dada && info.dada.id) || info.receipt_type === 'logistics') && (
               <View className='address-receive'>
                 <Text
-                  className={`iconfont ${info.receipt_type === 'dada' ? 'icon-shouhuodizhi-01' : 'icon-dizhi-01'
-                    }`}
+                  className={`iconfont ${
+                    info.receipt_type === 'dada' ? 'icon-shouhuodizhi-01' : 'icon-dizhi-01'
+                  }`}
                 ></Text>
                 <View className='info-trade'>
                   <Text className='address-detail'>
@@ -804,12 +809,7 @@ export default class TradeDetail extends Component {
           </View>
 
           <View className='trade-detail-goods'>
-            <SpNewShopItem
-              info={distributor}
-              canJump
-              inOrderDetail
-              hasLogo={false}
-            />
+            <SpNewShopItem info={distributor} canJump inOrderDetail hasLogo={false} />
             <View className='line'>
               <View className='left'>订单号：</View>
               <View className='right'>
@@ -856,7 +856,7 @@ export default class TradeDetail extends Component {
               总计：
               {this.isPointitemGood() ? (
                 <Text className='trade-money__point'>
-                  {info.point} {getPointName()}
+                  {info.point} {this.props.pointName}
                   {info.order_class === 'pointsmall' &&
                     info.freight_fee != 0 &&
                     info.freight_fee > 0 &&
@@ -938,7 +938,7 @@ export default class TradeDetail extends Component {
               <View className='right'>
                 {info.freight_type !== 'point'
                   ? `¥ ${info.freight_fee}`
-                  : `${info.freight_fee * 100}${getPointName()}`}
+                  : `${info.freight_fee * 100}${this.props.pointName}`}
               </View>
             </View>
             {info.type == '1' && (
@@ -955,10 +955,10 @@ export default class TradeDetail extends Component {
             )}
             {info.point_use > 0 && (
               <View className='line'>
-                <View className='left'>{`${getPointName()}支付`}</View>
+                <View className='left'>{`${this.props.pointName}支付`}</View>
                 <View className='right'>
                   {info.point_use}
-                  {getPointName()}，抵扣：¥{info.point_fee}
+                  {this.props.pointName}，抵扣：¥{info.point_fee}
                 </View>
               </View>
             )}
@@ -975,22 +975,6 @@ export default class TradeDetail extends Component {
                 <View className='left'>支付</View>
                 <View className='right'>
                   ¥{info.payment}{' '}
-                  {info.order_class !== 'excard' ? this.computedPayType() + '支付' : ''}
-                </View>
-              </View>
-            )}
-            {!isDhPoint && !isDeposit && NOT_PAY && (
-              <View className='line'>
-                <View className='left'>应付金额</View>
-                <View className='right'>
-                  ¥{info.payment}{' '} 
-                </View>
-              </View>
-            )}
-             {!isDhPoint && !isDeposit && NOT_PAY && (
-              <View className='line'>
-                <View className='left'>支付类型</View>
-                <View className='right'> 
                   {info.order_class !== 'excard' ? this.computedPayType() + '支付' : ''}
                 </View>
               </View>
@@ -1021,7 +1005,8 @@ export default class TradeDetail extends Component {
 
         {info.status !== 'TRADE_CLOSED' && (
           <View className='trade-detail__footer'>
-            {// 立即支付
+            {
+              // 立即支付
               info.status === 'WAIT_BUYER_PAY' && (
                 <Button
                   className='trade-detail__footer__btn trade-detail__footer_active trade-detail__footer_allWidthBtn'
@@ -1032,8 +1017,10 @@ export default class TradeDetail extends Component {
                 >
                   立即支付
                 </Button>
-              )}
-            {// 申请售后
+              )
+            }
+            {
+              // 申请售后
               (info.status === 'WAIT_SELLER_SEND_GOODS' ||
                 (info.status === 'TRADE_SUCCESS' &&
                   (info.receipt_type !== 'dada' ||
@@ -1043,77 +1030,89 @@ export default class TradeDetail extends Component {
                   (info.is_all_delivery ||
                     (!info.is_all_delivery && info.delivery_status === 'DONE')) &&
                   info.receipt_type !== 'dada')) &&
-              info.can_apply_aftersales === 1 &&
-              info.order_class !== 'excard' && (
-                <Button
-                  className={`trade-detail__footer__btn left ${info.is_logistics &&
-                    'trade-detail__footer_active trade-detail__footer_allWidthBtn'}`}
-                  onClick={this.handleClickBtn.bind(this, 'aftersales')}
-                >
-                  申请售后
-                </Button>
-              )}
-            {// 继续购物
+                info.can_apply_aftersales === 1 &&
+                info.order_class !== 'excard' && (
+                  <Button
+                    className={`trade-detail__footer__btn left ${
+                      info.is_logistics &&
+                      'trade-detail__footer_active trade-detail__footer_allWidthBtn'
+                    }`}
+                    onClick={this.handleClickBtn.bind(this, 'aftersales')}
+                  >
+                    申请售后
+                  </Button>
+                )
+            }
+            {
+              // 继续购物
               (info.status === 'WAIT_SELLER_SEND_GOODS' ||
                 (info.status === 'WAIT_BUYER_CONFIRM_GOODS' &&
                   info.receipt_type === 'dada' &&
                   info.receipt_type !== 'dada') ||
                 info.dada.dada_status !== 9) && (
                 <View
-                  className={`trade-detail__footer__btn trade-detail__footer_active right ${info.order_class === 'excard' ||
-                      info.can_apply_aftersales !== 1 ||
-                      (info.status === 'WAIT_BUYER_CONFIRM_GOODS' && info.receipt_type === 'dada')
+                  className={`trade-detail__footer__btn trade-detail__footer_active right ${
+                    info.order_class === 'excard' ||
+                    info.can_apply_aftersales !== 1 ||
+                    (info.status === 'WAIT_BUYER_CONFIRM_GOODS' && info.receipt_type === 'dada')
                       ? 'trade-detail__footer_allWidthBtn'
                       : ''
-                    }`}
+                  }`}
                   style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};`}
                   onClick={this.handleClickBtn.bind(this, 'home')}
                 >
                   继续购物
                 </View>
-              )}
-            {// 确认收货
+              )
+            }
+            {
+              // 确认收货
               info.order_class !== 'excard' &&
-              info.receipt_type !== 'dada' &&
-              !info.is_logistics &&
-              info.status === 'WAIT_BUYER_CONFIRM_GOODS' &&
-              (info.is_all_delivery ||
-                (!info.is_all_delivery && info.delivery_status === 'DONE')) && (
-                <View
-                  className={`trade-detail__footer__btn trade-detail__footer_active right ${info.can_apply_aftersales ===
-                    0 && 'trade-detail__footer_allWidthBtn'}`}
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                  onClick={this.handleClickBtn.bind(this, 'confirm')}
-                >
-                  确认收货
-                </View>
-              )}
-            {// 联系客服
+                info.receipt_type !== 'dada' &&
+                !info.is_logistics &&
+                info.status === 'WAIT_BUYER_CONFIRM_GOODS' &&
+                (info.is_all_delivery ||
+                  (!info.is_all_delivery && info.delivery_status === 'DONE')) && (
+                  <View
+                    className={`trade-detail__footer__btn trade-detail__footer_active right ${
+                      info.can_apply_aftersales === 0 && 'trade-detail__footer_allWidthBtn'
+                    }`}
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                    onClick={this.handleClickBtn.bind(this, 'confirm')}
+                  >
+                    确认收货
+                  </View>
+                )
+            }
+            {
+              // 联系客服
               (info.status === 'TRADE_SUCCESS' ||
                 (info.receipt_type === 'dada' && info.dada.dada_status === 9)) &&
-              info.order_class !== 'excard' && (
-                <View
-                  className={`trade-detail__footer__btn trade-detail__footer_active right ${(info.can_apply_aftersales ===
-                    0 ||
-                    (info.receipt_type === 'dada' && info.dada.dada_status === 9)) &&
-                    'trade-detail__footer_allWidthBtn'}`}
-                  style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-                >
-                  {meiqia.is_open === 'true' || echat.is_open === 'true' ? (
-                    <FloatMenuMeiQia
-                      storeId={info.distributor_id}
-                      info={{ orderId: info.order_id }}
-                      isFloat={false}
-                    >
-                      联系客服
-                    </FloatMenuMeiQia>
-                  ) : (
-                    <Button openType='contact' className='contact'>
-                      联系客服
-                    </Button>
-                  )}
-                </View>
-              )}
+                info.order_class !== 'excard' && (
+                  <View
+                    className={`trade-detail__footer__btn trade-detail__footer_active right ${
+                      (info.can_apply_aftersales === 0 ||
+                        (info.receipt_type === 'dada' && info.dada.dada_status === 9)) &&
+                      'trade-detail__footer_allWidthBtn'
+                    }`}
+                    style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+                  >
+                    {meiqia.is_open === 'true' || echat.is_open === 'true' ? (
+                      <FloatMenuMeiQia
+                        storeId={info.distributor_id}
+                        info={{ orderId: info.order_id }}
+                        isFloat={false}
+                      >
+                        联系客服
+                      </FloatMenuMeiQia>
+                    ) : (
+                      <Button openType='contact' className='contact'>
+                        联系客服
+                      </Button>
+                    )}
+                  </View>
+                )
+            }
           </View>
         )}
 

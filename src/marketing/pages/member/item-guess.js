@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote } from '@/components'
@@ -10,7 +11,7 @@ import './item-guess.scss'
 @withPager
 @withBackToTop
 export default class ItemGuess extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -19,11 +20,11 @@ export default class ItemGuess extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.nextPage()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       item_type: 'normal',
@@ -60,7 +61,7 @@ export default class ItemGuess extends Component {
     })
   }
 
-  render() {
+  render () {
     const { list, showBackToTop, scrollTop, page } = this.state
 
     return (

@@ -1,22 +1,22 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtButton, AtInput } from 'taro-ui'
-import { Loading, Price, SpCell, SpToast, SpNavBar, SpHtmlContent } from '@/components'
+import { Loading, Price, SpCell, SpToast, SpPage, SpHtmlContent } from '@/components'
 import api from '@/api'
 import S from '@/spx'
- 
+
 import {
   pickBy,
   log,
   authSetting,
   normalizeQuerys,
-  getPointName,
   buriedPoint,
   isAlipay,
   isWeixin,
   isWeb,
-  isWbWechat,
+  isWxWeb,
   redirectUrl,
   isObjectValueEqual,
   getThemeStyle,
@@ -26,7 +26,6 @@ import {
 import { lockScreen } from '@/utils/dom'
 import { Tracker } from '@/service'
 import { TracksPayed } from '@/utils/youshu'
-import { customName } from '@/utils/point'
 import find from 'lodash/find'
 import _cloneDeep from 'lodash/cloneDeep'
 import CheckoutItems from './checkout-items'
@@ -40,7 +39,6 @@ import { PAYTYPE } from '@/consts'
 
 import './espier-checkout.scss'
 import entry from '../../utils/entry'
-import { copySync } from 'fs-extra'
 
 const transformCartList = (list) => {
   return pickBy(list, {
@@ -63,19 +61,21 @@ const transformCartList = (list) => {
 }
 
 @connect(
-  ({ address, cart, colors }) => ({
-    address: address.current,
+  ({ user, cart, colors, sys }) => ({
+    address: user.address,
     coupon: cart.coupon,
     drugInfo: cart.drugInfo,
     colors: colors.current,
-    zitiShop: cart.zitiShop
+    zitiShop: cart.zitiShop,
+    pointName: sys.pointName
   }),
   (dispatch) => ({
     onClearFastbuy: () => dispatch({ type: 'cart/clearFastbuy' }),
     onClearCart: () => dispatch({ type: 'cart/clear' }),
     onClearCoupon: () => dispatch({ type: 'cart/clearCoupon' }),
     onClearDrugInfo: () => dispatch({ type: 'cart/clearDrugInfo' }),
-    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address }),
+    updateChooseAddress: (address) =>
+      dispatch({ type: 'user/updateChooseAddress', payload: address }),
     onChangeCoupon: (coupon) => dispatch({ type: 'cart/changeCoupon', payload: coupon }),
     onChangeZitiStore: (zitiShop) => dispatch({ type: 'cart/changeZitiStore', payload: zitiShop })
     //onChangeDrugInfo: (drugInfo) => dispatch({ type: 'cart/changeDrugInfo', payload: drugInfo })
@@ -83,11 +83,12 @@ const transformCartList = (list) => {
 )
 // @withLogin()
 export default class CartCheckout extends Component {
+  $instance = getCurrentInstance()
   static defaultProps = {
     list: []
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -116,7 +117,7 @@ export default class CartCheckout extends Component {
         freight_type: ''
       },
       // 默认支付方式
-      defalutPaytype:isWbWechat? 'wxpayjs':isWeb?'wxpayh5':'wxpay',
+      defalutPaytype: isWxWeb ? 'wxpayjs' : isWeb ? 'wxpayh5' : 'wxpay',
       payType: '',
       disabledPayment: null,
       isPaymentOpend: false,
@@ -143,16 +144,16 @@ export default class CartCheckout extends Component {
       pick: {},
       isOpenStore: null,
       channel: '',
-      headShop:{}
+      headShop: {}
     }
 
     // 路由参数缓存
     this.routerParams = {}
   }
 
-  async componentDidMount() { 
-    const { params } = this.$router || {}
-    if (params.scene) {
+  async componentDidMount () {
+    let params = this.$instance.router.params
+    if (params) {
       const data = await normalizeQuerys(params)
       this.routerParams = data
       Taro.setStorageSync('espierCheckoutData', data)
@@ -164,15 +165,12 @@ export default class CartCheckout extends Component {
         source = 'other_pay'
       }
       Taro.redirectTo({
-        url: `/subpage/pages/auth/wxauth?source=${source}&scene=${params.scene}`
+        url: `/subpage/pages/auth/wxauth?source=${source}&scene=${this.$instance.router.params.scene}`
       })
 
       return
     }
-    const { cart_type, pay_type: payType } = params
-    const {
-      shop_id:router_shop_id
-    } = params
+    const { cart_type, pay_type: payType, shop_id: router_shop_id } = this.$instance.router.params
     let curStore = null,
       info = null
 
@@ -191,8 +189,7 @@ export default class CartCheckout extends Component {
         lng,
         hour,
         phone
-      } = this.$router.params
- 
+      } = this.$instance.router.params
       // 积分购买不在此种情况
       curStore = {
         shop_id,
@@ -209,15 +206,15 @@ export default class CartCheckout extends Component {
       info = null
     }
 
-    const res=await getHeadShop(); 
+    const res = await getHeadShop()
 
     this.setState({
       curStore,
       info,
       payType: payType || this.state.payType,
-      headShop:{
+      headShop: {
         ...res,
-        is_current:router_shop_id==0
+        is_current: router_shop_id == 0
       }
     })
 
@@ -249,7 +246,7 @@ export default class CartCheckout extends Component {
       }
     })
 
-    this.props.onAddressChoose(null)
+    this.props.updateChooseAddress(null)
     this.props.onChangeZitiStore(null)
     Taro.removeStorageSync('selectShop')
     this.getSalespersonNologin()
@@ -263,10 +260,10 @@ export default class CartCheckout extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     const nextAddress = nextProps.address || {}
     const selfAddress = this.props.address || {}
-    console.log("componentWillReceiveProps==>",nextAddress, selfAddress)
+    console.log('componentWillReceiveProps==>', nextAddress, selfAddress)
     // if (JSON.stringify(nextAddress) != "{}" && JSON.stringify(selfAddress) != "{}" && !isObjectValueEqual(nextAddress, selfAddress)
     if (!isObjectValueEqual(nextAddress, selfAddress)) {
       this.fetchAddress()
@@ -276,14 +273,14 @@ export default class CartCheckout extends Component {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     // teardown clean
     this.props.onClearCoupon()
     this.props.onClearDrugInfo()
     Taro.removeStorageSync('selectShop')
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.setState({
       isPaymentOpend: false,
       isDrugInfoOpend: false,
@@ -296,12 +293,12 @@ export default class CartCheckout extends Component {
     }
   }
 
-  isPointitemGood() {
-    const options = this.$router.params
-    return options.type === 'pointitem'
+  isPointitemGood () {
+    const options = this.$instance.router?.params
+    return options?.type === 'pointitem'
   }
 
-  async fetchZiTiShop() {
+  async fetchZiTiShop () {
     const {
       shop_id,
       scene,
@@ -309,7 +306,7 @@ export default class CartCheckout extends Component {
       seckill_id = null,
       ticket = null,
       order_type
-    } = this.$router.params
+    } = this.$instance.router.params
     //const { zitiShop } = this.props;
     const params = await this.getParams()
     const selectShop = Taro.getStorageSync('selectShop')
@@ -375,9 +372,9 @@ export default class CartCheckout extends Component {
     )
   }
 
-  async fetchAddress(cb) {
-    const { receiptType, curStore,headShop } = this.state
-    console.log("===fetchAddress===>",headShop)
+  async fetchAddress (cb) {
+    const { receiptType, curStore, headShop } = this.state
+    console.log('===fetchAddress===>', headShop)
     const query = {}
     if (receiptType === 'dada') {
       query.receipt_type = receiptType
@@ -398,8 +395,8 @@ export default class CartCheckout extends Component {
   /**
    * 获取代下单导购
    * */
-  async getSalespersonNologin() {
-    const { source, scene } = this.$router.params
+  async getSalespersonNologin () {
+    const { source, scene } = this.$instance.router.params
     let salesperson_id = ''
     if (source === 'other_pay' || scene) {
       let espierCheckoutData = {}
@@ -427,8 +424,8 @@ export default class CartCheckout extends Component {
     })
   }
 
-  async getShop() {
-    const { source, scene } = this.$router.params
+  async getShop () {
+    const { source, scene } = this.$instance.router.params
     let distributor_id = ''
     if (source === 'other_pay' || scene) {
       let espierCheckoutData = {}
@@ -449,8 +446,8 @@ export default class CartCheckout extends Component {
     this.setState({ shopData })
   }
 
-  async getShopId() {
-    const { source, scene } = this.$router.params
+  async getShopId () {
+    const { source, scene } = this.$instance.router.params
     if (source === 'other_pay' || scene) {
       let espierCheckoutData = {}
       if (source === 'other_pay') {
@@ -462,10 +459,10 @@ export default class CartCheckout extends Component {
     }
   }
 
-  changeSelection(params = {}) {
+  changeSelection (params = {}) {
     const { address_list } = this.state
     if (address_list.length === 0) {
-      this.props.onAddressChoose(null)
+      this.props.updateChooseAddress(null)
       this.setState(
         {
           address: null
@@ -488,12 +485,11 @@ export default class CartCheckout extends Component {
         null
     }
 
-    this.props.onAddressChoose(address)
+    this.props.updateChooseAddress(address)
     this.handleAddressChange(address)
   }
 
-  async getParams() {
- 
+  async getParams () {
     let { isNeedPackage, pack } = this.state
 
     const {
@@ -507,7 +503,7 @@ export default class CartCheckout extends Component {
       scene,
       goodType,
       bargain_id = ''
-    } = this.$router.params
+    } = this.$instance.router.params
     let cxdid = null
     let dtid = null
     let smid = null
@@ -673,7 +669,7 @@ export default class CartCheckout extends Component {
     })
   }
 
-  async tradeSetting() {
+  async tradeSetting () {
     let res = await api.trade.tradeSetting()
     let { is_open, packName, packDes } = res
 
@@ -683,10 +679,10 @@ export default class CartCheckout extends Component {
         packName,
         packDes
       }
-    }) 
+    })
   }
 
-  async calcOrder() {
+  async calcOrder () {
     Taro.showLoading({
       title: '加载中',
       mask: true
@@ -778,7 +774,6 @@ export default class CartCheckout extends Component {
     let info = this.state.info
     let pointInfo = this.state.pointInfo
     if (items) {
-     
       // 从后端获取订单item
       info = {
         cart: [
@@ -797,7 +792,7 @@ export default class CartCheckout extends Component {
         point_use: point_use
       }
       if (pointInfo.real_use_point && pointInfo.real_use_point < pointInfo.point_use) {
-        S.toast(`${getPointName()}有调整`)
+        S.toast(`${this.props.pointName}有调整`)
       }
 
       this.params.items = items
@@ -832,7 +827,7 @@ export default class CartCheckout extends Component {
   }
 
   // 处理导购
-  dealGuidInfo(params) {
+  dealGuidInfo (params) {
     const work_userid = Taro.getStorageSync('work_userid')
     const chatId = Taro.getStorageSync('chatId')
     if (work_userid) {
@@ -856,9 +851,9 @@ export default class CartCheckout extends Component {
         express: receiptType !== 'ziti'
       },
       () => {
-        if (receiptType !== 'ziti') { 
+        if (receiptType !== 'ziti') {
           if (this.props.address) {
-            this.props.onAddressChoose(null)
+            this.props.updateChooseAddress(null)
           } else {
             this.fetchAddress()
           }
@@ -904,13 +899,14 @@ export default class CartCheckout extends Component {
 
   // 修改自提店铺
   handleEditZitiClick = async (id) => {
-    const { cart_type, seckill_id = null, ticket = null, goodType } = this.$router.params
+    const { cart_type, seckill_id = null, ticket = null, goodType } = this.$instance.router.params
     const params = await this.getParams()
     Taro.navigateTo({
       url: `/pages/store/ziti-list?shop_id=${id}&cart_type=${cart_type}&order_type=${
         params.order_type
-      }&seckill_id=${seckill_id}&ticket=${ticket}&goodType=${goodType}&bargain_id=${params.bargain_id ||
-        ''}`
+      }&seckill_id=${seckill_id}&ticket=${ticket}&goodType=${goodType}&bargain_id=${
+        params.bargain_id || ''
+      }`
     })
   }
 
@@ -918,7 +914,7 @@ export default class CartCheckout extends Component {
     console.log(type)
   }
 
-  handleClickItems(items) {
+  handleClickItems (items) {
     this.setState({
       curCheckoutItems: items
     })
@@ -974,7 +970,7 @@ export default class CartCheckout extends Component {
     )
   }
 
-  toggleCheckoutItems(isOpened) {
+  toggleCheckoutItems (isOpened) {
     if (isOpened === undefined) {
       isOpened = !this.state.showCheckoutItems
     }
@@ -983,7 +979,7 @@ export default class CartCheckout extends Component {
     this.setState({ showCheckoutItems: isOpened })
   }
 
-  toggleState(key, val) {
+  toggleState (key, val) {
     if (val === undefined) {
       val = !this.state[key]
     }
@@ -1012,7 +1008,7 @@ export default class CartCheckout extends Component {
     console.log(val)
   }
 
-  resolvePayError(e) {
+  resolvePayError (e) {
     const { payType, disabledPayment, defalutPaytype } = this.state
     if (payType === 'point' || payType === 'deposit') {
       const disabledPaymentMes = {}
@@ -1105,10 +1101,10 @@ export default class CartCheckout extends Component {
           if (tmlres.template_id && tmlres.template_id.length > 0) {
             wx.requestSubscribeMessage({
               tmplIds: tmlres.template_id,
-              success() {
+              success () {
                 _this.handlePay()
               },
-              fail() {
+              fail () {
                 _this.handlePay()
               }
             })
@@ -1125,7 +1121,7 @@ export default class CartCheckout extends Component {
     }
   }
 
-  async createByType(params) {
+  async createByType (params) {
     const { freight_type, freight_fee } = this.state.total
 
     const { payType } = this.state
@@ -1154,7 +1150,7 @@ export default class CartCheckout extends Component {
     return info
   }
 
-  async h5CreateByType(params) {
+  async h5CreateByType (params) {
     let info
     if (this.isPointitemGood()) {
       info = await api.trade.h5create({
@@ -1172,7 +1168,7 @@ export default class CartCheckout extends Component {
     //   return S.toast('请选择地址')
     // }
     const { payType, total, identity, isOpenStore, curStore, receiptType, channel } = this.state
-    const { type, goodType, cart_type } = this.$router.params
+    const { type, goodType, cart_type } = this.$instance.router.params
 
     const isDrug = type === 'drug'
 
@@ -1180,10 +1176,10 @@ export default class CartCheckout extends Component {
       try {
         const content =
           payType === 'point'
-            ? `确认使用${total.point}${getPointName()}全额抵扣商品总价吗`
+            ? `确认使用${total.point}${this.props.pointName}全额抵扣商品总价吗`
             : '确认使用余额支付吗？'
         const { confirm } = await Taro.showModal({
-          title: payType === 'point' ? `${getPointName()}支付` : '余额支付',
+          title: payType === 'point' ? `${this.props.pointName}支付` : '余额支付',
           content,
           confirmColor: '#0b4137',
           confirmText: '确认使用',
@@ -1215,7 +1211,7 @@ export default class CartCheckout extends Component {
 
     let order_id, config, payErr
     try {
-      let params = await this.getParams()
+      let params = (await this.getParams()) || {}
       const getShopId = await this.getShopId()
 
       if (process.env.APP_PLATFORM === 'standard' && cart_type !== 'cart') {
@@ -1256,22 +1252,21 @@ export default class CartCheckout extends Component {
         params = { ...params, ...identity }
       }
 
-      if (
-        isWeb &&
-        payType !== 'point' &&
-        payType !== 'deposit' &&
-        !isDrug
-      ) {
+      if (isWeb && payType !== 'point' && payType !== 'deposit' && !isDrug) {
         config = await this.h5CreateByType({
           ...params,
-          pay_type: this.state.total.freight_type === 'point' ? 'point' : payType===PAYTYPE.ALIH5?PAYTYPE.ALIH5:'wxpay'
+          pay_type:
+            this.state.total.freight_type === 'point'
+              ? 'point'
+              : payType === PAYTYPE.ALIH5
+              ? PAYTYPE.ALIH5
+              : 'wxpay'
         })
-        let redirectPath=`/subpage/pages/cashier/index?order_id=${config.order_id}`;
+        let redirectPath = `/subpage/pages/cashier/index?order_id=${config.order_id}`
 
-        if(payType===PAYTYPE.WXH5||payType===PAYTYPE.ALIH5){
-          redirectPath+=`&pay_type=${payType}`;
-        } 
-
+        if (payType === PAYTYPE.WXH5 || payType === PAYTYPE.ALIH5) {
+          redirectPath += `&pay_type=${payType}`
+        }
         redirectUrl(api, redirectPath)
 
         // Taro.redirectTo({
@@ -1366,7 +1361,6 @@ export default class CartCheckout extends Component {
           return
         }
 
-
         let url = `/subpage/pages/trade/detail?id=${order_id}`
 
         if (isExtraPoint) {
@@ -1390,7 +1384,6 @@ export default class CartCheckout extends Component {
     }
 
     payErr = null
-    console.log('-----configCheckout-----', config, total, config)
     try {
       const { total } = this.state
       const notNeedPay = total.freight_type === 'cash' && !config.package
@@ -1414,14 +1407,7 @@ export default class CartCheckout extends Component {
         }
       }
 
-      if (!payRes.result && isAlipay) {
-        Taro.showToast({
-          title: '用户取消支付',
-          icon: 'none'
-        })
-
-        payErr = '用户取消支付'
-
+      if (!payRes.result) {
         Taro.redirectTo({
           url: tradeDetailUrl
         })
@@ -1447,7 +1433,7 @@ export default class CartCheckout extends Component {
         icon: 'success'
       })
 
-      this.props.onClearCart()
+      // this.props.onClearCart()
 
       let purl = `/subpage/pages/trade/detail?id=${order_id}`
 
@@ -1472,12 +1458,12 @@ export default class CartCheckout extends Component {
         if (this.isPointitemGood()) {
           purl += '&type=pointitem'
         }
-
         Taro.redirectTo({
           url: purl
         })
       }
     }
+    this.props.onClearCart()
     return
 
     // const url = `/pages/cashier/index?order_id=${order_id}`
@@ -1489,54 +1475,6 @@ export default class CartCheckout extends Component {
     this.params = {
       ...this.params,
       remark: val
-    }
-  }
-
-  // 键盘挡输入框
-  getElementOffsetTop (el) {
-    let top = el.offsetTop
-    let cur = el.offsetParent
-    while(cur != null){
-      top += cur.offsetTop
-      cur = cur.offsetParent
-   }
-   return top
-  }
-
-  getDevice () {
-    const ua = navigator.userAgent
-    const ios = /iPad|iPhone|iPod/.test(ua)
-    return ios
-  }
-
-  handleRemarkFocus = (value, event) => {
-    if (!isWeb) {
-      return
-    }
-    const ios = this.getDevice()
-    const dom = event.target
-    setTimeout(() => {
-      if (ios) {
-        document.body.scrollTop = document.body.scrollHeight
-      } else {
-        // dom.scrollIntoView(false) 微信x5内核不支持
-        const body = document.getElementsByTagName('body')[0]
-        const clientHeight = body.clientHeight // 可见高
-        const fixHeight = clientHeight / 3 // 自定义位置
-        const offsetTop = this.getElementOffsetTop(dom)
-        body.scrollTop = offsetTop - fixHeight
-      }
-    }, 300);
-  }
-
-  handleRemarkBlur = () => {
-    if (!isWeb) {
-      return
-    }
-    const ios = this.getDevice()
-    if (!ios) {
-      const body = document.getElementsByTagName('body')[0]
-      body.scrollTop = 0
     }
   }
 
@@ -1559,7 +1497,7 @@ export default class CartCheckout extends Component {
         }
       })
 
-    const { shop_id, source, scene, cart_type, goodType } = this.$router.params
+    const { shop_id, source, scene, cart_type, goodType } = this.$instance.router.params
 
     let m_source = ''
     if (source === 'other_pay' || scene) {
@@ -1615,7 +1553,7 @@ export default class CartCheckout extends Component {
   }
 
   // 设置初次paytype
-  initDefaultPaytype = (payType, channel) => { 
+  initDefaultPaytype = (payType, channel) => {
     this.setState({
       defalutPaytype: payType,
       channel
@@ -1740,17 +1678,17 @@ export default class CartCheckout extends Component {
     })
   }
 
-  render() {
+  render () {
     // 支付方式文字
     const payTypeText = {
-      point: customName('积分支付'),
+      point: `${this.props.pointName}支付`,
       wxpay: isWeixin ? '微信支付' : isAlipay ? '支付宝支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',
       hfpay: '微信支付',
-      alipayh5:'支付宝支付',
-      wxpayh5:'微信支付',
-      wxpayjs:'微信支付'
+      alipayh5: '支付宝支付',
+      wxpayh5: '微信支付',
+      wxpayjs: '微信支付'
     }
 
     const { coupon, colors } = this.props
@@ -1779,27 +1717,68 @@ export default class CartCheckout extends Component {
       isPackage,
       pack,
       isOpenStore,
-      defalutPaytype, 
+      defalutPaytype,
       headShop
     } = this.state
-  
-    const { type, goodType, bargain_id } = this.$router.params
+    const { type, goodType, bargain_id } = this.$instance.router.params
     const isDrug = type === 'drug'
     if (!info) {
       return <Loading />
-    } 
+    }
     const couponText = !coupon
       ? ''
       : coupon.type === 'member'
       ? '会员折扣'
       : (coupon.value && coupon.value.title) || ''
     //const isBtnDisabled = !address
-    const isBtnDisabled = express ? !address : false 
+    const isBtnDisabled = express ? !address : false
     return (
-      <View className='page-checkout' style={styleNames(getThemeStyle())}>
-        {showAddressPicker === false ? (
-          <SpNavBar title='填写订单信息' leftIconType='chevron-left' fixed='true' />
-        ) : null}
+      <SpPage
+        className='page-cart-checkout'
+        renderFooter={
+          <View className='checkout-toolbar'>
+            <View className='checkout__total'>
+              共<Text className='total-items'>{total.items_count}</Text>
+              件商品　总计:
+              {payType !== 'point' && !this.isPointitemGood() ? (
+                <Price primary unit='cent' value={total.total_fee} />
+              ) : (
+                total.point && (
+                  <View class='last_price'>
+                    <Price
+                      className='order-item__price'
+                      appendText={this.props.pointName}
+                      noSymbol
+                      noDecimal
+                      value={total.point}
+                    />
+                    {!total.freight_fee == 0 &&
+                      total.freight_type === 'cash' &&
+                      this.isPointitemGood() && (
+                        <Price
+                          unit='cent'
+                          plus
+                          value={total.freight_fee}
+                          className='order-item__plus'
+                        />
+                      )}
+                  </View>
+                )
+              )}
+            </View>
+            <AtButton
+              type='primary'
+              className='btn-confirm-order'
+              customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+              loading={submitLoading}
+              disabled={isBtnDisabled}
+              onClick={this.submitPay}
+            >
+              {isDrug ? '提交预约' : '提交订单'}
+            </AtButton>
+          </View>
+        }
+      >
         {shoppingGuideData ? (
           <View className='shopping-guide-header'>
             此订单商品来自“{shoppingGuideData.store_name}”导购“
@@ -1910,7 +1889,7 @@ export default class CartCheckout extends Component {
                                 {this.isPointitemGood() ? (
                                   <Price
                                     className='order-item__price'
-                                    appendText={getPointName()}
+                                    appendText={this.props.pointName}
                                     noSymbol
                                     noDecimal
                                     value={item.item_point}
@@ -1941,11 +1920,9 @@ export default class CartCheckout extends Component {
                   <View className='sec cart-group__cont'>
                     <SpCell className='sec trade-remark' border={false}>
                       <AtInput
-                        className={`trade-remark__input` }
+                        className='trade-remark__input'
                         placeholder='给商家留言：选填（50字以内）'
                         onChange={this.handleRemarkChange.bind(this)}
-                        onFocus={this.handleRemarkFocus.bind(this)}
-                        onBlur={this.handleRemarkBlur.bind(this)}
                         maxLength={50}
                       />
                     </SpCell>
@@ -1982,51 +1959,57 @@ export default class CartCheckout extends Component {
             />
           )}
 
-          {goodType !== 'cross' && !this.isPointitemGood() && pointInfo.is_open_deduct_point && process.env.APP_PLATFORM !== 'platform' && (
-            <SpCell
-              isLink
-              className='trade-invoice'
-              title={customName('积分抵扣')}
-              onClick={this.handlePointShow}
-            >
-              <View className='invoice-title'>
-                {(pointInfo.point_use > 0 || payType === 'point') && (
-                  <View
-                    className='icon-close invoice-guanbi'
-                    onClick={this.resetPoint.bind(this)}
-                  ></View>
-                )}
-                {payType === 'point'
-                  ? '全额抵扣'
-                  : pointInfo.point_use > 0
-                  ? `${customName(`已使用${pointInfo.real_use_point}积分`)}`
-                  : `${customName('使用积分')}`}
-              </View>
-            </SpCell>
-          )}
+          {goodType !== 'cross' &&
+            !this.isPointitemGood() &&
+            pointInfo.is_open_deduct_point &&
+            process.env.APP_PLATFORM !== 'platform' && (
+              <SpCell
+                isLink
+                className='trade-invoice'
+                title={customName('积分抵扣')}
+                onClick={this.handlePointShow}
+              >
+                <View className='invoice-title'>
+                  {(pointInfo.point_use > 0 || payType === 'point') && (
+                    <View
+                      className='icon-close invoice-guanbi'
+                      onClick={this.resetPoint.bind(this)}
+                    ></View>
+                  )}
+                  {payType === 'point'
+                    ? '全额抵扣'
+                    : pointInfo.point_use > 0
+                    ? `${customName(`已使用${pointInfo.real_use_point}积分`)}`
+                    : `${customName('使用积分')}`}
+                </View>
+              </SpCell>
+            )}
 
-          {goodType !== 'cross' && !this.isPointitemGood() && pointInfo.is_open_deduct_point && process.env.APP_PLATFORM !== 'platform' && (
-            <SpCell
-              isLink
-              className='trade-invoice'
-              title={`${getPointName()}抵扣`}
-              onClick={this.handlePointShow}
-            >
-              <View className='invoice-title'>
-                {(pointInfo.point_use > 0 || payType === 'point') && (
-                  <View
-                    className='icon-close invoice-guanbi'
-                    onClick={this.resetPoint.bind(this)}
-                  ></View>
-                )}
-                {payType === 'point'
-                  ? '全额抵扣'
-                  : pointInfo.point_use > 0
-                  ? `已使用${pointInfo.real_use_point}${getPointName()}`
-                  : `使用${getPointName()}`}
-              </View>
-            </SpCell>
-          )}
+          {goodType !== 'cross' &&
+            !this.isPointitemGood() &&
+            pointInfo.is_open_deduct_point &&
+            process.env.APP_PLATFORM !== 'platform' && (
+              <SpCell
+                isLink
+                className='trade-invoice'
+                title={`${this.props.pointName}抵扣`}
+                onClick={this.handlePointShow}
+              >
+                <View className='invoice-title'>
+                  {(pointInfo.point_use > 0 || payType === 'point') && (
+                    <View
+                      className='icon-close invoice-guanbi'
+                      onClick={this.resetPoint.bind(this)}
+                    ></View>
+                  )}
+                  {payType === 'point'
+                    ? '全额抵扣'
+                    : pointInfo.point_use > 0
+                    ? `已使用${pointInfo.real_use_point}${this.props.pointName}`
+                    : `使用${this.props.pointName}`}
+                </View>
+              </SpCell>
+            )}
 
           {!bargain_id && !this.isPointitemGood() && (
             <View className='trade-payment'>
@@ -2039,7 +2022,7 @@ export default class CartCheckout extends Component {
                 {total.deduction && (
                   <Text className='trade-payment__hint'>
                     {total.remainpt}
-                    {`${getPointName()}可用`}
+                    {`${this.props.pointName}可用`}
                   </Text>
                 )}
                 <Text>{payTypeText[payType]}</Text>
@@ -2047,8 +2030,8 @@ export default class CartCheckout extends Component {
               {total.deduction && (
                 <View className='trade-payment__hint'>
                   可用{total.point}
-                  {getPointName()}，抵扣 <Price unit='cent' value={total.deduction} /> (包含运费{' '}
-                  <Price unit='cent' value={total.freight_fee}></Price>)
+                  {this.props.pointName}，抵扣 <Price unit='cent' value={total.deduction} />{' '}
+                  (包含运费 <Price unit='cent' value={total.freight_fee}></Price>)
                 </View>
               )}
             </View>
@@ -2067,11 +2050,13 @@ export default class CartCheckout extends Component {
               <SpCell className='trade-sub-total__item' title='优惠金额：'>
                 <Price unit='cent' value={total.discount_fee} />
               </SpCell>
-              {goodType !== 'cross' && pointInfo.is_open_deduct_point && process.env.APP_PLATFORM !== 'platform' && (
-                <SpCell className='trade-sub-total__item' title={`${getPointName()}抵扣：`}>
-                  <Price unit='cent' value={total.point_fee} />
-                </SpCell>
-              )}
+              {goodType !== 'cross' &&
+                pointInfo.is_open_deduct_point &&
+                process.env.APP_PLATFORM !== 'platform' && (
+                  <SpCell className='trade-sub-total__item' title={`${this.props.pointName}抵扣：`}>
+                    <Price unit='cent' value={total.point_fee} />
+                  </SpCell>
+                )}
               <SpCell className='trade-sub-total__item' title='运费：'>
                 <Price unit='cent' value={total.freight_fee} />
               </SpCell>
@@ -2085,10 +2070,10 @@ export default class CartCheckout extends Component {
 
           {this.isPointitemGood() && (
             <View className='sec trade-sub-total'>
-              <SpCell className='trade-sub-total__item' title={`${getPointName()}消费：`}>
+              <SpCell className='trade-sub-total__item' title={`${this.props.pointName}消费：`}>
                 <Price
                   className='order-item__price'
-                  appendText={getPointName()}
+                  appendText={this.props.pointName}
                   noSymbol
                   noDecimal
                   value={total.item_point}
@@ -2098,7 +2083,7 @@ export default class CartCheckout extends Component {
                 {total.freight_type === 'point' ? (
                   <Price
                     className='order-item__price'
-                    appendText={getPointName()}
+                    appendText={this.props.pointName}
                     noSymbol
                     noDecimal
                     value={total.freight_fee}
@@ -2127,30 +2112,30 @@ export default class CartCheckout extends Component {
           onClickBack={this.toggleCheckoutItems.bind(this, false)}
         />
 
-        <View className='toolbar checkout-toolbar'>
-          <View className='checkout__total'>
-            共<Text className='total-items'>{total.items_count}</Text>
+        {/* <View className="toolbar checkout-toolbar">
+          <View className="checkout__total">
+            共<Text className="total-items">{total.items_count}</Text>
             件商品　总计:
-            {payType !== 'point' && !this.isPointitemGood() ? (
-              <Price primary unit='cent' value={total.total_fee} />
+            {payType !== "point" && !this.isPointitemGood() ? (
+              <Price primary unit="cent" value={total.total_fee} />
             ) : (
               total.point && (
-                <View class='last_price'>
+                <View class="last_price">
                   <Price
-                    className='order-item__price'
-                    appendText={getPointName()}
+                    className="order-item__price"
+                    appendText={this.props.pointName}
                     noSymbol
                     noDecimal
                     value={total.point}
                   />
                   {!total.freight_fee == 0 &&
-                    total.freight_type === 'cash' &&
+                    total.freight_type === "cash" &&
                     this.isPointitemGood() && (
                       <Price
-                        unit='cent'
+                        unit="cent"
                         plus
                         value={total.freight_fee}
-                        className='order-item__plus'
+                        className="order-item__plus"
                       />
                     )}
                 </View>
@@ -2167,7 +2152,7 @@ export default class CartCheckout extends Component {
           >
             {isDrug ? '提交预约' : '提交订单'}
           </AtButton>
-        </View>
+        </View> */}
 
         <PaymentPicker
           isOpened={isPaymentOpend}
@@ -2191,7 +2176,7 @@ export default class CartCheckout extends Component {
         ></PointUse>
 
         <SpToast />
-      </View>
+      </SpPage>
     )
   }
 }

@@ -124,6 +124,7 @@
         color: $color-gray;
         z-index: 10;
         padding: 16px;
+        font-size: 28px;
       }
       /*  #endif  */
 
@@ -207,6 +208,9 @@
     margin: 0 15px 15px 0;
     display: inline-block;
     white-space: nowrap;
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &.is-active {
       color: $color-brand-primary;
       border-color: $color-brand-primary;

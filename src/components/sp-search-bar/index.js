@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Form, Text, Image } from '@tarojs/components'
-import { AtSearchBar } from 'taro-ui'
+import { AtSearchBar, AtForm } from 'taro-ui'
 import { classNames } from '@/utils'
 import { toggleTouchMove } from '@/utils/dom'
 
@@ -11,14 +12,15 @@ export default class SpSearchBar extends Component {
     isOpened: false,
     keyword: '',
     showDailog: true,
-    onCancel: () =>  {},
+    placeholder: '搜索',
+    onCancel: () => {},
     onChange: () => {},
     onClear: () => {},
     onFocus: () => {},
     onConfirm: () => {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -33,7 +35,7 @@ export default class SpSearchBar extends Component {
     addGlobalClass: true
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (process.env.TARO_ENV === 'h5') {
       toggleTouchMove(this.refs.container)
     }
@@ -66,6 +68,10 @@ export default class SpSearchBar extends Component {
   }
 
   handleConfirm = (e) => {
+    debugger
+    e.preventDefault && e.preventDefault()
+    e.stopPropagation && e.stopPropagation()
+
     if (e.detail.value && e.detail.value.trim()) {
       Taro.getStorage({ key: 'searchHistory' })
         .then((res) => {
@@ -119,18 +125,24 @@ export default class SpSearchBar extends Component {
     console.log('热门搜索', 100)
   }
 
-  render() {
-    const { isFixed, keyword, showDailog, _placeholder } = this.props
+  render () {
+    const { isFixed, keyword, showDailog, placeholder } = this.props
     const { showSearchDailog, historyList, isShowAction, searchValue } = this.state
     return (
       <View
-        className={classNames('sp-search-bar', isFixed ? 'sp-search-bar-fixed' : null, showSearchDailog ? 'sp-search-bar__focus' : null, !showDailog && 'without-dialog')}
+        className={classNames(
+          'sp-search-bar',
+          isFixed ? 'sp-search-bar-fixed' : null,
+          showSearchDailog ? 'sp-search-bar__focus' : null,
+          !showDailog && 'without-dialog'
+        )}
       >
         <Form className='sp-search-bar__form'>
+          {/* <AtForm onSubmit={this.handleConfirm.bind(this)}> */}
           <AtSearchBar
             className='sp-search-bar__bar'
             value={keyword}
-            placeholder='搜索'
+            placeholder={placeholder}
             actionName='取消'
             showActionButton={isShowAction}
             onFocus={this.handleFocusSearchHistory.bind(this, true)}
@@ -139,6 +151,7 @@ export default class SpSearchBar extends Component {
             onConfirm={this.handleConfirm.bind(this)}
             onActionClick={this.handleClickCancel.bind(this, false)}
           />
+          {/* </AtForm> */}
         </Form>
 
         {showDailog && (
@@ -150,7 +163,7 @@ export default class SpSearchBar extends Component {
             <View className='sp-search-bar__history-title'>
               <Text className='title'>最近搜索</Text>
               <Text
-                className='icon-trash icon-del'
+                className='icon-trashCan icon-del'
                 onClick={this.handleClickDelete.bind(this)}
               ></Text>
             </View>

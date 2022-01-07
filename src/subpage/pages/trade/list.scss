@@ -66,6 +66,20 @@
         );
         /*  #endif  */
       }
+      &.with-tabs-wx {
+        @include page-scroll(
+          $navigate-height-h5,
+          $edge-margin
+        );
+      }
+    }
+    .trade-cont {
+      .more {
+        color: #d42f29;
+        /*  #ifdef  h5  */
+        border: none;
+        /*  #endif  */
+      }
     }
   }
 
@@ -73,7 +87,7 @@
     position: relative;
     .btn-action {
       width: auto;
-      margin-left: 20rpx;
+      margin-left: 20px;
       padding: 0 22px;
       height: 42px;
       line-height: 42px;
@@ -81,6 +95,7 @@
       font-size: $font-size-small;
       color: #fff;
       background: #fff;
+      margin-top: 0px;
       &::after {
         background: none;
         border: none;
@@ -119,19 +134,6 @@
       font-size: 24px;
       color: #000;
     }
-  }
-}
-
-.after-saler-page {
-  .after-saler__scroll {
-    .more {
-      color: #d42f29;
-      border: none;
-      font-size: 24px;
-    }
-  }
-  .at-tabs__body {
-    height: 15px;
   }
 }
 

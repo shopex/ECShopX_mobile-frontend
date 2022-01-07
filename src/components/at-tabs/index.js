@@ -1,7 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Image } from '@tarojs/components'
 import { classNames } from '@/utils'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import './index.scss'
 
 @connect(({ colors }) => ({
@@ -16,14 +16,14 @@ export default class AtTabslist extends Component {
     tabList: [],
     onClick: () => {}
   }
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       current: 0
     }
   }
 
-  handleClick(value) {
+  handleClick (value) {
     this.setState(
       {
         current: value
@@ -34,7 +34,7 @@ export default class AtTabslist extends Component {
     )
   }
 
-  render() {
+  render () {
     const { current } = this.state
     const { tabList, colors } = this.props
     return (

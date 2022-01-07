@@ -1,12 +1,13 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer, AtInput } from 'taro-ui'
 import { BackToTop, Loading, SpNote, TabBar, HomeCapsule } from '@/components'
 import api from '@/api'
-import { Tracker } from '@/service'
-import { classNames, isWeixin, getPointName } from '@/utils'
+// import { Tracker } from '@/service'
+import { classNames, isWeixin } from '@/utils'
 import throttle from 'lodash/throttle'
 import Header from './comps/header'
 import GoodsItem from './comps/goods_item'
@@ -14,13 +15,15 @@ import FilterBlock from './comps/filter-block'
 import CustomHeader from './comps/headerContainer'
 import './list.scss'
 
-@connect(({ member, colors }) => ({
-  favs: member.favs,
-  colors: colors.current
+@connect(({ user, colors, sys }) => ({
+  favs: user.favs,
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 @withPager
 export default class List extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -69,17 +72,8 @@ export default class List extends Component {
     }
   }
 
-  config = {
-    enablePullDownRefresh: true,
-    onReachBottomDistance: 80,
-    backgroundTextStyle: 'dark',
-    navigationBarTitleText: '',
-    navigationBarTextStyle: 'white',
-    navigationStyle: 'custom'
-  }
-
-  async componentDidMount() {
-    const { keywords, dis_id, cat_id, main_cat_id } = this.$router.params
+  async componentDidMount () {
+    const { keywords, dis_id, cat_id, main_cat_id } = this.$instance.router.params
 
     this.init()
 
@@ -103,8 +97,8 @@ export default class List extends Component {
     )
   }
 
-  componentWillReceiveProps(next) {
-    if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
+  componentWillReceiveProps (next) {
+    if (next.favs && Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
       setTimeout(() => {
         const list = this.state.list.map((item) => {
           item.is_fav = Boolean(next.favs[item.item_id])
@@ -130,14 +124,14 @@ export default class List extends Component {
     })
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.getWechatNavBarHeight()
     this.fetchUserInfo()
 
-    const options = this.$router.params
+    const options = this.$instance.router.params
   }
 
-  async fetchUserInfo() {
+  async fetchUserInfo () {
     const [res, { point }] = await Promise.all([
       api.member.memberInfo(),
       api.pointitem.getMypoint()
@@ -159,7 +153,7 @@ export default class List extends Component {
 
   getLeafChild = (list) => {
     //获取分类的叶子节点
-    function queryList(json, arr) {
+    function queryList (json, arr) {
       for (var i = 0; i < json.length; i++) {
         var sonList = json[i].children || []
         if (sonList.length == 0) {
@@ -173,7 +167,7 @@ export default class List extends Component {
     return queryList(list, [])
   }
 
-  async fetchConfig(params) {
+  async fetchConfig (params) {
     const query = {
       page: 1,
       item_type: 'normal',
@@ -215,7 +209,7 @@ export default class List extends Component {
     })
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
 
     const {
@@ -259,7 +253,7 @@ export default class List extends Component {
     }
   }
 
-  startTrack() {
+  startTrack () {
     this.endTrack()
     const observer = Taro.createIntersectionObserver(this.$scope, {
       observeAll: true
@@ -284,7 +278,7 @@ export default class List extends Component {
     this.observe = observer
   }
 
-  endTrack() {
+  endTrack () {
     if (this.observer) {
       this.observer.disconnect()
       this.observe = null
@@ -350,7 +344,7 @@ export default class List extends Component {
     )
   }
 
-  handleClickItemF(idx) {
+  handleClickItemF (idx) {
     const item = this.state.filterList[idx] || {}
 
     let sortOrder = null
@@ -382,8 +376,9 @@ export default class List extends Component {
       price: price * 100,
       imgUrl: img
     })
-    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${item.distributor_id ||
-      0}&type=pointitem`
+    const url = `/pages/item/espier-detail?id=${item.item_id}&dtid=${
+      item.distributor_id || 0
+    }&type=pointitem`
     Taro.navigateTo({
       url
     })
@@ -591,7 +586,7 @@ export default class List extends Component {
     )
   }
 
-  render() {
+  render () {
     const {
       list,
       curFilterIdx,
@@ -714,7 +709,7 @@ export default class List extends Component {
 
             {
               <Text
-                className={classNames('iconfont', 'icon-search', {
+                className={classNames('iconfont', 'icon-search1', {
                   [`show`]: filterActive
                 })}
                 type='search'
@@ -796,16 +791,16 @@ export default class List extends Component {
             )}
             {pointVisible && (
               <View className='score'>
-                <View className='title'>{`${getPointName()}区间`}</View>
+                <View className='title'>{`${this.props.pointName}区间`}</View>
                 <View className='input-wrap'>
                   <AtInput
-                    placeholder={`最低${getPointName()}值`}
+                    placeholder={`最低${this.props.pointName}值`}
                     value={start_price}
                     onChange={this.handleChangeStartprice}
                   />
                   <View className='text'>~</View>
                   <AtInput
-                    placeholder={`最高${getPointName()}值`}
+                    placeholder={`最高${this.props.pointName}值`}
                     value={end_price}
                     onChange={this.handleChangeEndprice}
                   />

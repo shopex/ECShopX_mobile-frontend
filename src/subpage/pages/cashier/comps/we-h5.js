@@ -1,32 +1,34 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import api from '@/api'
 
 import './we.scss'
 
 export default class WeappBtn extends Component {
+  $instance = getCurrentInstance()
   static options = {
     addGlobalClass: true
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {}
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const refMeta = document.querySelector('meta[name="referrer"]')
     refMeta.setAttribute('content', 'always')
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     const refMeta = document.querySelector('meta[name="referrer"]')
     refMeta.setAttribute('content', 'never')
   }
 
   handleClickPay = async () => {
-    const { order_id } = this.$router.params
+    const { order_id } = this.$instance.router.params
     const { orderType = 'normal' } = this.props
 
     const params = {
@@ -35,7 +37,7 @@ export default class WeappBtn extends Component {
       order_type: orderType
     }
 
-    const res = await api.cashier.getPayment(params) 
+    const res = await api.cashier.getPayment(params)
     // eslint-disable-next-line
     const loc = location
     const redirect_url = `${loc.protocol}//${loc.host}/subpage/pages/cashier/cashier-result?order_id=${order_id}`
@@ -57,7 +59,7 @@ export default class WeappBtn extends Component {
     form.submit()
   }
 
-  render() {
+  render () {
     return (
       <View className='weapp-btn' onClick={this.handleClickPay.bind(this)}>
         微信支付

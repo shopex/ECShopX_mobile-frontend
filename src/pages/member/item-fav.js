@@ -1,22 +1,23 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { withPager, withBackToTop } from '@/hocs'
 import api from '@/api'
-import { pickBy, isNavbar, classNames } from '@/utils'
+import { pickBy, hasNavbar, isWxWeb } from '@/utils'
 import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote, RecommendItem } from '@/components'
 import StoreFavItem from './comps/store-fav-item'
 
 import './item-fav.scss'
 
-@connect(({ member }) => ({
-  favs: member.favs
+@connect(({ user }) => ({
+  favs: user.favs
 }))
 @withPager
 @withBackToTop
 export default class ItemFav extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -31,32 +32,26 @@ export default class ItemFav extends Component {
     }
   }
 
-  componentDidMount() {
-    this.nextPage()
+  componentDidShow () {
+    this.resetPage()
+    this.setState(
+      {
+        list: []
+      },
+      () => {
+        this.nextPage()
+      }
+    )
   }
 
-  componentWillReceiveProps (next) {
-    if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
-      setTimeout(() => {
-        const list = this.state.list.map(item => {
-          item.is_fav = Boolean(next.favs[item.item_id])
-          return item
-        })
-        this.setState({
-          list
-        })
-      })
-    }
-  }
-
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
       pageSize
     }
 
-    const { favs } = this.props
+    const { favs = {} } = this.props
 
     const { list, total } = await (async () => {
       let list = []
@@ -76,7 +71,9 @@ export default class ItemFav extends Component {
             point: 'point',
             // price: ({ price }) => (price/100).toFixed(2),
             price: ({ price, item_price }) => ((price || item_price) / 100).toFixed(2),
-            is_fav: ({ item_id }) => Boolean(favs[item_id])
+            is_fav: ({ item_id }) => {
+              return favs && Boolean(favs[item_id])
+            }
           })
           total = res.total_count
           break
@@ -182,13 +179,13 @@ export default class ItemFav extends Component {
     )
   }
 
-  render() {
+  render () {
     const { list, showBackToTop, scrollTop, page, curTabIdx, tabList } = this.state
     return (
       <View className='page-goods-fav'>
         <SpNavBar title='收藏' leftIconType='chevron-left' fixed='true' />
         <AtTabs
-          className='trade-list__tabs'
+          className={`trade-list__tabs ${hasNavbar && 'navbar_padtop'}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
@@ -198,7 +195,7 @@ export default class ItemFav extends Component {
           ))}
         </AtTabs>
         <ScrollView
-          className={classNames(isNavbar ? 'goods-list__navbar' : 'goods-list__scroll')}
+          className={`goods-list__scroll ${isWxWeb && 'goods_scroll_top'} `}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation

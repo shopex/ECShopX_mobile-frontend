@@ -1,25 +1,24 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, getCurrentRoute } from '@/utils'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 import TradeItem from './comps/item'
 
 import './list.scss'
+
 @connect(({ colors }) => ({
   colors: colors.current
 }))
 @withPager
-@withLogin()
 export default class TradePickList extends Component {
-  static config = {
-    navigationBarTitleText: '自提订单'
-  }
+  $instance = getCurrentInstance()
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -30,7 +29,7 @@ export default class TradePickList extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState(
       {
         query: {
@@ -60,11 +59,11 @@ export default class TradePickList extends Component {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.hideLayer()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       ...this.state.query,
@@ -86,7 +85,7 @@ export default class TradePickList extends Component {
       pay_type: 'pay_type',
       point: 'point',
       create_date: 'create_date',
-      distributor_info:'distributor_info',
+      distributor_info: 'distributor_info',
       order: ({ items }) =>
         pickBy(items, {
           order_id: 'order_id',
@@ -121,7 +120,7 @@ export default class TradePickList extends Component {
     const { tid } = trade
     if (type === 'confirm') {
       await api.trade.confirm(tid)
-      const { fullPath } = getCurrentRoute(this.$router)
+      const { fullPath } = getCurrentRoute(this.$instance.router)
       Taro.redirectTo({
         url: fullPath
       })
@@ -159,7 +158,7 @@ export default class TradePickList extends Component {
     })
   }
 
-  render() {
+  render () {
     const { curItemActionsId, tabList, list, page } = this.state
 
     return (

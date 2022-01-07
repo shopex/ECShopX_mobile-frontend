@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 
 import './index.scss'
@@ -12,7 +13,7 @@ export default class BackToTop extends Component {
     bottom: null
   }
 
-  render() {
+  render () {
     const { bottom } = this.props
 
     return (

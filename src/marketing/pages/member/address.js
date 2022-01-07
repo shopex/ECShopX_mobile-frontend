@@ -1,27 +1,29 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 // import AddressList from '@/components/new-address/address'
-import { connect } from '@tarojs/redux'
-import { SpToast, SpCell, SpNavBar } from '@/components'
+import { connect } from 'react-redux'
+import { SpToast, SpCell, SpNavBar, SpPage } from '@/components'
 import S from '@/spx'
 import api from '@/api'
-import { showLoading, hideLoading } from '@/utils'
 
 import './address.scss'
 
 const ADDRESS_ID = 'address_id'
 
 @connect(
-  ({ address, colors }) => ({
-    address: address.current,
+  ({ user, colors }) => ({
+    address: user.address,
     colors: colors.current
   }),
   (dispatch) => ({
-    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
+    updateChooseAddress: (address) =>
+      dispatch({ type: 'user/updateChooseAddress', payload: address })
   })
 )
 export default class AddressIndex extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -31,22 +33,20 @@ export default class AddressIndex extends Component {
     }
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.fetch()
   }
 
-  async fetch(isDelete = false) {
-    const { isPicker, receipt_type = '', city = '' } = this.$router.params
+  async fetch (isDelete = false) {
+    const { isPicker, receipt_type = '', city = '' } = this.$instance.router.params
     if (isPicker) {
       this.setState({
         isPicker: true
       })
     }
-    showLoading({
-      mask: true
-    })
+    Taro.showLoading()
     const { list } = await api.member.addressList()
-    hideLoading()
+    Taro.hideLoading()
     let newList = [...list]
     if (receipt_type === 'dada' && city) {
       newList = list
@@ -73,7 +73,7 @@ export default class AddressIndex extends Component {
       selectedId: item[ADDRESS_ID]
     })
 
-    this.props.onAddressChoose(item)
+    this.props.updateChooseAddress(item)
     setTimeout(() => {
       Taro.navigateBack()
     }, 700)
@@ -111,7 +111,7 @@ export default class AddressIndex extends Component {
     await api.member.addressDelete(item.address_id)
     S.toast('删除成功')
     if (selectedId === item.address_id) {
-      this.props.onAddressChoose(null)
+      this.props.updateChooseAddress(null)
     }
     setTimeout(() => {
       this.fetch(true)
@@ -129,106 +129,109 @@ export default class AddressIndex extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { selectedId, isPicker, list, is_open_crmAddress } = this.state
     return (
-      <View className='page-address-index'>
-        {process.env.TARO_ENV === 'weapp' ? (
-          <SpCell
-            isLink
-            iconPrefix='sp-icon'
-            icon='weixin'
-            title='获取微信收货地址'
-            onClick={this.wxAddress.bind(this)}
-          />
-        ) : null}
+      <SpPage className='page-address-index'>
+        <View>
+          {process.env.TARO_ENV === 'weapp' ? (
+            <SpCell
+              isLink
+              iconPrefix='sp-icon'
+              icon='weixin'
+              title='获取微信收货地址'
+              onClick={this.wxAddress.bind(this)}
+            />
+          ) : (
+            <SpNavBar title='收货地址' leftIconType='chevron-left' fixed='true' />
+          )}
 
-        <SpNavBar title='收货地址' leftIconType='chevron-left' fixed='true' />
-        <View className='member-address-list'>
-          {list.map((item) => {
-            return (
-              <View
-                key={item[ADDRESS_ID]}
-                className={`address-item ${item.disabled ? 'disabled' : ''}`}
-              >
-                {isPicker && !item.disabled && (
-                  <View
-                    className='address-item__check'
-                    onClick={this.handleClickChecked.bind(this, item)}
-                  >
-                    {item[ADDRESS_ID] === selectedId ? (
-                      <Text
-                        className='icon-check address-item__checked'
-                        style={{ color: colors.data[0].primary }}
-                      ></Text>
-                    ) : (
-                      <Text
-                        className='address-item__unchecked'
-                        style={{ borderColor: colors.data[0].primary }}
-                      >
-                        {' '}
-                      </Text>
-                    )}
-                  </View>
-                )}
-
-                <View className='address-item__content'>
-                  <View className='address-item__title'>
-                    <Text className='address-item__info'>{item.username}</Text>
-                    <Text className='address-item__info'>{item.telephone}</Text>
-                  </View>
-                  <View className='address-item__detail'>
-                    {item.province}
-                    {item.city}
-                    {item.county}
-                    {item.adrdetail}
-                  </View>
-                  <View className='address-item__footer'>
+          <View className='member-address-list'>
+            {list.map((item) => {
+              return (
+                <View
+                  key={item[ADDRESS_ID]}
+                  className={`address-item ${item.disabled ? 'disabled' : ''}`}
+                >
+                  {isPicker && !item.disabled && (
                     <View
-                      className='address-item__footer_default'
-                      onClick={this.handleChangeDefault.bind(this, item)}
+                      className='address-item__check'
+                      onClick={this.handleClickChecked.bind(this, item)}
                     >
-                      {item.is_def ? (
+                      {item[ADDRESS_ID] === selectedId ? (
                         <Text
-                          className='icon-check default__icon default__checked'
+                          className='iconfont icon-check address-item__checked'
                           style={{ color: colors.data[0].primary }}
+                        ></Text>
+                      ) : (
+                        <Text
+                          className='address-item__unchecked'
+                          style={{ borderColor: colors.data[0].primary }}
                         >
                           {' '}
                         </Text>
-                      ) : (
-                        <Text className='icon-check default__icon'> </Text>
                       )}
-                      <Text className='default-text'>设为默认</Text>
                     </View>
-                    <View className='address-item__footer_edit'>
+                  )}
+
+                  <View className='address-item__content'>
+                    <View className='address-item__title'>
+                      <Text className='address-item__info'>{item.username}</Text>
+                      <Text className='address-item__info'>{item.telephone}</Text>
+                    </View>
+                    <View className='address-item__detail'>
+                      {item.province}
+                      {item.city}
+                      {item.county}
+                      {item.adrdetail}
+                    </View>
+                    <View className='address-item__footer'>
                       <View
-                        className='footer-text'
-                        onClick={this.handleClickToEdit.bind(this, item)}
+                        className='address-item__footer_default'
+                        onClick={this.handleChangeDefault.bind(this, item)}
                       >
-                        <Text className='icon-edit footer-icon'> </Text>
-                        <Text>编辑</Text>
+                        {item.is_def ? (
+                          <Text
+                            className='iconfont icon-check default__icon default__checked'
+                            style={{ color: colors.data[0].primary }}
+                          >
+                            {' '}
+                          </Text>
+                        ) : (
+                          <Text className='iconfont icon-check default__icon'> </Text>
+                        )}
+                        <Text className='default-text'>设为默认</Text>
                       </View>
-                      <View className='footer-text' onClick={this.handleDelete.bind(this, item)}>
-                        <Text className='icon-trash footer-icon'> </Text>
-                        <Text>删除</Text>
+                      <View className='address-item__footer_edit'>
+                        <View
+                          className='footer-text'
+                          onClick={this.handleClickToEdit.bind(this, item)}
+                        >
+                          <Text className='iconfont icon-edit footer-icon'> </Text>
+                          <Text>编辑</Text>
+                        </View>
+                        <View className='footer-text' onClick={this.handleDelete.bind(this, item)}>
+                          <Text className='iconfont icon-trashCan footer-icon'> </Text>
+                          <Text>删除</Text>
+                        </View>
                       </View>
                     </View>
                   </View>
                 </View>
-              </View>
-            )
-          })}
+              )
+            })}
+          </View>
+          <View
+            className='member-address-add'
+            style={'background: ' + colors.data[0].primary}
+            onClick={this.handleClickToEdit.bind(this)}
+          >
+            添加新地址
+          </View>
+          <SpToast />
         </View>
-        <View
-          className='member-address-add'
-          style={'background: ' + colors.data[0].primary}
-          onClick={this.handleClickToEdit.bind(this)}
-        >
-          添加新地址
-        </View>
-        <SpToast />
-      </View>
+      </SpPage>
     )
   }
 }

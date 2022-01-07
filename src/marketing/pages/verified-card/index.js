@@ -1,10 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { SpNavBar } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
-import bankData from './hfpayBankData.json'
 
 import './index.scss'
 
@@ -12,16 +12,13 @@ import './index.scss'
   colors: colors.current
 }))
 export default class Index extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       info: {}
     }
   }
-  config = {
-    navigationBarTitleText: '实名认证以及绑定银行卡'
-  }
-  componentDidMount() {
+  componentDidMount () {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -45,7 +42,7 @@ export default class Index extends Component {
     }
   }
 
-  async fetch() {
+  async fetch () {
     const resUser = Taro.getStorageSync('userinfo')
     const { username, avatar } = resUser
     const promoter = await api.distribution.info()
@@ -84,7 +81,7 @@ export default class Index extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { info } = this.state
 

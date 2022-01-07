@@ -8,13 +8,14 @@
  * @LastEditors: PrendsMoi
  * @LastEditTime: 2021-03-08 18:34:22
  */
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 
 import './headContainer.scss'
 
 export default class HeaderCustom extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
@@ -33,7 +34,7 @@ export default class HeaderCustom extends Component {
     }
   }
 
-  render() {
+  render () {
     const { isWhite = false, statusBarHeight = 44, isHome } = this.props
     return (
       <View
@@ -42,9 +43,12 @@ export default class HeaderCustom extends Component {
       >
         <View className={`menu ${!isHome && 'roate'}`}>
           {isHome ? (
-            <View className='icon icon-home1' onClick={this.handleBack.bind(this, 'home')}></View>
+            <View
+              className='iconfont icon-home1'
+              onClick={this.handleBack.bind(this, 'home')}
+            ></View>
           ) : (
-            <View className='icon icon-arrowUp' onClick={this.handleBack.bind(this, '')}></View>
+            <View className='iconfont icon-arrowUp' onClick={this.handleBack.bind(this, '')}></View>
           )}
         </View>
       </View>
