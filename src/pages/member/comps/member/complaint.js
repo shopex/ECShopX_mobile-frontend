@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtAvatar, AtTextarea, AtButton, AtImagePicker } from 'taro-ui'
 import { Loading } from '@/components'
@@ -7,7 +8,7 @@ import api from '@/api'
 import './complaint.scss'
 
 export default class Complaint extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -17,11 +18,11 @@ export default class Complaint extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     let info = await api.member.getSalesperson()
 
     console.log('res', info)
@@ -32,7 +33,7 @@ export default class Complaint extends Component {
   /**
    * 起诉理由输入
    * */
-  handleChangeReason(e) {
+  handleChangeReason (e) {
     this.setState({
       complaintReason: e
     })
@@ -41,7 +42,7 @@ export default class Complaint extends Component {
   /**
    * 图片上传
    * */
-  handleChangeUploadImg(files) {
+  handleChangeUploadImg (files) {
     this.setState({
       files
     })
@@ -50,14 +51,14 @@ export default class Complaint extends Component {
   /**
    * 图片上传失败
    * */
-  handleChangeUploadError(mes) {
+  handleChangeUploadError (mes) {
     console.log('图片上传失败', mes)
   }
 
   /**
    * 投诉
    *  */
-  async handleClickButton() {
+  async handleClickButton () {
     let { complaintReason: complaints_content, files } = this.state
 
     if (!complaints_content) {
@@ -85,11 +86,11 @@ export default class Complaint extends Component {
     })
 
     Taro.redirectTo({
-      url: '/pages/member/index'
+      url: '/subpages/member/index'
     })
   }
 
-  render() {
+  render () {
     const { info, complaintReason, files } = this.state
 
     if (!info) {

@@ -1,5 +1,5 @@
 @import "../../style/imports";
-
+$primary-color: rgba(244, 129, 31, 1);
 .page-store-index {
   background: #fff;
   height: 100%;
@@ -8,7 +8,7 @@
  
     &.fixedSearch{
       .wgts-wrap {
-        padding-top: 80px;
+        padding-top: 170px;
         /*  #ifdef  h5  */
         padding-top: 160px;
         /*  #endif  */   

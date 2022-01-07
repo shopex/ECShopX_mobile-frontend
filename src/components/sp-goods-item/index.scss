@@ -1,7 +1,18 @@
 .sp-goods-item {
-  background-color: #f5f5f5;
+  background-color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
   .goods-item {
     &__hd {
+      padding-top: 100%;
+      position: relative;
+      .sp-image {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
     }
     &__bd {
       border-radius: 0;
@@ -16,6 +27,10 @@
         font-size: 24px;
         color: $color-hint-text;
         @include multi-ellipsis(2);
+      }
+
+      .goods-info {
+        margin-bottom: 20px;
       }
 
       .goods-price {
@@ -45,14 +60,34 @@
 
         }
         &-rg {
-          .icon-shoucang-01 {
-            font-size: 44px;
+          .iconfont {
+            font-size: 40px;
             color: #666;
+          }
+          .icon-shoucanghover-01 {
+            color: var(--color-primary);
           }
         }
       }
     }
     &__ft {
+      // margin-top: 40px;
+      // padding: 0 20px 20px;
+      // display: flex;
+      // align-items: center;
+      // .brand-logo {
+      //   border-radius: 50%;
+      //   overflow: hidden;
+      // }
+    }
+  }
+  .goods__store {
+    padding-top: 10px;
+    color: $color-gray;
+    font-size: 20px;
+    letter-spacing: 0;
+    &-entry {
+      color: #333;
     }
   }
 }

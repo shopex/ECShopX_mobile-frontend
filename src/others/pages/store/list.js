@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer, AtTabBar } from 'taro-ui'
 import {
@@ -14,17 +15,18 @@ import {
   SpNavBar
 } from '@/components'
 import api from '@/api'
-import { pickBy, classNames, getCurrentRoute, isNavbar } from '@/utils'
+import { pickBy, classNames, getCurrentRoute, getBrowserEnv } from '@/utils'
 
 import './list.scss'
 
-@connect(({ member }) => ({
-  favs: member.favs
+@connect(({ user }) => ({
+  favs: user.favs || []
 }))
 @withPager
 @withBackToTop
 export default class List extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -46,39 +48,44 @@ export default class List extends Component {
       shareInfo: {},
       localCurrent: 1,
       tabList: [
-        { title: '店铺首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/store/index' },
+        {
+          title: '店铺首页',
+          iconType: 'home',
+          iconPrefixClass: 'iconfont icon',
+          url: '/pages/store/index'
+        },
         {
           title: '商品列表',
           iconType: 'list',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/others/pages/store/list'
         },
         {
           title: '商品分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/others/pages/store/category'
         }
       ]
     }
   }
 
-  componentDidMount() {
-    const { cat_id = null, main_cat_id = null } = this.$router.params
+  componentDidMount () {
+    const { cat_id = null, main_cat_id = null } = this.$instance.router.params
     this.firstStatus = true
 
     this.setState(
       {
         query: {
-          keywords: this.$router.params.keywords,
+          keywords: this.$instance.router.params.keywords,
           item_type: 'normal',
           is_point: 'false',
-          distributor_id: this.$router.params.dis_id,
+          distributor_id: this.$instance.router.params.dis_id,
           approve_status: 'onsale,only_show',
           category: cat_id ? cat_id : '',
           main_category: main_cat_id ? main_cat_id : ''
         },
-        curTagId: this.$router.params.tag_id
+        curTagId: this.$instance.router.params.tag_id
       },
       () => {
         this.nextPage()
@@ -94,7 +101,7 @@ export default class List extends Component {
   componentWillReceiveProps (next) {
     if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
       setTimeout(() => {
-        const list = this.state.list.map(item => {
+        const list = this.state.list.map((item) => {
           item.is_fav = Boolean(next.favs[item.item_id])
           return item
         })
@@ -105,7 +112,7 @@ export default class List extends Component {
     }
   }
 
-  onShareAppMessage() {
+  onShareAppMessage () {
     const res = this.state.shareInfo
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `?uid=${userId}` : ''
@@ -116,7 +123,7 @@ export default class List extends Component {
     }
   }
 
-  onShareTimeline() {
+  onShareTimeline () {
     const res = this.state.shareInfo
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `uid=${userId}` : ''
@@ -127,7 +134,7 @@ export default class List extends Component {
     }
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { selectParams, tagsList, curTagId } = this.state
     const { distributor_id } = Taro.getStorageSync('curStore')
@@ -150,7 +157,7 @@ export default class List extends Component {
       item_params_list = [],
       select_tags_list = []
     } = await api.item.search(query)
-    const { favs } = this.props
+    const { favs = [] } = this.props
 
     item_params_list.map((item) => {
       if (selectParams.length < 4) {
@@ -177,9 +184,8 @@ export default class List extends Component {
       price: ({ price }) => (price / 100).toFixed(2),
       member_price: ({ member_price }) => (member_price / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
-      is_fav: ({ item_id }) => Boolean(favs[item_id])
+      is_fav: ({ item_id }) => Boolean(favs.find((item) => item.item_id == item_id))
     })
-
     let odd = [],
       even = []
     nList.map((item, idx) => {
@@ -254,7 +260,7 @@ export default class List extends Component {
     }
 
     /** 当不需要排序且点击一致时 */
-    if(current === this.state.curFilterIdx && !sort){
+    if (current === this.state.curFilterIdx && !sort) {
       return
     }
 
@@ -459,17 +465,17 @@ export default class List extends Component {
     if (cur !== current) {
       const curTab = this.state.tabList[current]
       const { url } = curTab
-      const options = this.$router.params
+      const options = this.$instance.router.params
       const id = options.dis_id
       const param = current === 1 ? `?dis_id=${id}` : `?id=${id}`
-      const fullPath = getCurrentRoute(this.$router).fullPath.split('?')[0]
+      const fullPath = getCurrentRoute(this.$instance.router).fullPath.split('?')[0]
       if (url && fullPath !== url) {
         Taro.redirectTo({ url: `${url}${param}` })
       }
     }
   }
 
-  render() {
+  render () {
     const {
       localCurrent,
       tabList,
@@ -491,11 +497,15 @@ export default class List extends Component {
       isShowSearch,
       query
     } = this.state
-
     return (
-      <View className={classNames('store-goods-list', isNavbar() ? 'store-goods-list-padding' : null)} >
+      <View className='page-goods-list'>
         <SpNavBar title='商品列表' leftIconType='chevron-left' fixed='true' />
-        <View className='goods-list__toolbar'>
+        <View
+          className={classNames(
+            'goods-list__toolbar',
+            getBrowserEnv().weixin ? 'goods-list__toolbar__wx' : null
+          )}
+        >
           <View
             className={`goods-list__search ${
               query && query.keywords && !isShowSearch ? 'on-search' : null
@@ -512,7 +522,7 @@ export default class List extends Component {
             {!isShowSearch && (
               <View
                 className={classNames(
-                  'goods-list__type',
+                  'goods-list__type iconfont',
                   listType === 'grid' ? 'icon-list' : 'icon-grid'
                 )}
                 onClick={this.handleViewChange}
@@ -594,7 +604,11 @@ export default class List extends Component {
         </AtDrawer>
 
         <ScrollView
-          className={classNames('goods-list__scroll', tagsList.length > 0 && 'with-tag-bar')}
+          className={classNames(
+            'goods-list__scroll',
+            tagsList.length > 0 && !getBrowserEnv().weixin && 'with-tag-bar',
+            tagsList.length > 0 && getBrowserEnv().weixin && 'with-tag-bar-wx'
+          )}
           scrollY
           scrollTop={scrollTop}
           scrollWithAnimation
@@ -655,7 +669,7 @@ export default class List extends Component {
           )}
         </ScrollView>
 
-        <BackToTop show={showBackToTop} onClick={this.scrollBackToTop} bottom={30} />
+        <BackToTop show={showBackToTop} onClick={this.scrollBackToTop} bottom={130} />
         <AtTabBar fixed tabList={tabList} onClick={this.handleClick} current={localCurrent} />
       </View>
     )

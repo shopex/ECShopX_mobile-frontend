@@ -1,6 +1,9 @@
 
 .coupon-list {
   background: #f6f6f6;
+  .navbar_padtop {
+    padding-top: $navigate-height;
+  }
   &__scroll {
     @include page-scroll(100px, $edge-margin);
     box-sizing: border-box;
@@ -36,11 +39,12 @@
 }
 
 .coupon-bottom {
-  width: 100%;
+  width: 77%;
   padding: 30px 89px;
   display: flex;
   justify-content: space-around;
   /*  #ifdef  h5  */
+  width: 100%;
   padding: 35px 0px;
   justify-content: space-evenly;
   /*  #endif  */

@@ -1,16 +1,18 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { SpCell, SpNavBar } from '@/components'
 import { goToPage } from '@/utils'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withLogin } from '@/hocs'
 import S from '@/spx'
 
-@connect(() => ({}),
+@connect(
+  () => ({}),
   (dispatch) => ({
     onUpdateCart: (list) => dispatch({ type: 'cart/update', payload: list }),
-    onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count }),
+    onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCartNum', payload: count }),
     onFetchFavs: (favs) => dispatch({ type: 'member/favs', payload: favs })
   })
 )
@@ -37,7 +39,7 @@ export default class MemberSetting extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <View className='page-member-setting'>
         <SpNavBar title='设置' fixed={false} />

@@ -1,10 +1,11 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Picker, Image } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { SpToast, SpTimer, SpNavBar, FormIdCollector, SpCheckbox } from '@/components'
 import { classNames, isString, isArray } from '@/utils'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 import S from '@/spx'
 import api from '@/api'
 
@@ -19,7 +20,8 @@ const isWeapp = Taro.getEnv() === Taro.ENV_TYPE.WEAPP
   () => ({})
 )
 export default class Reg extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -36,7 +38,7 @@ export default class Reg extends Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // console.log(Taro.getEnv(),this.props.land_params)
     if (process.env.TARO_ENV === 'weapp') {
       this.setState({
@@ -69,7 +71,7 @@ export default class Reg extends Component {
     }
   }
 
-  async fetch() {
+  async fetch () {
     let arr = []
     let res = await api.user.regParam()
     console.log(res)
@@ -136,7 +138,7 @@ export default class Reg extends Component {
     try {
       if (isWeapp) {
         const uid = Taro.getStorageSync('distribution_shop_id')
-        const { union_id, open_id } = this.$router.params
+        const { union_id, open_id } = this.$instance.router.params
         const trackParams = Taro.getStorageSync('trackParams')
         let params = {
           ...data,
@@ -169,7 +171,7 @@ export default class Reg extends Component {
       S.toast('注册成功')
       setTimeout(() => {
         Taro.redirectTo({
-          url: '/pages/member/index'
+          url: '/subpages/member/index'
         })
       }, 700)
     } catch (error) {
@@ -273,7 +275,7 @@ export default class Reg extends Component {
   }
 
   handleGetPhoneNumber = async (e) => {
-    // let { code } = this.$router.params
+    // let { code } = getCurrentInstance().params
     // try {
     //   await Taro.checkSession()
     // } catch (e) {
@@ -338,7 +340,7 @@ export default class Reg extends Component {
     })
   }
 
-  render() {
+  render () {
     const {
       info,
       isHasValue,
@@ -351,7 +353,7 @@ export default class Reg extends Component {
       showCheckboxPanel
     } = this.state
 
-    console.log("==list",list)
+    console.log('==list', list)
 
     return (
       <View className='auth-reg'>

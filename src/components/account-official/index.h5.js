@@ -1,6 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 
 import './index.scss'
 
@@ -11,16 +11,16 @@ export default class AccountOfficial extends Component {
 
   static defaultProps = {}
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {}
   }
-  componentDidMount() {}
+  componentDidMount () {}
 
-  componentDidShow() {}
+  componentDidShow () {}
 
-  render() {
+  render () {
     return <View className='account-view'></View>
   }
 }

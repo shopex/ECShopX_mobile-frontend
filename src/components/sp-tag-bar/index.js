@@ -1,57 +1,47 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { useState } from 'react'
 import { View, ScrollView } from '@tarojs/components'
 import { classNames } from '@/utils'
 
 import './index.scss'
 
-export default class SpTagBar extends Component {
-  static options = {
-    addGlobalClass: true
-  }
+function SpTagBar (props) {
+  const { list, value, children, onChange = () => {} } = props
 
-  static defaultProps = {
-    current: '',
-    list: []
-  }
-
-  constructor(props) {
-    super(props)
-
-    const { current } = props
-    this.state = {
-      curId: current
-    }
-  }
-
-  handleClickItem(id) {
-    this.setState({
-      curId: id
-    })
-    this.props.onChange({
-      current: id
-    })
-  }
-
-  render() {
-    const { list } = this.props
-    const { curId } = this.state
-
+  const isChecked = (item) => {
     return (
-      <ScrollView className='sp-tag-bar' scrollX>
-        {/* <View className="tag-bar-container"> */}
-        {list.map((item) => (
-          <View
-            className={classNames('tag-item', {
-              active: curId === item.tag_id
-            })}
-            onClick={this.handleClickItem.bind(this, item.tag_id)}
-            key={item.tag_id}
-          >
-            {item.tag_name}
-          </View>
-        ))}
-        {/* </View> */}
-      </ScrollView>
+      value == item.tag_id ||
+      value == item.value ||
+      value == item.plusValue ||
+      value == item.minusValue
     )
   }
+
+  return (
+    <View className='sp-tag-bar'>
+      <View className='tag-bar-hd'>
+        <ScrollView className='tag-container' scrollX>
+          {list.map((item, index) => (
+            <View
+              className={classNames('tag-item', {
+                active: isChecked(item)
+              })}
+              onClick={() => {
+                onChange(index, item)
+              }}
+              key={`tag-item__${index}`}
+            >
+              {item.tag_name}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+      <View className='tag-bar-ft'>{children}</View>
+    </View>
+  )
 }
+
+SpTagBar.options = {
+  addGlobalClass: true
+}
+
+export default SpTagBar

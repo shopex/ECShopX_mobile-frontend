@@ -1,51 +1,76 @@
-import { useState, useEffect } from '@tarojs/taro'
+import { total } from '@/api/cart'
+import { useState, useEffect, useRef } from 'react'
+import { useImmer } from 'use-immer'
+
+const initialState = {
+  loading: false,
+  hasMore: true,
+  pageIndex: 1,
+  pageSize: 10
+}
 
 export default (props) => {
-  const { fetch } = props
-  const [page, setPage] = useState({
-    pageIndex: 1,
-    pageSize: 10
-  })
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const { fetch, auto = true } = props
+  const [page, setPage] = useImmer(initialState)
+  const totalRef = useRef(0)
+
   const [hasNext, setHasNext] = useState(true)
 
-  useEffect(async () => {
-    setLoading(true)
-    await fetch(page)
-    setLoading(false)
-  }, [page])
+  useEffect(() => {
+    if (auto) {
+      excluteFetch()
+    }
+  }, [page.pageIndex])
+
+  const excluteFetch = async () => {
+    setPage((v) => {
+      v.loading = true
+    })
+    const { total } = await fetch(page)
+    totalRef.current = total
+    setPage((v) => {
+      if (!total || total <= page.pageSize * page.pageNo) {
+        v.hasMore = false
+      }
+      v.loading = false
+    })
+  }
 
   const nextPage = () => {
     const curPage = page.pageIndex + 1
-    if (!total || curPage > Math.ceil(+total / page.pageSize)) {
-      setHasNext(false)
+    if (!totalRef.current || curPage > Math.ceil(+totalRef.current / page.pageSize)) {
+      setPage((v) => {
+        v.hasMore = false
+      })
       return
+    } else {
+      setPage((v) => {
+        v.pageIndex = curPage
+      })
     }
-    setPage({
-      ...page,
-      pageIndex: curPage
-    })
+  }
+
+  const getTotal = () => {
+    return totalRef.current
   }
 
   /**
    * @function 分页重置
    */
-  const resetPage = () => {
-    setPage({
-      ...page,
-      pageIndex: 1
+  const resetPage = async () => {
+    totalRef.current = 0
+    await setPage((v) => {
+      v.pageIndex = 1
+      v.hasMore = true
     })
-    setTotal(0)
-    setLoading(false)
-    setHasNext(true)
+    if (!auto || page.pageIndex == 1) {
+      excluteFetch()
+    }
   }
 
   return {
-    total,
-    loading,
-    hasNext,
-    setTotal,
+    page,
+    getTotal,
     nextPage,
     resetPage
   }

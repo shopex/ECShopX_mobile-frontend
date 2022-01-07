@@ -1,9 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView, Text, Image } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { Loading, SpNote, SpNavBar, CouponItem } from '@/components'
 import api from '@/api'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withPager } from '@/hocs'
 import { pickBy, classNames, isNavbar } from '@/utils'
 import './coupon-nullify.scss'
@@ -13,7 +14,7 @@ import './coupon-nullify.scss'
 }))
 @withPager
 export default class CouponNullify extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -32,7 +33,7 @@ export default class CouponNullify extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const tabIdx = this.state.tabList.findIndex((tab) => tab.status === '2')
 
     if (tabIdx >= 0) {
@@ -49,7 +50,7 @@ export default class CouponNullify extends Component {
     }
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { curTabIdx, tabList } = this.state
     const status = tabList[curTabIdx].status
@@ -113,7 +114,7 @@ export default class CouponNullify extends Component {
     })
   }
 
-  render() {
+  render () {
     const { curTabIdx, tabList, list, page, couponTab } = this.state
     const { colors } = this.props
     const status = tabList[curTabIdx].status

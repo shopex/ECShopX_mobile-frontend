@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { Textarea, View, Image, Text, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { pickBy } from '@/utils'
 import api from '@/api'
 import { SpNavBar, AddressChoose } from '@/components'
@@ -8,15 +9,17 @@ import { SpNavBar, AddressChoose } from '@/components'
 import './index.scss'
 
 @connect(
-  ({ address }) => ({
-    address: address.current
+  ({ user }) => ({
+    address: user.address
   }),
   (dispatch) => ({
-    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
+    updateChooseAddress: (address) =>
+      dispatch({ type: 'user/updateChooseAddress', payload: address })
   })
 )
 export default class Pay extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
     this.state = {
       cur_address: null,
@@ -27,18 +30,14 @@ export default class Pay extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getOrderInfo()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.address !== this.props.address) { 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.address !== this.props.address) {
       this.handleChangeAddress(nextProps.address)
     }
-  }
-
-  config = {
-    navigationBarTitleText: '结算页面'
   }
 
   // 处理地址
@@ -71,7 +70,7 @@ export default class Pay extends Component {
 
   // 获取数据
   getOrderInfo = async () => {
-    const { bargain_id } = this.$router.params
+    const { bargain_id } = this.$instance.router.params
     const { bargain_info = {}, user_bargain_info = {} } = await api.boost.getUserBargain({
       bargain_id,
       has_order: true
@@ -104,7 +103,7 @@ export default class Pay extends Component {
           const isDef = list.find((item) => item.is_def)
           defaultAddress = isDef
         }
-        this.props.onAddressChoose(defaultAddress)
+        this.props.updateChooseAddress(defaultAddress)
       }
     )
   }
@@ -173,7 +172,7 @@ export default class Pay extends Component {
     })
   }
 
-  render() {
+  render () {
     const { cur_address, remark, goodInfo, purchasePrice, isLoading } = this.state
     return (
       <View className='pay'>

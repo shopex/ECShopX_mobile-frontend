@@ -1,20 +1,22 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
 // import { AtButton } from 'taro-ui'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 // import { AtInputNumber } from 'taro-ui'
 // import find from 'lodash/find'
 import { Price } from '@/components'
 import InputNumber from '@/components/input-number'
-import { classNames, pickBy, log, closeClassName, getPointName } from '@/utils'
+import { classNames, pickBy, log } from '@/utils'
 import { Tracker } from '@/service'
 import api from '@/api'
 import floor from 'lodash/floor'
 import entry from '@/utils/entry'
 import './index.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class GoodsBuyPanel extends Component {
   static options = {
@@ -36,7 +38,7 @@ export default class GoodsBuyPanel extends Component {
     isPointitem: false
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -57,7 +59,7 @@ export default class GoodsBuyPanel extends Component {
     this.disabledSet = new Set()
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { info } = this.props
     const { spec_items, promotion_activity, activity_info = null, activity_type } = info
 
@@ -86,11 +88,13 @@ export default class GoodsBuyPanel extends Component {
 
     const skuDict = {}
     const originSpecIds = info.item_spec_desc && info.item_spec_desc.map((item) => item.spec_id)
-    const newSpceItems = spec_items && spec_items.sort((a, b) => {
-      const first = a.item_spec[0].spec_value_id
-      const second = b.item_spec[0].spec_value_id
-      return first - second
-    })
+    const newSpceItems =
+      spec_items &&
+      spec_items.sort((a, b) => {
+        const first = a.item_spec[0].spec_value_id
+        const second = b.item_spec[0].spec_value_id
+        return first - second
+      })
     newSpceItems.forEach((t) => {
       const specValueId = t.item_spec.map((s) => s.spec_value_id)
       const specIds = t.item_spec.map((s) => s.spec_id)
@@ -117,7 +121,7 @@ export default class GoodsBuyPanel extends Component {
     this.initSelect()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     const { isOpened } = nextProps
     if (isOpened !== this.state.isActive) {
       this.setState({
@@ -145,7 +149,7 @@ export default class GoodsBuyPanel extends Component {
     return `已选 “${propsText}”`
   }
 
-  calcDisabled(selection) {
+  calcDisabled (selection) {
     const skuDict = this.skuDict
     const disabledSet = new Set()
     const makeReg = (sel, row, val) => {
@@ -176,7 +180,7 @@ export default class GoodsBuyPanel extends Component {
     this.disabledSet = disabledSet
   }
 
-  getCurSkuImg(sku) {
+  getCurSkuImg (sku) {
     let img = this.props.info.pics[0]
     if (!sku) {
       return img
@@ -191,7 +195,7 @@ export default class GoodsBuyPanel extends Component {
     return img
   }
 
-  updateCurSku(selection) { 
+  updateCurSku (selection) {
     const { info } = this.props
     const { activity } = this.state
     const { activity_type } = info
@@ -213,7 +217,7 @@ export default class GoodsBuyPanel extends Component {
     this.setState({
       curSku,
       curImg
-    }) 
+    })
 
     if (activity && info.activity_type === 'limited_buy') {
       const validItem = activity.items.find((n) => n.item_id === curSku.item_id)
@@ -269,7 +273,7 @@ export default class GoodsBuyPanel extends Component {
     } else {
       selection[idx] = item.spec_value_id
       selectionText[idx] = spec_full_text
-    } 
+    }
 
     this.updateCurSku(selection)
     this.setState({
@@ -287,7 +291,7 @@ export default class GoodsBuyPanel extends Component {
     this.props.onClose && this.props.onClose()
   }
 
-  handleBuyClick = async (type, skuInfo, num) => { 
+  handleBuyClick = async (type, skuInfo, num) => {
     if (this.state.busy) return
     const isOpenStore = await entry.getStoreStatus()
     const { marketing, info, isPointitem } = this.props
@@ -402,7 +406,7 @@ export default class GoodsBuyPanel extends Component {
     }
 
     if (type === 'pick') {
-      const { info } = this.props 
+      const { info } = this.props
       this.setState(
         {
           busy: false
@@ -465,34 +469,17 @@ export default class GoodsBuyPanel extends Component {
     return maxStore
   }
 
-  render() {
+  render () {
     // packItem={packagePrices}
     //                 mainItem={mainPackagePrice}
-    const {
-      info,
-      type,
-      fastBuyText,
-      colors,
-      isPackage,
-      packItem,
-      mainpackItem,
-      isPointitem
-    } = this.props
-    const {
-      curImg,
-      quantity,
-      selection,
-      isActive,
-      busy,
-      curSku,
-      promotions,
-      activity,
-      curLimit
-    } = this.state
+    const { info, type, fastBuyText, colors, isPackage, packItem, mainpackItem, isPointitem } =
+      this.props
+    const { curImg, quantity, selection, isActive, busy, curSku, promotions, activity, curLimit } =
+      this.state
     if (!info) {
       return null
     }
- 
+
     const { special_type } = info
     const isDrug = special_type === 'drug'
     const curSkus = this.noSpecs ? info : curSku
@@ -521,7 +508,7 @@ export default class GoodsBuyPanel extends Component {
     if (isPackage === 'package') {
       price = info.price * 100
       marketPrice = info.market_price * 100
-      if (curSkus) { 
+      if (curSkus) {
         price =
           (packItem[curSkus.item_id] && packItem[curSkus.item_id].price) ||
           (mainpackItem[curSkus.item_id] && mainpackItem[curSkus.item_id].price)
@@ -545,7 +532,7 @@ export default class GoodsBuyPanel extends Component {
         <View className='goods-buy-panel__overlay'></View>
 
         <View className='goods-buy-panel__wrap'>
-          <View className={closeClassName} onClick={() => this.toggleShow(false)} />
+          <View className='iconfont icon-close' onClick={() => this.toggleShow(false)} />
           <View className='goods-buy-panel__hd'>
             <View className='goods-img__wrap' onClick={this.handleImgClick.bind(this)}>
               <Image className='goods-img' mode='aspectFill' src={curImg || info.pics[0]} />
@@ -553,7 +540,7 @@ export default class GoodsBuyPanel extends Component {
             {isPointitem && (
               <View className='goods-point'>
                 <View className='number'>{curSku ? curSku.point : info.point}</View>
-                <View className='text'>{getPointName()}</View>
+                <View className='text'>{this.props.pointName}</View>
               </View>
             )}
             {!isPointitem && (
@@ -622,31 +609,32 @@ export default class GoodsBuyPanel extends Component {
           )}
           <View className='goods-buy-panel__bd'>
             <ScrollView className='goods-skus__wrap'>
-              {info.item_spec_desc && info.item_spec_desc.map((spec, idx) => {
-                return (
-                  <View className='sku-item__group' key={spec.spec_id}>
-                    {info.item_spec_desc.length > 1 && (
-                      <Text className='sku-item__group-hd'>{spec.spec_name}</Text>
-                    )}
-                    <View className='sku-item__group-bd'>
-                      {spec.spec_values.map((sku) => {
-                        return (
-                          <Text
-                            className={classNames('sku-item', {
-                              'is-active': sku.spec_value_id === selection[idx],
-                              'is-disabled': this.disabledSet.has(sku.spec_value_id)
-                            })}
-                            key={sku.spec_value_id}
-                            onClick={this.handleSelectSku.bind(this, sku, idx, spec.spec_name)}
-                          >
-                            {sku.spec_value_name}
-                          </Text>
-                        )
-                      })}
+              {info.item_spec_desc &&
+                info.item_spec_desc.map((spec, idx) => {
+                  return (
+                    <View className='sku-item__group' key={spec.spec_id}>
+                      {info.item_spec_desc.length > 1 && (
+                        <Text className='sku-item__group-hd'>{spec.spec_name}</Text>
+                      )}
+                      <View className='sku-item__group-bd'>
+                        {spec.spec_values.map((sku) => {
+                          return (
+                            <Text
+                              className={classNames('sku-item', {
+                                'is-active': sku.spec_value_id === selection[idx],
+                                'is-disabled': this.disabledSet.has(sku.spec_value_id)
+                              })}
+                              key={sku.spec_value_id}
+                              onClick={this.handleSelectSku.bind(this, sku, idx, spec.spec_name)}
+                            >
+                              {sku.spec_value_name}
+                            </Text>
+                          )
+                        })}
+                      </View>
                     </View>
-                  </View>
-                )
-              })}
+                  )
+                })}
             </ScrollView>
             {type !== 'pick' && isActive && (
               <View className='goods-quantity__wrap'>

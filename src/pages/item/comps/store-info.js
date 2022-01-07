@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import S from '@/spx'
 import api from '@/api'
@@ -14,7 +15,7 @@ export default class StoreInfo extends Component {
     info: null
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -22,7 +23,7 @@ export default class StoreInfo extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (!S.getAuthToken()) {
       return
     }
@@ -67,7 +68,7 @@ export default class StoreInfo extends Component {
     }
   }
 
-  render() {
+  render () {
     const { info } = this.props
     const { isFav } = this.state
 

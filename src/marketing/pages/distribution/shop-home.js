@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button, Image, Input } from '@tarojs/components'
 import { AtTabBar } from 'taro-ui'
 import { BackToTop, Loading, SpNavBar, SpImg, SpNote } from '@/components'
@@ -14,7 +15,8 @@ import './shop-home.scss'
 
 @withPager
 export default class DistributionShopHome extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -27,14 +29,14 @@ export default class DistributionShopHome extends Component {
         {
           title: '小店首页',
           iconType: 'home',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/shop-home',
           urlRedirect: true
         },
         {
           title: '分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/shop-category',
           urlRedirect: true
         }
@@ -66,27 +68,17 @@ export default class DistributionShopHome extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getShopInfo()
     this.init()
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.handleCloseSearch()
   }
 
-  // 配置信息
-  config = {
-    enablePullDownRefresh: true,
-    onReachBottomDistance: 80,
-    backgroundTextStyle: 'dark',
-    navigationBarTitleText: '',
-    navigationBarTextStyle: 'white',
-    navigationStyle: 'custom'
-  }
-
   // 分享
-  onShareAppMessage() {
+  onShareAppMessage () {
     const { info: shopInfo, userId } = this.state
     const title = shopInfo.shop_name || `${shopInfo.username}的小店`
     return {
@@ -161,7 +153,7 @@ export default class DistributionShopHome extends Component {
 
   // 获取小店信息
   getShopInfo = async () => {
-    const options = this.$router.params
+    const options = this.$instance.router.params
     const { tabList } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
@@ -200,7 +192,7 @@ export default class DistributionShopHome extends Component {
     tabList[0].url += `?featuredshop=${param.user_id}`
     tabList[1].url += `?featuredshop=${param.user_id}`
     // 是否当前页面
-    const isCurrentPage = this.$router.path.indexOf('distribution/shop-home') !== -1
+    const isCurrentPage = this.$instance.router.path.indexOf('distribution/shop-home') !== -1
     if (isCurrentPage) {
       Taro.setNavigationBarTitle({
         title: shop_name || `${nickname || username || mobile}的小店`
@@ -288,9 +280,9 @@ export default class DistributionShopHome extends Component {
       const curTab = this.state.tabList[current]
       const { url, urlRedirect } = curTab
 
-      const fullPath = getCurrentRoute(this.$router).fullPath.split('?')[0]
+      const fullPath = getCurrentRoute(this.$instance.router).fullPath.split('?')[0]
       if (url && fullPath !== url) {
-        if (!urlRedirect || (url === '/pages/member/index' && !S.getAuthToken())) {
+        if (!urlRedirect || (url === '/subpages/member/index' && !S.getAuthToken())) {
           Taro.navigateTo({ url })
         } else {
           Taro.redirectTo({ url })
@@ -419,7 +411,7 @@ export default class DistributionShopHome extends Component {
     )
   }
 
-  render() {
+  render () {
     const {
       showBackToTop,
       tabList,
@@ -551,13 +543,15 @@ export default class DistributionShopHome extends Component {
             >
               <View className={`content ${item.isOutSale && 'disable'}`}>
                 <View className='imgContent'>
-                  <SpImg
+                  {/* <SpImg
                     lazyLoad
                     width='400'
+                    height='80'
                     mode='aspectFill'
                     img-class='goodImg'
                     src={item.img}
-                  />
+                  /> */}
+                  <Image src={item.img} className='goodImg' lazyLoad />
                   <View className='outSale'></View>
                 </View>
                 <View className='info'>

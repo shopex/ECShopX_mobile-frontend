@@ -1,15 +1,26 @@
 .sp-tag-bar {
-  width: 100%;
-  white-space: nowrap;
+  display: flex;
   background: #fff;
+  padding: 10px 0;
+  justify-content: space-between;
+  .tag-bar-hd {
+    // width: 87%;
+  }
+  .tag-bar-ft {
+
+  }
+  .tag-container {
+    white-space: nowrap;
+    width: 95%;
+  }
   .tag-item {
     display: inline-block;
-    font-size: 26px;
+    font-size: 28px;
     color: $color-hint-text ;
-    margin: 0 10px;
+    margin: 0 20px;
     &.active {
       color: $color-primary-text;
-      font-size: 30px;
+      font-size: 34px;
       font-weight: 600;
     }
   }

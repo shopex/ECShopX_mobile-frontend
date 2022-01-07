@@ -1,6 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 
 import './destory-comfirm-modal.scss'
 
@@ -8,12 +8,12 @@ import './destory-comfirm-modal.scss'
   colors: colors.current
 }))
 export default class SettingIndex extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {}
   }
 
-  render() {
+  render () {
     const { visible, onCancel, confirmBtn, cancelBtn, content, title, colors } = this.props
     return visible ? (
       <View className='destory-comfirm-modal'>

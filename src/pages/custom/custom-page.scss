@@ -83,72 +83,7 @@
     position: relative;
   }
   
-  .wgt {
-    &__padded {
-      padding: 40px 0;
-    }
-    &__header {
-      display: flex;
-      align-items: center;
-      padding: 0 20px 10px 20px;
-    }
-    &__title {
-      display: flex;
-      align-items: flex-end;
-      flex: 1;
-      font-size: 32px;
-    }
-    &__subtitle {
-      padding-left: 10px;
-      font-size: 24px;
-      color: #999;
-    }
-    &__body {
-      &.with-padding {
-        padding: 0 20px;
-      }
-    }
-    &__goods__more {
-      display: flex;
-      text-align: right;
-      align-items: center;
-      justify-content: center;
-      height: 24px;
-      border-radius: 60px;
-    }
-    &__more {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 60px;
-      height: 24px;
-      border-radius: 60px;
-      .three-dot {
-        position: relative;
-        width: 8px;
-        height: 8px;
-        background: #333;
-        border-radius: 50%;
-        &::before, &::after {
-          position: absolute;
-          width: 8px;
-          height: 8px;
-          background: #333;
-          border-radius: 50%;
-          content: "";
-        }
-        &::before {
-          transform: translateX(-160%);
-        }
-        &::after {
-          transform: translateX(160%);
-        }
-      }
-    }
-    button {
-      font-size: 26px;
-    }
-  }
+
   
   .grid-goods__type-grid {
     @include clearfix();

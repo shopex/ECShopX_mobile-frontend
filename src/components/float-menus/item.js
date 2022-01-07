@@ -1,4 +1,4 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Button } from '@tarojs/components'
 
 import './item.scss'
@@ -16,7 +16,7 @@ export default class Index extends Component {
     hide: false
   }
 
-  render() {
+  render () {
     const { onClick, openType, iconPrefixClass, hide, icon, sessionFrom } = this.props
 
     return (
@@ -26,7 +26,7 @@ export default class Index extends Component {
         openType={openType}
         sessionFrom={sessionFrom || ''}
       >
-        <View className={`${iconPrefixClass} ${iconPrefixClass}-${icon}`}></View>
+        <View className={`${iconPrefixClass} ${icon}`}></View>
         {this.props.children}
       </Button>
     )

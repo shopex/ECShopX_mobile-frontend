@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import {
   Loading,
@@ -10,7 +11,7 @@ import {
 } from '@/components'
 import api from '@/api'
 import { withBackToTop, withPager } from '@/hocs'
-import { normalizeQuerys,isNavbar,classNames } from '@/utils'
+import { normalizeQuerys } from '@/utils'
 import entry from '@/utils/entry'
 
 import './espier-evaluation.scss'
@@ -18,11 +19,12 @@ import './espier-evaluation.scss'
 @withPager
 @withBackToTop
 export default class Evaluation extends Component {
+  $instance = getCurrentInstance()
   static options = {
     addGlobalClass: true
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -35,13 +37,13 @@ export default class Evaluation extends Component {
     }
   }
 
-  async componentWillMount() {
-    const query = await normalizeQuerys(this.$router.params)
-    this.$router.params.id = query.id
-    await entry.entryLaunch(this.$router.params, false)
+  async componentWillMount () {
+    const query = await normalizeQuerys(this.$instance.router.params)
+    this.$instance.router.params.id = query.id
+    await entry.entryLaunch(this.$instance.router.params, false)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const userInfo = Taro.getStorageSync('userinfo')
     this.setState({
       userInfo
@@ -49,13 +51,13 @@ export default class Evaluation extends Component {
     this.nextPage()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
-    const { order_type } = this.$router.params
+    const { order_type } = this.$instance.router.params
     const query = {
       page,
       pageSize,
-      item_id: this.$router.params.id,
+      item_id: this.$instance.router.params.id,
       order_type
     }
     const { list, total_count } = await api.item.evaluationList(query)
@@ -147,11 +149,11 @@ export default class Evaluation extends Component {
 
   handleClickViewEvaluation = (item) => {
     Taro.navigateTo({
-      url: `/marketing/pages/item/espier-evaluation-detail?id=${this.$router.params.id}&rate_id=${item.rate_id}&company_id=${item.company_id}&item_id=${item.item_id}`
+      url: `/marketing/pages/item/espier-evaluation-detail?id=${this.$instance.router.params.id}&rate_id=${item.rate_id}&company_id=${item.company_id}&item_id=${item.item_id}`
     })
   }
 
-  render() {
+  render () {
     const { showBackToTop, evaluationList, showCommentPanel } = this.state
 
     if (!evaluationList.length) {
@@ -159,9 +161,7 @@ export default class Evaluation extends Component {
     }
 
     return (
-      <View className={classNames('page-goods-evaluation',{
-        'has-navbar':isNavbar()
-      })} >
+      <View className='page-goods-evaluation'>
         <SpNavBar title='评论列表' leftIconType='chevron-left' />
         <ScrollView className='goods-detail__scroll' onScrollToLower={this.nextPage} scrollY>
           <View className='goods-evaluation-wrap'>
@@ -183,8 +183,8 @@ export default class Evaluation extends Component {
 
         <FloatMenus>
           <FloatMenuItem
-            iconPrefixClass='apple'
-            icon='arrow-up'
+            iconPrefixClass='iconfont'
+            icon='icon-arrow-up'
             hide={!showBackToTop}
             onClick={this.scrollBackToTop}
           />

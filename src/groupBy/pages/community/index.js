@@ -10,7 +10,7 @@ import entryLaunchFun from '@/utils/entryLaunch'
 import './index.scss'
 
 export default class Community extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       list: [],
@@ -29,7 +29,7 @@ export default class Community extends Component {
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.init()
   }
 
@@ -50,15 +50,15 @@ export default class Community extends Component {
   // 获取定位
   init = async () => {
     const lbs = await entryLaunchFun.getLocationInfo()
-    // if (lbs.latitude) await InverseAnalysisGaode(lbs)
+    // if (lbs.lat) await InverseAnalysisGaode(lbs)
     // const lbs = this.getLoacl()
     if (!lbs) return false
-    const { latitude, longitude } = lbs
+    const { lat, lng } = lbs
     this.setState(
       {
         lbs: {
-          lat: latitude,
-          lng: longitude
+          lat,
+          lng
         }
       },
       () => {
@@ -169,7 +169,7 @@ export default class Community extends Component {
     this.getCommunity()
   }
 
-  render() {
+  render () {
     const { list, isLoading, isEnd, isRefresh, scrollTop, current } = this.state
     return (
       <View className='community'>

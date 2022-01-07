@@ -1,9 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView, Text } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, SpNote, GoodsItem, SpNavBar } from '@/components'
 import { AtCountdown } from 'taro-ui'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import api from '@/api'
 import { pickBy, validColor, isString } from '@/utils'
 import { getDistributorId } from '@/utils/helper'
@@ -17,7 +18,8 @@ import './plusprice.scss'
 @withPager
 @withBackToTop
 export default class DetailPluspriceList extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -32,13 +34,9 @@ export default class DetailPluspriceList extends Component {
     }
   }
 
-  config = {
-    navigationBarTitleText: ''
-  }
-
-  componentDidMount() {
+  componentDidMount () {
     console.log('---componentDidMount---')
-    // const { marketing_id } = this.$router.params
+    // const { marketing_id } = getCurrentInstance().params
     // this.setState({
     //   query: {
     //     marketing_id: marketing_id
@@ -73,7 +71,7 @@ export default class DetailPluspriceList extends Component {
   //   }
   // }
 
-  calcTimer(totalSec) {
+  calcTimer (totalSec) {
     let remainingSec = totalSec
     const dd = Math.floor(totalSec / 24 / 3600)
     remainingSec -= dd * 3600 * 24
@@ -90,7 +88,7 @@ export default class DetailPluspriceList extends Component {
       ss
     }
   }
-  handleClickItem(item) {
+  handleClickItem (item) {
     const { distributor_id } = item
     const dtid = distributor_id ? distributor_id : getDistributorId()
     Taro.navigateTo({
@@ -98,10 +96,10 @@ export default class DetailPluspriceList extends Component {
     })
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
-      marketing_id: this.$router.params.marketing_id,
+      marketing_id: this.$instance.router.params.marketing_id,
       page,
       pageSize
     }
@@ -140,7 +138,7 @@ export default class DetailPluspriceList extends Component {
     }
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const {
       list,

@@ -1,11 +1,11 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import { setPageTitle, platformTemplateName } from '@/utils/platform'
-import { TabBar } from '@/components'
+import { TabBar, SpTabbar } from '@/components'
 import Series from './comps/series'
 
 import './index.scss'
@@ -14,7 +14,7 @@ import './index.scss'
   store
 }))
 export default class Category extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -27,12 +27,12 @@ export default class Category extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     setPageTitle('商品分类')
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     /*const nList = pickBy(res, {
       category_name: 'category_name',
       image_url: 'image_url',
@@ -120,7 +120,7 @@ export default class Category extends Component {
     }
   }
 
-  render() {
+  render () {
     const { curTabIdx, tabList, list, hasSeries, isChanged } = this.state
 
     return (
@@ -144,7 +144,7 @@ export default class Category extends Component {
         >
           <Series isChanged={isChanged} info={list} />
         </View>
-        <TabBar />
+        <SpTabbar />
       </View>
     )
   }

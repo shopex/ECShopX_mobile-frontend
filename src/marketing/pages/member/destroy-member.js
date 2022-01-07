@@ -1,21 +1,20 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { SpCheckbox } from '@/components'
 import req from '@/api/req'
+import configStore from '@/store'
 import DestoryConfirm from './comps/destory-comfirm-modal'
 import './destroy-member.scss'
 
-@connect(
-  ({ colors }) => ({
-    colors: colors.current
-  }),
-  (dispatch) => ({
-    onUpdateCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
-  })
-)
+const store = configStore()
+@connect(({ colors }) => ({
+  colors: colors.current
+}))
 export default class SettingIndex extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
     this.state = {
       checked: false,
@@ -25,11 +24,6 @@ export default class SettingIndex extends Component {
       confirmBtnContent: '',
       cancelBtnContent: ''
     }
-  }
-
-  config = {
-    navigationBarTitleText: '注销账号',
-    navigationBarBackgroundColor: '#F5F5F5'
   }
 
   handleSelect = () => {
@@ -58,10 +52,11 @@ export default class SettingIndex extends Component {
       // 确认注销账号
       req.delete('/member', { is_delete: '1' }).then((res) => {
         if (res.status) {
-          Taro.removeStorageSync('auth_token')
-          Taro.removeStorageSync('PrivacyUpdate_time')
-          // 清除购物车数据
-          this.props.onUpdateCount(0)
+          Taro.removeStorageSync('token')
+          Taro.removeStorageSync('policy_updatetime')
+          store.dispatch({
+            type: 'user/clearUserInfo'
+          })
           Taro.reLaunch({
             url: '/pages/index'
           })
@@ -71,12 +66,12 @@ export default class SettingIndex extends Component {
     this.setState({ visible: false })
   }
 
-  render() {
+  render () {
     const { checked, visible, content, title, cancelBtnContent, confirmBtnContent } = this.state
     const { colors } = this.props
     return (
       <View className='destory-member'>
-        <View className='title'>将{this.$router.params.phone}的账号注销</View>
+        <View className='title'>将{this.$instance.router.params.phone}的账号注销</View>
         <View className='content'>
           <View className='margin fonts'>
             账号注销后，你在相关产品/服务留存的的信息将被清空且无法找回，具体包括：

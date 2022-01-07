@@ -1,11 +1,14 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { classNames, navigateTo } from '@/utils'
 import './index.scss'
 
-function SpTabs(props) {
-  let { tablist = [], current, onChange } = this.props 
+function SpTabs (props) {
+  let { tablist = [], current, onChange, children } = props
+
+  console.log('current', current)
+
   return (
     <View className='sp-tabs'>
       <View className='sp-tabs-hd'>
@@ -23,7 +26,7 @@ function SpTabs(props) {
           </View>
         ))}
       </View>
-      <View className='sp-tabs-bd'>{this.props.children}</View>
+      <View className='sp-tabs-bd'>{children}</View>
     </View>
   )
 }

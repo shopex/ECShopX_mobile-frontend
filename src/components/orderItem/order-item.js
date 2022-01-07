@@ -1,12 +1,12 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import { Price, SpImg, PointTag } from '@/components'
-import { getPointName } from '@/utils';
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import './order-item.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class OrderItem extends Component {
   static defaultProps = {
@@ -23,7 +23,7 @@ export default class OrderItem extends Component {
     addGlobalClass: true
   }
 
-  render() {
+  render () {
     const {
       info,
       onClick,
@@ -79,19 +79,18 @@ export default class OrderItem extends Component {
         {customFooter ? (
           this.props.renderFooter
         ) : (
-          <View className='order-item__ft'> 
+          <View className='order-item__ft'>
             {isPointitemGood ? (
               <Price
                 className='order-item__price'
-                appendText={getPointName()}
+                appendText={this.props.pointName}
                 noSymbol
                 noDecimal
                 value={info.item_point || info.point}
               ></Price>
             ) : (
               <Price className='order-item__price' value={info.price}></Price>
-            )} 
-           
+            )}
           </View>
         )}
       </View>
