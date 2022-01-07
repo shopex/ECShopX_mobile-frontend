@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text, ScrollView, Picker } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtInput, AtCheckbox, AtFloatLayout, AtTextarea } from 'taro-ui'
 import { SpToast, SpCheckbox } from '@/components'
@@ -16,7 +17,8 @@ import './goods-reservate.scss'
 @withPager
 @withBackToTop
 export default class GoodsReservate extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -32,14 +34,14 @@ export default class GoodsReservate extends Component {
     }
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.count = 0
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     const { activity_info } = await api.user.registrationActivity({
-      activity_id: this.$router.params.activity_id
+      activity_id: this.$instance.router.params.activity_id
     })
     if (!activity_info) {
       this.setState({
@@ -218,10 +220,10 @@ export default class GoodsReservate extends Component {
         if (tmlres.template_id && tmlres.template_id.length > 0) {
           wx.requestSubscribeMessage({
             tmplIds: tmlres.template_id,
-            success() {
+            success () {
               _this.handleSubmit()
             },
-            fail() {
+            fail () {
               _this.handleSubmit()
             }
           })
@@ -298,7 +300,7 @@ export default class GoodsReservate extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const {
       cur_activity_info,
@@ -311,12 +313,16 @@ export default class GoodsReservate extends Component {
       isShowSubTips
     } = this.state
     // let new_activity_info = JSON.parse(cur_activity_info)
-    const { formdata } = cur_activity_info
+    const { formdata } = cur_activity_info || {}
+
+    if (!formdata) {
+      return null
+    }
     console.log(formdata, 255)
     return (
       <View className='goods-reservate'>
         <View className='goods-reservate__storeinfo'>
-          {(isHasActivityInfo && formdata.header_title)? (
+          {isHasActivityInfo && formdata.header_title ? (
             <Text className='goods-reservate__tip'>{formdata.header_title}</Text>
           ) : null}
           {formdata &&

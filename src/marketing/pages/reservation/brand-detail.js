@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text, ScrollView, Picker } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer } from 'taro-ui'
 import { SpCell } from '@/components'
@@ -12,7 +13,7 @@ import './brand-detail.scss'
 @withPager
 @withBackToTop
 export default class BrandDetail extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -27,9 +28,9 @@ export default class BrandDetail extends Component {
     }
   }
 
-  componentDidMount() {}
+  componentDidMount () {}
 
-  async fetch() {}
+  async fetch () {}
 
   handleCell = (type, e) => {
     const checked_index = e.detail.value
@@ -68,7 +69,7 @@ export default class BrandDetail extends Component {
     console.log(query, 53)
   }
 
-  render() {
+  render () {
     const {
       brand_name_list,
       brand_time_list,

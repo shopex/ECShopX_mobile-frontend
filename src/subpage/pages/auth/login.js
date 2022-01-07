@@ -1,16 +1,26 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 
 import { SpNavBar, SpTimer } from '@/components'
 import api from '@/api'
 import S from '@/spx'
-import { getThemeStyle, styleNames, classNames,getBrowserEnv, navigateTo, validate, showToast } from '@/utils'
+import {
+  getThemeStyle,
+  styleNames,
+  classNames,
+  getBrowserEnv,
+  navigateTo,
+  validate,
+  showToast
+} from '@/utils'
 
 import './login.scss'
 
 export default class Login extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -21,7 +31,7 @@ export default class Login extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getImageVcode()
   }
 
@@ -52,9 +62,9 @@ export default class Login extends Component {
     }
   }
 
-  handleTimerStop() {}
+  handleTimerStop () {}
 
-  handleInputChange(name, val) {
+  handleInputChange (name, val) {
     const { info } = this.state
     info[name] = val
     this.setState({
@@ -63,7 +73,7 @@ export default class Login extends Component {
   }
 
   handleNavLeftItemClick = () => {
-    // const { redirect } = this.$router.params
+    // const { redirect } = getCurrentInstance().params
     // if (redirect) {
     //   Taro.redirectTo({
     //     url: decodeURIComponent(redirect)
@@ -90,7 +100,7 @@ export default class Login extends Component {
     })
   }
 
-  async handleSubmit() {
+  async handleSubmit () {
     const { loginType } = this.state
     const { mobile, password, vcode } = this.state.info
     let params = {
@@ -119,7 +129,7 @@ export default class Login extends Component {
       const { token } = await api.user.login(params)
       if (token) {
         S.setAuthToken(token)
-        const { redirect } = this.$router.params
+        const { redirect } = this.$instance.router.params
         const url = redirect ? decodeURIComponent(redirect) : process.env.APP_HOME_PAGE
 
         Taro.redirectTo({
@@ -131,10 +141,13 @@ export default class Login extends Component {
     }
   }
 
-  render() {
+  render () {
     const { info, isVisible, loginType, imgInfo } = this.state
     return (
-      <View  className={classNames('page-auth-login',{'inWeixin':getBrowserEnv().weixin})} style={styleNames(getThemeStyle())}>
+      <View
+        className={classNames('page-auth-login', { 'inWeixin': getBrowserEnv().weixin })}
+        style={styleNames(getThemeStyle())}
+      >
         <SpNavBar onClickLeftIcon={this.handleNavLeftItemClick} title='登录' />
         <View className='auth-hd'>
           <View className='title'>欢迎登录</View>
@@ -216,7 +229,7 @@ export default class Login extends Component {
               </Text>
               <Text
                 className='btn-text'
-                onClick={()=>Taro.navigateTo({url:'/subpage/pages/auth/reg'})}
+                onClick={() => Taro.navigateTo({ url: '/subpage/pages/auth/reg' })}
               >
                 注册
               </Text>

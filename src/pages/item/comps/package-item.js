@@ -1,11 +1,12 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { AtAccordion, AtButton } from 'taro-ui'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { GoodsItem, SpCheckbox, GoodsBuyPanel } from '@/components'
 import { pickBy } from '@/utils'
 import S from '@/spx'
 import api from '@/api'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 
 import './package-item.scss'
 
@@ -14,7 +15,7 @@ import './package-item.scss'
     cart
   }),
   (dispatch) => ({
-    onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCount', payload: count })
+    onUpdateCartCount: (count) => dispatch({ type: 'cart/updateCartNum', payload: count })
   })
 )
 export default class PackageItem extends Component {
@@ -26,7 +27,7 @@ export default class PackageItem extends Component {
     distributorId: 0
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -45,11 +46,11 @@ export default class PackageItem extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     const { package_id } = this.props.info
     // const { itemLists, main_item_id, main_item_price, package_price } = await api.item.packageDetail(package_id)
     const res = await api.item.packageDetail(package_id)
@@ -283,16 +284,14 @@ export default class PackageItem extends Component {
 
     const { selection, mainItem } = this.state
     console.log(selection, 198)
-    console.log(mainItem,'mainItemmainItemmainItem');
+    console.log(mainItem, 'mainItemmainItemmainItem')
     // return
     const packageId = this.props.current
-    //if (!mainItem.checked_spec || mainItem.spec_items.length > 1) {
     if (!mainItem.checked_spec && mainItem.spec_items.length > 0) {
       Taro.showToast({
         title: '请选择主商品规格',
         icon: 'none'
       })
-
       return
     }
     const id = (mainItem.checked_spec && mainItem.checked_spec.item_id) || mainItem.item_id
@@ -329,7 +328,7 @@ export default class PackageItem extends Component {
     }
   }
 
-  async fetchCartcount() {
+  async fetchCartcount () {
     try {
       const { item_count } = await api.cart.count({ shop_type: 'distributor' })
       this.props.onUpdateCartCount(item_count)
@@ -338,7 +337,7 @@ export default class PackageItem extends Component {
     }
   }
 
-  countPackageTotal() {
+  countPackageTotal () {
     const { selection, packagePrices, mainPackagePrice } = this.state
     let packageTotalPrice = 0
     const selected = [...selection]
@@ -347,8 +346,8 @@ export default class PackageItem extends Component {
       // packageTotalPrice += Number(mainItem.price * 100)
       selected.map((id) => {
         packageTotalPrice +=
-          Number((packagePrices[id] && packagePrices[id].price)||0) ||
-          Number((mainPackagePrice[id] && mainPackagePrice[id].price)||0)
+          Number((packagePrices[id] && packagePrices[id].price) || 0) ||
+          Number((mainPackagePrice[id] && mainPackagePrice[id].price) || 0)
       })
     }
     this.setState({
@@ -356,7 +355,7 @@ export default class PackageItem extends Component {
     })
   }
 
-  render() {
+  render () {
     const { info, onClick, current } = this.props
     if (!info) {
       return null
@@ -375,8 +374,7 @@ export default class PackageItem extends Component {
       mainItem
     } = this.state
 
-
-    console.log("===packageTotalPrice===",packageTotalPrice)
+    console.log('===packageTotalPrice===', packageTotalPrice)
 
     const { package_id, package_name } = info
     return (
@@ -397,19 +395,21 @@ export default class PackageItem extends Component {
               info={mainItem}
               renderCheckbox={
                 <View className='cart-item__act'>
-                  <SpCheckbox key={mainItem.item_id} checked='true' disabled />
+                  <SpCheckbox key={mainItem.item_id} checked disabled />
                 </View>
               }
               renderSpec={
                 <View
                   className='goods-item__sku'
-                  style={mainItem.spec_items && mainItem.spec_items.length ? '' : 'display: none;'}
+                  style={
+                    mainItem.spec_items && mainItem.spec_items.length > 0 ? '' : 'display: none;'
+                  }
                   onClick={this.handleMainSkuSelection.bind(this, mainItem)}
                 >
                   <Text className='goods-item__sku-text'>
                     {mainItem.checked_spec ? mainItem.checked_spec.propsText : '请选择规格'}
                   </Text>
-                  <Text className='icon-arrowDown'></Text>
+                  <Text className='iconfont icon-arrowDown'></Text>
                 </View>
               }
             />
@@ -438,13 +438,13 @@ export default class PackageItem extends Component {
                   renderSpec={
                     <View
                       className='goods-item__sku'
-                      style={item.spec_items.length ? '' : 'display: none;'}
+                      style={item.spec_items.length > 0 ? '' : 'display: none;'}
                       onClick={this.handleSkuSelection.bind(this, item)}
                     >
                       <Text className='goods-item__sku-text'>
                         {item.checked_spec ? item.checked_spec.propsText : '请选择规格'}
                       </Text>
-                      <Text className='icon-arrowDown'></Text>
+                      <Text className='iconfont icon-arrowDown'></Text>
                     </View>
                   }
                 />

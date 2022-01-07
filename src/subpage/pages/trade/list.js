@@ -1,12 +1,21 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import _mapKeys from 'lodash/mapKeys'
 import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
-import { log, pickBy, resolveOrderStatus, getCurrentRoute, classNames,isNavbar } from '@/utils'
+import {
+  log,
+  pickBy,
+  resolveOrderStatus,
+  getCurrentRoute,
+  classNames,
+  isNavbar,
+  getBrowserEnv
+} from '@/utils'
 import { Tracker } from '@/service'
 import TradeItem from './comps/new-item'
 
@@ -17,7 +26,8 @@ import './list.scss'
 }))
 @withPager
 export default class TradeList extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -25,9 +35,9 @@ export default class TradeList extends Component {
       curTabIdx: 0,
       tabList: [
         { title: '全部订单', status: '0' },
-        { title: '待付款', status: '5' },
+        { title: '待支付', status: '5' },
         { title: '待收货', status: '1' },
-        { title: '已完成', status: '3' }
+        { title: '待评价', status: '7', is_rate: 0 }
       ],
       list: [],
       rate_status: false,
@@ -35,8 +45,8 @@ export default class TradeList extends Component {
     }
   }
 
-  componentDidShow() {
-    const { status } = this.$router.params
+  componentDidShow () {
+    const { status } = this.$instance.router.params
     const tabIdx = this.state.tabList.findIndex((tab) => tab.status === status)
 
     if (tabIdx >= 0) {
@@ -79,20 +89,21 @@ export default class TradeList extends Component {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.hideLayer()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { tabList, curTabIdx } = this.state
 
     params = _mapKeys(
       {
         ...params,
         order_type: 'normal',
-        status: tabList[curTabIdx].status
+        status: tabList[curTabIdx].status,
+        is_rate: tabList[curTabIdx].is_rate
       },
-      function(val, key) {
+      function (val, key) {
         if (key === 'page_no') return 'page'
         if (key === 'page_size') return 'pageSize'
 
@@ -132,7 +143,7 @@ export default class TradeList extends Component {
       delivery_corp: 'delivery_corp',
       delivery_corp_name: 'delivery_corp_name',
       delivery_id: 'delivery_id',
-      distributor_info:'distributor_info',
+      distributor_info: 'distributor_info',
       orders_delivery_id: 'orders_delivery_id',
       order_type: 'order_type',
       can_apply_cancel: 'can_apply_cancel',
@@ -213,7 +224,7 @@ export default class TradeList extends Component {
 
     if (type === 'confirm') {
       await api.trade.confirm(tid)
-      const { fullPath } = getCurrentRoute(this.$router)
+      const { fullPath } = getCurrentRoute(this.$instance.router)
       Taro.redirectTo({
         url: fullPath
       })
@@ -245,8 +256,9 @@ export default class TradeList extends Component {
           } = trade
           if (is_all_delivery || delivery_type === 'old') {
             Taro.navigateTo({
-              url: `/subpage/pages/trade/delivery-info?delivery_id=${orders_delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${delivery_corp_name ||
-                delivery_corp}&delivery_type=${delivery_type}&order_type=${order_type}&order_id=${tid}`
+              url: `/subpage/pages/trade/delivery-info?delivery_id=${orders_delivery_id}&delivery_code=${delivery_code}&delivery_corp=${delivery_corp}&delivery_name=${
+                delivery_corp_name || delivery_corp
+              }&delivery_type=${delivery_type}&order_type=${order_type}&order_id=${tid}`
             })
           } else {
             Taro.navigateTo({
@@ -280,33 +292,31 @@ export default class TradeList extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { curTabIdx, curItemActionsId, tabList, list = [], page, rateStatus } = this.state
 
     return (
-      <View className={classNames(
-        'page-trade-list',
-        {
-          'has-navbar':isNavbar()
-        }
-      )}>
+      <View
+        className={classNames('page-trade-list', {
+          'has-navbar': isNavbar()
+        })}
+      >
         <SpNavBar title='订单列表' leftIconType='chevron-left' fixed='true' />
         <AtTabs
           className={`trade-list__tabs ${colors.data[0].primary ? 'customTabsStyle' : ''}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
-          customStyle={{ color: colors.data[0].primary}}
+          customStyle={{ color: colors.data[0].primary }}
         >
           {tabList.map((panes, pIdx) => (
             <AtTabsPane current={curTabIdx} key={panes.status} index={pIdx}></AtTabsPane>
           ))}
         </AtTabs>
-
         <ScrollView
           scrollY
-          className='trade-list__scroll with-tabs'
+          className={`trade-list__scroll ${getBrowserEnv().weixin ? 'with-tabs-wx' : 'with-tabs'}`}
           // onScrollToUpper={this.onPullDownRefresh.bind(this)}
           onScrollToLower={this.nextPage}
         >
@@ -327,7 +337,9 @@ export default class TradeList extends Component {
           })}
           {page.isLoading && <Loading>正在加载...</Loading>}
           {!page.isLoading && !page.hasNext && !list.length && (
-            <SpNote isUrl img={`${process.env.APP_IMAGE_CDN}/empty_order.png`}>您还没有商城订单呦~</SpNote>
+            <SpNote isUrl img={`${process.env.APP_IMAGE_CDN}/empty_order.png`}>
+              您还没有商城订单呦~
+            </SpNote>
           )}
           {!!curItemActionsId && <View className='layer' onClick={this.hideLayer} />}
         </ScrollView>

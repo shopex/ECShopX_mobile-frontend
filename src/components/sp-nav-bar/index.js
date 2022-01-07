@@ -1,46 +1,39 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtNavBar } from 'taro-ui'
-import { classNames, getBrowserEnv, isWeb } from '@/utils'
+import { classNames, isWeb, isNavbar } from '@/utils'
 
 import './index.scss'
 
-export default class SpNavBar extends Component {
-  static defaultProps = {
-    leftIconType: 'chevron-left',
-    fixed: false,
-    title: ''
+function SpNavBar (props) {
+  const { leftIconType = 'chevron-left', title: p_title, onClickLeftIcon } = props
+  // const { page } = getCurrentInstance()
+  const { pageTitle } = useSelector((state) => state.sys)
+  // const defaultTitle = page ? page.config?.navigationBarTitleText : p_title
+
+  const handleClickLeftIcon = function () {
+    onClickLeftIcon ? onClickLeftIcon() : Taro.navigateBack()
   }
 
-  static options = {
-    addGlobalClass: true
-  }
-
-  handleClickLeftIcon = () => {
-    if (this.props.onClickLeftIcon) return this.props.onClickLeftIcon()
-    return Taro.navigateBack()
-  }
-
-  render() {
-    const { title, leftIconType, fixed } = this.props
-    if (isWeb && !getBrowserEnv().weixin) {
-      return (
-        <View
-          className={classNames(`sp-nav-bar nav-bar-height`, {
-            fixed
-          })}
-        >
-          <AtNavBar
-            fixed={fixed}
-            color='#000'
-            title={title}
-            leftIconType={leftIconType}
-            onClickLeftIcon={this.handleClickLeftIcon.bind(this)}
-          />
-        </View>
-      )
-    }
-
+  if (!isNavbar()) {
     return null
   }
+
+  return (
+    <AtNavBar
+      fixed
+      color='#000'
+      title={pageTitle}
+      leftIconType={leftIconType}
+      onClickLeftIcon={handleClickLeftIcon}
+    />
+  )
 }
+
+SpNavBar.options = {
+  addGlobalClass: true
+}
+
+export default SpNavBar

@@ -1,11 +1,11 @@
-import { createStore, applyMiddleware } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
+import logger from 'redux-logger'
 import persistReducer from 'redux-persist/lib/persistReducer'
 import persistStore from 'redux-persist/lib/persistStore'
-import thunkMiddleware from 'redux-thunk'
-import { createLogger } from 'redux-logger'
-import reducers from './reducers'
 
-let storage
+import rootReducer from './reducer'
+
+let storage, store
 
 if (process.env.TARO_ENV === 'weapp') {
   storage = require('redux-persist-weapp-storage/lib/bundle')
@@ -13,29 +13,23 @@ if (process.env.TARO_ENV === 'weapp') {
   storage = require('redux-persist/lib/storage').default
 }
 
-const isProd = process.env.NODE_ENV === 'production'
-
-const middlewares = [thunkMiddleware, !isProd && createLogger()].filter(Boolean)
-
 const reducer = persistReducer(
   {
     key: 'root',
-    storage,
-    blacklist: ['cart', 'address', 'home', 'guide']
+    storage
   },
-  reducers
+  rootReducer
 )
 
-let store, persistor
-
-export default function configStore() {
+export default function configStore (preloadedState = {}) {
   if (!store) {
-    store = createStore(reducer, applyMiddleware(...middlewares))
-    persistor = persistStore(store)
+    store = configureStore({
+      // reducer: rootReducer,
+      reducer,
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+      preloadedState
+    })
+    persistStore(store)
   }
-
-  return {
-    store,
-    persistor
-  }
+  return store
 }

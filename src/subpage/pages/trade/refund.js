@@ -1,8 +1,9 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtImagePicker, AtTag, AtTextarea, AtTabsPane, AtTabs } from 'taro-ui'
 import { SpCell, SpToast, SpHtmlContent, SpImgPicker } from '@/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import api from '@/api'
 // import req from '@/api/req'
 import { Tracker } from '@/service'
@@ -16,7 +17,8 @@ import './refund.scss'
   colors: colors.current
 }))
 export default class TradeRefund extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -43,9 +45,9 @@ export default class TradeRefund extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
-    const { status } = this.$router.params
+    const { status } = this.$instance.router.params
     const { segTypes, curSegIdx } = this.state
     let curIndex = 0
     segTypes.map((item, index) => {
@@ -56,18 +58,13 @@ export default class TradeRefund extends Component {
     })
   }
 
-  async fetch() {
+  async fetch () {
     Taro.showLoading({
       mask: true
     })
 
-    const {
-      aftersales_bn,
-      order_id,
-      isDelivery,
-      delivery_status,
-      deliverData
-    } = this.$router.params
+    const { aftersales_bn, order_id, isDelivery, delivery_status, deliverData } =
+      this.$instance.router.params
     let detail = deliverData ? JSON.parse(deliverData) : null
     // 获取售后原因
     const reasonList = await api.aftersales.reasonList()
@@ -99,7 +96,6 @@ export default class TradeRefund extends Component {
     }
 
     Taro.hideLoading()
-
     const { reason: oldReason } = this.state
 
     const newReason = [...oldReason, ...reasonList]
@@ -148,7 +144,6 @@ export default class TradeRefund extends Component {
     const imgFiles = data.slice(0, 3)
 
     imgUploader.uploadImageFn(imgFiles).then((res) => {
-      console.log('---res---', res)
       this.setState({
         imgs: res
       })
@@ -198,39 +193,40 @@ export default class TradeRefund extends Component {
   }
 
   aftersalesAxios = async () => {
-    this.setState({ isInvalid: false })
+    await this.setState({ isInvalid: false })
+    const { segTypes, curSegIdx, curReasonIdx, description } = this.state
+    const reason = this.state.reason[curReasonIdx]
+    const aftersales_type = segTypes[curSegIdx].status
+    const evidence_pic = this.state.imgs.map(({ url }) => url)
+    const { order_id, aftersales_bn, deliverData } = this.$instance.router.params
+    let detail = deliverData
+    const data = {
+      detail,
+      order_id,
+      aftersales_bn,
+      aftersales_type,
+      reason,
+      description,
+      evidence_pic
+    }
+
+    // console.log(data, 244)
+    const method = aftersales_bn ? 'modify' : 'apply'
+    await api.aftersales[method](data)
+
+    // 退款退货
+    const { orderInfo } = await api.trade.detail(order_id)
+    Tracker.dispatch('ORDER_REFUND', orderInfo)
+
     try {
-      const { segTypes, curSegIdx, curReasonIdx, description } = this.state
-      const reason = this.state.reason[curReasonIdx]
-      const aftersales_type = segTypes[curSegIdx].status
-      const evidence_pic = this.state.imgs.map(({ url }) => url)
-      const { order_id, aftersales_bn, deliverData } = this.$router.params
-      let detail = deliverData
-      const data = {
-        detail,
-        order_id,
-        aftersales_bn,
-        aftersales_type,
-        reason,
-        description,
-        evidence_pic
-      }
-
-      // console.log(data, 244)
-      const method = aftersales_bn ? 'modify' : 'apply'
-      await api.aftersales[method](data)
-
-      // 退款退货
-      const { orderInfo } = await api.trade.detail(order_id)
-      Tracker.dispatch('ORDER_REFUND', orderInfo)
-
       S.toast('操作成功')
       setTimeout(() => {
-        this.setState({ isInvalid: true })
         Taro.redirectTo({
           url: `/subpage/pages/trade/detail?id=${order_id}`
         })
-      }, 700)
+
+        this.setState({ isInvalid: true })
+      }, 100)
     } catch (e) {
       this.setState({ isInvalid: true })
     }
@@ -262,7 +258,7 @@ export default class TradeRefund extends Component {
     // })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const {
       segTypes,

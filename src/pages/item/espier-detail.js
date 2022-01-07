@@ -1,5 +1,5 @@
-/* eslint-disable react/jsx-key */
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import {
   View,
   Text,
@@ -8,25 +8,24 @@ import {
   SwiperItem,
   Image,
   Video,
-  Canvas
+  Canvas,
+  RichText
 } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtCountdown } from 'taro-ui'
 import {
   Loading,
   Price,
   FloatMenus,
   FloatMenuItem,
-  SpHtmlContent,
   SpToast,
-  SpNavBar,
   GoodsBuyPanel,
   SpCell,
   GoodsEvaluation,
   FloatMenuMeiQia,
-  GoodsItem,
   PointLine,
-  SpRecommend
+  SpRecommend,
+  SpPage
 } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
@@ -41,9 +40,9 @@ import {
   buriedPoint,
   isAlipay,
   isWeixin,
-  isWeb
+  linkPage,
+  getAppId
 } from '@/utils'
-import { setPageTitle } from '@/utils/platform'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from '@/service'
@@ -58,23 +57,21 @@ import {
   ParamsItem,
   GroupingItem
 } from './comps'
-import { linkPage } from '../home/wgts/helper'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 import { getDtidIdUrl } from '@/utils/helper'
-
 import './espier-detail.scss'
 
 @connect(
-  ({ cart, member, colors }) => ({
+  ({ cart, user, colors }) => ({
     cart,
     colors: colors.current,
-    favs: member.favs,
+    favs: user.favs,
     showLikeList: cart.showLikeList
   }),
   (dispatch) => ({
     onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
     onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
-    onUpdateCount: (count) => dispatch({ type: 'cart/updateCount', payload: count }),
+    onUpdateCount: (count) => dispatch({ type: 'cart/updateCartNum', payload: count }),
     onAddFav: ({ item_id, fav_id }) =>
       dispatch({ type: 'member/addFav', payload: { item_id, fav_id } }),
     onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
@@ -84,7 +81,8 @@ import './espier-detail.scss'
 @withBackToTop
 @withPointitem
 export default class EspierDetail extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -128,25 +126,25 @@ export default class EspierDetail extends Component {
   }
 
   getGoodId = async () => {
-    const options = await normalizeQuerys(this.$router.params)
+    const options = await normalizeQuerys(this.$instance.params || {})
     if (options.itemid && !options.id) {
       options.id = options.itemid
     }
     let id = options.id
     const entryData = await entry.entryLaunch({ ...options }, true)
     console.log('entryData---->', entryData)
-    id = entryData.id  
+    id = entryData.id
     if (options.scene) {
       const query = await normalizeQuerys(options)
       if (query.id) {
-        id = query.id 
+        id = query.id
       }
     }
-    return id;
+    return id
   }
 
-  async componentDidMount() {
-    const options = await normalizeQuerys(this.$router.params)
+  async componentDidMount () {
+    const options = await normalizeQuerys(this.$instance.router.params)
     // Taro.showLoading({
     //   mask: true
     // });
@@ -196,7 +194,7 @@ export default class EspierDetail extends Component {
             uid = query.uid
           }
         }
-       
+
         this.getEvaluationList(id)
         // 浏览记录
         if (S.getAuthToken()) {
@@ -205,7 +203,7 @@ export default class EspierDetail extends Component {
             if (id) {
               itemId = id
             } else {
-              itemId = this.$router.params.id
+              itemId = this.$instance.router.params.id
             }
             api.member.itemHistorySave(itemId)
           } catch (e) {
@@ -236,7 +234,7 @@ export default class EspierDetail extends Component {
     addGlobalClass: true
   }
 
-  async componentDidShow() {
+  async componentDidShow () {
     const userInfo = Taro.getStorageSync('userinfo')
     if (S.getAuthToken() && (!userInfo || !userInfo.userId)) {
       const res = await api.member.memberInfo()
@@ -252,15 +250,15 @@ export default class EspierDetail extends Component {
       Taro.setStorageSync('userinfo', userObj)
     }
     this.fetchCartCount()
-    const goodId=await this.getGoodId();
-    this.fetchInfo(goodId);
+    const goodId = await this.getGoodId()
+    this.fetchInfo(goodId)
   }
 
-  async getEvaluationList(id) {
+  async getEvaluationList (id) {
     let params = {
       page: 1,
       pageSize: 2,
-      item_id: id || this.$router.params.id
+      item_id: id || this.$instance.router.params.id
     }
     if (this.isPointitemGood()) {
       params = {
@@ -279,7 +277,7 @@ export default class EspierDetail extends Component {
     })
   }
 
-  onShareAppMessage(res) {
+  onShareAppMessage (res) {
     const { from } = res
     const { info } = this.state
     const curStore = Taro.getStorageSync('curStore')
@@ -302,7 +300,7 @@ export default class EspierDetail extends Component {
     }
   }
 
-  onShareTimeline() {
+  onShareTimeline () {
     const { info } = this.state
     const curStore = Taro.getStorageSync('curStore')
     const { userId } = Taro.getStorageSync('userinfo')
@@ -322,7 +320,7 @@ export default class EspierDetail extends Component {
     }
   }
 
-  async fetchCartCount() {
+  async fetchCartCount () {
     const { info } = this.state
     if (!S.getAuthToken() || !info) return
     const { special_type } = info
@@ -344,7 +342,7 @@ export default class EspierDetail extends Component {
       console.log(e)
     }
   }
-  async checkWhite() {
+  async checkWhite () {
     const { status } = await api.wx.getWhiteList()
     if (status == true) {
       setTimeout(() => {
@@ -353,12 +351,12 @@ export default class EspierDetail extends Component {
     }
   }
 
-  isPointitemGood() {
-    const options = this.$router.params
+  isPointitemGood () {
+    const options = this.$instance.router.params
     return options.type === 'pointitem'
   }
 
-  async goodInfo(id, param) {
+  async goodInfo (id, param) {
     let info
     if (this.isPointitemGood()) {
       info = await api.pointitem.detail(id, param)
@@ -368,28 +366,19 @@ export default class EspierDetail extends Component {
     return info
   }
 
-  componentWillReceiveProps(next) {
-    if (Object.keys(this.props.favs).length !== Object.keys(next.favs).length) {
-      let is_fav = null
-      setTimeout(() => {
-        is_fav = Boolean(next.favs[this.state.info.item_id])
-        this.setState({
-          info: { ...this.state.info, is_fav }
-        })
-        setTimeout(() => {
-          const likeList = this.state.likeList.map((item) => {
-            item.is_fav = Boolean(next.favs[item.item_id])
-            return item
-          })
-          this.setState({
-            likeList
-          })
-        })
-      }, 100)
-    }
-  }
+  // componentWillReceiveProps (next) {
+  //   if (next.favs && (Object.keys(this.props.favs).length !== Object.keys(next.favs).length)) {
+  //     let is_fav = null
+  //     setTimeout(() => {
+  //       is_fav = Boolean(next.favs[this.state.info.item_id])
+  //       this.setState({
+  //         info: {...this.state.info, is_fav}
+  //       })
+  //     }, 100)
+  //   }
+  // }
 
-  async goodPackageList(id) {
+  async goodPackageList (id) {
     let info
     if (this.isPointitemGood()) {
       info = { list: [] }
@@ -399,7 +388,7 @@ export default class EspierDetail extends Component {
     return info
   }
 
-  async fetchInfo(itemId, goodsId) {
+  async fetchInfo (itemId, goodsId) {
     this.nextPage()
     const { distributor_id, store_id } = Taro.getStorageSync('curStore')
     const { is_open_store_status } = this.state
@@ -408,7 +397,7 @@ export default class EspierDetail extends Component {
     if (itemId) {
       id = itemId
     } else {
-      id = this.$router.params.id
+      id = this.$instance.router.params.id
     }
 
     const param = { goods_id: goodsId }
@@ -420,10 +409,10 @@ export default class EspierDetail extends Component {
     if (process.env.APP_PLATFORM === 'standard') {
       param.distributor_id = distributor_id
     } else {
-      if (this.$router.params.dtid) {
-        param.distributor_id = this.$router.params.dtid
+      if (this.$instance.router.params.dtid) {
+        param.distributor_id = this.$instance.router.params.dtid
       } else {
-        const options = this.$router.params
+        const options = this.$instance.router.params
         if (options.scene) {
           const query = await normalizeQuerys(options)
           if (query.dtid) {
@@ -469,13 +458,10 @@ export default class EspierDetail extends Component {
         startActivity = info.activity_info.status === 'in_sale'
       }
     }
-
-    if (this.$router.path === '/pages/item/espier-detail') {
-      setPageTitle(info.item_name)
-      // Taro.setNavigationBarTitle({
-      //   title: info.item_name
-      // })
-    }
+    // setPageTitle( info.item_name )
+    Taro.setNavigationBarTitle({
+      title: info.item_name
+    })
 
     if (marketing === 'group' || marketing === 'seckill' || marketing === 'limited_time_sale') {
       const { colors } = this.props
@@ -490,13 +476,15 @@ export default class EspierDetail extends Component {
     }
 
     const { item_params } = info
-    let itemParams = item_params ? pickBy(item_params, {
-      label: 'attribute_name',
-      value: 'attribute_value_name'
-    }) : []
+    let itemParams = item_params
+      ? pickBy(item_params, {
+          label: 'attribute_name',
+          value: 'attribute_value_name'
+        })
+      : []
     itemParams = itemParams && itemParams.slice(0, 5)
 
-    info.is_fav = Boolean(this.props.favs[info.item_id])
+    // info.is_fav = Boolean(this.props.favs[info.item_id])
     const specImgsDict = this.resolveSpecImgs(info.item_spec_desc)
     const sixSpecImgsDict = pickBy(info.spec_images, {
       url: 'spec_image_url',
@@ -528,7 +516,7 @@ export default class EspierDetail extends Component {
         isSubscribeGoods: !!subscribe
       },
       async () => {
-        const vedioUrl = this.getVedioUrl();
+        const vedioUrl = this.getVedioUrl()
         let contentDesc = ''
         //说明没有值
         if (!isArray(desc)) {
@@ -536,6 +524,9 @@ export default class EspierDetail extends Component {
             contentDesc += `<video src=${vedioUrl} controls style='width:100%'></video>` + desc
           } else {
             contentDesc = desc
+              .toString()
+              .replace(/\s+style="[^"]*"/g, '')
+              .replace(/<img/g, '<img style="max-width:100%;height:auto;display: block;"')
           }
         } else {
           contentDesc = desc
@@ -545,6 +536,7 @@ export default class EspierDetail extends Component {
         if (list.length) {
           promotion_package = list.length
         }
+
         this.setState({
           desc: contentDesc,
           promotion_package
@@ -557,8 +549,20 @@ export default class EspierDetail extends Component {
     log.debug('fetch: done', info)
   }
 
-  async goodLikeList(query) {
-    const { id } = this.$router.params
+  getVedioUrl = () => {
+    const { info } = this.state
+    //有本地视频
+    const localVedio = info.video_type === 'local' && info.videos ? info.videos : false
+    //有微信视频
+    const wechatVedio = info.video_type !== 'local' && info.videos_url ? info.videos_url : false
+    //展示视频
+    const vedioUrl = localVedio || wechatVedio || false
+
+    return vedioUrl
+  }
+
+  async goodLikeList (query) {
+    const { id } = this.$instance.router.params
     let info
     if (this.isPointitemGood()) {
       info = await api.pointitem.likeList({
@@ -570,8 +574,7 @@ export default class EspierDetail extends Component {
     return info
   }
 
-  async fetch(params) {
-    console.log("====favs", this.props.favs)
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -580,24 +583,8 @@ export default class EspierDetail extends Component {
 
     const { list, total_count: total } = await this.goodLikeList(query)
 
-    const nList = pickBy(list, {
-      img: "pics[0]",
-      item_id: "item_id",
-      title: "itemName",
-      point: "point",
-      distributor_id: "distributor_id",
-      promotion_activity_tag: "promotion_activity",
-      price: ({ price }) => {
-        return (price / 100).toFixed(2);
-      },
-      member_price: ({ member_price }) => (member_price / 100).toFixed(2),
-      market_price: ({ market_price }) => (market_price / 100).toFixed(2),
-      desc: "brief",
-      is_fav: ({ item_id }) => Boolean(this.props.favs[item_id])
-    });
-
     this.setState({
-      likeList: [...this.state.likeList, ...nList]
+      likeList: [...this.state.likeList, ...list]
     })
 
     return {
@@ -605,17 +592,18 @@ export default class EspierDetail extends Component {
     }
   }
 
-  resolveSpecImgs(specs) {
+  resolveSpecImgs (specs) {
     const ret = {}
 
     //只有一个图片类型规格
-    specs && specs.some((item) => {
-      if (item.is_image) {
-        item.spec_values.forEach((v) => {
-          ret[v.spec_value_id] = v.spec_image_url
-        })
-      }
-    })
+    specs &&
+      specs.some((item) => {
+        if (item.is_image) {
+          item.spec_values.forEach((v) => {
+            ret[v.spec_value_id] = v.spec_image_url
+          })
+        }
+      })
 
     return ret
   }
@@ -699,7 +687,7 @@ export default class EspierDetail extends Component {
   }
 
   handleParamsClick = () => {
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
 
     Taro.navigateTo({
       url: `/pages/item/item-params?id=${id}`
@@ -764,8 +752,7 @@ export default class EspierDetail extends Component {
     const { info, is_open_store_status } = this.state
     const { pics, company_id, item_id } = info
     const host = req.baseURL.replace('/api/h5app/wxapp/', '')
-    const extConfig =
-      Taro.getEnv() === 'WEAPP' && Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
+    const { appid } = getAppId()
     const { distributor_id, store_id } = Taro.getStorageSync('curStore')
 
     const pic = pics[0].replace('http:', 'https:')
@@ -777,7 +764,10 @@ export default class EspierDetail extends Component {
           : distributor_id
         : infoId
 
-    const wxappCode = getDtidIdUrl(`${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${extConfig.appid}&company_id=${company_id}&id=${item_id}&uid=${userId}`, id)
+    const wxappCode = getDtidIdUrl(
+      `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${appid}&company_id=${company_id}&id=${item_id}&uid=${userId}`,
+      id
+    )
 
     console.log('wxappCode', wxappCode)
 
@@ -923,7 +913,7 @@ export default class EspierDetail extends Component {
         icon: 'none'
       })
       setTimeout(() => {
-        linkPage(page.linkPage, page)
+        linkPage(page)
       }, 1000)
       return
     }
@@ -944,7 +934,7 @@ export default class EspierDetail extends Component {
     })
   }
 
-  handleSavePoster() {
+  handleSavePoster () {
     const { poster } = this.state
     Taro.getSetting().then((res) => {
       if (!res.authSetting['scope.writePhotosAlbum']) {
@@ -1047,8 +1037,8 @@ export default class EspierDetail extends Component {
       url: `/others/pages/home/coupon-home?item_id=${this.state.info.item_id}&distributor_id=${id}`
     })
   }
-  handleClickViewAllEvaluation() {
-    let url = `/marketing/pages/item/espier-evaluation?id=${this.$router.params.id}`
+  handleClickViewAllEvaluation () {
+    let url = `/marketing/pages/item/espier-evaluation?id=${this.$instance.router.params.id}`
     if (this.isPointitemGood()) {
       url += `&order_type=pointsmall`
     }
@@ -1060,7 +1050,7 @@ export default class EspierDetail extends Component {
   handleToRateList = () => {
     const { evaluationTotal } = this.state
     if (evaluationTotal > 0) {
-      let url = `/marketing/pages/item/espier-evaluation?id=${this.$router.params.id}`
+      let url = `/marketing/pages/item/espier-evaluation?id=${this.$instance.router.params.id}`
       if (this.isPointitemGood()) {
         url += `&order_type=pointsmall`
       }
@@ -1157,7 +1147,7 @@ export default class EspierDetail extends Component {
     const { info } = this.state
     const { distributor_id } = Taro.getStorageSync('curStore')
     const { itemId: item_id } = info
-    const { user_card_id, card_id, code } = this.$router.params
+    const { user_card_id, card_id, code } = this.$instance.router.params
     const params = { distributor_id, item_id, user_card_id }
     const res = await api.cart.exchangeGood(params)
     if (res.status == true) {
@@ -1167,21 +1157,19 @@ export default class EspierDetail extends Component {
     }
   }
 
-
   getVedioUrl = () => {
-
-    const { info } = this.state;
+    const { info } = this.state
     //有本地视频
-    const localVedio = (info.video_type === 'local' && info.videos) ? info.videos : false;
+    const localVedio = info.video_type === 'local' && info.videos ? info.videos : false
     //有微信视频
-    const wechatVedio = (info.video_type !== 'local' && info.videos_url) ? info.videos_url : false;
+    const wechatVedio = info.video_type !== 'local' && info.videos_url ? info.videos_url : false
     //展示视频
-    const vedioUrl = localVedio || wechatVedio || false;
+    const vedioUrl = localVedio || wechatVedio || false
 
-    return vedioUrl;
+    return vedioUrl
   }
 
-  render() {
+  render () {
     const {
       info,
       sixSpecImgsDict,
@@ -1212,7 +1200,6 @@ export default class EspierDetail extends Component {
       evaluationList,
       isSubscribeGoods
     } = this.state
- 
 
     const { showLikeList, colors } = this.props
     const meiqia = Taro.getStorageSync('meiqia')
@@ -1233,23 +1220,18 @@ export default class EspierDetail extends Component {
     if (info.activity_type === 'limited_buy') {
       ruleDay = JSON.parse(info.activity_info.rule.day)
     }
-
+    const vedioUrl = this.getVedioUrl()
     const { pics: imgs, kaquan_list: coupon_list } = info
     let new_coupon_list = []
     if (coupon_list && coupon_list.list.length >= 1) {
       new_coupon_list = coupon_list.list.slice(0, 3)
     }
-    let { isNewGift } = this.$router.params
+    let { isNewGift } = this.$instance.router.params
 
-
-    const vedioUrl = this.getVedioUrl();
-
-    console.log('==vedioUrl==', vedioUrl, desc);
+    console.log('==likeList==', likeList)
 
     return (
-      <View className='page-goods-detail'>
-        <SpNavBar title={info.item_name} leftIconType='chevron-left' fixed />
-
+      <SpPage className='page-goods-detail'>
         <ScrollView
           className={`goods-detail__wrap ${isNewGift ? 'goods-detail__bottom' : null}`}
           scrollY
@@ -1371,7 +1353,7 @@ export default class EspierDetail extends Component {
               </View>
               {!isNewGift && !this.isPointitem() && isWeixin && (
                 <View className='goods-share__wrap' onClick={this.handleShare.bind(this)}>
-                  <View className='icon-share'></View>
+                  <View className='iconfont icon-share'></View>
                   <View className='share-label'>分享</View>
                 </View>
               )}
@@ -1473,7 +1455,7 @@ export default class EspierDetail extends Component {
           )}
 
           {marketing === 'group' && info.groups_list.length > 0 && !this.isPointitemGood() && (
-            <View className='goods-sec-specs'>
+            <View className='goods-sec-specs goods-gruop'>
               <View className='goods-sec-value'>
                 <Text className='title-inner'>正在进行中的团</Text>
                 <View className='grouping'>
@@ -1527,7 +1509,6 @@ export default class EspierDetail extends Component {
               value={`共${promotion_package}种组合随意搭配`}
             />
           )}
- 
 
           {itemParams.length > 0 && (
             <View className='goods-sec-specs' onClick={this.handleParamsClick.bind(this)}>
@@ -1599,46 +1580,21 @@ export default class EspierDetail extends Component {
             </View>
           ) : (
             <View>
-              {desc && <SpHtmlContent className='goods-detail__content' content={desc} />}
+              {desc && (
+                // <SpHtmlContent className="goods-detail__content" content={desc} />
+                <RichText nodes={desc} />
+              )}
             </View>
           )}
+
           {/* 猜你喜欢 */}
-          {likeList.length && showLikeList ? (
-            <View className="cart-list cart-list__disabled">
-              <View className="cart-list__hd like__hd">
-                <Text
-                  className="cart-list__title"
-                  style={{
-                    color: colors.data[0].primary,
-                    borderColor: colors.data[0].primary
-                  }}
-                >
-                  猜你喜欢
-                </Text>
-              </View>
-              <View className="goods-list goods-list__type-grid">
-                {likeList.map(item => {
-                  return (
-                    <View className="goods-list__item" key={item.item_id}>
-                      <GoodsItem
-                        key={item.item_id}
-                        info={item}
-                        onClick={this.handleClickItem.bind(this, item)}
-                      />
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-          ) : null}
-
-
+          <SpRecommend className='recommend-block' info={likeList} />
         </ScrollView>
 
         <FloatMenus>
           <FloatMenuItem
-            iconPrefixClass='icon'
-            icon='home1'
+            iconPrefixClass='iconfont'
+            icon='icon-home1'
             onClick={this.handleBackHome.bind(this)}
           />
           {isAlipay ? null : meiqia.is_open === 'true' ||
@@ -1650,15 +1606,15 @@ export default class EspierDetail extends Component {
             />
           ) : (
             <FloatMenuItem
-              iconPrefixClass='icon'
-              icon='headphones'
+              iconPrefixClass='iconfont'
+              icon='icon-headphones'
               openType='contact'
               sessionFrom={sessionFrom}
             />
           )}
           <FloatMenuItem
-            iconPrefixClass='icon'
-            icon='arrow-up'
+            iconPrefixClass='iconfont'
+            icon='icon-arrow-up'
             hide={!showBackToTop}
             onClick={this.scrollBackToTop}
           />
@@ -1666,10 +1622,10 @@ export default class EspierDetail extends Component {
 
         {!isNewGift ? (
           info.distributor_sale_status &&
-            hasStock &&
-            startActivity &&
-            !info.is_gift &&
-            !vipLimit ? (
+          hasStock &&
+          startActivity &&
+          !info.is_gift &&
+          !vipLimit ? (
             <GoodsBuyToolbar
               info={info}
               type={marketing}
@@ -1699,23 +1655,27 @@ export default class EspierDetail extends Component {
                   </View>
                 ) : (
                   <View
-                    style={`background: ${this.isPointitemGood() || isAlipay
-                      ? 'grey'
-                      : !isSubscribeGoods
+                    style={`background: ${
+                      this.isPointitemGood() || isAlipay
+                        ? 'grey'
+                        : !isSubscribeGoods
                         ? colors.data[0].primary
                         : 'inherit'
-                      }`}
-                    className={`arrivalNotice ${isSubscribeGoods &&
-                      'noNotice'} ${(this.isPointitemGood() || isWeb)&& 'good_disabled'}`}
+                    }`}
+                    className={`arrivalNotice ${isSubscribeGoods && 'noNotice'} ${
+                      this.isPointitemGood() && 'good_disabled'
+                    }`}
                     onClick={this.handleSubscription.bind(this)}
                   >
                     {this.isPointitemGood()
                       ? '已兑完'
                       : isSubscribeGoods
-                        ? '已订阅到货通知'
-                        : isAlipay
-                          ? '暂无可售' : isWeb? '已售罄'
-                          : '到货通知'}
+                      ? '已订阅到货通知'
+                      : isAlipay
+                      ? '暂无可售'
+                      : isWeb
+                      ? '已售罄'
+                      : '到货通知'}
                   </View>
                 )}
               </View>
@@ -1763,11 +1723,11 @@ export default class EspierDetail extends Component {
             <Image className='poster' src={poster} mode='widthFix' />
             <View className='view-flex view-flex-middle'>
               <View
-                className='icon-close poster-close-btn'
+                className='iconfont icon-close poster-close-btn'
                 onClick={this.handleHidePoster.bind(this)}
               ></View>
               <View
-                className='icon-download poster-save-btn'
+                className='iconfont icon-download poster-save-btn'
                 style={`background: ${colors.data[0].primary}`}
                 onClick={this.handleSavePoster.bind(this)}
               >
@@ -1780,7 +1740,7 @@ export default class EspierDetail extends Component {
         <Canvas className='canvas' canvas-id='myCanvas'></Canvas>
 
         <SpToast />
-      </View>
+      </SpPage>
     )
   }
 }

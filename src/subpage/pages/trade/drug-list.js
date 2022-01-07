@@ -1,22 +1,21 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
 import { withPager, withLogin } from '@/hocs'
 import { log, pickBy, resolveOrderStatus, getCurrentRoute } from '@/utils'
 import TradeItem from './comps/item'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 
 import './list.scss'
 
 @withPager
 @withLogin()
 export default class TradePickList extends Component {
-  static config = {
-    navigationBarTitleText: '处方药订单'
-  }
+  $instance = getCurrentInstance()
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -27,7 +26,7 @@ export default class TradePickList extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState(
       {
         query: {
@@ -57,11 +56,11 @@ export default class TradePickList extends Component {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.hideLayer()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       ...this.state.query,
@@ -118,7 +117,7 @@ export default class TradePickList extends Component {
     const { tid } = trade
     if (type === 'confirm') {
       await api.trade.confirm(tid)
-      const { fullPath } = getCurrentRoute(this.$router)
+      const { fullPath } = getCurrentRoute(this.$instance.router)
       Taro.redirectTo({
         url: fullPath
       })
@@ -156,7 +155,7 @@ export default class TradePickList extends Component {
     })
   }
 
-  render() {
+  render () {
     const { curItemActionsId, tabList, list, page } = this.state
 
     return (

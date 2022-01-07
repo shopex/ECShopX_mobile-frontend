@@ -1,11 +1,12 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtButton, AtFloatLayout } from 'taro-ui'
 import S from '@/spx'
 import api from '@/api'
 import { isWeixin, isWeb, isAlipay, classNames, showToast, navigateTo } from '@/utils'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 import './index.scss'
 
 @connect(
@@ -28,18 +29,18 @@ export default class SpFloatPrivacy extends Component {
     onChange: () => {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       info: null
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     const data = await api.shop.getStoreBaseInfo()
     this.setState({
       info: data
@@ -48,7 +49,7 @@ export default class SpFloatPrivacy extends Component {
 
   navigateTo = navigateTo
 
-  handleCancel() {
+  handleCancel () {
     this.props.onClose()
   }
 
@@ -62,7 +63,7 @@ export default class SpFloatPrivacy extends Component {
     Taro.setStorageSync('Privacy_agress', '1')
   }
 
-  handleConfirm() {
+  handleConfirm () {
     this.handleValidate(() => {
       S.OAuthWxUserProfile(() => {
         this.props.onChange()
@@ -91,7 +92,7 @@ export default class SpFloatPrivacy extends Component {
     })
   }
 
-  render() {
+  render () {
     const { isOpened } = this.props
     const { info } = this.state
     if (!info) {

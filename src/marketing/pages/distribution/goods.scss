@@ -3,13 +3,13 @@
 .page-distribution-shop {
   background: $color-bg-gray;
   /*  #ifdef  h5  */
-  padding-top: $navigate-height-h5;
+  // padding-top: $navigate-height-h5;
   /*  #endif  */
   .at-search-bar__action {
     display: none;
   }
   .goods-list {
-    padding: 24px $edge-margin;
+    padding: 0px $edge-margin;
     &__toolbar {
       position: fixed;
       top: 0;
@@ -50,15 +50,14 @@
     }
     &__scroll {
       @include page-scroll(
-        $tabs-height + $navigate-height + $searchbar-height,
+        $tabs-height + $navigate-height,
         $tabbar-height
       );
-      top: 130px;
       /*  #ifdef  h5  */
-      @include page-scroll(
-        $tabs-height + $navigate-height-h5 + $searchbar-height,
-        $tabbar-height
-      );
+      // @include page-scroll(
+      //   $tabs-height + $navigate-height-h5 + $searchbar-height,
+      //   $tabbar-height
+      // );
       /*  #endif  */
     }
     &__type-grid {

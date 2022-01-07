@@ -1,9 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { Input, View, Picker, Image } from '@tarojs/components'
-import { SpNavBar, SpCheckbox, SpFloatPrivacy } from '@/components'
+import { SpPage, SpNavBar, SpCheckbox, SpFloatPrivacy } from '@/components'
 import api from '@/api'
-import { connect } from '@tarojs/redux'
-import S from '@/spx' 
+import { connect } from 'react-redux'
+import S from '@/spx'
 import { showToast, getThemeStyle, styleNames } from '@/utils'
 import userIcon from '@/assets/imgs/user-icon.png'
 import imgUploader from '@/utils/upload'
@@ -11,16 +12,16 @@ import imgUploader from '@/utils/upload'
 import './userinfo.scss'
 
 @connect(
-  ({ colors, member }) => ({
+  ({ colors, user }) => ({
     colors: colors.current,
-    memberData: member.member
+    memberData: user.userInfo
   }),
   (dispatch) => ({
     setMemberInfo: (memberInfo) => dispatch({ type: 'member/init', payload: memberInfo })
   })
 )
 export default class UserInfo extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -31,7 +32,7 @@ export default class UserInfo extends Component {
       // 是否获取过微信信息
       isGetWxInfo: true,
       avatarClickNum: 0,
-      showCheckboxPanel: false,
+      showCheckboxPanel: false
       // 是否显示隐私协议
       // showPrivacy: false,
       // showTimes: 0,
@@ -45,12 +46,8 @@ export default class UserInfo extends Component {
     this.optionsType = ''
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getFormItem()
-  }
-
-  config = {
-    navigationBarTitleText: '个人信息'
   }
 
   // 上传头像
@@ -79,12 +76,12 @@ export default class UserInfo extends Component {
       }
     } else {
       // if (isAgree == 1) {
-        S.OAuthWxUserProfile(() => {
-          // this.setState({
-          //   showTimes: this.state.showTimes + 1
-          // })
-          this.getFormItem()
-        }, true)
+      S.OAuthWxUserProfile(() => {
+        // this.setState({
+        //   showTimes: this.state.showTimes + 1
+        // })
+        this.getFormItem()
+      }, true)
       // } else {
       //   this.setState({
       //     showPrivacy: true,
@@ -96,10 +93,10 @@ export default class UserInfo extends Component {
 
   // 获取表单字段
   getFormItem = async () => {
-    const { memberInfo } = this.props.memberData
-    const { requestFields } = memberInfo
+    const { avatar, requestFields } = this.props.memberData
+    // const { requestFields } = this.props.memberData
     const userInfo = {
-      avatar: memberInfo.avatar,
+      avatar,
       ...requestFields
     }
 
@@ -167,8 +164,8 @@ export default class UserInfo extends Component {
   }
 
   handleShowCheckboxPanel = (checkItem) => {
-    console.log("===handleShowCheckboxPanel",checkItem)
-    if(!checkItem.is_edit) return;
+    console.log('===handleShowCheckboxPanel', checkItem)
+    if (!checkItem.is_edit) return
     const { userInfo } = this.state
     const { key, checkbox } = checkItem
     this.optionsType = key
@@ -235,27 +232,27 @@ export default class UserInfo extends Component {
     // e && e.stopPropagation();
     const { userInfo, regParams, isAgree } = this.state
     // if (isAgree == 1) {
-      try {
-        Object.keys(regParams).forEach((key) => {
-          if (regParams[key].is_required) {
-            if (!userInfo[key]) {
-              throw regParams[key].name
-            }
+    try {
+      Object.keys(regParams).forEach((key) => {
+        if (regParams[key].is_required) {
+          if (!userInfo[key]) {
+            throw regParams[key].name
           }
-        })
+        }
+      })
 
-        await api.member.setMemberInfo({
-          ...userInfo
-        })
-        showToast('修改成功')
+      await api.member.setMemberInfo({
+        ...userInfo
+      })
+      showToast('修改成功')
 
-        await S.getMemberInfo()
-        // this.props.setMemberInfo({
-        //   ...memberInfo
-        // });
-      } catch (e) {
-        showToast(`请完善${e}`)
-      }
+      await S.getMemberInfo()
+      // this.props.setMemberInfo({
+      //   ...memberInfo
+      // });
+    } catch (e) {
+      showToast(`请完善${e}`)
+    }
     // } else {
     //   this.setState({
     //     showPrivacy: true,
@@ -276,13 +273,13 @@ export default class UserInfo extends Component {
   // })
   // }
 
-  render() {
+  render () {
     const {
       formItems,
       userInfo,
       regParams,
       showCheckboxPanel,
-      option_list,
+      option_list
       // showPrivacy,
       // wxUserInfo
     } = this.state
@@ -296,7 +293,7 @@ export default class UserInfo extends Component {
     }
 
     return (
-      <View className='page-member-setting' style={styleNames(getThemeStyle())}>
+      <SpPage className='page-member-setting'>
         <SpNavBar title='用户信息' />
         <View className='baseInfo'>
           <View className='item'>
@@ -404,7 +401,7 @@ export default class UserInfo extends Component {
                 {/* 多选 */}
                 {item.field_type === 5 && (
                   <View onClick={this.handleShowCheckboxPanel.bind(this, item)}>
-                    {userInfo[item.key]
+                    {userInfo[item.key].length > 0
                       ? this.showCheckBoxItem(userInfo[item.key])
                       : item.required_message}
                   </View>
@@ -414,7 +411,7 @@ export default class UserInfo extends Component {
           ))}
         </View>
 
-        <View className='btns'>
+        <View className='btns-user'>
           <View
             className='btn save'
             style={`background: ${colors.data[0].primary}`}
@@ -433,7 +430,7 @@ export default class UserInfo extends Component {
                 </View>
                 <View
                   className='panel-btn require-btn'
-                  style={`color: ${colors.data[0].primary}`}
+                  // style={`color: ${colors.data[0].primary}`}
                   onClick={this.btnClick.bind(this, 'require')}
                 >
                   确定
@@ -472,7 +469,7 @@ export default class UserInfo extends Component {
           }
           onChange={this.privacyOnChange.bind(this)}
         /> */}
-      </View>
+      </SpPage>
     )
   }
 }

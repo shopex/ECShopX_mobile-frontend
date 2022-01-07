@@ -1,9 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpNavBar, Loading, SpNote } from '@/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { formatTime } from '@/utils'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 import api from '@/api'
 
 import './history.scss'
@@ -12,7 +13,8 @@ import './history.scss'
   colors: colors.current
 }))
 export default class History extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
     this.state = {
       list: [],
@@ -27,8 +29,8 @@ export default class History extends Component {
     }
   }
 
-  componentDidMount() {
-    const { type = 0 } = this.$router.params
+  componentDidMount () {
+    const { type = 0 } = this.$instance.router.params
     const title = type === '1' ? '消费记录' : '充值记录'
     Taro.setNavigationBarTitle({
       title
@@ -37,14 +39,8 @@ export default class History extends Component {
     this.init(true)
   }
 
-  config = {
-    navigationBarTitleText: '充值记录',
-    enablePullDownRefresh: true,
-    backgroundTextStyle: 'dark'
-  }
-
   init = (isRefresh = false) => {
-    const { type = 0 } = this.$router.params
+    const { type = 0 } = this.$instance.router.params
     const { param, list: oldList } = this.state
     this.setState({ isLoading: true })
     param.outin_type = type === '1' ? 'outcome' : 'income'
@@ -96,7 +92,7 @@ export default class History extends Component {
     console.log(111)
   }
 
-  render() {
+  render () {
     const { list, isLoading, isEmpty } = this.state
     const { colors } = this.props
     return (

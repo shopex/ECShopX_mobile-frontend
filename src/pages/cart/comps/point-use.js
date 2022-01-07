@@ -1,6 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import {
   AtFloatLayout,
   AtInput,
@@ -10,11 +10,12 @@ import {
   AtModalAction
 } from 'taro-ui'
 import { SpCheckbox } from '@/components'
-import { closeClassName, getPointName } from '@/utils'
 import './point-use.scss'
+import { DEFAULT_POINT_NAME } from '@/consts'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ sys, colors }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class PointUse extends Component {
   static defaultProps = {
@@ -22,7 +23,7 @@ export default class PointUse extends Component {
     disabledPoint: false
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -72,16 +73,14 @@ export default class PointUse extends Component {
       })
       return max_point
     }
-    this.setState(
-      {
-        point: Number(value) > max_point ? max_point : value,
-        localType: info.deduct_point_rule.full_amount
-          ? Number(value) === max_point
-            ? 'point'
-            : defalutPaytype
+    this.setState({
+      point: Number(value) > max_point ? max_point : value,
+      localType: info.deduct_point_rule.full_amount
+        ? Number(value) === max_point
+          ? 'point'
           : defalutPaytype
-      }
-    )
+        : defalutPaytype
+    })
   }
 
   handleUseFullAmount = (checked) => {
@@ -98,8 +97,8 @@ export default class PointUse extends Component {
     this.props.onChange(point, pay_type)
   }
 
-  render() {
-    const { info, isOpened, loading, colors } = this.props
+  render () {
+    const { info, isOpened, loading, colors, pointName } = this.props
     const { point, isOpenRule, disabledPoint, localType } = this.state
     if (!info) {
       return null
@@ -110,23 +109,23 @@ export default class PointUse extends Component {
         <AtFloatLayout isOpened={isOpened}>
           <View className='point-use'>
             <View className='point-use__hd'>
-              <Text>{getPointName()}</Text>
+              <Text>{pointName}</Text>
               <Text className='rule-title' onClick={this.handleRuleOpen}>
                 使用规则
               </Text>
-              <View className={closeClassName} onClick={this.handleCancel}></View>
+              <View className='iconfont icon-close' onClick={this.handleCancel}></View>
             </View>
             <View className='point-use__bd'>
               <View className='point-item'>
-                <View className='point-item__title'>{`用户可用${getPointName()}：`}</View>
+                <View className='point-item__title'>{`用户可用${pointName}：`}</View>
                 <View className='point-item__desc'>{info.user_point}</View>
               </View>
               <View className='point-item border'>
-                <View className='point-item__title'>{`本单最大可用${getPointName()}：`}</View>
+                <View className='point-item__title'>{`本单最大可用${pointName}：`}</View>
                 <View className='point-item__desc'>{info.max_point}</View>
               </View>
               <View className='point-item'>
-                <View className='point-item__title'>{`请输入抵扣${getPointName()}`}</View>
+                <View className='point-item__title'>{`请输入抵扣${pointName}`}</View>
                 <View className='point-item__desc'>
                   <AtInput
                     type='number'
@@ -174,12 +173,10 @@ export default class PointUse extends Component {
           <AtModalContent>
             <View>使用条件</View>
             <View>
-              {`1.${getPointName()}支付不得超出订单应付总金额的 ${
-                deduct_point_rule.deduct_proportion_limit
-              }%；`}
+              {`1.${DEFAULT_POINT_NAME}支付不得超出订单应付总金额的 ${deduct_point_rule.deduct_proportion_limit}%；`}
             </View>
             <View>使用数量</View>
-            <View>{`2.${deduct_point_rule.deduct_point} ${getPointName()}抵 1 元；`}</View>
+            <View>{`2.${deduct_point_rule.deduct_point} ${pointName}抵 1 元；`}</View>
           </AtModalContent>
           <AtModalAction>
             <Button onClick={this.handleRuleClose}>我知道了</Button>

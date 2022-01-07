@@ -8,7 +8,8 @@
  * @LastEditors: PrendsMoi
  * @LastEditTime: 2021-03-05 13:54:30
  */
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import S from '@/spx'
 
@@ -41,7 +42,7 @@ export default class VipGuide extends Component {
     })
   }
 
-  render() {
+  render () {
     const { info } = this.props
 
     if (!info) {

@@ -4,6 +4,11 @@
     box-sizing: border-box;
     background: #ffffff;
   }
+  .goods-gruop {
+    .goods-sec-value {
+      width: 100% !important;
+    }
+  }
   .share {
     .at-float-layout {
       .layout-header {
@@ -19,30 +24,6 @@
       .layout-body__content {
         min-height: auto;
       }
-    }
-  }
-  .wgt {
-    &__padded {
-      padding: 40px 0;
-    }
-  
-    &__header {
-      display: flex;
-      align-items: center;
-      padding: 0 20px 10px;
-    }
-  
-    &__title {
-      display: flex;
-      align-items: flex-end;
-      flex: 1;
-      font-size: 32px;
-    }
-  
-    &__subtitle {
-      padding-left: 10px;
-      font-size: 24px;
-      color: #999;
     }
   }
   
@@ -779,5 +760,9 @@
       box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.14);
       border-radius: 40px;
     }
+  }
+
+  .icon-home1, .icon-headphones, .icon-arrow-up {
+    font-size: 38px;
   }
 }

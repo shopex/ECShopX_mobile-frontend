@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, GoodsItem, SpNavBar, SpNote } from '@/components'
@@ -10,11 +11,7 @@ import './item-history.scss'
 @withPager
 @withBackToTop
 export default class ItemHistory extends Component {
-  static config = {
-    navigationBarTitleText: '浏览记录'
-  }
-
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -23,11 +20,11 @@ export default class ItemHistory extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.nextPage()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -63,7 +60,7 @@ export default class ItemHistory extends Component {
     })
   }
 
-  render() {
+  render () {
     const { list, showBackToTop, scrollTop, page } = this.state
 
     return (

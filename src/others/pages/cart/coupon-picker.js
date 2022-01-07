@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { SpCheckbox, CouponItem, Loading, SpNote } from '@/components'
 import { pickBy } from '@/utils'
 import { withPager } from '@/hocs'
@@ -18,7 +19,8 @@ import './coupon-picker.scss'
 )
 @withPager
 export default class CouponPicker extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
     this.state = {
       ...this.state,
@@ -26,11 +28,11 @@ export default class CouponPicker extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.nextPage()
   }
 
-  async fetch(query = {}) {
+  async fetch (query = {}) {
     //const { distributor_id } = Taro.getStorageSync('curStore')
     const {
       items,
@@ -40,7 +42,7 @@ export default class CouponPicker extends Component {
       distributor_id,
       source,
       goodType
-    } = this.$router.params
+    } = this.$instance.router.params
     // const { curCoupon } = this.props
     const { page_no: page, page_size: pageSize } = query
 
@@ -104,7 +106,7 @@ export default class CouponPicker extends Component {
     return { total: couponsData.total_count }
   }
 
-  handleCouponSelect(type = 'coupon', value) {
+  handleCouponSelect (type = 'coupon', value) {
     if (value && !value.valid) return
 
     const payload = value
@@ -118,7 +120,7 @@ export default class CouponPicker extends Component {
     }, 300)
   }
 
-  render() {
+  render () {
     const { coupons, page = {} } = this.state
     const { curCoupon } = this.props
 

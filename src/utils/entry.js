@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
 import req from '@/api/req'
 import S from '@/spx'
@@ -9,7 +9,7 @@ import qs from 'qs'
 
 // 请在onload 中调用此函数，保证千人千码跟踪记录正常
 // 用户分享和接受参数处理
-async function entryLaunch(data, isNeedLocate, privacy_time) {
+async function entryLaunch (data, isNeedLocate, privacy_time) {
   let options = null
   if (data.scene) {
     const scene = decodeURIComponent(data.scene)
@@ -20,13 +20,30 @@ async function entryLaunch(data, isNeedLocate, privacy_time) {
   }
   console.log('[entry-options]', options)
 
-  
   // 如果没有带店铺id
   if (!options.dtid) {
     let { distributor_id, store_id } = Taro.getStorageSync('curStore')
     if (distributor_id) {
       options.dtid = options.isStore ? store_id : distributor_id
     }
+  }
+  let dtidValid = false
+  let store = {}
+
+  // 传过来的店铺id
+  if (options.dtid) {
+    store = await handleDistributorId(options.dtid)
+    dtidValid = store.status ? false : true
+  }
+
+  // 如果需要定位,并且店铺无效，
+  // if (!dtidValid) {
+  store = await getLocal(isNeedLocate, privacy_time)
+  // }
+
+  if (!store.status) {
+    options.store = store
+    options.dtid = store.distributor_id
   }
 
   if (options.uid) {
@@ -41,27 +58,6 @@ async function entryLaunch(data, isNeedLocate, privacy_time) {
     })
     trackViewNum(options.m, options.s)
   }
-  
-  let dtidValid = false
-  let store = {}
-
-  // 传过来的店铺id
-  if (options.dtid) {
-    store = await handleDistributorId(options.dtid)
-    dtidValid = store.status ? false : true
-  }
-
-  // 如果需要定位,并且店铺无效，
-  // if (!dtidValid) { 
-  store = await getLocal(isNeedLocate, privacy_time)
-  // }
-
-  if (!store.status) {
-    options.store = store
-    options.dtid = store.distributor_id
-  }
-
-  
 
   let emp_id = options.emp_id || data.emp_id || options.emp || data.emp //导购ID
   let gu = options.gu
@@ -78,7 +74,7 @@ async function entryLaunch(data, isNeedLocate, privacy_time) {
         entrytime: entrytime
       })
 
-      if (Taro.getStorageSync('auth_token')) {
+      if (Taro.getStorageSync('token')) {
         api.track.salesmenlog({ omc_id: emp_id })
       }
     }
@@ -145,7 +141,7 @@ async function entryLaunch(data, isNeedLocate, privacy_time) {
   return options
 }
 
-async function logScene(data) {
+async function logScene (data) {
   if (data.scene) {
     //扫码进来时
     let logParams = {}
@@ -176,12 +172,10 @@ async function logScene(data) {
   }
 }
 
-async function getLocalSetting() {
-  // const paramsurl = qs.stringify(payTypeField)
-  // const url = `/pagestemplate/setInfo?${paramsurl}`
-  // const { is_open_wechatapp_location } = await req.get(url)
-  const { is_open_wechatapp_location }=Taro.getStorageSync('settingInfo')
-  console.log("==getLocalSetting==",is_open_wechatapp_location)
+async function getLocalSetting () {
+  const paramsurl = qs.stringify(payTypeField)
+  const url = `/pagestemplate/setInfo?${paramsurl}`
+  const { is_open_wechatapp_location } = await req.get(url)
   if (is_open_wechatapp_location == 1) {
     return true
   } else {
@@ -194,7 +188,7 @@ async function getLocalSetting() {
 //     distributor_id:0
 //   }
 //   Taro.setStorageSync('curStore', store)
-async function getLocal(isNeedLocate, privacy_time) {
+async function getLocal (isNeedLocate, privacy_time) {
   let store = null
   const positionStatus = await getLocalSetting()
   if (!positionStatus) {
@@ -204,22 +198,22 @@ async function getLocal(isNeedLocate, privacy_time) {
     if (lnglat) {
       let param = {}
       if (isNeedLocate && positionStatus) {
-        param.lat = lnglat.latitude
-        param.lng = lnglat.longitude
+        param.lat = lnglat.lat
+        param.lng = lnglat.lng
       }
       store = await api.shop.getShop(param)
     } else {
       let locationData = null
       if (String(privacy_time)) {
         locationData = await entryLaunchFun.getLocationInfo()
-        if (locationData.latitude) await InverseAnalysisGaode(locationData)
+        if (locationData.lat) await InverseAnalysisGaode(locationData)
       }
       // const locationData = await getLoc()
       if (locationData !== null && locationData !== '') {
         let param = {}
         if (isNeedLocate && positionStatus) {
-          param.lat = locationData.latitude
-          param.lng = locationData.longitude
+          param.lat = locationData.lat
+          param.lng = locationData.lng
         }
         store = await api.shop.getShop(param)
       } else {
@@ -238,7 +232,7 @@ async function getLocal(isNeedLocate, privacy_time) {
   return store
 }
 
-async function getLoc() {
+async function getLoc () {
   if (process.env.TARO_ENV === 'weapp' || process.env.TARO_ENV === 'alipay') {
     return await Taro.getLocation({ type: 'gcj02' }).then(
       async (locationData) => {
@@ -259,9 +253,10 @@ async function getLoc() {
   }
 }
 
-async function getStoreStatus() {
+async function getStoreStatus () {
   const { nostores_status } = Taro.getStorageSync('otherSetting')
-  if (process.env.APP_PLATFORM === 'standard') {
+  // if (process.env.APP_PLATFORM === "standard") {
+  if ('standard') {
     if (nostores_status === true) {
       return true
     } else {
@@ -305,7 +300,7 @@ async function getStoreStatus() {
 //   })
 // }
 // 新增千人千码跟踪记录
-function trackViewNum(monitor_id, source_id) {
+function trackViewNum (monitor_id, source_id) {
   let _session = Taro.getStorageSync('_session')
   if (!_session) {
     return true
@@ -319,7 +314,7 @@ function trackViewNum(monitor_id, source_id) {
 }
 
 // distributorId 店铺ID
-async function handleDistributorId(distributorId) {
+async function handleDistributorId (distributorId) {
   const res = await api.shop.getShop({ distributor_id: distributorId })
   //const isOpenStore = await getStoreStatus()
   if (res.status === false) {
@@ -333,7 +328,7 @@ async function handleDistributorId(distributorId) {
 }
 
 // 格式化URL字符串
-function parseUrlStr(urlStr) {
+function parseUrlStr (urlStr) {
   var keyValuePairs = []
   if (urlStr) {
     for (var i = 0; i < urlStr.split('&').length; i++) {
@@ -364,27 +359,20 @@ function parseUrlStr(urlStr) {
 
 // 高德地图根据地址解析经纬度
 async function positiveAnalysisGaode (locationData) {
-  // let MAP_KEY = null
-  // if (process.env.TARO_ENV === 'weapp') {
-  //   const { map_key } = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
-  //   MAP_KEY = map_key
-  // } else {
-  //   MAP_KEY = Taro.getStorageSync('gaode_map_key') || {}
-  // }
   const { addressdetail: address } = locationData
   let cityInfo = await Taro.request({
     url: `https://restapi.amap.com/v3/geocode/geo`,
-    data:{
+    data: {
       key: process.env.APP_MAP_KEY,
-      address,
+      address
     }
   })
   if (cityInfo.data.status == 1) {
     const { geocodes } = cityInfo.data
     Taro.setStorageSync('lnglat', {
       ...geocodes[0],
-      longitude: +geocodes[0].location.split(',')[0],
-      latitude: +geocodes[0].location.split(',')[1],
+      lng: +geocodes[0].location.split(',')[0],
+      lat: +geocodes[0].location.split(',')[1],
       addressdetail: geocodes[0].formatted_address
     })
     Taro.eventCenter.trigger('lnglat-success')
@@ -392,29 +380,22 @@ async function positiveAnalysisGaode (locationData) {
 }
 
 // 高德地图根据经纬度解析地址
-async function InverseAnalysisGaode(locationData){
-  // let MAP_KEY = null
-  // if (process.env.TARO_ENV === 'weapp') {
-  //   const { map_key } = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
-  //   MAP_KEY = map_key
-  // } else {
-  //   MAP_KEY = Taro.getStorageSync('gaode_map_key') || {}
-  // }
-  const { latitude, longitude } = locationData
+async function InverseAnalysisGaode (locationData) {
+  const { lat, lng } = locationData
   let cityInfo = await Taro.request({
     url: `https://restapi.amap.com/v3/geocode/regeo`,
-    data:{
+    data: {
       key: process.env.APP_MAP_KEY,
-      location:`${longitude},${latitude}`, 
+      location: `${lng},${lat}`
     }
-  }); 
-  console.log("===cityInfowjb2===>",cityInfo,process.env.APP_MAP_KEY,locationData,process.env)
+  })
+  console.log('===cityInfowjb2===>', cityInfo, process.env.APP_MAP_KEY, locationData, process.env)
   if (cityInfo.data.status == 1) {
     Taro.setStorageSync('lnglat', {
       ...locationData,
       ...cityInfo.data.regeocode.addressComponent,
       addressdetail: cityInfo.data.regeocode.formatted_address
-    } );
+    })
     Taro.eventCenter.trigger('lnglat-success')
   }
 }
@@ -429,6 +410,5 @@ export default {
   InverseAnalysisGaode,
   positiveAnalysisGaode,
   getStoreStatus,
-  logScene,
-  handleDistributorId
+  logScene
 }

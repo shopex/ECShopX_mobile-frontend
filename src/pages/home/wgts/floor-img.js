@@ -1,7 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import { classNames, linkPage } from '@/utils'
 import './floor-img.scss'
 
 export default class WgtFloorImg extends Component {
@@ -13,12 +12,12 @@ export default class WgtFloorImg extends Component {
     info: {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
   onRoute = linkPage
 
-  render() {
+  render () {
     const { info } = this.props
     if (!info) {
       return null
@@ -26,19 +25,17 @@ export default class WgtFloorImg extends Component {
     const { base, data } = info
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View
+        className={classNames('wgt wgt-floor-img', {
+          wgt__padded: base.padded
+        })}
+      >
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>
-              <Text>{base.title}</Text>
-              <View className='wgt__subtitle'>{base.subtitle}</View>
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
+              <Text className='wgt-subtitle'>{base.subtitle}</Text>
             </View>
-            {/* <View
-											className='wgt__more'
-											onClick={this.handleClickMore}
-										>
-											<View className='three-dot'></View>
-										</View> */}
           </View>
         )}
         <View
@@ -51,11 +48,7 @@ export default class WgtFloorImg extends Component {
             {data &&
               data.map((item, idx) => {
                 return (
-                  <View
-                    className='lis'
-                    key={item.id}
-                    onClick={this.onRoute.bind(this, item.linkPage, item)}
-                  >
+                  <View className='lis' key={item.id} onClick={this.onRoute.bind(this, item)}>
                     <Image lazyLoad className='img' src={item.imgUrl}></Image>
                     <View className='title' style={'color:' + base && base.WordColor}>
                       {item.ImgTitle}

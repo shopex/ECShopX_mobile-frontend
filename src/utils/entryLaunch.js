@@ -1,17 +1,15 @@
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
 import qs from 'qs'
-import configStore from '@/store'
-import { showToast, log } from '@/utils'
-import entry from '@/utils/entry'
+import { showToast, log, isArray } from '@/utils'
 
+const geocodeUrl = 'https://restapi.amap.com/v3/geocode'
 class EntryLaunch {
-  constructor() {
-    const { store } = configStore()
-    this.store = store
+  constructor () {
+    this.init()
   }
 
-  init(params) {
+  init (params) {
     const { query, scene } =
       process.env.TARO_ENV == 'h5' ? { query: params } : Taro.getLaunchOptionsSync()
 
@@ -26,16 +24,20 @@ class EntryLaunch {
       }
     }
 
-    Taro.setStorageSync('launch_params', options)
-    this.sence_params = options
+    // Taro.setStorageSync("launch_params", options);
+    this.routeParams = options
     process.env.TARO_ENV == 'h5' && this.initAMap()
     return options
+  }
+
+  getRouteParams () {
+    return this.routeParams
   }
 
   /**
    * @function 初始化高德地图配置
    */
-  initAMap() { 
+  initAMap () {
     AMap.plugin(['AMap.Geolocation', 'AMap.Geocoder'], () => {
       //debugger
       this.geolocation = new AMap.Geolocation({
@@ -54,7 +56,7 @@ class EntryLaunch {
   /**
    * @function 获取当前店铺
    */
-  async getCurrentStore() {
+  async getCurrentStore () {
     const { is_open_wechatapp_location } = Taro.getStorageSync('settingInfo')
     const pages = Taro.getCurrentPages()
     const currentPage = pages[pages.length - 1]
@@ -69,7 +71,7 @@ class EntryLaunch {
       // 开启定位
       if (is_open_wechatapp_location == 1) {
         try {
-          const { longitude: lng, latitude: lat } = await this.getLocationInfo()
+          const { lng, lat } = await this.getLocationInfo()
           storeQuery = {
             ...storeQuery,
             lng,
@@ -100,55 +102,82 @@ class EntryLaunch {
   /**
    * @function 根据经纬度获取定位信息
    */
-  async getLocationInfo() {
+  async getLocationInfo () {
     if (process.env.TARO_ENV === 'weapp') {
       return new Promise((resolve, reject) => {
         Taro.getLocation({
           type: 'gcj02',
           success: (res) => {
-            resolve(res)
+            if (res.errMsg == 'getLocation:ok') {
+              resolve({
+                lng: res.longitude,
+                lat: res.latitude
+              })
+            } else {
+              reject({ message: res.errMsg })
+            }
           },
           fail: (error) => {
-            resolve({})
-            reject(error)
+            reject({ message: error })
           }
         })
       })
-      // return await Taro.getLocation({ type: 'gcj02' }).then(
-      //   async (locationData) => {
-      //     await entry.InverseAnalysisGaode(locationData)
-      //     return locationData
-      //   }
-      // ).catch(() => {
-      //   return {}
-      // })
     } else {
       return new Promise((reslove, reject) => {
-        this.geolocation.getCurrentPosition(function(status, result) {
+        this.geolocation.getCurrentPosition(function (status, result) {
           if (status == 'complete') {
             reslove({
-              longitude: result.position.lng,
-              latitude: result.position.lat
+              lng: result.position.lng,
+              lat: result.position.lat
             })
           } else {
             reject({ message: result.message })
           }
         })
       })
+    }
+  }
 
-      // const geolocation = new qq.maps.Geolocation();
-      // return new Promise((resolve, reject) => {
-      //   geolocation.getLocation(
-      //     res => {
-      //       showToast(JSON.stringify(res));
-      //       resolve(res);
-      //     },
-      //     error => {
-      //       reject(`qq maps geolocation fail... ,`, error);
-      //     },
-      //     { timeout: 9000 }
-      //   );
-      // });
+  async getCurrentAddressInfo () {
+    const { lng, lat } = await this.getLocationInfo()
+    let res = {}
+    if (lat) {
+      res = await this.getAddressByLnglatWebAPI(lng, lat)
+    }
+    return res
+  }
+
+  /**
+   * @function 根据地址解析经纬度
+   */
+  async getLnglatByAddress (address) {
+    const res = await Taro.request({
+      url: `${geocodeUrl}/geo`,
+      data: {
+        key: process.env.APP_MAP_KEY,
+        address
+      }
+    })
+    if (res.data.status == 1) {
+      const { geocodes } = res.data
+      if (geocodes.length > 0) {
+        return {
+          address: geocodes[0].formatted_address,
+          province: geocodes[0].province,
+          city: geocodes[0].city,
+          district: geocodes[0].district,
+          lng: geocodes[0].location.split(',')[0],
+          lat: geocodes[0].location.split(',')[1]
+        }
+      } else {
+        return {
+          error: '没有搜索到地址'
+        }
+      }
+    } else {
+      return {
+        error: '地址解析错误'
+      }
     }
   }
 
@@ -156,9 +185,9 @@ class EntryLaunch {
    * @function 根据经纬度解析地址
    * @params lnglat Array
    */
-  getAddressByLnglat(lng, lat) {
+  getAddressByLnglat (lng, lat) {
     return new Promise((reslove, reject) => {
-      this.geocoder.getAddress([lng, lat], function(status, result) {
+      this.geocoder.getAddress([lng, lat], function (status, result) {
         if (status === 'complete' && result.regeocode) {
           reslove(result.regeocode)
         } else {
@@ -168,12 +197,40 @@ class EntryLaunch {
     })
   }
 
+  async getAddressByLnglatWebAPI (lng, lat) {
+    const res = await Taro.request({
+      url: `${geocodeUrl}/regeo`,
+      data: {
+        key: process.env.APP_MAP_KEY,
+        location: `${lng},${lat}`
+      }
+    })
+    if (res.data.status == 1) {
+      const {
+        formatted_address,
+        addressComponent: { province, city, district }
+      } = res.data.regeocode
+      return {
+        lng,
+        lat,
+        address: formatted_address,
+        province: province,
+        city: isArray(city) ? province : city,
+        district: district
+      }
+    } else {
+      return {
+        error: '地址解析错误'
+      }
+    }
+  }
+
   /**
    * @function 是否开启店铺
    * @returns Boolean
    * @description 标准版有门店，并且根据后台设置是否展示门店；平台版不显示门店
    */
-  isOpenStore() {
+  isOpenStore () {
     const { nostores_status } = Taro.getStorageSync('otherSetting')
     if (process.env.APP_PLATFORM === 'standard') {
       return !nostores_status
@@ -192,9 +249,12 @@ class EntryLaunch {
         Taro.authorize({
           scope: 'scope.userLocation',
           success: async () => {
-            let locationData = await this.getLocationInfo()
-            if (locationData.latitude) await entry.InverseAnalysisGaode(locationData)
-            if (callback) callback()
+            let { lng, lat } = await this.getLocationInfo()
+            let res = {}
+            if (lat) {
+              res = await this.getAddressByLnglatWebAPI(lng, lat)
+            }
+            if (callback) callback(res)
           },
           fail: () => {
             Taro.showModal({
@@ -205,9 +265,12 @@ class EntryLaunch {
                   await Taro.openSetting()
                   const setting = await Taro.getSetting()
                   if (setting.authSetting['scope.userLocation']) {
-                    let locationData = await this.getLocationInfo()
-                    if (locationData.latitude) await entry.InverseAnalysisGaode(locationData)
-                    if (callback) callback()
+                    let { lng, lat } = await this.getLocationInfo()
+                    let res = {}
+                    if (lat) {
+                      res = await this.getAddressByLnglatWebAPI(lng, lat)
+                    }
+                    if (callback) callback(res)
                   } else {
                     Taro.showToast({ title: '获取定位权限失败', icon: 'none' })
                   }
@@ -217,17 +280,22 @@ class EntryLaunch {
           }
         })
       } else {
-        let locationData = await this.getLocationInfo()
-        if (locationData.latitude) await entry.InverseAnalysisGaode(locationData)
-        if (callback) callback()
+        let { lng, lat } = await this.getLocationInfo()
+        let res = {}
+        if (lat) {
+          res = await this.getAddressByLnglatWebAPI(lng, lat)
+        }
+        if (callback) callback(res)
       }
     } else {
-      let locationData = await this.getLocationInfo()
-      if (locationData.latitude) await entry.InverseAnalysisGaode(locationData)
-      if (callback) callback()
+      let { lng, lat } = await this.getLocationInfo()
+      let res = {}
+      if (lat) {
+        res = await this.getAddressByLnglatWebAPI(lng, lat)
+      }
+      if (callback) callback(res)
     }
   }
 }
-
 
 export default new EntryLaunch()

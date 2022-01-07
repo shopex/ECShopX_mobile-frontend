@@ -1,8 +1,9 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Form, Button } from '@tarojs/components'
 import { AtInput, AtButton } from 'taro-ui'
 import S from '@/spx'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { SpNavBar, SpToast } from '@/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
@@ -14,17 +15,14 @@ import './verified.scss'
   colors: colors.current
 }))
 export default class DistributionDashboard extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       info: {},
       isTrue: false
     }
   }
-  config = {
-    navigationBarTitleText: '实名认证'
-  }
-  componentDidMount() {
+  componentDidMount () {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -33,7 +31,7 @@ export default class DistributionDashboard extends Component {
     this.fetch()
   }
 
-  handleInput(type, val) {
+  handleInput (type, val) {
     let info = this.state.info
     info[type] = val
 
@@ -42,7 +40,7 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     let { info } = this.state
     if (!info.user_name) {
       return S.toast('请输入真实姓名')
@@ -70,7 +68,7 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  async fetch() {
+  async fetch () {
     const res = await api.member.hfpayUserApply()
     const info = pickBy(res, {
       user_name: 'user_name',
@@ -87,7 +85,7 @@ export default class DistributionDashboard extends Component {
     // const info = { username, avatar, ...pInfo }
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { info, isTrue } = this.state
 

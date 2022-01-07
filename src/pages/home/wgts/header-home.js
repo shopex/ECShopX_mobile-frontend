@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { toggleTouchMove } from '@/utils/dom'
 import { getQueryVariable } from '@/utils'
@@ -11,7 +12,7 @@ export default class HeaderHome extends Component {
     isOpenScanQrcode: 2
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -25,7 +26,7 @@ export default class HeaderHome extends Component {
     addGlobalClass: true
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (process.env.TARO_ENV === 'h5') {
       toggleTouchMove(this.refs.container)
     }
@@ -59,7 +60,7 @@ export default class HeaderHome extends Component {
     })
   }
 
-  render() {
+  render () {
     const { store = {}, isOpenScanQrcode, isOpenStoreStatus } = this.props
     const isNoStores = isOpenStoreStatus ? false : true
     return (
@@ -80,8 +81,7 @@ export default class HeaderHome extends Component {
 
           {/* {Taro.getEnv() !== 'WEB' && isOpenScanQrcode == 1 && (
             <View className='scancode' onClick={this.handleScanCode.bind(this)}>
-              <View className='iconfont icon-scan'></View>
-              <View>扫码</View>
+              <Text className='iconfont icon-scan'></Text>
             </View>
           )} */}
         </View>

@@ -1,39 +1,35 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text, ScrollView } from '@tarojs/components'
-import { Price, SpNavBar, SpCell, CouponModal } from '@/components'
-import { connect } from '@tarojs/redux'
+import { Price, SpNavBar, SpCell, CouponModal, SpPage } from '@/components'
+import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import { getPaymentList } from '@/utils/payment'
 import api from '@/api'
 import S from '@/spx'
-import {
-  pickBy,
-  classNames, showLoading,
-  hideLoading,
-  isAlipay,
-  getPointName,
-  isNavbar,
-  redirectUrl
-} from '@/utils'
-import PaymentPicker from '@/pages/cart/comps/payment-picker'  
+import { pickBy, classNames, hideLoading, isAlipay, isNavbar, redirectUrl } from '@/utils'
+import PaymentPicker from '@/pages/cart/comps/payment-picker'
 import userIcon from '@/assets/imgs/user-icon.png'
+// import { useDispatch } from 'react-redux'
 
 import './vipgrades.scss'
+// import { updateUserInfo } from '@/store/slices/user'
+// const dispatch = useDispatch()
 
-@connect(({ colors }) => ({
-  colors: colors.current
-}))
+@connect(
+  ({ colors, sys }) => ({
+    colors: colors.current,
+    pointName: sys.pointName
+  }),
+  (dispatch) => ({
+    onFetchUser: (favs) => dispatch({ type: 'user', payload: favs })
+  })
+)
 export default class VipIndex extends Component {
-  static config = {
-    navigationBarTitleText: '会员购买',
-    backgroundColor: '#2f3030',
-    backgroundTextStyle: 'light'
-  }
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
-      typeList:[],
       userInfo: {},
       userVipInfo: {},
       curTabIdx: 0,
@@ -50,7 +46,7 @@ export default class VipIndex extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
@@ -67,32 +63,23 @@ export default class VipIndex extends Component {
       }
     )
   }
-  // 获取支付方式
-  async getPayList(){
-    const { list }= await getPaymentList();  
-    const res = list; 
-    this.setState({
-      typeList: res,
-    })
-  }
-  async fetchInfo() {
-    this.getPayList();
+
+  async fetchInfo () {
     const { cur, list } = await api.vip.getList()
-    const { grade_name: name } = this.$router.params
+    const { grade_name: name } = this.$instance.router.params
 
     const tabList = pickBy(list, {
       title: ({ grade_name }) => grade_name,
       is_default: ({ is_default }) => is_default
     })
-    console.log('==============',tabList);
-    let curTabIdx;
+    console.log('==============', tabList)
+    let curTabIdx
     if (name) {
       curTabIdx = tabList.findIndex((item) => item.title === name)
-    }else{
+    } else {
       curTabIdx = tabList.findIndex((item) => item.is_default)
     }
-    // 
-
+    //
 
     this.setState(
       {
@@ -107,17 +94,20 @@ export default class VipIndex extends Component {
     )
   }
 
-  onGetsBindCardList(item) {
+  onGetsBindCardList (item) {
     const { curTabIdx } = this.state
     api.vip
-      .getBindCardList({ type: 'vip_grade', grade_id: item[curTabIdx].vip_grade_id })
+      .getBindCardList({
+        type: 'vip_grade',
+        grade_id: item[curTabIdx].vip_grade_id
+      })
       .then((res) => {
         const { list, total_count } = res
         this.setState({ couponList: list, total_count })
       })
   }
 
-  fetchCouponCardList() {
+  fetchCouponCardList () {
     api.vip.getShowCardPackage({ receive_type: 'vip_grade' }).then(({ all_card_list }) => {
       if (all_card_list && all_card_list.length > 0) {
         this.setState({ visible: true })
@@ -153,8 +143,7 @@ export default class VipIndex extends Component {
     })
   }
 
-  handleCharge=async ()=>{
-  
+  handleCharge = async () => {
     if (!S.getAuthToken()) {
       Taro.showToast({
         title: '请先登录再购买',
@@ -167,35 +156,39 @@ export default class VipIndex extends Component {
 
       return
     }
-    
-    const { list, curTabIdx, curCellIdx, payType } = this.state
-    
-    const vip_grade = list[curTabIdx];
 
-    const env = process.env.TARO_ENV;
+    const { list, curTabIdx, curCellIdx, payType } = this.state
+
+    const vip_grade = list[curTabIdx]
+
+    const env = process.env.TARO_ENV
 
     const params = {
       vip_grade_id: vip_grade.vip_grade_id,
       card_type: vip_grade.price_list[curCellIdx].name,
       distributor_id: Taro.getStorageSync('trackIdentity').distributor_id || '',
-      pay_type: env==='h5'?'wxpayh5':payType
-    } 
-  
-    showLoading({ mask: true })
+      pay_type: env === 'h5' ? 'wxpayh5' : payType
+    }
+
+    Taro.showLoading()
 
     const data = await api.vip.charge(params)
 
-    console.log("===data",data)
+    console.log('===data', data)
 
-    hideLoading()  
+    Taro.hideLoading()
 
-    const order_id=data.trade_info.order_id;
- 
-    if (env === "h5") { 
-      redirectUrl(api,`/subpage/pages/cashier/index?order_id=${order_id}&isMember=true`, 'navigateTo')
+    const order_id = data.trade_info.order_id
+
+    if (env === 'h5') {
+      redirectUrl(
+        api,
+        `/subpage/pages/cashier/index?order_id=${order_id}&isMember=true`,
+        'navigateTo'
+      )
       return
-		} 
- 
+    }
+
     var config = data
     var that = this
     wx.requestPayment({
@@ -204,18 +197,19 @@ export default class VipIndex extends Component {
       package: config.package,
       signType: config.signType,
       paySign: config.paySign,
-      success: function(res) {
+      success: function (res) {
         wx.showModal({
           content: '支付成功',
           showCancel: false,
-          success: function(res) {
+          success: function (res) {
             console.log('success')
             S.getMemberInfo()
             that.fetchCouponCardList()
+            Taro.navigateBack()
           }
         })
       },
-      fail: function(res) {
+      fail: function (res) {
         wx.showModal({
           content: '支付失败',
           showCancel: false
@@ -224,7 +218,7 @@ export default class VipIndex extends Component {
     })
   }
 
-  async fetchUserVipInfo() {
+  async fetchUserVipInfo () {
     const userVipInfo = await api.vip.getUserVipInfo()
     this.setState({
       userVipInfo
@@ -260,7 +254,7 @@ export default class VipIndex extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     let {
       userInfo,
@@ -275,187 +269,187 @@ export default class VipIndex extends Component {
       visible,
       couponList,
       all_card_list,
-      total_count,
-      typeList
+      total_count
     } = this.state
-    console.log('typeList',typeList);
-    // const payTypeText = {
-    //   point: `${getPointName()}支付`,
-    //   wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
-    //   deposit: '余额支付',
-    //   delivery: '货到付款',
-    //   hfpay: '微信支付'
-    // }
+    const payTypeText = {
+      point: `${this.props.pointName}支付`,
+      wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
+      deposit: '余额支付',
+      delivery: '货到付款',
+      hfpay: '微信支付'
+    }
     return (
-      <View
-        className={classNames('page-vip-vipgrades', 'vipgrades', {
-          'has-navbar': isNavbar()
-        })}
-      >
-        <SpNavBar title='会员购买' leftIconType='chevron-left' fixed='true' />
-        <View className='header' style={'background: ' + colors.data[0].marketing}>
-          <View className='header-isauth'>
-            <Image
-              className='header-isauth__avatar'
-              src={userInfo.avatar || userIcon}
-              mode='aspectFill'
-            />
-            <View className='header-isauth__info'>
-              <View className='nickname'>
-                {userInfo.username}
-                <Image className='icon-vip' src='/assets/imgs/svip.png' />
-              </View>
-              <View className='mcode'>
-                {userVipInfo.grade_name
-                  ? userVipInfo.grade_name + ' : 有效期至' + (userVipInfo.end_time || '')
-                  : '暂未开通'}
+      <SpPage>
+        <View
+          className={classNames('page-vip-vipgrades', 'vipgrades', {
+            'has-navbar': isNavbar()
+          })}
+        >
+          <SpNavBar title='会员购买' leftIconType='chevron-left' fixed='true' />
+          <View className='header' style={'background: ' + colors.data[0].marketing}>
+            <View className='header-isauth'>
+              <Image
+                className='header-isauth__avatar'
+                src={userInfo.avatar || userIcon}
+                mode='aspectFill'
+              />
+              <View className='header-isauth__info'>
+                <View className='nickname'>
+                  {userInfo.username}
+                  <Image className='icon-vip' src='/assets/imgs/svip.png' />
+                </View>
+                <View className='mcode'>
+                  {userVipInfo.grade_name
+                    ? userVipInfo.grade_name + ' : 有效期至' + (userVipInfo.end_time || '')
+                    : '暂未开通'}
+                </View>
               </View>
             </View>
-          </View>
-          <AtTabs
-            className='header-tab'
-            current={curTabIdx}
-            tabList={tabList}
-            onClick={this.handleClickTab}
-          >
-            {/* {tabList.map((panes, pIdx) => (
+            <AtTabs
+              className='header-tab'
+              current={curTabIdx}
+              tabList={tabList}
+              onClick={this.handleClickTab}
+            >
+              {/* {tabList.map((panes, pIdx) => (
               <AtTabsPane current={curTabIdx} key={panes.title} index={pIdx}></AtTabsPane>
             ))} */}
-          </AtTabs>
-        </View>
-        <View className='pay-box'>
-          {cur && cur.rate && cur.rate != 1 && (
-            <View className='text-muted'>
-              <text className='icon-info'></text> 货币汇率：1{cur.title} = {cur.rate}RMB
-            </View>
-          )}
-          <ScrollView scrollX className='grade-list'>
-            {list[curTabIdx] &&
-              list[curTabIdx].price_list.map((item, index) => {
-                return (
-                  item.price != 0 &&
-                  item.price != null && (
-                    <View
-                      className={`grade-item ${index == curCellIdx && 'active'}`}
-                      key={`${index}1`}
-                      onClick={this.checkHandle.bind(this, index)}
-                    >
-                      <View className='item-content'>
-                        <View className='desc weight'>
-                          {(item.name === 'monthly' && '连续包月') ||
-                            (item.name === 'quarter' && '连续包季') ||
-                            (item.name === 'year' && '连续包年')}
-                        </View>
-                        <View className='desc'>{item.desc}</View>
-                        <View className='amount'>
-                          <Price primary value={Number(item.price)} />
-                        </View>
-                      </View>
-                    </View>
-                  )
-                )
-              })}
-          </ScrollView>
-
-          <PaymentPicker
-            isOpened={isPaymentOpend}
-            type={payType}
-            isShowPoint={false}
-            isShowBalance={false}
-            isShowDelivery={false}
-            // disabledPayment={disabledPayment}
-            onClose={this.handleLayoutClose}
-            onChange={this.handlePaymentChange}
-          ></PaymentPicker>
-          {!isAlipay && (
-            <SpCell
-              isLink
-              border={false}
-              title='支付方式'
-              onClick={this.handlePaymentShow}
-              className='cus-sp-cell'
-            >
-              {
-                typeList.length > 0 && <Text>{typeList[0].pay_type_name}</Text>
-              }
-            </SpCell>
-          )}
-          <View className='pay-btn' onClick={this.handleCharge}>
-            立即支付
+            </AtTabs>
           </View>
-        </View>
-        {couponList && couponList.length > 0 && (
-          <View className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
-            <Text className='content-v-padded'>会员专享券包</Text>
-            <Text className='content-v-subtitle'>优惠券共计{total_count}张</Text>
-            <ScrollView scrollX className='scroll-box'>
-              {couponList.map((items) => (
-                <View
-                  className='coupon'
-                  key={items.card_id}
-                  onClick={this.handleCouponBox.bind(this)}
-                >
-                  <Image className='img' src={`${process.env.APP_IMAGE_CDN}/coupon_bck.png`} />
-                  {items.card_type === 'cash' && (
-                    <View>
-                      <View className='coupon-price'>
-                        <Price primary value={items.reduce_cost / 100} noDecimal />
-                      </View>
-                      <View className='coupon-desc'>
-                        满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}可用
-                      </View>
-                      <View className='coupon-quan'>代金券</View>
-                      <View className='coupon-mark'>
-                        {items.get_num > 0 ? `x${items.get_num}` : null}
-                      </View>
-                    </View>
-                  )}
-                  {(items.card_type === 'gift' || items.card_type === 'new_gift') && (
-                    <View>
-                      <View className='coupon-price'>
-                        <View className='coupon-font'>兑换券</View>
-                      </View>
-                      <View className='coupon-desc'>{items.description}</View>
-                      <View className='coupon-quan'>兑换券</View>
-                      <View className='coupon-mark'>
-                        {items.get_num > 0 ? `x${items.get_num}` : null}
-                      </View>
-                    </View>
-                  )}
-                  {items.card_type === 'discount' && (
-                    <View>
-                      <View className='coupon-price'>
-                        <Text className='coupon-font'>{(100 - items.discount) / 10}</Text>
-                        <Text className='coupon-size'>折</Text>
-                      </View>
-                      <View className='coupon-desc'>
-                        满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}使用
-                      </View>
-                      <View className='coupon-quan'>折扣券</View>
-                      <View className='coupon-mark'>
-                        {items.get_num > 0 ? `x${items.get_num}` : null}
-                      </View>
-                    </View>
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-        <View className='section' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
-          <View className='section-body'>
-            <View className='content-v-padded'>会员权益</View>
-            <View className='text-muted'>
+          <View className='pay-box'>
+            {cur && cur.rate && cur.rate != 1 && (
+              <View className='text-muted'>
+                <text className='icon-info'></text> 货币汇率：1{cur.title} = {cur.rate}RMB
+              </View>
+            )}
+            <ScrollView scrollX className='grade-list'>
               {list[curTabIdx] &&
-                list[curTabIdx].description &&
-                list[curTabIdx].description.split('\n').map((item, index) => {
-                  return <View key={`${index}1`}>{item}</View>
+                list[curTabIdx].price_list.map((item, index) => {
+                  return (
+                    item.price != 0 &&
+                    item.price != null && (
+                      <View
+                        className={`grade-item ${index == curCellIdx && 'active'}`}
+                        key={`${index}1`}
+                        onClick={this.checkHandle.bind(this, index)}
+                      >
+                        <View className='item-content'>
+                          <View className='desc weight'>
+                            {(item.name === 'monthly' && '连续包月') ||
+                              (item.name === 'quarter' && '连续包季') ||
+                              (item.name === 'year' && '连续包年')}
+                          </View>
+                          <View className='desc'>{item.desc}</View>
+                          <View className='amount'>
+                            <Price primary value={Number(item.price)} />
+                          </View>
+                        </View>
+                      </View>
+                    )
+                  )
                 })}
+            </ScrollView>
+
+            <PaymentPicker
+              isOpened={isPaymentOpend}
+              type={payType}
+              isShowPoint={false}
+              isShowBalance={false}
+              isShowDelivery={false}
+              // disabledPayment={disabledPayment}
+              onClose={this.handleLayoutClose}
+              onChange={this.handlePaymentChange}
+            ></PaymentPicker>
+            {!isAlipay && (
+              <SpCell
+                isLink
+                border={false}
+                title='支付方式'
+                onClick={this.handlePaymentShow}
+                className='cus-sp-cell'
+              >
+                <Text>{payTypeText[payType]}</Text>
+              </SpCell>
+            )}
+            <View className='pay-btn' onClick={this.handleCharge}>
+              立即支付
             </View>
           </View>
+          {couponList && couponList.length > 0 && (
+            <View className='coupon-box' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
+              <Text className='content-v-padded'>会员专享券包</Text>
+              <Text className='content-v-subtitle'>优惠券共计{total_count}张</Text>
+              <ScrollView scrollX className='scroll-box'>
+                {couponList.map((items) => (
+                  <View
+                    className='coupon'
+                    key={items.card_id}
+                    onClick={this.handleCouponBox.bind(this)}
+                  >
+                    <Image className='img' src={`${process.env.APP_IMAGE_CDN}/coupon_bck.png`} />
+                    {items.card_type === 'cash' && (
+                      <View>
+                        <View className='coupon-price'>
+                          <Price primary value={items.reduce_cost / 100} noDecimal />
+                        </View>
+                        <View className='coupon-desc'>
+                          满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}
+                          可用
+                        </View>
+                        <View className='coupon-quan'>代金券</View>
+                        <View className='coupon-mark'>
+                          {items.get_num > 0 ? `x${items.get_num}` : null}
+                        </View>
+                      </View>
+                    )}
+                    {(items.card_type === 'gift' || items.card_type === 'new_gift') && (
+                      <View>
+                        <View className='coupon-price'>
+                          <View className='coupon-font'>兑换券</View>
+                        </View>
+                        <View className='coupon-desc'>{items.description}</View>
+                        <View className='coupon-quan'>兑换券</View>
+                        <View className='coupon-mark'>
+                          {items.get_num > 0 ? `x${items.get_num}` : null}
+                        </View>
+                      </View>
+                    )}
+                    {items.card_type === 'discount' && (
+                      <View>
+                        <View className='coupon-price'>
+                          <Text className='coupon-font'>{(100 - items.discount) / 10}</Text>
+                          <Text className='coupon-size'>折</Text>
+                        </View>
+                        <View className='coupon-desc'>
+                          满{items.least_cost > 0 ? items.least_cost / 100 : 0.01}
+                          使用
+                        </View>
+                        <View className='coupon-quan'>折扣券</View>
+                        <View className='coupon-mark'>
+                          {items.get_num > 0 ? `x${items.get_num}` : null}
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+          <View className='section' style={{ boxShadow: '0rpx 2rpx 16rpx 0rpx #DDDDDD' }}>
+            <View className='section-body'>
+              <View className='content-v-padded'>会员权益</View>
+              <View className='text-muted'>
+                {list[curTabIdx] &&
+                  list[curTabIdx].description &&
+                  list[curTabIdx].description.split('\n').map((item, index) => {
+                    return <View key={`${index}1`}>{item}</View>
+                  })}
+              </View>
+            </View>
+          </View>
+          <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
         </View>
-        <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />
-      </View>
+      </SpPage>
     )
   }
 }

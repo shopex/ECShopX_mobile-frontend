@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Video,Text } from '@tarojs/components'
-import { linkPage } from './helper'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { View, Video, Text } from '@tarojs/components'
+import { linkPage, classNames } from '@/utils'
 
 import './film.scss'
 
@@ -17,7 +18,7 @@ export default class WgtFilm extends Component {
     screenWidth: null
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const res = Taro.getSystemInfoSync()
     this.setState({
       screenWidth: res.screenWidth
@@ -26,7 +27,7 @@ export default class WgtFilm extends Component {
 
   handleClickItem = linkPage
 
-  resolveSize({ width, height, ratio: tRatio } = {}, screenWidth, base = {}) {
+  resolveSize ({ width, height, ratio: tRatio } = {}, screenWidth, base = {}) {
     const aspectRatios = [16 / 9, 9 / 16, 4 / 3, 3 / 4, 1 / 1]
     const { proportion = 0 } = base
     let ratio = aspectRatios[proportion]
@@ -64,7 +65,7 @@ export default class WgtFilm extends Component {
     }
   }
 
-  render() {
+  render () {
     const { info } = this.props
     const { screenWidth } = this.state
 
@@ -76,12 +77,17 @@ export default class WgtFilm extends Component {
     const { width, height, objectFit } = this.resolveSize(config, screenWidth, base)
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View
+        className={classNames('wgt wgt-film', {
+          wgt__padded: base.padded
+        })}
+      >
         {base.title && (
-          // <View className='wgt__header' style={{justifyContent: 'flex-start'}}>
-          <View className='wgt__header'>
-            <Text>{base.title}</Text>
-            <View className='wgt__subtitle'>{base.subtitle}</View>
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
+              <Text className='wgt-subtitle'>{base.subtitle}</Text>
+            </View>
           </View>
         )}
         <View
