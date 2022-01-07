@@ -1,16 +1,12 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text } from '@tarojs/components'
 
 import './license.scss'
 
 export default class HomeLicense extends Component {
-  config = {
-    navigationBarTitleText: '电子营业执照'
-  }
+  componentDidMount () {}
 
-  componentDidMount() {}
-
-  render() {
+  render () {
     return (
       <View className='page-home-license'>
         <View className='dl'>

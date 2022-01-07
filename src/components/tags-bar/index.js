@@ -1,6 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { classNames } from '@/utils'
 
 import './index.scss'
@@ -18,7 +18,7 @@ export default class TagsBar extends Component {
     list: []
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { current } = props
@@ -27,7 +27,7 @@ export default class TagsBar extends Component {
     }
   }
 
-  handleClickItem(id) {
+  handleClickItem (id) {
     this.setState({
       curId: id
     })
@@ -36,7 +36,7 @@ export default class TagsBar extends Component {
     })
   }
 
-  render() {
+  render () {
     const { list, colors } = this.props
 
     return (

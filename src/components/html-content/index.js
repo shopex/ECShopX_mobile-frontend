@@ -1,14 +1,14 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View,RichText } from '@tarojs/components'
-import { classNames,isWeixin,isAlipay } from '@/utils'
-let src = './../components/wxParse/wxParse.wxml';
+import React, { Component } from 'react'
+import Taro from '@tarojs/taro'
+import { View, RichText } from '@tarojs/components'
+import { classNames } from '@/utils'
+import { wxParse } from '@/components/wxParse/wxParse'
+import './index.scss'
 
-import './index.scss';
-
-let wxParse
-if (isWeixin||isAlipay) {
-  wxParse = require('@/components/wxParse/wxParse')
-}
+// let wxParse;
+// if (process.env.TARO_ENV === "weapp") {
+//   wxParse = require("@/components/wxParse/wxParse");
+// }
 
 export default class HtmlContent extends Component {
   static defaultProps = {
@@ -20,30 +20,23 @@ export default class HtmlContent extends Component {
   }
 
   componentDidMount () {
-    if (isWeixin||isAlipay) {
-      const { content } = this.props 
-      console.log(content, 25)
-      wxParse.wxParse('article', 'html', content, this.$scope, 5)
+    if (process.env.TARO_ENV === 'weapp') {
+      const { content } = this.props
+      wxParse('content', 'html', content, this)
     }
   }
 
   render () {
     const { className } = this.props
-    const classes = classNames('html-content', className) 
+    const classes = classNames('html-content', className)
 
-    return process.env.TARO_ENV === 'weapp'
-      ? (<View className={classes}>
-          <import src={'../../components/wxParse/wxParse.wxml'} />
-          <template is='wxParse' data='{{wxParseData:article.nodes}}' />
-        </View>) 
-      : process.env.TARO_ENV === 'alipay'
-      ? (
-        <View className={classes}>
-          <RichText nodes={article.nodes}></RichText>
-          {/* <import src='../wxParse/wxParse.axml' />
-          <template is='wxParse' data='{{wxParseData:article.nodes}}' /> */}
-        </View>
-      )
-      : (<View className={classes} dangerouslySetInnerHTML={{ __html: this.props.content }} />)
+    return process.env.TARO_ENV === 'weapp' ? (
+      <View className={classes}>
+        <import src='../../components/wxParse/wxParse.wxml' />
+        <template is='wxParse' data='{{wxParseData:content.nodes}}' />
+      </View>
+    ) : (
+      <View className={classes} dangerouslySetInnerHTML={{ __html: this.props.content }} />
+    )
   }
 }

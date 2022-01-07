@@ -1,18 +1,17 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import api from '@/api'
 import { pickBy } from '@/utils'
-import { SpNavBar } from '@/components'
+import { SpNavBar, SpPage } from '@/components'
 import { ParamsItem } from './comps'
 
 import './item-params.scss'
 
 export default class ItemParams extends Component {
-  static config = {
-    navigationBarTitleText: '商品参数'
-  }
+  $instance = getCurrentInstance()
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -20,12 +19,12 @@ export default class ItemParams extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
 
-  async fetch() {
-    const { id } = this.$router.params
+  async fetch () {
+    const { id } = this.$instance.router.params
     const info = await api.item.detail(id)
     const { item_params } = info
     const itemParams = pickBy(item_params, {
@@ -37,18 +36,20 @@ export default class ItemParams extends Component {
     })
   }
 
-  render() {
+  render () {
     const { list } = this.state
 
     return (
-      <View className='goods-params-wrap'>
-        <SpNavBar title='商品参数' leftIconType='chevron-left' />
-        <View className='goods-params'>
-          {list.map((item) => {
-            return <ParamsItem key={item.attribute_id} info={item} />
-          })}
+      <SpPage>
+        <View className='goods-params-wrap'>
+          <SpNavBar title='商品参数' leftIconType='chevron-left' />
+          <View className='goods-params'>
+            {list.map((item) => {
+              return <ParamsItem key={item.attribute_id} info={item} />
+            })}
+          </View>
         </View>
-      </View>
+      </SpPage>
     )
   }
 }

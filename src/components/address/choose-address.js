@@ -1,16 +1,17 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { rightClassName } from '@/utils'
+import { connect } from 'react-redux'
 
 import './address.scss'
 
 @connect(
-  ({ address }) => ({
-    address: address.current
+  ({ user }) => ({
+    address: user.address
   }),
   (dispatch) => ({
-    onAddressChoose: (address) => dispatch({ type: 'address/choose', payload: address })
+    updateChooseAddress: (address) =>
+      dispatch({ type: 'user/updateChooseAddress', payload: address })
   })
 )
 export default class AddressChoose extends Component {
@@ -18,7 +19,7 @@ export default class AddressChoose extends Component {
     onClickBack: () => {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {}
@@ -38,7 +39,7 @@ export default class AddressChoose extends Component {
     }
   }
 
-  render() {
+  render () {
     const { isAddress } = this.props
 
     return (
@@ -61,7 +62,7 @@ export default class AddressChoose extends Component {
                   </View>
                 </View>
               </View>
-              <View className={`sp-cell__ft-icon ${rightClassName}`}></View>
+              <View className='sp-cell__ft-icon iconfont icon-arrowRight'></View>
             </View>
           ) : (
             <View className='address-info__bd'>+请选择收货地址</View>

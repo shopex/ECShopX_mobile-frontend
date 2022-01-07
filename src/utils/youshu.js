@@ -1,16 +1,17 @@
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
-import { Tracker } from '@/service'
+import { getAppId } from '@/utils'
+// import { Tracker } from "@/service";
 
-async function youshuLogin() {
+async function youshuLogin () {
   try {
     const { openid, unionid } = await getOpenId()
     if (openid) {
       // 通过token解析openid
-      Tracker.setVar({
-        open_id: openid,
-        union_id: unionid
-      })
+      // Tracker.setVar({
+      //   open_id: openid,
+      //   union_id: unionid
+      // });
     }
   } catch (e) {
     console.error(e)
@@ -18,7 +19,7 @@ async function youshuLogin() {
 }
 
 /**获取openid以及 unionid*/
-export async function getOpenId() {
+export async function getOpenId () {
   let openid
   let unionid
   let code
@@ -36,7 +37,7 @@ export async function getOpenId() {
   }
 }
 
-function TracksPayed(info, config, moduleName) {
+function TracksPayed (info, config, moduleName) {
   let item_fee = info.item_fee
   let total_fee = info.item_fee
 
@@ -45,16 +46,16 @@ function TracksPayed(info, config, moduleName) {
     total_fee = item_fee * 100
   }
 
-  Tracker.dispatch('ORDER_PAYED', {
-    ...info,
-    item_fee,
-    total_fee,
-    ...config
-  })
+  // Tracker.dispatch("ORDER_PAYED", {
+  //   ...info,
+  //   item_fee,
+  //   total_fee,
+  //   ...config
+  // });
 }
 
-function getYoushuAppid() {
-  const { appid } = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
+function getYoushuAppid () {
+  const { appid } = getAppId()
   const {
     youshu: { weapp_app_id }
   } = Taro.getStorageSync('otherSetting')

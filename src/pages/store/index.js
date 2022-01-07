@@ -1,13 +1,14 @@
-import Taro, { Component } from '@tarojs/taro'
+import { Component } from 'react'
+import { connect } from 'react-redux'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { SpToast, Loading, BackToTop, SpNewShopItem, SpCellCoupon } from '@/components'
+import { SpToast, Loading, BackToTop, SpNewShopItem, SpCellCoupon, SpPage } from '@/components'
 import { AtTabBar } from 'taro-ui'
 import req from '@/api/req'
 import api from '@/api'
-import { pickBy, normalizeQuerys, getCurrentRoute, classNames,isNavbar } from '@/utils'
+import { pickBy, normalizeQuerys, getCurrentRoute, classNames, isNavbar } from '@/utils'
 import { platformTemplateName } from '@/utils/platform'
-import { withBackToTop,withPager } from '@/hocs'
+import { withPager, withBackToTop } from '@/hocs'
 import qs from 'qs'
 import S from '@/spx'
 import {
@@ -29,6 +30,7 @@ import {
   WgtFloorImg,
   WgtHotTopic
 } from '../home/wgts'
+import CompHeader from './comps/comp-header'
 
 import './index.scss'
 
@@ -38,7 +40,7 @@ import './index.scss'
 @withPager
 @withBackToTop
 export default class StoreIndex extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -48,38 +50,50 @@ export default class StoreIndex extends Component {
       localCurrent: 0,
       storeInfo: null,
       tabList: [
-        { title: '店铺首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/store/index' },
+        {
+          title: '店铺首页',
+          iconPrefixClass: 'iconfont icon',
+          iconType: 'home',
+          url: '/pages/store/index'
+          //iconfont icon-home"
+        },
         {
           title: '商品列表',
           iconType: 'list',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/others/pages/store/list'
         },
         {
           title: '商品分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/others/pages/store/category'
         }
       ],
       couponList: [],
-      fixedSearch:false,
+      fixedSearch: false,
       likeList: []
     }
+    this.current = getCurrentInstance()
+    this.id = this.current.router.params.id
   }
 
-  async componentDidMount() {
-    const options = await normalizeQuerys(this.$router.params)
-    const id = options.id || options.dtid; 
+  async componentDidMount () {
+    // const current = getCurrentInstance()
+    // console.log('id==',current.router.params.id)
+    // const options = await normalizeQuerys(this.$router.params);
+    // const id = options.id || options.dtid;
+    // const id = current.router.params.id
+    const id = this.id
     if (id) {
       this.fetchInfo(id)
-      this.fetchCouponList(id) 
+      this.fetchCouponList(id)
     }
   }
 
   componentDidShow = () => {
     Taro.getStorage({ key: 'addTipIsShow' })
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         console.log(error)
         this.setState({
@@ -88,7 +102,7 @@ export default class StoreIndex extends Component {
       })
   }
 
-  onShareAppMessage(res) {
+  onShareAppMessage (res) {
     if (res.from === 'button') {
       console.log(res.target)
     }
@@ -98,22 +112,33 @@ export default class StoreIndex extends Component {
     }
   }
 
-  async fetchCouponList(id) {
+  async fetchCouponList (id) {
     const params = {
       page_no: 1,
       page_size: 5,
       end_date: 1,
       distributor_id: id
     }
-    const {
-      list
-    } = await api.member.homeCouponList(params)
+    const { list } = await api.member.homeCouponList(params)
     this.setState({
       couponList: list
     })
   }
 
-  async fetchInfo(distributorId) {
+  async fetchCouponList (id) {
+    const params = {
+      page_no: 1,
+      page_size: 5,
+      end_date: 1,
+      distributor_id: id
+    }
+    const { list } = await api.member.homeCouponList(params)
+    this.setState({
+      couponList: list
+    })
+  }
+
+  async fetchInfo (distributorId) {
     let id = ''
     let storeInfo = null
     if (distributorId) {
@@ -121,12 +146,19 @@ export default class StoreIndex extends Component {
     } else {
       id = await Taro.getStorageSync('curStore').distributor_id
     }
-    const { name, logo, scoreList, distributor_id } = await api.shop.getShop({ distributor_id: id, show_score: 1 })
+    const { name, logo, scoreList, distributor_id, marketingActivityList } = await api.shop.getShop(
+      {
+        distributor_id: id,
+        show_score: 1,
+        show_marketing_activity: 1
+      }
+    )
     storeInfo = {
       name,
       brand: logo,
       scoreList,
-      distributor_id
+      distributor_id,
+      marketingActivityList
     }
     const pathparams = qs.stringify({
       template_name: platformTemplateName,
@@ -143,8 +175,10 @@ export default class StoreIndex extends Component {
         })
       }
       //是否有search
-      let search=info.config.find(item=>item.name==='search')||{config:{}};
-      let fixedSearch=!!search.config.fixTop;
+      let search = info.config.find((item) => item.name === 'search') || {
+        config: {}
+      }
+      let fixedSearch = !!search.config.fixTop
 
       this.setState(
         {
@@ -153,7 +187,7 @@ export default class StoreIndex extends Component {
           fixedSearch
         },
         () => {
-          this.resetPage(()=>{
+          this.resetPage(() => {
             this.setState(
               {
                 likeList: []
@@ -163,12 +197,12 @@ export default class StoreIndex extends Component {
               }
             )
           })
-        
+
           // this.nextPage()
           // if (info.config) {
           //   info.config.map((item) => {
           //     if (item.name === 'setting' && item.config.faverite) {
-             
+
           //     }
           //   })
           // }
@@ -182,13 +216,13 @@ export default class StoreIndex extends Component {
   }
 
   // 获取猜你喜欢
-  fetch = async (params) => {  
+  fetch = async (params) => {
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
       pageSize
     }
-    const { list, total_count: total } = await api.cart.likeList(query) 
+    const { list, total_count: total } = await api.cart.likeList(query)
 
     const nList = pickBy(list, {
       img: 'pics[0]',
@@ -202,11 +236,11 @@ export default class StoreIndex extends Component {
       price: ({ price }) => (price / 100).toFixed(2),
       member_price: ({ member_price }) => (member_price / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
-      desc: 'brief', 
-    }) 
+      desc: 'brief'
+    })
     this.setState({
       likeList: [...this.state.likeList, ...nList]
-    }) 
+    })
 
     return {
       total
@@ -231,8 +265,8 @@ export default class StoreIndex extends Component {
     if (cur !== current) {
       const curTab = this.state.tabList[current]
       const { url } = curTab
-      const options = await normalizeQuerys(this.$router.params)
-      const id = options.id || options.dtid
+      // const options = await normalizeQuerys(this.$router.params);
+      const id = this.id
       const param = current === 1 ? `?dis_id=${id}` : `?id=${id}`
       const fullPath = getCurrentRoute(this.$router).fullPath.split('?')[0]
       if (url && fullPath !== url) {
@@ -241,7 +275,7 @@ export default class StoreIndex extends Component {
     }
   }
 
-  render() {
+  render () {
     const {
       wgts,
       storeInfo,
@@ -254,19 +288,18 @@ export default class StoreIndex extends Component {
       likeList
     } = this.state
     const user = Taro.getStorageSync('userinfo')
-
     if (!wgts || !this.props.store) {
       return <Loading />
     }
 
-    console.log("===likeList==>",likeList)
- 
-     
+    console.log('===likeList==>', likeList)
+    const id = this.id
     return (
-      <View className={classNames('page-store-index',{
-        fixedSearch,
-        'has-navbar':isNavbar()
-      })}>
+      <SpPage
+        className={classNames('page-store-index', {
+          fixedSearch
+        })}
+      >
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed__page'
           scrollTop={scrollTop}
@@ -275,77 +308,40 @@ export default class StoreIndex extends Component {
           scrollY
         >
           <View className='wgts-wrap__cont'>
-            <View className='store-header'>
-              <SpNewShopItem
-                inStore
-                info={storeInfo}
-                className={classNames(
-                  'in-shop-search'
-                )}
-              />
-            </View>
-
-            <SpCellCoupon
-              couponList={couponList}
-              info={storeInfo}
-            />
-
+            <CompHeader inStore info={storeInfo} couponList={couponList} />
             {wgts.map((item, idx) => {
               return (
                 <View className='wgt-wrap' key={`${item.name}${idx}`}>
-                  {item.name === 'search' && (
-                    <WgtSearchHome info={item} dis_id={this.$router.params.id} />
-                  )}
-                  {item.name === "nearbyShop" && <WgtNearbyShop info={item} />}
+                  {item.name === 'search' && <WgtSearchHome info={item} dis_id={id} />}
+                  {item.name === 'nearbyShop' && <WgtNearbyShop info={item} />}
                   {item.name === 'slider' && <WgtSlider info={item} />}
                   {item.name === 'film' && <WgtFilm info={item} />}
                   {item.name === 'marquees' && <WgtMarquees info={item} />}
                   {item.name === 'navigation' && <WgtNavigation info={item} />}
-                  {item.name === 'coupon' && (
-                    <WgtCoupon info={item} dis_id={this.$router.params.id} hasToast={false} />
-                  )}
+                  {item.name === 'coupon' && <WgtCoupon info={item} dis_id={id} />}
                   {item.name === 'imgHotzone' && <WgtImgHotZone info={item} />}
-                  {item.name === 'goodsScroll' && (
-                    <WgtGoodsScroll info={item} dis_id={this.$router.params.id} />
-                  )}
+                  {item.name === 'goodsScroll' && <WgtGoodsScroll info={item} dis_id={id} />}
                   {item.name === 'goodsGrid' && (
-                    <WgtGoodsGrid
-                      info={item}
-                      dis_id={this.$router.params.id}
-                      index={idx}
-                      type='good-grid'
-                    />
+                    <WgtGoodsGrid info={item} dis_id={id} index={idx} type='good-grid' />
                   )}
                   {item.name === 'goodsGridTab' && (
-                    <WgtGoodsGridTab
-                      info={item}
-                      index={idx}
-                      type='good-grid-tab' 
-                    />
+                    <WgtGoodsGridTab info={item} index={idx} type='good-grid-tab' />
                   )}
                   {item.name === 'showcase' && <WgtShowcase info={item} />}
-                  {item.name === 'store' && (
-                    <WgtStore info={item} />
-                  )}
-                   {item.name === 'headline' && <WgtHeadline info={item} />}
-                   {item.name === 'hotTopic' && <WgtHotTopic info={item} />}
-                   {item.name === 'floorImg' && <WgtFloorImg info={item} />}
-
-
+                  {item.name === 'store' && <WgtStore info={item} />}
                 </View>
               )
             })}
 
             <WgtGoodsFaverite info={likeList} />
-
           </View>
         </ScrollView>
 
         <BackToTop show={showBackToTop} onClick={this.scrollBackToTop} />
 
-        <SpToast />
+        {/* <SpToast /> */}
         <AtTabBar fixed tabList={tabList} onClick={this.handleClick} current={localCurrent} />
-      </View>
+      </SpPage>
     )
   }
 }

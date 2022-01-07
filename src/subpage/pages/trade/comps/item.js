@@ -1,13 +1,14 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
-import { classNames, formatPriceToHundred, getPointName } from '@/utils'
+import { connect } from 'react-redux'
+import { classNames, formatPriceToHundred } from '@/utils'
 import OrderItem from '../../../../components/orderItem/order-item'
 import { SpNewShopItem } from '@/components'
 import './item.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class TradeItem extends Component {
   static defaultProps = {
@@ -20,20 +21,20 @@ export default class TradeItem extends Component {
     payType: '',
     info: {},
     rateStatus: false,
-    onClickBtn: () => { },
-    onClick: () => { }
+    onClickBtn: () => {},
+    onClick: () => {}
   }
 
   static options = {
     addGlobalClass: true
   }
 
-  handleClickBtn(type) {
+  handleClickBtn (type) {
     const { info } = this.props
     this.props.onClickBtn && this.props.onClickBtn(type, info)
   }
 
-  computeTotalPrice() {
+  computeTotalPrice () {
     let total
     const {
       info: { point, order_class, freight_fee, freight_type, total_fee, payment, receipt_type },
@@ -42,13 +43,13 @@ export default class TradeItem extends Component {
 
     if (order_class === 'pointsmall') {
       if (freight_type === 'point' || (freight_type === 'cash' && freight_fee == 0)) {
-        total = `合计：${point} ${getPointName()}`
+        total = `合计：${point} ${this.props.pointName}`
       } else if (freight_type === 'cash' && freight_fee != 0) {
-        total = `合计：${point} ${getPointName()} + ￥${formatPriceToHundred(total_fee)}`
+        total = `合计：${point} ${this.props.pointName} + ￥${formatPriceToHundred(total_fee)}`
       }
     } else {
       if (payType === 'dhpoint') {
-        total = `合计：${total_fee}${getPointName()}`
+        total = `合计：${total_fee}${this.props.pointName}`
       } else {
         total = `合计：￥${payment}`
       }
@@ -66,7 +67,7 @@ export default class TradeItem extends Component {
     )
   }
 
-  render() {
+  render () {
     const {
       customHeader,
       customFooter,
@@ -88,20 +89,12 @@ export default class TradeItem extends Component {
         {!noHeader &&
           (customHeader ? (
             <View>
-              <SpNewShopItem
-                inOrderList
-                info={info.distributor_info}
-                canJump={true}
-              />
+              <SpNewShopItem inOrderList info={info.distributor_info} canJump />
               <View className='trade-item__hd'>{this.props.renderHeader}</View>
             </View>
           ) : (
             <View>
-               <SpNewShopItem
-                inOrderList
-                info={info.distributor_info}
-                canJump={true}
-              />
+              <SpNewShopItem inOrderList info={info.distributor_info} canJump />
               <View className='trade-item__hd'>
                 <View className='time lineone'>创建时间：{info.create_date}</View>
                 <View className='time linetwo'>
@@ -138,9 +131,9 @@ export default class TradeItem extends Component {
             <View className='trade-item__ft-bd'>
               <Text className='trade-item__status'>{info.status_desc}</Text>
               {(info.order_status_des === 'PAYED' || info.order_status_des === 'NOTPAY') &&
-                !info.is_logistics &&
-                info.can_apply_cancel != 0 &&
-                (info.receipt_type !== 'dada' || (info.dada && info.dada.dada_status === 0)) ? (
+              !info.is_logistics &&
+              info.can_apply_cancel != 0 &&
+              (info.receipt_type !== 'dada' || (info.dada && info.dada.dada_status === 0)) ? (
                 <Button
                   className='btn-action'
                   style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
@@ -165,9 +158,9 @@ export default class TradeItem extends Component {
             <View className='trade-item__ft-bd'>
               <Text className='trade-item__status'>{info.status_desc}</Text>
               {(info.order_status_des === 'PAYED' || info.order_status_des === 'NOTPAY') &&
-                info.can_apply_cancel != 0 &&
-                !info.is_logistics &&
-                (info.receipt_type !== 'dada' || (info.dada && info.dada.dada_status === 0)) ? (
+              info.can_apply_cancel != 0 &&
+              !info.is_logistics &&
+              (info.receipt_type !== 'dada' || (info.dada && info.dada.dada_status === 0)) ? (
                 <Button
                   className='btn-action'
                   style={`box-shadow: 0 0 0 1PX ${colors.data[0].primary}; color: ${colors.data[0].primary}`}
@@ -227,7 +220,11 @@ export default class TradeItem extends Component {
               onClick={this.props.onActionBtnClick.bind(this)}
             >更多</Text> */}
               {info.receipt_type !== 'dada' && (
-                <View className={classNames('trade-item__dropdown', { 'is-active': showActions })}>
+                <View
+                  className={classNames('trade-item__dropdown', {
+                    'is-active': showActions
+                  })}
+                >
                   <Text
                     className='trade-item__dropdown-item'
                     onClick={this.props.onActionClick.bind(this, 'confirm-receive')}
@@ -280,7 +277,11 @@ export default class TradeItem extends Component {
               className='trade-item__acts'
               onClick={this.props.onActionBtnClick.bind(this)}
             >更多</Text>*/}
-              <View className={classNames('trade-item__dropdown', { 'is-active': showActions })}>
+              <View
+                className={classNames('trade-item__dropdown', {
+                  'is-active': showActions
+                })}
+              >
                 {/*<Text className='trade-item__dropdown-item' onClick={this.props.onActionClick.bind(this, 'rate')}>评价|晒单</Text>*/}
                 <Text
                   className='trade-item__dropdown-item'

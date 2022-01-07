@@ -1,5 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { View, RichText } from '@tarojs/components'
 import { SpNavBar, SpHtmlContent } from '@/components'
 import { withPager } from '@/hocs'
 import api from '@/api'
@@ -8,7 +9,8 @@ import './reg.scss'
 
 @withPager
 export default class RegRule extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -16,14 +18,14 @@ export default class RegRule extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     let data = ''
     let navBarTitle = '协议'
-    const { type } = this.$router.params
+    const { type } = this.$instance.router.params
     Taro.showLoading()
     if (type === '1') {
       // 充值协议
@@ -63,13 +65,16 @@ export default class RegRule extends Component {
     })
   }
 
-  render() {
+  render () {
     const { info, title } = this.state
 
     return (
       <View className='page-member-integral'>
         <SpNavBar title={title} leftIconType='chevron-left' />
-        {info && <SpHtmlContent className='pay-rule-style' content={info} />}
+        {info && (
+          // <SpHtmlContent className='pay-rule-style' content={info} />
+          <RichText nodes={info} />
+        )}
       </View>
     )
   }

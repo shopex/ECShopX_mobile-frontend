@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtInput, AtTextarea, AtImagePicker, AtButton } from 'taro-ui'
 import imgUploader from '@/utils/upload'
@@ -9,7 +10,8 @@ import api from '@/api'
 import './shop-form.scss'
 
 export default class DistributionShopForm extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -18,9 +20,9 @@ export default class DistributionShopForm extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // const { imgs } = this.state
-    const { key, val } = this.$router.params
+    const { key, val } = this.$instance.router.params
     this.setState({
       info: {
         key,
@@ -87,7 +89,7 @@ export default class DistributionShopForm extends Component {
     })
   }
 
-  render() {
+  render () {
     const { info, imgs } = this.state
 
     return (

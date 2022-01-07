@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 
 import './list-item.scss'
 
@@ -29,7 +30,7 @@ export default class StoreListItem extends Component {
     })
   }
 
-  render() {
+  render () {
     const { info, isStore, colors } = this.props
     if (!info) return null
     const distance = info.distance ? (info.distance * 1).toFixed(2) : false

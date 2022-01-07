@@ -1,12 +1,14 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Navigator, Form, Button, Picker } from '@tarojs/components'
 import { AtInput, AtButton, AtList, AtListItem } from 'taro-ui'
 import S from '@/spx'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { SpNavBar, SpToast } from '@/components'
 import api from '@/api'
+import req from '@/api/req'
 import { pickBy, classNames } from '@/utils'
-import bankData from './hfpayBankData.json'
+// import bankData from './hfpayBankData.json'
 
 import './verified.scss'
 
@@ -14,7 +16,7 @@ import './verified.scss'
   colors: colors.current
 }))
 export default class DistributionDashboard extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       info: {},
@@ -22,22 +24,27 @@ export default class DistributionDashboard extends Component {
       isTrue: false,
       areaList: [],
       selectorChecked: [],
-      bankData
+      bankData: null
     }
   }
-  config = {
-    navigationBarTitleText: '绑定银行卡'
-  }
-  componentDidMount() {
+  async componentDidMount () {
     const { colors } = this.props
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
       backgroundColor: colors.data[0].marketing
     })
+    Taro.request({
+      url: `${process.env.APP_IMAGE_CDN}/hfpayBankData.json`
+    }).then((res) => {
+      this.setState({
+        bankData: res.data
+      })
+    })
+
     this.fetch()
   }
 
-  handleInput(type, val) {
+  handleInput (type, val) {
     let info = this.state.info
     info[type] = val
     this.setState({
@@ -45,7 +52,7 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     let { info } = this.state
     if (!info.bank_id) {
       return S.toast('请选择银行')
@@ -72,7 +79,7 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  async fetch() {
+  async fetch () {
     const res = await api.member.hfpayBankInfo()
     const info = pickBy(res, {
       card_num: 'card_num',
@@ -87,7 +94,8 @@ export default class DistributionDashboard extends Component {
     }
   }
 
-  handleChange(e) {
+  handleChange (e) {
+    const { bankData } = this.state
     let bank_name = bankData[e.detail.value].bank_name
     let bank_id = bankData[e.detail.value].bank_code
     let { info } = this.state
@@ -97,7 +105,7 @@ export default class DistributionDashboard extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { info, isTrue, bankData } = this.state
     return (

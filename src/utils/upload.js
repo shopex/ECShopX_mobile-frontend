@@ -1,17 +1,7 @@
-/*
- * @Author: Arvin
- * @GitHub: https://github.com/973749104
- * @Blog: https://liuhgxu.com
- * @Description: 说明
- * @FilePath: /unite-vshop/src/utils/upload.js
- * @Date: 2020-03-06 16:32:07
- * @LastEditors: Arvin
- * @LastEditTime: 2020-11-16 17:42:43
- */
 import Taro from '@tarojs/taro'
 import req from '@/api/req'
 import S from '@/spx'
-import { isAlipay } from '@/utils'
+import { isAlipay, getAppId, exceedLimit } from '@/utils'
 // import * as qiniu from 'qiniu-js'
 
 const getToken = (params) => {
@@ -38,6 +28,7 @@ const upload = {
         url: host,
         filePath: item.url,
         name: 'file',
+        withCredentials: false,
         formData: {
           name: filename,
           key: `${dir}`,
@@ -70,8 +61,8 @@ const upload = {
         url: host,
         filePath: item.url,
         fileType: 'image',
-        [isAlipay ? 'fileName' : 'name']: 'file',
         withCredentials: false,
+        [isAlipay ? 'fileName' : 'name']: 'file',
         formData: {
           'token': token,
           'key': key
@@ -91,14 +82,14 @@ const upload = {
   localUpload: async (item, tokenRes) => {
     const { filetype = 'image', domain } = tokenRes
     const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-    const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
+    const { appid } = getAppId()
     try {
       const res = await Taro.uploadFile({
         url: `${req.baseURL}espier/uploadlocal`,
         filePath: item.url,
         header: {
-          'Authorization': `Bearer ${S.getAuthToken()}`,
-          'authorizer-appid': extConfig.appid
+          Authorization: `Bearer ${S.getAuthToken()}`,
+          'authorizer-appid': appid
         },
         name: 'images',
         formData: {
@@ -184,6 +175,13 @@ const uploadImageFn = async (imgFiles, filetype = 'image') => {
         imgs.push(item)
       }
       continue
+    }
+    if (exceedLimit(item.file)) {
+      Taro.showToast({
+        title: '图片大小超出最大限制，请压缩后再上传',
+        icon: 'none'
+      })
+      break
     }
     try {
       const filename = item.url.slice(item.url.lastIndexOf('/') + 1)

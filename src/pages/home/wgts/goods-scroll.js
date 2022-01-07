@@ -1,9 +1,9 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
-import { calcTimer, classNames } from '@/utils'
-import { SpImg, SpMoreImg } from '@/components'
-import { linkPage } from './helper'
+import { calcTimer, classNames, linkPage } from '@/utils'
+import { SpImg } from '@/components'
 import { getDistributorId } from '@/utils/helper'
 import { withLoadMore } from '@/hocs'
 
@@ -16,7 +16,7 @@ export default class WgtGoodsScroll extends Component {
     info: null
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -24,7 +24,7 @@ export default class WgtGoodsScroll extends Component {
     }
   }
 
-  setTimer() { 
+  setTimer () {
     const { info } = this.props
     const { config } = info
     if (config.lastSeconds) {
@@ -35,15 +35,15 @@ export default class WgtGoodsScroll extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setTimer()
   }
 
-  navigateTo(url) {
+  navigateTo (url) {
     Taro.navigateTo({ url })
   }
 
-  handleClickItem(item) {
+  handleClickItem (item) {
     const { distributor_id, goodsId } = item
     // const dtid = distributor_id ? distributor_id : getDistributorId()
     Taro.navigateTo({
@@ -56,13 +56,15 @@ export default class WgtGoodsScroll extends Component {
       this.navigateTo(`/pages/item/list?dis_id=${this.props.dis_id || ''}`)
     } else if (type === 'limitTimeSale') {
       Taro.navigateTo({
-        url: `/marketing/pages/item/seckill-goods-list?seckill_type=limited_time_sale&seckill_id=${seckillId}&dis_id=${this
-          .props.dis_id || ''}`
+        url: `/marketing/pages/item/seckill-goods-list?seckill_type=limited_time_sale&seckill_id=${seckillId}&dis_id=${
+          this.props.dis_id || ''
+        }`
       })
     } else {
       Taro.navigateTo({
-        url: `/marketing/pages/item/seckill-goods-list?seckill_type=normal&seckill_id=${seckillId}&dis_id=${this
-          .props.dis_id || ''}`
+        url: `/marketing/pages/item/seckill-goods-list?seckill_type=normal&seckill_id=${seckillId}&dis_id=${
+          this.props.dis_id || ''
+        }`
       })
     }
   }
@@ -71,13 +73,13 @@ export default class WgtGoodsScroll extends Component {
     const { config } = this.props.info
     const { moreLink = {} } = config
     if (moreLink) {
-      linkPage(moreLink.linkPage, moreLink)
+      linkPage(moreLink)
     } else {
       this.navigateToList(config.type, config.seckillId)
     }
   }
 
-  render() {
+  render () {
     const { info } = this.props
     if (!info) {
       return null
@@ -89,11 +91,11 @@ export default class WgtGoodsScroll extends Component {
     return (
       <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>
-              <Text>{base.title}</Text>
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
               {config.type === 'goods' ? (
-                <View className='wgt__subtitle'>{base.subtitle}</View>
+                <Text className='wgt-subtitle'>{base.subtitle}</Text>
               ) : (
                 <View>
                   {timer && config.lastSeconds != 0 ? (
@@ -180,8 +182,6 @@ export default class WgtGoodsScroll extends Component {
                 </View>
               )
             })}
-
-            <SpMoreImg dataLength={data.length} config={config} base={base} more={more} />
           </ScrollView>
         </View>
       </View>

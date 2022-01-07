@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Picker } from '@tarojs/components'
 import { AtInput, AtButton } from 'taro-ui'
 import { SpNavBar, SpToast } from '@/components'
@@ -25,7 +26,8 @@ const LOGISTICS_CODE = {
   'ZJS': '宅急送'
 }
 export default class TradeRefundSendback extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
     const express = []
     for (let key in LOGISTICS_CODE) {
@@ -64,7 +66,7 @@ export default class TradeRefundSendback extends Component {
 
   handleSubmit = async () => {
     const { logi_no, corp_code } = this.state
-    const { item_id, order_id, aftersales_bn } = this.$router.params
+    const { item_id, order_id, aftersales_bn } = this.$instance.router.params
 
     if (!corp_code) {
       S.toast('请填写物流公司')
@@ -92,7 +94,7 @@ export default class TradeRefundSendback extends Component {
     }, 1000)
   }
 
-  render() {
+  render () {
     const { express, logi_no, curExpressIdx } = this.state
     return (
       <View className='page-refund-sendback' style={styleNames(getThemeStyle())}>

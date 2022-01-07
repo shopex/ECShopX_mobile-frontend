@@ -1,22 +1,24 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text, Input } from '@tarojs/components'
 import { SpNavBar, SpCell } from '@/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { withLogin } from '@/hocs'
 import S from '@/spx'
-import { classNames, getPointName } from '@/utils'
+import { classNames } from '@/utils'
 import api from '@/api'
 import PaymentPicker from '../../../pages/cart/comps/payment-picker'
 // /Users/zhangqing/projectTwo/ecshopx-vshop/src/pages/cart/comps/payment-picker.js
 import './index.scss'
 
-@connect(({ address, colors }) => ({
-  address: address.current,
-  colors: colors.current
+@connect(({ user, colors, sys }) => ({
+  address: user.address,
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 @withLogin()
 export default class Recharge extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     /**
      * @description: state字段说明
@@ -43,7 +45,7 @@ export default class Recharge extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.getMemberInfo()
     // 获取充值金额列表
     api.member.getRechargeNumber().then((res) => {
@@ -57,16 +59,12 @@ export default class Recharge extends Component {
     })
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.setStore()
   }
 
-  config = {
-    navigationBarTitleText: '储值'
-  }
-
   // 获取会员详情
-  getMemberInfo() {
+  getMemberInfo () {
     api.member.memberInfo().then((res) => {
       this.setState({
         deposit: res.deposit
@@ -98,7 +96,7 @@ export default class Recharge extends Component {
     let rule_id = ''
     // 判断是否点击其他金额
     if (index !== amounts.length - 1) {
-      const sendType = value.ruleType === 'money' ? '元' : getPointName()
+      const sendType = value.ruleType === 'money' ? '元' : this.props.pointName
       setValue = value.money
       rule_id = value.id
       ruleValue =
@@ -159,7 +157,6 @@ export default class Recharge extends Component {
     api.member
       .rehcargePay(param)
       .then((res) => {
-       
         Taro.hideLoading()
         if (Taro.getEnv() === 'WEAPP') {
           this.weappPay(res)
@@ -245,21 +242,13 @@ export default class Recharge extends Component {
     })
   }
 
-  render() {
-    const {
-      currentShop,
-      deposit,
-      amounts,
-      active,
-      value,
-      ruleValue,
-      payType,
-      isPaymentOpend
-    } = this.state
+  render () {
+    const { currentShop, deposit, amounts, active, value, ruleValue, payType, isPaymentOpend } =
+      this.state
     const { colors } = this.props
     const amountLength = amounts.length - 1
     const payTypeText = {
-      point: `${getPointName()}支付`,
+      point: `${this.props.pointName}支付`,
       wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',

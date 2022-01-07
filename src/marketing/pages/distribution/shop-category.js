@@ -1,5 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Text } from '@tarojs/components'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { View, ScrollView, Text, Image } from '@tarojs/components'
 import { Loading, SpImg, SpNote, SpNavBar } from '@/components'
 import { classNames, pickBy, getCurrentRoute } from '@/utils'
 import { AtTabBar } from 'taro-ui'
@@ -12,7 +13,8 @@ import './shop-category.scss'
 @withPager
 @withBackToTop
 export default class DistributionShopCategory extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -23,14 +25,14 @@ export default class DistributionShopCategory extends Component {
         {
           title: '小店首页',
           iconType: 'home',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/shop-home',
           urlRedirect: true
         },
         {
           title: '分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/shop-category',
           urlRedirect: true
         }
@@ -44,11 +46,11 @@ export default class DistributionShopCategory extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetchInfo()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.isChanged === true) {
       this.setState({
         currentIndex: 0
@@ -56,13 +58,8 @@ export default class DistributionShopCategory extends Component {
     }
   }
 
-  // 配置信息
-  config = {
-    navigationBarTitleText: ''
-  }
-
-  async fetchInfo() {
-    const options = this.$router.params
+  async fetchInfo () {
+    const options = this.$instance.router.params
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     const query = {
@@ -89,14 +86,14 @@ export default class DistributionShopCategory extends Component {
           {
             title: '小店首页',
             iconType: 'home',
-            iconPrefixClass: 'icon',
+            iconPrefixClass: 'iconfont icon',
             url: `/marketing/pages/distribution/shop-home?featuredshop=${options.featuredshop}`,
             urlRedirect: true
           },
           {
             title: '分类',
             iconType: 'category',
-            iconPrefixClass: 'icon',
+            iconPrefixClass: 'iconfont icon',
             url: `/marketing/pages/distribution/shop-category?featuredshop=${options.featuredshop}`,
             urlRedirect: true
           }
@@ -108,10 +105,10 @@ export default class DistributionShopCategory extends Component {
     )
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
     const { defaultId } = this.state
-    const options = this.$router.params
+    const options = this.$instance.router.params
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
 
@@ -182,9 +179,9 @@ export default class DistributionShopCategory extends Component {
       const curTab = this.state.tabList[current]
       const { url, urlRedirect } = curTab
 
-      const fullPath = getCurrentRoute(this.$router).fullPath.split('?')[0]
+      const fullPath = getCurrentRoute(this.$instance.router).fullPath.split('?')[0]
       if (url && fullPath !== url) {
-        if (!urlRedirect || (url === '/pages/member/index' && !S.getAuthToken())) {
+        if (!urlRedirect || (url === '/subpages/member/index' && !S.getAuthToken())) {
           Taro.navigateTo({ url })
         } else {
           Taro.redirectTo({ url })
@@ -194,7 +191,7 @@ export default class DistributionShopCategory extends Component {
   }
 
   handleClickItem = (item) => {
-    const options = this.$router.params
+    const options = this.$instance.router.params
     const { userId } = Taro.getStorageSync('userinfo')
     const distributionShopId = Taro.getStorageSync('distribution_shop_id')
     let id = distributionShopId || userId
@@ -215,17 +212,9 @@ export default class DistributionShopCategory extends Component {
       })
     }
   }
-  render() {
-    const {
-      list,
-      hasSeries,
-      tabList,
-      localCurrent,
-      contentList,
-      currentIndex,
-      page,
-      scrollTop
-    } = this.state
+  render () {
+    const { list, hasSeries, tabList, localCurrent, contentList, currentIndex, page, scrollTop } =
+      this.state
     const isHaveLeft = list.length > 0
     return (
       <View className='page-category-index'>
@@ -274,13 +263,14 @@ export default class DistributionShopCategory extends Component {
                         onClick={this.handleClickItem.bind(this, item)}
                       >
                         <View className='left'>
-                          <SpImg
+                          {/* <SpImg
                             lazyLoad
                             width='400'
                             mode='aspectFill'
                             img-class='goodImg'
                             src={item.img}
-                          />
+                          /> */}
+                          <Image src={item.img} lazyLoad className='goodImg' />
                         </View>
                         <View className='right'>
                           <View className='goodName'>{item.title}</View>

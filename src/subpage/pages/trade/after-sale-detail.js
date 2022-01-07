@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtCountdown } from 'taro-ui'
 import { Loading, SpToast, SpNavBar } from '@/components'
 import {
@@ -10,21 +11,21 @@ import {
   resolveOrderStatus,
   copyText,
   getCurrentRoute,
-  showLoading,
-  classNames,
-  isWebWechat
+  classNames
 } from '@/utils'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 import api from '@/api'
 import S from '@/spx'
 import AfterDetailItem from './comps/after-detail-item'
 import './after-sale-detail.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class TradeDetail extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -40,15 +41,15 @@ export default class TradeDetail extends Component {
     }
   }
 
-  componentDidShow() {
+  componentDidShow () {
     this.fetch()
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     clearInterval(this.state.interval)
   }
 
-  calcTimer(totalSec) {
+  calcTimer (totalSec) {
     let remainingSec = totalSec
     const dd = Math.floor(totalSec / 24 / 3600)
     remainingSec -= dd * 3600 * 24
@@ -65,7 +66,7 @@ export default class TradeDetail extends Component {
       ss
     }
   }
-  selectionGoods(list) {
+  selectionGoods (list) {
     const selected = list.filter((v) => v.is_checked)
     let params = {}
     let refund = []
@@ -123,7 +124,7 @@ export default class TradeDetail extends Component {
     }
   }
 
-  getParamsAboutItem = (oldInfo, isInit = false) => { 
+  getParamsAboutItem = (oldInfo, isInit = false) => {
     const newInfo = JSON.parse(JSON.stringify(oldInfo))
     /** 是否有积分商品 */
     let is_has_point
@@ -180,8 +181,8 @@ export default class TradeDetail extends Component {
     })
   }
 
-  async fetch() {
-    const { id } = this.$router.params
+  async fetch () {
+    const { id } = this.$instance.router.params
     const data = await api.trade.detail(id)
     let sessionFrom = ''
     const pickItem = {
@@ -342,7 +343,7 @@ export default class TradeDetail extends Component {
     await copyText(msg)
   }
 
-  async handlePay() {
+  async handlePay () {
     const { info } = this.state
 
     this.setState({
@@ -393,14 +394,14 @@ export default class TradeDetail extends Component {
         icon: 'success'
       })
 
-      const { fullPath } = getCurrentRoute(this.$router)
+      const { fullPath } = getCurrentRoute(this.$instance.router)
       Taro.redirectTo({
         url: fullPath
       })
     }
   }
 
-  async handleClickBtn(type, val) {
+  async handleClickBtn (type, val) {
     const { info } = this.state
 
     if (type === 'REFUND') {
@@ -439,7 +440,7 @@ export default class TradeDetail extends Component {
   }
 
   zitiWebsocket = () => {
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
     const { webSocketIsOpen, restartOpenWebsoect } = this.state
     // websocket 开始
     if (!webSocketIsOpen) {
@@ -474,7 +475,7 @@ export default class TradeDetail extends Component {
               () => {
                 setTimeout(() => {
                   Taro.redirectTo({
-                    url: '/pages/member/index'
+                    url: '/subpages/member/index'
                   })
                 }, 700)
               }
@@ -535,10 +536,7 @@ export default class TradeDetail extends Component {
 
   // 发送验证码
   sendCode = async () => {
-    showLoading({
-      title: '发送中',
-      mask: true
-    })
+    Taro.showLoading('发送中')
     const { info } = this.state
     const res = await api.trade.sendCode(info.tid)
     Taro.showToast({
@@ -553,7 +551,7 @@ export default class TradeDetail extends Component {
     })
   }
 
-  render() {
+  render () {
     const { colors } = this.props
     const { info, ziti, qrcode, timer, payLoading, scrollIntoView } = this.state
 
@@ -561,10 +559,8 @@ export default class TradeDetail extends Component {
       return <Loading></Loading>
     }
 
-    console.log("===isWebWechat==",isWebWechat)
-
     return (
-      <View className={classNames(`trade-detail ${info.is_logistics && 'islog'}`,{isWebWechat})}>
+      <View className={classNames(`trade-detail ${info.is_logistics && 'islog'}`)}>
         <SpNavBar title='售后详情' leftIconType='chevron-left' fixed='true' />
         {info.is_logistics && (
           <View className='custabs'>
@@ -719,7 +715,7 @@ export default class TradeDetail extends Component {
             )}
             {info.is_has_point && (
               <View>
-                {`总计${getPointName()}`}：
+                {`总计${}`}：
                 <Text className='trade-money__num'>￥{info.total_point_money}</Text>
               </View>
             )}

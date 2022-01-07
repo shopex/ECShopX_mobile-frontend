@@ -1,7 +1,8 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { AtTabBar } from 'taro-ui'
-import { SpToast, Loading, FilterBar, SpNote, SpNavBar, SearchBar } from '@/components'
+import { SpToast, Loading, FilterBar, SpNote, SpNavBar, SearchBar, SpPage } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
@@ -14,7 +15,8 @@ import './goods.scss'
 @withPager
 @withBackToTop
 export default class DistributionGoods extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -26,14 +28,14 @@ export default class DistributionGoods extends Component {
         {
           title: '推广商品',
           iconType: 'home',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/goods',
           urlRedirect: true
         },
         {
           title: '分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/marketing/pages/distribution/good-category',
           urlRedirect: true
         }
@@ -47,13 +49,13 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     Taro.hideShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
     })
     this.firstStatus = true
-    const { status } = this.$router.params
+    const { status } = this.$instance.router.params
     const { tabList } = this.state
     tabList[1].url += `?status=${status}`
     this.setState(
@@ -71,7 +73,7 @@ export default class DistributionGoods extends Component {
     )
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { page_no: page, page_size: pageSize } = params
     const { selectParams } = this.state
@@ -142,17 +144,16 @@ export default class DistributionGoods extends Component {
   }
 
   handleFilterChange = (data) => {
-
-    console.log("===handleFilterChange====",data)
-    const { current, sort } = data;
+    console.log('===handleFilterChange====', data)
+    const { current, sort } = data
 
     const query = {
       ...this.state.query,
       goodsSort: current === 0 ? null : current === 1 ? 1 : sort > 0 ? 3 : 2
     }
 
-    if((current == this.state.curFilterIdx) && sort!==null ){
-      return ;
+    if (current == this.state.curFilterIdx && sort !== null) {
+      return
     }
 
     if (
@@ -265,7 +266,7 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  onShareAppMessage(res) {
+  onShareAppMessage (res) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { info } = res.target.dataset
 
@@ -317,7 +318,7 @@ export default class DistributionGoods extends Component {
       const curTab = this.state.tabList[current]
       const { url } = curTab
 
-      const fullPath = getCurrentRoute(this.$router).fullPath.split('?')[0]
+      const fullPath = getCurrentRoute(this.$instance.router).fullPath.split('?')[0]
 
       if (url && fullPath !== url) {
         Taro.redirectTo({ url })
@@ -325,8 +326,8 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  render() {
-    const { status } = this.$router.params
+  render () {
+    const { status } = this.$instance.router.params
     const {
       list,
       page,
@@ -341,55 +342,57 @@ export default class DistributionGoods extends Component {
     console.log(list)
 
     return (
-      <View className='page-distribution-shop'>
-        <SpNavBar title='推广商品' leftIconType='chevron-left' fixed='true' />
-        <SearchBar
-          showDailog={false}
-          keyword={query ? query.keywords : ''}
-          onFocus={() => false}
-          onCancel={() => {}}
-          onChange={this.handleSearchChange}
-          onClear={this.handleConfirm.bind(this)}
-          onConfirm={this.handleConfirm.bind(this)}
-        />
-        <FilterBar
-          className='goods-list__tabs'
-          custom
-          current={curFilterIdx}
-          list={filterList}
-          onChange={this.handleFilterChange}
-        ></FilterBar>
+      <SpPage className='page-distribution-shop'>
+        <View>
+          <SpNavBar title='推广商品' leftIconType='chevron-left' fixed='true' />
+          <SearchBar
+            showDailog={false}
+            keyword={query ? query.keywords : ''}
+            onFocus={() => false}
+            onCancel={() => {}}
+            onChange={this.handleSearchChange}
+            onClear={this.handleConfirm.bind(this)}
+            onConfirm={this.handleConfirm.bind(this)}
+          />
+          <FilterBar
+            className='goods-list__tabs'
+            custom
+            current={curFilterIdx}
+            list={filterList}
+            onChange={this.handleFilterChange}
+          ></FilterBar>
 
-        <ScrollView
-          className='goods-list__scroll'
-          scrollY
-          scrollTop={scrollTop}
-          scrollWithAnimation
-          onScroll={this.handleScroll}
-          onScrollToLower={this.nextPage}
-        >
-          <View className='goods-list'>
-            {list.map((item) => {
-              const isRelease = goodsIds.findIndex((n) => item.goods_id == n) !== -1
-              return (
-                <DistributionGoodsItem
-                  key={item.goods_id}
-                  info={item}
-                  isRelease={isRelease}
-                  status={status}
-                  onClick={() => this.handleClickItem(item.goods_id)}
-                />
-              )
-            })}
-          </View>
-          {page.isLoading ? <Loading>正在加载...</Loading> : null}
-          {!page.isLoading && !page.hasNext && !list.length && (
-            <SpNote img='trades_empty.png'>暂无数据~</SpNote>
-          )}
-        </ScrollView>
-        <SpToast />
-        <AtTabBar fixed tabList={tabList} onClick={this.handleClick} current={localCurrent} />
-      </View>
+          <ScrollView
+            className='goods-list__scroll'
+            scrollY
+            scrollTop={scrollTop}
+            scrollWithAnimation
+            onScroll={this.handleScroll}
+            onScrollToLower={this.nextPage}
+          >
+            <View className='goods-list'>
+              {list.map((item) => {
+                const isRelease = goodsIds.findIndex((n) => item.goods_id == n) !== -1
+                return (
+                  <DistributionGoodsItem
+                    key={item.goods_id}
+                    info={item}
+                    isRelease={isRelease}
+                    status={status}
+                    onClick={() => this.handleClickItem(item.goods_id)}
+                  />
+                )
+              })}
+            </View>
+            {page.isLoading ? <Loading>正在加载...</Loading> : null}
+            {!page.isLoading && !page.hasNext && !list.length && (
+              <SpNote img='trades_empty.png'>暂无数据~</SpNote>
+            )}
+          </ScrollView>
+          <SpToast />
+          <AtTabBar fixed tabList={tabList} onClick={this.handleClick} current={localCurrent} />
+        </View>
+      </SpPage>
     )
   }
 }

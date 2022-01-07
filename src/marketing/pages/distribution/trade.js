@@ -1,9 +1,10 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { Loading, SpNote, SpNavBar } from '@/components'
 import api from '@/api'
-import { pickBy } from '@/utils'
+import { hasNavbar, pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
 
 import './trade.scss'
@@ -11,7 +12,8 @@ import './trade.scss'
 @withPager
 @withBackToTop
 export default class DistributionTrade extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -25,13 +27,13 @@ export default class DistributionTrade extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.nextPage()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { curTabIdx } = this.state
-    const { type } = this.$router.params
+    const { type } = this.$instance.router.params
     const { page_no: page, page_size: pageSize } = params
     const query = {
       brokerage_source: type,
@@ -82,7 +84,7 @@ export default class DistributionTrade extends Component {
     )
   }
 
-  render() {
+  render () {
     const { list, page, tabList, curFilterIdx, scrollTop, curTabIdx } = this.state
     console.log(list)
 
@@ -90,7 +92,7 @@ export default class DistributionTrade extends Component {
       <View className='page-distribution-trade'>
         <SpNavBar title='订单' leftIconType='chevron-left' />
         <AtTabs
-          className='trade-list__tabs'
+          className={`trade-list__tabs ${hasNavbar && 'trade-list__tabs_web'}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
@@ -100,7 +102,7 @@ export default class DistributionTrade extends Component {
           ))}
         </AtTabs>
         <ScrollView
-          className='trade-list__scroll'
+          className={`trade-list__scroll ${hasNavbar && 'trade-list__scroll_web'}`}
           scrollY
           scrollTop={scrollTop}
           onScrollToLower={this.nextPage}

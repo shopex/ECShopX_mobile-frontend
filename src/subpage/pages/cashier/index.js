@@ -1,44 +1,51 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { connect } from 'react-redux'
 import { View } from '@tarojs/components'
 import api from '@/api'
 import { Loading, SpNavBar, SpToast } from '@/components'
-import { pickBy, browser, getPointName } from '@/utils'
+import { pickBy, browser } from '@/utils'
 import { withLogin } from '@/hocs'
 import { AlipayPay, WeH5Pay, WePay } from './comps'
-import { getPaymentList } from '@/utils/payment'
+// import { getPaymentList } from '@/utils/payment'
 import { PAYTYPE } from '@/consts'
-import { deleteForm } from './util';
+import { deleteForm } from './util'
 
 import './index.scss'
 
+@connect(({ sys }) => ({
+  pointName: sys.pointName
+}))
 @withLogin()
 export default class Cashier extends Component {
+  $instance = getCurrentInstance()
   state = {
     info: null,
     env: '',
-    isHasAlipay:true,
-    payType:PAYTYPE.WXH5
+    isHasAlipay: true,
+    payType: PAYTYPE.WXH5
   }
 
-  componentDidShow() {
-    this.fetch();
-    deleteForm();
+  componentDidShow () {
+    this.fetch()
+    deleteForm()
   }
 
-  async componentDidMount(){ 
-    const { isHasAlipay } = await getPaymentList();
+  async componentDidMount () {
+    // const { isHasAlipay } = await getPaymentList();
+    const isHasAlipay = []
     this.setState({
       isHasAlipay
     })
   }
 
-  isPointitemGood() {
-    const options = this.$router.params
+  isPointitemGood () {
+    const options = this.$instance.router.params
     return options.type === 'pointitem'
   }
 
-  async fetch() {
-    const { order_id,pay_type,id } = this.$router.params
+  async fetch () {
+    const { order_id, pay_type, id } = this.$instance.router.params
 
     let env = ''
     if (browser.weixin) {
@@ -46,7 +53,7 @@ export default class Cashier extends Component {
     }
 
     Taro.showLoading()
-    const orderInfo = await api.cashier.getOrderDetail(order_id||id)
+    const orderInfo = await api.cashier.getOrderDetail(order_id || id)
 
     const info = pickBy(orderInfo.orderInfo, {
       order_id: 'order_id',
@@ -60,23 +67,24 @@ export default class Cashier extends Component {
     this.setState({
       info,
       env,
-      payType:pay_type
+      payType: pay_type
     })
     Taro.hideLoading()
   }
 
   handleClickBack = () => {
-    const { order_type,order_id } = this.state.info
-    const url = order_type === 'recharge' ? '/pages/member/pay' : `/subpage/pages/trade/detail?id=${order_id}`
+    const { order_type, order_id } = this.state.info
+    const url =
+      order_type === 'recharge' ? '/pages/member/pay' : `/subpage/pages/trade/detail?id=${order_id}`
 
     Taro.redirectTo({
       url
     })
   }
 
-  render() {
-    const { info, env, isHasAlipay,payType } = this.state;
- 
+  render () {
+    const { info, env, isHasAlipay, payType } = this.state
+
     if (!info) {
       return <Loading />
     }
@@ -93,7 +101,7 @@ export default class Cashier extends Component {
             <View className='cashier-money__content-title'>订单名称：{info.title}</View>
             <View className='cashier-money__content-title'>
               应付总额
-              {info.pay_type === 'point' ? `（${getPointName()}）` : '（元）'}
+              {info.pay_type === 'point' ? `（${this.props.pointName}）` : '（元）'}
             </View>
             <View className='cashier-money__content-number'>
               {info.pay_type === 'point' ? info.point : info.total_fee}
@@ -102,8 +110,10 @@ export default class Cashier extends Component {
         </View>
         {!env ? (
           <View>
-            {isHasAlipay && payType===PAYTYPE.ALIH5 &&<AlipayPay orderID={info.order_id} payType='alipayh5' orderType={info.order_type} />}
-            {payType===PAYTYPE.WXH5 && <WeH5Pay orderID={info.order_id} />}
+            {isHasAlipay && payType === PAYTYPE.ALIH5 && (
+              <AlipayPay orderID={info.order_id} payType='alipayh5' orderType={info.order_type} />
+            )}
+            {payType === PAYTYPE.WXH5 && <WeH5Pay orderID={info.order_id} />}
           </View>
         ) : (
           <View>

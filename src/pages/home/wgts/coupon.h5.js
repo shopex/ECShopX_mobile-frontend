@@ -1,10 +1,11 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { SpImg, SpToast, CouponModal } from '@/components'
 import api from '@/api'
 import S from '@/spx'
 import { classNames } from '@/utils'
-import { Tracker } from '@/service'
+// import { Tracker } from '@/service'
 
 import './coupon.scss'
 
@@ -23,7 +24,7 @@ export default class WgtCoupon extends Component {
     visible: false
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
@@ -33,13 +34,13 @@ export default class WgtCoupon extends Component {
       return
     }
 
-    await api.member.homeCouponGet( {
+    await api.member.homeCouponGet({
       card_id: card_item.id
     })
     S.toast('优惠券领取成功')
   }
 
-  navigateTo(url) {
+  navigateTo (url) {
     Taro.navigateTo({ url })
   }
 
@@ -59,7 +60,7 @@ export default class WgtCoupon extends Component {
     })
   }
 
-  fetchCouponCardList() {
+  fetchCouponCardList () {
     api.vip.getShowCardPackage({ receive_type: 'template' }).then(({ all_card_list }) => {
       if (all_card_list && all_card_list.length > 0) {
         this.setState({ visible: true })
@@ -82,7 +83,7 @@ export default class WgtCoupon extends Component {
     this.setState({ visible })
   }
 
-  render() {
+  render () {
     const { info, dis_id = '' } = this.props
     const { visible, all_card_list } = this.state
     if (!info) {
@@ -92,22 +93,17 @@ export default class WgtCoupon extends Component {
     const { base, data, voucher_package } = info
 
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View
+        className={classNames('wgt wgt-coupon', {
+          wgt__padded: base.padded
+        })}
+      >
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>
-              <Text>{base.title}</Text>
-              <View className='wgt__subtitle'>{base.subtitle}</View>
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
+              <Text className='wgt-subtitle'>{base.subtitle}</Text>
             </View>
-            {/* <View
-              className='wgt__more'
-              onClick={this.navigateTo.bind(
-                this,
-                `/others/pages/home/coupon-home?distributor_id=${dis_id}`
-              )}
-            >
-              <View className='three-dot'></View>
-            </View> */}
           </View>
         )}
         <View className='wgt__body with-padding'>
@@ -143,38 +139,42 @@ export default class WgtCoupon extends Component {
               </View>
             )
           })}
-          {voucher_package && voucher_package.map((item, idx) => {
-            return (
-              <View className={classNames('coupon-wgt', item.imgUrl && 'with-img')} key={`${idx}1`}>
-                {' '}
-                {item.imgUrl ? (
-                  <SpImg img-class='coupon_img' src={item.imgUrl} mode='widthFix' width='750' />
-                ) : (
-                  <View className='coupon-body'>
-                    <View className='coupon__amount'>
-                      <Text>{item.amount}</Text>
-                      <View className='coupon__amount-cur'>
-                        {item.type === 'cash' ? '元' : ''}
-                        {item.type === 'discount' ? '折' : ''}
-                      </View>
-                    </View>
-                    <View className='coupon-caption'>
-                      <View className='coupon-content'>
-                        <View className='coupon-content__brand-name'>{item.title}</View>
-                        <View className='coupon-content__coupon-desc'>{item.desc}</View>
-                      </View>
-                    </View>
-                  </View>
-                )}
-                <Button
-                  className='coupon-btn__getted'
-                  onClick={this.handleCouponClick.bind(this, item)}
+          {voucher_package &&
+            voucher_package.map((item, idx) => {
+              return (
+                <View
+                  className={classNames('coupon-wgt', item.imgUrl && 'with-img')}
+                  key={`${idx}1`}
                 >
-                  领取
-                </Button>
-              </View>
-            )
-          })}
+                  {' '}
+                  {item.imgUrl ? (
+                    <SpImg img-class='coupon_img' src={item.imgUrl} mode='widthFix' width='750' />
+                  ) : (
+                    <View className='coupon-body'>
+                      <View className='coupon__amount'>
+                        <Text>{item.amount}</Text>
+                        <View className='coupon__amount-cur'>
+                          {item.type === 'cash' ? '元' : ''}
+                          {item.type === 'discount' ? '折' : ''}
+                        </View>
+                      </View>
+                      <View className='coupon-caption'>
+                        <View className='coupon-content'>
+                          <View className='coupon-content__brand-name'>{item.title}</View>
+                          <View className='coupon-content__coupon-desc'>{item.desc}</View>
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  <Button
+                    className='coupon-btn__getted'
+                    onClick={this.handleCouponClick.bind(this, item)}
+                  >
+                    领取
+                  </Button>
+                </View>
+              )
+            })}
         </View>
         <SpToast />
         <CouponModal visible={visible} list={all_card_list} onChange={this.handleCouponChange} />

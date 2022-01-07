@@ -1,120 +1,37 @@
-import Taro, { Component } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
+import { useState, useCallback } from 'react'
 import { View, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
 import { AtButton } from 'taro-ui'
 import S from '@/spx'
 import api from '@/api'
-import { isWeixin, isAlipay, classNames, tokenParse } from '@/utils'
+import { isWeixin, isAlipay, classNames, showToast } from '@/utils'
+import { SG_SHARER_UID, SG_TRACK_PARAMS } from '@/consts'
 import { Tracker } from '@/service'
-import { PrivacyConfirmModal } from '@/components'
-
+import { SpPrivacyModal } from '@/components'
+import { useLogin } from '@/hooks'
 import './index.scss'
 
-@connect(
-  () => ({}),
-  (dispatch) => ({
-    setMemberInfo: (memberInfo) => dispatch({ type: 'member/init', payload: memberInfo })
+function SpLogin (props) {
+  const { children, className, onChange } = props
+  const { isLogin, login, updatePolicyTime, setToken } = useLogin({
+    policyUpdateHook: () => {
+      setPolicyModal(true)
+    }
   })
-)
-export default class SpLogin extends Component {
-  static options = {
-    addGlobalClass: true
-  }
+  const [isNewUser, setIsNewUser] = useState(false)
+  const [policyModal, setPolicyModal] = useState(false)
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      token: S.getAuthToken(),
-      privacyVisible: false,
-      update_time: null,
-      code: null
+  const handleClickLogin = async () => {
+    try {
+      await login()
+    } catch (e) {
+      setIsNewUser(true)
     }
   }
 
-  componentWillMount () {
-    Taro.eventCenter.on('login-success', () => {
-      this.setState({
-        token: S.getAuthToken()
-      })
-    })
-    this.onGetTimes()
-  }
-
-  onGetTimes = async () => {
-    const { update_time } = await api.wx.getPrivacyTime()
-    const resLogin = await Taro.login() || {}
-    let code = resLogin.code
-    this.setState({ update_time, code })
-  }
-
-  /** 设置导购id */
-  setSalespersonId = (params) => {
-    // 导购id
-    const salesperson_id = Taro.getStorageSync('s_smid')
-    if (salesperson_id) {
-      params.distributor_id = Taro.getStorageSync('s_dtid')
-      params.salesperson_id = salesperson_id
-    }
-  }
-
-  afterNewLogin = async ({ token, work_userid,is_new }) => {
-    if (token) {
-      S.setAuthToken(token)
-      if (work_userid) {
-        api.user.uniquevisito({
-          work_userid: work_userid
-        })
-        const gu_user_id = Taro.getStorageSync('gu_user_id')
-        if (gu_user_id) {
-          api.user.bindSaleperson({
-            work_userid: work_userid
-          })
-        }
-      }
-
-      // 通过token解析openid
-      if (isWeixin) {
-        const { user_id, openid, unionid } = tokenParse(token)
-        Tracker.setVar({
-          user_id: user_id,
-          open_id: openid,
-          union_id: unionid
-        })
-        //如果是新用户才领取会员卡
-        if(is_new){
-          await api.wx.newMarketing()
-        }
-      
-      }
-      await S.getMemberInfo()
-      // const memberInfo = await api.member.memberInfo();
-      // this.props.setMemberInfo( memberInfo )
-
-      this.setState({
-        token
-      })
-
-      this.props.onChange && this.props.onChange()
-
-      const { switch_first_auth_force_validation } = await api.user.getIsMustOauth({ module_type: 1 })
-      if (switch_first_auth_force_validation == 1) {
-        Taro.navigateTo({
-          url: '/marketing/pages/member/userinfo'
-        })
-      }
-    }
-  }
-
-  wexinBindPhone = async (e) => {
+  const handleBindPhone = async (e) => {
     const { encryptedData, iv, cloudID } = e.detail
-
     if (encryptedData && iv) {
-      // 推广用户uid
-      const uid = Taro.getStorageSync('distribution_shop_id')
-      const trackParams = Taro.getStorageSync('trackParams')
-
-      // 新导购信息处理
-      const work_userid = Taro.getStorageSync('work_userid')
       const { code } = await Taro.login()
       const params = {
         code,
@@ -124,135 +41,60 @@ export default class SpLogin extends Component {
         user_type: 'wechat',
         auth_type: 'wxapp'
       }
-
-      this.setSalespersonId(params)
-
-      if (work_userid) {
-        params.channel = 1
-        params.work_userid = work_userid
-      }
-
-      if (trackParams) {
-        params.source_id = trackParams.source_id
-        params.monitor_id = trackParams.monitor_id
-      }
-
-      if (uid) {
-        params.inviter_id = uid
-        params.uid = uid
-      }
-
+      Taro.showLoading()
       const { token, is_new } = await api.wx.newlogin(params)
-      this.afterNewLogin({ token, work_userid,is_new })
-    }
-  }
-
-  alipayBindPhone = async (e) => {
-    const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
-    console.log('--alipayBindPhone--', extConfig)
-    my.getPhoneNumber({
-      protocols: {
-        // 小程序模板所属的三方应用appId
-        isvAppId: extConfig.ali_isvid
-      },
-      success: async (res) => {
-        const encryptedData = res.response
-        const { authCode } = await my.getAuthCode({ scopes: ['auth_base'] })
-        const params = {
-          encryptedData,
-          code: authCode
-        }
-        this.setSalespersonId(params)
-        const { token } = await api.alipay.newlogin(params)
-        this.afterNewLogin({ token, work_userid: '' })
-      },
-      fail: (res) => {
-        console.log(res)
-        console.log('getPhoneNumber_fail')
+      if (token) {
+        setToken(token)
       }
-    })
-  }
+      showToast('恭喜您，注册成功')
 
-  async handleBindPhone(e) {
-    if (isWeixin) {
-      this.wexinBindPhone(e)
-    } else if (isAlipay) {
-      this.alipayBindPhone(e)
+      // Taro.hideLoading();
     }
   }
 
-  handleOnChange() {
-    this.props.onChange && this.props.onChange()
+  const handleOnChange = () => {
+    onChange && onChange()
   }
 
-  onPrivateChange = async (type, e) => {
-    if (type == 'agree') {
-      if (e) {
-        this.wexinBindPhone(e)
-      } else {
-        const result = await api.wx.getPrivacyTime()
-        const { update_time } = result
-  
-        Taro.setStorageSync('PrivacyUpdate_time', update_time)
-        try {
-          const token = await api.wx.login({ code: this.state.code }) || {}
-          Taro.setStorageSync('auth_token', token)
-          Taro.setStorageSync('refresh_token_time', Date.now() + 55 * 60 * 1000)
-          Taro.eventCenter.trigger('login-success')
-          this.props.onChange && this.props.onChange()
-        } catch(e) {
-          console.error(e, 'e')
-        }
-      }
+  const handleCloseModal = useCallback(() => {
+    setPolicyModal(false)
+  }, [])
+
+  const handleConfirmModal = useCallback(async () => {
+    // 自动登录
+    try {
+      await login()
+      onChange && onChange()
+    } catch (e) {
+      console.log(e)
+      setIsNewUser(true)
     }
-    if (type === 'reject') {
-      Taro.removeStorageSync('PrivacyUpdate_time')
-      Taro.removeStorageSync("auth_token")
-    }
-    this.setState({ privacyVisible: false })
-  }
+    setPolicyModal(false)
+  }, [])
 
-  onClickChange = () => {
-    this.setState({ privacyVisible: true })
-  }
+  return (
+    <View className={classNames('sp-login', className)}>
+      {isLogin && <View onClick={handleOnChange}>{children}</View>}
 
-  render() {
-    const { token, privacyVisible, update_time, code } = this.state
-    let privacy_time = Taro.getStorageSync('PrivacyUpdate_time')
-    let isPolicyShow = false
-    if (!String(privacy_time) || privacy_time != update_time) {
-      isPolicyShow = true
-    }
-    return (
-      <View className={classNames('sp-login', this.props.className)}>
-        {token && <View onClick={this.handleOnChange.bind(this)}>{this.props.children}</View>}
-
-        {!token && !isPolicyShow && isWeixin &&
-          <AtButton
-            className='login-btn'
-            openType='getPhoneNumber'
-            onGetPhoneNumber={this.handleBindPhone.bind(this)}
-          >
-            {this.props.children}
-          </AtButton>
-        }
-
-        {!token && isPolicyShow && isWeixin &&
-          <View onClick={this.onClickChange.bind(this)}>{this.props.children}</View>
-        }
-
-        {!token && isAlipay && <Button
-          className='login-btn ali-button'
-          onGetAuthorize={this.handleBindPhone}
-          openType='getAuthorize'
-          scope='phoneNumber'
-        >
-          {this.props.children}
+      {!isLogin && isNewUser && (
+        <Button className='login-btn' openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone}>
+          {children}
         </Button>
-        }
+      )}
 
-        <PrivacyConfirmModal isPhone={!Boolean(code)} visible={privacyVisible} onChange={this.onPrivateChange}  />
-      </View>
-    )
-  }
+      {!isLogin && !isNewUser && <View onClick={handleClickLogin}>{children}</View>}
+
+      <SpPrivacyModal
+        open={policyModal}
+        onCancel={handleCloseModal}
+        onConfirm={handleConfirmModal}
+      />
+    </View>
+  )
 }
+
+SpLogin.options = {
+  addGlobalClass: true
+}
+
+export default SpLogin

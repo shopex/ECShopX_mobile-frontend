@@ -1,6 +1,7 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane, AtTabBar } from 'taro-ui'
 import api from '@/api'
 import { pickBy, getCurrentRoute } from '@/utils'
@@ -13,7 +14,8 @@ import './category.scss'
   store
 }))
 export default class Category extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -25,34 +27,39 @@ export default class Category extends Component {
       isChanged: false,
       localCurrent: 2,
       tabBarList: [
-        { title: '店铺首页', iconType: 'home', iconPrefixClass: 'icon', url: '/pages/store/index' },
+        {
+          title: '店铺首页',
+          iconType: 'home',
+          iconPrefixClass: 'iconfont icon',
+          url: '/pages/store/index'
+        },
         {
           title: '商品列表',
           iconType: 'list',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/others/pages/store/list'
         },
         {
           title: '商品分类',
           iconType: 'category',
-          iconPrefixClass: 'icon',
+          iconPrefixClass: 'iconfont icon',
           url: '/others/pages/store/category'
         }
       ]
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
 
-  async fetch() {
+  async fetch () {
     /*const nList = pickBy(res, {
       category_name: 'category_name',
       image_url: 'image_url',
       children: 'children'
     })*/
-    const options = this.$router.params
+    const options = this.$instance.router.params
     const id = options.id
     const query = {
       template_name: platformTemplateName,
@@ -150,9 +157,9 @@ export default class Category extends Component {
     if (cur !== current) {
       const curTab = this.state.tabBarList[current]
       const { url } = curTab
-      const options = this.$router.params
+      const options = this.$instance.router.params
       const id = options.id
-      const fullPath = getCurrentRoute(this.$router).fullPath.split('?')[0]
+      const fullPath = getCurrentRoute(this.$instance.router).fullPath.split('?')[0]
       const param = current === 1 ? `?dis_id=${id}` : `?id=${id}`
       if (url && fullPath !== url) {
         Taro.redirectTo({ url: `${url}${param}` })
@@ -160,9 +167,9 @@ export default class Category extends Component {
     }
   }
 
-  render() {
+  render () {
     const { curTabIdx, tabList, list, hasSeries, isChanged, localCurrent, tabBarList } = this.state
-    const options = this.$router.params
+    const options = this.$instance.router.params
     return (
       <View className='page-category-index'>
         {tabList.length !== 0 ? (

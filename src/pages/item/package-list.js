@@ -1,8 +1,9 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, SpNote } from '@/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import api from '@/api'
 import { pickBy } from '@/utils'
 import PackageItem from './comps/package-item'
@@ -10,16 +11,16 @@ import PackageItem from './comps/package-item'
 import './package-list.scss'
 
 @connect(
-  ({ cart, member, colors }) => ({
+  ({ cart, user, colors }) => ({
     cart,
     colors: colors.current,
-    favs: member.favs,
+    favs: user.favs,
     showLikeList: cart.showLikeList
   }),
   (dispatch) => ({
     onFastbuy: (item) => dispatch({ type: 'cart/fastbuy', payload: { item } }),
     onAddCart: (item) => dispatch({ type: 'cart/add', payload: { item } }),
-    onUpdateCount: (count) => dispatch({ type: 'cart/updateCount', payload: count }),
+    onUpdateCount: (count) => dispatch({ type: 'cart/updateCartNum', payload: count }),
     onAddFav: ({ item_id, fav_id }) =>
       dispatch({ type: 'member/addFav', payload: { item_id, fav_id } }),
     onDelFav: ({ item_id }) => dispatch({ type: 'member/delFav', payload: { item_id } })
@@ -28,7 +29,8 @@ import './package-list.scss'
 @withPager
 @withBackToTop
 export default class PackageList extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -38,17 +40,13 @@ export default class PackageList extends Component {
     }
   }
 
-  config = {
-    navigationBarTitleText: '优惠组合'
-  }
-
-  componentDidMount() {
+  componentDidMount () {
     this.nextPage()
   }
 
-  async fetch(params) {
+  async fetch (params) {
     const { page_no: page, page_size: pageSize } = params
-    const { id } = this.$router.params
+    const { id } = this.$instance.router.params
     const { currentPackage } = this.state
     const query = {
       item_id: id,
@@ -86,9 +84,10 @@ export default class PackageList extends Component {
     })
   }
 
-  render() {
+  render () {
     const { list, showBackToTop, scrollTop, page, currentPackage, buyPanelType } = this.state
-    const { distributor_id } = this.$router.params 
+    const { distributor_id } = this.$instance.router.params
+    console.log('===================')
     return (
       <View className='page-package-goods'>
         <ScrollView
@@ -123,4 +122,4 @@ export default class PackageList extends Component {
       </View>
     )
   }
-} 
+}

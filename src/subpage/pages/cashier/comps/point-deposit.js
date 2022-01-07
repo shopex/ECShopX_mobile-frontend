@@ -1,18 +1,22 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { connect } from 'react-redux'
 import { View } from '@tarojs/components'
 import { AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 
 import api from '@/api'
 
 import './point-deposit.scss'
-import { getPointName } from '@/utils'
 
+@connect(({ sys }) => ({
+  pointName: sys.pointName
+}))
 export default class PointDepositBtn extends Component {
   static options = {
     addGlobalClass: true
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -64,14 +68,14 @@ export default class PointDepositBtn extends Component {
     // })
   }
 
-  render() {
+  render () {
     const { payType } = this.props
     const { isOpened } = this.state
 
     return (
       <View className='point-deposit-index'>
         <View className='pay-mode' onClick={this.handleClickPayment.bind(this, payType)}>
-          {payType === 'deposit' ? '预存款支付' : `${getPointName()}支付`}
+          {payType === 'deposit' ? '预存款支付' : `${this.props.pointName}支付`}
         </View>
 
         <AtModal

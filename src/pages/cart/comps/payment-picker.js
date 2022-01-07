@@ -1,14 +1,15 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
 import { View, Text, Button } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { AtFloatLayout } from 'taro-ui'
-import { SpCheckbox } from '@/components' 
-import { closeClassName, getPointName,isWeixin } from '@/utils' 
-import { getPaymentList } from '@/utils/payment'
+import { SpCheckbox } from '@/components'
+import { isWeixin } from '@/utils'
+import getPaymentList from '@/utils/payment'
 import './payment-picker.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, sys }) => ({
+  colors: colors.current,
+  pointName: sys.pointName
 }))
 export default class PaymentPicker extends Component {
   static defaultProps = {
@@ -18,7 +19,7 @@ export default class PaymentPicker extends Component {
     onInitDefaultPayType: () => {}
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -26,7 +27,7 @@ export default class PaymentPicker extends Component {
       typeList: []
     }
   }
-  componentDidMount() {
+  componentDidMount () {
     this.fetch()
   }
   componentWillReceiveProps = (nextProps) => {
@@ -40,23 +41,22 @@ export default class PaymentPicker extends Component {
   static options = {
     addGlobalClass: true
   }
-  async fetch() {
+  async fetch () {
+    const { list } = await getPaymentList()
+    const res = list
 
-    const { list }=await getPaymentList();  
-    const res = list;  
- 
     this.setState(
       {
         typeList: res
       },
       () => {
-        if (res[0]) { 
+        if (res[0]) {
           this.handlePaymentChange(res[0].pay_type_code, channel)
-          this.handleChange(res[0].pay_type_code) 
+          this.handleChange(res[0].pay_type_code)
           let channel = ''
           if (typeof res[0].pay_channel != 'undefined') {
             channel = res[0].pay_channel
-          } 
+          }
           this.props.onInitDefaultPayType(res[0].pay_type_code, channel)
         }
       }
@@ -88,7 +88,7 @@ export default class PaymentPicker extends Component {
     this.props.onChange(type, channel)
   }
 
-  render() {
+  render () {
     const {
       isOpened,
       loading,
@@ -98,14 +98,14 @@ export default class PaymentPicker extends Component {
       isShowBalance = true,
       isShowDelivery = true
     } = this.props
-    const { localType, typeList } = this.state 
+    const { localType, typeList } = this.state
 
     return (
       <AtFloatLayout isOpened={isOpened}>
         <View className='payment-picker'>
           <View className='payment-picker__hd'>
-            <View>支付方式</View>
-            <View className={closeClassName} onClick={this.handleCancel}></View>
+            <Text>支付方式</Text>
+            <View className='iconfont icon-close' onClick={this.handleCancel}></View>
           </View>
           <View className='payment-picker__bd'>
             {isShowPoint && (
@@ -116,11 +116,11 @@ export default class PaymentPicker extends Component {
                 onClick={this.handlePaymentChange.bind(this, 'point')}
               >
                 <View className='payment-item__bd'>
-                  <Text className='payment-item__title'>{`${getPointName()}支付`}</Text>
+                  <Text className='payment-item__title'>{`${this.props.pointName}支付`}</Text>
                   <Text className='payment-item__desc'>
                     {disabledPayment && disabledPayment['point']
                       ? disabledPayment['point']
-                      : `使用${getPointName()}支付`}
+                      : `使用${this.props.pointName}支付`}
                   </Text>
                 </View>
                 <View className='payment-item__ft'>
@@ -192,8 +192,8 @@ export default class PaymentPicker extends Component {
                     <Text className='payment-item__desc'>使用{item.pay_type_name}</Text>
                   </View>
                   <View className='payment-item__ft'>
-                   {/* <View>{localType === item.pay_type_code?'test':'test2'}</View>  */}
-                    <SpCheckbox checked={localType === item.pay_type_code}></SpCheckbox> 
+                    {/* <View>{localType === item.pay_type_code?'test':'test2'}</View>  */}
+                    <SpCheckbox checked={localType === item.pay_type_code}></SpCheckbox>
                   </View>
                 </View>
               )

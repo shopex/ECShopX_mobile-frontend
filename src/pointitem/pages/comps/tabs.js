@@ -6,9 +6,10 @@
  * @Description: In User Settings Edit
  * @FilePath: /ecshopx-newpc/Users/wujiabao/Desktop/work/ecshopx-vshop/src/pages/pointitem/comps/tabs.js
  */
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Icon } from '@tarojs/components'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 import { classNames } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 
@@ -30,7 +31,7 @@ export default class FilterBar extends Component {
     activeRef: false
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     const { current } = props
@@ -42,7 +43,7 @@ export default class FilterBar extends Component {
     }
   }
 
-  handleClickItem(idx) {
+  handleClickItem (idx) {
     const item = this.props.list[idx] || {}
 
     let sortOrder = null
@@ -117,7 +118,7 @@ export default class FilterBar extends Component {
     })
   }
 
-  render() {
+  render () {
     const { list, className, custom, colors } = this.props
     const { sortOrder, curIdx, active, inputValue } = this.state
 

@@ -1,8 +1,8 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
-import { SpImg } from '@/components'
-import { classNames } from '@/utils'
-import { linkPage } from './helper'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
+import { SpImage } from '@/components'
+import { classNames, linkPage } from '@/utils'
 import { WgtPlateType } from './index'
 
 import './slider.scss'
@@ -12,7 +12,7 @@ export default class WgtSlider extends Component {
     info: null
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -27,14 +27,14 @@ export default class WgtSlider extends Component {
 
   handleClickItem = linkPage
 
-  handleSwiperChange(e) {
+  handleSwiperChange (e) {
     const { current } = e.detail
     this.setState({
       curIdx: current
     })
   }
 
-  render() {
+  render () {
     const { info } = this.props
     const { curIdx, index } = this.state
     if (!info) {
@@ -42,13 +42,18 @@ export default class WgtSlider extends Component {
     }
     const { config, base, data } = info
     const curContent = (data[curIdx] || {}).content
-
     return (
-      <View className={`wgt ${base.padded ? 'wgt__padded' : null}`}>
+      <View
+        className={classNames('wgt wgt-slider', {
+          wgt__padded: base.padded
+        })}
+      >
         {base.title && (
-          <View className='wgt__header'>
-            <View className='wgt__title'>{base.title}</View>
-            <View className='wgt__subtitle'>{base.subtitle}</View>
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
+              <Text className='wgt-subtitle'>{base.subtitle}</Text>
+            </View>
           </View>
         )}
         {config ? (
@@ -74,15 +79,9 @@ export default class WgtSlider extends Component {
                     <View
                       style={`padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
                       className='wrapper-img'
-                      onClick={this.handleClickItem.bind(this, item.linkPage, item)}
+                      onClick={this.handleClickItem.bind(this, item)}
                     >
-                      {/* <WgtPlateType
-                        info={item}
-                        index={index}
-                        num={idx}
-                        base={base}
-                      /> */}
-                      <SpImg
+                      <SpImage
                         img-class='slider-item__img'
                         src={item.imgUrl}
                         mode='widthFix'

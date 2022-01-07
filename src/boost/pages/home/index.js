@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { SpNavBar } from '@/components'
 import api from '@/api'
@@ -9,7 +10,7 @@ import BargainItem from '../../component/bargainItem'
 import './index.scss'
 
 export default class Home extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       param: {
@@ -24,12 +25,8 @@ export default class Home extends Component {
       isEmpty: false
     }
   }
-  componentDidMount() {
+  componentDidMount () {
     this.getList()
-  }
-
-  config = {
-    navigationBarTitleText: '助力首页'
   }
 
   getList = async (isRefrsh = false) => {
@@ -89,15 +86,11 @@ export default class Home extends Component {
     this.getList()
   }
 
-  render() {
+  render () {
     const { list, scrollTop, isRefresh, isLoading, isEnd, isEmpty } = this.state
     return (
       <View className='home'>
-        <SpNavBar
-          title={this.config.navigationBarTitleText}
-          leftIconType='chevron-left'
-          fixed='true'
-        />
+        <SpNavBar title='助力首页' leftIconType='chevron-left' fixed='true' />
         <ScrollView
           className='list'
           scrollY

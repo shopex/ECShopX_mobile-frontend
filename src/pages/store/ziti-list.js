@@ -1,4 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
+import React, { Component } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView, Text, Picker } from '@tarojs/components'
 import { SpToast, SearchBar, BackToTop, SpNavBar, SpCheckbox, SpNote } from '@/components'
 import api from '@/api'
@@ -6,7 +7,7 @@ import { withPager, withBackToTop } from '@/hocs'
 import entry from '@/utils/entry'
 import StoreListItem from './comps/list-item'
 import { pickBy } from '@/utils'
-import { connect } from '@tarojs/redux'
+import { connect } from 'react-redux'
 
 import './ziti-list.scss'
 
@@ -21,7 +22,8 @@ import './ziti-list.scss'
 @withPager
 @withBackToTop
 export default class StoreZitiList extends Component {
-  constructor(props) {
+  $instance = getCurrentInstance()
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -36,11 +38,8 @@ export default class StoreZitiList extends Component {
       info: {}
     }
   }
-  config = {
-    navigationBarTitleText: '选择自提门店'
-  }
 
-  componentDidMount() {
+  componentDidMount () {
     const lnglat = Taro.getStorageSync('lnglat')
     const cityInfo = Taro.getStorageSync('selectShop')
     let query = {}
@@ -74,10 +73,11 @@ export default class StoreZitiList extends Component {
       this.handleGetLocation()
     }
   }
-  async fetch(params) {
+  async fetch (params) {
     const isOpenStore = await entry.getStoreStatus()
     const { page_no: page, page_size: pageSize } = params
-    const { shop_id, order_type, cart_type, seckill_id, ticket, bargain_id } = this.$router.params
+    const { shop_id, order_type, cart_type, seckill_id, ticket, bargain_id } =
+      this.$instance.router.params
     const query = {
       ...this.state.query,
       page,
@@ -392,7 +392,7 @@ export default class StoreZitiList extends Component {
     }, 300)
   }
 
-  render() {
+  render () {
     const {
       list,
       scrollTop,
