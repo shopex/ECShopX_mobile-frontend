@@ -43,7 +43,6 @@ import {
   linkPage,
   getAppId
 } from '@/utils'
-import { setPageTitle } from '@/utils/platform'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from '@/service'
