@@ -48,4 +48,3 @@ cicd test 3
 npm run prepare
 npx husky add .husky/pre-commit "npx lint-staged --allow-empty"
 
-
