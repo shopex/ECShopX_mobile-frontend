@@ -5,7 +5,8 @@ import { showToast, isArray } from '@/utils'
 import { SpPage } from '@/components'
 import { MButton, MStep, MNavBar, MCell, MImgPicker } from './comps'
 import { useArea, useUpdate, usePrevious } from './hook'
-import { navigateToAgreement, getMerchant, setMerchant, clearMerchant } from './util'
+import { navigateToAgreement, setMerchant, clearMerchant } from './util'
+import { useSelector } from 'react-redux'
 import {
   MERCHANT_TYPE,
   BUSINESS_SCOPE,
@@ -18,7 +19,6 @@ import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
 import './apply.scss'
-import { useDepChange } from '@/hooks'
 
 const StepOptions = ['入驻信息', '商户信息', '证照信息']
 
@@ -71,7 +71,13 @@ const initialState = {
 const Apply = () => {
   const [state, setState] = useImmer(initialState)
 
-  const { merchantType, businessScope, bankName } = getMerchant()
+  // const { merchantType, businessScope, bankName } = getMerchant()
+
+  const {
+    merchantType,
+    businessScope,
+    bank: { name: bankName }
+  } = useSelector((state) => state.merchant)
 
   const [merchantOptions, setMerchantOptions] = useState([])
 
@@ -420,7 +426,7 @@ const Apply = () => {
   }
 
   useDidShow(() => {
-    update()
+    // update()
   })
 
   const fieldName = state.settled_type === 'soletrader' ? '负责人' : '法人'

@@ -4,7 +4,8 @@ import { useRef } from 'react'
 import { MNavBar, MCell } from './comps'
 import { SpSearchBar, SpPage, SpScrollView, SpImage } from '@/components'
 import api from '@/api'
-import { MERCHANT_TYPE, BANG_NAME, PLACEHOLDER_SELECTOR } from './consts'
+import { updateMerchantType, updateBusinessScope, updateBank } from '@/store/slices/merchant'
+import { MERCHANT_TYPE, BANG_NAME, PLACEHOLDER_SELECTOR, BUSINESS_SCOPE } from './consts'
 import { useImmer } from 'use-immer'
 import { setMerchant, splitMatch } from './util'
 import { classNames } from '@/utils'
@@ -67,7 +68,23 @@ const Selector = () => {
   }
 
   const handleClick = ({ id, name, parent_id, bank_name }) => {
-    setMerchant({ key: type, id, name: isBank ? bank_name : name, parent_id })
+    if (type === MERCHANT_TYPE) {
+      updateMerchantType({
+        id,
+        name,
+        parent_id
+      })
+    } else if (type === BUSINESS_SCOPE) {
+      updateBusinessScope({
+        id,
+        name,
+        parent_id
+      })
+    } else if (type === BANG_NAME) {
+      updateBank({
+        name: bank_name
+      })
+    }
     Taro.navigateBack()
   }
 
