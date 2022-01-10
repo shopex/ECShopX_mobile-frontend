@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { MNavBar, MCell } from './comps'
 import { SpSearchBar, SpPage, SpScrollView, SpImage } from '@/components'
 import api from '@/api'
+import { useSelector, useDispatch } from 'react-redux'
 import { updateMerchantType, updateBusinessScope, updateBank } from '@/store/slices/merchant'
 import { MERCHANT_TYPE, BANG_NAME, PLACEHOLDER_SELECTOR, BUSINESS_SCOPE } from './consts'
 import { useImmer } from 'use-immer'
@@ -20,6 +21,7 @@ const initialState = {
 
 const Selector = () => {
   const [state, setState] = useImmer(initialState)
+  const dispatch = useDispatch()
   const selectsRef = useRef()
   const {
     params: { type, parent_id }
@@ -69,21 +71,27 @@ const Selector = () => {
 
   const handleClick = ({ id, name, parent_id, bank_name }) => {
     if (type === MERCHANT_TYPE) {
-      updateMerchantType({
-        id,
-        name,
-        parent_id
-      })
+      dispatch(
+        updateMerchantType({
+          id,
+          name,
+          parent_id
+        })
+      )
     } else if (type === BUSINESS_SCOPE) {
-      updateBusinessScope({
-        id,
-        name,
-        parent_id
-      })
+      dispatch(
+        updateBusinessScope({
+          id,
+          name,
+          parent_id
+        })
+      )
     } else if (type === BANG_NAME) {
-      updateBank({
-        name: bank_name
-      })
+      dispatch(
+        updateBank({
+          name: bank_name
+        })
+      )
     }
     Taro.navigateBack()
   }
