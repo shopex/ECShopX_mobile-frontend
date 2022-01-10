@@ -111,6 +111,7 @@
     padding: 16px;
     display: flex;
     align-items: center;
+    justify-content: space-around;
     color: #999;
     .price__symbol, .price__int, .price__decimal {
       color: #999;
