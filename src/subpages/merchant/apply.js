@@ -23,8 +23,6 @@ import { updateBank, updateBusinessScope, updateMerchantType } from '@/store/sli
 
 const StepOptions = ['入驻信息', '商户信息', '证照信息']
 
-//const merchatTypeOptions = [{ value: 'enterprise', label: '企业' }, { value: 'soho', label: '个体户' }];
-
 const bankAccType = [
   { value: 1, label: '对公' },
   { value: 2, label: '对私' }
@@ -403,6 +401,7 @@ const Apply = () => {
     getStep()
     return () => {
       S.delete(MerchantStepKey, true)
+      clearMerchant()
     }
   }, [])
 
@@ -418,6 +417,13 @@ const Apply = () => {
 
   const handleLogout = () => {
     S.delete(MerchantStepKey, true)
+    clearMerchant()
+  }
+
+  const clearMerchant = () => {
+    dispatch(updateMerchantType({}))
+    dispatch(updateBusinessScope({}))
+    dispatch(updateBank({}))
   }
 
   const fieldName = state.settled_type === 'soletrader' ? '负责人' : '法人'
