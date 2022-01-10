@@ -1,0 +1,22 @@
+.comp-couponlist {
+  display: flex;
+  align-items: center;
+  .couponlist-hd {
+    display: flex;
+    flex: 1;
+  }
+  .couponlist-ft {
+    width: 100px;
+  }
+  .coupon-item {
+    height: 46px;
+    line-height: 46px;
+    padding: 0 20px;
+    background: rgba(var(--color-rgb), 0.2);
+    color: var(--color-primary);
+    display: inline-block;
+  }
+  .coupons-block {
+    white-space: nowrap;
+  }
+}

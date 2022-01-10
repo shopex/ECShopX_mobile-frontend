@@ -64,6 +64,7 @@ import {
   GroupingItem
 } from './comps'
 import CompVipGuide from './comps/comp-vipguide'
+import CompCompList from './comps/comp-couponlist'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -111,6 +112,9 @@ function EspierDetail (props) {
     const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
   }
 
+  // 领券
+  const onChangeGetCoupon = () => {}
+
   return (
     <SpPage className='page-item-espierdetail' isDefault={isDefault} defaultMsg={defaultMsg}>
       {!info && <SpLoading />}
@@ -142,34 +146,22 @@ function EspierDetail (props) {
                 memberPrice: info.memberPrice
               }}
             />
-            {/* <View className="join-vip">
-              <View className="vip-info">
-                <View className="vip-value">
-                  <View className="vip-label">会员专享</View>
-                  <SpPrice noSymbol value={8.5} appendText="折"></SpPrice>
-                </View>
-                <View className="vip-desc">
-                  亲爱的顾客，成为会员即刻享受此优惠
-                </View>
-              </View>
-              <View className="btn-join">
-                立即加入 <Text className="iconfont icon-qianwang-011"></Text>
-              </View>
-            </View> */}
 
-            <View>
-              <View className='coupon-list'></View>
-              <View className='coupon-get'>
-                领券<Text className='iconfont'></Text>
+            <CompCompList info={info.couponList} onChange={onChangeGetCoupon} />
+
+            {/* <View>
+              <View className="coupon-list"></View>
+              <View className="coupon-get">
+                领券<Text className="iconfont"></Text>
               </View>
             </View>
             <View>
-              <View className='goods-name'>{info.itemName}</View>
-              <View className='goods-share'>
-                <Text className='iconfont'></Text>
+              <View className="goods-name">{info.itemName}</View>
+              <View className="goods-share">
+                <Text className="iconfont"></Text>
                 <Text>分享</Text>
               </View>
-            </View>
+            </View> */}
           </View>
 
           <View className='goods-sku'></View>
