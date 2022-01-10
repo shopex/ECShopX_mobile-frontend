@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-
+import { CompOtherLogin } from './comps'
 import { SpNavBar, SpTimer } from '@/components'
 import api from '@/api'
 import S from '@/spx'
@@ -241,9 +241,9 @@ export default class Login extends Component {
             </View>
           </AtForm>
         </View>
-        {/* <View className="auth-ft">
-          <Image className="logo" mode="widthFix" src={LOGO} />
-        </View> */}
+        <View className='other-login'>
+          <CompOtherLogin />
+        </View>
       </View>
     )
   }
