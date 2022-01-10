@@ -1,5 +1,70 @@
 .page-item-espierdetail {
   .goods-swiper {
     height: 750px;
+    margin-bottom: 24px;
+  }
+
+  .price-block {
+    display: flex;
+    align-items: center;
+    .vip-price {
+      background-color: #000;
+      color: #ead6b6;
+      padding: 15px 16px;
+      border-radius: 50px;
+      margin-left: 10px;
+      .sp-price {
+        margin-left: 10px;
+      }
+      .price__symbol {
+        color: #ead6b6;
+      }
+      .price__int {
+        color: #ead6b6;
+      }
+      .price__decimal {
+        color: #ead6b6;
+      }
+    }
+  }
+
+  .goods-info {
+    margin: 0px 16px 24px;
+    background-color: #fff;
+    padding: 19px 16px;
+    box-shadow: 0px 2px 10px 0px #eae7e0;
+  }
+
+  .vip-value {
+    display: flex;
+    align-items: center;
+  }
+  .vip-desc {
+    color: var(--color-primary);
+    font-size: 24px;
+  }
+  .vip-label {
+    width: 109px;
+    height: 46px;
+    line-height: 46px;
+    background: var(--color-primary);
+    text-align: center;
+    color: #fff;
+    font-size: 24px;
+    margin-right: 16px;
+  }
+
+  .vip-zhekou {
+    color: var(--color-primary);
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+
+  .goods-name {
+    font-size: 32px;
+    font-weight: 500;
+    color: #222222;
+    line-height: 48px;
   }
 }

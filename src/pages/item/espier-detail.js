@@ -63,12 +63,15 @@ import {
   ParamsItem,
   GroupingItem
 } from './comps'
+import CompVipGuide from './comps/comp-vipguide'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
 
 const initialState = {
-  info: null
+  info: null,
+  isDefault: false,
+  defaultMsg: ''
 }
 
 function EspierDetail (props) {
@@ -76,7 +79,7 @@ function EspierDetail (props) {
   const { type, id } = $instance.router.params
 
   const [state, setState] = useImmer(initialState)
-  const { info } = state
+  const { info, isDefault, defaultMsg } = state
 
   useEffect(() => {
     fetch()
@@ -86,8 +89,18 @@ function EspierDetail (props) {
     let data
     if (type == 'pointitem') {
     } else {
-      const itemDetail = await api.item.detail(id)
-      data = pickBy(itemDetail, doc.goods.GOODS_INFO)
+      try {
+        const itemDetail = await api.item.detail(id, {
+          showError: false
+        })
+        data = pickBy(itemDetail, doc.goods.GOODS_INFO)
+      } catch (e) {
+        setState((draft) => {
+          draft.isDefault = true
+          draft.defaultMsg = e.res.data.data.message
+        })
+        console.log(e.res)
+      }
     }
 
     setState((draft) => {
@@ -99,7 +112,7 @@ function EspierDetail (props) {
   }
 
   return (
-    <SpPage className='page-item-espierdetail'>
+    <SpPage className='page-item-espierdetail' isDefault={isDefault} defaultMsg={defaultMsg}>
       {!info && <SpLoading />}
       {info && (
         <View>
@@ -122,16 +135,28 @@ function EspierDetail (props) {
                 会员<SpPrice value={100}></SpPrice>
               </View>
             </View>
-            <View className='join-vip'>
-              <View className='vip-info'>
-                <View>
-                  <Text>会员专享</Text>
-                  <Text>8.5折</Text>
+
+            <CompVipGuide
+              info={{
+                ...info.vipgradeGuideTitle,
+                memberPrice: info.memberPrice
+              }}
+            />
+            {/* <View className="join-vip">
+              <View className="vip-info">
+                <View className="vip-value">
+                  <View className="vip-label">会员专享</View>
+                  <SpPrice noSymbol value={8.5} appendText="折"></SpPrice>
                 </View>
-                <View>亲爱的顾客，成为会员即刻享受此优惠</View>
+                <View className="vip-desc">
+                  亲爱的顾客，成为会员即刻享受此优惠
+                </View>
               </View>
-              <View className='btn-join'>立即加入</View>
-            </View>
+              <View className="btn-join">
+                立即加入 <Text className="iconfont icon-qianwang-011"></Text>
+              </View>
+            </View> */}
+
             <View>
               <View className='coupon-list'></View>
               <View className='coupon-get'>
@@ -139,7 +164,7 @@ function EspierDetail (props) {
               </View>
             </View>
             <View>
-              <View className='goods-name'></View>
+              <View className='goods-name'>{info.itemName}</View>
               <View className='goods-share'>
                 <Text className='iconfont'></Text>
                 <Text>分享</Text>
