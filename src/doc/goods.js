@@ -75,5 +75,7 @@ export const ITEM_LIST_GOODS = {
 }
 
 export const GOODS_INFO = {
-  imgs: 'pics'
+  imgs: 'pics',
+  memberPrice: 'member_price',
+  vipgradeGuideTitle: 'vipgrade_guide_title'
 }
