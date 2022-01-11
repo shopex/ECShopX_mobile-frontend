@@ -37,7 +37,7 @@ function CmopDeliver (props) {
     {
       type: 'ziti',
       name: '自提',
-      isopen: curStore.is_ziti // type !== 'pointitem' && curStore.is_ziti
+      isopen: headShop.is_current ? headShop.is_ziti : curStore.is_ziti // type !== 'pointitem' && curStore.is_ziti
     }
   ]
 
