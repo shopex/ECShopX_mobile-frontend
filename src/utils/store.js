@@ -25,3 +25,9 @@ export async function getHeadShop () {
   const res = await api.shop.getHeadquarters()
   return res
 }
+
+//获取店铺信息
+export async function getDistributorInfo (parmas) {
+  const res = await api.shop.getShop(parmas)
+  return res
+}
