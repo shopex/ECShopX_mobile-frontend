@@ -8,7 +8,7 @@ import { SpShopCoupon, SpShopFullReduction } from '@/components'
 import { useLogin } from '@/hooks'
 
 function CompHeader (props) {
-  const { info, couponList = [], brandInfo = () => {} } = props
+  const { info, couponList = [], brandInfo = () => {}, brand: brandShow = true } = props
   const { brand = '', name = '', scoreList = {}, marketingActivityList = [] } = info
   const [showMore, setShowMore] = useState(false)
   const [fav, setFav] = useState(false)
@@ -54,9 +54,11 @@ function CompHeader (props) {
           <View className='store-name'>{name}</View>
           <View className='store-avgSstar-block'>
             <Text className='store-avgSstar'>评分:{scoreList.avg_star}</Text>
-            <View className='brand-produce' onClick={brandInfo}>
-              品牌介绍 >
-            </View>
+            {brandShow && (
+              <View className='brand-produce' onClick={brandInfo}>
+                {'品牌介绍 >'}
+              </View>
+            )}
           </View>
         </View>
         <View className='attention' onClick={handleFocus(!fav)}>
