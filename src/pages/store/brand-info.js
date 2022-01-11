@@ -9,13 +9,16 @@ import api from '@/api'
 import './brand-info.scss'
 
 const initialState = {
-  storeInfo: {}
+  storeInfo: {},
+  fav: ''
 }
 
 const PageBrandInfo = () => {
   const [state, setState] = useImmer(initialState)
 
   const $instance = getCurrentInstance()
+
+  const { storeInfo, fav } = state
 
   const {
     params: { distributor_id }
@@ -31,7 +34,8 @@ const PageBrandInfo = () => {
     } = await api.shop.getShop({
       distributor_id,
       show_score: 1,
-      show_marketing_activity: 1
+      show_marketing_activity: 1,
+      show_sales_count: 1
     })
     setState((_state) => {
       _state.storeInfo = {
@@ -44,24 +48,35 @@ const PageBrandInfo = () => {
     })
   }
 
+  const storeFav = async (id) => {
+    const { is_fav } = await api.member.storeIsFav(id)
+
+    setState((state) => {
+      state.fav = is_fav
+    })
+  }
+
   useEffect(() => {
     getDetail()
+    storeFav(distributor_id)
   }, [])
-
-  const { storeInfo } = state
 
   return (
     <SpPage className={classNames('page-store-brand')}>
       <ScrollView className='page-store-brand-scrollview' scrollY>
         <View className='margin'>
-          <CompHeader info={storeInfo} brand={false} showFav={false} />
+          <CompHeader info={storeInfo} brand={false} fav={fav} showSale />
         </View>
         <View className='margin padding brand'>
           <View className='title'>品牌简介</View>
-          <View className='content'>{storeInfo.introduce || '无'}</View>
+          <View className='content'>
+            <View
+              dangerouslySetInnerHTML={{ __html: storeInfo.introduce?.replaceAll('\n', '<br/>') }}
+            ></View>
+          </View>
         </View>
         <View className='margin good'>
-          <View className='title' onClick={JumpPageIndex}>
+          <View className='title' onClick={() => Taro.navigateBack()}>
             {'去看看全部商品 >'}
           </View>
         </View>

@@ -69,7 +69,8 @@ export function newloginh5 (params) {
     ...params,
     auth_type: 'h5app',
     trustlogin_tag: 'weixin',
-    version_tag: 'touch'
+    version_tag: 'touch',
+    api_from: 'h5app'
   })
 }
 
@@ -149,4 +150,8 @@ export function getPrivacyTime (params) {
 
 export function getWxAuth (params) {
   return req.get(`/trustlogin/params`, params)
+}
+
+export function getIsNew (params) {
+  return req.get(`/member/is_new`, params)
 }
