@@ -16,7 +16,13 @@ function CompHeader (props) {
     fav: favProp,
     showFav = true
   } = props
-  const { brand = '', name = '', scoreList = {}, marketingActivityList = [] } = info
+  const {
+    brand = '',
+    name = '',
+    scoreList = {},
+    marketingActivityList = [],
+    showSale = false
+  } = info
   const [showMore, setShowMore] = useState(false)
   const [fav, setFav] = useState(false)
   const { isLogin } = useLogin({
@@ -70,6 +76,7 @@ function CompHeader (props) {
                 {'品牌介绍 >'}
               </View>
             )}
+            {showSale && <View></View>}
           </View>
         </View>
         {showFav && (

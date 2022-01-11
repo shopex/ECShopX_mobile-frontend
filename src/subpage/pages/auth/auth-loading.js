@@ -10,7 +10,20 @@ const AuthLoading = () => {
   const router = $instance.router
 
   const getIsNew = async () => {
-    const { token, is_new } = await api.wx.newloginh5({ code: router.params.code })
+    const {
+      token,
+      is_new,
+      pre_login_data: { unionid }
+    } = await api.wx.newloginh5({ code: router.params.code })
+    let url = ''
+    //如果是新用户
+    if (is_new === 1) {
+      url = `/subpage/pages/auth/bindPhone?unionid=${unionid}`
+      Taro.redirectTo({
+        url
+      })
+    } else {
+    }
     console.log('===token===>', token, is_new)
   }
 
