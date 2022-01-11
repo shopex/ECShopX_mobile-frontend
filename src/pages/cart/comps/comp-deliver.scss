@@ -1,6 +1,6 @@
-@import '../../../style/imports';
+@import '@/style/imports';
 
-.comp-deliver {
+.page-comp-deliver {
   width: 100%;
   background: #fff;
   border-radius: 10px;
@@ -32,12 +32,12 @@
   .address-module {
     background: #fff;
     padding: 12px 30px;
-    .addr-title {
+    .address-title {
       font-size: 32px;
       font-weight: 500;
       padding: 12px 0;
     }
-    .addr-detail {
+    .address-detail {
       display: flex;
       font-size: 26px;
       color: #666;
@@ -52,7 +52,7 @@
         color: #666;
       }
     }
-    .otherInfo {
+    .other-info {
       margin-top: 10px;
       .text-muted {
         font-size: 24px;
@@ -77,7 +77,7 @@
       font-size: 28px;
     }
   }
-  .cityDeliver{
+  .store-module{
     .store {
       padding-left: 30px;
     }
