@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro, { usePageScroll, getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpNavBar, SpFloatMenuItem } from '@/components'
+import { SpNavBar, SpFloatMenuItem, SpNote } from '@/components'
 import { TABBAR_PATH } from '@/consts'
 import { classNames, styleNames, hasNavbar } from '@/utils'
 
@@ -18,6 +18,8 @@ function SpPage (props) {
     renderFloat,
     renderFooter,
     scrollToTopBtn = false,
+    isDefault = false,
+    defaultMsg = '',
     navbar = true,
     onClickLeftIcon = null
   } = props
@@ -56,7 +58,10 @@ function SpPage (props) {
       style={styleNames(pageTheme)}
     >
       {hasNavbar && !isTabBarPage && navbar && <SpNavBar onClickLeftIcon={onClickLeftIcon} />}
-      <View className='sp-page-body'>{children}</View>
+
+      {isDefault && <SpNote img='empty_data.png' title={defaultMsg} />}
+
+      {!isDefault && <View className='sp-page-body'>{children}</View>}
 
       {/* 置底操作区 */}
       {renderFooter && <View className='sp-page-footer'>{renderFooter}</View>}
