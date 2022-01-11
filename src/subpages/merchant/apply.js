@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { ScrollView, View, Text } from '@tarojs/components'
 import { showToast, isArray, isUndefined } from '@/utils'
-import { SpPage } from '@/components'
+import { SpPage, SpLoading } from '@/components'
 import { MButton, MStep, MNavBar, MCell, MImgPicker } from './comps'
 import { useArea, usePrevious } from './hook'
 import { navigateToAgreement } from './util'
@@ -66,7 +66,8 @@ const initialState = {
   //法人手持身份证反面url
   legal_cert_id_back_url: '',
   //结算银行卡正面url
-  bank_card_front_url: []
+  bank_card_front_url: [],
+  formloading: false
 }
 
 const Apply = () => {
@@ -346,6 +347,9 @@ const Apply = () => {
       state.legal_certid_front_url = legal_certid_front_url || ''
       state.legal_cert_id_back_url = legal_cert_id_back_url || ''
     })
+    setState((state) => {
+      state.formloading = false
+    })
   }
 
   //点击下一步/上一步
@@ -363,6 +367,9 @@ const Apply = () => {
 
   //获取当前哪一步
   const getStep = async () => {
+    setState((state) => {
+      state.formloading = true
+    })
     const { step } = await api.merchant.getStep()
     const is_audit = step == 4
     //如果是审核失败跳回第一步
@@ -372,6 +379,7 @@ const Apply = () => {
     } else {
       setStep(step)
     }
+
     //大于1才调用详情
     if (step > 1) {
       getDetail()
@@ -436,177 +444,185 @@ const Apply = () => {
     <SpPage className='page-merchant-apply' navbar={false}>
       <MNavBar canBack={step !== 1} onBack={handleStep('back')} onLogout={handleLogout} />
 
-      <MStep options={StepOptions} className='mt-40' step={step} />
-
-      <ScrollView scrollY className='apply-scroll'>
-        <View className='page-merchant-apply-content'>
-          <View className='card'>
-            {step === 1 && (
-              <View>
-                <MCell
-                  title='商户类型'
-                  required
-                  value={merchantType.name}
-                  onClick={handleSwitchSelector(MERCHANT_TYPE)}
-                />
-                {merchantType.id && (
-                  <MCell
-                    title='经营范围'
-                    required
-                    value={businessScope.name}
-                    onClick={handleSwitchSelector(BUSINESS_SCOPE)}
-                  />
+      {state.formloading ? (
+        <SpLoading />
+      ) : (
+        <View>
+          <MStep options={StepOptions} className='mt-40' step={step} />
+          <ScrollView scrollY className='apply-scroll'>
+            <View className='page-merchant-apply-content'>
+              <View className='card'>
+                {step === 1 && (
+                  <View>
+                    <MCell
+                      title='商户类型'
+                      required
+                      value={merchantType.name}
+                      onClick={handleSwitchSelector(MERCHANT_TYPE)}
+                    />
+                    {merchantType.id && (
+                      <MCell
+                        title='经营范围'
+                        required
+                        value={businessScope.name}
+                        onClick={handleSwitchSelector(BUSINESS_SCOPE)}
+                      />
+                    )}
+                    <MCell
+                      title='入驻类型'
+                      required
+                      mode='radio'
+                      value={state.settled_type}
+                      radioOptions={merchantOptions}
+                      onRadioChange={handleChange('settled_type')}
+                    />
+                  </View>
                 )}
-                <MCell
-                  title='入驻类型'
-                  required
-                  mode='radio'
-                  value={state.settled_type}
-                  radioOptions={merchantOptions}
-                  onRadioChange={handleChange('settled_type')}
-                />
-              </View>
-            )}
-            {step === 2 && (
-              <View>
-                <MCell
-                  title='企业名称'
-                  required
-                  mode='input'
-                  placeholder='请输入企业名称'
-                  value={state.merchant_name}
-                  onChange={handleChange('merchant_name')}
-                />
-                <MCell
-                  title='统一社会信用代码'
-                  required
-                  mode='input'
-                  placeholder='请输入统一社会信用代码'
-                  value={state.social_credit_code_id}
-                  onChange={handleChange('social_credit_code_id')}
-                />
-                <MCell
-                  title='所在省市'
-                  required
-                  mode='area'
-                  areaList={areaList}
-                  selectArea={state.regions}
-                  onColumnChange={onAreaColumnChange}
-                  onChange={onAreaChange}
-                />
-                <MCell
-                  title='详细地址'
-                  required
-                  mode='input'
-                  placeholder='请输入街道门牌信息'
-                  value={state.address}
-                  onChange={handleChange('address')}
-                />
-                <MCell
-                  title={`${fieldName}姓名`}
-                  required
-                  mode='input'
-                  placeholder={`请输入${fieldName}姓名`}
-                  value={state.legal_name}
-                  onChange={handleChange('legal_name')}
-                />
-                <MCell
-                  title='身份证号码'
-                  required
-                  mode='input'
-                  placeholder='请输入身份证号码'
-                  value={state.legal_cert_id}
-                  onChange={handleChange('legal_cert_id')}
-                />
-                <MCell
-                  title='手机号码'
-                  required
-                  mode='input'
-                  placeholder='请输入手机号码'
-                  value={state.legal_mobile}
-                  onChange={handleChange('legal_mobile')}
-                />
-                <MCell
-                  title='结算银行账号类型'
-                  required
-                  mode='radio'
-                  value={state.bank_acct_type}
-                  radioOptions={bankAccType}
-                  onRadioChange={handleChange('bank_acct_type')}
-                />
-                <MCell
-                  title='结算银行账号'
-                  required
-                  mode='input'
-                  placeholder='请输入结算银行账号'
-                  value={state.card_id_mask}
-                  onChange={handleChange('card_id_mask')}
-                />
-                {banknameRequired && (
-                  <MCell
-                    title='结算银行'
-                    required
-                    value={bankName.name}
-                    onClick={handleSwitchSelector(BANG_NAME)}
-                  />
+                {step === 2 && (
+                  <View>
+                    <MCell
+                      title='企业名称'
+                      required
+                      mode='input'
+                      placeholder='请输入企业名称'
+                      value={state.merchant_name}
+                      onChange={handleChange('merchant_name')}
+                    />
+                    <MCell
+                      title='统一社会信用代码'
+                      required
+                      mode='input'
+                      placeholder='请输入统一社会信用代码'
+                      value={state.social_credit_code_id}
+                      onChange={handleChange('social_credit_code_id')}
+                    />
+                    <MCell
+                      title='所在省市'
+                      required
+                      mode='area'
+                      areaList={areaList}
+                      selectArea={state.regions}
+                      onColumnChange={onAreaColumnChange}
+                      onChange={onAreaChange}
+                    />
+                    <MCell
+                      title='详细地址'
+                      required
+                      mode='input'
+                      placeholder='请输入街道门牌信息'
+                      value={state.address}
+                      onChange={handleChange('address')}
+                    />
+                    <MCell
+                      title={`${fieldName}姓名`}
+                      required
+                      mode='input'
+                      placeholder={`请输入${fieldName}姓名`}
+                      value={state.legal_name}
+                      onChange={handleChange('legal_name')}
+                    />
+                    <MCell
+                      title='身份证号码'
+                      required
+                      mode='input'
+                      placeholder='请输入身份证号码'
+                      value={state.legal_cert_id}
+                      onChange={handleChange('legal_cert_id')}
+                    />
+                    <MCell
+                      title='手机号码'
+                      required
+                      mode='input'
+                      placeholder='请输入手机号码'
+                      value={state.legal_mobile}
+                      onChange={handleChange('legal_mobile')}
+                    />
+                    <MCell
+                      title='结算银行账号类型'
+                      required
+                      mode='radio'
+                      value={state.bank_acct_type}
+                      radioOptions={bankAccType}
+                      onRadioChange={handleChange('bank_acct_type')}
+                    />
+                    <MCell
+                      title='结算银行账号'
+                      required
+                      mode='input'
+                      placeholder='请输入结算银行账号'
+                      value={state.card_id_mask}
+                      onChange={handleChange('card_id_mask')}
+                    />
+                    {banknameRequired && (
+                      <MCell
+                        title='结算银行'
+                        required
+                        value={bankName.name}
+                        onClick={handleSwitchSelector(BANG_NAME)}
+                      />
+                    )}
+                    {bankmobileRequired && (
+                      <MCell
+                        title='绑定手机号'
+                        required
+                        mode='input'
+                        placeholder='请输入绑定手机号'
+                        value={state.bank_mobile}
+                        onChange={handleChange('bank_mobile')}
+                      />
+                    )}
+                  </View>
                 )}
-                {bankmobileRequired && (
-                  <MCell
-                    title='绑定手机号'
-                    required
-                    mode='input'
-                    placeholder='请输入绑定手机号'
-                    value={state.bank_mobile}
-                    onChange={handleChange('bank_mobile')}
-                  />
+                {step === 3 && (
+                  <View className='certificate-information'>
+                    <MImgPicker
+                      title={
+                        <Text>
+                          请根据提示上传<Text className='primary'>营业执照</Text>照片
+                        </Text>
+                      }
+                      value={state.license_url}
+                      onChange={handleChange('license_url')}
+                      info={['上传营业执照']}
+                    />
+                    <MImgPicker
+                      mode='idCard'
+                      title={
+                        <Text>
+                          请根据提示上传<Text className='primary'>{`${fieldName}手持身份证`}</Text>
+                          照片
+                        </Text>
+                      }
+                      value={[state.legal_certid_front_url, state.legal_cert_id_back_url]}
+                      onChange={handleChange('legal_certid_front_url', 'legal_cert_id_back_url')}
+                      info={[`上传${fieldName}手持身份证正面`, `上传${fieldName}手持身份证反面`]}
+                    />
+                    <MImgPicker
+                      mode='bankCard'
+                      value={state.bank_card_front_url}
+                      onChange={handleChange('bank_card_front_url')}
+                      title={
+                        <Text>
+                          请根据提示上传<Text className='primary'>结算银行卡正面</Text>照片
+                        </Text>
+                      }
+                      info={['上传结算银行卡正面']}
+                    />
+                  </View>
                 )}
               </View>
-            )}
-            {step === 3 && (
-              <View className='certificate-information'>
-                <MImgPicker
-                  title={
-                    <Text>
-                      请根据提示上传<Text className='primary'>营业执照</Text>照片
-                    </Text>
-                  }
-                  value={state.license_url}
-                  onChange={handleChange('license_url')}
-                  info={['上传营业执照']}
-                />
-                <MImgPicker
-                  mode='idCard'
-                  title={
-                    <Text>
-                      请根据提示上传<Text className='primary'>{`${fieldName}手持身份证`}</Text>照片
-                    </Text>
-                  }
-                  value={[state.legal_certid_front_url, state.legal_cert_id_back_url]}
-                  onChange={handleChange('legal_certid_front_url', 'legal_cert_id_back_url')}
-                  info={[`上传${fieldName}手持身份证正面`, `上传${fieldName}手持身份证反面`]}
-                />
-                <MImgPicker
-                  mode='bankCard'
-                  value={state.bank_card_front_url}
-                  onChange={handleChange('bank_card_front_url')}
-                  title={
-                    <Text>
-                      请根据提示上传<Text className='primary'>结算银行卡正面</Text>照片
-                    </Text>
-                  }
-                  info={['上传结算银行卡正面']}
-                />
-              </View>
-            )}
-          </View>
-          {step !== 1 && (
-            <View className='info mt-24'>
-              <Text className='icon-info'></Text>
-              <Text className='text'>{step === 2 ? STEPTWOTEXT(fieldName) : STEPTHREETEXT}</Text>
+              {step !== 1 && (
+                <View className='info mt-24'>
+                  <Text className='icon-info'></Text>
+                  <Text className='text'>
+                    {step === 2 ? STEPTWOTEXT(fieldName) : STEPTHREETEXT}
+                  </Text>
+                </View>
+              )}
             </View>
-          )}
+          </ScrollView>
         </View>
-      </ScrollView>
+      )}
 
       <View className='apply-bottom'>
         <View className='apply-bottom-text' onClick={navigateToAgreement}>

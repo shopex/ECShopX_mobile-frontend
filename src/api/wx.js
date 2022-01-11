@@ -64,6 +64,15 @@ export function newlogin (params) {
   )
 }
 
+export function newloginh5 (params) {
+  return req.post('/new_login', {
+    ...params,
+    auth_type: 'h5app',
+    trustlogin_tag: 'weixin',
+    version_tag: 'touch'
+  })
+}
+
 export function prelogin (params) {
   const appid = getAppId()
   return req.post('/prelogin', {
