@@ -16,31 +16,32 @@ function CmopDeliver (props) {
     onChangReceiptType = () => {}
   } = props
 
-  const deliveryList = [
-    {
-      type: 'logistics',
-      name: '普通快递',
-      isopen: curStore.is_delivery || (!curStore.is_delivery && !curStore.is_ziti)
-    },
-    {
-      type: 'dada',
-      name: '同城配送',
-      isopen: headShop.is_current ? headShop.is_dada : curStore.is_dada
-    },
-    {
-      type: 'ziti',
-      name: '自提',
-      isopen: type !== 'pointitem' && curStore.is_ziti
-    }
-  ]
-
-  const showSwitchDeliver = deliveryList.filter((item) => item.isopen) || []
-
   const $instance = getCurrentInstance()
   const router = $instance.router
   const { type } = router.params
 
   const { location = {} } = useSelector((state) => state.user)
+  const { rgb } = useSelector((state) => state.sys)
+
+  const deliveryList = [
+    {
+      type: 'logistics',
+      name: '普通快递',
+      isopen: curStore.is_delivery
+    },
+    {
+      type: 'dada',
+      name: '同城配',
+      isopen: headShop.is_current ? headShop.is_dada : curStore.is_dada
+    },
+    {
+      type: 'ziti',
+      name: '自提',
+      isopen: curStore.is_ziti // type !== 'pointitem' && curStore.is_ziti
+    }
+  ]
+
+  const showSwitchDeliver = deliveryList.filter((item) => item.isopen) || []
 
   const handleSwitchExpress = (type) => {
     // 切换配送方式
@@ -73,16 +74,19 @@ function CmopDeliver (props) {
   const showSwitchDeliverComp = () => {
     // 配送方式选择器
     return (
-      <View className={classNames(showSwitchDeliver.length > 0 && 'switch-tab')}>
-        {showSwitchDeliver.map((item) => (
-          <View
-            key={item.type}
-            className={`switch-item ${receiptType === item.type ? 'active' : ''}`}
-            onClick={handleSwitchExpress.bind(this, item.type)}
-          >
-            {item.name}
-          </View>
-        ))}
+      <View className='switch-box'>
+        <View className={classNames(showSwitchDeliver.length > 0 && 'switch-tab')}>
+          {showSwitchDeliver.map((item) => (
+            <View
+              key={item.type}
+              className={`switch-item ${receiptType === item.type ? 'active' : ''}`}
+              style={receiptType === item.type && { background: `rgb(${rgb}, 0.4)` }}
+              onClick={handleSwitchExpress.bind(this, item.type)}
+            >
+              {item.name}
+            </View>
+          ))}
+        </View>
       </View>
     )
   }
