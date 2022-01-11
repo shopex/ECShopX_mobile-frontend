@@ -54,7 +54,7 @@ const PageBrandInfo = () => {
     <SpPage className={classNames('page-store-brand')}>
       <ScrollView className='page-store-brand-scrollview' scrollY>
         <View className='margin'>
-          <CompHeader info={storeInfo} brand={false} />
+          <CompHeader info={storeInfo} brand={false} showFav={false} />
         </View>
         <View className='margin padding brand'>
           <View className='title'>品牌简介</View>

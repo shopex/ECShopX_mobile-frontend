@@ -2,13 +2,20 @@ import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import './comp-header.scss'
 import { classNames } from '@/utils'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import api from '@/api'
 import { SpShopCoupon, SpShopFullReduction } from '@/components'
 import { useLogin } from '@/hooks'
 
 function CompHeader (props) {
-  const { info, couponList = [], brandInfo = () => {}, brand: brandShow = true } = props
+  const {
+    info,
+    couponList = [],
+    brandInfo = () => {},
+    brand: brandShow = true,
+    fav: favProp,
+    showFav = true
+  } = props
   const { brand = '', name = '', scoreList = {}, marketingActivityList = [] } = info
   const [showMore, setShowMore] = useState(false)
   const [fav, setFav] = useState(false)
@@ -43,6 +50,10 @@ function CompHeader (props) {
     }
     setFav(flag)
   }
+
+  useEffect(() => {
+    setFav(favProp)
+  }, [favProp])
   //品牌介绍
   // const brandInfo = () => {}
   return (
@@ -61,9 +72,11 @@ function CompHeader (props) {
             )}
           </View>
         </View>
-        <View className='attention' onClick={handleFocus(!fav)}>
-          {fav ? '取消关注' : '+关注'}
-        </View>
+        {showFav && (
+          <View className='attention' onClick={handleFocus(!fav)}>
+            {fav ? '取消关注' : '+关注'}
+          </View>
+        )}
       </View>
       {/* {优惠券} */}
       {couponList.length > 0 && (
