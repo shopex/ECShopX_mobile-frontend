@@ -5,26 +5,12 @@
   align-items: flex-start;
   padding: $edge-size;
   &__hd {
-    margin-right: 30px;
+    margin-right: 20px;
   }
   &__bd {
     width: 50%;
-    margin-bottom: 30px;
-    position: relative;
-    // 跨境
-    .nationalInfo {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      font-size: 24px;
-      padding: 10px 0;
-      .nationalFlag {
-        width: 45px;
-        height: 45px;
-        border-radius: 100%;
-        margin-right: 15px;
-      }
-    }    
+    margin-bottom: 40px;
+    position: relative;  
   }
   &__ft {
     flex: 1;
@@ -49,10 +35,15 @@
   &__desc {
     color: $color-gray;
     font-size: $font-size-small;
+    margin-bottom: 10px;
   }
   &__spec {
     color: $color-gray;
     font-size: $font-size-small;
+    max-width: 90%;
+    min-width: 100px;
+    display: inline-block;
+    @include text-overflow();
   }
   &__price {
     color: $color-primary-text;

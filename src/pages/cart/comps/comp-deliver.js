@@ -1,5 +1,5 @@
 import React from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { useSelector } from 'react-redux'
 import { AddressChoose } from '@/components'
@@ -15,10 +15,6 @@ function CmopDeliver (props) {
     headquartersStore = {}, // 总店自提点
     onChangReceiptType = () => {}
   } = props
-
-  const $instance = getCurrentInstance()
-  const router = $instance.router
-  const { type } = router.params
 
   const { location = {} } = useSelector((state) => state.user)
   const { rgb } = useSelector((state) => state.sys)

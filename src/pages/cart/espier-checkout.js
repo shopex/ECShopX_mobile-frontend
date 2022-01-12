@@ -1388,7 +1388,6 @@ export default class CartCheckout extends Component {
           bankAccount: bankaccount,
           telephone: company_phone
         } = res
-        console.log(type, 440)
         this.params = {
           ...this.params,
           invoice_type: 'normal',
@@ -1510,8 +1509,7 @@ export default class CartCheckout extends Component {
       defalutPaytype,
       headquartersStore
     } = this.state
-    const { type, goodType, bargain_id } = this.$instance.router.params
-    // const { type, goodType, bargain_id } = this.routerParams || {}
+    const { type, goodType, bargain_id } = this.$instance.router?.params || {}
     if (!info) {
       return <Loading />
     }
@@ -1559,7 +1557,7 @@ export default class CartCheckout extends Component {
             <AtButton
               type='primary'
               className='btn-confirm-order'
-              customStyle={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+              customStyle='background: var(--color-primary); border-color: var(--color-primary)'
               loading={submitLoading}
               disabled={isBtnDisabled}
               onClick={this.submitPay}
@@ -1589,6 +1587,7 @@ export default class CartCheckout extends Component {
               return (
                 <View className='cart-group' key={cart.shop_id}>
                   <View className='sec cart-group__cont'>
+                    {/* <View className='order-item__idx'>商品清单（{cart.list.length}）</View> */}
                     {cart.list.map((item, idx) => {
                       return (
                         <View className='order-item__wrap' key={item.item_id}>
@@ -1599,21 +1598,9 @@ export default class CartCheckout extends Component {
                           ) : (
                             <View className='order-item__idx national'>
                               <Text>第{idx + 1}件商品</Text>
-                              {item.type == '1' && (
-                                <View className='nationalInfo'>
-                                  <Image
-                                    className='nationalFlag'
-                                    src={item.origincountry_img_url}
-                                    mode='aspectFill'
-                                    lazyLoad
-                                  />
-                                  <Text className='nationalTitle'>{item.origincountry_name}</Text>
-                                </View>
-                              )}
                             </View>
                           )}
                           <SpOrderItem
-                            // isShowNational
                             info={item}
                             showExtra={false}
                             showDesc
@@ -1639,7 +1626,7 @@ export default class CartCheckout extends Component {
                                     noSymbol
                                     noDecimal
                                     value={item.item_point}
-                                  ></Price>
+                                  />
                                 ) : (
                                   <Price className='order-item__price' value={item.price}></Price>
                                 )}
@@ -1693,19 +1680,19 @@ export default class CartCheckout extends Component {
               <SpCell
                 isLink
                 className='coupons-list'
-                title='选择优惠券'
+                title='优惠券'
                 onClick={this.handleCouponsClick}
-                value={couponText || ''}
+                value={couponText || '请选择'}
               />
             )}
-          {/* {isPackage && express && (
+          {isPackage && express && (
             <SelectPackage
               isPointitem={this.isPointitemGood()}
               isChecked={isNeedPackage}
               onHanleChange={this.changeNeedPackage.bind(this)}
               packInfo={pack}
             />
-          )} */}
+          )}
 
           {!this.isPointitemGood() &&
             pointInfo.is_open_deduct_point &&
