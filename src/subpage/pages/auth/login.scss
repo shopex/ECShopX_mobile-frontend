@@ -11,6 +11,15 @@ $border-color:#E2E4EA;
   display: flex;
   flex-direction: column;
 
+  .at-input{
+     .weui-input{
+       color:rgba(17, 26, 52, 1);
+     }
+     .input-placeholder{
+       color:rgba(197, 202, 213, 1);
+     }
+  } 
+
   &.is-code-login{
     .auth-bd{
       .form-submit{

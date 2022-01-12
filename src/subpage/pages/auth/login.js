@@ -5,7 +5,7 @@ import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { CompOtherLogin } from './comps'
 import { SpTimer, SpPage } from '@/components'
 import api from '@/api'
-import S from '@/spx'
+import qs from 'qs'
 import { classNames, navigateTo, validate, showToast } from '@/utils'
 import { navigationToReg, setTokenAndRedirect } from './util'
 import './login.scss'
@@ -19,7 +19,9 @@ export default class Login extends Component {
       info: {},
       isVisible: false,
       imgInfo: null,
-      loginType: 1 // 1=密码; 2=验证码
+      loginType: 1, // 1=密码; 2=验证码
+      //是否已经存在phone
+      isSetPhone: null
     }
   }
 
@@ -114,16 +116,37 @@ export default class Login extends Component {
     params['silent'] = 1
 
     try {
-      const { token, is_new } = await api.wx.newloginh5(params)
+      const { token, is_new, error_message } = await api.wx.newloginh5(params)
       if (is_new) {
-        Taro.navigateTo({
-          url: `/subpage/pages/auth/edit-password?phone=${mobile}`
-        })
+        //验证码登陆才会记录
+        if (loginType == 2) {
+          this.setState({
+            isSetPhone: {
+              phone: mobile,
+              vcode
+            }
+          })
+        }
+        showToast(error_message)
       } else {
+        this.setState({
+          isSetPhone: null
+        })
         setTokenAndRedirect(token).bind(this)
       }
     } catch (e) {
       console.log(e)
+    }
+  }
+
+  handleNavigateReg = () => {
+    const { isSetPhone } = this.state
+    if (isSetPhone) {
+      Taro.navigateTo({
+        url: `/subpage/pages/auth/edit-password?${qs.stringify(isSetPhone)}`
+      })
+    } else {
+      navigationToReg()
     }
   }
 
@@ -163,6 +186,7 @@ export default class Login extends Component {
                 value={info.mobile}
                 placeholder='请输入您的手机号码'
                 onChange={this.handleInputChange.bind(this, 'mobile')}
+                placeholderClass='input-placeholder'
               />
             </View>
             {/* 密码登录 */}
@@ -175,6 +199,7 @@ export default class Login extends Component {
                     value={info.password}
                     placeholder='请输入密码'
                     onChange={this.handleInputChange.bind(this, 'password')}
+                    placeholderClass='input-placeholder'
                   />
                 </View>
               </View>
@@ -189,6 +214,7 @@ export default class Login extends Component {
                     value={info.yzm}
                     placeholder='请输入图形验证码'
                     onChange={this.handleInputChange.bind(this, 'yzm')}
+                    placeholderClass='input-placeholder'
                   />
                 </View>
                 <View className='btn-field'>
@@ -211,6 +237,7 @@ export default class Login extends Component {
                     value={info.vcode}
                     placeholder='请输入验证码'
                     onChange={this.handleInputChange.bind(this, 'vcode')}
+                    placeholderClass='input-placeholder'
                   />
                 </View>
                 <View className='btn-field'>
@@ -242,7 +269,12 @@ export default class Login extends Component {
               >
                 登 录
               </AtButton>
-              <AtButton circle type='primary' className='reg-button' onClick={navigationToReg}>
+              <AtButton
+                circle
+                type='primary'
+                className='reg-button'
+                onClick={this.handleNavigateReg}
+              >
                 注 册
               </AtButton>
             </View>

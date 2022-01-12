@@ -71,7 +71,7 @@ const Reg = () => {
       return
     }
     try {
-      const { token } = await api.user.bind({
+      const { token } = await api.user.reg({
         auth_type: 'local',
         username: mobile
       })

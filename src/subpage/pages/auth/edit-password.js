@@ -20,7 +20,7 @@ const PageEditPassword = () => {
   const $instance = getCurrentInstance()
 
   const {
-    params: { phone, unionid }
+    params: { phone, unionid, vcode }
   } = $instance.router
 
   const [state, setState] = useImmer(initialValue)
@@ -38,9 +38,23 @@ const PageEditPassword = () => {
       return showToast('2次输入密码不一致!')
     }
 
-    const { token } = await api.user.bind({ username: phone, password, union_id: unionid })
-
-    setTokenAndRedirect(token)
+    //微信登陆绑定逻辑
+    if (unionid) {
+      const { token } = await api.user.bind({ username: phone, password, union_id: unionid })
+      setTokenAndRedirect(token)
+    } else {
+      //从登陆页跳转过来
+      await api.user.reg({
+        auth_type: 'wxapp',
+        mobile: phone,
+        user_name: phone,
+        password,
+        vcode,
+        sex: 0,
+        user_type: 'local'
+      })
+      Taro.navigateBack()
+    }
   }
 
   //全填写完

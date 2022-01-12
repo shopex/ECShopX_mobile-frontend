@@ -6,7 +6,7 @@ import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
 import { useImmer } from 'use-immer'
-import { setToken, setTokenAndRedirect } from './util'
+import { setTokenAndRedirect } from './util'
 import './bindPhone.scss'
 
 const SYMBOL = 'login'
