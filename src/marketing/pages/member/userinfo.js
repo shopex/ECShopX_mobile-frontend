@@ -5,7 +5,7 @@ import { SpPage, SpNavBar, SpCheckbox, SpFloatPrivacy } from '@/components'
 import api from '@/api'
 import { connect } from 'react-redux'
 import S from '@/spx'
-import { showToast, getThemeStyle, styleNames } from '@/utils'
+import { showToast } from '@/utils'
 import userIcon from '@/assets/imgs/user-icon.png'
 import imgUploader from '@/utils/upload'
 

@@ -24,9 +24,6 @@ export function refreshToken () {
 }
 
 export function reg (params) {
-  if (isWeixin) {
-    params.appid = getAppId() || ''
-  }
   return req.post('/member', params)
 }
 
