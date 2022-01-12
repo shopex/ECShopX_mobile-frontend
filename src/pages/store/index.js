@@ -73,7 +73,8 @@ export default class StoreIndex extends Component {
       couponList: [],
       fixedSearch: false,
       likeList: [],
-      storeIsVaild: false
+      storeIsVaild: false,
+      fav: undefined
     }
     this.current = getCurrentInstance()
     this.id = this.current.router.params.id
@@ -93,6 +94,14 @@ export default class StoreIndex extends Component {
     }
   }
 
+  storeFav = async (id) => {
+    const { is_fav } = await api.member.storeIsFav(id)
+
+    this.setState({
+      fav: is_fav
+    })
+  }
+
   componentDidShow = () => {
     Taro.getStorage({ key: 'addTipIsShow' })
       .then(() => {})
@@ -102,6 +111,10 @@ export default class StoreIndex extends Component {
           isShowAddTip: true
         })
       })
+    const id = this.id
+    if (id) {
+      this.storeFav(id)
+    }
   }
 
   onShareAppMessage (res) {
@@ -284,6 +297,15 @@ export default class StoreIndex extends Component {
     }
   }
 
+  handleBrandInfo = () => {
+    const {
+      storeInfo: { distributor_id }
+    } = this.state
+    Taro.navigateTo({
+      url: `/pages/store/brand-info?distributor_id=${distributor_id}`
+    })
+  }
+
   render () {
     const {
       wgts,
@@ -295,7 +317,8 @@ export default class StoreIndex extends Component {
       couponList,
       fixedSearch,
       likeList,
-      storeIsVaild
+      storeIsVaild,
+      fav
     } = this.state
     const user = Taro.getStorageSync('userinfo')
     if (!wgts || !this.props.store) {
@@ -321,7 +344,13 @@ export default class StoreIndex extends Component {
           scrollY
         >
           <View className='wgts-wrap__cont'>
-            <CompHeader inStore info={storeInfo} couponList={couponList} />
+            <CompHeader
+              inStore
+              info={storeInfo}
+              couponList={couponList}
+              brandInfo={this.handleBrandInfo}
+              fav={fav}
+            />
             {wgts.map((item, idx) => {
               return (
                 <View className='wgt-wrap' key={`${item.name}${idx}`}>

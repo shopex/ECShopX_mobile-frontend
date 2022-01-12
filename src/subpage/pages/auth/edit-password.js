@@ -6,7 +6,7 @@ import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
 import { useImmer } from 'use-immer'
-import './bindPhone.scss'
+import './edit-password.scss'
 
 const SYMBOL = 'login'
 
@@ -18,7 +18,7 @@ const initialValue = {
   imgInfo: null
 }
 
-const Reg = () => {
+const PageEditPassword = () => {
   const $instance = getCurrentInstance()
 
   const {
@@ -74,13 +74,12 @@ const Reg = () => {
 
     //如果是新用户
     if (is_new === 1) {
-      url = '/subpage/pages/auth/edit-password'
     } else {
       url = process.env.APP_HOME_PAGE
+      Taro.redirectTo({
+        url
+      })
     }
-    Taro.redirectTo({
-      url
-    })
   }
 
   useEffect(() => {
@@ -92,15 +91,15 @@ const Reg = () => {
 
   return (
     <SpPage
-      className={classNames('page-auth-bindphone', {
+      className={classNames('page-auth-edit-password', {
         'is-full': isFull
       })}
     >
       <View className='auth-hd'>
-        <View className='title'>手机号绑定</View>
+        <View className='title'>设置密码</View>
+        <View className='desc'>请设置密码完成注册</View>
       </View>
       <View className='auth-bd'>
-        <View className='form-title'>中国大陆 +86</View>
         <AtForm className='form'>
           <View className='form-field'>
             <AtInput
@@ -109,43 +108,22 @@ const Reg = () => {
               maxLength={11}
               type='tel'
               value={username}
-              placeholder='请输入您的手机号码'
+              placeholder='请输入密码'
               onChange={handleInputChange('username')}
             />
           </View>
-
-          {/* 验证码登录，验证码超过1次，显示图形验证码 */}
           <View className='form-field'>
-            <View className='input-field'>
-              <AtInput
-                clear
-                name='yzm'
-                value={yzm}
-                placeholder='请输入图形验证码'
-                onChange={handleInputChange('yzm')}
-              />
-            </View>
-            <View className='btn-field'>
-              {imgInfo && (
-                <Image className='image-vcode' src={imgInfo.imageData} onClick={getImageVcode} />
-              )}
-            </View>
+            <AtInput
+              clear
+              name='mobile'
+              maxLength={11}
+              type='tel'
+              value={username}
+              placeholder='再次输入密码'
+              onChange={handleInputChange('username')}
+            />
           </View>
-
-          <View className='form-field'>
-            <View className='input-field'>
-              <AtInput
-                clear
-                name='vcode'
-                value={vcode}
-                placeholder='请输入验证码'
-                onChange={handleInputChange('vcode')}
-              />
-            </View>
-            <View className='btn-field'>
-              <SpTimer onStart={handleTimerStart} />
-            </View>
-          </View>
+          <View className='form-tip'>6-16位密码、数字或字母</View>
 
           <View className='form-submit'>
             <AtButton
@@ -155,7 +133,7 @@ const Reg = () => {
               className='login-button'
               onClick={handleSubmit}
             >
-              下一步
+              完成
             </AtButton>
           </View>
         </AtForm>
@@ -164,4 +142,4 @@ const Reg = () => {
   )
 }
 
-export default Reg
+export default PageEditPassword

@@ -3,10 +3,11 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { AtButton, AtCountdown, AtCurtain } from 'taro-ui'
 import { FormIdCollector, SpNavBar } from '@/components'
-import { classNames, normalizeQuerys, log, isWeixin, isWeb } from '@/utils'
+import { classNames, normalizeQuerys, log, isWeixin, isWeb, showToast } from '@/utils'
 import entry from '@/utils/entry'
 import api from '@/api'
 import S from '@/spx'
+import qs from 'qs'
 import { getDtidIdUrl } from '@/utils/helper'
 
 import './group-detail.scss'
@@ -85,10 +86,13 @@ export default class GroupDetail extends Component {
 
   handleJoinClick = async () => {
     if (!S.getAuthToken()) {
-      S.toast('请先登录')
-
+      showToast('请先登录')
+      const { params, path } = this.$instance.router
       setTimeout(() => {
-        S.login(this)
+        let url = `/subpage/pages/auth/login?redirect=${encodeURIComponent(
+          `${path}?${qs.stringify(params)}`
+        )}`
+        Taro.redirectTo({ url })
       }, 2000)
 
       return
