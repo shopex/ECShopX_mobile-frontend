@@ -5,6 +5,7 @@ export default {
     'pages/cart/espier-index', // 购物车页面
     'pages/cart/espier-checkout', // 结算页面
     'pages/store/index', // 店铺首页
+    'pages/store/brand-info', // 店铺品牌
 
     'pages/home/landing', // 跳转等待页面
     'pages/floorguide/index', // 楼层引导页面
@@ -131,6 +132,7 @@ export default {
         'pages/auth/reg', //新用户注册页面
         'pages/auth/reg-rule', //注册协议&充值协议页面
         'pages/auth/login', //登录页面
+        'pages/auth/edit-password', //修改密码页面
         'pages/auth/auth-loading', //登录中转页
         'pages/auth/forgotpwd', //找回密码页面
         'pages/auth/wxauth', //微信授权页面

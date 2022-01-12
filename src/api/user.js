@@ -10,6 +10,11 @@ export function bindSaleperson (data) {
   return req.post('/member/bindSalesperson', data)
 }
 
+// 绑定
+export function bind (data) {
+  return req.post('/member/bind', data)
+}
+
 export function logout () {
   return req.post('/user.logout')
 }

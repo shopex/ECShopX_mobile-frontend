@@ -2,14 +2,27 @@ import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import './comp-header.scss'
 import { classNames } from '@/utils'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import api from '@/api'
 import { SpShopCoupon, SpShopFullReduction } from '@/components'
 import { useLogin } from '@/hooks'
 
 function CompHeader (props) {
-  const { info, couponList = [] } = props
-  const { brand = '', name = '', scoreList = {}, marketingActivityList = [] } = info
+  const {
+    info,
+    couponList = [],
+    brandInfo = () => {},
+    brand: brandShow = true,
+    fav: favProp,
+    showFav = true
+  } = props
+  const {
+    brand = '',
+    name = '',
+    scoreList = {},
+    marketingActivityList = [],
+    showSale = false
+  } = info
   const [showMore, setShowMore] = useState(false)
   const [fav, setFav] = useState(false)
   const { isLogin } = useLogin({
@@ -43,8 +56,12 @@ function CompHeader (props) {
     }
     setFav(flag)
   }
+
+  useEffect(() => {
+    setFav(favProp)
+  }, [favProp])
   //品牌介绍
-  const brandInfo = () => {}
+  // const brandInfo = () => {}
   return (
     <View className='comp-header'>
       {/* {店铺信息} */}
@@ -54,14 +71,19 @@ function CompHeader (props) {
           <View className='store-name'>{name}</View>
           <View className='store-avgSstar-block'>
             <Text className='store-avgSstar'>评分:{scoreList.avg_star}</Text>
-            <View className='brand-produce' onClick={brandInfo}>
-              品牌介绍 >
-            </View>
+            {brandShow && (
+              <View className='brand-produce' onClick={brandInfo}>
+                {'品牌介绍 >'}
+              </View>
+            )}
+            {showSale && <View></View>}
           </View>
         </View>
-        <View className='attention' onClick={handleFocus(!fav)}>
-          {fav ? '取消关注' : '+关注'}
-        </View>
+        {showFav && (
+          <View className='attention' onClick={handleFocus(!fav)}>
+            {fav ? '取消关注' : '+关注'}
+          </View>
+        )}
       </View>
       {/* {优惠券} */}
       {couponList.length > 0 && (
