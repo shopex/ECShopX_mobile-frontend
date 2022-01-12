@@ -9,10 +9,10 @@ import classNames from 'classnames'
 
 function CmopDeliver (props) {
   const {
-    curStore = {},
+    currentStore = {},
     address = {},
     receiptType = '', // 配送方式（logistics：普通快递  dada：同城配  ziti：自提）
-    headShop = {}, // 总店自提点
+    headquartersStore = {}, // 总店自提点
     onChangReceiptType = () => {}
   } = props
 
@@ -27,17 +27,17 @@ function CmopDeliver (props) {
     {
       type: 'logistics',
       name: '普通快递',
-      isopen: curStore.is_delivery
+      isopen: currentStore.is_delivery
     },
     {
       type: 'dada',
       name: '同城配',
-      isopen: headShop.is_current ? headShop.is_dada : curStore.is_dada
+      isopen: headquartersStore.is_current ? headquartersStore.is_dada : currentStore.is_dada
     },
     {
       type: 'ziti',
       name: '自提',
-      isopen: headShop.is_current ? headShop.is_ziti : curStore.is_ziti // type !== 'pointitem' && curStore.is_ziti
+      isopen: headquartersStore.is_current ? headquartersStore.is_ziti : currentStore.is_ziti // type !== 'pointitem' && currentStore.is_ziti
     }
   ]
 
@@ -61,7 +61,7 @@ function CmopDeliver (props) {
 
   const handleChooseAddress = (choose) => {
     // 自定义选择店铺跳转事件
-    let city = headShop.is_current ? headShop.city : curStore.city
+    let city = headquartersStore.is_current ? headquartersStore.city : currentStore.city
     let params = ''
     if (receiptType === 'dada') {
       params = `&city=${city}&receipt_type=dada`
@@ -101,23 +101,25 @@ function CmopDeliver (props) {
         <View className='store-module'>
           <AddressChoose isAddress={address} onCustomChosse={handleChooseAddress.bind(this)} />
           <View className='store'>
-            配送门店: {headShop.is_current ? headShop.name : curStore.name}
+            配送门店: {headquartersStore.is_current ? headquartersStore.name : currentStore.name}
           </View>
         </View>
       )}
       {/** 自提 */}
       {receiptType === 'ziti' && (
         <View className='address-module'>
-          <View className='address-title'>{curStore.name}</View>
+          <View className='address-title'>{currentStore.name}</View>
           <View className='address-detail'>
-            <View className='address'>{curStore.store_address}</View>
+            <View className='address'>{currentStore.store_address}</View>
             <View className='iconfont icon-periscope' onClick={handleMapClick.bind(this)}></View>
           </View>
           <View className='other-info'>
-            <View className='text-muted light'>门店营业时间：{curStore.hour}</View>
+            <View className='text-muted light'>门店营业时间：{currentStore.hour}</View>
             <View className='text-muted'>
               联系电话：
-              <Text className='phone'>{headShop.is_current ? headShop.phone : curStore.phone}</Text>
+              <Text className='phone'>
+                {headquartersStore.is_current ? headquartersStore.phone : currentStore.phone}
+              </Text>
             </View>
           </View>
         </View>
