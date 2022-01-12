@@ -10,7 +10,6 @@ function SpOrderItem (props) {
     payType = '',
     showExtra = true,
     info = null,
-    isShowNational = false,
     isPointitemGood = false,
     isShowPointTag = false,
     onClick = () => {},
@@ -22,22 +21,6 @@ function SpOrderItem (props) {
   const { pointName } = useSelector((state) => state.sys)
 
   if (!info) return null
-
-  const showNationalComp = () => {
-    if (isShowNational && info.type == '1' && info.origincountry_name) {
-      return (
-        <View className='nationalInfo'>
-          <Image
-            className='nationalFlag'
-            src={info.origincountry_img_url}
-            mode='aspectFill'
-            lazyLoad
-          />
-          <Text className='nationalTitle'>{info.origincountry_name}</Text>
-        </View>
-      )
-    }
-  }
 
   const showExtraComp = () => {
     if (showExtra) {
@@ -56,10 +39,9 @@ function SpOrderItem (props) {
   return (
     <View className='order-item' onClick={onClick}>
       <View className='order-item__hd'>
-        <SpImage src={img} width={140} />
+        <SpImage src={img} width={170} />
       </View>
       <View className='order-item__bd'>
-        {showNationalComp()}
         {isShowPointTag && <SpPoint />}
         <View className='order-item__title'>
           {info.order_item_type === 'plus_buy' && (
