@@ -19,10 +19,10 @@ function CompVipGuide (props) {
       <View className='vip-info'>
         <View className='vip-value'>
           <View className='vip-label'>{info.vipgrade_desc}</View>
-          {info.memberPrice && <SpPrice value={info.memberPrice}></SpPrice>}
-          {info.gradeDiscount && (
-            <SpPrice noSymbol value={info.gradeDiscount} appendText='折'></SpPrice>
-          )}
+          {/* {info.memberPrice && <SpPrice value={info.memberPrice}></SpPrice>} */}
+          {/* {info.gradeDiscount && ( */}
+          <SpPrice noSymbol value={info.gradeDiscount} appendText='折'></SpPrice>
+          {/* )} */}
         </View>
         <View className='vip-desc'>{info.guide_title_desc}</View>
       </View>

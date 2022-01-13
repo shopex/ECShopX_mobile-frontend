@@ -187,5 +187,8 @@ export default {
     'scope.userLocation': {
       desc: '您的位置信息将用于定位附近门店'
     }
+  },
+  usingComponents: {
+    'mp-html': './components/sp-html/mp-weixin/index'
   }
 }

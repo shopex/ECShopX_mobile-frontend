@@ -100,15 +100,6 @@
  
 }
 
-.at-button {
-  margin: 0;
-
-  &--primary {
-    font-size: $font-size;
-    background: $color-brand-primary;
-  }
-}
-
 .at-nav-bar {
   &__title {
     font-size: $font-size-large;
@@ -196,9 +187,14 @@
     }
 
   }
+  &--normal {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
   &--primary {
     background: var(--color-primary);
     border-color: var(--color-primary);
+    color: #fff;
   }
 }
 

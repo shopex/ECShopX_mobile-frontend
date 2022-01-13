@@ -7,18 +7,22 @@ import './comp-couponlist.scss'
 
 function CompCouponList (props) {
   const { info } = props
-
+  console.log(info)
   const onChangeLogin = () => {
     Taro.navigateTo({
       url: `/subpage/pages/vip/vipgrades?grade_name=${info.vipgrade_name}`
     })
   }
 
+  if (info.length == 0) {
+    return null
+  }
+
   return (
     <View className='comp-couponlist'>
       <View className='couponlist-hd'>
         <ScrollView className='coupons-block' scrollX>
-          {info.list.map((item, index) => (
+          {info.map((item, index) => (
             <View className='coupon-item' key={`coupon-item__${index}`}>
               {item.title}
             </View>
