@@ -28,17 +28,13 @@ async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
   const router = $instance.router
   if (hasToken) {
     await tokenSetSuccessCallback?.()
-    const { redi_url } = router.params
-    const url = redi_url ? decodeURIComponent(redi_url) : process.env.APP_HOME_PAGE
-    // debugger;
+    const { redi_url, redirect } = router.params
+    const url = redi_url
+      ? decodeURIComponent(redi_url)
+      : redirect
+      ? redirect
+      : process.env.APP_HOME_PAGE
     window.location.href = `${window.location.origin}${url}`
-    // window.location.replace(url)
-    // Taro.reLaunch({
-    //   url
-    // })
-    // Taro.redirectTo({
-    //   url
-    // })
   }
 }
 
