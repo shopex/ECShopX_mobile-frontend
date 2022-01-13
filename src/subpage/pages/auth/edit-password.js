@@ -6,6 +6,7 @@ import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
 import { setTokenAndRedirect } from './util'
+import { useLogin } from '@/hooks'
 import { useImmer } from 'use-immer'
 import './edit-password.scss'
 
@@ -33,6 +34,8 @@ const PageEditPassword = () => {
     })
   }
 
+  const { getUserInfo } = useLogin()
+
   const handleSubmit = async () => {
     if (password !== repassword) {
       return showToast('2次输入密码不一致!')
@@ -41,7 +44,10 @@ const PageEditPassword = () => {
     //微信登陆绑定逻辑
     if (unionid) {
       const { token } = await api.user.bind({ username: phone, password, union_id: unionid })
-      setTokenAndRedirect(token)
+
+      await setTokenAndRedirect(token, async () => {
+        await getUserInfo()
+      })
     } else {
       //从登陆页跳转过来
       await api.user.reg({

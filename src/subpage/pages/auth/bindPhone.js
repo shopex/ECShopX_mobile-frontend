@@ -4,6 +4,7 @@ import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
 import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
+import { useLogin } from '@/hooks'
 import api from '@/api'
 import { useImmer } from 'use-immer'
 import { setTokenAndRedirect, pushHistory } from './util'
@@ -27,6 +28,8 @@ const PageBindPhone = () => {
   const {
     params: { unionid, redi_url }
   } = $instance.router
+
+  const { getUserInfo } = useLogin()
 
   const [state, setState] = useImmer(initialValue)
 
@@ -82,7 +85,9 @@ const PageBindPhone = () => {
     } else {
       url = process.env.APP_HOME_PAGE
       const { token } = await api.user.bind({ username, check_type, vcode, union_id: unionid })
-      setTokenAndRedirect(token)
+      await setTokenAndRedirect(token, async () => {
+        await getUserInfo()
+      })
       return
     }
   }
