@@ -7,7 +7,7 @@ import { SpTimer, SpPage } from '@/components'
 import api from '@/api'
 import qs from 'qs'
 import { classNames, navigateTo, validate, showToast } from '@/utils'
-import { navigationToReg, setTokenAndRedirect } from './util'
+import { navigationToReg, setToken, setTokenAndRedirect } from './util'
 import './login.scss'
 
 export default class Login extends Component {
@@ -19,9 +19,7 @@ export default class Login extends Component {
       info: {},
       isVisible: false,
       imgInfo: null,
-      loginType: 1, // 1=密码; 2=验证码
-      //是否已经存在phone
-      isSetPhone: null
+      loginType: 1 // 1=密码; 2=验证码
     }
   }
 
@@ -113,27 +111,19 @@ export default class Login extends Component {
     }
 
     params['auth_type'] = 'local'
-    params['silent'] = 1
+    params['silent'] = 0
 
     try {
-      const { token, is_new, error_message } = await api.wx.newloginh5(params)
+      const { token, is_new, error_message, pre_login_data } = await api.wx.newloginh5(params)
       if (error_message) {
         showToast(error_message)
       }
       if (is_new) {
-        //验证码登陆才会记录
-        if (loginType == 2) {
-          this.setState({
-            isSetPhone: {
-              phone: mobile,
-              vcode
-            }
-          })
-        }
-      } else {
-        this.setState({
-          isSetPhone: null
+        setToken(token)
+        Taro.navigateTo({
+          url: `/subpage/pages/auth/edit-password?phone=${pre_login_data.mobile}`
         })
+      } else {
         setTokenAndRedirect(token).bind(this)
       }
     } catch (e) {
@@ -141,15 +131,8 @@ export default class Login extends Component {
     }
   }
 
-  handleNavigateReg = () => {
-    const { isSetPhone } = this.state
-    if (isSetPhone) {
-      Taro.navigateTo({
-        url: `/subpage/pages/auth/edit-password?${qs.stringify(isSetPhone)}`
-      })
-    } else {
-      navigationToReg()
-    }
+  handleNavigateReg = async () => {
+    navigationToReg()
   }
 
   render () {

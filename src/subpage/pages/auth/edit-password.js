@@ -5,7 +5,7 @@ import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
-import { setTokenAndRedirect } from './util'
+import { setTokenAndRedirect, getToken } from './util'
 import { useLogin } from '@/hooks'
 import { useImmer } from 'use-immer'
 import './edit-password.scss'
@@ -37,6 +37,10 @@ const PageEditPassword = () => {
   const { getUserInfo } = useLogin()
 
   const handleSubmit = async () => {
+    if (!validate.isPassword(password) || !validate.isPassword(repassword)) {
+      return showToast('密码格式不正确')
+    }
+
     if (password !== repassword) {
       return showToast('2次输入密码不一致!')
     }
@@ -50,17 +54,15 @@ const PageEditPassword = () => {
       })
     } else {
       //从登陆页跳转过来
-      await api.user.reg({
-        auth_type: 'local',
-        check_type: 'login',
+      const { user_id } = await api.user.forgotPwd({
         mobile: phone,
-        user_name: phone,
-        password,
-        vcode,
-        sex: 0,
-        user_type: 'local'
+        password
       })
-      Taro.navigateBack()
+      if (user_id) {
+        await setTokenAndRedirect(getToken(), async () => {
+          await getUserInfo()
+        })
+      }
     }
   }
 

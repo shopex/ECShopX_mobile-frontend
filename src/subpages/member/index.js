@@ -1,4 +1,4 @@
-import Taro, { useShareAppMessage, useDidShow } from '@tarojs/taro'
+import Taro, { useShareAppMessage, getCurrentPages, getCurrentInstance } from '@tarojs/taro'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
 import { useSelector } from 'react-redux'
@@ -82,6 +82,7 @@ const initialState = {
 }
 
 function MemberIndex (props) {
+  console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const { isLogin, updatePolicyTime, getUserInfoAuth } = useLogin({
     autoLogin: true,
     policyUpdateHook: () => {
