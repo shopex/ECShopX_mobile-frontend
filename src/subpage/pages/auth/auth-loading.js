@@ -4,6 +4,7 @@ import { SpPage, SpLoading } from '@/components'
 import { classNames } from '@/utils'
 import api from '@/api'
 import { setTokenAndRedirect } from './util'
+import { useLogin } from '@/hooks'
 import './auth-loading.scss'
 
 const AuthLoading = () => {
@@ -11,6 +12,8 @@ const AuthLoading = () => {
   const {
     params: { code, redi_url }
   } = $instance.router
+
+  const { getUserInfo } = useLogin()
 
   const getIsNew = async () => {
     const {
@@ -26,7 +29,9 @@ const AuthLoading = () => {
         url
       })
     } else {
-      setTokenAndRedirect(token)
+      setTokenAndRedirect(token, async () => {
+        await getUserInfo()
+      })
     }
   }
 

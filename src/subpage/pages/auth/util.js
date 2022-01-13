@@ -17,12 +17,13 @@ function setToken (token = '') {
 }
 
 //设置token并跳转
-function setTokenAndRedirect (token = '') {
+async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
   const hasToken = setToken(token)
 
   const $instance = this ? this.$instance : getCurrentInstance()
   const router = $instance.router
   if (hasToken) {
+    await tokenSetSuccessCallback?.()
     const { redi_url } = router.params
     const url = redi_url ? decodeURIComponent(redi_url) : process.env.APP_HOME_PAGE
 
