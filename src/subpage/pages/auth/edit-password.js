@@ -37,6 +37,10 @@ const PageEditPassword = () => {
   const { getUserInfo } = useLogin()
 
   const handleSubmit = async () => {
+    if (!validate.isPassword(password) || !validate.isPassword(repassword)) {
+      return showToast('密码格式不正确')
+    }
+
     if (password !== repassword) {
       return showToast('2次输入密码不一致!')
     }

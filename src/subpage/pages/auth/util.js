@@ -26,10 +26,11 @@ async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
     await tokenSetSuccessCallback?.()
     const { redi_url } = router.params
     const url = redi_url ? decodeURIComponent(redi_url) : process.env.APP_HOME_PAGE
-
-    Taro.redirectTo({
-      url
-    })
+    // debugger;
+    window.location.href = `http://ecshopx-h5.ex-sandbox.com${url}`
+    // Taro.redirectTo({
+    //   url
+    // })
   }
 }
 

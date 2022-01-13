@@ -22,9 +22,6 @@ const initialValue = {
 
 const PageBindPhone = () => {
   const $instance = getCurrentInstance()
-
-  console.log('====$instance', getCurrentPages())
-
   const {
     params: { unionid, redi_url }
   } = $instance.router
@@ -94,7 +91,7 @@ const PageBindPhone = () => {
 
   useEffect(() => {
     getImageVcode()
-    pushHistory('/subpage/pages/auth/login', '/subpage/pages/auth/bindPhone', '绑定手机号')
+    //pushHistory('/subpage/pages/auth/login', '/subpage/pages/auth/bindPhone', '绑定手机号')
   }, [])
 
   const handleClickLeft = () => {
