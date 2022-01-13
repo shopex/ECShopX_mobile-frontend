@@ -1,7 +1,46 @@
 .page-item-espierdetail {
+  .goods-pic-container {
+    position: relative;
+  }
   .goods-swiper {
     height: 750px;
     margin-bottom: 24px;
+  }
+  .video-container {
+    height: 100%;
+    position: relative;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    background: #000;
+    .item-video {
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      // height: auto;
+    }
+    .btn-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  .swiper-pagegation {
+    position: absolute;
+    right: 20rpx;
+    bottom: 20rpx;
+    display: inline-block;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    font-size: 22px;
+    border-radius: 14px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 6px;
+    opacity: .5;
   }
 
   .price-block {
@@ -35,36 +74,73 @@
     box-shadow: 0px 2px 10px 0px #eae7e0;
   }
 
-  .vip-value {
-    display: flex;
-    align-items: center;
-  }
-  .vip-desc {
-    color: var(--color-primary);
-    font-size: 24px;
-  }
-  .vip-label {
-    width: 109px;
-    height: 46px;
-    line-height: 46px;
-    background: var(--color-primary);
-    text-align: center;
-    color: #fff;
-    font-size: 24px;
-    margin-right: 16px;
-  }
-
-  .vip-zhekou {
-    color: var(--color-primary);
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-
   .goods-name {
     font-size: 32px;
     font-weight: 500;
-    color: #222222;
+    color: #222;
     line-height: 48px;
+  }
+
+  .goods-name-wrap {
+    display: flex;
+    align-items: center;
+    margin-top: 32px;
+    .goods-name {
+      @include multi-ellipsis(2);
+      height: 95px;
+      font-size: 32px;
+      font-weight: 500;
+      color: #222;
+      width: 600px;
+    }
+    .btn-share {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .icon-fenxiang-01 {
+      font-size: 38px;
+      color: #222;
+    }
+    .share-txt {
+      color: #999;
+      font-size: 22px;
+    }
+  }
+
+  .goods-desc {
+    margin: 24px 16px;
+    background-color: #fff;
+    box-shadow: 0px 2px 10px 0px #eae7e0;
+    .desc-hd {
+      height: 80px;
+      text-align: center;
+      line-height: 80px;
+    }
+    .desc-title {
+      color: #222;
+      position: relative;
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 16px;
+        height: 2px;
+        background: #222;
+        top: 20px;
+        left: -24px;
+      }
+      &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 18px;
+        height: 2px;
+        background: #222;
+        top: 20px;
+        right: -24px;
+      }
+    }
   }
 }

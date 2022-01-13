@@ -43,6 +43,7 @@ import SpRecommend from './sp-recommend'
 import SpTabs from './sp-tabs'
 import SpTimer from './sp-timer'
 import SpCell from './sp-cell'
+import SpHtml from './sp-html'
 import SpHtmlContent from './html-content'
 import SpNote from './sp-note'
 import SpSearch from './sp-search'
@@ -118,6 +119,7 @@ export {
   SpTabs,
   SpTimer,
   SpCell,
+  SpHtml,
   SpHtmlContent,
   SpNote,
   SpSearch,

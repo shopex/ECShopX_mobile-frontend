@@ -1,17 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import {
-  View,
-  Text,
-  ScrollView,
-  Swiper,
-  SwiperItem,
-  Image,
-  Video,
-  Canvas,
-  RichText
-} from '@tarojs/components'
+import { View, Text, Swiper, SwiperItem, Video } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { AtCountdown } from 'taro-ui'
 import {
@@ -64,15 +54,22 @@ import {
   GroupingItem
 } from './comps'
 import CompVipGuide from './comps/comp-vipguide'
-import CompCompList from './comps/comp-couponlist'
+import CompCouponList from './comps/comp-couponlist'
+import CompStore from './comps/comp-store'
+import CompEvaluation from './comps/comp-evaluation'
+import CompBuytoolbar from './comps/comp-buytoolbar'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
 
 const initialState = {
   info: null,
+  video: null,
+  curImgIdx: 0,
   isDefault: false,
-  defaultMsg: ''
+  defaultMsg: '',
+  evaluationList: [],
+  evaluationTotal: 0
 }
 
 function EspierDetail (props) {
@@ -80,10 +77,11 @@ function EspierDetail (props) {
   const { type, id } = $instance.router.params
 
   const [state, setState] = useImmer(initialState)
-  const { info, isDefault, defaultMsg } = state
+  const { info, video, isDefault, defaultMsg, evaluationList } = state
 
   useEffect(() => {
     fetch()
+    getEvaluationList()
   }, [])
 
   const fetch = async () => {
@@ -104,33 +102,104 @@ function EspierDetail (props) {
       }
     }
 
-    setState((draft) => {
-      draft.info = data
-    })
-
     // 是否订阅
-    const { user_id: subscribe } = await api.user.isSubscribeGoods(id)
+    const { user_id: subscribe = false } = await api.user.isSubscribeGoods(id)
+
+    setState((draft) => {
+      draft.info = {
+        ...data,
+        subscribe
+      }
+    })
+  }
+
+  const getEvaluationList = async () => {
+    const { id } = $instance.router.params
+    const { list, total_count } = await api.item.evaluationList({
+      page: 1,
+      pageSize: 2,
+      item_id: id
+    })
+    setState((draft) => {
+      draft.evaluationList = list
+      draft.evaluationTotal = total_count
+    })
   }
 
   // 领券
   const onChangeGetCoupon = () => {}
 
+  const onChangeSwiper = (e) => {
+    setState((draft) => {
+      draft.curImgIdx = e.detail.current
+    })
+  }
+
+  const handlePlayVideo = () => {
+    const video = Taro.createVideoContext('goods-video')
+    video.play()
+  }
+
+  const { windowWidth } = Taro.getSystemInfoSync()
+
   return (
-    <SpPage className='page-item-espierdetail' isDefault={isDefault} defaultMsg={defaultMsg}>
+    <SpPage
+      className='page-item-espierdetail'
+      isDefault={isDefault}
+      defaultMsg={defaultMsg}
+      renderFooter={<CompBuytoolbar info={info} />}
+    >
       {!info && <SpLoading />}
       {info && (
         <View>
-          <Swiper
-            className='goods-swiper'
-            // current={curImgIdx}
-            // onChange={this.handleSwiperChange}
-          >
-            {info.imgs.map((img, idx) => (
-              <SwiperItem key={`swiperitem__${idx}`}>
-                <SpImage mode='aspecFill' src={img} width={750} height={750}></SpImage>
-              </SwiperItem>
-            ))}
-          </Swiper>
+          <View className='goods-pic-container'>
+            <Swiper
+              className='goods-swiper'
+              // current={curImgIdx}
+              onChange={onChangeSwiper}
+            >
+              {info.video && (
+                <SwiperItem key='swiperitem__0'>
+                  <View className='video-container'>
+                    {/* 默认商品背景图 */}
+                    <SpImage
+                      mode='aspecFill'
+                      src={info.imgs[0]}
+                      width={windowWidth * 2}
+                      height={windowWidth * 2}
+                    ></SpImage>
+                    <SpImage
+                      className='btn-play'
+                      mode='aspecFill'
+                      src='play.png'
+                      width={110}
+                      height={110}
+                      onClick={handlePlayVideo}
+                    ></SpImage>
+                    <Video
+                      id='goods-video'
+                      className='item-video'
+                      controls={false}
+                      src={info.video}
+                      showCenterPlayBtn={false}
+                    />
+                  </View>
+                </SwiperItem>
+              )}
+
+              {info.imgs.map((img, idx) => (
+                <SwiperItem key={`swiperitem__${idx + 1}`}>
+                  <SpImage
+                    mode='aspecFill'
+                    src={img}
+                    width={windowWidth * 2}
+                    height={windowWidth * 2}
+                  ></SpImage>
+                </SwiperItem>
+              ))}
+            </Swiper>
+            <View className='swiper-pagegation'>1/9</View>
+          </View>
 
           <View className='goods-info'>
             <View className='price-block'>
@@ -147,28 +216,36 @@ function EspierDetail (props) {
               }}
             />
 
-            <CompCompList info={info.couponList} onChange={onChangeGetCoupon} />
+            <CompCouponList
+              info={
+                info.couponList.list.length > 3
+                  ? info.couponList.list.slice(0, 3)
+                  : info.couponList.list
+              }
+              onChange={onChangeGetCoupon}
+            />
 
-            {/* <View>
-              <View className="coupon-list"></View>
-              <View className="coupon-get">
-                领券<Text className="iconfont"></Text>
+            <View className='goods-name-wrap'>
+              <View className='goods-name'>{info.itemName}</View>
+              <View className='btn-share'>
+                <Text className='iconfont icon-fenxiang-01'></Text>
+                <Text className='share-txt'>分享</Text>
               </View>
             </View>
-            <View>
-              <View className="goods-name">{info.itemName}</View>
-              <View className="goods-share">
-                <Text className="iconfont"></Text>
-                <Text>分享</Text>
-              </View>
-            </View> */}
           </View>
 
           <View className='goods-sku'></View>
 
-          <View className='goods-rate'></View>
+          <CompEvaluation list={evaluationList}></CompEvaluation>
 
-          <View className='goods-desc'></View>
+          <CompStore info={info.distributorInfo} />
+
+          <View className='goods-desc'>
+            <View className='desc-hd'>
+              <Text className='desc-title'>宝贝详情</Text>
+            </View>
+            <SpHtml content={info.intro} />
+          </View>
         </View>
       )}
       <View></View>

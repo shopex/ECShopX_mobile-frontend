@@ -75,8 +75,14 @@ export const ITEM_LIST_GOODS = {
 }
 
 export const GOODS_INFO = {
+  itemName: 'itemName',
   imgs: 'pics',
   memberPrice: 'member_price',
   vipgradeGuideTitle: 'vipgrade_guide_title',
-  couponList: 'kaquan_list'
+  couponList: 'kaquan_list',
+  store: 'store',
+  isGift: 'is_gift',
+  intro: 'intro',
+  distributorInfo: 'distributor_info',
+  video: 'videos'
 }
