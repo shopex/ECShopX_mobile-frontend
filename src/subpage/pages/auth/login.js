@@ -117,6 +117,9 @@ export default class Login extends Component {
 
     try {
       const { token, is_new, error_message } = await api.wx.newloginh5(params)
+      if (error_message) {
+        showToast(error_message)
+      }
       if (is_new) {
         //验证码登陆才会记录
         if (loginType == 2) {
@@ -127,7 +130,6 @@ export default class Login extends Component {
             }
           })
         }
-        showToast(error_message)
       } else {
         this.setState({
           isSetPhone: null

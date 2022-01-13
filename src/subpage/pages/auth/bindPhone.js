@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
 import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
 import { useImmer } from 'use-immer'
-import { setTokenAndRedirect } from './util'
+import { setTokenAndRedirect, pushHistory } from './util'
 import './bindPhone.scss'
 
 const SYMBOL = 'login'
@@ -19,8 +19,10 @@ const initialValue = {
   imgInfo: null
 }
 
-const Reg = () => {
+const PageBindPhone = () => {
   const $instance = getCurrentInstance()
+
+  console.log('====$instance', getCurrentPages())
 
   const {
     params: { unionid, redi_url }
@@ -87,7 +89,14 @@ const Reg = () => {
 
   useEffect(() => {
     getImageVcode()
+    pushHistory('/subpage/pages/auth/login', '/subpage/pages/auth/bindPhone', '绑定手机号')
   }, [])
+
+  const handleClickLeft = () => {
+    Taro.redirectTo({
+      url: `/subpage/pages/auth/login?redirect=${redi_url}`
+    })
+  }
 
   //全填写完
   const isFull = username && yzm && vcode
@@ -97,6 +106,7 @@ const Reg = () => {
       className={classNames('page-auth-bindphone', {
         'is-full': isFull
       })}
+      onClickLeftIcon={handleClickLeft}
     >
       <View className='auth-hd'>
         <View className='title'>手机号绑定</View>
@@ -166,4 +176,4 @@ const Reg = () => {
   )
 }
 
-export default Reg
+export default PageBindPhone

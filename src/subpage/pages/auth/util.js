@@ -32,4 +32,22 @@ function setTokenAndRedirect (token = '') {
   }
 }
 
-export { navigationToReg, setToken, setTokenAndRedirect }
+/*-----监听返回事件-----*/
+function pushHistory (returnUrl, currentUrl, currentTitle) {
+  window.addEventListener(
+    'popstate',
+    function (e) {
+      console.log('====popstate===>', e)
+      window.location.href = returnUrl
+      //window.location.replace(returnUrl);
+    },
+    false
+  )
+  // var state = {
+  //   title: currentTitle,
+  //   url: currentUrl
+  // };
+  // window.history.pushState(state, currentTitle, currentUrl);
+}
+
+export { navigationToReg, setToken, setTokenAndRedirect, pushHistory }
