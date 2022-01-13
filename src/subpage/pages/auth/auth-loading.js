@@ -3,7 +3,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { SpPage, SpLoading } from '@/components'
 import { classNames } from '@/utils'
 import api from '@/api'
-import { setTokenAndRedirect } from './util'
+import { setTokenAndRedirect, getToken } from './util'
 import { useLogin } from '@/hooks'
 import './auth-loading.scss'
 
@@ -36,6 +36,11 @@ const AuthLoading = () => {
   }
 
   useEffect(() => {
+    let token = getToken()
+    if (token) {
+      setTokenAndRedirect(token)
+      return
+    }
     getIsNew()
   }, [])
 

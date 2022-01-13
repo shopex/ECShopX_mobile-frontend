@@ -16,6 +16,10 @@ function setToken (token = '') {
   }
 }
 
+function getToken () {
+  return S.getAuthToken()
+}
+
 //设置token并跳转
 async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
   const hasToken = setToken(token)
@@ -27,10 +31,11 @@ async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
     const { redi_url } = router.params
     const url = redi_url ? decodeURIComponent(redi_url) : process.env.APP_HOME_PAGE
     // debugger;
-    // window.location.href = `${window.location.origin}${url}`
-    Taro.reLaunch({
-      url
-    })
+    window.location.href = `${window.location.origin}${url}`
+    // window.location.replace(url)
+    // Taro.reLaunch({
+    //   url
+    // })
     // Taro.redirectTo({
     //   url
     // })
@@ -55,4 +60,4 @@ function pushHistory (returnUrl, currentUrl, currentTitle) {
   // window.history.pushState(state, currentTitle, currentUrl);
 }
 
-export { navigationToReg, setToken, setTokenAndRedirect, pushHistory }
+export { navigationToReg, setToken, setTokenAndRedirect, pushHistory, getToken }
