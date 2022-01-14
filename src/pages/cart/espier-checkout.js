@@ -40,7 +40,8 @@ const initialState = {
   invoiceTitle: '', // 发票抬头
   isNeedPackage: false, // 是否需要打包
   packInfo: {}, // 打包信息
-  disabledPayment: {} // 是否禁用支付
+  disabledPayment: {}, // 是否禁用支付
+  channel: ''
 }
 
 function CartCheckout (props) {
@@ -123,6 +124,7 @@ function CartCheckout (props) {
   const handlePaymentChange = async (payType, channel) => {
     setState((draft) => {
       draft.payType = payType
+      draft.channel = channel
     })
   }
 
