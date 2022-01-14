@@ -19,14 +19,18 @@
   }
   .goods-item-wrap {
     width: 50%;
+    padding: 6px;
     margin-bottom: 28px;
     box-sizing: border-box;
-    &:nth-child(2n + 1) {
-      padding-right: 14px;
+    &.three-inrow{
+      width: 33.3333%;
     }
-    &:nth-child(2n) {
-      padding-left: 14px;
-    }
+    // &:nth-child(2n + 1) {
+    //   padding-right: 14px;
+    // }
+    // &:nth-child(2n) {
+    //   padding-left: 14px;
+    // }
     .sp-goods-item {
       border-radius: 16px;
       overflow: hidden;
