@@ -34,7 +34,7 @@ function WgtGoodsGrid (props) {
       <View className='wgt-body'>
         <View className='wgt-goods-grid-list'>
           {goods.map((item, idx) => (
-            <View className={classNames('goods-item-wrap ',config.style==='grids' && 'three-inrow')} key={`goods-item-wrap__${idx}`}>
+            <View className={classNames('goods-item-wrap ',config.style==='grids' ? 'three-inrow':'two-inrow')} key={`goods-item-wrap__${idx}`}>
               <SpGoodsItem info={item} />
             </View>
           ))}
