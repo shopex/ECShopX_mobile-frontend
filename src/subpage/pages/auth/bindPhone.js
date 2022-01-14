@@ -17,7 +17,11 @@ const initialValue = {
   check_type: SYMBOL,
   yzm: '',
   vcode: '',
-  imgInfo: null
+  imgInfo: null,
+  //默认不是新用户
+  is_new: false,
+  password: '',
+  repassword: ''
 }
 
 const PageBindPhone = () => {
@@ -26,11 +30,9 @@ const PageBindPhone = () => {
     params: { unionid, redi_url }
   } = $instance.router
 
-  const { getUserInfo } = useLogin()
-
   const [state, setState] = useImmer(initialValue)
 
-  const { username, yzm, vcode, check_type, imgInfo } = state
+  const { username, yzm, vcode, check_type, imgInfo, is_new, password, repassword } = state
 
   const handleInputChange = (name) => (val) => {
     setState((state) => {
@@ -69,40 +71,61 @@ const PageBindPhone = () => {
   }
 
   const handleSubmit = async () => {
-    let url = ''
-
-    const { is_new } = await api.wx.getIsNew({ mobile: username })
+    try {
+      const { token, is_new, error_message, pre_login_data } = await api.user.bind({
+        username,
+        check_type,
+        vcode,
+        union_id: unionid
+      })
+      if (error_message) {
+        showToast(error_message)
+      }
+      if (is_new) {
+        setToken(token)
+        Taro.navigateTo({
+          url: `/subpage/pages/auth/edit-password?phone=${pre_login_data.mobile}`
+        })
+      } else {
+        const self = this
+        setTokenAndRedirect(token, async () => {
+          await self.handleUpdateUserInfo()
+        }).bind(self)
+      }
+    } catch (e) {
+      console.log(e)
+    }
 
     //如果是新用户
-    if (is_new === 1) {
-      const { status } = await api.user.checkSmsCode({
-        vcode,
-        check_type: SYMBOL,
-        mobile: username
-      })
-      //验证码错误
-      if (status === 0) {
-        showToast('手机验证码输入有误')
-        getImageVcode()
-        setState((_state) => {
-          _state.yzm = ''
-          _state.vcode = ''
-        })
-        return
-      } else {
-        url = `/subpage/pages/auth/edit-password?phone=${username}&unionid=${unionid}&redi_url=${redi_url}`
-        Taro.redirectTo({
-          url
-        })
-      }
-    } else {
-      url = process.env.APP_HOME_PAGE
-      const { token } = await api.user.bind({ username, check_type, vcode, union_id: unionid })
-      await setTokenAndRedirect(token, async () => {
-        await getUserInfo()
-      })
-      return
-    }
+    // if (is_new === 1) {
+    //   const { status } = await api.user.checkSmsCode({
+    //     vcode,
+    //     check_type: SYMBOL,
+    //     mobile: username
+    //   })
+    //   //验证码错误
+    //   if (status === 0) {
+    //     showToast('手机验证码输入有误')
+    //     getImageVcode()
+    //     setState((_state) => {
+    //       _state.yzm = ''
+    //       _state.vcode = ''
+    //     })
+    //     return
+    //   } else {
+    //     url = `/subpage/pages/auth/edit-password?phone=${username}&unionid=${unionid}&redi_url=${redi_url}`
+    //     Taro.redirectTo({
+    //       url
+    //     })
+    //   }
+    // } else {
+    //   url = process.env.APP_HOME_PAGE
+    //   const { token } = await api.user.bind({ username, check_type, vcode, union_id: unionid })
+    //   await setTokenAndRedirect(token, async () => {
+    //     await getUserInfo()
+    //   })
+    //   return
+    // }
   }
 
   useEffect(() => {
@@ -114,6 +137,17 @@ const PageBindPhone = () => {
     Taro.redirectTo({
       url: `/subpage/pages/auth/login?redirect=${redi_url}`
     })
+  }
+
+  const handlePhoneBlur = async (mobile) => {
+    if (mobile) {
+      const { is_new } = await api.wx.getIsNew({ mobile })
+      if (is_new === 1) {
+        setState((_state) => {
+          _state.is_new = true
+        })
+      }
+    }
   }
 
   //全填写完
@@ -141,6 +175,7 @@ const PageBindPhone = () => {
               value={username}
               placeholder='请输入您的手机号码'
               onChange={handleInputChange('username')}
+              onBlur={handlePhoneBlur}
             />
           </View>
 
@@ -176,6 +211,35 @@ const PageBindPhone = () => {
               <SpTimer onStart={handleTimerStart} />
             </View>
           </View>
+
+          {is_new && (
+            <View className='form-field'>
+              <AtInput
+                clear
+                type='password'
+                name='mobile'
+                maxLength={11}
+                type='tel'
+                value={password}
+                placeholder='请输入密码'
+                onChange={handleInputChange('password')}
+              />
+            </View>
+          )}
+
+          {is_new && (
+            <View className='form-field'>
+              <AtInput
+                clear
+                name='mobile'
+                maxLength={11}
+                type='tel'
+                value={repassword}
+                placeholder='再次输入密码'
+                onChange={handleInputChange('repassword')}
+              />
+            </View>
+          )}
 
           <View className='form-submit'>
             <AtButton
