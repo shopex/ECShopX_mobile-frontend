@@ -21,7 +21,7 @@
   }
 }
 
-.category-nav {
+.category-nav-cpn {
   &__content {
     width: 160px;
     height: 95px;
@@ -29,26 +29,16 @@
     white-space: nowrap;
     font-size: 26px;
     text-overflow: ellipsis;
-    border-left: 7px solid transparent;
     line-height: 95px;
     margin: 0 auto;
+  }
+  &__content-active {
+    transition: background-color 0.5s, border-left .1s;
     box-sizing: border-box;
-    border-top: 1px solid #e7e8ea;
-    background-color: #f5f5f5;
-  }
-  &__content:first-child {
-    border-top: 0;
-  }
-  &__content-checked {
-    transition: background-color 0.5s, border-left 0.5s;
     width: 100%;
-    color: #3e4044;
-    background-color: #fff;
-    box-sizing: border-box;
-    border-top: 1px solid transparent;
-  }
-  &__content-checked + &__content {
-    border-top: 1px solid transparent;
+    color: #d92128;
+    background-color: #f5f5f5;
+    // margin: 0;
   }
   .hot-tag {
     display: inline-block;

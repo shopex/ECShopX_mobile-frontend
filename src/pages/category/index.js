@@ -13,7 +13,8 @@ import Series from './comps/series'
 import './index.scss'
 
 const initialState = {
-  activeIndex: 0,
+  currentList:[], //当前系列
+  activeIndex: 0, 
   tabList: [], // 横向tab //
   contentList: [],
   hasSeries:false,  //是否有多级
@@ -22,6 +23,7 @@ const initialState = {
 const Category = (props) => {
 
   const [state, setState] = useImmer(initialState);
+  const {currentList,activeIndex, tabList,contentList,hasSeries}  = state
   // 获取数据
   useEffect(() => {
     getConfig()
@@ -33,7 +35,7 @@ const Category = (props) => {
     let seriesList = list[0] ? list[0].params.data : []
     let tabList = []
     let contentList = []
-  
+    // 说明有多系列
     if (list[0].params.hasSeries) {
       seriesList.map((item) => {
         tabList.push({ title: item.title, status: item.name })
@@ -45,9 +47,9 @@ const Category = (props) => {
     console.log('tabList====',tabList);
 
     console.log('contentList====',contentList);
-    const curIndexList = contentList[state.activeIndex]
-    console.log('curIndexList ====', curIndexList);
-    const nList = pickBy(curIndexList, {
+    let currentList = contentList[activeIndex]  //当前系列内容
+    console.log('currentList ====', currentList);
+    currentList = pickBy(currentList, {
       name: 'name',
       img: 'img',
       children: 'children',
@@ -58,15 +60,41 @@ const Category = (props) => {
         v.tabList = tabList,
         v.contentList = contentList,
         v.hasSeries = true,
-        v.list = nList
+        v.currentList = currentList
     })
 
   }
 
+  const fnSwitchSeries = (index)=>{
+    setState((v)=>{
+      v.activeIndex = index
+    })
+    console.log(index);
+  }
+
 
   return (
-    <View>
-      <View>category</View>
+    <View className='page-category-index'>
+      {
+        state.tabList.length > 0 ?
+        (<AtTabs current={state.activeIndex} tabList={state.tabList} onClick={fnSwitchSeries}>
+          {
+            state.tabList.map((item,index)=>{
+              return (
+                <AtTabsPane current={state.activeIndex}  index={index} key={item.status}>
+
+                </AtTabsPane>
+              )
+            })
+          }
+
+        </AtTabs>):<View>none</View>
+      }
+      <View  className={`${
+            hasSeries && tabList.length !== 0 ? 'category-comps' : 'category-comps-not'
+          }`}>
+        <Series info={state.currentList} />
+      </View>
     </View>
   )
 }

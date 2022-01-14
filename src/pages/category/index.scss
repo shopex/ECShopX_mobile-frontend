@@ -4,6 +4,9 @@
   width: 100%;
   height: 100vh;
   background: #ffffff;
+  .at-tabs{
+    height: auto;
+  }
   .search-input-fixed {
     z-index: $z-index-toolbar + 1;
   }
