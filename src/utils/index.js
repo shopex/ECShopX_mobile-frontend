@@ -376,10 +376,19 @@ const getUrl = (url) => {
   return `${hrefList[0]}//${hrefList[2]}${url}`
 }
 
+export function tokenParseH5 (token) {
+  try {
+    let base64Url = token.split('.')[1]
+    return JSON.parse(atob(base64Url))
+  } catch (e) {
+    return {}
+  }
+}
+
 export function tokenParse (token) {
   var base64Url = token.split('.')[1]
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-  console.log('Taro.base64ToArrayBuffer', Taro)
+  console.log('Taro.base64ToArrayBuffer', base64)
   var arr_base64 = Taro.base64ToArrayBuffer(base64)
   arr_base64 = String.fromCharCode.apply(null, new Uint8Array(arr_base64))
   var jsonPayload = decodeURIComponent(

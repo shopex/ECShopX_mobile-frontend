@@ -47,13 +47,11 @@ const PageEditPassword = () => {
 
     //微信登陆绑定逻辑
     if (unionid) {
-      const { token } = await api.user.bind({ username: phone, password, union_id: unionid })
-
-      await setTokenAndRedirect(token, async () => {
-        await getUserInfo()
-      })
+      // const { token } = await api.user.bind({ username: phone, password, union_id: unionid })
+      // await setTokenAndRedirect(token, async () => {
+      //   await getUserInfo()
+      // })
     } else {
-      //从登陆页跳转过来
       const { user_id } = await api.user.forgotPwd({
         mobile: phone,
         password
