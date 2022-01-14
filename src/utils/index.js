@@ -622,6 +622,30 @@ export function exceedLimit ({ size: fileSize }) {
   return size > 2
 }
 
+function isBase64 (str) {
+  if (str.indexOf('data:') != -1 && str.indexOf('base64') != -1) {
+    return true
+  } else {
+    return false
+  }
+}
+
+//判断是否是商家入驻
+const isMerchantModule = (() => {
+  if (!isWeb) return false
+  return /\/subpages\/merchant/.test(location.pathname)
+})()
+
+function isUndefined (val) {
+  return typeof val === 'undefined'
+}
+
+// 查询商家是否可用
+const merchantIsvaild = async (parmas) => {
+  const { status } = await api.distribution.merchantIsvaild(parmas)
+  return status
+}
+
 export {
   classNames,
   log,
@@ -635,7 +659,11 @@ export {
   validate,
   checkAppVersion,
   linkPage,
-  redirectUrl
+  redirectUrl,
+  isBase64,
+  isMerchantModule,
+  isUndefined,
+  merchantIsvaild
 }
 
 export * from './platforms'

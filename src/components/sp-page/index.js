@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro, { usePageScroll, getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpNavBar, SpFloatMenuItem } from '@/components'
+import { SpNavBar, SpFloatMenuItem, SpNote } from '@/components'
 import { TABBAR_PATH } from '@/consts'
 import { classNames, styleNames, hasNavbar } from '@/utils'
 
@@ -10,9 +10,19 @@ import './index.scss'
 
 function SpPage (props) {
   console.log(getCurrentInstance())
-  const { page, router } = getCurrentInstance()
+  const { page, router = {} } = getCurrentInstance()
   // debugger
-  const { className, children, renderFloat, renderFooter, scrollToTopBtn = false } = props
+  const {
+    className,
+    children,
+    renderFloat,
+    renderFooter,
+    scrollToTopBtn = false,
+    isDefault = false,
+    defaultMsg = '',
+    navbar = true,
+    onClickLeftIcon = null
+  } = props
   const sys = useSelector((state) => state.sys)
   const [showToTop, setShowToTop] = useState(false)
   const { colorPrimary, colorMarketing, colorAccent, rgb } = sys
@@ -37,18 +47,21 @@ function SpPage (props) {
       scrollTop: 0
     })
   }
-  const fidx = Object.values(TABBAR_PATH).findIndex((v) => v == router.path.split('?')[0])
+  const fidx = router && Object.values(TABBAR_PATH).findIndex((v) => v == router.path.split('?')[0])
   const isTabBarPage = fidx > -1
   return (
     <View
       className={classNames('sp-page', className, {
-        'has-navbar': hasNavbar && !isTabBarPage,
+        'has-navbar': hasNavbar && !isTabBarPage && navbar,
         'has-footer': renderFooter
       })}
       style={styleNames(pageTheme)}
     >
-      {hasNavbar && !isTabBarPage && <SpNavBar />}
-      <View className='sp-page-body'>{children}</View>
+      {hasNavbar && !isTabBarPage && navbar && <SpNavBar onClickLeftIcon={onClickLeftIcon} />}
+
+      {isDefault && <SpNote img='empty_data.png' title={defaultMsg} />}
+
+      {!isDefault && <View className='sp-page-body'>{children}</View>}
 
       {/* 置底操作区 */}
       {renderFooter && <View className='sp-page-footer'>{renderFooter}</View>}

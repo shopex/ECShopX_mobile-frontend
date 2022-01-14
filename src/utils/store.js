@@ -12,7 +12,7 @@ export function JumpStoreIndex (info) {
 
 //跳转到首页
 export function JumpPageIndex () {
-  Taro.navigateTo({ url: `/pages/index` })
+  Taro.redirectTo({ url: `/pages/index` })
 }
 
 //跳转到商品详情页
