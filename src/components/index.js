@@ -32,6 +32,7 @@ import SpPrivacyModal from './sp-privacy-modal'
 import SpLogin from './sp-login'
 import SpTabbar from './sp-tabbar'
 import SpGoodsItem from './sp-goods-item'
+import SpGoodsCell from './sp-goods-cell'
 import SpPrice from './sp-price'
 import SpPoint from './sp-point'
 import SpPage from './sp-page'
@@ -108,6 +109,7 @@ export {
   SpLogin,
   SpTabbar,
   SpGoodsItem,
+  SpGoodsCell,
   SpPrice,
   SpPoint,
   SpPage,

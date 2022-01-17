@@ -6,7 +6,7 @@ function SpHtml (props) {
   const { content = '' } = props
   const _content = content
     .replace(/\s+style="[^"]*"/g, '')
-    .replace(/<img/g, '<img style="max-width:100%;height:auto;display: block;"')
+    .replace(/<img/g, '<img style="width:100%;height:auto;display: block;"')
   console.log('content:', _content)
   return (
     <View className='sp-html'>

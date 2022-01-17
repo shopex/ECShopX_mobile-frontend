@@ -14,6 +14,10 @@ function CompVipGuide (props) {
     })
   }
 
+  if (!info.vipgrade_name) {
+    return null
+  }
+
   return (
     <View className='comp-vipguide'>
       <View className='vip-info'>
