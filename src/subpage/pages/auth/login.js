@@ -7,7 +7,7 @@ import { SpTimer, SpPage } from '@/components'
 import { updateUserInfo, fetchUserFavs } from '@/store/slices/user'
 import { connect } from 'react-redux'
 import api from '@/api'
-import { classNames, navigateTo, validate, showToast } from '@/utils'
+import { classNames, navigateTo, validate, showToast, tokenParseH5 } from '@/utils'
 import { navigationToReg, setToken, setTokenAndRedirect } from './util'
 import './login.scss'
 
@@ -108,6 +108,8 @@ export default class Login extends Component {
       }
       params['password'] = password
       params['check_type'] = 'password'
+      params['silent'] = 1
+      params['auto_register'] = 0
     } else {
       if (!validate.isRequired(vcode)) {
         showToast('请输入验证码')
@@ -115,21 +117,25 @@ export default class Login extends Component {
       }
       params['vcode'] = vcode
       params['check_type'] = 'mobile'
+      params['auto_register'] = 1
     }
 
     params['auth_type'] = 'local'
-    params['silent'] = 0
 
     try {
-      const { token, is_new, error_message, pre_login_data } = await api.wx.newloginh5(params)
-      if (error_message) {
-        showToast(error_message)
-      }
-      if (is_new) {
-        setToken(token)
-        Taro.navigateTo({
-          url: `/subpage/pages/auth/edit-password?phone=${pre_login_data.mobile}`
-        })
+      const { token } = await api.wx.newloginh5(params)
+
+      const { is_new } = tokenParseH5(token)
+
+      if (is_new === 1) {
+        if (loginType === 1) {
+          return showToast('当前手机号未注册，请先注册！')
+        } else {
+          setToken(token)
+          Taro.navigateTo({
+            url: `/subpage/pages/auth/edit-password?phone=${mobile}`
+          })
+        }
       } else {
         const self = this
         setTokenAndRedirect(token, async () => {
