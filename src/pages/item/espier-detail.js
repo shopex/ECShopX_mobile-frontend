@@ -14,10 +14,10 @@ import {
   SpToast,
   SpNavBar,
   GoodsBuyPanel,
-  SpCell,
   GoodsEvaluation,
   FloatMenuMeiQia,
   GoodsItem,
+  SpCell,
   SpImage,
   SpLoading,
   SpRecommend,
@@ -35,7 +35,9 @@ import {
   isAlipay,
   isWeixin,
   linkPage,
-  pickBy
+  pickBy,
+  classNames,
+  navigateTo
 } from '@/utils'
 import { setPageTitle } from '@/utils/platform'
 import doc from '@/doc'
@@ -68,6 +70,7 @@ const initialState = {
   play: false,
   isDefault: false,
   defaultMsg: '',
+  promotionPackage: [], // 组合优惠
   evaluationList: [],
   evaluationTotal: 0
 }
@@ -77,10 +80,11 @@ function EspierDetail (props) {
   const { type, id } = $instance.router.params
 
   const [state, setState] = useImmer(initialState)
-  const { info, play, isDefault, defaultMsg, evaluationList } = state
+  const { info, play, isDefault, defaultMsg, evaluationList, curImgIdx, promotionPackage } = state
 
   useEffect(() => {
     fetch()
+    getPackageList()
     getEvaluationList()
   }, [])
 
@@ -117,6 +121,9 @@ function EspierDetail (props) {
     // 是否订阅
     const { user_id: subscribe = false } = await api.user.isSubscribeGoods(id)
 
+    Taro.setNavigationBarTitle({
+      title: data.itemName
+    })
     setState((draft) => {
       draft.info = {
         ...data,
@@ -125,6 +132,15 @@ function EspierDetail (props) {
     })
   }
 
+  // 获取包裹
+  const getPackageList = async () => {
+    const { list } = await api.item.packageList({ item_id: id })
+    setState((draft) => {
+      draft.promotionPackage = list
+    })
+  }
+
+  // 获取评论
   const getEvaluationList = async () => {
     const { id } = $instance.router.params
     const { list, total_count } = await api.item.evaluationList({
@@ -139,7 +155,12 @@ function EspierDetail (props) {
   }
 
   // 领券
-  const onChangeGetCoupon = () => {}
+  const handleReceiveCoupon = () => {
+    const { item_id, distributor_id } = info
+    Taro.navigateTo({
+      url: `/others/pages/home/coupon-home?item_id=${item_id}&distributor_id=${distributor_id}`
+    })
+  }
 
   const onChangeSwiper = (e) => {
     setState((draft) => {
@@ -152,6 +173,7 @@ function EspierDetail (props) {
   return (
     <SpPage
       className='page-item-espierdetail'
+      scrollToTopBtn
       isDefault={isDefault}
       defaultMsg={defaultMsg}
       renderFooter={<CompBuytoolbar info={info} />}
@@ -177,6 +199,10 @@ function EspierDetail (props) {
               ))}
             </Swiper>
 
+            {info.imgs.length > 1 && (
+              <View className='swiper-pagegation'>{`${curImgIdx + 1}/${info.imgs.length}`}</View>
+            )}
+
             {info.video && play && (
               <View className='video-container'>
                 <Video
@@ -189,16 +215,18 @@ function EspierDetail (props) {
             )}
 
             <View
-              className='btn-video'
+              className={classNames('btn-video', {
+                playing: play
+              })}
               onClick={() => {
                 setState((draft) => {
                   play ? (draft.play = false) : (draft.play = true)
                 })
               }}
             >
+              {!play && <SpImage className='play-icon' src='play2.png' width={50} height={50} />}
               {play ? '退出视频' : '播放视频'}
             </View>
-            <View className='swiper-pagegation'>1/9</View>
           </View>
 
           <View className='goods-info'>
@@ -222,7 +250,7 @@ function EspierDetail (props) {
                   ? info.couponList.list.slice(0, 3)
                   : info.couponList.list
               }
-              onChange={onChangeGetCoupon}
+              onClick={handleReceiveCoupon}
             />
 
             <View className='goods-name-wrap'>
@@ -234,7 +262,37 @@ function EspierDetail (props) {
             </View>
           </View>
 
-          <View className='goods-sku'></View>
+          <View className='sku-block'>
+            <SpCell title='规格' isLink></SpCell>
+          </View>
+
+          <View className='sku-block'>
+            {promotionPackage.length > 0 && (
+              <SpCell
+                title='组合优惠'
+                isLink
+                onClick={navigateTo.bind(
+                  this,
+                  `/subpages/marketing/package-list?id=${info.itemId}&distributor_id=${info.distributorId}`
+                )}
+              >
+                {`共${promotionPackage.length}种组合随意搭配`}
+              </SpCell>
+            )}
+            <SpCell title='组合优惠' isLink value='共2种组合随意搭配'></SpCell>
+            <SpCell title='组合优惠' isLink value='共2种组合随意搭配'></SpCell>
+            <SpCell title='组合优惠' isLink value='共2种组合随意搭配'></SpCell>
+          </View>
+
+          <View className='goods-params'>
+            <View className='params-hd'>商品参数</View>
+            <View className='params-bd'>
+              <View className='params-item'>
+                <View className='params-label'>颜色</View>
+                <View className='params-value'>水晶石原色</View>
+              </View>
+            </View>
+          </View>
 
           <CompEvaluation list={evaluationList}></CompEvaluation>
 

@@ -75,6 +75,7 @@ export const ITEM_LIST_GOODS = {
 }
 
 export const GOODS_INFO = {
+  itemId: 'item_id',
   itemName: 'itemName',
   imgs: 'pics',
   memberPrice: 'member_price',
@@ -84,5 +85,6 @@ export const GOODS_INFO = {
   isGift: 'is_gift',
   intro: 'intro',
   distributorInfo: 'distributor_info',
+  distributorId: 'distributor_id',
   video: 'videos'
 }

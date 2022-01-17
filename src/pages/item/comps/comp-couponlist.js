@@ -6,7 +6,7 @@ import { SpPrice, SpLogin } from '@/components'
 import './comp-couponlist.scss'
 
 function CompCouponList (props) {
-  const { info } = props
+  const { info, onClick = () => {} } = props
   console.log(info)
   const onChangeLogin = () => {
     Taro.navigateTo({
@@ -29,7 +29,7 @@ function CompCouponList (props) {
           ))}
         </ScrollView>
       </View>
-      <View className='couponlist-ft'>
+      <View className='couponlist-ft' onClick={onClick}>
         领券<Text className='iconfont icon-qianwang-01'></Text>
       </View>
     </View>

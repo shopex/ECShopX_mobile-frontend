@@ -12,7 +12,6 @@ export default {
     'pages/item/list', // 商品列表页面
     'pages/item/espier-detail', // 商品详情页面
     'pages/item/item-params', // 商品参数详情页面
-    'pages/item/package-list', // 商品优惠组合详情页面
 
     'pages/article/index', // 文章页面
     'pages/recommend/list', // 推荐软文列表
@@ -24,12 +23,21 @@ export default {
   subPackages: [
     {
       root: 'subpages/ecshopx',
-      pages: ['nearly-shop', 'shop-list']
+      pages: [
+        'nearly-shop', // 店铺选择
+        'shop-list' // 商家列表
+      ]
     },
     {
       root: 'subpages/member',
       pages: [
         'index' // 会员中心
+      ]
+    },
+    {
+      root: 'subpages/marketing',
+      pages: [
+        'package-list' // 组合优惠
       ]
     },
     // {
