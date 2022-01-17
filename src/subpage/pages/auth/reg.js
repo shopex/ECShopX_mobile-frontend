@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import Taro from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
@@ -15,6 +16,8 @@ const initialValue = {
   imgInfo: null
 }
 
+const CODE_SYMBOL = 'sign'
+
 const Reg = () => {
   const [state, setState] = useImmer(initialValue)
 
@@ -27,20 +30,65 @@ const Reg = () => {
   }
 
   const getImageVcode = async () => {
-    const img_res = await api.user.regImg({ type: 'sign' })
+    const img_res = await api.user.regImg({ type: CODE_SYMBOL })
     setState((state) => {
       state.imgInfo = img_res
     })
   }
 
-  const handleTimerStart = () => {
+  const handleTimerStart = async (resolve) => {
     if (!validate.isMobileNum(mobile)) {
       showToast('请输入正确的手机号')
       return
     }
+    if (!validate.isRequired(yzm)) {
+      showToast('请输入图形验证码')
+      return
+    }
+    try {
+      await api.user.regSmsCode({
+        type: CODE_SYMBOL,
+        mobile: mobile,
+        yzm: yzm,
+        token: imgInfo.imageToken
+      })
+      showToast('验证码已发送')
+      resolve()
+    } catch (e) {
+      getImageVcode()
+    }
   }
 
-  const handleSubmit = () => {}
+  const handleSubmit = async () => {
+    if (!validate.isMobileNum(mobile)) {
+      showToast('请输入正确的手机号')
+      return
+    }
+    if (!validate.isRequired(vcode)) {
+      showToast('请输入验证码')
+      return
+    }
+    if (!validate.isRequired(password)) {
+      showToast('请输入密码')
+      return
+    }
+    try {
+      //从登陆页跳转过来
+      await api.user.reg({
+        auth_type: 'local',
+        check_type: CODE_SYMBOL,
+        mobile,
+        user_name: mobile,
+        password,
+        vcode,
+        sex: 0,
+        user_type: 'local'
+      })
+      Taro.navigateBack()
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   useEffect(() => {
     getImageVcode()
@@ -56,8 +104,7 @@ const Reg = () => {
       })}
     >
       <View className='auth-hd'>
-        <View className='title'>欢迎登录</View>
-        <View className='desc'>使用未注册的手机号注册</View>
+        <View className='title'>欢迎注册</View>
       </View>
       <View className='auth-bd'>
         <View className='form-title'>中国大陆 +86</View>
@@ -86,12 +133,8 @@ const Reg = () => {
               />
             </View>
             <View className='btn-field'>
-              {state.imgInfo && (
-                <Image
-                  className='image-vcode'
-                  src={state.imgInfo.imageData}
-                  onClick={getImageVcode}
-                />
+              {imgInfo && (
+                <Image className='image-vcode' src={imgInfo.imageData} onClick={getImageVcode} />
               )}
             </View>
           </View>
@@ -115,6 +158,7 @@ const Reg = () => {
             <View className='input-field'>
               <AtInput
                 clear
+                type='password'
                 name='password'
                 value={state.password}
                 placeholder='请输入密码'
@@ -136,7 +180,17 @@ const Reg = () => {
           </View>
 
           <View className='form-text'>
-            已阅读并同意<Text className='primary-color'>《注册协议》</Text>
+            已阅读并同意
+            <Text
+              className='primary-color'
+              onClick={() =>
+                Taro.navigateTo({
+                  url: '/subpage/pages/auth/reg-rule'
+                })
+              }
+            >
+              《注册协议》
+            </Text>
           </View>
         </AtForm>
       </View>
