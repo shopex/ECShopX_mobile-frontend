@@ -39,7 +39,7 @@ function SpOrderItem (props) {
   return (
     <View className='order-item' onClick={onClick}>
       <View className='order-item__hd'>
-        <SpImage src={img} width={170} />
+        <SpImage src={img} mode='aspectFill' width={170} height={170} />
       </View>
       <View className='order-item__bd'>
         {isShowPointTag && <SpPoint />}

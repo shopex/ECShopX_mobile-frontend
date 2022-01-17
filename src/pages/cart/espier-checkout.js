@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
-import { SpPage, SpPrice, SpCell, AddressChoose } from '@/components'
+import { SpPage, SpPrice, SpCell, SpOrderItem } from '@/components'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import api from '@/api'
@@ -54,6 +54,7 @@ function CartCheckout (props) {
   const { coupon } = useSelector((state) => state.cart)
 
   const {
+    detailInfo,
     payType,
     submitLoading,
     btnIsDisabled,
@@ -128,6 +129,85 @@ function CartCheckout (props) {
     })
   }
 
+  const handleRemarkChange = (val) => {
+    console.log(val, '---')
+  }
+
+  const goodsComp = () => {
+    return (
+      <View className='cart-list'>
+        {detailInfo.cart.map((cart) => {
+          return (
+            <View className='cart-checkout__group' key={cart.shop_id}>
+              <View className='cart-group__cont'>
+                {/* <View className='order-item__idx'>商品清单（{cart.list.length}）</View> */}
+                {cart.list.map((item, idx) => {
+                  return (
+                    <View className='order-item__wrap' key={item.item_id}>
+                      {item.order_item_type === 'gift' ? (
+                        <View className='order-item__idx'>
+                          <Text>赠品</Text>
+                        </View>
+                      ) : (
+                        <View className='order-item__idx national'>
+                          <Text>第{idx + 1}件商品</Text>
+                        </View>
+                      )}
+                      <SpOrderItem
+                        info={item}
+                        showExtra={false}
+                        showDesc
+                        isPointitemGood={isPointitemGood}
+                        renderDesc={
+                          <View className='order-item__desc'>
+                            {item.discount_info &&
+                              item.order_item_type !== 'gift' &&
+                              item.discount_info.map((discount) => (
+                                <Text className='order-item__discount' key={discount.type}>
+                                  {discount.info}
+                                </Text>
+                              ))}
+                          </View>
+                        }
+                        customFooter
+                        renderFooter={
+                          <View className='order-item__ft'>
+                            {isPointitemGood ? (
+                              <SpPrice
+                                className='order-item__price'
+                                appendText={pointName}
+                                noSymbol
+                                noDecimal
+                                value={item.item_point}
+                              />
+                            ) : (
+                              <SpPrice className='order-item__price' value={item.price || 1000} />
+                            )}
+                            <Text className='order-item__num'>x {item.num || 1}</Text>
+                          </View>
+                        }
+                      />
+                    </View>
+                  )
+                })}
+              </View>
+              <View className='cart-group__cont cus-input'>
+                <SpCell className='trade-remark' border={false}>
+                  <AtInput
+                    className='trade-remark__input'
+                    placeholder='给商家留言：选填（50字以内）'
+                    onChange={handleRemarkChange.bind(this)}
+                    maxLength={50}
+                  />
+                </SpCell>
+              </View>
+            </View>
+          )
+        })}
+      </View>
+    )
+  }
+
   const renderFooter = () => {
     return (
       <View className='checkout-toolbar'>
@@ -196,6 +276,7 @@ function CartCheckout (props) {
           onChangReceiptType={handleSwitchExpress}
         />
       </View>
+      {goodsComp()}
       {isWeixin && !isPointitemGood && totalInfo.invoice_status && (
         <SpCell
           isLink
@@ -241,7 +322,7 @@ function CartCheckout (props) {
       </View>
 
       {!isPointitemGood && (
-        <View className='sec cart-checkout__total'>
+        <View className='cart-checkout__total'>
           <SpCell className='trade-sub__item' title='商品金额：'>
             <SpPrice unit='cent' value={totalInfo.item_fee} />
           </SpCell>
