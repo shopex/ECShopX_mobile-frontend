@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
 import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
+import { useLogin } from '@/hooks'
 import api from '@/api'
 import { useImmer } from 'use-immer'
+import { setTokenAndRedirect, pushHistory } from './util'
 import './bindPhone.scss'
 
 const SYMBOL = 'login'
@@ -18,12 +20,13 @@ const initialValue = {
   imgInfo: null
 }
 
-const Reg = () => {
+const PageBindPhone = () => {
   const $instance = getCurrentInstance()
-
   const {
-    params: { unionid }
+    params: { unionid, redi_url }
   } = $instance.router
+
+  const { getUserInfo } = useLogin()
 
   const [state, setState] = useImmer(initialValue)
 
@@ -68,24 +71,50 @@ const Reg = () => {
   const handleSubmit = async () => {
     let url = ''
 
-    await api.user.bind({ username, check_type, vcode, union_id: unionid })
-
     const { is_new } = await api.wx.getIsNew({ mobile: username })
 
     //如果是新用户
     if (is_new === 1) {
-      url = '/subpage/pages/auth/edit-password'
+      const { status } = await api.user.checkSmsCode({
+        vcode,
+        check_type: SYMBOL,
+        mobile: username
+      })
+      //验证码错误
+      if (status === 0) {
+        showToast('手机验证码输入有误')
+        getImageVcode()
+        setState((_state) => {
+          _state.yzm = ''
+          _state.vcode = ''
+        })
+        return
+      } else {
+        url = `/subpage/pages/auth/edit-password?phone=${username}&unionid=${unionid}&redi_url=${redi_url}`
+        Taro.redirectTo({
+          url
+        })
+      }
     } else {
       url = process.env.APP_HOME_PAGE
+      const { token } = await api.user.bind({ username, check_type, vcode, union_id: unionid })
+      await setTokenAndRedirect(token, async () => {
+        await getUserInfo()
+      })
+      return
     }
-    Taro.redirectTo({
-      url
-    })
   }
 
   useEffect(() => {
     getImageVcode()
+    //pushHistory('/subpage/pages/auth/login', '/subpage/pages/auth/bindPhone', '绑定手机号')
   }, [])
+
+  const handleClickLeft = () => {
+    Taro.redirectTo({
+      url: `/subpage/pages/auth/login?redirect=${redi_url}`
+    })
+  }
 
   //全填写完
   const isFull = username && yzm && vcode
@@ -95,6 +124,7 @@ const Reg = () => {
       className={classNames('page-auth-bindphone', {
         'is-full': isFull
       })}
+      onClickLeftIcon={handleClickLeft}
     >
       <View className='auth-hd'>
         <View className='title'>手机号绑定</View>
@@ -164,4 +194,4 @@ const Reg = () => {
   )
 }
 
-export default Reg
+export default PageBindPhone

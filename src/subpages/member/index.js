@@ -1,4 +1,4 @@
-import Taro, { useShareAppMessage, useDidShow } from '@tarojs/taro'
+import Taro, { useShareAppMessage, getCurrentPages, getCurrentInstance } from '@tarojs/taro'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
 import { useSelector } from 'react-redux'
@@ -82,6 +82,7 @@ const initialState = {
 }
 
 function MemberIndex (props) {
+  console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const { isLogin, updatePolicyTime, getUserInfoAuth } = useLogin({
     autoLogin: true,
     policyUpdateHook: () => {
@@ -136,7 +137,9 @@ function MemberIndex (props) {
       // 积分商城
       await api.pointitem.getPointitemSetting()
     ])
-    let banner, menu, redirectInfo
+    let banner,
+      menu,
+      redirectInfo = {}
     if (bannerRes.list.length > 0) {
       const { app_id, is_show, login_banner, no_login_banner, page, url_is_open } =
         bannerRes.list[0].params.data
@@ -368,7 +371,7 @@ function MemberIndex (props) {
       </View>
 
       <View className='body-block'>
-        {config.banner.isShow && (
+        {config.banner?.isShow && (
           <CompBanner
             info={config.banner}
             src={isLogin ? config.banner.loginBanner : config.banner.noLoginBanner}

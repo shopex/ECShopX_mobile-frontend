@@ -1,4 +1,5 @@
 const phone_rule = /^1[3456789]\d{9}$/
+const password_rule = /^[(a-z|A-Z|0-9)]{6,16}$/
 const pass_rule = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,20}$/
 const num_rule = /^[0-9]*$/
 const letter_rule = /^[A-Za-z]+$/
@@ -8,6 +9,9 @@ const email_rule = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
 const validate = {
   isRequired: function (val) {
     return !(!val || val.length === 0)
+  },
+  isPassword: function (val) {
+    return password_rule.test(val)
   },
   isMobileNum: function (val) {
     return phone_rule.test(val)

@@ -4,12 +4,20 @@ import { View, Text, Image } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { CompOtherLogin } from './comps'
 import { SpTimer, SpPage } from '@/components'
+import { updateUserInfo, fetchUserFavs } from '@/store/slices/user'
+import { connect } from 'react-redux'
 import api from '@/api'
-import S from '@/spx'
+import qs from 'qs'
 import { classNames, navigateTo, validate, showToast } from '@/utils'
-import { navigationToReg } from './util'
+import { navigationToReg, setToken, setTokenAndRedirect } from './util'
 import './login.scss'
 
+@connect(
+  ({ colors }) => ({
+    colors: colors.current
+  }),
+  (dispatch) => ({ dispatch })
+)
 export default class Login extends Component {
   $instance = getCurrentInstance()
   constructor (props) {
@@ -100,6 +108,7 @@ export default class Login extends Component {
         return
       }
       params['password'] = password
+      params['check_type'] = 'password'
     } else {
       if (!validate.isRequired(vcode)) {
         showToast('请输入验证码')
@@ -109,20 +118,49 @@ export default class Login extends Component {
       params['check_type'] = 'mobile'
     }
 
-    try {
-      const { token } = await api.user.login(params)
-      if (token) {
-        S.setAuthToken(token)
-        const { redirect } = this.$instance.router.params
-        const url = redirect ? decodeURIComponent(redirect) : process.env.APP_HOME_PAGE
+    params['auth_type'] = 'local'
+    params['silent'] = 0
 
-        Taro.redirectTo({
-          url
+    try {
+      const { token, is_new, error_message, pre_login_data } = await api.wx.newloginh5(params)
+      if (error_message) {
+        showToast(error_message)
+      }
+      if (is_new) {
+        setToken(token)
+        Taro.navigateTo({
+          url: `/subpage/pages/auth/edit-password?phone=${pre_login_data.mobile}`
         })
+      } else {
+        const self = this
+        setTokenAndRedirect(token, async () => {
+          await self.handleUpdateUserInfo()
+        }).bind(self)
       }
     } catch (e) {
       console.log(e)
     }
+  }
+
+  handleUpdateUserInfo = async () => {
+    const { dispatch } = this.props
+    const _userInfo = await api.member.memberInfo()
+    // 兼容老版本 后续优化
+    const { username, avatar, user_id, mobile, open_id } = _userInfo.memberInfo
+    Taro.setStorageSync('userinfo', {
+      username: username,
+      avatar: avatar,
+      userId: user_id,
+      isPromoter: _userInfo.is_promoter,
+      mobile: mobile,
+      openid: open_id,
+      vip: _userInfo.vipgrade ? _userInfo.vipgrade.vip_type : ''
+    })
+    dispatch(updateUserInfo(_userInfo))
+  }
+
+  handleNavigateReg = async () => {
+    navigationToReg()
   }
 
   render () {
@@ -161,6 +199,7 @@ export default class Login extends Component {
                 value={info.mobile}
                 placeholder='请输入您的手机号码'
                 onChange={this.handleInputChange.bind(this, 'mobile')}
+                placeholderClass='input-placeholder'
               />
             </View>
             {/* 密码登录 */}
@@ -169,10 +208,12 @@ export default class Login extends Component {
                 <View className='input-field'>
                   <AtInput
                     clear
+                    type='password'
                     name='password'
                     value={info.password}
                     placeholder='请输入密码'
                     onChange={this.handleInputChange.bind(this, 'password')}
+                    placeholderClass='input-placeholder'
                   />
                 </View>
               </View>
@@ -187,6 +228,7 @@ export default class Login extends Component {
                     value={info.yzm}
                     placeholder='请输入图形验证码'
                     onChange={this.handleInputChange.bind(this, 'yzm')}
+                    placeholderClass='input-placeholder'
                   />
                 </View>
                 <View className='btn-field'>
@@ -209,6 +251,7 @@ export default class Login extends Component {
                     value={info.vcode}
                     placeholder='请输入验证码'
                     onChange={this.handleInputChange.bind(this, 'vcode')}
+                    placeholderClass='input-placeholder'
                   />
                 </View>
                 <View className='btn-field'>
@@ -223,12 +266,12 @@ export default class Login extends Component {
               <Text className='btn-text' onClick={this.handleToggleLogin.bind(this)}>
                 {passwordLogin ? '验证码登录' : '密码登录'}
               </Text>
-              <Text
+              {/* <Text
                 className='btn-text forgot-password'
                 onClick={() => Taro.navigateTo({ url: '/subpage/pages/auth/reg' })}
               >
                 忘记密码？
-              </Text>
+              </Text> */}
             </View>
             <View className='form-submit'>
               <AtButton
@@ -240,7 +283,12 @@ export default class Login extends Component {
               >
                 登 录
               </AtButton>
-              <AtButton circle type='primary' className='reg-button' onClick={navigationToReg}>
+              <AtButton
+                circle
+                type='primary'
+                className='reg-button'
+                onClick={this.handleNavigateReg}
+              >
                 注 册
               </AtButton>
             </View>
