@@ -14,11 +14,7 @@ const Series = (props) => {
 
   const { info } = props
   const colors = useSelector((state) => state.colors.current)
-  console.log(colors)
-
-
-
-
+  
 
   console.log(info)
   return (
