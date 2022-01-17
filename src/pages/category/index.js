@@ -1,6 +1,5 @@
-import React, { memo, Component } from 'react'
+import React, { memo, Component, useEffect } from 'react'
 import { View } from '@tarojs/components'
-import { useEffect } from 'react'
 import { useImmer } from 'use-immer'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'

@@ -1,5 +1,4 @@
-import React, { memo } from 'react'
-import { useState, useEffect } from 'react'
+import React, { memo, useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { useSelector } from 'react-redux'
@@ -69,6 +68,7 @@ const Series = (props) => {
   if (!info) {
     return <Loading />
   }
+  console.log(info[activeIndex])
   return (
     <View className='category-list'>
       {/* left */}
@@ -104,7 +104,7 @@ const Series = (props) => {
               onClick={() => handleCustomClick(currentID)}
             />
           )}
-          {currentChildren.map((item,index) =>
+          {currentChildren.map((item, index) =>
             item.children ? (
               <View className='new' key={index}>
                 <View className='group-title'>{item.name}</View>
