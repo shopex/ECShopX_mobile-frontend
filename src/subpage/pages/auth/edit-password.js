@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { SpPage, SpTimer } from '@/components'
+import { SpPage } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
@@ -45,22 +45,14 @@ const PageEditPassword = () => {
       return showToast('2次输入密码不一致!')
     }
 
-    //微信登陆绑定逻辑
-    if (unionid) {
-      // const { token } = await api.user.bind({ username: phone, password, union_id: unionid })
-      // await setTokenAndRedirect(token, async () => {
-      //   await getUserInfo()
-      // })
-    } else {
-      const { user_id } = await api.user.forgotPwd({
-        mobile: phone,
-        password
+    const { user_id } = await api.user.forgotPwd({
+      mobile: phone,
+      password
+    })
+    if (user_id) {
+      await setTokenAndRedirect(getToken(), async () => {
+        await getUserInfo()
       })
-      if (user_id) {
-        await setTokenAndRedirect(getToken(), async () => {
-          await getUserInfo()
-        })
-      }
     }
   }
 
