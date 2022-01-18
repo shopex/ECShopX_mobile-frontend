@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
+import { AtButton, AtInput } from 'taro-ui'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { AtButton, AtInput } from 'taro-ui'
-import { SpPage, SpPrice, SpCell, SpOrderItem } from '@/components'
-import { useSelector } from 'react-redux'
+import { updateChooseAddress } from '@/store/slices/user'
+import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import api from '@/api'
-import { isObjEmpty, isWeixin } from '@/utils'
+import doc from '@/doc'
+import { isObjEmpty, isWeixin, pickBy } from '@/utils'
+import { SpPage, SpPrice, SpCell, SpOrderItem } from '@/components'
 
 import CompDeliver from './comps/comp-deliver'
 import CompSelectPackage from './comps/comp-selectpackage'
@@ -24,7 +26,7 @@ const initialState = {
   isPointitemGood: false, // 是否为积分商城的商品
   shoppingGuideData: {}, //代客下单导购信息
   totalInfo: {
-    items_count: '', // 商品总件数
+    items_count: 0, // 商品总件数
     total_fee: '0.00', // 商品总计
     item_fee: '', // 商品金额
     freight_fee: '', // 运费
@@ -45,27 +47,38 @@ const initialState = {
 }
 
 function CartCheckout (props) {
-  const { type, goodType } = getCurrentInstance().router.params
+  const {
+    type,
+    goodType,
+    order_type,
+    shop_id: distributor_id,
+    cart_type,
+    seckill_id = null,
+    ticket = null,
+    pay_type
+  } = getCurrentInstance().router.params
 
   const [state, setState] = useImmer(initialState)
+  const dispatch = useDispatch()
+  // dispatch(changeZitiStore())
 
   const { location = {}, address } = useSelector((state) => state.user)
   const { rgb, pointName } = useSelector((state) => state.sys)
-  const { coupon } = useSelector((state) => state.cart)
+  const { coupon, zitiShop } = useSelector((state) => state.cart)
 
   const {
-    detailInfo,
+    detailInfo = {},
     payType,
     submitLoading,
     btnIsDisabled,
     isPointitemGood,
-    totalInfo,
+    totalInfo = {},
     shoppingGuideData,
     receiptType,
-    currentStoreInfo,
-    headquartersStoreInfo,
+    currentStoreInfo = {},
+    headquartersStoreInfo = {},
     invoiceTitle,
-    packInfo,
+    packInfo = {},
     isNeedPackage,
     disabledPayment
   } = state
@@ -78,7 +91,56 @@ function CartCheckout (props) {
 
   useEffect(() => {
     getTradeSetting()
+    fetchZiTiShop()
+    fetchAddress()
+    fetchHeaderShop()
   }, [])
+
+  const fetchHeaderShop = async () => {
+    const headquartersStoreInfo = await api.shop.getHeadquarters({ distributor_id })
+    setState((draft) => {
+      draft.headquartersStoreInfo = { ...headquartersStoreInfo, is_current: distributor_id == 0 }
+    })
+  }
+
+  const fetchZiTiShop = async () => {
+    const shopInfo = await api.shop.getShop({ distributor_id })
+    setState((draft) => {
+      ;(draft.currentStoreInfo = shopInfo),
+        (draft.receiptType = shopInfo.is_delivery || distributor_id == 0 ? 'logistics' : 'ziti')
+      // express: shopInfo.is_delivery
+    })
+  }
+
+  const fetchAddress = async () => {
+    let query = {
+      receipt_type: receiptType
+    }
+    if (receiptType === 'dada') {
+      query.city = headquartersStoreInfo.is_current ? headquartersStoreInfo.city : currentStore.city
+    }
+    const { list: address_list } = await api.member.addressList(query)
+    if (address_list.length == 0) {
+      await dispatch(updateChooseAddress({}))
+      calcOrder()
+      return
+    }
+
+    let updateAddress = address
+    if (!isObjEmpty(updateAddress)) {
+      let addressFilterList = address_list.filter((item) => item.is_def > 0)
+      updateAddress = addressFilterList[0] || address_list[0] || {}
+      await dispatch(updateChooseAddress(updateAddress))
+    }
+
+    if (isObjEmpty(updateAddress)) {
+      calcOrder()
+    }
+  }
+
+  const transformCartList = (list) => {
+    return pickBy(list, doc.checkout)
+  }
 
   const getTradeSetting = async () => {
     let data = await api.trade.tradeSetting()
@@ -108,6 +170,15 @@ function CartCheckout (props) {
     setState((draft) => {
       draft.receiptType = receiptType
     })
+    if (receiptType !== 'ziti') {
+      if (address) {
+        dispatch(updateChooseAddress(null))
+      } else {
+        fetchAddress()
+      }
+    } else {
+      calcOrder()
+    }
   }
 
   const handleInvoiceClick = () => {
@@ -133,77 +204,83 @@ function CartCheckout (props) {
     console.log(val, '---')
   }
 
+  const calcOrder = () => {
+    console.log('结算啦')
+    Taro.hideLoading()
+  }
+
   const goodsComp = () => {
     return (
       <View className='cart-list'>
-        {detailInfo.cart.map((cart) => {
-          return (
-            <View className='cart-checkout__group' key={cart.shop_id}>
-              <View className='cart-group__cont'>
-                {/* <View className='order-item__idx'>商品清单（{cart.list.length}）</View> */}
-                {cart.list.map((item, idx) => {
-                  return (
-                    <View className='order-item__wrap' key={item.item_id}>
-                      {item.order_item_type === 'gift' ? (
-                        <View className='order-item__idx'>
-                          <Text>赠品</Text>
-                        </View>
-                      ) : (
-                        <View className='order-item__idx national'>
-                          <Text>第{idx + 1}件商品</Text>
-                        </View>
-                      )}
-                      <SpOrderItem
-                        info={item}
-                        showExtra={false}
-                        showDesc
-                        isPointitemGood={isPointitemGood}
-                        renderDesc={
-                          <View className='order-item__desc'>
-                            {item.discount_info &&
-                              item.order_item_type !== 'gift' &&
-                              item.discount_info.map((discount) => (
-                                <Text className='order-item__discount' key={discount.type}>
-                                  {discount.info}
-                                </Text>
-                              ))}
+        {detailInfo.cart &&
+          detailInfo.cart.map((cart) => {
+            return (
+              <View className='cart-checkout__group' key={cart.shop_id}>
+                <View className='cart-group__cont'>
+                  {/* <View className='order-item__idx'>商品清单（{cart.list.length}）</View> */}
+                  {cart.list.map((item, idx) => {
+                    return (
+                      <View className='order-item__wrap' key={item.item_id}>
+                        {item.order_item_type === 'gift' ? (
+                          <View className='order-item__idx'>
+                            <Text>赠品</Text>
                           </View>
-                        }
-                        customFooter
-                        renderFooter={
-                          <View className='order-item__ft'>
-                            {isPointitemGood ? (
-                              <SpPrice
-                                className='order-item__price'
-                                appendText={pointName}
-                                noSymbol
-                                noDecimal
-                                value={item.item_point}
-                              />
-                            ) : (
-                              <SpPrice className='order-item__price' value={item.price || 1000} />
-                            )}
-                            <Text className='order-item__num'>x {item.num || 1}</Text>
+                        ) : (
+                          <View className='order-item__idx national'>
+                            <Text>第{idx + 1}件商品</Text>
                           </View>
-                        }
-                      />
-                    </View>
-                  )
-                })}
+                        )}
+                        <SpOrderItem
+                          info={item}
+                          showExtra={false}
+                          showDesc
+                          isPointitemGood={isPointitemGood}
+                          renderDesc={
+                            <View className='order-item__desc'>
+                              {item.discount_info &&
+                                item.order_item_type !== 'gift' &&
+                                item.discount_info.map((discount) => (
+                                  <Text className='order-item__discount' key={discount.type}>
+                                    {discount.info}
+                                  </Text>
+                                ))}
+                            </View>
+                          }
+                          customFooter
+                          renderFooter={
+                            <View className='order-item__ft'>
+                              {isPointitemGood ? (
+                                <SpPrice
+                                  className='order-item__price'
+                                  appendText={pointName}
+                                  noSymbol
+                                  noDecimal
+                                  value={item.item_point}
+                                />
+                              ) : (
+                                <SpPrice className='order-item__price' value={item.price || 1000} />
+                              )}
+                              <Text className='order-item__num'>x {item.num || 1}</Text>
+                            </View>
+                          }
+                        />
+                      </View>
+                    )
+                  })}
+                </View>
+                <View className='cart-group__cont cus-input'>
+                  <SpCell className='trade-remark' border={false}>
+                    <AtInput
+                      className='trade-remark__input'
+                      placeholder='给商家留言：选填（50字以内）'
+                      onChange={handleRemarkChange.bind(this)}
+                      maxLength={50}
+                    />
+                  </SpCell>
+                </View>
               </View>
-              <View className='cart-group__cont cus-input'>
-                <SpCell className='trade-remark' border={false}>
-                  <AtInput
-                    className='trade-remark__input'
-                    placeholder='给商家留言：选填（50字以内）'
-                    onChange={handleRemarkChange.bind(this)}
-                    maxLength={50}
-                  />
-                </SpCell>
-              </View>
-            </View>
-          )
-        })}
+            )
+          })}
       </View>
     )
   }
@@ -259,6 +336,8 @@ function CartCheckout (props) {
     : coupon.type === 'member'
     ? '会员折扣'
     : (coupon.value && coupon.value.title) || ''
+
+  console.log(headquartersStoreInfo, currentStoreInfo)
 
   return (
     <SpPage className='page-cart-checkout' renderFooter={renderFooter()}>

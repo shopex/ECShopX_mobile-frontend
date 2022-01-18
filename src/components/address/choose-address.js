@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { connect } from 'react-redux'
+import { isObjEmpty } from '@/utils'
 
 import './address.scss'
 
@@ -45,7 +46,7 @@ export default class AddressChoose extends Component {
     return (
       <View className='address-picker'>
         <View className='address' onClick={this.clickTo.bind(this, 'choose')}>
-          {isAddress ? (
+          {isObjEmpty(isAddress) ? (
             <View className='address-picker__bd'>
               <View className='address-receive'>
                 <View className='info-trade'>
