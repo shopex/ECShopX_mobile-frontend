@@ -376,10 +376,19 @@ const getUrl = (url) => {
   return `${hrefList[0]}//${hrefList[2]}${url}`
 }
 
+export function tokenParseH5 (token) {
+  try {
+    let base64Url = token.split('.')[1]
+    return JSON.parse(atob(base64Url))
+  } catch (e) {
+    return {}
+  }
+}
+
 export function tokenParse (token) {
   var base64Url = token.split('.')[1]
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-  console.log('Taro.base64ToArrayBuffer', Taro)
+  console.log('Taro.base64ToArrayBuffer', base64)
   var arr_base64 = Taro.base64ToArrayBuffer(base64)
   arr_base64 = String.fromCharCode.apply(null, new Uint8Array(arr_base64))
   var jsonPayload = decodeURIComponent(
@@ -622,6 +631,30 @@ export function exceedLimit ({ size: fileSize }) {
   return size > 2
 }
 
+function isBase64 (str) {
+  if (str.indexOf('data:') != -1 && str.indexOf('base64') != -1) {
+    return true
+  } else {
+    return false
+  }
+}
+
+//判断是否是商家入驻
+const isMerchantModule = (() => {
+  if (!isWeb) return false
+  return /\/subpages\/merchant/.test(location.pathname)
+})()
+
+function isUndefined (val) {
+  return typeof val === 'undefined'
+}
+
+// 查询商家是否可用
+const merchantIsvaild = async (parmas) => {
+  const { status } = await api.distribution.merchantIsvaild(parmas)
+  return status
+}
+
 export {
   classNames,
   log,
@@ -635,7 +668,11 @@ export {
   validate,
   checkAppVersion,
   linkPage,
-  redirectUrl
+  redirectUrl,
+  isBase64,
+  isMerchantModule,
+  isUndefined,
+  merchantIsvaild
 }
 
 export * from './platforms'

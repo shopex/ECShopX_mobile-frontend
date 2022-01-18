@@ -105,7 +105,7 @@ function SpPage (props, ref) {
   return (
     <View
       className={classNames('sp-page', className, {
-        'has-navbar': hasNavbar && !isTabBarPage,
+        'has-navbar': hasNavbar && !isTabBarPage && navbar,
         'has-footer': renderFooter
       })}
       style={styleNames({ ...pageTheme, ...lockStyle })}

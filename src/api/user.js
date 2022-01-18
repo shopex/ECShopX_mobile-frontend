@@ -10,6 +10,11 @@ export function bindSaleperson (data) {
   return req.post('/member/bindSalesperson', data)
 }
 
+// 绑定
+export function bind (data) {
+  return req.post('/member/bind', data)
+}
+
 export function logout () {
   return req.post('/user.logout')
 }
@@ -19,10 +24,12 @@ export function refreshToken () {
 }
 
 export function reg (params) {
-  if (isWeixin) {
-    params.appid = getAppId() || ''
-  }
   return req.post('/member', params)
+}
+
+//校验验证码
+export function checkSmsCode (params) {
+  return req.post('/member/check_sms_code', params)
 }
 
 export function regRule () {
