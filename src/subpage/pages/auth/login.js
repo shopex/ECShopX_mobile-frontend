@@ -168,6 +168,17 @@ export default class Login extends Component {
     navigationToReg()
   }
 
+  handleForgotPsd = async () => {
+    let url = '/subpage/pages/auth/forgotpwd'
+    const { mobile } = this.state.info
+    if (mobile) {
+      url += `?phone=${mobile}`
+    }
+    Taro.navigateTo({
+      url
+    })
+  }
+
   render () {
     const { info, loginType, imgInfo } = this.state
 
@@ -271,12 +282,9 @@ export default class Login extends Component {
               <Text className='btn-text' onClick={this.handleToggleLogin.bind(this)}>
                 {passwordLogin ? '验证码登录' : '密码登录'}
               </Text>
-              {/* <Text
-                className='btn-text forgot-password'
-                onClick={() => Taro.navigateTo({ url: '/subpage/pages/auth/reg' })}
-              >
+              <Text className='btn-text forgot-password' onClick={this.handleForgotPsd}>
                 忘记密码？
-              </Text> */}
+              </Text>
             </View>
             <View className='form-submit'>
               <AtButton
