@@ -1,199 +1,199 @@
-import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { View, Image, Input, Button } from '@tarojs/components'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { View, Text, Image } from '@tarojs/components'
+import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
+import { SpPage, SpTimer } from '@/components'
+import { classNames, validate, showToast, tokenParseH5 } from '@/utils'
+import { AtForm, AtInput, AtButton } from 'taro-ui'
+import { useLogin } from '@/hooks'
 import api from '@/api'
-import { SpTimer } from '@/components'
-import S from '@/spx'
-
+import { useImmer } from 'use-immer'
+import { setTokenAndRedirect, setToken } from './util'
 import './bindPhone.scss'
 
-@connect(
-  ({ colors }) => ({
-    colors: colors.current || { data: [{}] }
-  }),
-  () => ({})
-)
-export default class BindPhone extends Component {
-  constructor (props) {
-    super(props)
+const SYMBOL = 'login'
 
-    this.state = {
-      countryCode: '+86',
-      oldCountryCode: '+86',
-      currentMobile: '',
-      mobile: '',
-      smsCode: '',
-      baseInfo: {}
-    }
-  }
+const initialValue = {
+  username: '',
+  check_type: SYMBOL,
+  yzm: '',
+  vcode: '',
+  imgInfo: null
+}
 
-  componentDidMount () {
-    this.getStoreSettingInfo()
-    this.getUserInfo()
-  }
+const PageBindPhone = () => {
+  const $instance = getCurrentInstance()
+  const {
+    params: { unionid, redi_url }
+  } = $instance.router
 
-  // 获取总店配置信息
-  async getStoreSettingInfo () {
-    const data = await api.shop.getStoreBaseInfo()
-    this.setState({
-      baseInfo: data
+  const { getUserInfo } = useLogin()
+
+  const [state, setState] = useImmer(initialValue)
+
+  const { username, yzm, vcode, check_type, imgInfo } = state
+
+  const handleInputChange = (name) => (val) => {
+    setState((state) => {
+      state[name] = val
     })
   }
 
-  // 获取手机号
-  getPhoneNumber = async (res) => {
-    const { encryptedData, iv } = res.detail
-    if (encryptedData && iv) {
-      const { code } = await Taro.login()
-      const { phoneNumber, countryCode } = await api.wx.decryptPhone({
-        encryptedData,
-        iv,
-        code
-      })
-      this.setState({
-        mobile: phoneNumber,
-        countryCode,
-        oldCountryCode: countryCode
-      })
-    }
+  const getImageVcode = async () => {
+    const img_res = await api.user.regImg({ type: SYMBOL })
+    setState((state) => {
+      state.imgInfo = img_res
+    })
   }
 
-  // 获取验证码
-  getSmsCode = async (resolve) => {
-    const { mobile } = this.state
-    if (!/1\d{10}/.test(mobile)) {
-      Taro.showToast({
-        title: '请输入正确的手机号',
-        icon: 'none'
-      })
-      return false
+  const handleTimerStart = async (resolve) => {
+    if (!validate.isMobileNum(username)) {
+      showToast('请输入正确的手机号')
+      return
     }
-    const query = {
-      type: 'update',
-      mobile: mobile
+    if (!validate.isRequired(yzm)) {
+      showToast('请输入图形验证码')
+      return
     }
     try {
-      await api.user.regSmsCode(query)
-      Taro.showToast({
-        title: '发送成功',
-        icon: 'none'
+      await api.user.regSmsCode({
+        type: SYMBOL,
+        mobile: username,
+        yzm: yzm,
+        token: imgInfo.imageToken
       })
-    } catch (error) {
-      return false
-    }
-    resolve()
-  }
-
-  // 获取用户信息
-  getUserInfo = async () => {
-    const { memberInfo } = await api.member.memberInfo()
-    this.setState({
-      currentMobile: memberInfo.mobile,
-      mobile: memberInfo.mobile
-    })
-  }
-
-  // 输入
-  onInput = (type, e) => {
-    const { detail } = e
-    if (type === 'phone') {
-      this.setState({
-        mobile: detail.value
-      })
-    } else {
-      this.setState({
-        smsCode: detail.value
-      })
+      showToast('验证码已发送')
+      resolve()
+    } catch (e) {
+      getImageVcode()
     }
   }
 
-  // 确认修改
-  handleEdit = async () => {
-    const { mobile, smsCode, countryCode, currentMobile, oldCountryCode } = this.state
-    if (!mobile || !smsCode) {
-      const msg = !mobile ? '请输入手机号' : '请输入验证码'
-      Taro.showToast({
-        title: msg,
-        icon: 'none'
+  const handleSubmit = async () => {
+    try {
+      const { token } = await api.user.bind({
+        username,
+        check_type,
+        vcode,
+        union_id: unionid
       })
-      return false
+
+      const { is_new } = tokenParseH5(token)
+
+      if (is_new === 1) {
+        setToken(token)
+        Taro.navigateTo({
+          url: `/subpage/pages/auth/edit-password?phone=${username}`
+        })
+      } else {
+        const self = this
+        setTokenAndRedirect(token, async () => {
+          await getUserInfo()
+        }).bind(self)
+      }
+    } catch (e) {
+      console.log(e)
     }
-    await api.member.setMemberMobile({
-      old_mobile: currentMobile,
-      old_region_mobile: oldCountryCode + currentMobile,
-      old_country_code: oldCountryCode,
-      new_mobile: mobile,
-      new_region_mobile: countryCode + mobile,
-      new_country_code: countryCode,
-      smsCode
-    })
-    Taro.showToast({
-      title: '修改成功',
-      mask: true,
-      duration: 2000
-    })
-    await S.getMemberInfo()
-    setTimeout(() => {
-      Taro.navigateBack()
-    }, 2000)
   }
 
-  render () {
-    const { currentMobile, mobile, smsCode, countryCode, baseInfo } = this.state
-    const { colors } = this.props
+  useEffect(() => {
+    getImageVcode()
+    //pushHistory('/subpage/pages/auth/login', '/subpage/pages/auth/bindPhone', '绑定手机号')
+  }, [])
 
-    return (
-      <View className='bindPhone'>
-        <View className='logo'>
-          <Image className='img' src={baseInfo.logo} mode='aspectFill' />
-          <View className='currentPhone'>
-            当前手机号：{countryCode} {currentMobile}
-          </View>
-        </View>
-        <View className='form'>
-          <View className='item'>中国大陆 +86</View>
-          <View className='item'>
-            <Input
-              type='number'
-              value={mobile}
-              placeholder='请输入您的手机号'
-              onInput={this.onInput.bind(this, 'phone')}
-            />
-            <Button
-              className='btn'
-              openType='getPhoneNumber'
-              onGetPhoneNumber={this.getPhoneNumber.bind(this)}
-              style={`color: ${colors.data[0].primary}`}
-            >
-              授权号码
-            </Button>
-          </View>
-          <View className='item'>
-            <Input
-              placeholder='请输入验证码'
-              value={smsCode}
-              onInput={this.onInput.bind(this, 'sms')}
-            />
-            <SpTimer
-              style={`color: ${colors.data[0].primary} !important`}
-              className='time'
-              onStart={this.getSmsCode.bind(this)}
-            ></SpTimer>
-          </View>
-          <View className='tip'>
-            <View className='line'>* 手机号每30天可修改一次；</View>
-            <View className='line'>* 目前仅支持中国大陆手机号；</View>
-          </View>
-          <View
-            className='submit'
-            style={`background: ${colors.data[0].primary}`}
-            onClick={this.handleEdit.bind(this)}
-          >
-            修改手机号
-          </View>
-        </View>
+  const handleClickLeft = () => {
+    Taro.redirectTo({
+      url: `/subpage/pages/auth/login?redirect=${redi_url}`
+    })
+  }
+
+  const handlePhoneBlur = async (mobile) => {
+    if (mobile) {
+      const { is_new } = await api.wx.getIsNew({ mobile })
+      if (is_new === 1) {
+        setState((_state) => {
+          _state.is_new = true
+        })
+      }
+    }
+  }
+
+  //全填写完
+  const isFull = username && yzm && vcode
+
+  return (
+    <SpPage
+      className={classNames('page-auth-bindphone', {
+        'is-full': isFull
+      })}
+      onClickLeftIcon={handleClickLeft}
+    >
+      <View className='auth-hd'>
+        <View className='title'>手机号绑定</View>
       </View>
-    )
-  }
+      <View className='auth-bd'>
+        <View className='form-title'>中国大陆 +86</View>
+        <AtForm className='form'>
+          <View className='form-field'>
+            <AtInput
+              clear
+              name='mobile'
+              maxLength={11}
+              type='tel'
+              value={username}
+              placeholder='请输入您的手机号码'
+              onChange={handleInputChange('username')}
+              onBlur={handlePhoneBlur}
+            />
+          </View>
+
+          {/* 验证码登录，验证码超过1次，显示图形验证码 */}
+          <View className='form-field'>
+            <View className='input-field'>
+              <AtInput
+                clear
+                name='yzm'
+                value={yzm}
+                placeholder='请输入图形验证码'
+                onChange={handleInputChange('yzm')}
+              />
+            </View>
+            <View className='btn-field'>
+              {imgInfo && (
+                <Image className='image-vcode' src={imgInfo.imageData} onClick={getImageVcode} />
+              )}
+            </View>
+          </View>
+
+          <View className='form-field'>
+            <View className='input-field'>
+              <AtInput
+                clear
+                name='vcode'
+                value={vcode}
+                placeholder='请输入验证码'
+                onChange={handleInputChange('vcode')}
+              />
+            </View>
+            <View className='btn-field'>
+              <SpTimer onStart={handleTimerStart} />
+            </View>
+          </View>
+
+          <View className='form-submit'>
+            <AtButton
+              disabled={!isFull}
+              circle
+              type='primary'
+              className='login-button'
+              onClick={handleSubmit}
+            >
+              下一步
+            </AtButton>
+          </View>
+        </AtForm>
+      </View>
+    </SpPage>
+  )
 }
+
+export default PageBindPhone

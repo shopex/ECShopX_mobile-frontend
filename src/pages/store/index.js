@@ -6,7 +6,14 @@ import { SpToast, Loading, BackToTop, SpNewShopItem, SpCellCoupon, SpPage } from
 import { AtTabBar } from 'taro-ui'
 import req from '@/api/req'
 import api from '@/api'
-import { pickBy, normalizeQuerys, getCurrentRoute, classNames, isNavbar } from '@/utils'
+import {
+  pickBy,
+  normalizeQuerys,
+  getCurrentRoute,
+  classNames,
+  merchantIsvaild,
+  showToast
+} from '@/utils'
 import { platformTemplateName } from '@/utils/platform'
 import { withPager, withBackToTop } from '@/hocs'
 import qs from 'qs'
@@ -72,7 +79,9 @@ export default class StoreIndex extends Component {
       ],
       couponList: [],
       fixedSearch: false,
-      likeList: []
+      likeList: [],
+      storeIsVaild: false,
+      fav: undefined
     }
     this.current = getCurrentInstance()
     this.id = this.current.router.params.id
@@ -88,7 +97,16 @@ export default class StoreIndex extends Component {
     if (id) {
       this.fetchInfo(id)
       this.fetchCouponList(id)
+      this.fetchIsValid(id)
     }
+  }
+
+  storeFav = async (id) => {
+    const { is_fav } = await api.member.storeIsFav(id)
+
+    this.setState({
+      fav: is_fav
+    })
   }
 
   componentDidShow = () => {
@@ -100,6 +118,10 @@ export default class StoreIndex extends Component {
           isShowAddTip: true
         })
       })
+    const id = this.id
+    if (id) {
+      this.storeFav(id)
+    }
   }
 
   onShareAppMessage (res) {
@@ -110,6 +132,14 @@ export default class StoreIndex extends Component {
       title: this.state.storeInfo ? this.state.storeInfo.name : '店铺商品',
       path: `/pages/store/index?id=${this.$router.params.id}`
     }
+  }
+
+  async fetchIsValid (id) {
+    let isVaild = await merchantIsvaild({ distributor_id: id }) // 判断当前店铺关联商户是否被禁用 isVaild：true有效
+    // console.log('isVaild=========',isVaild);
+    this.setState({
+      storeIsVaild: !isVaild
+    })
   }
 
   async fetchCouponList (id) {
@@ -174,10 +204,13 @@ export default class StoreIndex extends Component {
           authStatus: true
         })
       }
-      //是否有search
-      let search = info.config.find((item) => item.name === 'search') || {
-        config: {}
+
+      if (!info.length) {
+        return showToast('当前暂未配置模板')
       }
+      //是否有search
+      let search = info.config.find((item) => item.name === 'search')
+
       let fixedSearch = !!search.config.fixTop
 
       this.setState(
@@ -209,6 +242,7 @@ export default class StoreIndex extends Component {
         }
       )
     } catch (e) {
+      // console.error(e)
       setTimeout(() => {
         Taro.navigateBack()
       }, 1500)
@@ -275,6 +309,15 @@ export default class StoreIndex extends Component {
     }
   }
 
+  handleBrandInfo = () => {
+    const {
+      storeInfo: { distributor_id }
+    } = this.state
+    Taro.navigateTo({
+      url: `/pages/store/brand-info?distributor_id=${distributor_id}`
+    })
+  }
+
   render () {
     const {
       wgts,
@@ -285,7 +328,9 @@ export default class StoreIndex extends Component {
       localCurrent,
       couponList,
       fixedSearch,
-      likeList
+      likeList,
+      storeIsVaild,
+      fav
     } = this.state
     const user = Taro.getStorageSync('userinfo')
     if (!wgts || !this.props.store) {
@@ -297,8 +342,11 @@ export default class StoreIndex extends Component {
     return (
       <SpPage
         className={classNames('page-store-index', {
-          fixedSearch
+          fixedSearch,
+          'page-store-height': storeIsVaild
         })}
+        isDefault={storeIsVaild}
+        defaultMsg='该店铺已注销，在别的店铺看看吧'
       >
         <ScrollView
           className='wgts-wrap wgts-wrap__fixed__page'
@@ -308,7 +356,13 @@ export default class StoreIndex extends Component {
           scrollY
         >
           <View className='wgts-wrap__cont'>
-            <CompHeader inStore info={storeInfo} couponList={couponList} />
+            <CompHeader
+              inStore
+              info={storeInfo}
+              couponList={couponList}
+              brandInfo={this.handleBrandInfo}
+              fav={fav}
+            />
             {wgts.map((item, idx) => {
               return (
                 <View className='wgt-wrap' key={`${item.name}${idx}`}>
