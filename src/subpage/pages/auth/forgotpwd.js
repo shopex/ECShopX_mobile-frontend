@@ -1,232 +1,205 @@
-import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import React, { useEffect } from 'react'
+import { View, Text, Image } from '@tarojs/components'
+import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
+import { SpPage, SpTimer } from '@/components'
+import { classNames, validate, showToast, tokenParseH5 } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { SpToast, SpTimer, SpNavBar } from '@/components'
-import S from '@/spx'
+import { useDepChange, useLogin } from '@/hooks'
 import api from '@/api'
-
+import { useImmer } from 'use-immer'
+import { setTokenAndRedirect, setToken } from './util'
 import './forgotpwd.scss'
 
-export default class Forgotpwd extends Component {
-  constructor (props) {
-    super(props)
+const SYMBOL = 'forgot_password'
 
-    this.state = {
-      info: {},
-      timerMsg: '获取验证码',
-      isVisible: false,
-      imgVisible: false,
-      imgInfo: {}
+const initialValue = {
+  username: '',
+  check_type: SYMBOL,
+  yzm: '',
+  vcode: '',
+  imgInfo: null,
+  password: '',
+  //默认是老用户
+  is_new: false
+}
+
+const PageBindPhone = () => {
+  const $instance = getCurrentInstance()
+  const {
+    params: { phone }
+  } = $instance.router
+
+  const [state, setState] = useImmer(initialValue)
+
+  const { username, yzm, vcode, imgInfo, password, is_new } = state
+
+  const handleInputChange = (name) => (val) => {
+    setState((state) => {
+      state[name] = val
+    })
+  }
+
+  const getImageVcode = async () => {
+    if (is_new) return showToast('该手机号还未注册！')
+    const img_res = await api.user.regImg({ type: SYMBOL })
+    setState((state) => {
+      state.imgInfo = img_res
+    })
+  }
+
+  const handleTimerStart = async (resolve) => {
+    if (is_new) return showToast('该手机号还未注册！')
+    if (!validate.isMobileNum(username)) {
+      showToast('请输入正确的手机号')
+      return
     }
-  }
-  componentDidMount () {
-    this.fetch()
-  }
-
-  handleClickImgcode = async () => {
-    const query = {
-      type: 'forgot_password'
+    if (!validate.isRequired(yzm)) {
+      showToast('请输入图形验证码')
+      return
     }
     try {
-      const img_res = await api.user.regImg(query)
-      this.setState({
-        imgInfo: img_res
+      await api.user.regSmsCode({
+        type: SYMBOL,
+        mobile: username,
+        yzm: yzm,
+        token: imgInfo.imageToken
       })
-    } catch (error) {
-      return false
+      showToast('验证码已发送')
+      resolve()
+    } catch (e) {
+      getImageVcode()
     }
   }
 
-  async fetch () {
-    this.handleClickImgcode()
-    this.count = 0
-  }
-
-  handleSubmit = async (e) => {
-    const { value } = e.detail
-    const data = {
-      ...this.state.info,
-      ...value
-    }
-    if (!data.mobile || !/1\d{10}/.test(data.mobile)) {
-      return S.toast('请输入正确的手机号')
-    }
-
-    if (!data.vcode) {
-      return S.toast('请选择验证码')
-    }
-
-    if (!data.password) {
-      return S.toast('请输入密码')
-    }
-
+  const handleSubmit = async () => {
     try {
-      await api.user.forgotPwd(data)
-      Taro.showToast({
-        title: '修改成功',
-        icon: 'none'
+      await api.user.forgotPwd({
+        mobile: phone,
+        password,
+        vcode
       })
-      setTimeout(() => {
-        Taro.redirectTo({
-          url: APP_AUTH_PAGE
-        })
-      }, 700)
-    } catch (error) {
-      return false
+      showToast('设置密码成功', () => {
+        Taro.navigateBack()
+      })
+    } catch (e) {
+      console.log(e)
     }
   }
 
-  handleChange = (name, val) => {
-    const { info } = this.state
-    info[name] = val
-    if (name === 'mobile') {
-      if (val.length === 11 && this.count === 0) {
-        this.count = 1
-        this.setState({
-          imgVisible: true
-        })
-      }
+  const handlePhoneBlur = async (mobile) => {
+    if (mobile) {
+      const { is_new } = await api.wx.getIsNew({ mobile })
+      setState((_state) => {
+        _state.is_new = !!is_new
+      })
     }
   }
 
-  handleClickIconpwd = () => {
-    const { isVisible } = this.state
-    this.setState({
-      isVisible: !isVisible
-    })
-  }
+  useEffect(() => {
+    getImageVcode()
+    //pushHistory('/subpage/pages/auth/login', '/subpage/pages/auth/bindPhone', '绑定手机号')
+  }, [])
 
-  handleErrorToastClose = () => {
-    S.closeToast()
-  }
-
-  handleTimerStart = async (resolve) => {
-    if (this.state.isTimerStart) return
-    const { mobile, yzm } = this.state.info
-    const { imgInfo } = this.state
-
-    if (!/1\d{10}/.test(mobile)) {
-      return S.toast('请输入正确的手机号')
+  useEffect(() => {
+    if (phone) {
+      setState((_state) => {
+        _state.username = phone
+      })
+      handlePhoneBlur(phone)
     }
+  }, [phone])
 
-    if (!(mobile.length === 11 && yzm)) {
-      return S.toast('请输入手机号和图形验证码')
-    }
+  //全填写完
+  const isFull = username && yzm && vcode && password
 
-    const query = {
-      type: 'forgot_password',
-      mobile: mobile,
-      yzm: yzm,
-      token: imgInfo.imageToken
-    }
-
-    try {
-      await api.user.regSmsCode(query)
-      S.toast('发送成功')
-    } catch (error) {
-      return false
-    }
-
-    resolve()
-  }
-
-  handleUpdateTimer = (val) => {
-    const timerMsg = `${val}s`
-    this.setState({
-      timerMsg
-    })
-  }
-
-  handleTimerStop = () => {
-    this.setState({
-      timerMsg: '重新获取'
-    })
-  }
-
-  render () {
-    const { info, timerMsg, isVisible, imgVisible, imgInfo } = this.state
-
-    return (
-      <View className='auth-forgotpwd'>
-        <SpNavBar title='忘记密码' leftIconType='chevron-left' />
-        <AtForm onSubmit={this.handleSubmit}>
-          <View className='sec auth-forgotpwd__form'>
+  return (
+    <SpPage
+      className={classNames('page-auth-forgotpwd', {
+        'is-full': isFull
+      })}
+    >
+      <View className='auth-hd'>
+        <View className='title'>忘记密码</View>
+      </View>
+      <View className='auth-bd'>
+        <View className='form-title'>中国大陆 +86</View>
+        <AtForm className='form'>
+          <View className='form-field'>
             <AtInput
-              title='手机号码'
+              clear
               name='mobile'
-              type='number'
               maxLength={11}
-              value={info.mobile}
-              placeholder='请输入手机号码'
-              onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, 'mobile')}
+              type='tel'
+              value={username}
+              placeholder='请输入您的手机号码'
+              onChange={handleInputChange('username')}
+              onBlur={handlePhoneBlur}
             />
-            {imgVisible ? (
-              <AtInput
-                title='图片验证码'
-                name='yzm'
-                value={info.yzm}
-                placeholder='请输入图片验证码'
-                onFocus={this.handleErrorToastClose}
-                onChange={this.handleChange.bind(this, 'yzm')}
-              >
-                <Image src={`${imgInfo.imageData}`} onClick={this.handleClickImgcode} />
-              </AtInput>
-            ) : null}
-            <AtInput
-              title='验证码'
-              name='vcode'
-              value={info.vcode}
-              placeholder='请输入验证码'
-              onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, 'vcode')}
-            >
-              <SpTimer
-                onStart={this.handleTimerStart}
-                onUpdateTimer={this.handleUpdateTimer}
-                onStop={this.handleTimerStop}
-                timerMsg={timerMsg}
-              />
-            </AtInput>
-            <AtInput
-              title='密码'
-              name='password'
-              type={isVisible ? 'text' : 'password'}
-              value={info.password}
-              placeholder='请输入密码'
-              onFocus={this.handleErrorToastClose}
-              onChange={this.handleChange.bind(this, 'password')}
-            >
-              {isVisible ? (
-                <View
-                  className='sp-icon sp-icon-yanjing icon-pwd'
-                  onClick={this.handleClickIconpwd}
-                >
-                  {' '}
-                </View>
-              ) : (
-                <View className='sp-icon sp-icon-icon6 icon-pwd' onClick={this.handleClickIconpwd}>
-                  {' '}
-                </View>
-              )}
-            </AtInput>
           </View>
-          <View className='btns'>
-            {process.env.TARO_ENV === 'weapp' ? (
-              <AtButton type='primary' formType='submit'>
-                确认
-              </AtButton>
-            ) : (
-              <AtButton type='primary' onClick={this.handleSubmit} formType='submit'>
-                确认
-              </AtButton>
-            )}
+
+          {/* 验证码登录，验证码超过1次，显示图形验证码 */}
+          <View className='form-field'>
+            <View className='input-field'>
+              <AtInput
+                clear
+                name='yzm'
+                value={yzm}
+                placeholder='请输入图形验证码'
+                onChange={handleInputChange('yzm')}
+                disabled={is_new}
+              />
+            </View>
+            <View className='btn-field'>
+              {imgInfo && (
+                <Image className='image-vcode' src={imgInfo.imageData} onClick={getImageVcode} />
+              )}
+            </View>
+          </View>
+
+          <View className='form-field'>
+            <View className='input-field'>
+              <AtInput
+                clear
+                name='vcode'
+                value={vcode}
+                placeholder='请输入验证码'
+                onChange={handleInputChange('vcode')}
+                disabled={is_new}
+              />
+            </View>
+            <View className='btn-field'>
+              <SpTimer onStart={handleTimerStart} />
+            </View>
+          </View>
+
+          <View className='form-field'>
+            <AtInput
+              clear
+              name='mobile'
+              maxLength={11}
+              type='tel'
+              value={password}
+              placeholder='再次输入密码'
+              onChange={handleInputChange('password')}
+            />
+          </View>
+          <View className='form-tip'>6-16位密码、数字或字母</View>
+
+          <View className='form-submit'>
+            <AtButton
+              disabled={!isFull}
+              circle
+              type='primary'
+              className='login-button'
+              onClick={handleSubmit}
+            >
+              完成
+            </AtButton>
           </View>
         </AtForm>
-
-        <SpToast />
       </View>
-    )
-  }
+    </SpPage>
+  )
 }
+
+export default PageBindPhone

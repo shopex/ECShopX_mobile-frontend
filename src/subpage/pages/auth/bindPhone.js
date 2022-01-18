@@ -106,17 +106,6 @@ const PageBindPhone = () => {
     })
   }
 
-  const handlePhoneBlur = async (mobile) => {
-    if (mobile) {
-      const { is_new } = await api.wx.getIsNew({ mobile })
-      if (is_new === 1) {
-        setState((_state) => {
-          _state.is_new = true
-        })
-      }
-    }
-  }
-
   //全填写完
   const isFull = username && yzm && vcode
 
@@ -142,7 +131,6 @@ const PageBindPhone = () => {
               value={username}
               placeholder='请输入您的手机号码'
               onChange={handleInputChange('username')}
-              onBlur={handlePhoneBlur}
             />
           </View>
 
