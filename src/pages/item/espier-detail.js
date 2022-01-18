@@ -4,22 +4,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Swiper, SwiperItem, Video } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { AtCountdown } from 'taro-ui'
-import {
-  Loading,
-  SpPrice,
-  FloatMenus,
-  FloatMenuItem,
-  SpToast,
-  GoodsBuyPanel,
-  GoodsEvaluation,
-  FloatMenuMeiQia,
-  GoodsItem,
-  SpCell,
-  SpImage,
-  SpLoading,
-  SpRecommend,
-  SpPage
-} from '@/components'
+import { SpPrice, SpCell, SpImage, SpLoading, SpRecommend, SpHtml, SpPage } from '@/components'
 import api from '@/api'
 import req from '@/api/req'
 import {
@@ -36,22 +21,11 @@ import {
   classNames,
   navigateTo
 } from '@/utils'
-import { setPageTitle } from '@/utils/platform'
+
 import doc from '@/doc'
 import entry from '@/utils/entry'
 import S from '@/spx'
 import { Tracker } from '@/service'
-import {
-  GoodsBuyToolbar,
-  ItemImg,
-  ImgSpec,
-  StoreInfo,
-  ActivityPanel,
-  SharePanel,
-  VipGuide,
-  ParamsItem,
-  GroupingItem
-} from './comps'
 import CompVipGuide from './comps/comp-vipguide'
 import CompCouponList from './comps/comp-couponlist'
 import CompStore from './comps/comp-store'
@@ -246,19 +220,21 @@ function EspierDetail (props) {
               </View>
             )}
 
-            <View
-              className={classNames('btn-video', {
-                playing: play
-              })}
-              onClick={() => {
-                setState((draft) => {
-                  play ? (draft.play = false) : (draft.play = true)
-                })
-              }}
-            >
-              {!play && <SpImage className='play-icon' src='play2.png' width={50} height={50} />}
-              {play ? '退出视频' : '播放视频'}
-            </View>
+            {info.video && (
+              <View
+                className={classNames('btn-video', {
+                  playing: play
+                })}
+                onClick={() => {
+                  setState((draft) => {
+                    play ? (draft.play = false) : (draft.play = true)
+                  })
+                }}
+              >
+                {!play && <SpImage className='play-icon' src='play2.png' width={50} height={50} />}
+                {play ? '退出视频' : '播放视频'}
+              </View>
+            )}
           </View>
 
           <View className='goods-info'>
