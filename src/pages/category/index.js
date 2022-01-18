@@ -1,10 +1,11 @@
-import React, { memo, Component, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { View } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'
 import { pickBy } from '@/utils'
-import { setPageTitle, platformTemplateName } from '@/utils/platform'
+import doc from '@/doc'
+import { platformTemplateName } from '@/utils/platform'
 import { SpPage, SpTabbar } from '@/components'
 import ComSeries from './comps/comp-series'
 
@@ -41,18 +42,11 @@ const CategoryIndex = (props) => {
     } else {
       contentList.push(seriesList)
     }
-    console.log('tabList====', tabList)
-
-    console.log('contentList====', contentList)
+    // console.log('tabList====', tabList)
+    // console.log('contentList====', contentList)
     let currentList = contentList[activeIndex] //当前系列内容
-    console.log('currentList ====', currentList)
-    currentList = pickBy(currentList, {
-      name: 'name',
-      img: 'img',
-      children: 'children',
-      hot: 'hot',
-      id: 'id'
-    })
+    // console.log('currentList ====', currentList)
+    currentList = pickBy(currentList, doc.category.CATEGORY_LIST)
     setState((draft) => {
       draft.tabList = tabList
       draft.contentList = contentList
