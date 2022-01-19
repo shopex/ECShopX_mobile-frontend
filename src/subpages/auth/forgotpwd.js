@@ -27,7 +27,7 @@ const initialValue = {
 const PageBindPhone = () => {
   const $instance = getCurrentInstance()
   const {
-    params: { phone }
+    params: { phone, redi_url }
   } = $instance.router
 
   const [state, setState] = useImmer(initialValue)
@@ -55,6 +55,9 @@ const PageBindPhone = () => {
 
   const showModalReg = async () => {
     let url = `/subpages/auth/reg`
+    if (redi_url) {
+      url += `?redi_url=${encodeURIComponent(redi_url)}`
+    }
     const { is_new } = await api.wx.getIsNew({ mobile: username })
     setState((_state) => {
       _state.is_new = !!is_new
