@@ -28,12 +28,12 @@ function CmopDeliver (props) {
     {
       type: 'dada',
       name: '同城配',
-      isopen: headquartersStore.is_current ? headquartersStore.is_dada : currentStore.is_dada
+      isopen: headquartersStore.is_headerstore ? headquartersStore.is_dada : currentStore.is_dada
     },
     {
       type: 'ziti',
       name: '自提',
-      isopen: headquartersStore.is_current ? headquartersStore.is_ziti : currentStore.is_ziti // type !== 'pointitem' && currentStore.is_ziti
+      isopen: headquartersStore.is_headerstore ? headquartersStore.is_ziti : currentStore.is_ziti // type !== 'pointitem' && currentStore.is_ziti
     }
   ]
 
@@ -57,7 +57,7 @@ function CmopDeliver (props) {
 
   const handleChooseAddress = (choose) => {
     // 自定义选择店铺跳转事件
-    let city = headquartersStore.is_current ? headquartersStore.city : currentStore.city
+    let city = headquartersStore.is_headerstore ? headquartersStore.city : currentStore.city
     let params = ''
     if (receiptType === 'dada') {
       params = `&city=${city}&receipt_type=dada`
@@ -97,7 +97,8 @@ function CmopDeliver (props) {
         <View className='store-module'>
           <AddressChoose isAddress={address} onCustomChosse={handleChooseAddress.bind(this)} />
           <View className='store'>
-            配送门店: {headquartersStore.is_current ? headquartersStore.name : currentStore.name}
+            配送门店:{' '}
+            {headquartersStore.is_headerstore ? headquartersStore.name : currentStore.name}
           </View>
         </View>
       )}
@@ -114,7 +115,7 @@ function CmopDeliver (props) {
             <View className='text-muted'>
               联系电话：
               <Text className='phone'>
-                {headquartersStore.is_current ? headquartersStore.phone : currentStore.phone}
+                {headquartersStore.is_headerstore ? headquartersStore.phone : currentStore.phone}
               </Text>
             </View>
           </View>
