@@ -174,17 +174,22 @@ export default class Login extends Component {
   }
 
   handleNavigateReg = async () => {
-    navigationToReg()
+    const { redirect } = this.$instance.router.params
+    navigationToReg(redirect)
   }
 
   handleForgotPsd = async () => {
+    const { redirect } = this.$instance.router.params
     let url = '/subpages/auth/forgotpwd'
     const { mobile } = this.state.info
+    if (redirect) {
+      url += `&redi_url=${redirect}`
+    }
     if (mobile) {
-      url += `?phone=${mobile}`
+      url += `&phone=${mobile}`
     }
     Taro.navigateTo({
-      url
+      url: encodeURIComponent(url)
     })
   }
 

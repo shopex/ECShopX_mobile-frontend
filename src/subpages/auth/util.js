@@ -3,9 +3,9 @@ import { showToast } from '@/utils'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 
 //跳转到注册页
-function navigationToReg () {
+function navigationToReg (redirect) {
   Taro.navigateTo({
-    url: '/subpages/auth/reg'
+    url: `/subpages/auth/reg?redi_url=${encodeURIComponent(redirect)}`
   })
 }
 
@@ -33,8 +33,10 @@ async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
     const url = redi_url
       ? decodeURIComponent(redi_url)
       : redirect
-      ? redirect
+      ? decodeURIComponent(redirect)
       : '/subpages/member/index'
+
+    debugger
     // : process.env.APP_HOME_PAGE
     Taro.redirectTo({ url })
     // window.location.href = `${window.location.origin}${url}`
