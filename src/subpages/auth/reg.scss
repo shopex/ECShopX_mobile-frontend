@@ -118,6 +118,15 @@ $border-color:#E2E4EA;
       margin-top:24px;
       text-align: center;
       line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .sp-checkbox-new {
+        .icon-roundcheckfill,.icon-round{
+          font-size:28px;
+        }
+      }
     }
     .forgot-password{
       color:rgba(133, 139, 156, 1);

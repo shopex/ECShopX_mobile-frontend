@@ -205,7 +205,6 @@ export default class Login extends Component {
           <View className='desc'>使用已注册的手机号登录</View>
         </View>
         <View className='auth-bd'>
-          <View className='form-title'>中国大陆 +86</View>
           <AtForm className='form'>
             <View className='form-field'>
               <AtInput

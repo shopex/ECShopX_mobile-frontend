@@ -123,7 +123,6 @@ const PageBindPhone = () => {
         <View className='title'>忘记密码</View>
       </View>
       <View className='auth-bd'>
-        <View className='form-title'>中国大陆 +86</View>
         <AtForm className='form'>
           <View className='form-field'>
             <AtInput
