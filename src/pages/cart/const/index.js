@@ -1,5 +1,5 @@
 export const initialState = {
-  detailInfo: {},
+  detailInfo: [],
   submitLoading: false,
   btnIsDisabled: false,
   addressList: [],
@@ -25,5 +25,7 @@ export const initialState = {
   isNeedPackage: false, // 是否需要打包
   packInfo: {}, // 打包信息
   disabledPayment: {}, // 是否禁用支付
-  channel: ''
+  channel: '',
+  paramsInfo: {}, // 结算接口参数
+  shouldCalcOrder: false // 操作优惠券的时候，需要重新调一下结算接口
 }

@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { useImmer } from 'use-immer'
+import { SpPage, SpPrice, SpCell, SpOrderItem } from '@/components'
 import { View, Text } from '@tarojs/components'
 import { updateChooseAddress } from '@/store/slices/user'
-import { useSelector, useDispatch } from 'react-redux'
-import { useImmer } from 'use-immer'
+import { isObjectsValue, isWeixin, pickBy, authSetting } from '@/utils'
+import _cloneDeep from 'lodash/cloneDeep'
 import api from '@/api'
 import doc from '@/doc'
-import { isObjectsValue, isWeixin, pickBy, authSetting } from '@/utils'
-import { SpPage, SpPrice, SpCell, SpOrderItem } from '@/components'
 
 import { initialState } from './const'
 
@@ -19,29 +20,29 @@ import CompPaymentPicker from './comps/comp-paymentpicker'
 import './espier-checkout.scss'
 
 function CartCheckout (props) {
+  const $instance = getCurrentInstance()
   const {
     type,
-    goodType,
-    order_type,
+    order_type = 'normal',
     shop_id: distributor_id,
     cart_type,
     seckill_id = null,
-    ticket = null,
-    pay_type
-  } = getCurrentInstance().router?.params || {}
-
-  let paramsInfo = {}
+    seckill_ticket = null,
+    pay_type,
+    source, // 不知道什么情况下会存在值
+    bargain_id
+  } = $instance.router?.params || {}
 
   const [state, setState] = useImmer(initialState)
   const dispatch = useDispatch()
   // dispatch(changeZitiStore())
 
-  const { location = {}, address } = useSelector((state) => state.user)
-  const { rgb, pointName } = useSelector((state) => state.sys)
-  const { coupon, zitiShop } = useSelector((state) => state.cart)
+  const { address } = useSelector((state) => state.user)
+  const { pointName } = useSelector((state) => state.sys)
+  const { coupon } = useSelector((state) => state.cart)
 
   const {
-    detailInfo = {},
+    detailInfo,
     payType,
     submitLoading,
     btnIsDisabled,
@@ -54,7 +55,9 @@ function CartCheckout (props) {
     invoiceTitle,
     packInfo = {},
     isNeedPackage,
-    disabledPayment
+    disabledPayment,
+    paramsInfo,
+    shouldCalcOrder
   } = state
 
   useEffect(() => {
@@ -70,20 +73,32 @@ function CartCheckout (props) {
     fetchHeaderShop()
   }, [])
 
+  useDidShow(() => {
+    if (shouldCalcOrder) {
+      setState((draft) => {
+        draft.shouldCalcOrder = false
+      })
+      calcOrder()
+    }
+  })
+
   const fetchHeaderShop = async () => {
     const headquartersStoreInfo = await api.shop.getHeadquarters({ distributor_id })
     setState((draft) => {
-      draft.headquartersStoreInfo = { ...headquartersStoreInfo, is_current: distributor_id == 0 }
+      draft.headquartersStoreInfo = {
+        ...headquartersStoreInfo,
+        is_headerstore: distributor_id == 0
+      }
     })
   }
 
   const fetchZiTiShop = async () => {
     const shopInfo = await api.shop.getShop({ distributor_id })
     setState((draft) => {
-      ;(draft.currentStoreInfo = shopInfo),
-        (draft.receiptType = shopInfo.is_delivery || distributor_id == 0 ? 'logistics' : 'ziti')
-      // express: shopInfo.is_delivery
+      draft.currentStoreInfo = shopInfo
+      // draft.receiptType = shopInfo.is_delivery || distributor_id == 0 ? 'logistics' : 'ziti'
     })
+    // express: shopInfo.is_delivery
   }
 
   const fetchAddress = async (type) => {
@@ -91,7 +106,9 @@ function CartCheckout (props) {
       receipt_type: type
     }
     if (type === 'dada') {
-      query.city = headquartersStoreInfo.is_current ? headquartersStoreInfo.city : currentStore.city
+      query.city = headquartersStoreInfo.is_headerstore
+        ? headquartersStoreInfo.city
+        : currentStore.city
     }
     const { list: address_list } = await api.member.addressList(query)
     if (address_list.length == 0) {
@@ -135,10 +152,10 @@ function CartCheckout (props) {
 
   const handleSwitchExpress = (receiptType) => {
     // 切换配送模式
-    // Taro.showLoading({
-    //   title: '加载中',
-    //   mask: true
-    // })
+    Taro.showLoading({
+      title: '加载中',
+      mask: true
+    })
     setState((draft) => {
       draft.receiptType = receiptType
       // draft.express = receiptType !== 'ziti'
@@ -165,8 +182,7 @@ function CartCheckout (props) {
           registration_number
         } = pickBy(res, doc.checkout.INVOICE_TITLE)
 
-        paramsInfo = {
-          ...paramsInfo,
+        let params_info = {
           invoice_type: 'normal',
           invoice_content: {
             title: type == 0 ? 'unit' : 'individual',
@@ -179,23 +195,39 @@ function CartCheckout (props) {
           }
         }
         setState((draft) => {
-          draft.invoiceTitle = content
+          ;(draft.invoiceTitle = content), (draft.paramsInfo = { ...paramsInfo, ...params_info })
         })
       }
     })
   }
 
+  console.log(paramsInfo, '----')
+
   const resetInvoice = (e) => {
     e.stopPropagation()
     setState((draft) => {
-      draft.invoiceTitle = ''
+      ;(draft.invoiceTitle = ''),
+        (draft.paramsInfo = { ...paramsInfo, invoice_type: '', invoice_content: {} })
     })
-    delete paramsInfo.invoice_type
-    delete paramsInfo.invoice_content
   }
 
-  const handleCouponsClick = () => {
-    console.log('优惠券')
+  const handleCouponsClick = async () => {
+    let items_filter = paramsInfo.items.filter((item) => item.order_item_type !== 'gift')
+    items_filter = items_filter.map((item) => {
+      const { item_id, num, total_fee: price } = item
+      return {
+        item_id,
+        num,
+        price
+      }
+    })
+    await setState((draft) => {
+      draft.shouldCalcOrder = true
+    })
+    let items = JSON.stringify(items_filter)
+    Taro.navigateTo({
+      url: `/others/pages/cart/coupon-picker?items=${items}&is_checkout=true&cart_type=${cart_type}&distributor_id=${distributor_id}` // &source=${source}不确定要不要传
+    })
   }
 
   const handlePaymentChange = async (payType, channel) => {
@@ -206,55 +238,205 @@ function CartCheckout (props) {
   }
 
   const handleRemarkChange = (val) => {
-    console.log(val, '---')
+    setState((draft) => {
+      draft.paramsInfo = { ...paramsInfo, remark: val }
+    })
   }
 
-  const calcOrder = () => {
-    console.log('结算啦')
+  const calcOrder = async () => {
+    Taro.showLoading({
+      title: '加载中',
+      mask: true
+    })
+    const params = getParams()
+    let data
+    try {
+      data = await api.cart.total(params)
+    } catch (e) {
+      Taro.hideLoading()
+      console.log(e)
+      // if (e.res.data.data.status_code === 422) {
+      //   setTimeout(() => {
+      //     Taro.navigateBack()
+      //   }, 1000)
+      // }
+    }
+
+    if (!data) return
+
+    const {
+      items,
+      item_fee,
+      // item_point,
+      totalItemNum: items_count,
+      member_discount = 0,
+      coupon_discount = 0,
+      discount_fee,
+      freight_fee = 0,
+      coupon_info,
+      total_fee,
+      invoice_status,
+      // 额外提示信息
+      extraTips = ''
+      // freight_type,
+      // freight_point = 0,
+      // point = 0,
+      // remainpt, // 总积分
+      // deduction,
+      // third_params,
+      // taxable_fee,
+      // total_tax,
+      // point_fee = 0,
+      // point_use,
+      // user_point = 0,
+      // max_point = 0,
+      // is_open_deduct_point,
+      // deduct_point_rule,
+      // real_use_point,
+    } = data
+
+    if (isObjectsValue(coupon_info) && !coupon) {
+      // dispatch({
+      //   type: 'coupon',
+      //   value: {
+      //     title: coupon_info.info,
+      //     card_id: coupon_info.id,
+      //     code: coupon_info.coupon_code,
+      //     discount: coupon_info.discount_fee
+      //   }
+      // })
+    }
+
+    const total = {
+      ...totalInfo,
+      item_fee,
+      discount_fee: -1 * discount_fee,
+      member_discount: -1 * member_discount,
+      coupon_discount: -1 * coupon_discount,
+      freight_fee,
+      total_fee,
+      items_count,
+      invoice_status // 是否开启开发票
+      // taxable_fee,
+      // total_tax,
+      // point,
+      // freight_point,
+      // remainpt, // 总积分
+      // deduction, // 抵扣
+      // point_fee: -1 * point_fee, //积分抵扣金额,
+      // item_point,
+      // freight_type
+    }
+    let info = detailInfo
+    if (items.length > 0) {
+      info = [
+        {
+          list: transformCartList(items),
+          cart_total_num: items.reduce((acc, item) => +item.num + acc, 0)
+        }
+      ]
+      setState((draft) => {
+        draft.paramsInfo = { cart_type, pay_type: pay_type || payType, items }
+      })
+    }
+
     Taro.hideLoading()
+
+    setState((draft) => {
+      ;(draft.totalInfo = total), (draft.detailInfo = info)
+    })
+    if (extraTips) {
+      Taro.showModal({
+        content: extraTips,
+        confirmText: '知道了',
+        showCancel: false
+      })
+    }
+  }
+
+  const getParams = () => {
+    const receiver = pickBy(address, {
+      receiver_name: 'username',
+      receiver_mobile: 'telephone',
+      receiver_state: 'province',
+      receiver_city: 'city',
+      receiver_district: 'county',
+      receiver_address: 'adrdetail',
+      receiver_zip: 'postalCode'
+    })
+
+    let cus_parmas = {
+      ...receiver,
+      ...paramsInfo,
+      receipt_type: receiptType,
+      distributor_id,
+      coupon_discount: 0,
+      member_discount: 0,
+      cart_type,
+      order_type: bargain_id ? 'bargain' : order_type,
+      promotion: 'normal'
+    }
+
+    if (coupon) {
+      const { not_use_coupon, type, value } = coupon
+      cus_parmas.not_use_coupon = not_use_coupon || 0
+      cus_parmas.coupon_discount = type === 'coupon' && value.code ? value.code : undefined
+      cus_parmas.member_discount = type === 'member' && value ? 1 : 0
+    }
+
+    cus_parmas.pack = packInfo
+    cus_parmas.bargain_id = bargain_id || undefined
+
+    setState((draft) => {
+      draft.paramsInfo = cus_parmas
+    })
+    // delete cus_parmas.items
+    return _cloneDeep({
+      ...cus_parmas,
+      items: []
+    })
   }
 
   const goodsComp = () => {
     return (
       <View className='cart-list'>
-        {detailInfo.cart &&
-          detailInfo.cart.map((cart) => {
-            return (
-              <View className='cart-checkout__group' key={cart.shop_id}>
-                <View className='cart-group__cont'>
-                  {/* <View className='order-item__idx'>商品清单（{cart.list.length}）</View> */}
-                  {cart.list.map((item, idx) => {
-                    return (
-                      <View className='order-item__wrap' key={item.item_id}>
-                        {item.order_item_type === 'gift' ? (
-                          <View className='order-item__idx'>
-                            <Text>赠品</Text>
+        {detailInfo.map((cart) => {
+          return (
+            <View className='cart-checkout__group' key={cart.shop_id}>
+              <View className='cart-group__cont'>
+                {/* <View className='order-item__idx'>商品清单（{cart.list.length}）</View> */}
+                {cart.list.map((item, idx) => {
+                  return (
+                    <View className='order-item__wrap' key={item.item_id}>
+                      {item.order_item_type === 'gift' ? (
+                        <View className='order-item__idx'>
+                          <Text>赠品</Text>
+                        </View>
+                      ) : (
+                        <View className='order-item__idx national'>
+                          <Text>第{idx + 1}件商品</Text>
+                        </View>
+                      )}
+                      <SpOrderItem
+                        info={item}
+                        showExtra={false}
+                        showDesc
+                        isPointitemGood={isPointitemGood}
+                        renderDesc={
+                          <View className='order-item__desc'>
+                            {item.discount_info &&
+                              item.order_item_type !== 'gift' &&
+                              item.discount_info.map((discount) => (
+                                <Text className='order-item__discount' key={discount.type}>
+                                  {discount.info}
+                                </Text>
+                              ))}
                           </View>
-                        ) : (
-                          <View className='order-item__idx national'>
-                            <Text>第{idx + 1}件商品</Text>
-                          </View>
-                        )}
-                        <SpOrderItem
-                          info={item}
-                          showExtra={false}
-                          showDesc
-                          isPointitemGood={isPointitemGood}
-                          renderDesc={
-                            <View className='order-item__desc'>
-                              {item.discount_info &&
-                                item.order_item_type !== 'gift' &&
-                                item.discount_info.map((discount) => (
-                                  <Text className='order-item__discount' key={discount.type}>
-                                    {discount.info}
-                                  </Text>
-                                ))}
-                            </View>
-                          }
-                          customFooter
-                          renderFooter={
-                            <View className='order-item__ft'>
-                              {isPointitemGood ? (
+                        }
+                        customFooter
+                        renderFooter={
+                          <View className='order-item__ft'>
+                            {/* {isPointitemGood ? (
                                 <SpPrice
                                   className='order-item__price'
                                   appendText={pointName}
@@ -263,29 +445,34 @@ function CartCheckout (props) {
                                   value={item.item_point}
                                 />
                               ) : (
-                                <SpPrice className='order-item__price' value={item.price || 1000} />
-                              )}
-                              <Text className='order-item__num'>x {item.num || 1}</Text>
-                            </View>
-                          }
-                        />
-                      </View>
-                    )
-                  })}
-                </View>
-                <View className='cart-group__cont cus-input'>
-                  <SpCell className='trade-remark' border={false}>
-                    <AtInput
-                      className='trade-remark__input'
-                      placeholder='给商家留言：选填（50字以内）'
-                      onChange={handleRemarkChange.bind(this)}
-                      maxLength={50}
-                    />
-                  </SpCell>
-                </View>
+                                <SpPrice className='order-item__price' value={item.price || 100} />
+                              )} */}
+                            <SpPrice
+                              unit='cent'
+                              className='order-item__price'
+                              value={item.price || 100}
+                            />
+                            <Text className='order-item__num'>x {item.num || 1}</Text>
+                          </View>
+                        }
+                      />
+                    </View>
+                  )
+                })}
               </View>
-            )
-          })}
+              <View className='cart-group__cont cus-input'>
+                <SpCell className='trade-remark' border={false}>
+                  <AtInput
+                    className='trade-remark__input'
+                    placeholder='给商家留言：选填（50字以内）'
+                    onChange={handleRemarkChange.bind(this)}
+                    maxLength={50}
+                  />
+                </SpCell>
+              </View>
+            </View>
+          )
+        })}
       </View>
     )
   }
@@ -296,8 +483,8 @@ function CartCheckout (props) {
         <View className='checkout-toolbar__total'>
           共<Text>{totalInfo.items_count}</Text>
           件商品　总计:
-          {payType !== 'point' && !isPointitemGood ? (
-            <SpPrice unit='cent' className='primary-price' value={totalInfo.total_fee} />
+          <SpPrice unit='cent' className='primary-price' value={totalInfo.total_fee} />
+          {/* {payType !== 'point' && !isPointitemGood ? (
           ) : (
             totalInfo.point && (
               <View class='checkout-toolbar__price'>
@@ -320,7 +507,7 @@ function CartCheckout (props) {
                   )}
               </View>
             )
-          )}
+          )} */}
         </View>
         <AtButton
           type='primary'
