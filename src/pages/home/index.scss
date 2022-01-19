@@ -1,0 +1,12 @@
+.padtop {
+  padding-top: $home-header-height;
+}
+.page-index {
+  padding-bottom: $tabbar-height;
+  .home-body {
+    margin-top: $home-header-height;
+  }
+  .wgt__padded {
+    padding: 40px 0px;
+  }
+}

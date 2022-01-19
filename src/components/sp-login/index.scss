@@ -1,0 +1,17 @@
+.sp-login {
+  display: initial;
+  .login-btn {
+    border-width: 0;
+    height: auto;
+    line-height: initial;
+    padding: 0;
+    background-color: transparent;
+    display: initial;
+    &:after {
+      border-width: 0;
+    }
+  } 
+  .ali-button {
+    background: transparent;
+  }
+}

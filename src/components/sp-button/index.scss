@@ -1,0 +1,32 @@
+$button-height: 80px;
+
+.sp-button {
+  position: relative;
+  height: 80px;
+  border-radius: 40px;
+  /* prettier-ignore */
+  border: 1PX solid var(--color-primary);
+  overflow: hidden;
+  font-size: 28px;
+  position: relative;
+
+  &__reset {
+    width: 34%;
+    color: var(--color-primary);
+    height: 100%;
+    line-height: $button-height;
+    @include flex-center();
+  }
+
+  &__confirm {
+    width: 66%;
+    background: var(--color-primary);
+    border-radius: 40px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    color: white;
+    @include flex-center();
+  }
+}
