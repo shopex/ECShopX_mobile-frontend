@@ -9,7 +9,7 @@ import './comp-password-input.scss'
 
 const initialValue = {
   //一种是正常的 text 一种是 password
-  type: 'text'
+  type: 'password'
 }
 
 const CompPasswordInput = (props) => {
