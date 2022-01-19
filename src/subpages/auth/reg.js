@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { SpPage, SpTimer } from '@/components'
+import { SpPage, SpTimer, SpCheckbox } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
+import { useSelector, useDispatch } from 'react-redux'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
 import { useImmer } from 'use-immer'
@@ -13,7 +14,8 @@ const initialValue = {
   yzm: '',
   vcode: '',
   password: '',
-  imgInfo: null
+  imgInfo: null,
+  checked: false
 }
 
 const CODE_SYMBOL = 'sign'
@@ -21,7 +23,9 @@ const CODE_SYMBOL = 'sign'
 const Reg = () => {
   const [state, setState] = useImmer(initialValue)
 
-  const { mobile, yzm, vcode, password, imgInfo } = state
+  const { mobile, yzm, vcode, password, imgInfo, checked } = state
+
+  const { colorPrimary } = useSelector((state) => state.sys)
 
   const handleInputChange = (name) => (val) => {
     setState((state) => {
@@ -60,6 +64,19 @@ const Reg = () => {
   }
 
   const handleSubmit = async () => {
+    if (!checked) {
+      const res = await Taro.showModal({
+        title: '提示',
+        content: '是否同意注册协议?',
+        showCancel: true,
+        cancel: '取消',
+        cancelText: '取消',
+        confirmText: '确认',
+        confirmColor: colorPrimary
+      })
+      if (!res.confirm) return
+    }
+
     if (!validate.isMobileNum(mobile)) {
       showToast('请输入正确的手机号')
       return
@@ -90,6 +107,12 @@ const Reg = () => {
     }
   }
 
+  const handleSelect = () => {
+    setState((_state) => {
+      _state.checked = !checked
+    })
+  }
+
   useEffect(() => {
     getImageVcode()
   }, [])
@@ -107,7 +130,6 @@ const Reg = () => {
         <View className='title'>欢迎注册</View>
       </View>
       <View className='auth-bd'>
-        <View className='form-title'>中国大陆 +86</View>
         <AtForm className='form'>
           <View className='form-field'>
             <AtInput
@@ -180,17 +202,20 @@ const Reg = () => {
           </View>
 
           <View className='form-text'>
-            已阅读并同意
-            <Text
-              className='primary-color'
-              onClick={() =>
-                Taro.navigateTo({
-                  url: '/subpages/auth/reg-rule'
-                })
-              }
-            >
-              《注册协议》
-            </Text>
+            <SpCheckbox checked={checked} onChange={handleSelect} />
+            <View>
+              已阅读并同意
+              <Text
+                className='primary-color'
+                onClick={() =>
+                  Taro.navigateTo({
+                    url: '/subpages/auth/reg-rule'
+                  })
+                }
+              >
+                《注册协议》
+              </Text>
+            </View>
           </View>
         </AtForm>
       </View>
