@@ -5,6 +5,7 @@ import { isWeb, isWeixin } from '@/utils'
 import { connect } from 'react-redux'
 import api from '@/api'
 import { SpTimer, SpPage } from '@/components'
+import { updateUserInfo } from '@/store/slices/user'
 import S from '@/spx'
 import './edit-phone.scss'
 
@@ -12,7 +13,7 @@ import './edit-phone.scss'
   ({ colors }) => ({
     colors: colors.current || { data: [{}] }
   }),
-  () => ({})
+  (dispatch) => ({ dispatch })
 )
 export default class BindPhone extends Component {
   constructor (props) {
@@ -57,6 +58,23 @@ export default class BindPhone extends Component {
         oldCountryCode: countryCode
       })
     }
+  }
+
+  handleUpdateUserInfo = async () => {
+    const { dispatch } = this.props
+    const _userInfo = await api.member.memberInfo()
+    // 兼容老版本 后续优化
+    const { username, avatar, user_id, mobile, open_id } = _userInfo.memberInfo
+    Taro.setStorageSync('userinfo', {
+      username: username,
+      avatar: avatar,
+      userId: user_id,
+      isPromoter: _userInfo.is_promoter,
+      mobile: mobile,
+      openid: open_id,
+      vip: _userInfo.vipgrade ? _userInfo.vipgrade.vip_type : ''
+    })
+    dispatch(updateUserInfo(_userInfo))
   }
 
   // 获取验证码
@@ -133,7 +151,7 @@ export default class BindPhone extends Component {
       mask: true,
       duration: 2000
     })
-    await S.getMemberInfo()
+    this.handleUpdateUserInfo()
     setTimeout(() => {
       Taro.navigateBack()
     }, 2000)
