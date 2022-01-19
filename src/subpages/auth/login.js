@@ -94,6 +94,7 @@ export default class Login extends Component {
   }
 
   async handleSubmit () {
+    const { redirect } = this.$instance.router.params
     const { loginType } = this.state
     const { mobile, password, vcode } = this.state.info
     let params = {
@@ -139,7 +140,9 @@ export default class Login extends Component {
         } else {
           setToken(token)
           Taro.navigateTo({
-            url: `/subpages/auth/edit-password?phone=${mobile}`
+            url: `/subpages/auth/edit-password?phone=${mobile}&redi_url=${encodeURIComponent(
+              redirect
+            )}`
           })
         }
       } else {
