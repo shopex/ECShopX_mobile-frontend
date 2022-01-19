@@ -183,13 +183,13 @@ export default class Login extends Component {
     let url = '/subpages/auth/forgotpwd'
     const { mobile } = this.state.info
     if (redirect) {
-      url += `&redi_url=${redirect}`
+      url += `?redi_url=${encodeURIComponent(redirect)}`
     }
     if (mobile) {
       url += `&phone=${mobile}`
     }
     Taro.navigateTo({
-      url: encodeURIComponent(url)
+      url
     })
   }
 
