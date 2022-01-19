@@ -1,0 +1,93 @@
+.sp-goods-item {
+  background-color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  .goods-item {
+    &__hd {
+      padding-top: 100%;
+      position: relative;
+      .sp-image {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    }
+    &__bd {
+      border-radius: 0;
+      padding: 15px;
+      .goods-title {
+        font-size: 24px;
+        color: $color-primary-text;
+        @include multi-ellipsis(1);
+        // padding: 15px;
+      }
+      .goods-desc {
+        font-size: 24px;
+        color: $color-hint-text;
+        @include multi-ellipsis(2);
+      }
+
+      .goods-info {
+        margin-bottom: 20px;
+      }
+
+      .goods-price {
+        line-height: 26px;
+        margin-top: 10px;
+      }
+
+      .promotions {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        .promotion-tag {
+          border: 1PX solid var(--color-primary);
+          color: var(--color-primary);
+          font-size: 22px;
+          border-radius: 4px;
+          padding: 0 4px;
+          line-height: 26px;
+          margin-right: 10px;
+        }
+      }
+
+      .bd-block {
+        display: flex;
+        justify-content: space-between;
+        &-lf {
+
+        }
+        &-rg {
+          .iconfont {
+            font-size: 40px;
+            color: #666;
+          }
+          .icon-shoucanghover-01 {
+            color: var(--color-primary);
+          }
+        }
+      }
+    }
+    &__ft {
+      // margin-top: 40px;
+      // padding: 0 20px 20px;
+      // display: flex;
+      // align-items: center;
+      // .brand-logo {
+      //   border-radius: 50%;
+      //   overflow: hidden;
+      // }
+    }
+  }
+  .goods__store {
+    padding-top: 10px;
+    color: $color-gray;
+    font-size: 20px;
+    letter-spacing: 0;
+    &-entry {
+      color: #333;
+    }
+  }
+}

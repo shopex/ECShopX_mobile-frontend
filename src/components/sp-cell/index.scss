@@ -1,0 +1,65 @@
+$cell-prefix:'sp-cell';
+
+.sp-cell {
+  background: #fff;
+  padding: 24px $edge-size;
+  display: flex;
+  align-items: center;
+  // @include hairline($color-border-gray-light, 75px, bottom);
+  color: $color-primary-text;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    height: 1PX;
+    bottom: 0;
+    background: #f4f4f4;
+  }
+  &__no-border {
+    &:before {
+      border: none;
+      background: transparent;
+    }
+  }
+  &__bd {
+    flex: 1;
+  }
+  &__ft {
+    color: $font-size-small;
+    color: $color-gray-light;
+    &-icon {
+      font-size: 40px;
+      color: rgba($color-gray-light, 0.8);
+      margin-right: -8px;
+    }
+  }
+  &__icon {
+    display: block;
+    width: 45px;
+    height: 45px;
+    color: rgba($color-gray-light, 0.8);
+    font-size: 40px;
+    margin-right: 8px;
+    margin-left: -8px;
+  }
+
+  &.commonStyle{
+
+    @include hairline(#DDDDDD,0,top,bottom);
+
+    .#{$cell-prefix}__hd{
+      width: 120px;
+    }
+    .#{$cell-prefix}__bd{
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+    }
+    .#{$cell-prefix}__ft{
+        padding: 0 15rpx;
+    }
+  }
+}

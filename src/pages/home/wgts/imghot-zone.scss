@@ -1,0 +1,8 @@
+.wgt-imghot-zone {
+  .img-hotzone {
+    position: relative;
+    &_zone {
+      position: absolute;
+    }
+  }
+}
