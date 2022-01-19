@@ -74,8 +74,15 @@ $border-color:#E2E4EA;
         .image-vcode {
           width:180px;
           height:60px;
+          display: block;
         }
       }
+    }
+
+    .form-tip{
+      font-size: 28px;
+      color: #3A3A5A;
+      margin-top: 16px;
     }
     
     .btn-text-group {
