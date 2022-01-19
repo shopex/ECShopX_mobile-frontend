@@ -65,6 +65,11 @@ $border-color:#E2E4EA;
       // border-bottom: 1PX solid #E2E4EA;
       @include hairline($border-color,0,bottom);
     }
+    .form-tip{
+      font-size: 28px;
+      color: #858b9c;
+      margin-top: 16px;
+    }
     .form-field {
       display: flex;
       align-items: center;
@@ -151,8 +156,8 @@ $border-color:#E2E4EA;
       height: 45px;
     }
   }
-  .other-login{
-    position: absolute;
+  .other-login{ 
+    margin-top: 60px;
     left: 0;
     right: 0;
     bottom:0;
