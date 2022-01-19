@@ -5,10 +5,12 @@ import { SpPage, SpTimer, SpCheckbox } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { useSelector } from 'react-redux'
 import { CompPasswordInput } from './comps'
+import { setTokenAndRedirect } from './util'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { PASSWORD_TIP } from './const'
 import api from '@/api'
 import { useImmer } from 'use-immer'
+import { useLogin } from '@/hooks'
 import './reg.scss'
 
 const initialValue = {
@@ -30,6 +32,8 @@ const Reg = () => {
   const { mobile, yzm, vcode, password, imgInfo, checked, member_register, privacy } = state
 
   const { colorPrimary } = useSelector((state) => state.sys)
+
+  const { getUserInfo } = useLogin()
 
   const handleInputChange = (name) => (val) => {
     setState((state) => {
@@ -98,7 +102,7 @@ const Reg = () => {
     }
     try {
       //从登陆页跳转过来
-      await api.user.reg({
+      const { token } = await api.user.reg({
         auth_type: 'local',
         check_type: CODE_SYMBOL,
         mobile,
@@ -107,8 +111,10 @@ const Reg = () => {
         sex: 0,
         user_type: 'local'
       })
-      showToast('注册成功', () => {
-        Taro.navigateBack()
+      showToast('注册成功', async () => {
+        await setTokenAndRedirect(token, async () => {
+          await getUserInfo()
+        })
       })
     } catch (e) {
       console.log(e)

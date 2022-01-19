@@ -1,4 +1,5 @@
 import S from '@/spx'
+import { showToast } from '@/utils'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 
 //跳转到注册页
@@ -57,4 +58,8 @@ function pushHistory (returnUrl, currentUrl, currentTitle) {
   // window.history.pushState(state, currentTitle, currentUrl);
 }
 
-export { navigationToReg, setToken, setTokenAndRedirect, pushHistory, getToken }
+function addListener () {
+  window.addEventListener('focusout', () => {})
+}
+
+export { navigationToReg, setToken, setTokenAndRedirect, pushHistory, getToken, addListener }
