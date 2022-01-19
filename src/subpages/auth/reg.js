@@ -3,9 +3,10 @@ import Taro from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { SpPage, SpTimer, SpCheckbox } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
-import { useSelector, useDispatch } from 'react-redux'
-import { CompOtherLogin, CompPasswordInput } from './comps'
+import { useSelector } from 'react-redux'
+import { CompPasswordInput } from './comps'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
+import { PASSWORD_TIP } from './const'
 import api from '@/api'
 import { useImmer } from 'use-immer'
 import './reg.scss'
@@ -201,7 +202,7 @@ const Reg = () => {
             </View>
           </View>
 
-          <View className='form-tip'>6-16位密码、数字或字母</View>
+          <View className='form-tip'>{PASSWORD_TIP}</View>
 
           <View className='form-submit'>
             <AtButton

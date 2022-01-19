@@ -7,6 +7,8 @@ import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
 import { useImmer } from 'use-immer'
 import { CompPasswordInput } from './comps'
+import { useSelector } from 'react-redux'
+import { PASSWORD_TIP } from './const'
 import './forgotpwd.scss'
 
 const SYMBOL = 'forgot_password'
@@ -32,6 +34,8 @@ const PageBindPhone = () => {
 
   const { username, yzm, vcode, imgInfo, password, is_new } = state
 
+  const { colorPrimary } = useSelector((state) => state.sys)
+
   const handleInputChange = (name) => (val) => {
     setState((state) => {
       state[name] = val
@@ -39,15 +43,39 @@ const PageBindPhone = () => {
   }
 
   const getImageVcode = async () => {
-    if (is_new) return showToast('该手机号还未注册！')
+    const is_stop = await showModalReg()
+    if (is_stop) return
     const img_res = await api.user.regImg({ type: SYMBOL })
     setState((state) => {
       state.imgInfo = img_res
     })
   }
 
+  const showModalReg = async () => {
+    let url = `/subpages/auth/reg`
+    const { is_new } = await api.wx.getIsNew({ mobile: username })
+    setState((_state) => {
+      _state.is_new = !!is_new
+    })
+    if (is_new === 1) {
+      const res = await Taro.showModal({
+        title: '提示',
+        content: `此手机号码未注册、是否同意前往注册`,
+        cancelText: '拒绝',
+        confirmText: '同意',
+        confirmColor: colorPrimary
+      })
+      if (res.confirm) {
+        Taro.navigateTo({
+          url
+        })
+      }
+      return true
+    }
+    return false
+  }
+
   const handleTimerStart = async (resolve) => {
-    if (is_new) return showToast('该手机号还未注册！')
     if (!validate.isMobileNum(username)) {
       showToast('请输入正确的手机号')
       return
@@ -88,15 +116,6 @@ const PageBindPhone = () => {
     }
   }
 
-  const handlePhoneBlur = async (mobile) => {
-    if (mobile) {
-      const { is_new } = await api.wx.getIsNew({ mobile })
-      setState((_state) => {
-        _state.is_new = !!is_new
-      })
-    }
-  }
-
   useEffect(() => {
     getImageVcode()
   }, [])
@@ -106,12 +125,11 @@ const PageBindPhone = () => {
       setState((_state) => {
         _state.username = phone
       })
-      handlePhoneBlur(phone)
     }
   }, [phone])
 
   //全填写完
-  const isFull = username && yzm && vcode && password
+  const isFull = username && yzm && vcode && password && password.length >= 6
 
   return (
     <SpPage
@@ -124,7 +142,7 @@ const PageBindPhone = () => {
       </View>
       <View className='auth-bd'>
         <AtForm className='form'>
-          <View className={classNames('form-field', { 'error': is_new })}>
+          <View className={classNames('form-field')}>
             <AtInput
               clear
               name='mobile'
@@ -133,11 +151,8 @@ const PageBindPhone = () => {
               value={username}
               placeholder='请输入您的手机号码'
               onChange={handleInputChange('username')}
-              onBlur={handlePhoneBlur}
             />
           </View>
-
-          {is_new && <View className='error'>该手机号未注册！</View>}
 
           {/* 验证码登录，验证码超过1次，显示图形验证码 */}
           <View className='form-field'>
@@ -175,7 +190,7 @@ const PageBindPhone = () => {
           <View className='form-field'>
             <CompPasswordInput onChange={handleInputChange('password')} />
           </View>
-          <View className='form-tip'>6-16位密码、数字或字母</View>
+          <View className='form-tip'>{PASSWORD_TIP}</View>
 
           <View className='form-submit'>
             <AtButton

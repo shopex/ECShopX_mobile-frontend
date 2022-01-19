@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Taro, { usePageScroll, getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpNavBar, SpFloatMenuItem, SpNote } from '@/components'
