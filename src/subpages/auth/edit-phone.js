@@ -161,8 +161,6 @@ export default class BindPhone extends Component {
     const { currentMobile, mobile, smsCode, countryCode, baseInfo } = this.state
     const { colors } = this.props
 
-    console.log('===mobile==', mobile)
-
     return (
       <SpPage className='page-edit-phone'>
         <View className='logo'>
