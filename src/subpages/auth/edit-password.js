@@ -5,7 +5,7 @@ import { SpPage } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import api from '@/api'
-import { setTokenAndRedirect, getToken } from './util'
+import { setTokenAndRedirect, getToken, pushHistory } from './util'
 import { useLogin } from '@/hooks'
 import { useImmer } from 'use-immer'
 import { PASSWORD_TIP } from './const'
@@ -56,6 +56,16 @@ const PageEditPassword = () => {
       })
     }
   }
+
+  const loginSuccess = async () => {
+    await setTokenAndRedirect(getToken(), async () => {
+      await getUserInfo()
+    })
+  }
+
+  useEffect(() => {
+    pushHistory(loginSuccess)
+  }, [])
 
   //全填写完
   const isFull = phone && password && repassword && password.length >= 6 && repassword.length >= 6
