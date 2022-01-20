@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
+import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast, tokenParseH5 } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
 import { useLogin } from '@/hooks'
 import api from '@/api'
+import S from '@/spx'
 import { useImmer } from 'use-immer'
 import { setTokenAndRedirect, setToken } from './util'
 import './bindPhone.scss'
@@ -68,6 +69,13 @@ const PageBindPhone = () => {
     }
   }
 
+  const loginSuccess = async (token) => {
+    if (!token) return
+    await setTokenAndRedirect(token, async () => {
+      await getUserInfo()
+    })
+  }
+
   const handleSubmit = async () => {
     try {
       const { token } = await api.user.bind({
@@ -84,10 +92,7 @@ const PageBindPhone = () => {
           url: `/subpages/auth/edit-password?phone=${username}`
         })
       } else {
-        const self = this
-        setTokenAndRedirect(token, async () => {
-          await getUserInfo()
-        }).bind(self)
+        loginSuccess(token)
       }
     } catch (e) {
       console.log(e)
@@ -97,6 +102,10 @@ const PageBindPhone = () => {
   useEffect(() => {
     getImageVcode()
   }, [])
+
+  useDidShow(async () => {
+    loginSuccess(S.getAuthToken())
+  })
 
   const handleClickLeft = () => {
     Taro.redirectTo({

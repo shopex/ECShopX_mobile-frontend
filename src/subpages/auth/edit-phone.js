@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import api from '@/api'
 import { SpTimer, SpPage } from '@/components'
 import { updateUserInfo } from '@/store/slices/user'
-import S from '@/spx'
+
 import './edit-phone.scss'
 
 @connect(
