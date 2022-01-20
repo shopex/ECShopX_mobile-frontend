@@ -1,52 +1,40 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import { AddressChoose } from '@/components'
 import { classNames } from '@/utils'
+import { updateChooseAddress } from '@/store/slices/user'
 
+import { deliveryList } from '../const'
 import './comp-deliver.scss'
 
-const deliveryList = [
-  {
-    type: 'logistics',
-    name: '普通快递',
-    key: 'is_delivery'
-  },
-  {
-    type: 'dada',
-    name: '同城配',
-    key: 'is_dada'
-  },
-  {
-    type: 'ziti',
-    name: '自提',
-    key: 'is_ziti'
-  }
-]
-
 const initialState = {
-  distributorInfo: {}
+  distributorInfo: {},
+  receiptType: 'logistics'
 }
 
 function CmopDeliver (props) {
-  const {
-    address = {},
-    receiptType = '', // 配送方式（logistics：普通快递  dada：同城配  ziti：自提）
-    onChangReceiptType = () => {},
-    distributor_id
-  } = props
+  const { address = {}, distributor_id, onChangReceiptType = () => {} } = props
+
+  const dispatch = useDispatch()
 
   const { location = {} } = useSelector((state) => state.user)
   const { rgb } = useSelector((state) => state.sys)
   const [state, setState] = useImmer(initialState)
-  const { distributorInfo } = state
+  const { distributorInfo, receiptType } = state
 
   useEffect(() => {
     fetch()
   }, [])
+
+  useEffect(() => {
+    if (receiptType !== 'ziti') {
+      fetchAddress()
+    }
+  }, [receiptType])
 
   const fetch = async () => {
     let distributorInfo
@@ -60,9 +48,24 @@ function CmopDeliver (props) {
     })
   }
 
-  const handleSwitchExpress = (type) => {
+  const fetchAddress = async () => {
+    await dispatch(updateChooseAddress(null))
+    let query = {
+      receipt_type: receiptType,
+      city: receiptType === 'dada' ? distributorInfo.city : undefined
+    }
+    const { list } = await api.member.addressList(query)
+    const defaultAddress = list.find((item) => item.is_def)
+    const update_address = defaultAddress || list[0] || {}
+    await dispatch(updateChooseAddress(update_address))
+  }
+
+  const handleSwitchExpress = async (type) => {
     // 切换配送方式
     if (receiptType === type) return
+    setState((draft) => {
+      draft.receiptType = type
+    })
     onChangReceiptType(type, distributorInfo)
   }
 

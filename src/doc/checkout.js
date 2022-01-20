@@ -1,6 +1,6 @@
 export const CHECKOUT_GOODS_ITEM = {
   item_id: 'item_id',
-  cart_id: 'cart_id',
+  // cart_id: 'cart_id',
   title: 'item_name',
   curSymbol: 'fee_symbol',
   discount_info: 'discount_info',
@@ -24,4 +24,14 @@ export const INVOICE_TITLE = {
   bankname: 'bankName',
   bankaccount: 'bankAccount',
   company_phone: 'telephone'
+}
+
+export const RECEIVER_ADDRESS = {
+  receiver_name: 'username',
+  receiver_mobile: 'telephone',
+  receiver_state: 'province',
+  receiver_city: 'city',
+  receiver_district: 'county',
+  receiver_address: 'adrdetail',
+  receiver_zip: 'postalCode'
 }

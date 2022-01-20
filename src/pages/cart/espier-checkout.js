@@ -1,11 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
 import { useImmer } from 'use-immer'
 import { SpPage, SpPrice, SpCell, SpOrderItem } from '@/components'
 import { View, Text } from '@tarojs/components'
-import { updateChooseAddress } from '@/store/slices/user'
 import { changeCoupon } from '@/store/slices/cart'
 import { isObjectsValue, isWeixin, pickBy, authSetting } from '@/utils'
 import _cloneDeep from 'lodash/cloneDeep'
@@ -56,7 +55,8 @@ function CartCheckout (props) {
     packInfo = {},
     isNeedPackage,
     disabledPayment,
-    paramsInfo
+    paramsInfo,
+    discountInfo
   } = state
 
   useEffect(() => {
@@ -67,33 +67,24 @@ function CartCheckout (props) {
 
   useEffect(() => {
     getTradeSetting()
-    fetchAddress()
+    return () => {
+      dispatch(changeCoupon(null))
+    }
   }, [])
+
+  useEffect(() => {
+    calcOrder()
+  }, [address])
 
   useEffect(() => {
     calcOrder()
   }, [coupon])
 
-  const fetchAddress = async (receipt_type, distributor_info) => {
-    let query = { receipt_type }
-    if (receipt_type === 'dada') {
-      query.city = distributor_info.city
-    }
-    const { list: address_list } = await api.member.addressList(query)
-    if (address_list.length == 0) {
-      await dispatch(updateChooseAddress({}))
-      calcOrder()
-      return
-    }
-
-    const defaultAddress = address_list.find((item) => item.is_def)
-    const update_address = defaultAddress || address_list[0] || {}
-    await dispatch(updateChooseAddress(update_address))
-
-    if (update_address) {
+  useEffect(() => {
+    if (receiptType !== 'ziti') {
       calcOrder()
     }
-  }
+  }, [receiptType])
 
   const transformCartList = (list) => {
     return pickBy(list, doc.checkout.CHECKOUT_GOODS_ITEM)
@@ -118,25 +109,15 @@ function CartCheckout (props) {
     console.log('提交按钮', isObjectsValue(shoppingGuideData), shoppingGuideData)
   }
 
-  const handleSwitchExpress = (receipt_type, distributor_info) => {
+  const handleSwitchExpress = (receiptType, distributorInfo) => {
     // 切换配送模式
-    Taro.showLoading({
-      title: '加载中',
-      mask: true
-    })
     setState((draft) => {
-      ;(draft.receiptType = receipt_type), (draft.distributorInfo = distributor_info)
-      // draft.express = receipt_type !== 'ziti'
+      ;(draft.receiptType = receiptType), (draft.distributorInfo = distributorInfo)
     })
-    if (receipt_type !== 'ziti') {
-      dispatch(updateChooseAddress(null))
-      fetchAddress(receipt_type, distributor_info)
-    } else {
-      calcOrder()
-    }
   }
 
   const handleInvoiceClick = () => {
+    // 开发票
     authSetting('invoiceTitle', async () => {
       const res = await Taro.chooseInvoiceTitle()
       if (res.errMsg === 'chooseInvoiceTitle:ok') {
@@ -169,18 +150,16 @@ function CartCheckout (props) {
     })
   }
 
-  console.log(paramsInfo, '----')
-
   const resetInvoice = (e) => {
     e.stopPropagation()
     setState((draft) => {
-      ;(draft.invoiceTitle = ''),
-        (draft.paramsInfo = { ...paramsInfo, invoice_type: '', invoice_content: {} })
+      draft.invoiceTitle = ''
+      draft.paramsInfo = { ...paramsInfo, invoice_type: '', invoice_content: {} }
     })
   }
 
   const handleCouponsClick = async () => {
-    let items_filter = paramsInfo.items.filter((item) => item.order_item_type !== 'gift')
+    let items_filter = discountInfo.filter((item) => item.order_item_type !== 'gift')
     items_filter = items_filter.map((item) => {
       const { item_id, num, total_fee: price } = item
       return {
@@ -189,9 +168,9 @@ function CartCheckout (props) {
         price
       }
     })
-    let items = JSON.stringify(items_filter)
+    let cus_item = JSON.stringify(items_filter)
     Taro.navigateTo({
-      url: `/others/pages/cart/coupon-picker?items=${items}&is_checkout=true&cart_type=${cart_type}&distributor_id=${distributor_id}` // &source=${source}不确定要不要传
+      url: `/others/pages/cart/coupon-picker?items=${cus_item}&is_checkout=true&cart_type=${cart_type}&distributor_id=${distributor_id}` // &source=${source}不确定要不要传
     })
   }
 
@@ -213,12 +192,11 @@ function CartCheckout (props) {
       title: '加载中',
       mask: true
     })
-    const params = getParams()
+    const cus_parmas = getParamsInfo()
     let data
     try {
-      data = await api.cart.total(params)
+      data = await api.cart.total({ ...cus_parmas })
     } catch (e) {
-      Taro.hideLoading()
       console.log(e)
       // if (e.res.data.data.status_code === 422) {
       //   setTimeout(() => {
@@ -226,6 +204,7 @@ function CartCheckout (props) {
       //   }, 1000)
       // }
     }
+    Taro.hideLoading()
 
     if (!data) return
 
@@ -238,7 +217,7 @@ function CartCheckout (props) {
       coupon_discount = 0,
       discount_fee,
       freight_fee = 0,
-      coupon_info,
+      coupon_info = {},
       total_fee,
       invoice_status,
       // 额外提示信息
@@ -277,9 +256,9 @@ function CartCheckout (props) {
     const total = {
       ...totalInfo,
       item_fee,
-      discount_fee: -1 * discount_fee,
-      member_discount: -1 * member_discount,
-      coupon_discount: -1 * coupon_discount,
+      discount_fee,
+      member_discount,
+      coupon_discount,
       freight_fee,
       total_fee,
       items_count,
@@ -290,7 +269,7 @@ function CartCheckout (props) {
       // freight_point,
       // remainpt, // 总积分
       // deduction, // 抵扣
-      // point_fee: -1 * point_fee, //积分抵扣金额,
+      // point_fee: point_fee, //积分抵扣金额,
       // item_point,
       // freight_type
     }
@@ -298,20 +277,18 @@ function CartCheckout (props) {
     if (items.length > 0) {
       info = [
         {
-          list: transformCartList(items),
-          cart_total_num: items.reduce((acc, item) => +item.num + acc, 0)
+          list: transformCartList(items)
         }
       ]
       setState((draft) => {
-        // draft.paramsInfo = { cart_type, pay_type: pay_type || payType, items }
-        draft.paramsInfo = { ...paramsInfo, items }
+        draft.discountInfo = transformCartList(items)
       })
     }
 
     Taro.hideLoading()
 
     setState((draft) => {
-      ;(draft.totalInfo = total), (draft.detailInfo = info)
+      ;(draft.totalInfo = total), (draft.paramsInfo = cus_parmas), (draft.detailInfo = info)
     })
     if (extraTips) {
       Taro.showModal({
@@ -322,24 +299,13 @@ function CartCheckout (props) {
     }
   }
 
-  const getParams = () => {
-    const receiver = pickBy(address, {
-      receiver_name: 'username',
-      receiver_mobile: 'telephone',
-      receiver_state: 'province',
-      receiver_city: 'city',
-      receiver_district: 'county',
-      receiver_address: 'adrdetail',
-      receiver_zip: 'postalCode'
-    })
-
+  const getParamsInfo = () => {
+    const receiver = pickBy(address, doc.checkout.RECEIVER_ADDRESS)
     let cus_parmas = {
-      ...receiver,
       ...paramsInfo,
+      ...receiver,
       receipt_type: receiptType,
       distributor_id,
-      coupon_discount: 0,
-      member_discount: 0,
       cart_type,
       order_type: bargain_id ? 'bargain' : order_type,
       promotion: 'normal'
@@ -355,14 +321,7 @@ function CartCheckout (props) {
     cus_parmas.pack = packInfo
     cus_parmas.bargain_id = bargain_id || undefined
 
-    setState((draft) => {
-      draft.paramsInfo = cus_parmas
-    })
-    // delete cus_parmas.items
-    return _cloneDeep({
-      ...cus_parmas,
-      items: []
-    })
+    return cus_parmas
   }
 
   const goodsComp = () => {
@@ -471,7 +430,6 @@ function CartCheckout (props) {
       )}
       <View className='cart-checkout__address'>
         <CompDeliver
-          receiptType={receiptType}
           distributor_id={distributor_id}
           address={address}
           onChangReceiptType={handleSwitchExpress}
