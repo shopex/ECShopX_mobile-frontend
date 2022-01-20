@@ -27,7 +27,8 @@ export default class Login extends Component {
       isVisible: false,
       imgInfo: null,
       loginType: 1, // 1=密码; 2=验证码
-      logoShow: true
+      logoShow: true,
+      is_new: false
     }
     //定时器
     this.timer = null
@@ -64,9 +65,12 @@ export default class Login extends Component {
 
   handleTimerStop () {}
 
-  handleInputChange (name, val) {
+  handleInputChange (name, val, error) {
     const { info } = this.state
     info[name] = val
+    if (name == 'mobile') {
+      info.is_new = error
+    }
     this.setState({
       info
     })
@@ -261,7 +265,7 @@ export default class Login extends Component {
     //全填写完
     const isFull =
       (codeLogin && info.mobile && info.yzm && info.vcode) ||
-      (passwordLogin && info.mobile && info.password && info.password.length >= 6)
+      (passwordLogin && info.mobile && info.password && info.password.length >= 6 && !info.is_new)
 
     const inputProp = {
       onFocus: this.logoShow(false),
@@ -286,6 +290,7 @@ export default class Login extends Component {
               <CompInputPhone
                 onChange={this.handleInputChange.bind(this, 'mobile')}
                 value={info.mobile}
+                needValidate={passwordLogin}
               />
             </View>
             {/* 密码登录 */}

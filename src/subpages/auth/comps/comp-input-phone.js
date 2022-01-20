@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtInput } from 'taro-ui'
@@ -20,6 +20,7 @@ const CompInputPhone = (props) => {
     onFocus = () => {},
     onBlur = () => {},
     value,
+    needValidate,
     ...restProps
   } = props
 
@@ -28,15 +29,29 @@ const CompInputPhone = (props) => {
   const { error } = state
 
   const handleChange = async (val) => {
+    let errorStatus = false
     if (val.length === 11) {
       const { is_new } = await api.wx.getIsNew({ mobile: val })
-
+      errorStatus = !!is_new
       setState((_state) => {
-        _state.error = !!is_new
+        _state.error = errorStatus
       })
     }
-    onChange?.(val)
+    if (val.length === 0) {
+      errorStatus = false
+      setState((_state) => {
+        _state.error = errorStatus
+      })
+    }
+    onChange?.(val, errorStatus)
   }
+
+  // useEffect(()=>{
+  //   console.log("===needValidate===>",needValidate)
+  //   setState(_state=>{
+  //     _state.error=needValidate?_state.error:false
+  //   })
+  // },[needValidate])
 
   return (
     <View
@@ -54,7 +69,7 @@ const CompInputPhone = (props) => {
         value={value}
         {...restProps}
       />
-      {error && <View className='error'>该手机号码未注册</View>}
+      {error && needValidate && <View className='error'>该手机号码未注册</View>}
     </View>
   )
 }
