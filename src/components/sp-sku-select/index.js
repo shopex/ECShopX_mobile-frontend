@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpFloatLayout, SpButton, SpImage, SpPrice, SpInputNumber } from '@/components'
+import { classNames } from '@/utils'
 import './index.scss'
 
 function SpSkuSelect (props) {
@@ -14,10 +15,15 @@ function SpSkuSelect (props) {
 
   const selection = Array(skuItems.length).fill(null)
   console.log('specItems:', specItems)
-  //
+  const skuDict = {}
   // 默认选择sku
-  const { item_spec } = specItems.find((item) => item.store > 0)
-  defaultSpecItem.item
+  const res = specItems.filter((item) => item.store > 0)
+  res.forEach((item) => {
+    const key = item.itemSpec.map((spec) => spec.spec_value_id).join('_')
+    skuDict[key] = item
+  })
+
+  console.log('skuDict:', skuDict)
 
   return (
     <SpFloatLayout
