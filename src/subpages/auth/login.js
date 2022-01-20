@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { CompOtherLogin, CompPasswordInput, CompInput } from './comps'
+import { CompOtherLogin, CompPasswordInput, CompInputPhone } from './comps'
 import { SpTimer, SpPage } from '@/components'
 import { updateUserInfo } from '@/store/slices/user'
 import { connect } from 'react-redux'
 import api from '@/api'
 import { classNames, navigateTo, validate, showToast, tokenParseH5 } from '@/utils'
 import { navigationToReg, setToken, setTokenAndRedirect, addListener } from './util'
-import { PASSWORD_TIP } from './const'
 import './login.scss'
 
 @connect(
@@ -283,17 +282,10 @@ export default class Login extends Component {
         </View>
         <View className='auth-bd'>
           <AtForm className='form'>
-            <View className='form-field'>
-              <AtInput
-                clear
-                name='mobile'
-                maxLength={11}
-                type='tel'
-                value={info.mobile}
-                placeholder='请输入您的手机号码'
+            <View className='form-field noborder'>
+              <CompInputPhone
                 onChange={this.handleInputChange.bind(this, 'mobile')}
-                placeholderClass='input-placeholder'
-                {...inputProp}
+                value={info.mobile}
               />
             </View>
             {/* 密码登录 */}

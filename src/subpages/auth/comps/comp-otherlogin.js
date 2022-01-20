@@ -28,7 +28,6 @@ const CompOtherLogin = () => {
 
   return (
     <View className='comp-other-login'>
-      {/* <View className='line'></View> */}
       <View className='text'>其它方式登录</View>
       <View className='loginway'>
         <View className='wechat' onClick={handleClickWexin}>

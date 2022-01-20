@@ -53,14 +53,12 @@ $border-color:#E2E4EA;
       font-size: 32px;
       color: #111A34;
       padding-bottom: 20px;
-      // border-bottom: 1PX solid #E2E4EA;
-      @include hairline($border-color,0,bottom);
+      border-bottom: 1PX solid $border-color;
     }
     .form-field {
       display: flex;
-      align-items: center;
-      @include hairline($border-color,0,bottom);
-      // border-bottom: 1PX solid #E2E4EA;
+      align-items: center; 
+      border-bottom: 1PX solid $border-color;
       .at-input {
         padding: 25px 0 !important;
         margin-bottom: 0;
@@ -100,12 +98,8 @@ $border-color:#E2E4EA;
         font-weight: 600;
       }
       .at-button--disabled{
-        opacity: 1;
-      }
-      .login-button{
-        background: rgba(var(--color-rgb), 0.2);
-        border-color: rgba(var(--color-rgb), 0.2);
-      }
+        opacity: 0.5;
+      } 
       .login-button,.reg-button{
         height: 100px;
         border-radius: 50px;
