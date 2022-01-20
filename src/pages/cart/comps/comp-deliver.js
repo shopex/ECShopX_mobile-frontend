@@ -1,48 +1,69 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { useSelector } from 'react-redux'
+import { useImmer } from 'use-immer'
 import { AddressChoose } from '@/components'
+import { classNames } from '@/utils'
 
 import './comp-deliver.scss'
-import classNames from 'classnames'
+import api from '@/api'
+
+const deliveryList = [
+  {
+    type: 'logistics',
+    name: '普通快递',
+    key: 'is_delivery'
+  },
+  {
+    type: 'dada',
+    name: '同城配',
+    key: 'is_dada'
+  },
+  {
+    type: 'ziti',
+    name: '自提',
+    key: 'is_ziti'
+  }
+]
+
+const initialState = {
+  distributorInfo: {}
+}
 
 function CmopDeliver (props) {
   const {
-    currentStore = {},
     address = {},
     receiptType = '', // 配送方式（logistics：普通快递  dada：同城配  ziti：自提）
-    headquartersStore = {}, // 总店自提点
-    onChangReceiptType = () => {}
+    onChangReceiptType = () => {},
+    distributor_id
   } = props
 
   const { location = {} } = useSelector((state) => state.user)
   const { rgb } = useSelector((state) => state.sys)
+  const [state, setState] = useImmer(initialState)
+  const { distributorInfo } = state
 
-  const deliveryList = [
-    {
-      type: 'logistics',
-      name: '普通快递',
-      isopen: currentStore.is_delivery
-    },
-    {
-      type: 'dada',
-      name: '同城配',
-      isopen: headquartersStore.is_headerstore ? headquartersStore.is_dada : currentStore.is_dada
-    },
-    {
-      type: 'ziti',
-      name: '自提',
-      isopen: headquartersStore.is_headerstore ? headquartersStore.is_ziti : currentStore.is_ziti // type !== 'pointitem' && currentStore.is_ziti
+  useEffect(() => {
+    fetch()
+  }, [])
+
+  const fetch = async () => {
+    let distributorInfo
+    if (distributor_id == 0) {
+      distributorInfo = await api.shop.getHeadquarters({ distributor_id })
+    } else {
+      distributorInfo = await api.shop.getShop({ distributor_id })
     }
-  ]
-
-  const showSwitchDeliver = deliveryList.filter((item) => item.isopen) || []
+    setState((draft) => {
+      draft.distributorInfo = distributorInfo
+    })
+  }
 
   const handleSwitchExpress = (type) => {
     // 切换配送方式
     if (receiptType === type) return
-    onChangReceiptType(type)
+    onChangReceiptType(type, distributorInfo)
   }
 
   const handleMapClick = () => {
@@ -67,56 +88,79 @@ function CmopDeliver (props) {
     })
   }
 
-  const showSwitchDeliverComp = () => {
-    // 配送方式选择器
-    return (
-      <View className='switch-box'>
-        <View className={classNames(showSwitchDeliver.length > 0 && 'switch-tab')}>
-          {showSwitchDeliver.map((item) => (
-            <View
-              key={item.type}
-              className={`switch-item ${receiptType === item.type ? 'active' : ''}`}
-              style={receiptType === item.type && { background: `rgb(${rgb}, 0.4)` }}
-              onClick={handleSwitchExpress.bind(this, item.type)}
-            >
-              {item.name}
-            </View>
-          ))}
-        </View>
-      </View>
-    )
-  }
+  // const showSwitchDeliverComp = () => {
+  //   // 配送方式选择器
+  //   return (
+  //     <View className='switch-box'>
+  //       <View className={classNames(showSwitchDeliver.length > 0 && 'switch-tab')}>
+  //         {showSwitchDeliver.map((item) => (
+  //           <View
+  //             key={item.type}
+  //             className={`switch-item ${receiptType === item.type ? 'active' : ''}`}
+  //             style={receiptType === item.type && { background: `rgb(${rgb}, 0.4)` }}
+  //             onClick={handleSwitchExpress.bind(this, item.type)}
+  //           >
+  //             {item.name}
+  //           </View>
+  //         ))}
+  //       </View>
+  //     </View>
+  //   )
+  // }
 
   return (
     <View className='page-comp-deliver'>
-      {showSwitchDeliverComp()}
+      <View className='switch-box'>
+        <View className={classNames(deliveryList.length > 0 && 'switch-tab')}>
+          {deliveryList.map((item) => {
+            if (distributorInfo[item.key]) {
+              return (
+                <View
+                  key={item.type}
+                  className={`switch-item ${receiptType === item.type ? 'active' : ''}`}
+                  style={receiptType === item.type && { background: `rgb(${rgb}, 0.4)` }}
+                  onClick={handleSwitchExpress.bind(this, item.type)}
+                >
+                  {item.name}
+                </View>
+              )
+            }
+          })}
+        </View>
+      </View>
+
+      {/* <View>
+        {
+          deliveryList.map(item => {
+            if(distributorInfo[item.key]) {
+              return <View>{item.name}</View>
+            }
+          })
+        }
+      </View> */}
+
       {/** 普通快递 */}
       {receiptType === 'logistics' && <AddressChoose isAddress={address} />}
       {/** 同城配 */}
       {receiptType === 'dada' && (
         <View className='store-module'>
           <AddressChoose isAddress={address} onCustomChosse={handleChooseAddress.bind(this)} />
-          <View className='store'>
-            配送门店:{' '}
-            {headquartersStore.is_headerstore ? headquartersStore.name : currentStore.name}
-          </View>
+          <View className='store'>配送门店: {distributorInfo.name}</View>
         </View>
       )}
       {/** 自提 */}
       {receiptType === 'ziti' && (
         <View className='address-module'>
-          <View className='address-title'>{currentStore.name}</View>
+          <View className='address-title'>{distributorInfo.name}</View>
           <View className='address-detail'>
-            <View className='address'>{currentStore.store_address}</View>
+            <View className='address'>{distributorInfo.store_address}</View>
             <View className='iconfont icon-periscope' onClick={handleMapClick.bind(this)}></View>
           </View>
           <View className='other-info'>
-            <View className='text-muted light'>门店营业时间：{currentStore.hour}</View>
+            <View className='text-muted light'>门店营业时间：{distributorInfo.hour}</View>
             <View className='text-muted'>
               联系电话：
-              <Text className='phone'>
-                {headquartersStore.is_headerstore ? headquartersStore.phone : currentStore.phone}
-              </Text>
+              <Text className='phone'>{distributorInfo.phone}</Text>
             </View>
           </View>
         </View>

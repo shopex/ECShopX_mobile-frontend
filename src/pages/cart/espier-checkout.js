@@ -50,14 +50,12 @@ function CartCheckout (props) {
     totalInfo = {},
     shoppingGuideData,
     receiptType,
-    currentStoreInfo = {},
-    headquartersStoreInfo = {},
+    distributorInfo = {},
     invoiceTitle,
     packInfo = {},
     isNeedPackage,
     disabledPayment,
-    paramsInfo,
-    shouldCalcOrder
+    paramsInfo
   } = state
 
   useEffect(() => {
@@ -68,47 +66,17 @@ function CartCheckout (props) {
 
   useEffect(() => {
     getTradeSetting()
-    fetchZiTiShop()
     fetchAddress()
-    fetchHeaderShop()
   }, [])
 
-  useDidShow(() => {
-    if (shouldCalcOrder) {
-      setState((draft) => {
-        draft.shouldCalcOrder = false
-      })
-      calcOrder()
-    }
-  })
+  useEffect(() => {
+    calcOrder()
+  }, [coupon])
 
-  const fetchHeaderShop = async () => {
-    const headquartersStoreInfo = await api.shop.getHeadquarters({ distributor_id })
-    setState((draft) => {
-      draft.headquartersStoreInfo = {
-        ...headquartersStoreInfo,
-        is_headerstore: distributor_id == 0
-      }
-    })
-  }
-
-  const fetchZiTiShop = async () => {
-    const shopInfo = await api.shop.getShop({ distributor_id })
-    setState((draft) => {
-      draft.currentStoreInfo = shopInfo
-      // draft.receiptType = shopInfo.is_delivery || distributor_id == 0 ? 'logistics' : 'ziti'
-    })
-    // express: shopInfo.is_delivery
-  }
-
-  const fetchAddress = async (type) => {
-    let query = {
-      receipt_type: type
-    }
-    if (type === 'dada') {
-      query.city = headquartersStoreInfo.is_headerstore
-        ? headquartersStoreInfo.city
-        : currentStore.city
+  const fetchAddress = async (receipt_type, distributor_info) => {
+    let query = { receipt_type }
+    if (receipt_type === 'dada') {
+      query.city = distributor_info.city
     }
     const { list: address_list } = await api.member.addressList(query)
     if (address_list.length == 0) {
@@ -117,9 +85,8 @@ function CartCheckout (props) {
       return
     }
 
-    let update_address = null
-    let addressFilterList = address_list.filter((item) => item.is_def)
-    update_address = addressFilterList[0] || address_list[0] || {}
+    const defaultAddress = address_list.find((item) => item.is_def)
+    const update_address = defaultAddress || address_list[0] || {}
     await dispatch(updateChooseAddress(update_address))
 
     if (update_address) {
@@ -150,19 +117,19 @@ function CartCheckout (props) {
     console.log('提交按钮', isObjectsValue(shoppingGuideData), shoppingGuideData)
   }
 
-  const handleSwitchExpress = (receiptType) => {
+  const handleSwitchExpress = (receipt_type, distributor_info) => {
     // 切换配送模式
     Taro.showLoading({
       title: '加载中',
       mask: true
     })
     setState((draft) => {
-      draft.receiptType = receiptType
-      // draft.express = receiptType !== 'ziti'
+      ;(draft.receiptType = receipt_type), (draft.distributorInfo = distributor_info)
+      // draft.express = receipt_type !== 'ziti'
     })
-    if (receiptType !== 'ziti') {
+    if (receipt_type !== 'ziti') {
       dispatch(updateChooseAddress(null))
-      fetchAddress(receiptType)
+      fetchAddress(receipt_type, distributor_info)
     } else {
       calcOrder()
     }
@@ -220,9 +187,6 @@ function CartCheckout (props) {
         num,
         price
       }
-    })
-    await setState((draft) => {
-      draft.shouldCalcOrder = true
     })
     let items = JSON.stringify(items_filter)
     Taro.navigateTo({
@@ -336,7 +300,8 @@ function CartCheckout (props) {
         }
       ]
       setState((draft) => {
-        draft.paramsInfo = { cart_type, pay_type: pay_type || payType, items }
+        // draft.paramsInfo = { cart_type, pay_type: pay_type || payType, items }
+        draft.paramsInfo = { ...paramsInfo, items }
       })
     }
 
@@ -529,8 +494,6 @@ function CartCheckout (props) {
     ? '会员折扣'
     : (coupon.value && coupon.value.title) || ''
 
-  // console.log(headquartersStoreInfo, currentStoreInfo)
-
   return (
     <SpPage className='page-cart-checkout' renderFooter={renderFooter()}>
       {isObjectsValue(shoppingGuideData) && (
@@ -541,8 +504,7 @@ function CartCheckout (props) {
       <View className='cart-checkout__address'>
         <CompDeliver
           receiptType={receiptType}
-          currentStore={currentStoreInfo}
-          headquartersStore={headquartersStoreInfo}
+          distributor_id={distributor_id}
           address={address}
           onChangReceiptType={handleSwitchExpress}
         />
