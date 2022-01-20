@@ -42,21 +42,15 @@ async function setTokenAndRedirect (token = '', tokenSetSuccessCallback) {
 }
 
 /*-----监听返回事件-----*/
-function pushHistory (returnUrl, currentUrl, currentTitle) {
+function pushHistory (callback) {
   window.addEventListener(
     'popstate',
     function (e) {
-      console.log('====popstate===>', e)
-      // window.location.href = returnUrl
-      //window.location.replace(returnUrl);
+      callback?.()
     },
     false
   )
-  // var state = {
-  //   title: currentTitle,
-  //   url: currentUrl
-  // };
-  // window.history.pushState(state, currentTitle, currentUrl);
+  window.history.pushState('new', null, null)
 }
 
 function addListener () {

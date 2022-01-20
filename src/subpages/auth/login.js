@@ -264,8 +264,13 @@ export default class Login extends Component {
 
     //全填写完
     const isFull =
-      (codeLogin && info.mobile && info.yzm && info.vcode) ||
-      (passwordLogin && info.mobile && info.password && info.password.length >= 6 && !info.is_new)
+      ((codeLogin && info.mobile && info.yzm && info.vcode) ||
+        (passwordLogin &&
+          info.mobile &&
+          info.password &&
+          info.password.length >= 6 &&
+          !info.is_new)) &&
+      info.mobile.length === 11
 
     const inputProp = {
       onFocus: this.logoShow(false),
