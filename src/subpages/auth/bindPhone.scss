@@ -103,8 +103,8 @@ $border-color:#E2E4EA;
         opacity: 1;
       }
       .login-button{
-        background-color: rgba(197, 202, 213, 1);
-        border-color: rgba(197, 202, 213, 1);
+        background: rgba(var(--color-rgb), 0.2);
+        border-color: rgba(var(--color-rgb), 0.2);
       }
       .login-button,.reg-button{
         height: 100px;

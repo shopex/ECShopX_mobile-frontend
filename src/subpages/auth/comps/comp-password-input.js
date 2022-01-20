@@ -29,7 +29,7 @@ const CompPasswordInput = (props) => {
       <AtInput
         clear
         type={type}
-        placeholder='请输入密码'
+        placeholder='密码由6-16位数字或字母组成'
         placeholderClass='input-placeholder'
         onChange={onChange}
         onFocus={onFocus}
@@ -38,7 +38,9 @@ const CompPasswordInput = (props) => {
       />
       <View className='input-icon' onClick={handleToggle}>
         <Text
-          className={classNames('icon', [type === 'text' ? 'icon-xianshi' : 'icon-yincang'])}
+          className={classNames('icon iconfont', [
+            type === 'text' ? 'icon-xianshi' : 'icon-yincang'
+          ])}
         ></Text>
       </View>
     </View>

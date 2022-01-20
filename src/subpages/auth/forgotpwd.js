@@ -43,10 +43,10 @@ const PageBindPhone = () => {
   }
 
   const getImageVcode = async (validate = false) => {
-    if (validate) {
-      const is_stop = await showModalReg()
-      if (is_stop) return
-    }
+    // if (validate) {
+    //   const is_stop = await showModalReg()
+    //   if (is_stop) return
+    // }
     const img_res = await api.user.regImg({ type: SYMBOL })
     setState((state) => {
       state.imgInfo = img_res
@@ -89,6 +89,11 @@ const PageBindPhone = () => {
       showToast('请输入图形验证码')
       return
     }
+
+    // 验证手机号是否注册
+    const isNewUser = await showModalReg()
+    if (isNewUser) return
+
     try {
       await api.user.regSmsCode({
         type: SYMBOL,
@@ -199,7 +204,7 @@ const PageBindPhone = () => {
           <View className='form-field'>
             <CompPasswordInput onChange={handleInputChange('password')} />
           </View>
-          <View className='form-tip'>{PASSWORD_TIP}</View>
+          {/* <View className='form-tip'>{PASSWORD_TIP}</View> */}
 
           <View className='form-submit'>
             <AtButton

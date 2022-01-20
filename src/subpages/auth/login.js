@@ -279,7 +279,7 @@ export default class Login extends Component {
       >
         <View className='auth-hd'>
           <View className='title'>欢迎登录</View>
-          <View className='desc'>使用已注册的手机号登录</View>
+          {/* <View className='desc'>使用已注册的手机号登录</View> */}
         </View>
         <View className='auth-bd'>
           <AtForm className='form'>
@@ -355,7 +355,7 @@ export default class Login extends Component {
                 </View>
               </View>
             )}
-            {passwordLogin && <View className='form-tip'>{PASSWORD_TIP}</View>}
+            {/* {passwordLogin && <View className='form-tip'>{PASSWORD_TIP}</View>} */}
             <View className='btn-text-group'>
               <Text className='btn-text' onClick={this.handleToggleLogin.bind(this)}>
                 {passwordLogin ? '验证码登录' : '密码登录'}
