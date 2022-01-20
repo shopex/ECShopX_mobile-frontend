@@ -1,19 +1,29 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
-import { View } from '@tarojs/components'
-import { SpFloatLayout, SpButton, SpImage, SpPrice } from '@/components'
+import { View, Text } from '@tarojs/components'
+import { SpFloatLayout, SpButton, SpImage, SpPrice, SpInputNumber } from '@/components'
 import './index.scss'
 
-function SpSku (props) {
-  const { info } = props
+function SpSkuSelect (props) {
+  const { info, open = false, onClose = () => {} } = props
   if (!info) {
     return null
   }
+  const { skuItems, specItems } = info
+
+  const selection = Array(skuItems.length).fill(null)
+  console.log('specItems:', specItems)
+  //
+  // 默认选择sku
+  const { item_spec } = specItems.find((item) => item.store > 0)
+  defaultSpecItem.item
+
   return (
     <SpFloatLayout
       className='sp-sku-select'
-      open
+      open={open}
+      onClose={onClose}
       renderFooter={<SpButton resetText='加入购物车' confirmText='立即购买'></SpButton>}
     >
       <View className='sku-info'>
@@ -26,14 +36,32 @@ function SpSku (props) {
         </View>
       </View>
       <View className='sku-list'>
-        <View className='sku-'></View>
+        {skuItems.map((item) => (
+          <View className='sku-group'>
+            <View className='sku-name'>{item.spec_name}</View>
+            <View className='sku-values'>
+              {item.spec_values.map((spec) => (
+                <View className='sku-btn'>
+                  {spec.spec_custom_value_name || spec.spec_value_name}
+                </View>
+              ))}
+            </View>
+          </View>
+        ))}
+        <View className='buy-count'>
+          <View className='label'>
+            购买数量<Text className='limit-count'>（限购5件）</Text>
+          </View>
+
+          <SpInputNumber />
+        </View>
       </View>
     </SpFloatLayout>
   )
 }
 
-SpSku.options = {
+SpSkuSelect.options = {
   addGlobalClass: true
 }
 
-export default SpSku
+export default SpSkuSelect

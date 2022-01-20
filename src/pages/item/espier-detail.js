@@ -55,6 +55,7 @@ const initialState = {
   mainGoods: {},
   makeUpGoods: [], // 组合商品
   packageOpen: false,
+  skuPanelOpen: true,
   evaluationList: [],
   evaluationTotal: 0
 }
@@ -74,6 +75,7 @@ function EspierDetail (props) {
     curImgIdx,
     promotionPackage,
     packageOpen,
+    skuPanelOpen,
     mainGoods,
     makeUpGoods
   } = state
@@ -97,12 +99,12 @@ function EspierDetail (props) {
   }, [play])
 
   useEffect(() => {
-    if (packageOpen) {
+    if (packageOpen || skuPanelOpen) {
       pageRef.current.pageLock()
     } else {
       pageRef.current.pageUnLock()
     }
-  }, [packageOpen])
+  }, [packageOpen, skuPanelOpen])
 
   const fetch = async () => {
     let data
@@ -280,7 +282,15 @@ function EspierDetail (props) {
           </View>
 
           <View className='sku-block'>
-            <SpCell title='规格' isLink></SpCell>
+            <SpCell
+              title='规格'
+              isLink
+              onClick={() => {
+                setState((draft) => {
+                  draft.skuPanelOpen = true
+                })
+              }}
+            ></SpCell>
           </View>
 
           <View className='sku-block'>
@@ -338,7 +348,15 @@ function EspierDetail (props) {
       />
 
       {/* Sku选择器 */}
-      <SpSkuSelect info={info} />
+      <SpSkuSelect
+        open={skuPanelOpen}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+      />
       <View></View>
     </SpPage>
   )

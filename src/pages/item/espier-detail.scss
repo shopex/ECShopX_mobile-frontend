@@ -67,22 +67,22 @@
     display: flex;
     align-items: center;
     .vip-price {
-      background-color: #000;
-      color: #ead6b6;
+      background-color: var(--color-primary);
+      color: #fff;
       padding: 15px 16px;
       border-radius: 50px;
       margin-left: 10px;
       .sp-price {
         margin-left: 10px;
       }
-      .price__symbol {
-        color: #ead6b6;
+      .sp-price__symbol {
+        color: #fff;
       }
-      .price__int {
-        color: #ead6b6;
+      .sp-price__int {
+        color: #fff;
       }
-      .price__decimal {
-        color: #ead6b6;
+      .sp-price__decimal {
+        color: #fff;
       }
     }
   }

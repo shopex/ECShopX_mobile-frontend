@@ -1,3 +1,5 @@
+import { pickBy } from '@/utils'
+
 export const WGT_GOODS_GRID = {
   cross: {
     key: 'origincountry_img_url',
@@ -84,6 +86,11 @@ export const GOODS_INFO = {
   store: 'store',
   isGift: 'is_gift',
   skuItems: 'item_spec_desc',
+  specItems: ({ spec_items }) => {
+    pickBy(spec_items, {
+      itemSpec: 'item_spec'
+    })
+  },
   intro: 'intro',
   distributorInfo: 'distributor_info',
   distributorId: 'distributor_id',

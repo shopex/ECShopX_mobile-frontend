@@ -15,7 +15,6 @@ const initialState = {
 }
 
 function SpPage (props, ref) {
-  console.log(getCurrentInstance())
   const { page, router } = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const { lock, lockStyle } = state
@@ -64,7 +63,6 @@ function SpPage (props, ref) {
       scrollTopRef.current = res.scrollTop
     }
 
-    console.log('xxxx')
     if (res.scrollTop > 300) {
       setShowToTop(true)
     } else {
