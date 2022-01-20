@@ -1,4 +1,4 @@
-$border-color:#E2E4EA;
+$border-color:#E2E4EA; 
 
 .page-auth-login {
   background-color: #fff;
@@ -10,6 +10,8 @@ $border-color:#E2E4EA;
   padding: 0 32px;
   display: flex;
   flex-direction: column;
+
+  @include placeholder(rgba(197, 202, 213, 1),32px);
 
   .at-input{
      .weui-input{
@@ -62,8 +64,7 @@ $border-color:#E2E4EA;
       font-size: 32px;
       color: #111A34;
       padding-bottom: 20px;
-      // border-bottom: 1PX solid #E2E4EA;
-      @include hairline($border-color,0,bottom);
+      border-bottom: 1PX solid $border-color; 
     }
     .form-tip{
       font-size: 28px;
@@ -73,8 +74,12 @@ $border-color:#E2E4EA;
     .form-field {
       display: flex;
       align-items: center;
-      @include hairline($border-color,0,bottom);
-      // border-bottom: 1PX solid #E2E4EA;
+      border-bottom: 1PX solid $border-color; 
+
+      &.noborder{
+        border-bottom: none; 
+      }
+
       .at-input {
         padding: 25px 0 !important;
         margin-bottom: 0;
@@ -114,12 +119,8 @@ $border-color:#E2E4EA;
         font-weight: 600;
       }
       .at-button--disabled{
-        opacity: 1;
-      }
-      .login-button{
-        background: rgba(var(--color-rgb), 0.2);
-        border-color: rgba(var(--color-rgb), 0.2);
-      }
+        opacity: .5;
+      } 
       .login-button,.reg-button{
         height: 100px;
         border-radius: 50px;
@@ -157,7 +158,7 @@ $border-color:#E2E4EA;
     }
   }
   .other-login{ 
-    margin-top: 60px;
+    margin-top: 100px;
     left: 0;
     right: 0;
     bottom:0;

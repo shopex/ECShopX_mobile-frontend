@@ -4,11 +4,10 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { SpPage, SpTimer } from '@/components'
 import { classNames, validate, showToast } from '@/utils'
 import { AtForm, AtInput, AtButton } from 'taro-ui'
-import api from '@/api'
+
 import { useImmer } from 'use-immer'
 import { CompPasswordInput } from './comps'
 import { useSelector } from 'react-redux'
-import { PASSWORD_TIP } from './const'
 import './forgotpwd.scss'
 
 const SYMBOL = 'forgot_password'
