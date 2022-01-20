@@ -25,5 +25,24 @@ export const initialState = {
   packInfo: {}, // 打包信息
   disabledPayment: {}, // 是否禁用支付
   channel: '',
-  paramsInfo: {} // 结算接口参数
+  paramsInfo: {}, // 结算接口参数
+  discountInfo: []
 }
+
+export const deliveryList = [
+  {
+    type: 'logistics',
+    name: '普通快递',
+    key: 'is_delivery'
+  },
+  {
+    type: 'dada',
+    name: '同城配',
+    key: 'is_dada'
+  },
+  {
+    type: 'ziti',
+    name: '自提',
+    key: 'is_ziti'
+  }
+]
