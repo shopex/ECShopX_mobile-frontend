@@ -63,13 +63,6 @@ const PageEditPassword = () => {
     })
   }
 
-  useEffect(() => {
-    pushHistory(loginSuccess)
-    return () => {
-      clearHistory(loginSuccess)
-    }
-  }, [])
-
   //全填写完
   const isFull = phone && password && repassword && password.length >= 6 && repassword.length >= 6
 
