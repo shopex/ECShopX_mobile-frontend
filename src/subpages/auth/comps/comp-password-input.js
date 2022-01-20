@@ -4,6 +4,7 @@ import { View, Text } from '@tarojs/components'
 import { AtInput } from 'taro-ui'
 import { classNames } from '@/utils'
 import { useImmer } from 'use-immer'
+import { PASSWORD_TIP } from '../const'
 import './comp-password-input.scss'
 
 const initialValue = {
@@ -29,7 +30,7 @@ const CompPasswordInput = (props) => {
       <AtInput
         clear
         type={type}
-        placeholder='密码由6-16位数字或字母组成'
+        placeholder={PASSWORD_TIP}
         placeholderClass='input-placeholder'
         onChange={onChange}
         onFocus={onFocus}
