@@ -87,8 +87,9 @@ export const GOODS_INFO = {
   isGift: 'is_gift',
   skuItems: 'item_spec_desc',
   specItems: ({ spec_items }) => {
-    pickBy(spec_items, {
-      itemSpec: 'item_spec'
+    return pickBy(spec_items, {
+      itemSpec: 'item_spec',
+      store: 'store'
     })
   },
   intro: 'intro',
