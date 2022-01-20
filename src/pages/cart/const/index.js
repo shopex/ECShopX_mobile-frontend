@@ -19,13 +19,11 @@ export const initialState = {
     freight_type: '', // 运费
     invoice_status: true // 是否需要开发票
   },
-  currentStoreInfo: {}, // 当前店铺信息
-  headquartersStoreInfo: {}, // 总店自提门店信息
+  distributorInfo: {}, // 店铺信息
   invoiceTitle: '', // 发票抬头
   isNeedPackage: false, // 是否需要打包
   packInfo: {}, // 打包信息
   disabledPayment: {}, // 是否禁用支付
   channel: '',
-  paramsInfo: {}, // 结算接口参数
-  shouldCalcOrder: false // 操作优惠券的时候，需要重新调一下结算接口
+  paramsInfo: {} // 结算接口参数
 }
