@@ -151,6 +151,7 @@ function CartCheckout (props) {
   }
 
   const handleCouponsClick = async () => {
+    const { cart_type, distributor_id } = paramsInfo
     let items_filter = discountInfo.filter((item) => item.order_item_type !== 'gift')
     items_filter = items_filter.map((item) => {
       const { item_id, num, total_fee: price } = item
@@ -161,10 +162,10 @@ function CartCheckout (props) {
       }
     })
     let cus_item = JSON.stringify(items_filter)
-    dispatch(changeCoupon(couponInfo))
     Taro.navigateTo({
       url: `/others/pages/cart/coupon-picker?items=${cus_item}&is_checkout=true&cart_type=${cart_type}&distributor_id=${distributor_id}` // &source=${source}不确定要不要传
     })
+    dispatch(changeCoupon(couponInfo))
   }
 
   const handlePaymentChange = async (payType, channel) => {
@@ -301,7 +302,6 @@ function CartCheckout (props) {
     if (receiptType === 'ziti') {
       receiver = pickBy({}, doc.checkout.RECEIVER_ADDRESS)
     }
-
     let cus_parmas = {
       ...paramsInfo,
       ...receiver,
@@ -322,7 +322,7 @@ function CartCheckout (props) {
       cus_parmas.member_discount = type === 'member' && value ? 1 : 0
     }
 
-    cus_parmas.pack = packInfo
+    cus_parmas.pack = isNeedPackage ? packInfo : undefined
     cus_parmas.bargain_id = bargain_id || undefined
 
     return cus_parmas
