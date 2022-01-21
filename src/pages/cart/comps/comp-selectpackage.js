@@ -17,7 +17,7 @@ function CompSelectPackage (props) {
     isChecked = false,
     packInfo = {},
     isPointitemGood = false, // 是否为积分商品
-    onHanleChange = () => {}
+    onHandleChange = () => {}
   } = props
 
   const { colorPrimary } = useSelector((state) => state.sys)
@@ -51,7 +51,7 @@ function CompSelectPackage (props) {
     setState((draft) => {
       draft.isOpendActionSheet = false
     })
-    if (ischange) onHanleChange && onHanleChange(checkedRadio)
+    if (ischange) onHandleChange && onHandleChange(checkedRadio)
   }
 
   return (
