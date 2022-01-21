@@ -462,7 +462,7 @@ function CartCheckout (props) {
           <CompSelectPackage
             isPointitemGood={isPointitemGood}
             isChecked={isNeedPackage}
-            onHanleChange={changeNeedPackage}
+            onHandleChange={changeNeedPackage}
             packInfo={packInfo}
           />
         </View>
