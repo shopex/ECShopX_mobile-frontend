@@ -11,6 +11,7 @@ import _get from 'lodash/get'
 import _findKey from 'lodash/findKey'
 import _pickBy from 'lodash/pickBy'
 import _keys from 'lodash/keys'
+import _isEmpty from 'lodash/isEmpty'
 import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
 import log from './log'
@@ -49,6 +50,10 @@ export function isArray (arr) {
 
 export function isString (val) {
   return typeof val === 'string'
+}
+
+export function isEmpty (obj) {
+  return _isEmpty(obj)
 }
 
 export function isObjectsValue (val) {
