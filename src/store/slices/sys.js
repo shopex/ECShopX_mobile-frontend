@@ -26,14 +26,14 @@ const initialState = {
       },
       {
         iconPath: '',
-        name: 'home',
+        name: 'category',
         pagePath: '/pages/category/index',
         selectedIconPath: '',
         text: '分类'
       },
       {
         iconPath: '',
-        name: 'home',
+        name: 'cart',
         pagePath: '/pages/cart/espier-index',
         selectedIconPath: '',
         text: '购物车',
@@ -41,7 +41,7 @@ const initialState = {
       },
       {
         iconPath: '',
-        name: 'home',
+        name: 'my',
         pagePath: '/subpages/member/index',
         selectedIconPath: '',
         text: '我的'
