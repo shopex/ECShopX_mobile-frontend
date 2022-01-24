@@ -50,6 +50,9 @@ class App extends Component {
         false
       )
     }
+
+    const deviceInfo = Taro.getSystemInfoSync()
+    console.log('deviceInfo:', deviceInfo)
   }
 
   async getSystemConfig () {
