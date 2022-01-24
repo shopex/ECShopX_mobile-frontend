@@ -668,6 +668,20 @@ const merchantIsvaild = async (parmas) => {
   return status
 }
 
+export function getExtConfigData () {
+  const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
+  if (_isEmpty(extConfig)) {
+    return {
+      appid: process.env.APP_ID,
+      company_id: process.env.APP_COMPANY_ID,
+      wxa_name: process.env.APP_NAME,
+      youshutoken: process.env.APP_YOUSHU_TOKEN
+    }
+  } else {
+    return extConfig
+  }
+}
+
 export {
   classNames,
   log,
