@@ -109,7 +109,8 @@ function CartCheckout (props) {
   const handleSwitchExpress = ({ receipt_type, distributorInfo }) => {
     // 切换配送模式
     setState((draft) => {
-      ;(draft.receiptType = receipt_type), (draft.distributorInfo = distributorInfo)
+      draft.receiptType = receipt_type
+      draft.distributorInfo = distributorInfo
     })
   }
 
@@ -141,7 +142,8 @@ function CartCheckout (props) {
           }
         }
         setState((draft) => {
-          ;(draft.invoiceTitle = content), (draft.paramsInfo = { ...paramsInfo, ...params_info })
+          draft.invoiceTitle = content
+          draft.paramsInfo = { ...paramsInfo, ...params_info }
         })
       }
     })
@@ -269,9 +271,9 @@ function CartCheckout (props) {
     Taro.hideLoading()
 
     setState((draft) => {
-      ;(draft.totalInfo = total),
-        (draft.detailInfo = info),
-        (draft.paramsInfo = { ...paramsInfo, ...cus_parmas })
+      draft.totalInfo = total
+      draft.detailInfo = info
+      draft.paramsInfo = { ...paramsInfo, ...cus_parmas }
     })
     if (extraTips) {
       Taro.showModal({
