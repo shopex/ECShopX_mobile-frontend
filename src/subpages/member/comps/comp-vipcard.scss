@@ -1,15 +1,15 @@
 .comp-vipcard {
   // width: 750px;
-  height: 85px;
+  height: 110px;
   background-size: 100% 100%;
   margin-top: 28px;
   display: flex;
-  padding: 20px 60px;
+  padding: 20px 60px 0;
   .lf-con {
     flex: 1;
     position: relative;
     &:after {
-      content: " ";
+      content: ' ';
       position: absolute;
       /* prettier-ignore */
       width: 1PX;
@@ -22,6 +22,7 @@
   .block {
     width: 100%;
     display: flex;
+    align-items: center;
   }
   .block-vip {
     width: 100%;

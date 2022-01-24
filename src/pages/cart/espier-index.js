@@ -7,7 +7,7 @@ import { useImmer } from 'use-immer'
 import qs from 'qs'
 import api from '@/api'
 import doc from '@/doc'
-import { navigateTo, pickBy } from '@/utils'
+import { navigateTo, pickBy, classNames } from '@/utils'
 import { useLogin, useDepChange } from '@/hooks'
 import {
   fetchCartList,
@@ -57,6 +57,7 @@ function CartIndex () {
 
   const { colorPrimary } = useSelector((state) => state.sys)
   const { validCart = [], invalidCart = [] } = useSelector((state) => state.cart)
+  const { tabbar = 1 } = router.params
 
   useDepChange(() => {
     fetch()
@@ -255,7 +256,11 @@ function CartIndex () {
   console.log(groupsList, 'list')
 
   return (
-    <SpPage className='page-cart-index'>
+    <SpPage
+      className={classNames('page-cart-index', {
+        'has-tabbar': tabbar == 1
+      })}
+    >
       {!isLogin && (
         <View className='login-header'>
           <View className='login-txt'>授权登录后同步购物车的商品</View>
@@ -447,7 +452,7 @@ function CartIndex () {
 
       <SpPrivacyModal open={policyModal} onCancel={onPolicyChange} onConfirm={onPolicyChange} />
 
-      <SpTabbar />
+      {tabbar == 1 && <SpTabbar />}
     </SpPage>
   )
 }

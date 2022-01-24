@@ -10,6 +10,10 @@
   .icon-shoucang-01 {
     font-size: 38px;
   }
+  .icon-shoucanghover-01 {
+    font-size: 38px;
+    color: var(--color-primary);
+  }
   .icon-gouwuche {
     font-size: 38px;
   }
@@ -18,9 +22,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
     &-txt {
       font-size: 24px;
       color: #222;
+    }
+    .cart-count {
+      position: absolute;
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      border-radius: 26px;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 20px;
+      text-align: center;
+      right: 26px;
     }
   }
   .toolbar-btns {
@@ -36,11 +53,18 @@
       text-align: center;
       font-size: 26px;
       box-sizing: border-box;
+      .btn-item-txt {
+        height: 80px;
+        line-height: 80px;
+      }
       &.btn-active {
         /* prettier-ignore */
         border: 1PX solid var(--color-primary);
         background: var(--color-primary);
         color: #fff;
+        .btn-item-txt {
+          color: #fff;
+        }
       }
       &.btn-default {
         /* prettier-ignore */
@@ -50,7 +74,7 @@
       &.btn-disabled {
         /* prettier-ignore */
         border: 1PX solid #E5E5E5;
-        background: #E5E5E5;
+        background: #e5e5e5;
         color: #8d8d8d;
       }
     }
