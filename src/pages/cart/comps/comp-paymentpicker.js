@@ -14,9 +14,8 @@ function CompPaymentPicker (props) {
     // isOpened = false,
     type = '',
     isShowDelivery = false,
-    // isShowPoint = true,
     loading,
-    isPointitemGood,
+    // isPointitemGood = false,
     disabledPayment = null,
     onChange = () => {}
     // onInitDefaultPayType = () => {}
@@ -92,16 +91,14 @@ function CompPaymentPicker (props) {
 
   return (
     <View className='pages-comp-paymentpicker'>
-      {!isPointitemGood && (
-        <SpCell
-          isLink
-          className='trade-invoice'
-          title='支付方式'
-          onClick={() => handlePaymentShow(true)}
-        >
-          <View className='invoice-title'>{payTypeText[type]}</View>
-        </SpCell>
-      )}
+      <SpCell
+        isLink
+        className='trade-invoice'
+        title='支付方式'
+        onClick={() => handlePaymentShow(true)}
+      >
+        <View className='invoice-title'>{payTypeText[type]}</View>
+      </SpCell>
 
       <AtFloatLayout isOpened={isOpendActionSheet} onClose={() => handlePaymentShow(false)}>
         <View className='payment-picker'>
@@ -110,7 +107,7 @@ function CompPaymentPicker (props) {
             <View className='iconfont icon-close'></View>
           </View>
           <View className='payment-picker__bd'>
-            {/* {isShowPoint &&
+            {/* {isPointitemGood &&
               <View
                 className={`payment-item ${
                   disabledPayment && disabledPayment['point'] ? 'is-disabled' : ''
