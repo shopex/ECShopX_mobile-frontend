@@ -41,6 +41,7 @@ import CompStore from './comps/comp-store'
 import CompPackageList from './comps/comp-packagelist'
 import CompEvaluation from './comps/comp-evaluation'
 import CompBuytoolbar from './comps/comp-buytoolbar'
+import CompShare from './comps/comp-share'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -361,7 +362,9 @@ function EspierDetail (props) {
           })
         }}
       />
-      <View></View>
+
+      {/* 分享 */}
+      <CompShare />
     </SpPage>
   )
 }

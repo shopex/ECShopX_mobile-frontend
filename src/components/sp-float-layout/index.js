@@ -7,7 +7,15 @@ import { classNames } from '@/utils'
 import './index.scss'
 
 function SpFloatLayout (props) {
-  const { title, children, className, renderFooter, open = false, onClose = () => {} } = props
+  const {
+    title,
+    children,
+    className,
+    hideClose = false,
+    renderFooter,
+    open = false,
+    onClose = () => {}
+  } = props
 
   return (
     <View
@@ -17,7 +25,7 @@ function SpFloatLayout (props) {
     >
       <View className='sp-float-layout__overlay'></View>
       <View className='sp-float-layout__body'>
-        <Text className='iconfont icon-guanbi' onClick={onClose}></Text>
+        {!hideClose && <Text className='iconfont icon-guanbi' onClick={onClose}></Text>}
         {title && (
           <View className='sp-float-layout-hd'>
             <Text className='layout-title'>{title}</Text>
