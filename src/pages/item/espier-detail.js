@@ -129,7 +129,7 @@ export default class EspierDetail extends Component {
   }
 
   getGoodId = async () => {
-    const options = await normalizeQuerys(this.$instance.params || {})
+    const options = await normalizeQuerys(this.$instance.router.params || {})
     if (options.itemid && !options.id) {
       options.id = options.itemid
     }
