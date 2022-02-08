@@ -6,7 +6,6 @@
   &.has-footer {
     padding-bottom: $toolbar-height + 20;
   }
-  
 
   .float-container {
     position: fixed;
@@ -18,7 +17,7 @@
     align-items: flex-end;
     flex-direction: column;
 
-    .icon-arrow-up  {
+    .icon-arrow-up {
       font-size: 38px;
       color: #fff;
     }
@@ -30,5 +29,6 @@
     left: 0;
     right: 0;
     height: $toolbar-height + 20;
+    z-index: $z-index-level-3;
   }
 }

@@ -149,9 +149,15 @@
           background-color: #f5f5f5;
         }
       }
+      &__bd {
+        display: flex;
+        align-items: center;
+      }
     }
     .cell-value {
       color: #222;
+      max-width: 500px;
+      @include text-overflow();
     }
   }
   .promotion-tag {
@@ -187,6 +193,8 @@
     }
     .params-value {
       color: #222;
+      max-width: 500px;
+      @include text-overflow();
     }
   }
 

@@ -25,12 +25,19 @@ const initialState = {
   selection: [],
   disabledSet: new Set(),
   curItem: null,
-  skuText: '选择规格',
+  skuText: '',
   num: 1
 }
 
 function SpSkuSelect (props) {
-  const { info, open = false, onClose = () => {}, onChange = () => {}, type } = props
+  const {
+    info,
+    open = false,
+    onClose = () => {},
+    onChange = () => {},
+    type,
+    hideInputNumber = false
+  } = props
   // const [state, setState] = useImmer(initialState)
   const [state, setState] = useAsyncCallback(initialState)
   const { selection, curImage, disabledSet, curItem, skuText, num } = state
@@ -38,7 +45,7 @@ function SpSkuSelect (props) {
   const skuDictRef = useRef({})
 
   useEffect(() => {
-    if (info) {
+    if (info && !info.nospec) {
       init()
     }
   }, [info])
@@ -105,7 +112,7 @@ function SpSkuSelect (props) {
       draft.skuText = skuText
     })
 
-    onChange(skuText)
+    onChange(skuText, curItem)
   }
 
   // calcDisabled(initSelection)
@@ -133,7 +140,7 @@ function SpSkuSelect (props) {
         img = specImgs[0]
       }
     }
-    console.log('img:', img)
+    // console.log('img:', img)
     return img
   }
 
@@ -157,10 +164,9 @@ function SpSkuSelect (props) {
   const { skuList } = info
 
   const addToCart = async () => {
-    const { itemId } = curItem
     await dispatch(
       addCart({
-        item_id: itemId,
+        item_id: curItem ? curItem.itemId : info.itemId,
         num,
         distributor_id: info.distributorId,
         shop_type: 'distributor'
@@ -171,10 +177,9 @@ function SpSkuSelect (props) {
   }
 
   const fastBuy = async () => {
-    const { itemId } = curItem
     const { distributorId } = info
     await api.cart.fastBuy({
-      item_id: itemId,
+      item_id: curItem ? curItem.itemId : info.itemId,
       num,
       distributor_id: distributorId
     })
@@ -228,6 +233,7 @@ function SpSkuSelect (props) {
             <SpPrice value={curItem ? curItem.marketPrice : info.marketPrice} lineThrough></SpPrice>
           </View>
           <View className='goods-sku-txt'>{skuText}</View>
+          <View className='goods-sku-store'>库存：{curItem ? curItem.store : info.store}</View>
         </View>
       </View>
       <View className='sku-list'>
@@ -253,22 +259,23 @@ function SpSkuSelect (props) {
             </View>
           </View>
         ))}
-        <View className='buy-count'>
-          <View className='label'>
-            购买数量<Text className='limit-count'>（限购5件）</Text>
-          </View>
+        {!hideInputNumber && (
+          <View className='buy-count'>
+            <View className='label'>
+              购买数量<Text className='limit-count'>（限购5件）</Text>
+            </View>
 
-          <SpInputNumber
-            value={num}
-            min={1}
-            onChange={(n) => {
-              this
-              setState((draft) => {
-                draft.num = n
-              })
-            }}
-          />
-        </View>
+            <SpInputNumber
+              value={num}
+              min={1}
+              onChange={(n) => {
+                setState((draft) => {
+                  draft.num = n
+                })
+              }}
+            />
+          </View>
+        )}
       </View>
     </SpFloatLayout>
   )

@@ -13,7 +13,7 @@ function SpGoodsCell (props) {
   }
 
   const handleClick = () => {
-    onSelectSku && onSelectSku()
+    onSelectSku && onSelectSku(info)
   }
 
   return (
@@ -29,7 +29,13 @@ function SpGoodsCell (props) {
           {/* 多规格商品 */}
           {!info.nospec && (
             <View className='goods-sku' onClick={handleClick}>
-              {/* {info.itemSpecDesc || '选择规格'} */}
+              {onSelectSku && (
+                <View className='spec-text'>
+                  {info.specText || '选择规格'}
+                  <Text className='iconfont icon-qianwang-01'></Text>
+                </View>
+              )}
+              {!onSelectSku && info.itemSpecDesc}
             </View>
           )}
           {info.num && <Text className='item-num'>x {info.num}</Text>}

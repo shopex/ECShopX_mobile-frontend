@@ -115,6 +115,12 @@ function EspierDetail (props) {
   useEffect(() => {
     if (id) {
       fetch()
+    }
+  }, [userInfo])
+
+  useEffect(() => {
+    if (id) {
+      fetch()
       getPackageList()
       getEvaluationList()
     }
@@ -259,7 +265,15 @@ function EspierDetail (props) {
       isDefault={isDefault}
       defaultMsg={defaultMsg}
       ref={pageRef}
-      renderFooter={<CompBuytoolbar info={info} onChange={onChangeToolBar} />}
+      renderFooter={
+        <CompBuytoolbar
+          info={info}
+          onChange={onChangeToolBar}
+          onSubscribe={() => {
+            fetch()
+          }}
+        />
+      }
     >
       {!info && <SpLoading />}
       {info && (
@@ -357,20 +371,22 @@ function EspierDetail (props) {
             </View>
           </View>
 
-          <View className='sku-block'>
-            <SpCell
-              title='规格'
-              isLink
-              onClick={() => {
-                setState((draft) => {
-                  draft.skuPanelOpen = true
-                  draft.selectType = 'picker'
-                })
-              }}
-            >
-              <Text className='cell-value'>{skuText}</Text>
-            </SpCell>
-          </View>
+          {!info.nospec && (
+            <View className='sku-block'>
+              <SpCell
+                title='规格'
+                isLink
+                onClick={() => {
+                  setState((draft) => {
+                    draft.skuPanelOpen = true
+                    draft.selectType = 'picker'
+                  })
+                }}
+              >
+                <Text className='cell-value'>{skuText}</Text>
+              </SpCell>
+            </View>
+          )}
 
           <View className='sku-block'>
             {promotionPackage.length > 0 && (
@@ -426,7 +442,21 @@ function EspierDetail (props) {
             <View className='desc-hd'>
               <Text className='desc-title'>宝贝详情</Text>
             </View>
-            <SpHtml content={info.intro} />
+            {isArray(info.intro) ? (
+              <View>
+                {info.intro.map((item, idx) => (
+                  <View className='wgt-wrap' key={`${item.name}${idx}`}>
+                    {item.name === 'film' && <WgtFilm info={item} />}
+                    {item.name === 'slider' && <WgtSlider info={item} />}
+                    {item.name === 'writing' && <WgtWriting info={item} />}
+                    {item.name === 'heading' && <WgtHeading info={item} />}
+                    {item.name === 'goods' && <WgtGoods info={item} />}
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <SpHtml content={info.intro} />
+            )}
           </View>
         </View>
       )}
