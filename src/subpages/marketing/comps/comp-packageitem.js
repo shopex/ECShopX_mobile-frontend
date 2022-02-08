@@ -13,18 +13,41 @@ const initialState = {
   mainGoods: null,
   makeUpGoods: [],
   skuPanelOpen: false,
-  skuInfo: null
+  skuInfo: null,
+  curGoodsType: 0, // 0:主商品； 1:可选商品
+  curMakeUpGoodsIndex: 0,
+  selection: new Set()
 }
 
 const MSpSkuSelect = React.memo(SpSkuSelect)
 function CompPackageItem (props) {
-  const { info } = props
+  const { info, onChange } = props
   const [state, setState] = useImmer(initialState)
-  const { mainGoods, makeUpGoods, skuPanelOpen, skuInfo } = state
+  const {
+    mainGoods,
+    makeUpGoods,
+    skuPanelOpen,
+    skuInfo,
+    selection,
+    curGoodsType,
+    curMakeUpGoodsIndex
+  } = state
 
   useEffect(() => {
     fetch()
   }, [])
+
+  useEffect(() => {
+    if (mainGoods && makeUpGoods) {
+      calcPackage()
+    }
+  }, [selection])
+
+  useEffect(() => {
+    if (mainGoods && makeUpGoods) {
+      calcPackage()
+    }
+  }, [mainGoods, makeUpGoods])
 
   const fetch = async () => {
     const {
@@ -40,29 +63,109 @@ function CompPackageItem (props) {
     })
   }
 
-  const onSelectSku = (item) => {
-    debugger
+  const onSelectSku = (idx, sidx, item) => {
+    console.log(mainGoods, makeUpGoods)
     setState((draft) => {
       draft.skuInfo = item
       draft.skuPanelOpen = true
+      draft.curGoodsType = idx
+      draft.curMakeUpGoodsIndex = sidx
     })
   }
 
-  console.log('mainGoods:', mainGoods)
+  const handleSelectGoods = ({ itemId }, checked) => {
+    const _selection = new Set()
+    selection.forEach((value) => {
+      _selection.add(value)
+    })
+    if (checked) {
+      _selection.add(itemId)
+    } else {
+      _selection.delete(itemId)
+    }
+    setState((draft) => {
+      draft.selection = _selection
+    })
+  }
+
+  const onChangeSkuSelect = (specText, curItem) => {
+    console.log(specText, curItem)
+    if (curGoodsType == 0) {
+      setState((draft) => {
+        draft.mainGoods.specText = specText
+        draft.mainGoods['curItem'] = curItem
+      })
+    } else {
+      setState((draft) => {
+        draft.makeUpGoods[curMakeUpGoodsIndex].specText = specText
+        draft.makeUpGoods[curMakeUpGoodsIndex]['curItem'] = curItem
+      })
+    }
+  }
+
+  // 计算优惠组合
+  const calcPackage = () => {
+    let itemId // 主商品id
+    let sitemIds = [] // 可选商品id
+    let packageTotalPrice = 0
+    // 单规格
+    if (mainGoods.nospec) {
+      itemId = mainGoods.itemId
+      packageTotalPrice += mainGoods.price
+    } else {
+      // 已选择规格
+      if (mainGoods.curItem) {
+        itemId = mainGoods.curItem.itemId
+        packageTotalPrice += mainGoods.curItem.price
+      }
+    }
+    makeUpGoods.forEach((goods) => {
+      if (selection.has(goods.itemId)) {
+        if (goods.nospec) {
+          sitemIds.push(goods.itemId)
+          packageTotalPrice += goods.price
+        } else {
+          // 已选择规格
+          if (goods.curItem) {
+            sitemIds.push(goods.curItem.itemId)
+            packageTotalPrice += goods.curItem.price
+          } else {
+            sitemIds.push(null)
+          }
+        }
+      }
+    })
+    onChange && onChange({ itemId, sitemIds, packageTotalPrice })
+  }
+
+  // console.log('mainGoods:', mainGoods)
   return (
     <View className='comp-packageitem'>
       <View className='main-goods'>主商品</View>
-      <SpGoodsCell info={mainGoods} onSelectSku={onSelectSku.bind(this)} />
+      <SpGoodsCell info={mainGoods} onSelectSku={onSelectSku.bind(this, 0, null)} />
       <View className='select-goods'>可选商品</View>
       {makeUpGoods.map((item, index) => (
         <View className='makeup-goods-item' key={`makeup-goods-item__${index}`}>
-          <SpCheckboxNew />
-          <SpGoodsCell info={item} onSelectSku={onSelectSku.bind(this, item)} />
+          <SpCheckboxNew
+            checked={selection.has(item.itemId)}
+            onChange={handleSelectGoods.bind(this, item)}
+          />
+          <SpGoodsCell info={item} onSelectSku={onSelectSku.bind(this, 1, index)} />
         </View>
       ))}
 
       {/* Sku选择器 */}
-      <MSpSkuSelect open={skuPanelOpen} info={skuInfo} onClose={() => {}} />
+      <MSpSkuSelect
+        hideInputNumber
+        open={skuPanelOpen}
+        info={skuInfo}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        onChange={onChangeSkuSelect}
+      />
     </View>
   )
 }

@@ -11,13 +11,20 @@ import './comp-buytoolbar.scss'
 
 const BTNS = {
   NOTICE: { title: '到货通知', key: 'notice', btnStatus: 'active' },
+  SUBSCRIBE: { title: '已订阅到货通知', key: 'subscribe', btnStatus: 'default' },
   ADD_CART: { title: '添加购物车', key: 'addcart', btnStatus: 'default' },
   FAST_BUY: { title: '立即购买', key: 'fastbuy', btnStatus: 'active' },
   GIFT: { title: '赠品不可购买', key: 'gift', btnStatus: 'disabled' }
 }
 
 function CompGoodsBuyToolbar (props) {
-  const { onAddCart = () => {}, onFastBuy = () => {}, info, onChange = () => {} } = props
+  const {
+    onAddCart = () => {},
+    onFastBuy = () => {},
+    info,
+    onChange = () => {},
+    onSubscribe = () => {}
+  } = props
   const { cartCount = 0 } = useSelector((state) => state.cart)
   const { favs = [] } = useSelector((state) => state.user)
   const dispatch = useDispatch()
@@ -28,7 +35,11 @@ function CompGoodsBuyToolbar (props) {
   }
 
   if (info.store == 0) {
-    btns.push(BTNS.NOTICE)
+    if (info.subscribe) {
+      btns.push(BTNS.SUBSCRIBE)
+    } else {
+      btns.push(BTNS.NOTICE)
+    }
   } else if (info.isGift) {
     btns.push(BTNS.GIFT)
   } else {
@@ -38,6 +49,9 @@ function CompGoodsBuyToolbar (props) {
 
   const onChangeLogin = async ({ key }) => {
     console.log('onChangeLogin:', key)
+    if (key == 'subscribe') {
+      return
+    }
     if (key == 'notice') {
       const { subscribe } = info
       if (subscribe) return false
@@ -49,27 +63,15 @@ function CompGoodsBuyToolbar (props) {
       Taro.requestSubscribeMessage({
         tmplIds: template_id,
         success: () => {
-          this.fetchInfo()
+          onSubscribe()
         },
         fail: () => {
-          this.fetchInfo()
+          onSubscribe()
         }
       })
     } else {
       onChange(key)
     }
-    // if (key == 'addcart') {
-    //   await dispatch(
-    //     addCart({
-    //       item_id: info.itemId,
-    //       num: 1,
-    //       distributor_id: info.distributorId,
-    //       shop_type: 'distributor'
-    //     })
-    //   )
-    // }
-    // if (key == 'fastbuy') {
-    // }
   }
 
   // 收藏

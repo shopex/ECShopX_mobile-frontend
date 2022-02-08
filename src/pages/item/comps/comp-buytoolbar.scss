@@ -46,13 +46,16 @@
     box-sizing: border-box;
     position: relative;
     .btn-item {
-      width: 100%;
+      width: calc(100% - 20px);
       border-radius: 40px;
       height: 80px;
       line-height: 80px;
       text-align: center;
       font-size: 26px;
       box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      bottom: 0;
       .btn-item-txt {
         height: 80px;
         line-height: 80px;

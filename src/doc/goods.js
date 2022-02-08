@@ -87,6 +87,7 @@ export const GOODS_INFO = {
   marketPrice: ({ market_price }) => market_price / 100,
   nospec: 'nospec',
   itemSpecDesc: 'item_spec_desc',
+  specText: '',
   vipgradeGuideTitle: 'vipgrade_guide_title',
   couponList: 'kaquan_list',
   store: 'store',

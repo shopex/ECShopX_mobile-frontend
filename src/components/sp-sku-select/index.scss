@@ -42,6 +42,8 @@
   }
   .goods-sku-txt {
     color: #999;
+    max-width: 500px;
+    @include text-overflow();
   }
 
   .sku-list {
@@ -74,6 +76,11 @@
     display: flex;
     flex-wrap: wrap;
     margin-top: 20px;
+    .spec-name {
+      display: block;
+      max-width: 260px;
+      @include text-overflow();
+    }
   }
   .sku-btn {
     padding: 0 16px;
@@ -97,6 +104,8 @@
         display: block;
         text-align: center;
         margin-top: 10px;
+        max-width: 260px;
+        @include text-overflow();
       }
     }
     &.active {

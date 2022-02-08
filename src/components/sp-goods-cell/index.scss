@@ -41,4 +41,14 @@
       }
     }
   }
+
+  .spec-text {
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    color: #222;
+    .icon-qianwang-01 {
+      font-size: 16px;
+    }
+  }
 }

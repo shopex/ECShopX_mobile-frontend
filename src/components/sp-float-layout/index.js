@@ -34,7 +34,7 @@ function SpFloatLayout (props) {
         <ScrollView className='sp-float-layout-bd' scrollY>
           {children}
         </ScrollView>
-        <View className='sp-float-layout-ft'>{renderFooter}</View>
+        {renderFooter && <View className='sp-float-layout-ft'>{renderFooter}</View>}
       </View>
     </View>
   )
