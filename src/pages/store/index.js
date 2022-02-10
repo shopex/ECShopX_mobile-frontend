@@ -383,6 +383,7 @@ export default class StoreIndex extends Component {
                   )}
                   {item.name === 'showcase' && <WgtShowcase info={item} />}
                   {item.name === 'store' && <WgtStore info={item} />}
+                  {item.name === 'headline' && <WgtHeadline info={item} />}
                 </View>
               )
             })}
