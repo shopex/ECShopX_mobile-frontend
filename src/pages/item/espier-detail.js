@@ -381,27 +381,22 @@ function EspierDetail (props) {
             )}
           </View>
 
-          <CompActivityBar
-            info={info.activityInfo}
-            type={info.activityType}
-            onTimeUp={() => {
-              fetch()
-            }}
-          />
+          {/* 拼团、秒杀、限时特惠显示活动价 */}
+          {ACTIVITY_LIST[info.activity_type] && (
+            <CompActivityBar
+              info={info.activityInfo}
+              type={info.activityType}
+              onTimeUp={() => {
+                fetch()
+              }}
+            >
+              <SpGoodsPrice info={info} />
+            </CompActivityBar>
+          )}
 
           <View className='goods-info'>
-            <SpGoodsPrice info={info} />
-            {/* <View className='price-block'>
-              <SpPrice className='goods-price' value={info.price}></SpPrice>
-              {info.memberPrice > 0 && (
-                <View className='vip-price'>
-                  会员<SpPrice value={info.memberPrice}></SpPrice>
-                </View>
-              )}
-              {
-
-              }
-            </View> */}
+            {/* 拼团、秒杀、限时特惠不显示 */}
+            {!ACTIVITY_LIST[info.activity_type] && <SpGoodsPrice info={info} />}
 
             <CompVipGuide
               info={{

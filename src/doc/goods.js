@@ -85,6 +85,7 @@ export const GOODS_INFO = {
   activityInfo: 'activity_info',
   activityType: 'activity_type',
   price: ({ price }) => price / 100,
+  activityPrice: ({ act_price }) => act_price / 100,
   memberPrice: ({ member_price }) => member_price / 100,
   marketPrice: ({ market_price }) => market_price / 100,
   nospec: 'nospec',
@@ -142,7 +143,9 @@ export const GOODS_INFO = {
       itemId: 'item_id',
       store: 'store',
       price: ({ price }) => price / 100,
-      marketPrice: ({ market_price }) => market_price / 100
+      marketPrice: ({ market_price }) => market_price / 100,
+      memberPrice: ({ member_price }) => member_price / 100,
+      activityPrice: ({ act_price }) => act_price / 100
     })
   },
   intro: 'intro',

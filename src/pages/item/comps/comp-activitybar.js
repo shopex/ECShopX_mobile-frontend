@@ -8,7 +8,7 @@ import { ACTIVITY_LIST, ACTIVITY_STATUS } from '@/consts'
 import './comp-activitybar.scss'
 
 function CompActivityBar (props) {
-  const { info, type, onTimeUp = () => {} } = props
+  const { info, type, onTimeUp = () => {}, children } = props
   if (!info) {
     return null
   }
@@ -24,10 +24,7 @@ function CompActivityBar (props) {
     <View className='comp-activitybar'>
       <View className='activitybar-hd'>
         <View className='activity-name'>{ACTIVITY_LIST[type]}</View>
-        <View className='goods-price'>
-          <SpPrice value={100}></SpPrice>
-          <SpPrice value={100}></SpPrice>
-        </View>
+        <View className='goods-price'>{children}</View>
       </View>
       <View className='activitybar-ft'>
         <View className='title'>{ACTIVITY_STATUS[type][status]}</View>

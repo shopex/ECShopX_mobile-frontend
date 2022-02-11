@@ -72,11 +72,16 @@
     max-height: 1000px;
     background: #fff;
     box-sizing: border-box;
+    overflow: hidden;
   }
   &-ft {
     background: #fff;
     padding: 20px;
     /* prettier-ignore */
     border-top: 1PX solid #f5f5f5;
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // right: 0;
   }
 }

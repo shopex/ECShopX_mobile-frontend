@@ -69,48 +69,6 @@
     opacity: 0.5;
   }
 
-  .price-block {
-    display: flex;
-    align-items: center;
-    .goods-price {
-      .sp-price__symbol {
-        color: #222;
-        font-size: 28px;
-      }
-      .sp-price__int {
-        color: #222;
-        font-size: 46px;
-      }
-      .sp-price__decimal {
-        color: #222;
-        font-size: 28px;
-      }
-    }
-    .vip-price {
-      background-color: var(--color-primary);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 50px;
-      margin-left: 10px;
-      font-size: 32px;
-      .sp-price {
-        margin-left: 10px;
-      }
-      .sp-price__symbol {
-        color: #fff;
-        font-size: 28px;
-      }
-      .sp-price__int {
-        color: #fff;
-        font-size: 46px;
-      }
-      .sp-price__decimal {
-        color: #fff;
-        font-size: 28px;
-      }
-    }
-  }
-
   .goods-info {
     margin: 24px 16px;
     background-color: #fff;
