@@ -4,7 +4,14 @@ import Taro from '@tarojs/taro'
 import { AtButton } from 'taro-ui'
 import { View, Text } from '@tarojs/components'
 import { useImmer } from 'use-immer'
-import { SpFloatLayout, SpButton, SpImage, SpPrice, SpInputNumber } from '@/components'
+import {
+  SpFloatLayout,
+  SpButton,
+  SpImage,
+  SpPrice,
+  SpInputNumber,
+  SpGoodsPrice
+} from '@/components'
 import { addCart, updateCount } from '@/store/slices/cart'
 import { BUY_TOOL_BTNS } from '@/consts'
 import api from '@/api'
@@ -192,7 +199,7 @@ function SpSkuSelect (props) {
       num,
       distributor_id: distributorId
     })
-    let url = `/pages/cart/espier-checkout?cart_type=fastbuy`
+    let url = `/pages/cart/espier-checkout?cart_type=fastbuy&shop_id=${distributorId}`
     if (activityType == 'seckill' || activityType === 'limited_time_sale') {
       const { seckill_id } = activityInfo
       const { ticket } = await api.item.seckillCheck({
@@ -251,10 +258,18 @@ function SpSkuSelect (props) {
           onClick={handlePreviewImage}
         />
         <View className='info-bd'>
-          <View className='goods-sku-price'>
+          {/* <View className='goods-sku-price'>
             <SpPrice value={curItem ? curItem.price : info.price}></SpPrice>
             <SpPrice value={curItem ? curItem.marketPrice : info.marketPrice} lineThrough></SpPrice>
-          </View>
+          </View> */}
+          <SpGoodsPrice
+            info={{
+              price: curItem ? curItem.price : info.price,
+              marketPrice: curItem ? curItem.marketPrice : info.marketPrice,
+              memberPrice: curItem ? curItem.memberPrice : info.memberPrice,
+              activityPrice: curItem ? curItem.activityPrice : info.activityPrice
+            }}
+          />
           <View className='goods-sku-txt'>{skuText}</View>
           <View className='goods-sku-store'>库存：{curItem ? curItem.store : info.store}</View>
         </View>

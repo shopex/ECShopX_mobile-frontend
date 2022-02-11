@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpPrice } from '@/components'
+import { classNames } from '@/utils'
 import './index.scss'
 
 function SpGoodsPrice (props) {
@@ -12,7 +13,11 @@ function SpGoodsPrice (props) {
   }
   const { price, memberPrice, marketPrice, activityPrice } = info
   return (
-    <View className='sp-goods-price'>
+    <View
+      className={classNames('sp-goods-price', {
+        'has-discount': memberPrice || activityPrice
+      })}
+    >
       <SpPrice className='sale-price' value={price} />
       {(memberPrice || activityPrice) && (
         <View className='discount'>

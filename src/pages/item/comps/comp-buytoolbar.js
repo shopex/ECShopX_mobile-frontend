@@ -5,7 +5,7 @@ import { View, Text } from '@tarojs/components'
 import { SpButton, SpLogin } from '@/components'
 import { classNames, navigateTo, showToast, isWeb } from '@/utils'
 import { addCart } from '@/store/slices/cart'
-import { BUY_TOOL_BTNS } from '@/consts'
+import { BUY_TOOL_BTNS, ACTIVITY_LIST } from '@/consts'
 import { fetchUserFavs, addUserFav, deleteUserFav } from '@/store/slices/user'
 import api from '@/api'
 import './comp-buytoolbar.scss'
@@ -42,7 +42,8 @@ function CompGoodsBuyToolbar (props) {
       return
     }
 
-    if (info.activityInfo) {
+    // 秒杀、拼团、限时特惠
+    if (ACTIVITY_LIST[info.activityType]) {
       if (info.activityType == 'seckill') {
         // 活动即将开始
         if (info.activityInfo.status === 'in_the_notice') {
