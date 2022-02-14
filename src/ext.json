@@ -1,16 +1,16 @@
 {
   "extEnable": true,
-  "extAppid": "wx4f25fb911393034b",
+  "extAppid": "wx6fbb5dde523c20dd",
   "ext": {
-    "company_id": "21",
-    "appid": "wx4f25fb911393034b",
+    "company_id": "1",
+    "appid": "wx6fbb5dde523c20dd",
     "wxa_name": "通用小程序",
-    "ali_isvid":""
+    "ali_isvid": ""
   },
   "window": {
-      "backgroundTextStyle": "light",
-      "navigationBarBackgroundColor": "#fff",
-      "navigationBarTitleText": "微商城",
-      "navigationBarTextStyle": "black"
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "微商城",
+    "navigationBarTextStyle": "black"
   }
 }
