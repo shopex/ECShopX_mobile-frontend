@@ -51,7 +51,18 @@ function CompGoodsBuyToolbar (props) {
         } else {
           btns.push(BUY_TOOL_BTNS.ACTIVITY_FAST_BUY)
         }
-      } else {
+      } else if (info.activityType == 'limited_time_sale') {
+        if (info.activityInfo.status === 'in_the_notice') {
+          btns.push(BUY_TOOL_BTNS.ACTIVITY_WILL_START)
+        } else {
+          btns.push(BUY_TOOL_BTNS.ACTIVITY_BUY)
+        }
+      } else if (info.activityType == 'group') {
+        if (info.activityInfo.show_status === 'nostart') {
+          btns.push(BUY_TOOL_BTNS.ACTIVITY_WILL_START)
+        } else {
+          btns.push(BUY_TOOL_BTNS.ACTIVITY_GROUP_BUY)
+        }
       }
       return
     }

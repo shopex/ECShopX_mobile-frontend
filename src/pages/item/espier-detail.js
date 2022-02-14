@@ -52,6 +52,7 @@ import CompEvaluation from './comps/comp-evaluation'
 import CompBuytoolbar from './comps/comp-buytoolbar'
 import CompShare from './comps/comp-share'
 import CompPromation from './comps/comp-promation'
+import CompGroup from './comps/comp-group'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../home/wgts'
 
 import './espier-detail.scss'
@@ -80,7 +81,9 @@ const initialState = {
   // sku选择器类型
   selectType: 'picker',
   evaluationList: [],
-  evaluationTotal: 0
+  evaluationTotal: 0,
+  // 多规格商品选中的规格
+  curItem: null
 }
 
 function EspierDetail (props) {
@@ -112,7 +115,8 @@ function EspierDetail (props) {
     selectType,
     id,
     type,
-    dtid
+    dtid,
+    curItem
   } = state
 
   useEffect(() => {
@@ -382,7 +386,7 @@ function EspierDetail (props) {
           </View>
 
           {/* 拼团、秒杀、限时特惠显示活动价 */}
-          {ACTIVITY_LIST[info.activity_type] && (
+          {ACTIVITY_LIST[info.activityType] && (
             <CompActivityBar
               info={info.activityInfo}
               type={info.activityType}
@@ -390,13 +394,13 @@ function EspierDetail (props) {
                 fetch()
               }}
             >
-              <SpGoodsPrice info={info} />
+              <SpGoodsPrice info={curItem ? curItem : info} />
             </CompActivityBar>
           )}
 
           <View className='goods-info'>
             {/* 拼团、秒杀、限时特惠不显示 */}
-            {!ACTIVITY_LIST[info.activity_type] && <SpGoodsPrice info={info} />}
+            {!ACTIVITY_LIST[info.activityType] && <SpGoodsPrice info={curItem ? curItem : info} />}
 
             <CompVipGuide
               info={{
@@ -432,6 +436,8 @@ function EspierDetail (props) {
               )}
             </View>
           </View>
+
+          <CompGroup info={info.groupsList} />
 
           {!info.nospec && (
             <View className='sku-block'>
@@ -497,7 +503,7 @@ function EspierDetail (props) {
           </View>
 
           {/* 商品评价 */}
-          <CompEvaluation list={evaluationList}></CompEvaluation>
+          <CompEvaluation list={evaluationList} itemId={info.itemId}></CompEvaluation>
 
           {/* 店铺 */}
           <CompStore info={info.distributorInfo} />
@@ -560,9 +566,10 @@ function EspierDetail (props) {
             draft.skuPanelOpen = false
           })
         }}
-        onChange={(skuText) => {
+        onChange={(skuText, curItem) => {
           setState((draft) => {
             draft.skuText = skuText
+            draft.curItem = curItem
           })
         }}
       />

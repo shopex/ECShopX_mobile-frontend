@@ -12,22 +12,29 @@ function CompActivityBar (props) {
   if (!info) {
     return null
   }
-  const { remaining_time, last_seconds, status } = info
-  let TIME = 0
+  const { remaining_time, last_seconds, status, show_status, person_num } = info
+  let TIME = 0,
+    activityDesc = ''
   if (type == 'group') {
     TIME = remaining_time
   } else {
     TIME = last_seconds
   }
 
+  if (type == 'group') {
+    activityDesc = `(${person_num}人团)`
+  }
+
   return (
     <View className='comp-activitybar'>
       <View className='activitybar-hd'>
-        <View className='activity-name'>{ACTIVITY_LIST[type]}</View>
+        <View className='activity-name'>{`${ACTIVITY_LIST[type]} ${activityDesc}`}</View>
         <View className='goods-price'>{children}</View>
       </View>
       <View className='activitybar-ft'>
-        <View className='title'>{ACTIVITY_STATUS[type][status]}</View>
+        <View className='title'>
+          {ACTIVITY_STATUS[type][type == 'group' ? show_status : status]}
+        </View>
         <AtCountdown
           format={{ day: '天', hours: ':', minutes: ':', seconds: '' }}
           isCard

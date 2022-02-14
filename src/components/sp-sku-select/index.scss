@@ -7,42 +7,30 @@
       border: 1PX solid #f5f5f5;
     }
     .info-bd {
-      margin-top: 30px;
+      margin-top: 10px;
       /*  #ifdef  h5  */
       margin-top: 10px;
       /*  #endif  */
     }
   }
 
-  .goods-sku-price {
-    .sp-price__symbol {
-      font-size: 24px;
-      color: var(--color-primary);
-    }
-    .sp-price__int {
-      font-size: 40px;
-      color: var(--color-primary);
-    }
-    .sp-price__decimal {
-      font-size: 24px;
-      color: var(--color-primary);
-    }
-    .line-through {
-      margin-left: 10px;
-      .sp-price__symbol {
-        font-size: 24px;
-        color: #999;
-      }
-      .sp-price__int {
-        font-size: 36px;
-        color: #999;
-      }
-      .sp-price__decimal {
-        font-size: 24px;
-        color: #999;
-      }
-    }
+  .sale-price {
+    @include price(#222, 26px, 36px, 26px);
   }
+  .discount {
+    padding: 6px 12px !important;
+  }
+  .discount-txt {
+    font-size: 28px !important;
+    margin-right: 2px !important;
+  }
+  .discount-price {
+    @include price(#fff, 26px, 36px, 26px);
+  }
+  .market-price {
+    @include price(#999, 26px, 30px, 26px);
+  }
+
   .goods-sku-txt {
     color: #999;
     max-width: 500px;

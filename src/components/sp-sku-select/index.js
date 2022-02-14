@@ -176,6 +176,11 @@ function SpSkuSelect (props) {
   const { skuList } = info
 
   const addToCart = async () => {
+    const { nospec } = info
+    if (!nospec && !curItem) {
+      showToast('请选择规格')
+      return
+    }
     Taro.showLoading()
     await dispatch(
       addCart({
@@ -191,6 +196,11 @@ function SpSkuSelect (props) {
   }
 
   const fastBuy = async () => {
+    const { nospec } = info
+    if (!nospec && !curItem) {
+      showToast('请选择规格')
+      return
+    }
     Taro.showLoading()
     const { distributorId, activityType, activityInfo } = info
     const itemId = curItem ? curItem.itemId : info.itemId
@@ -208,6 +218,9 @@ function SpSkuSelect (props) {
         num
       })
       url += `&type=${activityType}&seckill_id=${seckill_id}&ticket=${ticket}`
+    } else if (activityType == 'group') {
+      const { groups_activity_id } = activityInfo
+      url += `&type=${activityType}&group_id=${groups_activity_id}`
     }
     Taro.hideLoading()
     Taro.navigateTo({
@@ -222,6 +235,7 @@ function SpSkuSelect (props) {
         btnTxt = BUY_TOOL_BTNS[key].title
       }
     })
+
     if (type == 'picker') {
       return (
         <AtButton circle type='primary' onClick={onClose}>
@@ -234,7 +248,7 @@ function SpSkuSelect (props) {
           {btnTxt}
         </AtButton>
       )
-    } else if (type == 'fastbuy' || type == 'activity_fast_buy') {
+    } else {
       return (
         <AtButton circle loading={loading} type='primary' onClick={fastBuy}>
           {btnTxt}
@@ -242,6 +256,60 @@ function SpSkuSelect (props) {
       )
     }
   }
+
+  const renderLimitTip = () => {
+    const { nospec, activityType, activityInfo } = info
+    let limitNum = null
+    let limitTxt = ''
+    let max = null
+    // 商品限购
+    if (activityType) {
+      if (activityType == 'limited_buy') {
+        limitNum = activityInfo.rule.limit
+        if (activityInfo.rule.day == 0) {
+          limitTxt = `（限购${limitNum}件）`
+        } else {
+          limitTxt = `（每${activityInfo.rule.day}天，限购${limitNum}件）`
+        }
+      } else if (activityType == 'seckill' || activityType == 'limited_time_sale') {
+        if (nospec) {
+          limitNum = info.limitNum
+        } else {
+          if (curItem) {
+            limitNum = curItem.limitNum
+          }
+        }
+        limitTxt = `（限购${limitNum}件）`
+      } else if (activityType == 'group') {
+        limitNum = 1
+      }
+    }
+    if (limitNum) {
+      max = limitNum
+    } else {
+      max = curItem ? curItem.store : info.store
+    }
+
+    return (
+      <View className='buy-count'>
+        <View className='label'>
+          购买数量 {limitNum && <Text className='limit-count'>{limitTxt}</Text>}
+        </View>
+
+        <SpInputNumber
+          value={num}
+          min={1}
+          max={limitNum || max}
+          onChange={(n) => {
+            setState((draft) => {
+              draft.num = n
+            })
+          }}
+        />
+      </View>
+    )
+  }
+
   return (
     <SpFloatLayout
       className='sp-sku-select'
@@ -298,23 +366,7 @@ function SpSkuSelect (props) {
             </View>
           </View>
         ))}
-        {!hideInputNumber && (
-          <View className='buy-count'>
-            <View className='label'>
-              购买数量<Text className='limit-count'>（限购5件）</Text>
-            </View>
-
-            <SpInputNumber
-              value={num}
-              min={1}
-              onChange={(n) => {
-                setState((draft) => {
-                  draft.num = n
-                })
-              }}
-            />
-          </View>
-        )}
+        {!hideInputNumber && renderLimitTip()}
       </View>
     </SpFloatLayout>
   )
