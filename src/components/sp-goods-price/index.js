@@ -15,17 +15,17 @@ function SpGoodsPrice (props) {
   return (
     <View
       className={classNames('sp-goods-price', {
-        'has-discount': memberPrice || activityPrice
+        'has-discount': !isNaN(memberPrice) || !isNaN(activityPrice)
       })}
     >
       <SpPrice className='sale-price' value={price} />
-      {(memberPrice || activityPrice) && (
+      {(!isNaN(memberPrice) || !isNaN(activityPrice)) && (
         <View className='discount'>
           <Text className='discount-txt'>{activityPrice ? '活动价' : '会员价'}</Text>
           <SpPrice className='discount-price' value={activityPrice ? activityPrice : memberPrice} />
         </View>
       )}
-      {!(memberPrice || activityPrice) && (
+      {isNaN(memberPrice) && isNaN(activityPrice) && (
         <SpPrice className='market-price' lineThrough value={marketPrice} />
       )}
     </View>

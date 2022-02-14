@@ -86,7 +86,13 @@ export const GOODS_INFO = {
   activityType: 'activity_type',
   price: ({ price }) => price / 100,
   activityPrice: ({ act_price }) => act_price / 100,
-  memberPrice: ({ member_price }) => member_price / 100,
+  memberPrice: ({ member_price }) => {
+    if (!member_price) {
+      return NaN
+    } else {
+      return member_price / 100
+    }
+  },
   marketPrice: ({ market_price }) => market_price / 100,
   nospec: 'nospec',
   itemSpecDesc: 'item_spec_desc',
@@ -94,8 +100,10 @@ export const GOODS_INFO = {
   vipgradeGuideTitle: 'vipgrade_guide_title',
   couponList: 'kaquan_list',
   store: 'store',
+  limitNum: 'limit_num',
   isGift: 'is_gift',
   itemParams: 'item_params',
+  groupsList: 'groups_list',
   promotionActivity: ({ promotion_activity }) => {
     if (!promotion_activity) {
       return []
@@ -142,9 +150,16 @@ export const GOODS_INFO = {
       },
       itemId: 'item_id',
       store: 'store',
+      limitNum: 'limit_num',
       price: ({ price }) => price / 100,
       marketPrice: ({ market_price }) => market_price / 100,
-      memberPrice: ({ member_price }) => member_price / 100,
+      memberPrice: ({ member_price }) => {
+        if (!member_price) {
+          return NaN
+        } else {
+          return member_price / 100
+        }
+      },
       activityPrice: ({ act_price }) => act_price / 100
     })
   },
