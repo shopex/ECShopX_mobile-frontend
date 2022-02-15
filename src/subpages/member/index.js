@@ -1,7 +1,7 @@
 import Taro, { useShareAppMessage, getCurrentPages, getCurrentInstance } from '@tarojs/taro'
 import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
-import { SG_SHARE_CODE } from '@/consts'
+import { SG_SHARE_CODE, SG_APP_CONFIG } from '@/consts'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 
@@ -35,6 +35,7 @@ import CompPanel from './comps/comp-panel'
 import CompMenu from './comps/comp-menu'
 import CompHelpCenter from './comps/comp-helpcenter'
 import './index.scss'
+import { getSetting } from '@/api/merchant'
 
 const initialConfigState = {
   banner: {
@@ -114,7 +115,18 @@ function MemberIndex(props) {
 
   useEffect(() => {
     getMemberCenterConfig()
+    getSettings()
   }, [])
+
+  async function getSettings() {
+    const {
+      whitelist_status = false,
+    } = await api.shop.homeSetting()
+    // 白名单配置
+    Taro.setStorageSync(SG_APP_CONFIG, {
+      whitelist_status,
+    })
+  }
 
 
   // 分享

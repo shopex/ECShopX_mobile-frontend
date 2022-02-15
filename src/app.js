@@ -77,12 +77,12 @@ class App extends Component {
     // // 一洽客服配置
     // Taro.setStorageSync(SG_YIQIA, echat);
     // 白名单配置、门店配置、图片存储信息
-    Taro.setStorageSync(SG_APP_CONFIG, {
-      whitelist_status,
-      // nostores_status,
-      // openStore: !nostores_status,
-      // disk_driver
-    })
+    // Taro.setStorageSync(SG_APP_CONFIG, {
+    // whitelist_status,
+    // nostores_status,
+    // openStore: !nostores_status,
+    // disk_driver
+    // })
     // 分享时是否携带参数
     Taro.setStorageSync('distributor_param_status', distributor_param_status)
 
