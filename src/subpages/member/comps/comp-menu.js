@@ -3,6 +3,7 @@ import React from 'react'
 import { View, Image, Text } from '@tarojs/components'
 import { SpImage } from '@/components'
 import { classNames, styleNames, isWeb } from '@/utils'
+import { SG_APP_CONFIG } from '@/consts'
 
 import './comp-menu.scss'
 
@@ -67,6 +68,7 @@ const MENUS = [
 
 function CompMenu(props) {
   const { accessMenu, onLink = () => { }, isPromoter } = props
+  const config = Taro.getStorageSync(SG_APP_CONFIG)
   if (!accessMenu) {
     return null
   }
@@ -74,6 +76,9 @@ function CompMenu(props) {
   let menus = MENUS.filter((item) => accessMenu[item.key])
   if (isWeb) {
     menus = menus.filter((m_item) => m_item.key != 'popularize')
+  }
+  if (!config.whitelist_status) {
+    menus = menus.filter((m_item) => m_item.key != 'purchase')
   }
   return (
     <View className='comp-menu'>
