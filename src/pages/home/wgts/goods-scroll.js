@@ -97,7 +97,7 @@ export default class WgtGoodsScroll extends Component {
               {config.type === 'goods' ? (
                 <Text className='wgt-subtitle'>{base.subtitle}</Text>
               ) : (
-                <View>
+                <View className='wgt-timer'>
                   {timer && config.lastSeconds != 0 ? (
                     <View>
                       <AtCountdown
@@ -108,7 +108,9 @@ export default class WgtGoodsScroll extends Component {
                         minutes={timer.mm}
                         seconds={timer.ss}
                       />
-                      {config.status === 'in_the_notice' ? '后开始' : '后结束'}
+                      <Text className='time-fonts'>
+                        {config.status === 'in_the_notice' ? '后开始' : '后结束'}
+                      </Text>
                     </View>
                   ) : (
                     <View className='countdown__time'>活动已结束</View>
@@ -116,9 +118,11 @@ export default class WgtGoodsScroll extends Component {
                 </View>
               )}
             </View>
-            {/* <View className='wgt__more' onClick={this.handleClickMore}>
-              <View className='three-dot'></View>
-            </View> */}
+            {config.moreLink.linkPage && (
+              <View className='wgt-more' onClick={this.handleClickMore}>
+                <View className='three-dot'></View>
+              </View>
+            )}
           </View>
         )}
         <View className='wgt-body'>
