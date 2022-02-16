@@ -32,6 +32,7 @@ import CompMenu from './comps/comp-menu'
 import CompHelpCenter from './comps/comp-helpcenter'
 import './index.scss'
 import { MERCHANT_TOKEN } from '@/consts'
+import S from '@/spx'
 
 const initialConfigState = {
   banner: {
