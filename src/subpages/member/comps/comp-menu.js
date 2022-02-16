@@ -53,8 +53,8 @@ const MENUS = [
   {
     key: 'tenants',
     name: '商家入驻',
-    icon: 'm_menu_pintuan.png',
-    link: '/subpages/merchant/apply'
+    icon: 'm_menu_tuiguang.png',
+    link: '/subpages/merchant/login'
   }
   // {
   //   key: "complaint",
@@ -73,8 +73,7 @@ function CompMenu (props) {
   if (isWeb) {
     menus = menus.filter((m_item) => m_item.key != 'popularize')
   }
-  menus = menus.concat(MENUS[MENUS.length - 1])
-  console.log('====menus====>', menus)
+  menus = menus.concat(MENUS[MENUS.length - 1]) 
   return (
     <View className='comp-menu'>
       {menus.map((item, index) => (
