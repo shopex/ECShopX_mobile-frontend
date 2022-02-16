@@ -53,7 +53,7 @@ const MENUS = [
   {
     key: 'tenants',
     name: '商家入驻',
-    icon: 'm_menu_tuiguang.png',
+    icon: 'm_menu_merchat.png',
     link: '/subpages/merchant/login'
   }
   // {
