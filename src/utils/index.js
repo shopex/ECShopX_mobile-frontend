@@ -645,7 +645,7 @@ function isBase64 (str) {
 
 //判断是否是商家入驻
 const isMerchantModule = () => {
-  let pathname = isWeb ? location.pathname : getCurrentInstance().router.path
+  let pathname = isWeb ? location.pathname : getCurrentInstance()?.router?.path
   return /\/subpages\/merchant/.test(pathname)
 }
 
