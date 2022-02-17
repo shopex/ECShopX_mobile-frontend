@@ -3,7 +3,6 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
 import { calcTimer, classNames, linkPage } from '@/utils'
-import { SpImg } from '@/components'
 import { getDistributorId } from '@/utils/helper'
 import { withLoadMore } from '@/hocs'
 
@@ -157,13 +156,7 @@ export default class WgtGoodsScroll extends Component {
                     </View>
                   )}
                   <View className='thumbnail'>
-                    <SpImg
-                      img-class='goods-img'
-                      src={item.imgUrl}
-                      mode='aspectFill'
-                      width='240'
-                      lazyLoad
-                    />
+                    <Image src={item.imgUrl} className='goods-img' lazyLoad />
                   </View>
                   {item.type === '1' && (
                     <View className='nationalInfo'>
@@ -186,6 +179,13 @@ export default class WgtGoodsScroll extends Component {
                 </View>
               )
             })}
+
+            <View className='more_img' onClick={this.handleClickMore}>
+              <View className='img'>
+                <Image src={base.backgroundImg} className='goods-img' lazyLoad />
+              </View>
+              <View className='text'>查看更多</View>
+            </View>
           </ScrollView>
         </View>
       </View>
