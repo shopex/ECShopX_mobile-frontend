@@ -28,35 +28,35 @@ export * from './platforms'
 
 const isPrimitiveType = (val, type) => Object.prototype.toString.call(val) === type
 
-export function isFunction (val) {
+export function isFunction(val) {
   return isPrimitiveType(val, '[object Function]')
 }
 
-export function isNumber (val) {
+export function isNumber(val) {
   return isPrimitiveType(val, '[object Number]')
 }
 
-export function isPointerEvent (val) {
+export function isPointerEvent(val) {
   return isPrimitiveType(val, '[object PointerEvent]')
 }
 
-export function isObject (val) {
+export function isObject(val) {
   return isPrimitiveType(val, '[object Object]')
 }
 
-export function isArray (arr) {
+export function isArray(arr) {
   return Array.isArray(arr)
 }
 
-export function isString (val) {
+export function isString(val) {
   return typeof val === 'string'
 }
 
-export function isEmpty (obj) {
+export function isEmpty(obj) {
   return _isEmpty(obj)
 }
 
-export function isObjectsValue (val) {
+export function isObjectsValue(val) {
   // 判断对象是否有值 true：有  false：无
   return val && Object.keys(val).length > 0
 }
@@ -93,7 +93,7 @@ export const getBrowserEnv = () => {
 /** 在H5平台(微信浏览器) */
 export const isWxWeb = isWeb && !!getBrowserEnv().weixin
 
-export function isObjectValueEqual (a, b) {
+export function isObjectValueEqual(a, b) {
   var aProps = Object.getOwnPropertyNames(a)
   var bProps = Object.getOwnPropertyNames(b)
   if (aProps.length != bProps.length) {
@@ -148,7 +148,7 @@ export const isIphoneX = () => {
 }
 
 // TODO: 验证方法在h5及边界情况稳定性
-export function getCurrentRoute () {
+export function getCurrentRoute() {
   const router = getCurrentInstance().router
   // eslint-disable-next-line
   const { $taroTimestamp, ...params } = router.params || {}
@@ -163,7 +163,7 @@ export function getCurrentRoute () {
 }
 
 // 除以100以后的千分符
-export function formatPriceToHundred (price) {
+export function formatPriceToHundred(price) {
   if (price) {
     return (Number(price) / 100)
       .toFixed(2)
@@ -174,7 +174,7 @@ export function formatPriceToHundred (price) {
   }
 }
 
-export async function normalizeQuerys (params = {}) {
+export async function normalizeQuerys(params = {}) {
   const { scene, ...rest } = params
   const queryStr = decodeURIComponent(scene)
   const obj = qs.parse(queryStr)
@@ -195,7 +195,7 @@ export async function normalizeQuerys (params = {}) {
   return ret
 }
 
-export function pickBy (arr = [], keyMaps = {}) {
+export function pickBy(arr = [], keyMaps = {}) {
   const picker = (item) => {
     const ret = {}
 
@@ -223,7 +223,7 @@ export function pickBy (arr = [], keyMaps = {}) {
   }
 }
 
-export function navigateTo (url, isRedirect) {
+export function navigateTo(url, isRedirect) {
   if (isObject(isRedirect) || isPointerEvent(isRedirect)) {
     isRedirect = false
   }
@@ -235,23 +235,23 @@ export function navigateTo (url, isRedirect) {
   return Taro.navigateTo({ url })
 }
 
-export function resolvePath (baseUrl, params = {}) {
+export function resolvePath(baseUrl, params = {}) {
   const queryStr = typeof params === 'string' ? params : qs.stringify(params)
 
   return `${baseUrl}${baseUrl.indexOf('?') >= 0 ? '&' : '?'}${queryStr}`
 }
 
-export function formatTime (time, formatter = 'YYYY-MM-DD') {
+export function formatTime(time, formatter = 'YYYY-MM-DD') {
   const newTime = time.toString().length < 13 ? time * 1000 : time
   return dayjs(newTime).format(formatter)
 }
 
-export function formatDateTime (time, formatter = 'YYYY-MM-DD HH:mm:ss') {
+export function formatDateTime(time, formatter = 'YYYY-MM-DD HH:mm:ss') {
   const newTime = time.toString().length < 13 ? time * 1000 : time
   return dayjs(newTime).format(formatter)
 }
 
-export function copyText (text, msg = '内容已复制') {
+export function copyText(text, msg = '内容已复制') {
   return new Promise((resolve, reject) => {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.setClipboardData({
@@ -270,7 +270,7 @@ export function copyText (text, msg = '内容已复制') {
   })
 }
 
-export function calcTimer (totalSec) {
+export function calcTimer(totalSec) {
   let remainingSec = totalSec
   const dd = Math.floor(totalSec / 24 / 3600)
   remainingSec -= dd * 3600 * 24
@@ -288,7 +288,7 @@ export function calcTimer (totalSec) {
   }
 }
 
-export function resolveOrderStatus (status, isBackwards) {
+export function resolveOrderStatus(status, isBackwards) {
   if (isBackwards) {
     return _findKey(STATUS_TYPES_MAP, (o) => o === status)
   }
@@ -296,7 +296,7 @@ export function resolveOrderStatus (status, isBackwards) {
   return STATUS_TYPES_MAP[status]
 }
 
-export function goToPage (page) {
+export function goToPage(page) {
   // eslint-disable-next-line
   const loc = location
   page = page.replace(/^\//, '')
@@ -305,14 +305,14 @@ export function goToPage (page) {
   loc.href = url
 }
 
-export function maskMobile (mobile) {
+export function maskMobile(mobile) {
   return mobile.replace(/^(\d{2})(\d+)(\d{2}$)/, '$1******$3')
 }
 
 // 不可使用promise/async异步写法
-export function authSetting (scope, succFn, errFn) {
+export function authSetting(scope, succFn, errFn) {
   Taro.getSetting({
-    success (res) {
+    success(res) {
       const result = res.authSetting[`scope.${scope}`]
       if (result === undefined) {
         Taro.authorize({
@@ -327,7 +327,7 @@ export function authSetting (scope, succFn, errFn) {
   })
 }
 
-export function imgCompression (url) {
+export function imgCompression(url) {
   const rule = '?imageView2/1/w/80'
   return url + rule
 }
@@ -386,7 +386,7 @@ const getUrl = (url) => {
   return `${hrefList[0]}//${hrefList[2]}${url}`
 }
 
-export function tokenParseH5 (token) {
+export function tokenParseH5(token) {
   try {
     let base64Url = token.split('.')[1]
     return JSON.parse(atob(base64Url))
@@ -395,7 +395,7 @@ export function tokenParseH5 (token) {
   }
 }
 
-export function tokenParse (token) {
+export function tokenParse(token) {
   var base64Url = token.split('.')[1]
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   console.log('Taro.base64ToArrayBuffer', base64)
@@ -414,7 +414,7 @@ export function tokenParse (token) {
 }
 
 // 解析字符串
-function getQueryVariable (herf) {
+function getQueryVariable(herf) {
   const url = herf.split('?')
   let query = {}
   if (url[1]) {
@@ -429,7 +429,7 @@ function getQueryVariable (herf) {
   return query
 }
 /** 是否是合法的color */
-function validColor (color) {
+function validColor(color) {
   var re1 = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i
   var re2 =
     /^rgb\(([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\,([0-9]|[0-9][0-9]|25[0-5]|2[0-4][0-9]|[0-1][0-9][0-9])\)$/i
@@ -450,7 +450,7 @@ function validColor (color) {
  * }
  * } data 新增上报数据
  */
-export async function buriedPoint (data) {
+export async function buriedPoint(data) {
   const params = getCurrentInstance().router.params
   let {
     gu,
@@ -503,7 +503,7 @@ export async function buriedPoint (data) {
  *
  */
 
-export function paramsSplice (params) {
+export function paramsSplice(params) {
   let str = ''
   let arr = []
   for (var key in params) {
@@ -514,7 +514,7 @@ export function paramsSplice (params) {
   return str
 }
 
-export function resolveFavsList (list, favs) {
+export function resolveFavsList(list, favs) {
   return list.map((t) => {
     const { item_id } = t
     return {
@@ -525,7 +525,7 @@ export function resolveFavsList (list, favs) {
 }
 
 // 判断是否在导购货架
-export function isGoodsShelves () {
+export function isGoodsShelves() {
   const system = Taro.getSystemInfoSync()
   log.debug(`this system is: ${system.environment}`)
   if (system && system.environment && system.environment === 'wxwork') {
@@ -535,7 +535,7 @@ export function isGoodsShelves () {
   }
 }
 
-export function styleNames (styles) {
+export function styleNames(styles) {
   if (!styles || typeof styles !== 'object') {
     return '""'
   }
@@ -563,7 +563,7 @@ export function styleNames (styles) {
   return `${styleNames}`
 }
 
-export function getThemeStyle () {
+export function getThemeStyle() {
   const result = store.getState()
   const { colorPrimary, colorMarketing, colorAccent, rgb } = result.sys
   return {
@@ -574,13 +574,13 @@ export function getThemeStyle () {
   }
 }
 
-export function isNavbar () {
+export function isNavbar() {
   return isWeb && !getBrowserEnv().weixin
 }
 
 export const hasNavbar = isWeb && !getBrowserEnv().weixin
 
-export function showToast (title, callback) {
+export function showToast(title, callback) {
   Taro.showToast({
     title,
     icon: 'none'
@@ -590,7 +590,7 @@ export function showToast (title, callback) {
   }, 2000)
 }
 
-export function hex2rgb (hex) {
+export function hex2rgb(hex) {
   if (![4, 7].includes(hex.length)) {
     throw new Error('格式错误')
   }
@@ -607,7 +607,7 @@ export function hex2rgb (hex) {
   for (let i = 0, len = result.length; i < len; i += 2) {
     rgb[i / 2] = getHexVal(result[i]) * 16 + getHexVal(result[i + 1])
   }
-  function getHexVal (letter) {
+  function getHexVal(letter) {
     let num = -1
     switch (letter.toUpperCase()) {
       case 'A':
@@ -639,12 +639,12 @@ export function hex2rgb (hex) {
   return rgb
 }
 
-export function exceedLimit ({ size: fileSize }) {
+export function exceedLimit({ size: fileSize }) {
   const size = fileSize / 1024 / 1024
   return size > 2
 }
 
-function isBase64 (str) {
+function isBase64(str) {
   if (str.indexOf('data:') != -1 && str.indexOf('base64') != -1) {
     return true
   } else {
@@ -653,12 +653,12 @@ function isBase64 (str) {
 }
 
 //判断是否是商家入驻
-const isMerchantModule = (() => {
-  if (!isWeb) return false
-  return /\/subpages\/merchant/.test(location.pathname)
-})()
+const isMerchantModule = () => {
+  let pathname = isWeb ? location.pathname : getCurrentInstance()?.router?.path
+  return /\/subpages\/merchant/.test(pathname)
+}
 
-function isUndefined (val) {
+function isUndefined(val) {
   return typeof val === 'undefined'
 }
 
@@ -668,7 +668,7 @@ const merchantIsvaild = async (parmas) => {
   return status
 }
 
-export function getExtConfigData () {
+export function getExtConfigData() {
   const extConfig = Taro.getExtConfigSync ? Taro.getExtConfigSync() : {}
   if (_isEmpty(extConfig)) {
     return {

@@ -6,7 +6,7 @@ import { AtButton } from 'taro-ui'
 import { SpImage, SpFloatLayout } from '@/components'
 import './comp-share.scss'
 
-function CompShare (props) {
+function CompShare(props) {
   const {
     info,
     open = false,
@@ -32,11 +32,11 @@ function CompShare (props) {
           <Text className='share-item-txt'>分享给好友</Text>
         </Button>
         <View className='share-item' onClick={onCreatePoster}>
-          <SpImage src='wx_share.png' width={100} height={100} />
+          <SpImage src='save.png' width={100} height={100} />
           <Text className='share-item-txt'>海报分享</Text>
         </View>
         <View className='share-item' onClick={onShareEdit}>
-          <SpImage src='wx_share.png' width={100} height={100} />
+          <SpImage src='share_edit.png' width={100} height={100} />
           <Text className='share-item-txt'>分享编辑</Text>
         </View>
       </View>
