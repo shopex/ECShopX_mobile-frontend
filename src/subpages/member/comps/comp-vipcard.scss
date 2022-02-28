@@ -1,10 +1,16 @@
 .comp-vipcard {
   // width: 750px;
-  height: 110px;
+  height: 85px;
   background-size: 100% 100%;
   margin-top: 28px;
   display: flex;
-  padding: 20px 60px 0;
+  padding: 20px 60px;
+  &.is-not-default {
+    margin: 20px 25px 0 25px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  }
   .lf-con {
     flex: 1;
     position: relative;
@@ -22,7 +28,6 @@
   .block {
     width: 100%;
     display: flex;
-    align-items: center;
   }
   .block-vip {
     width: 100%;

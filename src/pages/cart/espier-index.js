@@ -36,7 +36,7 @@ const initialState = {
   policyModal: false // 隐私弹框
 }
 
-function CartIndex () {
+function CartIndex() {
   const { isLogin } = useLogin({
     autoLogin: true,
     policyUpdateHook: () => onPolicyChange(true)
@@ -49,7 +49,7 @@ function CartIndex () {
   const [state, setState] = useImmer(initialState)
   const { current, recommendList, policyModal } = state
 
-  const { colorPrimary } = useSelector((state) => state.sys)
+  const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
   const { validCart = [], invalidCart = [] } = useSelector((state) => state.cart)
   const { tabbar = 1 } = router.params
 
@@ -62,7 +62,9 @@ function CartIndex () {
   })
 
   const fetch = () => {
-    getRecommendList() // 猜你喜欢
+    if (openRecommend == 1) {
+      getRecommendList() // 猜你喜欢
+    }
     if (isLogin) {
       getCartList()
     }
@@ -153,7 +155,7 @@ function CartIndex () {
   const getRecommendList = async () => {
     const { list } = await api.cart.likeList({
       page: 1,
-      pageSize: 10
+      pageSize: 1000
     })
     setState((draft) => {
       draft.recommendList = list
@@ -432,7 +434,7 @@ function CartIndex () {
 
       {validCart.length == 0 && invalidCart.length == 0 && (
         <SpDefault type='cart' message='购物车内暂无商品～'>
-          <AtButton type='primary' circle onClick={navigateTo.bind(this, '/pages/index')}>
+          <AtButton type='primary' circle onClick={navigateTo.bind(this, '/pages/index', true)}>
             去选购
           </AtButton>
         </SpDefault>
