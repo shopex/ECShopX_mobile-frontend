@@ -7,7 +7,7 @@ const canvasWidth = 600
 const canvasHeight = 960
 
 class GoodsDetailPoster {
-  constructor (props) {
+  constructor(props) {
     const { ctx, info, userInfo, toPx, toRpx } = props
     this.ctx = ctx
     this.info = info
@@ -16,17 +16,17 @@ class GoodsDetailPoster {
     this.toRpx = toRpx
   }
 
-  getCanvasSize () {
+  getCanvasSize() {
     return {
       canvasWidth: canvasWidth,
       canvasHeight: canvasHeight
     }
   }
 
-  async drawPoster () {
+  async drawPoster() {
     const host = process.env.APP_BASE_URL.replace('/api/h5app/wxapp', '')
     const { appid, company_id } = getExtConfigData()
-    const { itemId, imgs } = this.info
+    const { itemId, imgs, price } = this.info
     const { user_id, avatar } = this.userInfo
     // const { dtid } =
 
@@ -125,6 +125,8 @@ class GoodsDetailPoster {
       drawOptions
     )
     // 商品金额
+    const initPrice = price.toFixed(2).split('.')[0]
+    const floatPrice = `.${price.toFixed(2).split('.')[1]}`
     drawText(
       {
         x: 24,
@@ -137,12 +139,12 @@ class GoodsDetailPoster {
             color: '#222'
           },
           {
-            text: '100',
+            text: initPrice,
             fontSize: 46,
             color: '#222'
           },
           {
-            text: '.00',
+            text: floatPrice,
             fontSize: 32,
             color: '#222'
           }
