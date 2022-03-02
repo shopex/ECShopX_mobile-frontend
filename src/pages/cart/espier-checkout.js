@@ -1803,7 +1803,7 @@ export default class CartCheckout extends Component {
             curStore={curStore}
             isOpenStore={isOpenStore}
             headShop={headShop}
-            address={address}
+            address={this.props.address}
             onChangReceiptType={this.handleSwitchExpress.bind(this)}
             onEidtZiti={this.handleEditZitiClick.bind(this)}
           />
