@@ -5,7 +5,7 @@ import { View, Text } from '@tarojs/components'
 import { SpImage, SpPrice } from '@/components'
 import './index.scss'
 
-function SpGoodsCell (props) {
+function SpGoodsCell(props) {
   const { info, onSelectSku } = props
 
   if (!info) {
@@ -16,6 +16,17 @@ function SpGoodsCell (props) {
     onSelectSku && onSelectSku(info)
   }
 
+  const { price, activityPrice, memberPrice, packagePrice } = info
+  let _price
+  if (!isNaN(activityPrice)) {
+    _price = activityPrice
+  } else if (!isNaN(packagePrice)) {
+    _price = packagePrice
+  } else if (!isNaN(memberPrice)) {
+    _price = memberPrice
+  } else {
+    _price = price
+  }
   return (
     <View className='sp-goods-cell'>
       <View className='goods-item-hd'>
@@ -41,7 +52,7 @@ function SpGoodsCell (props) {
           {info.num && <Text className='item-num'>x {info.num}</Text>}
         </View>
         <View className='item-ft'>
-          <SpPrice value={info.price}></SpPrice>
+          <SpPrice value={_price}></SpPrice>
           <SpPrice className='market-price' lineThrough value={info.marketPrice}></SpPrice>
         </View>
       </View>
