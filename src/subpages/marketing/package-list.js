@@ -17,7 +17,7 @@ const initialState = {
   list: []
 }
 
-function PackageList (props) {
+function PackageList(props) {
   const $instance = getCurrentInstance()
   const { id, distributor_id } = $instance.router.params
   const dispatch = useDispatch()
@@ -90,7 +90,7 @@ function PackageList (props) {
       })
     )
     await dispatch(updateCount({ shop_type: 'distributor' }))
-    showToast('成功加入购物车')
+    // showToast('成功加入购物车')
   }
 
   return (
