@@ -94,6 +94,8 @@ export const GOODS_INFO = {
     }
   },
   marketPrice: ({ market_price }) => market_price / 100,
+  // 组合价
+  packagePrice: ({ package_price }) => package_price / 100,
   nospec: 'nospec',
   itemSpecDesc: 'item_spec_desc',
   specText: '',

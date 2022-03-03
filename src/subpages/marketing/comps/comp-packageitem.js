@@ -20,7 +20,7 @@ const initialState = {
 }
 
 const MSpSkuSelect = React.memo(SpSkuSelect)
-function CompPackageItem (props) {
+function CompPackageItem(props) {
   const { info, onChange } = props
   const [state, setState] = useImmer(initialState)
   const {
@@ -111,24 +111,24 @@ function CompPackageItem (props) {
     // 单规格
     if (mainGoods.nospec) {
       itemId = mainGoods.itemId
-      packageTotalPrice += mainGoods.price
+      packageTotalPrice += mainGoods.packagePrice
     } else {
       // 已选择规格
       if (mainGoods.curItem) {
         itemId = mainGoods.curItem.itemId
-        packageTotalPrice += mainGoods.curItem.price
+        packageTotalPrice += mainGoods.curItem.packagePrice
       }
     }
     makeUpGoods.forEach((goods) => {
       if (selection.has(goods.itemId)) {
         if (goods.nospec) {
           sitemIds.push(goods.itemId)
-          packageTotalPrice += goods.price
+          packageTotalPrice += goods.packagePrice
         } else {
           // 已选择规格
           if (goods.curItem) {
             sitemIds.push(goods.curItem.itemId)
-            packageTotalPrice += goods.curItem.price
+            packageTotalPrice += goods.curItem.packagePrice
           } else {
             sitemIds.push(null)
           }
