@@ -4,7 +4,7 @@ import { View, Image } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import { SpScreenAd, SpPage, SpSearch, SpRecommend, SpPrivacyModal, SpTabbar } from '@/components'
 import api from '@/api'
-import { isWeixin } from '@/utils'
+import { isWeixin, platformTemplateName } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { useImmer } from 'use-immer'
@@ -29,6 +29,7 @@ function Home() {
   })
 
   const sys = useSelector((state) => state.sys)
+  const { useInfo } = useSelector((state) => state.guide)
   const showAdv = useSelector((member) => member.user.showAdv)
 
   const { openRecommend } = sys
@@ -39,47 +40,20 @@ function Home() {
   useEffect(() => {
     if (isLogin) {
       fetchWgts()
-      fetchLikeList()
-      fetchShareInfo()
+      // fetchShareInfo()
     }
   }, [isLogin])
 
   const fetchWgts = async () => {
-    const { config } = await api.shop.getShopTemplate({
-      distributor_id: 0 // 平台版固定值
+    const { config } = await api.guide.getHomeTmps({
+      template_name: platformTemplateName,
+      version: 'v1.0.1',
+      page_name: 'custom_salesperson',
+      company_id: 1
     })
     setState((v) => {
       v.wgts = config
     })
-    // 检查隐私协议是否变更或同意
-    const checkRes = await checkPolicyChange()
-    if (checkRes) {
-      fetchLocation()
-    }
-  }
-
-  const fetchLikeList = async () => {
-    if (openRecommend == 1) {
-      const query = {
-        page: 1,
-        pageSize: 1000
-      }
-      const { list } = await api.cart.likeList(query)
-      setLikeList(list)
-    }
-  }
-
-  const fetchShareInfo = async () => {
-    const res = await api.wx.shareSetting({ shareindex: 'index' })
-    setState((draft) => {
-      draft.shareInfo = res
-    })
-  }
-
-  // 定位
-  const fetchLocation = async () => {
-    const res = await entryLaunch.getCurrentAddressInfo()
-    dispatch(updateLocation(res))
   }
 
   useShareAppMessage(async (res) => {
@@ -106,11 +80,11 @@ function Home() {
   }
   return (
     <SpPage className='page-index' scrollToTopBtn>
-      <BaNavBar title='导购商城' fixed icon='in-icon in-icon-backhome' />
+      {/* <BaNavBar title='导购商城' fixed icon='in-icon in-icon-backhome' /> */}
 
-      {guideInfo && (
+      {/* {useInfo && (
         <BaStore onClick={this.handleOpenStore} guideInfo={guideInfo} defaultStore={storeInfo} />
-      )}
+      )} */}
 
       {/* <View className='home-body'>
         <HomeWgts wgts={filterWgts} />

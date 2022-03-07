@@ -22,7 +22,7 @@ export default (props = {}) => {
       autoLogin && login()
     } else {
       setIsLogin(true)
-      getUserInfo()
+      // getUserInfo()
     }
   }, [])
 
@@ -54,6 +54,7 @@ export default (props = {}) => {
         code
       })
       const { salesperson_id, distributor_id, session3rd } = guildeInfo
+      setToken(session3rd)
       //查询当前导购门店信息是否有效
       const { status } = await api.guide.is_valid({
         salesperson_id,
@@ -65,7 +66,6 @@ export default (props = {}) => {
           store_isValid: status
         })
       )
-      setToken(session3rd)
     } catch (e) {
       setIsNewUser(true)
       console.error('[hooks useQwLogin] guide login is failed: ', e)
@@ -74,6 +74,7 @@ export default (props = {}) => {
   }
 
   const setToken = async (token) => {
+    debugger
     S.setAuthToken(token)
     setIsLogin(true)
   }
