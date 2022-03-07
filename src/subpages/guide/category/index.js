@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
@@ -11,9 +11,9 @@ import Series from './comps/series'
 
 import './index.scss'
 
-@connect((store) => ({
-  store
-}))
+// @connect((store) => ({
+//   store
+// }))
 export default class BaCategory extends Component {
   constructor(props) {
     super(props)
