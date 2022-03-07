@@ -54,7 +54,12 @@ const initialState = {
       }
     ]
   },
-  isCustomTabBar: false
+  isCustomTabBar: false,
+  openStore: true,
+  openRecommend: 1,
+  openScanQrcode: 1,
+  openLocation: 1,
+  openOfficialAccount: 1
 }
 
 const sysSlice = createSlice({

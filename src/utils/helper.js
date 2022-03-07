@@ -12,9 +12,10 @@ export const transformTextByPoint = (isPoint = false, money, point) => {
 }
 
 export const getDistributorId = () => {
+  const { openStore } = store.getState().sys
   const { distributor_id, store_id } = Taro.getStorageSync('curStore') || {}
-  const otherSetting = Taro.getStorageSync('otherSetting') || {}
-  const id = otherSetting.nostores_status ? store_id : distributor_id
+  // const otherSetting = Taro.getStorageSync('otherSetting') || {}
+  const id = openStore ? distributor_id : store_id
   return id
 }
 
