@@ -682,6 +682,19 @@ export function getExtConfigData() {
   }
 }
 
+const getDistributorId = (platform_id = 0) => {
+  const { openStore } = store.getState().sys
+  const {
+    shopInfo: { distributor_id, store_id }
+  } = store.getState().shop
+  if (process.env.APP_PLATFORM === 'standard') {
+    const standard_id = openStore ? distributor_id : store_id
+    return standard_id
+  } else {
+    return platform_id
+  }
+}
+
 export {
   classNames,
   log,
@@ -699,7 +712,8 @@ export {
   isBase64,
   isMerchantModule,
   isUndefined,
-  merchantIsvaild
+  merchantIsvaild,
+  getDistributorId
 }
 
 export * from './platforms'
