@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { connect } from 'react-redux'
 import { Loading } from '@/components'
@@ -7,8 +7,7 @@ import { classNames } from '@/utils'
 
 import './series.scss'
 
-@connect(({ store, colors }) => ({
-  store,
+@connect(({ colors }) => ({
   colors: colors.current
 }))
 export default class Series extends Component {
@@ -83,15 +82,15 @@ export default class Series extends Component {
           <View className='category-nav'>
             {info.map((item, index) => (
               <View
-                className={classNames(
-                  'category-nav__content',
-                  currentIndex == index ? 'category-nav__content-checked' : null
-                )}
-                style={
-                  currentIndex == index
-                    ? `border-left: 7rpx solid ${colors.data[0].primary};`
-                    : null
-                }
+                // className={classNames(
+                //   'category-nav__content',
+                //   currentIndex == index ? 'category-nav__content-checked' : null
+                // )}
+                // style={
+                //   currentIndex == index
+                //     ? `border-left: 7rpx solid ${colors.data[0].primary};`
+                //     : null
+                // }
                 key={`${item.name}${index}`}
                 onClick={this.handleClickCategoryNav.bind(this, index)}
               >
@@ -103,7 +102,7 @@ export default class Series extends Component {
         </ScrollView>
         {/*右*/}
         <ScrollView className='category-list__content' scrollY>
-          <View className={classNames(pluralType ? 'category-content' : 'category-content-no')}>
+          <View >
             {itemsImg && (
               <Image
                 src={itemsImg}
@@ -125,7 +124,7 @@ export default class Series extends Component {
                       >
                         {child.img && (
                           <Image
-                            className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
+                            // className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
                             mode='aspectFit'
                             src={child.img}
                           />
@@ -143,7 +142,7 @@ export default class Series extends Component {
                 >
                   {item.img && (
                     <Image
-                      className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
+                      // className={classNames(imgType ? 'cat-img' : 'cat-img-no')}
                       mode='aspectFit'
                       src={item.img}
                     />

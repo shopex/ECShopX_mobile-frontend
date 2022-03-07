@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const initialState = {
+  userInfo: null,
+  storeInfo: null, // 导购门店信息
   list: [],
   cartIds: [],
   fastbuy: null,
@@ -11,17 +13,17 @@ const initialState = {
   count: '',
   ads: null,
   receiptType: '',
-  storeinfo: null,
   showBuyPanel: false,
-  goodsSkuInfo: null,
-  // 导购门店信息
-  storeInfo: null
+  goodsSkuInfo: null
 }
 
 const guideSlice = createSlice({
   name: 'guide',
   initialState,
   reducers: {
+    updateUserInfo: (state, { payload }) => {
+      state.userInfo = payload
+    },
     ['updateStoreInfo'](state, action) {
       const { info: storeInfo } = action.payload
       return {
@@ -31,7 +33,7 @@ const guideSlice = createSlice({
     },
     ['checkout'](state, action) {
       const checkoutItem = action.payload
-  
+
       return {
         ...state,
         checkoutItem
@@ -39,7 +41,7 @@ const guideSlice = createSlice({
     },
     ['fastbuy'](state, action) {
       const { item, num = 1 } = action.payload
-  
+
       return {
         ...state,
         fastbuy: {
@@ -50,14 +52,14 @@ const guideSlice = createSlice({
     },
     ['updateNum'](state, action) {
       const { cart_id, num } = action.payload
-  
+
       walkCart(state, (t) => {
         if (t.cart_id === cart_id) {
           t.num = num
         }
       })
       const list = [...state.list]
-  
+
       return {
         ...state,
         list
@@ -65,12 +67,12 @@ const guideSlice = createSlice({
     },
     ['update'](state, action) {
       const list = action.payload
-  
+
       let cartIds = []
       walkCart({ list }, (t) => {
         cartIds.push(t.cart_id)
       })
-  
+
       return {
         ...state,
         list,
@@ -97,7 +99,7 @@ const guideSlice = createSlice({
     },
     ['selection'](state, action) {
       const selection = action.payload
-  
+
       return {
         ...state,
         selection
@@ -105,7 +107,7 @@ const guideSlice = createSlice({
     },
     ['changeCoupon'](state, action) {
       const coupon = action.payload
-  
+
       return {
         ...state,
         coupon
@@ -113,7 +115,7 @@ const guideSlice = createSlice({
     },
     ['freightCoupon'](state, action) {
       const freightCoupon = action.payload
-  
+
       return {
         ...state,
         freightCoupon
@@ -127,7 +129,7 @@ const guideSlice = createSlice({
     },
     ['count'](state, action) {
       const count = action.payload > 0 ? action.payload : ''
-  
+
       return {
         ...state,
         count
@@ -135,7 +137,7 @@ const guideSlice = createSlice({
     },
     ['updateAds'](state, action) {
       const ads = action.payload ? action.payload : null
-  
+
       return {
         ...state,
         ads
@@ -143,7 +145,7 @@ const guideSlice = createSlice({
     },
     ['receiptType'](state, action) {
       const receiptType = action.payload
-  
+
       return {
         ...state,
         receiptType
@@ -151,7 +153,7 @@ const guideSlice = createSlice({
     },
     ['storeinfo'](state, action) {
       const storeinfo = action.payload
-  
+
       return {
         ...state,
         storeinfo
@@ -194,18 +196,12 @@ const guideSlice = createSlice({
   }
 })
 
-export const { setColor } = guideSlice.actions
+export const { updateUserInfo } = guideSlice.actions
 
 export default guideSlice.reducer
-
-
-
-
 
 function walkCart(state, fn) {
   state.list.forEach((shopCart) => {
     shopCart.list.forEach(fn)
   })
 }
-
-
