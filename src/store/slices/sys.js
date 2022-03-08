@@ -54,7 +54,6 @@ const initialState = {
       }
     ]
   },
-  isCustomTabBar: false,
   openStore: true,
   openRecommend: 1,
   openScanQrcode: 1,
@@ -84,13 +83,6 @@ const sysSlice = createSlice({
       return {
         ...state,
         pageTitle
-      }
-    },
-    updateIsCustomTabBar: (state, { payload }) => {
-      const { isCustomTabBar } = payload
-      return {
-        ...state,
-        isCustomTabBar
       }
     }
   }
