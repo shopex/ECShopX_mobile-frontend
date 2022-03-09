@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { connect } from 'react-redux'
 import { AtButton, AtInput, AtTextarea } from 'taro-ui'
@@ -267,7 +267,6 @@ export default class CartCheckout extends Component {
   componentWillReceiveProps(nextProps) {
     const nextAddress = nextProps.address || {}
     const selfAddress = this.props.address || {}
-    console.log('componentWillReceiveProps==>', nextAddress, selfAddress)
     // if (JSON.stringify(nextAddress) != "{}" && JSON.stringify(selfAddress) != "{}" && !isObjectValueEqual(nextAddress, selfAddress)
     if (!isObjectValueEqual(nextAddress, selfAddress)) {
       this.fetchAddress()
@@ -294,6 +293,11 @@ export default class CartCheckout extends Component {
       this.setState({ shouldCalcOrder: false }, () => {
         this.calcOrder()
       })
+    }
+
+    if (S.get('FROM_ADDRESS')) {
+      this.fetchAddress()
+      S.delete('FROM_ADDRESS')
     }
   }
 
@@ -376,9 +380,8 @@ export default class CartCheckout extends Component {
     )
   }
 
-  async fetchAddress(cb) {
+  async fetchAddress() {
     const { receiptType, curStore, headShop } = this.state
-    console.log('===fetchAddress===>', headShop)
     const query = {}
     if (receiptType === 'dada') {
       query.receipt_type = receiptType
@@ -391,7 +394,6 @@ export default class CartCheckout extends Component {
       },
       () => {
         this.changeSelection()
-        cb && cb(list)
       }
     )
   }
@@ -463,6 +465,31 @@ export default class CartCheckout extends Component {
     }
   }
 
+  dealAddress = (address) => {
+    const { address_list } = this.state
+    //修改之前的地址
+    let currentAddress = { ...address }
+    //修改之后的地址
+    const matchAddress = address_list.find(
+      (addressItem) => addressItem.address_id === currentAddress.address_id
+    )
+    //默认无变化
+    let hasChange = false
+    if (matchAddress) {
+      Object.keys(matchAddress).forEach((matchKey) => {
+        if (matchAddress[matchKey] !== currentAddress[matchKey]) {
+          hasChange = true
+        }
+      })
+    }
+
+    if (hasChange) {
+      return matchAddress
+    } else {
+      return currentAddress
+    }
+  }
+
   changeSelection(params = {}) {
     const { address_list } = this.state
     if (address_list.length === 0) {
@@ -479,6 +506,7 @@ export default class CartCheckout extends Component {
     }
 
     let address = this.props.address
+
     if (!address) {
       const { address_id } = params
       address =
@@ -488,6 +516,8 @@ export default class CartCheckout extends Component {
         address_list[0] ||
         null
     }
+
+    address = this.dealAddress(address)
 
     this.props.updateChooseAddress(address)
     this.handleAddressChange(address)
@@ -1701,6 +1731,7 @@ export default class CartCheckout extends Component {
     }
 
     const { coupon, colors, address } = this.props
+    console.log('====address===>', address)
     const {
       info,
       express,
@@ -1853,7 +1884,7 @@ export default class CartCheckout extends Component {
                   <View className='sec cart-group__cont'>
                     {cart.list.map((item, idx) => {
                       return (
-                        <View className='order-item__wrap' key={item.item_id}>
+                        <View className='order-item__wrap' key={item.idx}>
                           {item.order_item_type === 'gift' ? (
                             <View className='order-item__idx'>
                               <Text>赠品</Text>
@@ -1884,8 +1915,8 @@ export default class CartCheckout extends Component {
                               <View className='order-item__desc'>
                                 {item.discount_info &&
                                   item.order_item_type !== 'gift' &&
-                                  item.discount_info.map((discount) => (
-                                    <Text className='order-item__discount' key={discount.type}>
+                                  item.discount_info.map((discount, index) => (
+                                    <Text className='order-item__discount' key={index}>
                                       {discount.info}
                                     </Text>
                                   ))}
