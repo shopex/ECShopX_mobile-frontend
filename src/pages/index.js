@@ -110,7 +110,7 @@ function Home() {
   })
 
   const fetchStoreInfo = async ({ lat, lng }) => {
-    if (process.env.APP_PLATFORM === 'platform') return
+    if (!standardEnv) return
     let parmas = {
       distributor_id: getDistributorId() // 如果店铺id和经纬度都传会根据哪个去定位传参
     }
@@ -135,18 +135,18 @@ function Home() {
   return (
     <SpPage className='page-index' scrollToTopBtn renderFloat={<CompFloatMenu />}>
       {/* header-block */}
-      {process.env.APP_PLATFORM === 'platform' ? (
-        <WgtHomeHeader>
-          {searchComp && searchComp.config.fixTop && (
-            <SpSearch isFixTop={searchComp.config.fixTop} />
-          )}
-        </WgtHomeHeader>
-      ) : (
+      {standardEnv ? (
         <WgtHomeHeaderShop>
           {searchComp && searchComp.config.fixTop && (
             <SpSearch isFixTop={searchComp.config.fixTop} />
           )}
         </WgtHomeHeaderShop>
+      ) : (
+        <WgtHomeHeader>
+          {searchComp && searchComp.config.fixTop && (
+            <SpSearch isFixTop={searchComp.config.fixTop} />
+          )}
+        </WgtHomeHeader>
       )}
 
       <View className='home-body'>
