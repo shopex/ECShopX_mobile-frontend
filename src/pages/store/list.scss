@@ -154,6 +154,22 @@
       // }
     }
   }
+  .shop-logo {
+    height: 330px;
+    text-align: center;
+    background: #fff;
+    .img {
+      width: 150px;
+      height: 150px;
+      border-radius: 8px;
+      margin-top: 57px;
+    }
+    .tip {
+      font-size: 28px;
+      color: #666;
+      margin-top: 32px;
+    }
+  }
   .shop-bottom {
     position: fixed;
     width: 100%;

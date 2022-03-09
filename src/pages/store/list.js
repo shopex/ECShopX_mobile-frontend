@@ -25,7 +25,8 @@ const initialState = {
   type: 0, // 参数
   search_type: undefined, // 参数
   defaultShop: {},
-  logo: ''
+  logo: '',
+  isRecommend: false
 }
 
 function NearlyShop(props) {
@@ -81,11 +82,12 @@ function NearlyShop(props) {
       search_type: state.search_type,
       sort_type: 1
     }
-    const { list, total_count: total, defualt_address } = await api.shop.list(query)
+    const { list, total_count: total, defualt_address, is_recommend } = await api.shop.list(query)
 
     setState((v) => {
       v.shopList = v.shopList.concat(pickBy(list, doc.shop.SHOP_ITEM))
       v.chooseValue = [query.province, query.city, query.area]
+      v.isRecommend = is_recommend === 1
     })
 
     let format_address = !isArray(defualt_address) ? defualt_address : null
@@ -267,7 +269,7 @@ function NearlyShop(props) {
     }
   }
 
-  const { areaIndexArray, areaArray, chooseValue, defaultShop, logo } = state
+  const { areaIndexArray, areaArray, chooseValue, defaultShop, logo, isRecommend } = state
 
   return (
     <SpPage className='page-ecshopx-nearlyshop'>
@@ -308,6 +310,13 @@ function NearlyShop(props) {
           </View>
         </View>
       </View>
+
+      {isRecommend && !location.address && !address && (
+        <View className='shop-logo'>
+          <Image className='img' src={logo} mode='aspectFill' />
+          <View className='tip'>您想要地区的店铺暂时未入驻网上商城</View>
+        </View>
+      )}
 
       <View className='location-block'>
         <View className='block-title'>当前定位地址</View>
