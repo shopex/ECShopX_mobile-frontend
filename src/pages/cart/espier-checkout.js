@@ -24,7 +24,8 @@ import {
   getHeadShop,
   merchantIsvaild,
   debounce,
-  showToast
+  showToast,
+  standardEnv
 } from '@/utils'
 import { lockScreen } from '@/utils/dom'
 import { Tracker } from '@/service'
@@ -358,7 +359,7 @@ export default class CartCheckout extends Component {
         }
       }
     }
-    if (process.env.APP_PLATFORM === 'platform') {
+    if (!standardEnv) {
       delete ztparams.isNostores
     }
     const shopInfo = await api.shop.getShop(ztparams)
@@ -641,7 +642,7 @@ export default class CartCheckout extends Component {
     if (payType === 'point') {
       delete params.point_use
     }
-    if (process.env.APP_PLATFORM === 'platform') {
+    if (!standardEnv) {
       delete params.isNostores
     }
     if (coupon) {
@@ -1226,7 +1227,7 @@ export default class CartCheckout extends Component {
       let params = (await this.getParams()) || {}
       const getShopId = await this.getShopId()
 
-      if (process.env.APP_PLATFORM === 'standard' && cart_type !== 'cart') {
+      if (standardEnv && cart_type !== 'cart') {
         const { distributor_id, store_id } = Taro.getStorageSync('curStore')
         params.distributor_id = isOpenStore
           ? receiptType === 'ziti'
@@ -1520,7 +1521,7 @@ export default class CartCheckout extends Component {
 
     // S.set('point_use',point_use)
     let id = ''
-    if (process.env.APP_PLATFORM === 'standard' && cart_type !== 'cart') {
+    if (standardEnv && cart_type !== 'cart') {
       const { distributor_id } = Taro.getStorageSync('curStore')
       id = distributor_id
     } else {
@@ -1973,7 +1974,7 @@ export default class CartCheckout extends Component {
           {goodType !== 'cross' &&
             !this.isPointitemGood() &&
             pointInfo.is_open_deduct_point &&
-            process.env.APP_PLATFORM !== 'platform' && (
+            standardEnv && (
               <SpCell
                 isLink
                 className='trade-invoice'
@@ -1999,7 +2000,7 @@ export default class CartCheckout extends Component {
           {goodType !== 'cross' &&
             !this.isPointitemGood() &&
             pointInfo.is_open_deduct_point &&
-            process.env.APP_PLATFORM !== 'platform' && (
+            standardEnv && (
               <SpCell
                 isLink
                 className='trade-invoice'
@@ -2061,13 +2062,11 @@ export default class CartCheckout extends Component {
               <SpCell className='trade-sub-total__item' title='优惠金额：'>
                 <Price unit='cent' value={total.discount_fee} />
               </SpCell>
-              {goodType !== 'cross' &&
-                pointInfo.is_open_deduct_point &&
-                process.env.APP_PLATFORM !== 'platform' && (
-                  <SpCell className='trade-sub-total__item' title={`${this.props.pointName}抵扣：`}>
-                    <Price unit='cent' value={total.point_fee} />
-                  </SpCell>
-                )}
+              {goodType !== 'cross' && pointInfo.is_open_deduct_point && standardEnv && (
+                <SpCell className='trade-sub-total__item' title={`${this.props.pointName}抵扣：`}>
+                  <Price unit='cent' value={total.point_fee} />
+                </SpCell>
+              )}
               <SpCell className='trade-sub-total__item' title='运费：'>
                 <Price unit='cent' value={total.freight_fee} />
               </SpCell>
