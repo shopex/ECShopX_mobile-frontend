@@ -39,7 +39,7 @@ import Deliver from './comps/deliver'
 // import DrugInfo from './drug-info'
 import OrderItem from '../../components/orderItem/order-item'
 import { PAYTYPE } from '@/consts'
-
+import { dealTextAreaValue } from '@/utils/platform'
 import './espier-checkout.scss'
 import entry from '../../utils/entry'
 
@@ -1511,9 +1511,9 @@ export default class CartCheckout extends Component {
     // Taro.navigateTo({ url })
   }
 
-  handleRemarkChange = (remark) => {
+  handleRemarkChange = (...args) => {
     this.setState({
-      remark
+      remark: dealTextAreaValue(...args)
     })
   }
 
