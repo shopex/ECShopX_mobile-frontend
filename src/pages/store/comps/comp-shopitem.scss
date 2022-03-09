@@ -20,7 +20,7 @@
   }
   .shop-info {
     display: flex;
-    // justify-content: space-between;
+    align-items: center;
     .name,
     .distance {
       @include text-overflow();
@@ -35,6 +35,8 @@
       font-size: 22px;
       color: var(--color-primary);
       max-width: 20%;
+      height: 26px;
+      line-height: 26px;
       padding: 0px 2px;
       border-radius: 8px;
       /* prettier-ignore */
