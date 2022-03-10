@@ -1756,7 +1756,7 @@ export default class CartCheckout extends Component {
                 total.point && (
                   <View class='last_price'>
                     <Price
-                      className='order-item__price'
+                      className='sp-order-item__price'
                       appendText={this.props.pointName}
                       noSymbol
                       noDecimal
@@ -1769,7 +1769,7 @@ export default class CartCheckout extends Component {
                           unit='cent'
                           plus
                           value={total.freight_fee}
-                          className='order-item__plus'
+                          className='sp-order-item__plus'
                         />
                       )}
                   </View>
@@ -1855,13 +1855,13 @@ export default class CartCheckout extends Component {
                   <View className='sec cart-group__cont'>
                     {cart.list.map((item, idx) => {
                       return (
-                        <View className='order-item__wrap' key={item.item_id}>
+                        <View className='sp-order-item__wrap' key={item.item_id}>
                           {item.order_item_type === 'gift' ? (
-                            <View className='order-item__idx'>
+                            <View className='sp-order-item__idx'>
                               <Text>赠品</Text>
                             </View>
                           ) : (
-                            <View className='order-item__idx national'>
+                            <View className='sp-order-item__idx national'>
                               <Text>第{idx + 1}件商品</Text>
                               {item.type == '1' && (
                                 <View className='nationalInfo'>
@@ -1883,11 +1883,11 @@ export default class CartCheckout extends Component {
                             showDesc
                             isPointitemGood={this.isPointitemGood()}
                             renderDesc={
-                              <View className='order-item__desc'>
+                              <View className='sp-order-item__desc'>
                                 {item.discount_info &&
                                   item.order_item_type !== 'gift' &&
                                   item.discount_info.map((discount) => (
-                                    <Text className='order-item__discount' key={discount.type}>
+                                    <Text className='sp-order-item__discount' key={discount.type}>
                                       {discount.info}
                                     </Text>
                                   ))}
@@ -1895,20 +1895,23 @@ export default class CartCheckout extends Component {
                             }
                             customFooter
                             renderFooter={
-                              <View className='order-item__ft'>
+                              <View className='sp-order-item__ft'>
                                 {this.isPointitemGood() ? (
                                   <Price
-                                    className='order-item__price'
+                                    className='sp-order-item__price'
                                     appendText={this.props.pointName}
                                     noSymbol
                                     noDecimal
                                     value={item.item_point}
                                   ></Price>
                                 ) : (
-                                  <Price className='order-item__price' value={item.price}></Price>
+                                  <Price
+                                    className='sp-order-item__price'
+                                    value={item.price}
+                                  ></Price>
                                 )}
 
-                                <Text className='order-item__num'>x {item.num}</Text>
+                                <Text className='sp-order-item__num'>x {item.num}</Text>
                               </View>
                             }
                           />
@@ -2080,7 +2083,7 @@ export default class CartCheckout extends Component {
             <View className='sec trade-sub-total'>
               <SpCell className='trade-sub-total__item' title={`${this.props.pointName}消费：`}>
                 <Price
-                  className='order-item__price'
+                  className='sp-order-item__price'
                   appendText={this.props.pointName}
                   noSymbol
                   noDecimal
@@ -2090,7 +2093,7 @@ export default class CartCheckout extends Component {
               <SpCell className='trade-sub-total__item' title='运费：'>
                 {total.freight_type === 'point' ? (
                   <Price
-                    className='order-item__price'
+                    className='sp-order-item__price'
                     appendText={this.props.pointName}
                     noSymbol
                     noDecimal
@@ -2130,7 +2133,7 @@ export default class CartCheckout extends Component {
               total.point && (
                 <View class="last_price">
                   <Price
-                    className="order-item__price"
+                    className="sp-order-item__price"
                     appendText={this.props.pointName}
                     noSymbol
                     noDecimal
@@ -2143,7 +2146,7 @@ export default class CartCheckout extends Component {
                         unit="cent"
                         plus
                         value={total.freight_fee}
-                        className="order-item__plus"
+                        className="sp-order-item__plus"
                       />
                     )}
                 </View>
