@@ -3,10 +3,9 @@ import { connect } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { classNames, formatPriceToHundred } from '@/utils'
-import OrderItem from '../../../../components/orderItem/order-item'
+import { SpOrderItem , SpNewShopItem } from '@/components'
 
 import './new-item.scss'
-import { SpNewShopItem } from '@/components'
 
 @connect(({ colors, sys }) => ({
   colors: colors.current,
@@ -30,12 +29,12 @@ export default class TradeItem extends Component {
     addGlobalClass: true
   }
 
-  handleClickBtn (type) {
+  handleClickBtn(type) {
     const { info } = this.props
     this.props.onClickBtn && this.props.onClickBtn(type, info)
   }
 
-  computeTotalPrice () {
+  computeTotalPrice() {
     let total
     const {
       info: { point, order_class, freight_fee, freight_type, total_fee, payment, receipt_type },
@@ -69,7 +68,7 @@ export default class TradeItem extends Component {
     )
   }
 
-  render () {
+  render() {
     const {
       customFooter,
       onClick,
@@ -98,7 +97,7 @@ export default class TradeItem extends Component {
           {info &&
             info.order &&
             info.order.map((item, idx) => (
-              <OrderItem
+              <SpOrderItem
                 key={`${idx}1`}
                 info={item}
                 payType={payType}
