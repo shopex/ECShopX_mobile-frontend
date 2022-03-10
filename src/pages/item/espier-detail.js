@@ -34,7 +34,8 @@ import {
   linkPage,
   pickBy,
   classNames,
-  navigateTo
+  navigateTo,
+  VERSION_STANDARD
 } from '@/utils'
 
 import doc from '@/doc'
@@ -506,7 +507,7 @@ function EspierDetail(props) {
           <CompEvaluation list={evaluationList} itemId={info.itemId}></CompEvaluation>
 
           {/* 店铺 */}
-          <CompStore info={info.distributorInfo} />
+          {!VERSION_STANDARD && <CompStore info={info.distributorInfo} />}
 
           <View className='goods-desc'>
             <View className='desc-hd'>

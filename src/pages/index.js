@@ -110,7 +110,11 @@ function Home() {
   })
 
   const fetchStoreInfo = async ({ lat, lng }) => {
-    if (!VERSION_STANDARD) return
+    if (!VERSION_STANDARD) {
+      fetchWgts()
+      fetchLikeList()
+      return
+    }
     let parmas = {
       distributor_id: getDistributorId() // 如果店铺id和经纬度都传会根据哪个去定位传参
     }
