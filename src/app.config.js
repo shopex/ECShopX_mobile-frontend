@@ -30,7 +30,6 @@ export default {
         'category/index',
         'item/list',
         'item/espier-detail',
-        'item/item-params',
         'item/package-list',
         'cart/espier-index',
         'cart/espier-checkout',

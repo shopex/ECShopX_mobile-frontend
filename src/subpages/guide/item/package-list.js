@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro';
+import Taro from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { BackToTop, Loading, SpNote } from '@/components'
@@ -32,7 +32,7 @@ export default class PackageList extends Component {
 
   async fetch(params) {
     const { page_no: page, page_size: pageSize } = params
-    const { id } = getCurrentInstance().router.params
+    const { id } = this.$router.params
     const { currentPackage } = this.state
     const query = {
       item_id: id,
@@ -72,7 +72,7 @@ export default class PackageList extends Component {
 
   render() {
     const { list, showBackToTop, scrollTop, page, currentPackage, buyPanelType } = this.state
-    const { distributor_id } = getCurrentInstance().router.params
+    const { distributor_id } = this.$router.params
     return (
       <View className='page-package-goods'>
         <ScrollView

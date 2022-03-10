@@ -6,11 +6,17 @@ import { SpScreenAd, SpPage, SpSearch, SpRecommend, SpPrivacyModal, SpTabbar } f
 import api from '@/api'
 import { isWeixin, platformTemplateName } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
-import { updateLocation } from '@/store/slices/user'
+import { updateStoreInfo } from '@/store/slices/guide'
 import { useImmer } from 'use-immer'
 import { useQwLogin } from '@/hooks'
-// import HomeWgts from './home/comps/home-wgts'
-import { BaHomeWgts, BaStoreList, BaStore, BaGoodsBuyPanel, BaTabBar, BaNavBar } from './components'
+import {
+  BaHomeWgts,
+  BaStoreList,
+  BaStore,
+  BaGoodsBuyPanel,
+  BaTabBar,
+  BaNavBar
+} from '@/subpages/guide/components'
 // import { WgtHomeHeader } from '@/pages/home/wgts'
 
 // import './home/index.scss'
@@ -18,31 +24,32 @@ import { BaHomeWgts, BaStoreList, BaStore, BaGoodsBuyPanel, BaTabBar, BaNavBar }
 const initState = {
   wgts: [],
   shareInfo: {},
-  showBackToTop: false
+  showBackToTop: false,
+  shopList: null
 }
 
 function Home() {
   const [state, setState] = useImmer(initState)
-  const [likeList, setLikeList] = useImmer([])
   const { isLogin, login } = useQwLogin({
     autoLogin: true
   })
 
   const sys = useSelector((state) => state.sys)
-  const { useInfo } = useSelector((state) => state.guide)
+  const { userInfo } = useSelector((state) => state.guide)
   const showAdv = useSelector((member) => member.user.showAdv)
 
   const { openRecommend } = sys
-  const { wgts, shareInfo } = state
+  const { wgts, shareInfo, shopList } = state
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (isLogin) {
+    if (userInfo) {
       fetchWgts()
+      getStoreList()
       // fetchShareInfo()
     }
-  }, [isLogin])
+  }, [userInfo])
 
   const fetchWgts = async () => {
     const { config } = await api.guide.getHomeTmps({
@@ -51,9 +58,27 @@ function Home() {
       page_name: 'custom_salesperson',
       company_id: 1
     })
+
     setState((v) => {
       v.wgts = config
     })
+  }
+
+  //获取门店列表
+  const getStoreList = async (params = {}) => {
+    const { list } = await api.guide.distributorlist({
+      page: 1,
+      pageSize: 10000,
+      store_type: 'distributor'
+    })
+    const fd = list.find((item) => item.distributor_id == userInfo.distributor_id)
+    setState((draft) => {
+      draft.shopList = list
+    })
+
+    if (fd) {
+      dispatch(updateStoreInfo(fd))
+    }
   }
 
   useShareAppMessage(async (res) => {
@@ -71,24 +96,16 @@ function Home() {
       query: '/pages/index'
     }
   })
-  const searchComp = wgts.find((wgt) => wgt.name == 'search')
-  let filterWgts = []
-  if (searchComp && searchComp.config.fixTop) {
-    filterWgts = wgts.filter((wgt) => wgt.name !== 'search')
-  } else {
-    filterWgts = wgts
-  }
+
   return (
     <SpPage className='page-index' scrollToTopBtn>
-      {/* <BaNavBar title='导购商城' fixed icon='in-icon in-icon-backhome' /> */}
+      <BaNavBar home title='导购商城' />
 
-      {/* {useInfo && (
-        <BaStore onClick={this.handleOpenStore} guideInfo={guideInfo} defaultStore={storeInfo} />
-      )} */}
+      {userInfo && <BaStore guideInfo={userInfo} />}
 
-      {/* <View className='home-body'>
-        <HomeWgts wgts={filterWgts} />
-      </View> */}
+      <View className='home-body'>
+        <BaHomeWgts wgts={wgts} />
+      </View>
 
       <BaTabBar />
     </SpPage>

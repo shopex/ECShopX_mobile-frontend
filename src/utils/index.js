@@ -527,7 +527,7 @@ export function resolveFavsList(list, favs) {
 // 判断是否在导购货架
 export function isGoodsShelves() {
   const system = Taro.getSystemInfoSync()
-  log.debug(`this system is: ${system.environment}`)
+  log.debug(`this system is: ${JSON.stringify(system)}`)
   if (system && system.environment && system.environment === 'wxwork') {
     return true
   } else {
@@ -683,24 +683,23 @@ export function getExtConfigData() {
 }
 
 /**
- * 保留两个位小数，不足补0 
- * @param { Number } value 
+ * 保留两个位小数，不足补0
+ * @param { Number } value
  */
-export const returnFloat = value => {
-	var value = Math.round(parseFloat(value)*100)/100;
-	var s = value.toString().split(".");
-	if(s.length == 1){
-		value=value.toString()+".00";
-		return value;
-	}
-	if(s.length > 1){
-		if(s[1].length < 2){
-			value=value.toString()+"0";
-		}
-		return value;
-	}
+export const returnFloat = (value) => {
+  var value = Math.round(parseFloat(value) * 100) / 100
+  var s = value.toString().split('.')
+  if (s.length == 1) {
+    value = value.toString() + '.00'
+    return value
+  }
+  if (s.length > 1) {
+    if (s[1].length < 2) {
+      value = value.toString() + '0'
+    }
+    return value
+  }
 }
-
 
 export {
   classNames,

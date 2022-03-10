@@ -1,8 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { showToast } from '@/utils'
+import api from '@/api'
 
 const initialState = {
   userInfo: null,
   storeInfo: null, // 导购门店信息
+  cartCount: 0,
+  validCart: [],
+  invalidCart: [],
   list: [],
   cartIds: [],
   fastbuy: null,
@@ -17,6 +22,26 @@ const initialState = {
   goodsSkuInfo: null
 }
 
+export const fetchCartList = createAsyncThunk('cart/fetchCartList', async (params) => {
+  const { valid_cart, invalid_cart } = await api.cart.get(params)
+  return {
+    valid_cart,
+    invalid_cart
+  }
+})
+
+export const addCart = createAsyncThunk('cart/addCart', async (params) => {
+  debugger
+  await api.guide.cartdataadd(params)
+  showToast('成功加入购物车')
+})
+
+export const updateCount = createAsyncThunk('cart/updateCount', async (params) => {
+  // 获取购物车数量接口
+  const { item_count, cart_count } = await api.cart.count(params)
+  return { item_count, cart_count }
+})
+
 const guideSlice = createSlice({
   name: 'guide',
   initialState,
@@ -24,12 +49,8 @@ const guideSlice = createSlice({
     updateUserInfo: (state, { payload }) => {
       state.userInfo = payload
     },
-    ['updateStoreInfo'](state, action) {
-      const { info: storeInfo } = action.payload
-      return {
-        ...state,
-        storeInfo
-      }
+    updateStoreInfo: (state, { payload }) => {
+      state.storeInfo = payload
     },
     ['checkout'](state, action) {
       const checkoutItem = action.payload
@@ -193,10 +214,22 @@ const guideSlice = createSlice({
         giftCoupon: null
       }
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchCartList.fulfilled, (state, action) => {
+      const { valid_cart, invalid_cart } = action.payload
+      state.validCart = valid_cart
+      state.invalidCart = invalid_cart
+    })
+
+    builder.addCase(updateCount.fulfilled, (state, action) => {
+      const { item_count, cart_count } = action.payload
+      state.cartCount = item_count
+    })
   }
 })
 
-export const { updateUserInfo } = guideSlice.actions
+export const { updateUserInfo, updateStoreInfo } = guideSlice.actions
 
 export default guideSlice.reducer
 
