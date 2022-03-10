@@ -66,6 +66,7 @@ export default (props = {}) => {
           store_isValid: status
         })
       )
+      setIsLogin(true)
     } catch (e) {
       setIsNewUser(true)
       console.error('[hooks useQwLogin] guide login is failed: ', e)
@@ -74,9 +75,7 @@ export default (props = {}) => {
   }
 
   const setToken = async (token) => {
-    debugger
     S.setAuthToken(token)
-    setIsLogin(true)
   }
 
   return {
