@@ -6,7 +6,7 @@ import { SpImage } from '@/components'
 import { classNames } from '@/utils'
 import './comp-evaluation.scss'
 
-function CompEvaluation (props) {
+function CompEvaluation(props) {
   const { className, list = [], itemId } = props
 
   const onViewMore = () => {
