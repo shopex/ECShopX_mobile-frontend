@@ -7,7 +7,7 @@ import { SpPrice } from '@/components'
 import { ACTIVITY_LIST, ACTIVITY_STATUS } from '@/consts'
 import './comp-activitybar.scss'
 
-function CompActivityBar (props) {
+function CompActivityBar(props) {
   const { info, type, onTimeUp = () => {}, children } = props
   if (!info) {
     return null

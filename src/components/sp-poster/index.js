@@ -18,7 +18,7 @@ const initialState = {
   ctx: null
 }
 
-function SpPoster (props) {
+function SpPoster(props) {
   const { info, type, onClose = () => {} } = props
   const { userInfo } = useSelector((state) => state.user)
   const [state, setState] = useAsyncCallback(initialState)

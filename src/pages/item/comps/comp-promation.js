@@ -8,7 +8,7 @@ import { pickBy } from '@/utils'
 import doc from '@/doc'
 import './comp-promation.scss'
 
-function CompPromation (props) {
+function CompPromation(props) {
   const { open = false, info = [], onClose = () => {} } = props
 
   const renderFullGift = ({ gifts }) => {

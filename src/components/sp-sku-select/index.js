@@ -38,7 +38,7 @@ const initialState = {
   loading: false
 }
 
-function SpSkuSelect (props) {
+function SpSkuSelect(props) {
   const {
     info,
     open = false,

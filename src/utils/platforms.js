@@ -29,7 +29,7 @@ export const isAlipay = Taro.getEnv() == Taro.ENV_TYPE.ALIPAY
 // export const hideLoading = isAlipay ? my.hideLoading : Taro.hideLoading;
 
 //平台支付
-export async function payPlatform (order = {}) {
+export async function payPlatform(order = {}) {
   let payRes
   let payErr = null
   if (isAlipay) {

@@ -12,7 +12,7 @@ import './comp-store.scss'
 const initialState = {
   isFav: false
 }
-function CompStore (props) {
+function CompStore(props) {
   const { info } = props
   const [state, setState] = useImmer(initialState)
   const { isFav } = state
