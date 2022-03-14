@@ -66,7 +66,8 @@ const initialConfigState = {
     share_enable: false, // 分享
     memberinfo_enable: false, // 个人信息
     tenants: true, //商家入驻
-    purchase: true // 员工内购
+    purchase: true, // 员工内购
+    dianwu:true  // 店务
   },
   infoAppId: '',
   infoPage: '',
@@ -168,7 +169,7 @@ function MemberIndex(props) {
   }
 
   const getMemberCenterConfig = async () => {
-    const [bannerRes, menuRes, redirectRes, pointShopRes] = await Promise.all([
+    const [bannerRes, menuRes, redirectRes, pointShopRes,dianwuRes] = await Promise.all([
       // 会员中心banner
       await api.shop.getPageParamsConfig({
         page_name: 'member_center_setting'
@@ -182,7 +183,9 @@ function MemberIndex(props) {
         page_name: 'member_center_redirect_setting'
       }),
       // 积分商城
-      await api.pointitem.getPointitemSetting()
+      await api.pointitem.getPointitemSetting(),
+      //店务
+      await api.dianwu.is_admin()
     ])
     let banner,
       menu,
@@ -200,6 +203,7 @@ function MemberIndex(props) {
         appId: app_id
       }
     }
+    console.log("==dianwuRes==",dianwuRes)
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
     }
