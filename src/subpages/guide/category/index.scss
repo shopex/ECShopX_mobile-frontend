@@ -1,9 +1,9 @@
-.page-category-index {
+.page-guide-category-index {
   width: 100%;
   height: 100vh;
   background: #ffffff;
   .at-tabs {
-    height: auto;
+    box-sizing: border-box;
   }
   .at-tabs__header {
     justify-content: start;
@@ -25,6 +25,9 @@
       }
     }
   }
+  .at-tabs__body {
+    display: none;
+  }
 
   .search-input-fixed {
     z-index: $z-index-toolbar + 1;
@@ -39,11 +42,11 @@
   .category-comps {
     box-sizing: border-box;
     background: #ffffff;
-    @include page-scroll($tabs-height + 16px, $tabbar-height);
+    // @include page-scroll($tabs-height + 16px, $tabbar-height);
   }
   .category-comps-not {
     box-sizing: border-box;
     background: #ffffff;
-    @include page-scroll(0, $tabbar-height);
+    // @include page-scroll(0, $tabbar-height);
   }
 }

@@ -23,7 +23,7 @@ const initialState = {
 }
 
 export const fetchCartList = createAsyncThunk('cart/fetchCartList', async (params) => {
-  const { valid_cart, invalid_cart } = await api.cart.get(params)
+  const { valid_cart, invalid_cart } = await api.guide.cartdatalist(params)
   return {
     valid_cart,
     invalid_cart
@@ -33,6 +33,10 @@ export const fetchCartList = createAsyncThunk('cart/fetchCartList', async (param
 export const addCart = createAsyncThunk('cart/addCart', async (params) => {
   await api.guide.cartdataadd(params)
   showToast('成功加入购物车')
+})
+
+export const updateCartItemNum = createAsyncThunk('cart/updateCartItemNum', async (parmas) => {
+  await api.guide.cartdataadd(parmas)
 })
 
 export const updateCount = createAsyncThunk('cart/updateCount', async (params) => {

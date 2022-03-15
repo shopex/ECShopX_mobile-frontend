@@ -1,4 +1,4 @@
-.page-cart-index {
+.page-guide-cart-index {
   &.has-tabbar {
     padding-bottom: $tabbar-height;
   }
@@ -133,11 +133,12 @@
       border-left: 1px solid #999;
       border-right: 1px solid #999;
       width: 60px;
-      height: 32px;
-      line-height: 32px;
+      height: 46px;
+      // line-height: 40px;
       font-size: 24px;
       position: relative;
-      top: -2px;
+      top: -5px;
+      min-height: initial;
       /*  #ifdef  h5  */
       border-left: 1px solid #999;
       border-right: 1px solid #999;
