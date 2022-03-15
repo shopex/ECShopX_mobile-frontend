@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useSelector , connect } from 'react-redux'
+import { useSelector, connect } from 'react-redux'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow, getCurrentInstance } from '@tarojs/taro'
 import { useImmer } from 'use-immer'
@@ -261,7 +261,7 @@ function ItemList(props) {
       })}
     >
       <View id='item-list-head' className='item-list-head'>
-        <BaNavBar home title='导购商城' />
+        {/* <BaNavBar home title='导购商城' /> */}
         <View className='search-wrap'>
           <SpSearchBar
             keyword={keywords}

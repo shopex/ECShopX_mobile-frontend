@@ -328,7 +328,7 @@ function EspierDetail(props) {
           </SpFloatMenuItem>
           <SpFloatMenuItem
             onClick={() => {
-              Taro.navigateTo({ url: '/subpages/guide/cart/espier-index' })
+              Taro.navigateTo({ url: '/subpages/guide/cart/espier-index?tabbar=0' })
             }}
           >
             <View className='cart-count'>{cartCount}</View>
