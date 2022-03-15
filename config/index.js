@@ -49,7 +49,10 @@ const config = {
   copy: {
     patterns: copyPatterns
   },
-  plugins: ['@shopex/taro-plugin-modules',path.join(__dirname, "./modify-taro.js"),],
+  plugins: [
+    '@shopex/taro-plugin-modules',
+    // path.join(__dirname, "./modify-taro.js")
+  ],
 
   mini: {
     miniCssExtractPluginOption: {

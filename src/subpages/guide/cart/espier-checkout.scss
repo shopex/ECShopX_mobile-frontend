@@ -48,5 +48,9 @@
   }
   .checkout-info {
     margin: 0 20px 20px;
+    .sp-cell__bd {
+      text-align: right;
+      padding-right: 0;
+    }
   }
 }

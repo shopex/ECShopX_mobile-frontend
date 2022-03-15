@@ -13,11 +13,13 @@ import './espier-checkout.scss'
 const initialState = {
   list: [],
   itemFee: 0,
-  discountFee: 0
+  discountFee: 0,
+  cartTotalNum: 0,
+  totalFee: 0
 }
 function EspierCheckout(props) {
   const [state, setState] = useImmer(initialState)
-  const { list } = state
+  const { list, itemFee, discountFee, cartTotalNum, totalFee } = state
   useEffect(() => {
     fetch()
   }, [])
@@ -39,12 +41,14 @@ function EspierCheckout(props) {
     }
     const { valid_cart } = await api.guide.salesPromotion(params)
     if (valid_cart) {
-      const { list, item_fee, discount_fee } = valid_cart[0]
+      const { list, item_fee, discount_fee, cart_total_num, total_fee } = valid_cart[0]
       console.log(pickBy(list, doc.checkout.GUIDE_CHECKOUT_GOODSITEM))
       setState((draft) => {
         draft.list = pickBy(list, doc.checkout.GUIDE_CHECKOUT_GOODSITEM)
         draft.itemFee = item_fee / 100
         draft.discountFee = discount_fee / 100
+        draft.cartTotalNum = cart_total_num
+        draft.totalFee = total_fee / 100
       })
     }
   }
@@ -55,11 +59,11 @@ function EspierCheckout(props) {
       renderFooter={
         <View className='checkout-toolbar'>
           <View className='toolbar-info'>
-            <View className='total-num'>共{0}件商品</View>
+            <View className='total-num'>共{cartTotalNum}件商品</View>
             <View className='total-info'>
               <View>
                 总计:　
-                <SpPrice value={100} />
+                <SpPrice value={totalFee} />
               </View>
               <View className='desc-txt'>以实际支付金额为准</View>
             </View>
@@ -84,10 +88,14 @@ function EspierCheckout(props) {
       </View>
 
       <View className='checkout-info'>
-        <SpCell title='商品金额' value=''></SpCell>
-        <SpCell title='优惠金额'></SpCell>
-        <SpCell title='运费优惠'></SpCell>
-        <SpCell title='运费'></SpCell>
+        <SpCell title='商品金额'>
+          <SpPrice value={itemFee} />
+        </SpCell>
+        <SpCell title='优惠金额'>
+          <SpPrice value={0 - discountFee} />
+        </SpCell>
+        {/* <SpCell title='运费优惠'></SpCell>
+        <SpCell title='运费'></SpCell> */}
       </View>
 
       {/* <SpCell className='trade-sub-total__item' title='商品金额：'>
