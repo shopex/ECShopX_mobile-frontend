@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
 import { AtFloatLayout } from 'taro-ui'
 import { useSelector } from 'react-redux'
-import { isWeixin } from '@/utils'
+import { isWeixin, VERSION_STANDARD } from '@/utils'
 import getPaymentList from '@/utils/payment'
 import { SpCheckbox, SpCell } from '@/components'
 import { View, Text, Button } from '@tarojs/components'
@@ -123,7 +123,7 @@ function CompPaymentPicker(props) {
         <View className='payment-picker'>
           <View className='payment-picker__hd'>
             <Text>{title}</Text>
-            <View className='iconfont icon-close'></View>
+            <View onClick={() => handlePaymentShow(false)} className='iconfont icon-close'></View>
           </View>
           <View className='payment-picker__bd'>
             {isPointitemGood && (
@@ -150,7 +150,7 @@ function CompPaymentPicker(props) {
                 </View>
               </View>
             )}
-            {isShowBalance && isWeixin && (
+            {isShowBalance && VERSION_STANDARD && isWeixin && (
               <View
                 className={`payment-item ${
                   disabledPayment && disabledPayment['deposit'] ? 'is-disabled' : ''
