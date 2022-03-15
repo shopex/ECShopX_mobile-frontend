@@ -36,3 +36,27 @@ export const RECEIVER_ADDRESS = {
   receiver_address: 'adrdetail',
   receiver_zip: 'postalCode'
 }
+
+export const GUIDE_CHECKOUT_GOODSITEM = {
+  itemName: 'item_name',
+  img: 'pics',
+  nospec: ({ item_spec_desc }) => {
+    if (item_spec_desc) {
+      return false
+    } else {
+      return true
+    }
+  },
+  itemSpecDesc: 'item_spec_desc',
+  num: 'num',
+  price: ({ price }) => price / 100,
+  activityPrice: ({ act_price }) => act_price / 100,
+  memberPrice: ({ member_price }) => {
+    if (!member_price) {
+      return NaN
+    } else {
+      return member_price / 100
+    }
+  },
+  marketPrice: ({ market_price }) => market_price / 100
+}
