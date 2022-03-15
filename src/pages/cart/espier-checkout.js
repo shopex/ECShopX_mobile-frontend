@@ -97,7 +97,7 @@ function CartCheckout(props) {
     getTradeSetting()
     // tode 此处应有埋点
     return () => {
-      dispatch(changeCoupon(null)) // 清空优惠券信息
+      dispatch(changeCoupon()) // 清空优惠券信息
       dispatch(updateChooseAddress(null)) // 清空地址信息
       dispatch(changeZitiStore()) // 清空编辑自提列表选中的数据
     }
@@ -581,17 +581,21 @@ function CartCheckout(props) {
     } = data
 
     if (isObjectsValue(coupon_info)) {
-      setState((draft) => {
-        draft.couponInfo = {
-          type: 'coupon',
-          value: {
-            title: coupon_info.info,
-            card_id: coupon_info.id,
-            code: coupon_info.coupon_code,
-            discount: coupon_info.discount_fee
-          }
+      let info = {
+        type: 'coupon',
+        value: {
+          title: coupon_info.info,
+          card_id: coupon_info.id,
+          code: coupon_info.coupon_code,
+          discount: coupon_info.discount_fee
         }
+      }
+      setState((draft) => {
+        draft.couponInfo = info
       })
+      if (!coupon) {
+        dispatch(changeCoupon(info))
+      }
     } else {
       setState((draft) => {
         draft.couponInfo = {}
