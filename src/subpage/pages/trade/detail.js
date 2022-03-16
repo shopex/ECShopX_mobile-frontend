@@ -17,7 +17,7 @@ import {
   isNavbar,
   isWeb,
   redirectUrl,
-  VERSION_STANDARD
+  VERSION_PLATFORM
 } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { PAYTYPE } from '@/consts'
@@ -810,7 +810,7 @@ export default class TradeDetail extends Component {
           </View>
 
           <View className='trade-detail-goods'>
-            {!VERSION_STANDARD && (
+            {VERSION_PLATFORM && (
               <SpNewShopItem info={distributor} canJump inOrderDetail hasLogo={false} />
             )}
             <View className='line'>

@@ -15,7 +15,7 @@ import {
   classNames,
   isNavbar,
   getBrowserEnv,
-  VERSION_STANDARD
+  VERSION_PLATFORM
 } from '@/utils'
 import { Tracker } from '@/service'
 import TradeItem from './comps/new-item'
@@ -328,7 +328,7 @@ export default class TradeList extends Component {
                 key={item.tid}
                 rateStatus={rateStatus}
                 info={item}
-                isShowDistributorInfo={!VERSION_STANDARD}
+                isShowDistributorInfo={VERSION_PLATFORM}
                 showActions={curItemActionsId === item.tid}
                 onClick={this.handleClickItem.bind(this, item)}
                 onClickBtn={this.handleClickItemBtn.bind(this, item)}
