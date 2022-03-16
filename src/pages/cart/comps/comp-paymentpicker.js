@@ -150,30 +150,30 @@ function CompPaymentPicker(props) {
                 </View>
               </View>
             )}
-            {isShowBalance && VERSION_STANDARD && isWeixin && (
-              <View
-                className={`payment-item ${
-                  disabledPayment && disabledPayment['deposit'] ? 'is-disabled' : ''
-                }`}
-                onClick={handlePaymentChange.bind(this, 'deposit')}
-              >
-                <View className='payment-item__bd'>
-                  <Text className='payment-item__title'>余额支付</Text>
-                  <Text className='payment-item__desc'>
-                    {disabledPayment && disabledPayment['deposit']
-                      ? disabledPayment['deposit']
-                      : '使用余额支付'}
-                  </Text>
-                </View>
-                <View className='payment-item__ft'>
-                  <SpCheckbox
-                    disabled={disabledPayment && !!disabledPayment['deposit']}
-                    colors={colorPrimary}
-                    checked={localType === 'deposit'}
-                  ></SpCheckbox>
-                </View>
+            {/* {isShowBalance && VERSION_STANDARD && isWeixin && ( // 临时加的 后期需开启注释 */}
+            <View
+              className={`payment-item ${
+                disabledPayment && disabledPayment['deposit'] ? 'is-disabled' : ''
+              }`}
+              onClick={handlePaymentChange.bind(this, 'deposit')}
+            >
+              <View className='payment-item__bd'>
+                <Text className='payment-item__title'>余额支付</Text>
+                <Text className='payment-item__desc'>
+                  {disabledPayment && disabledPayment['deposit']
+                    ? disabledPayment['deposit']
+                    : '使用余额支付'}
+                </Text>
               </View>
-            )}
+              <View className='payment-item__ft'>
+                <SpCheckbox
+                  disabled={disabledPayment && !!disabledPayment['deposit']}
+                  colors={colorPrimary}
+                  checked={localType === 'deposit'}
+                ></SpCheckbox>
+              </View>
+            </View>
+            {/* )} */}
             {isShowDelivery && (
               <View
                 className={`payment-item ${
