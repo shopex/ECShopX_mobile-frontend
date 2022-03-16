@@ -16,9 +16,10 @@ import {
   showToast,
   isWeb,
   redirectUrl,
-  VERSION_STANDARD,
   isAlipay,
-  log
+  log,
+  VERSION_STANDARD,
+  VERSION_PLATFORM
 } from '@/utils'
 import { useAsyncCallback } from '@/hooks'
 import { PAYTYPE } from '@/consts'
@@ -694,7 +695,7 @@ function CartCheckout(props) {
       cus_parmas.order_type = 'normal_pointsmall'
     }
 
-    if (!VERSION_STANDARD) {
+    if (VERSION_PLATFORM) {
       delete cus_parmas.isNostores
     }
 
