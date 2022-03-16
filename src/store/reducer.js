@@ -7,7 +7,7 @@ import cartReducer from './slices/cart'
 import merchantReducer from './slices/merchant'
 import shopReducer from './slices/shop'
 import guideReducer from './slices/guide'
-// import tabBar from './slices/tab-bar'
+import tabBar from './slices/tab-bar'
 
 const rootReducer = combineReducers({
   guide: guideReducer,
@@ -16,8 +16,8 @@ const rootReducer = combineReducers({
   sys: sysReducer,
   cart: cartReducer,
   merchant: merchantReducer,
-  shop: shopReducer
-  // tabBar: tabBar
+  shop: shopReducer,
+  tabBar: tabBar
 })
 
 export default rootReducer

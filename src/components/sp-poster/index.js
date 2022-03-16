@@ -7,6 +7,7 @@ import { useAsyncCallback } from '@/hooks'
 import { classNames, authSetting, showToast } from '@/utils'
 import GoodsDetailPoster from './dw-goodsdetail'
 import GuideGoodsDetailPoster from './dw-guidegoodsdetail'
+import GuideCheckout from './dw-guidecheckout'
 
 import './index.scss'
 
@@ -76,6 +77,15 @@ function SpPoster(props) {
         break
       case 'guideGoodsDetial':
         canvasObj = new GuideGoodsDetailPoster({
+          ctx,
+          info,
+          userInfo: guideInfo,
+          toPx,
+          toRpx
+        })
+        break
+      case 'guideCheckout':
+        canvasObj = new GuideCheckout({
           ctx,
           info,
           userInfo: guideInfo,

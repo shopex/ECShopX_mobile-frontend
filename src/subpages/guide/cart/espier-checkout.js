@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
-import { SpPage, SpGoodsCell, SpPrice, SpCell } from '@/components'
+import { SpPage, SpGoodsCell, SpPrice, SpCell, SpPoster } from '@/components'
 import { pickBy } from '@/utils'
 import doc from '@/doc'
 import api from '@/api'
@@ -15,11 +15,13 @@ const initialState = {
   itemFee: 0,
   discountFee: 0,
   cartTotalNum: 0,
-  totalFee: 0
+  totalFee: 0,
+  posterModalOpen: false,
+  salesPromotionId: ''
 }
 function EspierCheckout(props) {
   const [state, setState] = useImmer(initialState)
-  const { list, itemFee, discountFee, cartTotalNum, totalFee } = state
+  const { list, itemFee, discountFee, cartTotalNum, totalFee, posterModalOpen } = state
   useEffect(() => {
     fetch()
   }, [])
@@ -41,7 +43,8 @@ function EspierCheckout(props) {
     }
     const { valid_cart } = await api.guide.salesPromotion(params)
     if (valid_cart) {
-      const { list, item_fee, discount_fee, cart_total_num, total_fee } = valid_cart[0]
+      const { list, item_fee, discount_fee, cart_total_num, total_fee, sales_promotion_id } =
+        valid_cart[0]
       console.log(pickBy(list, doc.checkout.GUIDE_CHECKOUT_GOODSITEM))
       setState((draft) => {
         draft.list = pickBy(list, doc.checkout.GUIDE_CHECKOUT_GOODSITEM)
@@ -49,6 +52,7 @@ function EspierCheckout(props) {
         draft.discountFee = discount_fee / 100
         draft.cartTotalNum = cart_total_num
         draft.totalFee = total_fee / 100
+        draft.salesPromotionId = sales_promotion_id
       })
     }
   }
@@ -69,7 +73,15 @@ function EspierCheckout(props) {
             </View>
           </View>
           <View className='checkout-btn'>
-            <AtButton circle type='primary'>
+            <AtButton
+              circle
+              type='primary'
+              onClick={() => {
+                setState((draft) => {
+                  draft.posterModalOpen = true
+                })
+              }}
+            >
               分享订单
             </AtButton>
           </View>
@@ -114,6 +126,21 @@ function EspierCheckout(props) {
             <SpCell className='trade-sub-total__item' title='运费：'>
               <Price unit='cent' value={total.freight_fee} />
             </SpCell> */}
+
+      {/* 海报 */}
+      {posterModalOpen && (
+        <SpPoster
+          info={{
+            ...state
+          }}
+          type='guideCheckout'
+          onClose={() => {
+            setState((draft) => {
+              draft.posterModalOpen = false
+            })
+          }}
+        />
+      )}
     </SpPage>
   )
 }
