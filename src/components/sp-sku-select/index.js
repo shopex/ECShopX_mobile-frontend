@@ -235,7 +235,6 @@ function SpSkuSelect(props) {
         btnTxt = BUY_TOOL_BTNS[key].title
       }
     })
-
     if (type == 'picker') {
       return (
         <AtButton circle type='primary' onClick={onClose}>

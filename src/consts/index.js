@@ -93,6 +93,33 @@ export const BUY_TOOL_BTNS = {
   NO_STORE: { title: '无货', key: 'nostore', btnStatus: 'disabled' }
 }
 
+export const COUPON_TYPE = {
+  gift: {
+    tag: '兑换券',
+    bg: 'linear-gradient(122deg, #F4C486 0%, #D4A570 100%)',
+    fc: '#AC8050',
+    invalidBg: 'linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)',
+    invalidFc: '#888888',
+    opacity: '0.4'
+  },
+  cash: {
+    tag: '满减券',
+    bg: 'linear-gradient(299deg, #679BDD 0%, #9AC5FF 100%)',
+    fc: '#4979B7',
+    invalidBg: 'linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)',
+    invalidFc: '#888888',
+    opacity: '0.4'
+  },
+  discount: {
+    tag: '折扣券',
+    bg: 'linear-gradient(126deg, #CCC0EF 0%, #7E6FA9 100%)',
+    fc: '#64578D',
+    invalidBg: 'linear-gradient(122deg, #D8D8D8 0%, #A9A9A9 100%)',
+    invalidFc: '#888888',
+    opacity: '0.4'
+  }
+}
+
 export const PAYTYPE = {
   /** h5环境下 */
   WXH5: 'wxpayh5',
