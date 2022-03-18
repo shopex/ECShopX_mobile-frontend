@@ -11,7 +11,7 @@ const Index = ()=>{
 
     // const { appid,company_id }=getExtConfigData();
 
-    const URL=`http://192.168.1.2:10086?${qs.stringify({
+    const URL=`${process.env.APP_DIANWU_URL}?${qs.stringify({
         in_shop_wechat:true,
         openid,
         unionid,
