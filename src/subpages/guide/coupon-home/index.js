@@ -1,10 +1,17 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import Taro, {
+  getCurrentInstance,
+  useDidShow,
+  useShareAppMessage,
+  useShareTimeline
+} from '@tarojs/taro'
+import { View, Button } from '@tarojs/components'
 import { SpPage, SpScrollView, CouponItem } from '@/components'
 import api from '@/api'
+import doc from '@/doc'
+import { pickBy } from '@/utils'
 import {
   BaHomeWgts,
   BaStoreList,
@@ -21,6 +28,7 @@ const initialState = {
 }
 function GuideCouponIndex(props) {
   const $instance = getCurrentInstance()
+  const { subtask_id = '' } = getCurrentInstance().router.params
   const [state, setState] = useImmer(initialState)
   const { list } = state
   const { userInfo } = useSelector((state) => state.guide)
@@ -35,6 +43,28 @@ function GuideCouponIndex(props) {
     })
   })
 
+  useShareAppMessage(async (options) => {
+    const cardId = options.target.dataset.info
+    return getAppShareInfo(cardId)
+  })
+
+  // useShareTimeline(async (res) => {
+  //   return getAppShareInfo()
+  // })
+
+  const getAppShareInfo = async (cardId) => {
+    const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'coupon' })
+    const { salesperson_id, distributor_id, work_userid, shop_code } = userInfo
+    const gu = `${work_userid}_${shop_code}`
+    const path = `/others/pages/home/coupon-home?smid=${salesperson_id}&card_id=${cardId}&distributor_id=${distributor_id}&subtask_id=${subtask_id}&gu=${gu}`
+    console.log(`getAppShareInfo:`, path)
+    return {
+      title: title,
+      imageUrl: imageUrl,
+      path: path
+    }
+  }
+
   const fetch = async () => {
     const { card_id = '', item_id = '' } = $instance.router.params
     const { distributor_id } = userInfo
@@ -45,9 +75,9 @@ function GuideCouponIndex(props) {
       item_id
     }
     const { list, total_count } = await api.member.homeCouponList(params)
-
+    console.log(pickBy(list, doc.coupon.COUPON_ITEM))
     setState((draft) => {
-      draft.list = list
+      draft.list = pickBy(list, doc.coupon.COUPON_ITEM)
     })
     return { total: total_count }
   }
@@ -55,12 +85,14 @@ function GuideCouponIndex(props) {
   return (
     <SpPage className='page-guide-coupon'>
       <BaNavBar home title='优惠券' />
-      <SpScrollView fetch={fetch}>
+      <SpScrollView className='coupon-list' fetch={fetch}>
         {list.map((item) => (
-          // <CouponItem info={item} />
-          <BaCoupon />
+          <View className='coupon-item__wrap'>
+            <BaCoupon info={item} />
+          </View>
         ))}
       </SpScrollView>
+      <BaTabBar />
     </SpPage>
   )
 }
