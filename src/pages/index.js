@@ -23,7 +23,8 @@ const MSpPrivacyModal = React.memo(SpPrivacyModal)
 const initState = {
   wgts: [],
   shareInfo: {},
-  showBackToTop: false
+  showBackToTop: false,
+  loading: true
 }
 
 function Home() {
@@ -40,7 +41,7 @@ function Home() {
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location = {} } = useSelector((state) => state.user)
 
-  const { wgts, shareInfo } = state
+  const { wgts, shareInfo, loading } = state
 
   const dispatch = useDispatch()
 
@@ -59,12 +60,14 @@ function Home() {
   }
 
   const fetchWgts = async () => {
+    // debugger
     const { config } = await api.shop.getShopTemplate({
       distributor_id: getDistributorId()
     })
-    setState((v) => {
-      v.wgts = config
+    setState((draft) => {
+      ;(draft.wgts = config), (draft.loading = false)
     })
+    fetchLikeList()
   }
 
   const fetchLikeList = async () => {
@@ -117,7 +120,7 @@ function Home() {
   const fetchStoreInfo = async ({ lat, lng }) => {
     if (VERSION_PLATFORM) {
       fetchWgts()
-      fetchLikeList()
+      // fetchLikeList()
       return
     }
     let parmas = {
@@ -132,7 +135,7 @@ function Home() {
     dispatch(updateShopInfo(res))
 
     fetchWgts()
-    fetchLikeList()
+    // fetchLikeList()
   }
 
   const searchComp = wgts.find((wgt) => wgt.name == 'search')
@@ -143,7 +146,13 @@ function Home() {
     filterWgts = wgts
   }
   return (
-    <SpPage className='page-index' scrollToTopBtn renderFloat={<CompFloatMenu />}>
+    <SpPage
+      className='page-index'
+      scrollToTopBtn
+      renderFloat={<CompFloatMenu />}
+      renderFooter={<SpTabbar />}
+      loading={loading}
+    >
       {/* header-block */}
       {VERSION_STANDARD ? (
         <WgtHomeHeaderShop>
@@ -183,8 +192,6 @@ function Home() {
 
       {/* 优惠券包 */}
       {/* <SpCouponPackage /> */}
-
-      <SpTabbar />
     </SpPage>
   )
 }
