@@ -377,7 +377,7 @@ function MemberIndex(props) {
   console.log('====config===', config.menu)
 
   return (
-    <SpPage className='pages-member-index'>
+    <SpPage className='pages-member-index' renderFooter={<SpTabbar />}>
       <View
         className='header-block'
         style={styleNames({
@@ -554,8 +554,6 @@ function MemberIndex(props) {
           setPolicyModal(false)
         }}
       />
-
-      <SpTabbar />
     </SpPage>
   )
 }
