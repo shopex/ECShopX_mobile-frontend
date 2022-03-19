@@ -4,7 +4,15 @@ import { View, Image } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import { SpScreenAd, SpPage, SpSearch, SpRecommend, SpPrivacyModal, SpTabbar } from '@/components'
 import api from '@/api'
-import { isWeixin, getDistributorId, VERSION_STANDARD, VERSION_PLATFORM } from '@/utils'
+import {
+  isWeixin,
+  getDistributorId,
+  VERSION_STANDARD,
+  VERSION_PLATFORM,
+  VERSION_IN_PURCHASE,
+  VERSION_B2C,
+  classNames
+} from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
@@ -40,13 +48,13 @@ function Home() {
   const [policyModal, setPolicyModal] = useState(false)
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location = {} } = useSelector((state) => state.user)
+  const { openScanQrcode } = useSelector((state) => state.sys)
 
   const { wgts, shareInfo, loading } = state
 
   const dispatch = useDispatch()
 
   useDidShow(() => {
-    fetchStoreInfo(location)
     fetchShareInfo()
     // 检查隐私协议是否变更或同意
     getPolicyUpdate()
@@ -56,6 +64,9 @@ function Home() {
     const checkRes = await checkPolicyChange()
     if (!checkRes && openLocation == 1) {
       setPolicyModal(true)
+    }
+    if (checkRes) {
+      fetchStoreInfo(location)
     }
   }
 
@@ -97,7 +108,7 @@ function Home() {
 
   const handleConfirmModal = useCallback(async () => {
     setPolicyModal(false)
-    fetchLocation()
+    if (VERSION_PLATFORM || VERSION_STANDARD) fetchLocation()
     // fetchStoreInfo(location)
   }, [])
 
@@ -130,7 +141,7 @@ function Home() {
       parmas.lat = lat
       parmas.lng = lng
     }
-    if (parmas.lat && parmas.distributor_id) delete parmas.distributor_id
+    // if (parmas.lat && parmas.distributor_id) delete parmas.distributor_id
     const res = await api.shop.getShop(parmas)
     dispatch(updateShopInfo(res))
 
@@ -145,6 +156,13 @@ function Home() {
   } else {
     filterWgts = wgts
   }
+
+  const fixedTop = searchComp && searchComp.config.fixTop
+  const isSetHight =
+    VERSION_PLATFORM ||
+    (openScanQrcode == 1 && isWeixin) ||
+    (VERSION_IN_PURCHASE && fixedTop) ||
+    (VERSION_B2C && fixedTop)
   return (
     <SpPage
       className='page-index'
@@ -156,19 +174,15 @@ function Home() {
       {/* header-block */}
       {VERSION_STANDARD ? (
         <WgtHomeHeaderShop>
-          {searchComp && searchComp.config.fixTop && (
-            <SpSearch isFixTop={searchComp.config.fixTop} />
-          )}
+          {fixedTop && <SpSearch isFixTop={searchComp.config.fixTop} />}
         </WgtHomeHeaderShop>
       ) : (
-        <WgtHomeHeader>
-          {searchComp && searchComp.config.fixTop && (
-            <SpSearch isFixTop={searchComp.config.fixTop} />
-          )}
+        <WgtHomeHeader isSetHight={isSetHight}>
+          {fixedTop && <SpSearch isFixTop={searchComp.config.fixTop} />}
         </WgtHomeHeader>
       )}
 
-      <View className='home-body'>
+      <View className={classNames(isSetHight ? 'home-body' : 'cus-home-body')}>
         <HomeWgts wgts={filterWgts} />
       </View>
 
@@ -186,6 +200,7 @@ function Home() {
         open={policyModal}
         onCancel={() => {
           setPolicyModal(false)
+          fetchStoreInfo(location)
         }}
         onConfirm={handleConfirmModal}
       />
