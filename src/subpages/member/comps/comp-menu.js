@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 import React from 'react'
 import { View, Image, Text } from '@tarojs/components'
 import { SpImage } from '@/components'
-import { classNames, styleNames, isWeb } from '@/utils'
+import { classNames, styleNames, isWeb, VERSION_PLATFORM } from '@/utils'
 import { SG_APP_CONFIG } from '@/consts'
 
 import './comp-menu.scss'
@@ -38,12 +38,12 @@ const MENUS = [
   //   icon: "m_menu_zhulidingdan.png",
   //   link: "/boost/pages/order/index",
   // },
-  {
-    key: 'offline_order',
-    name: '线下订单',
-    icon: 'm_menu_xianxiadingdan.png',
-    link: '/others/pages/bindOrder/index'
-  },
+  // {
+  //   key: 'offline_order',
+  //   name: '线下订单',
+  //   icon: 'm_menu_xianxiadingdan.png',
+  //   link: '/others/pages/bindOrder/index'
+  // },
   // community_order: { name: "社区团购", icon: "m_menu_tuangou.png" },
   {
     key: 'activity',
@@ -75,6 +75,24 @@ const MENUS_CONST = [
   }
 ]
 
+const MENUS_DIANWU = [
+  {
+    key: 'dianwu',
+    name: '店务管理',
+    icon: 'm_menu_dianwu.png',
+    link: '/subpages/dianwu/index'
+  }
+]
+
+const MENUS_OFFLINE = [
+  {
+    key: 'offline_order',
+    name: '线下订单',
+    icon: 'm_menu_xianxiadingdan.png',
+    link: '/others/pages/bindOrder/index'
+  }
+]
+
 function CompMenu(props) {
   const { accessMenu, onLink = () => {}, isPromoter } = props
   const config = Taro.getStorageSync(SG_APP_CONFIG)
@@ -91,6 +109,14 @@ function CompMenu(props) {
   //商家入驻是否开启
   if (accessMenu.merchant_status) {
     menus = menus.concat(MENUS_CONST)
+  }
+
+  if (accessMenu.dianwu && VERSION_PLATFORM) {
+    menus = menus.concat(MENUS_DIANWU)
+  }
+
+  if (accessMenu.offline_order && !VERSION_PLATFORM) {
+    menus = menus.concat(MENUS_OFFLINE)
   }
 
   return (
