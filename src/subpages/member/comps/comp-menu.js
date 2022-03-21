@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 import React from 'react'
 import { View, Image, Text } from '@tarojs/components'
 import { SpImage } from '@/components'
-import { classNames, styleNames, isWeb } from '@/utils'
+import { classNames, styleNames, isWeb,VERSION_PLATFORM } from '@/utils'
 import { SG_APP_CONFIG } from '@/consts'
 
 import './comp-menu.scss'
@@ -73,7 +73,16 @@ const MENUS_CONST = [
     icon: 'm_menu_merchat.png',
     link: '/subpages/merchant/login'
   }
-]
+];
+
+const MENUS_DIANWU = [
+  {
+    key: 'dianwu',
+    name: '店务管理',
+    icon: 'm_menu_dianwu.png',
+    link: '/subpages/dianwu/index'
+  }
+];
 
 function CompMenu(props) {
   const { accessMenu, onLink = () => {}, isPromoter } = props
@@ -92,6 +101,10 @@ function CompMenu(props) {
   if (accessMenu.merchant_status) {
     menus = menus.concat(MENUS_CONST)
   }
+
+  if(accessMenu.dianwu && VERSION_PLATFORM){
+    menus=menus.concat(MENUS_DIANWU); 
+  } 
 
   return (
     <View className='comp-menu'>
