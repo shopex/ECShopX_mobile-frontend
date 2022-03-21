@@ -67,7 +67,8 @@ const initialConfigState = {
     share_enable: false, // 分享
     memberinfo_enable: false, // 个人信息
     tenants: true, //商家入驻
-    purchase: true // 员工内购
+    purchase: true, // 员工内购
+    dianwu:false  // 店务
   },
   infoAppId: '',
   infoPage: '',
@@ -169,6 +170,28 @@ function MemberIndex(props) {
     }
   }
 
+  const setDianwu = async (menu) => {
+    const { result,status } = await api.dianwu.is_admin(); 
+    S.set('DIANWU_CONFIG',result,true)
+    setConfig((draft) => { 
+      draft.menu = {
+        ...menu, 
+        dianwu:status
+      } 
+    })
+  }
+
+  const setHeaderBlock = async () => {
+    const resAssets = await api.member.memberAssets()
+    const { discount_total_count, fav_total_count, point_total_count } = resAssets
+    setState((draft) => {
+      draft.favCount = fav_total_count
+      draft.point = point_total_count
+      draft.couponCount = discount_total_count
+    })
+  }
+
+
   const getMemberCenterConfig = async () => {
     const [bannerRes, menuRes, redirectRes, pointShopRes] = await Promise.all([
       // 会员中心banner
@@ -184,7 +207,8 @@ function MemberIndex(props) {
         page_name: 'member_center_redirect_setting'
       }),
       // 积分商城
-      await api.pointitem.getPointitemSetting()
+      await api.pointitem.getPointitemSetting(),
+     
     ])
     let banner,
       menu,
@@ -201,9 +225,12 @@ function MemberIndex(props) {
         urlOpen: url_is_open,
         appId: app_id
       }
-    }
+    } 
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
+    } 
+    if (S.get(SG_TOKEN)) { 
+      setDianwu(menu);
     }
     if (redirectRes.list.length > 0) {
       const {
@@ -252,15 +279,7 @@ function MemberIndex(props) {
     })
   }
 
-  const setHeaderBlock = async () => {
-    const resAssets = await api.member.memberAssets()
-    const { discount_total_count, fav_total_count, point_total_count } = resAssets
-    setState((draft) => {
-      draft.favCount = fav_total_count
-      draft.point = point_total_count
-      draft.couponCount = discount_total_count
-    })
-  }
+  
 
   const getMemberCenterData = async () => {
     const resSales = await api.member.getSalesperson()
