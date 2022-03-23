@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
@@ -60,6 +60,7 @@ function CartCheckout(props) {
   const [state, setState] = useAsyncCallback(initialState)
 
   const dispatch = useDispatch()
+  const pageRef = useRef()
   const { address } = useSelector((state) => state.user)
   const { pointName, openStore } = useSelector((state) => state.sys)
   const { coupon } = useSelector((state) => state.cart)
@@ -77,7 +78,6 @@ function CartCheckout(props) {
     distributorInfo,
     invoiceTitle,
     packInfo,
-    isNeedPackage,
     disabledPayment,
     paramsInfo,
     couponInfo,
@@ -86,8 +86,9 @@ function CartCheckout(props) {
     isPointOpenModal,
     point_use,
     pointInfo,
-    isPaymentOpend,
-    isPointOpen
+    isNeedPackage,
+    isPackageOpend,
+    isPaymentOpend
   } = state
 
   useEffect(() => {
@@ -105,6 +106,14 @@ function CartCheckout(props) {
       dispatch(changeZitiStore()) // 清空编辑自提列表选中的数据
     }
   }, [])
+
+  useEffect(() => {
+    if (isPackageOpend || isPaymentOpend) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [isPackageOpend, isPaymentOpend])
 
   useEffect(() => {
     if (!S.getAuthToken()) {
@@ -127,10 +136,17 @@ function CartCheckout(props) {
     })
   }
 
-  // 选择是否需要包装
-  const changeNeedPackage = (isChecked) => {
+  const onPackSheetChange = () => {
     setState((draft) => {
-      draft.isNeedPackage = isChecked
+      draft.isPackageOpend = true
+    })
+  }
+
+  // 选择是否需要包装
+  const changeNeedPackage = (isNeedPackage) => {
+    setState((draft) => {
+      draft.isNeedPackage = isNeedPackage
+      draft.isPackageOpend = false
     })
   }
 
@@ -541,7 +557,8 @@ function CartCheckout(props) {
   const handleLayoutClose = () => {
     setState((draft) => {
       draft.isPaymentOpend = false
-      draft.isPointOpen = false
+      draft.isPackageOpend = false
+      draft.isNeedPackage = true
     })
   }
 
@@ -899,7 +916,7 @@ function CartCheckout(props) {
   }
 
   return (
-    <SpPage className='page-cart-checkout' renderFooter={renderFooter()}>
+    <SpPage ref={pageRef} className='page-cart-checkout' renderFooter={renderFooter()}>
       {isObjectsValue(shoppingGuideData) && (
         <View className='shopping-guide__header'>
           此订单商品来自“{shoppingGuideData.store_name}”导购“ {shoppingGuideData.name}”的推荐
@@ -942,15 +959,15 @@ function CartCheckout(props) {
           </View>
         </SpCell>
       )}
-      {packInfo.is_open && ( // 打包
-        <View className='cart-checkout__pack'>
-          <CompSelectPackage
-            isPointitemGood={isPointitemGood}
-            isChecked={isNeedPackage}
-            onHandleChange={changeNeedPackage}
-            packInfo={packInfo}
-          />
-        </View>
+      {!isPointitemGood && packInfo.is_open && (
+        <SpCell
+          isLink
+          className='cart-checkout__pack'
+          title={packInfo.packName}
+          onClick={onPackSheetChange}
+        >
+          <View className='invoice-title'>{isNeedPackage ? '需要' : '不需要'}</View>
+        </SpCell>
       )}
 
       {!isPointitemGood && VERSION_STANDARD && pointInfo.is_open_deduct_point && (
@@ -1066,6 +1083,13 @@ function CartCheckout(props) {
         disabledPayment={disabledPayment}
         onChange={handlePaymentChange}
         onInitDefaultPayType={initDefaultPaytype}
+        onClose={handleLayoutClose}
+      />
+      <CompSelectPackage
+        isOpened={isPackageOpend}
+        isChecked={isNeedPackage}
+        packInfo={packInfo}
+        onChange={changeNeedPackage}
         onClose={handleLayoutClose}
       />
     </SpPage>
