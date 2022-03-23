@@ -513,7 +513,7 @@ function CartCheckout(props) {
   }
 
   const handleCouponsClick = async () => {
-    const { cart_type, shop_id: id } = paramsInfo
+    const { cart_type, distributor_id: id } = paramsInfo
     let items_filter = detailInfo.filter((item) => item.order_item_type !== 'gift')
     items_filter = items_filter.map((item) => {
       const { item_id, num, total_fee: price } = item
@@ -680,7 +680,8 @@ function CartCheckout(props) {
     setState((draft) => {
       draft.detailInfo = pickBy(items, doc.checkout.CHECKOUT_GOODS_ITEM)
       draft.totalInfo = total_info
-      ;(draft.paramsInfo = { ...paramsInfo, ...cus_parmas }), (draft.pointInfo = point_info)
+      draft.paramsInfo = { ...paramsInfo, ...cus_parmas }
+      draft.pointInfo = point_info
     })
     if (extraTips) {
       Taro.showModal({
@@ -713,9 +714,9 @@ function CartCheckout(props) {
       cart_type,
       order_type: bargain_id ? 'bargain' : value,
       promotion: 'normal',
-      member_discount: 0,
-      coupon_discount: 0,
-      not_use_coupon: 0,
+      // member_discount: 0,
+      // coupon_discount: 0,
+      // not_use_coupon: 0,
       isNostores: openStore ? 0 : 1, // 这个传参需要和后端在确定一下
       point_use,
       pay_type: payType,
