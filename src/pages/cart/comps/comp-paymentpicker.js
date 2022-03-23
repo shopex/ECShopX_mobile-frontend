@@ -53,7 +53,7 @@ function CompPaymentPicker(props) {
       if (typeof list[0].pay_channel != 'undefined') {
         channel = list[0].pay_channel
       }
-      onInitDefaultPayType(res[0].pay_type_code, channel)
+      onInitDefaultPayType(list[0].pay_type_code, channel)
     }
   }
 
