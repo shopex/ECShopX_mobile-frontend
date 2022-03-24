@@ -35,7 +35,8 @@ import {
   pickBy,
   classNames,
   navigateTo,
-  VERSION_PLATFORM
+  VERSION_PLATFORM,
+  isAPP
 } from '@/utils'
 
 import doc from '@/doc'
@@ -246,6 +247,24 @@ function EspierDetail(props) {
       }
       draft.promotionActivity = data.promotionActivity
     })
+
+    if (isAPP && userInfo) {
+      try {
+        Taro.APP.SAPPShare.init({
+          title: data.itemName,
+          content: data.brief,
+          pic: `${data.img}?time=${new Date().getTime()}`,
+          link: `${process.env.APP_CUSTOM_SERVER}/pages/item/espier-detail?id=${data.itemId}&dtid=${data.distributorId}&company_id=${data.companyId}`,
+          path: `/pages/item/espier-detail?company_id=${data.company_id}&id=${data.v}&dtid=${data.distributor_id}&uid=${userInfo.user_id}`,
+          price: data.price,
+          weibo: false,
+          miniApp: true
+        })
+        console.log('app share init success...')
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 
   // 获取包裹
@@ -421,12 +440,16 @@ function EspierDetail(props) {
 
             <View className='goods-name-wrap'>
               <View className='goods-name'>{info.itemName}</View>
-              {isWeixin && (
+              {(isWeixin || isAPP) && (
                 <SpLogin
                   onChange={() => {
-                    setState((draft) => {
-                      draft.sharePanelOpen = true
-                    })
+                    if (isAPP) {
+                      Taro.APP.SAPPShare.open()
+                    } else {
+                      setState((draft) => {
+                        draft.sharePanelOpen = true
+                      })
+                    }
                   }}
                 >
                   <View className='btn-share'>
