@@ -93,7 +93,6 @@ class MAPPShare {
   }
 
   _renderDom() {
-    debugger
     const eleId = document.getElementById('mapp-share')
     if (eleId) {
       eleId.remove()

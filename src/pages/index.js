@@ -75,7 +75,8 @@ function Home() {
       distributor_id: getDistributorId()
     })
     setState((draft) => {
-      ;(draft.wgts = config), (draft.loading = false)
+      draft.wgts = config
+      draft.loading = false
     })
     fetchLikeList()
   }

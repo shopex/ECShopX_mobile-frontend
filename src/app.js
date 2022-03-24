@@ -8,7 +8,7 @@ import api from '@/api'
 // import { youshuLogin } from '@/utils/youshu'
 import { fetchUserFavs } from '@/store/slices/user'
 import { DEFAULT_TABS, DEFAULT_THEME, SG_APP_CONFIG, SG_MEIQIA, SG_YIQIA } from '@/consts'
-import { checkAppVersion, isWeixin, isNavbar } from '@/utils'
+import { checkAppVersion, isWeixin, isNavbar, isAPP } from '@/utils'
 
 import './app.scss'
 
@@ -19,6 +19,15 @@ import './app.scss'
 // }
 
 const store = configStore()
+
+// 如果是app模式注入SAPP
+if (isAPP) {
+  import('@/plugin/app/index').then((APP) => {
+    Taro['APP'] = APP
+    Taro.APP.SAPP.init(Taro, store)
+  })
+}
+
 class App extends Component {
   componentWillMount() {
     this.getSystemConfig()
