@@ -61,7 +61,13 @@ function Home() {
 
   const getPolicyUpdate = async () => {
     const checkRes = await checkPolicyChange()
-    if (!checkRes && openLocation == 1) {
+    if (!checkRes && openLocation == 1 && VERSION_STANDARD) {
+      setPolicyModal(true)
+    }
+    if (!checkRes && openLocation == 2 && VERSION_STANDARD) {
+      fetchStoreInfo(location)
+    }
+    if (!checkRes && VERSION_PLATFORM) {
       setPolicyModal(true)
     }
     if (checkRes) {
@@ -75,7 +81,8 @@ function Home() {
       distributor_id: getDistributorId()
     })
     setState((draft) => {
-      ;(draft.wgts = config), (draft.loading = false)
+      draft.wgts = config
+      draft.loading = false
     })
     fetchLikeList()
   }
@@ -107,8 +114,11 @@ function Home() {
 
   const handleConfirmModal = useCallback(async () => {
     setPolicyModal(false)
-    if (VERSION_PLATFORM || VERSION_STANDARD) fetchLocation()
-    // fetchStoreInfo(location)
+    if (openLocation == 1 && (VERSION_PLATFORM || VERSION_STANDARD)) {
+      fetchLocation()
+    } else {
+      fetchStoreInfo(location)
+    }
   }, [])
 
   useShareAppMessage(async (res) => {
