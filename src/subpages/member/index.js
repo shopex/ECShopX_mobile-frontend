@@ -30,7 +30,8 @@ import {
   showModal,
   isWeixin,
   normalizeQuerys,
-  log
+  log,
+  VERSION_PLATFORM
 } from '@/utils'
 import { useLogin } from '@/hooks'
 import CompVipCard from './comps/comp-vipcard'
@@ -66,7 +67,8 @@ const initialConfigState = {
     share_enable: false, // 分享
     memberinfo_enable: false, // 个人信息
     tenants: true, //商家入驻
-    purchase: true // 员工内购
+    purchase: true, // 员工内购
+    dianwu:false  // 店务
   },
   infoAppId: '',
   infoPage: '',
@@ -92,7 +94,8 @@ const initialState = {
   waitRecevieNum: 0,
   waitEvaluateNum: 0,
   afterSalesNum: 0,
-  zitiNum: 0
+  zitiNum: 0,
+  deposit: 0
 }
 
 function MemberIndex(props) {
@@ -167,6 +170,28 @@ function MemberIndex(props) {
     }
   }
 
+  const setDianwu = async (menu) => {
+    const { result,status } = await api.dianwu.is_admin(); 
+    S.set('DIANWU_CONFIG',result,true)
+    setConfig((draft) => { 
+      draft.menu = {
+        ...menu, 
+        dianwu:status
+      } 
+    })
+  }
+
+  const setHeaderBlock = async () => {
+    const resAssets = await api.member.memberAssets()
+    const { discount_total_count, fav_total_count, point_total_count } = resAssets
+    setState((draft) => {
+      draft.favCount = fav_total_count
+      draft.point = point_total_count
+      draft.couponCount = discount_total_count
+    })
+  }
+
+
   const getMemberCenterConfig = async () => {
     const [bannerRes, menuRes, redirectRes, pointShopRes] = await Promise.all([
       // 会员中心banner
@@ -182,7 +207,8 @@ function MemberIndex(props) {
         page_name: 'member_center_redirect_setting'
       }),
       // 积分商城
-      await api.pointitem.getPointitemSetting()
+      await api.pointitem.getPointitemSetting(),
+     
     ])
     let banner,
       menu,
@@ -199,9 +225,12 @@ function MemberIndex(props) {
         urlOpen: url_is_open,
         appId: app_id
       }
-    }
+    } 
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
+    } 
+    if (S.get(SG_TOKEN)) { 
+      setDianwu(menu);
     }
     if (redirectRes.list.length > 0) {
       const {
@@ -245,17 +274,12 @@ function MemberIndex(props) {
         backgroundImg: memberRes?.memberInfo?.gradeInfo?.background_pic_url
       }
     })
-  }
-
-  const setHeaderBlock = async () => {
-    const resAssets = await api.member.memberAssets()
-    const { discount_total_count, fav_total_count, point_total_count } = resAssets
     setState((draft) => {
-      draft.favCount = fav_total_count
-      draft.point = point_total_count
-      draft.couponCount = discount_total_count
+      draft.deposit = memberRes.deposit
     })
   }
+
+  
 
   const getMemberCenterData = async () => {
     const resSales = await api.member.getSalesperson()
@@ -377,7 +401,7 @@ function MemberIndex(props) {
   console.log('====config===', config.menu)
 
   return (
-    <SpPage className='pages-member-index'>
+    <SpPage className='pages-member-index' renderFooter={<SpTabbar />}>
       <View
         className='header-block'
         style={styleNames({
@@ -420,12 +444,14 @@ function MemberIndex(props) {
             <View className='bd-item-label'>积分(分)</View>
             <View className='bd-item-value'>{state.point}</View>
           </View>
-          {/* <View className='bd-item'>
-            <View className='bd-item-label'>储值(¥)</View>
-            <View className='bd-item-value'>
-              <SpPrice value={state.deposit} />
+          {VERSION_PLATFORM && (
+            <View className='bd-item deposit-item'>
+              <View className='bd-item-label'>储值(¥)</View>
+              <View className='bd-item-value'>
+                <SpPrice noDecimal noSymbol value={state.deposit} />
+              </View>
             </View>
-          </View> */}
+          )}
           <View className='bd-item' onClick={handleClickLink.bind(this, '/pages/member/item-fav')}>
             <View className='bd-item-label'>收藏(个)</View>
             <View className='bd-item-value'>{state.favCount}</View>
@@ -554,8 +580,6 @@ function MemberIndex(props) {
           setPolicyModal(false)
         }}
       />
-
-      <SpTabbar />
     </SpPage>
   )
 }

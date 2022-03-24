@@ -5,7 +5,7 @@ import { View, Text } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { SpNavBar, SpFloatMenuItem, SpNote } from '@/components'
 import { TABBAR_PATH } from '@/consts'
-import { classNames, styleNames, hasNavbar } from '@/utils'
+import { classNames, styleNames, hasNavbar, isWeixin } from '@/utils'
 
 import './index.scss'
 
@@ -15,7 +15,7 @@ const initialState = {
 }
 
 function SpPage(props, ref) {
-  const { page, router } = getCurrentInstance()
+  const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const { lock, lockStyle } = state
   // debugger
@@ -26,6 +26,7 @@ function SpPage(props, ref) {
     renderFooter,
     scrollToTopBtn = false,
     isDefault = false,
+    loading = false,
     defaultMsg = '',
     navbar = true,
     onClickLeftIcon = null
@@ -100,13 +101,31 @@ function SpPage(props, ref) {
     }
   }))
 
-  const fidx = Object.values(TABBAR_PATH).findIndex((v) => v == router.path.split('?')[0])
+  const fidx = Object.values(TABBAR_PATH).findIndex(
+    (v) => v == $instance.router?.path.split('?')[0]
+  )
   const isTabBarPage = fidx > -1
+
+  const deviceInfo = Taro.getSystemInfoSync()
+  // console.log('deviceInfo:', deviceInfo)
+  const { model } = deviceInfo
+
+  const ipx =
+    [
+      'iPhone 12/13 mini',
+      'iPhone X',
+      'iPhone XR',
+      'iPhone XS Max',
+      'iPhone 12/13 (Pro)',
+      'iPhone 12/13 Pro Max'
+    ].includes(model) && isWeixin
+
   return (
     <View
       className={classNames('sp-page', className, {
         'has-navbar': hasNavbar && !isTabBarPage && navbar,
-        'has-footer': renderFooter
+        'has-footer': renderFooter,
+        'ipx': ipx
       })}
       style={styleNames({ ...pageTheme, ...lockStyle })}
       ref={wrapRef}
@@ -114,6 +133,8 @@ function SpPage(props, ref) {
       {hasNavbar && !isTabBarPage && <SpNavBar onClickLeftIcon={onClickLeftIcon} />}
 
       {isDefault && <SpNote img='empty_data.png' title={defaultMsg} />}
+
+      {/* {loading && <SpNote img='loading.gif' />} */}
 
       {!isDefault && <View className='sp-page-body'>{children}</View>}
 
