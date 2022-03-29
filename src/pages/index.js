@@ -67,7 +67,7 @@ function Home() {
     if (!checkRes && openLocation == 2 && VERSION_STANDARD) {
       fetchStoreInfo(location)
     }
-    if (!checkRes && VERSION_PLATFORM) {
+    if (!checkRes && (VERSION_PLATFORM || VERSION_B2C)) {
       setPolicyModal(true)
     }
     if (checkRes) {
