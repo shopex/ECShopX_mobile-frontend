@@ -919,7 +919,8 @@ function CartCheckout(props) {
     wxpayh5: '微信支付',
     wxpayjs: '微信支付',
     point: `${pointName}支付`,
-    deposit: '余额支付'
+    deposit: '余额支付',
+    adapay: '微信支付'
     // delivery: '货到付款',
   }
 
