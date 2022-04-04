@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
+import { TRANSFORM_PAYTYPE } from '@/consts'
 import api from '@/api'
 
 const initialState = {
@@ -29,6 +30,10 @@ export default (props = {}) => {
         break
       case 'wxpayjs':
         wxpayjsPay(params, orderInfo)
+        break
+      case 'wxpayapp':
+      case 'alipayapp':
+        AppPay(params, orderInfo)
         break
     }
   }
@@ -97,7 +102,27 @@ export default (props = {}) => {
     window.location.href = `${res.mweb_url}&redirect_url=${encodeURIComponent(redirect_url)}`
   }
 
-  // 微信APP
+  // APP(微信、支付宝)
+  const AppPay = async (params, orderInfo) => {
+    console.log('AppPay:', params, orderInfo)
+    const { order_id, orderType = 'normal', pay_type } = orderInfo
+    const query = {
+      order_id,
+      pay_type,
+      order_type: orderType
+    }
+    const { config: appPayConfig } = await api.cashier.getPayment(query)
+    try {
+      await Taro.SAPPPay.payment({
+        id: TRANSFORM_PAYTYPE[pay_type],
+        order_params: appPayConfig
+      })
+      Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+    } catch (e) {
+      console.error(e)
+      Taro.redirectTo({ url: `/subpage/pages/trade/detail?id=${order_id}` })
+    }
+  }
 
   // 支付宝H5
   const alipayh5Pay = async (params, orderInfo) => {
@@ -117,8 +142,6 @@ export default (props = {}) => {
     document.body.appendChild(el)
     document.getElementById('alipay_submit').submit()
   }
-
-  // 支付宝APP
 
   return {
     cashierPayment

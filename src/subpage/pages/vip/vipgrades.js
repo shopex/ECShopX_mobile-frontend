@@ -7,7 +7,7 @@ import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
 import { pickBy, classNames, hideLoading, isAlipay, isNavbar, redirectUrl } from '@/utils'
-import PaymentPicker from '@/pages/cart/comps/payment-picker'
+import CompPaymentPicker from '@/pages/cart/comps/comp-paymentpicker'
 import userIcon from '@/assets/imgs/user-icon.png'
 // import { useDispatch } from 'react-redux'
 
@@ -38,6 +38,7 @@ export default class VipIndex extends Component {
       list: [],
       cur: null,
       payType: '',
+      payChannel: '',
       isPaymentOpend: false,
       visible: false,
       total_count: 0,
@@ -157,7 +158,7 @@ export default class VipIndex extends Component {
       return
     }
 
-    const { list, curTabIdx, curCellIdx, payType } = this.state
+    const { list, curTabIdx, curCellIdx, payType, payChannel } = this.state
 
     const vip_grade = list[curTabIdx]
 
@@ -167,7 +168,8 @@ export default class VipIndex extends Component {
       vip_grade_id: vip_grade.vip_grade_id,
       card_type: vip_grade.price_list[curCellIdx].name,
       distributor_id: Taro.getStorageSync('trackIdentity').distributor_id || '',
-      pay_type: env === 'h5' ? 'wxpayh5' : payType
+      pay_type: env === 'h5' ? 'wxpayh5' : payType,
+      pay_channel: payChannel
     }
 
     Taro.showLoading()
@@ -237,14 +239,22 @@ export default class VipIndex extends Component {
     })
   }
 
-  handlePaymentChange = async (payType) => {
+  handlePaymentChange = async (payType, payChannel) => {
     this.setState(
       {
         payType,
+        payChannel,
         isPaymentOpend: false
       },
       () => {}
     )
+  }
+
+  initDefaultPaytype = (payType, payChannel) => {
+    this.setState({
+      payChannel,
+      payType
+    })
   }
 
   handleCouponBox = () => {
@@ -276,7 +286,8 @@ export default class VipIndex extends Component {
       wxpay: process.env.TARO_ENV === 'weapp' ? '微信支付' : '现金支付',
       deposit: '余额支付',
       delivery: '货到付款',
-      hfpay: '微信支付'
+      hfpay: '微信支付',
+      adapay: '微信支付'
     }
     return (
       <SpPage>
@@ -350,16 +361,18 @@ export default class VipIndex extends Component {
                 })}
             </ScrollView>
 
-            <PaymentPicker
+            <CompPaymentPicker
               isOpened={isPaymentOpend}
               type={payType}
-              isShowPoint={false}
+              title='支付方式'
+              isPointitemGood={false}
               isShowBalance={false}
               isShowDelivery={false}
               // disabledPayment={disabledPayment}
               onClose={this.handleLayoutClose}
               onChange={this.handlePaymentChange}
-            ></PaymentPicker>
+              onInitDefaultPayType={this.initDefaultPaytype}
+            />
             {!isAlipay && (
               <SpCell
                 isLink

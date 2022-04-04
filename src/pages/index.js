@@ -36,7 +36,7 @@ const initState = {
 function Home() {
   const [state, setState] = useImmer(initState)
   const [likeList, setLikeList] = useImmer([])
-  const { openRecommend, openLocation } = useSelector((state) => state.sys)
+  const { openRecommend, openLocation, openStore } = useSelector((state) => state.sys)
   const { isLogin, login, updatePolicyTime, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       if (isUpdate) {
@@ -64,22 +64,6 @@ function Home() {
     // 检查隐私协议是否变更或同意
     checkPolicyChange()
   })
-
-  const getPolicyUpdate = async () => {
-    const checkRes = await checkPolicyChange()
-    if (!checkRes && openLocation == 1 && VERSION_STANDARD) {
-      setPolicyModal(true)
-    }
-    if (!checkRes && openLocation == 2 && VERSION_STANDARD) {
-      fetchStoreInfo(location)
-    }
-    if (!checkRes && VERSION_PLATFORM) {
-      setPolicyModal(true)
-    }
-    if (checkRes) {
-      fetchStoreInfo(location)
-    }
-  }
 
   const fetchWgts = async () => {
     const { config } = await api.shop.getShopTemplate({
@@ -159,8 +143,10 @@ function Home() {
 
   const fixedTop = searchComp && searchComp.config.fixTop
   const isSetHight =
-    VERSION_PLATFORM || (openScanQrcode == 1 && isWeixin) || (VERSION_B2C && fixedTop)
-
+    VERSION_PLATFORM ||
+    (openScanQrcode == 1 && isWeixin) ||
+    (openStore && openLocation == 1) ||
+    fixedTop
   return (
     <SpPage
       className='page-index'
@@ -171,7 +157,7 @@ function Home() {
     >
       {/* header-block */}
       {VERSION_STANDARD ? (
-        <WgtHomeHeaderShop>
+        <WgtHomeHeaderShop isSetHight={isSetHight}>
           {fixedTop && <SpSearch isFixTop={searchComp.config.fixTop} />}
         </WgtHomeHeaderShop>
       ) : (
