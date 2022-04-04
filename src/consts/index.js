@@ -143,7 +143,9 @@ export const TRANSFORM_PAYTYPE = {
   'wxpayh5': 'wxpay',
   'alipayh5': 'alipay',
   'wxpayjs': 'wxpay',
-  'deposit': 'deposit'
+  'deposit': 'deposit',
+  'wxpayapp': 'wxpay',
+  'alipayapp': 'alipay'
 }
 
 export * from './localstorage'

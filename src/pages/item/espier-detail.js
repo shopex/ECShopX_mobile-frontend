@@ -44,6 +44,7 @@ import entryLaunch from '@/utils/entryLaunch'
 import qs from 'qs'
 import S from '@/spx'
 import { Tracker } from '@/service'
+import { usesNavigation } from '@/hooks'
 import { ACTIVITY_LIST } from '@/consts'
 import CompActivityBar from './comps/comp-activitybar'
 import CompVipGuide from './comps/comp-vipguide'
@@ -85,7 +86,8 @@ const initialState = {
   evaluationList: [],
   evaluationTotal: 0,
   // 多规格商品选中的规格
-  curItem: null
+  curItem: null,
+  recommendList: []
 }
 
 function EspierDetail(props) {
@@ -94,7 +96,8 @@ function EspierDetail(props) {
   // const { type, id, dtid } = await entryLaunch.getRouteParams()
   const pageRef = useRef()
   const { userInfo } = useSelector((state) => state.user)
-  const { colorPrimary } = useSelector((state) => state.sys)
+  const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
+  const { setNavigationBarTitle } = usesNavigation()
 
   const [state, setState] = useImmer(initialState)
   const {
@@ -118,7 +121,8 @@ function EspierDetail(props) {
     id,
     type,
     dtid,
-    curItem
+    curItem,
+    recommendList
   } = state
 
   useEffect(() => {
@@ -226,9 +230,8 @@ function EspierDetail(props) {
     // 是否订阅
     const { user_id: subscribe = false } = await api.user.isSubscribeGoods(id)
 
-    Taro.setNavigationBarTitle({
-      title: data.itemName
-    })
+    setNavigationBarTitle(data.itemName)
+
     console.log(ACTIVITY_LIST[data.activityType])
     if (ACTIVITY_LIST[data.activityType]) {
       Taro.setNavigationBarColor({
@@ -265,6 +268,20 @@ function EspierDetail(props) {
         console.error(e)
       }
     }
+
+    if (openRecommend == 1) {
+      getRecommendList() // 猜你喜欢
+    }
+  }
+
+  const getRecommendList = async () => {
+    const { list } = await api.cart.likeList({
+      page: 1,
+      pageSize: 30
+    })
+    setState((draft) => {
+      draft.recommendList = list
+    })
   }
 
   // 获取包裹
@@ -354,7 +371,7 @@ function EspierDetail(props) {
     >
       {!info && <SpLoading />}
       {info && (
-        <View>
+        <View className='goods-contents'>
           <View className='goods-pic-container'>
             <Swiper
               className='goods-swiper'
@@ -557,6 +574,8 @@ function EspierDetail(props) {
           </View>
         </View>
       )}
+
+      <SpRecommend info={recommendList} />
 
       {/* 优惠组合 */}
       <CompPackageList

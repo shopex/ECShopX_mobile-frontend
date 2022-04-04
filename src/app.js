@@ -42,22 +42,22 @@ class App extends Component {
   }
 
   componentDidShow(options) {
-    if (isNavbar()) {
-      document.querySelector('title').addEventListener(
-        'DOMSubtreeModified',
-        () => {
-          const pageTitle = document.querySelector('title').innerHTML
-          log.debug(`document title: ${pageTitle}, current env is ${Taro.getEnv()}`)
-          store.dispatch({
-            type: 'sys/updatePageTitle',
-            payload: {
-              pageTitle
-            }
-          })
-        },
-        false
-      )
-    }
+    // if (isNavbar()) {
+    //   document.querySelector('title').addEventListener(
+    //     'DOMSubtreeModified',
+    //     () => {
+    //       const pageTitle = document.querySelector('title').innerHTML
+    //       log.debug(`document title: ${pageTitle}, current env is ${Taro.getEnv()}`)
+    //       store.dispatch({
+    //         type: 'sys/updatePageTitle',
+    //         payload: {
+    //           pageTitle
+    //         }
+    //       })
+    //     },
+    //     false
+    //   )
+    // }
     this.getSystemConfig()
   }
 
