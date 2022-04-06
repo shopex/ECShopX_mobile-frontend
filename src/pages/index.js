@@ -57,13 +57,21 @@ function Home() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetchWgts()
+    init()
   }, [])
 
   useDidShow(() => {
     // 检查隐私协议是否变更或同意
     checkPolicyChange()
   })
+
+  const init = async () => {
+    if (VERSION_STANDARD) {
+      await fetchStoreInfo(location)
+    } else {
+      await fetchWgts()
+    }
+  }
 
   const fetchWgts = async () => {
     const { config } = await api.shop.getShopTemplate({
@@ -131,6 +139,7 @@ function Home() {
     }
     const res = await api.shop.getShop(parmas)
     dispatch(updateShopInfo(res))
+    await fetchWgts()
   }
 
   const searchComp = wgts.find((wgt) => wgt.name == 'search')
