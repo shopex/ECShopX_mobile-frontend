@@ -239,5 +239,11 @@ export default {
   },
   usingComponents: {
     'mp-html': './components/sp-html/mp-weixin/index'
+  },
+  window: {
+    'backgroundTextStyle': 'light',
+    'navigationBarBackgroundColor': '#fff',
+    'navigationBarTitleText': '微商城',
+    'navigationBarTextStyle': 'black'
   }
 }

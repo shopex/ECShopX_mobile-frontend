@@ -4,8 +4,8 @@ import usePage from './usePage'
 import useDepChange from './useDepChange'
 import useAsyncCallback from './useAsyncCallback'
 import usePayment from './usePayment'
-import usesNavigation from './usesNavigation'
+import useNavigation from './useNavigation'
 
 export default {}
 
-export { useLogin, useQwLogin, usePage, useDepChange, useAsyncCallback, usePayment, usesNavigation }
+export { useLogin, useQwLogin, usePage, useDepChange, useAsyncCallback, usePayment, useNavigation }

@@ -44,7 +44,7 @@ import entryLaunch from '@/utils/entryLaunch'
 import qs from 'qs'
 import S from '@/spx'
 import { Tracker } from '@/service'
-import { usesNavigation } from '@/hooks'
+import { useNavigation, useLogin } from '@/hooks'
 import { ACTIVITY_LIST } from '@/consts'
 import CompActivityBar from './comps/comp-activitybar'
 import CompVipGuide from './comps/comp-vipguide'
@@ -94,10 +94,11 @@ function EspierDetail(props) {
   const $instance = getCurrentInstance()
   // const { type, id, dtid } = $instance.router.params
   // const { type, id, dtid } = await entryLaunch.getRouteParams()
+  const { getUserInfoAuth } = useLogin()
   const pageRef = useRef()
   const { userInfo } = useSelector((state) => state.user)
   const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
-  const { setNavigationBarTitle } = usesNavigation()
+  const { setNavigationBarTitle } = useNavigation()
 
   const [state, setState] = useImmer(initialState)
   const {
@@ -462,10 +463,11 @@ function EspierDetail(props) {
               </View>
               {(isWeixin || isAPP()) && (
                 <SpLogin
-                  onChange={() => {
+                  onChange={async () => {
                     if (isAPP()) {
                       Taro.SAPPShare.open()
                     } else {
+                      await getUserInfoAuth()
                       setState((draft) => {
                         draft.sharePanelOpen = true
                       })
