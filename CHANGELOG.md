@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v2.5.1...v2.6.0) (2022-04-09)
+
+
+### Features
+
+* test ([ba3e216](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/ba3e21626e137e343f7df75d5c2fca5f47b766b3))
+
+### [2.5.1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v2.5.0...v2.5.1) (2022-04-09)
+
+
+### Bug Fixes
+
+* adapay ([331af57](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/331af5774899fd06b3b52ed321b690045f5ecfbc))
+* h5支付 ([08a4eae](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/08a4eae9eb1fa45f09478ab23434683c0b2817b4))
+* 修复定位 ([f370598](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/f370598fdf4051b9a77684080ca7eb6dd32e06cd))
+* 支付优化 ([0018623](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/00186230ee845d726df86e98c64b54e6566c7576))
+* 支付优化 ([6f693d8](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/6f693d810a590e4c0cea35fd78970cb0038ecdbf))
+
 ## [2.5.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v2.4.5...v2.5.0) (2022-03-21)
 
 
