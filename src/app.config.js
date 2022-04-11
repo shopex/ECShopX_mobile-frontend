@@ -243,7 +243,7 @@ export default {
   window: {
     'backgroundTextStyle': 'light',
     'navigationBarBackgroundColor': '#fff',
-    'navigationBarTitleText': '微商城',
+    'navigationBarTitleText': 'ECShopX免费',
     'navigationBarTextStyle': 'black'
   }
 }
