@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
 import { SpPage, SpPrice, SpCell, SpOrderItem, SpCashier, SpGoodsCell } from '@/components'
-import { View, Text } from '@tarojs/components'
+import { View, Text, Picker } from '@tarojs/components'
 import { changeCoupon } from '@/store/slices/cart'
 import { updateChooseAddress } from '@/store/slices/user'
 import { changeZitiStore } from '@/store/slices/shop'
@@ -74,6 +74,13 @@ function CartCheckout(props) {
     isPointOpenModal,
     point_use,
     pointInfo,
+    streetCommunityList,
+    openStreet,
+    multiValue,
+    multiIndex,
+    streetCommunityTxt,
+    street,
+    community,
     isNeedPackage,
     isPackageOpend,
     isPaymentOpend,
@@ -176,6 +183,10 @@ function CartCheckout(props) {
       showToast('该商品已下架')
       return
     }
+    // 校验开始街道、社区
+    if (openStreet && (!street || !community)) {
+      return showToast('请选择街道居委')
+    }
 
     setState(
       (draft) => {
@@ -206,6 +217,11 @@ function CartCheckout(props) {
 
   const handlePay = async () => {
     const params = await getParamsInfo()
+    // 店铺是否开启社区街道
+    if (openStreet) {
+      params['subdistrict_parent_id'] = street
+      params['subdistrict_id'] = community
+    }
     console.log('trade params:', params)
     if (payType === 'deposit') {
       // 验证余额额度是否可用
@@ -438,7 +454,11 @@ function CartCheckout(props) {
       max_point = 0,
       is_open_deduct_point,
       deduct_point_rule,
-      real_use_point
+      real_use_point,
+      // 是否开启下单填写街道、社区
+      is_require_subdistrict: openStreet,
+      subdistrict_parent_id,
+      subdistrict_id
     } = orderRes
 
     if (coupon_info) {
@@ -682,6 +702,26 @@ function CartCheckout(props) {
           onEidtZiti={handleEditZitiClick}
         />
       </View>
+
+      {/* 街道、社区信息填写 */}
+      {openStreet && (
+        <View className='cart-checkout__stree'>
+          <SpCell isLink title='街道居委'>
+            <Picker
+              mode='multiSelector'
+              onChange={bindMultiPickerChange}
+              onColumnChange={bindMultiPickerColumnChange}
+              value={multiIndex}
+              range={multiValue}
+            >
+              <View className='picker-value'>{streetCommunityTxt}</View>
+            </Picker>
+          </SpCell>
+          <View className='cart-checkout__stree-desc'>
+            <Text className='required'>*</Text>如所选街道居委信息错误，订单将无法配送！
+          </View>
+        </View>
+      )}
 
       {renderGoodsComp()}
 
