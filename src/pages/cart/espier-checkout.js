@@ -446,8 +446,6 @@ function CartCheckout(props) {
       distributor_id: dtid
     })
     if (streetCommunityList.length > 0) {
-      multiValue[0] = streetCommunityList.map((item) => item.label)
-      multiValue[1] = streetCommunityList[0].children.map((item) => item.label)
       streetCommunityList.forEach((pitem, pindex) => {
         if (pitem.id == subdistrict_parent_id) {
           pitem.children.forEach((sitem, sindex) => {
@@ -460,6 +458,8 @@ function CartCheckout(props) {
           })
         }
       })
+      multiValue[0] = streetCommunityList.map((item) => item.label)
+      multiValue[1] = streetCommunityList[multiIndex[0]].children.map((item) => item.label)
     } else {
       showToast('暂无街道、社区配置')
     }

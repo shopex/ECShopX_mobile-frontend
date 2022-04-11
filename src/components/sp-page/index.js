@@ -118,18 +118,22 @@ function SpPage(props, ref) {
   }))
 
   const deviceInfo = Taro.getSystemInfoSync()
-  // console.log('deviceInfo:', deviceInfo)
+  console.log('deviceInfo:', deviceInfo)
   const { model } = deviceInfo
 
-  const ipx =
-    [
-      'iPhone 12/13 mini',
-      'iPhone X',
-      'iPhone XR',
-      'iPhone XS Max',
-      'iPhone 12/13 (Pro)',
-      'iPhone 12/13 Pro Max'
-    ].includes(model) && isWeixin
+  // const ipx =
+  //   [
+  //     'iPhone 12/13 mini',
+  //     'iPhone X',
+  //     'iPhone XR',
+  //     'iPhone XS Max',
+  //     'iPhone 12/13 (Pro)',
+  //     'iPhone 12/13 Pro Max',
+  //     'iPhone 11',
+  //     'iPhone 12',
+  //     'iPhone 13'
+  //   ].includes(model) && isWeixin
+  const ipx = model.search(/iPhone X|iPhone 11|iPhone 12|iPhone 13/g) > -1 && isWeixin
 
   const { page } = getCurrentInstance()
   const _pageTitle = page?.config?.navigationBarTitleText
