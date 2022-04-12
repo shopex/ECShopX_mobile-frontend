@@ -132,6 +132,7 @@ export default class AfterSale extends Component {
 
   render() {
     const { curTabIdx, tabList, list, page } = this.state
+    const { colors } = this.props
 
     return (
       <View className='trade-list'>
