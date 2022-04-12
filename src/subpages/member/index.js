@@ -176,17 +176,6 @@ function MemberIndex(props) {
     }
   }
 
-  const setDianwu = async (menu) => {
-    const { result, status } = await api.dianwu.is_admin()
-    S.set('DIANWU_CONFIG', result, true)
-    setConfig((draft) => {
-      draft.menu = {
-        ...menu,
-        dianwu: status
-      }
-    })
-  }
-
   const setHeaderBlock = async () => {
     const resAssets = await api.member.memberAssets()
     const { discount_total_count, fav_total_count, point_total_count } = resAssets
@@ -233,8 +222,13 @@ function MemberIndex(props) {
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
     }
-    if (S.get(SG_TOKEN)) {
-      setDianwu(menu)
+    if (S.getAuthToken() && VERSION_PLATFORM) {
+      const { result, status } = await api.dianwu.is_admin()
+      S.set('DIANWU_CONFIG', result, status)
+      menu = {
+        ...menu,
+        dianwu: status
+      }
     }
     if (redirectRes.list.length > 0) {
       const {
