@@ -57,6 +57,12 @@ const MENUS = [
     name: '内购',
     icon: 'm_menu_tuangou.png',
     link: '/marketing/pages/member/purchase'
+  },
+  {
+    key: 'dianwu',
+    name: '店务管理',
+    icon: 'm_menu_dianwu.png',
+    link: '/subpages/dianwu/index'
   }
   // {
   //   key: "complaint",
@@ -72,15 +78,6 @@ const MENUS_CONST = [
     name: '商家入驻',
     icon: 'm_menu_merchat.png',
     link: '/subpages/merchant/login'
-  }
-]
-
-const MENUS_DIANWU = [
-  {
-    key: 'dianwu',
-    name: '店务管理',
-    icon: 'm_menu_dianwu.png',
-    link: '/subpages/dianwu/index'
   }
 ]
 
@@ -109,10 +106,6 @@ function CompMenu(props) {
   //商家入驻是否开启
   if (accessMenu.merchant_status) {
     menus = menus.concat(MENUS_CONST)
-  }
-
-  if (accessMenu.dianwu && VERSION_PLATFORM) {
-    menus = menus.concat(MENUS_DIANWU)
   }
 
   if (accessMenu.offline_order && !VERSION_PLATFORM) {
