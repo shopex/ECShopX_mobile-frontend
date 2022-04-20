@@ -189,9 +189,16 @@ export default class DistributionWithdraw extends Component {
         </View>
         <View className='section list'>
           <View className='list-item' style='position: relative'>
-            <Picker onChange={this.handlePick.bind(this)} range={payList} rangeKey='name'>
-              <View className='pay-type-picker'></View>
-            </Picker>
+            {payList.length > 0 && (
+              <Picker
+                onChange={this.handlePick.bind(this)}
+                mode='selector'
+                range={payList}
+                rangeKey='name'
+              >
+                <View className='pay-type-picker'></View>
+              </Picker>
+            )}
             <View className='label'>提现方式</View>
             <View className='list-item-txt content-right'>{payText[curIdx]}</View>
             <View className='item-icon-go icon-arrowRight'></View>
