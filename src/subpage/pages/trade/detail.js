@@ -1026,7 +1026,7 @@ export default class TradeDetail extends Component {
         </ScrollView>
 
         {info.status !== 'TRADE_CLOSED' && (
-          <View className='trade-detail__footer'>
+          <View className={classNames('trade-detail__footer', info.order_status_des)}>
             {
               // 立即支付
               info.status === 'WAIT_BUYER_PAY' && (
