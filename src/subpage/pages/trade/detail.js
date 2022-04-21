@@ -335,12 +335,10 @@ export default class TradeDetail extends Component {
           wxpayapp: 'wxpay'
         }
         try {
-          debugger
           await Taro.SAPPPay.payment({
             id: AppPayType[pay_type],
             order_params: config.config
           })
-          debugger
         } catch (e) {
           console.error(e)
           debugger
