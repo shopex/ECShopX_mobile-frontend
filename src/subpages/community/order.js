@@ -1,0 +1,312 @@
+import React, { useEffect, useCallback, useRef, useState } from 'react'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { View, Button } from '@tarojs/components'
+import {
+  AtTabs,
+  AtTabsPane,
+  AtModal,
+  AtModalContent,
+  AtModalAction,
+  AtModalHeader,
+  AtInput,
+  AtTag
+} from 'taro-ui'
+import { SpPage, SpScrollView, SpSearchBar } from '@/components'
+import { pickBy, classNames } from '@/utils'
+import { useSelector } from 'react-redux'
+import { useImmer } from 'use-immer'
+import doc from '@/doc'
+import api from '@/api'
+import CompOrderItem from './comps/comp-order-item'
+
+import './order.scss'
+
+const initialState = {
+  keywords: '',
+  orderList: [],
+  curTabIdx: 2,
+  curDeliverTagIdx: 0,
+  curAfterTagIdx: 0,
+  isOpened: false,
+  remark: ''
+}
+const tabList = [
+  { title: '全部', type: '0' },
+  { title: '待支付', type: '1' },
+  { title: '发货', type: '2' },
+  { title: '售后', type: '3' }
+]
+
+const deliverTagList = [
+  { title: '待收货', type: '0' },
+  { title: '部分发货', type: '1' },
+  { title: '已发货', type: '2' },
+  { title: '已收货', type: '3' }
+]
+
+const afterTagList = [
+  { title: '待退款', type: '0' },
+  { title: '已退款', type: '1' }
+]
+
+function CommunityOrder(props) {
+  const [state, setState] = useImmer(initialState)
+  const [isShowSearch, setIsShowSearch] = useState(false)
+  const { colorPrimary } = useSelector((state) => state.sys)
+  const orderRef = useRef()
+
+  const { keywords, orderList, curTabIdx, isOpened, remark, curDeliverTagIdx, curAfterTagIdx } =
+    state
+
+  useEffect(() => {}, [])
+
+  const fetch = async ({ pageIndex, pageSize }) => {
+    let params = {
+      page: pageIndex,
+      pageSize,
+      keywords,
+      order_type: 'normal',
+      status: 0,
+      curTabIdx,
+      curDeliverTagIdx,
+      curAfterTagIdx
+    }
+    const {
+      list,
+      pager: { count: total },
+      rate_status
+    } = await api.trade.list(params)
+    const n_list = pickBy(list, doc.community.COMMUNITY_ORDER_LIST)
+    setState((draft) => {
+      draft.orderList = [...orderList, ...n_list]
+    })
+
+    return { total }
+  }
+
+  const handleOnFocus = () => {
+    setIsShowSearch(true)
+  }
+
+  const handleOnChange = (val) => {
+    setState((draft) => {
+      draft.keywords = val
+    })
+  }
+
+  const handleOnClear = async () => {
+    await setState((draft) => {
+      draft.keywords = ''
+      draft.orderList = []
+    })
+    setIsShowSearch(false)
+    orderRef.current.reset()
+  }
+
+  const handleSearchCancel = () => {
+    setState((draft) => {
+      draft.keywords = ''
+    })
+    setIsShowSearch(false)
+  }
+
+  const handleConfirm = async (val) => {
+    await setState((draft) => {
+      draft.orderList = []
+      draft.keywords = val
+    })
+    setIsShowSearch(false)
+    orderRef.current.reset()
+  }
+
+  const handleClickTab = async (curTabIdx) => {
+    await setState((draft) => {
+      draft.curTabIdx = curTabIdx
+      draft.curAfterTagIdx = 0
+      draft.curDeliverTagIdx = 0
+    })
+    orderRef.current.reset()
+  }
+
+  const renderFooter = () => {
+    return (
+      <>
+        <View
+          onClick={handleClickBtn}
+          className='footer-btn'
+          style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}`}
+        >
+          申请退款
+        </View>
+        <View
+          onClick={handleClickBtn}
+          className='footer-btn'
+          style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}`}
+        >
+          售后详情
+        </View>
+        <View
+          onClick={handleClickBtn}
+          className='footer-btn'
+          style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}`}
+        >
+          关闭订单
+        </View>
+        <View
+          onClick={handleClickBtn}
+          className='footer-btn'
+          style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}`}
+        >
+          去支付
+        </View>
+        <View
+          onClick={handleClickBtn}
+          className='footer-btn'
+          style={`background: ${colorPrimary};`}
+        >
+          再来一单
+        </View>
+      </>
+    )
+  }
+
+  const handleClickBtn = () => {}
+
+  const onEditClick = (isOpened) => {
+    setState((draft) => {
+      draft.isOpened = isOpened
+    })
+  }
+
+  const actionChange = (isOpened, type) => {
+    console.log(type)
+    if (type == 'confirm') {
+      console.log(remark, '---')
+      setState((draft) => {
+        draft.remark = ''
+      })
+    } else {
+      setState((draft) => {
+        draft.remark = ''
+      })
+    }
+    setState((draft) => {
+      draft.isOpened = isOpened
+    })
+  }
+
+  const handleChange = (value) => {
+    setState((draft) => {
+      draft.remark = value
+    })
+  }
+
+  const deliverTagClick = async ({ name }) => {
+    const idx = deliverTagList.findIndex((el) => el.type == name.type)
+    console.log(idx)
+    await setState((draft) => {
+      draft.curDeliverTagIdx = idx
+      draft.curAfterTagIdx = 0
+    })
+    orderRef.current.reset()
+  }
+
+  const afterTagClick = async ({ name }) => {
+    const idx = afterTagList.findIndex((el) => el.type == name.type)
+    console.log(idx)
+    await setState((draft) => {
+      draft.curAfterTagIdx = idx
+      draft.curDeliverTagIdx = 0
+    })
+    orderRef.current.reset()
+  }
+
+  return (
+    <SpPage className='page-community-order'>
+      <SpScrollView className='order-list-scroll' ref={orderRef} fetch={fetch}>
+        <View className='search'>
+          <SpSearchBar
+            showDailog={false}
+            keyword={keywords}
+            placeholder='搜索商品名'
+            onFocus={handleOnFocus}
+            onChange={handleOnChange}
+            onClear={handleOnClear}
+            onCancel={handleSearchCancel}
+            onConfirm={handleConfirm}
+          />
+        </View>
+        <View className='tabs-list'>
+          <AtTabs
+            className={`${colorPrimary ? 'customTabsStyle' : ''}`}
+            current={curTabIdx}
+            tabList={tabList}
+            onClick={handleClickTab}
+            customStyle={{ color: colorPrimary }}
+          >
+            {tabList.map((panes, pIdx) => (
+              <AtTabsPane current={curTabIdx} key={panes.status} index={pIdx}></AtTabsPane>
+            ))}
+          </AtTabs>
+          {curTabIdx == 2 && (
+            <View className='order-tags-box'>
+              {deliverTagList.map((item, idx) => (
+                <AtTag
+                  name={item}
+                  key={item}
+                  active={idx == curDeliverTagIdx}
+                  onClick={deliverTagClick}
+                  className={classNames('order-tags', idx === curDeliverTagIdx ? 'tag-active' : '')}
+                >
+                  {item.title}
+                </AtTag>
+              ))}
+            </View>
+          )}
+          {curTabIdx == 3 && (
+            <View className='order-tags-box'>
+              {afterTagList.map((item, idx) => (
+                <AtTag
+                  name={item}
+                  key={item}
+                  active={idx == curAfterTagIdx}
+                  onClick={afterTagClick}
+                  className={classNames('order-tags', idx === curAfterTagIdx ? 'tag-active' : '')}
+                >
+                  {item.title}
+                </AtTag>
+              ))}
+            </View>
+          )}
+        </View>
+        {orderList.map((item) => (
+          <CompOrderItem
+            key={item.tid}
+            info={item}
+            renderFooter={renderFooter()}
+            onEditClick={onEditClick}
+          />
+        ))}
+      </SpScrollView>
+      <AtModal isOpened={isOpened} closeOnClickOverlay={false}>
+        <AtModalHeader>添加备注</AtModalHeader>
+        <AtModalContent>
+          <AtInput
+            name='remark'
+            title='备注'
+            type='text'
+            placeholder='最多100个字哦'
+            value={remark}
+            onChange={handleChange}
+          />
+        </AtModalContent>
+        <AtModalAction>
+          <Button onClick={() => actionChange(false, 'cancel')}>取消</Button>
+          <Button onClick={() => actionChange(false, 'confirm')}>确定</Button>
+        </AtModalAction>
+      </AtModal>
+    </SpPage>
+  )
+}
+
+export default CommunityOrder

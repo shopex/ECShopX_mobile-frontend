@@ -5,8 +5,7 @@
     padding: 16px 24px;
   }
   .at-tabs {
-    box-shadow: 0 10px 10px rgba(#000, 0.05);
-    margin-bottom: 24px;
+    // box-shadow: 0 10px 10px rgba(#000, 0.05);
     // &__header {
     // position: fixed;
     // left: 0;
@@ -28,5 +27,27 @@
     &__item--active {
       color: var(--color-primary);
     }
+  }
+  .order-tags-box {
+    padding: 24px;
+    background: #fff;
+    margin-bottom: 24px;
+    .order-tags {
+      margin-right: 15px;
+      font-size: 24px;
+    }
+    .tag-active {
+      color: #ffffff;
+      background: var(--color-primary);
+      border: 1px solid var(--color-primary);
+    }
+  }
+  .footer-btn {
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 26px;
+    display: inline-block;
+    color: #fff;
+    margin: 0px 5px;
   }
 }
