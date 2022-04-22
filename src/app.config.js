@@ -57,7 +57,8 @@ export default {
     {
       root: 'subpages/marketing',
       pages: [
-        'package-list' // 组合优惠
+        'package-list', // 组合优惠
+        'certification' // 实名认证
       ]
     },
     {
@@ -243,7 +244,7 @@ export default {
   window: {
     'backgroundTextStyle': 'light',
     'navigationBarBackgroundColor': '#fff',
-    'navigationBarTitleText': '微商城',
+    'navigationBarTitleText': 'ECShopX免费',
     'navigationBarTextStyle': 'black'
   }
 }

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
 import { SpPage, SpPrice, SpCell, SpOrderItem, SpCashier, SpGoodsCell } from '@/components'
-import { View, Text } from '@tarojs/components'
+import { View, Text, Picker } from '@tarojs/components'
 import { changeCoupon } from '@/store/slices/cart'
 import { updateChooseAddress } from '@/store/slices/user'
 import { changeZitiStore } from '@/store/slices/shop'
@@ -74,10 +74,20 @@ function CartCheckout(props) {
     isPointOpenModal,
     point_use,
     pointInfo,
+    streetCommunityList,
+    openStreet,
+    openBuilding,
+    multiValue,
+    multiIndex,
+    streetCommunityTxt,
+    street,
+    community,
     isNeedPackage,
     isPackageOpend,
     isPaymentOpend,
-    openCashier
+    openCashier,
+    buildingNumber,
+    houseNumber // 房号
   } = state
 
   const {
@@ -176,6 +186,15 @@ function CartCheckout(props) {
       showToast('该商品已下架')
       return
     }
+    // // 校验楼号、房号
+    // if (openBuilding && !buildingNumber) {
+    //   return showToast('请输入楼号')
+    // }
+
+    // // 校验楼道，楼号
+    // if (openBuilding && !houseNumber) {
+    //   return showToast('请输入房号')
+    // }
 
     setState(
       (draft) => {
@@ -206,6 +225,16 @@ function CartCheckout(props) {
 
   const handlePay = async () => {
     const params = await getParamsInfo()
+    // 店铺是否开启社区街道
+    if (openStreet) {
+      params['subdistrict_parent_id'] = street
+      params['subdistrict_id'] = community
+    }
+
+    if (openBuilding) {
+      params['building_number'] = buildingNumber
+      params['house_number'] = houseNumber
+    }
     console.log('trade params:', params)
     if (payType === 'deposit') {
       // 验证余额额度是否可用
@@ -407,6 +436,57 @@ function CartCheckout(props) {
     })
   }
 
+  // 获取街道、社区
+  const getSubdistrict = async ({
+    receiver_state,
+    receiver_city,
+    receiver_district,
+    subdistrict_parent_id,
+    subdistrict_id
+  }) => {
+    let multiValue = []
+    let multiIndex = [0, 0]
+    let streetCommunityList = []
+    let streetCommunityTxt = '请选择'
+    let street = null
+    let community = null
+
+    // 调用街道、社区接口
+    streetCommunityList = await api.cart.getSubdistrict({
+      receiver_state,
+      receiver_city,
+      receiver_district,
+      distributor_id: dtid
+    })
+    if (streetCommunityList.length > 0) {
+      streetCommunityList.forEach((pitem, pindex) => {
+        if (pitem.id == subdistrict_parent_id) {
+          pitem.children.forEach((sitem, sindex) => {
+            if (sitem.id == subdistrict_id) {
+              streetCommunityTxt = `${pitem.label} ${sitem.label}`
+              multiIndex = [pindex, sindex]
+              street = subdistrict_parent_id
+              community = subdistrict_id
+            }
+          })
+        }
+      })
+      multiValue[0] = streetCommunityList.map((item) => item.label)
+      multiValue[1] = streetCommunityList[multiIndex[0]].children.map((item) => item.label)
+    } else {
+      showToast('暂无街道、社区配置')
+    }
+
+    return {
+      multiValue,
+      streetCommunityList,
+      multiIndex,
+      streetCommunityTxt,
+      street,
+      community
+    }
+  }
+
   const calcOrder = async () => {
     Taro.showLoading()
     const cus_parmas = await getParamsInfo()
@@ -438,8 +518,29 @@ function CartCheckout(props) {
       max_point = 0,
       is_open_deduct_point,
       deduct_point_rule,
-      real_use_point
+      real_use_point,
+      // 是否开启下单填写街道、社区
+      is_require_subdistrict: openStreet,
+      // 是否开启楼道、楼号
+      is_require_building: openBuilding,
+      subdistrict_parent_id,
+      subdistrict_id,
+      receiver_state,
+      receiver_city,
+      receiver_district
     } = orderRes
+
+    let subdistrictRes
+    if (openStreet) {
+      subdistrictRes = await getSubdistrict({
+        receiver_state,
+        receiver_city,
+        receiver_district,
+        subdistrict_parent_id,
+        subdistrict_id
+      })
+    }
+    console.log('subdistrictRes:', subdistrictRes)
 
     if (coupon_info) {
       const info = {
@@ -503,6 +604,24 @@ function CartCheckout(props) {
       draft.totalInfo = total_info
       draft.paramsInfo = { ...paramsInfo, ...cus_parmas }
       draft.pointInfo = point_info
+      draft.openStreet = openStreet
+      draft.openBuilding = openBuilding
+      if (openStreet) {
+        const {
+          multiValue,
+          multiIndex,
+          streetCommunityList,
+          streetCommunityTxt,
+          street,
+          community
+        } = subdistrictRes
+        draft.multiValue = multiValue
+        draft.multiIndex = multiIndex
+        draft.streetCommunityList = streetCommunityList
+        draft.streetCommunityTxt = streetCommunityTxt
+        draft.street = street
+        draft.community = community
+      }
     })
     if (extraTips) {
       Taro.showModal({
@@ -606,6 +725,42 @@ function CartCheckout(props) {
     }
   }
 
+  // 街道社区
+  const bindMultiPickerChange = (e) => {
+    const [a, b] = e.detail.value
+    if (streetCommunityList[a].children == 0) {
+      return showToast('居委不能为空')
+    }
+    setState((draft) => {
+      draft.multiIndex = [a, b]
+      draft.streetCommunityTxt = `${streetCommunityList[a].label} ${streetCommunityList[a].children[b].label}`
+      draft.street = streetCommunityList[a].id
+      draft.community = streetCommunityList[a].children[b].id
+    })
+  }
+
+  // 街道社区
+  const bindMultiPickerColumnChange = (e) => {
+    const { column, value } = e.detail
+    let _multiValue = [multiValue[0]]
+    // debugger
+    if (column == 0) {
+      _multiValue[1] = streetCommunityList[value].children.map((item) => item.label)
+      setState((draft) => {
+        draft.multiValue = _multiValue
+        draft.multiIndex = [value, 0]
+      })
+    } else {
+    }
+    // debugger
+  }
+
+  const onChangeBuildInput = (name, val) => {
+    setState((draft) => {
+      draft[name] = val
+    })
+  }
+
   const renderFooter = () => {
     return (
       <View className='checkout-toolbar'>
@@ -682,6 +837,48 @@ function CartCheckout(props) {
           onEidtZiti={handleEditZitiClick}
         />
       </View>
+
+      {/* 街道、社区信息填写 */}
+      {openStreet && (
+        <View className='cart-checkout__stree'>
+          <SpCell isLink title='街道居委'>
+            <Picker
+              mode='multiSelector'
+              onChange={bindMultiPickerChange}
+              onColumnChange={bindMultiPickerColumnChange}
+              value={multiIndex}
+              range={multiValue}
+            >
+              <View className='picker-value'>{streetCommunityTxt}</View>
+            </Picker>
+          </SpCell>
+          <View className='cart-checkout__stree-desc'>
+            <Text className='required'>*</Text>如所选街道居委信息错误，订单将无法配送！
+          </View>
+        </View>
+      )}
+
+      {openBuilding && (
+        <View className='cart-checkout__building'>
+          <SpCell border title='楼号'>
+            <AtInput
+              name='buildingNumber'
+              placeholder='请输入楼号'
+              value={buildingNumber}
+              onChange={onChangeBuildInput.bind(this, 'buildingNumber')}
+            />
+          </SpCell>
+
+          <SpCell border title='房号'>
+            <AtInput
+              name='houseNumber'
+              placeholder='请输入房号'
+              value={houseNumber}
+              onChange={onChangeBuildInput.bind(this, 'houseNumber')}
+            />
+          </SpCell>
+        </View>
+      )}
 
       {renderGoodsComp()}
 
