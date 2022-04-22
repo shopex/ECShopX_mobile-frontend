@@ -3,7 +3,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import { Loading, SpNote, SpNavBar } from '@/components'
-import { pickBy, log } from '@/utils'
+import { pickBy, log, getBrowserEnv, classNames, isNavbar } from '@/utils'
 import api from '@/api'
 import { connect } from 'react-redux'
 import { withLogin, withPager } from '@/hocs'
@@ -20,7 +20,7 @@ import './list.scss'
 @withLogin()
 export default class AfterSale extends Component {
   $instance = getCurrentInstance()
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -37,7 +37,7 @@ export default class AfterSale extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { status } = this.$instance.router.params
     const tabIdx = this.state.tabList.findIndex((tab) => tab.status === status)
 
@@ -55,7 +55,7 @@ export default class AfterSale extends Component {
     }
   }
 
-  async fetch (params) {
+  async fetch(params) {
     const { tabList, curTabIdx } = this.state
 
     params = _mapKeys(
@@ -130,24 +130,34 @@ export default class AfterSale extends Component {
     })
   }
 
-  render () {
+  render() {
     const { curTabIdx, tabList, list, page } = this.state
+    const { colors } = this.props
 
     return (
-      <View className='trade-list'>
+      <View
+        className={classNames('page-trade-list', {
+          'has-navbar': isNavbar()
+        })}
+      >
         <SpNavBar title='售后订单列表' leftIconType='chevron-left' fixed='true' />
         <AtTabs
-          className='trade-list__tabs'
+          className={`trade-list__tabs ${colors.data[0].primary ? 'customTabsStyle' : ''}`}
           current={curTabIdx}
           tabList={tabList}
           onClick={this.handleClickTab}
+          customStyle={{ color: colors.data[0].primary }}
         >
           {tabList.map((panes, pIdx) => (
             <AtTabsPane current={curTabIdx} key={panes.status} index={pIdx}></AtTabsPane>
           ))}
         </AtTabs>
 
-        <ScrollView scrollY className='trade-list__scroll' onScrollToLower={this.nextPage}>
+        <ScrollView
+          scrollY
+          className={`trade-list__scroll ${getBrowserEnv().weixin ? 'with-tabs-wx' : 'with-tabs'}`}
+          onScrollToLower={this.nextPage}
+        >
           {list &&
             list.map((item, idx) => {
               return (

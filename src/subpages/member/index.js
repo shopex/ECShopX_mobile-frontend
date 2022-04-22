@@ -32,7 +32,8 @@ import {
   isWeixin,
   normalizeQuerys,
   log,
-  VERSION_PLATFORM
+  VERSION_PLATFORM,
+  VERSION_STANDARD
 } from '@/utils'
 import { useLogin } from '@/hooks'
 import CompVipCard from './comps/comp-vipcard'
@@ -176,17 +177,6 @@ function MemberIndex(props) {
     }
   }
 
-  const setDianwu = async (menu) => {
-    const { result, status } = await api.dianwu.is_admin()
-    S.set('DIANWU_CONFIG', result, true)
-    setConfig((draft) => {
-      draft.menu = {
-        ...menu,
-        dianwu: status
-      }
-    })
-  }
-
   const setHeaderBlock = async () => {
     const resAssets = await api.member.memberAssets()
     const { discount_total_count, fav_total_count, point_total_count } = resAssets
@@ -233,8 +223,13 @@ function MemberIndex(props) {
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
     }
-    if (S.get(SG_TOKEN)) {
-      setDianwu(menu)
+    if (S.getAuthToken() && VERSION_PLATFORM) {
+      const { result, status } = await api.dianwu.is_admin()
+      S.set('DIANWU_CONFIG', result, status)
+      menu = {
+        ...menu,
+        dianwu: status
+      }
     }
     if (redirectRes.list.length > 0) {
       const {
@@ -447,14 +442,15 @@ function MemberIndex(props) {
             <View className='bd-item-label'>积分(分)</View>
             <View className='bd-item-value'>{state.point}</View>
           </View>
-          {VERSION_PLATFORM && (
-            <View className='bd-item deposit-item'>
-              <View className='bd-item-label'>储值(¥)</View>
-              <View className='bd-item-value'>
-                <SpPrice noSymbol value={state.deposit} />
+          {VERSION_PLATFORM ||
+            (VERSION_STANDARD && (
+              <View className='bd-item deposit-item'>
+                <View className='bd-item-label'>储值(¥)</View>
+                <View className='bd-item-value'>
+                  <SpPrice noSymbol value={state.deposit} />
+                </View>
               </View>
-            </View>
-          )}
+            ))}
           <View className='bd-item' onClick={handleClickLink.bind(this, '/pages/member/item-fav')}>
             <View className='bd-item-label'>收藏(个)</View>
             <View className='bd-item-value'>{state.favCount}</View>

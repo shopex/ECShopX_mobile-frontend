@@ -55,7 +55,7 @@ function CompGoodsBuyToolbar(props) {
         if (info.activityInfo.status === 'in_the_notice') {
           btns.push(BUY_TOOL_BTNS.ACTIVITY_WILL_START)
         } else {
-          btns.push(BUY_TOOL_BTNS.ACTIVITY_BUY)
+          btns.push(BUY_TOOL_BTNS.ADD_CART, BUY_TOOL_BTNS.ACTIVITY_BUY)
         }
       } else if (info.activityType == 'group') {
         if (info.activityInfo.show_status === 'nostart') {

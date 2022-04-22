@@ -322,6 +322,7 @@ function SpSkuSelect(props) {
           src={getImgs()}
           width={170}
           height={170}
+          mode='aspectFit'
           onClick={handlePreviewImage}
         />
         <View className='info-bd'>
