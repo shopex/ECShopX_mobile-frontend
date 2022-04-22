@@ -63,7 +63,8 @@ const MENUS = [
     name: '店务管理',
     icon: 'm_menu_dianwu.png',
     link: '/subpages/dianwu/index'
-  }
+  },
+
   // {
   //   key: "complaint",
   //   name: "投诉记录",
@@ -78,6 +79,15 @@ const MENUS_CONST = [
     name: '商家入驻',
     icon: 'm_menu_merchat.png',
     link: '/subpages/merchant/login'
+  }
+]
+
+const MENUS_NO_OAUTH = [
+  {
+    key: 'community',
+    name: '社区团购',
+    icon: 'm_menu_tuangou.png',
+    link: '/subpages/community/index'
   }
 ]
 
@@ -108,6 +118,7 @@ function CompMenu(props) {
     menus = menus.concat(MENUS_CONST)
   }
 
+  menus = menus.concat(MENUS_NO_OAUTH)
   // if (accessMenu.offline_order) {
   //   menus = menus.concat(MENUS_OFFLINE)
   // }
