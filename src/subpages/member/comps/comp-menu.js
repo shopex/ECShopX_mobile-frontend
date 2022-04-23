@@ -63,7 +63,7 @@ const MENUS = [
     name: '店务管理',
     icon: 'm_menu_dianwu.png',
     link: '/subpages/dianwu/index'
-  },
+  }
 
   // {
   //   key: "complaint",
