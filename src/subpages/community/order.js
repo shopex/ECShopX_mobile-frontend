@@ -24,7 +24,7 @@ import './order.scss'
 const initialState = {
   keywords: '',
   orderList: [],
-  curTabIdx: 2,
+  curTabIdx: 0,
   curDeliverTagIdx: 0,
   curAfterTagIdx: 0,
   isOpened: false,
