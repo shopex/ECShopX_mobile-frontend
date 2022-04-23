@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux'
 
 import './comp-order-item.scss'
 
+const statusList = [{ name: '已支付', status: 0, fontColor: '#4da915', backgroundColor: '#e1fff3' }]
+
 function CompOrderItem(props) {
   const { info, renderFooter = null, showActions = true, onEditClick = () => {} } = props
   const { colorPrimary } = useSelector((state) => state.sys)
@@ -23,16 +25,15 @@ function CompOrderItem(props) {
           </View>
           <View className='date'>2022/04/21 22:33</View>
         </View>
-        <View className='hd-status payed'>部分提货</View>
-        {/* <View className='hd-status payed'>待支付</View>
-        <View className='hd-status payed'>待发货</View>
-        <View className='hd-status payed'>部分发货</View>
-        <View className='hd-status payed'>已发货</View>
-        <View className='hd-status payed'>已收货</View>
-        <View className='hd-status payed'>部分提货</View>
-        <View className='hd-status payed'>待退款</View>
-        <View className='hd-status payed'>已支付</View>
-        <View className='hd-status payed'>已退款</View> */}
+        {statusList.map((item) => (
+          <View
+            className='hd-status'
+            key={item.status}
+            style={{ color: item.fontColor, backgroundColor: item.backgroundColor }}
+          >
+            {item.name}
+          </View>
+        ))}
       </View>
       <View className='comp-order-item-content'>
         <View className='comp-order-item-title'>

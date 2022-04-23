@@ -12,7 +12,7 @@ const TABLIST = [
     title: '订单',
     iconType: 'home',
     iconPrefixClass: 'iconfont icon',
-    url: '/pages/index',
+    url: '/subpages/community/order',
     urlRedirect: true
   },
   {
@@ -35,7 +35,7 @@ const TABLIST = [
     iconPrefixClass: 'iconfont icon',
     url: '/subpages/community/index',
     urlRedirect: true
-  },
+  }
 ]
 
 function CompTabbar(props) {
