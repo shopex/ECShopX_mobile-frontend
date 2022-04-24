@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { useImmer } from 'use-immer'
 import { View, Text } from '@tarojs/components'
 import { SpPage, SpImage } from '@/components'
+import { AtInput, AtTabs, AtTabsPane, AtSearchBar } from 'taro-ui'
 import qs from 'qs'
 import { log } from '@/utils'
 import './index.scss'
@@ -24,7 +26,35 @@ const MENUS = [
   }
 ]
 
+const tabList = [
+  { title: '全部', type: '0' },
+  { title: '跟团中', type: '1' },
+  { title: '预览中', type: '2' },
+  { title: '未开始', type: '3' },
+  { title: '已结束', type: '4' }
+]
+
+const initialState = {
+  curTabIdx: 0,
+  searchValue: ''
+}
+
 const Index = () => {
+  const [state, setState] = useImmer(initialState)
+  const { curTabIdx, searchValue } = state
+
+  const handleClickTab = (curTabIdx) => {
+    setState((draft) => {
+      draft.curTabIdx = curTabIdx
+    })
+  }
+
+  const onSearchChange = (value) => {
+    setState((draft) => {
+      draft.searchValue = value
+    })
+  }
+
   return (
     <SpPage className='page-community-index' renderFooter={<CompTabbar />}>
       <View className='page-header'>
@@ -46,7 +76,18 @@ const Index = () => {
         </View>
       </View>
 
-      <View className='card-block'></View>
+      <View className='card-block'>
+        <View className='search-wrap'>
+          <AtSearchBar value={searchValue} onChange={onSearchChange} />
+        </View>
+        <View className="group-state-list">
+          <AtTabs current={curTabIdx} tabList={tabList} onClick={handleClickTab}>
+            {tabList.map((panes, pIdx) => (
+              <AtTabsPane current={curTabIdx} key={panes.status} index={pIdx}></AtTabsPane>
+            ))}
+          </AtTabs>
+        </View>
+      </View>
 
       <View className='group-list'>
         {[1, 2, 3].map((item) => (
