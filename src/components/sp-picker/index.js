@@ -43,7 +43,7 @@ function SpPicker(props) {
           visible: visible
         })}
         onTap={onPickerCancel}
-        catchtouchmove={true}
+        catchtouchmove
       ></View>
 
       <View
@@ -51,7 +51,7 @@ function SpPicker(props) {
           visible: visible
         })}
       >
-        <View className='sp-picker-hd' catchtouchmove={true}>
+        <View className='sp-picker-hd' catchtouchmove>
           <Text onTap={onPickerCancel}>取消</Text>
           {/* {this.props.children} */}
           <Text onTap={pickerConfirm}>确定</Text>

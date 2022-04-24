@@ -26,14 +26,14 @@ const initialState = {
 }
 
 function ItemList(props) {
-  const [ state, setState ] = useImmer(initialState)
+  const [state, setState] = useImmer(initialState)
   const { selectGoods } = useSelector((state) => state.select)
   const { list, selection } = state
   const dispatch = useDispatch()
   const goodsRef = useRef()
 
   useEffect(() => {
-    setState(draft => {
+    setState((draft) => {
       draft.selection = selectGoods
     })
   }, [])
@@ -41,20 +41,20 @@ function ItemList(props) {
   const onSelectGoodsChange = ({ id }, checked) => {
     // const temp = [...selection]
     const temps = new Set(selection)
-    if(temps.has(id)) {
+    if (temps.has(id)) {
       temps.delete(id)
     } else {
       temps.add(id)
     }
 
-    setState(draft => {
+    setState((draft) => {
       draft.selection = Array.from(temps)
     })
   }
 
   const fetch = async ({ pageIndex, pageSize }) => {
-    setState(draft => {
-      draft.list = DEMO_DATA.map(item => {
+    setState((draft) => {
+      draft.list = DEMO_DATA.map((item) => {
         return {
           ...item,
           checked: selectGoods.includes(item.id)
@@ -85,7 +85,10 @@ function ItemList(props) {
       <SpScrollView className='itemlist-scroll' ref={goodsRef} fetch={fetch}>
         {list.map((item, index) => (
           <View className='goods-item-wrap' key={`goods-item-wrap__${index}`}>
-            <SpCheckbox checked={selection.includes(item.id)} onChange={onSelectGoodsChange.bind(this, item)}>
+            <SpCheckbox
+              checked={selection.includes(item.id)}
+              onChange={onSelectGoodsChange.bind(this, item)}
+            >
               <CompGoodsItem />
             </SpCheckbox>
           </View>

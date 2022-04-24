@@ -9,12 +9,12 @@ function CompGoodsItem(props) {
   return (
     <View className='comp-goods-item'>
       <View className='item-hd'>
-        <SpImage width={160} height={160}/>
+        <SpImage width={160} height={160} />
       </View>
       <View className='item-bd'>
-        <View className="goods-name">金龙鱼</View>
-        <View className="goods-sku">库存：50</View>
-        <View className="goods-price">
+        <View className='goods-name'>金龙鱼</View>
+        <View className='goods-sku'>库存：50</View>
+        <View className='goods-price'>
           <SpPrice value={100} />
         </View>
       </View>

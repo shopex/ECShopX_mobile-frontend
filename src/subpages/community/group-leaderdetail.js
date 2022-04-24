@@ -20,14 +20,13 @@ function GroupLeaderDetail(props) {
   const handleClickShare = () => {}
 
   // 加入购物车
-  const handleAddCart = () => {
-
-  }
-
-
+  const handleAddCart = () => {}
 
   return (
-    <SpPage className='page-community-group-leaderdetail' renderFooter={<CompGroupTabbar></CompGroupTabbar>}>
+    <SpPage
+      className='page-community-group-leaderdetail'
+      renderFooter={<CompGroupTabbar></CompGroupTabbar>}
+    >
       <View className='page-bg'></View>
       <View className='page-body'>
         <View className='page-header'>
@@ -88,12 +87,9 @@ function GroupLeaderDetail(props) {
         </View>
 
         <View className='joinlog'>
-          <View className='title'>
-            跟团记录
-          </View>
+          <View className='title'>跟团记录</View>
           <CompGroupLogList isLeader></CompGroupLogList>
         </View>
-
       </View>
     </SpPage>
   )

@@ -16,20 +16,21 @@ const CompGoodsItemBuy = (props) => {
         <SpImage />
         {isLeft && <Text className='comp-goodsitembuy-img__num'>剩余999件</Text>}
       </View>
-      {isShare && <View className='comp-goodsitembuy-share'>
-        <Text
-          className='icon iconfont icon-gouwuche'
-        ></Text>
-      </View>
-      }
+      {isShare && (
+        <View className='comp-goodsitembuy-share'>
+          <Text className='icon iconfont icon-gouwuche'></Text>
+        </View>
+      )}
 
       <View className='comp-goodsitembuy-info'>
         <View className='comp-goodsitembuy-info__name'>测试商品</View>
         {isSpecs && <View className='comp-goodsitembuy-info__specs'>111</View>}
-        {isTag && <View>
-          <View className='comp-goodsitembuy-info__tag'>团长推荐</View>
-          <View className='comp-goodsitembuy-info__tag'>网红爆款</View>
-        </View>}
+        {isTag && (
+          <View>
+            <View className='comp-goodsitembuy-info__tag'>团长推荐</View>
+            <View className='comp-goodsitembuy-info__tag'>网红爆款</View>
+          </View>
+        )}
         <View>
           <Text className='comp-goodsitembuy-info__num'>10件起购</Text>
         </View>

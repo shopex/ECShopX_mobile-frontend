@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpPage, SpImage, SpPrice, SpHtml } from '@/components'
-import { AtButton, } from 'taro-ui'
-import { isArray, classNames, navigateTo, } from '@/utils'
+import { AtButton } from 'taro-ui'
+import { isArray, classNames, navigateTo } from '@/utils'
 
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '@/pages/home/wgts'
 
@@ -18,43 +18,40 @@ function GroupLeaderDetail(props) {
     intro: '详情'
   })
   // 点击素材
-  const handleClickPic = () => { }
+  const handleClickPic = () => {}
 
   // 点击分享
-  const handleClickShare = () => { }
+  const handleClickShare = () => {}
 
-  const handleClickBuy = () => {
-
-  }
-
-
+  const handleClickBuy = () => {}
 
   return (
-    <SpPage className='page-group-memberdetail' renderFooter={
-      <View className='comp-goodsbuytoolbar'>
-        <View
-          className='toolbar-item'
-          onClick={navigateTo.bind(this, '/pages/cart/espier-index?tabbar=0')}
-        >
-          <Text className='icon iconfont icon-gouwuche'></Text>
-          <Text className='toolbar-item-txt'>订单</Text>
-        </View>
-        <View
-          className='toolbar-item'
-          onClick={navigateTo.bind(this, '/pages/cart/espier-index?tabbar=0')}
-        >
-          <Text className='icon iconfont icon-gouwuche'></Text>
-          <Text className='toolbar-item-txt'>购物车</Text>
-        </View>
-        <View className='toolbar-item toolbar-item-buy' onClick={handleClickBuy.bind(this)}>
-          <View className='price'>
-            <SpPrice
-              value={0}
-            />
+    <SpPage
+      className='page-group-memberdetail'
+      renderFooter={
+        <View className='comp-goodsbuytoolbar'>
+          <View
+            className='toolbar-item'
+            onClick={navigateTo.bind(this, '/pages/cart/espier-index?tabbar=0')}
+          >
+            <Text className='icon iconfont icon-gouwuche'></Text>
+            <Text className='toolbar-item-txt'>订单</Text>
           </View>
-          <Text className='toolbar-item-buy-txt'>跟团购买</Text>
+          <View
+            className='toolbar-item'
+            onClick={navigateTo.bind(this, '/pages/cart/espier-index?tabbar=0')}
+          >
+            <Text className='icon iconfont icon-gouwuche'></Text>
+            <Text className='toolbar-item-txt'>购物车</Text>
+          </View>
+          <View className='toolbar-item toolbar-item-buy' onClick={handleClickBuy.bind(this)}>
+            <View className='price'>
+              <SpPrice value={0} />
+            </View>
+            <Text className='toolbar-item-buy-txt'>跟团购买</Text>
+          </View>
         </View>
-      </View>}
+      }
     >
       {/* 头部背景 */}
       <View className='page-bg'></View>
@@ -79,45 +76,32 @@ function GroupLeaderDetail(props) {
         </View>
 
         <View className='leader'>
-          <View className='title'>
-            团长介绍
-          </View>
+          <View className='title'>团长介绍</View>
           <View className='des'>
-            团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍
+            团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍
+            团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍 团长介绍
             <Text className='icon iconfont icon-arrowRight'></Text>
           </View>
         </View>
 
         {/* 本团信息 */}
         <View className='group'>
-          <View className='group-title'>
-            【1-3天送到】
-          </View>
-          <View className='group-type'>
-            快递
-          </View>
+          <View className='group-title'>【1-3天送到】</View>
+          <View className='group-type'>快递</View>
           <View className='group-info'>
             <View className='left'>
-              <View className='title'>
-                本团
-              </View>
-              <View className='title'>
-                商品
-              </View>
+              <View className='title'>本团</View>
+              <View className='title'>商品</View>
             </View>
             <View className='goods'>
               <View className='goods-img'>
                 <SpImage className='group-head' width={100} height={100} />
               </View>
               <View className='goods-info'>
-                <View className='goods-info__name'>
-                  肉肉
-                </View>
+                <View className='goods-info__name'>肉肉</View>
                 <View className='goods-info__price'>
                   <View className='price'>
-                    <SpPrice
-                      value={0}
-                    />
+                    <SpPrice value={0} />
                   </View>
                 </View>
               </View>
@@ -138,7 +122,6 @@ function GroupLeaderDetail(props) {
                 <Text className=''>14人跟团</Text>
               </View>
             </View>
-
           </View>
         </View>
 
@@ -164,17 +147,19 @@ function GroupLeaderDetail(props) {
         </View>
 
         <View className='goodslist'>
-          <CompGoodsItemBuy isShare={false} isMarket={false} isLeft={false} isTag={false}></CompGoodsItemBuy>
+          <CompGoodsItemBuy
+            isShare={false}
+            isMarket={false}
+            isLeft={false}
+            isTag={false}
+          ></CompGoodsItemBuy>
         </View>
 
         {/* 跟团记录 */}
         <View className='joinlog'>
-          <View className='title'>
-            跟团记录
-          </View>
+          <View className='title'>跟团记录</View>
           <CompGroupLogList></CompGroupLogList>
         </View>
-
       </View>
     </SpPage>
   )

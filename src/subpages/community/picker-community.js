@@ -23,14 +23,14 @@ const initialState = {
   list: []
 }
 function PickerCommunity(props) {
-  const [ state, setState ] = useImmer(initialState)
+  const [state, setState] = useImmer(initialState)
   const { selectGoods } = useSelector((state) => state.select)
   const { list, selection } = state
   const dispatch = useDispatch()
   const goodsRef = useRef()
 
   useEffect(() => {
-    setState(draft => {
+    setState((draft) => {
       draft.selection = selectGoods
     })
   }, [])
@@ -38,20 +38,20 @@ function PickerCommunity(props) {
   const onSelectCommunityChange = ({ id }, checked) => {
     // const temp = [...selection]
     const temps = new Set(selection)
-    if(temps.has(id)) {
+    if (temps.has(id)) {
       temps.delete(id)
     } else {
       temps.add(id)
     }
 
-    setState(draft => {
+    setState((draft) => {
       draft.selection = Array.from(temps)
     })
   }
 
   const fetch = async ({ pageIndex, pageSize }) => {
-    setState(draft => {
-      draft.list = DEMO_DATA.map(item => {
+    setState((draft) => {
+      draft.list = DEMO_DATA.map((item) => {
         return {
           ...item,
           checked: selectGoods.includes(item.id)
@@ -81,15 +81,15 @@ function PickerCommunity(props) {
       }
     >
       <SpScrollView className='itemlist-scroll' ref={goodsRef} fetch={fetch}>
-        {[1,2,3,4,5].map((item, index) => (
+        {[1, 2, 3, 4, 5].map((item, index) => (
           <View className='goods-item-wrap' key={`goods-item-wrap__${index}`}>
             <SpCheckbox
               checked={selection.includes(item.id)}
               onChange={onSelectCommunityChange.bind(this, item)}
             >
-              <View className="community-item">
-                <View className="community-location">上海市上海普陀区</View>
-                <View className="community-address">XXXXXXXXXXXXXXX小区</View>
+              <View className='community-item'>
+                <View className='community-location'>上海市上海普陀区</View>
+                <View className='community-address'>XXXXXXXXXXXXXXX小区</View>
               </View>
             </SpCheckbox>
           </View>
