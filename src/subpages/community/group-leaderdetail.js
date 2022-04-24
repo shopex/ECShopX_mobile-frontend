@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpPage, SpImage, SpButton, SpUpload, SpCell } from '@/components'
 import { AtInput, AtButton, AtProgress } from 'taro-ui'
 import './group-leaderdetail.scss'
+import { classNames } from '@/utils'
 
 import CompGroupTabbar from './comps/comp-groupbar'
 import CompGroupNeighbour from './comps/comp-groupneighbour'
+import CompGoodsItemBuy from './comps/comp-goodsitembuy'
+import CompGroupLogList from './comps/comp-grouploglist'
 
 function GroupLeaderDetail(props) {
 
@@ -19,6 +22,13 @@ function GroupLeaderDetail(props) {
   // 点击分享
   const handleClickShare = () => {
   }
+
+  // 加入购物车
+  const handleAddCart = () => {
+
+  }
+
+
 
   return (
     <SpPage
@@ -80,12 +90,23 @@ function GroupLeaderDetail(props) {
           </View>
         </View>
 
+        <View className='goodslist'>
+          <CompGoodsItemBuy></CompGoodsItemBuy>
+          <CompGoodsItemBuy></CompGoodsItemBuy>
+          <CompGoodsItemBuy></CompGoodsItemBuy>
+          <AtButton className='add-cart' type='primary' circle onClick={handleAddCart.bind(this)}>
+            加入购物车
+          </AtButton>
+        </View>
+
+        <View className='joinlog'>
+          <View className='title'>
+            跟团记录
+          </View>
+          <CompGroupLogList></CompGroupLogList>
+        </View>
 
       </View>
-
-
-
-
     </SpPage>
   )
 }
