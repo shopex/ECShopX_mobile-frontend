@@ -48,9 +48,7 @@ function CompGroupTabbar(props) {
       </View>
       <View className='toolbar-item'>
         <View className='toolbar-item-money'>
-          <SpPrice
-            value={0}
-          />
+          <SpPrice value={0} />
         </View>
         <Text className='toolbar-item-txt'>x人来过</Text>
       </View>

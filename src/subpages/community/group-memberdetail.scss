@@ -1,7 +1,6 @@
 .page-group-memberdetail {
   :root {
     --main-color-green: #3ec07d;
-
   }
 
   .comp-goodsbuytoolbar {
@@ -46,9 +45,7 @@
           font-size: 30px;
           font-weight: 400;
         }
-
       }
-
 
       &-txt {
         font-size: 24px;
@@ -61,7 +58,6 @@
       }
     }
   }
-
 
   .page-bg {
     background: var(--color-primary);
@@ -99,8 +95,6 @@
         .user-name {
           font-size: 40px;
         }
-
-
       }
 
       .user-info-right {
@@ -133,7 +127,6 @@
           }
         }
       }
-
     }
 
     .leader {
@@ -145,7 +138,7 @@
         font-size: 30px;
         font-weight: 900;
         padding: 0 30px 20px;
-        border-bottom: 1PX solid #eee;
+        border-bottom: 1px solid #eee;
       }
 
       .des {
@@ -166,7 +159,7 @@
     }
 
     .group {
-      border-bottom: 1PX solid #eee;
+      border-bottom: 1px solid #eee;
       padding: 20px 30px 20px;
       background-color: #fff;
 
@@ -224,17 +217,14 @@
             }
 
             &__price {
-
               .sp-price__int,
               .sp-price__symbol,
               .sp-price__decimal {
                 font-weight: 900;
                 color: #e96717;
               }
-
             }
           }
-
         }
       }
 
@@ -249,7 +239,8 @@
             display: flex;
             align-items: center;
 
-            .date {}
+            .date {
+            }
 
             .countdown {
               color: #ef9e67;
@@ -266,7 +257,6 @@
           }
         }
       }
-
     }
 
     .goods-desc {
@@ -324,7 +314,6 @@
       .title {
         font-size: 30px;
         padding: 20px 30px;
-
       }
     }
   }

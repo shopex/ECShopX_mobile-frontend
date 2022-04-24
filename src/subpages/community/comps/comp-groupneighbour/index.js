@@ -50,17 +50,16 @@ function CompGroupNeighbour(props) {
 
       <View className='main'>
         <View className={classNames('comp-group-neighbour-contanier', isOpen ? 'open' : '')}>
-          {info && info.map((item, index) => {
-            return (
-              <View className='comp-group-neighbour-item' key={index}>
-                <View className='head'>
-                  <View className='head__l'>
-                    <Text className='icon iconfont icon-gouwuche'></Text>
-                    <Text className='name'>{item.name}</Text>
-                  </View>
-                  <View className='head__r'>
-                    {item.distance}km
-                  </View>
+          {info &&
+            info.map((item, index) => {
+              return (
+                <View className='comp-group-neighbour-item' key={index}>
+                  <View className='head'>
+                    <View className='head__l'>
+                      <Text className='icon iconfont icon-gouwuche'></Text>
+                      <Text className='name'>{item.name}</Text>
+                    </View>
+                    <View className='head__r'>{item.distance}km</View>
                   </View>
                   <View className='info'>
                     <View className='progress'>
@@ -74,8 +73,8 @@ function CompGroupNeighbour(props) {
                     <Text>还差{item.lessJoin}件起送</Text>
                   </View>
                 </View>
-            )
-          })}
+              )
+            })}
         </View>
 
         <View className='more' onClick={handleClickMore.bind(this)}>

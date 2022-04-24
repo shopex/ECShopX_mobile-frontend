@@ -1,4 +1,4 @@
-$avater-width: 40px;
+$avater-width: 60px;
 $good-img-width: 150px;
 
 .comp-order-item {
@@ -22,7 +22,7 @@ $good-img-width: 150px;
     padding: 24px;
     background: #fff;
     /* prettier-ignore */
-    border-bottom: 1PX solid #eee;
+    border-bottom: 1PX solid #F5F5F5;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,13 +50,12 @@ $good-img-width: 150px;
   &-title {
     padding-bottom: 24px;
     display: flex;
-    justify-content: space-between;
+    align-items: center;
     .content-imgbox {
       width: $avater-width;
       height: $avater-width;
       margin-right: 24px;
       /* prettier-ignore */
-      border: 1PX solid #FBFCFB;
       border-radius: 8px;
       overflow: hidden;
       .content-img {
@@ -65,22 +64,34 @@ $good-img-width: 150px;
         display: block;
       }
     }
-    .content-active {
-      display: flex;
-      align-items: center;
-      &-name {
-        @include multi-ellipsis(1);
-      }
-      .iconfont {
-        font-size: 28px;
-        margin-left: 16px;
-      }
+  }
+  &-active {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    /* prettier-ignore */
+    border-bottom: 1PX solid #F5F5F5;
+    .active-name {
+      @include multi-ellipsis(1);
+      flex: 1;
+      margin-right: 30px;
+    }
+    .active-font {
+      font-size: 26px;
+      color: #999;
+    }
+    .iconfont {
+      font-size: 26px;
+      margin-left: 16px;
+      color: #999;
     }
   }
   &-goods {
     padding-bottom: 24px;
     display: flex;
     justify-content: space-between;
+    padding-top: 16px;
     .goods-info {
       width: 80%;
       height: 100%;
@@ -125,6 +136,7 @@ $good-img-width: 150px;
       .goods-desc {
         @include multi-ellipsis(1);
         padding: 10px 0px;
+        font-size: 26px;
       }
       .goods-num {
         font-size: 26px;
@@ -196,7 +208,7 @@ $good-img-width: 150px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #faf7fa;
+    background: #f5f5f5;
     height: 60px;
     line-height: 60px;
     padding: 0px 16px;
