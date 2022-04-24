@@ -58,7 +58,6 @@ function CommunityOrder(props) {
 
   const { keywords, orderList, curTabIdx, isOpened, remark, curDeliverTagIdx, curAfterTagIdx } =
     state
-
   const fetch = async ({ pageIndex, pageSize }) => {
     let params = {
       page: pageIndex,

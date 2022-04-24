@@ -16,7 +16,7 @@ export default class SpFilterBar extends Component {
     list: []
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const { current } = props
@@ -26,7 +26,7 @@ export default class SpFilterBar extends Component {
     }
   }
 
-  handleClickItem (idx) {
+  handleClickItem(idx) {
     const item = this.props.list[idx]
     let sortOrder = null
 
@@ -45,8 +45,8 @@ export default class SpFilterBar extends Component {
     })
   }
 
-  render () {
-    const { list, className, custom } = this.props
+  render() {
+    const { list, className, custom, color } = this.props
     const { sortOrder, curIdx } = this.state
 
     return (
@@ -63,7 +63,9 @@ export default class SpFilterBar extends Component {
                 onClick={this.handleClickItem.bind(this, idx)}
                 key={`sp-filter-bar-item__${idx}`}
               >
-                <Text className='sp-filter-bar__item-text'>{item.title}</Text>
+                <Text className='sp-filter-bar__item-text' style={curIdx === idx && { color }}>
+                  {item.title}
+                </Text>
                 {item.icon && <Text className={classNames('iconfont', item.icon)}></Text>}
               </View>
             ))}

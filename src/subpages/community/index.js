@@ -20,7 +20,7 @@ const MENUS = [
     key: 'dianwu',
     name: '我的活动',
     icon: 'm_menu_dianwu.png',
-    link: '/subpages/dianwu/index'
+    link: '/subpages/community/activity'
   }
 ]
 

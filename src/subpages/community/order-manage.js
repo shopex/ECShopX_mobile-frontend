@@ -32,17 +32,17 @@ const initialState = {
 }
 const tabList = [
   { title: '全部', type: '0' },
-  { title: '发货', type: '1' },
-  { title: '核销', type: '2' },
-  { title: '售后', type: '3' },
-  { title: '备注', type: '4' }
+  { title: '发货', type: '1' }
+  // { title: '核销', type: '2' },
+  // { title: '售后', type: '3' },
+  // { title: '备注', type: '4' }
 ]
 
 const deliverTagList = [
-  { title: '待收货', type: '0' },
-  { title: '部分发货', type: '1' },
-  { title: '已发货', type: '2' },
-  { title: '已收货', type: '3' }
+  { title: '待收货', type: 6 }
+  // { title: '部分发货', type: '1' },
+  // { title: '已发货', type: '2' },
+  // { title: '已收货', type: '3' }
 ]
 
 const afterTagList = [
@@ -63,18 +63,15 @@ function OrderManage(props) {
     let params = {
       page: pageIndex,
       pageSize,
-      keywords,
-      order_type: 'normal',
-      status: 0,
-      curTabIdx,
-      curDeliverTagIdx,
-      curAfterTagIdx
+      mobile: keywords,
+      status: curDeliverTagIdx
+      // curDeliverTagIdx,
+      // curAfterTagIdx
     }
     const {
       list,
-      pager: { count: total },
-      rate_status
-    } = await api.trade.list(params)
+      pager: { count: total }
+    } = await api.community.getCommunityLits(params)
     const n_list = pickBy(list, doc.community.COMMUNITY_ORDER_LIST)
     setState((draft) => {
       draft.orderList = [...orderList, ...n_list]
@@ -123,6 +120,7 @@ function OrderManage(props) {
       draft.curTabIdx = curTabIdx
       draft.curAfterTagIdx = 0
       draft.curDeliverTagIdx = 0
+      draft.orderList = []
     })
     orderRef.current.reset()
   }
@@ -183,13 +181,18 @@ function OrderManage(props) {
     })
   }
 
-  const actionChange = (isOpened, type) => {
+  const actionChange = async (isOpened, type) => {
     console.log(type)
     if (type == 'confirm') {
       console.log(remark, '---')
-      setState((draft) => {
+      await setState((draft) => {
         draft.remark = ''
+        draft.orderList = []
+        draft.curTabIdx = 0
+        draft.curAfterTagIdx = 0
+        draft.curDeliverTagIdx = 0
       })
+      orderRef.current.reset()
     } else {
       setState((draft) => {
         draft.remark = ''
@@ -208,10 +211,10 @@ function OrderManage(props) {
 
   const deliverTagClick = async ({ name }) => {
     const idx = deliverTagList.findIndex((el) => el.type == name.type)
-    console.log(idx)
     await setState((draft) => {
       draft.curDeliverTagIdx = idx
       draft.curAfterTagIdx = 0
+      draft.orderList = []
     })
     orderRef.current.reset()
   }
@@ -222,6 +225,7 @@ function OrderManage(props) {
     await setState((draft) => {
       draft.curAfterTagIdx = idx
       draft.curDeliverTagIdx = 0
+      draft.orderList = []
     })
     orderRef.current.reset()
   }
@@ -252,7 +256,7 @@ function OrderManage(props) {
               <AtTabsPane current={curTabIdx} key={panes.status} index={pIdx}></AtTabsPane>
             ))}
           </AtTabs>
-          {curTabIdx == 2 && (
+          {curTabIdx == 1 && (
             <View className='page-order-manage-tags'>
               {deliverTagList.map((item, idx) => (
                 <AtTag
@@ -291,7 +295,7 @@ function OrderManage(props) {
         </View>
         {orderList.map((item) => (
           <CompOrderItem
-            key={item.tid}
+            key={item.order_id}
             info={item}
             renderFooter={renderFooter()}
             onEditClick={onEditClick}
