@@ -7,7 +7,7 @@ $bot-height: 160px;
     padding: 30px 24px;
     background: #fff;
     /* prettier-ignore */
-    border-top: 1PX solid #eee;
+    border-top: 1PX solid #F5F5F5;
     .label {
       font-size: 30px;
       font-weight: bold;
@@ -28,7 +28,7 @@ $bot-height: 160px;
     padding: 30px 24px;
     font-size: 30px;
     /* prettier-ignore */
-    border-bottom: 1PX solid #eee;
+    border-bottom: 1PX solid #F5F5F5;
     &:last-child {
       border: none;
     }
@@ -44,7 +44,7 @@ $bot-height: 160px;
       padding: 30px 24px;
       margin-top: 24px;
       /* prettier-ignore */
-      border-bottom: 1PX solid #eee;
+      border-bottom: 1PX solid #F5F5F5;
     }
     .goods-info {
       height: 90px;
@@ -62,7 +62,7 @@ $bot-height: 160px;
     .refund-money {
       padding: 24px 0px 15px 0px;
       /* prettier-ignore */
-      border-top: 1PX solid #eee;
+      border-top: 1PX solid #F5F5F5;
       margin-left: 65px;
       margin-right: 24px;
     }

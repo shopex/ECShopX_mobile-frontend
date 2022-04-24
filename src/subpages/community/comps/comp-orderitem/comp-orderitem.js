@@ -9,18 +9,20 @@ import './comp-orderitem.scss'
 const statusList = [{ name: '已支付', status: 0, fontColor: '#4da915', backgroundColor: '#e1fff3' }]
 
 function CompOrderItem(props) {
-  const { info, renderFooter = null, onEditClick = () => {} } = props
+  const { info = {}, renderFooter = null, onEditClick = () => {} } = props
 
   return (
     <View className='comp-order-item'>
-      <View className='comp-order-item-timer'>请在000000</View>
+      <View className='comp-order-item-timer'>只有团员才有</View>
       <View className='comp-order-item-head'>
         <View className='head-info'>
           <View className='head-info-group'>
             <Text>跟团号：</Text>
-            <Text className='head-info-num'>10</Text>
+            <Text className='head-info-num'>
+              {info.zitiList && info.zitiList.activity_trade_no}
+            </Text>
           </View>
-          <View className='head-info-date'>2022/04/21 22:33</View>
+          <View className='head-info-date'>{info.createDate}</View>
         </View>
         {statusList.map((item) => (
           <View
@@ -28,43 +30,43 @@ function CompOrderItem(props) {
             key={item.status}
             style={{ color: item.fontColor, backgroundColor: item.backgroundColor }}
           >
-            {item.name}
+            {info.order_status_msg}
           </View>
         ))}
       </View>
       <View className='comp-order-item-content'>
         <View className='comp-order-item-title'>
           <View className='content-imgbox'>
-            <Image
-              src='https://preissue-b-img-cdn.yuanyuanke.cn/image/42/2022/01/12/16c76febe685d4249e419259ad979f9bxZsiiZARkIXx70VrEOdbVANzU96nH7hU'
-              className='content-img'
-            />
+            <Image src={info.memberInfo && info.memberInfo.avatar} className='content-img' />
           </View>
-          <View className='content-active'>
-            <View className='content-active-name'>活动名称</View>
+          <Text>{info.memberInfo && info.memberInfo.username}</Text>
+        </View>
+        <View className='comp-order-item-active'>
+          <View className='active-name'>{info.zitiList && info.zitiList.activity_name}</View>
+          <View>
+            <Text className='active-font'>查看</Text>
             <Text className='iconfont icon-qianwang-01' />
           </View>
         </View>
         <View className='comp-order-item-goods'>
           <View className='goods-info'>
             <ScrollView className='scroll-goods' scrollX>
-              <View className='scroll-item'>
-                <View className='goods-imgbox'>
-                  <Image
-                    src='https://preissue-b-img-cdn.yuanyuanke.cn/image/42/2022/01/12/16c76febe685d4249e419259ad979f9bxZsiiZARkIXx70VrEOdbVANzU96nH7hU'
-                    className='goods-img'
-                    lazyLoad
-                  />
-                  <View className='img-desc'>商品已核销</View>
-                </View>
-                <View className='goods-desc'>商品描述啊啊啊啊啊啊</View>
-                <View className='goods-num'>+11件</View>
-              </View>
+              {info.items &&
+                info.items.map((good, goodIdx) => (
+                  <View className='scroll-item' key={goodIdx}>
+                    <View className='goods-imgbox'>
+                      <Image src={good.pic} className='goods-img' lazyLoad />
+                      <View className='img-desc'>商品已核销（只有团员有）</View>
+                    </View>
+                    <View className='goods-desc'>{good.itemName}</View>
+                    <View className='goods-num'>+{good.num}件</View>
+                  </View>
+                ))}
             </ScrollView>
           </View>
           <View className='goods-sale'>
             <SpPrice className='sale-price' value={0.03} />
-            <View className='sale-num'>共5件</View>
+            <View className='sale-num'>共{info.totalNum}件</View>
           </View>
         </View>
         <View className='comp-order-item-info'>
@@ -73,39 +75,39 @@ function CompOrderItem(props) {
             <View className='ziti-label'>
               <Text className='iconfont icon-dizhi-01' />
               <Text className='ziti-desc'>自提点：</Text>
-              <Text className='ziti-desc'>嘻嘻嘻谢谢</Text>
+              <Text className='ziti-desc'>{info.address || '000'}</Text>
             </View>
             <View className='ziti-address'>
-              <Text>详细地址写在这里啊</Text>
+              <Text>{info.ziti_name || '000'}</Text>
               {/* <Text className='iconfont icon-dizhi-01 showaddress-icon' /> */}
             </View>
           </View>
           <View className='ziti-info'>
             <View className='ziti-label'>
               <Text className='iconfont icon-dizhi-01' />
-              <Text className='ziti-desc'>XXXXX</Text>
-              <Text className='ziti-desc ml'>186738383933</Text>
+              <Text className='ziti-desc'>{info.receiver_name}</Text>
+              <Text className='ziti-desc ml'>{info.receiver_mobile}</Text>
             </View>
-            <View className='ziti-address'>详细地址写在这里啊</View>
-            <View className='ziti-address'>楼号(如10)</View>
-            <View className='ziti-address'>房号(如101)</View>
-            <View className='ziti-address'>多少弄：</View>
+            <View className='ziti-address'>{info.receiver_address}</View>
+            <View className='ziti-address'>{info.buildingNumber}(如10)</View>
+            <View className='ziti-address'>{info.houseNumber}(如101)</View>
+            {/* <View className='ziti-address'>多少弄：</View> */}
           </View>
           <View className='ziti-tuan'>
             <View className='ziti-label'>
               <Text className='iconfont icon-dizhi-01' />
               <Text className='ziti-desc'>团员备注：</Text>
-              <Text className='ziti-desc'>暂无</Text>
+              <Text className='ziti-desc'>{info.remark}</Text>
               <Text onClick={onEditClick} className='iconfont icon-edit address-icon' />
             </View>
           </View>
         </View>
       </View>
       {renderFooter && <View className='comp-order-item-footer'>{renderFooter}</View>}
-      <View className='comp-order-item-record'>
+      {/* <View className='comp-order-item-record'>
         <View className='money'>已退0.01</View>
         <View className='iconfont icon-qianwang-01' />
-      </View>
+      </View> */}
     </View>
   )
 }
