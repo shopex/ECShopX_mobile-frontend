@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { ScrollView, View, Text } from '@tarojs/components'
 import { SpImage, SpPrice } from '@/components'
-import './index.scss'
+import './comp-groupitem.scss'
 
 function CompGroupItem(props) {
   return (
