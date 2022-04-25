@@ -39,6 +39,7 @@ const initialState = {
 }
 function Group(props) {
   const [state, setState] = useImmer(initialState)
+  const { selectCommunityZiti, selectGoods } = useSelector((state) => state.community)
   const { list, comps, startDate, startTime, endDate, endTime } = state
   const savePreview = () => {}
 
@@ -222,8 +223,8 @@ function Group(props) {
         </View>
         <View className='card-block-bd'>
           <View className='goods-list'>
-            {[1, 2, 3].map((item) => (
-              <CompGoodsItem />
+            {selectGoods.map((item) => (
+              <CompGoodsItem info={item} />
             ))}
           </View>
         </View>
@@ -239,7 +240,13 @@ function Group(props) {
             onClick={() => {
               Taro.navigateTo({ url: '/subpages/community/picker-community' })
             }}
-          />
+          >
+            {selectCommunityZiti ? (
+              <View className="ziti-info">{selectCommunityZiti.zitiName}</View>
+            ) : (
+              <View className='ziti-info placeholder'>选择服务小区</View>
+            )}
+          </SpCell>
           {/* <SpCell border title="需要用户填写信息" isLink/> */}
 
           <SpCell border title='团购开始时间' isLink>
