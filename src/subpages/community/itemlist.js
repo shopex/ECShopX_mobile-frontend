@@ -5,20 +5,12 @@ import Taro from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { SpPage, SpCheckbox, SpScrollView } from '@/components'
 import { AtButton } from 'taro-ui'
-import { updateSelectGoods } from '@/store/slices/select'
+import { updateSelectGoods } from '@/store/slices/community'
+import api from '@/api'
+import doc from '@/doc'
+import { pickBy } from '@/utils'
 import CompGoodsItem from './comps/comp-goodsitem'
 import './itemlist.scss'
-
-const DEMO_DATA = [
-  { id: 1, name: 'xx' },
-  { id: 2, name: 'xx' },
-  { id: 3, name: 'xx' },
-  { id: 4, name: 'xx' },
-  { id: 5, name: 'xx' },
-  { id: 6, name: 'xx' },
-  { id: 7, name: 'xx' },
-  { id: 8, name: 'xx' }
-]
 
 const initialState = {
   selection: [],
@@ -27,47 +19,48 @@ const initialState = {
 
 function ItemList(props) {
   const [state, setState] = useImmer(initialState)
-  const { selectGoods } = useSelector((state) => state.select)
+  const { selectGoods } = useSelector((state) => state.community)
   const { list, selection } = state
   const dispatch = useDispatch()
   const goodsRef = useRef()
 
   useEffect(() => {
     setState((draft) => {
-      draft.selection = selectGoods
+      draft.selection = selectGoods.map(item => item.itemId)
     })
   }, [])
 
-  const onSelectGoodsChange = ({ id }, checked) => {
-    // const temp = [...selection]
+  const onSelectGoodsChange = ({ itemId }, checked) => {
     const temps = new Set(selection)
-    if (temps.has(id)) {
-      temps.delete(id)
+    if (temps.has(itemId)) {
+      temps.delete(itemId)
     } else {
-      temps.add(id)
+      temps.add(itemId)
     }
-
+    
+    console.log(`selection:`, Array.from(temps))
     setState((draft) => {
       draft.selection = Array.from(temps)
     })
   }
 
   const fetch = async ({ pageIndex, pageSize }) => {
+    const params = {
+      page: pageIndex,
+      page_size: pageSize
+    }
+    const { total_count: total, list } = await api.community.getChiefItems(params)
     setState((draft) => {
-      draft.list = DEMO_DATA.map((item) => {
-        return {
-          ...item,
-          checked: selectGoods.includes(item.id)
-        }
-      })
+      draft.list = pickBy(list, doc.community.COMMUNITY_GOODS_ITEM)
     })
     return {
-      total: 5
+      total
     }
   }
 
   const handleConfirm = () => {
-    dispatch(updateSelectGoods(selection))
+    const res = list.filter(item => selection.includes(item.itemId) )
+    dispatch(updateSelectGoods(res))
     Taro.navigateBack()
   }
 
@@ -86,10 +79,10 @@ function ItemList(props) {
         {list.map((item, index) => (
           <View className='goods-item-wrap' key={`goods-item-wrap__${index}`}>
             <SpCheckbox
-              checked={selection.includes(item.id)}
+              checked={selection.includes(item.itemId)}
               onChange={onSelectGoodsChange.bind(this, item)}
             >
-              <CompGoodsItem />
+              <CompGoodsItem info={item} />
             </SpCheckbox>
           </View>
         ))}

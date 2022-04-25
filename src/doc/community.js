@@ -64,3 +64,23 @@ export const COMMUNITY_ACTIVITY_LIST = {
     }
   }
 }
+
+export const COMMUNITY_ZITI = {
+  id: 'ziti_id',
+  area: ({ province, city, area }) => {
+    return `${province} ${city} ${area}`
+  },
+  zitiName: 'ziti_name',
+  province: 'province',
+  city: 'city',
+  country: 'area',
+  address: 'address'
+}
+
+export const COMMUNITY_GOODS_ITEM = {
+  itemId: 'itemId',
+  pic: 'pics[0]',
+  itemName: 'item_name',
+  store: 'store',
+  price: ({ price }) => (price / 100).toFixed(2)
+}
