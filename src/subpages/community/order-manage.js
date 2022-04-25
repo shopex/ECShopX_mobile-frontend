@@ -68,10 +68,7 @@ function OrderManage(props) {
       // curDeliverTagIdx,
       // curAfterTagIdx
     }
-    const {
-      list,
-      pager: { count: total }
-    } = await api.community.getCommunityLits(params)
+    const { list, total_count: total } = await api.community.getCommunityList(params)
     const n_list = pickBy(list, doc.community.COMMUNITY_ORDER_LIST)
     setState((draft) => {
       draft.orderList = [...orderList, ...n_list]
