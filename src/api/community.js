@@ -9,9 +9,8 @@ export function getActivityLits(params) {
   return req.get('/community/chief/activity', params)
 }
 
-export function confirmChange(params) {
-  console.log(params)
-  // return req.get('/community/chief/activity', params)
+export function confirmDelivery(activity_id) {
+  return req.post(`/community/chief/confirm_delivery/${activity_id}`)
 }
 
 export function checkChief() {

@@ -60,7 +60,7 @@ function ActivityPage() {
     console.log(type)
     if (type == 'confirm') {
       const { activityId } = currentInfo
-      api.community.confirmChange({ activity_id: activityId }).then((res) => {
+      api.community.confirmDelivery(activityId).then((res) => {
         showToast('操作成功')
         setState((draft) => {
           draft.curTabIdx = 0
