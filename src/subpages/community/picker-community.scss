@@ -1,5 +1,5 @@
 .page-community-picker {
-  .sp-scrollview-body {
+  .item-list {
     padding: 20px;
   }
   .goods-item-wrap {
@@ -16,9 +16,20 @@
     &__label {
       margin-left: 0;
       margin-right: 16px;
+      width: 600px;
     }
   }
   .btn-wrap {
     padding: 20px;
+  }
+  .community-item {
+    &-tools {
+      text-align: right;
+      padding: 0 20px;
+    }
+  }
+  .icon-edit {
+    font-size: 36px;
+    color: #666;
   }
 }

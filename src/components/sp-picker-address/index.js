@@ -2,117 +2,140 @@ import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro from '@tarojs/taro'
-import { View, Picker } from '@tarojs/components'
+import { View, Text, Picker } from '@tarojs/components'
 import api from '@/api'
 import './index.scss'
 
 const initialState = {
   areaData: [],
   areaList: [[], [], []],
-  multiIndex: [0, 0, 0]
+  multiIndex: [0, 0, 0],
+  selectValue: []
 }
 
 function SpPickerAddress(props) {
+  const { onChange = () => {}, value = [] } = props
   const [state, setState] = useImmer(initialState)
-  const { areaData, areaList, multiIndex } = state
+  const { areaData, areaList, multiIndex, selectValue } = state
+  
   useEffect(() => {
     fetch()
   }, [])
 
   const fetch = async () => {
     const res = await api.member.areaList()
-    const provices = []
-    const citys = []
-    const countys = []
-    res.forEach((item, index) => {
-      provices.push(item.label)
-      if (index === 0) {
-        item.children.forEach((citem, cindex) => {
-          citys.push(citem.label)
-          if (cindex === 0) {
-            citem.children.forEach((sitem) => {
-              countys.push(sitem.label)
-            })
-          }
-        })
-      }
-    })
+    const arrayProvince = []
+    const arrayCity = []
+    const arrayCounty = []
+    const multiIndex = [0, 0, 0]
+    // debugger
+    if (value.length > 0) {
+      res.forEach((item, index) => {
+        arrayProvince.push(item.label)
+        if (item.label == value[0]) {
+          multiIndex[0] = index
+          item.children.forEach((citem, cindex) => {
+            arrayCity.push(citem.label)
+            if (citem.label == value[1]) {
+              multiIndex[1] = cindex
+              citem.children.forEach((sitem, sindex) => {
+                arrayCounty.push(sitem.label)
+                if (sitem.label == value[2]) {
+                  multiIndex[2] = sindex
+                }
+              })
+            }
+          })
+        }
+      })
+    } else {
+      res.forEach((item, index) => {
+        arrayProvince.push(item.label)
+        if (index === 0) {
+          item.children.forEach((citem, cindex) => {
+            arrayCity.push(citem.label)
+            if (cindex === 0) {
+              citem.children.forEach((sitem) => {
+                arrayCounty.push(sitem.label)
+              })
+            }
+          })
+        }
+      })
+    }
+
     setState((draft) => {
       draft.areaData = res
-      draft.areaList = [provices, citys, countys]
+      draft.areaList = [arrayProvince, arrayCity, arrayCounty]
+      draft.multiIndex = multiIndex
+      draft.selectValue = value
     })
   }
 
-  const init = () => {}
-
   const onMultiPickerChange = (e) => {
-    const { info } = this.state
-    const [ proviceIndex = 0, cityIndex = 0, countryIndex = 0 ] = e.detail.value
+    const [provinceIndex = 0, cityIndex = 0, countryIndex = 0] = e.detail.value
+    const selectValue = []
     areaData.forEach((item, index) => {
-      if (index === proviceIndex) {
-        info.province = item.label
+      if (index === provinceIndex) {
+        selectValue.push(item.label)
         item.children.forEach((citem, cindex) => {
           if (cindex === cityIndex) {
+            selectValue.push(citem.label)
             citem.children.forEach((sitem, sindex) => {
-              if (sitem === countryIndex) {
-                info.county = th_item.label
+              if (sindex === countryIndex) {
+                selectValue.push(sitem.label)
               }
             })
           }
         })
       }
     })
-    this.setState({ info })
+    console.log(`selectValue:`, selectValue)
+    setState((draft) => {
+      draft.selectValue = selectValue
+    })
+    onChange(selectValue)
   }
 
   const onMultiPickerColumnChange = (e) => {
     const { column, value } = e.detail
-    const { areaList, multiIndex } = this.state
-    if (e.detail.column === 0) {
-      this.setState({
-        multiIndex: [e.detail.value, 0, 0]
-      })
-      this.nList.map((item, index) => {
-        if (index === e.detail.value) {
-          let arrCity = []
-          let arrCounty = []
-          item.children.map((c_item, c_index) => {
-            arrCity.push(c_item.label)
-            if (c_index === 0) {
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-            }
-          })
-          areaList[1] = arrCity
-          areaList[2] = arrCounty
-          this.setState({ areaList })
-        }
-      })
-    } else if (e.detail.column === 1) {
-      multiIndex[1] = e.detail.value
-      multiIndex[2] = 0
-      this.setState(
-        {
-          multiIndex
-        },
-        () => {
-          this.nList[multiIndex[0]].children.map((c_item, c_index) => {
-            if (c_index === e.detail.value) {
-              let arrCounty = []
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-              areaList[2] = arrCounty
-              this.setState({ areaList })
-            }
+    const arrayCity = []
+    const arrayCountry = []
+
+    let curCity
+    let curCountry
+    if (column === 0) {
+      curCity = areaData[value].children
+      curCity.forEach((citem, cindex) => {
+        arrayCity.push(citem.label)
+        if (cindex == 0) {
+          curCountry = citem.children
+          curCountry.forEach((sitem) => {
+            arrayCountry.push(sitem.label)
           })
         }
-      )
+      })
+      setState((draft) => {
+        draft.multiIndex = [value, 0, 0]
+        draft.areaList = [areaList[0], arrayCity, arrayCountry]
+      })
+    } else if (column === 1) {
+      curCity = areaData[multiIndex[0]].children
+      curCity.forEach((citem, cindex) => {
+        if (cindex == value) {
+          curCountry = citem.children
+          curCountry.forEach((sitem) => {
+            arrayCountry.push(sitem.label)
+          })
+        }
+      })
+      setState((draft) => {
+        draft.multiIndex = [multiIndex[0], value, 0]
+        draft.areaList = [areaList[0], areaList[1], arrayCountry]
+      })
     } else {
-      multiIndex[2] = e.detail.value
-      this.setState({
-        multiIndex
+      setState((draft) => {
+        draft.multiIndex = [multiIndex[0], multiIndex[1], value]
       })
     }
   }
@@ -126,21 +149,9 @@ function SpPickerAddress(props) {
         value={multiIndex}
         range={areaList}
       >
-        <View className='picker'>
-          <View className='picker__title'>选择省市区</View>
-          {/* {info.address_id ? (
-            `${info.province}${info.city}${info.county}`
-          ) : (
-            <View>
-              {multiIndex.length > 0 ? (
-                <Text>
-                  {areaList[0][multiIndex[0]]}
-                  {areaList[1][multiIndex[1]]}
-                  {areaList[2][multiIndex[2]]}
-                </Text>
-              ) : null}
-            </View>
-          )} */}
+        <View className='picker-con'>
+          {selectValue.length > 0 && <Text className='picker-value'>{selectValue.join(' ')}</Text>}
+          {selectValue.length == 0 && <Text className='placeholder'>选择省市区</Text>}
         </View>
       </Picker>
     </View>

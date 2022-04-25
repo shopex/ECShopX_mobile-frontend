@@ -6,16 +6,22 @@ import { SpImage, SpPrice } from '@/components'
 import './comp-goodsitem.scss'
 
 function CompGoodsItem(props) {
+  const { info } = props
+  if(!info) {
+    return
+  }
+
+  const { pic, itemName, store, price } = info
   return (
     <View className='comp-goods-item'>
       <View className='item-hd'>
-        <SpImage width={160} height={160} />
+        <SpImage src={pic} width={160} height={160} />
       </View>
       <View className='item-bd'>
-        <View className='goods-name'>金龙鱼</View>
-        <View className='goods-sku'>库存：50</View>
+        <View className='goods-name'>{itemName}</View>
+        <View className='goods-sku'>{`库存：${store}`}</View>
         <View className='goods-price'>
-          <SpPrice value={100} />
+          <SpPrice value={price} />
         </View>
       </View>
     </View>
