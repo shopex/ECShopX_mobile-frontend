@@ -50,16 +50,18 @@ const CompGoodsItemBuy = (props) => {
         )} */}
         <View>{/* <Text className='comp-goodsitembuy-info__num'>10件起购</Text> */}</View>
         <View className='comp-goodsitembuy-info__price'>
-          <SpPrice value={info.price} size={24} />
+          <SpPrice value={info.price} />
           {/* {isMarket && <SpPrice lineThrough size={22} unit='cent' value={info.market_price} />} */}
         </View>
       </View>
 
       <View className='hasbuy-num'>{/* <Text className=''>已团{info.buy_num}</Text> */}</View>
 
-      <View className='comp-goodsitembuy-handle'>
-        <SpInputNumber value={info.num} min={0} onChange={onNumChange} />
-      </View>
+      {!hideInputNumber && (
+        <View className='comp-goodsitembuy-handle'>
+          <SpInputNumber value={info.num} min={0} onChange={onNumChange} />
+        </View>
+      )}
     </View>
   )
 }
