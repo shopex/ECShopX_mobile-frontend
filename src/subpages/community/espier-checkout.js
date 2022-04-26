@@ -2,32 +2,76 @@ import React, { Component, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpPage, SpImage, SpPrice } from '@/components'
+import { SpPage, SpImage, SpPrice, AddressChoose } from '@/components'
 import { AtInput } from 'taro-ui'
+import { usePayment } from '@/hooks'
 import qs from 'qs'
-import { log } from '@/utils'
+import { log, pickBy } from '@/utils'
 import api from '@/api'
+import doc from '@/doc'
 import CompGoodsItemBuy from './comps/comp-goodsitembuy'
 
 import './espier-checkout.scss'
+import { useImmer } from 'use-immer'
+
+const initialState = {
+  info: null,
+  activityInfo: null
+}
 
 const EspierCheckout = () => {
   const $instance = getCurrentInstance()
   const { activity_id, items } = $instance.router.params
-  const { chiefInfo, checkIsChief } = useSelector((state) => state.user)
+  const { address, chiefInfo, checkIsChief } = useSelector((state) => state.user)
+  const { cashierPayment } = usePayment()
+  const [state, setState] = useImmer(initialState)
+  const { info, activityInfo } = state
   console.log('chiefInfo:', chiefInfo)
+  console.log('address:', address)
   useEffect(() => {
     fetch()
   }, [])
 
   const fetch = async () => {
     const goodsItems = JSON.parse(decodeURIComponent(items))
+    const { distributor_id } = chiefInfo.distributors
     const params = {
       order_type: 'normal_community',
       community_activity_id: activity_id,
+      items: goodsItems,
+      distributor_id,
+      receipt_type: 'ziti'
+    }
+    const res = await api.cart.total(params)
+    const activityInfo = await api.community.getActiveDetail(activity_id)
+
+    setState((draft) => {
+      draft.info = pickBy(res, doc.community.COMMUNITY_CHECKOUT_RES)
+      draft.activityInfo = activityInfo
+    })
+  }
+
+  const handlePay = async () => {
+    const { address_id, username, telephone, province, city, county, adrdetail } = address
+    const goodsItems = JSON.parse(decodeURIComponent(items))
+    const { distributor_id } = chiefInfo.distributors
+    const params = {
+      receipt_type: 'ziti',
+      order_type: 'normal_community',
+      distributor_id,
+      community_ziti_id: activityInfo.ziti[0].ziti_id,
+      community_activity_id: activity_id,
+      receiver_name: username,
+      receiver_mobile: telephone,
+      receiver_state: province,
+      receiver_city: city,
+      receiver_district: county,
+      receiver_address: adrdetail,
+      pay_type: 'wxpay',
       items: goodsItems
     }
-    await api.cart.total(params)
+    const orderInfo = await api.trade.create(params)
+    cashierPayment(params, orderInfo)
   }
 
   const renderFooter = () => {
@@ -35,10 +79,12 @@ const EspierCheckout = () => {
       <View className='espierCheckout-toolbar'>
         <View className='espierCheckout-toolbar__price'>
           实际支付：
-          <SpPrice value={990} noDecimal />
+          <SpPrice value={info?.totalFee} />
         </View>
 
-        <View className='espierCheckout-toolbar__button'>立即支付</View>
+        <View className='espierCheckout-toolbar__button' onClick={handlePay}>
+          立即支付
+        </View>
       </View>
     )
   }
@@ -58,33 +104,27 @@ const EspierCheckout = () => {
           </View>
 
           <View className='espierCheckout-address__info'>
-            <View className='espierCheckout-address__info-name'>
-              <Text>孙旭</Text>
-              131221080999
-            </View>
-            <View>上海市徐汇区宜山路700号</View>
+            <AddressChoose isAddress={address} />
           </View>
         </View>
 
         <View className='espierCheckout-goods'>
-          {/* <GoodsItem />
-          <GoodsItem /> */}
-          {
-            <CompGoodsItemBuy />
-          }
+          {info?.items.map((item) => (
+            <CompGoodsItemBuy info={item} show />
+          ))}
         </View>
 
         <View className='espierCheckout-total'>
           <View className='espierCheckout-total__price'>
             <View className='espierCheckout-total__title'>商品总价</View>
 
-            <SpPrice value={990} noDecimal />
+            <SpPrice value={info?.totalFee} />
           </View>
 
           <View className='espierCheckout-total__payPrice'>
-            <Text className='espierCheckout-total__payPrice-num'>共10件</Text>
+            <Text className='espierCheckout-total__payPrice-num'>共{info?.totalItemNum}件</Text>
             实际支付
-            <SpPrice value={990} noDecimal />
+            <SpPrice value={info?.totalFee} />
           </View>
         </View>
 
