@@ -51,7 +51,7 @@ const initialState = {
 
 const Index = () => {
   const [state, setState] = useImmer(initialState)
-  const { userInfo = {}, chiefInfo, checkIsChief } = useSelector((state) => state.user)
+  const { chiefInfo, checkIsChief } = useSelector((state) => state.user)
   const { curTabIdx, searchValue, activityList, tabType } = state
   const [isShowSearch, setIsShowSearch] = useState(false)
   const activityRef = useRef()
@@ -128,8 +128,8 @@ const Index = () => {
       <SpScrollView className='page-community-activity-scroll' ref={activityRef} fetch={fetch}>
         <View className='page-header'>
           <View className='user-info'>
-            <SpImage src={userInfo.avatar} width={120} height={120} />
-            <Text className='user-name'>{userInfo.username || userInfo.mobile}</Text>
+            <SpImage src={chiefInfo?.chief_avatar} width={110} height={110} />
+            <Text className='user-name'>{chiefInfo?.chief_name}</Text>
           </View>
         </View>
 
