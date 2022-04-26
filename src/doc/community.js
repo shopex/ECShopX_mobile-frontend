@@ -54,13 +54,14 @@ export const COMMUNITY_ORDER_LIST = {
 
 export const COMMUNITY_ACTIVITY_ITEM = {
   activityIntro: ({ activity_intro }) => {
-    if (activity_intro) return JSON.parse(activity_intro)
+    return JSON.parse(activity_intro)
   },
   activityPics: ({ activity_pics }) => {
-    if (activity_pics) return JSON.parse(activity_pics)
+    return JSON.parse(activity_pics)
   },
   activityName: 'activity_name',
   activityId: 'activity_id',
+  chiefInfo: 'chief_info',
   items: ({ items }) => {
     return pickBy(items, {
       itemId: 'itemId',
