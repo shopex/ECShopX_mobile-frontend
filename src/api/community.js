@@ -52,3 +52,4 @@ export function getChiefActiveDetail(activity_id) {
   // 团长获取活动详情
   return req.get(`/community/chief/activity/${activity_id}`)
 }
+
