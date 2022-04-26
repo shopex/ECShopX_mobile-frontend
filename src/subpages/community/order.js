@@ -338,7 +338,7 @@ function CommunityOrder(props) {
             </View>
           )} */}
         </View>
-        {curTabIdx == 3 &&
+        {/* {curTabIdx == 3 &&
           orderList.map((item, idx) => (
             <CompTradeItem
               key={`${idx}1`}
@@ -355,7 +355,7 @@ function CommunityOrder(props) {
               info={item}
               onClick={() => handleClickItem(item)}
             />
-          ))}
+          ))} */}
         {curTabIdx !== 3 &&
           orderList.map((item) => (
             <CompOrderItem
