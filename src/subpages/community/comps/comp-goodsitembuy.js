@@ -18,7 +18,8 @@ const CompGoodsItemBuy = (props) => {
     isMarket = false,
     isLeft = false,
     isTag = false,
-    isSpecs = false
+    isSpecs = false,
+    hideInputNumber = false
   } = props
   // const [state, setState] = useImmer(initialState)
   // const { num } = state
@@ -58,21 +59,6 @@ const CompGoodsItemBuy = (props) => {
 
       <View className='comp-goodsitembuy-handle'>
         <SpInputNumber value={info.num} min={0} onChange={onNumChange} />
-        {/* {num == 0
-           ? <Button size='mini' className='add-btn' onClick={() => onNumChange(1)}>
-              加购商品
-            </Button>
-          :  <SpInputNumber
-              value={num}
-              min={1}
-              // max={limitNum}
-              onChange={onNumChange}
-            />
-        } */}
-
-        {/* <View className='comp-goodsitembuy-handle__symbol comp-goodsitembuy-handle__reduce'>-</View>
-        <View className='comp-goodsitembuy-handle__num'>10</View>
-        <View className='comp-goodsitembuy-handle__symbol comp-goodsitembuy-handle__plus'>+</View> */}
       </View>
     </View>
   )

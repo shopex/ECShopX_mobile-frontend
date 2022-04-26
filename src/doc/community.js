@@ -184,3 +184,16 @@ export const COMMUNITY_AFTER_SALE_ITEM = {
       num: 'num'
     })
 }
+
+export const COMMUNITY_CHECKOUT_RES = {
+  items: ({ items }) => {
+    return pickBy(items, {
+      pic: 'pic',
+      itemName: 'item_name',
+      price: ({ price }) => (price / 100).toFixed(2),
+      num: 'num'
+    })
+  },
+  totalFee: ({ total_fee }) => (total_fee / 100).toFixed(2),
+  totalItemNum: 'totalItemNum'
+}

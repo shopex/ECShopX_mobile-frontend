@@ -7,7 +7,7 @@ import { AtButton, AtCountdown } from 'taro-ui'
 import { useImmer } from 'use-immer'
 import doc from '@/doc'
 import api from '@/api'
-import { isArray, navigateTo, calcTimer, pickBy } from '@/utils'
+import { isArray, navigateTo, calcTimer, pickBy, showToast } from '@/utils'
 
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '@/pages/home/wgts'
 
@@ -63,12 +63,17 @@ function GroupLeaderDetail(props) {
   const handleClickShare = () => {}
 
   const handleClickBuy = () => {
-    const tempItems = items.map((item) => {
-      return {
-        item_id: item.itemId,
-        num: item.num
-      }
-    })
+    const tempItems = items
+      .filter((item) => item.num > 0)
+      .map((item) => {
+        return {
+          item_id: item.itemId,
+          num: item.num
+        }
+      })
+    if (tempItems.length == 0) {
+      return showToast('请选择购买商品')
+    }
     const goodsItems = JSON.stringify(tempItems)
     Taro.navigateTo({
       url: `/subpages/community/espier-checkout?activity_id=${activity_id}&items=${goodsItems}`
