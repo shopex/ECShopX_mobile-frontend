@@ -8,13 +8,6 @@
   border-bottom: 1PX solid #f7f7f7;
 
   &-img {
-    height: 170px;
-    width: 170px;
-    // background: #777;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-
     &__num {
       position: absolute;
       bottom: 0;
@@ -32,7 +25,7 @@
 
   &-info {
     flex: 1;
-    padding-left: 14px;
+    padding-left: 20px;
 
     &__name {
       padding: 5px 0px;
@@ -66,23 +59,6 @@
 
     &__price {
       margin-top: 7px;
-
-      .sp-price__int,
-      .sp-price__symbol,
-      .sp-price__decimal {
-        font-weight: 900;
-        color: #e96717;
-      }
-
-      .line-through {
-        margin-left: 12px;
-
-        .sp-price__int,
-        .sp-price__symbol,
-        .sp-price__decimal {
-          font-weight: normal;
-        }
-      }
     }
   }
 

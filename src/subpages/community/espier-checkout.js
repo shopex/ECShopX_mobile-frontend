@@ -1,9 +1,9 @@
-import React, { Component, useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpPage, SpImage, SpPrice, AddressChoose } from '@/components'
-import { AtInput } from 'taro-ui'
+import { SpPage, SpImage, SpPrice, AddressChoose, SpCell } from '@/components'
+import { AtButton, AtInput } from 'taro-ui'
 import { usePayment } from '@/hooks'
 import qs from 'qs'
 import { log, pickBy } from '@/utils'
@@ -16,7 +16,8 @@ import { useImmer } from 'use-immer'
 
 const initialState = {
   info: null,
-  activityInfo: null
+  activityInfo: null,
+  extraFields: []
 }
 
 const EspierCheckout = () => {
@@ -25,9 +26,10 @@ const EspierCheckout = () => {
   const { address, chiefInfo, checkIsChief } = useSelector((state) => state.user)
   const { cashierPayment } = usePayment()
   const [state, setState] = useImmer(initialState)
-  const { info, activityInfo } = state
+  const { info, activityInfo, extraFields } = state
   console.log('chiefInfo:', chiefInfo)
   console.log('address:', address)
+  log.debug(`activity_id: ${activity_id}`)
   useEffect(() => {
     fetch()
   }, [])
@@ -35,7 +37,7 @@ const EspierCheckout = () => {
   const fetch = async () => {
     const goodsItems = JSON.parse(decodeURIComponent(items))
     const activityInfo = await api.community.getActiveDetail(activity_id)
-    const { distributor_id } = activityInfo
+    const { distributor_id, extra_data } = activityInfo
     const params = {
       order_type: 'normal_community',
       community_activity_id: activity_id,
@@ -48,13 +50,32 @@ const EspierCheckout = () => {
     setState((draft) => {
       draft.info = pickBy(res, doc.community.COMMUNITY_CHECKOUT_RES)
       draft.activityInfo = activityInfo
+      draft.extraFields = extra_data.map((item) => {
+        return {
+          ...item,
+          field_value: ''
+        }
+      })
     })
   }
+
+  const onInputChange = useCallback((index, value) => {
+    const _extraFields = JSON.parse(JSON.stringify(extraFields))
+    _extraFields[index].field_value = value
+    console.log(JSON.stringify(_extraFields))
+    setState((draft) => {
+      draft.extraFields = _extraFields
+    })
+  })
 
   const handlePay = async () => {
     const { address_id, username, telephone, province, city, county, adrdetail } = address
     const goodsItems = JSON.parse(decodeURIComponent(items))
     const { ziti, distributor_id } = activityInfo
+    const communityExtraData = {}
+    extraFields.forEach(item => {
+      communityExtraData[item.field_name] = item.field_value
+    })
     const params = {
       receipt_type: 'ziti',
       order_type: 'normal_community',
@@ -68,7 +89,8 @@ const EspierCheckout = () => {
       receiver_district: county,
       receiver_address: adrdetail,
       pay_type: 'wxpay',
-      items: goodsItems
+      items: goodsItems,
+      community_extra_data: JSON.stringify(communityExtraData)
     }
     const orderInfo = await api.trade.create(params)
     cashierPayment(params, orderInfo)
@@ -79,18 +101,18 @@ const EspierCheckout = () => {
       <View className='espierCheckout-toolbar'>
         <View className='espierCheckout-toolbar__price'>
           实际支付：
-          <SpPrice value={info?.totalFee} />
+          <SpPrice size={46} value={info?.totalFee} />
         </View>
 
-        <View className='espierCheckout-toolbar__button' onClick={handlePay}>
+        <AtButton circle type="primary" className='espierCheckout-toolbar__button' onClick={handlePay}>
           立即支付
-        </View>
+        </AtButton>
       </View>
     )
   }
 
   return (
-    <SpPage className='page-community-index' renderFooter={renderFooter()}>
+    <SpPage className='page-community-checkout' renderFooter={renderFooter()}>
       <View className='espierCheckout'>
         <View className='espierCheckout-header'>
           <View className='espierCheckout-header__explain'>配送说明</View>
@@ -108,9 +130,21 @@ const EspierCheckout = () => {
           </View>
         </View>
 
+        {extraFields.length > 0 && (
+          <View className='extra-block'>
+            {extraFields.map((item, index) => (
+              <SpCell border title={item.field_name}>
+                {item.field_type == 'text' && (
+                  <AtInput name={item.field_name} value={item.field_value} placeholder={`请填写${item.field_name}`} onChange={onInputChange.bind(this, index)} />
+                )}
+              </SpCell>
+            ))}
+          </View>
+        )}
+
         <View className='espierCheckout-goods'>
           {info?.items.map((item) => (
-            <CompGoodsItemBuy info={item} show />
+            <CompGoodsItemBuy info={item} hideInputNumber />
           ))}
         </View>
 
@@ -123,8 +157,7 @@ const EspierCheckout = () => {
 
           <View className='espierCheckout-total__payPrice'>
             <Text className='espierCheckout-total__payPrice-num'>共{info?.totalItemNum}件</Text>
-            实际支付
-            <SpPrice value={info?.totalFee} />
+            实际支付 <SpPrice value={info?.totalFee} />
           </View>
         </View>
 

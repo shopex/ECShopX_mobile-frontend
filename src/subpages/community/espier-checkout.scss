@@ -2,8 +2,7 @@
   &-header {
     // height: 150px;
     background: #fefffe;
-    padding: 35px 30px;
-    border-top: 1px solid #f7f7f7;
+    padding: 30px;
 
     &__explain {
       font-size: 30px;
@@ -12,9 +11,9 @@
   }
 
   &-address {
-    padding: 35px 30px;
+    padding: 30px;
     background: #fefffe;
-    margin-top: 22px;
+    margin-top: 20px;
 
     &__title {
       padding-bottom: 28px;
@@ -27,7 +26,6 @@
     }
 
     &__info {
-      padding: 35px 20px 25px 20px;
       background: #f8f8f7;
 
       &-name {
@@ -42,7 +40,7 @@
   }
 
   &-goods {
-    margin-top: 22px;
+    margin-top: 20px;
     padding: 0 30px;
     background: #fff;
   }
@@ -59,10 +57,6 @@
     &__title {
       font-size: 30px;
     }
-    .sp-price__int,
-    .sp-price__symbol {
-      font-weight: 900;
-    }
 
     &__payPrice {
       text-align: right;
@@ -73,18 +67,12 @@
         color: #666;
         margin-right: 8px;
       }
-
-      .sp-price__int,
-      .sp-price__symbol {
-        font-size: 38px !important;
-        // color: #fe6620;
-      }
     }
   }
 
   &-remarks {
     padding: 30px;
-    margin-top: 22px;
+    margin: 20px 0;
     background: #fff;
 
     .at-input {
@@ -99,33 +87,34 @@
   }
 
   &-toolbar {
-    padding-left: 30px;
+    // padding-left: 30px;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
 
     &__price {
-      height: 108px;
-      line-height: 108px;
-
-      .sp-price__int,
-      .sp-price__symbol {
-        font-size: 38px !important;
-        // color: #fe6620;
-        // font-weight: 900;
-      }
-
-      .sp-price__int {
-        font-size: 45px !important;
-      }
+      // height: 108px;
+      // line-height: 108px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
     }
+  }
 
-    &__button {
-      width: 290px;
-      height: 108px;
-      line-height: 108px;
-      text-align: center;
-      color: #fff;
-      background: #06c160;
+  .at-input {
+    margin-bottom: 0;
+    &::after {
+      border-color: transparent;
+    }
+  }
+
+  .extra-block {
+    // padding: 30px 20px;
+    background: #fff;
+    margin-top: 20px;
+    .sp-cell {
+      padding: 10px 30px;
     }
   }
 }
