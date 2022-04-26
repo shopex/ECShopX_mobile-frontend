@@ -12,10 +12,18 @@ const initialState = {
 }
 
 function SpUpload(props) {
-  const { max, onChange = () => {} } = props
+  const { max, onChange = () => {}, value = [] } = props
 
   const [state, setState] = useImmer(initialState)
   const { files } = state
+
+  useEffect(() => {
+    if (value.length > 0) {
+      setState((draft) => {
+        draft.files = value
+      })
+    }
+  }, [value])
 
   const handleUploadFile = async () => {
     const { tempFilePaths } = await Taro.chooseImage({
@@ -28,11 +36,8 @@ function SpUpload(props) {
     }))
     imgUploader.uploadImageFn(resultFiles).then((res) => {
       console.log('---uploadImageFn res---', res)
-      const _res = res.map(item => item.url)
-      const _files = [
-        ...files,
-        ..._res
-      ]
+      const _res = res.map((item) => item.url)
+      const _files = [...files, ..._res]
       setState((draft) => {
         draft.files = _files
       })
