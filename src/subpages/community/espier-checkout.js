@@ -34,7 +34,8 @@ const EspierCheckout = () => {
 
   const fetch = async () => {
     const goodsItems = JSON.parse(decodeURIComponent(items))
-    const { distributor_id } = chiefInfo.distributors
+    const activityInfo = await api.community.getActiveDetail(activity_id)
+    const { distributor_id } = activityInfo
     const params = {
       order_type: 'normal_community',
       community_activity_id: activity_id,
@@ -43,7 +44,6 @@ const EspierCheckout = () => {
       receipt_type: 'ziti'
     }
     const res = await api.cart.total(params)
-    const activityInfo = await api.community.getActiveDetail(activity_id)
 
     setState((draft) => {
       draft.info = pickBy(res, doc.community.COMMUNITY_CHECKOUT_RES)
@@ -54,12 +54,12 @@ const EspierCheckout = () => {
   const handlePay = async () => {
     const { address_id, username, telephone, province, city, county, adrdetail } = address
     const goodsItems = JSON.parse(decodeURIComponent(items))
-    const { distributor_id } = chiefInfo.distributors
+    const { ziti, distributor_id } = activityInfo
     const params = {
       receipt_type: 'ziti',
       order_type: 'normal_community',
       distributor_id,
-      community_ziti_id: activityInfo.ziti[0].ziti_id,
+      community_ziti_id: ziti[0].ziti_id,
       community_activity_id: activity_id,
       receiver_name: username,
       receiver_mobile: telephone,
