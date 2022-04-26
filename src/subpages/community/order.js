@@ -19,7 +19,7 @@ import doc from '@/doc'
 import api from '@/api'
 import CompOrderItem from './comps/comp-orderitem'
 import CompTabbar from './comps/comp-tabbar'
-// import CompTradeItem from './comps/comp-tradeitem'
+import CompTradeItem from './comps/comp-tradeitem'
 
 import './order.scss'
 
@@ -368,44 +368,8 @@ function CommunityOrder(props) {
               <AtTabsPane current={curTabIdx} key={panes.status} index={pIdx}></AtTabsPane>
             ))}
           </AtTabs>
-          {/* {curTabIdx == 1 && (
-            <View className='page-community-order-tags'>
-              {deliverTagList.map((item, idx) => (
-                <AtTag
-                  name={item}
-                  key={item}
-                  active={idx == curDeliverTagIdx}
-                  onClick={deliverTagClick}
-                  className={classNames(
-                    'order-tags',
-                    idx === curDeliverTagIdx ? 'order-tags-active' : ''
-                  )}
-                >
-                  {item.title}
-                </AtTag>
-              ))}
-            </View>
-          )} */}
-          {/* {curTabIdx == 3 && (
-            <View className='page-community-order-tags'>
-              {afterTagList.map((item, idx) => (
-                <AtTag
-                  name={item}
-                  key={item}
-                  active={idx == curAfterTagIdx}
-                  onClick={afterTagClick}
-                  className={classNames(
-                    'order-tags',
-                    idx === curAfterTagIdx ? 'order-tags-active' : ''
-                  )}
-                >
-                  {item.title}
-                </AtTag>
-              ))}
-            </View>
-          )} */}
         </View>
-        {/* {curTabIdx == 3 &&
+        {curTabIdx == 3 &&
           orderList.map((item, idx) => (
             <CompTradeItem
               key={`${idx}1`}
@@ -422,7 +386,7 @@ function CommunityOrder(props) {
               info={item}
               onClick={() => handleClickItem(item)}
             />
-          ))} */}
+          ))}
         {curTabIdx !== 3 &&
           orderList.map((item) => (
             <CompOrderItem
