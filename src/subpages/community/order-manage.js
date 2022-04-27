@@ -178,33 +178,33 @@ function CheifOrderManage(props) {
     // })
   }
 
-  const onEditClick = (isOpened) => {
-    setState((draft) => {
-      draft.isOpened = isOpened
-    })
-  }
+  // const onEditClick = (isOpened) => {
+  //   setState((draft) => {
+  //     draft.isOpened = isOpened
+  //   })
+  // }
 
-  const actionChange = async (isOpened, type) => {
-    console.log(type)
-    if (type == 'confirm') {
-      console.log(remark, '---')
-      await setState((draft) => {
-        draft.remark = ''
-        draft.orderList = []
-        draft.curTabIdx = 0
-        // draft.curAfterTagIdx = 0
-        // draft.curDeliverTagIdx = 0
-      })
-      orderRef.current.reset()
-    } else {
-      setState((draft) => {
-        draft.remark = ''
-      })
-    }
-    setState((draft) => {
-      draft.isOpened = isOpened
-    })
-  }
+  // const actionChange = async (isOpened, type) => {
+  //   console.log(type)
+  //   if (type == 'confirm') {
+  //     console.log(remark, '---')
+  //     await setState((draft) => {
+  //       draft.remark = ''
+  //       draft.orderList = []
+  //       draft.curTabIdx = 0
+  //       // draft.curAfterTagIdx = 0
+  //       // draft.curDeliverTagIdx = 0
+  //     })
+  //     orderRef.current.reset()
+  //   } else {
+  //     setState((draft) => {
+  //       draft.remark = ''
+  //     })
+  //   }
+  //   setState((draft) => {
+  //     draft.isOpened = isOpened
+  //   })
+  // }
 
   const handleChange = (value) => {
     setState((draft) => {
@@ -379,11 +379,11 @@ function CheifOrderManage(props) {
             key={item.order_id}
             info={item}
             renderFooter={renderFooter(item)}
-            onEditClick={onEditClick}
+            // onEditClick={onEditClick}
           />
         ))}
       </SpScrollView>
-      <AtModal isOpened={isOpened} closeOnClickOverlay={false}>
+      {/* <AtModal isOpened={isOpened} closeOnClickOverlay={false}>
         <AtModalHeader>添加备注</AtModalHeader>
         <AtModalContent>
           <AtInput
@@ -399,7 +399,7 @@ function CheifOrderManage(props) {
           <Button onClick={() => actionChange(false, 'cancel')}>取消</Button>
           <Button onClick={() => actionChange(false, 'confirm')}>确定</Button>
         </AtModalAction>
-      </AtModal>
+      </AtModal> */}
       <AtModal
         isOpened={orderModal}
         className='order-modal'
