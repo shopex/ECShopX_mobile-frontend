@@ -16,22 +16,28 @@ import CompGroupItem from './comps/comp-groupitem'
 
 const MENUS = [
   {
-    key: 'dianwu',
+    key: 'order',
     name: '订单管理',
     icon: 'm_menu_order.png',
     link: '/subpages/community/order-manage'
   },
   {
-    key: 'dianwu',
+    key: 'active',
     name: '我的活动',
     icon: 'm_menu_activity.png',
     link: '/subpages/community/activity'
   },
   {
-    key: 'dianwu',
+    key: 'start',
     name: '一键开团',
     icon: 'm_menu_group.png',
     link: '/subpages/community/group'
+  },
+  {
+    key: 'goods',
+    name: '商品核销',
+    icon: 'm_menu_qrcode.png',
+    link: ''
   }
 ]
 
@@ -129,6 +135,27 @@ const Index = () => {
     })
   }
 
+  const onMenusClick = (item) => {
+    if (item.key == 'goods') {
+      Taro.scanCode().then(async (res) => {
+        let parmas = {
+          code: res.result
+        }
+        try {
+          const result = await api.user.scanOrderCode(parmas)
+          S.toast(result.msg)
+        } catch (e) {
+          Taro.showToast({
+            icon: 'none',
+            title: e.message
+          })
+        }
+      })
+    } else {
+      Taro.navigateTo({ url: item.link })
+    }
+  }
+
   return (
     <SpPage className='page-community-index'>
       <SpScrollView className='page-community-activity-scroll' ref={activityRef} fetch={fetch}>
@@ -145,7 +172,7 @@ const Index = () => {
             {MENUS.map((item, index) => (
               <View
                 className='menu-item'
-                onClick={() => Taro.navigateTo({ url: item.link })}
+                onClick={() => onMenusClick(item)}
                 key={`menu-item__${index}`}
               >
                 <SpImage className='menu-image' src={item.icon} width={100} height={100} />
