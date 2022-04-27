@@ -277,7 +277,7 @@ function CheifOrderManage(props) {
 
   const onHefChange = () => {
     Taro.navigateTo({
-      url: '/subpages/community/boxlist'
+      url: `/subpages/community/boxlist?activity_id=${activity_id}`
     })
   }
 
@@ -325,7 +325,7 @@ function CheifOrderManage(props) {
           </View>
         </View>
       )}
-      {checkIsChief && (
+      {checkIsChief && activity_id && (
         <View className='page-order-manage-boxlist' onClick={onHefChange}>
           <View className='btn'>成团汇总</View>
         </View>

@@ -77,7 +77,7 @@ export function scanOrderCode(parmas) {
   return req.post('/community/orders/qr_writeoff', parmas)
 }
 
-export function activityOrderItem() {
+export function activityOrderItem(activity_id) {
   // 团长查看活动商品统计
-  return req.post(`/community/chief/activity_order_item`)
+  return req.post(`/community/chief/activity_order_item/${activity_id}`)
 }

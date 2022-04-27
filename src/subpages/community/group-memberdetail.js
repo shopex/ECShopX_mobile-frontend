@@ -113,7 +113,12 @@ function GroupLeaderDetail(props) {
             <Text className='toolbar-item-txt'>购物车</Text>
           </View> */}
           <View className='btn-buy-wrap'>
-            <AtButton circle type='primary' onClick={handleClickBuy.bind(this)}>
+            <AtButton
+              disabled={!info?.showBuy}
+              circle
+              type='primary'
+              onClick={handleClickBuy.bind(this)}
+            >
               <View className='btn-buy'>
                 {/* <SpPrice value={0} /> */}
                 <Text>跟团购买</Text>

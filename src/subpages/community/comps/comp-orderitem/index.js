@@ -21,7 +21,7 @@ function CompOrderItem(props) {
 
   return (
     <View className='comp-order-item'>
-      {!checkIsChief && info.autoCancelSeconds?.ss > 0 && (
+      {/* {!checkIsChief && info.autoCancelSeconds?.ss > 0 && (
         <View className='comp-order-item-timer'>
           请在
           <AtCountdown
@@ -35,7 +35,7 @@ function CompOrderItem(props) {
           />
           内支付，过期订单自动关闭
         </View>
-      )}
+      )} */}
       <View className='comp-order-item-head'>
         <View className='head-info'>
           <View className='head-info-group'>
