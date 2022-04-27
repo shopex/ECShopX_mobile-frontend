@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import Taro, { useDidShow } from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { Image, View, Picker } from '@tarojs/components'
 import { AtList, AtListItem } from 'taro-ui'
 import { useSelector } from 'react-redux'
@@ -35,6 +35,8 @@ const BoxList = () => {
   const { startDate, startTime, endDate, endTime, activeIndex, list, itemBoxNum, itemPieceNum } =
     state
   const goodsRef = useRef()
+  const $instance = getCurrentInstance()
+  const { activity_id } = $instance.router?.params
 
   // useEffect(() => {
   //   if (startDate && startTime && endDate && endTime) {
@@ -51,7 +53,9 @@ const BoxList = () => {
     //   params['end_time'] = `${endDate} ${endTime}`
     // }
 
-    const { list, total, item_box_num, item_piece_num } = await api.community.activityOrderItem()
+    const { list, total, item_box_num, item_piece_num } = await api.community.activityOrderItem(
+      activity_id
+    )
     setState((draft) => {
       draft.list = pickBy(list, doc.community.GOOD_LIST)
       draft.itemBoxNum = item_box_num
