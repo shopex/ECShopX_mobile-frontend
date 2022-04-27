@@ -40,6 +40,7 @@ function PickerCommunity(props) {
 
   const onSelectCommunityChange = (item, checked) => {
     dispatch(updateSelectCommunityZiti(item))
+    Taro.navigateBack()
   }
 
   const handleConfirm = () => {

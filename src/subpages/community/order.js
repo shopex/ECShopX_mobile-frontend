@@ -62,7 +62,7 @@ function CommunityOrder(props) {
   const orderRef = useRef()
   const $instance = getCurrentInstance()
   const { activity_id } = $instance.router?.params
-
+  
   const { keywords, orderList, curTabIdx, isOpened, remark, payLoading } = state
   const fetch = async ({ pageIndex, pageSize }) => {
     let total_count = 0
@@ -85,14 +85,14 @@ function CommunityOrder(props) {
         status: (curTabIdx == 1 && 5) || (curTabIdx == 2 && 4) || '',
         activity_id
       }
-      const { list, total_count: total } = await api.community.getCommunityList(params)
+      const { list, pager: { count } } = await api.community.getCommunityList(params)
       const n_list = pickBy(list, doc.community.COMMUNITY_ORDER_LIST)
       setState((draft) => {
         draft.orderList = [...orderList, ...n_list]
       })
-      total_count = total
+      total_count = count
     }
-
+    debugger
     return { total: total_count }
   }
 
@@ -151,7 +151,7 @@ function CommunityOrder(props) {
       canApplyAftersales
     } = info || {}
     let isShowCacel =
-      (orderStatusDes == 'PAYED' || orderStatusDes == 'NOTPAY') &&
+      (orderStatusDes == 'PAYED_PENDING' || orderStatusDes == 'NOTPAY') &&
       canApplyCancel != 0 &&
       communityInfo.activity_status != 'success'
     return (
