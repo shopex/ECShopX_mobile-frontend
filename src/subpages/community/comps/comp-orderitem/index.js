@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { AtCountdown } from 'taro-ui'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { SpPrice } from '@/components'
 import { useSelector } from 'react-redux'
@@ -19,16 +20,16 @@ function CompOrderItem(props) {
 
   return (
     <View className='comp-order-item'>
-      {!checkIsChief && autoCancelSeconds?.ss && (
+      {!checkIsChief && info?.autoCancelSeconds?.ss && (
         <View className='comp-order-item-timer'>
           请在
           <AtCountdown
             format={{ day: '天', hours: ':', minutes: ':', seconds: '' }}
-            isShowDay={autoCancelSeconds.dd > 0}
-            day={autoCancelSeconds.dd}
-            hours={autoCancelSeconds.hh}
-            minutes={autoCancelSeconds.mm}
-            seconds={autoCancelSeconds.ss}
+            isShowDay={info?.autoCancelSeconds.dd > 0}
+            day={info?.autoCancelSeconds.dd}
+            hours={info?.autoCancelSeconds.hh}
+            minutes={info?.autoCancelSeconds.mm}
+            seconds={info?.autoCancelSeconds.ss}
             onTimeUp={onCountDownEnd}
           />
           内支付，过期订单自动关闭
