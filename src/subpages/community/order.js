@@ -95,7 +95,6 @@ function CommunityOrder(props) {
       })
       total_count = count
     }
-    debugger
     return { total: total_count }
   }
 
