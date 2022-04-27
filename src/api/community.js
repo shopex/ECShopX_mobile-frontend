@@ -71,3 +71,8 @@ export function exportOrder(parmas) {
   // 导出团购订单
   return req.get(`/community/orders/export`, parmas)
 }
+
+export function scanOrderCode(parmas) {
+  // 核销码
+  return req.post('/community/orders/qr_writeoffcode', parmas)
+}
