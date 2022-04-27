@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { View, Text, ScrollView, Image } from '@tarojs/components'
+import { View, Text, ScrollView, Image, Button } from '@tarojs/components'
 import { SpPage, SpImage, SpPrice, SpHtml } from '@/components'
 import { AtButton, AtCountdown } from 'taro-ui'
 import { useImmer } from 'use-immer'
@@ -140,10 +140,10 @@ function GroupLeaderDetail(props) {
               <Text className='icon iconfont icon-weixin'></Text>
               <Text className='right-item-txt'>朋友圈</Text>
             </View> */}
-            <View className='right-item' openType='share'>
-              <Text className='icon iconfont icon-fenxiang-01' />
+            <Button className='right-item' openType='share'>
+              <Text className='iconfont icon-fenxiang-01'></Text>
               <Text className='right-item-txt'>分享</Text>
-            </View>
+            </Button>
           </View>
         </View>
         {chiefInfo?.chief_desc && (
@@ -210,7 +210,7 @@ function GroupLeaderDetail(props) {
               <View className='time'>
                 {/* <Text className=''>9人查看</Text> */}
                 {/* <Text className='i'></Text> */}
-                <Text className=''>{info?.order_num}人跟团</Text>
+                {info?.order_num && <Text className=''>{info?.order_num}人跟团</Text>}
               </View>
             </View>
           </View>
