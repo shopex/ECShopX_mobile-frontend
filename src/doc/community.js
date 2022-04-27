@@ -33,7 +33,7 @@ export const COMMUNITY_ORDER_LIST = {
     if (auto_cancel_seconds) {
       return calcTimer(auto_cancel_seconds)
     } else {
-      return {}
+      return 0
     }
   },
   items: ({ items }) => {
