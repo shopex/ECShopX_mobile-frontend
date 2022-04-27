@@ -28,6 +28,7 @@ export const COMMUNITY_ORDER_LIST = {
   orderType: 'order_type',
   payType: 'pay_type',
   totalFee: 'total_fee',
+  activityId: 'activity_id',
   canApplyAftersales: 'can_apply_aftersales',
   autoCancelSeconds: ({ auto_cancel_seconds }) => {
     if (auto_cancel_seconds) {
