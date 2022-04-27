@@ -8,13 +8,14 @@ import { classNames } from '@/utils'
 import './index.scss'
 
 function CompOrderItem(props) {
-  const { checkIsChief = true } = props
+  const { checkIsChief = true, onClick = () => {} } = props
   const {
     info = {},
     renderFooter = null,
     onEditClick = () => {},
     onCountDownEnd = () => {}
   } = props
+  // const { checkIsChief: isChief } = useSelector((state) => state.user)
 
   return (
     <View className='comp-order-item'>
@@ -54,10 +55,12 @@ function CompOrderItem(props) {
         </View>
         <View className='comp-order-item-active'>
           <View className='active-name'>{info?.communityInfo?.activity_name}</View>
-          <View>
-            <Text className='active-font'>查看</Text>
-            <Text className='iconfont icon-qianwang-01' />
-          </View>
+          {checkIsChief && (
+            <View onClick={onClick(info)}>
+              <Text className='active-font'>查看</Text>
+              <Text className='iconfont icon-qianwang-01' />
+            </View>
+          )}
         </View>
         <View className='comp-order-item-goods'>
           <View className='goods-info'>

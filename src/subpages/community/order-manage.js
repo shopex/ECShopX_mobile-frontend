@@ -178,6 +178,12 @@ function CheifOrderManage(props) {
     // })
   }
 
+  const onOrderClick = (item) => {
+    Taro.navigateTo({
+      url: `/subpages/community/group-leaderdetail?activity_id=${item.activityId}`
+    })
+  }
+
   // const onEditClick = (isOpened) => {
   //   setState((draft) => {
   //     draft.isOpened = isOpened
@@ -379,6 +385,7 @@ function CheifOrderManage(props) {
             key={item.order_id}
             info={item}
             renderFooter={renderFooter(item)}
+            onClick={onOrderClick}
             // onEditClick={onEditClick}
           />
         ))}
