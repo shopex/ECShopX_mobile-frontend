@@ -127,16 +127,22 @@ $good-img-width: 80px;
           flex-direction: column;
           align-items: center;
           position: relative;
-          line-height: 1.2;
-          margin-left: 30px;
+          // line-height: 1.2;
+          // margin-left: 30px;
 
-          .iconfont {
-            font-size: 38px;
+          background-color: transparent;
+          line-height: normal;
+          margin: 0;
+          padding: 0;
+          &:after {
+            border: 0px;
+          }
+          .icon-fenxiang-01 {
+            font-size: 40px;
             color: var(--color-primary);
           }
-
           &-txt {
-            font-size: 20px;
+            font-size: 24px;
             color: #999;
           }
         }

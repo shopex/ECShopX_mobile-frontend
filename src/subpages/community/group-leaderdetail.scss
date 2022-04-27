@@ -87,7 +87,8 @@
         }
         .icon-fenxiang-01 {
           font-size: 40px;
-          // color: #3ec07d;
+          color: var(--color-primary);
+          // color: var(--color-primary);
         }
         &-txt {
           font-size: 24px;
@@ -111,13 +112,13 @@
       }
 
       .type {
-        color: #3ec07d;
-        background-color: #e9f9f2;
-        font-size: 26px;
+        color: var(--color-primary);
+        border: 1px solid var(--color-primary);
+        font-size: 24px;
         vertical-align: middle;
         margin-left: 20px;
         padding: 0 4px;
-        border-radius: 4px;
+        border-radius: 6px;
       }
 
       .list {
@@ -126,7 +127,7 @@
         color: #999;
 
         .time {
-          font-size: 24px;
+          font-size: 26px;
           display: flex;
           align-items: center;
 
@@ -135,6 +136,7 @@
 
           .countdown {
             color: #ef9e67;
+            margin-right: 5px;
           }
 
           .i {
@@ -177,8 +179,8 @@
       }
       .add-cart {
         margin: 20px 0;
-        background-color: #3ec07d !important;
-        border-color: #3ec07d !important;
+        background-color: var(--color-primary) !important;
+        border-color: var(--color-primary) !important;
       }
     }
 
@@ -222,12 +224,12 @@
             width: 40px;
             height: 40px;
             line-height: 42px;
-            font-size: 24px;
+            // font-size: 26px;
             color: var(--color-primary);
           }
           .at-countdown__separator {
             padding: 0;
-            font-size: 24px;
+            // font-size: 26px;
           }
         }
 
