@@ -37,9 +37,7 @@ function CompOrderItem(props) {
         <View className='head-info'>
           <View className='head-info-group'>
             <Text>跟团号：</Text>
-            <Text className='head-info-num'>
-              {info.communityInfo && info.communityInfo.activity_trade_no}
-            </Text>
+            <Text className='head-info-num'>{info?.communityInfo?.activity_trade_no}</Text>
           </View>
           <View className='head-info-date'>{info.createDate}</View>
         </View>
@@ -50,14 +48,12 @@ function CompOrderItem(props) {
       <View className='comp-order-item-content'>
         <View className='comp-order-item-title'>
           <View className='content-imgbox'>
-            <Image src={info.memberInfo && info.memberInfo.avatar} className='content-img' />
+            <Image src={info?.memberInfo?.avatar} className='content-img' />
           </View>
-          <Text>{info.memberInfo && info.memberInfo.username}</Text>
+          <Text>{info?.memberInfo?.username}</Text>
         </View>
         <View className='comp-order-item-active'>
-          <View className='active-name'>
-            {info.communityInfo && info.communityInfo.activity_name}
-          </View>
+          <View className='active-name'>{info?.communityInfo?.activity_name}</View>
           <View>
             <Text className='active-font'>查看</Text>
             <Text className='iconfont icon-qianwang-01' />
@@ -66,17 +62,16 @@ function CompOrderItem(props) {
         <View className='comp-order-item-goods'>
           <View className='goods-info'>
             <ScrollView className='scroll-goods' scrollX>
-              {info.items &&
-                info.items.map((good, goodIdx) => (
-                  <View className='scroll-item' key={goodIdx}>
-                    <View className='goods-imgbox'>
-                      <Image src={good.pic} className='goods-img' lazyLoad />
-                      {/* {!checkIsChief && <View className='img-desc'>商品已核销（只有团员有）</View>} */}
-                    </View>
-                    <View className='goods-desc'>{good.itemName}</View>
-                    <View className='goods-num'>+{good.num}件</View>
+              {info?.items.map((good, goodIdx) => (
+                <View className='scroll-item' key={goodIdx}>
+                  <View className='goods-imgbox'>
+                    <Image src={good.pic} className='goods-img' lazyLoad />
+                    {/* {!checkIsChief && <View className='img-desc'>商品已核销（只有团员有）</View>} */}
                   </View>
-                ))}
+                  <View className='goods-desc'>{good.itemName}</View>
+                  <View className='goods-num'>+{good.num}件</View>
+                </View>
+              ))}
             </ScrollView>
           </View>
           <View className='goods-sale'>
@@ -90,10 +85,10 @@ function CompOrderItem(props) {
             <View className='ziti-label'>
               <Text className='iconfont icon-dizhi-01' />
               <Text className='ziti-desc'>自提点：</Text>
-              <Text className='ziti-desc'>{info.address}</Text>
+              <Text className='ziti-desc'>{info?.communityInfo?.ziti_name}</Text>
             </View>
             <View className='ziti-address'>
-              <Text>{info.ziti_name}</Text>
+              <Text>{info?.communityInfo?.name}</Text>
               {/* <Text className='iconfont icon-dizhi-01 showaddress-icon' /> */}
             </View>
           </View>

@@ -26,7 +26,7 @@ function ItemList(props) {
 
   useEffect(() => {
     setState((draft) => {
-      draft.selection = selectGoods.map(item => item.itemId)
+      draft.selection = selectGoods.map((item) => item.itemId)
     })
   }, [])
 
@@ -37,7 +37,7 @@ function ItemList(props) {
     } else {
       temps.add(itemId)
     }
-    
+
     console.log(`selection:`, Array.from(temps))
     setState((draft) => {
       draft.selection = Array.from(temps)
@@ -51,7 +51,7 @@ function ItemList(props) {
     }
     const { total_count: total, list } = await api.community.getChiefItems(params)
     setState((draft) => {
-      draft.list = pickBy(list, doc.community.COMMUNITY_GOODS_ITEM)
+      draft.list = [...list, pickBy(list, doc.community.COMMUNITY_GOODS_ITEM)]
     })
     return {
       total
@@ -59,7 +59,7 @@ function ItemList(props) {
   }
 
   const handleConfirm = () => {
-    const res = list.filter(item => selection.includes(item.itemId) )
+    const res = list.filter((item) => selection.includes(item.itemId))
     dispatch(updateSelectGoods(res))
     Taro.navigateBack()
   }

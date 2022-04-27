@@ -214,7 +214,7 @@ function Group(props) {
     dispatch(updateSelectCommunityZiti(null))
     showToast(id ? '活动修改成功' : '活动添加成功')
     setTimeout(() => {
-      if(id) {
+      if (id) {
         Taro.navigateBack()
       } else {
         Taro.redirectTo({
@@ -301,7 +301,7 @@ function Group(props) {
                     </View>
                   </View>
                 </View>
-                {item.type == 'bigimage' && <SpImage src={item.value} width={670} height={670} />}
+                {item.type == 'bigimage' && <SpImage src={item.value} width={670} />}
                 {item.type == 'text' && (
                   <AtTextarea
                     name={`${item.type}__${index}`}
