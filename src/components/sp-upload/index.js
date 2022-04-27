@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
@@ -49,7 +48,7 @@ function SpUpload(props) {
     <View className='sp-upload'>
       {files.map((item, index) => (
         <View className='file-item' key={`file-item__${index}`}>
-          <SpImage src={item} />
+          <SpImage src={item} width={160} height={160} />
         </View>
       ))}
       <View className='btn-upload' onClick={handleUploadFile}>
