@@ -31,7 +31,7 @@ export const COMMUNITY_ORDER_LIST = {
   activityId: 'activity_id',
   canApplyAftersales: 'can_apply_aftersales',
   autoCancelSeconds: ({ auto_cancel_seconds }) => {
-    if (auto_cancel_seconds) {
+    if (auto_cancel_seconds > 0) {
       return calcTimer(auto_cancel_seconds)
     } else {
       return 0
@@ -62,6 +62,8 @@ export const COMMUNITY_ACTIVITY_ITEM = {
     return JSON.parse(activity_pics)
   },
   orders: 'orders',
+  activityStatus: 'activity_status',
+  showBuy: 'show_buy',
   buttons: 'buttons',
   activityName: 'activity_name',
   activityId: 'activity_id',
@@ -140,6 +142,7 @@ export const COMMUNITY_ACTIVITY_LIST = {
   orderNum: 'order_num',
   userNum: 'user_num',
   totalFee: 'total_fee',
+  canWriteoff: 'can_writeoff',
   items: ({ items }) => {
     if (!items) {
       return []
