@@ -13,6 +13,7 @@ import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '@/pages/ho
 
 import CompGoodsItemBuy from './comps/comp-goodsitembuy'
 import CompGroupLogList from './comps/comp-grouploglist'
+import CompGroupNeighbour from './comps/comp-groupneighbour'
 import CompWgts from './comps/comp-wgts'
 
 import './group-memberdetail.scss'
@@ -161,10 +162,39 @@ function GroupLeaderDetail(props) {
           </View>
         )}
 
+        <CompGroupNeighbour info={info?.ziti} /> 
+
         {/* 本团信息 */}
         <View className='group'>
-          <View className='group-title'>{info?.activityName}</View>
-          <View className='group-type'>自提</View>
+          <View className="group-hd">
+            <View className="group-name">
+              <Text className='group-title'>{info?.activityName}</Text>
+              <Text className='group-type'>自提</Text>
+            </View>
+            <View className="activity-status">{info?.activityStatusMsg}</View>
+          </View>
+
+          <View className='time'>
+            {/* {detail?.save_time && <View className='date'>{detail?.save_time} 发布</View>}
+            {detail?.save_time && timer.ss && <View className='i' />} */}
+            {timer?.ss && (
+              <>
+                <View className='countdown'>
+                  <AtCountdown
+                    format={{ day: '天', hours: ':', minutes: ':', seconds: '' }}
+                    isShowDay={timer.dd > 0}
+                    day={timer.dd}
+                    hours={timer.hh}
+                    minutes={timer.mm}
+                    seconds={timer.ss}
+                    onTimeUp={countDownEnd}
+                  />
+                </View>
+                后结束
+              </>
+            )}
+          </View>
+          
           <View className='group-info'>
             <View className='left'>
               <View className='title'>本团</View>

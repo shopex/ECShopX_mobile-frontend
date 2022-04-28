@@ -118,8 +118,11 @@ function GroupLeaderDetail(props) {
           <CompGroupNeighbour info={detail?.ziti} />
           <View className='group-info'>
             <View className='head'>
-              <Text className='name'>{detail?.activityName}</Text>
-              <Text className='type'>顾客自提</Text>
+              <View>
+                <Text className='name'>{detail?.activityName}</Text>
+                <Text className='type'>顾客自提</Text>
+              </View>
+              <View className="activity-status">{detail?.activityStatusMsg}</View>
             </View>
             <View className='goods-group-info'>
               <View className='list'>
