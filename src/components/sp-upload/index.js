@@ -61,8 +61,8 @@ function SpUpload(props) {
     <View className='sp-upload'>
       {files.map((item, index) => (
         <View className='file-item' key={`file-item__${index}`}>
-          <SpImage src={item} width={160} height={160} />
-          <Text className='iconfont icon-close' onClick={() => handleDeletePic(index)}></Text>
+          <SpImage mode="aspectFit" src={item} width={160} height={160}/>
+          <Text className='iconfont icon-guanbi' onClick={handleDeletePic.bind(this, index)}></Text>
         </View>
       ))}
       <View className='btn-upload' onClick={handleUploadFile}>

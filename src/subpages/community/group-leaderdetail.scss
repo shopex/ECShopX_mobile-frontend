@@ -103,6 +103,8 @@
 
       .head {
         margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
       }
 
       .name {
@@ -243,5 +245,9 @@
         }
       }
     }
+  }
+  .activity-status {
+    color: var(--color-primary);
+    font-size: 30px;
   }
 }
