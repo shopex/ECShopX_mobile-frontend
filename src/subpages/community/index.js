@@ -33,12 +33,12 @@ const MENUS = [
     icon: 'm_menu_group.png',
     link: '/subpages/community/group'
   },
-  {
-    key: 'goods',
-    name: '商品核销',
-    icon: 'm_menu_qrcode.png',
-    link: ''
-  }
+  // {
+  //   key: 'goods',
+  //   name: '商品核销',
+  //   icon: 'm_menu_qrcode.png',
+  //   link: ''
+  // }
 ]
 
 const tabList = [

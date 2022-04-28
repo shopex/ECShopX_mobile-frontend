@@ -88,12 +88,12 @@ export default class TradeItem extends Component {
         {!noHeader &&
           (customHeader ? (
             <View>
-              <SpNewShopItem inOrderList info={info.distributor_info} canJump />
+              {/* <SpNewShopItem inOrderList info={info.distributor_info} canJump /> */}
               <View className='trade-item__hd'>{this.props.renderHeader}</View>
             </View>
           ) : (
             <View>
-              <SpNewShopItem inOrderList info={info.distributor_info} canJump />
+              {/* <SpNewShopItem inOrderList info={info.distributor_info} canJump /> */}
               <View className='trade-item__hd'>
                 <View className='time lineone'>创建时间：{info.create_date}</View>
                 <View className='time linetwo'>

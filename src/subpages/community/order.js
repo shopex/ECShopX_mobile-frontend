@@ -92,7 +92,6 @@ function CommunityOrder(props) {
       })
       total_count = count
     }
-    debugger
     return { total: total_count }
   }
 
@@ -148,7 +147,8 @@ function CommunityOrder(props) {
       receiver_type,
       status,
       communityInfo,
-      canApplyAftersales
+      canApplyAftersales,
+      orderStatus
     } = info || {}
     let isShowCacel =
       (orderStatusDes == 'PAYED_PENDING' || orderStatusDes == 'NOTPAY') &&
@@ -160,21 +160,21 @@ function CommunityOrder(props) {
           <View
             onClick={() => handleClickBtn(info, 'cancel')}
             className='page-order-manage-btn'
-            style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}`}
+            style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}; margin-right: 10px;`}
           >
             取消订单
           </View>
         )}
-        {status === 'WAIT_BUYER_PAY' && (
+        {orderStatus === 'NOTPAY' && (
           <View
             onClick={() => handleClickBtn(info, 'pay')}
             className='page-order-manage-btn'
-            style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}`}
+            style={`border: 1PX solid ${colorPrimary}; color: ${colorPrimary}; margin-right: 10px;`}
           >
             立即支付
           </View>
         )}
-        {canApplyAftersales && (
+        {canApplyAftersales == 1 && (
           <View
             onClick={() => handleClickBtn(info, 'detail')}
             className='page-community-order-btn'
@@ -208,9 +208,9 @@ function CommunityOrder(props) {
   const handlePay = async (info) => {
     const { orderId, orderType, payType } = info
     const paymentParams = {
-      payType,
-      orderId,
-      orderType
+      pay_type: payType,
+      order_id: orderId,
+      order_type: orderType
     }
     setState((draft) => {
       draft.payLoading = true

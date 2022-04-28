@@ -4,7 +4,11 @@ $good-img-width: 80px;
   :root {
     --main-color-green: var(--color-primary);
   }
-
+  .comp-group-neighbour  {
+    // padding: 20px 0;
+    background-color: #fff;
+    margin-bottom: 30px;
+  }
   .goodsbuytoolbar {
     display: flex;
     padding: 20px;
@@ -182,7 +186,17 @@ $good-img-width: 80px;
       border-bottom: 1px solid #eee;
       padding: 20px 30px 20px;
       background-color: #fff;
-
+      &-hd {
+        display: flex;
+        justify-content: space-between;
+      }
+      .group-name {
+        display: flex;
+        align-items: center;
+      }
+      .group-title {
+        margin-right: 10px;
+      }
       &-title {
         font-size: 30px;
         font-weight: 900;
@@ -409,6 +423,34 @@ $good-img-width: 80px;
         font-size: 30px;
         padding: 20px 30px;
       }
+    }
+  }
+  .activity-status {
+    color: var(--color-primary);
+    font-size: 30px;
+  }
+
+  .countdown {
+    color: var(--color-primary);
+    .at-countdown {
+      color: $color-gray;
+      line-height: 1;
+      vertical-align: middle;
+      display: inline-block;
+      color: var(--color-primary);
+    }
+    .at-countdown__time-box {
+      font-family: 'Helvetica';
+      background: transparent;
+      width: 40px;
+      height: 40px;
+      line-height: 42px;
+      // font-size: 26px;
+      color: var(--color-primary);
+    }
+    .at-countdown__separator {
+      padding: 0;
+      // font-size: 26px;
     }
   }
 }
