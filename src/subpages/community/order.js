@@ -62,7 +62,7 @@ function CommunityOrder(props) {
   const orderRef = useRef()
   const $instance = getCurrentInstance()
   const { activity_id } = $instance.router?.params
-  
+
   const { keywords, orderList, curTabIdx, isOpened, remark, payLoading } = state
   const fetch = async ({ pageIndex, pageSize }) => {
     let total_count = 0
@@ -85,7 +85,10 @@ function CommunityOrder(props) {
         status: (curTabIdx == 1 && 5) || (curTabIdx == 2 && 4) || '',
         activity_id
       }
-      const { list, pager: { count } } = await api.community.getCommunityList(params)
+      const {
+        list,
+        pager: { count }
+      } = await api.community.getCommunityList(params)
       const n_list = pickBy(list, doc.community.COMMUNITY_ORDER_LIST)
       setState((draft) => {
         draft.orderList = [...orderList, ...n_list]
@@ -174,7 +177,7 @@ function CommunityOrder(props) {
             立即支付
           </View>
         )}
-        {canApplyAftersales == 1 && (
+        {canApplyAftersales > 0 && (
           <View
             onClick={() => handleClickBtn(info, 'detail')}
             className='page-community-order-btn'
@@ -282,6 +285,12 @@ function CommunityOrder(props) {
     orderRef.current.reset()
   }
 
+  const onOrderClick = (item) => {
+    Taro.navigateTo({
+      url: `/subpages/community/group-memberdetail?activity_id=${item?.communityInfo.activity_id}`
+    })
+  }
+
   // const actionChange = async (isOpened, type) => {
   //   console.log(type)
   //   if (type == 'confirm') {
@@ -359,7 +368,7 @@ function CommunityOrder(props) {
           <AtTabs
             current={curTabIdx}
             tabList={tabList}
-            onClick={handleClickTab}
+            onClick={(e) => handleClickTab(e)}
             customStyle={{ color: colorPrimary }}
           >
             {tabList.map((panes, pIdx) => (
@@ -388,10 +397,11 @@ function CommunityOrder(props) {
         {curTabIdx !== 3 &&
           orderList.map((item) => (
             <CompOrderItem
-              key={item.tid}
+              key={item.orderId}
               info={item}
               checkIsChief={false}
               renderFooter={renderFooter(item)}
+              onClick={onOrderClick}
               // onEditClick={onEditClick}
               onCountDownEnd={onCountDownEnd}
             />
