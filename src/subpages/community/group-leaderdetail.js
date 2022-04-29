@@ -122,7 +122,7 @@ function GroupLeaderDetail(props) {
                 <Text className='name'>{detail?.activityName}</Text>
                 <Text className='type'>顾客自提</Text>
               </View>
-              <View className="activity-status">{detail?.activityStatusMsg}</View>
+              <View className='activity-status'>{detail?.activityStatusMsg}</View>
             </View>
             <View className='goods-group-info'>
               <View className='list'>
@@ -162,7 +162,7 @@ function GroupLeaderDetail(props) {
               <Text className='icon iconfont icon-gouwuche'></Text>
               请先加好友或进群，确认邻居身份后再下单
             </View>
-            {detail?.activityPics.map((item) => (
+            {detail?.activityPics?.map((item) => (
               <SpImage
                 src={item}
                 mode='aspectFit'
@@ -178,7 +178,7 @@ function GroupLeaderDetail(props) {
         </View>
 
         <View className='goodslist'>
-          {detail?.items.map((item) => (
+          {detail?.items?.map((item) => (
             <CompGoodsItem info={item} />
           ))}
           {/* <CompGoodsItemBuy isShare isMarket isLeft isTag isSpecs></CompGoodsItemBuy>

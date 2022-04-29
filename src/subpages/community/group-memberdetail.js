@@ -181,7 +181,7 @@ function GroupLeaderDetail(props) {
             </View>
             <View className='right'>
               <ScrollView className='scroll-goods' scrollX>
-                {info?.items.map((item, idx) => (
+                {info?.items?.map((item, idx) => (
                   <View className='goods' key={idx}>
                     <View className='goods-imgbox'>
                       <Image src={item.pic} className='goods-img' lazyLoad />
@@ -238,7 +238,7 @@ function GroupLeaderDetail(props) {
         </View>
 
         <View className='goodslist'>
-          {items.map((goods, index) => (
+          {items?.map((goods, index) => (
             <CompGoodsItemBuy
               // isShare={false}
               // key={goodsIdx}

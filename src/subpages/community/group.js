@@ -263,7 +263,7 @@ function Group(props) {
             />
           </View>
           <View className='info-list'>
-            {comps.map((item, index) => (
+            {comps?.map((item, index) => (
               <View className='comp-item-wrap' key={`comp-item__${index}`}>
                 <View className='comp-info'>
                   <Text className='comp-name'>{getCompName(item)}</Text>
