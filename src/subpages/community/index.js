@@ -195,7 +195,7 @@ const Index = () => {
           </View>
         </View>
 
-        {/* <View className='card-block'>
+        <View className='card-block'>
           <View className='card-block-hd'>团员功能</View>
           <View className='card-block-bd menu-list'>
             {MENUS.map((item, index) => (
@@ -209,7 +209,7 @@ const Index = () => {
               </View>
             ))}
           </View>
-        </View> */}
+        </View>
 
         <View className='card-block'>
           <View className='search-wrap'>
