@@ -162,15 +162,16 @@ function GroupLeaderDetail(props) {
               <Text className='icon iconfont icon-gouwuche'></Text>
               请先加好友或进群，确认邻居身份后再下单
             </View>
-            {detail?.activityPics?.map((item) => (
-              <SpImage
-                src={item}
-                mode='aspectFit'
-                className='group-head'
-                width={200}
-                height={200}
-              />
-            ))}
+            {detail?.activityPics &&
+              detail?.activityPics?.map((item) => (
+                <SpImage
+                  src={item}
+                  mode='aspectFit'
+                  className='group-head'
+                  width={200}
+                  height={200}
+                />
+              ))}
           </View>
           <View className='group-foot'>
             <CompWgts info={detail?.activityIntro} />
