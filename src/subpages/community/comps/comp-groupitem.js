@@ -5,11 +5,11 @@ import { classNames } from '@/utils'
 import './comp-groupitem.scss'
 
 function CompGroupItem(props) {
-  const { info } = props
+  const { info = {}, onClick = () => {} } = props
 
   return (
     <View className='comp-group-item'>
-      <View className='group-item-hd'>
+      <View className='group-item-hd' onClick={() => onClick(info)}>
         <View className='item-info'>
           <View className='info-hd'>
             <View className='name'>{info.activityName}</View>
@@ -21,7 +21,7 @@ function CompGroupItem(props) {
         <View></View>
       </View>
       <View className='group-item-bd'>
-        <ScrollView scrollX className='img_list'>
+        <ScrollView scrollX className='img_list' onClick={() => onClick(info)}>
           {info?.items.map((item, idx) => (
             <View className='goods-item' key={`goods-item__${idx}`}>
               <SpImage src={item.pics} width={200} height={200} />
