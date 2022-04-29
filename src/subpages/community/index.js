@@ -113,9 +113,9 @@ const Index = () => {
     })
   }
 
-  const handleOnClear = async (value) => {
+  const handleOnClear = async () => {
     await setState((draft) => {
-      draft.searchValue = value
+      draft.searchValue = undefined
       draft.activityList = []
     })
     setIsShowSearch(false)
@@ -124,9 +124,11 @@ const Index = () => {
 
   const handleSearchCancel = () => {
     setState((draft) => {
-      draft.searchValue = ''
+      draft.searchValue = undefined
+      draft.orderList = []
     })
     setIsShowSearch(false)
+    orderRef.current.reset()
   }
 
   const handleConfirm = async (val) => {
@@ -214,7 +216,7 @@ const Index = () => {
             <SpSearchBar
               showDailog={false}
               keyword={searchValue}
-              placeholder='搜索商品名'
+              placeholder='根据活动名查询'
               onFocus={handleOnFocus}
               onChange={onSearchChange}
               onClear={handleOnClear}
