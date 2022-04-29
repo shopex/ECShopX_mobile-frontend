@@ -3,6 +3,7 @@ import { useImmer } from 'use-immer'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import imgUploader from '@/utils/upload'
+import { isArray } from '@/utils'
 import { SpImage } from '@/components'
 import './index.scss'
 
@@ -59,12 +60,16 @@ function SpUpload(props) {
 
   return (
     <View className='sp-upload'>
-      {files.map((item, index) => (
-        <View className='file-item' key={`file-item__${index}`}>
-          <SpImage mode='aspectFit' src={item} width={160} height={160} />
-          <Text className='iconfont icon-guanbi' onClick={handleDeletePic.bind(this, index)}></Text>
-        </View>
-      ))}
+      {isArray(files) &&
+        files.map((item, index) => (
+          <View className='file-item' key={`file-item__${index}`}>
+            <SpImage mode='aspectFit' src={item} width={160} height={160} />
+            <Text
+              className='iconfont icon-guanbi'
+              onClick={handleDeletePic.bind(this, index)}
+            ></Text>
+          </View>
+        ))}
       <View className='btn-upload' onClick={handleUploadFile}>
         <Text className='iconfont icon-plus'></Text>
         <Text className='btn-upload-txt'>添加二维码</Text>
