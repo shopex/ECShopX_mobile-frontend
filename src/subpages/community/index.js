@@ -14,7 +14,7 @@ import './index.scss'
 import CompTabbar from './comps/comp-tabbar'
 import CompGroupItem from './comps/comp-groupitem'
 
-const MENUS = [
+const CHIEFMENUS = [
   {
     key: 'order',
     name: '订单管理',
@@ -32,13 +32,22 @@ const MENUS = [
     name: '一键开团',
     icon: 'm_menu_group.png',
     link: '/subpages/community/group'
-  },
+  }
   // {
   //   key: 'goods',
   //   name: '商品核销',
   //   icon: 'm_menu_qrcode.png',
   //   link: ''
   // }
+]
+
+const MENUS = [
+  {
+    key: 'order',
+    name: '我的订单',
+    icon: 'm_menu_order.png',
+    link: '/subpages/community/order'
+  }
 ]
 
 const tabList = [
@@ -171,6 +180,22 @@ const Index = () => {
         <View className='card-block'>
           <View className='card-block-hd'>团长功能</View>
           <View className='card-block-bd menu-list'>
+            {CHIEFMENUS.map((item, index) => (
+              <View
+                className='menu-item'
+                onClick={() => onMenusClick(item)}
+                key={`menu-item__${index}`}
+              >
+                <SpImage className='menu-image' src={item.icon} width={100} height={100} />
+                <Text className='menu-name'>{item.name}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View className='card-block'>
+          <View className='card-block-hd'>团员功能</View>
+          <View className='card-block-bd menu-list'>
             {MENUS.map((item, index) => (
               <View
                 className='menu-item'
@@ -208,8 +233,8 @@ const Index = () => {
 
         <View className='group-list'>
           {activityList.map((item, idx) => (
-            <View className='card-block' key={idx} onClick={handleClickActivity.bind(this, item)} s>
-              <CompGroupItem info={item} />
+            <View className='card-block' key={idx}>
+              <CompGroupItem info={item} onClick={handleClickActivity} />
             </View>
           ))}
         </View>
