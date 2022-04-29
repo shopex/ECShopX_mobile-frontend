@@ -40,17 +40,15 @@ function Group(props) {
   const { qrcode, activityName, comps, startDate, startTime, endDate, endTime } = state
   const dispatch = useDispatch()
   const $instance = getCurrentInstance()
-  const { id } = $instance.router.params
-  console.log(id, '-id--')
 
   useEffect(() => {
-    if (id) {
+    if ($instance.router.params.id) {
       fetchActivity()
     }
   }, [])
 
   const fetchActivity = async () => {
-    const res = await api.community.getChiefActivity(id)
+    const res = await api.community.getChiefActivity($instance.router.params.id)
     console.log('fetchDetail:', pickBy(res, doc.community.COMMUNITY_ACTIVITY_ITEM))
     const { activityIntro, activityName, activityPics, startTime, endTime } = pickBy(
       res,
@@ -200,11 +198,13 @@ function Group(props) {
       start_time: `${startDate} ${startTime}`,
       end_time: `${endDate} ${endTime}`
     }
+    let cur_id = $instance.router.params.id
+    debugger
     let act_id
     // 修改活动
-    if (id) {
-      await api.community.modiflyChiefActivity(id, params)
-      act_id = id
+    if (cur_id) {
+      await api.community.modiflyChiefActivity(cur_id, params)
+      act_id = cur_id
     } else {
       const { activity_id } = await api.community.createChiefActivity(params)
       act_id = activity_id
@@ -212,9 +212,9 @@ function Group(props) {
 
     dispatch(updateSelectGoods([]))
     dispatch(updateSelectCommunityZiti(null))
-    showToast(id ? '活动修改成功' : '活动添加成功')
+    showToast(cur_id ? '活动修改成功' : '活动添加成功')
     setTimeout(() => {
-      if (id) {
+      if (cur_id) {
         Taro.navigateBack()
       } else {
         Taro.redirectTo({
