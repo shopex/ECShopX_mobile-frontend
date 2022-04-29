@@ -199,7 +199,6 @@ function Group(props) {
       end_time: `${endDate} ${endTime}`
     }
     let cur_id = $instance.router.params.id
-    debugger
     let act_id
     // 修改活动
     if (cur_id) {
