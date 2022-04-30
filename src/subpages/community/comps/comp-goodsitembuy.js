@@ -29,7 +29,7 @@ const CompGoodsItemBuy = (props) => {
     onChange(num)
   }
 
-  const handleClickGoodsDetail = () => {
+  const handleClickGoodsDetail = (e) => {
     const { itemId, distributorId } = info
     Taro.navigateTo({
       url: `/subpages/community/espier-detail?id=${itemId}&dtid=${distributorId}`
@@ -37,33 +37,17 @@ const CompGoodsItemBuy = (props) => {
   }
 
   return (
-    <View className='comp-goodsitembuy' onClick={handleClickGoodsDetail}>
-      <View className='comp-goodsitembuy-img'>
+    <View className='comp-goodsitembuy' >
+      <View className='comp-goodsitembuy-img' onClick={handleClickGoodsDetail}>
         <SpImage src={info.pic} width={160} height={160} />
       </View>
-      {/* {isShare && (
-        <View className='comp-goodsitembuy-share'>
-          <Text className='icon iconfont icon-gouwuche'></Text>
-        </View>
-      )} */}
-
       <View className='comp-goodsitembuy-info'>
         <View className='comp-goodsitembuy-info__name'>{info.itemName}</View>
-        {/* {isSpecs && <View className='comp-goodsitembuy-info__specs'>111</View>} */}
-        {/* {isTag && (
-          <View>
-            <View className='comp-goodsitembuy-info__tag'>团长推荐</View>
-            <View className='comp-goodsitembuy-info__tag'>网红爆款</View>
-          </View>
-        )} */}
-        <View>{/* <Text className='comp-goodsitembuy-info__num'>10件起购</Text> */}</View>
         <View className='comp-goodsitembuy-info__price'>
           <SpPrice value={info.price} />
-          {/* {isMarket && <SpPrice lineThrough size={22} unit='cent' value={info.market_price} />} */}
         </View>
       </View>
 
-      <View className='hasbuy-num'>{/* <Text className=''>已团{info.buy_num}</Text> */}</View>
 
       {!hideInputNumber && (
         <View className='comp-goodsitembuy-handle'>
