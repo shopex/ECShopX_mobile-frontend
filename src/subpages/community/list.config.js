@@ -1,3 +1,3 @@
 export default {
-  navigationBarTitleText: '商品列表--平台商品'
+  navigationBarTitleText: '平台商品'
 }
