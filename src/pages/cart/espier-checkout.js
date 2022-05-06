@@ -2,7 +2,16 @@ import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
-import { SpPage, SpPrice, SpCell, SpOrderItem, SpCashier, SpGoodsCell } from '@/components'
+import {
+  SpPage,
+  SpPrice,
+  SpCell,
+  SpOrderItem,
+  SpCashier,
+  SpGoodsCell,
+  SpFloatLayout,
+  SpNumberKeyBoard
+} from '@/components'
 import { View, Text, Picker } from '@tarojs/components'
 import { changeCoupon } from '@/store/slices/cart'
 import { updateChooseAddress } from '@/store/slices/user'
@@ -19,7 +28,8 @@ import {
   isAPP,
   log,
   VERSION_STANDARD,
-  VERSION_PLATFORM
+  VERSION_PLATFORM,
+  VERSION_IN_PURCHASE
 } from '@/utils'
 import { useAsyncCallback, useLogin, usePayment } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
@@ -132,12 +142,12 @@ function CartCheckout(props) {
   }, [address, coupon, payType, shop.zitiShop, point_use])
 
   useEffect(() => {
-    if (isPackageOpend || openCashier) {
+    if (isPackageOpend || openCashier || isPointOpenModal) {
       pageRef.current.pageLock()
     } else {
       pageRef.current.pageUnLock()
     }
-  }, [isPackageOpend, openCashier])
+  }, [isPackageOpend, openCashier, isPointOpenModal])
 
   // 是否需要包装
   const getTradeSetting = async () => {
@@ -147,33 +157,9 @@ function CartCheckout(props) {
     })
   }
 
-  // 选择是否需要包装
-  const changeNeedPackage = (isNeedPackage) => {
-    setState((draft) => {
-      draft.isNeedPackage = isNeedPackage
-      draft.isPackageOpend = false
-    })
-  }
-
-  const handlePointClick = () => {
-    setState((draft) => {
-      draft.isPointOpenModal = true
-    })
-  }
-
-  const resetPoint = (e) => {
-    e.stopPropagation()
-    setState((draft) => {
-      draft.point_use = 0
-      draft.pointInfo = { ...pointInfo, point_use: 0 }
-      draft.payType = defalutPaytype
-    })
-  }
-
-  const handlePointUseChange = (point_use, payType) => {
+  const handlePointUseChange = (point_use) => {
     setState((draft) => {
       draft.point_use = point_use
-      draft.payType = payType
       draft.isPointOpenModal = false
     })
   }
@@ -584,7 +570,6 @@ function CartCheckout(props) {
     }
 
     const point_info = {
-      ...pointInfo,
       deduct_point_rule,
       is_open_deduct_point,
       user_point, //用户现有积分
@@ -930,20 +915,19 @@ function CartCheckout(props) {
         </SpCell>
       )}
 
-      {VERSION_STANDARD && pointInfo.is_open_deduct_point && (
+      {!VERSION_IN_PURCHASE && pointInfo?.is_open_deduct_point && (
         <SpCell
           isLink
           className='cart-checkout__invoice'
           title={`${pointName}抵扣`}
-          onClick={handlePointClick}
+          onClick={() => {
+            setState((draft) => {
+              draft.isPointOpenModal = true
+            })
+          }}
         >
           <View className='invoice-title'>
-            {(pointInfo.point_use > 0 || payType === 'point') && (
-              <View className='icon-close invoice-close' onClick={(e) => resetPoint(e)}></View>
-            )}
-            {payType === 'point'
-              ? '全额抵扣'
-              : pointInfo.point_use > 0
+            {pointInfo.point_use > 0
               ? `已使用${pointInfo.real_use_point}${pointName}`
               : `使用${pointName}`}
           </View>
@@ -983,7 +967,7 @@ function CartCheckout(props) {
         <SpCell className='trade-sub__item' title='优惠金额：'>
           <SpPrice unit='cent' primary value={-1 * totalInfo.discount_fee} />
         </SpCell>
-        {pointInfo.is_open_deduct_point && VERSION_STANDARD && (
+        {pointInfo.is_open_deduct_point && !VERSION_IN_PURCHASE && (
           <SpCell className='trade-sub__item' title={`${pointName}抵扣：`}>
             <SpPrice unit='cent' primary value={-1 * totalInfo.point_fee} />
           </SpCell>
@@ -995,8 +979,6 @@ function CartCheckout(props) {
 
       <CompPointUse
         isOpened={isPointOpenModal}
-        type={payType}
-        defalutPaytype={defalutPaytype}
         info={pointInfo}
         onClose={() => {
           setState((draft) => {
