@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { AtProgress } from 'taro-ui'
+import { View, Text } from '@tarojs/components'
 import { SpImage, SpPrice } from '@/components'
 import './comp-goodsitem.scss'
 
 function CompGoodsItem(props) {
-  const { info } = props
+  const { info, showProgress = false } = props
   if (!info) {
     return
   }
 
-  const { pic, itemName, store, price } = info
+  const { pic, itemName, store, price, itemSpecDesc } = info
 
   const handleClickGoodsDetail = () => {
     const { itemId, distributorId } = info
@@ -27,10 +28,17 @@ function CompGoodsItem(props) {
       </View>
       <View className='item-bd'>
         <View className='goods-name'>{itemName}</View>
-        <View className='goods-sku'>{`库存：${store}`}</View>
+        <View className='goods-spec'>{itemSpecDesc}</View>
+        <View className='goods-store'>{`库存：${store}`}</View>
         <View className='goods-price'>
           <SpPrice primary value={price} />
         </View>
+        {showProgress && (
+          <View className='activity-progress'>
+            <AtProgress percent={25} isHidePercent />
+            <Text className='progress-txt'>还差50件起送</Text>
+          </View>
+        )}
       </View>
     </View>
   )
