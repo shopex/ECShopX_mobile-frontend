@@ -89,12 +89,8 @@ export const COMMUNITY_ACTIVITY_ITEM = {
       distributorId: 'distributor_id',
       price: ({ price }) => (price / 100).toFixed(2),
       num: 0,
-      buyNum: ({ buy_num }) => {
-        return 10
-      },
-      minDeliveryNum: ({ min_delivery_num }) => {
-        return min_delivery_num + 100
-      },
+      buyNum: 'buy_num',
+      minDeliveryNum: 'min_delivery_num',
       nospec: 'nospec',
       specItems: ({ spec_items }) => {
         return pickBy(spec_items, {
