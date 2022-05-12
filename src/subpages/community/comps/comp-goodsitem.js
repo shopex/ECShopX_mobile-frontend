@@ -49,7 +49,7 @@ function CompGoodsItem(props) {
           </View>
         )}
         {
-           <View className="delivery-num">{`${minDeliveryNum}件起送`}</View>
+          !showProgress && minDeliveryNum > 0 && <View className="delivery-num">{`${minDeliveryNum}件起送`}</View>
         }
       </View>
     </View>
