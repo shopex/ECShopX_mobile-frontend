@@ -50,7 +50,8 @@ export default class WgtMarquees extends Component {
     if (!info) {
       return null
     }
-    const { config, base, data, announce } = info
+    const { config, base, data } = info
+    const { announce } = this.state
 
     return (
       <View
@@ -100,7 +101,7 @@ export default class WgtMarquees extends Component {
             className='marqueContent'
           >
             <AtNoticebar marquee>
-              <Text>{announce}</Text>
+              <Text style={`color:${config.fontcolor}`}>{announce}</Text>
             </AtNoticebar>
           </View>
         )}
