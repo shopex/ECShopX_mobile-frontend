@@ -53,7 +53,9 @@ export default {
     {
       root: 'subpages/member',
       pages: [
-        'index' // 会员中心
+        'index', // 会员中心
+        'point-detail', // 积分明细
+        'point-rule' // 积分规则
       ]
     },
     {

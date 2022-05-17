@@ -160,7 +160,7 @@ function SpPage(props, ref) {
         {cusCurrentPage == 1 ? (
           <View className='left-container'>
             <Text
-              className='iconfont icon-home'
+              className='iconfont icon-home1'
               onClick={() => {
                 Taro.navigateTo({
                   url: '/pages/index'

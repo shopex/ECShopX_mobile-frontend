@@ -150,6 +150,21 @@ export const TRANSFORM_PAYTYPE = {
   'alipayapp': 'alipay'
 }
 
+export const POINT_TYPE = {
+  1: '注册送积分',
+  2: '推荐送分',
+  3: '充值返积分',
+  4: '推广注册返积分',
+  5: '积分换购',
+  6: '储值兑换积分',
+  7: '订单返积分',
+  8: '会员等级返佣',
+  9: '取消订处理积分',
+  10: '售后处理积分',
+  11: '大转盘抽奖送积分',
+  12: '管理员手动调整积分'
+}
+
 export * from './localstorage'
 
 export default {}
