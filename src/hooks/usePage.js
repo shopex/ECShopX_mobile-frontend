@@ -1,12 +1,14 @@
 import { total } from '@/api/cart'
 import { useState, useEffect, useRef } from 'react'
+import { useAsyncCallback } from '@/hooks'
 import { useImmer } from 'use-immer'
 
 const initialState = {
   loading: false,
   hasMore: true,
   pageIndex: 1,
-  pageSize: 10
+  pageSize: 10,
+  reset: false
 }
 
 export default (props) => {
@@ -17,10 +19,16 @@ export default (props) => {
   const [hasNext, setHasNext] = useState(true)
 
   useEffect(() => {
-    if (auto) {
+    if (auto || page.pageIndex > 1) {
       excluteFetch()
     }
   }, [page.pageIndex])
+
+  useEffect(() => {
+    if(page.reset) {
+      excluteFetch()
+    }
+  }, [page.reset])
 
   const excluteFetch = async () => {
     setPage((v) => {
@@ -28,11 +36,12 @@ export default (props) => {
     })
     const { total } = await fetch(page)
     totalRef.current = total
-    setPage((v) => {
+    setPage((draft) => {
       if (!total || total <= page.pageSize * page.pageNo) {
-        v.hasMore = false
+        draft.hasMore = false
       }
-      v.loading = false
+      draft.loading = false
+      draft.reset = false
     })
   }
 
@@ -57,15 +66,14 @@ export default (props) => {
   /**
    * @function 分页重置
    */
-  const resetPage = async () => {
+  const resetPage = () => {
+    console.log('resetPage')
     totalRef.current = 0
-    await setPage((v) => {
-      v.pageIndex = 1
-      v.hasMore = true
+    setPage((draft) => {
+      draft.pageIndex = 1
+      draft.hasMore = true
+      draft.reset = true
     })
-    if (!auto || page.pageIndex == 1) {
-      excluteFetch()
-    }
   }
 
   return {

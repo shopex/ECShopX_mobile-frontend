@@ -22,7 +22,7 @@ import validate from './validate'
 import checkAppVersion from './updateManager'
 import linkPage from './linkPage'
 
-const {store} = configStore()
+const { store } = configStore()
 
 export * from './platforms'
 
@@ -185,6 +185,10 @@ export function formatPriceToHundred(price) {
   } else {
     return 0
   }
+}
+
+export function thousandthFormat(value) {
+  return (value.toString() + '').replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,')
 }
 
 export async function normalizeQuerys(params = {}) {

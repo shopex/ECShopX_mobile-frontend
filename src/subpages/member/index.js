@@ -449,7 +449,7 @@ function MemberIndex(props) {
             <View className='bd-item-label'>优惠券(张)</View>
             <View className='bd-item-value'>{state.couponCount}</View>
           </View>
-          <View className='bd-item' onClick={handleClickPoint}>
+          <View className='bd-item' onClick={handleClickLink.bind(this, '/subpages/member/point-detail')}>
             <View className='bd-item-label'>积分(分)</View>
             <View className='bd-item-value'>{state.point}</View>
           </View>
