@@ -124,13 +124,14 @@ class API {
     this.isRefreshingToken = false
     S.logout()
     setTimeout(() => {
+      const { path } = getCurrentInstance().router
       let url
       if (isMerchantModule()) {
         url = '/subpages/merchant/login'
       } else if (isGoodsShelves()) {
         url = '/subpages/guide/index'
       } else {
-        url = '/subpages/member/index'
+        url = `/subpages/member/index${path != url ? `?redirect_url=${path}` : ''}`
       }
       getCurrentInstance().router.path !== url && Taro.redirectTo({ url })
     }, 300)
@@ -144,7 +145,7 @@ class API {
     const reqUrl = this.getReqUrl(url)
     const query = !data || typeof data === 'string' ? qs.parse(data) : data
     if (company_id) {
-      query.company_id = company_id
+      query['company_id'] = company_id
     }
 
     if (!methodIsGet) {

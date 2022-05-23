@@ -12,7 +12,7 @@ const initialState = {
 }
 
 function SpUpload(props) {
-  const { max, onChange = () => {}, value = [] } = props
+  const { max, onChange = () => {}, value = [], multiple = true } = props
 
   const [state, setState] = useImmer(initialState)
   const { files } = state
@@ -70,10 +70,12 @@ function SpUpload(props) {
             ></Text>
           </View>
         ))}
-      <View className='btn-upload' onClick={handleUploadFile}>
-        <Text className='iconfont icon-plus'></Text>
-        <Text className='btn-upload-txt'>添加二维码</Text>
-      </View>
+      {(multiple || (!multiple && files.length == 0)) && (
+        <View className='btn-upload' onClick={handleUploadFile}>
+          <Text className='iconfont icon-plus'></Text>
+          <Text className='btn-upload-txt'>上传图片</Text>
+        </View>
+      )}
     </View>
   )
 }

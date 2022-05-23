@@ -165,6 +165,22 @@ export const POINT_TYPE = {
   12: '管理员手动调整积分'
 }
 
+export const FORM_COMP = {
+  INPUT: 1,
+  NUMBER: 2,
+  DATE: 3,
+  RADIO: 4,
+  CHECKBOX: 5,
+  MOBILE: 6,
+  IMAGE: 7,
+}
+
+export const CHIEF_APPLY_STATUS = {
+  WAITE: 0,
+  RESLOVE: 1,
+  REJECT: 2
+}
+
 export * from './localstorage'
 
 export default {}
