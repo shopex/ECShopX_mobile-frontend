@@ -32,7 +32,7 @@ export default class WgtImgHotZone extends Component {
       return null
     }
 
-    const { config, base, data } = info
+    const { config, base, data, distributor_id } = info
     const curContent = (data[curIdx] || {}).content
 
     return (
@@ -63,7 +63,10 @@ export default class WgtImgHotZone extends Component {
                   top: `${item.topPer * 100}%`,
                   left: `${item.leftPer * 100}%`
                 })}
-                onClick={this.handleClickItem.bind(this, item)}
+                onClick={this.handleClickItem.bind(this, {
+                  ...item,
+                  distributor_id
+                })}
               ></View>
             )
           })}

@@ -1,8 +1,9 @@
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 // import { WGTS_NAV_MAP } from '@/consts'
 
 function linkPage (data) {
-  const { id, title, linkPage, linkType, type } = data
+  const { id, title, linkPage, linkType, type, distributor_id } = data
+  const { id: dtid } = getCurrentInstance().router.params
   // console.log('linkPage:', type, data)
   // h5链接
   if(linkType == 1) {
@@ -85,6 +86,10 @@ function linkPage (data) {
 
   if (id === 'pointitems') {
     url = '/pointitem/pages/list'
+  }
+
+  if(id == 'applyChief') {
+    url = `/subpages/community/apply-chief?distributor_id=${dtid || distributor_id}`
   }
 
   if (type === 'other_wxapp') {

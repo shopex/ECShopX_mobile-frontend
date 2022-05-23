@@ -96,7 +96,9 @@ export default {
         'trade/after-sale-detail', // 团购-售后详情页面
         'boxlist', // 箱数列表
         'list', // 商品列表
-        'espier-detail' // 商品详情
+        'espier-detail', // 商品详情
+        'apply-chief', // 申请团长
+        'chief-licence' // 团长注册协议
       ]
     },
     {
