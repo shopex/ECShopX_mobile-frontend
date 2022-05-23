@@ -49,5 +49,21 @@
       display: inline-block;
       margin-top: 40px;
     }
+    &.reject {
+      .sp-note__text {
+        color: #EC2E3D;
+      }
+    }
+  }
+  .reject-reason {
+    width: 560px;
+    padding: 24px 40px 60px;
+    background: #EBEBEB;
+    border-radius: 16px;
+    color: #999;
+    font-size: 26px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    text-align: left;
   }
 }
