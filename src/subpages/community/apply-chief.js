@@ -17,6 +17,7 @@ const initialState = {
   rules: {},
   agree: false,
   approveStatus: 0,
+  refuseReason: '',
   explanation: '',
   isDefault: false,
   loading: true,
@@ -32,6 +33,7 @@ function ApplyChief(props) {
     agree,
     explanation,
     approveStatus,
+    refuseReason,
     isDefault,
     defaultMsg,
     defaultImg,
@@ -47,7 +49,7 @@ function ApplyChief(props) {
   }, [])
 
   const getApplyChief = async () => {
-    const { approve_status } = await api.community.getApplyChief({
+    const { approve_status, refuse_reason } = await api.community.getApplyChief({
       distributor_id
     })
     let _isDefault = false,
@@ -76,6 +78,7 @@ function ApplyChief(props) {
     }
     setState((draft) => {
       draft.approveStatus = approve_status
+      draft.refuseReason = refuse_reason
       draft.isDefault = _isDefault
       draft.defaultMsg = _defaultMsg
       draft.defaultImg = _defaultImg
@@ -241,8 +244,9 @@ function ApplyChief(props) {
       defaultMsg={defaultMsg}
       loading={loading}
       renderDefault={
-        <View className='default-view'>
+        <View className={classNames('default-view', { reject: approveStatus == CHIEF_APPLY_STATUS.REJECT })}>
           <SpNote img={defaultImg} title={defaultMsg} />
+          {approveStatus == CHIEF_APPLY_STATUS.REJECT && <View className='reject-reason'>{refuseReason}</View>}
           {(approveStatus == CHIEF_APPLY_STATUS.RESLOVE ||
             approveStatus == CHIEF_APPLY_STATUS.REJECT) && (
             <AtButton circle type='primary' onClick={handleClickDefaultBtn}>
@@ -270,7 +274,6 @@ function ApplyChief(props) {
         </View>
         <View className='container'>
           <View className='applychief-desc'>
-            {/* 团长招募提示文案，团长招募提示文案，团长招募提示文案团长招募提示文案。团长招募提示文案，团长招募提示文案。团长招募提示文案，团长招募提示文案，团长招募提示文案，团长招募提示文案，团长招募提示文案，团长招募提示文案，团长招募提示文案。团长招募提示文案，团长招募提示文案，团长招募提示文案团长招募提示文案。团长招募提示文案，团长招募提示文案。团长招募提示文案，团长招募提示文案。团长招募提示文案。 */}
             <mp-html content={explanation} />
           </View>
           <View className='form-container'>
