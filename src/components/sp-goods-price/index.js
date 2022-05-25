@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpPrice } from '@/components'
+import { SpPrice, SpVipLabel } from '@/components'
 import { classNames } from '@/utils'
 import './index.scss'
 
@@ -11,15 +11,26 @@ function SpGoodsPrice(props) {
   if (!info) {
     return null
   }
-  const { price, memberPrice, marketPrice, activityPrice } = info
+  const { price, memberPrice, marketPrice, activityPrice, vipPrice, svipPrice } = info
   return (
     <View
-      className={classNames('sp-goods-price', {
-        'has-discount': !isNaN(memberPrice) || !isNaN(activityPrice)
-      })}
+      className={classNames('sp-goods-price')}
     >
-      <SpPrice className='sale-price' value={price} />
-      {(!isNaN(memberPrice) || !isNaN(activityPrice)) && (
+      <View className='goods-price'>
+        <SpPrice size={48} className='sale-price' value={price} />
+        <SpPrice className='mkt-price' lineThrough value={marketPrice} />
+      </View>
+      <View>
+        <View className='vip-price'>
+          <SpPrice value={vipPrice} />
+          <SpVipLabel content='VIP' type='vip' />
+        </View>
+        <View className='svip-price'>
+          <SpPrice value={svipPrice} />
+          <SpVipLabel content='SVIP' type='svip' />
+        </View>
+      </View>
+      {/* {(!isNaN(memberPrice) || !isNaN(activityPrice)) && (
         <View className='discount'>
           <Text className='discount-txt'>{activityPrice ? '活动价' : '会员价'}</Text>
           <SpPrice className='discount-price' value={activityPrice ? activityPrice : memberPrice} />
@@ -27,7 +38,7 @@ function SpGoodsPrice(props) {
       )}
       {isNaN(memberPrice) && isNaN(activityPrice) && (
         <SpPrice className='market-price' lineThrough value={marketPrice} />
-      )}
+      )} */}
     </View>
   )
 }

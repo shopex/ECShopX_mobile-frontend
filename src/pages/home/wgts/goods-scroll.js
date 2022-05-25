@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtCountdown } from 'taro-ui'
-import { calcTimer, classNames, isWeb, linkPage, getDistributorId } from '@/utils'
-import { withLoadMore } from '@/hocs'
+import { SpGoodsItem, SpImage } from '@/components'
+import { calcTimer, classNames, isWeb, linkPage, getDistributorId, pickBy } from '@/utils'
+import doc from '@/doc'
 
 import './goods-scroll.scss'
 
-// @withLoadMore
 export default class WgtGoodsScroll extends Component {
   static options = {
     addGlobalClass: true,
@@ -79,23 +79,6 @@ export default class WgtGoodsScroll extends Component {
     }
   }
 
-  // getDom = () => {
-  //   let that = this
-  //   setTimeout(() => {
-  //     Taro.createSelectorQuery()
-  //       // .in(that)
-  //       .select('.scroll-goods')
-  //       .boundingClientRect(res => {
-  //         console.log(res, '-------')
-  //         // debugger
-  //         that.setState({
-  //           boxHeight: res.height
-  //         })
-  //       })
-  //       .exec()
-  //   }, 300)
-  // }
-
   render() {
     const { info } = this.props
     if (!info) {
@@ -104,9 +87,10 @@ export default class WgtGoodsScroll extends Component {
 
     const { base, data, config, more } = info
     const { timer, boxHeight } = this.state
+    const goods = pickBy(data, doc.goods.WGT_GOODS_GRID)
 
     return (
-      <View className={`wgt page-goods-scroll ${base.padded ? 'wgt__padded' : null}`}>
+      <View className={`wgt wgt-goods-scroll ${base.padded ? 'wgt__padded' : null}`}>
         {base.title && (
           <View className='wgt-head'>
             <View className='wgt-hd'>
@@ -144,7 +128,26 @@ export default class WgtGoodsScroll extends Component {
         )}
         <View className='wgt-body'>
           <ScrollView className='scroll-goods' scrollX>
-            {data.map((item, idx) => {
+            {goods.map((item, idx) => (
+              <View
+                className={classNames('scroll-item', {
+                  'lastItem': idx === goods.length - 1
+                })}
+              >
+                {config.leaderboard && (
+                  <View className='subscript'>
+                    <View className='subscript-text'>NO.{idx + 1}</View>
+                    <SpImage className='subscript-img' src='paihang.png' />
+                  </View>
+                )}
+                <SpGoodsItem
+                  showPrice={config.showPrice}
+                  info={item}
+                  key={`scroll-goods-item__${idx}`}
+                />
+              </View>
+            ))}
+            {/* {data.map((item, idx) => {
               const price = (
                 (item.act_price
                   ? item.act_price
@@ -204,7 +207,7 @@ export default class WgtGoodsScroll extends Component {
                   )}
                 </View>
               )
-            })}
+            })} */}
 
             {config.moreLink.linkPage && (
               <View className='more_img' onClick={this.handleClickMore}>

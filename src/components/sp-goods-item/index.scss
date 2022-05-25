@@ -17,42 +17,19 @@
     }
     &__bd {
       border-radius: 0;
-      padding: 0px 16px;
+      padding: 16px 16px 0;
       .goods-title {
         font-size: 24px;
         color: #222;
         font-weight: bold;
-        @include multi-ellipsis(1);
-        padding-top: 15px;
+        @include multi-ellipsis(2);
+        // padding-top: 15px;
         // padding: 15px;
       }
       .goods-desc {
         font-size: 24px;
         color: $color-hint-text;
         @include multi-ellipsis(1);
-      }
-
-      // .goods-info {
-      //   margin-bottom: 16px;
-      // }
-
-      .gd-price {
-        .sp-price {
-          font-size: 32px;
-          font-weight: bold;
-          color: #222;
-          &__symbol {
-            margin-right: 10px;
-          }
-        }
-      }
-      .mk-price {
-        .sp-price {
-          font-size: 24px;
-          color: #888;
-          text-decoration: line-through;
-          font-weight: normal;
-        }
       }
 
       .promotions {
@@ -99,13 +76,32 @@
       // }
     }
   }
+  .mkt-price {
+    margin-left: 8px;
+  }
   .goods__store {
-    padding-top: 10px;
-    color: $color-gray;
-    font-size: 20px;
-    letter-spacing: 0;
-    &-entry {
-      color: #333;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    .sp-image-img {
+      border-radius: 60px;
+      object-fit: cover;
+    }
+    .store-name {
+      color: #222;
+      font-weight: 400;
+      font-size: 24px;
+      margin-left: 8px;
+    }
+  }
+  .vip-price,
+  .svip-price {
+    display: flex;
+    align-items: center;
+    .sp-price__symbol,
+    .sp-price__int,
+    .sp-price__decimal {
+      color: #666;
     }
   }
 }

@@ -14,16 +14,22 @@ export const WGT_GOODS_GRID = {
   promotion: 'promotion_activity',
   distributorId: 'distributor_id',
   isPoint: 'is_point',
-  price: ({ act_price, member_price, price }) => {
-    if (act_price > 0) {
-      return act_price
-    } else if (member_price > 0) {
-      return member_price
-    } else {
-      return price
-    }
-  },
-  marketPrice: 'market_price'
+  // price: ({ act_price, member_price, price }) => {
+  //   if (act_price > 0) {
+  //     return act_price
+  //   } else if (member_price > 0) {
+  //     return member_price
+  //   } else {
+  //     return price
+  //   }
+  // },
+  // marketPrice: 'market_price',
+  price: ({ price }) => price / 100, // 销售价
+  activityPrice: ({ activity_price }) => activity_price / 100, // 秒杀价
+  marketPrice: ({ market_price }) => market_price / 100, // 原价
+  memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
+  vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
+  svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
 }
 
 export const WGT_GOODS_GRID_TAB = {
@@ -36,16 +42,22 @@ export const WGT_GOODS_GRID_TAB = {
   promotion: 'promotion_activity',
   distributorId: 'distributor_id',
   isPoint: 'is_point',
-  price: ({ act_price, member_price, price }) => {
-    if (act_price > 0) {
-      return act_price
-    } else if (member_price > 0) {
-      return member_price
-    } else {
-      return price
-    }
-  },
-  marketPrice: 'market_price',
+  // price: ({ act_price, member_price, price }) => {
+  //   if (act_price > 0) {
+  //     return act_price
+  //   } else if (member_price > 0) {
+  //     return member_price
+  //   } else {
+  //     return price
+  //   }
+  // },
+  // marketPrice: 'market_price',
+  price: ({ price }) => price / 100, // 销售价
+  activityPrice: ({ activity_price }) => activity_price / 100, // 秒杀价
+  marketPrice: ({ market_price }) => market_price / 100, // 原价
+  memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
+  vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
+  svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
   brand: 'brand'
 }
 
@@ -70,8 +82,13 @@ export const ITEM_LIST_GOODS = {
   origincountry_name: 'origincountry_name',
   origincountry_img_url: 'origincountry_img_url',
   type: 'type',
-  price: 'price',
-  marketPrice: 'market_price',
+  price: ({ price }) => price / 100, // 销售价
+  activityPrice: ({ activity_price }) => activity_price / 100, // 秒杀价
+  marketPrice: ({ market_price }) => market_price / 100, // 原价
+  memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
+  vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
+  svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
+
   // is_fav: ({ item_id }) => Boolean(favs[item_id]),
   store: 'store'
 }
@@ -86,18 +103,13 @@ export const GOODS_INFO = {
   activityInfo: 'activity_info',
   activityType: 'activity_type',
   approveStatus: 'approve_status',
-  price: ({ price }) => price / 100,
-  activityPrice: ({ act_price }) => act_price / 100,
-  memberPrice: ({ member_price }) => {
-    if (!member_price) {
-      return NaN
-    } else {
-      return member_price / 100
-    }
-  },
-  marketPrice: ({ market_price }) => market_price / 100,
-  // 组合价
-  packagePrice: ({ package_price }) => package_price / 100,
+  price: ({ price }) => price / 100, // 销售价
+  activityPrice: ({ act_price }) => act_price / 100, // 秒杀价
+  marketPrice: ({ market_price }) => market_price / 100, // 原价
+  memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
+  vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
+  svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
+  packagePrice: ({ package_price }) => package_price / 100, // 组合价
   nospec: 'nospec',
   itemSpecDesc: 'item_spec_desc',
   specText: '',
@@ -156,16 +168,23 @@ export const GOODS_INFO = {
       itemId: 'item_id',
       store: 'store',
       limitNum: 'limit_num',
-      price: ({ price }) => price / 100,
-      marketPrice: ({ market_price }) => market_price / 100,
-      memberPrice: ({ member_price }) => {
-        if (!member_price) {
-          return NaN
-        } else {
-          return member_price / 100
-        }
-      },
-      activityPrice: ({ act_price }) => act_price / 100
+      // price: ({ price }) => price / 100,
+      // marketPrice: ({ market_price }) => market_price / 100,
+      // memberPrice: ({ member_price }) => {
+      //   if (!member_price) {
+      //     return NaN
+      //   } else {
+      //     return member_price / 100
+      //   }
+      // },
+      // activityPrice: ({ act_price }) => act_price / 100
+      price: ({ price }) => price / 100, // 销售价
+      activityPrice: ({ act_price }) => act_price / 100, // 秒杀价
+      marketPrice: ({ market_price }) => market_price / 100, // 原价
+      memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
+      vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
+      svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
+      packagePrice: ({ package_price }) => package_price / 100, // 组合价
     })
   },
   intro: 'intro',
