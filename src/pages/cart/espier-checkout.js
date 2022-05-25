@@ -393,7 +393,7 @@ function CartCheckout(props) {
 
   const handleCouponsClick = async () => {
     const { cart_type, distributor_id: id } = paramsInfo
-    let items_filter = detailInfo.filter((item) => item.order_item_type !== 'gift')
+    let items_filter = detailInfo.filter((item) => item.orderItemType !== 'gift')
     items_filter = items_filter.map((item) => {
       const { item_id, num, total_fee: price } = item
       return {
@@ -491,6 +491,7 @@ function CartCheckout(props) {
       coupon_discount = 0,
       discount_fee = 0,
       freight_fee = 0,
+      promotion_discount = 0,
       freight_type,
       freight_point = 0,
       coupon_info,
@@ -570,7 +571,8 @@ function CartCheckout(props) {
       deduction, // 抵扣
       point_fee, //积分抵扣金额,
       item_point,
-      freight_type
+      freight_type,
+      promotion_discount
     }
 
     const point_info = {
@@ -967,21 +969,31 @@ function CartCheckout(props) {
       )}
 
       <View className='cart-checkout__total'>
-        <SpCell className='trade-sub__item' title='商品金额：'>
+        {/* <SpCell className='trade-sub__item' title='原价：'>
+          <SpPrice unit='cent' value={totalInfo.item_fee} />
+        </SpCell> */}
+        <SpCell className='trade-sub__item' title='总价：'>
           <SpPrice unit='cent' value={totalInfo.item_fee} />
         </SpCell>
-        <SpCell className='trade-sub__item' title='优惠金额：'>
-          <SpPrice unit='cent' primary value={-1 * totalInfo.discount_fee} />
-        </SpCell>
-        {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && dtid == 0)) &&
-          pointInfo.is_open_deduct_point && (
-            <SpCell className='trade-sub__item' title={`${pointName}抵扣：`}>
-              <SpPrice unit='cent' primary value={-1 * totalInfo.point_fee} />
-            </SpCell>
-          )}
         <SpCell className='trade-sub__item' title='运费：'>
           <SpPrice unit='cent' value={totalInfo.freight_fee} />
         </SpCell>
+        <SpCell className='trade-sub__item' title='促销：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.promotion_discount} />
+        </SpCell>
+        <SpCell className='trade-sub__item' title='优惠券：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.coupon_discount} />
+        </SpCell>
+        {/* <SpCell className='trade-sub__item' title='优惠金额：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.discount_fee} />
+        </SpCell> */}
+        {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && dtid == 0)) &&
+          pointInfo.is_open_deduct_point && (
+            <SpCell className='trade-sub__item' title={`${pointName}抵扣：`}>
+              <SpPrice unit='cent' primary value={0 - totalInfo.point_fee} />
+            </SpCell>
+          )}
+        
       </View>
 
       <CompPointUse

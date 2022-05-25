@@ -181,6 +181,13 @@ export const CHIEF_APPLY_STATUS = {
   REJECT: 2
 }
 
+export const GOODS_TYPE = {
+  'normal': '普通商品',
+  'gift': '赠品',
+  'plus_buy': '换购',
+  'package': '组合商品'
+}
+
 export * from './localstorage'
 
 export default {}

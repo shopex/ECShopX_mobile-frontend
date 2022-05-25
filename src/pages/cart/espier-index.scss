@@ -58,7 +58,7 @@
       }
     }
     &-hd-disabeld {
-      font-size: 36px;
+      font-size: 28px;
       color: #999;
       font-weight: bold;
       margin: 65px 0px 10px;
@@ -107,7 +107,7 @@
     padding: 16px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    // justify-content: space-around;
   }
   .cart-item-warp-disabled {
     padding: 16px;
@@ -124,6 +124,7 @@
   .cart-goods-item,
   .comp-goodsitem {
     flex: 1;
+    width: 620px;
   }
   .at-input-number {
     border: 1px solid #999;

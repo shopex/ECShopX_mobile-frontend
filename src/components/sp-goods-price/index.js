@@ -13,23 +13,40 @@ function SpGoodsPrice(props) {
   }
   const { price, memberPrice, marketPrice, activityPrice, vipPrice, svipPrice } = info
   return (
-    <View
-      className={classNames('sp-goods-price')}
-    >
-      <View className='goods-price'>
-        <SpPrice size={48} className='sale-price' value={price} />
-        <SpPrice className='mkt-price' lineThrough value={marketPrice} />
-      </View>
-      <View>
-        <View className='vip-price'>
-          <SpPrice value={vipPrice} />
-          <SpVipLabel content='VIP' type='vip' />
+    <View className={classNames('sp-goods-price')}>
+      {!isNaN(activityPrice) && (
+        <View className='activity'>
+          <SpPrice size={48} className='sale-price' value={price} />
+          <View className='activity-wrap'>
+            活动价 <SpPrice size={48} className='activity-price' value={activityPrice} />
+          </View>
         </View>
-        <View className='svip-price'>
-          <SpPrice value={svipPrice} />
-          <SpVipLabel content='SVIP' type='svip' />
+      )}
+      {isNaN(activityPrice) && (
+        <View>
+          <View className='goods-price'>
+            <SpPrice size={48} className='sale-price' value={price} />
+            {!isNaN(marketPrice) && (
+              <SpPrice className='mkt-price' lineThrough value={marketPrice} />
+            )}
+          </View>
+          <View>
+            <View className='vip-price'>
+              <SpPrice value={info.memberPrice} />
+              <SpVipLabel content='会员价' type='member' />
+            </View>
+            <View className='vip-price'>
+              <SpPrice value={vipPrice} />
+              <SpVipLabel content='VIP' type='vip' />
+            </View>
+            <View className='svip-price'>
+              <SpPrice value={svipPrice} />
+              <SpVipLabel content='SVIP' type='svip' />
+            </View>
+          </View>
         </View>
-      </View>
+      )}
+
       {/* {(!isNaN(memberPrice) || !isNaN(activityPrice)) && (
         <View className='discount'>
           <Text className='discount-txt'>{activityPrice ? '活动价' : '会员价'}</Text>

@@ -37,7 +37,8 @@
         flex-wrap: wrap;
         margin-top: 16px;
         .promotion-tag {
-          border: 1px solid var(--color-primary);
+          /* prettier-ignore */
+          border: 1PX solid var(--color-primary);
           color: var(--color-primary);
           font-size: 22px;
           border-radius: 8px;

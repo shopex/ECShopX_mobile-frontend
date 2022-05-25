@@ -5,7 +5,7 @@ export const CHECKOUT_GOODS_ITEM = {
   img: 'pic',
   curSymbol: 'fee_symbol',
   discount_info: 'discount_info',
-  order_item_type: 'order_item_type',
+  orderItemType: 'order_item_type',
   type: 'type',
   origincountry_img_url: 'origincountry_img_url',
   origincountry_name: 'origincountry_name',

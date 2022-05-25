@@ -154,10 +154,10 @@
   justify-content: center;
 }
 
-@mixin price($color, $symbol-size, $int-size, $decimal-size) {
+@mixin price($color, $int-size) {
   .sp-price__symbol {
     color: $color !important;
-    font-size: $symbol-size !important;
+    font-size: $int-size - 8px !important;
   }
   .sp-price__int {
     color: $color !important;
@@ -165,7 +165,7 @@
   }
   .sp-price__decimal {
     color: $color !important;
-    font-size: $decimal-size !important;
+    font-size: $int-size - 4px !important;
   }
 }
 
