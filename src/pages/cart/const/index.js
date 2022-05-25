@@ -14,6 +14,8 @@ export const initialState = {
   totalInfo: {
     items_count: 0, // 商品总件数
     total_fee: '0.00', // 商品总计
+    promotion_discount: 0, // 促销
+    discount_fee: 0,
     item_fee: '', // 商品金额
     freight_fee: '', // 运费
     member_discount: '', // 会员折扣

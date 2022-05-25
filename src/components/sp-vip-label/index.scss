@@ -14,6 +14,12 @@
     height: 0;
     border-left: 10px solid transparent;
   }
+  &.member {
+    background: linear-gradient(270deg, #FF7089 0%, #FF0000 100%);
+    &::before {
+      border-top: 6px solid #FF0000;
+    }
+  }
   &.vip {
     background: linear-gradient(270deg, #fdc300 0%, #ff8400 100%);
     &::before {

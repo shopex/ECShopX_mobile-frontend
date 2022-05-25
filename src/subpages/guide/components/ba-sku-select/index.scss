@@ -15,7 +15,10 @@
   }
 
   .sale-price {
-    @include price(#222, 26px, 36px, 26px);
+    @include price(#222, 38px);
+  }
+  .activity-price {
+    @include price(#fff, 38px);
   }
   .discount {
     padding: 6px 12px !important;
@@ -24,12 +27,7 @@
     font-size: 28px !important;
     margin-right: 2px !important;
   }
-  .discount-price {
-    @include price(#fff, 26px, 36px, 26px);
-  }
-  .market-price {
-    @include price(#999, 26px, 30px, 26px);
-  }
+
 
   .goods-sku-txt {
     color: #999;

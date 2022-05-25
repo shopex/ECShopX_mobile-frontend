@@ -441,7 +441,7 @@ function EspierDetail(props) {
                 fetch()
               }}
             >
-              {/* <SpGoodsPrice info={curItem ? curItem : info} /> */}
+              <SpGoodsPrice info={curItem ? curItem : info} />
             </CompActivityBar>
           )}
 

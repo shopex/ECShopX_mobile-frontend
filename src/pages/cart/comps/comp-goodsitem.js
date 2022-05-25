@@ -4,7 +4,7 @@ import { SpPrice, SpInputNumber, SpImage } from '@/components'
 
 import './comp-goodsitem.scss'
 
-function CompGoodsItem (props) {
+function CompGoodsItem(props) {
   const {
     info,
     children,
@@ -24,7 +24,7 @@ function CompGoodsItem (props) {
       {children}
       <View className='comp-goodsitem'>
         <View className='comp-goodsitem-hd' onClick={onClickImgAndTitle}>
-          <SpImage className='comp-goodsitem-image' mode='aspectFill' src={info.pics} />
+          <SpImage className='comp-goodsitem-image' src={info.pics} width={180} height={180}/>
         </View>
         <View className='comp-goodsitem-bd'>
           <View className='item-hd'>
@@ -38,7 +38,7 @@ function CompGoodsItem (props) {
             )}
           </View>
 
-          {info.brief && <Text className='spec-brief'>{info.brief}</Text>}
+          {/* {info.brief && <Text className='spec-brief'>{info.brief}</Text>} */}
 
           {info.item_spec_desc && (
             <View className='item-bd'>
@@ -55,7 +55,10 @@ function CompGoodsItem (props) {
           )}
 
           <View className='item-ft'>
-            <SpPrice value={info.price / 100} />
+            <View className='goods-price-wrap'>
+              <SpPrice value={info.price / 100} />
+              {info.market_price && <SpPrice className='mkt-price' lineThrough value={info.market_price / 100} />}
+            </View>
             {isShowAddInput ? (
               <SpInputNumber
                 value={info.num}

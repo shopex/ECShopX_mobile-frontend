@@ -123,15 +123,21 @@ function SpGoodsItem(props) {
             <View className='goods-price'>
               <View className='gd-price'>
                 <SpPrice size={36} value={info.activityPrice || info.price}></SpPrice>
-                <SpPrice
-                  size={26}
-                  className='mkt-price'
-                  lineThrough
-                  value={info.marketPrice}
-                ></SpPrice>
+                {!isNaN(info.marketPrice) && (
+                  <SpPrice
+                    size={26}
+                    className='mkt-price'
+                    lineThrough
+                    value={info.marketPrice}
+                  ></SpPrice>
+                )}
               </View>
               {!info.activityPrice && (
                 <View>
+                  <View className='vip-price'>
+                    <SpPrice value={info.memberPrice} />
+                    <SpVipLabel content='会员价' type='member' />
+                  </View>
                   <View className='vip-price'>
                     <SpPrice value={info.vipPrice} />
                     <SpVipLabel content='VIP' type='vip' />

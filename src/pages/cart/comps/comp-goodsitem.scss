@@ -18,12 +18,19 @@
   }
   .item-ft {
     position: absolute;
-    bottom:8px;
+    bottom: 0;
     left: 0;
     right: 0;
     display:flex;
     justify-content: space-between;
     align-items: center;
+    .goods-price-wrap {
+      display: flex;
+      align-items: center;
+    }
+    .mkt-price {
+      margin-left: 8px;
+    }
   }
   .goods-title {
     @include multi-ellipsis(1);

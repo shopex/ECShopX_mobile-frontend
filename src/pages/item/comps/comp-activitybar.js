@@ -45,7 +45,7 @@ function CompActivityBar(props) {
           />
         </View>
       </View>
-      <View className='activitybar-footer'>
+      {/* <View className='activitybar-footer'>
         <View className='vip-price'>
           <SpPrice value={priceObj?.vipPrice} />
           <SpVipLabel content='VIP' type='vip' />
@@ -54,7 +54,7 @@ function CompActivityBar(props) {
           <SpPrice value={priceObj?.svipPrice} />
           <SpVipLabel content='SVIP' type='svip' />
         </View>
-      </View>
+      </View> */}
     </View>
   )
 }
