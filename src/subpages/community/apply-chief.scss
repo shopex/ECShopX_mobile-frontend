@@ -1,6 +1,10 @@
 .page-community-applychief {
   .page-hd {
     background: var(--color-primary);
+    .container {
+      position: relative;
+      z-index: 100;
+    }
   }
   .form-bg {
     position: absolute;
