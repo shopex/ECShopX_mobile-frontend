@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Image, ScrollView, Text } from '@tarojs/components'
+import { SpPrice } from '@/components'
 import './store.scss'
 
 export default class WgtStore extends Component {
@@ -87,12 +88,10 @@ export default class WgtStore extends Component {
                   <Image
                     className='store-goods__item-thumbnail'
                     src={goods.imgUrl}
-                    style={{ borderColor: base.borderColor || 'none' }}
                     mode='scaleToFill'
                   />
                   <View className='store-goods__item-price' style={{ color: base.borderColor }}>
-                    <Text className='cur'>¥</Text>
-                    {(goods.price / 100).toFixed(2)}
+                    <SpPrice value={goods.price / 100} />
                   </View>
                 </View>
               ))}

@@ -432,13 +432,16 @@ function EspierDetail(props) {
           {/* 拼团、秒杀、限时特惠显示活动价 */}
           {ACTIVITY_LIST[info.activityType] && (
             <CompActivityBar
-              info={info.activityInfo}
+              info={{
+                ...info.activityInfo,
+                priceObj: curItem ? curItem : info
+              }}
               type={info.activityType}
               onTimeUp={() => {
                 fetch()
               }}
             >
-              <SpGoodsPrice info={curItem ? curItem : info} />
+              {/* <SpGoodsPrice info={curItem ? curItem : info} /> */}
             </CompActivityBar>
           )}
 

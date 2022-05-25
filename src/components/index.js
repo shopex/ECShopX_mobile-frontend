@@ -86,6 +86,7 @@ import SpPickerAddress from './sp-picker-address'
 import SpNumberKeyBoard from './sp-numberkeyboard'
 import SpForm from './sp-form'
 import SpFormItem from './sp-form-item'
+import SpVipLabel from './sp-vip-label'
 
 export default {}
 
@@ -177,5 +178,6 @@ export {
   SpPickerAddress,
   SpNumberKeyBoard,
   SpForm,
-  SpFormItem
+  SpFormItem,
+  SpVipLabel
 }

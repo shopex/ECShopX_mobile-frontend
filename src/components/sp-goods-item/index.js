@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
-import { SpImage, SpPoint, SpPrice } from '@/components'
+import { SpImage, SpPoint, SpPrice, SpVipLabel } from '@/components'
 import { fetchUserFavs, addUserFav, deleteUserFav } from '@/store/slices/user'
 import qs from 'qs'
 import api from '@/api'
@@ -100,46 +100,6 @@ function SpGoodsItem(props) {
           <View className='goods-desc'>{info.brief}</View>
         </View>
 
-        {(info.is_point || (!info.is_point && showPrice) || showFav) && (
-          <View className='bd-block'>
-            {/* 商品价格、积分 */}
-            {info.is_point && (
-              <View className='goods-price'>
-                <SpPoint value={info.point} />
-              </View>
-            )}
-
-            {!info.is_point && showPrice && (
-              <View className='goods-price'>
-                <View className='gd-price'>
-                  <SpPrice value={info.price / 100}></SpPrice>
-                </View>
-                <View className='mk-price'>
-                  {info.marketPrice / 100 > 0 && (
-                    <SpPrice lineThrough value={info.marketPrice / 100}></SpPrice>
-                  )}
-                </View>
-              </View>
-            )}
-            {/* {
-                isOpenCollection && <View className='bd-block-rg'>
-                  <Text className='iconfont icon-shoucang-01'></Text>
-                </View>
-              } */}
-            {showFav && (
-              <View className='bd-block-rg'>
-                <Text
-                  className={classNames(
-                    'iconfont',
-                    isFaved ? 'icon-shoucanghover-01' : 'icon-shoucang-01'
-                  )}
-                  onClick={handleFavClick}
-                />
-              </View>
-            )}
-          </View>
-        )}
-
         {/* 促销活动标签 */}
         {showPromotion && info.promotion && info.promotion.length > 0 && (
           <View className='promotions'>
@@ -150,12 +110,66 @@ function SpGoodsItem(props) {
             ))}
           </View>
         )}
+
+        <View className='bd-block'>
+          {/* 商品价格、积分 */}
+          {info.is_point && (
+            <View className='goods-point'>
+              <SpPoint value={info.point} />
+            </View>
+          )}
+
+          {!info.is_point && showPrice && (
+            <View className='goods-price'>
+              <View className='gd-price'>
+                <SpPrice size={36} value={info.activityPrice || info.price}></SpPrice>
+                <SpPrice
+                  size={26}
+                  className='mkt-price'
+                  lineThrough
+                  value={info.marketPrice}
+                ></SpPrice>
+              </View>
+              {!info.activityPrice && (
+                <View>
+                  <View className='vip-price'>
+                    <SpPrice value={info.vipPrice} />
+                    <SpVipLabel content='VIP' type='vip' />
+                  </View>
+                  <View className='svip-price'>
+                    <SpPrice value={info.svipPrice} />
+                    <SpVipLabel content='SVIP' type='svip' />
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+
+          {showFav && (
+            <View className='bd-block-rg'>
+              <Text
+                className={classNames(
+                  'iconfont',
+                  isFaved ? 'icon-shoucanghover-01' : 'icon-shoucang-01'
+                )}
+                onClick={handleFavClick}
+              />
+            </View>
+          )}
+        </View>
+
         {isShowStore && (
           <View className='goods__store' onClick={() => onStoreClick(info)}>
-            {info.distributor_info.name}{' '}
-            <Text className='goods__store-entry'>
+            <SpImage
+              src={info.distributor_info.distributor_info || 'shop_default_logo.png'}
+              width={60}
+              height={60}
+            />
+            <Text className='store-name'>{info.distributor_info.name}</Text>
+
+            {/* <Text className='goods__store-entry'>
               进店<Text className='iconfont icon-arrowRight'></Text>
-            </Text>
+            </Text> */}
           </View>
         )}
       </View>
