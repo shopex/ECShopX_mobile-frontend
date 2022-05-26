@@ -12,8 +12,11 @@ const initialState = {
 }
 
 export default (props) => {
-  const { fetch, auto = true } = props
-  const [page, setPage] = useImmer(initialState)
+  const { fetch, auto = true, pageSize = 10 } = props
+  const [page, setPage] = useImmer({
+    ...initialState,
+    pageSize
+  })
   const totalRef = useRef(0)
 
   const [hasNext, setHasNext] = useState(true)
@@ -36,12 +39,13 @@ export default (props) => {
     })
     const { total } = await fetch(page)
     totalRef.current = total
-    setPage((draft) => {
-      if (!total || total <= page.pageSize * page.pageNo) {
-        draft.hasMore = false
+    // console.log('excluteFetch:', total, page.pageSize, page.pageIndex)
+    setPage((v) => {
+      if (!total || total <= page.pageSize * page.pageIndex) {
+        v.hasMore = false
       }
-      draft.loading = false
-      draft.reset = false
+      v.loading = false
+      // v.reset = false
     })
   }
 
