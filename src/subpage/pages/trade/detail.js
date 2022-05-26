@@ -139,6 +139,7 @@ export default class TradeDetail extends Component {
       origincountry_name: 'origincountry_name',
       origincountry_img_url: 'origincountry_img_url',
       price: ({ total_fee }) => (total_fee / 100).toFixed(2),
+      total_fee_new: ({ total_fee_new }) => (total_fee_new / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
       point: 'item_point',
       item_point: 'item_point',
@@ -955,7 +956,7 @@ export default class TradeDetail extends Component {
                 <View className='right'>{info.invoice_content}</View>
               </View>
             )}
-            {enMarketPrice && (
+            {enMarketPrice && info.market_fee > 0 && (
               <View className='line'>
                 <View className='left'>原价</View>
                 <View className='right'>{`¥${info.market_fee}`}</View>
@@ -990,12 +991,12 @@ export default class TradeDetail extends Component {
                 <View className='right'>{`¥${info.total_tax}`}</View>
               </View>
             )}
-            {!this.isPointitemGood() && (
+            {/* {!this.isPointitemGood() && (
               <View className='line'>
                 <View className='left'>优惠</View>
                 <View className='right'>{`- ￥${info.discount_fee}`}</View>
               </View>
-            )}
+            )} */}
             {info.point_use > 0 && (
               <View className='line'>
                 <View className='left'>{`${this.props.pointName}支付`}</View>
