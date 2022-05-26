@@ -881,7 +881,7 @@ export default class TradeDetail extends Component {
           )}
 
           <View className='trade-money'>
-            <View>
+            {/* <View>
               总计：
               {this.isPointitemGood() ? (
                 <Text className='trade-money__point'>
@@ -894,7 +894,7 @@ export default class TradeDetail extends Component {
               ) : (
                 <Text className='trade-money__num'>￥{info.totalpayment}</Text>
               )}
-            </View>
+            </View> */}
             {!info.is_logistics &&
               info.can_apply_cancel != 0 &&
               (info.status === 'WAIT_BUYER_PAY' ||
