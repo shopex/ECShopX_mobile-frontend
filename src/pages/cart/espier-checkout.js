@@ -139,9 +139,9 @@ function CartCheckout(props) {
   }, [isNewUser])
 
   useEffect(() => {
-    if (!calc.current) {
+    // if (!calc.current) {
       calcOrder()
-    }
+    // }
   }, [address, coupon, payType, shop.zitiShop, point_use])
 
   useEffect(() => {
@@ -478,7 +478,7 @@ function CartCheckout(props) {
 
   const calcOrder = async () => {
     Taro.showLoading()
-    calc.current = true
+    // calc.current = true
     const cus_parmas = await getParamsInfo()
 
     const orderRes = await api.cart.total(cus_parmas)
@@ -618,7 +618,7 @@ function CartCheckout(props) {
         draft.community = community
       }
     })
-    calc.current = false
+    // calc.current = false
     if (extraTips) {
       Taro.showModal({
         content: extraTips,
