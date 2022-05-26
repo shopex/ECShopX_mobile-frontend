@@ -4,7 +4,7 @@ import { View, Text, Image, Navigator, Button, Canvas } from '@tarojs/components
 import { connect } from 'react-redux'
 import { SpNavBar, Loading, SpPage, SpPoster } from '@/components'
 import api from '@/api'
-import { pickBy, canvasExp, classNames, isArray } from '@/utils'
+import { pickBy, canvasExp, classNames, isArray, getExtConfigData } from '@/utils'
 import userIcon from '@/assets/imgs/user-icon.png'
 import req from '@/api/req'
 import S from '@/spx'
@@ -163,11 +163,11 @@ export default class DistributionDashboard extends Component {
       Taro.setStorageSync('userinfo', userObj)
       userinfo = userObj
     }
-    const extConfig =
-      Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync
-        ? wx.getExtConfigSync()
-        : { appid: process.env.APP_ID, company_id: process.env.APP_COMPANY_ID }
-
+    // const extConfig =
+    //   Taro.getEnv() === 'WEAPP' && wx.getExtConfigSync
+    //     ? wx.getExtConfigSync()
+    //     : { appid: process.env.APP_ID, company_id: process.env.APP_COMPANY_ID }
+    const extConfig = getExtConfigData()
     shop_status = JSON.parse(shop_status === 1)
     const url = isOpenShop && shop_status ? `marketing/pages/distribution/shop-home` : `pages/index`
     const wxappCode = `${req.baseURL}promoter/qrcode.png?path=${url}&appid=${extConfig.appid}&company_id=${extConfig.company_id}&user_id=${userId}`

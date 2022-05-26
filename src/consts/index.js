@@ -79,6 +79,16 @@ export const TABBAR_PATH = {
   allGoods: '/pages/item/list?isTabBar=true'
 }
 
+export const TABBAR_ICON = {
+  home: 'shouye',
+  category: 'fenlei',
+  cart: 'gwche',
+  member: 'huiyuan',
+  article: 'zhongcao',
+  liveroom: 'zhibo',
+  allGoods: 'quanbushangpin'
+}
+
 export const BUY_TOOL_BTNS = {
   NOTICE: { title: '到货通知', key: 'notice', btnStatus: 'active' },
   SUBSCRIBE: { title: '已订阅到货通知', key: 'subscribe', btnStatus: 'default' },
