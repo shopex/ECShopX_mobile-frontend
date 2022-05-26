@@ -16,10 +16,9 @@ function CompGoodsItem(props) {
     onClickImgAndTitle = () => {}
   } = props
   const { priceSetting } = useSelector((state) => state.sys)
+  const { userInfo = {} } = useSelector((state) => state.user)
   const { cart_page } = priceSetting
-  const {
-    market_price: enMarketPrice,
-  } = cart_page
+  const { market_price: enMarketPrice } = cart_page
 
   if (!info) {
     return null
@@ -42,7 +41,13 @@ function CompGoodsItem(props) {
       {children}
       <View className='comp-goodsitem'>
         <View className='comp-goodsitem-hd' onClick={onClickImgAndTitle}>
-          <SpImage className='comp-goodsitem-image' src={info.pics} width={180} height={180}/>
+          <SpImage
+            className='comp-goodsitem-image'
+            mode='aspectFill'
+            src={info.pics}
+            width={180}
+            height={180}
+          />
         </View>
         <View className='comp-goodsitem-bd'>
           <View className='item-hd'>
@@ -64,29 +69,35 @@ function CompGoodsItem(props) {
             </View>
           )}
 
-          {info.promotions && (
-            <View className='goods-title__promotion'>
-              {info.promotions.map((item) => (
-                <View className='goods-title__tag'>{item.promotion_tag}</View>
-              ))}
-            </View>
-          )}
+          <View className='item-tags'>
+            {info?.promotions?.map((item) => (
+              <View className='item-tag'>{item.promotion_tag}</View>
+            ))}
+            {!isNaN(member_price) && (
+              <View className='item-tag'>{userInfo?.gradeInfo?.grade_name}</View>
+            )}
+          </View>
 
           <View className='item-ft'>
-            <View className='goods-price-wrap'>
-              <SpPrice value={_price / 100} />
-              {info.market_price > 0 && enMarketPrice && <SpPrice className='mkt-price' lineThrough value={info.market_price / 100} />}
+            <View className='item-fd-hd'></View>
+            <View className='item-ft-bd'>
+              <View className='goods-price-wrap'>
+                <SpPrice value={_price / 100} />
+                {info.market_price > 0 && enMarketPrice && (
+                  <SpPrice className='mkt-price' lineThrough value={info.market_price / 100} />
+                )}
+              </View>
+              {isShowAddInput ? (
+                <SpInputNumber
+                  value={info.num}
+                  max={info.store}
+                  min={1}
+                  onChange={(e) => onChange(e)}
+                />
+              ) : (
+                <Text className='item-num'>x {info.num}</Text>
+              )}
             </View>
-            {isShowAddInput ? (
-              <SpInputNumber
-                value={info.num}
-                max={info.store}
-                min={1}
-                onChange={(e) => onChange(e)}
-              />
-            ) : (
-              <Text className='item-num'>x {info.num}</Text>
-            )}
           </View>
         </View>
       </View>

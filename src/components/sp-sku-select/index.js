@@ -190,7 +190,9 @@ function SpSkuSelect(props) {
         shop_type: 'distributor'
       })
     )
+    onClose()
     dispatch(updateCount({ shop_type: 'distributor' }))
+    
     Taro.hideLoading()
     showToast('成功加入购物车')
   }

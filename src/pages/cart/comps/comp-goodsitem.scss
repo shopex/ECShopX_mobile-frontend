@@ -21,9 +21,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
+
     .goods-price-wrap {
       display: flex;
       align-items: center;
@@ -31,18 +29,60 @@
     .mkt-price {
       margin-left: 8px;
     }
+    &-hd {
+      display: flex;
+    }
+    &-bd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .vip-grade {
+      /* prettier-ignore */
+      border: 1PX solid var(--color-primary);
+      color: var(--color-primary);
+      font-size: 22px;
+      border-radius: 8px;
+      padding: 0 6px;
+      height: 32px;
+      line-height: 32px;
+      margin-right: 10px;
+      display: inline-block;
+      margin: 0 10px 4px 0;
+    }
+  }
+  .item-tags {
+    display: flex;
+    align-items: center;
+    .item-tag {
+      /* prettier-ignore */
+      border: 1PX solid var(--color-primary);
+      color: var(--color-primary);
+      font-size: 22px;
+      border-radius: 8px;
+      padding: 0 6px;
+      height: 32px;
+      line-height: 32px;
+      margin-right: 10px;
+      display: inline-block;
+      margin: 0 10px 4px 0;
+    }
   }
   .goods-title {
     @include multi-ellipsis(1);
     width: 300px;
     &__tag {
-      display: inline-block;
+      /* prettier-ignore */
       border: 1PX solid var(--color-primary);
       color: var(--color-primary);
-      padding: 1px 10px;
-      font-size: 20px;
+      font-size: 22px;
+      border-radius: 8px;
+      padding: 0 6px;
+      height: 32px;
+      line-height: 32px;
       margin-right: 10px;
-      border-radius: 10px;
+      display: inline-block;
+      margin: 0 10px 4px 0;
     }
     &__promotion {
       display: flex;
@@ -53,13 +93,13 @@
         width: 300px;
         font-size: 26px;
         color: #999;
-        @include multi-ellipsis(2)
-        // @include text-overflow();
+        @include multi-ellipsis(2) // @include text-overflow();
+;
       }
     }
   }
   .spec-desc {
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
     font-size: 24px;
     color: #999;
     padding: 5px 13px;
