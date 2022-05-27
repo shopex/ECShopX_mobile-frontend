@@ -56,6 +56,7 @@
     position: fixed;
     left: 0;
     right: 0;
+    z-index: 1000;
     .left-container,
     .right-container {
       width: 100px;
@@ -71,8 +72,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #fff;
     }
-    .icon-home {
+    .icon-home1 {
       font-size: 40px;
       color: #fff;
     }

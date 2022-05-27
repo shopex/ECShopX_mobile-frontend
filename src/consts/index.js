@@ -79,6 +79,16 @@ export const TABBAR_PATH = {
   allGoods: '/pages/item/list?isTabBar=true'
 }
 
+export const TABBAR_ICON = {
+  home: 'shouye',
+  category: 'fenlei',
+  cart: 'gwche',
+  member: 'huiyuan',
+  article: 'zhongcao',
+  liveroom: 'zhibo',
+  allGoods: 'quanbushangpin'
+}
+
 export const BUY_TOOL_BTNS = {
   NOTICE: { title: '到货通知', key: 'notice', btnStatus: 'active' },
   SUBSCRIBE: { title: '已订阅到货通知', key: 'subscribe', btnStatus: 'default' },
@@ -148,6 +158,44 @@ export const TRANSFORM_PAYTYPE = {
   'deposit': 'deposit',
   'wxpayapp': 'wxpay',
   'alipayapp': 'alipay'
+}
+
+export const POINT_TYPE = {
+  1: '注册送积分',
+  2: '推荐送分',
+  3: '充值返积分',
+  4: '推广注册返积分',
+  5: '积分换购',
+  6: '储值兑换积分',
+  7: '订单返积分',
+  8: '会员等级返佣',
+  9: '取消订处理积分',
+  10: '售后处理积分',
+  11: '大转盘抽奖送积分',
+  12: '管理员手动调整积分'
+}
+
+export const FORM_COMP = {
+  INPUT: 1,
+  NUMBER: 2,
+  DATE: 3,
+  RADIO: 4,
+  CHECKBOX: 5,
+  MOBILE: 6,
+  IMAGE: 7,
+}
+
+export const CHIEF_APPLY_STATUS = {
+  WAITE: 0,
+  RESLOVE: 1,
+  REJECT: 2
+}
+
+export const GOODS_TYPE = {
+  'normal': '普通商品',
+  'gift': '赠品',
+  'plus_buy': '换购',
+  'package': '组合商品'
 }
 
 export * from './localstorage'

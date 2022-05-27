@@ -29,7 +29,7 @@ import {
   log,
   VERSION_STANDARD,
   VERSION_B2C,
-  VERSION_PLATFORM,
+  VERSION_PLATFORM
 } from '@/utils'
 import { useAsyncCallback, useLogin, usePayment } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
@@ -60,6 +60,7 @@ function CartCheckout(props) {
 
   const dispatch = useDispatch()
   const pageRef = useRef()
+  const calc = useRef(false)
   const { userInfo, address } = useSelector((state) => state.user)
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
   const { coupon } = useSelector((state) => state.cart)
@@ -138,7 +139,9 @@ function CartCheckout(props) {
   }, [isNewUser])
 
   useEffect(() => {
-    calcOrder()
+    // if (!calc.current) {
+      calcOrder()
+    // }
   }, [address, coupon, payType, shop.zitiShop, point_use])
 
   useEffect(() => {
@@ -224,7 +227,7 @@ function CartCheckout(props) {
     console.log('trade params:', params)
     if (payType === 'deposit') {
       // 验证余额额度是否可用
-      if (userInfo.deposit < totalInfo.total_fee) {
+      if (userInfo.deposit < totalInfo.total_fee / 100) {
         const { confirm } = await Taro.showModal({
           content: '余额额度不足，请充值',
           cancelText: '取消',
@@ -390,7 +393,7 @@ function CartCheckout(props) {
 
   const handleCouponsClick = async () => {
     const { cart_type, distributor_id: id } = paramsInfo
-    let items_filter = detailInfo.filter((item) => item.order_item_type !== 'gift')
+    let items_filter = detailInfo.filter((item) => item.orderItemType !== 'gift')
     items_filter = items_filter.map((item) => {
       const { item_id, num, total_fee: price } = item
       return {
@@ -475,6 +478,7 @@ function CartCheckout(props) {
 
   const calcOrder = async () => {
     Taro.showLoading()
+    // calc.current = true
     const cus_parmas = await getParamsInfo()
 
     const orderRes = await api.cart.total(cus_parmas)
@@ -487,6 +491,7 @@ function CartCheckout(props) {
       coupon_discount = 0,
       discount_fee = 0,
       freight_fee = 0,
+      promotion_discount = 0,
       freight_type,
       freight_point = 0,
       coupon_info,
@@ -513,7 +518,9 @@ function CartCheckout(props) {
       subdistrict_id,
       receiver_state,
       receiver_city,
-      receiver_district
+      receiver_district,
+      item_fee_new,
+      market_fee
     } = orderRes
 
     let subdistrictRes
@@ -552,6 +559,8 @@ function CartCheckout(props) {
 
     const total_info = {
       ...totalInfo,
+      item_fee_new,
+      market_fee,
       item_fee,
       discount_fee,
       member_discount,
@@ -566,7 +575,8 @@ function CartCheckout(props) {
       deduction, // 抵扣
       point_fee, //积分抵扣金额,
       item_point,
-      freight_type
+      freight_type,
+      promotion_discount
     }
 
     const point_info = {
@@ -608,6 +618,7 @@ function CartCheckout(props) {
         draft.community = community
       }
     })
+    // calc.current = false
     if (extraTips) {
       Taro.showModal({
         content: extraTips,
@@ -643,7 +654,7 @@ function CartCheckout(props) {
       // not_use_coupon: 0,
       isNostores: openStore ? 0 : 1, // 这个传参需要和后端在确定一下
       point_use,
-      pay_type: (point_use > 0 && totalInfo.total_fee == 0 ) ? 'point' : payType,
+      pay_type: point_use > 0 && totalInfo.total_fee == 0 ? 'point' : payType,
       distributor_id: receiptType === 'ziti' && ziti_shopid ? ziti_shopid : dtid
     }
 
@@ -915,24 +926,25 @@ function CartCheckout(props) {
       )}
 
       {/* 平台版自营店铺、云店、官方商城支持积分抵扣 */}
-      {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && dtid == 0)) && pointInfo?.is_open_deduct_point && (
-        <SpCell
-          isLink
-          className='cart-checkout__invoice'
-          title={`${pointName}抵扣`}
-          onClick={() => {
-            setState((draft) => {
-              draft.isPointOpenModal = true
-            })
-          }}
-        >
-          <View className='invoice-title'>
-            {pointInfo.point_use > 0
-              ? `已使用${pointInfo.real_use_point}${pointName}`
-              : `使用${pointName}`}
-          </View>
-        </SpCell>
-      )}
+      {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && dtid == 0)) &&
+        pointInfo?.is_open_deduct_point && (
+          <SpCell
+            isLink
+            className='cart-checkout__invoice'
+            title={`${pointName}抵扣`}
+            onClick={() => {
+              setState((draft) => {
+                draft.isPointOpenModal = true
+              })
+            }}
+          >
+            <View className='invoice-title'>
+              {pointInfo.point_use > 0
+                ? `已使用${pointInfo.real_use_point}${pointName}`
+                : `使用${pointName}`}
+            </View>
+          </SpCell>
+        )}
 
       {!bargain_id && (
         <View>
@@ -961,20 +973,31 @@ function CartCheckout(props) {
       )}
 
       <View className='cart-checkout__total'>
-        <SpCell className='trade-sub__item' title='商品金额：'>
-          <SpPrice unit='cent' value={totalInfo.item_fee} />
+        <SpCell className='trade-sub__item' title='原价：'>
+          <SpPrice unit='cent' value={totalInfo.market_fee} />
         </SpCell>
-        <SpCell className='trade-sub__item' title='优惠金额：'>
-          <SpPrice unit='cent' primary value={-1 * totalInfo.discount_fee} />
+        <SpCell className='trade-sub__item' title='总价：'>
+          <SpPrice unit='cent' value={totalInfo.item_fee_new} />
         </SpCell>
-        {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && dtid == 0)) && pointInfo.is_open_deduct_point && (
-          <SpCell className='trade-sub__item' title={`${pointName}抵扣：`}>
-            <SpPrice unit='cent' primary value={-1 * totalInfo.point_fee} />
-          </SpCell>
-        )}
         <SpCell className='trade-sub__item' title='运费：'>
           <SpPrice unit='cent' value={totalInfo.freight_fee} />
         </SpCell>
+        <SpCell className='trade-sub__item' title='促销：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.promotion_discount} />
+        </SpCell>
+        <SpCell className='trade-sub__item' title='优惠券：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.coupon_discount} />
+        </SpCell>
+        {/* <SpCell className='trade-sub__item' title='优惠金额：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.discount_fee} />
+        </SpCell> */}
+        {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && dtid == 0)) &&
+          pointInfo.is_open_deduct_point && (
+            <SpCell className='trade-sub__item' title={`${pointName}抵扣：`}>
+              <SpPrice unit='cent' primary value={0 - totalInfo.point_fee} />
+            </SpCell>
+          )}
+        
       </View>
 
       <CompPointUse

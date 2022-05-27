@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { SpGoodsItem, SpImage } from '@/components'
 
 import './goods-scroll.scss'
 
@@ -56,7 +57,7 @@ export default class WgtGoodsScroll extends Component {
                 {config.leaderboard && (
                   <View className='subscript'>
                     <View className='subscript-text'>NO.{idx + 1}</View>
-                    <Image className='subscript-img' src='/assets/imgs/paihang.png' />
+                    <SpImage className='subscript-img' src='paihang.png' />
                   </View>
                 )}
                 <View className='thumbnail'>

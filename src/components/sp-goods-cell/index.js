@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpImage, SpPrice } from '@/components'
+import { GOODS_TYPE } from '@/consts'
 import './index.scss'
 
 function SpGoodsCell(props) {
   const { info, onSelectSku } = props
-
+  const { userInfo = {}, vipInfo = {} } = useSelector((state) => state.user)
   if (!info) {
     return null
   }
@@ -30,7 +31,7 @@ function SpGoodsCell(props) {
   return (
     <View className='sp-goods-cell'>
       <View className='goods-item-hd'>
-        <SpImage mode='aspectFit' src={info.img} width={170} height={170} />
+        <SpImage mode='aspectFit' src={info.img} width={180} height={180} />
       </View>
       <View className='goods-item-bd'>
         <View className='item-hd'>
@@ -51,11 +52,36 @@ function SpGoodsCell(props) {
               </View>
             )}
           </View>
-          {info.num && <Text className='item-num'>x {info.num}</Text>}
+        </View>
+        <View className='labels-block'>
+          {/* {info.discount_info?.map((sp, idx) => (
+            <View className='goods-type' key={`goods-type__${idx}`}>
+              {userInfo?.gradeInfo?.grade_name}
+            </View>
+          ))} */}
+
+
+          {!isNaN(memberPrice) && (
+            <View className='goods-type'>{vipInfo?.isVip ? vipInfo?.grade_name : userInfo?.gradeInfo?.grade_name}</View>
+          )}
+          {info.orderItemType != 'normal' && (
+            <View className='goods-type'>{GOODS_TYPE[info.orderItemType]}</View>
+          )}
         </View>
         <View className='item-ft'>
-          <SpPrice value={_price}></SpPrice>
-          <SpPrice className='market-price' lineThrough value={info.marketPrice}></SpPrice>
+          <View className='price-gp'>
+            <SpPrice value={_price}></SpPrice>
+            {info.marketPrice > 0 && (
+              <SpPrice
+                className='market-price'
+                size={28}
+                lineThrough
+                value={info.marketPrice}
+              ></SpPrice>
+            )}
+          </View>
+
+          {info.num && <Text className='item-num'>x {info.num}</Text>}
         </View>
       </View>
     </View>

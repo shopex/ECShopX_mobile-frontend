@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUserInfo, fetchUserFavs } from '@/store/slices/user'
@@ -14,6 +14,7 @@ export default (props = {}) => {
   const [isNewUser, setIsNewUser] = useState(false)
   const dispatch = useDispatch()
   const { userInfo } = useSelector((state) => state.user)
+  const $instance = getCurrentInstance()
   // const policyTime = useRef(0)
 
   useEffect(() => {
@@ -51,11 +52,15 @@ export default (props = {}) => {
   }
 
   const setToken = async (token) => {
+    const { redirect_url } = $instance.router.params
     S.setAuthToken(token)
     setIsLogin(true)
     getUserInfo()
     dispatch(fetchUserFavs())
     dispatch(updateCount({ shop_type: 'distributor' })) // 获取购物车商品数量
+    if(redirect_url) {
+      Taro.redirectTo({ url: redirect_url })
+    }
   }
 
   const getUserInfo = async (refresh) => {

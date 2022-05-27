@@ -3,12 +3,12 @@ import React, { useState } from 'react'
 import { View, Image } from '@tarojs/components'
 import { useSelector } from 'react-redux'
 import { AtTabBar } from 'taro-ui'
-import { TABBAR_PATH } from '@/consts'
+import { TABBAR_PATH, TABBAR_ICON } from '@/consts'
 import { classNames, styleNames, getCurrentRoute } from '@/utils'
 import './index.scss'
 
 function SpTabbar(props) {
-  const { tabbar = {} } = useSelector((state) => state.sys)
+  const { colorPrimary, tabbar = {} } = useSelector((state) => state.sys)
   const { cartCount = 0 } = useSelector((state) => state.cart)
   const { className } = props
 
@@ -17,8 +17,8 @@ function SpTabbar(props) {
     return {
       title: item.text,
       name: item.name,
-      iconType: item.iconPath ? '' : item.name,
-      selectedIconType: item.selectedIconPath ? '' : item.name,
+      iconType: item.iconPath ? '' : TABBAR_ICON[item.name],
+      selectedIconType: item.selectedIconPath ? '' : `${TABBAR_ICON[item.name]}-fill`,
       iconPrefixClass: 'iconfont icon',
       image: item.iconPath,
       selectedImage: item.selectedIconPath,
@@ -55,10 +55,10 @@ function SpTabbar(props) {
         },
         className
       )}
-      color={color}
-      iconSize='18'
+      // color={colorPrimary}
+      iconSize='20'
       backgroundColor={backgroundColor}
-      selectedColor={selectedColor}
+      selectedColor={colorPrimary}
       tabList={tabList}
       onClick={handleTabbarClick}
       current={currentIndex}
