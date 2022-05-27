@@ -113,24 +113,28 @@ export default class List extends Component {
   }
 
   onShareAppMessage() {
-    const res = this.state.shareInfo
+    const { shareInfo, query } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
-    const query = userId ? `?uid=${userId}` : ''
+    const params = userId
+      ? `?uid=${userId}&dis_id=${query.distributor_id}`
+      : `?dis_id=${query.distributor_id}`
     return {
-      title: res.title,
-      imageUrl: res.imageUrl,
-      path: `/pages/item/list${query}`
+      title: shareInfo.title,
+      imageUrl: shareInfo.imageUrl,
+      path: `/others/pages/store/list${params}`
     }
   }
 
   onShareTimeline() {
-    const res = this.state.shareInfo
+    const { shareInfo, query } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
-    const query = userId ? `uid=${userId}` : ''
+    const params = userId
+      ? `?uid=${userId}&dis_id=${query.distributor_id}`
+      : `?dis_id=${query.distributor_id}`
     return {
-      title: res.title,
-      imageUrl: res.imageUrl,
-      query: query
+      title: shareInfo.title,
+      imageUrl: shareInfo.imageUrl,
+      query: params
     }
   }
 

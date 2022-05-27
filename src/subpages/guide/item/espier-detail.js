@@ -34,7 +34,6 @@ import {
   isAlipay,
   isWeixin,
   isWeb,
-  linkPage,
   pickBy,
   classNames,
   navigateTo

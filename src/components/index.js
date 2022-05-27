@@ -84,6 +84,9 @@ import SpUpload from './sp-upload'
 import SpPicker from './sp-picker'
 import SpPickerAddress from './sp-picker-address'
 import SpNumberKeyBoard from './sp-numberkeyboard'
+import SpForm from './sp-form'
+import SpFormItem from './sp-form-item'
+import SpVipLabel from './sp-vip-label'
 
 export default {}
 
@@ -173,5 +176,8 @@ export {
   SpUpload,
   SpPicker,
   SpPickerAddress,
-  SpNumberKeyBoard
+  SpNumberKeyBoard,
+  SpForm,
+  SpFormItem,
+  SpVipLabel
 }

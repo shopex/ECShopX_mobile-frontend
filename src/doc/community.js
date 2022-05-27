@@ -1,3 +1,4 @@
+import Big from 'big.js'
 import { pickBy, calcTimer } from '@/utils'
 import { AFTER_SALE_STATUS } from '@/consts'
 
@@ -44,8 +45,9 @@ export const COMMUNITY_ORDER_LIST = {
       return pickBy(items, {
         orderId: 'order_id',
         itemName: 'item_name',
-        // price: 'price',
+        price: ({ price }) => (price / 100).toFixed(2),
         // total_fee: 'total_fee',
+        itemSpecDesc: 'item_spec_desc',
         num: 'num',
         zitiName: 'ziti_name',
         pic: 'pic'
@@ -116,7 +118,19 @@ export const COMMUNITY_ACTIVITY_ITEM = {
       country: 'area',
       address: 'address'
     })
-  }
+  },
+  showCondition: ({ condition_type }) => condition_type == 'money',
+  progressValue: ({ condition_money, total_fee }) => {
+    const totalFee = total_fee / 100
+    return totalFee >= condition_money ? 100 : totalFee / condition_money * 100
+  },
+  diffCondition: ({ condition_money, total_fee }) => {
+    const totalFee = total_fee / 100
+    return totalFee >= condition_money ? 0 : new Big(condition_money).minus(totalFee).toNumber()
+  },
+  totalFee: 'total_fee',
+  conditionMoney: 'condition_money',
+  conditionType: "condition_type"
 }
 
 export const COMMUNITY_ACTIVITY_DETAIL_ITEM = {

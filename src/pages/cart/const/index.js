@@ -12,8 +12,12 @@ export const initialState = {
   isPointitemGood: false, // 是否为积分商城的商品
   shoppingGuideData: {}, //代客下单导购信息
   totalInfo: {
+    market_fee: 0, // 原价
+    item_fee_new: 0, // 总价
     items_count: 0, // 商品总件数
     total_fee: '0.00', // 商品总计
+    promotion_discount: 0, // 促销
+    discount_fee: 0,
     item_fee: '', // 商品金额
     freight_fee: '', // 运费
     member_discount: '', // 会员折扣
@@ -50,7 +54,6 @@ export const initialState = {
   isPackageOpend: false,
   isNeedPackage: false, // 是否需要打包
   openCashier: false,
-  calcing: false,
   isPointOpenModal: false
 }
 

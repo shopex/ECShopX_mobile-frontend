@@ -91,3 +91,24 @@ export function closeCode(parmas) {
 export function getMemberItems(params) {
   return req.get('/community/member/items', params)
 }
+
+
+// 获取申请信息
+export function getAppayFields(params) {
+  return req.get('/community/chief/apply_fields', params)
+}
+
+// 提交申请
+export function applyChief(params) {
+  return req.post('/community/chief/apply', params)
+}
+
+// 获取申请进度
+export function getApplyChief(params) {
+  return req.get('/community/chief/apply', params)
+}
+
+// 获取团长申请说明
+export function aggrementAndExplanation(params) {
+  return req.get('/community/chief/aggrement_and_explanation', params)
+}

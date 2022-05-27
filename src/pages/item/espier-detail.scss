@@ -127,22 +127,23 @@
       font-weight: 500;
       color: #222;
       // line-height: 48px;
-      @include text-overflow();
+      @include multi-ellipsis(2);
     }
     .brief {
       font-size: 28px;
       color: #666;
+      @include text-overflow();
     }
   }
 
   .goods-name-wrap {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-top: 32px;
     .goods-name {
-      @include multi-ellipsis(2);
-      height: 95px;
+      // @include multi-ellipsis(2);
+      // height: 95px;
       font-size: 32px;
       font-weight: 500;
       color: #222;

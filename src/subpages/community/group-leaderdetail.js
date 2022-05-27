@@ -75,6 +75,7 @@ function GroupLeaderDetail(props) {
   const countDownEnd = () => {
     fetchDetial()
   }
+
   return (
     <SpPage
       className='page-community-group-leaderdetail'
@@ -161,16 +162,39 @@ function GroupLeaderDetail(props) {
               <Text className='icon iconfont icon-gouwuche'></Text>
               请先加好友或进群，确认邻居身份后再下单
             </View>
-            {isArray(detail?.activityPics) &&
-              detail?.activityPics.map((item) => (
-                <SpImage
-                  src={item}
-                  mode='aspectFit'
-                  className='group-head'
-                  width={200}
-                  height={200}
-                />
-              ))}
+
+            {detail?.showCondition && (
+              <View className='condition-wrap'>
+                <View className='condition'>
+                  <View className='condition-label'>
+                    <Text>成团金额</Text>
+                    <Text>{`${detail.diffCondition <= 0 ? '已满足成团金额' : `还差${detail.diffCondition}元成团`}`}</Text>
+                  </View>
+                  <AtProgress percent={detail.progressValue} isHidePercent />
+                </View>
+              </View>
+            )}
+
+            {isArray(detail?.activityPics) && (
+              <View
+                className='leader-concat'
+                onClick={() => {
+                  Taro.previewImage({
+                    urls: detail?.activityPics
+                  })
+                }}
+              >
+                {detail?.activityPics.map((item) => (
+                  <SpImage
+                    src={item}
+                    mode='aspectFit'
+                    className='group-head'
+                    width={200}
+                    height={200}
+                  />
+                ))}
+              </View>
+            )}
           </View>
           <View className='group-foot'>
             <CompWgts info={detail?.activityIntro} />

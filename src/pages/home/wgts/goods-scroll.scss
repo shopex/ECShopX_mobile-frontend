@@ -1,4 +1,4 @@
-.page-goods-scroll {
+.wgt-goods-scroll {
   .scroll-goods {
     width: 100%;
     height: 100%;
@@ -11,19 +11,16 @@
       height: 100%;
       display: inline-grid;
       position: relative;
-      // padding: 6px 0 0 6px;
       background: #fff;
-      margin-left: 16px;
-      padding-bottom: 24px;
       border-radius: 16px;
-      overflow: hidden;
+      margin: 10px 0 0 16px;
       &:last-child {
         margin-right: 16px;
       }
       .subscript {
         position: absolute;
-        left: 0;
-        top: 0;
+        left: -8px;
+        top: -8px;
         width: 80px;
         height: 80px;
         z-index: 15;

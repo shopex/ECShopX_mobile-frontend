@@ -28,6 +28,8 @@ function SpPage(props, ref) {
     renderFooter,
     scrollToTopBtn = false,
     isDefault = false,
+    defaultImg = 'empty_data.png',
+    renderDefault,
     loading = false,
     defaultMsg = '',
     navbar = true,
@@ -160,7 +162,7 @@ function SpPage(props, ref) {
         {cusCurrentPage == 1 ? (
           <View className='left-container'>
             <Text
-              className='iconfont icon-home'
+              className='iconfont icon-home1'
               onClick={() => {
                 Taro.navigateTo({
                   url: '/pages/index'
@@ -198,7 +200,7 @@ function SpPage(props, ref) {
         <SpNavBar title={pageTitle || _pageTitle} onClickLeftIcon={onClickLeftIcon} />
       )}
 
-      {isDefault && <SpNote img='empty_data.png' title={defaultMsg} />}
+      {isDefault && (renderDefault || <SpNote img={defaultImg} title={defaultMsg} />)}
 
       {customNavigation && CustomNavigation()}
 
