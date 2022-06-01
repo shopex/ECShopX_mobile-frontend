@@ -28,6 +28,7 @@ class EntryLaunch {
     const { params } = $instance.router;
     let options = {};
     if (params.scene) {
+      console.log(qs.parse(decodeURIComponent(params.scene)))
       options = {
         ...qs.parse(decodeURIComponent(params.scene)),
       };
