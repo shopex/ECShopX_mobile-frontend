@@ -70,17 +70,17 @@ export default class DistributionShopHome extends Component {
   }
 
   async componentDidMount() {
-    if (!S.getAuthToken()) {
-      const { path } = this.$instance.router
-      const params = await entryLaunch.getRouteParams()
-      const redirect = encodeURIComponent(`${path}?${qs.stringify(params)}`)
-      Taro.navigateTo({
-        url: `${process.env.APP_AUTH_PAGE}?redirect_url=${redirect}`
-      })
-    } else {
+    // if (!S.getAuthToken()) {
+    //   const { path } = this.$instance.router
+    //   const params = await entryLaunch.getRouteParams()
+    //   const redirect = encodeURIComponent(`${path}?${qs.stringify(params)}`)
+    //   Taro.navigateTo({
+    //     url: `${process.env.APP_AUTH_PAGE}?redirect_url=${redirect}`
+    //   })
+    // } else {
       this.getShopInfo()
       this.init()
-    }
+    // }
   }
 
   componentDidShow() {
