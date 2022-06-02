@@ -10,7 +10,16 @@ import { isObject, classNames, isWeixin, isWeb } from '@/utils'
 import './index.scss'
 
 function SpScrollView(props, ref) {
-  const { className, children, fetch, auto = true, renderEmpty, style, pageSize = 10 } = props
+  const {
+    className,
+    children,
+    fetch,
+    auto = true,
+    renderEmpty,
+    style,
+    pageSize = 10,
+    onLoad = () => {}
+  } = props
   // const scope = useScope();
   const { page, getTotal, nextPage, resetPage } = usePage({
     fetch,
@@ -74,6 +83,12 @@ function SpScrollView(props, ref) {
     }
   }, [page])
 
+  useEffect(() => {
+    if (!page.hasMore) {
+      onLoad()
+    }
+  }, [page.hasMore])
+
   const observerFn = () => {}
 
   useImperativeHandle(ref, () => ({
@@ -82,6 +97,7 @@ function SpScrollView(props, ref) {
       resetPage()
     }
   }))
+
   // console.log('sp scrollview:', page.loading, page.hasMore)
   return (
     <View className={classNames('sp-scrollview', className)} style={style} ref={wrapRef}>
