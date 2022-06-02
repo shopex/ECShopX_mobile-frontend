@@ -119,7 +119,7 @@ export default class WgtGoodsScroll extends Component {
                 </View>
               )}
             </View>
-            {config.moreLink.linkPage && (
+            {config?.moreLink?.linkPage && (
               <View className='wgt-more' onClick={this.handleClickMore}>
                 <View className='three-dot'></View>
               </View>
@@ -150,7 +150,7 @@ export default class WgtGoodsScroll extends Component {
             ))}
       
 
-            {config.moreLink.linkPage && (
+            {config?.moreLink?.linkPage && (
               <View className='more_img' onClick={this.handleClickMore}>
                 <View className={`img ${isWeb ? 'h5-img' : ''}`}>
                   <Image src={base.backgroundImg} className='goods-img' lazyLoad />

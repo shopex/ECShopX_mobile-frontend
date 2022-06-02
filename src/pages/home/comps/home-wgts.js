@@ -30,7 +30,7 @@ const initialState = {
   localWgts: []
 }
 function HomeWgts(props) {
-  const { wgts } = props
+  const { wgts, onLoad = () => {}, children } = props
   const [state, setState] = useImmer(initialState)
   const { localWgts } = state
 
@@ -50,9 +50,8 @@ function HomeWgts(props) {
       total: wgts.length
     }
   }
-
   return (
-    <SpScrollView className='home-wgts' fetch={fetch} pageSize={3}>
+    <SpScrollView className='home-wgts' fetch={fetch} pageSize={3} onLoad={onLoad}>
       {localWgts.map((list) => {
         return list.map((item, idx) => (
           <View
@@ -89,6 +88,7 @@ function HomeWgts(props) {
           </View>
         ))
       })}
+      {children}
     </SpScrollView>
   )
 }

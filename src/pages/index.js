@@ -81,7 +81,7 @@ function Home() {
       draft.wgts = config
       draft.loading = false
     })
-    fetchLikeList()
+    // fetchLikeList()
   }
 
   const fetchLikeList = async () => {
@@ -180,11 +180,11 @@ function Home() {
       )}
 
       <View className={classNames(isSetHight ? 'home-body' : 'cus-home-body')}>
-        <HomeWgts wgts={filterWgts} />
+        <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
+          {/* 猜你喜欢 */}
+          <SpRecommend className='recommend-block' info={likeList} />
+        </HomeWgts>
       </View>
-
-      {/* 猜你喜欢 */}
-      <SpRecommend className='recommend-block' info={likeList} />
 
       {/* 小程序搜藏提示 */}
       {isWeixin && <MCompAddTip />}

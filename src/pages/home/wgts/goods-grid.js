@@ -48,7 +48,7 @@ function WgtGoodsGrid(props) {
             <Text className='wgt-title'>{base.title}</Text>
             <Text className='wgt-subtitle'>{base.subtitle}</Text>
           </View>
-          {config.moreLink.linkPage && (
+          {config.moreLink?.linkPage && (
             <View className='wgt-more' onClick={handleClickMore}>
               <View className='three-dot'></View>
             </View>
