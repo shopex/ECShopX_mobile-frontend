@@ -28,7 +28,7 @@ class EntryLaunch {
     // const { params } = $instance.router;
     const params = options?.query || $instance.router.params
     let _options = {};
-    if (params.scene) {
+    if (params?.scene) {
       console.log(qs.parse(decodeURIComponent(params.scene)))
       _options = {
         ...qs.parse(decodeURIComponent(params.scene)),

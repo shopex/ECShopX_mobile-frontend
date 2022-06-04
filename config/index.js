@@ -108,7 +108,7 @@ const config = {
       mode: "browser"
     },
     devServer: {
-      https: true,
+      // https: true,
       // overlay: {
       //   warnings: false,
       //   errors: false
