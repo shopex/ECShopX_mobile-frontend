@@ -72,7 +72,7 @@ function MemberLevel(props) {
           <View className='title'>读取会员名称权益</View>
           <SpImage src='quanyi_you.png' width={200} height={36} />
         </View>
-        <View className='content-bd'><SpHtml content={list?.[activeIndex]?.description}></SpHtml></View>
+        <View className='content-bd'><SpHtml content={list?.[activeIndex]?.description || ''}></SpHtml></View>
         <View className='content-ft'>
           <SpImage src='quanyi_h.png' width={556} height={54} />
         </View>
