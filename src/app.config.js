@@ -7,6 +7,7 @@ export default {
     'pages/cart/espier-checkout', // 结算页面
     'pages/cart/cashier-result', // 支付结果页面
     'pages/cart/cashier-alipay', // 支付宝收银台（adapay）
+    'pages/cart/cashier-weapp', // 微信收银台（adapay）
 
     'pages/home/landing', // 跳转等待页面
     'pages/floorguide/index', // 楼层引导页面
@@ -114,7 +115,11 @@ export default {
         'list', // 商品列表
         'espier-detail', // 商品详情
         'apply-chief', // 申请团长
-        'chief-licence' // 团长注册协议
+        'chief-licence', // 团长注册协议
+        'commission', // 团长佣金
+        'withdraw', // 团长提现
+        'withdraw-bank', // 提现银行
+        'withdraw-list' // 提现记录
       ]
     },
     {

@@ -83,8 +83,9 @@ function SpCashier(props) {
   }
 
   const onChangePayment = (item) => {
+    const { paymentCode, paymentChannel } = item
     setState((draft) => {
-      draft.selectPayment = item.paymentCode
+      draft.selectPayment = paymentChannel
       draft.selectItem = item
     })
   }
@@ -125,7 +126,7 @@ function SpCashier(props) {
         {list.map((item, index) => (
           <View className='payment-item' key={`payment-item__${index}`}>
             <SpCheckbox
-              checked={item.paymentCode == selectPayment}
+              checked={item.paymentChannel == selectPayment}
               onChange={onChangePayment.bind(this, item)}
               // disabled={onDisabled(item)}
             >
