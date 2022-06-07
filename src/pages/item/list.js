@@ -73,7 +73,7 @@ function ItemList(props) {
 
   useDidShow(() => {
     setTimeout(() => {
-      wx.createSelectorQuery()
+      Taro.createSelectorQuery()
         .select('#item-list-head')
         .boundingClientRect((res) => {
           console.log('boundingClientRect:', res) //
@@ -294,7 +294,7 @@ function ItemList(props) {
       <SpScrollView
         className='item-list-scroll'
         style={styleNames({
-          marginTop: `${fixTop}px`
+          "margin-top": `${fixTop / 2}px`
         })}
         ref={goodsRef}
         fetch={fetch}

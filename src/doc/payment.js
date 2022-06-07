@@ -1,7 +1,9 @@
 export const PAYMENT_ITEM = {
   paymentCode: 'pay_type_code',
   paymentName: 'pay_type_name',
-  paymentChannel: 'pay_channel'
+  paymentChannel: ({ pay_channel, paymentCode }) => {
+    return pay_channel || paymentCode
+  }
 }
 
 export const APP_PAYMENT_ITEM = {

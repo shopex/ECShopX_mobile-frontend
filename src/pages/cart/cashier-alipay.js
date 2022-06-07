@@ -10,6 +10,9 @@ import { SpPrice, SpCell } from '@/components'
 import './cashier-alipay.scss'
 
 function CashierAlipay(props) {
+  const handlePay = () => {
+    window.location.href = 'https://wxaurl.cn/M0qyMy2ArXo'
+  }
   return (
     <View className='cashier-alipay'>
       <View className='cashier-hd'>
@@ -24,7 +27,7 @@ function CashierAlipay(props) {
         <SpCell title='订单号' value={'876545678909876'}/>
       </View>
       <View className='btn-wrap'>
-        <AtButton>立即支付</AtButton>
+        <AtButton onClick={handlePay}>立即支付</AtButton>
       </View>
     </View>
   )
