@@ -19,7 +19,6 @@ export default (props = {}) => {
 
   const cashierPayment = (params, orderInfo) => {
     console.log(`cashierPayment:`, params, orderInfo)
-    debugger
     const { pay_type, pay_channel } = params
     switch (pay_type) {
       case 'wxpay':
