@@ -80,9 +80,11 @@ export default (props = {}) => {
     const $instance = getCurrentInstance()
     const { order_id, code } = $instance.router.params
     const { open_id } = await api.wx.getOpenid({ code })
+    const { pay_channel } = params
     const { pay_type, order_type = 'normal' } = orderInfo
     const config = await api.cashier.getPayment({
       pay_type,
+      pay_channel,
       order_id,
       order_type,
       open_id
