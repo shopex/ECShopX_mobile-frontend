@@ -57,13 +57,13 @@ export default (props = {}) => {
   // 微信小程序支付
   const weappPay = async (params, orderInfo) => {
     const { pay_channel, pay_type } = params
-    const { order_id, tradeSourceType, order_type } = orderInfo
+    const { order_id, trade_source_type, order_type } = orderInfo
     try {
       const weappOrderInfo = await api.cashier.getPayment({
         pay_type,
         pay_channel,
         order_id,
-        order_type
+        order_type: order_type || trade_source_type
       })
       await Taro.requestPayment(weappOrderInfo)
       const { activityType } = params
@@ -77,7 +77,7 @@ export default (props = {}) => {
       const $instance = getCurrentInstance()
       const { path } = $instance.router
       if (path != '/subpage/pages/trade/detail' && path != '/subpages/community/order') {
-        if (tradeSourceType == 'normal_community') {
+        if (trade_source_type == 'normal_community') {
           Taro.redirectTo({ url: `/subpages/community/order` })
         } else {
           Taro.redirectTo({ url: `/subpage/pages/trade/detail?id=${order_id}` })
