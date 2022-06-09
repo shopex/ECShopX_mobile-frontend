@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import api from '@/api'
 import doc from '@/doc'
 import { AtButton } from 'taro-ui'
@@ -18,9 +18,10 @@ const initialState = {
 function CommunityCommission(props) {
   const [state, setState] = useImmer(initialState)
   const { total_fee, rebate_total, cash_withdrawal_rebate, payed_rebate } = state
-  useEffect(() => {
+  
+  useDidShow(() => {
     fetch()
-  }, [])
+  })
 
   const fetch = async () => {
     const { cash_withdrawal_rebate, payed_rebate, rebate_total, total_fee } =

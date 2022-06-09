@@ -73,19 +73,26 @@ function ItemList(props) {
 
   useDidShow(() => {
     setTimeout(() => {
-      Taro.createSelectorQuery()
-        .select('#item-list-head')
-        .boundingClientRect((res) => {
-          console.log('boundingClientRect:', res) //
-          if (res) {
-            setState((draft) => {
-              draft.fixTop = res.bottom
-              console.log('fixTop:', res.bottom) //
-            })
-          }
+      if (isWeixin) {
+        Taro.createSelectorQuery()
+          .select('#item-list-head')
+          .boundingClientRect((res) => {
+            console.log('boundingClientRect:', res) //
+            if (res) {
+              setState((draft) => {
+                draft.fixTop = res.bottom
+                console.log('fixTop1:', res.bottom) //
+              })
+            }
+          })
+          .exec()
+      } else {
+        setState((draft) => {
+          draft.fixTop = document.getElementById('item-list-head').clientHeight
+          console.log('fixTop2:', document.getElementById('item-list-head').clientHeight) //
         })
-        .exec()
-    }, 200)
+      }
+    }, 500)
   })
 
   const fetch = async ({ pageIndex, pageSize }) => {
@@ -294,7 +301,7 @@ function ItemList(props) {
       <SpScrollView
         className='item-list-scroll'
         style={styleNames({
-          "margin-top": `${fixTop / 2}px`
+          'margin-top': `${fixTop}px`
         })}
         ref={goodsRef}
         fetch={fetch}

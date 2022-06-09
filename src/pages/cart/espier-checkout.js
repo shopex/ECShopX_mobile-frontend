@@ -284,9 +284,9 @@ function CartCheckout(props) {
       }
     } else {
       try {
-        const resInfo = await api.trade.create(params)
-        orderInfo = resInfo
-        orderId = resInfo.trade_info.order_id
+        const { trade_info } = await api.trade.create(params)
+        orderInfo = trade_info
+        orderId = trade_info.order_id
       } catch (e) {
         setState((draft) => {
           draft.submitLoading = false
