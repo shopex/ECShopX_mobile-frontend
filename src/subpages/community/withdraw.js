@@ -56,6 +56,7 @@ function CommunityWitdraw(props) {
       pay_type: "bankcard"   //bankcard=银行卡;alipay=支付宝;wechat=微信
     })
     showToast('提现申请成功')
+    Taro.navigateBack()
     
   }
 

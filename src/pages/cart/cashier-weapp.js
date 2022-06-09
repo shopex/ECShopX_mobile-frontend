@@ -39,7 +39,7 @@ function CashierWeApp(props) {
       // 微信客户端code授权
       const loc = window.location
       // const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-result?order_id=${orderId}`
-      const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-weapp?order_id=${orderId}`
+      const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-weapp?order_id=${order_id}`
       let { redirect_url } = await api.wx.getredirecturl({ url })
       window.location.href = redirect_url
     }
@@ -77,19 +77,7 @@ function CashierWeApp(props) {
   }
 
   const handlePay = async () => {
-    const { pay_type, pay_channel } = params
-    const { order_id } = orderInfo
-    if(isWeixin) {
-      const weappOrderInfo = await api.cashier.getPayment({
-        pay_type,
-        pay_channel: 'wx_lite',
-        order_id,
-      })
-      cashierPayment(params, weappOrderInfo)
-    } else {
-      cashierPayment(params, orderInfo)
-    }
-    
+    cashierPayment(params, orderInfo)
   }
   return (
     <View className='cashier-weapp'>

@@ -52,6 +52,7 @@ function CommunityWithdrawBank(props) {
         bankcard_no: bankNum
       })
       showToast('添加成功')
+      Taro.navigateBack()
     })
   }
 
