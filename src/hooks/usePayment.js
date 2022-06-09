@@ -176,8 +176,9 @@ export default (props = {}) => {
     const { openlink } = await api.cashier.getWeappUrlSchema({
       path: '/pages/index',
       query: {
-        params: JSON.stringify(params),
-        orderInfo: JSON.stringify(orderInfo)
+        // params: JSON.stringify(params),
+        // orderInfo: JSON.stringify(orderInfo)
+        order_id
       },
       env_version: 'release'
     })
