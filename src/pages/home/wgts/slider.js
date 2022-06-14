@@ -59,7 +59,8 @@ export default class WgtSlider extends Component {
         {config ? (
           <View className='slider-wrap'>
             {data[0] && (
-              <Image mode='widthFix' className='scale-placeholder' lazyLoad src={data[0].imgUrl} />
+              // <Image mode='widthFix' className='scale-placeholder' lazyLoad src={data[0].imgUrl} />
+              <SpImage src={data[0].imgUrl} />
             )}
             <Swiper
               className='slider-img'
@@ -84,9 +85,6 @@ export default class WgtSlider extends Component {
                       <SpImage
                         img-class='slider-item__img'
                         src={item.imgUrl}
-                        mode='widthFix'
-                        width='718'
-                        height='100%'
                         lazyLoad
                       />
                     </View>
