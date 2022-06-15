@@ -122,6 +122,7 @@ export const GOODS_INFO = {
   isGift: 'is_gift',
   itemParams: 'item_params',
   groupsList: 'groups_list',
+  orderItemType: 'item_type',
   promotionActivity: ({ promotion_activity }) => {
     if (!promotion_activity) {
       return []
