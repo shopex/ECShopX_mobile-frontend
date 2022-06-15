@@ -11,6 +11,7 @@ export const WGT_GOODS_GRID = {
   itemId: 'goodsId',
   itemName: 'title',
   brief: 'brief',
+  brand: 'brand',
   promotion: 'promotion_activity',
   distributorId: 'distributor_id',
   isPoint: 'is_point',
