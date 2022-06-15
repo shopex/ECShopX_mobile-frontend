@@ -94,7 +94,8 @@ class App extends Component {
       is_open_scan_qrcode: openScanQrcode,
       is_open_wechatapp_location: openLocation,
       is_open_official_account: openOfficialAccount,
-      color_style: { primary, accent, marketing }
+      color_style: { primary, accent, marketing },
+      title // 商城应用名称
     } = await api.shop.getAppBaseInfo()
 
     const priceSetting = await api.shop.getAppGoodsPriceSetting()
@@ -135,6 +136,7 @@ class App extends Component {
           openLocation, // 开启小程序定位 1开启 2关闭
           openOfficialAccount, // 开启关注公众号组件 1开启 2关闭
           diskDriver: disk_driver,
+          appName: title,
           echat,
           meiqia,
           openStore: !nostores_status, // 前端店铺展示是否关闭 true:开启 false:关闭（接口返回值为true:关闭 false:不关闭）

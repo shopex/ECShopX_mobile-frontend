@@ -16,7 +16,7 @@ import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
 import { useImmer } from 'use-immer'
-import { useLogin } from '@/hooks'
+import { useLogin, useNavigation } from '@/hooks'
 import HomeWgts from './home/comps/home-wgts'
 import { WgtHomeHeader, WgtHomeHeaderShop } from './home/wgts'
 import CompAddTip from './home/comps/comp-addtip'
@@ -36,7 +36,7 @@ const initState = {
 function Home() {
   const [state, setState] = useImmer(initState)
   const [likeList, setLikeList] = useImmer([])
-  const { openRecommend, openLocation, openStore } = useSelector((state) => state.sys)
+  const { openRecommend, openLocation, openStore, appName } = useSelector((state) => state.sys)
   const { isLogin, login, updatePolicyTime, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       if (isUpdate) {
@@ -51,6 +51,7 @@ function Home() {
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
   const { openScanQrcode } = useSelector((state) => state.sys)
+  const { setNavigationBarTitle } = useNavigation()
 
   const { wgts, loading } = state
 
@@ -58,6 +59,7 @@ function Home() {
 
   useEffect(() => {
     init()
+    setNavigationBarTitle(appName)
   }, [])
 
   useDidShow(() => {
