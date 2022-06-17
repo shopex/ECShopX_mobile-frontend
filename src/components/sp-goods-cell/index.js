@@ -28,7 +28,7 @@ function SpGoodsCell(props) {
   } else {
     _price = price
   }
-  console.log('isNaN(memberPrice):', info.orderItemType)
+  // console.log('isNaN(memberPrice):', info.orderItemType)
   return (
     <View className='sp-goods-cell'>
       <View className='goods-item-hd'>

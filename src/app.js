@@ -25,6 +25,7 @@ import './app.scss'
 //   require('nerv-devtools')
 // }
 
+
 const { store } = configStore()
 
 // 如果是app模式，注入SAPP
