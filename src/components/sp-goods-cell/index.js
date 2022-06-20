@@ -17,16 +17,29 @@ function SpGoodsCell(props) {
     onSelectSku && onSelectSku(info)
   }
 
-  const { price, activityPrice, memberPrice, packagePrice } = info
-  let _price
-  if (!isNaN(activityPrice)) {
-    _price = activityPrice
-  } else if (!isNaN(packagePrice)) {
-    _price = packagePrice
-  } else if (!isNaN(memberPrice)) {
-    _price = memberPrice
+  const { price, activityPrice, memberPrice, packagePrice, curItem } = info
+
+  let _price = 0
+  let t_price, t_activityPrice, t_memberPrice, t_packagePrice
+  if(curItem) {
+    t_price = curItem.price
+    t_activityPrice = curItem.activityPrice
+    t_memberPrice = curItem.memberPrice
+    t_packagePrice = curItem.packagePrice
   } else {
-    _price = price
+    t_price = price
+    t_activityPrice = activityPrice
+    t_memberPrice = memberPrice
+    t_packagePrice = packagePrice
+  }
+  if (!isNaN(t_activityPrice)) {
+    _price = t_activityPrice
+  } else if (!isNaN(t_packagePrice)) {
+    _price = t_packagePrice
+  } else if (!isNaN(t_memberPrice)) {
+    _price = t_memberPrice
+  } else {
+    _price = t_price
   }
   // console.log('isNaN(memberPrice):', info.orderItemType)
   return (
