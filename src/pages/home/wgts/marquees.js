@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Swiper, SwiperItem } from '@tarojs/components'
+import { classNames, styleNames } from '@/utils'
 import { AtNoticebar } from 'taro-ui'
 
 import './marquees.scss'
@@ -55,53 +56,62 @@ export default class WgtMarquees extends Component {
 
     return (
       <View
-        className={`wgt ${base.padded ? 'wgt__padded' : null} ${
-          config.direction === 'vertical' ? 'marquees-vertical' : 'marquees-horizontal'
-        }`}
-        style={`background:${config.bgcolor}`}
+        className={classNames(`wgt wgt-goods-grid`, {
+          wgt__padded: base.padded
+        })}
       >
-        <View
-          className='marquees-label'
-          style={`background:${config.bgcolor}; color:${config.labelcolor}`}
-        >
-          {config.label ? (
-            <Text className='label-text' style={`border-color:${config.labelcolor}`}>
-              <Text className='icon-sound'></Text>
-              {config.label}
-            </Text>
-          ) : null}
-        </View>
+        {config.label && (
+          <View
+            className='marquees-label'
+            style={styleNames({
+              color: config.labelcolor
+            })}
+          >
+            <Text className='iconfont icon-tongzhituiguang'></Text>
+            {config.label}
+          </View>
+        )}
         {config.direction === 'vertical' ? (
           <Swiper
             className='marquees'
+            style={styleNames({
+              background: config.bgcolor
+            })}
             autoplay
             circular
             interval={3000}
             duration={300}
             vertical={config.direction}
-            // style={`background-color:${config.bgcolor}`}
           >
-            {data.map((item, idx) => {
-              return (
-                <SwiperItem key={`${idx}1`} className='marquees-item'>
-                  <View
-                    onClick={this.handleClickItem.bind(this, item.id)}
-                    style={`color:${config.fontcolor}`}
-                    className='item-text'
-                  >
-                    {item.title}
-                  </View>
-                </SwiperItem>
-              )
-            })}
+            {data.map((item, idx) => (
+              <SwiperItem key={`marquees-item__${idx}`} className='marquees-item'>
+                <View
+                  className='item-text'
+                  style={styleNames({
+                    color: config.fontcolor
+                  })}
+                  onClick={this.handleClickItem.bind(this, item.id)}
+                >
+                  {item.title}
+                </View>
+              </SwiperItem>
+            ))}
           </Swiper>
         ) : (
           <View
-            style={`background:${config.bgcolor}; color:${config.fontcolor}`}
-            className='marqueContent'
+            style={styleNames({
+              background: config.bgcolor,
+              color: config.fontcolor
+            })}
           >
             <AtNoticebar marquee>
-              <Text style={`color:${config.fontcolor}`}>{announce}</Text>
+              <View
+                style={styleNames({
+                  color: config.fontcolor
+                })}
+              >
+                {announce}
+              </View>
             </AtNoticebar>
           </View>
         )}

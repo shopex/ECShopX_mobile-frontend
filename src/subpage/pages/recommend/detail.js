@@ -5,7 +5,7 @@ import api from '@/api'
 import { withPager } from '@/hocs'
 import { FloatMenus, FloatMenuItem, SpNavBar } from '@/components'
 import { connect } from 'react-redux'
-import { formatTime, buriedPoint, log } from '@/utils'
+import { formatTime, buriedPoint, log, isWeixin } from '@/utils'
 import S from '@/spx'
 // import { Tracker } from '@/service'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading } from '../../../pages/home/wgts'
@@ -17,9 +17,9 @@ import './detail.scss'
 @withPager
 export default class recommendDetail extends Component {
   $instance = getCurrentInstance()
-  constructor (props) {
+  constructor(props) {
     props = props || {}
-    props.pageSize = 50
+    // props.pageSize = 50
     super(props)
 
     this.state = {
@@ -32,12 +32,12 @@ export default class recommendDetail extends Component {
     }
   }
 
-  componentDidShow () {
+  componentDidShow() {
     this.fetchContent()
     // this.praiseCheck()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Taro.getSystemInfo().then((res) => {
       this.setState({
         screenWidth: res.screenWidth
@@ -49,7 +49,7 @@ export default class recommendDetail extends Component {
     })
   }
 
-  onShareAppMessage (res) {
+  onShareAppMessage(res) {
     const { info } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `&uid=${userId}` : ''
@@ -62,7 +62,7 @@ export default class recommendDetail extends Component {
     }
   }
 
-  onShareTimeline () {
+  onShareTimeline() {
     const { info } = this.state
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `&uid=${userId}` : ''
@@ -103,7 +103,7 @@ export default class recommendDetail extends Component {
     })
   }
 
-  async fetchContent () {
+  async fetchContent() {
     const { id } = this.$instance.router.params
     console.log('this.$instance.router:', this.$instance.router)
     // 关注数加1
@@ -188,7 +188,7 @@ export default class recommendDetail extends Component {
     }
   }
 
-  handleShare () {}
+  handleShare() {}
 
   handleClickGoods = () => {
     const { id } = this.$instance.router.params
@@ -199,14 +199,14 @@ export default class recommendDetail extends Component {
     Taro.navigateToMiniProgram({
       appId: APP_GIFT_APPID, // 要跳转的小程序的appid
       path: '/pages/index/index', // 跳转的目标页面
-      success (res) {
+      success(res) {
         // 打开成功
         console.log(res)
       }
     })
   }
 
-  render () {
+  render() {
     const { colors } = this.props
     const { info, praiseCheckStatus, screenWidth, collectArticleStatus, showBackToTop } = this.state
 
@@ -285,14 +285,16 @@ export default class recommendDetail extends Component {
             <Text className='iconfont icon-star_on'> </Text>
             <Text>{collectArticleStatus ? '已加入' : '加入心愿'}</Text>
           </View>
-          <Button
-            openType='share'
-            className='recommend-detail__bar-item'
-            onClick={this.handleClickBar.bind(this, 'share')}
-          >
-            <Text className='iconfont icon-share1'> </Text>
-            <Text>分享</Text>
-          </Button>
+          {isWeixin && (
+            <Button
+              openType='share'
+              className='recommend-detail__bar-item'
+              onClick={this.handleClickBar.bind(this, 'share')}
+            >
+              <Text className='iconfont icon-share1'> </Text>
+              <Text>分享</Text>
+            </Button>
+          )}
         </View>
       </View>
     )
