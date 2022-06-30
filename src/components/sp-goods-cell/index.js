@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { SpImage, SpPrice } from '@/components'
 import { GOODS_TYPE } from '@/consts'
+import { VERSION_IN_PURCHASE } from '@/utils'
 import './index.scss'
 
 function SpGoodsCell(props) {
@@ -73,7 +74,7 @@ function SpGoodsCell(props) {
             </View>
           ))} */}
 
-          {!isNaN(memberPrice) && (
+          {!isNaN(memberPrice) && !VERSION_IN_PURCHASE && (
             <View className='goods-type'>{vipInfo?.isVip ? vipInfo?.grade_name : userInfo?.gradeInfo?.grade_name}</View>
           )}
           {info?.orderItemType != 'normal' && (
