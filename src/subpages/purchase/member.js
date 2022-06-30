@@ -125,8 +125,6 @@ function MemberIndex(props) {
       getMemberCenterData()
       setMemberBackground()
       fetchPurchase()
-      // 绑定内购家属
-      bindPurchaseFamily()
     }
   }, [isLogin])
 
@@ -175,12 +173,6 @@ function MemberIndex(props) {
       path: '/pages/index'
     }
   })
-
-  const bindPurchaseFamily = async () => {
-    // 内购分享码
-    const { code } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    await api.purchase.purchaseBind({ code })
-  }
 
   const getMemberCenterConfig = async () => {
     const [bannerRes, menuRes, redirectRes, pointShopRes] = await Promise.all([
