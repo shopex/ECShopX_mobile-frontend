@@ -3,6 +3,7 @@ import { useImmer } from 'use-immer'
 import { useSelector } from 'react-redux'
 import { View, Text, Image } from '@tarojs/components'
 import { SpPrice, SpInputNumber, SpImage } from '@/components'
+import { VERSION_IN_PURCHASE } from '@/utils'
 
 import './comp-goodsitem.scss'
 
@@ -92,7 +93,7 @@ function CompGoodsItem(props) {
             {info?.promotions?.map((item) => (
               <View className='item-tag'>{item.promotion_tag}</View>
             ))}
-            {!isNaN(member_price) && (
+            {!isNaN(member_price) && !VERSION_IN_PURCHASE && (
               <View className='item-tag'>{vipInfo?.isVip ? vipInfo?.grade_name : userInfo?.gradeInfo?.grade_name}</View>
             )}
           </View>
