@@ -15,6 +15,7 @@
   .marquees {
     flex: 1;
     height: 60px;
+    overflow: hidden;
     .marquees-item {
       padding-left: 16px;
       padding-right: 16px;
