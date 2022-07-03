@@ -80,16 +80,16 @@ function SpCashier(props) {
       const appPaymentlist = pickBy(resAppPayment, doc.payment.APP_PAYMENT_ITEM)
       
     }
-
+    let _list = list
     if(process.env.NODE_ENV === 'development') {
-      list.concat(paymentList)
+      _list = list.concat(paymentList)
     }
 
     setState((draft) => {
-      draft.list = list
+      draft.list = _list
     })
-    onChange(list[0])
-    onChangePayment(list[0])
+    onChange(_list[0])
+    onChangePayment(_list[0])
 
     // console.log('===list===', list)
     // const isHasAlipay = list.some((item) => item.pay_type_code === 'alipayh5')
