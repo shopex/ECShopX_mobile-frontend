@@ -118,8 +118,9 @@
   }
   .order-con {
     display: flex;
+    justify-content: flex-start;
     .order-item {
-      flex: 1;
+      width: 25%;
       display: flex;
       justify-content: center;
       flex-direction: column;

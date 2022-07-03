@@ -12,7 +12,10 @@ export default class PurchaseIndex extends Component {
 
     this.state = {
       ...this.state,
-      info: {},
+      info: {
+        dependents_limit: 0,
+        surplus_share_limitnum: 0
+      },
       code: ''
     }
   }
@@ -52,6 +55,7 @@ export default class PurchaseIndex extends Component {
 
   render() {
     const { info } = this.state
+  
 
     return (
       <SpPage className='page-purchase-index'>
@@ -90,7 +94,7 @@ export default class PurchaseIndex extends Component {
             </View>
           </View>
           <View className="share-info">
-            <View className="title">邀请码</View>
+            <View className="title">邀请额度</View>
             <View className='limitnum'>{`共计：${info.dependents_limit}；已使用：${info.dependents_limit - info.surplus_share_limitnum}；可分享：${info.surplus_share_limitnum}`}</View>
           </View>
           <View className='header-bd'>

@@ -17,12 +17,12 @@ import { SG_APP_CONFIG } from '@/consts'
 import './comp-menu.scss'
 
 const MENUS = [
-  {
-    key: 'collection',
-    name: '我的收藏',
-    icon: 'm_menu_soucang.png',
-    link: '/pages/member/item-fav'
-  }
+  // {
+  //   key: 'collection',
+  //   name: '我的收藏',
+  //   icon: 'm_menu_soucang.png',
+  //   link: '/pages/member/item-fav'
+  // }
 ]
 
 // const MENUS_OFFLINE = [

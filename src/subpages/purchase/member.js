@@ -483,8 +483,8 @@ function MemberIndex(props) {
 
         <CompPanel
           title='订单'
-          extra='查看全部订单'
-          onLink={handleClickLink.bind(this, '/subpage/pages/trade/list')}
+          // extra='查看全部订单'
+          // onLink={handleClickLink.bind(this, '/subpage/pages/trade/list')}
         >
           {config.menu.ziti_order && (
             <View
@@ -505,7 +505,7 @@ function MemberIndex(props) {
           <View className='order-con'>
             <View
               className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=5')}
+              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=5&evaluate=0')}
             >
               <SpImage src='daizhifu.png' className='icon-style' />
               {state.waitPayNum > 0 && (
@@ -519,7 +519,7 @@ function MemberIndex(props) {
             </View>
             <View
               className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=1')}
+              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=1&evaluate=0')}
             >
               <SpImage src='daishouhuo.png' className='icon-style' />
               {state.waitRecevieNum + state.waitSendNum > 0 && (
@@ -531,7 +531,7 @@ function MemberIndex(props) {
               )}
               <Text className='order-txt'>待收货</Text>
             </View>
-            <View
+            {/* <View
               className='order-item'
               onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=7')}
             >
@@ -557,7 +557,7 @@ function MemberIndex(props) {
                 </View>
               )}
               <Text className='order-txt'>售后</Text>
-            </View>
+            </View> */}
           </View>
         </CompPanel>
 
