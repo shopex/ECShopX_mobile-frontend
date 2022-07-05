@@ -687,12 +687,12 @@ function PurchaseCheckout(props) {
         <SpCell className='trade-sub__item' title='运费：'>
           <SpPrice unit='cent' value={totalInfo.freight_fee} />
         </SpCell>
-        <SpCell className='trade-sub__item' title='促销：'>
+        {/* <SpCell className='trade-sub__item' title='促销：'>
           <SpPrice unit='cent' primary value={0 - totalInfo.promotion_discount} />
         </SpCell>
         <SpCell className='trade-sub__item' title='优惠券：'>
           <SpPrice unit='cent' primary value={0 - totalInfo.coupon_discount} />
-        </SpCell>
+        </SpCell> */}
         {/* <SpCell className='trade-sub__item' title='优惠金额：'>
           <SpPrice unit='cent' primary value={0 - totalInfo.discount_fee} />
         </SpCell> */}

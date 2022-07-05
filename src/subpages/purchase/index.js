@@ -94,10 +94,10 @@ export default class PurchaseIndex extends Component {
             </View>
           </View>
           <View className="share-info">
-            <View className="title">邀请额度</View>
+            <View className="title">分享额度</View>
             <View className='limitnum'>{`共计：${info.dependents_limit}；已使用：${info.dependents_limit - info.surplus_share_limitnum}；可分享：${info.surplus_share_limitnum}`}</View>
           </View>
-          <View className='header-bd'>
+          {/* <View className='header-bd'>
             <View className='bd-item'>
               <View className='bd-item-label'>总额度</View>
               <View className='bd-item-value'>
@@ -116,7 +116,7 @@ export default class PurchaseIndex extends Component {
                 {info.surplus_limitfee ? (info.surplus_limitfee / 100).toFixed(2) : '0.00'}
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
         {info.user_type === 'employee' && (
           <View>
