@@ -4,7 +4,7 @@ import { View, Button } from '@tarojs/components'
 import req from '@/api/req'
 import { SpPage, SpCell, SpNavBar } from '@/components'
 import S from '@/spx'
-import { goToPage, isWeb } from '@/utils'
+import { goToPage, isWeb, VERSION_IN_PURCHASE } from '@/utils'
 import { connect } from 'react-redux'
 import DestoryConfirm from './comps/destory-comfirm-modal'
 
@@ -142,7 +142,7 @@ export default class SettingIndex extends Component {
             isLink
             onClick={this.handleClickWxOAuth.bind(this, '/marketing/pages/member/address', true)}
           ></SpCell>
-          {S.getAuthToken() && (
+          {S.getAuthToken() && !VERSION_IN_PURCHASE && (
             <View className='btn'>
               {isWeb && (
                 <Button

@@ -9,6 +9,7 @@ import {
   getDistributorId,
   VERSION_STANDARD,
   VERSION_PLATFORM,
+  VERSION_IN_PURCHASE,
   VERSION_B2C,
   classNames
 } from '@/utils'
@@ -99,7 +100,7 @@ function Home() {
 
   // 定位
   const fetchLocation = async () => {
-    if (!location) {
+    if (!location && !VERSION_IN_PURCHASE) {
       const res = await entryLaunch.getCurrentAddressInfo()
       dispatch(updateLocation(res))
     }
