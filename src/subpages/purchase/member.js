@@ -414,12 +414,6 @@ function MemberIndex(props) {
               <Text className='username'>
                 {(userInfo && (userInfo.username || userInfo.mobile)) || '获取昵称'}
               </Text>
-              {config.menu.member_code && (
-                <Text
-                  className='iconfont icon-erweima-01'
-                  onClick={handleClickLink.bind(this, '/marketing/pages/member/member-code')}
-                ></Text>
-              )}
             </View>
             <View className='join-us'>{VipGradeDom()}</View>
           </View>
@@ -486,21 +480,6 @@ function MemberIndex(props) {
           // extra='查看全部订单'
           // onLink={handleClickLink.bind(this, '/subpage/pages/trade/list')}
         >
-          {config.menu.ziti_order && (
-            <View
-              className='ziti-order'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/customer-pickup-list')}
-            >
-              <View className='ziti-order-info'>
-                <View className='title'>自提订单</View>
-                <View className='ziti-txt'>
-                  您有<Text className='ziti-num'>{state.zitiNum}</Text>
-                  个等待自提的订单
-                </View>
-              </View>
-              <Text className='iconfont icon-qianwang-01'></Text>
-            </View>
-          )}
 
           <View className='order-con'>
             <View
@@ -531,33 +510,6 @@ function MemberIndex(props) {
               )}
               <Text className='order-txt'>待收货</Text>
             </View>
-            {/* <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/list?status=7')}
-            >
-              <SpImage src='pingjia.png' className='icon-style' />
-              {state.waitEvaluateNum > 0 && (
-                <View
-                  className={`'order-bradge' ${VERSION_IN_PURCHASE && 'purchase-order-bradge'}`}
-                >
-                  <Text>{state.waitEvaluateNum}</Text>
-                </View>
-              )}
-              <Text className='order-txt'>待评价</Text>
-            </View>
-
-            <View
-              className='order-item'
-              onClick={handleClickLink.bind(this, '/subpage/pages/trade/after-sale')}
-            >
-              <SpImage src='shouhou.png' className='icon-style' />
-              {state.afterSalesNum > 0 && (
-                <View className='order-bradge'>
-                  <Text>{state.afterSalesNum}</Text>
-                </View>
-              )}
-              <Text className='order-txt'>售后</Text>
-            </View> */}
           </View>
         </CompPanel>
 

@@ -6,9 +6,10 @@ import './comp-panel.scss'
 
 function CompPanel (props) {
   const { title, extra, icon = 'icon-qianwang-01', children, className, onLink = () => {} } = props
-  if(!children) {
-    return null
-  }
+  // if(!children) {
+  //   return null
+  // }
+  console.log('children:', children)
   return (
     <View
       className={classNames(
