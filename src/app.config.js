@@ -315,4 +315,5 @@ export default {
   //     'provider': 'wx2b03c6e691cd7370' // 必须填该直播组件appid，该示例值即为直播组件appid（复制时请去掉注释）
   //   }
   // }
+  
 }
