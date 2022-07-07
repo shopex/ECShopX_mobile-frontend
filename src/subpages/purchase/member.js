@@ -145,11 +145,10 @@ function MemberIndex(props) {
   const fetchPurchase = async () => {
     // 内购分享码
     const { code: purchaseCode } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    const data = await api.purchase.purchaseInfo()
-    if(purchaseCode) {
+    if (purchaseCode && !userInfo?.is_dependent) {
       await api.purchase.purchaseBind({ code: purchaseCode })
     }
-
+    const data = await api.purchase.purchaseInfo()
     setState((draft) => {
       draft.purchaseInfo = data
     })
@@ -267,23 +266,18 @@ function MemberIndex(props) {
 
   const setHeaderBlock = async () => {
     const resAssets = await api.member.memberAssets()
-    const { discount_total_count, fav_total_count, point_total_count } = resAssets
+    const { fav_total_count, point_total_count } = resAssets
     setState((draft) => {
       draft.favCount = fav_total_count
       draft.point = point_total_count
-      draft.couponCount = discount_total_count
     })
   }
 
   const getMemberCenterData = async () => {
-    const resSales = await api.member.getSalesperson()
     const resTrade = await api.trade.getCount()
-    const resVip = await api.vip.getList()
-    const resAssets = await api.member.memberAssets()
     // 大转盘
-    const resTurntable = await api.wheel.getTurntableconfig()
 
-    await setHeaderBlock()
+    // await setHeaderBlock()
 
     const {
       aftersales, // 待处理售后
@@ -360,9 +354,7 @@ function MemberIndex(props) {
   const VipGradeDom = () => {
     if (isLogin) {
       return (
-        <View
-          className='gradename'
-        >
+        <View className='gradename'>
           {
             {
               true: '员工',
@@ -476,7 +468,6 @@ function MemberIndex(props) {
           // extra='查看全部订单'
           // onLink={handleClickLink.bind(this, '/subpage/pages/trade/list')}
         >
-
           <View className='order-con'>
             <View
               className='order-item'
@@ -509,16 +500,14 @@ function MemberIndex(props) {
           </View>
         </CompPanel>
 
-        <CompPanel title='我的服务'>
-          <CompMenu
-            accessMenu={{
-              ...config.menu,
-              popularize: userInfo ? userInfo.popularize : false
-            }}
-            isPromoter={userInfo ? userInfo.isPromoter : false}
-            onLink={handleClickService}
-          />
-        </CompPanel>
+        <CompMenu
+          accessMenu={{
+            ...config.menu,
+            popularize: userInfo ? userInfo.popularize : false
+          }}
+          isPromoter={userInfo ? userInfo.isPromoter : false}
+          onLink={handleClickService}
+        />
 
         <CompPanel title='帮助中心'>
           <CompHelpCenter onLink={handleClickService} />
