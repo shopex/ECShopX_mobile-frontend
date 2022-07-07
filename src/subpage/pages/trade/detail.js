@@ -18,6 +18,7 @@ import {
   isWeb,
   redirectUrl,
   VERSION_PLATFORM,
+  VERSION_IN_PURCHASE,
   isAPP,
   isWxWeb
 } from '@/utils'
@@ -1095,7 +1096,7 @@ export default class TradeDetail extends Component {
                   (info.is_all_delivery || info.delivery_status == 'PARTAIL') &&
                   info.receipt_type !== 'dada')) &&
                 info.can_apply_aftersales === 1 &&
-                info.order_class !== 'excard' && (
+                info.order_class !== 'excard' && !VERSION_IN_PURCHASE && (
                   <Button
                     className={`trade-detail__footer__btn left ${
                       info.is_logistics &&
