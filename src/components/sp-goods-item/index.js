@@ -8,7 +8,7 @@ import qs from 'qs'
 import api from '@/api'
 import S from '@/spx'
 
-import { isObject, classNames, showToast, VERSION_PLATFORM } from '@/utils'
+import { isObject, classNames, showToast, VERSION_PLATFORM, VERSION_IN_PURCHASE } from '@/utils'
 import { PROMOTION_TAG } from '@/consts'
 
 import './index.scss'
@@ -176,7 +176,7 @@ function SpGoodsItem(props) {
             </View>
           )}
 
-          {showFav && (
+          {showFav && !VERSION_IN_PURCHASE && (
             <View className='bd-block-rg'>
               <Text
                 className={classNames(

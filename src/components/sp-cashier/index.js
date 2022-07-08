@@ -6,7 +6,7 @@ import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { SpFloatLayout, SpCheckbox } from '@/components'
 import api from '@/api'
-import { isWxWeb, getDistributorId, isAPP, pickBy } from '@/utils'
+import { isWeixin, isWxWeb, isWeb, getDistributorId, isAPP, pickBy, VERSION_IN_PURCHASE } from '@/utils'
 import doc from '@/doc'
 import { payment_platform } from '@/utils/platform'
 import './index.scss'
@@ -39,11 +39,12 @@ function SpCashier(props) {
   // console.log('isAPP:', isAPP(), Taro.getEnv(), Taro.ENV_TYPE.APP)
   const ENV = Taro.getEnv()
   useEffect(() => {
-    if (isAPP()) {
-      fetchAppPaymentList()
-    } else {
-      fetchPaymentList()
-    }
+    // if (isAPP()) {
+    //   fetchAppPaymentList()
+    // } else {
+    //   fetchPaymentList()
+    // }
+    fetchPaymentList()
   }, [ENV])
 
   useEffect(() => {
@@ -55,16 +56,41 @@ function SpCashier(props) {
   }, [value, isOpened])
 
   const fetchPaymentList = async () => {
+    let platform = ''
+    if(isWxWeb) {
+      platform = 'wxPlatform'
+    } else if(isWeixin) {
+      platform = 'wxMiniProgram'
+    } else if(isWeb) {
+      platform = 'h5'
+    } else if(isAPP()) {
+      platform = 'app'
+    }
+
     const params = {
       distributor_id: getDistributorId(),
-      platform: isWxWeb ? 'wxPlatform' : payment_platform
+      platform
     }
     const res = await api.member.getTradePaymentList(params)
-    const list = [...pickBy(res, doc.payment.PAYMENT_ITEM), ...paymentList]
+    const list = pickBy(res, doc.payment.PAYMENT_ITEM)
+
+    if (isAPP()) {
+      const resAppPayment = await Taro.SAPPPay.getPayList()
+      console.log('fetchAppPaymentList:', resAppPayment)
+      const appPaymentlist = pickBy(resAppPayment, doc.payment.APP_PAYMENT_ITEM)
+      
+    }
+    let _list = list
+    if(process.env.NODE_ENV === 'development') {
+      _list = list.concat(paymentList)
+    }
+
     setState((draft) => {
-      draft.list = list
+      draft.list = _list
     })
-    onChange(list[0])
+    onChange(_list[0])
+    onChangePayment(_list[0])
+
     // console.log('===list===', list)
     // const isHasAlipay = list.some((item) => item.pay_type_code === 'alipayh5')
     // return {
@@ -76,11 +102,15 @@ function SpCashier(props) {
   const fetchAppPaymentList = async () => {
     const res = await Taro.SAPPPay.getPayList()
     console.log('fetchAppPaymentList:', res)
-    const list = [...pickBy(res, doc.payment.APP_PAYMENT_ITEM), ...paymentList]
+    const list = pickBy(res, doc.payment.APP_PAYMENT_ITEM)
+    if(process.env.NODE_ENV === 'development') {
+      list.concat(paymentList)
+    }
     setState((draft) => {
       draft.list = list
     })
     onChange(list[0])
+    onChangePayment(list[0])
   }
 
   const onChangePayment = (item) => {

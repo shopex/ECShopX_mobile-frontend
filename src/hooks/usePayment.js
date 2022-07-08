@@ -26,14 +26,14 @@ export default (props = {}) => {
         break
       case 'adapay':
         if (pay_channel == 'wx_lite') {
-          weappPay(params, orderInfo)
-        } else if (pay_channel == 'wx_pub') {
-          if (isWxWeb) {
-            wxpayjsPay(params, orderInfo)
-          } else if (isWeb) {
+          if(isWeixin) {
+            weappPay(params, orderInfo)
+          } else if(isWeb) {
             // H5非微信浏览器，跳转小程序发起支付
             adapayH5Pay(params, orderInfo)
           }
+        } else if (pay_channel == 'wx_pub') {
+          wxpayjsPay(params, orderInfo)
         } else if (pay_channel == 'alipay_wap') {
           adapayAliH5Pay(params, orderInfo)
         }
@@ -185,7 +185,7 @@ export default (props = {}) => {
   const adapayH5Pay = async (params, orderInfo) => {
     const { order_id, orderType = 'normal' } = orderInfo
     const { openlink } = await api.cashier.getWeappUrlSchema({
-      path: '/pages/index',
+      path: '/pages/cart/cashier-weapp',
       query: {
         // params: JSON.stringify(params),
         // orderInfo: JSON.stringify(orderInfo)

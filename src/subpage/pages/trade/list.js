@@ -38,8 +38,10 @@ export default class TradeList extends Component {
         { title: '全部订单', status: '0' },
         { title: '待支付', status: '5' },
         { title: '待收货', status: '1' },
-        { title: '待评价', status: '7', is_rate: 0 }
+        
       ],
+      // 是否显示待评价
+      evaluate: 1,
       list: [],
       rate_status: false,
       curItemActionsId: null
@@ -47,14 +49,19 @@ export default class TradeList extends Component {
   }
 
   componentDidShow() {
-    const { status } = this.$instance.router.params
+    const { status, evaluate = 1 } = this.$instance.router.params
     const tabIdx = this.state.tabList.findIndex((tab) => tab.status === status)
-
+    const _tabList = JSON.parse(JSON.stringify(this.state.tabList))
+    if(evaluate == 1) {
+      _tabList.push({ title: '待评价', status: '7', is_rate: 0 })
+    }
     if (tabIdx >= 0) {
       this.setState(
         {
           curTabIdx: tabIdx,
-          list: []
+          list: [],
+          evaluate,
+          tabList: _tabList
         },
         () => {
           this.resetPage()
@@ -295,7 +302,16 @@ export default class TradeList extends Component {
 
   render() {
     const { colors } = this.props
-    const { curTabIdx, curItemActionsId, tabList, list = [], page, rateStatus } = this.state
+    const {
+      curTabIdx,
+      curItemActionsId,
+      tabList,
+      list = [],
+      page,
+      rateStatus,
+      evaluate
+    } = this.state
+
 
     return (
       <View
