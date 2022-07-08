@@ -260,7 +260,7 @@ function SpSkuSelect(props) {
   }
 
   const renderLimitTip = () => {
-    const { nospec, activityType, activityInfo } = info
+    const { nospec, activityType, activityInfo, purlimitByCart, purlimitByFastbuy } = info
     let limitNum = null
     let limitTxt = ''
     let max = null
@@ -286,11 +286,26 @@ function SpSkuSelect(props) {
         limitNum = 1
       }
     }
+    
+    // 内购加购限制 + 内购立即购买限制
+    if (type == 'addcart' && purlimitByCart) { 
+      limitNum = purlimitByCart
+      limitTxt = `（限购${purlimitByCart}件）`
+    }
+
+    if(type == 'fastbuy' && purlimitByFastbuy) {
+      limitNum = purlimitByFastbuy
+      limitTxt = `（限购${purlimitByFastbuy}件）`
+    }
+
+
     if (limitNum) {
       max = limitNum
     } else {
       max = curItem ? curItem.store : info.store
     }
+
+    
 
     return (
       <View className='buy-count'>

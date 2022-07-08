@@ -21,7 +21,7 @@ export default {
 
     'pages/custom/custom-page', // 自定义页面
     'pages/chat/index', // 客服
-    'pages/liveroom/index', // 直播间页面
+    'pages/liveroom/index' // 直播间页面
 
     // 'pages/store/index', // 店铺首页
     // 'pages/store/brand-info', // 店铺品牌
@@ -31,6 +31,16 @@ export default {
     // 'pages/store/ziti-list' // 自提列表
   ],
   subPackages: [
+    // 内购
+    {
+      root: 'subpages/purchase', 
+      pages: [
+        'member',
+        'espier-detail',
+        'espier-checkout',
+        'index' // 家属分享
+      ]
+    },
     // 导购货架 guide
     {
       root: 'subpages/guide',
@@ -189,8 +199,7 @@ export default {
 
         'pages/plusprice/detail-plusprice-list', //商品进入换购详情页面
         'pages/plusprice/cart-plusprice-list', //购物车进入换购详情页面
-        'pages/member/qrcode',
-        'pages/member/purchase' //员工内购
+        'pages/member/qrcode'
       ]
     },
     {
@@ -299,5 +308,12 @@ export default {
     'navigationBarBackgroundColor': '#fff',
     'navigationBarTitleText': '小程序',
     'navigationBarTextStyle': 'black'
-  }
+  },
+  // plugins: {
+  //   'live-player-plugin': {
+  //     'version': '1.3.0', // 注意填写该直播组件最新版本号，微信开发者工具调试时可获取最新版本号（复制时请去掉注释）
+  //     'provider': 'wx2b03c6e691cd7370' // 必须填该直播组件appid，该示例值即为直播组件appid（复制时请去掉注释）
+  //   }
+  // }
+  
 }

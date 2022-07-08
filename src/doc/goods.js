@@ -96,6 +96,7 @@ export const ITEM_LIST_GOODS = {
 
 export const GOODS_INFO = {
   itemId: 'item_id',
+  itemBn: 'item_bn',
   itemName: 'itemName',
   brief: 'brief',
   img: 'pics[0]',
@@ -119,6 +120,9 @@ export const GOODS_INFO = {
   store: 'store',
   store_setting: 'store_setting',
   limitNum: 'limit_num',
+  // 内购限购
+  purlimitByCart: 'purchase_limit_num_by_cart',
+  purlimitByFastbuy: 'purchase_limit_num_by_fastbuy',
   isGift: 'is_gift',
   itemParams: 'item_params',
   groupsList: 'groups_list',

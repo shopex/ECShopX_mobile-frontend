@@ -115,7 +115,7 @@ function ItemList(props) {
   })
 
   const fetch = async ({ pageIndex, pageSize }) => {
-    const { cat_id, main_cat_id } = $instance.router.params
+    const { cat_id, main_cat_id, tag_id } = $instance.router.params
     let params = {
       page: pageIndex,
       pageSize,
@@ -123,7 +123,8 @@ function ItemList(props) {
       keywords: keywords,
       approve_status: 'onsale,only_show',
       item_type: 'normal',
-      is_point: 'false'
+      is_point: 'false',
+      tag_id
     }
 
     if (curFilterIdx == 1) {

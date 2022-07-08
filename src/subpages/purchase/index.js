@@ -3,16 +3,19 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
 import { SpPage, SpImage, SpButton } from '@/components'
 import api from '@/api'
-import { styleNames, formatDateTime } from '@/utils'
-import './purchase.scss'
+import { styleNames, formatDateTime, log } from '@/utils'
+import './index.scss'
 
-export default class myGroupList extends Component {
+export default class PurchaseIndex extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       ...this.state,
-      info: {},
+      info: {
+        dependents_limit: 0,
+        surplus_share_limitnum: 0
+      },
       code: ''
     }
   }
@@ -25,10 +28,11 @@ export default class myGroupList extends Component {
     const { info } = this.state
     return new Promise(async function (resolve) {
       const data = await api.purchase.purchaseCode()
+      log.debug(`/subpages/purchase/member?code=${data.code}`)
       resolve({
         title: info.purchase_name,
         imageUrl: info.ad_pic,
-        path: `/subpages/member/index?code=${data.code}`
+        path: `/subpages/purchase/member?code=${data.code}`
       })
     })
   }
@@ -51,9 +55,10 @@ export default class myGroupList extends Component {
 
   render() {
     const { info } = this.state
+  
 
     return (
-      <SpPage className='pages-purchase-index'>
+      <SpPage className='page-purchase-index'>
         <View
           className='header-block'
           style={styleNames({
@@ -66,8 +71,14 @@ export default class myGroupList extends Component {
               <View className='username-wrap'>
                 <View className='left-wrap'>
                   <View className='username'>{info.username}</View>
-                  <View className='userRole'>{info.user_type === 'dependents' && '家属'}</View>
-                  <View className='userRole'>{info.user_type === 'employee' && '员工'}</View>
+                  <View className='userRole'>
+                    {
+                      {
+                        'dependents': '家属',
+                        'employee': '员工'
+                      }[info.user_type]
+                    }
+                  </View>
                 </View>
                 {info.user_type === 'employee' && (
                   <Button
@@ -82,7 +93,11 @@ export default class myGroupList extends Component {
               </View>
             </View>
           </View>
-          <View className='header-bd'>
+          <View className="share-info">
+            <View className="title">分享额度</View>
+            <View className='limitnum'>{`共计：${info.dependents_limit}；已使用：${info.dependents_limit - info.surplus_share_limitnum}；可分享：${info.surplus_share_limitnum}`}</View>
+          </View>
+          {/* <View className='header-bd'>
             <View className='bd-item'>
               <View className='bd-item-label'>总额度</View>
               <View className='bd-item-value'>
@@ -101,7 +116,7 @@ export default class myGroupList extends Component {
                 {info.surplus_limitfee ? (info.surplus_limitfee / 100).toFixed(2) : '0.00'}
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
         {info.user_type === 'employee' && (
           <View>
