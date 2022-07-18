@@ -119,7 +119,6 @@ function CmopDeliver(props) {
   if (!distributorInfo) {
     return null
   }
-
   return (
     <View className='page-comp-deliver'>
       <View className='switch-box'>

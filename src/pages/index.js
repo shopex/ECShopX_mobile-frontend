@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import Taro, { useShareAppMessage, useShareTimeline, useDidShow } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
-import { SpScreenAd, SpPage, SpSearch, SpRecommend, SpPrivacyModal, SpTabbar } from '@/components'
+import { SpScreenAd, SpPage, SpSearch, SpRecommend, SpPrivacyModal, SpTabbar, SpCouponPackage } from '@/components'
 import api from '@/api'
 import {
   isWeixin,
@@ -206,7 +206,7 @@ function Home() {
       />
 
       {/* 优惠券包 */}
-      {/* <SpCouponPackage /> */}
+      <SpCouponPackage />
     </SpPage>
   )
 }

@@ -137,17 +137,12 @@ function PurchaseCheckout(props) {
     }
   }, [isNewUser])
 
-  // useEffect(() => {
-  //   // if (!calc.current) {
-  //     calcOrder()
-  //   // }
-  // }, [address, coupon, payType, shop.zitiShop, point_use])
 
   useEffect(() => {
     if (receiptType && payType) {
       calcOrder()
     }
-  }, [address, payType, coupon, point_use])
+  }, [address, payType, point_use])
 
   useEffect(() => {
     if (isPackageOpend || openCashier || isPointOpenModal) {
@@ -499,9 +494,6 @@ function PurchaseCheckout(props) {
       cart_type,
       order_type: bargain_id ? 'bargain' : value,
       promotion: 'normal',
-      // member_discount: 0,
-      // coupon_discount: 0,
-      // not_use_coupon: 0,
       isNostores: openStore ? 0 : 1, // 这个传参需要和后端在确定一下
       point_use,
       pay_type: point_use > 0 && totalInfo.total_fee == 0 ? 'point' : payType,
@@ -521,13 +513,6 @@ function PurchaseCheckout(props) {
 
     if (VERSION_PLATFORM) {
       delete cus_parmas.isNostores
-    }
-
-    if (coupon) {
-      const { type, value } = coupon
-      cus_parmas.not_use_coupon = value?.code ? 0 : 1
-      cus_parmas.coupon_discount = type === 'coupon' && value.code ? value.code : undefined
-      cus_parmas.member_discount = type === 'member' && value ? 1 : 0
     }
 
     const { packName, packDes } = packInfo
@@ -621,14 +606,6 @@ function PurchaseCheckout(props) {
       </View>
     )
   }
-
-  console.log(couponInfo, 'couponInfo', coupon)
-  const couponText =
-    couponInfo.type === 'member'
-      ? '会员折扣'
-      : couponInfo?.value?.code
-      ? couponInfo?.value?.title
-      : ''
 
   return (
     <SpPage ref={pageRef} className='page-purchase-checkout' renderFooter={renderFooter()}>

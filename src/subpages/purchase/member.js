@@ -69,6 +69,7 @@ const initialConfigState = {
     ziti_order: false, // 自提
     share_enable: false, // 分享
     memberinfo_enable: false, // 个人信息
+    dianwu: false, // 店务,
     tenants: true, //商家入驻
     purchase: true, // 员工内购
     collection: true // 我的收藏
@@ -214,6 +215,14 @@ function MemberIndex(props) {
     }
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
+    }
+    if (S.getAuthToken() && (VERSION_PLATFORM || VERSION_IN_PURCHASE)) {
+      const { result, status } = await api.dianwu.is_admin()
+      S.set('DIANWU_CONFIG', result, status)
+      menu = {
+        ...menu,
+        dianwu: status
+      }
     }
     if (redirectRes.list.length > 0) {
       const {
