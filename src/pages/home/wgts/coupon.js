@@ -163,6 +163,12 @@ function WgtCoupon(props) {
   }
 
   const renderCouponCell2 = () => {
+    let backgroundImg = 'coupon_two.png'
+    if (len == 3) {
+      backgroundImg = 'coupon_three.png'
+    } else if (len >= 4) {
+      backgroundImg = 'coupon_four.png'
+    }
     return (
       <View className={classNames('coupon-wrap', `coupon-${len > 4 ? 4 : len}`)}>
         {data.map((item, index) => {
@@ -176,12 +182,6 @@ function WgtCoupon(props) {
               />
             )
           } else {
-            let backgroundImg = 'coupon_two.png'
-            if (len == 3) {
-              backgroundImg = 'coupon_three.png'
-            } else if (len >= 4) {
-              backgroundImg = 'coupon_four.png'
-            }
             return (
               <View
                 className='coupon-item'
@@ -235,7 +235,7 @@ function WgtCoupon(props) {
               <View
                 className='coupon-item coupon-package'
                 style={styleNames({
-                  'background-image': `url(${process.env.APP_IMAGE_CDN}/${backgroundImg}.png)`
+                  'background-image': `url(${process.env.APP_IMAGE_CDN}/${backgroundImg})`
                 })}
                 key={`coupon-package-item__${index}`}
               >
@@ -276,11 +276,16 @@ function WgtCoupon(props) {
       </View>
 
       {/* 优惠券包 */}
-      {visibleCouponPkg && <SpCouponPackage info='template' onClose={() => {
-        setState(draft => {
-          draft.visibleCouponPkg = false
-        })
-      }}/>}
+      {visibleCouponPkg && (
+        <SpCouponPackage
+          info='template'
+          onClose={() => {
+            setState((draft) => {
+              draft.visibleCouponPkg = false
+            })
+          }}
+        />
+      )}
     </View>
   )
 }
