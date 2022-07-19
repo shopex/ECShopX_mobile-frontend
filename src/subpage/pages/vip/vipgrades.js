@@ -181,7 +181,6 @@ export default class VipIndex extends Component {
     Taro.hideLoading()
 
     const order_id = data.trade_info.order_id
-    debugger
     if (env === 'h5') {
       redirectUrl(
         api,
@@ -206,8 +205,9 @@ export default class VipIndex extends Component {
           success: function (res) {
             console.log('success')
             S.getMemberInfo()
-            that.fetchCouponCardList()
-            Taro.navigateBack()
+            // that.fetchCouponCardList()
+            this.setState({ visible: true })
+            // Taro.navigateBack()
           }
         })
       },
@@ -464,7 +464,13 @@ export default class VipIndex extends Component {
         </View>
 
         {/* 优惠券包 */}
-        {/* <SpCouponPackage /> */}
+        {visible && (
+          <SpCouponPackage
+            onClose={() => {
+              this.setState({ visible: false })
+            }}
+          />
+        )}
       </SpPage>
     )
   }
