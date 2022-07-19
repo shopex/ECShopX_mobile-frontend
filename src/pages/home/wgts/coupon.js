@@ -145,7 +145,7 @@ function WgtCoupon(props) {
                 key={`coupon-package-item__${index}`}
               >
                 <View className='coupon-hd'>
-                  <View className='amount'>券</View>
+                  <View className='amount'>券包</View>
                   <View className='desc'>{item.package_describe}</View>
                 </View>
                 <View className='coupon-ft'>
@@ -235,12 +235,12 @@ function WgtCoupon(props) {
               <View
                 className='coupon-item coupon-package'
                 style={styleNames({
-                  'background-image': `url(${process.env.APP_IMAGE_CDN}/coupon_four.png)`
+                  'background-image': `url(${process.env.APP_IMAGE_CDN}/${backgroundImg}.png)`
                 })}
                 key={`coupon-package-item__${index}`}
               >
                 <View className='coupon-hd'>
-                  <View className='amount'>券</View>
+                  <View className='amount'>券包</View>
                 </View>
                 <View className='coupon-ft'>
                   <View className='title'>{item.title}</View>

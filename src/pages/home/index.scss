@@ -5,6 +5,7 @@
   padding-bottom: $tabbar-height;
   .home-body {
     margin-top: $home-header-height;
+    overflow-x: hidden;
   }
   .cus-home-body {
     margin-top: 0px;
