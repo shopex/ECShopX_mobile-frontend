@@ -206,7 +206,7 @@ function Home() {
       />
 
       {/* 优惠券包 */}
-      {/* <SpCouponPackage /> */}
+      { VERSION_STANDARD && <SpCouponPackage /> }
     </SpPage>
   )
 }
