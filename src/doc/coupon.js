@@ -57,7 +57,13 @@ export const COUPON = {
   },
   sourceType: 'source_type',
   sourceId: 'source_id',
-  valid: 'valid'
+  valid: ({ valid }) => {
+    if(typeof valid === 'undefined') {
+      return true
+    } else {
+      return valid
+    }
+  }
 }
 
 export const GUIDE_COUPON_ITEM = {
