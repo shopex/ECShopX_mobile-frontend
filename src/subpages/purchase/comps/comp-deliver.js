@@ -45,6 +45,7 @@ function CmopDeliver(props) {
 
   const fetchAddress = async () => {
     let _distributorInfo = distributorInfo
+    let _receiptType = receiptType
     if (!distributorInfo) {
       if (distributor_id == 0) {
         _distributorInfo = await api.shop.getHeadquarters({ distributor_id })
@@ -56,12 +57,13 @@ function CmopDeliver(props) {
         const fd = deliveryList.find((item) => _distributorInfo[item.key])
         if(fd) {
           draft.receiptType = fd.type
+          _receiptType = fd.type
         }
       })
     }
-    if (receiptType == 'ziti') {
+    if (_receiptType == 'ziti') {
       onChange({
-        receipt_type: receiptType,
+        receipt_type: _receiptType,
         distributor_info: _distributorInfo,
         address_info: null
       })
@@ -69,9 +71,9 @@ function CmopDeliver(props) {
     }
 
     let query = {
-      receipt_type: receiptType
+      receipt_type: _receiptType
     }
-    if (receiptType == 'dada') {
+    if (_receiptType == 'dada') {
       query['city'] = _distributorInfo.city
     }
     // 非自提情况下，把地址存起来，否则清空地址
@@ -79,9 +81,8 @@ function CmopDeliver(props) {
     const defaultAddress = list.find((item) => item.is_def) || list[0] || null
 
     const selectAddress = list.find(item => item.address_id == storeAddress?.address_id )
-
     onChange({
-      receipt_type: receiptType,
+      receipt_type: _receiptType,
       distributor_info: _distributorInfo,
       address_info: selectAddress || defaultAddress
     })

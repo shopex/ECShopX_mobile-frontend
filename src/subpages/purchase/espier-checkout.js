@@ -556,6 +556,8 @@ function PurchaseCheckout(props) {
   }
 
   const renderFooter = () => {
+
+    // console.log('renderFooter:', receiptType, address , !isObjectsValue(address))
     return (
       <View className='checkout-toolbar'>
         <View className='checkout-toolbar__total'>
