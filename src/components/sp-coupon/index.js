@@ -84,7 +84,7 @@ function SpCoupon(props) {
               {COUPON_TYPE[cardType].tag}
             </View>
             <View className='title'>{`${
-              VERSION_PLATFORM ? `${distributorName}: ${title}` : title
+              VERSION_PLATFORM && distributorName ? `${distributorName}: ${title}` : title
             }`}</View>
           </View>
           <View className='coupon-datetime'>{`有效期: ${beginDate} - ${endDate}`}</View>
