@@ -146,7 +146,9 @@ function MemberIndex(props) {
   const fetchPurchase = async () => {
     // 内购分享码
     const { code: purchaseCode } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    if (purchaseCode && !userInfo?.is_dependent) {
+    // 员工、家属
+    const { is_employee, is_dependent } = userInfo
+    if (purchaseCode && !is_employee && !is_dependent) {
       await api.purchase.purchaseBind({ code: purchaseCode })
     }
     const data = await api.purchase.purchaseInfo()
@@ -365,10 +367,10 @@ function MemberIndex(props) {
       return (
         <View className='gradename'>
           {
-            {
-              true: '员工',
-              false: '员工亲友'
-            }[userInfo?.is_employee]
+            userInfo?.is_employee && '员工'
+          }
+          {
+            userInfo?.is_dependent && '员工亲友'
           }
         </View>
       )
@@ -474,8 +476,8 @@ function MemberIndex(props) {
 
         <CompPanel
           title='订单'
-          // extra='查看全部订单'
-          // onLink={handleClickLink.bind(this, '/subpage/pages/trade/list')}
+          extra='查看全部订单'
+          onLink={handleClickLink.bind(this, '/subpage/pages/trade/list?evaluate=0')}
         >
           {config.menu.ziti_order && (
             <View
