@@ -17,7 +17,7 @@ export const COUPON_ITEM = {
   description: 'description',
   quantity: ({ quantity }) => parseInt(quantity),
   distributorName: ({ distributor_info }) => {
-    return distributor_info.name
+    return distributor_info?.name
   },
   getNum: 'get_num',
   valid: ({ valid }) => {
@@ -56,7 +56,7 @@ export const COUPON = {
     }
   },
   distributorName: ({ distributor_info }) => {
-    return distributor_info.name
+    return distributor_info?.name
   },
   sourceType: 'source_type',
   sourceId: 'source_id',

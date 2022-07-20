@@ -47,12 +47,14 @@
       align-items: flex-start;
       .title {
         max-width: 380px;
+        height: 80px;
+        @include multi-ellipsis(2);
       }
     }
     .coupon-datetime {
       font-size: 22px;
       color: #555;
-      margin: 50px 0 0 25px;
+      margin: 4px 0 0 25px;
     }
     .coupon-desc {
       font-size: 22px;
