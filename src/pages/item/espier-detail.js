@@ -500,7 +500,7 @@ function EspierDetail(props) {
             </View>
             <View className='item-bn-sales'>
               {/* <View className='item-bn'></View> */}
-              {info.salesSetting && <View className='item-sales'>{`销量：${info.sales}`}</View>}
+              {info.salesSetting && <View className='item-sales'>{`销量：${info.sales || 0}`}</View>}
             </View>
           </View>
 
