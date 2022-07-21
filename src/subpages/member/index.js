@@ -405,7 +405,7 @@ function MemberIndex(props) {
       <View
         className='header-block'
         style={styleNames({
-          'background-image': `url(${memberConfig.backgroundImg || `${process.env.APP_IMAGE_CDN}/m_bg.png`})`
+          'background-image': `url(${`${process.env.APP_IMAGE_CDN}/m_bg.png`})`
         })}
       >
         <View className='header-hd'>

@@ -47,14 +47,14 @@ function CompVipCard(props) {
       background
     }
   }
-  const { background } = renderBackgroundImage()
+  // const { background } = renderBackgroundImage()
   return (
     <View
       className={classNames('comp-vipcard', {
-        'is-not-default': vipImg
+        // 'is-not-default': vipImg
       })}
       style={styleNames({
-        'background-image': background
+        'background-image': `url(${`${process.env.APP_IMAGE_CDN}/vip1.png`})`
       })}
       onClick={onLink}
     >
