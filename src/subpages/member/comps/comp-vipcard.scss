@@ -41,7 +41,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
+    padding-top: 4px;
     .top-block {
       display: flex;
       flex-direction: row;
@@ -49,24 +49,24 @@
       justify-content: space-between;
       .vip-card {
         font-size: 35px;
-        color: #000000;
+        color: #fff;
         font-weight: 500;
         display: flex;
         align-items: center;
         .icon {
-          color: #000000;
+          color: #fff;
           font-size: 20px;
           padding-left: 15px;
         }
       }
       .card-no {
         font-size: 30px;
-        color: #000000;
+        color: #fff;
         font-weight: 400;
       }
     }
     .expire-time {
-      color: gray;
+      color: #dfdfdf;
       font-size: 25px;
     }
   }
