@@ -28,6 +28,7 @@ import {
   isAPP,
   isWxWeb,
   log,
+  isEmpty,
   VERSION_STANDARD,
   VERSION_B2C,
   VERSION_PLATFORM
@@ -271,10 +272,9 @@ function CartCheckout(props) {
       title: '正在提交',
       mask: true
     })
-
+    
     let orderInfo
     let orderId
-
     if ((isWeb || isAPP()) && payType !== 'deposit') {
       try {
         const h5ResInfo = await api.trade.h5create({
@@ -702,9 +702,10 @@ function CartCheckout(props) {
     if (VERSION_PLATFORM) {
       delete cus_parmas.isNostores
     }
-
-    if (coupon) {
-      const { coupon_id, coupon_code, title } = coupon
+    console.log(couponInfo)
+    const _coupon = coupon || couponInfo
+    if (!isEmpty(_coupon)) {
+      const { coupon_id, coupon_code, title } = _coupon
       cus_parmas.not_use_coupon = coupon_code ? 0 : 1
       if (coupon_code) {
         cus_parmas.coupon_discount = coupon_code
