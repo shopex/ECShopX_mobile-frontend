@@ -59,7 +59,7 @@ function SpGoodsItem(props) {
   }
 
   const handleClick = () => {
-    const { itemId, distributorId } = info
+    const { itemId, distributorId, card_id, code, user_card_id } = info
     if (onClick) {
       onClick()
       return
@@ -69,6 +69,14 @@ function SpGoodsItem(props) {
       query = {
         ...query,
         dtid: distributorId
+      }
+    }
+    if (card_id) {
+      query = {
+        ...query,
+        card_id,
+        code,
+        user_card_id
       }
     }
     const url = `/pages/item/espier-detail?${qs.stringify(query)}`
