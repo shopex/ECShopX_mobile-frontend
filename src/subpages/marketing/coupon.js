@@ -6,7 +6,7 @@ import api from '@/api'
 import doc from '@/doc'
 import { View, Text } from '@tarojs/components'
 import { SpPage, SpTagBar, SpScrollView, SpCoupon, SpImage } from '@/components'
-import { pickBy } from '@/utils'
+import { pickBy, showToast } from '@/utils'
 import './coupon.scss'
 
 const initialState = {
@@ -52,13 +52,17 @@ function CouponIndex() {
     })
   }
 
-  const handleClickCouponItem = ({ cardId, cardType, status, sourceType, sourceId, id }) => {
+  const handleClickCouponItem = ({ cardId, cardType, status, sourceType, sourceId, id, tagClass }) => {
+    if(tagClass == 'notstarted') {
+      showToast('活动未开始')
+      return
+    }
     if (cardType == 'new_gift') {
       if (status == 1) {
         Taro.navigateTo({
           url: `/pages/item/list?card_id=${cardId}&user_card_id=${id}`
         })
-      } else if(status == 10) {
+      } else if (status == 10) {
         Taro.navigateTo({
           url: `/subpages/marketing/exchange-code?card_id=${cardId}&user_card_id=${id}&from=mycoupon`
         })
@@ -116,12 +120,12 @@ function CouponIndex() {
               {item.cardType != 'new_gift' && <Text>去使用</Text>}
               {item.cardType == 'new_gift' && (
                 <Text>
-                  {
-                    {
-                      '1': '去使用',
-                      '10': '待核销'
-                    }[item.status]
-                  }
+                  {item?.tagClass == 'notstarted'
+                    ? '未开始'
+                    : {
+                        '1': '去使用',
+                        '10': '待核销'
+                      }[item.status]}
                 </Text>
               )}
             </SpCoupon>

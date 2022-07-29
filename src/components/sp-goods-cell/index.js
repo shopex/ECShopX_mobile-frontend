@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { SpImage, SpPrice } from '@/components'
+import { SpImage, SpPrice, SpPoint } from '@/components'
 import { GOODS_TYPE } from '@/consts'
 import { VERSION_IN_PURCHASE } from '@/utils'
 import './index.scss'
@@ -18,10 +18,10 @@ function SpGoodsCell(props) {
     onSelectSku && onSelectSku(info)
   }
 
-  const { price, activityPrice, memberPrice, packagePrice, curItem } = info
+  const { price, activityPrice, memberPrice, packagePrice, curItem, point } = info
   let _price = 0
   let t_price, t_activityPrice, t_memberPrice, t_packagePrice
-  if(curItem) {
+  if (curItem) {
     t_price = curItem.price
     t_activityPrice = curItem.activityPrice
     t_memberPrice = curItem.memberPrice
@@ -75,7 +75,9 @@ function SpGoodsCell(props) {
           ))} */}
 
           {!isNaN(memberPrice) && !VERSION_IN_PURCHASE && (
-            <View className='goods-type'>{vipInfo?.isVip ? vipInfo?.grade_name : userInfo?.gradeInfo?.grade_name}</View>
+            <View className='goods-type'>
+              {vipInfo?.isVip ? vipInfo?.grade_name : userInfo?.gradeInfo?.grade_name}
+            </View>
           )}
           {info?.orderItemType != 'normal' && (
             <View className='goods-type'>{GOODS_TYPE[info.orderItemType]}</View>
@@ -83,7 +85,8 @@ function SpGoodsCell(props) {
         </View>
         <View className='item-ft'>
           <View className='price-gp'>
-            <SpPrice value={_price}></SpPrice>
+            {point && <SpPoint value={point} />}
+            {!point && <SpPrice value={_price}></SpPrice>}
             {info.marketPrice > 0 && (
               <SpPrice
                 className='market-price'

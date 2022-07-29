@@ -16,6 +16,7 @@ import {
   SG_ROUTER_PARAMS
 } from '@/consts'
 import { checkAppVersion, isWeixin, isNavbar, log, entryLaunch } from '@/utils'
+import { requestIntercept } from '@/plugin/requestIntercept'
 
 import './app.scss'
 
@@ -38,6 +39,7 @@ if (process.env.APP_BUILD_TARGET == 'app') {
   })
 }
 
+requestIntercept()
 class App extends Component {
   // componentWillMount() {
   //   this.getSystemConfig()
