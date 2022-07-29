@@ -411,7 +411,7 @@ function MemberIndex(props) {
         <View className='header-hd'>
           <SpImage
             className='usericon'
-            src={(userInfo && userInfo.avatar) || 'default_user.png'}
+            src={(userInfo && userInfo.avatar) || 'user_icon.png'}
             width='110'
             onClick={handleClickLink.bind(this, '/marketing/pages/member/userinfo')}
           />

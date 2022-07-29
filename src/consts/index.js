@@ -103,7 +103,9 @@ export const BUY_TOOL_BTNS = {
   NO_STORE: { title: '无货', key: 'nostore', btnStatus: 'disabled' },
   ONLY_SHOW: { title: '仅展示商品', key: 'only_show', btnStatus: 'disabled' },
   // 兑换券商品
-  EX_CHANGE: { title: '立即兑换', key: 'exchange', btnStatus: 'active' }
+  EX_CHANGE: { title: '立即兑换', key: 'exchange', btnStatus: 'active' },
+  // 兑换积分商品
+  EX_CHANGE_POINT: { title: '立即兑换', key: 'exchange_point', btnStatus: 'active' }
 }
 
 export const COUPON_TYPE = {

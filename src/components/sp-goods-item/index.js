@@ -59,7 +59,7 @@ function SpGoodsItem(props) {
   }
 
   const handleClick = () => {
-    const { itemId, distributorId, card_id, code, user_card_id } = info
+    const { itemId, distributorId, card_id, code, user_card_id, point } = info
     if (onClick) {
       onClick()
       return
@@ -79,7 +79,8 @@ function SpGoodsItem(props) {
         user_card_id
       }
     }
-    const url = `/pages/item/espier-detail?${qs.stringify(query)}`
+
+    const url = `${!!point ? '/subpages/pointshop/espier-detail' : '/pages/item/espier-detail'}?${qs.stringify(query)}`
     Taro.navigateTo({
       url
     })
@@ -131,13 +132,13 @@ function SpGoodsItem(props) {
 
         <View className='bd-block'>
           {/* 商品价格、积分 */}
-          {info.is_point && (
+          {info.point && (
             <View className='goods-point'>
               <SpPoint value={info.point} />
             </View>
           )}
 
-          {!info.is_point && showPrice && (
+          {!info.point && showPrice && (
             <View className='goods-price'>
               <View className='gd-price'>
                 <SpPrice size={36} value={info.activityPrice || info.price}></SpPrice>

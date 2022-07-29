@@ -1,14 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { withPager, withBackToTop } from '@/hocs'
 import { AtDrawer, AtTabs } from 'taro-ui'
 import {
-  BackToTop,
-  Loading,
-  TagsBar,
   SpFilterBar,
   SearchBar,
   GoodsItem,
@@ -22,7 +18,9 @@ import {
   SpPage,
   SpScrollView,
   SpDrawer,
-  SpSelect
+  SpSelect,
+  SpPoint,
+  SpImage
 } from '@/components'
 import doc from '@/doc'
 import api from '@/api'
@@ -34,9 +32,9 @@ import {
   styleNames,
   VERSION_STANDARD
 } from '@/utils'
+import { getMypoint } from '@/api/pointitem'
 
 import './list.scss'
-import { getMypoint } from '@/api/pointitem'
 
 const initialState = {
   leftList: [],
@@ -44,20 +42,20 @@ const initialState = {
   brandList: [],
   brandSelect: [],
   filterList: [
-    { title: '综合' },
+    { title: '全部' },
     { title: '销量' },
-    { title: '价格', icon: 'icon-shengxu-01' },
-    { title: '价格', icon: 'icon-jiangxu-01' }
+    { title: '积分', icon: ['icon-shengxu-01', 'icon-jiangxu-01'], sort: 1 },
   ],
   curFilterIdx: 0,
+  sort: -1,
   tagList: [],
   curTagIdx: 0,
   keywords: '',
   show: false,
-  fixTop: 0
+  point: 0,
 }
 
-function PointShopList(props) {
+function PointShopList() {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const {
@@ -67,57 +65,30 @@ function PointShopList(props) {
     brandList,
     brandSelect,
     curFilterIdx,
+    sort,
     filterList,
     tagList,
     curTagIdx,
     show,
-    fixTop
+    point
   } = state
   const [isShowSearch, setIsShowSearch] = useState(false)
+  const { userInfo } = useSelector((state) => state.user)
   const goodsRef = useRef()
 
   useEffect(() => {
     getMypoint()
   }, [])
 
-  useDidShow(() => {
-    // setTimeout(() => {
-    //   if (isWeixin) {
-    //     Taro.createSelectorQuery()
-    //       .select('#item-list-head')
-    //       .boundingClientRect((res) => {
-    //         console.log('boundingClientRect:', res) //
-    //         if (res) {
-    //           setState((draft) => {
-    //             draft.fixTop = res.bottom
-    //             console.log('fixTop1:', res.bottom) //
-    //           })
-    //         }
-    //       })
-    //       .exec()
-    //   } else {
-    //     Taro.createSelectorQuery()
-    //       .select('#item-list-head')
-    //       .boundingClientRect((res) => {
-    //         console.log('boundingClientRect:', res) //
-    //         if (res) {
-    //           setState((draft) => {
-    //             draft.fixTop = res.bottom
-    //             console.log('fixTop2:', res.bottom) //
-    //           })
-    //         }
-    //       })
-    //       .exec()
-    //     // setState((draft) => {
-    //     //   draft.fixTop = document.getElementById('item-list-head').clientHeight
-    //     //   console.log('fixTop2:', document.getElementById('item-list-head').clientHeight) //
-    //     // })
-    //   }
-    // }, 1000)
-  })
+  useEffect(() => {
+    goodsRef.current.reset()
+  }, [curFilterIdx, sort])
 
   const getMypoint = async () => {
     const { point } = await api.pointitem.getMypoint()
+    setState((draft) => {
+      draft.point = point
+    })
   }
 
   const fetch = async ({ pageIndex, pageSize }) => {
@@ -125,12 +96,11 @@ function PointShopList(props) {
     let params = {
       page: pageIndex,
       pageSize,
-      item_type: 'normal',
-      keywords: keywords,
-      approve_status: 'onsale,only_show',
-      item_type: 'normal',
-      is_point: 'false',
-      tag_id
+      item_type: 'normal'
+      // keywords: keywords,
+      // approve_status: 'onsale,only_show',
+      // item_type: 'normal',
+      // is_point: 'false'
     }
 
     if (curFilterIdx == 1) {
@@ -138,14 +108,11 @@ function PointShopList(props) {
       params['goodsSort'] = 1
     } else if (curFilterIdx == 2) {
       // 价格升序
-      params['goodsSort'] = 3
-    } else if (curFilterIdx == 3) {
-      // 价格降序
-      params['goodsSort'] = 2
-    }
-
-    if (curTagIdx) {
-      params['tag_id'] = curTagIdx
+      if(sort == 1) {
+        params['goodsSort'] = 3
+      } else {
+        params['goodsSort'] = 2
+      }
     }
 
     if (cat_id) {
@@ -164,11 +131,9 @@ function PointShopList(props) {
       list,
       total_count,
       item_params_list = [],
-      select_tags_list = [],
       brand_list
-    } = await api.item.search(params)
-    console.time('list render')
-    const n_list = pickBy(list, doc.goods.ITEM_LIST_GOODS)
+    } = await api.pointitem.search(params)
+    const n_list = pickBy(list, doc.goods.ITEM_LIST_POINT_GOODS)
     const resLeftList = n_list.filter((item, index) => {
       if (index % 2 == 0) {
         return item
@@ -179,21 +144,11 @@ function PointShopList(props) {
         return item
       }
     })
-    console.timeEnd('list render')
 
-    setState((v) => {
-      v.leftList[pageIndex - 1] = resLeftList
-      v.rightList[pageIndex - 1] = resRightList
-      v.brandList = pickBy(brand_list?.list, doc.goods.WGT_GOODS_BRAND)
-      if (select_tags_list.length > 0) {
-        v.tagList = [
-          {
-            tag_name: '全部',
-            tag_id: 0
-          }
-        ].concat(select_tags_list)
-        v.fixTop = fixTop + 34
-      }
+    setState((draft) => {
+      draft.leftList[pageIndex - 1] = resLeftList
+      draft.rightList[pageIndex - 1] = resRightList
+      draft.brandList = pickBy(brand_list?.list, doc.goods.WGT_GOODS_BRAND)
     })
 
     return { total: total_count }
@@ -227,9 +182,6 @@ function PointShopList(props) {
   }
 
   const handleConfirm = async (val) => {
-    Tracker.dispatch('SEARCH_RESULT', {
-      keywords: val
-    })
     setIsShowSearch(false)
     await setState((draft) => {
       draft.leftList = []
@@ -239,22 +191,13 @@ function PointShopList(props) {
     goodsRef.current.reset()
   }
 
-  const onChangeTag = async (index, item) => {
-    await setState((draft) => {
+  const handleFilterChange = ({ current, sort}) => {
+    setState((draft) => {
       draft.leftList = []
       draft.rightList = []
-      draft.curTagIdx = item.tag_id
+      draft.curFilterIdx = current || 0
+      draft.sort = sort
     })
-    goodsRef.current.reset()
-  }
-
-  const handleFilterChange = async (e) => {
-    await setState((draft) => {
-      draft.leftList = []
-      draft.rightList = []
-      draft.curFilterIdx = e.current || 0
-    })
-    goodsRef.current.reset()
   }
 
   const onChangeBrand = (val) => {
@@ -289,60 +232,55 @@ function PointShopList(props) {
     })
   }
   return (
-    <SpPage
-      scrollToTopBtn
-      className={classNames('page-pointshop-list', {
-        'has-tagbar': tagList.length > 0
-      })}
-    >
-      <View className='search-wrap'>
-        <SpSearchBar
-          keyword={keywords}
-          placeholder='搜索'
-          onFocus={handleOnFocus}
-          onChange={handleOnChange}
-          onClear={handleOnClear}
-          onCancel={handleSearchOff}
-          onConfirm={handleConfirm}
-        />
-      </View>
-      <View className='item-list-head'>
-        {tagList.length > 0 && (
-          <SpTagBar className='tag-list' list={tagList} value={curTagIdx} onChange={onChangeTag}>
-            {/* <View
-            className="filter-btn"
-            onClick={() => {
-              setState(v => {
-                v.show = true;
-              });
-            }}
+    <SpPage scrollToTopBtn className={classNames('page-pointshop-list')}>
+      <View className='page-hd'>
+        <View className='pointshop-hd'>
+          <View className='point-info'>
+            <View className='point-info-hd'>
+              <SpImage src={userInfo?.avatar || 'user_icon.png'} width={80} height={80} />
+              <Text className='user-name'>{userInfo?.username}</Text>
+            </View>
+            <View className='point-total'>
+              <SpPoint value={point} />
+            </View>
+          </View>
+        </View>
+        <View className='item-list-head'>
+          <SpFilterBar
+            custom
+            current={curFilterIdx}
+            list={filterList}
+            onChange={handleFilterChange}
           >
-            筛选<Text className="iconfont icon-filter"></Text>
-          </View> */}
-          </SpTagBar>
-        )}
-
-        <SpFilterBar
-          custom
-          current={curFilterIdx}
-          list={filterList}
-          onChange={handleFilterChange}
-        />
+            <View
+              className='filter-btn'
+              onClick={() => {
+                setState((v) => {
+                  v.show = true
+                })
+              }}
+            >
+              筛选<Text className='iconfont icon-filter'></Text>
+            </View>
+            <SpSearchBar
+              keyword={keywords}
+              placeholder='搜索'
+              onFocus={handleOnFocus}
+              onChange={handleOnChange}
+              onClear={handleOnClear}
+              onCancel={handleSearchOff}
+              onConfirm={handleConfirm}
+            />
+          </SpFilterBar>
+        </View>
       </View>
-      <SpScrollView
-        className='item-list-scroll'
-        // style={styleNames({
-        //   'margin-top': `${fixTop}px`
-        // })}
-        ref={goodsRef}
-        fetch={fetch}
-      >
+      <SpScrollView className='item-list-scroll' auto={false} ref={goodsRef} fetch={fetch}>
         <View className='goods-list'>
           <View className='left-container'>
             {leftList.map((list, idx) => {
               return list.map((item, sidx) => (
                 <View className='goods-item-wrap' key={`goods-item-l__${idx}_${sidx}`}>
-                  <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
+                  <SpGoodsItem onStoreClick={handleClickStore} info={item} />
                 </View>
               ))
             })}
@@ -351,7 +289,7 @@ function PointShopList(props) {
             {rightList.map((list, idx) => {
               return list.map((item, sidx) => (
                 <View className='goods-item-wrap' key={`goods-item-r__${idx}_${sidx}`}>
-                  <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
+                  <SpGoodsItem onStoreClick={handleClickStore} info={item} />
                 </View>
               ))
             })}
