@@ -56,14 +56,15 @@ export default (props = {}) => {
   const setToken = async (token) => {
     const { redirect_url } = $instance.router.params
     S.setAuthToken(token)
+    setIsLogin(true)
+    await getUserInfo()
     // 导购UV统计
     entryLaunch.postGuideUV()
-    setIsLogin(true)
-    getUserInfo()
+    entryLaunch.postGuideTask($instance.router)
     dispatch(fetchUserFavs())
     dispatch(updateCount({ shop_type: 'distributor' })) // 获取购物车商品数量
     console.log('useLogin setToken redirect_url:', redirect_url, decodeURIComponent(redirect_url))
-    if(redirect_url) {
+    if (redirect_url) {
       Taro.redirectTo({ url: decodeURIComponent(redirect_url) })
     }
   }

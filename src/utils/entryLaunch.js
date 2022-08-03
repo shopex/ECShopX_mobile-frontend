@@ -379,7 +379,7 @@ class EntryLaunch {
       return
     }
     const { gu, subtask_id, item_id, dtid } = await this.getRouteParams()
-    if (gu) {
+    if (gu && S.getAuthToken()) {
       const [employee_number, shop_code] = gu.split('_')
       const _params = {
         employee_number,
@@ -391,18 +391,15 @@ class EntryLaunch {
       }
       api.wx.taskReportData(_params)
 
-      // 关系延续埋点
-      if (S.getAuthToken() && employee_number) {
-        const { userInfo } = store.getState().user
-        const { user_id } = userInfo
-        api.wx.interactiveReportData({
-          event_id: employee_number,
-          user_type: 'wechat',
-          user_id,
-          event_type: routePath[path],
-          store_bn: shop_code
-        })
-      }
+      const { userInfo } = store.getState().user
+      const { user_id } = userInfo
+      api.wx.interactiveReportData({
+        event_id: employee_number,
+        user_type: 'wechat',
+        user_id,
+        event_type: routePath[path],
+        store_bn: shop_code
+      })
     }
   }
 }
