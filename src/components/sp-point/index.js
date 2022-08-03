@@ -12,8 +12,8 @@ const SpPoint = (props) => {
 
   return (
     <Text className={classNames('sp-point', className)}>
-      <Text class='point'>{value}</Text>
-      <Text class='unit'>{pointName}</Text>
+      <Text className='point'>{value}</Text>
+      <Text className='unit'>{pointName}</Text>
     </Text>
   )
 }
