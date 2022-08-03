@@ -110,7 +110,7 @@ function PointShopEspierCheckout() {
     if (receiptType && payType) {
       calcOrder()
     }
-  }, [address, payType, coupon, point_use])
+  }, [address, payType])
 
   useEffect(() => {
     if (isPackageOpend || isPointOpenModal) {
@@ -279,7 +279,7 @@ function PointShopEspierCheckout() {
     })
 
     // 收货地址为空时，需要触发calcOrder
-    if (!address_info) {
+    if (receipt_type == 'logistics' && !address_info) {
       calcOrder()
     }
     // if (address_info) {

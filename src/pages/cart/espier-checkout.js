@@ -345,7 +345,7 @@ function CartCheckout(props) {
     })
 
     // 收货地址为空时，需要触发calcOrder
-    if (!address_info) {
+    if (receipt_type == 'logistics' && !address_info) {
       calcOrder()
     }
     // if (address_info) {
