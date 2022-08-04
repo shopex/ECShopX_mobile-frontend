@@ -20,7 +20,8 @@ import {
   VERSION_PLATFORM,
   VERSION_IN_PURCHASE,
   isAPP,
-  isWxWeb
+  isWxWeb,
+  isWeixin
 } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { PAYTYPE } from '@/consts'
@@ -442,10 +443,17 @@ export default class TradeDetail extends Component {
       })
       if (confirm) {
         await api.trade.confirm(info.tid)
-        const { fullPath } = getCurrentRoute(this.$instance.router)
-        Taro.redirectTo({
-          url: fullPath
-        })
+        if(isWeixin) {
+          const { fullPath } = getCurrentRoute(this.$instance.router)
+          Taro.redirectTo({
+            url: fullPath
+          })
+        } else {
+          const { path } = this.$instance.router
+          Taro.redirectTo({
+            url: path
+          })
+        }
       }
       return
     }
