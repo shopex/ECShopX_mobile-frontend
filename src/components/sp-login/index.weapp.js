@@ -69,6 +69,7 @@ function SpLogin(props) {
       // gu_user_id: 欢迎语上带过来的员工编号, 同work_user_id
       if(gu_user_id) {
         params['channel'] = 1
+        params['work_userid'] = gu_user_id
       }
 
       try {
