@@ -72,6 +72,8 @@ class App extends Component {
         Taro.removeStorageSync(SG_GUIDE_PARAMS)
         Taro.removeStorageSync(SG_GUIDE_PARAMS_UPDATETIME)
       } else {
+        // 欢迎语携带用户编号
+        if(guideParams?.gu_user_id) { delete guideParams.gu_user_id }
         Taro.setStorageSync(SG_GUIDE_PARAMS, {
           ...guideParams,
           ...params

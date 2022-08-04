@@ -409,6 +409,7 @@ export default class TradeDetail extends Component {
   }
 
   async handleClickBtn(type, e) {
+    debugger
     e.stopPropagation()
     const { info } = this.state
     if (type === 'home') {
@@ -1105,15 +1106,15 @@ export default class TradeDetail extends Component {
                   info.receipt_type !== 'dada')) &&
                 info.can_apply_aftersales === 1 &&
                 info.order_class !== 'excard' && !VERSION_IN_PURCHASE && !this.isPointitemGood() && (
-                  <Button
-                    className={`trade-detail__footer__btn left ${
+                  <View
+                    className={`trade-detail__footer__btn ${
                       info.is_logistics &&
                       'trade-detail__footer_active trade-detail__footer_allWidthBtn'
                     }`}
                     onClick={this.handleClickBtn.bind(this, 'aftersales')}
                   >
                     申请售后
-                  </Button>
+                  </View>
                 )
             }
             {
