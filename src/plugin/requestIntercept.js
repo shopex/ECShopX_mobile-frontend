@@ -8,11 +8,11 @@ export function requestIntercept() {
     const { method, data, url } = requestParams
     const { path } = getCurrentInstance().router
     if(path === '/pages/cart/espier-checkout' && url === `${process.env.APP_BASE_URL}/order` ) {
-      const { gu } = Taro.getStorageSync(SG_GUIDE_PARAMS) || {}
+      const { gu, gu_user_id } = Taro.getStorageSync(SG_GUIDE_PARAMS) || {}
       if(gu) {
         const [work_userid] = gu.split('_')
         const _data = qs.parse(data)
-        _data['work_userid'] = work_userid
+        _data['work_userid'] = gu_user_id || work_userid
         requestParams.data = qs.stringify(_data)
       }
     }
