@@ -10,11 +10,12 @@ page {
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
-  /*  #ifdef  h5  */
-  // padding-top: $navigate-height-h5;
   height: 100vh;
+  /*  #ifdef  h5  */
+  padding-top: $navigate-height-h5;
   /*  #endif  */
-  .baseInfo, .basicInfo {
+  .baseInfo,
+  .basicInfo {
     background: #fff;
     color: #666;
     .title {
@@ -116,7 +117,7 @@ page {
     top: 0;
     left: 0;
     background: rgba($color: #000000, $alpha: 0.5);
-    z-index:100;
+    z-index: 100;
     .checkBoxPanel {
       position: absolute;
       width: 100%;
