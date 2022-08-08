@@ -21,7 +21,7 @@ import './userinfo.scss'
   })
 )
 export default class UserInfo extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -46,7 +46,7 @@ export default class UserInfo extends Component {
     this.optionsType = ''
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.getFormItem()
   }
 
@@ -248,6 +248,10 @@ export default class UserInfo extends Component {
       showToast('修改成功')
 
       await S.getMemberInfo()
+
+      Taro.reLaunch({
+        url: '/subpages/member/index'
+      })
       // this.props.setMemberInfo({
       //   ...memberInfo
       // });
@@ -274,7 +278,7 @@ export default class UserInfo extends Component {
   // })
   // }
 
-  render () {
+  render() {
     const {
       formItems,
       userInfo,
