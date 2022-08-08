@@ -307,30 +307,25 @@ function CartCheckout(props) {
       draft.submitLoading = false
     })
 
-    // 储值支付 或者 积分抵扣
-    if (payType === 'deposit' || params.pay_type == 'point') {
-      Taro.redirectTo({ url: `/pages/cart/cashier-result?order_id=${orderId}` })
+    if (
+      params.pay_type == 'wxpayjs' ||
+      (params.pay_type == 'adapay' && params.pay_channel == 'wx_pub' && isWxWeb)
+    ) {
+      // 微信客户端code授权
+      const loc = window.location
+      // const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-result?order_id=${orderId}`
+      const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-weapp?order_id=${orderId}`
+      let { redirect_url } = await api.wx.getredirecturl({ url })
+      window.location.href = redirect_url
     } else {
-      if (
-        params.pay_type == 'wxpayjs' ||
-        (params.pay_type == 'adapay' && params.pay_channel == 'wx_pub' && isWxWeb)
-      ) {
-        // 微信客户端code授权
-        const loc = window.location
-        // const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-result?order_id=${orderId}`
-        const url = `${loc.protocol}//${loc.host}/pages/cart/cashier-weapp?order_id=${orderId}`
-        let { redirect_url } = await api.wx.getredirecturl({ url })
-        window.location.href = redirect_url
-      } else {
-        cashierPayment(
-          {
-            ...params,
-            // 活动类型：拼团
-            activityType: type
-          },
-          orderInfo
-        )
-      }
+      cashierPayment(
+        {
+          ...params,
+          // 活动类型：拼团
+          activityType: type
+        },
+        orderInfo
+      )
     }
   }
 
