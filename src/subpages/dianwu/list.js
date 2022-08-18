@@ -53,7 +53,9 @@ function DianWuList() {
         keywords
       }
     }
+    Taro.showLoading()
     const { list: _list, total_count } = await api.dianwu.goodsItems(params)
+    Taro.hideLoading()
 
     setState((draft) => {
       draft.list[pageIndex - 1] = pickBy(_list, doc.dianwu.GOODS_ITEM)
@@ -129,13 +131,21 @@ function DianWuList() {
                 </View>
               </View> */}
               <CompGoods info={item}>
-                <AtButton
-                  circle
-                  className={classNames({ 'active': true })}
-                  onClick={handleAddToCart.bind(this, item)}
-                >
-                  <Text className='iconfont icon-plus'></Text>
-                </AtButton>
+                {item.store > 0 && (
+                  <AtButton
+                    circle
+                    className={classNames({ 'active': true })}
+                    onClick={handleAddToCart.bind(this, item)}
+                  >
+                    <Text className='iconfont icon-plus'></Text>
+                  </AtButton>
+                )}
+
+                {item.store == 0 && (
+                  <AtButton circle disabled>
+                    缺货
+                  </AtButton>
+                )}
               </CompGoods>
             </View>
           ))

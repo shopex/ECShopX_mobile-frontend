@@ -126,6 +126,7 @@ function DianWuCashier() {
       const { list } = await api.dianwu.getMembers({
         user_card_code: result.split('_')[1]
       })
+      console.log(pickBy(list, doc.dianwu.MEMBER_ITEM))
       setState((draft) => {
         draft.searchMemberResult = pickBy(list, doc.dianwu.MEMBER_ITEM)
       })
@@ -229,7 +230,7 @@ function DianWuCashier() {
         draft.searchMemberResult = pickBy(list, doc.dianwu.MEMBER_ITEM)
       })
     } else {
-      showToast('请输入正确的手机号')
+      showToast('请输入正确的手机号:', mobile)
     }
   }
 
@@ -435,13 +436,21 @@ function DianWuCashier() {
           {searchGoodsList.map((item, index) => (
             <View className='goods-item-wrap' key={`goods-item-wrap__${index}`}>
               <CompGoods info={item}>
-                <AtButton
-                  circle
-                  className={classNames({ 'active': true })}
-                  onClick={handleAddToCart.bind(this, item)}
-                >
-                  <Text className='iconfont icon-plus'></Text>
-                </AtButton>
+                {item.store > 0 && (
+                  <AtButton
+                    circle
+                    className={classNames({ 'active': true })}
+                    onClick={handleAddToCart.bind(this, item)}
+                  >
+                    <Text className='iconfont icon-plus'></Text>
+                  </AtButton>
+                )}
+
+                {item.store == 0 && (
+                  <AtButton circle disabled>
+                    缺货
+                  </AtButton>
+                )}
               </CompGoods>
             </View>
           ))}
@@ -466,6 +475,7 @@ function DianWuCashier() {
           <View className='search-user-bd'>
             <View className='form-field'>
               <AtInput
+                clear
                 name='mobile'
                 value={mobile}
                 className='mobile'
