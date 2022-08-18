@@ -44,7 +44,7 @@ function SpImage(props) {
       draft.loadSuccess = true
     })
   }
-  // console.log('SpImage:', imgUrl)
+  // console.log('SpImage:', circle)
   return (
     <View
       className={classNames(
@@ -66,7 +66,7 @@ function SpImage(props) {
         style={styleNames({
           'border-radius': isNumber(circle)
             ? `${circle}px`
-            : isBoolean(circle) && isBoolean
+            : isBoolean(circle) && circle
             ? `${width / 2}px`
             : 0
         })}
