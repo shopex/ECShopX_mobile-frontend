@@ -38,3 +38,33 @@ export function getMembers(params) {
 export function createMember(params) {
   return req.post('/member', params)
 }
+
+// 收银台结算
+export function checkout(params) {
+  return req.post('/checkout', params)
+}
+
+// 订单创建
+export function createOrder(params) {
+  return req.post('/order/create', params)
+}
+
+// 支付
+export function orderPayment(params) {
+  return req.post('/order/payment', params)
+}
+
+// 支付结果查询
+export function getPaymentResultByOrder(params) {
+  return req.get('/order/payment/query', params)
+}
+
+// 订单详情
+export function getTradeDetail(order_id) {
+  return req.get(`/order/${order_id}`)
+}
+
+// 根据userid查询会员
+export function getMemberByUserId(params) {
+  return req.get(`/member`, params)
+}
