@@ -165,7 +165,7 @@
         /* prettier-ignore */
         border-bottom: 1PX solid #ededed;
         margin-bottom: 26px;
-        padding-bottom: 20px;
+        // padding-bottom: 20px;
       }
     }
     .price-wrap {
@@ -216,7 +216,8 @@
     .item-caption {
       padding: 20px;
       display: flex;
-      flex: 1;
+      // flex: 1;
+      width: calc(100% - 180px);
       .item-hd {
         margin-right: 20px;
         .btn-delete {
@@ -237,7 +238,7 @@
         .title {
           font-weight: 600;
           @include text-overflow();
-          max-width: 540px;
+          max-width: 340px;
           padding-bottom: 10px;
         }
         .sku {
@@ -259,7 +260,7 @@
     .item-option {
       display: flex;
       flex-direction: column;
-      width: 120px;
+      width: 180px;
       border-left: 1PX solid #dadada;
       &-count {
         display: flex;
@@ -284,6 +285,9 @@
           font-size: 28px;
           input {
             padding-right: 0;
+          }
+          &:after {
+            border-color: transparent;
           }
         }
       }

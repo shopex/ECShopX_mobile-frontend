@@ -82,9 +82,9 @@ export const CHECKOUT_GOODS_ITEM = {
   itemFee: ({ item_fee }) => item_fee / 100,
   discountFee: ({ discount_fee }) => discount_fee / 100,
   totalFee: ({ total_fee }) => total_fee / 100,
-  memberDiscount: ({ member_discount }) => member_discount / 100,
-  couponDiscount: ({ coupon_discount }) => coupon_discount / 100,
-  promotionDiscount: ({ promotion_discount }) => promotion_discount / 100
+  memberDiscount: ({ member_discount }) => member_discount ? member_discount / 100 : 0,
+  couponDiscount: ({ coupon_discount }) => coupon_discount ? coupon_discount / 100 : 0,
+  promotionDiscount: ({ promotion_discount }) => promotion_discount ? promotion_discount / 100 : 0
 }
 
 export const COUPON_ITEM = {

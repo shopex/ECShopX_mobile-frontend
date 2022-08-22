@@ -53,7 +53,7 @@ function DianWuCashier() {
     searchResultLayout,
     addUserCurtain,
     searchGoodsList,
-    searchMemberResult,
+    searchMemberResult
   } = state
   const pageRef = useRef()
   const scanIsUseableRef = useRef(true)
@@ -235,6 +235,28 @@ function DianWuCashier() {
     }
   }
 
+  const onChangePlus = async (item, idx, index) => {
+    const _num = parseInt(item.num) + 1
+    if(_num > item.store) {
+      return
+    }
+    setState((draft) => {
+      draft.cartList[idx].list[index].num = _num
+    })
+    onChangeInputNumber(item, _num)
+  }
+
+  const onChangeMinus = async (item, idx, index) => {
+    const _num = parseInt(item.num) - 1
+    if(_num == 0) {
+      return
+    }
+    setState((draft) => {
+      draft.cartList[idx].list[index].num = _num
+    })
+    onChangeInputNumber(item, _num)
+  }
+
   return (
     <SpPage
       className='page-dianwu-cashier'
@@ -287,8 +309,8 @@ function DianWuCashier() {
           </View> */}
         </AtButton>
       </View>
-      {/*
-      <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />*/}
+
+      <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />
       {member && (
         <View className='member-info'>
           <View className='lf'>
@@ -354,14 +376,21 @@ function DianWuCashier() {
                 </View>
                 <View className='item-option'>
                   <View className='item-option-count'>
-                    <View className='count-option iconfont icon-plus'></View>
-                    <View className='count-option iconfont icon-minus'></View>
+                    <View
+                      className='count-option iconfont icon-plus'
+                      onClick={onChangePlus.bind(this, item, idx, index)}
+                    ></View>
+                    <View
+                      className='count-option iconfont icon-minus'
+                      onClick={onChangeMinus.bind(this, item, idx, index)}
+                    ></View>
                   </View>
                   <View className='item-option-input'>
                     <AtInput
+                      name={`at-number_${idx}_${index}`}
                       value={item.num}
                       min={1}
-                      onChange={(num) => {
+                      onBlur={(num) => {
                         setState((draft) => {
                           draft.cartList[idx].list[index].num = num
                         })
@@ -369,7 +398,10 @@ function DianWuCashier() {
                       }}
                     />
                   </View>
-                  <View className='item-option-del iconfont icon-trashCan' onClick={handleDeleteCartItem.bind(this, item)}></View>
+                  <View
+                    className='item-option-del iconfont icon-trashCan'
+                    onClick={handleDeleteCartItem.bind(this, item)}
+                  ></View>
                 </View>
                 {/*
                     <SpInputNumber
