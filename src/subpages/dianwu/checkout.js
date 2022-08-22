@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
@@ -16,6 +16,7 @@ import {
   SpFloatLayout,
   SpCheckbox
 } from '@/components'
+import { selectMember } from '@/store/slices/dianwu'
 import { pickBy, showToast } from '@/utils'
 import CompGoodsPrice from './comps/comp-goods-price'
 import CompGift from './comps/comp-gift'
@@ -62,11 +63,13 @@ function DianwuCheckout(props) {
   const $instance = getCurrentInstance()
   const { distributor_id } = $instance.router.params
   const { member } = useSelector((state) => state.dianwu)
+  const dispatch = useDispatch()
 
   const onPendingOrder = () => {}
 
   // 收款
   const onCollection = async () => {
+    debugger
     setState((draft) => {
       draft.isOpened = true
       // draft.orderId = order_id
@@ -98,6 +101,7 @@ function DianwuCheckout(props) {
   const getCheckout = async () => {
     let params = {
       user_id: member?.userId,
+      not_use_coupon: 1,
     }
     if(selectCoupon) {
       params = {
@@ -106,6 +110,7 @@ function DianwuCheckout(props) {
         coupon_discount: selectCoupon
       }
     }
+    Taro.showLoading()
     const res = await api.dianwu.checkout(params)
     const {
       items,
@@ -132,6 +137,7 @@ function DianwuCheckout(props) {
       draft.couponInfo = _couponInfo
       draft.selectCoupon = _couponInfo ? _couponInfo.coupon_code : null
     })
+    Taro.hideLoading()
   }
 
   const onChangeRemark = (e) => {
@@ -141,14 +147,19 @@ function DianwuCheckout(props) {
   }
 
   const createOrder = async () => {
-    const { order_id } = await api.dianwu.createOrder({
+    let params = {
       user_id: member?.userId,
-      remark
-      // distributor_id
-      // pay_type
-      // not_use_coupon
-      // coupon_discount
-    })
+      remark,
+      not_use_coupon: 1
+    }
+    if(couponInfo) {
+      params = {
+        ...params,
+        not_use_coupon: 0,
+        coupon_discount: couponInfo.coupon_code
+      }
+    }
+    const { order_id } = await api.dianwu.createOrder(params)
     return order_id
   }
 
@@ -162,6 +173,7 @@ function DianwuCheckout(props) {
         order_id,
         auth_code: result
       })
+      dispatch(selectMember(null))
       Taro.redirectTo({
         url: `/subpages/dianwu/collection-result?order_id=${order_id}&trade_id=${trade_info.trade_id}`
       })
@@ -186,6 +198,7 @@ function DianwuCheckout(props) {
       order_id,
       pay_type: 'pos'
     })
+    dispatch(selectMember(null))
     Taro.redirectTo({ url: `/subpages/dianwu/collection-result?order_id=${order_id}&pay_type=pos` })
   }
 
@@ -344,7 +357,11 @@ function DianwuCheckout(props) {
         ></AtTextarea>
       </View>
 
-      <AtModal className='collection-modal' isOpened={isOpened}>
+      <AtModal className='collection-modal' isOpened={isOpened} onClose={() => {
+        setState(draft => {
+          draft.isOpened = false
+        })
+      }}>
         <AtModalHeader>应收款</AtModalHeader>
         <AtModalContent>
           <View className='total-mount'>
