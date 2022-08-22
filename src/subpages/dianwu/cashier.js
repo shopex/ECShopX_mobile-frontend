@@ -287,7 +287,8 @@ function DianWuCashier() {
           </View> */}
         </AtButton>
       </View>
-      <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />
+      {/*
+      <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />*/}
       {member && (
         <View className='member-info'>
           <View className='lf'>
@@ -334,18 +335,30 @@ function DianWuCashier() {
           {cartList.map((shopList, idx) => {
             return shopList.list.map((item, index) => (
               <View className='item-wrap' key={`item-wrap__${idx}_${index}`}>
-                <View className='item-hd'>
-                  <SpImage src={item.pic} width={110} height={110} />
-                  <View className='btn-delete' onClick={handleDeleteCartItem.bind(this, item)}>
-                    <Text className='iconfont icon-trashCan'></Text>
+                <View className='item-caption'>
+                  <View className='item-hd'>
+                    <SpImage src={item.pic} width={120} height={120} />
+                    {/*
+                    <View className='btn-delete' onClick={handleDeleteCartItem.bind(this, item)}>
+                      <Text className='iconfont icon-trashCan'></Text>
+                    </View>
+                    */}
+                  </View>
+                  <View className='item-bd'>
+                    <View className='title'>{item.itemName}</View>
+                    {item.itemSpecDesc && <View className='sku'>{item.itemSpecDesc}</View>}
+                    <View className='ft-info'>
+                      <CompGoodsPrice info={item} />
+                    </View>
                   </View>
                 </View>
-                <View className='item-bd'>
-                  <View className='title'>{item.itemName}</View>
-                  {item.itemSpecDesc && <View className='sku'>{item.itemSpecDesc}</View>}
-                  <View className='ft-info'>
-                    <CompGoodsPrice info={item} />
-                    <SpInputNumber
+                <View className='item-option'>
+                  <View className='item-option-count'>
+                    <View className='count-option iconfont icon-plus'></View>
+                    <View className='count-option iconfont icon-minus'></View>
+                  </View>
+                  <View className='item-option-input'>
+                    <AtInput
                       value={item.num}
                       min={1}
                       onChange={(num) => {
@@ -356,7 +369,20 @@ function DianWuCashier() {
                       }}
                     />
                   </View>
+                  <View className='item-option-del iconfont icon-trashCan' onClick={handleDeleteCartItem.bind(this, item)}></View>
                 </View>
+                {/*
+                    <SpInputNumber
+                      value={item.num}
+                      min={1}
+                      onChange={(num) => {
+                        setState((draft) => {
+                          draft.cartList[idx].list[index].num = num
+                        })
+                        onChangeInputNumber(item, num)
+                      }}
+                    />
+                */}
               </View>
             ))
           })}
