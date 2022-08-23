@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
@@ -16,6 +16,7 @@ import {
   SpFloatLayout,
   SpCheckbox
 } from '@/components'
+import { selectMember } from '@/store/slices/dianwu'
 import { pickBy, showToast } from '@/utils'
 import CompGoodsPrice from './comps/comp-goods-price'
 import CompGift from './comps/comp-gift'
@@ -29,6 +30,12 @@ const initialState = {
   itemFee: 0,
   discountFee: 0,
   totalFee: 0,
+  memberDiscount: 0,
+  couponDiscount: 0,
+  promotionDiscount: 0,
+  couponInfo: null,
+  selectCoupon: null,
+  couponList: [],
   remark: '',
   isOpened: false,
   couponLayout: false
@@ -42,14 +49,21 @@ function DianwuCheckout(props) {
     itemFee,
     discountFee,
     totalFee,
+    memberDiscount,
+    couponDiscount,
+    promotionDiscount,
     remark,
     isOpened,
-    couponLayout
+    couponLayout,
+    couponList,
+    couponInfo,
+    selectCoupon
   } = state
   const pageRef = useRef()
   const $instance = getCurrentInstance()
   const { distributor_id } = $instance.router.params
   const { member } = useSelector((state) => state.dianwu)
+  const dispatch = useDispatch()
 
   const onPendingOrder = () => {}
 
@@ -63,6 +77,7 @@ function DianwuCheckout(props) {
 
   useEffect(() => {
     getCheckout()
+    getUserCardList()
   }, [])
 
   useEffect(() => {
@@ -73,17 +88,40 @@ function DianwuCheckout(props) {
     }
   }, [isOpened, couponLayout])
 
-  const getCheckout = async () => {
-    const res = await api.dianwu.checkout({
+  const getUserCardList = async () => {
+    const { list } = await api.dianwu.getUserCardList({
       user_id: member?.userId
     })
+    setState((draft) => {
+      draft.couponList = pickBy(list, doc.dianwu.COUPON_ITEM)
+    })
+  }
+
+  const getCheckout = async () => {
+    let params = {
+      user_id: member?.userId,
+      not_use_coupon: 1,
+    }
+    if(selectCoupon) {
+      params = {
+        ...params,
+        not_use_coupon: 0,
+        coupon_discount: selectCoupon
+      }
+    }
+    Taro.showLoading()
+    const res = await api.dianwu.checkout(params)
     const {
       items,
       itemsPromotion: _itemsPromotion,
       totalItemNum: _totalItemNum,
       itemFee: _itemFee,
       discountFee: _discountFee,
-      totalFee: _totalFee
+      totalFee: _totalFee,
+      memberDiscount: _memberDiscount,
+      couponDiscount: _couponDiscount,
+      promotionDiscount: _promotionDiscount,
+      couponInfo: _couponInfo
     } = pickBy(res, doc.dianwu.CHECKOUT_GOODS_ITEM)
     setState((draft) => {
       draft.itemList = items
@@ -92,7 +130,13 @@ function DianwuCheckout(props) {
       draft.itemFee = _itemFee
       draft.discountFee = _discountFee
       draft.totalFee = _totalFee
+      draft.memberDiscount = _memberDiscount
+      draft.couponDiscount = _couponDiscount
+      draft.promotionDiscount = _promotionDiscount
+      draft.couponInfo = _couponInfo
+      draft.selectCoupon = _couponInfo ? _couponInfo.coupon_code : null
     })
+    Taro.hideLoading()
   }
 
   const onChangeRemark = (e) => {
@@ -102,14 +146,19 @@ function DianwuCheckout(props) {
   }
 
   const createOrder = async () => {
-    const { order_id } = await api.dianwu.createOrder({
+    let params = {
       user_id: member?.userId,
-      remark
-      // distributor_id
-      // pay_type
-      // not_use_coupon
-      // coupon_discount
-    })
+      remark,
+      not_use_coupon: 1
+    }
+    if(couponInfo) {
+      params = {
+        ...params,
+        not_use_coupon: 0,
+        coupon_discount: couponInfo.coupon_code
+      }
+    }
+    const { order_id } = await api.dianwu.createOrder(params)
     return order_id
   }
 
@@ -121,8 +170,9 @@ function DianwuCheckout(props) {
       const order_id = await createOrder()
       const { trade_info } = await api.dianwu.orderPayment({
         order_id,
-        auth_code: '130784806218283467'
+        auth_code: result
       })
+      dispatch(selectMember(null))
       Taro.redirectTo({
         url: `/subpages/dianwu/collection-result?order_id=${order_id}&trade_id=${trade_info.trade_id}`
       })
@@ -147,7 +197,30 @@ function DianwuCheckout(props) {
       order_id,
       pay_type: 'pos'
     })
+    dispatch(selectMember(null))
     Taro.redirectTo({ url: `/subpages/dianwu/collection-result?order_id=${order_id}&pay_type=pos` })
+  }
+
+  // 使用优惠券
+  const handleUseCoupon = async () => {
+    getCheckout()
+    setState(draft => {
+      draft.couponLayout = false
+    })
+  }
+
+  const couponIsChecked = ({ couponCode }) => {
+    if (selectCoupon == couponCode) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const onChangeCoupon = ({ couponCode }, e) => {
+    setState(draft => {
+      draft.selectCoupon = e ? couponCode : null
+    })
   }
 
   return (
@@ -199,19 +272,6 @@ function DianwuCheckout(props) {
               {item.itemSpecDesc && <View className='sku'>{item.itemSpecDesc}</View>}
               <View className='ft-info'>
                 <CompGoodsPrice info={item} />
-                {/* <View className='price-list'>
-                  <View className='price-wrap'>
-                    <SpPrice className='sale-price' value={999.99}></SpPrice>
-                  </View>
-                  <View className='price-wrap'>
-                    <SpPrice className='vip-price' value={888.99}></SpPrice>
-                    <SpVipLabel content='VIP' type='vip' />
-                  </View>
-                  <View className='price-wrap'>
-                    <SpPrice className='svip-price' value={666.99}></SpPrice>
-                    <SpVipLabel content='SVIP' type='svip' />
-                  </View>
-                </View> */}
                 <View className='num'>数量：{item.num}</View>
               </View>
             </View>
@@ -221,7 +281,7 @@ function DianwuCheckout(props) {
       {itemsPromotion && (
         <View className='block-gift'>
           {itemsPromotion.map((item, idx) => {
-            return item.activity_desc.gifts.map((gift, index) => (
+            return item.activity_desc?.gifts?.map((gift, index) => (
               <View className='gift-item' key={`gift-item__${idx}_${index}`}>
                 <CompGift info={gift} />
               </View>
@@ -231,9 +291,21 @@ function DianwuCheckout(props) {
       )}
 
       <View className='block-coupon'>
-        <SpCell title='使用券' border isLink>
-          <Text>共5张优惠券可用</Text>
-        </SpCell>
+        {couponList.length > 0 && (
+          <SpCell
+            title='使用券'
+            border
+            isLink
+            onClick={() => {
+              setState((draft) => {
+                draft.couponLayout = true
+              })
+            }}
+          >
+            <Text>{`${couponInfo ? couponInfo.rule : '请选择'}`}</Text>
+          </SpCell>
+        )}
+
         {/* <SpCell title='使用积分' isLink>
           暂无可用
         </SpCell> */}
@@ -243,15 +315,15 @@ function DianwuCheckout(props) {
         <SpCell title={`${totalItemNum}件商品合计`} border>
           <SpPrice value={itemFee} />
         </SpCell>
-        <SpCell title='优惠' border>
-          <SpPrice value={`-${discountFee}`} />
+        <SpCell title='促销优惠' border>
+          <SpPrice value={`-${promotionDiscount}`} />
         </SpCell>
-        {/* <SpCell title='会员折扣' border>
-          <SpPrice value={-50} />
-        </SpCell> */}
-        {/* <SpCell title='券优惠' border>
-          <SpPrice value={-50} />
-        </SpCell> */}
+        <SpCell title='会员折扣' border>
+          <SpPrice value={`-${memberDiscount}`} />
+        </SpCell>
+        <SpCell title='券优惠' border>
+          <SpPrice value={`-${couponDiscount}`} />
+        </SpCell>
         {/* <SpCell title='积分抵扣' border>
           <SpPrice value={-50} />
         </SpCell> */}
@@ -271,7 +343,11 @@ function DianwuCheckout(props) {
         ></AtTextarea>
       </View>
 
-      <AtModal className='collection-modal' isOpened={isOpened}>
+      <AtModal className='collection-modal' isOpened={isOpened} onClose={() => {
+        setState(draft => {
+          draft.isOpened = false
+        })
+      }}>
         <AtModalHeader>应收款</AtModalHeader>
         <AtModalContent>
           <View className='total-mount'>
@@ -303,17 +379,24 @@ function DianwuCheckout(props) {
         }}
         renderFooter={
           <SpButton
-            resetText='暂不使用'
+            resetText='取消'
             confirmText='确定'
-            onConfirm={onPendingOrder}
-            onReset={onCollection}
+            onConfirm={handleUseCoupon}
+            onReset={() => {
+              setState((draft) => {
+                draft.couponLayout = false
+              })
+            }}
           ></SpButton>
         }
       >
         <View className='coupon-list'>
-          {[1, 2, 3, 4, 5, 6].map((item, index) => (
-            <CompCoupon key={`coupon-item__${index}`}>
-              <SpCheckbox />
+          {couponList.map((item, index) => (
+            <CompCoupon info={item} key={`coupon-item__${index}`}>
+              <SpCheckbox
+                checked={couponIsChecked(item)}
+                onChange={onChangeCoupon.bind(this, item)}
+              />
             </CompCoupon>
           ))}
         </View>

@@ -53,7 +53,7 @@ function DianWuCashier() {
     searchResultLayout,
     addUserCurtain,
     searchGoodsList,
-    searchMemberResult,
+    searchMemberResult
   } = state
   const pageRef = useRef()
   const scanIsUseableRef = useRef(true)
@@ -235,6 +235,28 @@ function DianWuCashier() {
     }
   }
 
+  const onChangePlus = async (item, idx, index) => {
+    const _num = parseInt(item.num) + 1
+    if(_num > item.store) {
+      return
+    }
+    setState((draft) => {
+      draft.cartList[idx].list[index].num = _num
+    })
+    onChangeInputNumber(item, _num)
+  }
+
+  const onChangeMinus = async (item, idx, index) => {
+    const _num = parseInt(item.num) - 1
+    if(_num == 0) {
+      return
+    }
+    setState((draft) => {
+      draft.cartList[idx].list[index].num = _num
+    })
+    onChangeInputNumber(item, _num)
+  }
+
   return (
     <SpPage
       className='page-dianwu-cashier'
@@ -264,7 +286,7 @@ function DianWuCashier() {
     >
       <View className='block-tools'>
         <SpSearchInput
-          placeholder='商品名称'
+          placeholder='请输入商品货号/商品名'
           onConfirm={(val) => {
             setState((draft) => {
               draft.keywords = val
@@ -287,6 +309,7 @@ function DianWuCashier() {
           </View> */}
         </AtButton>
       </View>
+
       <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />
       {member && (
         <View className='member-info'>
@@ -334,17 +357,53 @@ function DianWuCashier() {
           {cartList.map((shopList, idx) => {
             return shopList.list.map((item, index) => (
               <View className='item-wrap' key={`item-wrap__${idx}_${index}`}>
-                <View className='item-hd'>
-                  <SpImage src={item.pic} width={110} height={110} />
-                  <View className='btn-delete' onClick={handleDeleteCartItem.bind(this, item)}>
-                    <Text className='iconfont icon-trashCan'></Text>
+                <View className='item-caption'>
+                  <View className='item-hd'>
+                    <SpImage src={item.pic} width={120} height={120} />
+                    {/*
+                    <View className='btn-delete' onClick={handleDeleteCartItem.bind(this, item)}>
+                      <Text className='iconfont icon-trashCan'></Text>
+                    </View>
+                    */}
+                  </View>
+                  <View className='item-bd'>
+                    <View className='title'>{item.itemName}</View>
+                    {item.itemSpecDesc && <View className='sku'>{item.itemSpecDesc}</View>}
+                    <View className='ft-info'>
+                      <CompGoodsPrice info={item} />
+                    </View>
                   </View>
                 </View>
-                <View className='item-bd'>
-                  <View className='title'>{item.itemName}</View>
-                  {item.itemSpecDesc && <View className='sku'>{item.itemSpecDesc}</View>}
-                  <View className='ft-info'>
-                    <CompGoodsPrice info={item} />
+                <View className='item-option'>
+                  <View className='item-option-count'>
+                    <View
+                      className='count-option iconfont icon-plus'
+                      onClick={onChangePlus.bind(this, item, idx, index)}
+                    ></View>
+                    <View
+                      className='count-option iconfont icon-minus'
+                      onClick={onChangeMinus.bind(this, item, idx, index)}
+                    ></View>
+                  </View>
+                  <View className='item-option-input'>
+                    <AtInput
+                      name={`at-number_${idx}_${index}`}
+                      value={item.num}
+                      min={1}
+                      onBlur={(num) => {
+                        setState((draft) => {
+                          draft.cartList[idx].list[index].num = num
+                        })
+                        onChangeInputNumber(item, num)
+                      }}
+                    />
+                  </View>
+                  <View
+                    className='item-option-del iconfont icon-trashCan'
+                    onClick={handleDeleteCartItem.bind(this, item)}
+                  ></View>
+                </View>
+                {/*
                     <SpInputNumber
                       value={item.num}
                       min={1}
@@ -355,8 +414,7 @@ function DianWuCashier() {
                         onChangeInputNumber(item, num)
                       }}
                     />
-                  </View>
-                </View>
+                */}
               </View>
             ))
           })}
@@ -383,7 +441,7 @@ function DianWuCashier() {
             已优惠 <SpPrice size={38} value={cartList[0]?.discountFee} />
           </View>
         </View>
-        {/* <View
+        <View
           className='rg'
           onClick={() => {
             setState((draft) => {
@@ -392,7 +450,7 @@ function DianWuCashier() {
           }}
         >
           优惠详情<Text className='iconfont icon-qianwang-01'></Text>
-        </View> */}
+        </View>
       </View>
 
       <SpFloatLayout
@@ -405,14 +463,14 @@ function DianWuCashier() {
         }}
       >
         <View className='discount-detail'>
-          <SpCell title='4件商品合计'>
-            <SpPrice value={2450}></SpPrice>
+          <SpCell title={`${cartList[0]?.totalNum}件商品合计`}>
+            <SpPrice value={cartList[0]?.totalPrice}></SpPrice>
           </SpCell>
           <SpCell title='促销优惠'>
-            <SpPrice value={-500}></SpPrice>
+            <SpPrice value={`-${cartList[0]?.promotionFee}`}></SpPrice>
           </SpCell>
           <SpCell title='会员折扣'>
-            <SpPrice value={-500}></SpPrice>
+            <SpPrice value={`-${cartList[0]?.memberDiscount}`}></SpPrice>
           </SpCell>
         </View>
       </SpFloatLayout>
@@ -513,39 +571,6 @@ function DianWuCashier() {
           </View>
         </View>
       </AtCurtain>
-
-      {/* <AtCurtain
-        isOpened={addUserCurtain}
-        onClose={() => {
-          setState((draft) => {
-            draft.addUserCurtain = false
-          })
-        }}
-      >
-        <View
-          className='create-user'
-          style={styleNames({
-            'background-image': `url(${process.env.APP_IMAGE_CDN}/create_member_bk.png)`
-          })}
-        >
-          <View className='create-user-hd'>
-            <View className='title'>创建会员</View>
-            <View className='sub-title'>引导客户创建会员，领取新客礼</View>
-          </View>
-          <View className='create-user-bd'>
-            <View className='form-field'>
-              <AtInput className='mobile' />
-            </View>
-            <View className='form-field'>
-              <AtInput className='code' />
-              <View className='send-code'>重新发送</View>
-            </View>
-          </View>
-          <View className='create-user-ft'>
-            <View className='btn-submit'>快捷创建</View>
-          </View>
-        </View>
-      </AtCurtain> */}
     </SpPage>
   )
 }
