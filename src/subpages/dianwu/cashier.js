@@ -97,20 +97,6 @@ function DianWuCashier() {
       pageSize: 100,
       keywords
     })
-    // const [{ list: memberList }, { list: goodsList }] = await Promise.all([
-    //   await api.dianwu.getMembers({
-    //     page: 1,
-    //     pageSize: 100,
-    //     mobile: keywords
-    //   }),
-    //   await api.dianwu.goodsItems({
-    //     page: 1,
-    //     pageSize: 100,
-    //     distributor_id,
-    //     keywords
-    //   })
-    // ])
-
     Taro.hideLoading()
 
     setState((draft) => {
@@ -138,7 +124,8 @@ function DianWuCashier() {
 
   const getCashierList = async () => {
     const { valid_cart } = await api.dianwu.getCartDataList({
-      user_id: member?.userId
+      user_id: member?.userId,
+      distributor_id
     })
     setState((draft) => {
       draft.cartList = pickBy(valid_cart, doc.dianwu.CART_GOODS_ITEM)
@@ -150,7 +137,8 @@ function DianWuCashier() {
       cart_id: cartId,
       item_id: itemId,
       num,
-      is_checked: true
+      is_checked: true,
+      distributor_id
     })
     getCashierList()
   }, 200)
@@ -172,7 +160,8 @@ function DianWuCashier() {
   const handleAddToCart = async ({ itemId }) => {
     await api.dianwu.addToCart({
       item_id: itemId,
-      num: 1
+      num: 1,
+      distributor_id
     })
     getCashierList()
     showToast('加入收银台成功')
@@ -185,7 +174,8 @@ function DianWuCashier() {
       audioContextRef.current.play()
       try {
         await api.dianwu.scanAddToCart({
-          barcode: e.detail.result
+          barcode: e.detail.result,
+          distributor_id
         })
         getCashierList()
         showToast('加入收银台成功')
@@ -275,7 +265,7 @@ function DianWuCashier() {
             <View
               className='g-button__second'
               onClick={() => {
-                Taro.navigateTo({ url: `/subpages/dianwu/checkout` })
+                Taro.navigateTo({ url: `/subpages/dianwu/checkout?distributor_id=${distributor_id}` })
               }}
             >
               结算收银
@@ -286,7 +276,7 @@ function DianWuCashier() {
     >
       <View className='block-tools'>
         <SpSearchInput
-          placeholder='请输入商品货号/商品名'
+          placeholder='商品名称/商品货号/商品条形码'
           onConfirm={(val) => {
             setState((draft) => {
               draft.keywords = val

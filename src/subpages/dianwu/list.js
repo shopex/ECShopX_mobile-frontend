@@ -44,7 +44,8 @@ function DianWuList() {
   const fetch = async ({ pageIndex, pageSize }) => {
     let params = {
       page: pageIndex,
-      pageSize
+      pageSize,
+      distributor_id
     }
     if (keywords) {
       params = {
@@ -68,14 +69,17 @@ function DianWuList() {
   const handleAddToCart = async ({ itemId }) => {
     await api.dianwu.addToCart({
       item_id: itemId,
-      num: 1
+      num: 1,
+      distributor_id
     })
     getCashierList()
     showToast('加入收银台成功')
   }
 
   const getCashierList = async () => {
-    const { valid_cart } = await api.dianwu.getCartDataList()
+    const { valid_cart } = await api.dianwu.getCartDataList({
+      distributor_id
+    })
     setState((draft) => {
       draft.cartList = pickBy(valid_cart, doc.dianwu.CART_GOODS_ITEM)
     })
@@ -95,7 +99,7 @@ function DianWuList() {
             className='btn-confirm'
             onClick={() => {
               Taro.navigateTo({
-                url: `/subpages/dianwu/cashier`
+                url: `/subpages/dianwu/cashier?distributor_id=${distributor_id}`
               })
             }}
           >
@@ -106,7 +110,7 @@ function DianWuList() {
     >
       <View className='search-block'>
         <SpSearchInput
-          placeholder='请输入商品货号/商品名'
+          placeholder='商品名称/商品货号/商品条形码'
           onConfirm={(val) => {
             setState((draft) => {
               draft.keywords = val
