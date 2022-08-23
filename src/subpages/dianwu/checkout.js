@@ -90,7 +90,8 @@ function DianwuCheckout(props) {
 
   const getUserCardList = async () => {
     const { list } = await api.dianwu.getUserCardList({
-      user_id: member?.userId
+      user_id: member?.userId,
+      distributor_id
     })
     setState((draft) => {
       draft.couponList = pickBy(list, doc.dianwu.COUPON_ITEM)
@@ -101,6 +102,7 @@ function DianwuCheckout(props) {
     let params = {
       user_id: member?.userId,
       not_use_coupon: 1,
+      distributor_id
     }
     if(selectCoupon) {
       params = {
@@ -124,7 +126,7 @@ function DianwuCheckout(props) {
       couponInfo: _couponInfo
     } = pickBy(res, doc.dianwu.CHECKOUT_GOODS_ITEM)
     setState((draft) => {
-      draft.itemList = items
+      draft.itemList = items.filter(item => item.orderItemType != 'gift')
       draft.itemsPromotion = _itemsPromotion
       draft.totalItemNum = _totalItemNum
       draft.itemFee = _itemFee
@@ -149,7 +151,8 @@ function DianwuCheckout(props) {
     let params = {
       user_id: member?.userId,
       remark,
-      not_use_coupon: 1
+      not_use_coupon: 1,
+      distributor_id
     }
     if(couponInfo) {
       params = {
@@ -239,7 +242,7 @@ function DianwuCheckout(props) {
       }
     >
       <View className='block-user'>
-        <SpImage width={110} height={110} />
+        <SpImage src={member?.avatar || 'user_icon.png'} width={110} height={110} />
         <View className='user-info'>
           <View className='info-hd'>
             <Text className='name'>{member?.username || '未知'}</Text>
