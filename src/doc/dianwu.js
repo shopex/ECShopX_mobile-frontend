@@ -49,6 +49,7 @@ export const CART_GOODS_ITEM = {
 
 export const MEMBER_ITEM = {
   username: 'username',
+  avatar: 'avatar',
   mobile: 'mobile',
   userId: 'user_id'
 }
@@ -67,6 +68,7 @@ export const CHECKOUT_GOODS_ITEM = {
       pic: 'pic',
       name: 'item_name',
       itemSpecDesc: 'item_spec_desc',
+      orderItemType: 'order_item_type',
       price: ({ price }) => price / 100, // 销售价
       activityPrice: ({ activity_price }) => activity_price / 100, // 秒杀价
       marketPrice: ({ market_price }) => market_price / 100, // 原价
