@@ -191,9 +191,18 @@ function DianWuCashier() {
   }
 
   // 选择会员
-  const handleSelectMember = () => {
+  const handleSelectMember = async () => {
     const [item] = searchMemberResult
-    dispatch(selectMember(item))
+    const userInfo = await api.dianwu.getMemberByUserId({ user_id: item.userId })
+    const { couponNum, point, vipDiscount } = pickBy(userInfo, doc.dianwu.MEMBER_INFO)
+    dispatch(
+      selectMember({
+        ...item,
+        couponNum,
+        point,
+        vipDiscount
+      })
+    )
     setState((draft) => {
       draft.addUserCurtain = false
     })
@@ -229,7 +238,7 @@ function DianWuCashier() {
 
   const onChangePlus = async (item, idx, index) => {
     const _num = parseInt(item.num) + 1
-    if(_num > item.store) {
+    if (_num > item.store) {
       return
     }
     setState((draft) => {
@@ -240,7 +249,7 @@ function DianWuCashier() {
 
   const onChangeMinus = async (item, idx, index) => {
     const _num = parseInt(item.num) - 1
-    if(_num == 0) {
+    if (_num == 0) {
       return
     }
     setState((draft) => {
@@ -270,7 +279,9 @@ function DianWuCashier() {
                 setState((draft) => {
                   draft.isCameraOpend = false
                 })
-                Taro.navigateTo({ url: `/subpages/dianwu/checkout?distributor_id=${distributor_id}` })
+                Taro.navigateTo({
+                  url: `/subpages/dianwu/checkout?distributor_id=${distributor_id}`
+                })
               }}
             >
               结算收银
@@ -304,11 +315,13 @@ function DianWuCashier() {
           </View> */}
         </AtButton>
       </View>
-      { isCameraOpend && (
+      {isCameraOpend && (
         <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />
       )}
-      { !isCameraOpend && (
-        <View className='camera-placeholder' onClick={() => {
+      {!isCameraOpend && (
+        <View
+          className='camera-placeholder'
+          onClick={() => {
             setState((draft) => {
               draft.isCameraOpend = true
             })
