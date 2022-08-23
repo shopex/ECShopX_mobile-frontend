@@ -286,7 +286,7 @@ function DianWuCashier() {
     >
       <View className='block-tools'>
         <SpSearchInput
-          placeholder='商品名称/商品编码'
+          placeholder='请输入商品货号/商品名'
           onConfirm={(val) => {
             setState((draft) => {
               draft.keywords = val
