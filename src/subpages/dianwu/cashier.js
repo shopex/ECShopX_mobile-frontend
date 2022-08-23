@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro, { getCurrentInstance, useDidHide } from '@tarojs/taro'
 import api from '@/api'
 import doc from '@/doc'
 import { View, Text, ScrollView, Camera } from '@tarojs/components'
@@ -38,7 +38,8 @@ const initialState = {
   searchMemberResult: null,
   discountDetailLayout: false,
   searchResultLayout: false,
-  addUserCurtain: false
+  addUserCurtain: false,
+  isCameraOpend: false
 }
 
 function DianWuCashier() {
@@ -53,7 +54,8 @@ function DianWuCashier() {
     searchResultLayout,
     addUserCurtain,
     searchGoodsList,
-    searchMemberResult
+    searchMemberResult,
+    isCameraOpend
   } = state
   const pageRef = useRef()
   const scanIsUseableRef = useRef(true)
@@ -64,7 +66,7 @@ function DianWuCashier() {
   const dispatch = useDispatch()
 
   useDianWuLogin()
-
+  
   useEffect(() => {
     audioContextRef.current = wx.createInnerAudioContext({
       useWebAudioImplement: true // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
@@ -275,6 +277,9 @@ function DianWuCashier() {
             <View
               className='g-button__second'
               onClick={() => {
+                setState((draft) => {
+                  draft.isCameraOpend = false
+                })
                 Taro.navigateTo({ url: `/subpages/dianwu/checkout` })
               }}
             >
@@ -309,8 +314,22 @@ function DianWuCashier() {
           </View> */}
         </AtButton>
       </View>
-
-      <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />
+      { isCameraOpend && (
+        <Camera className='scan-code' mode='scanCode' onScanCode={handleScanCodeByGoods} />
+      )}
+      { !isCameraOpend && (
+        <View className='camera-placeholder' onClick={() => {
+            setState((draft) => {
+              draft.isCameraOpend = true
+            })
+          }}
+        >
+          <View className='camera-placeholder-wrap'>
+            <View className='iconfont icon-camera'></View>
+            <View>点击开启摄像头扫码</View>
+          </View>
+        </View>
+      )}
       {member && (
         <View className='member-info'>
           <View className='lf'>
@@ -389,6 +408,7 @@ function DianWuCashier() {
                     <AtInput
                       name={`at-number_${idx}_${index}`}
                       value={item.num}
+                      type='number'
                       min={1}
                       onBlur={(num) => {
                         setState((draft) => {
