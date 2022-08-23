@@ -66,7 +66,7 @@ function DianWuCashier() {
   const dispatch = useDispatch()
 
   useDianWuLogin()
-  
+
   useEffect(() => {
     audioContextRef.current = wx.createInnerAudioContext({
       useWebAudioImplement: true // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
@@ -99,20 +99,6 @@ function DianWuCashier() {
       pageSize: 100,
       keywords
     })
-    // const [{ list: memberList }, { list: goodsList }] = await Promise.all([
-    //   await api.dianwu.getMembers({
-    //     page: 1,
-    //     pageSize: 100,
-    //     mobile: keywords
-    //   }),
-    //   await api.dianwu.goodsItems({
-    //     page: 1,
-    //     pageSize: 100,
-    //     distributor_id,
-    //     keywords
-    //   })
-    // ])
-
     Taro.hideLoading()
 
     setState((draft) => {
@@ -140,7 +126,8 @@ function DianWuCashier() {
 
   const getCashierList = async () => {
     const { valid_cart } = await api.dianwu.getCartDataList({
-      user_id: member?.userId
+      user_id: member?.userId,
+      distributor_id
     })
     setState((draft) => {
       draft.cartList = pickBy(valid_cart, doc.dianwu.CART_GOODS_ITEM)
@@ -152,7 +139,8 @@ function DianWuCashier() {
       cart_id: cartId,
       item_id: itemId,
       num,
-      is_checked: true
+      is_checked: true,
+      distributor_id
     })
     getCashierList()
   }, 200)
@@ -174,7 +162,8 @@ function DianWuCashier() {
   const handleAddToCart = async ({ itemId }) => {
     await api.dianwu.addToCart({
       item_id: itemId,
-      num: 1
+      num: 1,
+      distributor_id
     })
     getCashierList()
     showToast('加入收银台成功')
@@ -187,7 +176,8 @@ function DianWuCashier() {
       audioContextRef.current.play()
       try {
         await api.dianwu.scanAddToCart({
-          barcode: e.detail.result
+          barcode: e.detail.result,
+          distributor_id
         })
         getCashierList()
         showToast('加入收银台成功')
@@ -280,7 +270,7 @@ function DianWuCashier() {
                 setState((draft) => {
                   draft.isCameraOpend = false
                 })
-                Taro.navigateTo({ url: `/subpages/dianwu/checkout` })
+                Taro.navigateTo({ url: `/subpages/dianwu/checkout?distributor_id=${distributor_id}` })
               }}
             >
               结算收银
@@ -291,7 +281,7 @@ function DianWuCashier() {
     >
       <View className='block-tools'>
         <SpSearchInput
-          placeholder='商品名称/商品编码'
+          placeholder='商品名称/商品货号/商品条形码'
           onConfirm={(val) => {
             setState((draft) => {
               draft.keywords = val
