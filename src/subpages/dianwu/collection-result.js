@@ -63,7 +63,14 @@ function DianwuCollectionResult(props) {
       user_id,
       pay_status
     } = orderInfo
-    const { username, mobile } = await api.dianwu.getMemberByUserId({ user_id })
+    let username, mobile
+    if (user_id != 0) {
+      const { username: _username, mobile: _mobile } = await api.dianwu.getMemberByUserId({
+        user_id
+      })
+      username = _username
+      mobile = _mobile
+    }
 
     setState((draft) => {
       draft.distributor = distributor
@@ -113,10 +120,18 @@ function DianwuCollectionResult(props) {
             <View className='checkout-result'>
               <Text className='iconfont icon-correct'></Text>收款成功
             </View>
-            <View className='user-info'>
-              <Text className='name'>{info.username}</Text>
-              <Text className='mobile'>{info.mobile}</Text>
-            </View>
+            {info.username && (
+              <View className='user-info'>
+                <Text className='name'>{info.username}</Text>
+                <Text className='mobile'>{info.mobile}</Text>
+              </View>
+            )}
+            {!info.username && (
+              <View className='user-info'>
+                <Text className='name'>非会员</Text>
+              </View>
+            )}
+
             {/* <View className='vip'>
           等级：<Text className='vip-level'>白金会员</Text>
         </View> */}
