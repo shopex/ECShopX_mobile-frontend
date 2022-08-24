@@ -336,7 +336,7 @@ function DianWuCashier() {
       {member && (
         <View className='member-info'>
           <View className='lf'>
-            <Text className='name'>{member.username || '未知'}</Text>
+            <Text className='name'>{member.username || '匿名'}</Text>
             <Text className='mobile'>{member.mobile}</Text>
           </View>
           <View className='rg'>

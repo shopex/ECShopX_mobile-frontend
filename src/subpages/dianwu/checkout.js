@@ -245,7 +245,7 @@ function DianwuCheckout(props) {
         <SpImage src={member?.avatar || 'user_icon.png'} width={110} height={110} />
         <View className='user-info'>
           <View className='info-hd'>
-            <Text className='name'>{member?.username || '未知'}</Text>
+            <Text className='name'>{member?.username || '匿名'}</Text>
             <Text className='mobile'>{member?.mobile}</Text>
           </View>
           <View className='info-bd'>
