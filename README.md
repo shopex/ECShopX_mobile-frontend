@@ -42,7 +42,7 @@ sh dev.sh
 #打包使用
 sh run.sh
 ```
-cicd test 3
+cicd test 3 afe
 
 ## 代码prettier
 npm run prepare
@@ -66,4 +66,4 @@ APP_CDN_BUCKET=unat-bucket
 npm install @shopex/taro-plugin-modules -S --registry=http://registry.npm.ishopex.cn
 
 # 再安装其他依赖
-npm install
+npm install 
