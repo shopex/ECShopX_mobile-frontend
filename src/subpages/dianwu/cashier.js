@@ -267,15 +267,20 @@ function DianWuCashier() {
           <View className='total-info'>
             <View className='real-mount'>
               <Text className='label'>实收 </Text>
-              <SpPrice value={cartList[0]?.totalFee} />
+              <SpPrice value={cartList[0]?.totalFee || 0} />
             </View>
-            <View className='txt'>已选择{cartList[0]?.totalNum}件商品</View>
+            <View className='txt'>已选择{cartList[0]?.totalNum || 0}件商品</View>
           </View>
           <View className='g-button'>
             <View className='g-button__first'>挂单</View>
             <View
               className='g-button__second'
               onClick={() => {
+                if(cartList.length == 0) {
+                  showToast('请添加商品')
+                  return
+                }
+
                 setState((draft) => {
                   draft.isCameraOpend = false
                 })
@@ -321,7 +326,7 @@ function DianWuCashier() {
         </AtButton>
       </View>
       {isCameraOpend && (
-        <View class="scan-code-wrap">
+        <View class='scan-code-wrap'>
           <Camera className='scan-code-camera' mode='scanCode' onScanCode={handleScanCodeByGoods} />
           <View
             className='scan-code-close'
@@ -330,7 +335,9 @@ function DianWuCashier() {
                 draft.isCameraOpend = false
               })
             }}
-          >关闭扫码</View>
+          >
+            关闭扫码
+          </View>
         </View>
       )}
       {!isCameraOpend && (
@@ -429,11 +436,14 @@ function DianWuCashier() {
                       type='number'
                       min={1}
                       onBlur={(num) => {
-                        setState((draft) => {
-                          draft.cartList[idx].list[index].num = (num == '' ||  num == 0) ? 1 : num
-                        },() => {
-                          onChangeInputNumber(item, num)
-                        })
+                        setState(
+                          (draft) => {
+                            draft.cartList[idx].list[index].num = num == '' || num == 0 ? 1 : num
+                          },
+                          () => {
+                            onChangeInputNumber(item, num)
+                          }
+                        )
                       }}
                     />
                   </View>
@@ -471,26 +481,28 @@ function DianWuCashier() {
         </View>
       )}
 
-      <View className='total-bar'>
-        <View className='lf'>
-          <View className='total-mount'>
-            合计 <SpPrice size={38} value={cartList[0]?.totalPrice} />
+      {cartList.length > 0 && (
+        <View className='total-bar'>
+          <View className='lf'>
+            <View className='total-mount'>
+              合计 <SpPrice size={38} value={cartList[0]?.totalPrice} />
+            </View>
+            <View className='discount-mount'>
+              已优惠 <SpPrice size={38} value={cartList[0]?.discountFee} />
+            </View>
           </View>
-          <View className='discount-mount'>
-            已优惠 <SpPrice size={38} value={cartList[0]?.discountFee} />
+          <View
+            className='rg'
+            onClick={() => {
+              setState((draft) => {
+                draft.discountDetailLayout = true
+              })
+            }}
+          >
+            优惠详情<Text className='iconfont icon-qianwang-01'></Text>
           </View>
         </View>
-        <View
-          className='rg'
-          onClick={() => {
-            setState((draft) => {
-              draft.discountDetailLayout = true
-            })
-          }}
-        >
-          优惠详情<Text className='iconfont icon-qianwang-01'></Text>
-        </View>
-      </View>
+      )}
 
       <SpFloatLayout
         title='优惠详情'
