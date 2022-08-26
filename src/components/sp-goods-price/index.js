@@ -23,9 +23,9 @@ function SpGoodsPrice(props) {
     <View className={classNames('sp-goods-price')}>
       {!isNaN(activityPrice) && (
         <View className='activity'>
-          <SpPrice size={48} className='sale-price' value={price} />
+          <SpPrice size={42} className='sale-price' value={price} />
           <View className='activity-wrap'>
-            活动价 <SpPrice size={48} className='activity-price' value={activityPrice} />
+            活动价 <SpPrice size={42} className='activity-price' value={activityPrice} />
           </View>
         </View>
       )}
@@ -36,7 +36,7 @@ function SpGoodsPrice(props) {
               isPoint && <SpPoint className='sale-point' value={point} />
             }
             {
-              !isPoint && <SpPrice size={48} className='sale-price' value={price} />
+              !isPoint && <SpPrice size={42} className='sale-price' value={price} />
             }
             {marketPrice > 0 && enMarketPrice && (
               <SpPrice className='mkt-price' lineThrough value={marketPrice} />
