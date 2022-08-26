@@ -42,14 +42,14 @@ const CategoryIndex = (props) => {
     const seriesList = pickBy(data, doc.category.CATEGORY_STORE_LIST)
     let tabList = []
     let contentList = []
-    if (hasSeries) {
-      seriesList.map((item) => {
-        tabList.push({ title: item.name, status: item.name })
-        contentList.push(item.children)
-      })
-    } else {
-      contentList.push(seriesList)
-    }
+    // if (hasSeries) {
+    //   seriesList?.map((item) => {
+    //     tabList.push({ title: item.name, status: item.name })
+    //     contentList.push(item.children)
+    //   })
+    // } else {
+    // }
+    contentList.push(seriesList)
     console.log(`contentList:`, contentList)
     setState((draft) => {
       draft.tabList = tabList
@@ -128,13 +128,13 @@ const CategoryIndex = (props) => {
               <SpImage src={curContent.img} width={600} height={200} mode='aspectFill' />
             )}
             <View className='category-content-list'>
-              {curContent?.children.map((item, index) => (
+              {curContent?.children?.map((item, index) => (
                 <View className='category-content' key={`content-item__${index}`}>
                   <View className='category-two-item'>
                     <Text className='item-name'>{item.name}</Text>
                   </View>
                   <View className='category-three'>
-                    {item.children.map((sitem, sindex) => (
+                    {item?.children?.map((sitem, sindex) => (
                       <View
                         className='category-three-item'
                         key={`category-three-item__${sindex}`}
