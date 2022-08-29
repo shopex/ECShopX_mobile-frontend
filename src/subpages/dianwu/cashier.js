@@ -208,6 +208,25 @@ function DianWuCashier() {
     })
   }
 
+  // 挂单
+  const handleOrderPendding = async () => {
+    if (cartList.length == 0) {
+      Taro.navigateTo({ url: '/subpages/dianwu/pending-checkout' })
+      return
+    }
+    const { confirm } = await Taro.showModal({
+      title: '挂单确认',
+      content: '请确认是否挂单'
+    })
+    if (confirm) {
+      await api.dianwu.orderPendding({
+        user_id: member?.userId,
+        distributor_id
+      })
+      getCashierList()
+    }
+  }
+
   const handleCreateMember = async () => {
     const res = await api.dianwu.createMember({ mobile })
     const newUser = pickBy(res, doc.dianwu.CREATE_MEMBER_ITEM)
@@ -272,11 +291,13 @@ function DianWuCashier() {
             <View className='txt'>已选择{cartList[0]?.totalNum || 0}件商品</View>
           </View>
           <View className='g-button'>
-            <View className='g-button__first'>挂单</View>
+            <View className='g-button__first' onClick={handleOrderPendding}>
+              {cartList.length == 0 ? '取单' : '挂单'}
+            </View>
             <View
               className='g-button__second'
               onClick={() => {
-                if(cartList.length == 0) {
+                if (cartList.length == 0) {
                   showToast('请添加商品')
                   return
                 }

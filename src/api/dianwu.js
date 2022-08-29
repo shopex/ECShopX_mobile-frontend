@@ -73,3 +73,13 @@ export function getMemberByUserId(params) {
 export function getUserCardList(params) {
   return req.get('/getUserCardList', params)
 }
+
+// 挂单
+export function orderPendding(params) {
+  return req.post('/operator/cartdata/pending', params)
+}
+
+// 取单
+export function fetchPendding(params) {
+  return req.post('/operator/pending/fetch', params)
+}
