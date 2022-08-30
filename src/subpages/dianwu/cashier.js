@@ -206,6 +206,8 @@ function DianWuCashier() {
     )
     setState((draft) => {
       draft.addUserCurtain = false
+      draft.mobile = ''
+      draft.searchMemberResult = null
     })
   }
 

@@ -96,13 +96,9 @@ function DianwuPendingCheckout(props) {
     })
     if (userId != 0) {
       const userInfo = await api.dianwu.getMemberByUserId({ user_id: userId })
-      const { couponNum, point, vipDiscount } = pickBy(userInfo, doc.dianwu.MEMBER_INFO)
+      const _userInfo = pickBy(userInfo, doc.dianwu.MEMBER_INFO)
       dispatch(
-        selectMember({
-          couponNum,
-          point,
-          vipDiscount
-        })
+        selectMember(_userInfo)
       )
     }
     if (from == 'home' || from == 'tabbar') {
