@@ -132,8 +132,12 @@ export const PENDING_ITEM = {
   pendingData: ({ pending_data }) => {
     return pickBy(pending_data, {
       pic: ({ pics }) => (pics ? (typeof pics !== 'string' ? pics[0] : JSON.parse(pics)[0]) : ''),
+      name: 'itemName',
+      itemSpecDesc: 'item_spec_desc',
+      num: 'num'
     })
   },
   userId: 'user_id',
-  memberInfo: 'memberInfo'
+  memberInfo: 'memberInfo',
+  showDetail: false
 }

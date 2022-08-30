@@ -67,9 +67,9 @@ function DianwuPendingCheckout(props) {
     }
   }
 
-  const toggleShowDetail = ({ showDetail }, index) => {
+  const toggleShowDetail = ({ showDetail }, index, sidx) => {
     setState((draft) => {
-      draft.list[index].showDetail = !showDetail
+      draft.list[index][sidx].showDetail = !showDetail
     })
   }
 
@@ -146,55 +146,72 @@ function DianwuPendingCheckout(props) {
                     {/* <View className='vip'>白金会员</View> */}
                   </View>
                 </View>
-
-                <View className='shousuo-detail'>
-                  <View className='goods-list'>
-                    <ScrollView className='goods-image-wrap' scrollX>
-                      {item.pendingData.map((goods, goods_index) => (
-                        <SpImage
-                          src={goods.pic}
-                          width={110}
-                          height={110}
-                          circle={8}
-                          key={`goods-image__${goods_index}`}
-                        />
-                      ))}
-                    </ScrollView>
-                    <View className='total-num'>共{item.pendingData.length}件商品</View>
-                  </View>
-                  {/* <View className='gift-list'>
+                {!item.showDetail && (
+                  <View className='shousuo-detail'>
+                    <View className='goods-list'>
+                      <ScrollView className='goods-image-wrap' scrollX>
+                        {item.pendingData.map((goods, goods_index) => (
+                          <SpImage
+                            src={goods.pic}
+                            width={110}
+                            height={110}
+                            circle={8}
+                            key={`goods-image__${goods_index}`}
+                          />
+                        ))}
+                      </ScrollView>
+                      <View className='total-num'>共{item.pendingData.length}件商品</View>
+                    </View>
+                    {/* <View className='gift-list'>
                     <View className='gift-tag'>赠品</View>
                     <View className='gift-name'>
                       我商品名我商品名我商品名最多只显示一行我商品名我商品名我商品名最多只显示一行
                     </View>
                     <View className='gift-more'>共9件赠品</View>
                   </View> */}
-                </View>
-                {/* {item.showDetail && (
-                <View className='expend-detail'>
-                  <View className='goods-list'>
-                    {item.items.map((goods, goods_index) => (
-                      <CompGoods />
-                    ))}
                   </View>
-                  <View className='gift-list'>
-                    {[1, 2, 3].map((item, index) => (
-                      <CompGift />
-                    ))}
+                )}
+
+                {item.showDetail && (
+                  <View className='expend-detail'>
+                    <View className='goods-list'>
+                      {item.pendingData.map((goods, goods_index) => (
+                        <View className='g-item' key={`g-item__${index}_${goods_index}`}>
+                          <View className='g-item-hd'>
+                            <SpImage src={goods.pic} width={110} height={110} />
+                          </View>
+                          <View className='g-item-bd'>
+                            <View className='title'>{goods.name}</View>
+                            <View className='sku-num'>
+                              <View className='sku-num-l'>
+                                {goods.itemSpecDesc && (
+                                  <View className='sku'>{goods.itemSpecDesc}</View>
+                                )}
+                              </View>
+                              <View className='g-num'>数量:{goods.num}</View>
+                            </View>
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+                    {/* <View className='gift-list'>
+                      {[1, 2, 3].map((item, index) => (
+                        <CompGift />
+                      ))}
+                    </View> */}
                   </View>
-                </View>
-              )} */}
+                )}
               </View>
               <View className='checkoutitem-ft'>
-                {/* <View
-                className={classNames('btn-showdetial', {
-                  'expended': item.showDetail
-                })}
-                onClick={toggleShowDetail.bind(this, item, index)}
-              >
-                {item.showDetail ? '收起明细' : '展开明细'}
-                <Text className='iconfont icon-qianwang-01'></Text>
-              </View> */}
+                <View
+                  className={classNames('btn-showdetial', {
+                    'expended': item.showDetail
+                  })}
+                  onClick={toggleShowDetail.bind(this, item, index, sidx)}
+                >
+                  {item.showDetail ? '收起明细' : '展开明细'}
+                  <Text className='iconfont icon-qianwang-01'></Text>
+                </View>
                 <View className='btn-actions'>
                   <AtButton circle onClick={handleDeleteItem.bind(this, item)}>
                     删除
