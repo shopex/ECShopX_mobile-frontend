@@ -71,7 +71,10 @@ export const MEMBER_INFO = {
   couponNum: ({ coupon_num }) => {
     return coupon_num || 0
   },
-  point: 'point'
+  point: 'point',
+  username: 'username',
+  avatar: 'avatar',
+  mobile: 'mobile'
 }
 
 export const CREATE_MEMBER_ITEM = {
