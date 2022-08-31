@@ -144,5 +144,6 @@ export const PENDING_ITEM = {
   },
   userId: 'user_id',
   memberInfo: 'memberInfo',
-  showDetail: false
+  showDetail: false,
+  totalNum: 'total_num'
 }

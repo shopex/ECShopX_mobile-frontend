@@ -156,7 +156,7 @@ function DianwuPendingCheckout(props) {
                           />
                         ))}
                       </ScrollView>
-                      <View className='total-num'>共{item.pendingData.length}件商品</View>
+                      <View className='total-num'>共{item.totalNum}件商品</View>
                     </View>
                     {/* <View className='gift-list'>
                     <View className='gift-tag'>赠品</View>
