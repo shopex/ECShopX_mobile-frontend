@@ -70,10 +70,10 @@ function DianWuCashier() {
   useDianWuLogin()
 
   useEffect(() => {
-    audioContextRef.current = wx.createInnerAudioContext({
-      useWebAudioImplement: true // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
-    })
-    audioContextRef.current.src = `${process.env.APP_IMAGE_CDN}/scan_success.wav`
+    // audioContextRef.current = wx.createInnerAudioContext({
+    //   useWebAudioImplement: true // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
+    // })
+    // audioContextRef.current.src = `${process.env.APP_IMAGE_CDN}/scan_success.wav`
     const { distributor_id: dtid } = $instance.router.params
     setState((draft) => {
       draft.distributor_id = dtid
@@ -132,7 +132,25 @@ function DianWuCashier() {
     }
   }
 
+  const handleScanGoodsBN = async () => {
+    const { errMsg, result } = await Taro.scanCode()
+    console.log('handleScanCode:', result)
+    if (errMsg == 'scanCode:ok') {
+      Taro.showLoading()
+      await api.dianwu.scanAddToCart({
+        barcode: result,
+        distributor_id
+      })
+      Taro.hideLoading()
+      showToast('加入收银台成功')
+      getCashierList()
+    } else {
+      showToast(errMsg)
+    }
+  }
+
   const getCashierList = async () => {
+    const { distributor_id } = $instance.router.params
     const { valid_cart } = await api.dianwu.getCartDataList({
       user_id: member?.userId,
       distributor_id
@@ -392,8 +410,8 @@ function DianWuCashier() {
           </View>
         )}
       </View>
-      {isCameraOpend && (
-        <View class='scan-code-wrap'>
+      {/* {isCameraOpend && (
+        <View class='scan-code-wrap' >
           <Camera className='scan-code-camera' mode='scanCode' onScanCode={handleScanCodeByGoods} />
           <View
             className='scan-code-close'
@@ -406,22 +424,21 @@ function DianWuCashier() {
             关闭扫码
           </View>
         </View>
-      )}
-      {!isCameraOpend && (
-        <View
-          className='camera-placeholder'
-          onClick={() => {
-            setState((draft) => {
-              draft.isCameraOpend = true
-            })
-          }}
-        >
-          <View className='camera-placeholder-wrap'>
-            <View className='iconfont icon-camera'></View>
-            <View>点击开启摄像头扫码</View>
-          </View>
+      )} */}
+      <View
+        className='camera-placeholder'
+        onClick={handleScanGoodsBN}
+        // onClick={() => {
+        //   setState((draft) => {
+        //     draft.isCameraOpend = true
+        //   })
+        // }}
+      >
+        <View className='camera-placeholder-wrap'>
+          <View className='iconfont icon-camera'></View>
+          <View>点击开启摄像头扫码</View>
         </View>
-      )}
+      </View>
 
       {/* <View className='block-promation'>
         {[1, 2, 3].map((item, index) => (
