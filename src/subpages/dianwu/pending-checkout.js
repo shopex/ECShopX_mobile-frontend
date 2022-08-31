@@ -101,7 +101,7 @@ function DianwuPendingCheckout(props) {
         selectMember(_userInfo)
       )
     }
-    if (from == 'home' || from == 'tabbar') {
+    if (from == 'home' || from == 'tabbar' || from == 'checkout') {
       Taro.redirectTo({
         url: `/subpages/dianwu/cashier?token=${token}&distributor_id=${distributor_id}`
       })
