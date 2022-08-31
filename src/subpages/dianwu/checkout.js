@@ -92,7 +92,7 @@ function DianwuCheckout(props) {
           })
           if (pendingModal.confirm) {
             Taro.redirectTo({
-              url: `/subpages/dianwu/pending-checkout?distributor_id=${distributor_id}`
+              url: `/subpages/dianwu/pending-checkout?distributor_id=${distributor_id}&from=checkout`
             })
           }
         } else {

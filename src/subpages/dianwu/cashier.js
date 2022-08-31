@@ -56,13 +56,14 @@ function DianWuCashier() {
     addUserCurtain,
     searchGoodsList,
     searchMemberResult,
-    isCameraOpend
+    isCameraOpend,
+    distributor_id
   } = state
   const pageRef = useRef()
   const scanIsUseableRef = useRef(true)
   const audioContextRef = useRef()
   const $instance = getCurrentInstance()
-  const { distributor_id } = $instance.router.params
+
   const { member } = useSelector((state) => state.dianwu)
   const dispatch = useDispatch()
 
@@ -73,7 +74,11 @@ function DianWuCashier() {
       useWebAudioImplement: true // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
     })
     audioContextRef.current.src = `${process.env.APP_IMAGE_CDN}/scan_success.wav`
-  })
+    const { distributor_id: dtid } = $instance.router.params
+    setState((draft) => {
+      draft.distributor_id = dtid
+    })
+  }, [])
 
   useEffect(() => {
     getCashierList()
@@ -113,10 +118,12 @@ function DianWuCashier() {
     const { errMsg, result } = await Taro.scanCode()
     console.log('handleScanCode:', result)
     if (errMsg == 'scanCode:ok') {
+      Taro.showLoading()
       const { list } = await api.dianwu.getMembers({
         user_card_code: result.split('_')[1]
       })
-      console.log(pickBy(list, doc.dianwu.MEMBER_ITEM))
+      // console.log(pickBy(list, doc.dianwu.MEMBER_ITEM))
+      Taro.hideLoading()
       setState((draft) => {
         draft.searchMemberResult = pickBy(list, doc.dianwu.MEMBER_ITEM)
       })
