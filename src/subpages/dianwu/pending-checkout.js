@@ -8,7 +8,7 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { useDianWuLogin } from '@/hooks'
 import { SG_DIANWU_TOKEN } from '@/consts'
-import { SpPage, SpScrollView, SpImage } from '@/components'
+import { SpPage, SpScrollView, SpImage, SpPrice } from '@/components'
 import { selectMember } from '@/store/slices/dianwu'
 import { classNames, pickBy } from '@/utils'
 import CompGoods from './comps/comp-goods'
@@ -156,7 +156,7 @@ function DianwuPendingCheckout(props) {
                           />
                         ))}
                       </ScrollView>
-                      <View className='total-num'>共{item.pendingData.length}件商品</View>
+                      <View className='total-num'>共{item.totalNum}件商品</View>
                     </View>
                     {/* <View className='gift-list'>
                     <View className='gift-tag'>赠品</View>
@@ -183,6 +183,7 @@ function DianwuPendingCheckout(props) {
                                 {goods.itemSpecDesc && (
                                   <View className='sku'>{goods.itemSpecDesc}</View>
                                 )}
+                                <SpPrice value={goods.price} />
                               </View>
                               <View className='g-num'>数量:{goods.num}</View>
                             </View>
