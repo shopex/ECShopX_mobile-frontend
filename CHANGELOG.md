@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.2.1...v3.3.0) (2022-08-31)
+
+
+### Bug Fixes
+
+* merge ([4243217](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/4243217fcd0ca5426c46a178625f705308ca923c))
+* 修复bug ([fc5620c](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/fc5620ca0c28773f78e484724ede1fcfa2a9ac8f))
+* 取单列表商品数 ([6b08124](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/6b08124c0ace89404f06468214be030aa3c94f79))
+* 取单错误提示 ([2fba1ce](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/2fba1ce923b58fc0cde29799df8963ed512250fa))
+* 扫码报错问题 ([8f4d4a1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/8f4d4a191082d1ce95979c8a357d326c61fdc88c))
+* 挂、取单 ([fd2c327](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/fd2c3271c6249a94166e38cfe3e4ed2b08c5d757))
+* 新会员折扣显示 ([729cdf9](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/729cdf9cb922d4fe1c24bf0ef640fa96220a10cd))
+
 ### [3.2.1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.2.0-live...v3.2.1) (2022-08-25)
 
 
