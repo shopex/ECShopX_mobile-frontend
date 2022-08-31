@@ -230,14 +230,38 @@ function DianWuCashier() {
       content: '请确认是否挂单'
     })
     if (confirm) {
-      await api.dianwu.orderPendding({
-        user_id: member?.userId,
-        distributor_id
-      })
-      if(!member) {
-        getCashierList()
-      } else {
-        dispatch(selectMember(null))
+      try {
+        await api.dianwu.orderPendding({
+          user_id: member?.userId,
+          distributor_id,
+          showError: false
+        })
+        if (!member) {
+          getCashierList()
+        } else {
+          dispatch(selectMember(null))
+        }
+      } catch (e) {
+        if (e.res.data.data?.code == '42201') {
+          const pendingModal = await Taro.showModal({
+            title: '挂单上限提醒',
+            content: e.res.data.data.message,
+            confirmText: '现在就去'
+          })
+          if (pendingModal.confirm) {
+            Taro.navigateTo({
+              url: `/subpages/dianwu/pending-checkout?distributor_id=${distributor_id}`,
+              events: {
+                // 取单事件
+                onEventFetchOrder: () => {
+                  getCashierList()
+                }
+              }
+            })
+          }
+        } else {
+          showToast(e.res.data.data.message)
+        }
       }
     }
   }
