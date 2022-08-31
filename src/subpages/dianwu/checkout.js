@@ -72,15 +72,33 @@ function DianwuCheckout(props) {
       content: '请确认是否挂单'
     })
     if (confirm) {
-      await api.dianwu.orderPendding({
-        user_id: member?.userId,
-        distributor_id
-      })
-      dispatch(selectMember(null))
-      onEventCreateOrder()
-      setTimeout(() => {
-        Taro.navigateBack()
-      }, 200)
+      try {
+        await api.dianwu.orderPendding({
+          user_id: member?.userId,
+          distributor_id,
+          showError: false
+        })
+        dispatch(selectMember(null))
+        onEventCreateOrder()
+        setTimeout(() => {
+          Taro.navigateBack()
+        }, 200)
+      } catch (e) {
+        if (e.res.data.data?.code == '42201') {
+          const pendingModal = await Taro.showModal({
+            title: '挂单上限提醒',
+            content: e.res.data.data.message,
+            confirmText: '现在就去'
+          })
+          if (pendingModal.confirm) {
+            Taro.redirectTo({
+              url: `/subpages/dianwu/pending-checkout?distributor_id=${distributor_id}`
+            })
+          }
+        } else {
+          showToast(e.res.data.data.message)
+        }
+      }
     }
   }
 
@@ -227,7 +245,7 @@ function DianwuCheckout(props) {
     const pages = Taro.getCurrentPages()
     const current = pages[pages.length - 1]
     const eventChannel = current.getOpenerEventChannel()
-    eventChannel.emit('onEventCreateOrder')
+    eventChannel.emit('onEventFetchOrder')
   }
 
   // 使用优惠券

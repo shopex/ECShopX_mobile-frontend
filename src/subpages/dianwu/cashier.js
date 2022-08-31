@@ -589,7 +589,7 @@ function DianWuCashier() {
               Taro.navigateTo({
                 url: `/subpages/dianwu/checkout?distributor_id=${distributor_id}`,
                 events: {
-                  onEventCreateOrder: () => {
+                  onEventFetchOrder: () => {
                     getCashierList()
                   }
                 }
