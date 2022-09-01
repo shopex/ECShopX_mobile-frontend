@@ -89,6 +89,7 @@ function WgtGoodsGridTab(props) {
                         <View className='goodgrid-item' key={`goods-item__${index}`}>
                           <SpGoodsItem
                             info={data}
+                            showPrice={config.showPrice}
                             renderBrand={
                               config.brand && (
                                 <SpImage
@@ -112,6 +113,7 @@ function WgtGoodsGridTab(props) {
                         <View className='goodgrid-item' key={`goods-item__${index}`}>
                           <SpGoodsItem
                             info={data}
+                            showPrice={config.showPrice}
                             renderBrand={
                               config.brand && (
                                 <SpImage
