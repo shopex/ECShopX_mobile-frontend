@@ -233,7 +233,7 @@ function CartCheckout(props) {
       params['house_number'] = houseNumber
     }
     console.log('trade params:', params)
-    if (payType === 'deposit') {
+    if (params.pay_type === 'deposit') {
       // 验证余额额度是否可用
       if (userInfo.deposit < totalInfo.total_fee / 100) {
         const { confirm } = await Taro.showModal({
@@ -275,11 +275,11 @@ function CartCheckout(props) {
 
     let orderInfo
     let orderId
-    if ((isWeb || isAPP()) && payType !== 'deposit') {
+    if ((isWeb || isAPP()) && params.pay_type !== 'deposit') {
       try {
         const h5ResInfo = await api.trade.h5create({
           ...params,
-          pay_type: isAPP() ? payType : TRANSFORM_PAYTYPE[payType]
+          pay_type: isAPP() ? params.pay_type : TRANSFORM_PAYTYPE[params.pay_type]
         })
         orderInfo = h5ResInfo
         orderId = h5ResInfo.order_id
