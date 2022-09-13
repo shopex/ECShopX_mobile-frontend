@@ -4,12 +4,13 @@ import { useImmer } from 'use-immer'
 import Taro from '@tarojs/taro'
 import api from '@/api'
 import doc from '@/doc'
+import { classNames } from '@/utils'
 import { View } from '@tarojs/components'
 import { Context } from './context'
 import './index.scss'
 
 function SpForm(props, ref) {
-  const { formData, rules, children } = props
+  const { formData, rules, children, className } = props
   const fields = useRef([])
 
   const onSubmitForm = (callback) => {
@@ -47,7 +48,7 @@ function SpForm(props, ref) {
         addFields
       }}
     >
-      <View className='sp-form'>{children}</View>
+      <View className={classNames('sp-form', className)}>{children}</View>
     </Context.Provider>
   )
 }

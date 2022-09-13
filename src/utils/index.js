@@ -741,6 +741,13 @@ export const isShowMarketPrice = (mktPrice) => {
   return !isNaN(mktPrice) && mktPrice > 0
 }
 
+export const onEventChannel = (eventName, data) => {
+  const pages = Taro.getCurrentPages()
+  const current = pages[pages.length - 1]
+  const eventChannel = current.getOpenerEventChannel()
+  eventChannel.emit(eventName, data)
+}
+
 export {
   classNames,
   log,

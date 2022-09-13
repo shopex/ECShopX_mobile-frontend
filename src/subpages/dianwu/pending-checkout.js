@@ -13,6 +13,7 @@ import { selectMember } from '@/store/slices/dianwu'
 import { classNames, pickBy } from '@/utils'
 import CompGoods from './comps/comp-goods'
 import CompGift from './comps/comp-gift'
+import CompTabbar from './comps/comp-tabbar'
 import './pending-checkout.scss'
 
 const initialState = {
@@ -45,7 +46,7 @@ function DianwuPendingCheckout(props) {
   const dispatch = useDispatch()
   const listRef = useRef()
 
-  useDianWuLogin()
+  // useDianWuLogin()
 
   useEffect(() => {}, [])
 
@@ -97,9 +98,7 @@ function DianwuPendingCheckout(props) {
     if (userId != 0) {
       const userInfo = await api.dianwu.getMemberByUserId({ user_id: userId })
       const _userInfo = pickBy(userInfo, doc.dianwu.MEMBER_INFO)
-      dispatch(
-        selectMember(_userInfo)
-      )
+      dispatch(selectMember(_userInfo))
     }
     if (from == 'home' || from == 'tabbar' || from == 'checkout') {
       Taro.redirectTo({
@@ -115,7 +114,7 @@ function DianwuPendingCheckout(props) {
   }
 
   return (
-    <SpPage className='page-dianwu-pending-checkout'>
+    <SpPage className='page-dianwu-pending-checkout' navigateTheme='dark' renderFooter={<CompTabbar />}>
       <SpScrollView className='pending-checkout-list' ref={listRef} fetch={fetch}>
         {list.map((items, index) => {
           return items.map((item, sidx) => (

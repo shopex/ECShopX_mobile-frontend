@@ -16,6 +16,8 @@ import {
   SpFloatLayout,
   SpCheckbox
 } from '@/components'
+import qs from 'qs'
+import { PROMOTION_TAG } from '@/consts'
 import { selectMember } from '@/store/slices/dianwu'
 import { pickBy, showToast } from '@/utils'
 import CompGoodsPrice from './comps/comp-goods-price'
@@ -148,6 +150,44 @@ function DianwuCheckout(props) {
     }
     Taro.showLoading()
     const res = await api.dianwu.checkout(params)
+    if (res.extraTips) {
+      await Taro.showModal({
+        content: res.extraTips,
+        confirmText: '知道了'
+      })
+      Taro.navigateBack()
+      return
+    }
+    resloveResWrap(res)
+    // const {
+    //   items,
+    //   itemsPromotion: _itemsPromotion,
+    //   totalItemNum: _totalItemNum,
+    //   itemFee: _itemFee,
+    //   discountFee: _discountFee,
+    //   totalFee: _totalFee,
+    //   memberDiscount: _memberDiscount,
+    //   couponDiscount: _couponDiscount,
+    //   promotionDiscount: _promotionDiscount,
+    //   couponInfo: _couponInfo
+    // } = pickBy(res, doc.dianwu.CHECKOUT_GOODS_ITEM)
+    // setState((draft) => {
+    //   draft.itemList = items.filter((item) => item.orderItemType != 'gift')
+    //   draft.itemsPromotion = _itemsPromotion
+    //   draft.totalItemNum = _totalItemNum
+    //   draft.itemFee = _itemFee
+    //   draft.discountFee = _discountFee
+    //   draft.totalFee = _totalFee
+    //   draft.memberDiscount = _memberDiscount
+    //   draft.couponDiscount = _couponDiscount
+    //   draft.promotionDiscount = _promotionDiscount
+    //   draft.couponInfo = _couponInfo
+    //   draft.selectCoupon = _couponInfo ? _couponInfo.coupon_code : null
+    // })
+    Taro.hideLoading()
+  }
+
+  const resloveResWrap = (res) => {
     const {
       items,
       itemsPromotion: _itemsPromotion,
@@ -173,7 +213,29 @@ function DianwuCheckout(props) {
       draft.couponInfo = _couponInfo
       draft.selectCoupon = _couponInfo ? _couponInfo.coupon_code : null
     })
-    Taro.hideLoading()
+  }
+
+  const handleChangePrice = () => {
+    let params = {
+      user_id: member?.userId,
+      not_use_coupon: 1,
+      distributor_id
+    }
+    if (selectCoupon) {
+      params = {
+        ...params,
+        not_use_coupon: 0,
+        coupon_discount: selectCoupon
+      }
+    }
+    Taro.navigateTo({
+      url: `/subpages/dianwu/change-price?${qs.stringify(params)}`,
+      events: {
+        onEventChangePrice: (res) => {
+          resloveResWrap(res)
+        }
+      }
+    })
   }
 
   const onChangeRemark = (e) => {
@@ -327,7 +389,42 @@ function DianwuCheckout(props) {
           </View>
         ))}
       </View>
-      {itemsPromotion && (
+      {itemsPromotion.map((item, idx) => (
+        <View className='promotion-item' key={`promotion-item__${idx}`}>
+          {/* {item.activity_type == 'full_gift' && (
+            <View className='gift-item'>
+              <View className='activity-tag'>{PROMOTION_TAG[item.activity_type]}</View>
+              <View className='activity-content'>
+                {item.activity_desc?.gifts?.map((gift, index) => (
+                  <View className='gift-item' key={`gift-item__${idx}__${index}`}>
+                    <View className='gift-item__head'>
+                      <View className='gift-name'>{gift.itemName}</View>
+                      <View className='num'>x {gift.gift_num}</View>
+                    </View>
+                    <View className='gift-item__body'>
+                      <Text className='sku'>{gift?.item_spec_desc}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )} */}
+
+          {/* {item.activity_type != 'full_gift' && (
+            <View className='activity-item'>
+              <View className='activity-tag'>{PROMOTION_TAG[item.activity_type]}</View>
+              <View className='activity-content'>{item.activity_name}</View>
+            </View>
+          )} */}
+          {item.activity_type == 'full_gift' && (
+            <View className='activity-item'>
+              <View className='activity-tag'>{PROMOTION_TAG[item.activity_type]}</View>
+              <View className='activity-content'>{item.item_name}</View>
+            </View>
+          )}
+        </View>
+      ))}
+      {/* {itemsPromotion && (
         <View className='block-gift'>
           <View className='gift-tag'>赠品</View>
           {itemsPromotion.map((item, idx) => {
@@ -336,7 +433,7 @@ function DianwuCheckout(props) {
             ))
           })}
         </View>
-      )}
+      )} */}
 
       <View className='block-coupon'>
         {couponList.length > 0 && (
@@ -404,6 +501,7 @@ function DianwuCheckout(props) {
         <AtModalContent>
           <View className='total-mount'>
             <SpPrice size={48} value={totalFee} />
+            <Text className='iconfont icon-edit' onClick={handleChangePrice}></Text>
           </View>
           {/* <SpCell isLink border>
             <Text className='iconfont icon-weixinzhifu'></Text>

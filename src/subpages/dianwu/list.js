@@ -32,7 +32,7 @@ function DianWuList() {
   const $instance = getCurrentInstance()
   const { distributor_id } = $instance.router.params
 
-  useDianWuLogin()
+  // useDianWuLogin()
 
   // useEffect(() => {
   //   getCashierList()
@@ -94,6 +94,7 @@ function DianWuList() {
   return (
     <SpPage
       className='page-dianwu-list'
+      navigateTheme='dark'
       scrollToTopBtn
       renderFooter={<CompTabbar />}
     >
