@@ -99,14 +99,19 @@ export const CHECKOUT_GOODS_ITEM = {
       memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
       vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
       svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
+      totalFee: ({ total_fee }) => total_fee / 100,
+      discountFee: ({ discount_fee }) => discount_fee / 100, // 优惠
+      point: 'point', // 积分抵扣
       num: 'num',
       barcode: 'barcode'
     })
   },
-  itemsPromotion: 'items_promotion',
+  itemsPromotion: ({ items_promotion }) => items_promotion || [],
   totalItemNum: 'totalItemNum',
   // item_fee_new 不包含赠品商品价格
   itemFee: ({ item_fee_new }) => item_fee_new / 100,
+  itemFeeNew: ({ item_fee_new }) => item_fee_new / 100,
+  freightFee: ({ freight_fee }) => freight_fee / 100,
   discountFee: ({ discount_fee }) => discount_fee / 100,
   totalFee: ({ total_fee }) => total_fee / 100,
   memberDiscount: ({ member_discount }) => (member_discount ? member_discount / 100 : 0),
@@ -146,4 +151,33 @@ export const PENDING_ITEM = {
   memberInfo: 'memberInfo',
   showDetail: false,
   totalNum: 'total_num'
+}
+
+export const ORDER_INFO = {
+  items: ({ items }) => {
+    return pickBy(items, {
+      pic: 'pic',
+      itemId: 'item_id',
+      itemName: 'item_name',
+      itemSpecDesc: 'item_spec_desc',
+      totalFee: ({ total_fee }) => total_fee / 100,
+      price: ({ price }) => price / 100,
+      num: 'num',
+      discountFee: ({ discount_fee }) => discount_fee / 100,
+      point: ({ point }) => point / 100
+    })
+  },
+  user_id: 'user_id',
+  receiver_name: 'receiver_name',
+  receiver_mobile: 'receiver_mobile',
+  receiver_state: 'receiver_state',
+  receiver_city: 'receiver_city',
+  receiver_district: 'receiver_district',
+  receiver_address: 'receiver_address',
+  order_class: 'order_class',
+  totalFee: ({ total_fee }) => total_fee / 100,
+  freightFee: ({ freight_fee }) => freight_fee / 100,
+  itemFeeNew: ({ item_total_fee }) => item_total_fee / 100,
+  receipt_type: 'receipt_type',
+  point_freight_fee: 'point_freight_fee'
 }

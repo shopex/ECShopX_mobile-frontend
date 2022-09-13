@@ -4,18 +4,23 @@
   $footer-height: 120px !default;
   $tabbar-height: 120px !default;
   $tabbar-ipx-height: 140px !default;
+  padding-top: 170px;
   .item-list-scroll {
-    @include page-scroll($header-height + $camera-height, $footer-height + 70px);
+    padding: 24px 0;
+    @include page-scroll($header-height + $camera-height + 168px, $footer-height + $page-footer-height + 66px);
   }
   &.ipx {
-    .sp-page-body {
-      height: calc(100vh - 140px);
+    .item-list-scroll {
+      @include page-scroll($header-height + $camera-height + 168px, $footer-height + $page-ipx-footer-height + 66px);
     }
+    // .sp-page-body {
+    //   height: calc(100vh - 140px);
+    // }
   }
-  .sp-page-body {
-    position: relative;
-    height: calc(100vh - 120px);
-  }
+  // .sp-page-body {
+  //   position: relative;
+  //   height: calc(100vh - 120px);
+  // }
   .block-tools {
     display: flex;
     align-items: center;
@@ -220,7 +225,7 @@
     }
   }
   .block-goods {
-    margin-top: 24px;
+    // margin-top: 24px;
     padding: 0 20px;
     .item-wrap {
       background-color: #fff;
@@ -382,6 +387,7 @@
     align-items: center;
     padding: 0 20px;
     background: #fff;
+    z-index: 1000;
     .total-info {
       line-height: 32px;
     }
@@ -399,18 +405,32 @@
     }
   }
 
-  .block-gift {
-    padding: 20px;
+  // .block-gift {
+  //   padding: 20px;
+  //   .gift-tag {
+  //     margin-left: 10px;
+  //     margin-bottom: 10px;
+  //     width: 110px;
+  //     height: 40px;
+  //     background: #ff5257;
+  //     border-radius: 4px;
+  //     color: #fff;
+  //     text-align: center;
+  //     margin-right: 10px;
+  //   }
+  // }
+  .gift-block {
+    .gift-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
     .gift-tag {
-      margin-left: 10px;
-      margin-bottom: 10px;
-      width: 110px;
-      height: 40px;
       background: #ff5257;
-      border-radius: 4px;
-      color: #fff;
-      text-align: center;
       margin-right: 10px;
+      color: #fff;
+      font-size: 26px;
+      padding: 0 4px;
     }
   }
   &.ipx {
@@ -429,6 +449,7 @@
     bottom: $footer-height + $tabbar-height;
     left: 0;
     right: 0;
+    z-index: 1000;
     .lf {
       color: #4980ff;
       display: flex;

@@ -6,7 +6,7 @@ export default {
     'pages/cart/espier-index', // 购物车页面
     'pages/cart/espier-checkout', // 结算页面
     'pages/cart/cashier-result', // 支付结果页面
-    'pages/cart/cashier-alipay', // 支付宝收银台（adapay）
+    // 'pages/cart/cashier-alipay', // 支付宝收银台（adapay）
     'pages/cart/cashier-weapp', // 微信收银台（adapay）
 
     'pages/home/landing', // 跳转等待页面
@@ -97,9 +97,13 @@ export default {
         'list', // 商品搜索列表
         'cashier', // 收银台
         'checkout', // 结算
+        'change-price', // 结算改价
         'collection', // 收款
         'pending-checkout', // 取单
-        'collection-result' // 收款结果
+        'collection-result', // 收款结果
+        'login', // 登录
+        'picker-shop', // 店铺选择
+        'trade/change-price' // 订单改价
       ]
     },
     // 积分商城

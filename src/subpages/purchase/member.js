@@ -218,14 +218,14 @@ function MemberIndex(props) {
     if (menuRes.list.length > 0) {
       menu = { ...menuRes.list[0].params.data, purchase: true }
     }
-    if (S.getAuthToken() && (VERSION_PLATFORM || VERSION_IN_PURCHASE)) {
-      const { result, status } = await api.dianwu.is_admin()
-      S.set('DIANWU_CONFIG', result, status)
-      menu = {
-        ...menu,
-        dianwu: status
-      }
-    }
+    // if (S.getAuthToken() && (VERSION_PLATFORM || VERSION_IN_PURCHASE)) {
+    //   const { result, status } = await api.dianwu.is_admin()
+    //   S.set('DIANWU_CONFIG', result, status)
+    //   menu = {
+    //     ...menu,
+    //     dianwu: status
+    //   }
+    // }
     if (redirectRes.list.length > 0) {
       const {
         info_app_id,
@@ -494,7 +494,7 @@ function MemberIndex(props) {
               <Text className='iconfont icon-qianwang-01'></Text>
             </View>
           )}
-          
+
           <View className='order-con'>
             <View
               className='order-item'
@@ -556,7 +556,7 @@ function MemberIndex(props) {
         }}
       />
 
-      
+
     </SpPage>
   )
 }
