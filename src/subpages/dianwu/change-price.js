@@ -9,6 +9,7 @@ import { useAsyncCallback } from '@/hooks'
 import { SpPage, SpCell, SpSelect, SpImage, SpPrice, SpCheckbox } from '@/components'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { classNames, pickBy, validate, onEventChannel, showToast } from '@/utils'
+import Big from 'big.js'
 import CompInput from './comps/comp-input'
 import './change-price.scss'
 
@@ -61,7 +62,8 @@ function DianwuChangePrice(props) {
     })
     setState((draft) => {
       draft.items = _items
-      draft.itemFeeNew = itemFeeNew
+      // total_fee - freight_fee + point_freight_fee
+      draft.itemFeeNew = new Big(totalFee).minus(freightFee).toFixed(2)
       draft.freightFee = freightFee
       draft.totalFee = totalFee
     })
@@ -119,7 +121,7 @@ function DianwuChangePrice(props) {
     const params = getChangePriceParams(items)
     const res = await fetchCheckout(params)
     showToast('价格修改成功')
-    onEventChannel('onEventChangePrice', res)
+    onEventChannel('onEventChangePrice', { res, markdown: params.markdown })
     setTimeout(() => {
       Taro.navigateBack()
     }, 2000)

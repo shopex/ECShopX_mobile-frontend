@@ -40,7 +40,8 @@ const initialState = {
   couponList: [],
   remark: '',
   isOpened: false,
-  couponLayout: false
+  couponLayout: false,
+  markdown: null
 }
 function DianwuCheckout(props) {
   const [state, setState] = useImmer(initialState)
@@ -59,7 +60,8 @@ function DianwuCheckout(props) {
     couponLayout,
     couponList,
     couponInfo,
-    selectCoupon
+    selectCoupon,
+    markdown
   } = state
   const pageRef = useRef()
   const $instance = getCurrentInstance()
@@ -188,7 +190,7 @@ function DianwuCheckout(props) {
     Taro.hideLoading()
   }
 
-  const resloveResWrap = (res) => {
+  const resloveResWrap = (res, markdown) => {
     const {
       items,
       itemsPromotion: _itemsPromotion,
@@ -213,6 +215,7 @@ function DianwuCheckout(props) {
       draft.promotionDiscount = _promotionDiscount
       draft.couponInfo = _couponInfo
       draft.selectCoupon = _couponInfo ? _couponInfo.coupon_code : null
+      draft.markdown = markdown
     })
   }
 
@@ -229,11 +232,17 @@ function DianwuCheckout(props) {
         coupon_discount: selectCoupon
       }
     }
+    if(markdown) {
+      params = {
+        ...params,
+        markdown
+      }
+    }
     Taro.navigateTo({
       url: `/subpages/dianwu/change-price?${qs.stringify(params)}`,
       events: {
-        onEventChangePrice: (res) => {
-          resloveResWrap(res)
+        onEventChangePrice: ({ res, markdown }) => {
+          resloveResWrap(res, markdown)
         }
       }
     })
@@ -257,6 +266,12 @@ function DianwuCheckout(props) {
         ...params,
         not_use_coupon: 0,
         coupon_discount: couponInfo.coupon_code
+      }
+    }
+    if(markdown) {
+      params = {
+        ...params,
+        markdown
       }
     }
     const { order_id } = await api.dianwu.createOrder(params)

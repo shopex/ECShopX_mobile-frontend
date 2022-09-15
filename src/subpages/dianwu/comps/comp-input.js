@@ -24,7 +24,7 @@ function CompInput(props) {
     <View className='comp-input'>
       <Text className='append-prefix'>{prefix}</Text>
       <AtInput
-        type='number'
+        // type='number'
         name={name}
         value={value}
         placeholder={placeholder}
