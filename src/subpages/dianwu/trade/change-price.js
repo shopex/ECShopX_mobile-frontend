@@ -8,6 +8,7 @@ import { AtButton } from 'taro-ui'
 import { SpPage, SpCell, SpSelect, SpImage, SpPrice, SpCheckbox } from '@/components'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { classNames, pickBy, validate, showToast, isNumber } from '@/utils'
+import Big from 'big.js'
 import CompInput from './../comps/comp-input'
 import './change-price.scss'
 
@@ -29,7 +30,8 @@ const initialState = {
   totalFee: 0, // 订单应付金额
   globalPrice: '',
   globalFreightFee: '',
-  isFreeFreight: false
+  isFreeFreight: false,
+  pointFreightFee: ''
 }
 function DianwuChangePrice(props) {
   const [state, setState] = useImmer(initialState)
@@ -37,7 +39,6 @@ function DianwuChangePrice(props) {
     changeTypeList,
     changeType,
     showTip,
-    trade_id,
     buyMember,
     receiveName,
     receiveAddress,
@@ -48,16 +49,17 @@ function DianwuChangePrice(props) {
     totalFee,
     globalPrice,
     globalFreightFee,
-    isFreeFreight
+    isFreeFreight,
+    pointFreightFee
   } = state
   const $instance = getCurrentInstance()
+  const { trade_id } = $instance.router.params
 
   useEffect(() => {
     fetchOrderInfo()
   }, [])
 
   const fetchOrderInfo = async () => {
-    const { trade_id } = $instance.router.params
     const res = await api.dianwu.getTradeDetail(trade_id)
     const { orderInfo, distributor } = res
     const {
@@ -74,7 +76,7 @@ function DianwuChangePrice(props) {
       itemFeeNew,
       freightFee,
       totalFee,
-      point_freight_fee
+      pointFreightFee
     } = pickBy(orderInfo, doc.dianwu.ORDER_INFO)
 
     const { store_address, store_name } = distributor
@@ -108,7 +110,6 @@ function DianwuChangePrice(props) {
     })
 
     setState((draft) => {
-      draft.trade_id = trade_id
       draft.buyMember = _buyMember
       draft.receiveName = _receiveName
       draft.receiveAddress = _receiveAddress
@@ -117,6 +118,8 @@ function DianwuChangePrice(props) {
       draft.itemFeeNew = itemFeeNew
       draft.freightFee = freightFee
       draft.totalFee = totalFee
+      draft.globalFreightFee = new Big(freightFee).minus(pointFreightFee).toFixed(2)
+      draft.pointFreightFee = pointFreightFee
     })
   }
 
@@ -216,7 +219,6 @@ function DianwuChangePrice(props) {
   }
 
   const orderMarkdown = async (params) => {
-    const { trade_id } = $instance.router.params
     params = {
       ...params,
       order_id: trade_id
@@ -235,13 +237,26 @@ function DianwuChangePrice(props) {
     })
   }
 
+  const onConfirmChangePrice = async () => {
+    let params = getChangePriceParams()
+    params = {
+      ...params,
+      order_id: trade_id
+    }
+    if(isFreeFreight) {
+      params['freight_fee'] = 0
+    }
+    await api.dianwu.changePriceConfirm(params)
+    Taro.navigateBack()
+  }
+
   return (
     <SpPage
       className={classNames('page-dianwu-change-price', {
         'show-tip': showTip
       })}
       renderFooter={
-        <AtButton circle type='primary'>
+        <AtButton circle type='primary' onClick={onConfirmChangePrice}>
           确认改价
         </AtButton>
       }
@@ -366,6 +381,8 @@ function DianwuChangePrice(props) {
             <SpPrice value={itemFeeNew} />
             <Text className='operator'>+</Text>
             <SpPrice value={freightFee} />
+            <Text className='operator'>-</Text>
+            <SpPrice value={pointFreightFee} />
             <Text className='operator'>=</Text>
             <SpPrice className='total-fee' value={totalFee} />
           </Text>

@@ -179,5 +179,5 @@ export const ORDER_INFO = {
   freightFee: ({ freight_fee }) => freight_fee / 100,
   itemFeeNew: ({ item_total_fee }) => item_total_fee / 100,
   receipt_type: 'receipt_type',
-  point_freight_fee: 'point_freight_fee'
+  pointFreightFee: ({ point_freight_fee }) => point_freight_fee / 100
 }
