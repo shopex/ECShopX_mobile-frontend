@@ -5,9 +5,10 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
 import doc from '@/doc'
 import { AtButton } from 'taro-ui'
+import { useAsyncCallback } from '@/hooks'
 import { SpPage, SpCell, SpSelect, SpImage, SpPrice, SpCheckbox } from '@/components'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { classNames, pickBy, validate, onEventChannel } from '@/utils'
+import { classNames, pickBy, validate, onEventChannel, showToast } from '@/utils'
 import CompInput from './comps/comp-input'
 import './change-price.scss'
 
@@ -26,7 +27,7 @@ const initialState = {
   globalFreightFee: ''
 }
 function DianwuChangePrice(props) {
-  const [state, setState] = useImmer(initialState)
+  const [state, setState] = useAsyncCallback(initialState)
   const {
     changeTypeList,
     items,
@@ -68,11 +69,17 @@ function DianwuChangePrice(props) {
   }
 
   const onChangePrice = (index, value) => {
-    setState((draft) => {
-      draft.items[index].changePrice = validate.isMoney(value)
-        ? value
-        : value.substring(0, value.length - 1)
-    })
+    setState(
+      (draft) => {
+        draft.items[index].changePrice = validate.isMoney(value)
+          ? value
+          : value.substring(0, value.length - 1)
+      }
+      // ({ items: _items }) => {
+      //   const params = getChangePriceParams(_items)
+      //   fetchCheckout(params)
+      // }
+    )
   }
 
   const onChangeDiscount = (index, value) => {
@@ -83,10 +90,10 @@ function DianwuChangePrice(props) {
     })
   }
 
-  const onConfirmChangePrice = async () => {
+  const getChangePriceParams = (_items) => {
     const params = $instance.router.params
     let markdown = {}
-    const _items = items.map((item) => {
+    const tItems = _items.map((item) => {
       let total_fee
       // 直接改价
       if (changeType[0] == 1) {
@@ -101,23 +108,31 @@ function DianwuChangePrice(props) {
       }
     })
 
-    markdown['items'] = _items
+    markdown['items'] = tItems
     markdown['down_type'] = 'items'
     params['markdown'] = markdown
-
-    const res = await fetchCheckout(params)
-    onEventChannel('onEventChangePrice', res)
-    Taro.navigateBack()
+    return params
   }
 
+  // 确认改价
+  const onConfirmChangePrice = async () => {
+    const params = getChangePriceParams(items)
+    const res = await fetchCheckout(params)
+    showToast('价格修改成功')
+    onEventChannel('onEventChangePrice', res)
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 2000)
+  }
+
+  // 一键改价
   const onChangeGlobalPrice = (value) => {
     setState((draft) => {
-      draft.globalPrice = validate.isMoney(value)
-        ? value
-        : value.substring(0, value.length - 1)
+      draft.globalPrice = validate.isMoney(value) ? value : value.substring(0, value.length - 1)
     })
   }
 
+  // 一键改价确定
   const handleGlobalChangePrice = async () => {
     const params = $instance.router.params
     let markdown = {}
@@ -128,7 +143,6 @@ function DianwuChangePrice(props) {
 
     fetchCheckout(params)
   }
-
 
   const itemPriceFormat = ({ totalFee, price, num, discountFee, point }) => {
     return `¥${totalFee.toFixed(2)} = ${price.toFixed(2)} x ${num} - ${discountFee.toFixed(
@@ -239,7 +253,12 @@ function DianwuChangePrice(props) {
         <View className='block-bd'>
           <View className='bd-item'>
             <Text className='label'>一键改价</Text>
-            <CompInput value={globalPrice} name='global-price' prefix='¥' onChange={onChangeGlobalPrice}/>
+            <CompInput
+              value={globalPrice}
+              name='global-price'
+              prefix='¥'
+              onChange={onChangeGlobalPrice}
+            />
             <View className='bd-item-ft'>
               <AtButton className='btn-change' circle onClick={handleGlobalChangePrice}>
                 确定

@@ -151,6 +151,7 @@ function DianwuCheckout(props) {
     Taro.showLoading()
     const res = await api.dianwu.checkout(params)
     if (res.extraTips) {
+      Taro.hideLoading()
       await Taro.showModal({
         content: res.extraTips,
         confirmText: '知道了'
