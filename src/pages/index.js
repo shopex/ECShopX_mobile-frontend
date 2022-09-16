@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import Taro, { getCurrentInstance, useShareAppMessage, useShareTimeline, useDidShow } from '@tarojs/taro'
+import Taro, {
+  getCurrentInstance,
+  useShareAppMessage,
+  useShareTimeline,
+  useDidShow
+} from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -36,16 +41,18 @@ import './home/index.scss'
 const MCompAddTip = React.memo(CompAddTip)
 const MSpPrivacyModal = React.memo(SpPrivacyModal)
 
-const initState = {
+const initialState = {
   wgts: [],
   showBackToTop: false,
   loading: true
 }
 
 function Home() {
-  const [state, setState] = useImmer(initState)
+  const [state, setState] = useImmer(initialState)
   const [likeList, setLikeList] = useImmer([])
-  const { openRecommend, openLocation, openStore, appName } = useSelector((state) => state.sys)
+  const { initState, openRecommend, openLocation, openStore, appName } = useSelector(
+    (state) => state.sys
+  )
   const { isLogin, login, updatePolicyTime, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       if (isUpdate) {
@@ -67,9 +74,11 @@ function Home() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    init()
-    setNavigationBarTitle(appName)
-  }, [])
+    if (initState) {
+      init()
+      setNavigationBarTitle(appName)
+    }
+  }, [initState])
 
   useDidShow(() => {
     // 检查隐私协议是否变更或同意
@@ -154,6 +163,7 @@ function Home() {
       // params.distributor_id = undefined
     }
     const res = await api.shop.getShop(params)
+    console.log('fetchStoreInfo:', res)
     dispatch(updateShopInfo(res))
     await fetchWgts()
   }

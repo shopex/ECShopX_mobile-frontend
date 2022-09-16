@@ -708,7 +708,7 @@ const getDistributorId = (platform_id = 0) => {
   const { sys, shop } = store.getState()
   const { openStore } = sys
   const {
-    shopInfo: { distributor_id, shop_id }
+    shopInfo: { distributor_id, shop_id = 0 }
   } = shop
   if (VERSION_STANDARD) {
     const standard_id = openStore ? distributor_id : shop_id
@@ -739,6 +739,13 @@ export const returnFloat = (value) => {
 
 export const isShowMarketPrice = (mktPrice) => {
   return !isNaN(mktPrice) && mktPrice > 0
+}
+
+export const onEventChannel = (eventName, data) => {
+  const pages = Taro.getCurrentPages()
+  const current = pages[pages.length - 1]
+  const eventChannel = current.getOpenerEventChannel()
+  eventChannel.emit(eventName, data)
 }
 
 export {

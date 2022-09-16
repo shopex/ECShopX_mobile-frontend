@@ -55,6 +55,7 @@ function DianwuCollectionResult(props) {
       create_time,
       item_fee,
       item_fee_new,
+      item_total_fee,
       discount_fee,
       total_fee,
       member_discount,
