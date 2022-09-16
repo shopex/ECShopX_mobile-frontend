@@ -10,6 +10,7 @@ function getColor(field, value) {
 const { colorPrimary, colorMarketing, colorAccent } = DEFAULT_THEME
 
 const initialState = {
+  initState: false,
   colorPrimary: colorPrimary,
   colorMarketing: colorMarketing,
   colorAccent: colorAccent,
