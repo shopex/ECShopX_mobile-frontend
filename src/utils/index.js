@@ -708,7 +708,7 @@ const getDistributorId = (platform_id = 0) => {
   const { sys, shop } = store.getState()
   const { openStore } = sys
   const {
-    shopInfo: { distributor_id, shop_id }
+    shopInfo: { distributor_id, shop_id = 0 }
   } = shop
   if (VERSION_STANDARD) {
     const standard_id = openStore ? distributor_id : shop_id

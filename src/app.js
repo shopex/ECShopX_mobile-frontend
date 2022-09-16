@@ -59,6 +59,7 @@ class App extends Component {
 
   onLaunch(options) {
     console.log(`app onLaunch:`, options)
+    this.getSystemConfig()
     entryLaunch.getRouteParams(options).then((params) => {
       console.log(`app componentDidShow:`, options, params)
       Taro.setStorageSync(SG_ROUTER_PARAMS, params)
@@ -89,11 +90,8 @@ class App extends Component {
     })
   }
 
-
-
   componentDidShow(options) {
-
-
+    console.log(`app componentDidShow:`, options)
     // if (isNavbar()) {
     //   document.querySelector('title').addEventListener(
     //     'DOMSubtreeModified',
@@ -110,7 +108,6 @@ class App extends Component {
     //     false
     //   )
     // }
-    this.getSystemConfig()
   }
 
   async getSystemConfig() {
@@ -162,6 +159,7 @@ class App extends Component {
       store.dispatch({
         type: 'sys/setSysConfig',
         payload: {
+          initState: true,
           colorPrimary: primary,
           colorMarketing: marketing,
           colorAccent: accent,
