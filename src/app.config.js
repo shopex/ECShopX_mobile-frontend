@@ -6,7 +6,7 @@ export default {
     'pages/cart/espier-index', // 购物车页面
     'pages/cart/espier-checkout', // 结算页面
     'pages/cart/cashier-result', // 支付结果页面
-    'pages/cart/cashier-alipay', // 支付宝收银台（adapay）
+    // 'pages/cart/cashier-alipay', // 支付宝收银台（adapay）
     'pages/cart/cashier-weapp', // 微信收银台（adapay）
 
     'pages/home/landing', // 跳转等待页面
@@ -97,9 +97,13 @@ export default {
         'list', // 商品搜索列表
         'cashier', // 收银台
         'checkout', // 结算
+        'change-price', // 结算改价
         'collection', // 收款
         'pending-checkout', // 取单
-        'collection-result' // 收款结果
+        'collection-result', // 收款结果
+        'login', // 登录
+        'picker-shop', // 店铺选择
+        'trade/change-price' // 订单改价
       ]
     },
     // 积分商城
@@ -317,11 +321,11 @@ export default {
     'navigationBarTitleText': '小程序',
     'navigationBarTextStyle': 'black'
   },
-  // plugins: {
-  //   'live-player-plugin': {
-  //     'version': '1.3.0', // 注意填写该直播组件最新版本号，微信开发者工具调试时可获取最新版本号（复制时请去掉注释）
-  //     'provider': 'wx2b03c6e691cd7370' // 必须填该直播组件appid，该示例值即为直播组件appid（复制时请去掉注释）
-  //   }
-  // }
+  plugins: {
+    'live-player-plugin': {
+      'version': '1.3.0', // 注意填写该直播组件最新版本号，微信开发者工具调试时可获取最新版本号（复制时请去掉注释）
+      'provider': 'wx2b03c6e691cd7370' // 必须填该直播组件appid，该示例值即为直播组件appid（复制时请去掉注释）
+    }
+  }
 
 }

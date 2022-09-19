@@ -60,10 +60,12 @@ function SpFormItem(props) {
 
   return (
     <View className='sp-form-item'>
-      <View className='form-item-label'>
-        {rule.length > 0 && <Text className='required'>*</Text>}
-        <Text className='label'>{label}</Text>
-      </View>
+      {label && (
+        <View className='form-item-label'>
+          {rule.length > 0 && <Text className='required'>*</Text>}
+          <Text className='label'>{label}</Text>
+        </View>
+      )}
       <View className='form-item-control'>{children}</View>
       <View className='form-item-message'>{message}</View>
     </View>

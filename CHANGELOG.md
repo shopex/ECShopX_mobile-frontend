@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.3.0-live...v3.4.0) (2022-09-16)
+
+
+### Bug Fixes
+
+* bug ([5a7941b](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/5a7941baccf5dd38d4b3471b77984a8649953364))
+* bug ([9b96f5d](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/9b96f5d93de9cdd196fcbde0a807d5b462ab62ac))
+* **bug:** bug修复 ([47512cb](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/47512cb942d50079d4510f0f64ba8b4890a2295e))
+* bug修复 ([286ff17](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/286ff177cbbfec531e8faf215cd23918616bb6e1))
+* bug修复 ([57af5a5](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/57af5a50f0aca342d058f1ae09b3a95077d84cca))
+* item_fee_new ([c6634c1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/c6634c153ff6f5a66a05d0b125597f193d424722))
+* test ([db35699](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/db35699164f44c72e7c879d7fa4ac8e3efb69aa5))
+* 价格计算浮点数 ([474475e](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/474475efc8dfdecf6f4cd2ec3c3180c194343ccf))
+* 同城配订单禁止改运费 ([a8c62de](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/a8c62de865a4fc0b09a7c8344ebbe399eb8f6b2b))
+* 收银台结算显示 ([0e75a00](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/0e75a00a6ace15e497c98dfbe3bb22324fc16389))
+* 改价 ([ede666f](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/ede666f191f40574aab6774f2ea8c6904c2aee3c))
+* 订单商品总计 ([4484f08](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/4484f088beb362fe61ece136315e196273c17cd7))
+
 ## [3.3.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.2.1...v3.3.0) (2022-08-31)
 
 

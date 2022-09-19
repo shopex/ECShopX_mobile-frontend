@@ -1,4 +1,9 @@
-import req from './req-dianwu'
+// import req from './req-dianwu'
+import { API } from './req'
+const req = new API({
+  baseURL: process.env.APP_BASE_URL.replace('/h5app/wxapp', '')
+})
+
 
 export function goodsItems(params) {
   return req.get('/goods/items/onsale', params)
@@ -92,4 +97,18 @@ export function penddingList(params) {
 // 删除挂单
 export function penddingDelete(params) {
   return req.delete('/operator/pending/delete', params)
+}
+
+// 改价
+export function changePrice (params) {
+  return req.post('/order/markdown', params)
+}
+
+// 改价确认
+export function changePriceConfirm (params) {
+  return req.post('/order/markdown/confirm', params)
+}
+
+export function is_admin(params) {
+  return req.get('/distributor/bind/checkout', params)
 }

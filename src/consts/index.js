@@ -157,10 +157,10 @@ export const PAYMENT_TYPE = {
   wx_pub: '微信支付',
   alipay: '支付宝支付',
   alipay_wap: '支付宝支付',
-  alipay_qr: "支付宝支付",
-  pos: "现金支付",
-  wxpaypos: "微信支付",
-  alipaypos: "支付宝支付"
+  alipay_qr: '支付宝支付',
+  pos: '现金支付',
+  wxpaypos: '微信支付',
+  alipaypos: '支付宝支付'
 }
 
 export const TRANSFORM_PAYTYPE = {
@@ -170,7 +170,8 @@ export const TRANSFORM_PAYTYPE = {
   'deposit': 'deposit',
   'wxpayapp': 'wxpay',
   'alipayapp': 'alipay',
-  'adapay': 'adapay'
+  'adapay': 'adapay',
+  'point': 'point'
 }
 
 export const POINT_TYPE = {
@@ -195,7 +196,7 @@ export const FORM_COMP = {
   RADIO: 4,
   CHECKBOX: 5,
   MOBILE: 6,
-  IMAGE: 7,
+  IMAGE: 7
 }
 
 export const CHIEF_APPLY_STATUS = {

@@ -1,4 +1,4 @@
-
 export default {
-  navigationBarTitleText: '取单'
+  navigationBarTitleText: '取单',
+  navigationStyle: 'custom'
 }

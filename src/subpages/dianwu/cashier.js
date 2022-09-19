@@ -67,7 +67,7 @@ function DianWuCashier() {
   const { member } = useSelector((state) => state.dianwu)
   const dispatch = useDispatch()
 
-  useDianWuLogin()
+  // useDianWuLogin()
 
   useEffect(() => {
     // audioContextRef.current = wx.createInnerAudioContext({
@@ -352,7 +352,12 @@ function DianWuCashier() {
   }
 
   return (
-    <SpPage className='page-dianwu-cashier' ref={pageRef} renderFooter={<CompTabbar />}>
+    <SpPage
+      className='page-dianwu-cashier'
+      navigateTheme='dark'
+      ref={pageRef}
+      renderFooter={<CompTabbar />}
+    >
       <View className='block-tools'>
         <SpSearchInput
           placeholder='商品名称/货号/条码'
@@ -495,16 +500,21 @@ function DianWuCashier() {
                         value={item.num}
                         type='number'
                         min={1}
-                        onBlur={(num) => {
-                          setState(
-                            (draft) => {
-                              draft.cartList[idx].list[index].num = num == '' || num == 0 ? 1 : num
-                            },
-                            () => {
-                              onChangeInputNumber(item, num)
-                            }
-                          )
+                        onBlur={(value) => {
+                          if (value) {
+                            onChangeInputNumber(item, value)
+                          }
                         }}
+                        // onBlur={(num) => {
+                        //   setState(
+                        //     (draft) => {
+                        //       draft.cartList[idx].list[index].num = num == '' || num == 0 ? 1 : num
+                        //     },
+                        //     () => {
+                        //       onChangeInputNumber(item, num)
+                        //     }
+                        //   )
+                        // }}
                       />
                     </View>
                     <View
@@ -527,20 +537,40 @@ function DianWuCashier() {
                 </View>
               ))
             })}
+            {cartList[0]?.giftActivity && (
+              <View className='gift-block'>
+                {cartList[0]?.giftActivity.map((act, m) => {
+                  return act.gifts.map((gift, n) => (
+                    <View className='gift-item' key={`gift-item__${m}__${n}`}>
+                      <View className='gift-tag'>赠品</View>
+                      <View className='gift-content'>{gift.itemName}</View>
+                      {gift.item_spec_desc && (
+                        <Text className='gift-sku'>（{gift.item_spec_desc}）</Text>
+                      )}
+                    </View>
+                  ))
+                })}
+              </View>
+            )}
           </View>
         )}
-        {cartList[0]?.giftActivity.length > 0 && (
+
+        {/* {cartList[0]?.giftActivity.length > 0 && (
           <View className='block-gift'>
             <View className='gift-tag'>赠品</View>
             {cartList.map((shopList, idx) => {
               return shopList.giftActivity.map((item, index) => {
                 return item.gifts.map((gift, gindex) => (
-                  <CompGift info={gift} key={`gift-item__${idx}_${index}_${gindex}`} />
+                  // <CompGift info={gift} key={`gift-item__${idx}_${index}_${gindex}`} />
+                  <View className='activity-item'>
+                    <View className='activity-tag'>{PROMOTION_TAG[item.activity_type]}</View>
+                    <View className='activity-content'>{item.item_name}</View>
+                  </View>
                 ))
               })
             })}
           </View>
-        )}
+        )} */}
       </ScrollView>
 
       {cartList.length > 0 && (

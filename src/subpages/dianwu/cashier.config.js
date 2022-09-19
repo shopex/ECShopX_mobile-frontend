@@ -1,4 +1,5 @@
 
 export default {
-  navigationBarTitleText: '收银台'
+  navigationBarTitleText: '收银台',
+  navigationStyle: 'custom'
 }

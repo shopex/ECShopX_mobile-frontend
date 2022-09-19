@@ -4,6 +4,7 @@
   $tabbar-height: 120px !default;
   $tabbar-ipx-height: 140px !default;
   font-family: Helvetica;
+  padding-top: 170px;
   &.ipx {
     .sp-page-body {
       height: calc(100vh - 140px);
@@ -35,6 +36,7 @@
     justify-content: space-between;
     padding: 0 40px;
     background: #ffffff;
+    z-index: 1000;
     .total-info {
       display: flex;
       flex-direction: column;

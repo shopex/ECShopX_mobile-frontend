@@ -33,6 +33,11 @@ const validate = {
   // 企业税号
   checkTax (val) {
     return /^[A-Z0-9]{15}$|^[A-Z0-9]{17}$|^[A-Z0-9]{18}$|^[A-Z0-9]{20}$/.test(val)
+  },
+  // 金额验证
+  isMoney(val) {
+    const reg = new RegExp('((^[1-9]\\d*)|^0)(\\.\\d{0,2}){0,1}$')
+    return reg.test(val)
   }
 }
 
