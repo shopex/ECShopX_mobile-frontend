@@ -1,7 +1,8 @@
 import Taro from '@tarojs/taro'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { View, Button } from '@tarojs/components'
 import { AtButton, AtCurtain } from 'taro-ui'
+import { useImmer } from 'use-immer'
 import S from '@/spx'
 import api from '@/api'
 import { isWeixin, isAlipay, classNames, showToast, entryLaunch } from '@/utils'
@@ -13,15 +14,15 @@ import './index.scss'
 
 function SpLogin(props) {
   const { children, className, onChange, newUser = false } = props
-  const { isLogin, login, updatePolicyTime, setToken } = useLogin({
+  const { isLogin, login, updatePolicyTime, setToken, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
-      isUpdate && setPolicyModal(true)
+      // isUpdate && setPolicyModal(true)
     }
   })
-
   const [isNewUser, setIsNewUser] = useState(false)
   const [policyModal, setPolicyModal] = useState(false)
   const [loginModal, setLoginModal] = useState(false)
+  const codeRef = useRef()
 
   useEffect(() => {
     if (newUser) {
@@ -41,7 +42,8 @@ function SpLogin(props) {
   const handleBindPhone = async (e) => {
     const { encryptedData, iv, cloudID } = e.detail
     if (encryptedData && iv) {
-      const { code } = await Taro.login()
+      // const { code } = await Taro.login()
+      const code = codeRef.current
       let params = {
         code,
         encryptedData,
@@ -107,16 +109,24 @@ function SpLogin(props) {
     setPolicyModal(false)
   }, [])
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    const checkRes = await checkPolicyChange()
+    if(!checkRes) {
+      setPolicyModal(true)
+      return
+    }
     if (isLogin) {
       onChange && onChange()
     } else {
+      const { code } = await Taro.login()
+      codeRef.current = code
       setLoginModal(true)
     }
   }
 
   console.log('newUser:', newUser, isNewUser)
 
+  // eslint-disable-next-line no-undef
   const { icon, nickname } = __wxConfig.accountInfo
 
   return (
@@ -132,13 +142,20 @@ function SpLogin(props) {
 
       {!isLogin && !isNewUser && <View onClick={handleClickLogin}>{children}</View>} */}
 
+      {/* 隐私协议 */}
       <SpPrivacyModal
         open={policyModal}
         onCancel={handleCloseModal}
         onConfirm={handleConfirmModal}
       />
 
-      <AtCurtain isOpened={loginModal}>
+      {/* 授权登录 */}
+      <AtCurtain
+        isOpened={loginModal}
+        onClose={() => {
+          setLoginModal(false)
+        }}
+      >
         <View className='login-modal'>
           <View className='login-modal__hd'>
             <SpImage circle src={icon} width={120} height={120} />
@@ -146,7 +163,10 @@ function SpLogin(props) {
           </View>
           <View className='login-modal__bd'>登录手机号，查看全部订单和优惠券</View>
           <View className='login-modal__ft'>
-            <AtButton type='primary' />
+            {/* <AtButton type='primary'>登录</AtButton> */}
+            <AtButton type='primary' openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone}>
+              登录
+            </AtButton>
           </View>
         </View>
       </AtCurtain>
