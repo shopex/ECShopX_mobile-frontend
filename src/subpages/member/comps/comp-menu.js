@@ -135,6 +135,11 @@ function CompMenu(props) {
     menus = menus.concat(MENUS_COMMUNITY)
   }
 
+  if (VERSION_PLATFORM) {
+    // 平台版隐藏助力活动和助力订单
+    menus = menus.filter((m_item) => m_item.key != 'boost_activity' && m_item.key != 'boost_order')
+  }
+
   // menus = menus.concat([
   //   {
   //     key: 'pointMenu',
