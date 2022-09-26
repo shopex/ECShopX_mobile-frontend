@@ -23,6 +23,9 @@
     .input-field {
       text-align: right;
       color: #666;
+      /*  #ifdef  h5  */
+      visibility: inherit;
+      /*  #endif  */
     }
   }
 
@@ -30,6 +33,9 @@
     padding: 0;
     background: transparent;
     border-color: transparent;
+    /*  #ifdef  h5  */
+    visibility: inherit;
+    /*  #endif  */
     &:after {
       border-width: 0;
     }
