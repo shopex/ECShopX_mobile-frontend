@@ -4,6 +4,7 @@ import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
 import doc from '@/doc'
+import qs from 'qs'
 import { View, Text } from '@tarojs/components'
 import { pickBy, showToast, isWeixin } from '@/utils'
 import { SpPage, SpScrollView, SpCoupon } from '@/components'
@@ -21,11 +22,17 @@ function CouponCenter(props) {
 
   const fetch = async ({ pageIndex, pageSize }) => {
     const { distributor_id, item_id = '', itemid = '', card_id } = $instance.router.params
+    let cid = card_id
+
+    if (scene) {
+      const query = qs.parse(decodeURIComponent(scene))
+      cid = query.card_id
+    }
     const params = {
       page_no: pageIndex,
       page_size: pageSize,
       end_date: 1,
-      card_id,
+      card_id: cid,
       distributor_id: distributor_id,
       item_id: item_id || itemid
     }
