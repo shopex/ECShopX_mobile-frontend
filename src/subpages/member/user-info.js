@@ -9,7 +9,7 @@ import api from '@/api'
 import doc from '@/doc'
 import S from '@/spx'
 import { SG_POLICY } from '@/consts'
-import { classNames, showToast, isWeb, formatTime, isArray, goToPage } from '@/utils'
+import { classNames, showToast, formatTime, isArray, goToPage, isWeixin, isWeb } from '@/utils'
 import imgUploader from '@/utils/upload'
 import { View, Input, Picker, Button } from '@tarojs/components'
 import './user-info.scss'
@@ -218,7 +218,10 @@ function MemberUserInfo(props) {
       ...formUserInfo
     })
     showToast('修改成功')
-    getUserInfo(true)
+    await getUserInfo(true)
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 200)
   }
 
   const handleLogOff = async () => {
@@ -256,6 +259,24 @@ function MemberUserInfo(props) {
     })
   }
 
+  const onUploadAvatarFile = async () => {
+    const { tempFiles = [] } = await Taro.chooseImage({
+      count: 1
+    })
+    if (tempFiles.length > 0) {
+      const imgFiles = tempFiles.slice(0, 1).map((item) => {
+        return {
+          file: item,
+          url: item.path
+        }
+      })
+      const res = await imgUploader.uploadImageFn(imgFiles)
+      setState((draft) => {
+        draft.formUserInfo.avatar = res[0].url
+      })
+    }
+  }
+
   const onChangeUsername = (e) => {
     setState((draft) => {
       draft.formUserInfo.username = e.detail.value
@@ -269,6 +290,22 @@ function MemberUserInfo(props) {
   }
 
   // console.log('formUserInfo:', formUserInfo)
+
+  const renderAvatar = () => {
+    if (isWeixin) {
+      return (
+        <Button class='avatar-wrapper' open-type='chooseAvatar' onChooseAvatar={onChooseAvatar}>
+          <SpImage src={formUserInfo.avatar || 'user_icon.png'} width={110} height={110} circle />
+        </Button>
+      )
+    } else {
+      return (
+        <View class='avatar-wrapper' onClick={onUploadAvatarFile}>
+          <SpImage src={formUserInfo.avatar || 'user_icon.png'} width={110} height={110} circle />
+        </View>
+      )
+    }
+  }
   return (
     <SpPage
       ref={pageRef}
@@ -280,21 +317,7 @@ function MemberUserInfo(props) {
       }
     >
       <View className='block-container'>
-        <SpCell
-          title='头像'
-          isLink
-          border
-          value={
-            <Button class='avatar-wrapper' open-type='chooseAvatar' onChooseAvatar={onChooseAvatar}>
-              <SpImage
-                src={formUserInfo.avatar || 'user_icon.png'}
-                width={110}
-                height={110}
-                circle
-              />
-            </Button>
-          }
-        ></SpCell>
+        <SpCell title='头像' isLink border value={renderAvatar()}></SpCell>
         <SpCell
           title='昵称'
           isLink
@@ -314,7 +337,7 @@ function MemberUserInfo(props) {
         <SpCell
           isLink
           title='手机号'
-          value={userInfo.mobile}
+          value={userInfo?.mobile}
           onClick={() => {
             Taro.navigateTo({
               url: '/subpages/auth/edit-phone'
