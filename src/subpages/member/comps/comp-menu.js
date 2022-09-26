@@ -9,7 +9,8 @@ import {
   isWeb,
   VERSION_PLATFORM,
   VERSION_STANDARD,
-  VERSION_IN_PURCHASE
+  VERSION_IN_PURCHASE,
+  VERSION_B2C
 } from '@/utils'
 import { SG_APP_CONFIG } from '@/consts'
 
@@ -133,6 +134,11 @@ function CompMenu(props) {
   // 社区团购
   if (!VERSION_IN_PURCHASE && isWeixin) {
     menus = menus.concat(MENUS_COMMUNITY)
+  }
+
+  if (VERSION_PLATFORM || VERSION_B2C) {
+    // 平台版隐藏助力活动和助力订单
+    menus = menus.filter((m_item) => m_item.key != 'boost_activity' && m_item.key != 'boost_order')
   }
 
   // menus = menus.concat([
