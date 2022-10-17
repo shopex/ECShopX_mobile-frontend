@@ -248,7 +248,7 @@ export default class TradeRefundDetail extends Component {
             </View>
           </View>
         )}
-        {meiqia.is_open === 'true' || echat.is_open === 'true' ? (
+        {!isWeb && meiqia.is_open === 'true' || echat.is_open === 'true' ? (
           <FloatMenuMeiQia
             storeId={info.distributor_id}
             info={{ orderId: info.order_id }}
