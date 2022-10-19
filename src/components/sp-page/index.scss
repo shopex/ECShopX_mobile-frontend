@@ -9,6 +9,13 @@
       padding-bottom: $page-ipx-footer-height;
     }
   }
+  &.has-custom-navigation {
+    .countDown {
+      &.right_top {
+        top: 12%;
+      }
+    }
+  }
 
   &.ipx {
     padding-bottom: 20px;
