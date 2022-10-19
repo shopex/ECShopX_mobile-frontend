@@ -205,7 +205,7 @@ function SpPage(props, ref) {
       } else {
         pageStyle = {
           'backgroundImage': `url(${navigateBackgroundImage.url})`,
-          'backgroundSize': '100% 100',
+          'backgroundSize': '100% 100%',
           'backgroundRepeat': 'no-repeat',
           'backgroundPosition': 'center'
         }
@@ -273,7 +273,7 @@ function SpPage(props, ref) {
     } else {
       pageBackground = {
         'backgroundImage': `url(${pageBackgroundImage.url})`,
-        'backgroundSize': '100% 100',
+        'backgroundSize': '100% 100%',
         'backgroundPosition': 'center'
       }
     }
@@ -284,6 +284,7 @@ function SpPage(props, ref) {
       className={classNames('sp-page', className, {
         'has-navbar': hasNavbar && !isTabBarPage && navbar,
         'has-footer': renderFooter,
+        'has-custom-navigation': customNavigation,
         'ipx': ipx
       })}
       style={styleNames({ ...pageTheme, ...lockStyle, ...pageBackground })}
@@ -301,7 +302,7 @@ function SpPage(props, ref) {
       {loading && <SpLoading />}
 
       {!isDefault && !loading && <View className='sp-page-body' style={styleNames({
-        marginTop: `${navbarH}px`
+        marginTop: `${customNavigation ? navbarH : 0}px`
       })}>{children}</View>}
 
       {/* 置底操作区 */}
