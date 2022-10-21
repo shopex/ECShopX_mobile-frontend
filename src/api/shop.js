@@ -43,7 +43,7 @@ export function getPageParamsConfig ({
   template_name = platformTemplateName,
   version = 'v1.0.1'
 }) {
-  return req.get(transformPlatformUrl('/pageparams/setting'), {
+  return req.get('/pageparams/setting', {
     page_name,
     template_name,
     version
