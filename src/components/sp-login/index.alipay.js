@@ -60,7 +60,7 @@ function SpLogin(props, ref) {
         encryptedData,
         auth_type: 'aliapp'
       }
-      Taro.showLoading()
+      Taro.showLoading({ title: '' })
 
       try {
         const { token } = await api.alipay.alipay_login(params)

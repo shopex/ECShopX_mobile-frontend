@@ -53,7 +53,7 @@ export default class EditShare extends Component {
 
   // 获取分享信息
   async getShareSettingInfo() {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { id, dtid, company_id } = this.$instance.router.params
     const data = await api.item.getShareSetting(id)
     const insertData = [

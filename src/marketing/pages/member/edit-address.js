@@ -57,7 +57,7 @@ export default class AddressIndex extends Component {
   }
 
   async fetch() {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { list } = await api.member.addressList()
     this.setState({
       listLength: list.length

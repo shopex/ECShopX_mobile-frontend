@@ -73,7 +73,7 @@ function CartIndex() {
   }
 
   const getCartList = async () => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { type = 'distributor' } = router.params
     const params = {
       shop_type: type
@@ -175,7 +175,7 @@ function CartIndex() {
   // }
 
   const onChangeGoodsIsCheck = async (item, type, checked) => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     let parmas = { is_checked: checked }
     if (type === 'all') {
       const cartIds = item.list.map((item) => item.cart_id)

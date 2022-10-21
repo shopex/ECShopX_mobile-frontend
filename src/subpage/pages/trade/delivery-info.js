@@ -224,7 +224,7 @@ export default class TradeDetail extends Component {
   }
 
   async fetch () {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     let { delivery_type, delivery_id, order_type, order_id } = this.$instance.router.params
     let list
     if (delivery_type == 'new') {

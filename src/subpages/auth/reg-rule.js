@@ -26,7 +26,7 @@ export default class RegRule extends Component {
     let data = ''
     let navBarTitle = '协议'
     const { type } = this.$instance.router.params
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     if (type === '1') {
       // 充值协议
       const { content, title = '充值协议' } = await api.member.depositPayRule()

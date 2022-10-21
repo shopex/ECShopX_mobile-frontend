@@ -161,7 +161,7 @@ function DianwuCheckout(props) {
         coupon_discount: selectCoupon
       }
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const res = await api.dianwu.checkout(params)
     if (res.extraTips) {
       Taro.hideLoading()
