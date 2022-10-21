@@ -63,7 +63,7 @@ function SpLogin(props, ref) {
           purchanse_share_code: purchaseCode
         }
       }
-      Taro.showLoading()
+      Taro.showLoading({ title: '' })
 
       // const { uid } = entryLaunch.getLaunchParams()
       const { uid } = Taro.getStorageSync(SG_ROUTER_PARAMS)

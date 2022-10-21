@@ -66,7 +66,7 @@ export default class RecommendList extends Component {
         }
       })
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     this.resetPage()
     this.setState({
       list: []

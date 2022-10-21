@@ -181,7 +181,7 @@ function BaSkuSelect(props) {
       showToast('请选择规格')
       return
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     await dispatch(
       addCart({
         item_id: curItem ? curItem.itemId : info.itemId,
@@ -200,7 +200,7 @@ function BaSkuSelect(props) {
       showToast('请选择规格')
       return
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { distributorId, activityType, activityInfo } = info
     const itemId = curItem ? curItem.itemId : info.itemId
     await api.cart.fastBuy({

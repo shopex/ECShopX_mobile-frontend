@@ -508,7 +508,7 @@ function CartCheckout(props) {
   }
 
   const calcOrder = async () => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     // calc.current = true
     const cus_parmas = await getParamsInfo()
 

@@ -172,7 +172,7 @@ export default class VipIndex extends Component {
       pay_channel: payChannel
     }
 
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
 
     const data = await api.vip.charge(params)
 

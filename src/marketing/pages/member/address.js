@@ -44,7 +44,7 @@ export default class AddressIndex extends Component {
         isPicker: true
       })
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { list } = await api.member.addressList()
     Taro.hideLoading()
     let newList = [...list]

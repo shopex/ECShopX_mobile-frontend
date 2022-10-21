@@ -22,7 +22,7 @@ export default class CashierResult extends Component {
     }
   }
   componentDidMount () {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     setInterval(() => {
       Taro.hideLoading()
       this.fetch()

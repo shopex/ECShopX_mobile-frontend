@@ -100,7 +100,7 @@ function DianWuCashier() {
   }, [keywords])
 
   const handleSearchByKeyword = async (keywords) => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { list: goodsList } = await api.dianwu.goodsItems({
       page: 1,
       pageSize: 100,
@@ -119,7 +119,7 @@ function DianWuCashier() {
     const { errMsg, result } = await Taro.scanCode()
     console.log('handleScanCode:', result)
     if (errMsg == 'scanCode:ok') {
-      Taro.showLoading()
+      Taro.showLoading({ title: '' })
       const { list } = await api.dianwu.getMembers({
         user_card_code: result.split('_')[1]
       })
@@ -138,7 +138,7 @@ function DianWuCashier() {
     const { errMsg, result } = await Taro.scanCode()
     console.log('handleScanCode:', result)
     if (errMsg == 'scanCode:ok') {
-      Taro.showLoading()
+      Taro.showLoading({ title: '' })
       await api.dianwu.scanAddToCart({
         barcode: result,
         distributor_id
