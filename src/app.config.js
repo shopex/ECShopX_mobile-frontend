@@ -105,7 +105,9 @@ export default {
         'collection-result', // 收款结果
         'login', // 登录
         'picker-shop', // 店铺选择
-        'trade/change-price' // 订单改价
+        'trade/change-price', // 订单改价
+        'trade/cancel-trade', // 取消订单
+        'trade/sale-after' // 订单售后
       ]
     },
     // 积分商城
