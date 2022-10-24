@@ -86,9 +86,7 @@ function Home() {
   })
 
   const init = async () => {
-    if (VERSION_STANDARD) {
-      await fetchStoreInfo(location)
-    } else {
+    if (!VERSION_STANDARD) {
       await fetchWgts()
     }
   }
