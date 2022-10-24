@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { updateUserInfo, fetchUserFavs, clearUserInfo } from '@/store/slices/user'
 import { updateCount, clearCart } from '@/store/slices/cart'
 import api from '@/api'
-import { isWeixin, showToast, entryLaunch } from '@/utils'
+import { isWeixin, showToast, entryLaunch,isAlipay,alipayAutoLogin } from '@/utils'
 import S from '@/spx'
 import { SG_POLICY } from '@/consts/localstorage'
 
@@ -35,14 +35,15 @@ export default (props = {}) => {
   }, [userInfo])
 
   const login = async () => {
-    if (isWeixin) {
+    if (isWeixin || isAlipay) {
       // 隐私协议
       const checkResult = await checkPolicyChange()
       if (checkResult) {
-        Taro.showLoading()
-        const { code } = await Taro.login()
+        Taro.showLoading({ title: '' })
+        const { code } = await getCode()
+
         try {
-          const { token } = await api.wx.login({ code, showError: false })
+          const { token } = await getToken(code)
           Taro.hideLoading()
           setToken(token)
         } catch (e) {
@@ -55,6 +56,20 @@ export default (props = {}) => {
     }
   }
 
+  const getCode = async () => {
+    if(isWeixin){
+      return await Taro.login()
+    }
+    if(isAlipay){
+      return await alipayAutoLogin()
+    }
+  }
+
+  const getToken = async (code) => {
+    const auth_type = isWeixin ? 'wxapp' : 'aliapp'
+    return await api.wx.login({ code, showError: false, auth_type })
+  }
+
   const logout = () => {
     S.clearAuthToken()
     dispatch(clearUserInfo())
@@ -63,6 +78,7 @@ export default (props = {}) => {
 
   const setToken = async (token) => {
     const { redirect_url } = $instance.router.params
+    console.log('redirect_url',redirect_url)
     S.setAuthToken(token)
     setIsLogin(true)
     await getUserInfo()
