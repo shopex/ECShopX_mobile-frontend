@@ -170,8 +170,20 @@ class EntryLaunch {
       })
     } else if (process.env.TARO_ENV === 'alipay') {
       // TODO 支付宝小程序 地图
-      return new Promise(async (reslove, reject) => {
-        reject({ message: '支付宝小程序地图等待配置' })
+      return new Promise(async (resolve, reject) => {
+        my.getLocation({
+          type: 0, // 获取经纬度和省市区县数据
+          success: (res) => {
+            console.log(11,res);
+            resolve({
+              lng: res.longitude,
+              lat: res.latitude
+            })
+          },
+          fail: (res) => {
+            reject({ message: '定位失败' + JSON.stringify(res) });
+          }
+        })
       })
     } else {
       return new Promise(async (reslove, reject) => {
@@ -191,6 +203,7 @@ class EntryLaunch {
 
   async getCurrentAddressInfo(refresh = false) {
     const { lng, lat } = await this.getLocationInfo()
+    // console.log(' lng, lat', lng, lat);
     let res = {}
     if (lat) {
       res = await this.getAddressByLnglatWebAPI(lng, lat)
@@ -211,6 +224,7 @@ class EntryLaunch {
       }
     })
 
+    // console.log(0,res);
     if (res.data.status == 1) {
       const { geocodes } = res.data
       if (geocodes.length > 0) {
