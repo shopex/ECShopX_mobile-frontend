@@ -409,7 +409,7 @@ export default class TradeDetail extends Component {
   }
 
   async handleClickBtn(type, e) {
-    debugger
+    // debugger
     e.stopPropagation()
     const { info } = this.state
     if (type === 'home') {
