@@ -771,6 +771,23 @@ const alipayAutoLogin = () => {
   })
 }
 
+const requestAlipayminiPayment = (tradeNO) => {
+  return new Promise((resolve, reject) => {
+    my.tradePay({
+      tradeNO: tradeNO,
+      success: (res) => {
+        console.log('支付成功res', res);
+        resolve()
+      },
+      fail: (res) => {
+        console.log('支付失败res', res);
+        reject(res)
+      }
+    });
+    
+  })
+}
+
 export {
   classNames,
   log,
@@ -790,7 +807,8 @@ export {
   isUndefined,
   merchantIsvaild,
   getDistributorId,
-  alipayAutoLogin
+  alipayAutoLogin,
+  requestAlipayminiPayment
 }
 
 export * from './platforms'

@@ -7,7 +7,7 @@ export const initialState = {
   addressList: [],
   receiptType: '', // 收货方式：ziti自提  logistics快递
   defalutPaytype: isWxWeb ? 'wxpayjs' : isWeb ? 'wxpayh5' : 'wxpay', // 默认支付方式
-  payType: '', // wxpay 微信支付 point 积分支付 deposit 储值支付
+  payType: '', // wxpay 微信支付 point 积分支付 deposit 储值支付  alipaymini 支付宝小程序支付
   payChannel: '', // 支付渠道
   isPointitemGood: false, // 是否为积分商城的商品
   shoppingGuideData: {}, //代客下单导购信息

@@ -6,7 +6,7 @@ import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { SpFloatLayout, SpCheckbox } from '@/components'
 import api from '@/api'
-import { isWeixin, isWxWeb, isWeb, getDistributorId, isAPP, pickBy, VERSION_IN_PURCHASE } from '@/utils'
+import { isWeixin, isWxWeb, isWeb, getDistributorId, isAPP, pickBy, VERSION_IN_PURCHASE, isAlipay } from '@/utils'
 import doc from '@/doc'
 import { payment_platform } from '@/utils/platform'
 import './index.scss'
@@ -65,6 +65,8 @@ function SpCashier(props) {
       platform = 'h5'
     } else if(isAPP()) {
       platform = 'app'
+    } else if(isAlipay) {
+      platform = 'alipaymini'
     }
 
     const params = {

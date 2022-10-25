@@ -160,7 +160,8 @@ export const PAYMENT_TYPE = {
   alipay_qr: '支付宝支付',
   pos: '现金支付',
   wxpaypos: '微信支付',
-  alipaypos: '支付宝支付'
+  alipaypos: '支付宝支付',
+  alipaymini: '支付宝支付'
 }
 
 export const TRANSFORM_PAYTYPE = {
