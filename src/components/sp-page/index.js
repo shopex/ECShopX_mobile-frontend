@@ -46,7 +46,8 @@ function SpPage(props, ref) {
   const sys = useSelector((state) => state.sys)
   const [showToTop, setShowToTop] = useState(false)
   const [mantle, setMantle] = useState(false)
-  const { colorPrimary, colorMarketing, colorAccent, rgb } = sys
+  const { colorPrimary, colorMarketing, colorAccent, rgb, appName } = sys
+
   const pageTheme = {
     '--color-primary': colorPrimary,
     '--color-marketing': colorMarketing,
@@ -196,7 +197,7 @@ function SpPage(props, ref) {
     // const navbarH = statusBarHeight + menuButton.height + (menuButton.top - statusBarHeight) * 2
     let pageStyle = {}, pageTitleStyle = {}, showLeftContainer = true
     if (pageConfig) {
-      const { title, navigateBackgroundColor, navigateStyle, navigateBackgroundImage, titleStyle, titleColor, titleBackgroundImage, titlePosition } = pageConfig
+      const { navigateBackgroundColor, navigateStyle, navigateBackgroundImage, titleStyle, titleColor, titleBackgroundImage, titlePosition } = pageConfig
       // 导航颜色背景
       if (navigateStyle == '1') {
         pageStyle = {
@@ -214,7 +215,7 @@ function SpPage(props, ref) {
       if (titleStyle == '1') {
         renderTitle = <Text style={styleNames({
           color: titleColor
-        })}>{title}</Text>
+        })}>{appName}</Text>
       } else {
         renderTitle = <SpImage src={titleBackgroundImage.url} height={72} mode='heightFix' />
       }

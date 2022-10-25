@@ -57,9 +57,8 @@ function Home() {
     policyUpdateHook: (isUpdate) => {
       if (isUpdate) {
         setPolicyModal(true)
-      } else {
-        fetchLocation()
       }
+      fetchLocation()
     }
   })
 
