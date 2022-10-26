@@ -30,8 +30,7 @@ export default (props = {}) => {
 
   useEffect(() => {
     const token = S.getAuthToken()
-    let isLoginIn = isAlipay ? userInfo && token : userInfo
-    if (isLoginIn) {
+    if (userInfo && token) {
       setIsLogin(true) 
     }
   }, [userInfo])
