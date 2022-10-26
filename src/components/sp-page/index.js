@@ -162,6 +162,7 @@ function SpPage(props, ref) {
 
   let model = ''
   let ipx = false
+  let gNavbarH = 0
   // let customNavigation = false
   // let cusCurrentPage = 0
 
@@ -170,6 +171,10 @@ function SpPage(props, ref) {
     // console.log('deviceInfo:', deviceInfo)
     model = deviceInfo.model
     ipx = model.search(/iPhone X|iPhone 11|iPhone 12|iPhone 13/g) > -1
+
+    const menuButton = Taro.getMenuButtonBoundingClientRect()
+    const { statusBarHeight } = Taro.getSystemInfoSync()
+    gNavbarH = statusBarHeight + menuButton.height + (menuButton.top - statusBarHeight) * 2
   }
 
   const { page, route } = getCurrentInstance()
@@ -182,10 +187,6 @@ function SpPage(props, ref) {
   //   customNavigation = navigationStyle === 'custom'
   //   cusCurrentPage = pages.length
   // }
-
-  const menuButton = Taro.getMenuButtonBoundingClientRect()
-  const { statusBarHeight } = Taro.getSystemInfoSync()
-  const navbarH = statusBarHeight + menuButton.height + (menuButton.top - statusBarHeight) * 2
 
   const CustomNavigation = () => {
     // const menuButton = Taro.getMenuButtonBoundingClientRect()
@@ -224,7 +225,7 @@ function SpPage(props, ref) {
       }
 
     }
-    showLeftContainer = !!['/subpages/guide/index', '/pages/index'].includes(page.route)
+    showLeftContainer = !['/subpages/guide/index', '/pages/index'].includes(`/${page.route}`)
 
     return (
       <View
@@ -303,7 +304,7 @@ function SpPage(props, ref) {
       {loading && <SpLoading />}
 
       {!isDefault && !loading && <View className='sp-page-body' style={styleNames({
-        marginTop: `${customNavigation ? navbarH : 0}px`
+        marginTop: `${(customNavigation && pageConfig) ? gNavbarH : 0}px`
       })}>{children}</View>}
 
       {/* 置底操作区 */}

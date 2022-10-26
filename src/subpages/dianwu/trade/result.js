@@ -18,7 +18,9 @@ function DianwuTradeResult(props) {
     <View className='title'>{'订单已取消'}</View>
     <View className='desc'>{'请耐心等待系统退款'}</View>
 
-    <AtButton className='btn-return' circle>返回订单列表</AtButton>
+    <AtButton className='btn-return' circle onClick={() => {
+      Taro.navigateBack()
+    }}>返回订单列表</AtButton>
   </SpPage>;
 }
 
