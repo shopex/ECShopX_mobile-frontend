@@ -26,7 +26,8 @@ function StoreZitiPicker(props) {
   const fetchZitiList = async () => {
     const { distributor_id, zitiId } = $instance.router.params
     const { list } = await api.cart.getZitiList({
-      cart_type: 'cart'
+      cart_type: 'cart',
+      distributor_id
     })
     setState(draft => {
       draft.zitiList = list
