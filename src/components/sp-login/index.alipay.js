@@ -135,8 +135,7 @@ function SpLogin(props, ref) {
         }}
       >
         <View className='login-modal'>
-          <View className='login-modal__hd'>
-            <View className='nick-name'>''</View>
+          <View className='login-modal__hd--alipay'>
           </View>
           <View className='login-modal__bd'>登录手机号，查看全部订单和优惠券</View>
           <View className='login-modal__ft'>
