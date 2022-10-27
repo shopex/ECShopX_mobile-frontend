@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useImperativeHandle } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView, Text } from '@tarojs/components'
 import { AtInput } from 'taro-ui'
 import { useImmer } from 'use-immer'
@@ -52,7 +52,8 @@ function CompDeliver(props, ref) {
   const [state, setState] = useImmer(initialState)
   const { distributorInfo, receiptType, showTimePicker, form, rules, weekdays, timeSlots, pickerIndex, activeTimeId } = state
   const formRef = useRef()
-
+  const $instance = getCurrentInstance()
+  const { cart_type } = $instance.router.params
   // useEffect(() => {
   //   fetch()
   // }, [])
@@ -280,7 +281,7 @@ function CompDeliver(props, ref) {
         <View className='address-module'>
           <View className='ziti-title' onClick={() => {
             Taro.navigateTo({
-              url: `/subpages/store/ziti-picker?distributor_id=${distributor_id}`
+              url: `/subpages/store/ziti-picker?distributor_id=${distributor_id}&cart_type=${cart_type}`
             })
           }}>{zitiAddress?.name || '选择自提地址'}
             <Text className='iconfont icon-arrowRight'></Text>
