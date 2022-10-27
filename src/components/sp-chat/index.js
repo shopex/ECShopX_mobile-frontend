@@ -43,7 +43,7 @@ function SpChat(props) {
 
   return (
     <View className='sp-chat'>
-      {isWeAppKefu && (
+      {(isWeAppKefu && !isAlipay) && (
         <Button className='btn-cantact' openType='contact' sessionFrom={sessionFrom}>
           {children}
           {isAlipay && <contact-button
