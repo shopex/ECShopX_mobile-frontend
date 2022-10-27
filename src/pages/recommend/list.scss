@@ -7,7 +7,7 @@
       top: 0;      
       left: 0;
       width: 100%;
-      z-index: $z-index-toolbar;
+      z-index: $z-index-level-4;
       background: #fff;
       box-shadow: $box-shadow;
       padding-top: 10px;
@@ -60,7 +60,7 @@
         text-align: center;
         color: #666666;
         font-size: 26px;
-        .iconfont {
+        .icon-menu,.icon-periscope {
           color: #ccc;
           display: inline-block;
           font-size: 28px;
@@ -161,4 +161,9 @@
 			line-height: 75px;
 		}
 	}
+  .sp-float-layout {
+    .icon-guanbi {
+      line-height: 1;
+    }
+  }
 }
