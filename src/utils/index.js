@@ -776,11 +776,11 @@ const requestAlipayminiPayment = (tradeNO) => {
     my.tradePay({
       tradeNO: tradeNO,
       success: (res) => {
-        console.log('支付成功res', res);
-        resolve()
+        console.log('支付回调成功res', res);
+        resolve(res)
       },
       fail: (res) => {
-        console.log('支付失败res', res);
+        console.log('支付回调失败res', res);
         reject(res)
       }
     });

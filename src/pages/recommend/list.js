@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView, Picker } from '@tarojs/components'
+import { SpAddress } from '@/components'
 import { withPager, withBackToTop } from '@/hocs'
 import { connect } from 'react-redux'
 import { AtDrawer } from 'taro-ui'
@@ -42,7 +43,8 @@ export default class RecommendList extends Component {
       areaList: [],
       multiIndex: [],
       isShowSearch: false,
-      shareInfo: {}
+      shareInfo: {},
+      isSpAddressOpened: false,
     }
   }
 
@@ -144,8 +146,8 @@ export default class RecommendList extends Component {
       total_count: total,
       province_list
     } = S.getAuthToken()
-      ? await api.article.authList(article_query)
-      : await api.article.list(article_query)
+        ? await api.article.authList(article_query)
+        : await api.article.list(article_query)
 
     if (areaList.length === 0) {
       let res = await api.member.areaList()
@@ -387,23 +389,23 @@ export default class RecommendList extends Component {
     }
   }
 
-  bindMultiPickerChange = async (e) => {
+  bindMultiPickerChange = async () => {
     const { info } = this.state
-    this.addList.map((item, index) => {
-      if (index === e.detail.value[0]) {
-        info.province = item.label
-        item.children.map((s_item, sIndex) => {
-          if (sIndex === e.detail.value[1]) {
-            info.city = s_item.label
-            s_item.children.map((th_item, thIndex) => {
-              if (thIndex === e.detail.value[2]) {
-                info.county = th_item.label
-              }
-            })
-          }
-        })
-      }
-    })
+    // this.addList.map((item, index) => {
+    //   if (index === e.detail.value[0]) {
+    //     info.province = item.label
+    //     item.children.map((s_item, sIndex) => {
+    //       if (sIndex === e.detail.value[1]) {
+    //         info.city = s_item.label
+    //         s_item.children.map((th_item, thIndex) => {
+    //           if (thIndex === e.detail.value[2]) {
+    //             info.county = th_item.label
+    //           }
+    //         })
+    //       }
+    //     })
+    //   }
+    // })
 
     const { province, city, area } = info
     this.setState(
@@ -411,8 +413,8 @@ export default class RecommendList extends Component {
         query: {
           ...this.state.query,
           province,
-          city,
-          area
+          city
+          // area
         }
       },
       () => {
@@ -429,7 +431,6 @@ export default class RecommendList extends Component {
         )
       }
     )
-    this.setState({ info })
   }
 
   bindMultiPickerColumnChange = (e) => {
@@ -489,6 +490,32 @@ export default class RecommendList extends Component {
     })
   }
 
+  handleClickCloseSpAddress = () => {
+    this.setState({
+      isSpAddressOpened: false
+    })
+  }
+
+  handleClickOpenSpAddress = () => {
+    this.setState({
+      isSpAddressOpened: true
+    })
+  }
+
+
+  onPickerChange = (selectValue) => {
+    const info = {
+      province: selectValue[0].label,
+      city: selectValue[1].label,
+      // area: selectValue[2].label
+    }
+    this.setState({
+      info
+    }, () => {
+      this.bindMultiPickerChange()
+    })
+  }
+
   render() {
     const {
       list,
@@ -502,7 +529,8 @@ export default class RecommendList extends Component {
       multiIndex,
       areaList,
       query,
-      isShowSearch
+      isShowSearch,
+      isSpAddressOpened
     } = this.state
     const { colors } = this.props
     let address = info.province + info.city
@@ -512,9 +540,8 @@ export default class RecommendList extends Component {
         <View className='page-recommend-list'>
           <View className='recommend-list__toolbar'>
             <View
-              className={`recommend-list__search ${
-                query && query.title && isShowSearch ? 'on-search' : null
-              }`}
+              className={`recommend-list__search ${query && query.title && isShowSearch ? 'on-search' : null
+                }`}
             >
               <SearchBar
                 showDailog={false}
@@ -532,7 +559,7 @@ export default class RecommendList extends Component {
                 <Text>{selectColumn.name || '栏目'}</Text>
               </View>
               <View className='filter-bar__item region-picker'>
-                <Picker
+                {/* <Picker
                   mode='multiSelector'
                   onClick={this.handleClickPicker}
                   onChange={this.bindMultiPickerChange}
@@ -544,7 +571,13 @@ export default class RecommendList extends Component {
                     <View className='iconfont icon-periscope'></View>
                     <Text>{address || '地区'}</Text>
                   </View>
-                </Picker>
+                </Picker> */}
+                <View onClick={this.handleClickOpenSpAddress.bind(this)}>
+                  <View className='iconfont icon-periscope'></View>
+                  <Text>{address || '地区'}</Text>
+                </View>
+                <SpAddress isOpened={isSpAddressOpened} onClose={this.handleClickCloseSpAddress} onChange={this.onPickerChange} />
+
                 {address ? (
                   <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text>
                 ) : (
@@ -573,8 +606,8 @@ export default class RecommendList extends Component {
                       style={
                         item.isChooseColumn
                           ? {
-                              background: (colors && colors.data && colors.data[0].primary) || null
-                            }
+                            background: (colors && colors.data && colors.data[0].primary) || null
+                          }
                           : {}
                       }
                       key={`${index}1`}
@@ -634,7 +667,7 @@ export default class RecommendList extends Component {
           </ScrollView>
 
           <BackToTop show={showBackToTop} onClick={this.scrollBackToTop} />
-          
+
         </View>
       </SpPage>
     )

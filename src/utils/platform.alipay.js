@@ -16,4 +16,4 @@ export function dealTextAreaValue(value) {
   return value
 }
 
-export const payment_platform = 'wxMiniProgram'
+export const payment_platform = 'alipaymini'

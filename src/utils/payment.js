@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { payment_platform } from '@/utils/platform'
-import { isWxWeb } from '@/utils'
+import { isWxWeb, isAlipay } from '@/utils'
 import api from '@/api'
 
 export default async function getPaymentList (distributor_id) {
@@ -9,6 +9,11 @@ export default async function getPaymentList (distributor_id) {
     params = {
       distributor_id,
       platform: isWxWeb ? 'wxPlatform' : payment_platform
+    }
+  }
+  if(isAlipay){
+    params = {
+      platform: payment_platform
     }
   }
   let list = await api.member.getTradePaymentList(params)
