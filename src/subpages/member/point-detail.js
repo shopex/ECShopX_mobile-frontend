@@ -23,6 +23,7 @@ const initialState = {
 }
 function PointDetail(props) {
   const [state, setState] = useImmer(initialState)
+  const { pointName } = useSelector((state) => state.sys)
   const { list, point, active } = state
   const pointRef = useRef()
 
@@ -79,31 +80,32 @@ function PointDetail(props) {
           <View className='point-info-hd'>
             <View className='point-table'>
               <SpImage src='point.png' width={48} height={48} />
-              <Text className='label'>可用积分</Text>
+              <Text className='label'>{`可用${pointName}`}</Text>
             </View>
             <View className='point-rule' onClick={() => {
               Taro.navigateTo({ url: '/subpages/member/point-rule' })
-            }}>积分规则</View>
+            }}>{`${pointName}规则`}</View>
           </View>
           <View className='point-total'>{point}</View>
         </View>
       </View>
       <View className='point-list'>
-        <View className='title'>积分收支明细</View>
+        <View className='title'>{`${pointName}收支明细`}</View>
         <View className='point-list-body'>
           <View className='point-type'>
-            {btns.map((item) => (
+            {btns.map((item, index) => (
               <View
                 className={classNames('btn-pointtype', { active: item.key == active })}
                 onClick={handleClickPointType.bind(this, item)}
+                key={`point-type__${index}`}
               >
                 {item.title}
               </View>
             ))}
           </View>
           <SpScrollView className='point-item-wrap' auto={false} ref={pointRef} fetch={fetch}>
-            {list.map((item) => (
-              <View className='point-item'>
+            {list.map((item, index) => (
+              <View className='point-item' key={`point-item__${index}`}>
                 <View className='point-item-hd'>
                   <View className='name'>{item.journalType}</View>
                   <View className='created'>{item.created}</View>

@@ -57,8 +57,9 @@ function Home() {
     policyUpdateHook: (isUpdate) => {
       if (isUpdate) {
         setPolicyModal(true)
+      } else {
+        fetchLocation()
       }
-      fetchLocation()
     }
   })
 
@@ -85,9 +86,9 @@ function Home() {
   })
 
   const init = async () => {
-    if (!VERSION_STANDARD) {
-      await fetchWgts()
-    }
+    // if (!VERSION_STANDARD) {
+    await fetchWgts()
+    // }
   }
 
   const fetchWgts = async () => {
@@ -114,9 +115,14 @@ function Home() {
 
   // 定位
   const fetchLocation = async () => {
-    if (!location && !VERSION_IN_PURCHASE) {
-      const res = await entryLaunch.getCurrentAddressInfo()
-      dispatch(updateLocation(res))
+    if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
+      try {
+        const res = await entryLaunch.getCurrentAddressInfo()
+        dispatch(updateLocation(res))
+      } catch (e) {
+        // 定位失败，获取默认店铺
+        console.error('map location fail:', e)
+      }
     }
 
     if (VERSION_STANDARD) {
@@ -126,9 +132,7 @@ function Home() {
 
   const handleConfirmModal = useCallback(async () => {
     setPolicyModal(false)
-    if ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM) {
-      fetchLocation()
-    }
+    fetchLocation()
   }, [])
 
   useShareAppMessage(async (res) => {
