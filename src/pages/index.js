@@ -116,8 +116,13 @@ function Home() {
   // 定位
   const fetchLocation = async () => {
     if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
-      const res = await entryLaunch.getCurrentAddressInfo()
-      dispatch(updateLocation(res))
+      try {
+        const res = await entryLaunch.getCurrentAddressInfo()
+        dispatch(updateLocation(res))
+      } catch (e) {
+        // 定位失败，获取默认店铺
+        console.error('map location fail:', e)
+      }
     }
 
     if (VERSION_STANDARD) {
