@@ -46,7 +46,8 @@ function SpPage(props, ref) {
   const sys = useSelector((state) => state.sys)
   const [showToTop, setShowToTop] = useState(false)
   const [mantle, setMantle] = useState(false)
-  const { colorPrimary, colorMarketing, colorAccent, rgb } = sys
+  const { colorPrimary, colorMarketing, colorAccent, rgb, appName } = sys
+
   const pageTheme = {
     '--color-primary': colorPrimary,
     '--color-marketing': colorMarketing,
@@ -161,6 +162,7 @@ function SpPage(props, ref) {
 
   let model = ''
   let ipx = false
+  let gNavbarH = 0, gStatusBarHeight = 0
   // let customNavigation = false
   // let cusCurrentPage = 0
 
@@ -169,6 +171,11 @@ function SpPage(props, ref) {
     // console.log('deviceInfo:', deviceInfo)
     model = deviceInfo.model
     ipx = model.search(/iPhone X|iPhone 11|iPhone 12|iPhone 13/g) > -1
+
+    const menuButton = Taro.getMenuButtonBoundingClientRect()
+    const { statusBarHeight } = Taro.getSystemInfoSync()
+    gNavbarH = statusBarHeight + menuButton.height + (menuButton.top - statusBarHeight) * 2
+    gStatusBarHeight = statusBarHeight
   }
 
   const { page, route } = getCurrentInstance()
@@ -182,21 +189,11 @@ function SpPage(props, ref) {
   //   cusCurrentPage = pages.length
   // }
 
-  const menuButton = Taro.getMenuButtonBoundingClientRect()
-  const { statusBarHeight } = Taro.getSystemInfoSync()
-  const navbarH = statusBarHeight + menuButton.height + (menuButton.top - statusBarHeight) * 2
-
   const CustomNavigation = () => {
-    // const menuButton = Taro.getMenuButtonBoundingClientRect()
-    // const { statusBarHeight } = Taro.getSystemInfoSync()
     const { page, route } = getCurrentInstance()
-    // console.log('MenuButton:', menuButton, statusBarHeight)
-    // console.log(cusCurrentPage)
-
-    // const navbarH = statusBarHeight + menuButton.height + (menuButton.top - statusBarHeight) * 2
     let pageStyle = {}, pageTitleStyle = {}, showLeftContainer = true
     if (pageConfig) {
-      const { title, navigateBackgroundColor, navigateStyle, navigateBackgroundImage, titleStyle, titleColor, titleBackgroundImage, titlePosition } = pageConfig
+      const { navigateBackgroundColor, navigateStyle, navigateBackgroundImage, titleStyle, titleColor, titleBackgroundImage, titlePosition } = pageConfig
       // 导航颜色背景
       if (navigateStyle == '1') {
         pageStyle = {
@@ -214,7 +211,7 @@ function SpPage(props, ref) {
       if (titleStyle == '1') {
         renderTitle = <Text style={styleNames({
           color: titleColor
-        })}>{title}</Text>
+        })}>{appName}</Text>
       } else {
         renderTitle = <SpImage src={titleBackgroundImage.url} height={72} mode='heightFix' />
       }
@@ -223,7 +220,7 @@ function SpPage(props, ref) {
       }
 
     }
-    showLeftContainer = !!['/subpages/guide/index', '/pages/index'].includes(page.route)
+    showLeftContainer = !['/subpages/guide/index', '/pages/index'].includes(`/${page.route}`)
 
     return (
       <View
@@ -231,8 +228,8 @@ function SpPage(props, ref) {
           'mantle': mantle,
         }, navigateTheme)}
         style={styleNames({
-          height: `${navbarH}px`,
-          paddingTop: `${statusBarHeight}px`,
+          height: `${gNavbarH}px`,
+          paddingTop: `${gStatusBarHeight}px`,
           ...pageStyle
         })}
       >
@@ -302,7 +299,7 @@ function SpPage(props, ref) {
       {loading && <SpLoading />}
 
       {!isDefault && !loading && <View className='sp-page-body' style={styleNames({
-        marginTop: `${customNavigation ? navbarH : 0}px`
+        marginTop: `${(customNavigation && pageConfig) ? gNavbarH : 0}px`
       })}>{children}</View>}
 
       {/* 置底操作区 */}

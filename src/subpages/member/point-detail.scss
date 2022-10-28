@@ -39,7 +39,7 @@
   }
 
   .point-rule {
-    width: 120px;
+    padding: 0 10px;
     height: 36px;
     border-radius: 20px;
     /* prettier-ignore */
@@ -82,7 +82,7 @@
       margin-bottom: 20px;
     }
     &-body {
-      
+
       border-radius: 16px;
     }
     .point-item {
