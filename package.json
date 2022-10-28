@@ -52,6 +52,7 @@
     "copy-to-clipboard": "^3.0.8",
     "dayjs": "^1.10.6",
     "lodash": "^4.17.11",
+    "mini-html-parser2": "^0.3.0",
     "qiniu-js": "^2.5.4",
     "qrcode": "^1.5.0",
     "qs": "6.6.0",
