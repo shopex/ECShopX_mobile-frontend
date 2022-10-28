@@ -31,17 +31,17 @@ class GoodsDetailPoster {
     // const { dtid } =
 
     const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${appid}&company_id=${company_id}&id=${itemId}&uid=${user_id}`
+    
+    // TODO 获取微信二维码的接口，需要换alipay  https://ecshopx1.shopex123.com/api/h5app/alipaymini/qrcode.png?company_id=1&page=page/index  
     console.log('wxappCode:', wxappCode)
 
     const pic = imgs[0].replace('http:', 'https:')
-    console.log('goods pic:', pic)
     // 商品图片
     this.goodsImg = await Taro.getImageInfo({ src: pic })
     // 太阳码
     this.codeImg = await Taro.getImageInfo({ src: wxappCode })
     // 头像
-    this.avatar = await Taro.getImageInfo({ src: avatar })
-
+    if(avatar) this.avatar = await Taro.getImageInfo({ src: avatar })
     const drawOptions = {
       ctx: this.ctx,
       toPx: this.toPx,
@@ -87,7 +87,7 @@ class GoodsDetailPoster {
       drawOptions
     )
     // 头像
-    drawImage(
+    avatar && drawImage(
       {
         imgPath: this.avatar.path,
         x: 24,
