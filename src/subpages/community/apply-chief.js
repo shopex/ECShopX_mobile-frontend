@@ -7,9 +7,9 @@ import api from '@/api'
 import doc from '@/doc'
 import qs from 'qs'
 import { CHIEF_APPLY_STATUS, FORM_COMP } from '@/consts'
-import { View, Text, Picker } from '@tarojs/components'
+import { View, Text, Picker, RichText } from '@tarojs/components'
 import { SpPage, SpImage, SpForm, SpFormItem, SpUpload, SpCheckbox, SpNote } from '@/components'
-import { classNames, showToast } from '@/utils'
+import { classNames, showToast, isAlipay, htmlStringToNodeArray } from '@/utils'
 import './apply-chief.scss'
 
 const initialState = {
@@ -117,7 +117,10 @@ function ApplyChief(props) {
   }
 
   const aggrementAndExplanation = async () => {
-    const { explanation } = await api.community.aggrementAndExplanation({ distributor_id })
+    let { explanation } = await api.community.aggrementAndExplanation({ distributor_id })
+    if(isAlipay){
+      explanation = htmlStringToNodeArray(explanation)
+    }
     setState((draft) => {
       draft.explanation = explanation
     })
@@ -288,7 +291,8 @@ function ApplyChief(props) {
         </View>
         <View className='container'>
           <View className='applychief-desc'>
-            <mp-html content={explanation} />
+            {!isAlipay && <mp-html content={explanation} />}
+            {isAlipay && <RichText nodes={explanation} />}
           </View>
           <View className='form-container'>
             <SpForm ref={formRef} className='applychief-form' formData={form} rules={rules}>
