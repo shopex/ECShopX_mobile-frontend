@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, RichText } from '@tarojs/components'
-import { SpNavBar, SpHtmlContent } from '@/components'
+import { SpNavBar, SpHtmlContent, SpHtml } from '@/components'
 import { withPager } from '@/hocs'
 import api from '@/api'
 
@@ -67,13 +67,11 @@ export default class RegRule extends Component {
 
   render () {
     const { info, title } = this.state
-
     return (
       <View className='page-member-integral'>
         <SpNavBar title={title} leftIconType='chevron-left' />
         {info && (
-          // <SpHtmlContent className='pay-rule-style' content={info} />
-          <RichText nodes={info} />
+          <SpHtml content={info}></SpHtml>
         )}
       </View>
     )

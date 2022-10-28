@@ -15,6 +15,7 @@ import _isEmpty from 'lodash/isEmpty'
 import _remove from 'lodash/remove'
 import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
+import parse from 'mini-html-parser2'
 import log from './log'
 import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
@@ -771,6 +772,7 @@ const alipayAutoLogin = () => {
   })
 }
 
+// 支付宝小程序支付
 const requestAlipayminiPayment = (tradeNO) => {
   return new Promise((resolve, reject) => {
     my.tradePay({
@@ -784,9 +786,21 @@ const requestAlipayminiPayment = (tradeNO) => {
         reject(res)
       }
     });
-    
   })
 }
+
+const htmlStringToNodeArray = (htmlString) => {
+  let nodeArray = null;
+  parse(htmlString, (err, nodes) => {
+    if (!err) {
+      nodeArray = nodes
+    } else {
+      log.error('htmlStringToNodeArray error')
+    }
+  })
+  return nodeArray;
+}
+
 
 export {
   classNames,
@@ -808,7 +822,8 @@ export {
   merchantIsvaild,
   getDistributorId,
   alipayAutoLogin,
-  requestAlipayminiPayment
+  requestAlipayminiPayment,
+  htmlStringToNodeArray
 }
 
 export * from './platforms'
