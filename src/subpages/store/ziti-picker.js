@@ -5,31 +5,43 @@ import Taro, { getCurrentInstance } from "@tarojs/taro";
 import api from "@/api"
 import doc from "@/doc"
 import { View } from "@tarojs/components"
+import { VERSION_PLATFORM, VERSION_STANDARD } from '@/utils'
 import { changeZitiAddress } from '@/store/slices/cart'
 import { SpPage, SpCheckboxNew } from '@/components'
 import "./ziti-picker.scss";
 
 const initialState = {
   zitiList: [],
-  zitiId: null
+  zitiId: null,
+  isDefault: false
 }
 function StoreZitiPicker(props) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
-  const { zitiList, zitiId } = state
+  const { zitiList, zitiId, isDefault } = state
   const dispatch = useDispatch()
+  const { openLocation } = useSelector(
+    (state) => state.sys
+  )
+
   useEffect(() => {
     fetchZitiList()
   }, [])
 
   const fetchZitiList = async () => {
-    const { distributor_id, zitiId } = $instance.router.params
-    const { list } = await api.cart.getZitiList({
-      cart_type: 'cart',
-      distributor_id
-    })
+    const { distributor_id, zitiId, cart_type } = $instance.router.params
+    const _params = {
+      cart_type,
+      distributor_id,
+      isNostores: 1
+    }
+    // if(VERSION_PLATFORM || (VERSION_STANDARD && openLocation != 1)) {
+    //   _params['isNostores'] = 1
+    // }
+    const { list } = await api.cart.getZitiList(_params)
     setState(draft => {
-      draft.zitiList = list,
+      draft.zitiList = list
+      draft.isDefault = list.length == 0
       draft.zitiId = zitiId
     })
   }
@@ -42,7 +54,7 @@ function StoreZitiPicker(props) {
     }, 300)
   }
 
-  return <SpPage className='page-store-zitipicker'>
+  return <SpPage className='page-store-zitipicker' isDefault={isDefault} defaultMsg='暂无数据'>
     {
       zitiList.map((item, index) => (
         <View className='ziti-item' key={`ziti-item__${index}`}>

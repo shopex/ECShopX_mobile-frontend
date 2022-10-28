@@ -70,17 +70,17 @@ function NearlyShop(props) {
     const { pageIndex: page, pageSize } = params
     const { keyword } = state
     const [chooseProvice, chooseCity, chooseDistrict] = state.chooseValue
-    const { province, city, district } = location
+    const { province, city, district } = location || {}
     const query = {
       page,
       pageSize,
-      lat: location.lat,
-      lng: location.lng,
+      lat: location?.lat,
+      lng: location?.lng,
       name: keyword,
       province: province || chooseProvice,
       city: city || chooseCity,
       area: district || chooseDistrict,
-      type: location.lat ? state.type : 1,
+      type: location?.lat ? state.type : 1,
       search_type: state.search_type,
       sort_type: 1
     }
@@ -107,7 +107,7 @@ function NearlyShop(props) {
   }
 
   const onConfirmSearch = async ({ detail }) => {
-    const res = await entryLaunch.getLnglatByAddress(location.address)
+    const res = await entryLaunch.getLnglatByAddress(location?.address)
     const { lng, lat, error } = res
     if (error) {
       showToast(error)
@@ -323,7 +323,7 @@ function NearlyShop(props) {
               placeholder='请输入想搜索的店铺'
               confirmType='search'
               value={state.keyword}
-              disabled={!location.address}
+              disabled={!location?.address}
               onInput={onInputChange}
               onConfirm={onConfirmSearch}
             />
@@ -334,7 +334,7 @@ function NearlyShop(props) {
         </View>
       </View>
 
-      {isRecommend && !location.address && !address && (
+      {isRecommend && !location?.address && !address && (
         <View className='shop-logo'>
           <Image className='img' src={logo} mode='aspectFill' />
           <View className='tip'>您想要地区的店铺暂时未入驻网上商城</View>
@@ -344,14 +344,14 @@ function NearlyShop(props) {
       <View className='location-block'>
         <View className='block-title'>当前定位地址</View>
         <View className='location-wrap'>
-          <Text className='location-address'>{location.address || '无法获取您的位置信息'}</Text>
+          <Text className='location-address'>{location?.address || '无法获取您的位置信息'}</Text>
           <View className='btn-location' onClick={isPolicyTime}>
             <Text
               className={classNames('iconfont icon-zhongxindingwei', {
                 active: state.locationIng
               })}
             ></Text>
-            {location.address ? (state.locationIng ? '定位中...' : '重新定位') : '开启定位'}
+            {location?.address ? (state.locationIng ? '定位中...' : '重新定位') : '开启定位'}
           </View>
         </View>
       </View>
@@ -390,7 +390,7 @@ function NearlyShop(props) {
       )}
 
       <View className='nearlyshop-list'>
-        <View className='list-title'>{location.address ? '附近门店' : '推荐门店'}</View>
+        <View className='list-title'>{location?.address ? '附近门店' : '推荐门店'}</View>
         <SpScrollView ref={shopRef} className='shoplist-block' fetch={fetchShop}>
           {state.shopList.map((item, index) => (
             <View
@@ -404,7 +404,7 @@ function NearlyShop(props) {
         </SpScrollView>
       </View>
 
-      <View className='shop-bottom' onClick={handleClickItem}>
+      <View className='shop-bottom' onClick={() => handleClickShop(headquarters)}>
         <Image className='img' src={logo} mode='aspectFill' />
         {headquarters.store_name}
         <View className='iconfont icon-arrowRight' />
