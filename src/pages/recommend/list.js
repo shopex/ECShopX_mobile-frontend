@@ -333,7 +333,9 @@ export default class RecommendList extends Component {
     })
     if (type === 'reset') {
       const { paramsList, selectParams } = this.state
-      this.state.paramsList.map((item) => {
+      console.log('handleClickSearchParams:paramsList', paramsList)
+      console.log('handleClickSearchParams:selectParams', selectParams)
+      paramsList && paramsList.map((item) => {
         item.attribute_values.map((v_item) => {
           if (v_item.attribute_value_id === '') {
             v_item.isChooseParams = true
@@ -342,15 +344,16 @@ export default class RecommendList extends Component {
           }
         })
       })
-      selectParams.map((item) => {
+      selectParams && selectParams.map((item) => {
         item.attribute_value_id = ''
       })
       this.setState({
         paramsList,
-        selectParams
+        selectParams,        
       })
+      this.resetColumn()
     }
-
+    
     this.resetPage()
     this.setState(
       {
@@ -361,6 +364,16 @@ export default class RecommendList extends Component {
       }
     )
   }
+
+  resetColumn(){
+    this.setState({
+      selectColumn : Object.assign({}, { id: '', name: '全部', isChooseColumn: true }),
+      columnList : this.state.columnList.map((d,idx)=>{
+        d.isChooseColumn = idx == 0 ? true : false
+        return d
+      })
+    })
+  } 
 
   // 选定开户地区
   handleClickPicker = () => {

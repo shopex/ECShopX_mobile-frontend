@@ -5,7 +5,7 @@
     position: absolute;
     width: 100%;
     z-index: 9999;
-    top: 70px;
+    top: 90px;
   }
   .recommend-list {
     &__toolbar {
@@ -26,7 +26,7 @@
       }
       .search-input {
         box-shadow: none;
-        padding: 10px 0;
+        padding: 20px 0;
         &__focus{
           .at-search-bar {
             padding-right: 30px !important;
