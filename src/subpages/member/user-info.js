@@ -254,6 +254,7 @@ function MemberUserInfo(props) {
         url: e.detail.avatarUrl
       }
     ])
+    console.log('onChooseAvatar:res', res)
     setState((draft) => {
       draft.formUserInfo.avatar = res[0].url
     })
@@ -271,8 +272,12 @@ function MemberUserInfo(props) {
         }
       })
       const res = await imgUploader.uploadImageFn(imgFiles)
+      // console.log('onUploadAvatarFile:res', res)
+      // debugger
+      // https://resource/apml16866fa5e90bd3dd72409b11e4f68679.jpg
       setState((draft) => {
-        draft.formUserInfo.avatar = res[0].url
+        // draft.formUserInfo.avatar = res[0].url
+        draft.formUserInfo.avatar = imgFiles[0].url
       })
     }
   }
