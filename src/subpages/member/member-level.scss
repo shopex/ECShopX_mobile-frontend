@@ -5,6 +5,11 @@
     padding-top: 50px;
     .card-swiper {
       height: 375px;
+
+      /*  #ifdef  alipay  */
+      width:110%;
+      margin-left:-80px;
+      /*  #endif  */
     }
     .swiper-slide {
       text-align: center;
