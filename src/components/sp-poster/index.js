@@ -106,7 +106,10 @@ function SpPoster(props) {
       default:
         break
     }
+    console.log('handleCreatePoster:canvasObj', canvasObj)
     const { canvasWidth, canvasHeight } = canvasObj.getCanvasSize()
+    console.log('handleCreatePoster:canvasWidth', canvasWidth)
+    console.log('handleCreatePoster:canvasHeight', canvasHeight)
     setState(
       (draft) => {
         draft.pxWidth = canvasWidth
@@ -114,6 +117,7 @@ function SpPoster(props) {
         draft.ctx = ctx
       },
       async (_state) => {
+        console.log('handleCreatePoster-setState:_state', _state)
         await canvasObj.drawPoster()
         const poster = await getPoster(_state)
         Taro.hideLoading()
@@ -137,6 +141,7 @@ function SpPoster(props) {
           },
           Taro.getCurrentInstance().page
         )
+        console.log('handleCreatePoster-getPoster:poster', poster)
         resolve(poster)
       })
     })
