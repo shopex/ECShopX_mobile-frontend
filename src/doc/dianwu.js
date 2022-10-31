@@ -156,6 +156,7 @@ export const PENDING_ITEM = {
 export const ORDER_INFO = {
   items: ({ items }) => {
     return pickBy(items, {
+      id: 'id',
       pic: 'pic',
       itemId: 'item_id',
       itemName: 'item_name',
@@ -164,6 +165,7 @@ export const ORDER_INFO = {
       price: ({ price }) => price / 100,
       num: 'num',
       refundNum: 'left_aftersales_num',
+      leftAftersalesNum: 'left_aftersales_num',
       checked: false,
       discountFee: ({ discount_fee }) => discount_fee / 100,
       point: ({ point_fee }) => point_fee / 100
