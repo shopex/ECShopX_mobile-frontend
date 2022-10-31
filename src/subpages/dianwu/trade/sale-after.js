@@ -80,6 +80,7 @@ function DianwuTradeSaleAfter(props) {
     if (items.length == 0) {
       return showToast('请选择需要售后的商品')
     }
+    console.log(isNumber(refundFee), refundFee)
     if (!isNumber(refundFee)) {
       return showToast('请填写退款金额')
     }
@@ -218,7 +219,7 @@ function DianwuTradeSaleAfter(props) {
         value={refundFee}
         onChange={(e) => {
           setState(draft => {
-            draft.refundFee = e
+            draft.refundFee = parseFloat(e)
           })
         }}
       />}></SpCell>
@@ -231,7 +232,7 @@ function DianwuTradeSaleAfter(props) {
         value={refundPoint}
         onChange={(e) => {
           setState(draft => {
-            draft.refundPoint = e
+            draft.refundPoint = parseFloat(e)
           })
         }}
       />}></SpCell>

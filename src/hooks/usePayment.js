@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { TRANSFORM_PAYTYPE } from '@/consts'
-import { isWeixin, isWeb, isWxWeb } from '@/utils'
+import { isWeixin, isWeb, isWxWeb, showToast } from '@/utils'
 import api from '@/api'
 
 const initialState = {
@@ -197,6 +197,9 @@ export default (props = {}) => {
       },
       env_version: 'release'
     })
+    if(!openlink) {
+      return showToast('小程序URL Scheme生成失败')
+    }
     console.log('url_link:', openlink)
     Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
     setTimeout(() => {
