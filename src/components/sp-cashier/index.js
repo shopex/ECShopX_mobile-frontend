@@ -29,8 +29,8 @@ function SpCashier(props) {
   const {
     isOpened = true,
     value,
-    onClose = () => {},
-    onChange = () => {},
+    onClose = () => { },
+    onChange = () => { },
     paymentAmount = 0
   } = props
   const { userInfo } = useSelector((state) => state.user)
@@ -57,16 +57,16 @@ function SpCashier(props) {
 
   const fetchPaymentList = async () => {
     let platform = ''
-    if(isWxWeb) {
+    if (isWxWeb) {
       platform = 'wxPlatform'
-    } else if(isWeixin) {
+    } else if (isWeixin) {
       platform = 'wxMiniProgram'
-    } else if(isWeb) {
-      platform = 'h5'
-    } else if(isAPP()) {
+    } else if (isAPP()) {
       platform = 'app'
     } else if(isAlipay) {
       platform = 'alipaymini'
+    } else if (isWeb) {
+      platform = 'h5'
     }
 
     const params = {
@@ -80,10 +80,10 @@ function SpCashier(props) {
       const resAppPayment = await Taro.SAPPPay.getPayList()
       console.log('fetchAppPaymentList:', resAppPayment)
       const appPaymentlist = pickBy(resAppPayment, doc.payment.APP_PAYMENT_ITEM)
-      
+
     }
     let _list = list
-    if(process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development') {
       _list = list.concat(paymentList)
     }
 
@@ -105,7 +105,7 @@ function SpCashier(props) {
     const res = await Taro.SAPPPay.getPayList()
     console.log('fetchAppPaymentList:', res)
     const list = pickBy(res, doc.payment.APP_PAYMENT_ITEM)
-    if(process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development') {
       list.concat(paymentList)
     }
     setState((draft) => {
@@ -161,7 +161,7 @@ function SpCashier(props) {
             <SpCheckbox
               checked={item.paymentChannel == selectPayment}
               onChange={onChangePayment.bind(this, item)}
-              // disabled={onDisabled(item)}
+            // disabled={onDisabled(item)}
             >
               {renderPaymentName(item)}
             </SpCheckbox>

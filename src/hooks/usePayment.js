@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { TRANSFORM_PAYTYPE } from '@/consts'
-import { isWeixin, isWeb, isWxWeb, requestAlipayminiPayment } from '@/utils'
+import { isWeixin, isWeb, isWxWeb, requestAlipayminiPayment, isAPP, showToast } from '@/utils'
 import api from '@/api'
 
 const initialState = {
@@ -28,13 +28,13 @@ export default (props = {}) => {
         if (pay_channel == 'wx_lite') {
           if (isWeixin) {
             weappPay(params, orderInfo)
-          } else if (isWeb) {
+          } else if (isAPP() || isWeb) {
             // H5非微信浏览器，跳转小程序发起支付
             adapayH5Pay(params, orderInfo)
           }
         } else if (pay_channel == 'wx_pub') {
           wxpayjsPay(params, orderInfo)
-        } else if (pay_channel == 'alipay_wap') {
+        } else if (pay_channel == 'alipay_wap' || pay_channel == 'alipay') {
           adapayAliH5Pay(params, orderInfo)
         }
         break
@@ -231,6 +231,9 @@ export default (props = {}) => {
       },
       env_version: 'release'
     })
+    if(!openlink) {
+      return showToast('小程序URL Scheme生成失败')
+    }
     console.log('url_link:', openlink)
     Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
     setTimeout(() => {
@@ -245,11 +248,13 @@ export default (props = {}) => {
     let query = {
       order_id,
       pay_type,
-      order_type: order_type,
-      return_url: `${protocol}//${host}${cashierResultUrl}?order_id=${order_id}`
+      order_type
     }
-    if (pay_type == 'adapay' && pay_channel == 'alipay_wap') {
+    if (pay_type == 'adapay') {
       query['pay_channel'] = pay_channel
+    }
+    if(!isAPP()) {
+      query['return_url'] = `${protocol}//${host}${cashierResultUrl}?order_id=${order_id}`
     }
 
     const { payment } = await api.cashier.getPayment(query)
