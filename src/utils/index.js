@@ -288,6 +288,14 @@ export function copyText(text, msg = '内容已复制') {
         error: reject
       })
     } else {
+      if(isAlipay){
+        console.log('copyText:text', text)
+        my.setClipboard({
+          text: text,
+        });
+        resolve(text)
+        return 
+      }
       if (copy(text)) {
         S.toast(msg)
         resolve(text)

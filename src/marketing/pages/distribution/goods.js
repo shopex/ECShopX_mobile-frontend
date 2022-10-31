@@ -152,7 +152,7 @@ export default class DistributionGoods extends Component {
       goodsSort: current === 0 ? null : current === 1 ? 1 : sort > 0 ? 3 : 2
     }
 
-    if (current == this.state.curFilterIdx && sort !== null) {
+    if (current == this.state.curFilterIdx && current !== 2) {
       return
     }
 
