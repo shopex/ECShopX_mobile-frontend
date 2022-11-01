@@ -2,7 +2,7 @@
  * @Author: dreamworks.cnn@gmail.com
  * @Date: 2022-11-01 11:36:16
  * @LastEditors: dreamworks.cnn@gmail.com
- * @LastEditTime: 2022-11-01 11:36:52
+ * @LastEditTime: 2022-11-01 11:42:07
  * @FilePath: /ecshopxx-vshop/src/components/sp-chat/index.js
  * @Description: 
  * 
@@ -16,7 +16,7 @@ import { useImmer } from 'use-immer'
 import { SpFloatMenuItem } from '@/components'
 import { showToast, isAlipay } from '@/utils'
 import api from '@/api'
->>>>>>> develop
+
 import './index.scss'
 
 const initialState = {
