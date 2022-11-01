@@ -808,7 +808,6 @@ function CartCheckout(props) {
   const bindMultiPickerColumnChange = (e) => {
     const { column, value } = e.detail
     let _multiValue = [multiValue[0]]
-    // debugger
     if (column == 0) {
       _multiValue[1] = streetCommunityList[value].children.map((item) => item.label)
       setState((draft) => {
@@ -817,7 +816,6 @@ function CartCheckout(props) {
       })
     } else {
     }
-    // debugger
   }
 
   const onChangeBuildInput = (name, val) => {

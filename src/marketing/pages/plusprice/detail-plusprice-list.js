@@ -89,7 +89,6 @@ export default class DetailPluspriceList extends Component {
   }
   handleClickItem(item) {
     const { distributor_id } = item
-    // debugger
     // const dtid = distributor_id ? distributor_id : getDistributorId()
     Taro.navigateTo({
       url: `/pages/item/espier-detail?id=${item.item_id}&dtid=${distributor_id}`

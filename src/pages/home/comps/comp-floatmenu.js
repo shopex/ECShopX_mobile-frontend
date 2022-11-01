@@ -31,7 +31,6 @@ function CompFloatMenu(props) {
     }
     const res = await api.distribution.info(param)
 
-    // debugger;
     const { user_id, is_valid, selfInfo = {}, parentInfo = {} } = res || {}
     let _userId
     if (is_valid) {

@@ -22,7 +22,6 @@ function SpPage(props, ref) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const { lock, lockStyle, pageTitle, isTabBarPage, customNavigation, cusCurrentPage } = state
-  // debugger
   const {
     className,
     children,
