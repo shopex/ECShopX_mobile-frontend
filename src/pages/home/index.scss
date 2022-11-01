@@ -1,0 +1,20 @@
+.padtop {
+  padding-top: $home-header-height;
+}
+.page-index {
+  padding-bottom: $tabbar-height;
+  .home-body {
+    overflow-x: hidden;
+    &.has-home-header {
+      margin-top: $home-header-height;
+    }
+    /*  #ifdef  h5  */
+    &.has-home-header {
+      margin-top: 0
+    }
+    /*  #endif  */
+  }
+  .wgt__padded {
+    padding: 24px 0px;
+  }
+}
