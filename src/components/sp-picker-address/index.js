@@ -18,7 +18,7 @@ function SpPickerAddress(props) {
   const { onChange = () => {}, value = [] } = props
   const [state, setState] = useImmer(initialState)
   const { areaData, areaList, multiIndex, selectValue, selectId } = state
-  
+
   useEffect(() => {
     fetch()
   }, [])
@@ -29,7 +29,6 @@ function SpPickerAddress(props) {
     const arrayCity = []
     const arrayCounty = []
     const multiIndex = [0, 0, 0]
-    // debugger
     if (value.length > 0) {
       res.forEach((item, index) => {
         arrayProvince.push(item.label)
