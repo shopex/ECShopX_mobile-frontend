@@ -1,7 +1,18 @@
+/*
+ * @Author: dreamworks.cnn@gmail.com
+ * @Date: 2022-10-13 00:40:25
+ * @LastEditors: dreamworks.cnn@gmail.com
+ * @LastEditTime: 2022-11-02 16:03:31
+ * @FilePath: /ecshopxx-vshop/src/doc/shop.js
+ * @Description: 
+ * 
+ * Copyright (c) 2022 by wangzhanyuan dreamworks.cnn@gmail.com, All Rights Reserved. 
+ */
 export const SHOP_ITEM = {
   logo: 'logo',
   title: 'title',
   store_name: 'store_name',
+  name: 'store_name',
   hour: 'hour',
   store_address: 'store_address',
   address: 'address',

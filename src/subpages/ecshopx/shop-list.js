@@ -87,7 +87,7 @@ function shopList (props) {
     const { list, total_count, tagList } = await api.shop.list(query)
     const _list = pickBy(list, doc.shop.SHOP_ITEM)
     const _tagList = pickBy(tagList, doc.goods.BUSINESS_LIST_TAG)
-
+    console.log('_list', _list)
     await setState((v) => {
       v.list = [...v.list, ..._list]
       v.tagList = _tagList
