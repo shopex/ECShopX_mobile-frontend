@@ -592,7 +592,11 @@ export default class RecommendList extends Component {
                 <SpAddress isOpened={isSpAddressOpened} onClose={this.handleClickCloseSpAddress} onChange={this.onPickerChange} />
 
                 {address ? (
-                  <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}></Text>
+                  <View
+                  className='zoom-btn icon-close iconfont'
+                  onClick={this.handleRegionRefresh.bind(this)}
+                ></View>
+                  // <Text className='icon-close' onClick={this.handleRegionRefresh.bind(this)}>x</Text>
                 ) : (
                   ''
                 )}
