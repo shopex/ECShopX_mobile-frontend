@@ -242,7 +242,7 @@ function MemberUserInfo(props) {
   const handleLogOut = async () => {
     logout()
     showToast('退出登录成功')
-    goToPage(process.env.APP_HOME_PAGE)
+    Taro.redirectTo({ url: '/pages/index' })
   }
 
   const onChooseAvatar = async (e) => {

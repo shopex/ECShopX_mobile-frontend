@@ -232,7 +232,7 @@ export default class DistributionDashboard extends Component {
         x: 0,
         y: 0,
         width: 375,
-        height: isAlipay ? 320 : 640,
+        height: 640,
         canvasId: 'myCanvas'
       }).then((res) => {
         const shareImg = res.tempFilePath
