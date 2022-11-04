@@ -28,7 +28,6 @@ const Index = () => {
   }, [])
 
   // useDidShow(() => {
-  //   debugger
   //   log.debug(`dianwu useDidShow ${webviewSrc}`)
   //   createWebviewUrl()
   // })
@@ -61,7 +60,6 @@ const Index = () => {
 
 
   const onMessage = (e) => {
-    debugger
   }
 
   return <WebView src={webviewSrc} onMessage={onMessage} />

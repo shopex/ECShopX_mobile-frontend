@@ -2,17 +2,17 @@
  * @Author: dreamworks.cnn@gmail.com
  * @Date: 2022-02-28 00:39:48
  * @LastEditors: dreamworks.cnn@gmail.com
- * @LastEditTime: 2022-11-02 19:30:26
+ * @LastEditTime: 2022-11-04 17:10:21
  * @FilePath: /ecshopxx-vshop/src/marketing/pages/distribution/comps/goods-item.js
  * @Description: 
  * 
  * Copyright (c) 2022 by wangzhanyuan dreamworks.cnn@gmail.com, All Rights Reserved. 
  */
 import React, { Component } from 'react'
+import Taro from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
 // import { AtButton } from 'taro-ui'
 import { classNames } from '@/utils'
-import Taro from '@tarojs/taro'
 // import api from '@/api'
 
 import './goods-item.scss'
@@ -72,7 +72,7 @@ export default class DistributionGoodsItem extends Component {
               <View className='goods-item__actions'>
                 <Button
                   className='goods-item__share-btn'
-                  dataInfo={info}
+                  data-info={info}
                   openType='share'
                   onClick={()=>Taro.setStorageSync('shareData',info)}
                   size='small'
