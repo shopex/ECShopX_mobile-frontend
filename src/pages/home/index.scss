@@ -1,6 +1,11 @@
 .padtop {
   padding-top: $home-header-height;
 }
+.sp-page-body{
+   /*  #ifdef  alipay  */
+  padding-top: 80px;
+  /*  #endif  */
+}
 .page-index {
   padding-bottom: $tabbar-height;  
   .home-body {
