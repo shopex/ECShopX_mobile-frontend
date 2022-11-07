@@ -23,31 +23,38 @@ const upload = {
   aliUpload: async (item, tokenRes) => {
     const { accessid, dir, host, policy, signature } = tokenRes
     const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-    debugger
+    const updata = {
+      url: host,
+      filePath: item.url,
+      name: 'file',
+      withCredentials: false,
+      formData: {
+        name: filename,
+        key: `${dir}`,
+        policy: policy,
+        OSSAccessKeyId: accessid,
+        // 让服务端返回200
+        signature: signature,
+        success_action_status: '200'
+        // 服务端回调
+        // callback: callback
+      },
+      fileType: 'image',
+      header: {
+        'Content-Type': 'application/x-www-form-urlencoded', // 只能是这种形式
+      },
+      fail:(err)=>{
+        // debugger
+        // console.log('aliUpload:host', host)
+        console.log('aliUpload:Taro.uploadFile', err)
+      }
+    }
+    // console.log('upload:updata', updata)
+    // debugger
     try {
-      const res = await Taro.uploadFile({
-        url: host,
-        filePath: item.url,
-        name: 'file',
-        withCredentials: false,
-        formData: {
-          name: filename,
-          key: `${dir}`,
-          policy: policy,
-          OSSAccessKeyId: accessid,
-          // 让服务端返回200
-          signature: signature,
-          success_action_status: '200'
-          // 服务端回调
-          // callback: callback
-        },
-        fail:(err)=>{
-          debugger
-          console.log('aliUpload:Taro.uploadFile', err)
-        }
-      })
-      console.log('---aliUpload-upload:res', res)
-      console.log('---aliUpload-:dir', host, dir)
+      const res = await Taro.uploadFile(updata)
+      // console.log('---aliUpload-upload:res', res)
+      // console.log('---aliUpload-:dir', host, dir)
       if (!res) {
         return false
       }
@@ -197,18 +204,18 @@ const uploadImageFn = async (imgFiles, filetype = 'image') => {
       const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
       const { driver, token } = await getToken({ filetype, filename })
       const uploadType = getUploadFun(driver)
-      console.log('----uploadType----', uploadType)
+      // console.log('----uploadType----', uploadType)
       const img = await upload[uploadType](item, { ...token, filetype })
-      console.log('---uploadImageFn---', img)
+      // console.log('---uploadImageFn---1', img)
       if (!img || !img.url) {
         continue
       }
       imgs.push(img)
     } catch (e) {
-      console.log('uploadImageFn', e)
+      // console.log('uploadImageFn', e)
     }
   }
-  console.log('---uploadImageFn---', imgs)
+  // console.log('---uploadImageFn---2', imgs)
   return imgs
 }
 
