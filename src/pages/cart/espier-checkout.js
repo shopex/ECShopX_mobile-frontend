@@ -269,7 +269,7 @@ function CartCheckout(props) {
     let orderId
     try {
       const resOrderInfo = await api.trade.h5create(params)
-      orderInfo = resOrderInfo
+      orderInfo = resOrderInfo      
       orderId = resOrderInfo.order_id
     } catch (e) {
       setState((draft) => {

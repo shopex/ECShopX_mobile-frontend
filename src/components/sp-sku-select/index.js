@@ -47,6 +47,7 @@ function SpSkuSelect(props) {
     type,
     hideInputNumber = false
   } = props
+  console.log('SpSkuSelect:info', info)
   // const [state, setState] = useImmer(initialState)
   const [state, setState] = useAsyncCallback(initialState)
   const { selection, curImage, disabledSet, curItem, skuText, num, loading } = state
@@ -226,6 +227,7 @@ function SpSkuSelect(props) {
       url += `&type=${activityType}&group_id=${groups_activity_id}`
     }
     Taro.hideLoading()
+    console.log('navigateTo:url', url)
     Taro.navigateTo({
       url
     })
