@@ -69,7 +69,6 @@ class DistributionPoster {
 
     const pic = qrcode_bg_img || `${process.env.APP_IMAGE_CDN}/fenxiao_bk.png`
     console.log('goods pic1:', pic)
-    debugger
     // 背景图片
     this.bkg = await Taro.getImageInfo({ src: pic })
     // 太阳码
@@ -141,14 +140,14 @@ class DistributionPoster {
     drawImage(
       {
         imgPath: this.codeImg.path,
-        x: isAlipay ? 26 : 120,
+        x: isAlipay ? 30 : 120,
         y: isAlipay ? 90 : 620,
-        w: isAlipay ? 120 : 480,
-        h: isAlipay ? 120 : 480,
+        w: isAlipay ? 220 : 480,
+        h: isAlipay ? 240 : 480,
         sx: 0,
         sy: 0,
-        sw:isAlipay ? 120: this.codeImg.width,
-        sh:isAlipay ? 110: this.codeImg.height
+        sw:this.codeImg.width,
+        sh:this.codeImg.width
       },
       drawOptions
     )
