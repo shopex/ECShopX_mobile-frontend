@@ -76,7 +76,7 @@ function Home() {
   useEffect(() => {
     if (initState) {
       init()
-      // setNavigationBarTitle(appName)
+      setNavigationBarTitle(appName)
     }
   }, [initState])
 
