@@ -39,18 +39,7 @@ const CategoryIndex = (props) => {
     }
     const { list } = await api.category.getCategory(query)
     const { data, hasSeries } = list[0].params
-    const seriesList = pickBy(data, {
-        name: 'name',
-        children: ({ children }) => {
-          return pickBy(children, {
-            name: 'name',
-            img: 'img',
-            category_id :'category_id',
-            main_category_id:'main_category_id',
-            is_main_category:'is_main_category',
-          })
-        }
-    })
+    const seriesList = pickBy(data, doc.category.CATEGORY_STORE_LIST_TWO_CHILDREN)
     let tabList = []
     let contentList = []
     // if (hasSeries) {
