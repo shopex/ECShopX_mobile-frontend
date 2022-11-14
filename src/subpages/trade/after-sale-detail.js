@@ -5,15 +5,15 @@ import Taro from "@tarojs/taro";
 import api from "@/api"
 import doc from "@/doc"
 import { View } from "@tarojs/components"
-import "./list.scss";
+import "./after-sale-detail.scss";
 
 
-function TradeList(props) {
-  return <View className="page-trade-list"></View>;
+function TradeAfterSaleDetail(props) {
+  return <View className="page-trade-after-sale-detail"></View>;
 }
 
-TradeList.options = {
+TradeAfterSaleDetail.options = {
   addGlobalClass: true
 }
 
-export default TradeList
+export default TradeAfterSaleDetail
