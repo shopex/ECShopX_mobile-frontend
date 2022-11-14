@@ -8,11 +8,9 @@ import { AtTabs, AtInput, AtTextarea } from 'taro-ui'
 import { SpPage, SpButton, SpCell, SpCheckbox, SpImage, SpInputNumber, SpSelect, SpUpload, SpPrice } from '@/components'
 import { View, Text, Picker } from "@tarojs/components"
 import { pickBy, showToast, isNumber } from '@/utils'
-// import CompTradeInfo from './../comps/comp-trade-info'
 import "./after-sale.scss";
 
 const initialState = {
-  tradeId: '',
   info: null,
   curTabIdx: 0,
   tabList: [
@@ -50,71 +48,20 @@ function TradeAfterSale(props) {
   const [state, setState] = useImmer(initialState)
   const { tradeId, info, curTabIdx, tabList, reason, reasons, refundFee, refundPoint, goodsReturned, goodsReturnedList, description, pic } = state
 
-  // useEffect(() => {
-  //   if (info) {
-  //     const { items } = info
-  //     setState(draft => {
-  //       draft.refundFee = items
-  //         .filter((item) => item.checked)
-  //         .reduce((sum, { totalFee, num, refundNum }) => sum + totalFee / num * refundNum, 0)
-  //     })
-  //   }
-  // }, [info])
+  useEffect(() => {
+    fetch()
+  }, [])
 
   const onCancel = () => {
     Taro.navigateBack()
   }
 
-  const onConfirm = async () => {
-    if (!reason) {
-      return showToast('请选择退款原因')
-    }
-    const { trade_id } = $instance.router.params
-    const [img] = pic || []
-    const items = info?.items.filter(item => item.checked).map(item => {
-      return {
-        id: item.id,
-        num: item.refundNum
-      }
+  const fetch = async () => {
+    const { id } = $instance.router.params
+    const { orderInfo } = await api.trade.detail(id)
+    setState(draft => {
+      draft.info = pickBy(orderInfo, doc.trade.TRADE_ITEM)
     })
-    if (items.length == 0) {
-      return showToast('请选择需要售后的商品')
-    }
-    console.log(isNumber(refundFee), refundFee)
-    if (!isNumber(refundFee)) {
-      return showToast('请填写退款金额')
-    }
-    if(refundFee > getRealRefundFee()) {
-      return showToast('退款金额超过实际可退金额')
-    }
-    if (!isNumber(refundPoint)) {
-      return showToast('请填写积分')
-    }
-    const params = {
-      order_id: trade_id,
-      aftersales_type: tabList[curTabIdx].status,
-      goods_returned: goodsReturned[0] == 2,
-      reason: reasons?.[reason],
-      detail: JSON.stringify(items),
-      refund_fee: refundFee * 100,
-      refund_point: refundPoint,
-      description,
-      pic: img
-    }
-    await api.dianwu.salesAfterApply(params)
-    let type = 3
-    if (params.aftersales_type == 'ONLY_REFUND') {
-      type = 3
-    } else if (params.aftersales_type == 'REFUND_GOODS' && !params.goods_returned) {
-      type = 4
-    } else if (params.aftersales_type == 'REFUND_GOODS' && params.goods_returned) {
-      type = 5
-    }
-    Taro.redirectTo({ url: `/subpages/dianwu/trade/result?type=${type}` })
-    // showToast('订单取消成功')
-    // setTimeout(() => {
-    //   Taro.navigateBack()
-    // }, 2000)
   }
 
   const onChangeItemCheck = (item, index, e) => {
@@ -143,7 +90,7 @@ function TradeAfterSale(props) {
 
   return <SpPage className='page-trade-after-sale' renderFooter={
     <View className='btn-wrap'>
-      <SpButton confirmText='提交' onReset={onCancel} onConfirm={onConfirm} />
+      {/* <SpButton confirmText='提交' onReset={onCancel} onConfirm={onConfirm} /> */}
     </View>
   }
   >
@@ -157,12 +104,6 @@ function TradeAfterSale(props) {
         })
       }}
     />
-
-    {/* <CompTradeInfo onFetch={(data) => {
-      setState(draft => {
-        draft.info = data
-      })
-    }} /> */}
 
     <View className='picker-reason'>
       <Picker
