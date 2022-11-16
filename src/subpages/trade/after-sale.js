@@ -5,7 +5,7 @@ import Taro, { getCurrentInstance } from "@tarojs/taro";
 import api from "@/api"
 import doc from "@/doc"
 import { AtTabs, AtInput, AtTextarea } from 'taro-ui'
-import { SpPage, SpButton, SpCell, SpCheckbox, SpImage, SpInputNumber, SpSelect, SpUpload, SpPrice } from '@/components'
+import { SpPage, SpTabs, SpCell, SpCheckbox, SpImage, SpInputNumber, SpSelect, SpUpload, SpPrice } from '@/components'
 import { View, Text, Picker } from "@tarojs/components"
 import { pickBy, showToast, isNumber } from '@/utils'
 import "./after-sale.scss";
@@ -14,8 +14,8 @@ const initialState = {
   info: null,
   curTabIdx: 0,
   tabList: [
-    { title: '仅退款', status: 'ONLY_REFUND' },
-    { title: '退货退款', status: 'REFUND_GOODS' }
+    { title: '仅退款', icon: 'icon-jintuikuan-01', type: 'ONLY_REFUND' },
+    { title: '退货退款', icon: 'icon-tuikuantuihuo-01', type: 'REFUND_GOODS' }
   ],
   reason: '',
   reasons: [
@@ -94,33 +94,13 @@ function TradeAfterSale(props) {
     </View>
   }
   >
-
-    <AtTabs
-      current={curTabIdx}
-      tabList={tabList}
-      onClick={(e) => {
-        setState(draft => {
-          draft.curTabIdx = e
-        })
-      }}
-    />
-
-    <View className='picker-reason'>
-      <Picker
-        mode='selector'
-        range={reasons}
-        onChange={(e) => {
-          setState(draft => {
-            draft.reason = e.detail.value
-          })
-        }}
-      >
-        <SpCell title='退款原因' isLink value={<Text>{`${reasons?.[reason] || '请选择取消原因'}`}</Text>}></SpCell>
-      </Picker>
-    </View>
+    <SpTabs current={curTabIdx} tablist={tabList} onChange={(e) => {
+      setState(draft => {
+        draft.curTabIdx = e
+      })
+    }} />
 
     <View className='refund-items'>
-      <View className='title'>退款商品</View>
       <View className='items-container'>
         {
           info?.items.map((item, index) => (
@@ -133,11 +113,13 @@ function TradeAfterSale(props) {
                 <View className='goods-info'>
                   <View className='goods-info-hd'>
                     <Text className='goods-title'>{item.itemName}</Text>
-                    <Text className='goods-num'>{`数量：${item.num}`}</Text>
                   </View>
-                  <View><SpPrice value={item.totalFee / item.num} /></View>
                   <View className='goods-info-bd'>
                     <View className='sku-info'>{item.itemSpecDesc && <Text>{`规格：${item.itemSpecDesc}`}</Text>}</View>
+                    <View><SpPrice value={item.totalFee / item.num} /> x <Text className='num'>{item.num}</Text></View>
+                  </View>
+                  <View className='goods-info-ft'>
+                    <Text>退款数量</Text>
                     <SpInputNumber
                       disabled={!item.leftAftersalesNum}
                       value={item.refundNum}
@@ -152,6 +134,20 @@ function TradeAfterSale(props) {
           ))
         }
       </View>
+    </View>
+
+    <View className='picker-reason'>
+      <Picker
+        mode='selector'
+        range={reasons}
+        onChange={(e) => {
+          setState(draft => {
+            draft.reason = e.detail.value
+          })
+        }}
+      >
+        <SpCell title='退款原因' isLink value={<Text>{`${reasons?.[reason] || '请选择取消原因'}`}</Text>}></SpCell>
+      </Picker>
     </View>
 
     <View className='refund-amount'>

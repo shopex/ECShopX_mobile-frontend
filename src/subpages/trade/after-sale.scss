@@ -47,7 +47,8 @@
   }
   .refund-items {
     background-color: #fff;
-    margin-top: 20px;
+    margin: 24px 16px 0;
+    border-radius: 16px;
     .title {
       font-size: 30px;
       font-weight: 500;
@@ -56,12 +57,15 @@
     }
   }
   .items-container {
-    padding: 0 32px 20px;
+    // padding: 0 32px 20px;
+    padding: 24px 20px;
   }
   .item-wrap {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
   }
   .item-bd {
     flex: 1;
@@ -79,6 +83,12 @@
     &-bd {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+    &-ft {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .goods-title {
       font-weight: 500;
@@ -94,6 +104,10 @@
       font-size: 24px;
       font-weight: 400;
       color: #858b9c;
+      background: #F5F5F5;
+      padding: 0 10px;
+      height: 34px;
+      line-height: 34px;
     }
   }
   .refund-amount,
