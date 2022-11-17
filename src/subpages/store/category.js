@@ -86,7 +86,7 @@ const CategoryIndex = (props) => {
 
   const curContent = contentList?.[pIndex]?.[sIndex]
 
-  console.log('curContent=======================================', curContent)
+  console.log('curContent', curContent)
   return (
     <SpPage className='page-store-category' renderFooter={<CompTabbar />}>
       {/* <View id='category-tab'>
