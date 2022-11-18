@@ -67,7 +67,7 @@
     background-color: #fff;
     // background-color: rgb(66, 209, 109);
     .category-content-list {
-      display: flex;
+      // display: flex;
       flex-wrap: wrap;
       padding: 20rpx;
     }
@@ -85,7 +85,10 @@
     }
   }
   .category-two-item {
+    // margin: 0 10px 20px 0;
+    // text-align: center;
     margin-bottom: 20px;
+
     .item-name {
       color: #333;
       font-weight: 600;
