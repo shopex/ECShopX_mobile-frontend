@@ -52,7 +52,8 @@ function TradeStorePicker(props) {
   }
 
   const onSelectShopItem = (item) => {
-    onEventChannel('onEventPickerStore', item)
+    // onEventChannel('onEventPickerStore', item)
+    Taro.eventCenter.trigger('onEventPickerStore', item)
     Taro.navigateBack()
   }
   console.log('refundStore:', refundStore)

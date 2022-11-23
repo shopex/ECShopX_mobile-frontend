@@ -43,6 +43,16 @@ function TradeAfterSale(props) {
 
   useEffect(() => {
     fetch()
+    Taro.eventCenter.on('onEventPickerStore', (item) => {
+      console.log('onEventPickerStore:', item)
+      setState(draft => {
+        draft.refundStore = item
+      })
+    })
+
+    return () => {
+      Taro.eventCenter.off('onEventPickerStore')
+    }
   }, [])
 
   useEffect(() => {
@@ -277,15 +287,7 @@ function TradeAfterSale(props) {
             'placeholder': !refundStore
           })}>{refundStore ? refundStore.name : '请选择退货门店'}</Text>} onClick={() => {
             Taro.navigateTo({
-              url: `/subpages/trade/store-picker?distributor_id=${info.distributorId}&refund_store=${refundStore?.address_id}`,
-              events: {
-                onEventPickerStore: (item) => {
-                  console.log('onEventPickerStore:', item)
-                  setState(draft => {
-                    draft.refundStore = item
-                  })
-                }
-              }
+              url: `/subpages/trade/store-picker?distributor_id=${info.distributorId}&refund_store=${refundStore?.address_id}`
             })
           }} />
           <SpCell border title='联系人' value={<AtInput
