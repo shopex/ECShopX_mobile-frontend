@@ -148,7 +148,7 @@ function TradeAfterSaleDetail(props) {
     </View>
 
     {
-      info?.returnType == 'logistics' && <View className='after-address'>
+      info?.returnType == 'logistics' && info?.hasAftersalesAddress && <View className='after-address'>
         <SpCell title='回寄信息:'>
           <>
             <View className='contact-mobile'>
@@ -211,14 +211,16 @@ function TradeAfterSaleDetail(props) {
       <SpCell title='退货方式'>
         {getRefundType()}
       </SpCell>
-      <SpCell title='退货门店'>
-        <>
-          <View className='store-name'>{info?.afterSalesName}</View>
-          <View className='store-address'>{info?.afterSalesAddress}</View>
-          <View className='store-connect'>{info?.afterSalesMobile}</View>
-          <View className='store-time'>{`营业时间 ${info?.aftersalesHours}`}</View>
-        </>
-      </SpCell>
+      {
+        info?.returnType == 'offline' && <SpCell title='退货门店'>
+          <>
+            <View className='store-name'>{info?.afterSalesName}</View>
+            <View className='store-address'>{info?.afterSalesAddress}</View>
+            <View className='store-connect'>{info?.afterSalesMobile}</View>
+            <View className='store-time'>{`营业时间 ${info?.aftersalesHours}`}</View>
+          </>
+        </SpCell>
+      }
     </View>
 
     <View className='after-sales-type'>

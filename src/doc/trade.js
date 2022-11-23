@@ -1,4 +1,4 @@
-import { pickBy, formatDateTime } from "@/utils"
+import { pickBy, formatDateTime, isObject } from "@/utils"
 
 export const TRADE_ITEM = {
   orderId: 'order_id',
@@ -67,6 +67,7 @@ export const TRADE_AFTER_SALES_ITEM = {
       price: ({ orderItem }) => orderItem.total_fee / 100,
     })
   },
+  hasAftersalesAddress: ({ aftersales_address }) => isObject(aftersales_address),
   afterSalesName: ({ aftersales_address }) =>  aftersales_address.aftersales_name,
   afterSalesMobile: ({ aftersales_address }) =>  aftersales_address.aftersales_mobile,
   afterSalesAddress: ({ aftersales_address }) =>  aftersales_address.aftersales_address,
