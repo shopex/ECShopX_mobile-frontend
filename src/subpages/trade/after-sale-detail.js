@@ -144,33 +144,36 @@ function TradeAfterSaleDetail(props) {
   >
     <View className='after-progress'>
       {AFTER_SALE_STATUS_TEXT[info?.progress]}
-      {info?.distributorRemark && <View className='distributor-remark'>商家备注：{info.distributorRemark}</View>}
+      {info?.refuseReason && <View className='distributor-remark'>商家备注：{info.refuseReason}</View>}
     </View>
 
-    <View className='after-address'>
-      <SpCell title='回寄信息:'>
-        <>
-          <View className='contact-mobile'>
-            <Text className='contact'>{info?.afterSalesContact}</Text>
-            <Text className='mobile'>{info?.afterSalesMobile}</Text>
+    {
+      info?.returnType == 'logistics' && <View className='after-address'>
+        <SpCell title='回寄信息:'>
+          <>
+            <View className='contact-mobile'>
+              <Text className='contact'>{info?.afterSalesContact}</Text>
+              <Text className='mobile'>{info?.afterSalesMobile}</Text>
+            </View>
+            <View className='btn-copy' circle size='small' onClick={() => {
+              copyText(`${info?.afterSalesContact} ${info?.afterSalesMobile}\n${info?.afterSalesAddress}`)
+            }}>复制</View>
+          </>
+        </SpCell>
+        <View className='address-detail'>{info?.afterSalesAddress}</View>
+        {
+          info?.progress == 1 && <View className='btn-container'>
+            <View className='btn-logistics'>
+              <AtButton circle type='primary' onClick={() => {
+                Taro.navigateTo({ url: `/subpages/trade/logistics-info?aftersales_bn=${aftersales_bn}` })
+              }}>填写物流信息</AtButton>
+            </View>
           </View>
-          <View className='btn-copy' circle size='small' onClick={() => {
-            copyText(`${info?.afterSalesContact} ${info?.afterSalesMobile}\n${info?.afterSalesAddress}`)
-          }}>复制</View>
-        </>
-      </SpCell>
-      <View className='address-detail'>{info?.afterSalesAddress}</View>
-      {
-        info?.progress == 1 && <View className='btn-container'>
-          <View className='btn-logistics'>
-            <AtButton circle type='primary' onClick={() => {
-              Taro.navigateTo({ url: `/subpages/trade/logistics-info?aftersales_bn=${aftersales_bn}` })
-            }}>填写物流信息</AtButton>
-          </View>
-        </View>
-      }
+        }
 
-    </View>
+      </View>
+    }
+
 
     <View className='refund-items'>
       <View className='items-container'>
@@ -210,10 +213,10 @@ function TradeAfterSaleDetail(props) {
       </SpCell>
       <SpCell title='退货门店'>
         <>
-          <View className='store-name'>ShopX徐汇区田尚坊钦州北路店显示全部门店名称</View>
-          <View className='store-address'>上海市徐汇区钦州北路282号-2</View>
-          <View className='store-connect'>021-33333333</View>
-          <View className='store-time'>营业时间 9:00-21:00</View>
+          <View className='store-name'>{info?.afterSalesName}</View>
+          <View className='store-address'>{info?.afterSalesAddress}</View>
+          <View className='store-connect'>{info?.afterSalesMobile}</View>
+          <View className='store-time'>{`营业时间 ${info?.aftersalesHours}`}</View>
         </>
       </SpCell>
     </View>

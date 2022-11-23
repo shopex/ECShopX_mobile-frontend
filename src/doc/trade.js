@@ -57,6 +57,7 @@ export const TRADE_AFTER_SALES_ITEM = {
   afterSalesBn: 'aftersales_bn',
   afterSalesType: 'aftersales_type',
   distributorRemark: 'distributor_remark',
+  refuseReason: 'refuse_reason',
   items: ({ detail }) => {
     return pickBy(detail, {
       pic: ({ orderItem }) => orderItem.pic,
@@ -66,9 +67,11 @@ export const TRADE_AFTER_SALES_ITEM = {
       price: ({ orderItem }) => orderItem.total_fee / 100,
     })
   },
+  afterSalesName: ({ aftersales_address }) =>  aftersales_address.aftersales_name,
   afterSalesMobile: ({ aftersales_address }) =>  aftersales_address.aftersales_mobile,
   afterSalesAddress: ({ aftersales_address }) =>  aftersales_address.aftersales_address,
   afterSalesContact: ({ aftersales_address }) =>  aftersales_address.aftersales_contact,
+  aftersalesHours: ({ aftersales_address }) =>  aftersales_address.aftersales_hours,
   refundFee: ({ refund_fee }) => refund_fee / 100,
   refundPoint: ({ refund_point }) => refund_point / 100,
   reason: 'reason',
