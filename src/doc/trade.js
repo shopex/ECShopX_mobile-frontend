@@ -52,6 +52,7 @@ export const SHOP_INFO = {
 }
 
 export const TRADE_AFTER_SALES_ITEM = {
+  orderId: 'order_id',
   progress: 'progress',
   progressMsg: ({ app_info }) => app_info.progress_msg,
   afterSalesBn: 'aftersales_bn',
