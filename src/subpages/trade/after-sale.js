@@ -22,7 +22,7 @@ const initialState = {
   refundType: 'offline',
   description: '',
   pic: '',
-  refundTypeList: REFUND_FEE_TYPE,
+  refundTypeList: [],
   refundStore: '', // 退货门店
   contact: '', // 联系人
   mobile: '', // 联系电话
@@ -72,13 +72,15 @@ function TradeAfterSale(props) {
     const { orderInfo } = await api.trade.detail(id)
     const reasons = await api.aftersales.reasonList()
     const { intro, is_open } = await api.aftersales.remindDetail()
+    const _info = pickBy(orderInfo, doc.trade.TRADE_ITEM)
     setState(draft => {
-      draft.info = pickBy(orderInfo, doc.trade.TRADE_ITEM)
+      draft.info = _info
       draft.reasons = reasons
       draft.afterSaleDesc = {
         intro,
         is_open
       }
+      draft.refundTypeList = _info.offlineAftersalesIsOpen ? REFUND_FEE_TYPE : REFUND_FEE_TYPE.filter(item => item.value != 'offline')
     })
   }
 

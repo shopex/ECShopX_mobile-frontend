@@ -44,7 +44,9 @@ export const TRADE_ITEM = {
   totalFee: ({ total_fee }) => total_fee / 100,
   marketFee: ({ market_fee }) => market_fee / 100,
   itemFee: ({ item_fee_new }) => item_fee_new / 100,
-  freightFee: ({ freight_fee }) => freight_fee / 100
+  freightFee: ({ freight_fee }) => freight_fee / 100,
+  // 用于云店后台交易设置-到店退货关闭时判断
+  offlineAftersalesIsOpen: 'offline_aftersales_is_open'
 }
 
 export const SHOP_INFO = {
@@ -53,7 +55,7 @@ export const SHOP_INFO = {
 
 export const TRADE_AFTER_SALES_ITEM = {
   progress: 'progress',
-  orderId: 'order_id',
+  progressMsg: ({ app_info }) => app_info.progress_msg,
   afterSalesBn: 'aftersales_bn',
   afterSalesType: 'aftersales_type',
   distributorRemark: 'distributor_remark',
@@ -79,5 +81,5 @@ export const TRADE_AFTER_SALES_ITEM = {
   description: 'description',
   evidencePic: 'evidence_pic',
   createTime: ({ create_time }) => formatDateTime(create_time * 1000),
-  returnType: 'return_type',
+  returnType: 'return_type'
 }
