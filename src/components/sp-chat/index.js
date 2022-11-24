@@ -57,7 +57,7 @@ function SpChat(props) {
         chat_link = meiqia_url.common
       }
       if(!chat_link) {
-        return
+        return showToast('客服暂不在线，请稍后再试~')
       }
       Taro.navigateTo({ url: `/pages/chat/index?url=${encodeURIComponent(chat_link)}` })
     }
