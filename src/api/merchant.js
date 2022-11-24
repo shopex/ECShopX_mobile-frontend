@@ -39,3 +39,8 @@ export function getAuditstatus (params) {
 export function detail () {
   return req.get(`/merchant/settlementapply/detail`)
 }
+
+//获取密码
+export function getPassword () {
+  return req.get(`/merchant/password/reset`)
+}

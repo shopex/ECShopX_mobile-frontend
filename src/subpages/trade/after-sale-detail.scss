@@ -44,17 +44,18 @@
     .sp-cell__bd {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       .contact {
         font-size: 30px;
         font-weight: 600;
         color: #222;
+        word-break: break-all;
       }
       .mobile {
         font-size: 30px;
         font-weight: 600;
         color: #999;
-        margin-left: 20px;
+        // margin-left: 20px;
       }
     }
     .sp-cell__ft,
@@ -191,7 +192,6 @@
     padding: 10px 0;
     border-radius: 16px;
     background-color: #fff;
-    border-radius: 16px;
     overflow: hidden;
     .sp-cell {
       align-items: flex-start;
@@ -214,15 +214,18 @@
     }
 
     .store-name {
-      font-size: 30px;
+      font-size: 28px;
       color: #222;
       line-height: 42px;
+      margin-top: 2px;
     }
     .store-address {
+      font-size: 28px;
       color: #222;
       line-height: 40px;
     }
     .store-connect {
+      font-size: 28px;
       color: #222;
       line-height: 40px;
     }
@@ -238,7 +241,6 @@
     padding: 10px 0;
     border-radius: 16px;
     background-color: #fff;
-    border-radius: 16px;
     overflow: hidden;
     .sp-cell {
       align-items: flex-start;
