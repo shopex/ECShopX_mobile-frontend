@@ -75,6 +75,7 @@ export default class AfterSale extends Component {
 
     let nList = pickBy(list, {
       id: 'aftersales_bn',
+      order_id: 'order_id',
       status_desc: ({ aftersales_status }) => AFTER_SALE_STATUS[aftersales_status],
       totalItems: 'num',
       payment: ({ refund_fee }) => (refund_fee / 100).toFixed(2),
@@ -107,16 +108,10 @@ export default class AfterSale extends Component {
 
   detailFilter(nList){
     const {order_id} = this.$instance.router.params
-
     let nFList = JSON.parse(JSON.stringify(nList))
-
     if(order_id){
-      nFList = nList.filter(item => {
-        item.order = item.order.filter(oItem => oItem.order_id === order_id)
-        return item.order?.length
-      })
+      nFList = nList.filter(item => item.order_id == order_id)
     }
-
     return nFList
   }
 
