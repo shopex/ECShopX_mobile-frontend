@@ -23,7 +23,7 @@ const Index = () => {
   // })
 
   const createWebviewUrl = () => {
-    // const { openid, unionid, app_id, app_type, company_id } = S.get('DIANWU_CONFIG', true)
+    const { openid, unionid, app_id, app_type, company_id } = S.get('DIANWU_CONFIG', true)
     const token =  S.getAuthToken()
     // const url = `${process.env.APP_DIANWU_URL}?${qs.stringify({
     //   in_shop_wechat: true,
@@ -35,6 +35,7 @@ const Index = () => {
     // })}`
     const url = `${process.env.APP_DIANWU_URL}?${qs.stringify({
       token,
+      company_id
       // type:'alipay'
     })}`
     setState(draft => {

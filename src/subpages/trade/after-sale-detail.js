@@ -143,7 +143,7 @@ function TradeAfterSaleDetail(props) {
   }
   >
     <View className='after-progress'>
-      {AFTER_SALE_STATUS_TEXT[info?.progress]}
+      {info?.progressMsg}
       {info?.refuseReason && <View className='distributor-remark'>商家备注：{info.refuseReason}</View>}
     </View>
 
@@ -212,7 +212,7 @@ function TradeAfterSaleDetail(props) {
         {getRefundType()}
       </SpCell>
       {
-        info?.returnType == 'offline' && <SpCell title='退货门店'>
+        info?.returnType == 'offline' && info?.hasAftersalesAddress && <SpCell title='退货门店'>
           <>
             <View className='store-name'>{info?.afterSalesName}</View>
             <View className='store-address'>{info?.afterSalesAddress}</View>
