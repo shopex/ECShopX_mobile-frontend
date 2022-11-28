@@ -222,6 +222,8 @@ function MemberIndex(props) {
     }
     if (S.getAuthToken() && (VERSION_PLATFORM || VERSION_STANDARD)) {
       const { result, status } = await api.member.is_admin()
+      console.log('env:result', result)
+      console.log('env:status', status)
       S.set('DIANWU_CONFIG', result, status)
       menu = {
         ...menu,
@@ -465,14 +467,14 @@ function MemberIndex(props) {
             <View className='bd-item-label'>{`${pointName}`}</View>
             <View className='bd-item-value'>{state.point}</View>
           </SpLogin>
-          {process.env.NODE_ENV === 'development' && (
+          {/* {process.env.NODE_ENV === 'development' && (
             <View className='bd-item deposit-item'>
               <View className='bd-item-label'>储值(¥)</View>
               <View className='bd-item-value'>
                 <SpPrice noSymbol value={state.deposit} />
               </View>
             </View>
-          )}
+          )} */}
           <SpLogin
             className='bd-item'
             onChange={handleClickLink.bind(this, '/pages/member/item-fav')}

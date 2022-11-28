@@ -1,13 +1,21 @@
 @import "../../style/imports";
 
 .page-recommend-list {
+  /*  #ifdef  alipay  */
+  .filter-bar{
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+    top: 90px;
+  }
+  /*  #endif  */
   .recommend-list {
     &__toolbar {
       position: fixed;
       top: 0;      
       left: 0;
       width: 100%;
-      z-index: $z-index-toolbar;
+      z-index: $z-index-level-4;
       background: #fff;
       box-shadow: $box-shadow;
       padding-top: 10px;
@@ -20,6 +28,9 @@
       }
       .search-input {
         box-shadow: none;
+        /*  #ifdef  alipay  */
+        padding: 20px 0;
+        /*  #endif  */
         &__focus{
           .at-search-bar {
             padding-right: 30px !important;
@@ -54,13 +65,14 @@
     }
     &__tabs {
       display: flex;
+      
       .filter-bar__item {
         flex: 1;
         justify-content: center;
         text-align: center;
         color: #666666;
         font-size: 26px;
-        .iconfont {
+        .icon-menu,.icon-periscope {
           color: #ccc;
           display: inline-block;
           font-size: 28px;
@@ -161,4 +173,9 @@
 			line-height: 75px;
 		}
 	}
+  .sp-float-layout {
+    .icon-guanbi {
+      line-height: 1;
+    }
+  }
 }

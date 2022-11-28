@@ -39,9 +39,9 @@ export function login (params) {
   return req.post(
     '/login',
     {
-      ...params,
       appid,
-      auth_type: 'wxapp'
+      auth_type: 'wxapp',
+      ...params
     },
     { showError: false }
   )

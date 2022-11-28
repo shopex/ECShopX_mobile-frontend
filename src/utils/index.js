@@ -15,6 +15,7 @@ import _isEmpty from 'lodash/isEmpty'
 import _remove from 'lodash/remove'
 import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
+import parse from 'mini-html-parser2'
 import log from './log'
 import canvasExp from './canvasExp'
 import calCommonExp from './calCommonExp'
@@ -31,6 +32,11 @@ const isPrimitiveType = (val, type) => Object.prototype.toString.call(val) === t
 
 export function isFunction(val) {
   return isPrimitiveType(val, '[object Function]')
+}
+
+export function uniqueFunc(arr, uniId){
+  const res = new Map();
+  return arr.filter((item) => !res.has(item[uniId]) && res.set(item[uniId], 1));
 }
 
 export function isNumber(val) {
@@ -287,6 +293,14 @@ export function copyText(text, msg = '内容已复制') {
         error: reject
       })
     } else {
+      if(isAlipay){
+        console.log('copyText:text', text)
+        my.setClipboard({
+          text: text,
+        });
+        resolve(text)
+        return
+      }
       if (copy(text)) {
         S.toast(msg)
         resolve(text)
@@ -382,13 +396,13 @@ export const browser = (() => {
 
 // 注入美洽客服插件
 export const meiqiaInit = () => {
-  ;(function (m, ei, q, i, a, j, s) {
+  ; (function (m, ei, q, i, a, j, s) {
     m[i] =
       m[i] ||
       function () {
-        ;(m[i].a = m[i].a || []).push(arguments)
+        ; (m[i].a = m[i].a || []).push(arguments)
       }
-    ;(j = ei.createElement(q)), (s = ei.getElementsByTagName(q)[0])
+      ; (j = ei.createElement(q)), (s = ei.getElementsByTagName(q)[0])
     j.async = true
     j.charset = 'UTF-8'
     j.src = 'https://static.meiqia.com/dist/meiqia.js?_=t'
@@ -668,7 +682,7 @@ export function hex2rgb(hex) {
 
 export function exceedLimit({ size: fileSize }) {
   const size = fileSize / 1024 / 1024
-  return size > 2
+  return size > 15
 }
 
 function isBase64(str) {
@@ -754,6 +768,53 @@ export const onEventChannel = (eventName, data) => {
   eventChannel.emit(eventName, data)
 }
 
+// 支付宝小程序取code
+const alipayAutoLogin = () => {
+  return new Promise((resolve, reject) => {
+    my.getAuthCode({
+      scopes: 'auth_base',
+      success: (res) => {
+        const code = res.authCode;
+        resolve({ code })
+      },
+      fail: (res) => {
+        console.error('[sp-login] alipayAutoLogin login fail:', res)
+        reject(res)
+      }
+    })
+  })
+}
+
+// 支付宝小程序支付
+const requestAlipayminiPayment = (tradeNO) => {
+  return new Promise((resolve, reject) => {
+    my.tradePay({
+      tradeNO: tradeNO,
+      success: (res) => {
+        console.log('支付回调成功res', res);
+        resolve(res)
+      },
+      fail: (res) => {
+        console.log('支付回调失败res', res);
+        reject(res)
+      }
+    });
+  })
+}
+
+const htmlStringToNodeArray = (htmlString) => {
+  let nodeArray = null;
+  parse(htmlString, (err, nodes) => {
+    if (!err) {
+      nodeArray = nodes
+    } else {
+      log.error('htmlStringToNodeArray error')
+    }
+  })
+  return nodeArray;
+}
+
+
 export {
   classNames,
   log,
@@ -772,7 +833,10 @@ export {
   isMerchantModule,
   isUndefined,
   merchantIsvaild,
-  getDistributorId
+  getDistributorId,
+  alipayAutoLogin,
+  requestAlipayminiPayment,
+  htmlStringToNodeArray
 }
 
 export * from './platforms'

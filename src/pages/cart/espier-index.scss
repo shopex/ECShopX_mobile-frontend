@@ -7,6 +7,9 @@
     justify-content: center;
     align-items: center;
     padding: 20px 0;
+    /*  #ifdef  alipay  */
+    padding-top: 40px;
+    /*  #endif  */
     .login-txt {
       color: $color-brand-accent;
       margin-right: 10px;
@@ -28,6 +31,10 @@
   .shop-cart-item {
     padding: 0 16px;
     margin-top: 40px;
+    /*  #ifdef  alipay  */
+    margin-top: 0;
+    padding-top: 40px;
+    /*  #endif  */
     &-shadow {
       box-shadow: 0px 2px 10px 0px #eae7e0;
     }

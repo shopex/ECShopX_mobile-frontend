@@ -111,7 +111,7 @@ export default class recommendDetail extends Component {
     if (resFocus) {
       this.detailInfo(id)
       /*, ()=>{
-      //         Taro.showLoading()
+      //         Taro.showLoading({ title: '' })
       //         let item_id_List = []
       //         if(info.content){
       //           info.content.map(item => {

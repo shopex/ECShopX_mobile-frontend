@@ -68,7 +68,7 @@ function PickerDateTime(props) {
 
     // const { source, value } = state
     // source.item[]
-    
+
     setState(
       (draft) => {
         draft.value = e.detail.value
@@ -90,9 +90,7 @@ function PickerDateTime(props) {
         // }
         // return markMultiDateTime ? res : res[0]
         // const res = source.map((item, index) => item[value[index]])
-        // debugger
         // const cur = getDayjs()
-        // debugger
         // const source2 = dateTime && format(dateTime, dayjs(start))
         // console.log('source2:', source2)
       }

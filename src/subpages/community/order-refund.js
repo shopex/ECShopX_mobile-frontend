@@ -107,7 +107,7 @@ function OrderRefund(props) {
   }
 
   const onChangeCheck = async (item, type, checked) => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     let parmas = { is_checked: checked }
     if (type === 'all') {
       const goodIds = item.list.map((item) => item.goodId)

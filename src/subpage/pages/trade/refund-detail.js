@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button } from '@tarojs/components'
 import { REFUND_STATUS } from '@/consts'
-import { formatTime,isWeb } from '@/utils'
+import { formatTime, isWeb, isAlipay } from '@/utils'
 import { Loading, FloatMenuMeiQia, SpHtml } from '@/components'
 import api from '@/api'
 import './refund-detail.scss'
@@ -257,7 +257,7 @@ export default class TradeRefundDetail extends Component {
             <Button className='refund-detail-btn'>联系客服</Button>
           </FloatMenuMeiQia>
         ) : (
-          !isWeb && <Button openType='contact' className='refund-detail-btn'>
+          (!isWeb && !isAlipay) && <Button openType='contact' className='refund-detail-btn'>
             联系客服
           </Button>
         )}

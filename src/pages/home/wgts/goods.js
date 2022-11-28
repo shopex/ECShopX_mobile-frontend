@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 // import { Tracker } from '@/service'
 import S from '@/spx'
 import entry from '@/utils/entry'
-import { getDistributorId, VERSION_STANDARD, classNames } from '@/utils'
+import { getDistributorId, VERSION_STANDARD, classNames, isAlipay } from '@/utils'
 import api from '@/api'
 
 import './goods.scss'
@@ -136,7 +136,7 @@ export default class WgtGoods extends Component {
       if (!item_data.favStatus) {
         await api.member.addFav(item_data.item_id)
 
-        Tracker.dispatch('GOODS_COLLECT', info)
+        !isAlipay && Tracker.dispatch('GOODS_COLLECT', info)
 
         this.props.onAddFav(item_data)
         Taro.showToast({

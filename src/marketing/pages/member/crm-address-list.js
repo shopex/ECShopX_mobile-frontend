@@ -37,7 +37,7 @@ export default class CrmAddressList extends Component {
   }
 
   // async fetch () {
-  //   Taro.showLoading()
+  //   Taro.showLoading({ title: '' })
   //   const data = await api.member.crmAddressList() // 此接口已删除
   //   Taro.hideLoading()
   //   let selectedId = data.find(addr => addr.is_def > 0) || null

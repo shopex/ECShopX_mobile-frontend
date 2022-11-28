@@ -23,6 +23,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      &--alipay {
+        height: 70px;
+      }
       .sp-image {
         position: relative;
         top: -60px;
@@ -43,7 +46,7 @@
     }
     &__ft {
       text-align: center;
-      .at-button--primary {
+      .at-button--primary,.alipay-button--primary {
         width: 370px;
         height: 80px;
       }

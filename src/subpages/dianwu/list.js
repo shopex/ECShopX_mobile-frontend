@@ -59,7 +59,7 @@ function DianWuList() {
         keywords
       }
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { list: _list, total_count } = await api.dianwu.goodsItems(params)
     Taro.hideLoading()
 

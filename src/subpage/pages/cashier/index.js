@@ -53,7 +53,7 @@ export default class Cashier extends Component {
       env = 'WX'
     }
 
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const orderInfo = await api.cashier.getOrderDetail(order_id || id)
 
     const info = pickBy(orderInfo.orderInfo, {

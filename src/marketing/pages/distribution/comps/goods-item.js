@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Taro from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
 // import { AtButton } from 'taro-ui'
 import { classNames } from '@/utils'
@@ -17,13 +18,14 @@ export default class DistributionGoodsItem extends Component {
   }
 
   render () {
-    const { info, onClick, className, isRelease, status } = this.props
+    const { info, onClick, className, isRelease, status, shareDataChange } = this.props
+    console.log('DistributionGoodsItem', this.props)
     if (!info) {
       return null
     }
 
     const img = info.img || info.image_default_id
-
+    console.log('DistributionGoodsItem:info', info)
     return (
       <View className={classNames('goods-item', className)}>
         <View className='goods-item__bd'>
@@ -60,8 +62,9 @@ export default class DistributionGoodsItem extends Component {
               <View className='goods-item__actions'>
                 <Button
                   className='goods-item__share-btn'
-                  dataInfo={info}
+                  data-info={info}
                   openType='share'
+                  onClick={()=>Taro.setStorageSync('shareData',info)}
                   size='small'
                 >
                   <Text class='iconfont icon-share2'></Text>

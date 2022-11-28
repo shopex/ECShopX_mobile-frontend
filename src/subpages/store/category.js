@@ -96,6 +96,7 @@ const CategoryIndex = (props) => {
           ))}
         </AtTabs>
       </View> */}
+
       <View className='category-container'>
         <ScrollView className='comp-series__nav' scrollY>
           <View className='nav-list'>
@@ -129,8 +130,9 @@ const CategoryIndex = (props) => {
             )}
             <View className='category-content-list'>
               {curContent?.children?.map((item, index) => (
-                <View className='category-content' key={`content-item__${index}`}>
-                  <View className='category-two-item'>
+                <View className='category-content' key={`content-item__${index}`} >
+                  <View className='category-two-item' >
+
                     <Text className='item-name'>{item.name}</Text>
                   </View>
                   <View className='category-three'>

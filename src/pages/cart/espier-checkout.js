@@ -128,7 +128,7 @@ function CartCheckout(props) {
       return () => {
         dispatch(changeCoupon()) // 清空优惠券信息
         dispatch(changeZitiAddress(null)) // 清空自提地址信息
-        // dispatch(updateChooseAddress(null)) // 清空地址信息
+        dispatch(updateChooseAddress(null)) // 清空地址信息
         dispatch(changeZitiStore()) // 清空编辑自提列表选中的数据
       }
     }
@@ -190,44 +190,29 @@ function CartCheckout(props) {
       showToast('该商品已下架')
       return
     }
-    // // 校验楼号、房号
-    // if (openBuilding && !buildingNumber) {
-    //   return showToast('请输入楼号')
-    // }
 
-    // // 校验楼道，楼号
-    // if (openBuilding && !houseNumber) {
-    //   return showToast('请输入房号')
-    // }
-
-    setState(
-      (draft) => {
-        draft.submitLoading = true
-      },
-      async () => {
-        if (isWeixin) {
-          const templeparams = {
-            temp_name: 'yykweishop',
-            source_type: receiptType === 'logistics' ? 'logistics_order' : 'ziti_order'
-          }
-          const { template_id } = await api.user.newWxaMsgTmpl(templeparams)
-          Taro.requestSubscribeMessage({
-            tmplIds: template_id,
-            success: () => {
-              handlePay()
-            },
-            fail: () => {
-              handlePay()
-            }
-          })
-        } else {
-          handlePay()
-        }
+    if (isWeixin) {
+      const templeparams = {
+        temp_name: 'yykweishop',
+        source_type: receiptType === 'logistics' ? 'logistics_order' : 'ziti_order'
       }
-    )
+      const { template_id } = await api.user.newWxaMsgTmpl(templeparams)
+      try {
+        await Taro.requestSubscribeMessage({ tmplIds: template_id })
+        handlePay()
+      } catch (e) {
+        console.error(e)
+        handlePay()
+      }
+    } else {
+      handlePay()
+    }
   }
 
   const handlePay = async () => {
+    setState((draft) => {
+      draft.submitLoading = true
+    })
     const params = await getParamsInfo()
     // 店铺是否开启社区街道
     if (openStreet) {
@@ -290,35 +275,9 @@ function CartCheckout(props) {
       setState((draft) => {
         draft.submitLoading = false
       })
+      Taro.hideLoading()
       return
     }
-
-    // if ((isWeb || isAPP()) && params.pay_type !== 'deposit') {
-    //   try {
-    //     const h5ResInfo = await api.trade.h5create({
-    //       ...params,
-    //       pay_type: isAPP() ? params.pay_type : TRANSFORM_PAYTYPE[params.pay_type]
-    //     })
-    //     orderInfo = h5ResInfo
-    //     orderId = h5ResInfo.order_id
-    //   } catch (e) {
-    //     setState((draft) => {
-    //       draft.submitLoading = false
-    //     })
-    //   }
-    // } else {
-    //   try {
-    //     const { trade_info, team_id } = await api.trade.create(params)
-    //     orderInfo = { ...trade_info, team_id }
-    //     orderId = trade_info.order_id
-    //   } catch (e) {
-    //     setState((draft) => {
-    //       draft.submitLoading = false
-    //     })
-    //     return
-    //   }
-    // }
-
     Taro.hideLoading()
 
     setState((draft) => {
@@ -451,6 +410,8 @@ function CartCheckout(props) {
 
   // 商家留言
   const handleRemarkChange = (val) => {
+    if(val.length > 50) val = val.slice(0,50)
+    console.log('handleRemarkChange:remark', remark)
     setState((draft) => {
       draft.remark = val
     })
@@ -508,7 +469,7 @@ function CartCheckout(props) {
   }
 
   const calcOrder = async () => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     // calc.current = true
     const cus_parmas = await getParamsInfo()
 
@@ -808,7 +769,6 @@ function CartCheckout(props) {
   const bindMultiPickerColumnChange = (e) => {
     const { column, value } = e.detail
     let _multiValue = [multiValue[0]]
-    // debugger
     if (column == 0) {
       _multiValue[1] = streetCommunityList[value].children.map((item) => item.label)
       setState((draft) => {
@@ -817,7 +777,6 @@ function CartCheckout(props) {
       })
     } else {
     }
-    // debugger
   }
 
   const onChangeBuildInput = (name, val) => {
@@ -888,6 +847,7 @@ function CartCheckout(props) {
   }
 
   console.log(couponInfo, 'couponInfo', coupon)
+  console.log('payChannel',payChannel)
   const couponText = couponInfo ? couponInfo.title : ''
   // couponInfo.type === 'member'
   //   ? '会员折扣'

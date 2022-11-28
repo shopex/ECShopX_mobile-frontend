@@ -1,17 +1,20 @@
 import Taro from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
-import { isWeb } from '@/utils'
-
+import { View, Text, RichText } from '@tarojs/components'
+import { isWeb, isAlipay, htmlStringToNodeArray, isWeixin } from '@/utils'
 function SpHtml(props) {
   const { content = '' } = props
-  const _content = content.toString()
+  let _content = content.toString()
     .replace(/\s+style="[^"]*"/g, '')
     .replace(/<img/g, '<img style="width:100%;height:auto;display: block;"')
+  if (isAlipay) {
+    _content = htmlStringToNodeArray(_content)
+  }
   // console.log('content:', _content)
   return (
     <View className='sp-html'>
       {isWeb && <View dangerouslySetInnerHTML={{ __html: _content }} />}
-      {!isWeb && <mp-html content={_content} />}
+      {isWeixin && <mp-html content={_content} />}
+      {isAlipay && <RichText nodes={_content} />}
     </View>
   )
 }

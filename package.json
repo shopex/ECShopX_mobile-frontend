@@ -1,7 +1,7 @@
 {
   "name": "ecshopx-vshop",
   "app_name": "ecshopx",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "private": true,
   "description": "taro app for bbc",
   "scripts": {
@@ -52,6 +52,7 @@
     "copy-to-clipboard": "^3.0.8",
     "dayjs": "^1.10.6",
     "lodash": "^4.17.11",
+    "mini-html-parser2": "^0.3.0",
     "qiniu-js": "^2.5.4",
     "qrcode": "^1.5.0",
     "qs": "6.6.0",
@@ -68,7 +69,7 @@
     "use-immer": "^0.6.0"
   },
   "devDependencies": {
-    "@shopex/taro-plugin-modules": "^1.0.11",
+    "@shopex/taro-plugin-modules": "^1.0.12",
     "@tarojs/cli": "3.4.3",
     "@tarojs/mini-runner": "3.4.3",
     "@tarojs/webpack-runner": "3.4.3",

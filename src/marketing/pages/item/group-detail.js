@@ -3,7 +3,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 import { AtButton, AtCountdown, AtCurtain } from 'taro-ui'
 import { FormIdCollector, SpNavBar } from '@/components'
-import { classNames, normalizeQuerys, log, isWeixin, isWeb, showToast } from '@/utils'
+import { classNames, normalizeQuerys, log, isWeixin, isWeb, isAlipay, showToast } from '@/utils'
 import entry from '@/utils/entry'
 import api from '@/api'
 import S from '@/spx'
@@ -35,11 +35,12 @@ export default class GroupDetail extends Component {
 
   async fetchDetail() {
     const { team_id } = this.$instance.router.params
+    console.log('team_id', team_id)
     const { distributor_id } = Taro.getStorageSync('curStore')
-    const params = { distributor_id }
+    const params = { distributor_id }    
     const detail = await api.group.groupDetail(team_id, params)
     const { activity_info, team_info, member_list } = detail
-
+    console.log('detail', detail)
     const { over_time: total_micro_second, person_num } = activity_info
 
     const userInfo = Taro.getStorageSync('userinfo')
@@ -94,7 +95,7 @@ export default class GroupDetail extends Component {
       showToast('请先登录')
       const { params, path } = this.$instance.router
       let url = ''
-      if (isWeixin) {
+      if (isWeixin || isAlipay) {
         url = `/subpages/member/index?redirect=${encodeURIComponent(
           `${path}?${qs.stringify(params)}`
         )}`

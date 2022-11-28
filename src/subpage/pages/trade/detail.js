@@ -318,7 +318,6 @@ export default class TradeDetail extends Component {
     //   order_id,
     //   order_type
     // }
-    // debugger
 
     // const config = await api.cashier.getPayment(paymentParams)
 
@@ -365,12 +364,10 @@ export default class TradeDetail extends Component {
     //       })
     //     } catch (e) {
     //       console.error(e)
-    //       debugger
     //       payErr = e
     //     }
     //   } else {
     //     // const resObj = await payPlatform(config)
-    //     debugger
     //     const { cashierPayment } = usePayment()
     //     cashierPayment(params, orderInfo)
     //     payErr = resObj.payErr
@@ -394,7 +391,6 @@ export default class TradeDetail extends Component {
     //     })
     //   }
     // }
-    // debugger
     // if (!payErr) {
     //   await Taro.showToast({
     //     title: '支付成功',
@@ -409,7 +405,6 @@ export default class TradeDetail extends Component {
   }
 
   async handleClickBtn(type, e) {
-    debugger
     e.stopPropagation()
     const { info } = this.state
     if (type === 'home') {
@@ -444,7 +439,7 @@ export default class TradeDetail extends Component {
       })
       if (confirm) {
         await api.trade.confirm(info.tid)
-        if (isWeixin) {
+        if (isWeixin || isAlipay) {
           const { fullPath } = getCurrentRoute(this.$instance.router)
           Taro.redirectTo({
             url: fullPath
@@ -459,8 +454,11 @@ export default class TradeDetail extends Component {
       return
     }
     if (type === 'aftersales') {
+      // Taro.navigateTo({
+      //   url: `/subpage/pages/trade/after-sale-detail?id=${info.tid}`
+      // })
       Taro.navigateTo({
-        url: `/subpage/pages/trade/after-sale-detail?id=${info.tid}`
+        url: `/subpages/trade/after-sale?id=${info.tid}`
       })
       return
     }
