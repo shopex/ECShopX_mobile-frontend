@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Picker } from '@tarojs/components'
 import { AtInput, AtButton } from 'taro-ui'
-import { SpNavBar, SpToast,SpPage } from '@/components'
+import { SpNavBar, SpToast, SpPage } from '@/components'
 import { getThemeStyle, styleNames } from '@/utils'
 import { LOGISTICS_CODE } from '@/consts'
 import api from '@/api'
@@ -101,44 +101,41 @@ export default class TradeRefundSendback extends Component {
     const { express, logi_no, curExpressIdx } = this.state
     return (
       <SpPage className='page-distribution-tarde-refund-sendback'>
-          <View className='page-refund-sendback' style={styleNames(getThemeStyle())}>
-        <SpNavBar title='售后填写物流公司' leftIconType='chevron-left' fixed='true' />
-
-        <View className='sec' >
-          <View className='at-input'>
-            <View className='at-input__container'>
-              <View className='at-input__title'>物流公司：</View>
-              <Picker
-                mode='selector'
-                range={express}
-                rangeKey='corp_name'
-                onChange={this.handleExpressChange}
-              >
-                <View className='picker'>{express[curExpressIdx].corp_name}</View>
-              </Picker>
+        <View className='page-refund-sendback' style={styleNames(getThemeStyle())}>
+          <View className='sec'>
+            <View className='at-input'>
+              <View className='at-input__container'>
+                <View className='at-input__title'>物流公司：</View>
+                <Picker
+                  mode='selector'
+                  range={express}
+                  rangeKey='corp_name'
+                  onChange={this.handleExpressChange}
+                >
+                  <View className='picker'>{express[curExpressIdx].corp_name}</View>
+                </Picker>
+              </View>
             </View>
+
+            <AtInput
+              title='物流单号：'
+              name='logi_no'
+              type='text'
+              placeholder='请填写物流单号'
+              value={logi_no}
+              onChange={this.handleChange.bind(this, 'logi_no')}
+            />
           </View>
 
-          <AtInput
-            title='物流单号：'
-            name='logi_no'
-            type='text'
-            placeholder='请填写物流单号'
-            value={logi_no}
-            onChange={this.handleChange.bind(this, 'logi_no')}
-          />
+          <View className='btns'>
+            <AtButton type='primary' onClick={this.handleSubmit}>
+              保存
+            </AtButton>
+          </View>
+
+          <SpToast />
         </View>
-
-        <View className='btns'>
-          <AtButton type='primary' onClick={this.handleSubmit}>
-            保存
-          </AtButton>
-        </View>
-
-        <SpToast />
-      </View>
-    </SpPage>
-
+      </SpPage>
     )
   }
 }
