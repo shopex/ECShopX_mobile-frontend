@@ -80,7 +80,6 @@ function SpPage(props, ref) {
   }, [lock])
 
   useEffect(() => {
-
     if (isWeixin) {
       const pages = Taro.getCurrentPages()
       const { navigationStyle } = page.config
@@ -95,7 +94,6 @@ function SpPage(props, ref) {
 
   useDidShow(() => {
     const { page, router } = getCurrentInstance()
-
     const pageTitle = page?.config?.navigationBarTitleText
 
     const fidx = Object.values(TABBAR_PATH).findIndex(
