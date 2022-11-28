@@ -3,7 +3,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Picker } from '@tarojs/components'
 import { AtInput, AtButton } from 'taro-ui'
 import { SpNavBar, SpToast } from '@/components'
-import { getThemeStyle, styleNames } from '@/utils'
+import { getThemeStyle, styleNames, isWxWeb } from '@/utils'
 import { LOGISTICS_CODE } from '@/consts'
 import api from '@/api'
 import S from '@/spx'
@@ -103,7 +103,7 @@ export default class TradeRefundSendback extends Component {
       <View className='page-refund-sendback' style={styleNames(getThemeStyle())}>
         <SpNavBar title='售后填写物流公司' leftIconType='chevron-left' fixed='true' />
 
-        <View className='sec'>
+        <View className='sec' style={isWxWeb && { paddingTop: 0 }}>
           <View className='at-input'>
             <View className='at-input__container'>
               <View className='at-input__title'>物流公司：</View>
