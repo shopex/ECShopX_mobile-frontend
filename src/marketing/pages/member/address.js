@@ -34,17 +34,17 @@ export default class AddressIndex extends Component {
   }
 
   componentDidShow() {
-    this.fetch()
+    this.fetch()    
   }
 
-  async fetch(isDelete = false) {
-    const { isPicker, receipt_type = '', city = '' } = this.$instance.router.params
+  async fetch(isDelete = false) {    
+    const { isPicker, receipt_type = '', city = '' } = this.$instance.router.params    
     if (isPicker) {
       this.setState({
         isPicker: true
       })
     }
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { list } = await api.member.addressList()
     Taro.hideLoading()
     let newList = [...list]

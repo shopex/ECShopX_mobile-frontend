@@ -5,7 +5,7 @@ import { View, Text } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { SpNavBar, SpFloatMenuItem, SpNote, SpLoading, SpImage } from '@/components'
 import { TABBAR_PATH } from '@/consts'
-import { classNames, styleNames, hasNavbar, isWeixin, isGoodsShelves, entryLaunch } from '@/utils'
+import { classNames, styleNames, hasNavbar, isWeixin, isAlipay, isGoodsShelves, entryLaunch } from '@/utils'
 
 import './index.scss'
 
@@ -22,7 +22,6 @@ function SpPage(props, ref) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const { lock, lockStyle, pageTitle, isTabBarPage, customNavigation, cusCurrentPage } = state
-  // debugger
   const {
     className,
     children,
@@ -81,7 +80,7 @@ function SpPage(props, ref) {
   }, [lock])
 
   useEffect(() => {
-    if (isWeixin) {
+    if (isWeixin || isAlipay) {
       const pages = Taro.getCurrentPages()
       const { navigationStyle } = page.config
       // customNavigation = navigationStyle === 'custom'
@@ -166,11 +165,11 @@ function SpPage(props, ref) {
   // let customNavigation = false
   // let cusCurrentPage = 0
 
-  if (isWeixin) {
+  if (isWeixin || isAlipay) {
     const deviceInfo = Taro.getSystemInfoSync()
     // console.log('deviceInfo:', deviceInfo)
     model = deviceInfo.model
-    ipx = model.search(/iPhone X|iPhone 11|iPhone 12|iPhone 13/g) > -1
+    ipx = model.search(/iPhone\s*X|iPhone\s*11|iPhone\s*12|iPhone\s*13|iPhone\s*14|iPhone\s*10/g) > -1
 
     const menuButton = Taro.getMenuButtonBoundingClientRect()
     const { statusBarHeight } = Taro.getSystemInfoSync()
@@ -197,14 +196,14 @@ function SpPage(props, ref) {
       // 导航颜色背景
       if (navigateStyle == '1') {
         pageStyle = {
-          'backgroundColor': navigateBackgroundColor
+          'background-color': navigateBackgroundColor
         }
       } else {
         pageStyle = {
-          'backgroundImage': `url(${navigateBackgroundImage.url})`,
-          'backgroundSize': '100% 100%',
-          'backgroundRepeat': 'no-repeat',
-          'backgroundPosition': 'center'
+          'background-image': `url(${navigateBackgroundImage.url})`,
+          'background-size': '100% 100%',
+          'background-repeat': 'no-repeat',
+          'background-position': 'center'
         }
       }
       // 页面标题
@@ -229,7 +228,7 @@ function SpPage(props, ref) {
         }, navigateTheme)}
         style={styleNames({
           height: `${gNavbarH}px`,
-          paddingTop: `${gStatusBarHeight}px`,
+          'padding-top': `${gStatusBarHeight}px`,
           ...pageStyle
         })}
       >
@@ -253,7 +252,7 @@ function SpPage(props, ref) {
           </View>
         </View>}
 
-        <View className='title-container' style={styleNames(pageTitleStyle)}>{pageTitle || renderTitle}</View>
+        {isWeixin && <View className='title-container' style={styleNames(pageTitleStyle)}>{pageTitle || renderTitle}</View>}
         {/* <View className='right-container'></View> */}
       </View>
     )
@@ -265,13 +264,13 @@ function SpPage(props, ref) {
 
     if (pageBackgroundStyle == '1') {
       pageBackground = {
-        'backgroundColor': pageBackgroundColor
+        'background-color': pageBackgroundColor
       }
     } else {
       pageBackground = {
-        'backgroundImage': `url(${pageBackgroundImage.url})`,
-        'backgroundSize': '100% 100%',
-        'backgroundPosition': 'center'
+        'background-image': `url(${pageBackgroundImage.url})`,
+        'background-size': '100% 100%',
+        'background-position': 'center'
       }
     }
   }
@@ -299,7 +298,7 @@ function SpPage(props, ref) {
       {loading && <SpLoading />}
 
       {!isDefault && !loading && <View className='sp-page-body' style={styleNames({
-        marginTop: `${(customNavigation && pageConfig) ? gNavbarH : 0}px`
+        'margin-top': `${(customNavigation && pageConfig) ? gNavbarH : 0}px`
       })}>{children}</View>}
 
       {/* 置底操作区 */}

@@ -37,12 +37,12 @@ export default class SpNote extends Component {
       <View className={classNames('sp-note', className)}>
         {/* {icon && <AtIcon prefixClass='sw-icon' value={value} size='60' color='#cdcdcd' />} */}
         {img && (
-          <SpImage className='default-img' src={img} width={292} height={224} />
-          // <Image
-          //   className='sp-note__img'
-          //   mode='widthFix'
-          //   src={isUrl ? img : this.resolveUrl(img)}
-          // />
+          isUrl ? <SpImage className='default-img' src={img} width={292} height={224} /> :
+          <Image
+            className='sp-note__img'
+            mode='widthFix'
+            src={isUrl ? img : this.resolveUrl(img)}
+          />
         )}
         <Text className='sp-note__text'>{title || this.props.children}</Text>
         {button && to && (

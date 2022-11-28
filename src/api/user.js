@@ -1,6 +1,5 @@
-import { isWeixin, getAppId } from '@/utils'
+import { isWeixin, getAppId, isAlipay } from '@/utils'
 import req from './req'
-
 export function login (data) {
   return req.post('/login', data)
 }
@@ -90,6 +89,9 @@ export function scancodeAddcart (data) {
 }
 
 export function newWxaMsgTmpl (params = {}) {
+  if(isAlipay){
+    return req.get('/alitemplatemessage', params)
+  }
   return req.get('/newtemplate', params)
 }
 

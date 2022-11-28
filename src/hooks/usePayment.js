@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { TRANSFORM_PAYTYPE } from '@/consts'
-import { isWeixin, isWeb, isWxWeb, isAPP, showToast } from '@/utils'
+import { isWeixin, isWeb, isWxWeb, requestAlipayminiPayment, isAPP, showToast } from '@/utils'
 import api from '@/api'
 
 const initialState = {
@@ -55,6 +55,8 @@ export default (props = {}) => {
       case 'point':
         depositPay(params, orderInfo)
         break
+      case 'alipaymini':
+        alipaymini(params, orderInfo)
     }
   }
 
@@ -70,6 +72,38 @@ export default (props = {}) => {
         order_type: order_type || trade_source_type
       })
       await Taro.requestPayment(weappOrderInfo)
+      const { activityType } = params
+      if (activityType == 'group') {
+        Taro.redirectTo({ url: `/marketing/pages/item/group-detail?team_id=${orderInfo.team_id}` })
+      } else {
+        Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+      }
+    } catch (e) {
+      // 社区拼团订单
+      const $instance = getCurrentInstance()
+      const { path } = $instance.router
+      if (path != '/subpage/pages/trade/detail' && path != '/subpages/community/order') {
+        if (trade_source_type == 'normal_community') {
+          Taro.redirectTo({ url: `/subpages/community/order` })
+        } else {
+          Taro.redirectTo({ url: `/subpage/pages/trade/detail?id=${order_id}` })
+        }
+      }
+    }
+  }
+
+  // 支付宝小程序支付
+  const alipaymini = async (params, orderInfo) => {
+    const { pay_channel, pay_type } = params
+    const { order_id, trade_source_type, order_type } = orderInfo
+    try {
+      const {trade_no} = await api.cashier.getPayment({
+        pay_type,
+        pay_channel,
+        order_id,
+        order_type: order_type || trade_source_type
+      })
+      await requestAlipayminiPayment(trade_no)
       const { activityType } = params
       if (activityType == 'group') {
         Taro.redirectTo({ url: `/marketing/pages/item/group-detail?team_id=${orderInfo.team_id}` })

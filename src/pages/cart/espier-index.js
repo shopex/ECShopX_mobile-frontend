@@ -55,13 +55,14 @@ function CartIndex() {
   const { validCart = [], invalidCart = [] } = useSelector((state) => state.cart)
   const { tabbar = 1 } = router.params
 
-  useDepChange(() => {
-    fetch()
-  }, [isLogin])
-
-  // useDidShow(() => {
+  // useDepChange(() => {
   //   fetch()
-  // })
+  // }, [isLogin])
+
+  useDidShow(() => {
+    console.log('useDidShow', isLogin)
+    if(isLogin) fetch()
+  })
 
   const fetch = () => {
     if (openRecommend == 1) {
@@ -73,7 +74,7 @@ function CartIndex() {
   }
 
   const getCartList = async () => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     const { type = 'distributor' } = router.params
     const params = {
       shop_type: type
@@ -175,7 +176,7 @@ function CartIndex() {
   // }
 
   const onChangeGoodsIsCheck = async (item, type, checked) => {
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
     let parmas = { is_checked: checked }
     if (type === 'all') {
       const cartIds = item.list.map((item) => item.cart_id)

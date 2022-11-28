@@ -242,7 +242,7 @@ function MemberUserInfo(props) {
   const handleLogOut = async () => {
     logout()
     showToast('退出登录成功')
-    goToPage(process.env.APP_HOME_PAGE)
+    Taro.redirectTo({ url: '/pages/index' })
   }
 
   const onChooseAvatar = async (e) => {
@@ -254,6 +254,7 @@ function MemberUserInfo(props) {
         url: e.detail.avatarUrl
       }
     ])
+    console.log('onChooseAvatar:res', res)
     setState((draft) => {
       draft.formUserInfo.avatar = res[0].url
     })
@@ -263,6 +264,7 @@ function MemberUserInfo(props) {
     const { tempFiles = [] } = await Taro.chooseImage({
       count: 1
     })
+    console.log('onUploadAvatarFile:tempFiles', tempFiles)
     if (tempFiles.length > 0) {
       const imgFiles = tempFiles.slice(0, 1).map((item) => {
         return {
@@ -271,8 +273,12 @@ function MemberUserInfo(props) {
         }
       })
       const res = await imgUploader.uploadImageFn(imgFiles)
+      // console.log('onUploadAvatarFile:res', res)
+      // debugger
+      // https://resource/apml16866fa5e90bd3dd72409b11e4f68679.jpg
       setState((draft) => {
         draft.formUserInfo.avatar = res[0].url
+        // draft.formUserInfo.avatar = imgFiles[0].url
       })
     }
   }

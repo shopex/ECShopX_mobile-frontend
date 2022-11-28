@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from '@/api'
 import S from '@/spx'
-import { pickBy, classNames, hideLoading, isAlipay, isNavbar, redirectUrl } from '@/utils'
+import { pickBy, classNames, hideLoading, isAlipay, isNavbar, redirectUrl, requestAlipayminiPayment } from '@/utils'
 import CompPaymentPicker from '@/pages/cart/comps/comp-paymentpicker'
 import userIcon from '@/assets/imgs/user-icon.png'
 // import { useDispatch } from 'react-redux'
@@ -172,7 +172,7 @@ export default class VipIndex extends Component {
       pay_channel: payChannel
     }
 
-    Taro.showLoading()
+    Taro.showLoading({ title: '' })
 
     const data = await api.vip.charge(params)
 
@@ -187,6 +187,28 @@ export default class VipIndex extends Component {
         `/subpage/pages/cashier/index?order_id=${order_id}&isMember=true`,
         'navigateTo'
       )
+      return
+    }
+
+    // 支付宝支付
+    if (isAlipay) {
+      try {
+        const { memo } = await requestAlipayminiPayment(data.trade_no)
+        if (memo) {
+          Taro.showToast({
+            title: memo,
+            icon: 'none'
+          })
+        }
+        S.getMemberInfo()
+        this.setState({ visible: true })
+      } catch (e) {
+        Taro.showToast({
+          title: '支付失败',
+          icon: 'none'
+        })
+        console.log('error==>', e);
+      }
       return
     }
 
@@ -246,7 +268,7 @@ export default class VipIndex extends Component {
         payChannel,
         isPaymentOpend: false
       },
-      () => {}
+      () => { }
     )
   }
 
@@ -287,7 +309,8 @@ export default class VipIndex extends Component {
       deposit: '余额支付',
       delivery: '货到付款',
       hfpay: '微信支付',
-      adapay: '微信支付'
+      adapay: '微信支付',
+      alipaymini: '支付宝支付'
     }
     return (
       <SpPage>
@@ -373,17 +396,17 @@ export default class VipIndex extends Component {
               onChange={this.handlePaymentChange}
               onInitDefaultPayType={this.initDefaultPaytype}
             />
-            {!isAlipay && (
-              <SpCell
-                isLink
-                border={false}
-                title='支付方式'
-                onClick={this.handlePaymentShow}
-                className='cus-sp-cell'
-              >
-                <Text>{payTypeText[payType]}</Text>
-              </SpCell>
-            )}
+
+            <SpCell
+              isLink
+              border={false}
+              title='支付方式'
+              onClick={this.handlePaymentShow}
+              className='cus-sp-cell'
+            >
+              <Text>{payTypeText[payType]}</Text>
+            </SpCell>
+
             <View className='pay-btn' onClick={this.handleCharge}>
               立即支付
             </View>

@@ -2,6 +2,7 @@ export const SHOP_ITEM = {
   logo: 'logo',
   title: 'title',
   store_name: 'store_name',
+  name: 'store_name',
   hour: 'hour',
   store_address: 'store_address',
   address: 'address',
@@ -10,7 +11,7 @@ export const SHOP_ITEM = {
   distance: ({ distance, distance_unit }) => {
     return distance
       ? (distance < 1 ? Math.round(distance * Math.pow(10, 3)) : Number(distance).toFixed(2)) +
-          distance_unit
+      distance_unit
       : ''
   },
   cardList: 'discountCardList',
@@ -41,4 +42,21 @@ export const STORE_INFO = {
   name: 'name',
   logo: 'logo',
   marketingActivityList: 'marketingActivityList'
+}
+
+export const STORE_ITEM = {
+  name: 'name',
+  province: 'province',
+  city: 'city',
+  area: 'area',
+  address: 'address',
+  mobile: 'mobile',
+  hours: 'hours',
+  address_id: 'address_id',
+  distributor_id: 'distributor_id',
+  distance: ({ distance }) => {
+    const _distance = parseFloat(distance)
+    return distance
+      ? (_distance < 1000 ? `${parseInt(_distance)}m` : `${(_distance / 1000).toFixed(1)}km`) : ''
+  },
 }

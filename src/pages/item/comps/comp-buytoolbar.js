@@ -176,7 +176,7 @@ function CompGoodsBuyToolbar(props) {
                 className={classNames('btn-item', `btn-${item.btnStatus}`)}
                 key={`btn-item__${index}`}
               >
-                {item.title}
+                1{item.title}2
               </View>
             )
           } else {

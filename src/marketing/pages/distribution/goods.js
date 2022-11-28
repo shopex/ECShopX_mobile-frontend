@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { View, ScrollView } from '@tarojs/components'
+import { View, ScrollView, Button, Text } from '@tarojs/components'
 import { AtTabBar } from 'taro-ui'
 import { SpToast, Loading, FilterBar, SpNote, SpNavBar, SearchBar, SpPage } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 import { withPager, withBackToTop } from '@/hocs'
-import { pickBy, getCurrentRoute } from '@/utils'
+import { pickBy, getCurrentRoute, isAlipay } from '@/utils'
 import DistributionGoodsItem from './comps/goods-item'
 import { getDtidIdUrl } from '@/utils/helper'
 
@@ -16,11 +16,12 @@ import './goods.scss'
 @withBackToTop
 export default class DistributionGoods extends Component {
   $instance = getCurrentInstance()
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       ...this.state,
+      shareInfo:{},
       info: {},
       curFilterIdx: 0,
       filterList: [{ title: '综合' }, { title: '销量' }, { title: '价格', sort: -1 }],
@@ -49,7 +50,7 @@ export default class DistributionGoods extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     Taro.hideShareMenu({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
@@ -73,7 +74,7 @@ export default class DistributionGoods extends Component {
     )
   }
 
-  async fetch (params) {
+  async fetch(params) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { page_no: page, page_size: pageSize } = params
     const { selectParams } = this.state
@@ -152,7 +153,7 @@ export default class DistributionGoods extends Component {
       goodsSort: current === 0 ? null : current === 1 ? 1 : sort > 0 ? 3 : 2
     }
 
-    if (current == this.state.curFilterIdx && sort !== null) {
+    if (current == this.state.curFilterIdx && current !== 2) {
       return
     }
 
@@ -267,8 +268,25 @@ export default class DistributionGoods extends Component {
   }
 
   onShareAppMessage (res) {
+    // const { userId } = Taro.getStorageSync('userinfo')
     const { userId } = Taro.getStorageSync('userinfo')
     const { info } = res.target.dataset
+    
+    if(isAlipay){    
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const info = Taro.getStorageSync('shareData')
+          resolve({
+            title: info.title,
+            imageUrl: info.img,            
+            path: getDtidIdUrl(
+              `/pages/item/espier-detail?id=${info.item_id}&uid=${userId}`,
+              info.distributor_id 
+            )
+          })
+        },10)
+      });            
+    }
 
     return {
       title: info.title,
@@ -325,8 +343,10 @@ export default class DistributionGoods extends Component {
       }
     }
   }
-
-  render () {
+  shareDataChange = (shareInfo)=>{
+    this.setState({shareInfo})
+  }
+  render() {
     const { status } = this.$instance.router.params
     const {
       list,
@@ -349,7 +369,7 @@ export default class DistributionGoods extends Component {
             showDailog={false}
             keyword={query ? query.keywords : ''}
             onFocus={() => false}
-            onCancel={() => {}}
+            onCancel={() => { }}
             onChange={this.handleSearchChange}
             onClear={this.handleConfirm.bind(this)}
             onConfirm={this.handleConfirm.bind(this)}
@@ -378,6 +398,7 @@ export default class DistributionGoods extends Component {
                     key={item.goods_id}
                     info={item}
                     isRelease={isRelease}
+                    shareDataChange={this.shareDataChange}
                     status={status}
                     onClick={() => this.handleClickItem(item.goods_id)}
                   />

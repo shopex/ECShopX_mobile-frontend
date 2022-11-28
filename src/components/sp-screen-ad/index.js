@@ -28,7 +28,7 @@ export default class ScreenAd extends Component {
       // 跳转链接
       jumpUrl: {},
       // 图片/视频链接
-      url: ''
+      url: '',
     }
   }
 
@@ -55,7 +55,7 @@ export default class ScreenAd extends Component {
         isJump: res.is_jump === 1,
         downTime: res.waiting_time,
         jumpUrl: res.ad_url,
-        url: res.ad_material
+        url: res.ad_material,
       },
       () => {
         setTimeout(() => {

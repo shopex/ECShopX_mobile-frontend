@@ -155,6 +155,15 @@ export default {
       ]
     },
     {
+      root: 'subpages/trade',
+      pages: [
+        'after-sale',
+        'after-sale-detail',
+        'logistics-info',
+        'store-picker'
+      ]
+    },
+    {
       root: 'marketing',
       pages: [
         'pages/distribution/index', // 推广管理首页

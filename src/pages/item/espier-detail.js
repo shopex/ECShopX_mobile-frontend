@@ -6,7 +6,7 @@ import Taro, {
   useShareTimeline,
   useReady
 } from '@tarojs/taro'
-import { View, Text, Swiper, SwiperItem, Video } from '@tarojs/components'
+import { View, Text, Swiper, SwiperItem, Video, Canvas } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { AtCountdown } from 'taro-ui'
 import {
@@ -380,7 +380,8 @@ function EspierDetail(props) {
           }}
         />
       }
-    >
+    >      
+      {/* <Canvas id="canvas2" type="2d" onReady={onCanvasReady} /> */}
       {!info && <SpLoading />}
       {info && (
         <View className='goods-contents'>
@@ -480,7 +481,8 @@ function EspierDetail(props) {
                 <View className='title'>{info.itemName}</View>
                 <View className='brief'>{info.brief}</View>
               </View>
-              {(isWeixin || isAPP()) && (
+              {/* {(isWeixin || isAPP()) && ( */}
+              {(
                 <View className='btn-share-wrap'>
                   <SpLogin
                     onChange={async () => {

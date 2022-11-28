@@ -8,7 +8,7 @@ import './comp-group.scss'
 
 function CompGroup(props) {
   const { info } = props
-
+  console.log()
   if (!info || !info.groupsList) {
     return null
   }
