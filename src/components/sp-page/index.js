@@ -219,7 +219,7 @@ function SpPage(props, ref) {
       }
 
     }
-    showLeftContainer = !['/subpages/guide/index', '/pages/index'].includes(`/${page.route}`)
+    showLeftContainer = !['/subpages/guide/index', '/pages/index'].includes(`/${page?.route}`)
 
     return (
       <View
