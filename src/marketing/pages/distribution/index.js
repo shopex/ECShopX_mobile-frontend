@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { View, Text, Image, Navigator, Button, Canvas } from '@tarojs/components'
 import { connect } from 'react-redux'
 import { SpNavBar, Loading, SpPage, SpPoster } from '@/components'
 import api from '@/api'
 import { pickBy, canvasExp, classNames, isArray, getExtConfigData, isAlipay } from '@/utils'
-import userIcon from '@/assets/imgs/user-icon.png'
 import req from '@/api/req'
 import S from '@/spx'
 import './index.scss'
@@ -174,13 +173,11 @@ export default class DistributionDashboard extends Component {
     const wxappCode = `${req.baseURL}promoter/qrcode.png?path=${url}&appid=${extConfig.appid}&company_id=${extConfig.company_id}&user_id=${userId}`
     console.log('DistributionDashboard-wxappCode:', wxappCode)
     let avatarImg, bck
-    // if (avatar) {
-    //   // 头像
-    //   avatarImg = await Taro.getImageInfo({ src: avatar })
-    // }
-    let nAvatar = avatar === '' ? `${process.env.APP_IMAGE_CDN}/user_icon.png` : avatar
+
     //头像
+    let nAvatar = avatar === '' ? `${process.env.APP_IMAGE_CDN}/user_icon.png` : avatar
     avatarImg = await Taro.getImageInfo({ src: nAvatar })
+
     if (qrcode_bg_img) {
       // 背景
       bck = await Taro.getImageInfo({ src: qrcode_bg_img })
@@ -189,6 +186,7 @@ export default class DistributionDashboard extends Component {
         src: `${process.env.APP_IMAGE_CDN}/fenxiao_bk.png`
       }) // 背景图片
     }
+
     const codeImg = await Taro.getImageInfo({ src: wxappCode }) // 二维码
     console.log('DistributionDashboard-avatarImg:', avatarImg)
     console.log('DistributionDashboard-codeImg:', codeImg)
@@ -326,7 +324,7 @@ export default class DistributionDashboard extends Component {
         <SpNavBar title='推广管理' leftIconType='chevron-left' />
         <View className='header' style={'background: ' + colors.data[0].marketing}>
           <View className='view-flex view-flex-middle'>
-            <Image className='header-avatar' src={info.avatar || userIcon} mode='aspectFill' />
+            <Image className='header-avatar' src={info.avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png`} mode='aspectFill' />
             <View className='header-info view-flex-item'>
               {info.username}
               {info.is_open_promoter_grade && <Text>（{info.promoter_grade_name}）</Text>}
