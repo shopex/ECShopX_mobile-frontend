@@ -2,7 +2,6 @@ import Taro, { Component } from '@tarojs/taro'
 import api from '@/api'
 import { getExtConfigData } from '@/utils'
 import { drawText, drawImage, drawBlock } from './helper'
-import userIcon from '@/assets/imgs/user-icon.png'
 const canvasWidth = 750
 const canvasHeight = 1335
 
@@ -37,13 +36,13 @@ class DistributionPoster {
 
     const pic = qrcode_bg_img || `${process.env.APP_IMAGE_CDN}/fenxiao_bk.png`
     console.log('goods pic1:', pic)
-    debugger
+
     // 背景图片
     this.bkg = await Taro.getImageInfo({ src: pic })
     // 太阳码
     this.codeImg = await Taro.getImageInfo({ src: wxappCode })
     // 头像
-    this.avatar = await Taro.getImageInfo({ src: avatar || userIcon })
+    this.avatar = await Taro.getImageInfo({ src: avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png` })
 
     const drawOptions = {
       ctx: this.ctx,
@@ -52,7 +51,6 @@ class DistributionPoster {
     }
     this.drawOptions = drawOptions
     const { username } = this.userInfo
-    debugger
     drawBlock(
       {
         x: 0,

@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Taro from '@tarojs/taro'
-import { View, Text, Image, Button, Canvas } from '@tarojs/components'
-import { useImmer } from 'use-immer'
+import { View, Text, Image, Canvas } from '@tarojs/components'
 import { useAsyncCallback } from '@/hooks'
 import { classNames, authSetting, showToast } from '@/utils'
 import GoodsDetailPoster from './dw-goodsdetail'
@@ -64,7 +63,6 @@ function SpPoster(props) {
     Taro.showLoading({
       title: '海报生成中...'
     })
-    debugger
     const ctx = Taro.createCanvasContext(eleId, Taro.getCurrentInstance().page)
     let canvasObj
     switch (type) {
@@ -108,7 +106,6 @@ function SpPoster(props) {
         break
     }
     const { canvasWidth, canvasHeight } = canvasObj.getCanvasSize()
-    debugger
     setState(
       (draft) => {
         draft.pxWidth = canvasWidth
@@ -117,8 +114,6 @@ function SpPoster(props) {
       },
       async (_state) => {
         await canvasObj.drawPoster()
-        debugger
-        //========================================
         const poster = await getPoster(_state)
         Taro.hideLoading()
         setState((draft) => {
@@ -129,10 +124,8 @@ function SpPoster(props) {
   }
 
   const getPoster = ({ ctx, pxWidth, pxHeight, eleId }) => {
-    debugger
     return new Promise((resolve, reject) => {
       ctx.draw(false, async () => {
-        debugger
         const { tempFilePath: poster } = await Taro.canvasToTempFilePath(
           {
             x: 0,
