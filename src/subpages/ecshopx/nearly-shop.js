@@ -113,15 +113,17 @@ function NearlyShop(props) {
           v.shopList = []
           v.keyword = ''
           v.name = ''
-          v.type = 0
+          // v.type = 0
           v.search_type = undefined
         })
         console.log('getLocationInfo 重新定位',)
         shopRef.current.reset()
       }
     })
+
     setState((v) => {
       v.locationIng = false
+      v.type = 2
     })
   }
 
@@ -163,7 +165,6 @@ function NearlyShop(props) {
   }
 
   const isPolicyTime = async () => {
-
     const checkRes = await checkPolicyChange()
     if (checkRes) {
       getLocationInfo()
