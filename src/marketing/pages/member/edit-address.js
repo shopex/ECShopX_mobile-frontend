@@ -1,107 +1,86 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-// import EditAddress from '@/components/new-address/edit-address'
-import { View, Switch, Text, Picker, Button } from '@tarojs/components'
-import { AtForm, AtInput, AtButton } from 'taro-ui'
-import { connect } from 'react-redux'
-import { SpCell, SpToast, SpNavBar, SpAddress } from '@/components'
+import { View, Switch, Text, Button } from '@tarojs/components'
+import { AtInput, AtButton } from 'taro-ui'
+import { SpCell, SpNavBar, SpAddress } from '@/components'
 import api from '@/api'
 import { isWxWeb } from '@/utils'
 import S from '@/spx'
 
 import './edit-address.scss'
 
-//转换属性
-const traverseData = (data) => {
-  let item = []
-  data.forEach((d) => {
-    let newData = {}
-    newData.name = d.label
-    if (d.children) {
-      newData.subList = traverseData(d.children)
-    }
-    item.push(newData)
-  })
-  return item
+const initialState = {
+  info: {},
+  listLength: 0,
+  areaArray: [[], [], []],
+  areaIndexArray: [0, 0, 0],
+  areaData: [],
+  chooseValue: ['', '', ''],
+  isOpened: false
 }
 
-@connect(
-  ({ colors }) => ({
-    colors: colors.current
-  }),
-  (dispatch) => ({
-    updateChooseAddress: (address) =>
-      dispatch({ type: 'user/updateChooseAddress', payload: address })
-  })
-)
-export default class AddressIndex extends Component {
-  $instance = getCurrentInstance()
-  constructor(props) {
-    super(props)
+function AddressIndex(props) {
+  const $instance = getCurrentInstance()
+  const [state, setState] = useImmer(initialState)
+  const colors = useSelector((state) => state.colors.current)
+  const dispatch = useDispatch()
 
-    this.state = {
-      info: {},
-      listLength: 0,
-      areaArray: [[], [], []],
-      areaIndexArray: [0, 0, 0],
-      areaData: [],
-      chooseValue: ['', '', ''],
-      isOpened: false
-      // ubmitLoading: false,
-    }
+  const updateChooseAddress = (address) => {
+    dispatch({ type: 'user/updateChooseAddress', payload: address })
   }
 
-  async componentDidMount() {
-    await this.fetchAddressList()
-    await this.fetch()
+  useEffect(() => {
+    fetchAddressList()
+    fetch()
     Taro.setNavigationBarTitle({
-      title: this.setNavigationBarTitle()
+      title: setNavigationBarTitle()
     })
+  },[])
+
+  const setNavigationBarTitle = () => {
+    return $instance.router?.params?.address_id ? '编辑地址' : '新增地址'
   }
 
-  setNavigationBarTitle = () => {
-    return this.state.info.user_id ? '编辑地址' : '新增地址'
-  }
-
-  fetchAddressList = async () => {
+  const fetchAddressList = async () => {
     const areaData = await api.member.areaList()
-    this.setState({
-      areaData
+    setState((draft) => {
+      draft.areaData = areaData
     })
   }
 
-  async fetch() {
+  const fetch = async () => {
     Taro.showLoading({ title: '' })
     const { list } = await api.member.addressList()
-    this.setState({
-      listLength: list.length
+    setState((draft) => {
+      draft.listLength = list?.length
     })
 
     list.map((a_item) => {
-      if (a_item.address_id === this.$instance.router.params.address_id) {
-        this.setState({
-          info: a_item,
-          chooseValue: [a_item.province, a_item.city, a_item.county]
+      if (a_item.address_id === $instance.router?.params?.address_id) {
+        setState((draft) => {
+          ;(draft.info = a_item),
+            (draft.chooseValue = [a_item.province, a_item.city, a_item.county])
         })
       }
     })
 
-    if (this.$instance.router.params.isWechatAddress) {
+    if ($instance.router?.params?.isWechatAddress) {
       try {
         const resAddress = await Taro.chooseAddress()
         const query = {
-          province: resAddress.provinceName,
-          city: resAddress.cityName,
-          county: resAddress.countyName,
-          adrdetail: resAddress.detailInfo,
+          province: resAddress?.provinceName,
+          city: resAddress?.cityName,
+          county: resAddress?.countyName,
+          adrdetail: resAddress?.detailInfo,
           is_def: 0,
-          postalCode: resAddress.postalCode,
-          telephone: resAddress.telNumber,
-          username: resAddress.userName
+          postalCode: resAddress?.postalCode,
+          telephone: resAddress?.telNumber,
+          username: resAddress?.userName
         }
-        this.setState({
-          info: query,
-          chooseValue: [query.province, query.city, query.county]
+        setState((draft) => {
+          ;(draft.info = query), (draft.chooseValue = [query.province, query.city, query.county])
         })
       } catch (err) {
         console.error(err)
@@ -112,49 +91,49 @@ export default class AddressIndex extends Component {
     Taro.hideLoading()
   }
 
-  onPickerClick = () => {
-    this.setState({
-      isOpened: true
+  const onPickerClick = () => {
+    setState((draft) => {
+      draft.isOpened = true
     })
   }
 
-  handleClickClose = () => {
-    this.setState({
-      isOpened: false
+  const handleClickClose = () => {
+    setState((draft) => {
+      draft.isOpened = false
     })
   }
 
-  onPickerChange = (selectValue) => {
-    const chooseValue = [selectValue[0].label, selectValue[1].label, selectValue[2].label]
-    this.setState({
-      chooseValue
+  const onPickerChange = (selectValue) => {
+    const chooseValue = [selectValue[0]?.label, selectValue[1]?.label, selectValue[2]?.label]
+    setState((draft) => {
+      draft.chooseValue = chooseValue
     })
   }
 
-  handleChange = (name, val) => {
-    const { info } = this.state
-    info[name] = val
-    this.setState({
-      info
+  const handleChange = (name, val) => {
+    const nInfo = JSON.parse(JSON.stringify(state.info || {}))
+    nInfo[name] = val
+    setState((draft) => {
+      draft.info = nInfo
     })
   }
 
-  handleDefChange = (e) => {
+  const handleDefChange = (e) => {
     const info = {
-      ...this.state.info,
+      ...state.info,
       is_def: e.detail.value ? 1 : 0
     }
 
-    this.setState({
-      info
+    setState((draft) => {
+      draft.info = info
     })
   }
 
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     const { value } = e.detail || {}
-    const { chooseValue } = this.state
+    const { chooseValue } = state
     const data = {
-      ...this.state.info,
+      ...state.info,
       ...value
     }
 
@@ -163,7 +142,7 @@ export default class AddressIndex extends Component {
     } else {
       data.is_def = '1'
     }
-    if (this.state.listLength === 0) {
+    if (state.listLength === 0) {
       data.is_def = '1'
     }
 
@@ -175,11 +154,9 @@ export default class AddressIndex extends Component {
       return S.toast('请输入手机号')
     }
 
-    // if (!data.province) {
     data.province = chooseValue[0]
     data.city = chooseValue[1]
     data.county = chooseValue[2]
-    // }
 
     if (!data.adrdetail) {
       return S.toast('请输入详细地址')
@@ -194,7 +171,7 @@ export default class AddressIndex extends Component {
       } else {
         S.toast('创建成功')
       }
-      this.props.updateChooseAddress(data)
+      updateChooseAddress(data)
       setTimeout(() => {
         Taro.navigateBack()
       }, 700)
@@ -205,74 +182,68 @@ export default class AddressIndex extends Component {
     Taro.hideLoading()
   }
 
-  render() {
-    const { colors } = this.props
-    const { info, areaIndexArray, areaArray, chooseValue, isOpened } = this.state
-    console.log('color', colors, info)
-    return (
-      <View className='page-address-edit' style={isWxWeb && { paddingTop: 0 }}>
-        <SpNavBar title={this.setNavigationBarTitle()} leftIconType='chevron-left' fixed='true' />
-        <View className='page-address-edit__form'>
-          <SpCell
-            className='logistics-no'
-            title='收件人'
-            value={
-              <AtInput
-                name='username'
-                value={info.username}
-                placeholder='收件人姓名'
-                onChange={this.handleChange.bind(this, 'username')}
-              />
-            }
-          ></SpCell>
+  const { info, chooseValue, isOpened } = state
 
-          <SpCell
-            className='logistics-no'
-            title='手机号码'
-            value={
-              <AtInput
-                name='telephone'
-                maxLength={11}
-                value={info.telephone}
-                placeholder='收件人手机号码'
-                onChange={this.handleChange.bind(this, 'telephone')}
-              />
-            }
-          ></SpCell>
+  return (
+    <View className='page-address-edit' style={isWxWeb && { paddingTop: 0 }}>
+      <SpNavBar title={setNavigationBarTitle} leftIconType='chevron-left' fixed='true' />
+      <View className='page-address-edit__form'>
+        <SpCell
+          className='logistics-no'
+          title='收件人'
+          value={
+            <AtInput
+              name='username'
+              value={info?.username}
+              placeholder='收件人姓名'
+              onChange={(e) => handleChange('username', e)}
+            />
+          }
+        ></SpCell>
 
-          <SpCell
-            className='logistics-no province'
-            title='所在区域'
-            value={
-              <View className='picker' onClick={this.onPickerClick}>
-                {chooseValue.join('') === '' ? (
-                  <Text>选择省/市/区</Text>
-                ) : (
-                  <Text style={{ color: '#000' }}>{chooseValue.join('/')}</Text>
-                )}
-              </View>
-            }
-          ></SpCell>
-          <SpAddress
-            isOpened={isOpened}
-            onClose={this.handleClickClose}
-            onChange={this.onPickerChange}
-          />
+        <SpCell
+          className='logistics-no'
+          title='手机号码'
+          value={
+            <AtInput
+              name='telephone'
+              maxLength={11}
+              value={info?.telephone}
+              placeholder='收件人手机号码'
+              onChange={(e) => handleChange('telephone', e)}
+            />
+          }
+        ></SpCell>
 
-          <SpCell
-            className='logistics-no'
-            title='详细地址'
-            value={
-              <AtInput
-                name='adrdetail'
-                value={info.adrdetail}
-                placeholder='请填写详细地址（街道、门牌）'
-                onChange={this.handleChange.bind(this, 'adrdetail')}
-              />
-            }
-          ></SpCell>
+        <SpCell
+          className='logistics-no province'
+          title='所在区域'
+          value={
+            <View className='picker' onClick={onPickerClick}>
+              {chooseValue?.join('') === '' ? (
+                <Text>选择省/市/区</Text>
+              ) : (
+                <Text style={{ color: '#000' }}>{chooseValue?.join('/')}</Text>
+              )}
+            </View>
+          }
+        ></SpCell>
+        <SpAddress isOpened={isOpened} onClose={handleClickClose} onChange={onPickerChange} />
 
-          {/* <SpCell
+        <SpCell
+          className='logistics-no'
+          title='详细地址'
+          value={
+            <AtInput
+              name='adrdetail'
+              value={info?.adrdetail}
+              placeholder='请填写详细地址（街道、门牌）'
+              onChange={(e) => handleChange('adrdetail', e)}
+            />
+          }
+        ></SpCell>
+
+        {/* <SpCell
             className='logistics-no'
             title='邮政编码'
             value={
@@ -283,42 +254,47 @@ export default class AddressIndex extends Component {
               />
             }
           ></SpCell> */}
-        </View>
+      </View>
 
-        <View className='sec'>
-          <SpCell
-            title='设为默认地址'
-            iisLink
-            value={
-              <Switch
-                checked={info.is_def}
-                className='def-switch'
-                onChange={this.handleDefChange.bind(this)}
-                color={colors.data[0].primary}
-              />
-            }
-          ></SpCell>
-        </View>
-        <View className='btns'>
-          {/* <AtButton
+      <View className='sec'>
+        <SpCell
+          title='设为默认地址'
+          iisLink
+          value={
+            <Switch
+              checked={info?.is_def}
+              className='def-switch'
+              onChange={handleDefChange}
+              color={colors.data[0].primary}
+            />
+          }
+        ></SpCell>
+      </View>
+      <View className='btns'>
+        {/* <AtButton
             circle
             type='primary'
             className='save-btn'
-            onClick={this.handleSubmit}
+            onClick={handleSubmit}
             style={`background: ${colors}; border-color: ${colors};border-radius: 25px;`}
           >
             保存并使用
           </AtButton> */}
-          <Button
-            type='primary'
-            onClick={this.handleSubmit}
-            className='submit-btn'
-            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};border-radius: 25px;`}
-          >
-            保存并使用
-          </Button>
-        </View>
+        <Button
+          type='primary'
+          onClick={handleSubmit}
+          className='submit-btn'
+          style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary};border-radius: 25px;`}
+        >
+          保存并使用
+        </Button>
       </View>
-    )
-  }
+    </View>
+  )
 }
+
+AddressIndex.options = {
+  addGlobalClass: true
+}
+
+export default AddressIndex
