@@ -143,6 +143,7 @@ function SpPoster(props) {
       async (_state) => {
         await canvasObj.drawPoster()
         const poster = await getPoster(_state)
+        console.log('handleCreatePoster:getPoster', poster)
         Taro.hideLoading()
         setState((draft) => {
           draft.poster = poster
