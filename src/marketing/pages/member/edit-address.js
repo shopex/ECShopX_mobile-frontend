@@ -8,6 +8,7 @@ import { SpCell, SpNavBar, SpAddress } from '@/components'
 import api from '@/api'
 import { isWxWeb } from '@/utils'
 import S from '@/spx'
+import { useNavigation } from '@/hooks'
 
 import './edit-address.scss'
 
@@ -26,6 +27,7 @@ function AddressIndex(props) {
   const [state, setState] = useImmer(initialState)
   const colors = useSelector((state) => state.colors.current)
   const dispatch = useDispatch()
+  const { setNavigationBarTitle } = useNavigation()
 
   const updateChooseAddress = (address) => {
     dispatch({ type: 'user/updateChooseAddress', payload: address })
@@ -34,12 +36,10 @@ function AddressIndex(props) {
   useEffect(() => {
     fetchAddressList()
     fetch()
-    Taro.setNavigationBarTitle({
-      title: setNavigationBarTitle()
-    })
+    setNavigationBarTitle(initNavigationBarTitle())
   },[])
 
-  const setNavigationBarTitle = () => {
+  const initNavigationBarTitle = () => {
     return $instance.router?.params?.address_id ? '编辑地址' : '新增地址'
   }
 
