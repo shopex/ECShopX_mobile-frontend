@@ -75,7 +75,7 @@ function CartIndex() {
 
   const getCartList = async () => {
     Taro.showLoading({ title: '' })
-    const { type = 'distributor' } = router.params
+    const { type = 'distributor' } = router?.params || {}
     const params = {
       shop_type: type
     }
