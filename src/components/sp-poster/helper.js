@@ -12,7 +12,6 @@
  * @param { function } drawOptions.toPx - toPx方法
  * @param { function } drawOptions.toRpx - toRpx方法
  */
- import { isAlipay, } from '@/utils'
 
 export function _drawRadiusRect(drawData, drawOptions) {
   const { x, y, w, h, r } = drawData
@@ -85,11 +84,7 @@ export function _getTextWidth(text, drawOptions) {
  * @param { function } drawOptions.toRpx - toRpx方法
  */
 export function _drawSingleText(drawData, drawOptions) {
-  if(isAlipay){
-    // drawData.x = drawData.x / 4
-    // drawData.y = drawData.y / 4
-    // drawData.fontSize = drawData.fontSize / 2
-  }
+  
   const {
     x,
     y,
@@ -248,11 +243,7 @@ export function drawText(params, drawOptions) {
  */
 export function drawImage(data, drawOptions) {
   const { ctx, toPx } = drawOptions
-  if(isAlipay){
-    data.sw = data.sw * 2
-    data.sh = data.sh * 2
-    data.h = data.h / 1.3
-  }
+  
   const {
     imgPath,
     x,
@@ -378,8 +369,6 @@ export function drawBlock(
   },
   drawOptions
 ) {  
-  console.log('drawBlock:data',arguments[0])
-  height = height * 2
   const { ctx, toPx } = drawOptions
   // 判断是否块内有文字
   let blockWidth = 0 // 块的宽度

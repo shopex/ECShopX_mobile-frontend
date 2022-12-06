@@ -12,8 +12,7 @@
  * @param { function } drawOptions.toPx - toPx方法
  * @param { function } drawOptions.toRpx - toRpx方法
  */
-
-import { isAlipay, } from '@/utils'
+ import { isAlipay, } from '@/utils'
 
 export function _drawRadiusRect(drawData, drawOptions) {
   const { x, y, w, h, r } = drawData
@@ -86,6 +85,11 @@ export function _getTextWidth(text, drawOptions) {
  * @param { function } drawOptions.toRpx - toRpx方法
  */
 export function _drawSingleText(drawData, drawOptions) {
+  if(isAlipay){
+    // drawData.x = drawData.x / 4
+    // drawData.y = drawData.y / 4
+    // drawData.fontSize = drawData.fontSize / 2
+  }
   const {
     x,
     y,
@@ -103,17 +107,16 @@ export function _drawSingleText(drawData, drawOptions) {
     fontStyle = 'normal',
     fontFamily = 'sans-serif'
   } = drawData
-  // console.log(drawData)
+  console.log('_drawSingleText:drawData',drawData)
   const { ctx, toPx, toRpx } = drawOptions
-  console.log('_drawSingleText:', drawOptions)
   ctx.save()
   ctx.beginPath()
   ctx.font = fontStyle + ' ' + fontWeight + ' ' + toPx(fontSize, true) + 'px ' + fontFamily
-  !isAlipay && ctx.setGlobalAlpha(opacity)
+  ctx.setGlobalAlpha(opacity)
   // ctx.setFontSize(toPx(fontSize));
-  !isAlipay && ctx.setFillStyle(color)
-  !isAlipay && ctx.setTextBaseline(baseLine)
-  !isAlipay && ctx.setTextAlign(textAlign)
+  ctx.setFillStyle(color)
+  ctx.setTextBaseline(baseLine)
+  ctx.setTextAlign(textAlign)
   let textWidth = toRpx(ctx.measureText(text).width)
   const textArr = []
   if (textWidth > width) {
@@ -206,6 +209,7 @@ export function drawText(params, drawOptions) {
     // lineNum,
     // lineHeight
   } = params
+  console.log('drawText', params)
   if (Object.prototype.toString.call(text) === '[object Array]') {
     let preText = { x, y, baseLine }
     text.forEach((item) => {
@@ -242,8 +246,13 @@ export function drawText(params, drawOptions) {
  * @param { function } drawOptions.toPx - toPx方法
  * @param { function } drawOptions.toRpx - toRpx方法
  */
-export function drawImage(data, drawOptions,canvas) {
+export function drawImage(data, drawOptions) {
   const { ctx, toPx } = drawOptions
+  if(isAlipay){
+    data.sw = data.sw * 2
+    data.sh = data.sh * 2
+    data.h = data.h / 1.3
+  }
   const {
     imgPath,
     x,
@@ -259,6 +268,7 @@ export function drawImage(data, drawOptions,canvas) {
     borderColor
   } = data
   ctx.save()
+  console.log('drawImage:data', data)
   if (borderRadius > 0) {
     let drawData = {
       x,
@@ -270,8 +280,8 @@ export function drawImage(data, drawOptions,canvas) {
     _drawRadiusRect(drawData, drawOptions)
     ctx.strokeStyle = 'rgba(255,255,255,0)'
     ctx.stroke()
-    ctx.clip()
-    !isAlipay && ctx.drawImage(
+    ctx.clip()   
+    ctx.drawImage(
       imgPath,
       toPx(sx),
       toPx(sy),
@@ -282,27 +292,13 @@ export function drawImage(data, drawOptions,canvas) {
       toPx(w),
       toPx(h)
     )
-    if(isAlipay){
-      const img = canvas.createImage();
-      img.src = imgPath;
-      img.onload = () => {
-        ctx.drawImage(img, toPx(sx),
-        toPx(sy),
-        toPx(sw),
-        toPx(sh),
-        toPx(x),
-        toPx(y),
-        toPx(w),
-        toPx(h));
-      }
-    }
     if (borderWidth > 0) {
       ctx.setStrokeStyle(borderColor)
       ctx.setLineWidth(toPx(borderWidth))
       ctx.stroke()
     }
   } else {
-    !isAlipay && ctx.drawImage(
+    ctx.drawImage(
       imgPath,
       toPx(sx),
       toPx(sy),
@@ -313,23 +309,7 @@ export function drawImage(data, drawOptions,canvas) {
       toPx(w),
       toPx(h)
     )
-
-    if(isAlipay){
-      const img = canvas.createImage();
-      img.src = imgPath;
-      img.onload = () => {
-        ctx.drawImage(img, toPx(sx),
-        toPx(sy),
-        toPx(sw),
-        toPx(sh),
-        toPx(x),
-        toPx(y),
-        toPx(w),
-        toPx(h));
-      }
-    }
   }
-  
   ctx.restore()
 }
 
@@ -397,7 +377,9 @@ export function drawBlock(
     opacity = 1
   },
   drawOptions
-) {
+) {  
+  console.log('drawBlock:data',arguments[0])
+  height = height * 2
   const { ctx, toPx } = drawOptions
   // 判断是否块内有文字
   let blockWidth = 0 // 块的宽度
@@ -429,8 +411,8 @@ export function drawBlock(
   if (backgroundColor) {
     // 画面
     ctx.save()
-    !isAlipay && ctx.setGlobalAlpha(opacity)
-    !isAlipay && ctx.setFillStyle(backgroundColor)
+    ctx.setGlobalAlpha(opacity)
+    ctx.setFillStyle(backgroundColor)
     if (borderRadius > 0) {
       // 画圆角矩形
       let drawData = {
@@ -450,7 +432,7 @@ export function drawBlock(
   if (borderWidth) {
     // 画线
     ctx.save()
-    !isAlipay && ctx.setGlobalAlpha(opacity)
+    ctx.setGlobalAlpha(opacity)
     ctx.setStrokeStyle(borderColor)
     ctx.setLineWidth(toPx(borderWidth))
     if (borderRadius > 0) {
