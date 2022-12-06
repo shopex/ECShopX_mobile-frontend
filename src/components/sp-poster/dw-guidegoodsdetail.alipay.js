@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import api from '@/api'
 import { getExtConfigData } from '@/utils'
-import { drawText, drawImage, drawBlock } from './helper'
+import { drawText, drawImage, drawBlock } from './helper.alipay'
 
 const canvasWidth = 600
 const canvasHeight = 960
