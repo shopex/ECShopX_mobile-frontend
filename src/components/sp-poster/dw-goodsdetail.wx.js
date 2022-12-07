@@ -29,10 +29,9 @@ class GoodsDetailPoster {
     const { appid, company_id } = getExtConfigData()
     const { itemId, imgs, price } = this.info
     const { user_id, avatar } = this.userInfo
-    // const { dtid } =
 
     const wxappCode = `${host}/wechatAuth/wxapp/qrcode.png?page=${`pages/item/espier-detail`}&appid=${appid}&company_id=${company_id}&id=${itemId}&uid=${user_id}`
-    // TODO 获取微信二维码的接口，需要换alipay  https://ecshopx1.shopex123.com/api/h5app/alipaymini/qrcode.png?company_id=1&page=page/index  
+    // TODO 获取微信二维码的接口，需要换alipay  https://ecshopx1.shopex123.com/api/h5app/alipaymini/qrcode.png?company_id=1&page=page/index
 
     const pic = imgs[0].replace('http:', 'https:')
     // const wxappCode = pic
@@ -40,22 +39,12 @@ class GoodsDetailPoster {
 
     console.log('pic:', pic)
     // 商品图片
-    this.goodsImg = await Taro.getImageInfo({ src: pic,fail:(err)=>{
-      console.log('goodsImg-err',err)
-    }})
+    this.goodsImg = await Taro.getImageInfo({ src: pic })
     // 太阳码
-    try{
-      this.codeImg = await Taro.getImageInfo({ src: wxappCode,fail:(err)=>{
-        console.log('codeImg-err',err)
-      } })
-    }catch(err){
-      console.log('catch:codeImg-err',err)
-    }
-    
+    this.codeImg = await Taro.getImageInfo({ src: wxappCode })
     // 头像
-    if(avatar) this.avatar = await Taro.getImageInfo({ src: avatar,fail:(err)=>{
-      console.log('avatar-err',err)
-    } })
+    const _avatar = avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png`
+    this.avatar = await Taro.getImageInfo({ src: _avatar })
 
     console.log('this.goodsImg:', this.goodsImg)
 
@@ -97,7 +86,7 @@ class GoodsDetailPoster {
         x: 24,
         y: 624,
         width: 312,
-        height: 40,
+        height: 80,
         backgroundColor: '#efefef',
         borderRadius: 80
       },

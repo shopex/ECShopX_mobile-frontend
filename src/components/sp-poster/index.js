@@ -14,10 +14,10 @@ import DistributionAl from './dw-distribution.alipay'
 import DistributionWx from './dw-distribution.wx'
 
 const DwArray = [
-  isAlipay?GoodsDetailPosterAl:GoodsDetailPosterWx,
-  isAlipay?GuideGoodsDetailPosterAl:GuideGoodsDetailPosterWx,
-  isAlipay?GuideCheckoutAl:GuideCheckoutWx,
-  isAlipay?DistributionAl:DistributionWx,
+  isAlipay ? GoodsDetailPosterAl : GoodsDetailPosterWx,
+  isAlipay ? GuideGoodsDetailPosterAl : GuideGoodsDetailPosterWx,
+  isAlipay ? GuideCheckoutAl : GuideCheckoutWx,
+  isAlipay ? DistributionAl : DistributionWx,
 ]
 const [GoodsDetailPoster, GuideGoodsDetailPoster, GuideCheckout, Distribution] = DwArray
 
@@ -27,15 +27,13 @@ const initialState = {
   poster: null,
   pxWidth: 200,
   pxHeight: 200,
-  // pxWidth: 335,
-  // pxHeight: 536,
   factor: 1,
   eleId: 'poster-canvas',
   ctx: null
 }
 
 function SpPoster(props) {
-  const { info, type, onClose = () => {} } = props
+  const { info, type, onClose = () => { } } = props
   const { userInfo } = useSelector((state) => state.user)
   const { userInfo: guideInfo } = useSelector((state) => state.guide)
   const [state, setState] = useAsyncCallback(initialState)
@@ -201,8 +199,9 @@ function SpPoster(props) {
         className='canvasbox'
         canvasId='poster-canvas'
         id='poster-canvas'
-        width={pxWidth} 
+        width={pxWidth}
         height={pxHeight}
+        style={`width:${pxWidth}px; height:${pxHeight}px;`}
       />
     </View>
   )
