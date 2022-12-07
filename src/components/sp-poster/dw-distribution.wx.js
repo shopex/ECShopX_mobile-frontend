@@ -3,8 +3,8 @@ import api from '@/api'
 import { getExtConfigData } from '@/utils'
 import { drawText, drawImage, drawBlock } from './helper'
 
-const canvasWidth = 750
-const canvasHeight = 1335
+const canvasWidth = 600
+const canvasHeight = 960
 
 class DistributionPoster {
   constructor(props) {
@@ -42,8 +42,10 @@ class DistributionPoster {
     // 太阳码
     this.codeImg = await Taro.getImageInfo({ src: wxappCode })
     // 头像
-    this.avatar = await Taro.getImageInfo({ src: avatar })
+    const _avatar = avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png`
+    this.avatar = await Taro.getImageInfo({ src: _avatar })
 
+    console.log('this.codeImg:', this.codeImg)
     const drawOptions = {
       ctx: this.ctx,
       toPx: this.toPx,
@@ -81,8 +83,8 @@ class DistributionPoster {
     drawImage(
       {
         imgPath: this.avatar.path,
-        x: 220,
-        y: 60,
+        x: 145,
+        y: 50,
         w: 80,
         h: 80,
         sx: 0,
@@ -96,8 +98,8 @@ class DistributionPoster {
     // 姓名
     drawText(
       {
-        x: 310,
-        y: 110,
+        x: 260,
+        y: 100,
         fontSize: 30,
         color: '#000',
         text: username
@@ -108,10 +110,10 @@ class DistributionPoster {
     drawImage(
       {
         imgPath: this.codeImg.path,
-        x: 120,
-        y: 620,
-        w: 480,
-        h: 480,
+        x: 112,
+        y: 442,
+        w: 370,
+        h: 370,
         sx: 0,
         sy: 0,
         sw: this.codeImg.width,

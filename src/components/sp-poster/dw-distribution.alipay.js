@@ -73,7 +73,8 @@ class DistributionPoster {
     // 太阳码
     this.codeImg = await Taro.getImageInfo({ src: wxappCode })
     // 头像
-    this.avatar = await Taro.getImageInfo({ src: avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png` })
+    const _avatar = avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png`
+    this.avatar = await Taro.getImageInfo({ src: _avatar })
 
     const drawOptions = {
       ctx: this.ctx,
