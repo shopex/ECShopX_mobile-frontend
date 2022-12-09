@@ -18,7 +18,7 @@ const initialState = {
   locationIng: false,
   chooseValue: ['北京市', '北京市', '昌平区'],
   keyword: '', // 参数
-  type: 0, // 参数
+  type: 0, // 0:正常流程 1:基于省市区过滤 2:基于默认收货地址强制定位
   search_type: undefined, // 参数
   isSpAddressOpened: false,
 }
@@ -37,9 +37,14 @@ function NearlyShop(props) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // fetchAddressList()
+    if (address) {
+      shopRef.current.reset()
+    }
+    return () => {
+      dispatch(updateChooseAddress(null)) // 清空地址信息
+    }
     // onPickerClick()
-  }, [])
+  }, [address])
 
   const fetchShop = async (params) => {
     const { pageIndex: page, pageSize } = params
@@ -62,7 +67,7 @@ function NearlyShop(props) {
     const { list, total_count: total, defualt_address } = await api.shop.list(query)
 
     setState((v) => {
-      v.shopList = uniqueFunc(v.shopList.concat(pickBy(list, doc.shop.SHOP_ITEM)),'distributor_id')
+      v.shopList = uniqueFunc(v.shopList.concat(pickBy(list, doc.shop.SHOP_ITEM)), 'distributor_id')
       v.chooseValue = [query.province, query.city, query.area]
     })
 
@@ -195,7 +200,7 @@ function NearlyShop(props) {
       selectValue[1].label,
       selectValue[2].label
     ]
-    setState((v)=>{
+    setState((v) => {
       v.chooseValue = chooseValue
       v.type = 1
     })
@@ -210,7 +215,7 @@ function NearlyShop(props) {
       <View className='search-block'>
         <View className='search-bar'>
           <View className='region-picker'>
-            <SpAddress isOpened={isSpAddressOpened} onClose={handleClickCloseSpAddress} onChange={onPickerChange}/>
+            <SpAddress isOpened={isSpAddressOpened} onClose={handleClickCloseSpAddress} onChange={onPickerChange} />
             <View className='pick-title' onClick={handleClickOpenSpAddress}>
               <View className='iconfont icon-periscope'></View>
               <Text className='pick-address'>{chooseValue.join('') || '选择地区'}</Text>
@@ -253,7 +258,7 @@ function NearlyShop(props) {
         </View>
         <View className='block-title block-flex'>
           <View>我的收货地址</View>
-          {address && (
+          {!address && (
             <View
               className='arrow'
               onClick={() =>

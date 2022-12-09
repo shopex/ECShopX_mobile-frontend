@@ -138,34 +138,28 @@ function PointShopEspierCheckout() {
       return
     }
 
-    setState(
-      (draft) => {
-        draft.submitLoading = true
-      },
-      async () => {
-        if (isWeixin) {
-          const templeparams = {
-            temp_name: 'yykweishop',
-            source_type: receiptType === 'logistics' ? 'logistics_order' : 'ziti_order'
-          }
-          const { template_id } = await api.user.newWxaMsgTmpl(templeparams)
-          Taro.requestSubscribeMessage({
-            tmplIds: template_id,
-            success: () => {
-              handlePay()
-            },
-            fail: () => {
-              handlePay()
-            }
-          })
-        } else {
-          handlePay()
-        }
+    if (isWeixin) {
+      const templeparams = {
+        temp_name: 'yykweishop',
+        source_type: receiptType === 'logistics' ? 'logistics_order' : 'ziti_order'
       }
-    )
+      const { template_id } = await api.user.newWxaMsgTmpl(templeparams)
+      try {
+        await Taro.requestSubscribeMessage({ tmplIds: template_id })
+        handlePay()
+      } catch (e) {
+        console.error(e)
+        handlePay()
+      }
+    } else {
+      handlePay()
+    }
   }
 
   const handlePay = async () => {
+    setState((draft) => {
+      draft.submitLoading = true
+    })
     const params = await getParamsInfo()
     console.log('trade params:', params)
     if (payType === 'deposit') {
