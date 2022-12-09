@@ -4,22 +4,11 @@ import Taro from '@tarojs/taro'
 import { View, Text, Image, Canvas } from '@tarojs/components'
 import { useAsyncCallback } from '@/hooks'
 import { classNames, authSetting, showToast, isAlipay } from '@/utils'
-import GoodsDetailPosterAl from './dw-goodsdetail.alipay'
-import GoodsDetailPosterWx from './dw-goodsdetail.wx'
-import GuideGoodsDetailPosterAl from './dw-guidegoodsdetail.alipay'
-import GuideGoodsDetailPosterWx from './dw-guidegoodsdetail.wx'
-import GuideCheckoutWx from './dw-guidecheckout.wx'
-import GuideCheckoutAl from './dw-guidecheckout.alipay'
-import DistributionAl from './dw-distribution.alipay'
-import DistributionWx from './dw-distribution.wx'
+import GoodsDetailPoster from './dw-goodsdetail'
+import Distribution from './dw-distribution'
+import GuideGoodsDetailPoster from './dw-guidegoodsdetail'
+import GuideCheckout from './dw-guidecheckout'
 
-const DwArray = [
-  isAlipay ? GoodsDetailPosterAl : GoodsDetailPosterWx,
-  isAlipay ? GuideGoodsDetailPosterAl : GuideGoodsDetailPosterWx,
-  isAlipay ? GuideCheckoutAl : GuideCheckoutWx,
-  isAlipay ? DistributionAl : DistributionWx,
-]
-const [GoodsDetailPoster, GuideGoodsDetailPoster, GuideCheckout, Distribution] = DwArray
 
 import './index.scss'
 
