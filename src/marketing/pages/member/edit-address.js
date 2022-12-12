@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Switch, Text, Button } from '@tarojs/components'
-import { AtInput, AtButton } from 'taro-ui'
+import { AtInput, AtButton, AtTextarea } from 'taro-ui'
 import { SpCell, SpNavBar, SpAddress } from '@/components'
 import api from '@/api'
 import { isWxWeb } from '@/utils'
@@ -37,7 +37,7 @@ function AddressIndex(props) {
     fetchAddressList()
     fetch()
     setNavigationBarTitle(initNavigationBarTitle())
-  },[])
+  }, [])
 
   const initNavigationBarTitle = () => {
     return $instance.router?.params?.address_id ? '编辑地址' : '新增地址'
@@ -111,6 +111,7 @@ function AddressIndex(props) {
   }
 
   const handleChange = (name, val) => {
+    console.log('---', name, val)
     const nInfo = JSON.parse(JSON.stringify(state.info || {}))
     nInfo[name] = val
     setState((draft) => {
@@ -189,7 +190,7 @@ function AddressIndex(props) {
       <SpNavBar title={setNavigationBarTitle} leftIconType='chevron-left' fixed='true' />
       <View className='page-address-edit__form'>
         <SpCell
-          className='logistics-no'
+          className='logistics-no border-bottom'
           title='收件人'
           value={
             <AtInput
@@ -202,28 +203,30 @@ function AddressIndex(props) {
         ></SpCell>
 
         <SpCell
-          className='logistics-no'
+          className='logistics-no border-bottom'
           title='手机号码'
           value={
             <AtInput
               name='telephone'
               maxLength={11}
               value={info?.telephone}
-              placeholder='收件人手机号码'
+              placeholder='收件人手机号'
               onChange={(e) => handleChange('telephone', e)}
             />
           }
         ></SpCell>
 
         <SpCell
-          className='logistics-no province'
+          className='logistics-no province border-bottom'
           title='所在区域'
+          isLink
+          arrow
           value={
             <View className='picker' onClick={onPickerClick}>
               {chooseValue?.join('') === '' ? (
                 <Text>选择省/市/区</Text>
               ) : (
-                <Text style={{ color: '#000' }}>{chooseValue?.join('/')}</Text>
+                <Text style={{ color: '#222' }}>{chooseValue?.join('/')}</Text>
               )}
             </View>
           }
@@ -231,17 +234,18 @@ function AddressIndex(props) {
         <SpAddress isOpened={isOpened} onClose={handleClickClose} onChange={onPickerChange} />
 
         <SpCell
-          className='logistics-no'
+          className='logistics-no detail-address'
           title='详细地址'
-          value={
-            <AtInput
-              name='adrdetail'
-              value={info?.adrdetail}
-              placeholder='请填写详细地址（街道、门牌）'
-              onChange={(e) => handleChange('adrdetail', e)}
-            />
-          }
-        ></SpCell>
+        >
+          <AtTextarea
+            count={false}
+            // name='adrdetail'
+            value={info?.adrdetail}
+            maxLength={100}
+            placeholder='请填写详细地址（街道、门牌）'
+            onChange={(e) => handleChange('adrdetail', e)}
+          />
+        </SpCell>
 
         {/* <SpCell
             className='logistics-no'
@@ -256,20 +260,19 @@ function AddressIndex(props) {
           ></SpCell> */}
       </View>
 
-      <View className='sec'>
-        <SpCell
-          title='设为默认地址'
-          iisLink
-          value={
-            <Switch
-              checked={info?.is_def}
-              className='def-switch'
-              onChange={handleDefChange}
-              color={colors.data[0].primary}
-            />
-          }
-        ></SpCell>
-      </View>
+      <SpCell
+        title='设为默认收货地址'
+        iisLink
+        className='default_address'
+        value={
+          <Switch
+            checked={info?.is_def}
+            className='def-switch'
+            onChange={handleDefChange}
+            color={colors.data[0].primary}
+          />
+        }
+      ></SpCell>
       <View className='btns'>
         {/* <AtButton
             circle

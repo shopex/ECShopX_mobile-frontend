@@ -9,7 +9,15 @@
   padding-top: $navigate-height-h5;
   /*  #endif  */
   .page-address-edit__form{
-    padding-top: 0;
+    border-radius: 16px;
+    padding: 5rpx 16rpx 0rpx 16rpx;
+    .sp-cell{
+      padding: 24rpx 20rpx 24rpx 10rpx;
+      &__title{
+        color: #666666;
+      }
+    }
+
   }
   .sp-cell__ft {
     color: #ccc;
@@ -21,6 +29,11 @@
   }
   .picker {
     width: 350px;
+    text{
+      margin-left: -40rpx !important;
+      font-size: 32rpx;
+    }
+
     &__title {
       font-size: $font-size;
       margin-right: 16px;
@@ -36,12 +49,17 @@
       color: #808080;
     }
   }
-  .submit-btn{
-    border-radius: 5px;
-    font-size: 30px;
+
+    .submit-btn{
+      border-radius: 5px;
+      font-size: 30px;
+    }
+
+  .border-bottom{
+    border-bottom:1rpx solid #DDDDDD;
   }
   .logistics-no {
-    border-bottom:1rpx solid #e6e6e6;
+    // background-color: blue;
     .at-input {
       margin-bottom: 0;
       width: 350px;
@@ -53,6 +71,31 @@
         padding-right: 0;
       }
     }
+    .at-textarea{
+      border: none;
+      width: 100%;
+      // background-color: red;
+      // margin-top: 10rpx;
+      margin-left: 65rpx !important;
+      color: #222;
+      padding: 0 18rpx 0 0;
+    }
   }
+  .default_address{
+    border-radius: 16px;
+    margin: 12rpx 0;
+    padding-right: 0rpx;
+
+  }
+  .at-input input{
+    margin-left: -40rpx ;
+    font-size: 32rpx;
+  }
+
+    .detail-address{
+      padding-bottom: 0 !important;
+      align-items: flex-start !important;
+    }
+
 
 }
