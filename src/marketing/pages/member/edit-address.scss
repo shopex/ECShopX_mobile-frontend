@@ -53,6 +53,7 @@
     .submit-btn{
       border-radius: 5px;
       font-size: 30px;
+      padding: 8rpx 0;
     }
 
   .border-bottom{
@@ -72,18 +73,18 @@
       }
     }
     .at-textarea{
+      overflow: hidden;
       border: none;
       width: 100%;
-      // background-color: red;
-      // margin-top: 10rpx;
+      height: 100rpx;
       margin-left: 65rpx !important;
       color: #222;
-      padding: 0 18rpx 0 0;
+      padding: 0 18rpx 12rpx 0;
     }
   }
   .default_address{
     border-radius: 16px;
-    margin: 12rpx 0;
+    margin: 22rpx 0;
     padding-right: 0rpx;
 
   }
