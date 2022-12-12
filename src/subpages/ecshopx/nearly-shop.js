@@ -40,9 +40,6 @@ function NearlyShop(props) {
     if (address) {
       shopRef.current.reset()
     }
-    return () => {
-      dispatch(updateChooseAddress(null)) // 清空地址信息
-    }
     // onPickerClick()
   }, [address])
 
