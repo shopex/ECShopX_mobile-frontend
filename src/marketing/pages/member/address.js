@@ -111,8 +111,8 @@ function AddressIndex(props) {
       content: `确定要删除该地址吗?`,
       showCancel: true,
       cancel: '取消',
-      cancelText: '拒绝',
-      confirmText: '同意',
+      cancelText: '取消',
+      confirmText: '确定',
       confirmColor: colors.colorPrimary
     })
     if (!res.confirm) return
@@ -172,6 +172,7 @@ function AddressIndex(props) {
           <SpCell
             isLink
             iconPrefix='sp-icon'
+            className='address-harvest'
             icon='weixin'
             title='获取微信收货地址'
             onClick={wxAddress}
@@ -179,9 +180,11 @@ function AddressIndex(props) {
         ) : (
           <SpNavBar
             title='收货地址'
+            className='address-harvest'
             leftIconType='chevron-left'
             fixed='true'
             onClickLeftIcon={handleClickLeftIcon}
+
           />
         )}
 
