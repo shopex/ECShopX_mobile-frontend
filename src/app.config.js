@@ -31,7 +31,9 @@ export default {
         'member',
         'espier-detail',
         'espier-checkout',
-        'index' // 家属分享
+        'index', // 家属分享
+        'select-company',
+        'select-company-no',
       ]
     },
     // 导购货架 guide

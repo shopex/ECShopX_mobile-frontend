@@ -1,47 +1,49 @@
-.select-role{
+page{
   background-color: #F5F5F5;
-  height: 100vh;
-  padding-top: 90px;
-  position: relative;
-  .header{
-    margin: 0 auto;
-    width: 369px;
-    height: 369px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  .select-role{
+    padding-top: 90px;
+    position: relative;
+    .header{
+      margin: 0 auto;
+      width: 369px;
+      height: 369px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-    &-avatar{
-      width: 150px;
-      height: 150px;
+      &-avatar{
+        width: 150px;
+        height: 150px;
+      }
+      .welcome{
+        color: #666666 ;
+        font-size: 28px;
+        margin: 72px 0 35px 0;
+      }
+      .title{
+        color: #222222;
+        font-size: 40px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+      }
     }
-    .welcome{
-      color: #666666 ;
-      font-size: 28px;
-      margin: 72px 0 35px 0;
-    }
-    .title{
-      color: #222222;
-      font-size: 40px;
-      font-family: PingFangSC-Regular, PingFang SC;
-      font-weight: 400;
-    }
-  }
-  .btns{
-    margin-top: 240px;
-    button{
-      font-size: 40px;
-      border: none;
-    }
-    &-staff{
-      margin-bottom: 48px;
-      background-color: #F4811F;
-      color: #fff;
-    }
-    &-friend{
-      background-color: #FFFFFF;
-      color: #F4811F;
+    .btns{
+      margin-top: 240px;
+      button{
+        font-size: 40px;
+        border: none;
+      }
+      &-staff{
+        margin-bottom: 48px;
+        background-color: #F4811F;
+        color: #fff;
+      }
+      &-friend{
+        background-color: #FFFFFF;
+        color: #F4811F;
+      }
     }
   }
 }
+
