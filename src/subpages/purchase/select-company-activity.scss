@@ -1,0 +1,102 @@
+page{
+  padding-top: 154rpx;
+  font-family: PingFangSC-Regular, PingFang SC;
+  .user-box{
+    width: 100%;
+    height: 154rpx;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: #fff;
+    border-radius: 0px 0px 64px 64px;
+    display: flex;
+    // justify-content: space-between;
+    align-items: center;
+    padding: 36rpx;
+    box-sizing: border-box;
+    .user-avatar{
+      border: 4px solid #fff;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      margin-right: 20px;
+      overflow: hidden;
+    }
+    .user-content{
+      flex: 1;
+      margin-bottom: 5rpx;
+      &-account{
+        font-size: 32px;
+        font-weight: 500;
+        color: #222222;
+      }
+      &-info{
+        display: flex;
+        .user-content-role{
+          width: 80rpx;
+          height: 41rpx;
+          background: #fbf2e9;
+          text-align: center;
+          line-height: 41rpx;
+
+          margin-right: 8rpx;
+          font-size: 24px;
+          font-weight: 500;
+          color: #F4811F;
+        }
+        .user-content-company{
+          font-size: 24px;
+          font-weight: 400;
+          color: #999999;
+        }
+      }
+    }
+    .user-more .more{
+      font-size: 20rpx;
+      color: #aaa;
+    }
+  }
+  .select-component{
+    padding: 0 32rpx;
+    .activity-title{
+      margin-top: 36rpx;
+      color: #999999;
+      font-size: 32rpx;
+    }
+    .end{
+      background: url('../../assets/imgs/act_end.jpg') no-repeat center / cover ;
+    }
+    .activity-item{
+      width: 686rpx;
+      height: 110rpx;
+      border-radius: 24rpx;
+      margin-top: 32rpx;
+      padding: 33rpx 40rpx;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &-title{
+        flex: 1;
+        font-size: 32px;
+        font-weight: 500;
+        color: #222222;
+        @include multi-ellipsis(1);
+      }
+      .hot{
+        min-width: 30rpx;
+        &::before{
+          content: '';
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          background: #F4811F;
+          margin: 0 10rpx 5rpx 0;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
+

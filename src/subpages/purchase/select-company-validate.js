@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { View, Text, ScrollView, Image, Input, Picker } from '@tarojs/components'
+import { View, Text, ScrollView, Image, Input, Picker ,Button} from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
 import { classNames } from '@/utils'
@@ -30,6 +30,10 @@ function SelectComponent(props) {
     })
   }
 
+  const getPhoneNumber = (e)=>{
+    console.log(e)
+  }
+
   return (
     <View className='select-component'>
       <View className='select-component-title'>商派软件有限公司</View>
@@ -41,7 +45,7 @@ function SelectComponent(props) {
       <AtButton circle className='btns-phone' onClick={handleValidate}>
         使用该号码验证
       </AtButton>
-      <AtButton circle className='btns-other'>
+      <AtButton circle className='btns-other' open-type='getPhoneNumber' onGetPhoneNumber={getPhoneNumber} >
         其他手机号码验证
       </AtButton>
       <CompBottomTip />

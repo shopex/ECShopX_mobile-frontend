@@ -18,7 +18,7 @@ function SelectRole(props) {
   return (
     <View className='select-role'>
       <View className='header'>
-        <Image className='header-avatar' src={userIcon} mode='aspectFill' />
+        <Image className='header-avatar' src={`${process.env.APP_IMAGE_CDN}/user_icon.png`} mode='aspectFill' />
         <Text className='welcome'>欢迎登陆</Text>
         <Text className='title'>上海商派员工亲友购</Text>
       </View>
