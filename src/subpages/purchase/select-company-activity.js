@@ -34,6 +34,12 @@ function SelectComponent(props) {
   })
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
 
+  const handleToggleRole = ()=>{
+    Taro.navigateTo({
+      url:'/subpages/purchase/select-identity'
+    })
+  }
+
   return (
     <>
       <View className='user-box'>
@@ -50,7 +56,7 @@ function SelectComponent(props) {
             <View className='user-content-company'>{userInfo?.company}</View>
           </View>
         </View>
-        <View className='user-more'>
+        <View className='user-more' onClick={handleToggleRole}>
           <Text className='iconfont icon-qianwang-01 more'></Text>
         </View>
       </View>
