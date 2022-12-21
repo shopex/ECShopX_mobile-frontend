@@ -37,7 +37,8 @@ export default {
         'select-company-account',
         'select-company-validate',
         'select-company-activity',
-        'select-identity'
+        'select-identity',
+        'neigou-order'
       ]
     },
     // 导购货架 guide

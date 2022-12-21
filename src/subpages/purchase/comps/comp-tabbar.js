@@ -15,7 +15,7 @@ const TABBAR_LIST = [
   {
     title: '内购订单',
     iconType: 'neigoudingdan-01',
-    url: 'subpages/purchase/select-company-activity'
+    url: 'subpages/purchase/neigou-order'
   }
 ]
 
@@ -48,7 +48,6 @@ function CompTabbar(props) {
     // const { id, dtid } = await entryLaunch.getRouteParams()
     // const distributor_id = getDistributorId(id || dtid)
     if (path != tabItem.url) {
-      debugger
       Taro.redirectTo({ url: `/${tabItem.url}` })
     }
   }

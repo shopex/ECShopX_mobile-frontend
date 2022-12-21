@@ -1,0 +1,35 @@
+page{
+  // padding-top: 154rpx;
+  font-family: PingFangSC-Regular, PingFang SC;
+  .order-tabbar{
+    width: 100%;
+    height: 92rpx;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: #fff;
+    border-radius: 0px 0px 64px 64px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    .order-item{
+      flex: 1;
+      display: block;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 400;
+      color: #999999;
+    }
+    .active{
+      font-size: 36px;
+      font-weight: 600;
+      color: #222222;
+    }
+  }
+  .select-component{
+    padding: 0 32rpx;
+
+  }
+}
+
