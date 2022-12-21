@@ -48,6 +48,10 @@ function SelectIdentity(props) {
   const [state, setState] = useImmer(initialState)
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
 
+  const handletoggleIdentity = (item) => {
+    console.log('item',item)
+  }
+
   return (
     <View className='select-identity'>
       <View className='head'>
@@ -58,7 +62,7 @@ function SelectIdentity(props) {
         <View className='identity'>
           {state.identity.map((item, index) => {
             return (
-              <View key={index} className='identity-item'>
+              <View key={index} className='identity-item' onClick={()=>handletoggleIdentity(item)}>
                 <View className='identity-item-avatar'>
                   <Image src={item?.avatar} className='avatar' />
                 </View>
