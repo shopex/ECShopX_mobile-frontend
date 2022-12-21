@@ -24,9 +24,13 @@ function SelectComponent(props) {
       { title: '活动标题1' },
       { title: '活动标题2' },
       { title: '活动标题打打交道吧杰进步1级背sdadadadada景百1', isHot: true },
-      { title: '活动标题4', isHot: true }
+      { title: '活动标题4', isHot: true },
+      { title: '活动标题1' },
+      { title: '活动标题2' },
+      { title: '活动标题打打交道吧杰进步1级背sdadadadada景百1', isHot: true },
+      { title: '活动标题4', isHot: true },
     ],
-    end: [{ title: '结束活动标题1' }, { title: '结束活动标题2' }]
+    end: [{ title: '结束活动标题1' }, { title: '结束活动标题2' },{ title: '结束活动标题3' }, { title: '结束活动标题4' }]
   })
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
 
@@ -53,9 +57,15 @@ function SelectComponent(props) {
       <SpPage className='select-component' renderFooter={<CompTabbar />}>
         <View>
           <View className='activity-title'>进行中活动</View>
-          {activity?.pending.map((item) => {
+          {activity?.pending.map((item,index) => {
             return (
-              <View key={item.title} className='activity-item'>
+              <View
+                key={item.title}
+                className={classNames(
+                  'activity-item',
+                  `act${(index%4)+1}`
+                )}
+              >
                 <View className='activity-item-title'>{item.title}</View>
                 {item.isHot && <View className='hot'>预热中</View>}
               </View>
@@ -64,11 +74,10 @@ function SelectComponent(props) {
         </View>
         <View>
           <View className='activity-title'>已结束活动</View>
-          {activity?.pending.map((item) => {
+          {activity?.end.map((item) => {
             return (
               <View key={item.title} className='activity-item end'>
                 <View className='activity-item-title'>{item.title}</View>
-                {item.isHot && <View className='hot'>预热中</View>}
               </View>
             )
           })}

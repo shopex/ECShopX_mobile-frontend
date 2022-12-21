@@ -36,7 +36,8 @@ export default {
         'select-company-no',
         'select-company-account',
         'select-company-validate',
-        'select-company-activity'
+        'select-company-activity',
+        'select-identity'
       ]
     },
     // 导购货架 guide
