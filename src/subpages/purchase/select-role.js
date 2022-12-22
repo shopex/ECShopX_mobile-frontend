@@ -12,25 +12,38 @@ import CompBottomTip from './comps/comp-bottomTip'
 const initialState = {}
 
 function SelectRole(props) {
+  const [isLogin, setIsLogin] = useState(false)
 
   useEffect(() => {}, [])
 
   return (
     <View className='select-role'>
       <View className='header'>
-        <Image className='header-avatar' src={`${process.env.APP_IMAGE_CDN}/user_icon.png`} mode='aspectFill' />
+        <Image
+          className='header-avatar'
+          src={`${process.env.APP_IMAGE_CDN}/user_icon.png`}
+          mode='aspectFill'
+        />
         <Text className='welcome'>欢迎登陆</Text>
         <Text className='title'>上海商派员工亲友购</Text>
       </View>
       <View className='btns'>
-        <AtButton circle className='btns-staff'>
-          我是员工
-          <Text className='iconfont icon-close'></Text>
-        </AtButton>
-        <AtButton circle className='btns-frined'>
-          我是亲友
-          <Text className='iconfont icon-close'></Text>
-        </AtButton>
+        {isLogin ? (
+          <>
+            <AtButton circle className='btns-staff button'>
+              我是员工&nbsp;
+              <Text className='iconfont icon-qianwang-011 icon'></Text>
+            </AtButton>
+            <AtButton circle className='btns-friend button'>
+              我是亲友&nbsp;
+              <Text className='iconfont icon-qianwang-011 icon'></Text>
+            </AtButton>
+          </>
+        ) : (
+          <AtButton circle className='btns-weixin button'>
+            微信授权登录
+          </AtButton>
+        )}
       </View>
       <CompBottomTip />
     </View>

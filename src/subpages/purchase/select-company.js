@@ -37,7 +37,7 @@ function SelectComponent(props) {
           value={state.selectorChecked}
           className='select-option '
         />
-        <Text className='iconfont icon-select select '></Text>
+        <Text className='iconfont icon-zhankai select '></Text>
       </Picker>
       <AtButton circle className='btns-staff' disabled={!state.selectorChecked}>
         继续验证

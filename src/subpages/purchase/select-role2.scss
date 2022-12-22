@@ -13,8 +13,9 @@ page{
       justify-content: center;
 
       &-avatar{
-        width: 150px;
-        height: 150px;
+        width: 150rpx;
+        height: 150rpx;
+        border-radius: 50%;
       }
       .welcome{
         color: #666666 ;
