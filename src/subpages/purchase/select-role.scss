@@ -5,43 +5,54 @@ page{
     position: relative;
     .header{
       margin: 0 auto;
-      width: 369px;
-      height: 369px;
+      width: 369rx;
+      height: 369rpx;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
 
       &-avatar{
-        width: 150px;
-        height: 150px;
+        width: 150rpx;
+        height: 150rpx;
+        border-radius: 50%;
       }
       .welcome{
         color: #666666 ;
-        font-size: 28px;
-        margin: 72px 0 35px 0;
+        font-size: 28rpx;
+        margin: 72rpx 0 35rpx 0;
       }
       .title{
         color: #222222;
-        font-size: 40px;
+        font-size: 40rpx;
         font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
+        font-weight: 400 !important;
       }
     }
     .btns{
-      margin-top: 240px;
-      button{
-        font-size: 40px;
+      margin-top: 80rpx;
+      .button{
+        font-weight: 600;
         border: none;
+        color: #FFFFFF;
+
+      }
+      .icon{
+        display: inline-block;
+        margin-bottom: 10rpx;
       }
       &-staff{
-        margin-bottom: 48px;
+        margin-bottom: 48rpx;
         background-color: #F4811F;
-        color: #fff;
       }
       &-friend{
         background-color: #FFFFFF;
-        color: #F4811F;
+        color: #F4811F !important;
+      }
+      &-weixin{
+        background: #07C160;
+        font-size: 32rpx;
+        font-weight: 400 !important;
       }
     }
   }

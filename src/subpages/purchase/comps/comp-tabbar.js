@@ -9,12 +9,12 @@ import './comp-tabbar.scss'
 const TABBAR_LIST = [
   {
     title: '全部活动',
-    iconType: 'neigouhuodong-01',
+    iconType: 'neigouhuodong',
     url: 'subpages/purchase/select-company-activity'
   },
   {
     title: '内购订单',
-    iconType: 'neigoudingdan-01',
+    iconType: 'neigoudingdan',
     url: 'subpages/purchase/neigou-order'
   }
 ]
