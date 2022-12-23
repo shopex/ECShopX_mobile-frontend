@@ -25,7 +25,7 @@ const initialState = {
 
 function SelectComponent(props) {
   const [state, setState] = useImmer(initialState)
-  const [isError, setIsError] = useState(true)
+  const [isError, setIsError] = useState(false)
   const formRef = useRef()
   const { form, rules } = state
 
@@ -42,6 +42,7 @@ function SelectComponent(props) {
   const onFormSubmit = async () => {
     formRef.current.onSubmit(async () => {
       const { email, code } = form
+      console.log(111,formRef.current)
       // await api.operator.smsLogin({
       //   email,
       //   code,
