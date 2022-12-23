@@ -8,7 +8,7 @@ import { classNames } from '@/utils'
 import './select-role.scss'
 import userIcon from '@/assets/imgs/user-icon.png'
 import CompBottomTip from './comps/comp-bottomTip'
-import { SpPrivacyModal, SpFloatPrivacy } from '@/components'
+import {  SpFloatPrivacyShort } from '@/components'
 
 const initialState = {}
 
@@ -46,7 +46,7 @@ function SelectRole(props) {
   return (
     <View className='select-role'>
       {/* 隐私协议 */}
-      <SpFloatPrivacy isOpened={policyModal} onClose={handleCloseModal} />
+      <SpFloatPrivacyShort isOpened={policyModal} onClose={handleCloseModal} />
 
       <View className='header'>
         <Image
