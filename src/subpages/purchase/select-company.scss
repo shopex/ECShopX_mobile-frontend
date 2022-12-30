@@ -12,16 +12,16 @@ page{
     }
     .pick-company{
       position: relative;
+      background: #ffffff;
+      border-radius: 45px;
+      border: 1px solid #d5d5df;
+      padding-left: 34px;
+      margin-top: 24px;
       .select{
         position: absolute;
-        right: 40rpx ;
-        top: 28rpx;
+        right: 40px ;
+        top: 28px;
       }
-    }
-    .select-option{
-      border-radius: 40px;
-      border: 1px solid #D5D5DF;
-      padding:15rpx 30rpx;
     }
     .btns-staff{
       background: #F4811F;
@@ -32,6 +32,11 @@ page{
     }
     .at-input::after{
       content: none;
+    }
+    &-enterprise_sn {
+      color: #999;
+      height: 80px;
+      line-height: 80px;
     }
   }
 }

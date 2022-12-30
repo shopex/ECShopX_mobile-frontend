@@ -50,6 +50,7 @@ function SelectIdentity(props) {
 
   const handletoggleIdentity = (item) => {
     console.log('item',item)
+    Taro.navigateBack()
   }
 
   return (

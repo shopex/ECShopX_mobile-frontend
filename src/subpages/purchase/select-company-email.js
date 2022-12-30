@@ -42,6 +42,7 @@ function SelectComponent(props) {
   }
 
   const onFormSubmit = async () => {
+    // 有商场校验白名单，账号绑定并登录，无商场检验白名单通过手机号授权
     formRef.current.onSubmit(async () => {
       const { email, code } = form
       // await api.operator.smsLogin({
@@ -50,6 +51,9 @@ function SelectComponent(props) {
       //   logintype: 'smsstaff'
       // })
       showToast('登录成功')
+
+      // 无商场逻辑（需要调整一个页面去授权手机号）
+      Taro.navigateTo({ url: `/subpages/purchase/select-role` })
     })
   }
 
@@ -144,3 +148,5 @@ SelectComponent.options = {
 }
 
 export default SelectComponent
+
+// 邮箱登录
