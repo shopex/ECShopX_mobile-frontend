@@ -40,15 +40,16 @@ function SelectComponent(props) {
   }
 
   const onFormSubmit = async () => {
+    // 有商场校验白名单，账号绑定并登录，无商场检验白名单通过手机号授权
     formRef.current.onSubmit(async () => {
-      const { email, code } = form
-      console.log(111,formRef.current)
-      // await api.operator.smsLogin({
-      //   email,
-      //   code,
-      //   logintype: 'smsstaff'
-      // })
+      const { account, password } = form
+      console.log(formRef.current)
+      // await api.purchase.getEnterpriseList()
       showToast('登录成功')
+
+      // 无商场逻辑（需要调整一个页面去授权手机号）
+      // Taro.navigateTo({ url: `/subpages/purchase/select-role?isLogin=true&isRole=false` })
+      Taro.navigateTo({ url: `/subpages/purchase/select-role?isLogin=false&isRole=false` })
     })
   }
 
@@ -60,7 +61,7 @@ function SelectComponent(props) {
         <SpForm ref={formRef} className='login-form' formData={form} rules={rules}>
             <SpFormItem prop='account'>
               <AtInput
-                placeholder='请输入完整登陆账号'
+                placeholder='请输入完整登录账号'
                 value={form.account}
                 onChange={onInputChange.bind(this, 'account')}
                 className={classNames('select-option', isError ? 'err' : '')}
@@ -71,7 +72,7 @@ function SelectComponent(props) {
             </SpFormItem>
             <SpFormItem prop='password'>
               <AtInput
-                placeholder='请输入登陆密码'
+                placeholder='请输入登录密码'
                 value={form.password}
                 onChange={onInputChange.bind(this, 'password')}
                 className={classNames('select-option', isError ? 'err' : '')}
@@ -83,14 +84,14 @@ function SelectComponent(props) {
         </SpForm>
 
         {/* <AtInput
-          placeholder='请输入完整登陆账号'
+          placeholder='请输入完整登录账号'
           value={state.account}
           onChange={onChangeAccount}
           className={classNames('select-option',isError?'err':'')}
           clear
         />
         <AtInput
-          placeholder='请输入登陆密码'
+          placeholder='请输入登录密码'
           value={state.password}
           onChange={onChangePsd}
           className={classNames('select-option',isError?'err':'')}
@@ -116,3 +117,5 @@ SelectComponent.options = {
 }
 
 export default SelectComponent
+
+// 账号登录

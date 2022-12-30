@@ -98,3 +98,5 @@ SelectComponent.options = {
 }
 
 export default SelectComponent
+
+// 内购活动列表
