@@ -1,0 +1,23 @@
+@import "@/style/imports";
+
+.tags {
+  width: 100%;
+  white-space: nowrap;
+  background: transparent;
+  border-bottom: 1PX solid #efefef;
+  .tag-item {
+    display: inline-block;
+    height:47px;
+    line-height: 47px;
+    background-color: #ffffff;
+    border-radius: 23px;
+    margin-right: 17px;
+    color: #000000;
+    padding: 0 40px;
+    font-size: 22px;
+    &_active {
+        background-color: #000000;
+        color: white;
+    }
+  }
+}

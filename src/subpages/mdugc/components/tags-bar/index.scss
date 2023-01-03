@@ -1,0 +1,54 @@
+@import "@/style/imports";
+
+.tags {
+  width: 100%;
+  white-space: nowrap;
+  background: transparent;
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none; /* Firefox */
+
+  .tag-item {
+    display: inline-block;
+    margin-top: 10px;
+    height:47px;
+    line-height: 47px;
+    background-color: #ffffff;
+    border-radius: 23px;
+    margin-right: 17px;
+    color: #000000;
+    padding: 0 40px;
+    font-size: 22px;
+    position: relative;
+    box-sizing: content-box;
+    &_delete{
+      position: absolute;
+      right: -5px;
+      top: -5px;
+      background-color: rgb(136, 136, 136);
+      border-radius: 50%;
+      padding: 3px;
+      .iconfont{
+        font-size: 25px;
+        color: #ffffff;
+        font-weight: bold;
+        transform: rotateZ(45deg);
+      }
+    }
+    &_active {
+        background-color: #000000;
+        color: white;
+        // .tag-item_delete{
+        //   background-color: rgb(255, 255, 255);
+        //   .iconfont{
+        //     color: #000000;
+        //   }
+        // }
+    }
+  }
+}
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+  display: none;
+}
