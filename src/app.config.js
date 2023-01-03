@@ -164,6 +164,27 @@ const config = {
       ]
     },
     {
+      root: 'subpages/mdugc',
+      pages: [
+        "pages/index/index",
+          "pages/list/index",
+          "pages/make/index",
+          "pages/member/index",
+          "pages/make_img/index",
+          "pages/make_label/index",
+          "pages/make_word/index",
+          "pages/make_complete/index",
+          "pages/make_details/index",
+          "pages/make_newslist/index",
+          "pages/make_fabulous/index",
+          "pages/make_comment/index",
+          "pages/make_follow/index",
+          "pages/make_collection/index",
+          "pages/make_system/index",
+          "pages/make_followfans/index"
+      ]
+    },
+    {
       root: 'marketing',
       pages: [
         'pages/distribution/index', // 推广管理首页

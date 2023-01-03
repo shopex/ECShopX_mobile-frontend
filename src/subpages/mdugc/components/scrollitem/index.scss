@@ -1,0 +1,110 @@
+// @import "../../../style/imports";
+
+.scrollitemlisti {
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0px 0px 15px 0px 
+		rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  position: relative;
+  .badges{
+    width: 100%;
+    height: auto;
+    &_i{
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background-color: #f56c6c;
+        color: #fff;
+        padding:7px 10px;
+        font-size: 20px;
+        border-radius: 10px;
+    }
+  }
+  .img{
+      &_i{
+          width: 100%;
+          border-top-left-radius:10px;
+          border-top-right-radius:10px;
+      }
+  }
+  .text{
+      padding:20px 15px;
+      .title{
+          margin-bottom: 20px;
+          text{
+            font-size: 25px;
+            display: -webkit-box;
+            overflow:hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-height: 35px;
+          }
+      }
+      .btm{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &_left{
+            width: 70%;
+            display: flex;
+            align-items: center;
+            &_img{
+                width: 39px;
+                border-radius:50%;
+            }
+            &_text{
+                width: 60%;
+                color: #3e3e3e;
+                display: block;
+                font-size: 20px;
+                line-height: 23px;
+                height: 23px;
+                white-space: nowrap;
+                text-overflow:ellipsis;
+                overflow:hidden;
+                margin-left: 15px;
+            }
+        }
+        .icon-aixin-shixin{
+            color: #df2f2f;
+        }
+        &_right{
+            display: flex;
+            align-items: center;
+            font-size: 39rpx;
+            text{
+                font-size: 20px;
+                display: block;
+                margin-left: 10px;
+                color: #000;
+            }
+        }
+      }
+  }
+  .mask{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba($color: #000000, $alpha: 0.6);
+      color: #fff;
+      z-index: 10;
+      &_i{
+          display: flex;
+          align-items: center;
+          &_icon{
+            font-size: 33px;
+          }
+          &_text{
+            font-size: 27px;
+            margin-left: 5px;
+          }
+      }
+  }
+}
