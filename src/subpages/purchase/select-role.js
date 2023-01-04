@@ -1,11 +1,10 @@
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import React, { useCallback, useState, useEffect } from 'react'
 import { useImmer } from 'use-immer'
-import { View, Text, ScrollView, Image } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
-import { classNames } from '@/utils'
-import userIcon from '@/assets/imgs/user-icon.png'
+import { showToast, VERSION_IN_PURCHASE } from '@/utils'
 import { SpFloatPrivacyShort } from '@/components'
 import { useLogin } from '@/hooks'
 import './select-role.scss'
@@ -27,7 +26,7 @@ function SelectRole(props) {
 
   const { isLogin, isRole, policyModal, userInfo } = state
   const $instance = getCurrentInstance()
-  const { isLogin: isRouterLogin = false, isRole: isRouterRole = true } = $instance.router.params || {}
+  const { isLogin: isRouterLogin = false, isRole: isRouterRole = true, code: invite_code } = $instance.router.params || {}
 
   useEffect(() => {
     setState(draft => {
@@ -79,7 +78,30 @@ function SelectRole(props) {
     const { encryptedData, iv } = e.detail
     if (encryptedData && iv) {
       console.log(e.detail)
-      Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+      validatePhone()
+    }
+  }
+
+  const validatePhone = async () => {
+    try {
+      await api.purchase.getEmployeeRelativeBind({ invite_code })
+      showToast('验证成功')
+      setTimeout(() => {
+        Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+      }, 2000)
+    } catch (e) {
+      // Taro.showModal({
+      //   title: VERSION_IN_PURCHASE ? '登录失败' : '验证失败',
+      //   content: `手机号码错误，请更换手机号`,
+      //   confirmColor:'#F4811F',
+      //   showCancel: VERSION_IN_PURCHASE,
+      //   confirmText: VERSION_IN_PURCHASE ? '重新授权' : '我知道了',
+      //   cancelText: '取消',
+      //   cancelColor: '#aaa',
+      //   success: () => {
+      //     Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+      //   }
+      // })
     }
   }
 
@@ -98,7 +120,7 @@ function SelectRole(props) {
         <Text className='title'>上海商派员工亲友购</Text>
       </View>
       <View className='btns'>
-        {isRole && !isLogin && (
+        {!invite_code && !isLogin && (
           <>
             <AtButton circle className='btns-staff button' onClick={() => handleConfirmClick('staff')}>
               我是员工&nbsp;
@@ -110,17 +132,30 @@ function SelectRole(props) {
             </AtButton>
           </>
         )}
-        {!isRole && isLogin &&
+        {invite_code && isLogin && VERSION_IN_PURCHASE && // 无商城，已登录亲友验证、绑定
           <>
             <View className='btns-account'>
               已授权账号：<Text className='account'>{userInfo.phone}</Text>
             </View>
-            <AtButton circle className='btns-staff button login'>
+            <AtButton onClick={validatePhone} circle className='btns-staff button login'>
               确认登录
             </AtButton>
           </>
         }
-        {!isRole && !isLogin && <AtButton openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone} circle className='btns-weixin button'>微信授权登录</AtButton>}
+        {invite_code && isLogin && !VERSION_IN_PURCHASE && // 有商城，已登录亲友验证、绑定
+          <AtButton circle className='btns-staff button login'>
+            验证通过，继续
+          </AtButton>
+        }
+        {invite_code && !isLogin && // 有/无商城，未登录亲友验证、绑定
+          <AtButton
+            openType='getPhoneNumber'
+            onGetPhoneNumber={handleBindPhone}
+            circle
+            className='btns-weixin button'
+          >
+            微信授权登录
+          </AtButton>}
       </View>
       <CompBottomTip />
     </View>

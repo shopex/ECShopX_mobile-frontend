@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import { View, Text, ScrollView, Image, Input, Picker } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
-import { classNames, showToast } from '@/utils'
+import { classNames, showToast, VERSION_IN_PURCHASE } from '@/utils'
 import './select-company-email.scss'
 import CompBottomTip from './comps/comp-bottomTip'
 import { SpForm, SpFormItem, SpTimer } from '@/components'
@@ -46,17 +46,19 @@ function SelectComponent(props) {
     const { enterprise_id } = $instance.router.params
     // 有商场校验白名单，账号绑定并登录，无商场检验白名单通过手机号授权
     formRef.current.onSubmit(async () => {
-      const { email, vcode } = form
-      const params = {
-        enterprise_id,
-        email,
-        vcode
+      if (VERSION_IN_PURCHASE) {
+        // 无商场逻辑（需要调整一个页面去授权手机号）
+        Taro.navigateTo({ url: `/subpages/purchase/select-company-phone` })
+      } else {
+        const { email, vcode } = form
+        const params = {
+          enterprise_id,
+          email,
+          vcode
+        }
+        await api.purchase.setEmployeeAuth(params)
+        showToast('验证成功')
       }
-      await api.purchase.setEmployeeAuth(params)
-      showToast('验证成功')
-
-      // 无商场逻辑（需要调整一个页面去授权手机号）
-      Taro.navigateTo({ url: `/subpages/purchase/select-company-phone?isHasShop=false` })
     })
   }
 

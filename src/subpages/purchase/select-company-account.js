@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import { View, Text, ScrollView, Image, Input, Picker } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
-import { classNames,showToast} from '@/utils'
+import { classNames, showToast, VERSION_IN_PURCHASE} from '@/utils'
 import './select-company-account.scss'
 import CompBottomTip from './comps/comp-bottomTip'
 import { SpForm, SpFormItem } from '@/components'
@@ -12,14 +12,14 @@ import { SpForm, SpFormItem } from '@/components'
 const initialState = {
   form: {
     account: '',
-    password: ''
+    auth_code: ''
   },
   rules: {
     account: [
       { required: true, message: '账号不能为空' }
       // { validate: 'mobile', message: '请输入正确的邮箱地址' }
     ],
-    password: [{ required: true, message: '请输入验证码' }]
+    auth_code: [{ required: true, message: '请输入验证码' }]
   }
 }
 
@@ -40,15 +40,24 @@ function SelectComponent(props) {
   }
 
   const onFormSubmit = async () => {
-    // 有商场校验白名单，账号绑定并登录，无商场检验白名单通过手机号授权
+    const { enterprise_id } = $instance.router.params
     formRef.current.onSubmit(async () => {
-      const { account, password } = form
-      console.log(formRef.current)
-      // await api.purchase.getEnterpriseList()
-      showToast('登录成功')
-
+      const { account, auth_code } = form
       // 无商场逻辑（需要调整一个页面去授权手机号）
-      Taro.navigateTo({ url: `/subpages/purchase/select-company-phone` }) // 有商场员工手机号登录
+      if (VERSION_IN_PURCHASE) {
+        Taro.navigateTo({ url: `/subpages/purchase/select-company-phone` }) // 有商场员工手机号登录
+      } else {
+        const params = {
+          enterprise_id,
+          account,
+          auth_code
+        }
+        await api.purchase.setEmployeeAuth(params)
+        showToast('验证成功')
+        setTimeout(() => {
+          Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+        }, 2000)
+      }
       // Taro.navigateTo({ url: `/subpages/purchase/select-role?isLogin=true&isRole=false` })
       // Taro.navigateTo({ url: `/subpages/purchase/select-role?isLogin=false&isRole=false` })
     })
@@ -71,13 +80,13 @@ function SelectComponent(props) {
                 focus
               />
             </SpFormItem>
-            <SpFormItem prop='password'>
+            <SpFormItem prop='auth_code'>
               <AtInput
                 placeholder='请输入登录密码'
-                value={form.password}
-                onChange={onInputChange.bind(this, 'password')}
+                value={form.auth_code}
+                onChange={onInputChange.bind(this, 'auth_code')}
                 className={classNames('select-option', isError ? 'err' : '')}
-                name='password'
+                name='auth_code'
                 clear
                 focus
               />
@@ -93,7 +102,7 @@ function SelectComponent(props) {
         />
         <AtInput
           placeholder='请输入登录密码'
-          value={state.password}
+          value={state.auth_code}
           onChange={onChangePsd}
           className={classNames('select-option',isError?'err':'')}
           clear
@@ -105,7 +114,7 @@ function SelectComponent(props) {
       </View>
       {isError && <View className='err-info'>账号或密码错误，请重新输入</View>}
 
-      <AtButton circle className='btns-staff' disabled={!(form.account || form.password)} onClick={onFormSubmit}>
+      <AtButton circle className='btns-staff' disabled={!(form.account || form.auth_code)} onClick={onFormSubmit}>
         验证
       </AtButton>
       <CompBottomTip />

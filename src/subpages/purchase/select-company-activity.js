@@ -1,38 +1,34 @@
 import Taro from '@tarojs/taro'
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { View, Text, ScrollView, Image, Input, Picker, Button } from '@tarojs/components'
+import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
 import { classNames } from '@/utils'
-import './select-company-activity.scss'
-import CompBottomTip from './comps/comp-bottomTip'
-import { SpPage, SpTabbar } from '@/components'
+import { SpPage, SpTabbar, SpScrollView, SpSearchInput } from '@/components'
 import CompTabbar from './comps/comp-tabbar'
-import actEnd from '@/assets/imgs/act_end.jpg'
+import './select-company-activity.scss'
+
+const initialState = {
+  activityList: [],
+  activity_name: ''
+}
 
 function SelectComponent(props) {
-  const [userInfo, setUserInfo] = useState({
-    avatar: '',
-    account: '用户账号',
-    role: '员工',
-    company: '商派软件有限公司'
-  })
-  const [activity, setActivity] = useState({
-    pending: [
-      { title: '活动标题1' },
-      { title: '活动标题2' },
-      { title: '活动标题打打交道吧杰进步1级背sdadadadada景百1', isHot: true },
-      { title: '活动标题4', isHot: true },
-      { title: '活动标题1' },
-      { title: '活动标题2' },
-      { title: '活动标题打打交道吧杰进步1级背sdadadadada景百1', isHot: true },
-      { title: '活动标题4', isHot: true },
-    ],
-    end: [{ title: '结束活动标题1' }, { title: '结束活动标题2' },{ title: '结束活动标题3' }, { title: '结束活动标题4' }]
-  })
-  const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
+  const { userInfo = {} } = useSelector((state) => state.user)
+  const [state, setState] = useImmer(initialState)
+  const { activityList, activity_name } = state
+  const scrollRef = useRef()
+
+  const fetch = async({ pageIndex, pageSize }) => {
+    const { list, total_count } = await api.purchase.getEmployeeActivityList({ page: pageIndex, pageSize, activity_name })
+    setState(draft => {
+      draft.activityList = [...activityList, ...list]
+    })
+
+    return { total: total_count }
+  }
 
   const handleToggleRole = ()=>{
     Taro.navigateTo({
@@ -40,56 +36,64 @@ function SelectComponent(props) {
     })
   }
 
+  const onConfirm = (value) => {
+    setState(draft => {
+      draft.activity_name = value
+      draft.activityList = []
+    })
+    scrollRef.current.reset()
+  }
+
   return (
-    <>
+    <SpPage className='select-component' renderFooter={<CompTabbar />}>
       <View className='user-box'>
-        <View>
+        <View className='user-flex'>
           <Image
             className='user-avatar'
             src={userInfo?.avatar || `${process.env.APP_IMAGE_CDN}/user_icon.png`}
           />
-        </View>
-        <View className='user-content'>
-          <View className='user-content-account'>{userInfo?.account}</View>
-          <View className='user-content-info'>
-            <View className='user-content-role'>{userInfo?.role}</View>
-            <View className='user-content-company'>{userInfo?.company}</View>
+          <View className='user-content'>
+            <View className='user-content-account'>{userInfo?.nickname || userInfo.mobile}</View>
+            <View className='user-content-info'>
+              <View className='user-content-role'>{userInfo?.is_employee && '员工' || userInfo.is_dependent && '亲友'}</View>
+              <View className='user-content-company'>{userInfo?.company}</View>
+            </View>
+          </View>
+          <View className='user-more' onClick={handleToggleRole}>
+            <Text className='iconfont icon-qianwang-01 more'></Text>
           </View>
         </View>
-        <View className='user-more' onClick={handleToggleRole}>
-          <Text className='iconfont icon-qianwang-01 more'></Text>
+        <View className='user-serach'>
+          <SpSearchInput
+            placeholder='活动名称'
+            onConfirm={onConfirm}
+          />
         </View>
       </View>
-      <SpPage className='select-component' renderFooter={<CompTabbar />}>
-        <View>
-          <View className='activity-title'>进行中活动</View>
-          {activity?.pending.map((item,index) => {
-            return (
-              <View
-                key={item.title}
-                className={classNames(
-                  'activity-item',
-                  `act${(index%4)+1}`
-                )}
-              >
-                <View className='activity-item-title'>{item.title}</View>
-                {item.isHot && <View className='hot'>预热中</View>}
+      <SpScrollView ref={scrollRef} className='item-list-scroll' fetch={fetch}>
+        {activityList.map((item,index) => (
+          <View
+            key={item.id}
+            className={classNames(
+              'activity-item',
+              `act${(index%4)+1}`
+            )}
+          >
+            <View className='activity-item-top user-more'>
+              <View className='activity-item-title'>{item.name}</View>
+              <Text className='iconfont icon-qianwang-01 more'></Text>
+            </View>
+            <View className='activity-item-role'>
+              <View className='activity-item-role-left'>
+                <View className='role'>{item.is_employee == 1 ? '员工': '亲友'}</View>
+                <View className='enterise'>{item.rel_enterprise}</View>
               </View>
-            )
-          })}
-        </View>
-        <View>
-          <View className='activity-title'>已结束活动</View>
-          {activity?.end.map((item) => {
-            return (
-              <View key={item.title} className='activity-item end'>
-                <View className='activity-item-title'>{item.title}</View>
-              </View>
-            )
-          })}
-        </View>
-      </SpPage>
-    </>
+              <View className='hot'>{item.status_desc}</View>
+            </View>
+          </View>
+        ))}
+      </SpScrollView>
+    </SpPage>
   )
 }
 
