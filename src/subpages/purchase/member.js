@@ -365,13 +365,14 @@ function MemberIndex(props) {
   const VipGradeDom = () => {
     if (isLogin) {
       return (
-        <View className='gradename'>
-          {
-            userInfo?.is_employee && '员工'
-          }
-          {
-            userInfo?.is_dependent && '员工亲友'
-          }
+        <View className='user-grade-name'>
+          <View className='username'>
+            {(userInfo && (userInfo.username || userInfo.mobile)) || '获取昵称'}
+          </View>
+          <View className='gradename'>
+            { userInfo?.is_employee && '员工' }
+            { userInfo?.is_dependent && '员工亲友' }
+          </View>
         </View>
       )
     } else {
@@ -402,20 +403,21 @@ function MemberIndex(props) {
         })}
       >
         <View className='header-hd'>
-          <SpImage
-            className='usericon'
-            src={(userInfo && userInfo.avatar) || 'default_user.png'}
-            width='110'
-            onClick={handleClickLink.bind(this, '/marketing/pages/member/userinfo')}
-          />
+          <View className='header-hd__header'>
+            <SpImage
+              className='usericon'
+              width='110'
+              src={(userInfo && userInfo.avatar) || 'default_user.png'}
+            />
+          </View>
           <View className='header-hd__body'>
             <View className='username-wrap'>
-              <Text className='username'>
-                {(userInfo && (userInfo.username || userInfo.mobile)) || '获取昵称'}
-              </Text>
+              <View className='join-us'>{VipGradeDom()}</View>
             </View>
-            <View className='join-us'>{VipGradeDom()}</View>
           </View>
+          {isLogin && <View className='header-hd__footer'>
+            <Text className='iconfont icon-qianwang-01' onClick={handleClickLink.bind(this, '/subpages/member/user-info')}></Text>
+          </View>}
         </View>
         <View className='header-bd'>
           <View className='bd-item'>
@@ -536,10 +538,6 @@ function MemberIndex(props) {
           isPromoter={userInfo ? userInfo.isPromoter : false}
           onLink={handleClickService}
         />
-
-        <CompPanel title='帮助中心'>
-          <CompHelpCenter onLink={handleClickService} />
-        </CompPanel>
       </View>
       {/* <View className="dibiao-block">
         <SpImage className="dibiao-image" src="dibiao.png" />

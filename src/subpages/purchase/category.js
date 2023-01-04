@@ -9,7 +9,7 @@ import { platformTemplateName } from '@/utils/platform'
 import { SpPage, SpTabbar } from '@/components'
 import CompSeries from '@/pages/category/comps/comp-series'
 
-import './index.scss'
+import './category.scss'
 
 const initialState = {
   currentList: [], //当前系列

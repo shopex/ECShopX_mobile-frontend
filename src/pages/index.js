@@ -210,7 +210,7 @@ function Home() {
         </HomeWgts>
       </View>
 
-      {/* 小程序搜藏提示 */}
+      {/* 小程序收藏提示 */}
       {isWeixin && <MCompAddTip />}
 
       {/* 开屏广告 */}
