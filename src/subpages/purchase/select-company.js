@@ -47,8 +47,8 @@ function SelectComponent(props) {
       redirectUrl = `/subpages/purchase/select-company-account`
     } else if (auth_type == 'email') {
       redirectUrl = `/subpages/purchase/select-company-email`
-    } else if (auth_type == 'phone') {
-      redirectUrl = `/subpages/purchase/select-company-phone?isHasShop=true`
+    } else if (auth_type == 'mobile') {
+      redirectUrl = `/subpages/purchase/select-company-phone`
     }
     Taro.navigateTo({
       url: `${redirectUrl}?enterprise_sn=${enterprise_sn}&enterprise_name=${name}&enterprise_id=${id}`

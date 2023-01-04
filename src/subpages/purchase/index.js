@@ -3,10 +3,15 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image, Button } from '@tarojs/components'
 import { SpPage, SpImage, SpButton } from '@/components'
 import api from '@/api'
+import { connect } from 'react-redux'
 import { styleNames, formatDateTime, log } from '@/utils'
 import './index.scss'
 
+@connect(({ user }) => ({
+  userInfo: user.userInfo
+}))
 export default class PurchaseIndex extends Component {
+  $instance = getCurrentInstance()
   constructor(props) {
     super(props)
 
@@ -33,7 +38,7 @@ export default class PurchaseIndex extends Component {
   onShareAppMessage() {
     const { info } = this.state
     return new Promise(async function (resolve) {
-      const data = await api.purchase.getEmployeeInvitedata()
+      const data = await api.purchase.getEmployeeInviteCode()
       log.debug(`/subpages/purchase/member?code=${data.invite_code}`)
       resolve({
         title: info.purchase_name,
@@ -44,7 +49,8 @@ export default class PurchaseIndex extends Component {
   }
 
   async fetch() {
-    const data = await api.purchase.getEmployeeInvitedata()
+    const { activity_id } = this.$instance.router.params
+    const data = await api.purchase.getEmployeeInvitData({ activity_id })
     this.setState({
       info: data
     })
@@ -61,7 +67,7 @@ export default class PurchaseIndex extends Component {
 
   render() {
     const { info } = this.state
-  
+    const { userInfo } = this.props
 
     return (
       <SpPage className='page-purchase-index'>
@@ -72,28 +78,22 @@ export default class PurchaseIndex extends Component {
           })}
         >
           <View className='header-hd'>
-            <SpImage className='usericon' src={info.avatar || 'default_user.png'} width='110' />
+            <SpImage className='usericon' src={userInfo.avatar || 'default_user.png'} width='110' />
             <View className='header-hd__body'>
               <View className='username-wrap'>
                 <View className='left-wrap'>
-                  <View className='username'>{info.username}</View>
+                  <View className='username'>{userInfo.username}</View>
                   <View className='userRole'>
-                    {
-                      {
-                        'dependents': '家属',
-                        'employee': '员工'
-                      }[info.user_type]
-                    }
+                    { info.is_employee == 1 ? '员工' : '家属' }
                   </View>
                 </View>
-                {info.user_type === 'employee' && (
+                {info.is_employee == 1 && (
                   <Button
                     open-type='share'
                     size='mini'
                     className='shareBtn'
                     disabled={
-                      info.invited_num == '0' ||
-                      info.dependents_begin_time > dayjs().unix()
+                      info.invited_num == '0'
                     }
                   >
                     <Text onClick={this.showInfo.bind(this)}>分享</Text>
@@ -127,7 +127,7 @@ export default class PurchaseIndex extends Component {
             </View>
           </View> */}
         </View>
-        {info.user_type === 'employee' && (
+        {info.is_employee == 1 && (
           <View>
             <View className='line-wrap'>
               <Text className='line'></Text>

@@ -28,7 +28,7 @@ const MENUS = [
     key: 'purchase',
     name: '分享家属',
     icon: 'm_menu_jiatingfengxiang.png',
-    link: '/subpages/purchase/index'
+    link: `/subpages/purchase/index?activity_id=1`
   },
   {
     key: 'dianwu',
