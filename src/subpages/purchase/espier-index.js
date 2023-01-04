@@ -21,7 +21,7 @@ import {
   SpPrivacyModal
 } from '@/components'
 
-import CompGoodsItem from './comps/comp-goodsitem'
+import CompGoodsItem from '@/pages/cart/comps/comp-goodsitem'
 
 import './espier-index.scss'
 
