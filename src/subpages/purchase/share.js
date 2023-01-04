@@ -5,7 +5,7 @@ import { SpPage, SpImage, SpButton } from '@/components'
 import api from '@/api'
 import { connect } from 'react-redux'
 import { styleNames, formatDateTime, log } from '@/utils'
-import './index.scss'
+import './share.scss'
 
 @connect(({ user }) => ({
   userInfo: user.userInfo
@@ -39,11 +39,11 @@ export default class PurchaseIndex extends Component {
     const { info } = this.state
     return new Promise(async function (resolve) {
       const data = await api.purchase.getEmployeeInviteCode()
-      log.debug(`/subpages/purchase/member?code=${data.invite_code}`)
+      log.debug(`/subpages/purchase/select-role?code=${data.invite_code}`)
       resolve({
         title: info.purchase_name,
         imageUrl: info.ad_pic,
-        path: `/subpages/purchase/member?code=${data.invite_code}`
+        path: `/subpages/purchase/select-role?code=${data.invite_code}`
       })
     })
   }
