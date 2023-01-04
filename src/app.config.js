@@ -31,7 +31,7 @@ export default {
         'member',
         'espier-detail',
         'espier-checkout',
-        'index', // 家属分享
+        'share', // 家属分享
         'select-role',
         'select-company',
         'select-company-account',
