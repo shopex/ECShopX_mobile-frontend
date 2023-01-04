@@ -12,23 +12,19 @@ import { SpToast, Loading, SpNote, SearchBar } from '@/components'
 import api from '@/api'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
-import {TagsBarcheck,Scrollitem} from '../../components'
-
-
-
+import { TagsBarcheck, Scrollitem } from '../../components'
 
 import './index2.scss'
 
-
 const initialState = {
   list: [],
-  oddList:[],
-  evenList:[],
-  curTagId:[],//标签
-  istag:1,//时间、热度
-  val:'',//搜索框
-  tagsList:[],
-  refresherTriggered:false
+  oddList: [],
+  evenList: [],
+  curTagId: [], //标签
+  istag: 1, //时间、热度
+  val: '', //搜索框
+  tagsList: [],
+  refresherTriggered: false
 }
 
 function MdugcIndex() {
@@ -43,8 +39,6 @@ function MdugcIndex() {
   const { openScanQrcode } = useSelector((state) => state.sys)
   const { setNavigationBarTitle } = useNavigation()
 
-
-
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -52,101 +46,128 @@ function MdugcIndex() {
     // nextPage()
   }, [])
 
-
-   // 搜索
-  const  shonChange =(val)=>{
+  // 搜索
+  const shonChange = (val) => {
     // console.log("输入框值改变",val)
   }
-  const shonClear=()=>{
-    console.log("清除")
+  const shonClear = () => {
+    console.log('清除')
     // resetPage()
-    setState(draft=>{
-      draft.list = [],
-      draft.oddList = [],
-      draft.evenList = [],
-      draft.val = ''
+    setState((draft) => {
+      ;(draft.list = []), (draft.oddList = []), (draft.evenList = []), (draft.val = '')
     })
   }
-  const shonConfirm=(val)=>{
-    console.log("完成触发",val)
+  const shonConfirm = (val) => {
+    console.log('完成触发', val)
     // resetPage()
-    setState(draft => {
-      draft.list = [],
-      draft.oddList = [],
-      draft.evenList = [],
-      draft.val = val
+    setState((draft) => {
+      ;(draft.list = []), (draft.oddList = []), (draft.evenList = []), (draft.val = val)
+    })
+  }
+
+  const handleTagChange = (id) => {
+    console.log('这是选中标签', id)
+    let { curTagId } = state
+    // this.resetPage()
+    setState((draft) => {
+      ;(draft.list = []), (draft.oddList = []), (draft.evenList = [])
+    })
+    let idx = curTagId.findIndex((item) => {
+      return item == id
+    })
+    if (idx >= 0) {
+      curTagId.splice(idx, 1)
+    } else {
+      curTagId.push(id)
+    }
+    setState(
+      (draft) => {
+        draft.curTagId = curTagId
+      },
+      () => {
+        // this.nextPage()
+        console.log(123)
+      }
+    )
+  }
+
+  const gettopicslist = async () => {
+    let data = {
+      page: 1,
+      pageSize: 8
+    }
+    let { list } = await api.mdugc.topiclist(data)
+    let nList = pickBy(list, {
+      topic_id: 'topic_id',
+      topic_name: 'topic_name'
+    })
+    setState((draft) => {
+      draft.tagsList = nList
+    })
+  }
+
+  const onistag = (istag) => {
+    // this.resetPage()
+    console.log(istag)
+    setState((draft) => {
+      ;(draft.list = []), (draft.oddList = []), (draft.evenList = [])
     })
 
+    setState(
+      (draft) => {
+        draft.istag = istag
+      },
+      () => {
+        // nextPage()
+      }
+    )
   }
 
-const handleTagChange=(id)=>{
-  console.log("这是选中标签",id)
-  let {curTagId}=state
-  // this.resetPage()
-  setState(draft => {
-    draft.list = [],
-    draft.oddList = [],
-    draft.evenList = []
-  })
-  let idx=curTagId.findIndex((item)=>{
-    return item==id
-  })
-  if(idx>=0){
-    curTagId.splice(idx,1)
-  }else{
-    curTagId.push(id)
-  }
-  setState(draft=>{
-    draft.curTagId = curTagId
-  }, () => {
-    // this.nextPage()
-    console.log(123)
-  })
-}
-
-const gettopicslist = async() => {
-  let data={
-    page:1,
-    pageSize:8
-  }
-  debugger
-  let { list } = await api.mdugc.topiclist(data)
-  let nList = pickBy(list, {
-    topic_id:"topic_id",
-    topic_name:"topic_name"
-  })
-  setState(draft => {
-    draft.tagsList = nList
-  })
-
-}
-
-const {val, tagsList, curTagId } = state
+  const { val, tagsList, curTagId, istag } = state
   return (
     <View className='ugcindex'>
-    <View className='ugcindex_search'>
-      <SearchBar
-        showDailog={false}
-        keyword={val}
-        placeholder='搜索'
-        onFocus={() => false}
-        onCancel={() => {}}
-        onChange={shonChange.bind(this)}
-        onClear={shonClear.bind(this)}
-        onConfirm={shonConfirm.bind(this)}
-      />
-    </View>
-    <View className='ugcindex_tagsbar'>
-          {
-            tagsList.length &&
-            <TagsBarcheck
-              current={curTagId}
-              list={tagsList}
-              onChange={handleTagChange.bind(this)}
-            />
-          }
+      <View className='ugcindex_search'>
+        <SearchBar
+          showDailog={false}
+          keyword={val}
+          placeholder='搜索'
+          onFocus={() => false}
+          onCancel={() => {}}
+          onChange={shonChange.bind(this)}
+          onClear={shonClear.bind(this)}
+          onConfirm={shonConfirm.bind(this)}
+        />
+      </View>
+      <View className='ugcindex_tagsbar'>
+        {tagsList.length && (
+          <TagsBarcheck current={curTagId} list={tagsList} onChange={handleTagChange.bind(this)} />
+        )}
+      </View>
+      <View className='ugcindex_list'>
+        <View className='ugcindex_list__tag'>
+          <View
+            onClick={onistag.bind(this, 1)}
+            className={
+              istag == 1
+                ? 'ugcindex_list__tag_i icon-shijian ugcindex_list__tag_iact'
+                : 'ugcindex_list__tag_i icon-shijian'
+            }
+          >
+            最热
+          </View>
+          <View
+            onClick={onistag.bind(this, 2)}
+            className={
+              istag == 2
+                ? 'ugcindex_list__tag_i icon-shoucang ugcindex_list__tag_iact'
+                : 'ugcindex_list__tag_i icon-shoucang'
+            }
+          >
+            最新
+          </View>
         </View>
-    {/* <ScrollView
+      </View>
+      {/* <ScrollView
       className='goods-list__scroll'
       scrollY
       scrollTop={scrollTop}
@@ -265,8 +286,8 @@ const {val, tagsList, curTagId } = state
         <SpNote img='trades_empty.png'>暂无数据~</SpNote>
       )}
     </ScrollView> */}
-    <SpToast />
-  </View>
+      <SpToast />
+    </View>
   )
 }
 
