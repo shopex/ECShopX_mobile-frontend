@@ -41,7 +41,8 @@ export default {
         'select-identity',
         'neigou-order',
         'category',
-        'espier-index'
+        'espier-index',
+        'index'
       ]
     },
     // 导购货架 guide
