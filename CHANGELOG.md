@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.8.3...v3.9.0) (2023-01-05)
+
+### [3.8.3](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.8.2...v3.8.3) (2022-12-20)
+
+### [3.8.2](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.8.1...v3.8.2) (2022-12-20)
+
+### [3.8.1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.8.0...v3.8.1) (2022-12-20)
+
+
+### Bug Fixes
+
+* 支付宝小程序海报保存 ([ca4a360](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/ca4a3602faf3c93bdd08e0cef4b92bd3a82494d6))
+
 ## [3.8.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.7.5...v3.8.0) (2022-12-15)
 
 
