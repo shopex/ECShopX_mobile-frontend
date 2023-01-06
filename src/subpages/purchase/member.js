@@ -33,8 +33,7 @@ import {
   normalizeQuerys,
   log,
   isEmpty,
-  VERSION_IN_PURCHASE,
-  VERSION_PLATFORM
+  VERSION_IN_PURCHASE
 } from '@/utils'
 import { useLogin } from '@/hooks'
 import S from '@/spx'
@@ -42,7 +41,7 @@ import CompVipCard from './comps/comp-vipcard'
 import CompBanner from './comps/comp-banner'
 import CompPanel from './comps/comp-panel'
 import CompMenu from './comps/comp-menu'
-import CompHelpCenter from './comps/comp-helpcenter'
+import CompTabbar from './comps/comp-tabbar'
 import './member.scss'
 
 const initialConfigState = {
@@ -144,14 +143,9 @@ function MemberIndex(props) {
   })
 
   const fetchPurchase = async () => {
-    // 内购分享码
-    const { code: purchaseCode } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    // 员工、家属
-    const { is_employee, is_dependent } = userInfo
-    if (purchaseCode && !is_employee && !is_dependent) {
-      await api.purchase.purchaseBind({ code: purchaseCode })
-    }
-    const data = await api.purchase.purchaseInfo()
+    // 内购分享信息
+    const { activity_id, enterprise_id } = Taro.getStorageSync('purchase_share_info') || {}
+    const data = await api.purchase.getEmployeeActivitydata({ activity_id, enterprise_id })
     setState((draft) => {
       draft.purchaseInfo = data
     })
@@ -216,7 +210,7 @@ function MemberIndex(props) {
       }
     }
     if (menuRes.list.length > 0) {
-      menu = { ...menuRes.list[0].params.data, purchase: true }
+      menu = { ...menuRes.list[0].params.data }
     }
     // if (S.getAuthToken() && (VERSION_PLATFORM || VERSION_IN_PURCHASE)) {
     //   const { result, status } = await api.dianwu.is_admin()
@@ -353,10 +347,10 @@ function MemberIndex(props) {
         })
       }
     }
-    if ((isEmpty(purchaseInfo) || !whitelist_status) && VERSION_IN_PURCHASE && key == 'purchase') {
-      showToast('暂无权限，请联系管理员')
-      return
-    }
+    // if ((isEmpty(purchaseInfo) || !whitelist_status) && VERSION_IN_PURCHASE && key == 'purchase') {
+    //   showToast('暂无权限，请联系管理员')
+    //   return
+    // }
     if (link) {
       Taro.navigateTo({ url: link })
     }
@@ -395,7 +389,7 @@ function MemberIndex(props) {
   console.log('====config===', config.menu)
 
   return (
-    <SpPage className='page-purchase-member' renderFooter={<SpTabbar />}>
+    <SpPage className='page-purchase-member' renderFooter={<CompTabbar />}>
       <View
         className='header-block'
         style={styleNames({
@@ -424,8 +418,8 @@ function MemberIndex(props) {
             <View className='bd-item-label'>总额度</View>
             <View className='bd-item-value'>
               {isLogin
-                ? purchaseInfo.total_limitfee
-                  ? (purchaseInfo.total_limitfee / 100).toFixed(2)
+                ? purchaseInfo.limit_fee
+                  ? (purchaseInfo.limit_fee / 100).toFixed(2)
                   : '0.00'
                 : '****'}
             </View>
@@ -434,8 +428,8 @@ function MemberIndex(props) {
             <View className='bd-item-label'>已使用额度</View>
             <View className='bd-item-value'>
               {isLogin
-                ? purchaseInfo.used_limitfee
-                  ? (purchaseInfo.used_limitfee / 100).toFixed(2)
+                ? purchaseInfo.aggregate_fee
+                  ? (purchaseInfo.aggregate_fee / 100).toFixed(2)
                   : '0.00'
                 : '****'}
             </View>
@@ -444,8 +438,8 @@ function MemberIndex(props) {
             <View className='bd-item-label'>剩余额度</View>
             <View className='bd-item-value'>
               {isLogin
-                ? purchaseInfo.surplus_limitfee
-                  ? (purchaseInfo.surplus_limitfee / 100).toFixed(2)
+                ? purchaseInfo.left_fee
+                  ? (purchaseInfo.left_fee / 100).toFixed(2)
                   : '0.00'
                 : '****'}
             </View>
@@ -532,7 +526,7 @@ function MemberIndex(props) {
         <CompMenu
           accessMenu={{
             ...config.menu,
-            purchase: (purchaseInfo.used_roles ? purchaseInfo.used_roles.indexOf('dependents') > -1 : false) && userInfo?.is_employee,
+            purchase: purchaseInfo?.is_employee && purchaseInfo?.if_relative_join,
             popularize: userInfo ? userInfo.popularize : false
           }}
           isPromoter={userInfo ? userInfo.isPromoter : false}

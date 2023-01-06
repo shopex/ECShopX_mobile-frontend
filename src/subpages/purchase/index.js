@@ -23,6 +23,8 @@ import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
 import HomeWgts from '@/pages/home/comps/home-wgts'
 import { WgtHomeHeader } from '@/pages/home/wgts'
+import configStore from '@/store'
+import CompTabbar from './comps/comp-tabbar'
 
 import '@/pages/home/index.scss'
 
@@ -33,12 +35,12 @@ const initialState = {
   loading: true
 }
 
+const { store } = configStore()
+
 function Home() {
   const [state, setState] = useImmer(initialState)
   const [likeList, setLikeList] = useImmer([])
-  const { initState, openRecommend, openLocation, openStore, appName } = useSelector(
-    (state) => state.sys
-  )
+  const { initState, openRecommend, openLocation, openStore, appName } = useSelector((state) => state.sys)
   const { isLogin, login, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       if (isUpdate) {
@@ -47,10 +49,9 @@ function Home() {
       }
     }
   })
+  const $instance = getCurrentInstance()
 
   const [policyModal, setPolicyModal] = useState(false)
-  const showAdv = useSelector((member) => member.user.showAdv)
-  const { location } = useSelector((state) => state.user)
   const { openScanQrcode } = useSelector((state) => state.sys)
   const { setNavigationBarTitle } = useNavigation()
 
@@ -70,15 +71,30 @@ function Home() {
     checkPolicyChange()
   })
 
+  useEffect(() => {
+    const { activity_id, enterprise_id, pages_template_id } = $instance.router.params || {}
+    if (activity_id) {
+      Taro.setStorageSync('purchase_share_info', { activity_id, enterprise_id, pages_template_id })
+    }
+  }, [])
+
   const init = async () => {
-    // if (!VERSION_STANDARD) {
     await fetchWgts()
-    // }
   }
 
   const fetchWgts = async () => {
-    const { config } = await api.shop.getShopTemplate({
-      distributor_id: getDistributorId()
+    const { pages_template_id } = Taro.getStorageSync('purchase_share_info')
+    console.log(Taro.getStorageSync('purchase_share_info'), pages_template_id, '-----')
+    const { config, tab_bar } = await api.shop.getShopTemplate({
+      distributor_id: getDistributorId(),
+      pages_template_id
+    })
+    const tabBar = JSON.parse(tab_bar)
+    store.dispatch({
+      type: 'purchase/setPurchaseTabbar',
+      payload: {
+        tabbar: tabBar
+      }
     })
     setState((draft) => {
       draft.wgts = config
@@ -89,22 +105,6 @@ function Home() {
   const handleConfirmModal = useCallback(async () => {
     setPolicyModal(false)
   }, [])
-
-  const fetchStoreInfo = async (location) => {
-    let params = {
-      distributor_id: getDistributorId() // 如果店铺id和经纬度都传会根据哪个去定位传参
-    }
-    if (openLocation == 1 && location) {
-      const { lat, lng } = location
-      params.lat = lat 
-      params.lng = lng
-      // params.distributor_id = undefined
-    }
-    const res = await api.shop.getShop(params)
-    console.log('fetchStoreInfo:', res)
-    dispatch(updateShopInfo(res))
-    await fetchWgts()
-  }
 
   const searchComp = wgts.find((wgt) => wgt.name == 'search')
   const pageData = wgts.find((wgt) => wgt.name == 'page')
@@ -131,7 +131,7 @@ function Home() {
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
       pageConfig={pageData?.base}
-      renderFooter={<SpTabbar />}
+      renderFooter={<CompTabbar />}
       loading={loading}
     >
       <View

@@ -56,8 +56,15 @@ function SelectComponent(props) {
           email,
           vcode
         }
-        await api.purchase.setEmployeeAuth(params)
-        showToast('验证成功')
+        try {
+          await api.purchase.setEmployeeAuth(params)
+          showToast('验证成功')
+          setTimeout(() => {
+            Taro.redirectTo({ url: `/subpages/purchase/select-company-activity` })
+          }, 2000)
+        } catch (e) {
+          console.error(e)
+        }
       }
     })
   }
@@ -74,15 +81,11 @@ function SelectComponent(props) {
       return false
     }
     // 先检验白名单，通过以后在请求验证码
-    try {
-      await api.purchase.getEmailCode({ email, enterprise_id })
-      Taro.showToast({
-        title: '发送成功',
-        icon: 'none'
-      })
-    } catch (e) {
-      console.log(e)
-    }
+    const res = await api.purchase.getEmailCode({ email, enterprise_id })
+    Taro.showToast({
+      title: res?.status ? '发送成功' : '发送失败',
+      icon: 'none'
+    })
   }
 
   return (

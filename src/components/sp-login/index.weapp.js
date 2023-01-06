@@ -55,14 +55,6 @@ function SpLogin(props, ref) {
         user_type: 'wechat',
         auth_type: 'wxapp'
       }
-      // 内购分享码
-      const { code: purchaseCode } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-      if (purchaseCode) {
-        params = {
-          ...params,
-          purchanse_share_code: purchaseCode
-        }
-      }
       Taro.showLoading({ title: '' })
 
       // const { uid } = entryLaunch.getLaunchParams()

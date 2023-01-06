@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { View, Text, Image, Button } from '@tarojs/components'
-import { SpPage, SpImage, SpButton } from '@/components'
+import { View, Text, ScrollView, Button } from '@tarojs/components'
+import { SpPage, SpImage } from '@/components'
 import api from '@/api'
 import { connect } from 'react-redux'
+import { withPager } from '@/hocs'
 import { styleNames, formatDateTime, log } from '@/utils'
 import './share.scss'
 
 @connect(({ user }) => ({
   userInfo: user.userInfo
 }))
+@withPager
 export default class PurchaseIndex extends Component {
   $instance = getCurrentInstance()
   constructor(props) {
@@ -21,7 +23,7 @@ export default class PurchaseIndex extends Component {
         invite_limit: 0,
         invited_num: 0
       },
-      code: ''
+      relative_list: []
     }
   }
 
@@ -29,16 +31,18 @@ export default class PurchaseIndex extends Component {
     Taro.hideShareMenu({
       menus: ['shareAppMessage', 'shareTimeline']
     })
+    this.nextPage()
   }
 
   componentDidShow() {
-    this.fetch()
+    this.getActivitydata()
   }
 
   onShareAppMessage() {
     const { info } = this.state
+    const { enterprise_id, activity_id } = Taro.getStorageSync('purchase_share_info') || {}
     return new Promise(async function (resolve) {
-      const data = await api.purchase.getEmployeeInviteCode()
+      const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
       log.debug(`/subpages/purchase/select-role?code=${data.invite_code}`)
       resolve({
         title: info.purchase_name,
@@ -48,25 +52,37 @@ export default class PurchaseIndex extends Component {
     })
   }
 
-  async fetch() {
-    const { activity_id } = this.$instance.router.params
-    const data = await api.purchase.getEmployeeInvitData({ activity_id })
+  async getActivitydata() {
+    const { activity_id, enterprise_id } = Taro.getStorageSync('purchase_share_info') || {}
+    const data = await api.purchase.getEmployeeActivitydata({ activity_id, enterprise_id })
     this.setState({
       info: data
     })
   }
 
+  async fetch ({ pageIndex, pageSize }) {
+    const { relative_list } = this.state
+    const { activity_id, enterprise_id } = Taro.getStorageSync('purchase_share_info') || {}
+    const { list, total_count } = await api.purchase.getEmployeeInvitelist({ activity_id, enterprise_id, page: pageIndex, pageSize })
+    this.setState({
+      relative_list: [...relative_list, ...list]
+    })
+    return { total: total_count }
+  }
+
   showInfo() {
     const { info } = this.state
-    info.invited_num == '0' &&
+    if (info.invite_limit == info.invited_num) {
       Taro.showToast({
         title: '分享次数为0',
         icon: 'none'
       })
+      return
+    }
   }
 
   render() {
-    const { info } = this.state
+    const { info, relative_list } = this.state
     const { userInfo } = this.props
 
     return (
@@ -93,7 +109,7 @@ export default class PurchaseIndex extends Component {
                     size='mini'
                     className='shareBtn'
                     disabled={
-                      info.invited_num == '0'
+                      info.invite_limit == info.invited_num
                     }
                   >
                     <Text onClick={this.showInfo.bind(this)}>分享</Text>
@@ -104,7 +120,7 @@ export default class PurchaseIndex extends Component {
           </View>
           <View className="share-info">
             <View className="title">分享额度</View>
-            <View className='limitnum'>{`共计：${info.invite_limit}；已使用：${info.invite_limit - info.invited_num}；可分享：${info.invited_num}`}</View>
+            <View className='limitnum'>{`共计：${info.invite_limit}；已使用：${info.invited_num}；可分享：${info.invite_limit - info.invited_num}`}</View>
           </View>
           {/* <View className='header-bd'>
             <View className='bd-item'>
@@ -134,9 +150,15 @@ export default class PurchaseIndex extends Component {
               <Text className='line-title'>全部家属</Text>
               <Text className='line'></Text>
             </View>
-            {info.relative_list && info.relative_list.length > 0 && (
+            <ScrollView
+              className='line-wrap-scroll'
+              scrollY
+              scrollWithAnimation
+              onScroll={this.handleScroll}
+              onScrollToLower={this.nextPage}
+            >
               <View className='list-wrap'>
-                {info.relative_list.map((item) => {
+                {relative_list?.map((item) => {
                   return (
                     <View className='list-item' key={item.id}>
                       <SpImage
@@ -162,8 +184,8 @@ export default class PurchaseIndex extends Component {
                   )
                 })}
               </View>
-            )}
-            {info.relative_list.length === 0 && <View className='centerText'>暂无数据</View>}
+            </ScrollView>
+            {relative_list.length === 0 && <View className='centerText'>暂无数据</View>}
           </View>
         )}
       </SpPage>

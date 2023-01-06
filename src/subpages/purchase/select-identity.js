@@ -13,84 +13,65 @@ import CompTabbar from './comps/comp-tabbar'
 import actEnd from '@/assets/imgs/act_end.jpg'
 
 const initialState = {
-  identity: [
-    {
-      avatar: `${process.env.APP_IMAGE_CDN}/user_icon.png`,
-      company: '商派软件有限公司',
-      role: '员工',
-      account: '18888888888'
-    },
-    {
-      avatar: `${process.env.APP_IMAGE_CDN}/user_icon.png`,
-      company: '商派软件有限公司',
-      role: '亲友',
-      account: 'youxiang@youxiang.com',
-      isUse: true
-    },
-    {
-      avatar: '',
-      company: '公司名称公司名称公司名称公司名称',
-      role: '亲友',
-      account: '用户账号'
-    }
-  ],
-  invalidIdentity: [
-    {
-      avatar: `${process.env.APP_IMAGE_CDN}/user_icon.png`,
-      company: '商派软件有限公司',
-      role: '员工',
-      account: '18888888888'
-    }
-  ]
+  identity: [],
+  invalidIdentity: []
 }
 
 function SelectIdentity(props) {
   const [state, setState] = useImmer(initialState)
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
 
-  const handletoggleIdentity = (item) => {
-    console.log('item',item)
-    Taro.navigateBack()
+  useEffect(() => {
+    getUserEnterprises()
+  }, [])
+  
+  const getUserEnterprises = async () => {
+    const data = await api.purchase.getUserEnterprises()
+    setState(draft => {
+      draft.identity = data.filter(item => item.disabled == 0)
+      draft.invalidIdentity = data.filter(item => item.disabled == 1)
+    })
+  }
+
+  const onAddIdentityChange = () => {
+    Taro.navigateTo({
+      url: '/subpages/purchase/select-role'
+    })
   }
 
   return (
     <View className='select-identity'>
-      <View className='head'>
-        <View className='head-title'>轻触头像以切换身份</View>
-        <View className='head-line'></View>
+      <View className='identity-item' onClick={onAddIdentityChange}>
+        <View className='identity-item-avatar'>
+          <Text className='iconfont icon-tianjia1 add-icon avatar'></Text>
+        </View>
+        <View className='add-identity'>添加身份</View>
       </View>
       <View className='content'>
         <View className='identity'>
           {state.identity.map((item, index) => {
             return (
-              <View key={index} className='identity-item' onClick={()=>handletoggleIdentity(item)}>
+              <View key={index} className='identity-item'>
                 <View className='identity-item-avatar'>
-                  <Image src={item?.avatar} className='avatar' />
+                  <Image src={item?.logo} className='avatar' />
                 </View>
                 <View className='identity-item-content'>
                   <View className='content-top'>
-                    <View className='company'>{item.company}</View>
-                    {item.isUse && <View className='nowuse'>当前使用</View>}
+                    <View className='company'>{item.name}</View>
                   </View>
                   <View className='content-bottom'>
-                    <View className={classNames('role', item.role !== '员工' ? 'friend' : '')}>
-                      {item.role}
+                    <View className={classNames('role', item.is_relative == 1 ? 'friend' : '')}>
+                      {item.is_employee == 1 && '员工' || item.is_relative == 1 && '亲友'}
                     </View>
-                    <View className='account'>{item.account}</View>
+                    <View className='account'>{item.login_account}</View>
                   </View>
                 </View>
               </View>
             )
           })}
-          <View className='identity-item'>
-                <View className='identity-item-avatar'>
-                  <Text className='iconfont icon-tianjia1 add-icon avatar'></Text>
-                </View>
-                <View className='add-identity'>添加身份</View>
-          </View>
         </View>
         <View className='invalid-identity'>
-          <View className='title'>已失效身份</View>
+          {state.invalidIdentity?.length > 0 && <View className='title'>已失效身份</View>}
           {state.invalidIdentity?.map((item, index) => {
             return (
               <View key={index} className='identity-item'>
@@ -99,13 +80,13 @@ function SelectIdentity(props) {
                 </View>
                 <View className='identity-item-content'>
                   <View className='content-top'>
-                    <View className='company'>{item.company}</View>
+                    <View className='company'>{item.name}</View>
                   </View>
                   <View className='content-bottom'>
-                    <View className={classNames('role', item.role !== '员工' ? 'friend' : '')}>
-                      {item.role}
+                    <View className={classNames('role', item.is_relative == 1 ? 'friend' : '')}>
+                      {item.is_employee == 1 && '员工' || item.is_relative == 1 && '亲友'}
                     </View>
-                    <View className='account'>{item.account}</View>
+                    <View className='account'>{item.login_account}</View>
                   </View>
                 </View>
               </View>

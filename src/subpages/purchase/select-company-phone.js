@@ -1,4 +1,4 @@
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
@@ -9,39 +9,54 @@ import { classNames, showToast, VERSION_IN_PURCHASE } from '@/utils'
 import './select-company-phone.scss'
 import CompBottomTip from './comps/comp-bottomTip'
 
+const initialState = {
+  login_code: ''
+}
 
 function SelectComponent(props) {
   const { userInfo = {} } = useSelector((state) => state.user)
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
   const $instance = getCurrentInstance()
+  const { enterprise_id, enterprise_name } = $instance.router.params
+  const [state, setState] = useImmer(initialState)
+
+  useDidShow(() => {
+    getLoginCode()
+  })
+
+  const getLoginCode = async () => {
+    const { code } = await Taro.login()
+    setState(draft => {
+      draft.login_code = code
+    })
+  }
 
   const handleBindPhone = async (e) => {
     const { encryptedData, iv, code } = e.detail
     if (encryptedData && iv) {
       console.log(e.detail)
-      const { code } = await Taro.login()
       const { phoneNumber } = await api.wx.decryptPhone({
         encryptedData,
         iv,
-        code
+        code: state.login_code
       })
-      validatePhone(phoneNumber)
+      const params = {
+        enterprise_id,
+        mobile:　phoneNumber
+      }
+      validatePhone(params)
     }
   }
 
-  const validatePhone = async (mobile) => {
-    const { enterprise_id } = $instance.router.params
-    const params = {
-      enterprise_id,
-      mobile
-    }
+  const validatePhone = async (params) => {
     try {
-      await api.purchase.setEmployeeAuth(params)
+      await api.purchase.setEmployeeAuth({ ...params, showError: false })
       showToast('验证成功')
       setTimeout(() => {
-        Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+        Taro.redirectTo({ url: `/subpages/purchase/select-company-activity` })
       }, 2000)
     } catch (e) {
+      console.log(e)
       Taro.showModal({
         title: VERSION_IN_PURCHASE ? '登录失败' : '验证失败',
         content: `手机号码错误，请更换手机号`,
@@ -51,9 +66,10 @@ function SelectComponent(props) {
         cancelText: '取消',
         cancelColor: '#aaa',
         success: () => {
-          Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+          // Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
         }
       })
+      getLoginCode()
     }
   }
 
@@ -61,7 +77,7 @@ function SelectComponent(props) {
 
   return (
     <View className='select-component'>
-      <View className='select-component-title'>商派软件有限公司</View>
+      <View className='select-component-title'>{enterprise_name}</View>
       <View className='select-component-prompt'>使用手机号进行验证</View>
       {!VERSION_IN_PURCHASE &&
         <>
@@ -69,7 +85,10 @@ function SelectComponent(props) {
             <Text>已授权手机号：</Text>
             <Text className='phone-number'>{userInfo.mobile}</Text>
           </View>
-          <AtButton circle className='btns-phone' onClick={() => validatePhone(userInfo.mobile)}>
+          <AtButton circle className='btns-phone' onClick={() => validatePhone({
+            enterprise_id,
+            mobile: 'member_mobile'
+          })}>
             使用该号码验证
           </AtButton>
           <AtButton circle className='btns-other' openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone} >

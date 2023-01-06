@@ -112,6 +112,20 @@ export const TABBAR_ICON = {
   allGoods: 'quanbushangpin'
 }
 
+export const PURCHASE_TABBAR_PATH = {
+  home: 'subpages/purchase/index',
+  category: 'subpages/purchase/category',
+  cart: 'subpages/purchase/espier-index',
+  member: 'subpages/purchase/member',
+}
+
+export const PURCHASE_TABBAR_ICON = {
+  home: 'shouye',
+  category: 'fenlei',
+  cart: 'gwche',
+  member: 'huiyuan',
+}
+
 export const BUY_TOOL_BTNS = {
   NOTICE: { title: '到货通知', key: 'notice', btnStatus: 'active' },
   SUBSCRIBE: { title: '已订阅到货通知', key: 'subscribe', btnStatus: 'default' },

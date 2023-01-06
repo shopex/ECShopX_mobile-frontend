@@ -185,7 +185,7 @@ function MemberIndex(props) {
   }
 
   const getMemberCenterConfig = async () => {
-    const [bannerRes, menuRes, redirectRes, pointShopRes] = await Promise.all([
+    const [bannerRes, menuRes, redirectRes, pointShopRes, purchaseRes] = await Promise.all([
       // 会员中心banner
       await api.shop.getPageParamsConfig({
         page_name: 'member_center_setting'
@@ -199,7 +199,8 @@ function MemberIndex(props) {
         page_name: 'member_center_redirect_setting'
       }),
       // 积分商城
-      await api.pointitem.getPointitemSetting()
+      await api.pointitem.getPointitemSetting(),
+      await api.purchase.getEmployeeIsOpen()
     ])
     let banner,
       menu,
@@ -218,7 +219,7 @@ function MemberIndex(props) {
       }
     }
     if (menuRes.list.length > 0) {
-      menu = { ...menuRes.list[0].params.data, purchase: true }
+      menu = { ...menuRes.list[0].params.data }
     }
     if (S.getAuthToken() && (VERSION_PLATFORM || VERSION_STANDARD)) {
       const { result, status } = await api.member.is_admin()
@@ -252,7 +253,8 @@ function MemberIndex(props) {
       draft.banner = banner
       draft.menu = {
         ...menu,
-        pointMenu: pointShopRes.entrance.mobile_openstatus
+        pointMenu: pointShopRes.entrance.mobile_openstatus,
+        purchase: purchaseRes.is_open
       }
       draft.infoAppId = redirectInfo.info_app_id
       draft.infoPage = redirectInfo.info_page
@@ -372,6 +374,11 @@ function MemberIndex(props) {
       } else {
         Taro.navigateTo({ url: `/subpages/community/order` })
       }
+    }
+
+    if (key == 'purchase') {
+      Taro.setStorageSync('purchase_share_info', {})
+      Taro.setStorageSync('invite_code', '')
     }
 
     if (link) {

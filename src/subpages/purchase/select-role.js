@@ -24,6 +24,7 @@ function SelectRole(props) {
 
   useEffect(() => {
     checkPrivacy()
+    Taro.setStorageSync('invite_code', invite_code)
   }, [])
 
   const checkPrivacy = async () => {
@@ -91,6 +92,10 @@ function SelectRole(props) {
     }
   }
 
+  const handlePassClick = () => {
+    Taro.redirectTo({ url: `/subpages/purchase/select-company-activity` })
+  }
+
   return (
     <View className='select-role'>
       {/* 隐私协议 */}
@@ -111,7 +116,7 @@ function SelectRole(props) {
         <Text className='title'>上海商派员工亲友购</Text>
       </View>
       <View className='btns'>
-        {!invite_code && !isLogin && (
+        {!invite_code && (
           <>
             <AtButton circle className='btns-staff button' onClick={() => handleConfirmClick('staff')}>
               我是员工&nbsp;
@@ -134,9 +139,12 @@ function SelectRole(props) {
           </>
         }
         {invite_code && isLogin && !VERSION_IN_PURCHASE && // 有商城，已登录亲友验证、绑定
-          <AtButton circle className='btns-staff button login'>
-            验证通过，继续
-          </AtButton>
+          <>
+            <View className='validate-pass'>验证通过</View>
+            <AtButton circle className='btns-staff button login' onClick={handlePassClick}>
+              继续
+            </AtButton>
+          </>
         }
         {invite_code && !isLogin && // 有/无商城，未登录亲友验证、绑定
           <AtButton

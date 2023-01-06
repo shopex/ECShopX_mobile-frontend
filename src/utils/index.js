@@ -551,6 +551,7 @@ export function paramsSplice(params) {
   let str = ''
   let arr = []
   for (var key in params) {
+    console.log(params)
     let p = `${key}=${params[key]}`
     arr.push(p)
   }
