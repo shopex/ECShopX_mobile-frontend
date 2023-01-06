@@ -7,7 +7,6 @@ import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
 import { classNames } from '@/utils'
 import { SpPage, SpTabbar, SpScrollView, SpSearchInput } from '@/components'
-import CompTabbar from './comps/comp-tabbar'
 import './select-company-activity.scss'
 
 const initialState = {
@@ -30,7 +29,7 @@ function SelectComponent(props) {
     return { total: total_count }
   }
 
-  const handleToggleRole = ()=>{
+  const handleToggleRole = () => {
     Taro.navigateTo({
       url:'/subpages/purchase/select-identity'
     })
@@ -47,9 +46,17 @@ function SelectComponent(props) {
   const renderFooter = () => {
     return (
       <View className='select-component-footer' onClick={handleToggleRole}>
-        切换身份
+        身份管理
       </View>
     )
+  }
+
+  const onClickChange = (item) => {
+    console.log(item)
+    const { id, enterprise_id, pages_template_id } = item
+    Taro.navigateTo({
+      url: `/subpages/purchase/index?activity_id=${id}&enterprise_id=${enterprise_id}&pages_template_id=${pages_template_id}`
+    })
   }
 
   return (
@@ -89,6 +96,7 @@ function SelectComponent(props) {
               'activity-item',
               `act${(index%4)+1}`
             )}
+            onClick={() => onClickChange(item)}
           >
             <View className='activity-item-top user-more'>
               <View className='activity-item-title'>{item.name}</View>
@@ -96,7 +104,7 @@ function SelectComponent(props) {
             </View>
             <View className='activity-item-role'>
               <View className='activity-item-role-left'>
-                <View className='role'>{item.is_employee == 1 ? '员工': '亲友'}</View>
+                <View className='role'>{item.is_employee == 1 && '员工' || item.is_relative == 1 && '亲友'}</View>
                 <View className='enterise'>{item.rel_enterprise}</View>
               </View>
               <View className='hot'>{item.status_desc}</View>

@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
 import { View, Text, ScrollView, Image, Input, Picker } from '@tarojs/components'
@@ -28,6 +28,7 @@ function SelectComponent(props) {
   const [isError, setIsError] = useState(false)
   const formRef = useRef()
   const { form, rules } = state
+  const $instance = getCurrentInstance()
 
   useEffect(() => {
     //请求获取企业信息
@@ -55,7 +56,7 @@ function SelectComponent(props) {
         await api.purchase.setEmployeeAuth(params)
         showToast('验证成功')
         setTimeout(() => {
-          Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+          Taro.redirectTo({ url: `/subpages/purchase/select-company-activity` })
         }, 2000)
       }
     })

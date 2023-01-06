@@ -22,6 +22,7 @@ import {
 } from '@/components'
 
 import CompGoodsItem from '@/pages/cart/comps/comp-goodsitem'
+import CompTabbar from './comps/comp-tabbar'
 
 import './espier-index.scss'
 
@@ -261,7 +262,7 @@ function CartIndex() {
       className={classNames('page-cart-index', {
         'has-tabbar': tabbar == 1
       })}
-      renderFooter={tabbar == 1 && <SpTabbar />}
+      renderFooter={tabbar == 1 && <CompTabbar />}
     >
       {!isLogin && (
         <View className='login-header'>
