@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Taro, {
   getCurrentInstance,
   useShareAppMessage,
@@ -42,6 +42,7 @@ import {
   VERSION_PLATFORM,
   isAPP
 } from '@/utils'
+import { fetchUserFavs } from '@/store/slices/user'
 
 import doc from '@/doc'
 import entryLaunch from '@/utils/entryLaunch'
@@ -103,6 +104,7 @@ function EspierDetail(props) {
   const { userInfo } = useSelector((state) => state.user)
   const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
   const { setNavigationBarTitle } = useNavigation()
+  const dispatch = useDispatch()
 
   const [state, setState] = useImmer(initialState)
   const {
@@ -212,6 +214,9 @@ function EspierDetail(props) {
       draft.type = type
       draft.dtid = dtid
     })
+    if (S.getAuthToken()) {
+      await dispatch(fetchUserFavs())
+    }
   }
 
   const fetch = async () => {
@@ -481,8 +486,8 @@ function EspierDetail(props) {
                 <View className='title'>{info.itemName}</View>
                 <View className='brief'>{info.brief}</View>
               </View>
-              {/* {(isWeixin || isAPP()) && ( */}
-              {(
+              {(isWeixin || isAPP()) && (
+              // {(
                 <View className='btn-share-wrap'>
                   <SpLogin
                     onChange={async () => {
