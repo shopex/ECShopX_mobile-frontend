@@ -108,7 +108,7 @@ class API {
     const options = {
       company_id: process.env.APP_COMPANY_ID
     }
-    if (isWeixin || isAlipay) {
+    if (isWeixin) {
       const extConfig = getExtConfigData()
       options.appid = extConfig.appid
       if (extConfig.company_id) {
