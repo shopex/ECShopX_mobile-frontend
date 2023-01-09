@@ -43,11 +43,11 @@ export default class PurchaseIndex extends Component {
     const { enterprise_id, activity_id } = Taro.getStorageSync('purchase_share_info') || {}
     return new Promise(async function (resolve) {
       const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
-      log.debug(`/subpages/purchase/select-role?code=${data.invite_code}`)
+      log.debug(`/pages/select-role/index?code=${data.invite_code}`)
       resolve({
         title: info.purchase_name,
         imageUrl: info.ad_pic,
-        path: `/subpages/purchase/select-role?code=${data.invite_code}`
+        path: `/pages/select-role/index?code=${data.invite_code}`
       })
     })
   }

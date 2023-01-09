@@ -35,7 +35,7 @@ function SelectIdentity(props) {
 
   const onAddIdentityChange = () => {
     Taro.navigateTo({
-      url: '/subpages/purchase/select-role'
+      url: '/pages/select-role/index'
     })
   }
 
