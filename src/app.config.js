@@ -32,7 +32,7 @@ const config = {
         'espier-detail',
         'espier-checkout',
         'share', // 家属分享
-        'select-role',
+        // 'select-role',
         'select-company',
         'select-company-account',
         'select-company-email',
@@ -364,6 +364,10 @@ if (process.env.TARO_ENV == 'weapp') {
       'mp-html': './components/sp-html/mp-weixin/index'
     }
   })
+}
+
+if (process.env.APP_PLATFORM == 'in_purchase') {
+  config?.pages?.splice(config?.pages[0], 1, 'pages/select-role/index')
 }
 
 export default config

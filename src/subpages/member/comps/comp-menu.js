@@ -69,7 +69,7 @@ const MENUS = [
     key: 'purchase',
     name: '内购',
     icon: 'm_menu_tuangou.png',
-    link: '/subpages/purchase/select-role'
+    link: '/pages/select-role/index'
   },
   {
     key: 'dianwu',
