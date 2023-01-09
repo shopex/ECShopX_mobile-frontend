@@ -368,6 +368,8 @@ if (process.env.TARO_ENV == 'weapp') {
 
 if (process.env.APP_PLATFORM == 'in_purchase') {
   config?.pages?.splice(config?.pages[0], 1, 'pages/select-role/index')
+} else {
+  config?.pages?.push('pages/select-role/index')
 }
 
 export default config
