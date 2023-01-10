@@ -1,15 +1,10 @@
 import Taro from '@tarojs/taro'
-import React, { useCallback, useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
-import { View, Text, ScrollView, Image, Input, Picker, Button } from '@tarojs/components'
-import { AtButton, AtInput } from 'taro-ui'
+import { View, Text, Image } from '@tarojs/components'
 import api from '@/api'
 import { classNames } from '@/utils'
 import './select-identity.scss'
-import CompBottomTip from './comps/comp-bottomTip'
-import { SpPage, SpTabbar } from '@/components'
-import CompTabbar from './comps/comp-tabbar'
 
 const initialState = {
   identity: [],
@@ -18,7 +13,6 @@ const initialState = {
 
 function SelectIdentity(props) {
   const [state, setState] = useImmer(initialState)
-  const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
 
   useEffect(() => {
     getUserEnterprises()
@@ -34,7 +28,7 @@ function SelectIdentity(props) {
 
   const onAddIdentityChange = () => {
     Taro.navigateTo({
-      url: '/pages/select-role/index'
+      url: '/pages/select-role/index?type=addIdentity'
     })
   }
 
@@ -69,10 +63,10 @@ function SelectIdentity(props) {
             )
           })}
         </View>
-        <View className='invalid-identity'>
-          {state.invalidIdentity?.length > 0 && <View className='title'>已失效身份</View>}
-          {state.invalidIdentity?.map((item, index) => {
-            return (
+        {state.invalidIdentity?.length > 0 &&
+          <View className='invalid-identity'>
+            <View className='title'>已失效身份</View>
+            {state.invalidIdentity?.map((item, index) => (
               <View key={index} className='identity-item'>
                 <View className='identity-item-avatar'>
                   <Image src={item?.avatar} className='avatar' />
@@ -89,9 +83,9 @@ function SelectIdentity(props) {
                   </View>
                 </View>
               </View>
-            )
-          })}
-        </View>
+            ))}
+          </View>
+        }
       </View>
     </View>
   )

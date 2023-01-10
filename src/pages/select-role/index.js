@@ -1,5 +1,5 @@
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
 import { View, Text, Image } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
@@ -8,12 +8,13 @@ import api from '@/api'
 import { showToast, VERSION_IN_PURCHASE } from '@/utils'
 import { SpFloatPrivacyShort } from '@/components'
 import { useLogin } from '@/hooks'
+import S from '@/spx'
 import CompBottomTip from '@/subpages/purchase/comps/comp-bottomTip'
 import { updateInviteCode } from '@/store/slices/purchase'
 
 import './index.scss'
 function SelectRole(props) {
-  const { isLogin, checkPolicyChange } = useLogin({
+  const { isLogin, checkPolicyChange, setToken, login } = useLogin({
     policyUpdateHook: (isUpdate) => {
       isUpdate && setPolicyModal(true)
     }
@@ -22,14 +23,40 @@ function SelectRole(props) {
   const { appName, appLogo } = useSelector((state) => state.sys)
   const [policyModal, setPolicyModal] = useState(false)
   const [reject, setReject] = useState(false)
+  const [userEnterprises, setUserEnterprises] = useState([])
   const $instance = getCurrentInstance()
-  const { code: invite_code } = $instance.router.params || {}
+  const { code: invite_code, type = '' } = $instance.router.params || {}
   const dispatch = useDispatch()
+  const codeRef = useRef()
+
+  useEffect(() => {
+    if (!S.getAuthToken()) {
+      Taro.login({
+        success: ({ code }) => {
+          codeRef.current = code
+        },
+        fail: (e) => {
+          console.error('[sp-login] taro login fail:', e)
+        }
+      })
+    }
+  }, [])
 
   useEffect(() => {
     checkPrivacy()
     dispatch(updateInviteCode(invite_code))
+    if (!VERSION_IN_PURCHASE && !type && !invite_code && (userInfo?.is_relative || userInfo?.is_employee)) { // type：渠道是添加身份
+      getUserEnterprises()
+    }
   }, [])
+
+  const getUserEnterprises = async () => {
+    const data = await api.purchase.getUserEnterprises({ disabled: 0 })
+    setUserEnterprises(data)
+    if (data?.length > 0) {
+      Taro.reLaunch({ url: '/subpages/purchase/select-company-activity' })
+    }
+  }
 
   const checkPrivacy = async () => {
     const checkRes = await checkPolicyChange()
@@ -39,22 +66,20 @@ function SelectRole(props) {
     }
   }
 
-  const handleCloseModal = useCallback(() => {
+  const handleCloseModal = () => {
     setReject(true)
-  }, [])
+  }
 
   // 同意隐私协议
-  const handleConfirmModal = useCallback(async () => {
+  const handleConfirmModal = () => {
     setPolicyModal(false)
-  }, [])
+  }
 
-  const handleConfirmClick = async(type)=>{
+  const handleConfirmClick = async(type) => {
     if (type === 'friend') {
       Taro.showModal({
         title: '亲友验证说明',
         content: `如果您是亲友，请通过员工分享的活动链接认证；如果您是员工，请在上一页面中点击「我是员工」验证身份`,
-        // confirmColor: colorPrimary,
-        confirmColor:'#F4811F',
         showCancel: false,
         confirmText: '我知道了'
       })
@@ -68,36 +93,36 @@ function SelectRole(props) {
   const handleBindPhone = async (e) => {
     const { encryptedData, iv } = e.detail
     if (encryptedData && iv) {
-      console.log(e.detail)
-      validatePhone()
+      if (!S.getAuthToken()) {
+        await login()
+      }
+      validatePhone(e.detail)
     }
   }
 
   const validatePhone = async () => {
     try {
-      await api.purchase.getEmployeeRelativeBind({ invite_code })
+      await api.purchase.getEmployeeRelativeBind({ invite_code, showError: false })
       showToast('验证成功')
       setTimeout(() => {
-        Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
       }, 2000)
     } catch (e) {
-      // Taro.showModal({
-      //   title: VERSION_IN_PURCHASE ? '登录失败' : '验证失败',
-      //   content: `手机号码错误，请更换手机号`,
-      //   confirmColor:'#F4811F',
-      //   showCancel: VERSION_IN_PURCHASE,
-      //   confirmText: VERSION_IN_PURCHASE ? '重新授权' : '我知道了',
-      //   cancelText: '取消',
-      //   cancelColor: '#aaa',
-      //   success: () => {
-      //     Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
-      //   }
-      // })
+      console.log(e)
+      Taro.showModal({
+        content: `身份绑定失败，请重新打开小程序卡片`,
+        confirmText: '我知道了',
+        cancelColor: '#aaa',
+        showCancel: false,
+        success: () => {
+          Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+        }
+      })
     }
   }
 
   const handlePassClick = () => {
-    Taro.redirectTo({ url: `/subpages/purchase/select-company-activity` })
+    Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
   }
 
   return (
@@ -120,7 +145,7 @@ function SelectRole(props) {
         <Text className='title'>{appName}</Text>
       </View>
       <View className='btns'>
-        {!invite_code && (
+        {(!invite_code && !isLogin || !invite_code && type || !invite_code && userEnterprises.length == 0) && 
           <>
             <AtButton circle className='btns-staff button' onClick={() => handleConfirmClick('staff')}>
               我是员工&nbsp;
@@ -131,8 +156,8 @@ function SelectRole(props) {
               <Text className='iconfont icon-qianwang-011 icon'></Text>
             </AtButton>
           </>
-        )}
-        {invite_code && isLogin && VERSION_IN_PURCHASE && // 无商城，已登录亲友验证、绑定
+        }
+        {!invite_code && isLogin && VERSION_IN_PURCHASE && // 无商城，已登录亲友验证、绑定
           <>
             <View className='btns-account'>
               已授权账号：<Text className='account'>{userInfo?.mobile}</Text>
@@ -142,13 +167,22 @@ function SelectRole(props) {
             </AtButton>
           </>
         }
-        {invite_code && isLogin && !VERSION_IN_PURCHASE && // 有商城，已登录亲友验证、绑定
+        {invite_code && isLogin && !VERSION_IN_PURCHASE && userInfo?.is_relative && // 有商城，已登录亲友验证、绑定
           <>
             <View className='validate-pass'>验证通过</View>
             <AtButton circle className='btns-staff button login' onClick={handlePassClick}>
               继续
             </AtButton>
           </>
+        }
+        {invite_code && isLogin && !userInfo?.is_relative &&
+          <AtButton
+            circle
+            className='btns-weixin button'
+            onClick={validatePhone}
+          >
+            身份绑定
+          </AtButton>
         }
         {invite_code && !isLogin && // 有/无商城，未登录亲友验证、绑定
           <AtButton

@@ -83,7 +83,8 @@ const initialConfigState = {
   memberConfig: {
     // defaultImg: null,
     vipImg: null
-  }
+  },
+  purchaseRes: {}
 }
 
 const initialState = {
@@ -128,6 +129,7 @@ function MemberIndex(props) {
     if (isLogin) {
       getMemberCenterData()
       setMemberBackground()
+      getEmployeeIsOpen()
       const { redirect } = $instance.router.params
       if (redirect) {
         Taro.redirectTo({ url: decodeURIComponent(redirect) })
@@ -185,8 +187,15 @@ function MemberIndex(props) {
     })
   }
 
+  const getEmployeeIsOpen = async () => {
+    const purchaseRes = await api.purchase.getEmployeeIsOpen()
+    setConfig(draft => {
+      draft.purchaseRes = purchaseRes
+    })
+  }
+
   const getMemberCenterConfig = async () => {
-    const [bannerRes, menuRes, redirectRes, pointShopRes, purchaseRes] = await Promise.all([
+    const [bannerRes, menuRes, redirectRes, pointShopRes] = await Promise.all([
       // 会员中心banner
       await api.shop.getPageParamsConfig({
         page_name: 'member_center_setting'
@@ -201,7 +210,6 @@ function MemberIndex(props) {
       }),
       // 积分商城
       await api.pointitem.getPointitemSetting(),
-      await api.purchase.getEmployeeIsOpen()
     ])
     let banner,
       menu,
@@ -254,8 +262,7 @@ function MemberIndex(props) {
       draft.banner = banner
       draft.menu = {
         ...menu,
-        pointMenu: pointShopRes.entrance.mobile_openstatus,
-        purchase: purchaseRes.is_open
+        pointMenu: pointShopRes.entrance.mobile_openstatus
       }
       draft.infoAppId = redirectInfo.info_app_id
       draft.infoPage = redirectInfo.info_page
@@ -596,6 +603,7 @@ function MemberIndex(props) {
           <CompMenu
             accessMenu={{
               ...config.menu,
+              purchase: config.purchaseRes.is_open,
               popularize: userInfo ? userInfo.popularize : false
             }}
             isPromoter={userInfo ? userInfo.isPromoter : false}
