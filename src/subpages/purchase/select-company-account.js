@@ -56,7 +56,7 @@ function SelectComponent(props) {
         await api.purchase.setEmployeeAuth(params)
         showToast('验证成功')
         setTimeout(() => {
-          Taro.redirectTo({ url: `/subpages/purchase/select-company-activity` })
+          Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
         }, 2000)
       }
     })
