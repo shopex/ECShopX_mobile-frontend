@@ -6,7 +6,7 @@ import { AtButton } from 'taro-ui'
 import { useSelector, useDispatch } from 'react-redux'
 import api from '@/api'
 import { showToast, VERSION_IN_PURCHASE } from '@/utils'
-import { SpFloatPrivacyShort } from '@/components'
+import { SpFloatPrivacyShort, SpLogin } from '@/components'
 import { useLogin } from '@/hooks'
 import S from '@/spx'
 import CompBottomTip from '@/subpages/purchase/comps/comp-bottomTip'
@@ -14,7 +14,8 @@ import { updateInviteCode } from '@/store/slices/purchase'
 
 import './index.scss'
 function SelectRole(props) {
-  const { isLogin, checkPolicyChange, setToken, login } = useLogin({
+  const { isLogin, checkPolicyChange, isNewUser, setToken, login } = useLogin({
+    autoLogin: true,
     policyUpdateHook: (isUpdate) => {
       isUpdate && setPolicyModal(true)
     }
@@ -30,6 +31,11 @@ function SelectRole(props) {
   const codeRef = useRef()
 
   useEffect(() => {
+    checkPrivacy()
+    dispatch(updateInviteCode(invite_code))
+  }, [])
+
+  useEffect(() => {
     if (!S.getAuthToken()) {
       Taro.login({
         success: ({ code }) => {
@@ -43,12 +49,10 @@ function SelectRole(props) {
   }, [])
 
   useEffect(() => {
-    checkPrivacy()
-    dispatch(updateInviteCode(invite_code))
-    if (!VERSION_IN_PURCHASE && !type && !invite_code && (userInfo?.is_relative || userInfo?.is_employee)) { // type：渠道是添加身份
+    if (!type && !invite_code && (userInfo?.is_relative || userInfo?.is_employee)) { // type：渠道是添加身份
       getUserEnterprises()
     }
-  }, [])
+  }, [userInfo])
 
   const getUserEnterprises = async () => {
     const data = await api.purchase.getUserEnterprises({ disabled: 0 })
@@ -71,7 +75,10 @@ function SelectRole(props) {
   }
 
   // 同意隐私协议
-  const handleConfirmModal = () => {
+  const handleConfirmModal = async () => {
+    if (!isNewUser) {
+      await login()
+    }
     setPolicyModal(false)
   }
 
@@ -93,10 +100,25 @@ function SelectRole(props) {
   const handleBindPhone = async (e) => {
     const { encryptedData, iv } = e.detail
     if (encryptedData && iv) {
-      if (!S.getAuthToken()) {
-        await login()
+      const code = codeRef.current
+      const params = {
+        code,
+        encryptedData,
+        iv,
+        cloudID,
+        user_type: 'wechat',
+        auth_type: 'wxapp',
+        invite_code
       }
-      validatePhone(e.detail)
+      const { token } = await api.wx.newlogin(params)
+      setToken(token)
+      Taro.showToast({
+        icon: 'success',
+        title: '验证成功'
+      })
+      setTimeout(() => {
+        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+      }, 2000)
     }
   }
 
@@ -110,7 +132,7 @@ function SelectRole(props) {
     } catch (e) {
       console.log(e)
       Taro.showModal({
-        content: `身份绑定失败，请重新打开小程序卡片`,
+        content: e,
         confirmText: '我知道了',
         cancelColor: '#aaa',
         showCancel: false,
@@ -134,7 +156,6 @@ function SelectRole(props) {
         onCancel={handleCloseModal}
         onConfirm={handleConfirmModal}
       />
-
       <View className='header'>
         <Image
           className='header-avatar'
@@ -157,7 +178,7 @@ function SelectRole(props) {
             </AtButton>
           </>
         }
-        {!invite_code && isLogin && VERSION_IN_PURCHASE && // 无商城，已登录亲友验证、绑定
+        {/* {!invite_code && isLogin && !type && userInfo?.is_relative && VERSION_IN_PURCHASE && // 无商城，已登录亲友验证、绑定
           <>
             <View className='btns-account'>
               已授权账号：<Text className='account'>{userInfo?.mobile}</Text>
@@ -166,8 +187,9 @@ function SelectRole(props) {
               确认登录
             </AtButton>
           </>
-        }
-        {invite_code && isLogin && !VERSION_IN_PURCHASE && userInfo?.is_relative && // 有商城，已登录亲友验证、绑定
+        } */}
+        {/* {invite_code && isLogin && // 亲友&已登录 */}
+        {invite_code && isLogin && userInfo?.is_relative && // 有/无商城，已登录亲友验证、绑定
           <>
             <View className='validate-pass'>验证通过</View>
             <AtButton circle className='btns-staff button login' onClick={handlePassClick}>
@@ -181,10 +203,10 @@ function SelectRole(props) {
             className='btns-weixin button'
             onClick={validatePhone}
           >
-            身份绑定
+            微信授权登录
           </AtButton>
         }
-        {invite_code && !isLogin && // 有/无商城，未登录亲友验证、绑定
+        {invite_code && isNewUser && // 有/无商城，未登录亲友验证、绑定
           <AtButton
             openType='getPhoneNumber'
             onGetPhoneNumber={handleBindPhone}
@@ -192,7 +214,8 @@ function SelectRole(props) {
             className='btns-weixin button'
           >
             微信授权登录
-          </AtButton>}
+          </AtButton>
+        }
       </View>
       <CompBottomTip />
     </View>

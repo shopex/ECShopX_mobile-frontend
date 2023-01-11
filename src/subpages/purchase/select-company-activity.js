@@ -54,7 +54,7 @@ function SelectComponent(props) {
   const onClickChange = (item) => {
     console.log(item)
     const { id, enterprise_id, pages_template_id } = item
-    Taro.navigateTo({
+    Taro.redirectTo({
       url: `/subpages/purchase/index?activity_id=${id}&enterprise_id=${enterprise_id}&pages_template_id=${pages_template_id}`
     })
   }

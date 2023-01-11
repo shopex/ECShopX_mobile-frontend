@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
 import { View, Text, ScrollView, Image, Input, Picker } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
+import { useLogin } from '@/hooks'
 import api from '@/api'
 import { classNames, showToast, VERSION_IN_PURCHASE } from '@/utils'
 import './select-company-email.scss'
@@ -24,6 +25,7 @@ const initialState = {
 }
 
 function SelectComponent(props) {
+  const { isNewUser } = useLogin()
   const [state, setState] = useImmer(initialState)
   const { form, rules } = state
 
@@ -31,7 +33,7 @@ function SelectComponent(props) {
   const [isErrorCode, setIsErrorCode] = useState(false)
   const formRef = useRef()
   const $instance = getCurrentInstance()
-  const { enterprise_id, enterprise_name } = $instance.router.params
+  const { enterprise_id, enterprise_name, enterprise_sn } = $instance.router.params
 
   useEffect(() => {
     //请求获取企业信息
@@ -46,11 +48,11 @@ function SelectComponent(props) {
   const onFormSubmit = async () => {
     // 有商场校验白名单，账号绑定并登录，无商场检验白名单通过手机号授权
     formRef.current.onSubmit(async () => {
-      if (VERSION_IN_PURCHASE) {
+      const { email, vcode } = form
+      if (isNewUser) {
         // 无商场逻辑（需要调整一个页面去授权手机号）
-        Taro.navigateTo({ url: `/subpages/purchase/select-company-phone` })
+        Taro.navigateTo({ url: `/subpages/purchase/select-company-phone?enterprise_sn=${enterprise_sn}&enterprise_name=${enterprise_name}&enterprise_id=${enterprise_id}&email=${email}&vcode=${vcode}` }) // 有商场员工手机号登录
       } else {
-        const { email, vcode } = form
         const params = {
           enterprise_id,
           email,

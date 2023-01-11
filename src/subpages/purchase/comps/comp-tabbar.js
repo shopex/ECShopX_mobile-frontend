@@ -76,7 +76,7 @@ function CompTabbar(props) {
     console.log(tabItem, 'tabItem')
     const { path } = getCurrentRoute()
     if (path != tabItem.url) {
-      Taro.redirectTo({ url: `/${tabItem.url}` })
+      Taro.redirectTo({ url: `${tabItem.url}` })
       // Taro.redirectTo({ url: `/${tabItem.url}?${paramsSplice(purchase_share_info)}` })
     }
   }
@@ -89,7 +89,7 @@ function CompTabbar(props) {
       classNames={classNames({ 'comp-tabbar': true })}
       iconSize='20'
       backgroundColor={backgroundColor}
-      selectedColor={colorPrimary}
+      selectedColor={tabbar?.config?.selectedColor}
       tabList={tabList}
       onClick={handleTabbarClick}
       current={currentIndex}
