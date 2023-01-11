@@ -87,7 +87,7 @@ function Home() {
       distributor_id: getDistributorId(),
       pages_template_id
     })
-    const tabBar = JSON.parse(tab_bar)
+    const tabBar = tab_bar && JSON.parse(tab_bar)
     store.dispatch({
       type: 'purchase/updatePurchaseTabbar',
       payload: {

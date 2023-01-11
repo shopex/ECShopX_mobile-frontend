@@ -2,22 +2,27 @@ import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { View, Text, ScrollView, Image, Input, Picker ,Button} from '@tarojs/components'
-import { AtButton, AtInput } from 'taro-ui'
+import { View, Text} from '@tarojs/components'
+import { SpLogin } from '@/components'
+import { AtButton } from 'taro-ui'
 import api from '@/api'
-import { classNames, showToast, VERSION_IN_PURCHASE } from '@/utils'
-import './select-company-phone.scss'
+import S from '@/spx'
+import { useLogin } from '@/hooks'
+import { showToast, VERSION_IN_PURCHASE } from '@/utils'
+
 import CompBottomTip from './comps/comp-bottomTip'
+import './select-company-phone.scss'
 
 const initialState = {
   login_code: ''
 }
 
 function SelectComponent(props) {
+  const { setToken, isNewUser } = useLogin()
   const [state, setState] = useImmer(initialState)
   const { userInfo = {} } = useSelector((state) => state.user)
   const $instance = getCurrentInstance()
-  const { enterprise_id, enterprise_name } = $instance.router.params
+  const { enterprise_id, enterprise_name, auth_code, account, email, vcode } = $instance.router.params
 
   useDidShow(() => {
     getLoginCode()
@@ -31,19 +36,37 @@ function SelectComponent(props) {
   }
 
   const handleBindPhone = async (e) => {
-    const { encryptedData, iv, code } = e.detail
+    const { encryptedData, iv, cloudID } = e.detail
     if (encryptedData && iv) {
-      console.log(e.detail)
-      const { phoneNumber } = await api.wx.decryptPhone({
+      // const { phoneNumber } = await api.wx.decryptPhone({
+      //   encryptedData,
+      //   iv,
+      //   code: state.login_code
+      // })
+      const params = {
+        code: state.login_code,
         encryptedData,
         iv,
-        code: state.login_code
-      })
-      const params = {
-        enterprise_id,
-        mobile:　phoneNumber
+        cloudID,
+        user_type: 'wechat',
+        auth_type: 'wxapp',
+        employee_auth: {
+          enterprise_id,
+          account,
+          auth_code,
+          email,
+          vcode
+        }
       }
-      validatePhone(params)
+      const { token } = await api.wx.newlogin(params)
+      setToken(token)
+      Taro.showToast({
+        icon: 'success',
+        title: '验证成功'
+      })
+      setTimeout(() => {
+        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+      }, 2000)
     }
   }
 
@@ -57,15 +80,13 @@ function SelectComponent(props) {
     } catch (e) {
       console.log(e)
       Taro.showModal({
-        title: VERSION_IN_PURCHASE ? '登录失败' : '验证失败',
-        content: `手机号码错误，请更换手机号`,
+        title: '验证失败',
+        content: e,
         confirmColor:'#F4811F',
-        showCancel: VERSION_IN_PURCHASE,
-        confirmText: VERSION_IN_PURCHASE ? '重新授权' : '我知道了',
-        cancelText: '取消',
-        cancelColor: '#aaa',
+        showCancel: false,
+        confirmText: '我知道了',
         success: () => {
-          // Taro.navigateTo({ url: `/subpages/purchase/select-company-activity` })
+          Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
         }
       })
       getLoginCode()
@@ -76,7 +97,7 @@ function SelectComponent(props) {
     <View className='select-component'>
       <View className='select-component-title'>{enterprise_name}</View>
       <View className='select-component-prompt'>使用手机号进行验证</View>
-      {!VERSION_IN_PURCHASE &&
+      {!VERSION_IN_PURCHASE && // 有商场的到这个页面都已经登录成功不用区分是否是新用户
         <>
           <View className='phone-box'>
             <Text>已授权手机号：</Text>
@@ -93,8 +114,27 @@ function SelectComponent(props) {
           </AtButton>
         </>
       }
-      {VERSION_IN_PURCHASE &&
-        <AtButton circle className='btns-phone' openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone} customStyle={{ marginTop: '50%' }}>
+      {VERSION_IN_PURCHASE && isNewUser &&
+        <AtButton
+          openType='getPhoneNumber'
+          onGetPhoneNumber={handleBindPhone}
+          circle
+          className='btns-phone'
+          customStyle={{ marginTop: '50%' }}
+        >
+          微信授权登录
+        </AtButton>
+      }
+      {VERSION_IN_PURCHASE && !isNewUser &&
+        <AtButton
+          circle
+          className='btns-phone'
+          onClick={() => validatePhone({
+            enterprise_id,
+            mobile: 'member_mobile'
+          })}
+          customStyle={{ marginTop: '50%' }}
+        >
           微信授权登录
         </AtButton>
       }

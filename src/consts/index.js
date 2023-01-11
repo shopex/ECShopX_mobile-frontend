@@ -113,10 +113,10 @@ export const TABBAR_ICON = {
 }
 
 export const PURCHASE_TABBAR_PATH = {
-  home: 'subpages/purchase/index',
-  category: 'subpages/purchase/category',
-  cart: 'subpages/purchase/espier-index',
-  member: 'subpages/purchase/member',
+  home: '/subpages/purchase/index',
+  category: '/subpages/purchase/category',
+  cart: '/subpages/purchase/espier-index',
+  member: '/subpages/purchase/member',
 }
 
 export const PURCHASE_TABBAR_ICON = {
