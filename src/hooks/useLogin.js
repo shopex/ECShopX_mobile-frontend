@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import dayjs from 'dayjs'
 import { updateUserInfo, fetchUserFavs, clearUserInfo } from '@/store/slices/user'
 import { updateCount, clearCart } from '@/store/slices/cart'
+import { purchaseClearCart } from '@/store/slices/purchase'
 import api from '@/api'
 import { isWeixin, showToast, entryLaunch,isAlipay,alipayAutoLogin } from '@/utils'
 import S from '@/spx'
@@ -75,6 +76,7 @@ export default (props = {}) => {
     S.clearAuthToken()
     dispatch(clearUserInfo())
     dispatch(clearCart())
+    dispatch(purchaseClearCart())
   }
 
   const setToken = async (token) => {
