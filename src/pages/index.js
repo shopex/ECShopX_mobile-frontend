@@ -29,6 +29,7 @@ import {
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
+import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
 import HomeWgts from './home/comps/home-wgts'
@@ -79,6 +80,11 @@ function Home() {
       setNavigationBarTitle(appName)
     }
   }, [initState])
+
+  useEffect(() => {
+    dispatch(updatePurchaseShareInfo())
+    dispatch(updateInviteCode())
+  }, [])
 
   useDidShow(() => {
     // 检查隐私协议是否变更或同意
