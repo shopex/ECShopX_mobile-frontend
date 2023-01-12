@@ -13,10 +13,12 @@ function linkPage (data) {
     return
   }
   let url = ''
+  debugger
   switch (linkPage) {
     case 'goods':
       url = '/pages/item/espier-detail?id=' + id
       break
+    case 'category':
     case 'sale_category':
       url = '/pages/item/list?cat_id=' + id
       break
