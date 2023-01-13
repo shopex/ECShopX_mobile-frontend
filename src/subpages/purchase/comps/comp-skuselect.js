@@ -217,7 +217,7 @@ function SpSkuSelect(props) {
       num,
       distributor_id: distributorId
     }, !!info.point) // info.point 有积分值时是积分商品
-    let url = !!info.point ? '/subpages/pointshop/espier-checkout?cart_type=fastbuy&shop_id=0' : `/pages/cart/espier-checkout?cart_type=fastbuy&shop_id=${distributorId}`
+    let url = !!info.point ? '/subpages/pointshop/espier-checkout?cart_type=fastbuy&shop_id=0' : `/subpages/purchase/espier-checkout?cart_type=fastbuy&shop_id=${distributorId}`
     if (activityType == 'seckill' || activityType === 'limited_time_sale') {
       const { seckill_id } = activityInfo
       const { ticket } = await api.item.seckillCheck({
