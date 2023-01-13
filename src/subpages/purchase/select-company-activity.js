@@ -6,6 +6,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
 import { classNames } from '@/utils'
+import { updateUserInfo } from '@/store/slices/user'
 import { SpPage, SpTabbar, SpScrollView, SpSearchInput } from '@/components'
 import './select-company-activity.scss'
 
@@ -18,6 +19,16 @@ function SelectComponent(props) {
   const [state, setState] = useImmer(initialState)
   const { activityList, activity_name } = state
   const scrollRef = useRef()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    updataMemberInfo()
+  }, [])
+
+  const updataMemberInfo = async () => {
+    const _userInfo = await api.member.memberInfo()
+    dispatch(updateUserInfo(_userInfo))
+  }
 
   const fetch = async({ pageIndex, pageSize }) => {
     const { list, total_count } = await api.purchase.getEmployeeActivityList({ page: pageIndex, pageSize, activity_name })

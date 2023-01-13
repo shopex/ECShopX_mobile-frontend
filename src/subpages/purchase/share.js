@@ -33,9 +33,6 @@ export default class PurchaseIndex extends Component {
       menus: ['shareAppMessage', 'shareTimeline']
     })
     this.nextPage()
-  }
-
-  componentDidShow() {
     this.getActivitydata()
   }
 
@@ -46,8 +43,8 @@ export default class PurchaseIndex extends Component {
       const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
       log.debug(`/pages/select-role/index?code=${data.invite_code}`)
       resolve({
-        title: info.purchase_name,
-        imageUrl: info.ad_pic,
+        title: info.name,
+        imageUrl: info.share_pic,
         path: `/pages/select-role/index?code=${data.invite_code}`
       })
     })
