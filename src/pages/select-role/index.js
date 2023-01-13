@@ -49,7 +49,7 @@ function SelectRole(props) {
   }, [])
 
   useEffect(() => {
-    if (!type && !invite_code && (userInfo?.is_relative || userInfo?.is_employee)) { // type：渠道是添加身份
+    if (!type && !invite_code && (userInfo?.is_relative || userInfo?.is_employee)) { // type：渠道是添加身份,不能跳转到活动列表页
       getUserEnterprises()
     }
   }, [userInfo])
@@ -165,15 +165,16 @@ function SelectRole(props) {
         <Text className='title'>{appName}</Text>
       </View>
       <View className='btns'>
-        {(!invite_code && !isLogin || !invite_code && type || !invite_code && userEnterprises.length == 0) && 
+        {/* {(!invite_code && !isLogin || !invite_code && type || !invite_code && userEnterprises.length == 0) &&  */}
+        {!invite_code && (!isLogin || type || userEnterprises.length == 0) &&
           <>
             <AtButton circle className='btns-staff button' onClick={() => handleConfirmClick('staff')}>
               我是员工&nbsp;
-              <Text className='iconfont icon-qianwang-011 icon'></Text>
+              {/* <Text className='iconfont icon-qianwang-011 icon'></Text> */}
             </AtButton>
             <AtButton circle className='btns-friend button' onClick={() => handleConfirmClick('friend')}>
               我是亲友&nbsp;
-              <Text className='iconfont icon-qianwang-011 icon'></Text>
+              {/* <Text className='iconfont icon-qianwang-011 icon'></Text> */}
             </AtButton>
           </>
         }

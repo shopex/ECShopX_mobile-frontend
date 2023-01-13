@@ -51,11 +51,26 @@ function SelectComponent(props) {
           account,
           auth_code
         }
-        await api.purchase.setEmployeeAuth(params)
-        showToast('验证成功')
-        setTimeout(() => {
-          Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
-        }, 2000)
+        try {
+          await api.purchase.setEmployeeAuth({...params, showError: false})
+          showToast('验证成功')
+          setTimeout(() => {
+            Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+          }, 2000)
+        } catch(e) {
+          Taro.showModal({
+            title: '验证失败',
+            content: e,
+            confirmColor:'#F4811F',
+            showCancel: false,
+            confirmText: '我知道了',
+            success: () => {
+              if (e.indexOf('重复绑定') > -1) {
+                Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+              }
+            }
+          })
+        }
       }
     })
   }

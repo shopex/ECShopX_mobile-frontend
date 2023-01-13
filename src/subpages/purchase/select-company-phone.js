@@ -3,10 +3,8 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import { View, Text} from '@tarojs/components'
-import { SpLogin } from '@/components'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
-import S from '@/spx'
 import { useLogin } from '@/hooks'
 import { showToast, VERSION_IN_PURCHASE } from '@/utils'
 
@@ -86,7 +84,9 @@ function SelectComponent(props) {
         showCancel: false,
         confirmText: '我知道了',
         success: () => {
-          Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+          if (e.indexOf('重复绑定') > -1) {
+            Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+          }
         }
       })
       getLoginCode()
