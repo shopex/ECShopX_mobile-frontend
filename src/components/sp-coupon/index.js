@@ -116,7 +116,7 @@ function SpCoupon(props) {
             )
           }
           {!info.valid && (
-            <View className='invaild-desc'>{info.invalid_desc}</View>
+            <View className='invaild-desc'>{info.invalidDesc}</View>
           )}
           </View>
         </View>
