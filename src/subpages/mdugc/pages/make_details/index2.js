@@ -4,7 +4,7 @@ import { View, Text,Image, Input, ScrollView, Button } from '@tarojs/components'
 import { Swiperugc, Popups } from '../../components'
 import { FloatMenus, FloatMenuItem, BackToTop, Loading } from '@/components'
 import S from '@/spx'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { withPager, withBackToTop, withPointitem } from '@/hocs'
 
 import { AtActionSheet, AtActionSheetItem } from 'taro-ui'
@@ -12,7 +12,7 @@ import api from '@/api'
 import { useImmer } from 'use-immer'
 
 //import '../../font/iconfont.scss'
-import './index.scss'
+import './index2.scss'
 import { async } from 'regenerator-runtime'
 
 const initialState = {
