@@ -59,7 +59,7 @@ function MakeComment(props) {
     Taro.navigateTo({ url })
   }
 
-  const { list, page, showBackToTop, scrollTop } = this.state
+  const { list, page, showBackToTop, scrollTop } = state
   return (
     <View className='comment'>
       <View className='comment_list'>
@@ -68,8 +68,8 @@ function MakeComment(props) {
           className='comment_list__scroll'
           scrollTop={scrollTop}
           scrollWithAnimation
-          onScroll={this.handleScroll}
-          onScrollToLower={this.nextPage}
+          onScroll={handleScroll}
+          onScrollToLower={nextPage}
         >
           <View className='comment_list__scroll_scrolls'>
             {list?.map((item) => {
@@ -120,7 +120,7 @@ function MakeComment(props) {
         </ScrollView>
       </View>
 
-      <BackToTop show={showBackToTop} onClick={this.scrollBackToTop} bottom={150} />
+      <BackToTop show={showBackToTop} onClick={scrollBackToTop} bottom={150} />
     </View>
   )
 }

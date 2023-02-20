@@ -890,7 +890,7 @@ function Make(props) {
             ) : null}
             {file_img?.map((item, idx) => {
               return (
-                <Block>
+                <Block key={idx}>
                   <View className='makeindex_upload_img_i' >
                     <SpImg
                       img-class='makeindex_upload_img_i_img'
