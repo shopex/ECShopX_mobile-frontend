@@ -14,7 +14,8 @@ import { AtTabs, AtTabsPane } from 'taro-ui'
 import api from "@/api";
 
 //import '../../font/iconfont.scss'
-import './index.scss'
+import './index2.scss'
+
 @connect(
   ({ member }) => ({
     memberData: member.member
