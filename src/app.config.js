@@ -184,7 +184,8 @@ const config = {
           "pages/make_follow/index",
           "pages/make_collection/index",
           "pages/make_system/index",
-          "pages/make_followfans/index"
+          "pages/make_followfans/index",
+          "pages/make_followfans/index2"
       ]
     },
     {

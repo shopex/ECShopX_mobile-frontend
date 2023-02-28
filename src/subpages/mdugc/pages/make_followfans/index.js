@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text , Image , ScrollView } from '@tarojs/components'
 import S from '@/spx'
 import { connect } from 'react-redux'
@@ -37,7 +37,7 @@ export default class make_followfans extends Component {
     "backgroundTextStyle": "dark",
   }
   componentDidShow () {
-    const {type,user_id}=this.$router.params
+    const {type,user_id}=getCurrentInstance().router.params
     const { memberData } = this.props;
 
     let title=''
@@ -63,7 +63,7 @@ export default class make_followfans extends Component {
   // 列表
   async fetch (params) {
     const { page_no, page_size } = params
-    const {user_id}=this.$router.params
+    const {user_id}=getCurrentInstance().router.params
     let {type}=this.state
     let { memberData } = this.props;
     params = {
@@ -131,10 +131,8 @@ export default class make_followfans extends Component {
   }
 
 
-  render () {
     const { list , page , showBackToTop , scrollTop } = this.state
-    const {type,user_id}=this.$router.params
-    const { memberData } = this.props;
+    const {type,user_id}=getCurrentInstance().router.params
 
 
     return (
@@ -197,4 +195,4 @@ export default class make_followfans extends Component {
       </View>
     )
   }
-}
+

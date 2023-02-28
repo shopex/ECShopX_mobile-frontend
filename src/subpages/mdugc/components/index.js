@@ -7,3 +7,4 @@ export { default as NavBar } from './navbar'
 // popups
 export { default as Popups } from './popups'
 export { default as TagsBarcheck } from './tags-barcheck'
+export { default as FilterBar } from './filter-bar'

@@ -168,7 +168,7 @@ export default class SearchBar extends Component {
         {/*</View>*/}
         {/*</View>*/}
         {/* <View className='search-input__form'>
-          
+
         </View> */}
         {/* {微信浏览器form enter自动刷新页面} */}
         <View className='search-input__form'>

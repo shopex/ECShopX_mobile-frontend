@@ -1,15 +1,12 @@
-import React, { Component, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
-import { View, Text, Button, ScrollView,Image } from '@tarojs/components'
-import { Scrollitem, Popups } from '../../components'
+import { View, Text, Button, ScrollView, Image } from '@tarojs/components'
+import { Scrollitem, SpImage, SpPage, SpScrollView } from '@/components'
 import S from '@/spx'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-
-import { SpNote, BackToTop, FloatMenus, FloatMenuItem, Loading } from '@/components'
+import { FilterBar, Popups } from '../../components'
 import { pickBy } from '@/utils'
-import { withPager, withBackToTop } from '@/hocs'
-import { AtTabs, AtTabsPane } from 'taro-ui'
 
 import api from '@/api'
 
@@ -52,12 +49,14 @@ const initialState = {
   popnum: [
     {
       text: '当前发布笔记数',
-      icon: 'icon-bi',
+      // icon: 'icon-16',
+      icon: 'icon-guanbi2',
       num: 10
     },
     {
       text: '当前获得点赞数',
-      icon: 'icon-aixin',
+      // icon: 'icon-dianzan',
+      icon: 'icon-guanbi2',
       num: 100
     }
   ]
@@ -65,13 +64,15 @@ const initialState = {
 
 function mdugcmember(props) {
   const [state, setState] = useImmer(initialState)
-  const memberData = useSelector((member) => member.member)
+  const memberData = useSelector(({ member }) => member.member)
+  const colors = useSelector((state) => state.sys)
   const router = useRouter()
+  const listRef = useRef()
 
   useEffect(() => {
-    let { memberData } = props
+    console.log(111, memberData)
     const isAuth = S.getAuthToken()
-    if (!isAuth || !memberData.memberInfo) {
+    if (!isAuth || !memberData?.memberInfo) {
       Taro.showToast({
         icon: 'none',
         title: '请先登录'
@@ -90,32 +91,28 @@ function mdugcmember(props) {
     let file_drafts = wx.getStorageSync('md_drafts')
     let { userinfo } = state
     let userid = ''
+    let isoneself = userinfo.isoneself
     if (parseInt(user_id) >= 0) {
       if (memberData.memberInfo && user_id == memberData.memberInfo.user_id) {
-        userinfo.isoneself = true
+        isoneself = true
       } else {
       }
       console.log('是管理员', user_id)
       userid = user_id
     } else {
-      userid = memberData.memberInfo.user_id
-      userinfo.isoneself = true
+      userid = memberData?.memberInfo?.user_id
+      isoneself = true
     }
-    if (!userinfo.isoneself) {
+    if (isoneself) {
       Taro.setNavigationBarTitle({
         title: '主页'
       })
     }
     getuserinfo(userid)
-    userinfo.userid = userid
-    setState(
-      (draft) => {
-        draft.userinfo = userinfo
-      },
-      () => {
-        // that.nextPage()
-      }
-    )
+    setState(({ userinfo }) => {
+      userinfo.isoneself = isoneself
+      userinfo.userid = userid
+    })
   })
 
   const getuserinfo = async (userid) => {
@@ -271,19 +268,15 @@ function mdugcmember(props) {
     })
   }
   const handleTagChange = (i) => {
-    // this.resetPage()
+    console.log(1, i)
+    // listRef.current.reset()
     setState((draft) => {
       ;(draft.list = []), (draft.oddList = []), (draft.evenList = [])
     })
 
-    setState(
-      (draft) => {
-        draft.curTagId = i
-      },
-      () => {
-        // this.nextPage()
-      }
-    )
+    setState((draft) => {
+      draft.curTagId = i
+    })
   }
   // 开启弹窗
   const openonLast = () => {
@@ -299,7 +292,7 @@ function mdugcmember(props) {
     })
   }
   // 关注|取消关注
-  const followercreate = async () => {
+  const followercreate = async (params) => {
     const isAuth = S.getAuthToken()
     if (!isAuth) {
       Taro.showToast({
@@ -314,13 +307,34 @@ function mdugcmember(props) {
 
       return
     }
-    const { memberData } = props
+
     let { userinfo } = state
     let data = {
       user_id: userinfo.userid,
       follower_user_id: memberData.memberInfo.user_id
     }
-    let res = await api.mdugc.followercreate(data)
+    let res = {}
+    if (params === 'unfollow') {
+      const confirmRes = await Taro.showModal({
+        title: '提示',
+        content: `确定要取消关注吗?`,
+        showCancel: true,
+        cancel: '取消',
+        cancelText: '取消',
+        confirmText: '确定',
+        confirmColor: colors.colorPrimary
+      })
+      // console.log(777, confirmRes)
+      if (confirmRes.confirm) {
+        res = await api.mdugc.followercreate(data)
+      } else {
+        return
+      }
+    } else {
+      res = await api.mdugc.followercreate(data)
+    }
+    debugger
+
     if (res.action == 'unfollow') {
       userinfo.follow_status = 0
       userinfo.followers = userinfo.followers - 1
@@ -357,13 +371,17 @@ function mdugcmember(props) {
     userinfo
   } = state
 
+  console.log('useri', userinfo.userid)
+
   return (
     <View className='ugcmember'>
-      123
       <View className='ugcmember_t'>
         <View className='ugcmember_t_data'>
           <View className='ugcmember_t_data_l'>
-            <Image src={userinfo.headimgurl} className='ugcmember_t_data_l_avatar' />
+            <SpImage
+              src={userinfo?.headimgurl || 'user_icon.png'}
+              className='ugcmember_t_data_l_avatar'
+            />
             <View className='ugcmember_t_data_l_name'>{userinfo.nickname}</View>
           </View>
           {userinfo.isoneself ? (
@@ -385,7 +403,7 @@ function mdugcmember(props) {
                 className='ugcmember_t_news_l_i'
                 onClick={topages.bind(
                   this,
-                  `/mdugc/pages/make_followfans/index?type=follower&user_id=${userinfo.userid}`
+                  `/subpages/mdugc/pages/make_followfans/index2?type=follower&user_id=${userinfo.userid}`
                 )}
               >
                 <View className='ugcmember_t_news_l_i_t'>{userinfo.idols}</View>
@@ -397,7 +415,7 @@ function mdugcmember(props) {
               className='ugcmember_t_news_l_i'
               onClick={topages.bind(
                 this,
-                `/mdugc/pages/make_followfans/index?type=user&user_id=${userinfo.userid}`
+                `/subpages/mdugc/pages/make_followfans/index2?type=user&user_id=${userinfo.userid}`
               )}
             >
               <View className='ugcmember_t_news_l_i_t'>{userinfo.followers}</View>
@@ -409,71 +427,159 @@ function mdugcmember(props) {
             </View>
           </View>
           {userinfo.isoneself ? null : userinfo.follow_status ? (
-            <View className='ugcmember_t_news_r' onClick={followercreate.bind(this)}>
+            <View className='ugcmember_t_news_r' onClick={followercreate.bind(this, 'unfollow')}>
               已关注
             </View>
           ) : (
-            <View className='ugcmember_t_news_r follow' onClick={followercreate.bind(this)}>
+            <View
+              className='ugcmember_t_news_r follow'
+              onClick={followercreate.bind(this, 'follow')}
+            >
               关注
             </View>
           )}
+          <View className='ugcmember_t_news_r' onClick={followercreate.bind(this, 'unfollow')}>
+              已关注
+            </View>
         </View>
       </View>
-      <AtTabs current={curTagId} scroll tabList={tab} onClick={handleTagChange.bind(this)}>
-        <AtTabsPane current={curTagId} index={0}>
-          <View className='ugcmember_b'>
-            <View className='ugcmember_b_list'>
-              <ScrollView
-                scrollY
-                className='ugcmember_b_list__scroll'
-                scrollTop={scrollTop}
-                scrollWithAnimation
-                onScroll={handleScroll}
-                onScrollToLower={nextPage}
-              >
-                {userinfo.isoneself && userinfo.draft_post && userinfo.draft_post.post_id ? (
-                  <View
-                    className='ugcmember_b_list__scroll_draft'
-                    onClick={topages.bind(
-                      this,
-                      `/mdugc/pages/make/index?post_id=${userinfo.draft_post.post_id}&md_drafts=true`
-                    )}
-                  >
-                    <View className='ugcmember_b_list__scroll_draft_icon icon-caogao'></View>
-                    <View className='ugcmember_b_list__scroll_draft_text'>本地草稿</View>
-                  </View>
-                ) : null}
-                <View className='ugcmember_b_list__scroll_scrolls'>
-                  <View className='ugcmember_b_list__scroll_scrolls_left'>
-                    {oddList.map((item, index) => {
-                      return (
-                        <View className='ugcmember_b_list__scroll_scrolls_item' key={index}>
-                          <Scrollitem item={item} type={userinfo.isoneself ? 'member' : ''} />
-                        </View>
-                      )
-                    })}
-                  </View>
-                  <View className='ugcmember_b_list__scroll_scrolls_right'>
-                    {evenList.map((item, index) => {
-                      return (
-                        <View className='ugcmember_b_list__scroll_scrolls_item' key={index}>
-                          <Scrollitem item={item} type={userinfo.isoneself ? 'member' : ''} />
-                        </View>
-                      )
-                    })}
-                  </View>
+      <FilterBar current={curTagId} tab={tab} onTabClick={handleTagChange.bind(this)} />
+      <SpPage scrollToTopBtn isDefault={false} defaultMsg='暂无更新～'>
+        <View className='ugcmember_b'>
+          <View className='ugcmember_b_list'>
+            <SpScrollView
+              className='ugcmember_b_list__scroll'
+              auto={false}
+              ref={listRef}
+              fetch={fetch}
+            >
+              {userinfo.isoneself && userinfo.draft_post && userinfo.draft_post.post_id ? (
+                <View
+                  className='ugcmember_b_list__scroll_draft'
+                  onClick={topages.bind(
+                    this,
+                    `/mdugc/pages/make/index?post_id=${userinfo.draft_post.post_id}&md_drafts=true`
+                  )}
+                >
+                  <View className='ugcmember_b_list__scroll_draft_icon icon-caogao'></View>
+                  <View className='ugcmember_b_list__scroll_draft_text'>本地草稿</View>
                 </View>
-                {page.isLoading && <Loading>正在加载...</Loading>}
-                {!page.isLoading && !page.hasNext && !list.length && (
-                  <SpNote img='trades_empty.png'>列表页为空!</SpNote>
-                )}
-              </ScrollView>
-            </View>
+              ) : null}
+              <View className='ugcmember_b_list__scroll_scrolls'>
+                <View className='ugcmember_b_list__scroll_scrolls_left'>
+                  {oddList.map((item, index) => {
+                    return (
+                      <View className='ugcmember_b_list__scroll_scrolls_item' key={index}>
+                        <Scrollitem item={item} type={userinfo.isoneself ? 'member' : ''} />
+                      </View>
+                    )
+                  })}
+                </View>
+                <View className='ugcmember_b_list__scroll_scrolls_right'>
+                  {evenList.map((item, index) => {
+                    return (
+                      <View className='ugcmember_b_list__scroll_scrolls_item' key={index}>
+                        <Scrollitem item={item} type={userinfo.isoneself ? 'member' : ''} />
+                      </View>
+                    )
+                  })}
+                </View>
+              </View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+              <View>1</View>
+            </SpScrollView>
           </View>
-        </AtTabsPane>
-        <AtTabsPane current={curTagId} index={1}></AtTabsPane>
-        <AtTabsPane current={curTagId} index={2}></AtTabsPane>
-      </AtTabs>
+        </View>
+      </SpPage>
+      {isPopups ? (
+        <Popups title='获赞' text={popnum} istext={true} Last={onLast.bind(this)}></Popups>
+      ) : null}
       {/* <View className='ugcmember_b'>
           <View className='ugcmember_b_list'>
 
@@ -549,14 +655,14 @@ function mdugcmember(props) {
             </ScrollView>
           </View>
         </View> */}
-      <BackToTop
+      {/* <BackToTop
         show={showBackToTop}
         // onClick={scrollBackToTop}
         bottom={150}
-      />
-      {isPopups ? (
+      /> */}
+      {/* {'isPopups' ? (
         <Popups title='获赞' text={popnum} istext={true} Last={onLast.bind(this)}></Popups>
-      ) : null}
+      ) : null} */}
     </View>
   )
 }
