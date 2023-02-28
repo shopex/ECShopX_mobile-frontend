@@ -29,6 +29,7 @@ export default class TagsBarcheck extends Component {
   }
   componentWillReceiveProps(nextProps){
     const { current } = nextProps
+    console.log(123,current)
     this.setState({
       curId:current
     })
@@ -50,7 +51,7 @@ export default class TagsBarcheck extends Component {
           list.map((item, idx) => {
             return (
               <View
-                className={` ${(curId.filter( curIdi=> (curIdi==item.topic_id))).length>0?"tag-item_active":""} tag-item `}
+                className={` ${(curId?.filter( curIdi=> (curIdi==item.topic_id))).length>0?"tag-item_active":""} tag-item `}
                 onClick={this.handleClickItem.bind(this, item.topic_id)}
                 key={item.topic_id}
               >

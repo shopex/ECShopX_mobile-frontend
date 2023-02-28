@@ -62,7 +62,7 @@ const initialState = {
       occupyi: 0
     }
   ],
-  curTagId: '',
+  curTagId: [],
   isPopups: false,
   videoenable: 0,
   elastic: {
@@ -136,38 +136,40 @@ function MdugcIndex() {
 
   useEffect(() => {
     getUgcList()
+    fetch()
   }, [curTagId, istag])
 
   // componentDidShow () {
   const initHandle = () => {
     Taro.setNavigationBarColor({
       frontColor: '#000000',
-      backgroundColor: '#eeeeee',
+      backgroundColor: '#eeeeee'
     })
-    let pages = Taro.getCurrentPages();
-    let currentPage = pages[pages.length - 1]; // 获取当前页面
-    if (currentPage.__data__.delete) { // 获取值
-      console.log("这是笔记详情传递的删除数据",currentPage.__data__.delete)
-      let post_id=currentPage.__data__.delete
-      this.updatelist(post_id,"delete")
+    let pages = Taro.getCurrentPages()
+    let currentPage = pages[pages.length - 1] // 获取当前页面
+    if (currentPage.__data__.delete) {
+      // 获取值
+      console.log('这是笔记详情传递的删除数据', currentPage.__data__.delete)
+      let post_id = currentPage.__data__.delete
+      this.updatelist(post_id, 'delete')
       setTimeout(() => {
-        currentPage.setData({ //清空上一页面传递值
-          delete:''
-        });
-      }, 1000);
-
-    }else if(currentPage.__data__.heart){
-      console.log("这是笔记详情传递的点赞数据",currentPage.__data__.heart)
-      let heart=currentPage.__data__.heart
-      this.updatelist(heart.item_id,heart.isheart,heart.likes)
+        currentPage.setData({
+          //清空上一页面传递值
+          delete: ''
+        })
+      }, 1000)
+    } else if (currentPage.__data__.heart) {
+      console.log('这是笔记详情传递的点赞数据', currentPage.__data__.heart)
+      let heart = currentPage.__data__.heart
+      this.updatelist(heart.item_id, heart.isheart, heart.likes)
       setTimeout(() => {
-        currentPage.setData({ //清空上一页面传递值
-          heart:''
-        });
-      }, 1000);
+        currentPage.setData({
+          //清空上一页面传递值
+          heart: ''
+        })
+      }, 1000)
     }
   }
-
 
   const getUgcList = async () => {
     await setState((draft) => {
@@ -178,42 +180,42 @@ function MdugcIndex() {
     listRef.current.reset()
   }
 
-   // 更新列表
-  const updatelist=(post_id,type,likes)=>{
-    let {list,oddList,evenList}=state
-    let idx=list.findIndex(item=>item.item_id==post_id)
-    let idx_odd=oddList.findIndex(item=>item.item_id==post_id)
-    let idx_even=evenList.findIndex(item=>item.item_id==post_id)
-    console.log("这是下标",idx,idx_odd,idx_even)
-    if(idx>=0){
-      if(type=='delete'){
-        list.splice(idx,1)
-        if(idx_odd>=0){
-          oddList.splice(idx_odd,1)
-        }else{
-          evenList.splice(idx_even,1)
+  // 更新列表
+  const updatelist = (post_id, type, likes) => {
+    let { list, oddList, evenList } = state
+    let idx = list.findIndex((item) => item.item_id == post_id)
+    let idx_odd = oddList.findIndex((item) => item.item_id == post_id)
+    let idx_even = evenList.findIndex((item) => item.item_id == post_id)
+    console.log('这是下标', idx, idx_odd, idx_even)
+    if (idx >= 0) {
+      if (type == 'delete') {
+        list.splice(idx, 1)
+        if (idx_odd >= 0) {
+          oddList.splice(idx_odd, 1)
+        } else {
+          evenList.splice(idx_even, 1)
         }
-      }else{
-        list=setlist(list,idx,type,likes)
+      } else {
+        list = setlist(list, idx, type, likes)
         // if(idx_odd>=0){
         //   oddList=that.setlist(oddList,idx_odd,type)
         // }else{
         //   evenList=that.setlist(evenList,idx_even,type)
         // }
-        console.log("这是改后数据",list,oddList,evenList)
+        console.log('这是改后数据', list, oddList, evenList)
       }
-      setState(draft=>{
-        draft.list = list,
-        draft.oddList = oddList,
-        draft.evenList = evenList
+      setState((draft) => {
+        ;(draft.list = list), (draft.oddList = oddList), (draft.evenList = evenList)
       })
     }
   }
 
-  const setlist=(lists,idxs,types,likes)=>{
-    let listi=lists,idx=idxs,type=types;
-    listi[idx].isheart=type
-    listi[idx].likes=likes
+  const setlist = (lists, idxs, types, likes) => {
+    let listi = lists,
+      idx = idxs,
+      type = types
+    listi[idx].isheart = type
+    listi[idx].likes = likes
     return listi
   }
 
@@ -239,27 +241,27 @@ function MdugcIndex() {
   }
 
   const handleTagChange = (id) => {
-    console.log('这是选中标签', id)
-    let { curTagId } = state
-    // this.resetPage()
+    let ncurTagId = JSON.parse(JSON.stringify(state.curTagId))
+
+    console.log('这是选中标签', id, ncurTagId)
+    listRef.current.reset()
     setState((draft) => {
       ;(draft.list = []), (draft.oddList = []), (draft.evenList = [])
     })
-    let idx = curTagId.findIndex((item) => {
+    let idx = ncurTagId.findIndex((item) => {
       return item == id
     })
     if (idx >= 0) {
-      curTagId.splice(idx, 1)
+      ncurTagId.splice(idx, 1)
     } else {
-      curTagId.push(id)
+      ncurTagId.push(id)
     }
     setState(
       (draft) => {
-        draft.curTagId = curTagId
+        draft.curTagId = ncurTagId
       },
-      () => {
-        // this.nextPage()
-        console.log(123)
+      async () => {
+        console.log(state.curTagId)
       }
     )
   }
@@ -288,7 +290,7 @@ function MdugcIndex() {
   }
 
   // 列表
-  const fetch = async ({ pageIndex = 2, pageSize = 10 }) => {
+  const fetch = async ({ pageIndex = 1, pageSize = 10 }) => {
     Taro.showLoading({
       title: '正在加载...'
     })
@@ -366,136 +368,86 @@ function MdugcIndex() {
       </View>
 
       {/* {tagsList?.length !== 0 && list?.length !== 0 && ( */}
-        <SpPage
-          scrollToTopBtn
-          renderFloat={
-            <View className='float-icon'>
-              <SpFloatMenuItem
-                style={{ fontSize: '38px' }}
-                onClick={topages.bind(this,'/subpages/mdugc/pages/member/index2')}
+      <SpPage
+        scrollToTopBtn
+        renderFloat={
+          <View className='float-icon'>
+            <SpFloatMenuItem
+              style={{ fontSize: '38px' }}
+              onClick={topages.bind(this, '/subpages/mdugc/pages/member/index2')}
+            >
+              <Text className='iconfont icon-huiyuanzhongxin'></Text>
+            </SpFloatMenuItem>
+            <SpFloatMenuItem onClick={topages.bind(this, '/subpages/mdugc/pages/make/index2')}>
+              <Text className='iconfont icon-tianjia1'></Text>
+            </SpFloatMenuItem>
+          </View>
+        }
+        renderFooter={<SpTabbar />}
+      >
+        <View>
+          <View className='ugcindex_tagsbar'>
+            {tagsList?.length && (
+              <TagsBarcheck
+                current={curTagId}
+                list={tagsList}
+                onChange={handleTagChange.bind(this)}
+              />
+            )}
+          </View>
+          <View className='ugcindex_list'>
+            <View className='ugcindex_list__tag'>
+              <View
+                onClick={onistag.bind(this, 1)}
+                className={
+                  istag == 1
+                    ? 'ugcindex_list__tag_i icon-shijian ugcindex_list__tag_iact'
+                    : 'ugcindex_list__tag_i icon-shijian'
+                }
               >
-                <Text className='iconfont icon-huiyuanzhongxin'></Text>
-              </SpFloatMenuItem>
-              <SpFloatMenuItem
-                onClick={topages.bind(this,'/subpages/mdugc/pages/make/index2')}
+                最热
+              </View>
+              <View
+                onClick={onistag.bind(this, 2)}
+                className={
+                  istag == 2
+                    ? 'ugcindex_list__tag_i icon-shoucang ugcindex_list__tag_iact'
+                    : 'ugcindex_list__tag_i icon-shoucang'
+                }
               >
-                <Text className='iconfont icon-tianjia1'></Text>
-              </SpFloatMenuItem>
+                最新
+              </View>
             </View>
-          }
-          renderFooter={<SpTabbar />}
-        >
-          <View>
-            <View className='ugcindex_tagsbar'>
-              {tagsList?.length && (
-                <TagsBarcheck
-                  current={curTagId}
-                  list={tagsList}
-                  onChange={handleTagChange.bind(this)}
-                />
-              )}
-            </View>
-            <View className='ugcindex_list'>
-              <View className='ugcindex_list__tag'>
-                <View
-                  onClick={onistag.bind(this, 1)}
-                  className={
-                    istag == 1
-                      ? 'ugcindex_list__tag_i icon-shijian ugcindex_list__tag_iact'
-                      : 'ugcindex_list__tag_i icon-shijian'
-                  }
-                >
-                  最热
+            <SpScrollView
+              className='ugcindex_list__scroll'
+              auto={false}
+              ref={listRef}
+              fetch={fetch}
+            >
+              <View className='ugcindex_list__scroll_scrolls'>
+                <View className='ugcindex_list__scroll_scrolls_left'>
+                  {oddList?.map((item) => {
+                    return (
+                      <View className='ugcindex_list__scroll_scrolls_item' key={item.item_id}>
+                        <Scrollitem item={item} setlikes={updatelist} />
+                      </View>
+                    )
+                  })}
                 </View>
-                <View
-                  onClick={onistag.bind(this, 2)}
-                  className={
-                    istag == 2
-                      ? 'ugcindex_list__tag_i icon-shoucang ugcindex_list__tag_iact'
-                      : 'ugcindex_list__tag_i icon-shoucang'
-                  }
-                >
-                  最新
+                <View className='ugcindex_list__scroll_scrolls_right'>
+                  {evenList?.map((item) => {
+                    return (
+                      <View className='ugcindex_list__scroll_scrolls_item' key={item.item_id}>
+                        <Scrollitem item={item} setlikes={updatelist} />
+                      </View>
+                    )
+                  })}
                 </View>
               </View>
-              <SpScrollView
-                className='ugcindex_list__scroll'
-                auto={false}
-                ref={listRef}
-                fetch={fetch}
-              >
-                <View className='ugcindex_list__scroll_scrolls'>
-                  <View className='ugcindex_list__scroll_scrolls_left'>
-                    {oddList?.map((item) => {
-                      return (
-                        <View className='ugcindex_list__scroll_scrolls_item' key={item.item_id}>
-                          <Scrollitem item={item} setlikes={updatelist} />
-                        </View>
-                      )
-                    })}
-                  </View>
-                  <View className='ugcindex_list__scroll_scrolls_right'>
-                    {evenList?.map((item) => {
-                      return (
-                        <View className='ugcindex_list__scroll_scrolls_item' key={item.item_id}>
-                          <Scrollitem item={item} setlikes={updatelist} />
-                        </View>
-                      )
-                    })}
-                  </View>
-                </View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-                <View>1</View>
-              </SpScrollView>
-            </View>
+            </SpScrollView>
           </View>
-        </SpPage>
+        </View>
+      </SpPage>
       {/*  )} */}
 
       {/* {tagsList?.length == 0 && list?.length == 0 && (
@@ -513,7 +465,6 @@ function MdugcIndex() {
           <SpTabbar />
         </>
        )}  */}
-
     </View>
 
     // <View className='ugcindex'>

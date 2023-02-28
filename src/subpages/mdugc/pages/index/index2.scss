@@ -1,6 +1,21 @@
 .ugcindex{
   font-family: PingFangSC-Semibold, PingFang SC;
 
+  .ugcindex_search{
+
+    .at-icon-search{
+      color: #F4811F;
+    }
+    .at-icon-search::after{
+      content: '';
+      width: 1px;
+height: 34px;
+border-right: 1px solid #BBBBBB;
+position: relative;
+margin-left: 10rpx;
+    }
+  }
+
   .icon-huiyuanzhongxin,.icon-tianjia1{
     font-size: 30px ;
   }
