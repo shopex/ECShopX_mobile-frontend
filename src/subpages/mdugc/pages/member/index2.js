@@ -370,7 +370,7 @@ function mdugcmember(props) {
     userinfo
   } = state
 
-  console.log('useri', userinfo.userid)
+  console.log('useri', userinfo)
 
   return (
     <View className='ugcmember'>
@@ -386,9 +386,9 @@ function mdugcmember(props) {
           {userinfo.isoneself ? (
             <View
               className='ugcmember_t_data_r'
-              onClick={topages.bind(this, '/mdugc/pages/make_newslist/index')}
+              onClick={topages.bind(this, '/subpages/mdugc/pages/make_newslist/index2')}
             >
-              <View className='ugcmember_t_data_r_icon icon-xiaoxi'></View>
+              <View className='ugcmember_t_data_r_icon iconfont icon-arrow-up'></View>
               {userinfo.unread_nums > 0 ? (
                 <View className='ugcmember_t_data_r_num'>{userinfo.unread_nums}</View>
               ) : null}

@@ -498,7 +498,7 @@ export default class mdugcmember extends Component {
               />
               <View className='ugcmember_t_data_l_name'>{userinfo.nickname}</View>
             </View>
-            {userinfo.isoneself ? (
+            {/* {userinfo.isoneself ? ( */}
               <View
                 className='ugcmember_t_data_r'
                 onClick={this.topages.bind(this, '/subpages/mdugc/pages/make_newslist/index')}
@@ -508,7 +508,7 @@ export default class mdugcmember extends Component {
                   <View className='ugcmember_t_data_r_num'>{userinfo.unread_nums}</View>
                 ) : null}
               </View>
-            ) : null}
+            {/* ) : null} */}
           </View>
           <View className='ugcmember_t_news'>
             <View className='ugcmember_t_news_l'>
