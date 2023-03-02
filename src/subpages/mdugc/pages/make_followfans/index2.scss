@@ -32,10 +32,11 @@
               width: 90px;
               height: 90px;
               border-radius: 50%;
+              border: 1px solid #979797;
             }
           }
           &_cen{
-            width: 100%;
+            flex: 1;
             &_title{
               font-size: 28px;
               margin-bottom: 10px;
@@ -56,20 +57,16 @@
             }
           }
           &_r{
-            margin-left: 25px;
-            width: 175px;
+            padding: 8px 25px;
             text-align: center;
-            line-height: 47px;
-            border: 2px solid #000000;
-            height: 50px;
-            background-color: #000000;
-            border-radius: 25px;
-            color: #ffffff;
-            font-size: 19px;
+            background-color: #F5F5F5;
+            border-radius: 35px;
+            color: #666666;
+            font-size: 28px;
           }
           &_r.active{
-            color: #000000;
-            background-color: #fff;
+            color: #fff;
+            background-color:#F4811F;
           }
         }
       }

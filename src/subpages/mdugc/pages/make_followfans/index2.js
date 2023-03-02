@@ -1,4 +1,4 @@
-import React, { useEffect, useRef,useCallback } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import Taro, { getCurrentInstance, useRouter } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import S from '@/spx'
@@ -50,7 +50,7 @@ function make_followfans(props) {
 
   useEffect(() => {
     const { type } = getCurrentInstance().router.params
-    let id  = type === 'user' ? 1 : 0
+    let id = type === 'user' ? 1 : 0
     // Taro.setNavigationBarTitle({
     //   title
     // })
@@ -58,21 +58,20 @@ function make_followfans(props) {
       draft.type = type
       draft.curTagId = id
     })
-  },[])
+  }, [])
 
   // 列表
-  const fetch = async (params) => {
-    const { page_no, page_size } = params
+  const fetch = async ({ page_no = 1, page_size = 10 }) => {
     const { user_id } = getCurrentInstance().router.params
-    let { type } = state
+    let type = state.type === '' ? getCurrentInstance().router.params?.type : state.type
 
-    params = {
+    const params = {
       page_no,
       page_size,
       user_id,
       user_type: type
     }
-    console.log(6, params)
+    console.log(6, params, state)
     const { list, total_count: total } = await api.mdugc.followerlist(params)
     console.log('list, total', list, total)
 
@@ -88,12 +87,12 @@ function make_followfans(props) {
     return { total }
   }
 
-  const handleTagChange = useCallback(async(i) => {
+  const handleTagChange = useCallback(async (i) => {
     listRef?.current?.reset()
-    setState((draft) => {
-      ;(draft.list = []), (draft.curTagId = i), (draft.type = i ? 'follow' : 'user')
+    await setState((draft) => {
+      ;(draft.list = []), (draft.curTagId = i), (draft.type = i ? 'user' : 'follower')
     })
-    await fetch()
+    // await fetch()
   })
 
   // 关注|取消关注
@@ -139,19 +138,13 @@ function make_followfans(props) {
     })
   }
 
-  const { curTagId, tab, list1 } = state
-  const { type, user_id } = getCurrentInstance().router.params
+  const { curTagId, tab, list1,type } = state
 
   return (
     <View className='follow'>
       <FilterBar current={curTagId} tab={tab} onTabClick={handleTagChange.bind(this)} />
       <SpPage scrollToTopBtn isDefault={false} defaultMsg='暂无更新～'>
-        <SpScrollView
-          className='ugcmember_b_list__scroll'
-          auto={true}
-          ref={listRef}
-          fetch={fetch}
-        >
+        <SpScrollView className='ugcmember_b_list__scroll' auto={true} ref={listRef} fetch={fetch}>
           <View className='follow_list'>
             <View className='follow_list__scroll_scrolls'>
               {list1.map((item, i) => {
@@ -175,6 +168,21 @@ function make_followfans(props) {
                         {item.nickname}
                       </View>
                     </View>
+                    {type == 'follower' ? (
+                      <View
+                        onClick={followercreate.bind(this, i)}
+                        className='follow_list__scroll_scrolls_item_r'
+                      >
+                        已关注
+                      </View>
+                    ) : (
+                      <View
+                        className='follow_list__scroll_scrolls_item_r active'
+                        onClick={followercreate.bind(this, i)}
+                      >
+                        +关注
+                      </View>
+                    )}
                     {/* {item.mutal_follow == 0 ? (
                       type == 'user' ? (
                         <View

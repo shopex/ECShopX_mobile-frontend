@@ -179,6 +179,7 @@ const config = {
           "pages/make_complete/index",
           "pages/make_details/index",
           "pages/make_newslist/index",
+          "pages/make_newslist/index2",
           "pages/make_fabulous/index",
           "pages/make_comment/index",
           "pages/make_follow/index",

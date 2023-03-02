@@ -35,7 +35,7 @@ function Make(props) {
 
   useEffect(() => {
     iniData()
-  })
+  },[])
 
   const iniData = async () => {
     console.log(router.params) // 页面参数获取
@@ -850,10 +850,10 @@ function Make(props) {
         iconTheme='#000'
         onBack={onugcBack.bind(this)}
         back
-        renderCenter={<View className='trace-rowAlignCenter'>编辑</View>}
+        renderCenter={<View className='trace-rowAlignCenter'>编辑笔记</View>}
       />
       <View className='makeindexs'>
-        <View className='makeindex_upload'>
+      <View className='makeindex_upload'>
           {/* <View className='makeindex_upload_video'>
               {
                 file_video.url?(
@@ -871,12 +871,12 @@ function Make(props) {
               }
             </View> */}
           <View className='makeindex_upload_img'>
-            {(file_img?.length == 0 && file_video?.url) ||
-            (file_video?.video_idx == -1 && file_video?.url) ? (
+            {/* {(file_img?.length == 0 && file_video?.url) ||
+            (file_video?.video_idx == -1 && file_video?.url) ? ( */}
               <View className='makeindex_upload_img_i'>
                 <SpImg
                   img-class='makeindex_upload_img_i_img'
-                  src={file_video.cover}
+                  src={'https://bbc-espier-images.amorepacific.com.cn/image/2/2023/02/27/8cb6a339f27aeaeb02669173e9a68fdeHe4tKEonZIuygGC8ZSSCWXdGJXJKeywv'||file_video?.cover}
                   mode='widthFix'
                   lazyLoad
                 />
@@ -884,10 +884,10 @@ function Make(props) {
                   className='makeindex_upload_delete'
                   onClick={deletefile.bind(this, 0, 'video')}
                 >
-                  <Text className='makeindex_upload_delete_i icon-jiahao'></Text>
+                  <Text className='makeindex_upload_delete_i iconfont icon-tianjia1'></Text>
                 </View>
               </View>
-            ) : null}
+            {/* ) : null} */}
             {file_img?.map((item, idx) => {
               return (
                 <Block key={idx}>
@@ -933,14 +933,14 @@ function Make(props) {
                 </Block>
               )
             })}
-            {(file_video.url && file_img.length <= 7) ||
-            (!file_video.url && file_img.length <= 8) ? (
+            {(file_video?.url && file_img?.length <= 7) ||
+            (!file_video?.url && file_img?.length <= 8) ? (
               <View
                 onClick={openpush.bind(this)}
                 className='makeindex_upload_occupy icon-jiahao'
               ></View>
             ) : null}
-            {occupy.map(() => (
+            {occupy?.map(() => (
               <View className='makeindex_upload_img_occupy'></View>
             ))}
           </View>
@@ -950,27 +950,27 @@ function Make(props) {
             <AtInput
               title=''
               type='text'
-              placeholder='标题'
+              placeholder='填写标题会有更多关注哦～'
               maxLength='20'
-              value={file_text.title}
+              value={file_text?.title}
               onChange={handleChangetext}
             />
           </View>
           <View className='makeindex_input_textarea'>
             <AtTextarea
-              value={file_text.attextarea}
+              value={file_text?.attextarea}
               onChange={handleChangeattextarea}
               maxLength={1000}
               height={300}
-              placeholder='文本'
+              placeholder='添加正文'
             />
           </View>
         </View>
         <View className='makeindex_word'>
-          <View className='makeindex_word_title'>添加话题</View>
+          <View className='makeindex_word_title'>#添加话题</View>
           <View className='makeindex_word_scroll'>
             <View className='makeindex_word_scroll_left'>
-              {file_word.length && (
+              {file_word?.length && (
                 <TagsBar
                   current={curTagId}
                   list={file_word}
@@ -1004,10 +1004,10 @@ function Make(props) {
                 </View>
               )
             })}
-            {file_commodity.length < 9 ? (
+            {file_commodity?.length < 9 ? (
               <View onClick={addcommodity} className='makeindex_upload_occupy icon-jiahao'></View>
             ) : null}
-            {occupy.map(() => (
+            {occupy?.map(() => (
               <View className='makeindex_upload_img_occupy'></View>
             ))}
           </View>
@@ -1034,9 +1034,9 @@ function Make(props) {
       {isGrant ? (
         <Popups
           title='MassimoDutti  申请'
-          text={elastic.title}
-          closetext={elastic.closetext}
-          showtext={elastic.showtext}
+          text={elastic?.title}
+          closetext={elastic?.closetext}
+          showtext={elastic?.showtext}
           Last={ongrant}
         ></Popups>
       ) : null}
