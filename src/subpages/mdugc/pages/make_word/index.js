@@ -146,7 +146,7 @@ export default class make_label extends Component {
             onChange={this.shonChange.bind(this)}
             onClear={this.shonClear.bind(this)}
             onConfirm={this.shonConfirm.bind(this)}
-            _placeholder="请输入"
+            _placeholder="搜索"
             keyword={val}
           ></SearchBar>
         </View>

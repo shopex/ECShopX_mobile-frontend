@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import { useSelector } from 'react-redux'
 import { pickBy } from '@/utils'
 import { useImmer } from 'use-immer'
@@ -25,17 +25,65 @@ const initialState = {
   page: {
     page_no: 1,
     page_size: 10
-  }
+  },
+  file_text: {},
+  file_word: [],
+  file_commodity: [],
+  file_img: [],
+  file_video: {},
+  uploadtype: [],
+  isPopups: false,
+  videoenable: 0,
+  elastic: {
+    title: '使用您的摄像头，将会上传你摄录的照片及视频',
+    closetext: '拒绝',
+    showtext: '允许',
+    type: 0
+  },
+  isGrant: false, //是否授权
+  isOpened: false, //是否显示上传按钮
+  uploadtype: [],
+  upload_choice: [
+    {
+      text: '添加视频',
+      type: 'video'
+    },
+    {
+      text: '添加图片',
+      type: 'img'
+    }
+  ],
+  upload_img: [
+    {
+      text: '拍照',
+      type: 'camera_i'
+    },
+    {
+      text: '从相册选择',
+      type: 'album_i'
+    }
+  ],
+  upload_video: [
+    {
+      text: '拍摄',
+      type: 'camera_v'
+    },
+    {
+      text: '从相册选择',
+      type: 'album_v'
+    }
+  ]
 }
 
 function Make(props) {
   const [state, setState] = useImmer(initialState)
   const memberData = useSelector((member) => member.member)
+  const colors = useSelector((state) => state.sys)
   const router = useRouter()
 
   useEffect(() => {
     iniData()
-  },[])
+  }, [])
 
   const iniData = async () => {
     console.log(router.params) // 页面参数获取
@@ -130,8 +178,10 @@ function Make(props) {
     }
   }
 
-  useEffect(() => {
-    let { file_word, file_commodity } = state
+  useDidShow(() => {
+    let file_word = JSON.parse(JSON.stringify(state.file_word))
+    let file_commodity = JSON.parse(JSON.stringify(state.file_commodity))
+
     console.log('触发')
     wx.enableAlertBeforeUnload({
       message: '返回上一页将不会保存该编辑页内容',
@@ -146,6 +196,7 @@ function Make(props) {
     //   frontColor: '#000000',
     //   backgroundColor: '#ffffff',
     // })
+
     let pages = Taro.getCurrentPages()
     let currentPage = pages[pages.length - 1] // 获取当前页面
     if (currentPage.__data__.img) {
@@ -158,9 +209,9 @@ function Make(props) {
         img: ''
       })
     } else if (currentPage.__data__.word) {
-      console.log('这是添加话题页传递的数据', currentPage.__data__.word)
+      console.log('这是添加话题页传递的数据', currentPage.__data__.word, file_word)
       let word = currentPage.__data__.word
-      let is = file_word.findIndex((item) => {
+      let is = file_word?.findIndex((item) => {
         return item.topic_id == word.topic_id
       })
       console.log('isisis', is)
@@ -331,7 +382,7 @@ function Make(props) {
                 file = JSON.stringify(file)
                 Taro.hideLoading()
                 Taro.navigateTo({
-                  url: `/mdugc/pages/make_img/index?imgurl=${file}`
+                  url: `/subpages/mdugc/pages/make_img/index?imgurl=${file}`
                 })
               }
             })
@@ -367,7 +418,7 @@ function Make(props) {
   const addfileimg = (imgs) => {
     console.log('这是图片详细信息', imgs)
     let img = JSON.parse(JSON.stringify(imgs))
-    let { file_img } = state
+    let file_img = JSON.parse(JSON.stringify(state.file_img))
     if (img.indexpages !== '' && img.indexpages >= 0) {
       let idx = img.indexpages
       delete img.indexpages
@@ -383,7 +434,8 @@ function Make(props) {
   }
   // 删除
   const deletefile = (i, isfile) => {
-    let { file_video, file_img } = state
+    const file_video = JSON.parse(JSON.stringify(state.file_video))
+    const file_img = JSON.parse(JSON.stringify(state.file_img))
     if (isfile == 'video') {
       file_video = {
         url: '',
@@ -408,7 +460,7 @@ function Make(props) {
   }
   // 删除商品
   const deletecommodity = (i) => {
-    let { file_commodity } = state
+    let file_commodity = JSON.parse(JSON.stringify(state.file_commodity))
     file_commodity.splice(i, 1)
     setState((draft) => {
       draft.file_commodity = file_commodity
@@ -416,10 +468,10 @@ function Make(props) {
   }
   // 删除话题
   const deleteword = (i) => {
-    let { file_word } = state
-    file_word.splice(i, 1)
+    let nfile_word = JSON.parse(JSON.stringify(state.file_word))
+    nfile_word.splice(i, 1)
     setState((draft) => {
-      draft.file_word = file_word
+      draft.file_word = nfile_word
     })
   }
   // 编辑
@@ -431,19 +483,19 @@ function Make(props) {
     }
     imgurls = JSON.stringify(imgurls)
     Taro.navigateTo({
-      url: `/mdugc/pages/make_img/index?imgurls=${imgurls}`
+      url: `/subpages/mdugc/pages/make_img/index?imgurls=${imgurls}`
     })
   }
   // 输入框
   const handleChangetext = (val) => {
-    let { file_text } = state
+    let file_text = JSON.parse(JSON.stringify(state.file_text))
     file_text.title = val
     setState((draft) => {
       draft.file_text = file_text
     })
   }
   const handleChangeattextarea = (val) => {
-    let { file_text } = state
+    let file_text = JSON.parse(JSON.stringify(state.file_text))
     file_text.attextarea = val
     setState((draft) => {
       draft.file_text = file_text
@@ -458,13 +510,13 @@ function Make(props) {
   // 添加话题
   const addword = () => {
     Taro.navigateTo({
-      url: `/mdugc/pages/make_word/index`
+      url: `/subpages/mdugc/pages/make_word/index`
     })
   }
   // 推荐商品
   const addcommodity = () => {
     Taro.navigateTo({
-      url: `/mdugc/pages/make_complete/index`
+      url: `/subpages/mdugc/pages/make_complete/index`
     })
   }
   const ischeck = (is_draft) => {
@@ -496,25 +548,25 @@ function Make(props) {
       if (videoenable != 1 && file_img.length == 0) {
         Taro.showToast({
           icon: 'none',
-          title: '请上传图片!'
+          title: '请上传图片！'
         })
         idx = 0
       } else if (videoenable == 1 && file_img.length == 0 && !file_video.cover) {
         Taro.showToast({
           icon: 'none',
-          title: '请上传视频或图片!'
+          title: '请上传视频或图片！'
         })
         idx = 0
       } else if (!file_text.title) {
         Taro.showToast({
           icon: 'none',
-          title: '请填写标题!'
+          title: '请填写标题！'
         })
         idx = 0
       } else if (!file_text.attextarea) {
         Taro.showToast({
           icon: 'none',
-          title: '请填写内容文字!'
+          title: '请添加正文'
         })
         idx = 0
       } else if (emoji.test(file_text.title)) {
@@ -659,15 +711,20 @@ function Make(props) {
     console.log('这是信息', res)
   }
   // 返回上一页
-  const onugcBack = () => {
+  const onugcBack =  async() => {
     console.log('返回上一页')
-    setState((draft) => {
-      draft.isPopups = true
+    // setState((draft) => {
+    //   draft.isPopups = true
+    // })
+    const { confirm } = await Taro.showModal({
+      title: '提示',
+      content: '是否退出当前编辑,退出内容不可保存哦～',
+      confirmText: '确认退出',
+      cancelText: '继续编辑',
+      confirmColor: colors.colorPrimary
     })
-  }
-  const onLast = (isLast) => {
-    console.log('这是遮罩层数据', isLast)
-    if (isLast == 1) {
+
+    if(confirm){
       setState((draft) => {
         draft.isback = false
       })
@@ -676,10 +733,22 @@ function Make(props) {
         delta: 1
       })
     }
-    setState((draft) => {
-      draft.isPopups = false
-    })
   }
+  // const onLast = (isLast) => {
+  //   console.log('这是遮罩层数据', isLast)
+  //   if (isLast == 1) {
+  //     setState((draft) => {
+  //       draft.isback = false
+  //     })
+  //     wx.disableAlertBeforeUnload()
+  //     Taro.navigateBack({
+  //       delta: 1
+  //     })
+  //   }
+  //   setState((draft) => {
+  //     draft.isPopups = false
+  //   })
+  // }
   // 是否授权摄像头
   const isallowcamera = (type) => {
     let { elastic } = state
@@ -752,7 +821,6 @@ function Make(props) {
   // 点击添加
   const openpush = () => {
     let { file_video, file_img, videoenable, upload_choice, upload_img } = state
-
     if (file_video.url || videoenable != 1) {
       setState((draft) => {
         ;(draft.uploadtype = upload_img), (draft.isOpened = true)
@@ -842,6 +910,7 @@ function Make(props) {
     uploadtype
   } = state
 
+  console.log('file', file_word, file_img)
   return (
     <View className='makeindex'>
       <NavBar
@@ -853,7 +922,7 @@ function Make(props) {
         renderCenter={<View className='trace-rowAlignCenter'>编辑笔记</View>}
       />
       <View className='makeindexs'>
-      <View className='makeindex_upload'>
+        <View className='makeindex_upload'>
           {/* <View className='makeindex_upload_video'>
               {
                 file_video.url?(
@@ -872,7 +941,7 @@ function Make(props) {
             </View> */}
           <View className='makeindex_upload_img'>
             {/* {(file_img?.length == 0 && file_video?.url) ||
-            (file_video?.video_idx == -1 && file_video?.url) ? ( */}
+            (file_video?.video_idx == -1 && file_video?.url) ? (
               <View className='makeindex_upload_img_i'>
                 <SpImg
                   img-class='makeindex_upload_img_i_img'
@@ -887,22 +956,22 @@ function Make(props) {
                   <Text className='makeindex_upload_delete_i iconfont icon-tianjia1'></Text>
                 </View>
               </View>
-            {/* ) : null} */}
+            ) : null} */}
             {file_img?.map((item, idx) => {
               return (
                 <Block key={idx}>
-                  <View className='makeindex_upload_img_i' >
+                  <View className='makeindex_upload_img_i'>
                     <SpImg
                       img-class='makeindex_upload_img_i_img'
                       src={item.bg_shareImg}
-                      mode='aspectFill'
+                      mode='widthFix'
                       lazyLoad
                     />
                     <View
                       className='makeindex_upload_delete'
                       onClick={deletefile.bind(this, idx, 'img')}
                     >
-                      <Text className='makeindex_upload_delete_i icon-jiahao'></Text>
+                      <Text className='makeindex_upload_delete_i iconfont icon-tianjia1'></Text>
                     </View>
                     <View className='makeindex_upload_edit' onClick={editimg.bind(this, idx)}>
                       编辑
@@ -933,12 +1002,12 @@ function Make(props) {
                 </Block>
               )
             })}
-            {(file_video?.url && file_img?.length <= 7) ||
-            (!file_video?.url && file_img?.length <= 8) ? (
-              <View
-                onClick={openpush.bind(this)}
-                className='makeindex_upload_occupy icon-jiahao'
-              ></View>
+            {file_img?.length < 9 ? (
+              <View onClick={openpush.bind(this)} className='makeindex_upload_occupy '>
+                <View className='iconfont icon-xiangji'></View>
+                <View>添加图片</View>
+                <View>({file_img?.length}/9)</View>
+              </View>
             ) : null}
             {occupy?.map(() => (
               <View className='makeindex_upload_img_occupy'></View>
@@ -962,15 +1031,14 @@ function Make(props) {
               onChange={handleChangeattextarea}
               maxLength={1000}
               height={300}
-              placeholder='添加正文'
+              placeholder='添加正文......'
             />
           </View>
         </View>
         <View className='makeindex_word'>
-          <View className='makeindex_word_title'>#添加话题</View>
           <View className='makeindex_word_scroll'>
             <View className='makeindex_word_scroll_left'>
-              {file_word?.length && (
+              {file_word?.length > 0 && (
                 <TagsBar
                   current={curTagId}
                   list={file_word}
@@ -980,7 +1048,9 @@ function Make(props) {
                 />
               )}
             </View>
-            <View onClick={addword} className='makeindex_word_scroll_right icon-bianji'></View>
+          </View>
+          <View className='makeindex_word_title' onClick={addword}>
+            #添加话题
           </View>
         </View>
         <View className='makeindex_commodity'>
@@ -992,20 +1062,24 @@ function Make(props) {
                   <SpImg
                     img-class='makeindex_commodity_list_i_img'
                     src={item.img}
-                    mode='aspectFill'
+                    mode='widthFix'
                     lazyLoad
                   />
                   <View
                     className='makeindex_upload_delete'
                     onClick={deletecommodity.bind(this, idx)}
                   >
-                    <Text className='makeindex_upload_delete_i icon-jiahao'></Text>
+                    <Text className='makeindex_upload_delete_i iconfont icon-tianjia1'></Text>
                   </View>
                 </View>
               )
             })}
             {file_commodity?.length < 9 ? (
-              <View onClick={addcommodity} className='makeindex_upload_occupy icon-jiahao'></View>
+              <View onClick={addcommodity} className='makeindex_upload_occupy '>
+                <View className='iconfont icon-tianjia1'></View>
+                <View>选择商品</View>
+                <View>({file_commodity?.length}/9)</View>
+              </View>
             ) : null}
             {occupy?.map(() => (
               <View className='makeindex_upload_img_occupy'></View>
@@ -1014,7 +1088,7 @@ function Make(props) {
         </View>
         <View className='makeindex_footer'>
           <View className='makeindex_footer_draft' onClick={oncreate.bind(this, true)}>
-            <View className='icon-caogao'></View>
+            <View className='iconfont icon-caogaoxiang'></View>
             <View className='makeindex_footer_draft_text'>保存草稿</View>
           </View>
           <View className='makeindex_footer_release' onClick={oncreate.bind(this, false)}>
@@ -1022,7 +1096,7 @@ function Make(props) {
           </View>
         </View>
       </View>
-      {isPopups ? (
+      {/* {isPopups ? (
         <Popups
           title='是否退出当前编辑'
           text='退出内容将不可保存哦'
@@ -1030,10 +1104,10 @@ function Make(props) {
           showtext='继续编辑'
           Last={onLast}
         ></Popups>
-      ) : null}
+      ) : null} */}
       {isGrant ? (
         <Popups
-          title='MassimoDutti  申请'
+          title='申请'
           text={elastic?.title}
           closetext={elastic?.closetext}
           showtext={elastic?.showtext}

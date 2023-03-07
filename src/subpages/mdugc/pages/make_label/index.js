@@ -171,7 +171,7 @@ export default class make_label extends Component {
                     <View className="ugcindex_list__scroll_scrolls_item top">
                       {val}
                       <View className='ugcindex_list__scroll_scrolls_item_r' onClick={this.addtag.bind(this)}>
-                        <View className='ugcindex_list__scroll_scrolls_item_r_icon icon-jiahao'></View>
+                        <View className='ugcindex_list__scroll_scrolls_item_r_icon iconfont icon-tianjia1'></View>
                         添加标签
                       </View>
                     </View>

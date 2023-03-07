@@ -26,8 +26,10 @@
         &_item{
           width: 100%;
           padding: 30px 25px;
-          font-size: 25px;
-          border-bottom: solid 1px rgba($color: #000000, $alpha: 0.3);
+          font-size: 28px;
+          color: #222222;
+          font-weight: 400;
+          border-bottom: 1px solid #DDDDDD;
           &_r{
             position: absolute;
             right: 0;

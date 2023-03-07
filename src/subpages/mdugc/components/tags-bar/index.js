@@ -56,11 +56,11 @@ export default class TagsBar extends Component {
                 onClick={this.handleClickItem.bind(this, item.topic_id)}
                 key={item.topic_id}
               >
-                {item.topic_name}
+                #{item.topic_name}
                 {
                   isedit && (
                     <View onClick={this.delete.bind(this,idx)} className='tag-item_delete'>
-                      <View className='iconfont icon-jiahao'></View>
+                      <View className='iconfont icon-tianjia1'></View>
                     </View>
                   )
                 }

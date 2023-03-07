@@ -1,16 +1,29 @@
-.ugcindex{
+.ugcindex {
   width: 100%;
   padding: 0 30px;
   margin: 0 auto;
   min-height: 100vh;
   background-color: #ffffff;
-  &_search{
+
+  &_search {
     .search-inputugc__bar {
       padding-left: 0;
     }
+    .at-icon-search{
+      color: #F4811F;
+    }
+    .at-icon-search::after{
+      content: '';
+      width: 1px;
+      height: 34px;
+      border-right: 1px solid #BBBBBB;
+      position: relative;
+      margin-left: 12px;
+    }
   }
-  &_list{
-    &__scroll{
+
+  &_list {
+    &__scroll {
       position: absolute;
       top: 80px;
       left: 0;
@@ -21,14 +34,18 @@
       overflow-y: auto;
       overflow-x: hidden;
       z-index: 1;
-      &_scrolls{
+
+      &_scrolls {
         width: 100%;
-        &_item{
+
+        &_item {
           width: 100%;
           padding: 25px;
-          font-size: 25px;
-          border-bottom: solid 1px rgba($color: #000000, $alpha: 0.3);
-          &_r{
+          font-size: 28px;
+          font-weight: 400;
+          color: #222222;
+          border-bottom: 1px solid #DDDDDD;
+          &_r {
             position: absolute;
             right: 0;
             top: 50%;
@@ -40,22 +57,26 @@
             padding: 0 16px;
             display: flex;
             align-items: center;
-            &_icon{
+
+            &_icon {
               margin-right: 10px;
             }
           }
         }
-        &_item.top{
+
+        &_item.top {
           position: relative;
         }
       }
     }
   }
-  .float-menus{
+
+  .float-menus {
     right: 33px;
   }
-  &_floatmenus{
-    .float-menus{
+
+  &_floatmenus {
+    .float-menus {
       bottom: 220px;
     }
   }
