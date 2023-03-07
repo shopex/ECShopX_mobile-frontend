@@ -9,34 +9,38 @@
 
   .tag-item {
     display: inline-block;
-    margin-top: 10px;
+    margin: 10px 0;
     height:47px;
     line-height: 47px;
-    background-color: #ffffff;
-    border-radius: 23px;
     margin-right: 17px;
-    color: #000000;
+    font-weight: 400;
+    color: #F4811F;
     padding: 0 40px;
     font-size: 22px;
     position: relative;
     box-sizing: content-box;
     &_delete{
+
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
       position: absolute;
       right: -5px;
-      top: -5px;
+      top: 20%;
       background-color: rgb(136, 136, 136);
       border-radius: 50%;
       padding: 3px;
       .iconfont{
-        font-size: 25px;
+        // font-size: 20px;
         color: #ffffff;
         font-weight: bold;
         transform: rotateZ(45deg);
       }
     }
     &_active {
-        background-color: #000000;
-        color: white;
+        // background-color: #000000;
+        // color: white;
         // .tag-item_delete{
         //   background-color: rgb(255, 255, 255);
         //   .iconfont{

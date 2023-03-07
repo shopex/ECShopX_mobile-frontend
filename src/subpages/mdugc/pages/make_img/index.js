@@ -1,11 +1,12 @@
 
 import React, { Component } from 'react'
-import Taro from '@tarojs/taro'
-import { Input, View, Image , MovableArea , MovableView , Button} from '@tarojs/components'
+import Taro,{getCurrentInstance} from '@tarojs/taro'
+import { Input, View, Image , MovableArea , MovableView ,Text} from '@tarojs/components'
 //import '../../font/iconfont.scss'
 import './index.scss'
 
 export default class Make_img extends Component {
+
   constructor (props) {
     super(props)
 
@@ -20,11 +21,10 @@ export default class Make_img extends Component {
     }
   }
 
-  config = {
-    navigationBarTitleText: '编辑图片',
-  }
+
   componentWillMount () {
-    let {imgurl , imgurls}=this.$router.params
+    console.log(1,getCurrentInstance())
+    let {imgurl , imgurls}=getCurrentInstance().router.params
     console.log("imgurl2",imgurl,imgurls)
     if(imgurl){
       // 首次进入
@@ -81,10 +81,10 @@ export default class Make_img extends Component {
     //       console.log("失败：", err);
     //   },
     // });
-    Taro.setNavigationBarColor({
-      frontColor: '#000000',
-      backgroundColor: '#ffffff',
-    })
+    // Taro.setNavigationBarColor({
+    //   frontColor: '#000000',
+    //   backgroundColor: '#ffffff',
+    // })
     let pages = Taro.getCurrentPages();
     let currentPage = pages[pages.length - 1]; // 获取当前页面
     if (currentPage.__data__.label) { // 获取值
@@ -240,7 +240,7 @@ export default class Make_img extends Component {
             }
           </MovableArea>
         </View>
-        <View className='makeimgindex_btn makeimgindex_btn_label' onClick={this.topages.bind(this,"/mdugc/pages/make_label/index")}>添加标签</View>
+        <View className='makeimgindex_btn makeimgindex_btn_label' onClick={this.topages.bind(this,"/subpages/mdugc/pages/make_label/index")}>添加标签</View>
         <View className='makeimgindex_btn makeimgindex_btn_complete' onClick={this.drawImage.bind(this)}>确认</View>
 
       </View>
