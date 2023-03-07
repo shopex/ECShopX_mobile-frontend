@@ -46,7 +46,7 @@ export default class Scrollitem extends Component {
   }
   handleClickItem(item) {
     Taro.navigateTo({
-      url: `/subpages/mdugc/pages/make_details/index?item_id=${item.item_id}`
+      url: `/subpages/mdugc/pages/make_details/index2?item_id=${item.item_id}`
     })
   }
   // 收藏

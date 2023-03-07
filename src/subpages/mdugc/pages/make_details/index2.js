@@ -1,8 +1,8 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component, useEffect,useRef } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
-import { View, Text,Image, Input, ScrollView, Button } from '@tarojs/components'
+import { View, Text, Image, Input, ScrollView, Button } from '@tarojs/components'
 import { Swiperugc, Popups } from '../../components'
-import { FloatMenus, FloatMenuItem, BackToTop, Loading } from '@/components'
+import { FloatMenus, FloatMenuItem, SpPage, BackToTop, Loading } from '@/components'
 import S from '@/spx'
 import { useSelector } from 'react-redux'
 import { withPager, withBackToTop, withPointitem } from '@/hocs'
@@ -17,7 +17,20 @@ import { async } from 'regenerator-runtime'
 
 const initialState = {
   isoneself: false,
-  file_details: {},
+  file_details: {
+    user_id:'123',
+    follow_status:true,
+    title:'ZzzzZ',
+    content:'dayugdwauhbdwajhdwahdpwuahdwa',
+    userInfo:{
+      headimgurl:'https://bbc-espier-images.amorepacific.com.cn/image/2/2022/05/10/bae3541a7470e305133303fd8463289anybc3XWcf3hTmdVy5VCMRmBNKi9xesKY',
+      nickname:'jhon asd'
+    },
+    images:['https://bbc-espier-images.amorepacific.com.cn/image/2/2022/05/10/bae3541a7470e305133303fd8463289anybc3XWcf3hTmdVy5VCMRmBNKi9xesKY','https://bbc-espier-images.amorepacific.com.cn/image/2/2022/05/10/bae3541a7470e305133303fd8463289anybc3XWcf3hTmdVy5VCMRmBNKi9xesKY','https://bbc-espier-images.amorepacific.com.cn/image/2/2022/05/10/bae3541a7470e305133303fd8463289anybc3XWcf3hTmdVy5VCMRmBNKi9xesKY','https://bbc-espier-images.amorepacific.com.cn/image/2/2022/05/10/bae3541a7470e305133303fd8463289anybc3XWcf3hTmdVy5VCMRmBNKi9xesKY'],
+    video:'https://ecshopx1.yuanyuanke.cn/videos/35/2022/05/27/1dc847cbf9d73a5281cf8b8c7896970ahwKqT4DAWI0mDWxatWvW9izucYk6uWXc',
+    topics:[{topic_name:'香薰'},{topic_name:'水晶石'},{topic_name:'水晶石精油'},{topic_name:'火香薰'},{topic_name:'精油'},{topic_name:'话题跳转模板'}],
+    created:1678185237
+  },
   theory: [],
   isOpened: false,
   inputtext: '',
@@ -39,6 +52,7 @@ function MdugcDetails(props) {
   const [state, setState] = useImmer(initialState)
   const memberData = useSelector((member) => member.member)
   const router = useRouter()
+  const pageRef = useRef()
 
   useEffect(() => {
     let { item_id } = router.params
@@ -252,7 +266,7 @@ function MdugcDetails(props) {
 
       return
     }
-    let { comment_act } = state
+    let comment_act = JSON.parse(JSON.stringify(state.comment_act))
     if (type == 'one') {
       console.log('一级评论')
       comment_act.parent = ''
@@ -391,7 +405,7 @@ function MdugcDetails(props) {
   const wordlist = (item) => {
     let items = JSON.stringify(item)
     Taro.navigateTo({
-      url: `/mdugc/pages/list/index?item=${items}`
+      url: `/subpages/mdugc/pages/list/index?item=${items}`
     })
   }
   // 遮罩层
@@ -702,7 +716,7 @@ function MdugcDetails(props) {
     now = now * 1000
     const date = new Date(now)
     const new_data = new Date()
-    let new_y = new_data.getFullYear() //当前年份
+    // let new_y = new_data.getFullYear() //当前年份
     let y = date.getFullYear() // 年份
     let m = date.getMonth() + 1 // 月份，注意：js里的月要加1
     let d = date.getDate() // 日
@@ -711,9 +725,9 @@ function MdugcDetails(props) {
     // let s = date.getSeconds() // 秒
     // 返回值，根据自己需求调整，现在已经拿到了年月日时分秒了
     let time = m + '月' + d + '日'
-    if (new_y > y) {
+    // if (new_y > y) {
       time = y + '年' + time
-    }
+    // }
     return time
   }
 
@@ -759,29 +773,61 @@ function MdugcDetails(props) {
   // console.log("这是下拉",page)
   return (
     <View className='ugcdetailsr'>
-      <ScrollView
-        scrollY
-        className='ugcdetailsr_scroll'
-        scrollTop={scrollTop}
-        scrollWithAnimation
-        onScroll={handleScroll}
-        onScrollToLower={nextPage}
+      <SpPage
+        className='ugc-detail'
+        scrollToTopBtn
+        isDefault={false}
+        defaultMsg='defaultMsg'
+        ref={pageRef}
+        renderFooter={
+          <View className='ugcdetailsr_footer'>
+            <View className='ugcdetailsr_footer_input' onClick={reply.bind(this, 'one')}>
+              <Text className='iconfont icon-bianji1'></Text>
+              &nbsp;留言评论...
+            </View>
+            <View className='ugcdetailsr_footer_icon'>
+              <View
+                onClick={postlike}
+                // className={`iconfont ${file_details.like_status ? 'icon-dianzanFilled' : 'icon-dianzan'}`}
+                className={`iconfont ${
+                  file_details.favorite_status ? 'icon-shoucanghover-01' : 'icon-shoucang-01'
+                }`}
+              ></View>
+              <Text>{file_details.likes}123</Text>
+            </View>
+            <View className='ugcdetailsr_footer_icon'>
+              <View
+                onClick={postfavorite}
+                className={`iconfont ${
+                  file_details.favorite_status ? 'icon-shoucanghover-01' : 'icon-shoucang-01'
+                }`}
+              ></View>
+              <Text>{file_details.favorite_nums}456</Text>
+            </View>
+            {/* {file_details.status == 1 ? ( */}
+            <Button openType='share' className='ugcdetailsr_footer_icon ugcdetailsr_footer_btn'>
+              <View className='iconfont icon-fenxiang-01 share'></View>
+              <Text>{file_details.share_nums ? file_details.share_nums : 0}</Text>
+            </Button>
+            {/* ) : null} */}
+          </View>
+        }
       >
         <View className='ugcdetailsr_scroll_view'>
-          <View className='ugcdetailsr_swiper'>
-            <Swiperugc file_detailss={file_details}></Swiperugc>
-          </View>
+          {/* <View className='ugcdetailsr_swiper'>
+            <Swiperugc file_detailss={file_details} />
+          </View> */}
           <View className='ugcdetailsr_text'>
             <View className='ugcdetailsr_text_top'>
               <View
                 className='ugcdetailsr_text_top_l'
                 onClick={topages.bind(
                   this,
-                  `/mdugc/pages/member/index?user_id=${file_details.user_id}`
+                  `/subpages/mdugc/pages/member/index2?user_id=${file_details.user_id}`
                 )}
               >
-                <image mode='aspectFit' src={file_details.userInfo.headimgurl} />
-                <View>{file_details.userInfo.nickname}</View>
+                <image mode='aspectFit' src={file_details?.userInfo?.headimgurl} />
+                <View>{file_details?.userInfo?.nickname}</View>
               </View>
               {!isoneself ? (
                 <View
@@ -799,21 +845,21 @@ function MdugcDetails(props) {
               </View>
             </View>
             <View className='ugcdetailsr_text_subject'>
-              {topics.map((item) => {
+              {topics?.map((item) => {
                 return (
                   <View onClick={wordlist.bind(this, item)} className='ugcdetailsr_text_subject_i'>
-                    {item.topic_name}
+                    #{item.topic_name}
                   </View>
                 )
               })}
             </View>
             <View className='ugcdetailsr_text_time'>{formatDate(file_details.created)}</View>
           </View>
-          {goods.length > 0 ? (
+          {/* {goods?.length > 0 ? (
             <View className='ugcdetailsr_commodity'>
               <View className='ugcdetailsr_commodity_title'>推荐商品</View>
               <View className='ugcdetailsr_commodity_center'>
-                {goods.length > 2 ? (
+                {goods?.length > 2 ? (
                   <View
                     className='ugcdetailsr_commodity_center_left'
                     onClick={oncommoditynum.bind(this)}
@@ -849,14 +895,14 @@ function MdugcDetails(props) {
                 </ScrollView>
               </View>
             </View>
-          ) : null}
-          <View className='ugcdetailsr_theory'>
+          ) : null} */}
+          {/* <View className='ugcdetailsr_theory'>
             <View className='ugcdetailsr_theory_length'>
-              共{totalnum ? totalnum : page.total}条评论
+              共{totalnum ? totalnum : page?.total}条评论
             </View>
-            {theory.length > 0 ? (
+            {theory?.length > 0 ? (
               <View className='ugcdetailsr_theory_text'>
-                {theory.map((item, idx) => {
+                {theory?.map((item, idx) => {
                   return (
                     <View className='ugcdetailsr_theory_list' key={idx}>
                       <View className='ugcdetailsr_theory_list_top'>
@@ -991,8 +1037,8 @@ function MdugcDetails(props) {
                       </View>
                       {(commentlist[item.comment_id] &&
                         commentlist[item.comment_id].total ==
-                          commentlist[item.comment_id].list.length) ||
-                      (item.child && item.child.length < 2) ||
+                          commentlist[item.comment_id].list?.length) ||
+                      (item.child && item?.child?.length < 2) ||
                       !item.child ? null : (
                         <View
                           className='ugcdetailsr_theory_open'
@@ -1003,7 +1049,7 @@ function MdugcDetails(props) {
                       )}
                       {commentlist[item.comment_id] &&
                       commentlist[item.comment_id].total ==
-                        commentlist[item.comment_id].list.length &&
+                        commentlist[item.comment_id]?.list?.length &&
                       commentlist[item.comment_id].total > 2 ? (
                         <View
                           className='ugcdetailsr_theory_open'
@@ -1017,7 +1063,7 @@ function MdugcDetails(props) {
                 })}
               </View>
             ) : null}
-            {!page.isLoading && !page.hasNext && !theory.length && (
+            {!page?.isLoading && !page?.hasNext && !theory?.length && (
               <View className='ugcdetailsr_theory_empty'>
                 <View className='icon-sixin ugcdetailsr_theory_empty_icons'></View>
                 <View className='ugcdetailsr_theory_empty_text'>
@@ -1025,8 +1071,8 @@ function MdugcDetails(props) {
                 </View>
               </View>
             )}
-          </View>
-          {isoneself ? (
+          </View> */}
+          {/* {isoneself ? (
             <View className='ugcdetailsr_float'>
               <FloatMenus>
                 <FloatMenuItem
@@ -1044,12 +1090,12 @@ function MdugcDetails(props) {
                 />
               </FloatMenus>
             </View>
-          ) : null}
+          ) : null} */}
         </View>
-        {page.isLoading && <Loading>正在加载...</Loading>}
-      </ScrollView>
+      </SpPage>
+
       {isfocus ? (
-        <View className='ugcdetailsr_input' style={{ paddingBottom: `${input_bottom - 0 + 10}px` }}>
+        <View className='ugcdetailsr_input' style={{ paddingBottom: `${input_bottom - 0 + 20}px` }}>
           <Input
             className='ugcdetailsr_input_text'
             type='text'
@@ -1062,33 +1108,6 @@ function MdugcDetails(props) {
           />
         </View>
       ) : null}
-      <View className='ugcdetailsr_footer'>
-        <View className='ugcdetailsr_footer_icon'>
-          <View
-            onClick={postlike}
-            className={file_details.like_status ? 'icon-aixin-shixin' : 'icon-aixin'}
-          ></View>
-          <Text>{file_details.likes}</Text>
-        </View>
-        <View className='ugcdetailsr_footer_icon'>
-          <View
-            onClick={postfavorite}
-            className={file_details.favorite_status ? 'icon-shoucang-shixin' : 'icon-shoucang'}
-          ></View>
-          <Text>{file_details.favorite_nums}</Text>
-        </View>
-        {file_details.status == 1 ? (
-          <Button openType='share' className='ugcdetailsr_footer_icon ugcdetailsr_footer_btn'>
-            <View className='icon-fengxiang share'></View>
-            <Text>{file_details.share_nums ? file_details.share_nums : 0}</Text>
-          </Button>
-        ) : null}
-
-        <View className='ugcdetailsr_footer_input' onClick={reply.bind(this, 'one')}>
-          留言评论
-        </View>
-      </View>
-      <BackToTop show={showBackToTop} onClick={scrollBackToTop} bottom={150} />
 
       <AtActionSheet
         isOpened={isOpened}
