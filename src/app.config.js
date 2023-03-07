@@ -178,6 +178,7 @@ const config = {
           "pages/make_word/index",
           "pages/make_complete/index",
           "pages/make_details/index",
+          "pages/make_details/index2",
           "pages/make_newslist/index",
           "pages/make_newslist/index2",
           "pages/make_fabulous/index",
