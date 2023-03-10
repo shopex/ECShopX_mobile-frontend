@@ -204,7 +204,7 @@ function Home() {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
       >
-        {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch />}</WgtHomeHeader>}
+        {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
         <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
           {/* 猜你喜欢 */}
           <SpRecommend className='recommend-block' info={likeList} />

@@ -169,7 +169,8 @@ function StoreIndex() {
     >
       <View className='search' >
         <SpSearch
-          isFixTop={searchComp?.config?.fixTop}
+          // isFixTop={searchComp?.config?.fixTop}
+          info={searchComp}
           onClick={() => {
             Taro.navigateTo({
               url: `/subpages/store/item-list?dtid=${distributorId}`
@@ -178,7 +179,7 @@ function StoreIndex() {
         />
       </View>
 
-      <View className='header-block' style={{background:`${pageData?.base?.pageBackgroundColor}`}}>
+      <View className='header-block' style={{ background: `${pageData?.base?.pageBackgroundColor}` }}>
         <CompShopBrand dtid={distributorId} />
       </View>
       <HomeWgts wgts={filterWgts} dtid={distributorId} onLoad={fetchLikeList}>
