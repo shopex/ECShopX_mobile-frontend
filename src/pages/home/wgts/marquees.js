@@ -36,12 +36,10 @@ export default class WgtMarquees extends Component {
   }
 
   handleClickItem = (id) => {
-    try {
+    if (id) {
       Taro.navigateTo({
         url: `/subpage/pages/recommend/detail?id=${id}`
       })
-    } catch (error) {
-      console.log(error)
     }
   }
 
@@ -56,30 +54,26 @@ export default class WgtMarquees extends Component {
 
     return (
       <View
-        className={classNames(`wgt wgt-goods-grid`, {
-          wgt__padded: base.padded
+        className={classNames(`wgt wgt-marquees`, {
+          'wgt__padded': base.padded
         })}
       >
-        {config.label && (
-          <View
-            className='marquees-label'
-            style={styleNames({
-              color: config.labelcolor
-            })}
-          >
-            <Text className='iconfont icon-tongzhituiguang'></Text>
-            {config.label}
+        {base.title && (
+          <View className='wgt-head'>
+            <View className='wgt-hd'>
+              <Text className='wgt-title'>{base.title}</Text>
+              <Text className='wgt-subtitle'>{base.subtitle}</Text>
+            </View>
           </View>
         )}
-        {config.direction === 'vertical' ? (
+        <View className='wgt-body' style={styleNames({
+          background: config.bgcolor
+        })}>
           <Swiper
             className='marquees'
-            style={styleNames({
-              background: config.bgcolor
-            })}
             autoplay
             circular
-            interval={3000}
+            interval={5000}
             duration={300}
             vertical={config.direction}
           >
@@ -97,7 +91,21 @@ export default class WgtMarquees extends Component {
               </SwiperItem>
             ))}
           </Swiper>
-        ) : (
+        </View>
+        {/* {config.label && (
+          <View
+            className='marquees-label'
+            style={styleNames({
+              color: config.labelcolor
+            })}
+          >
+            <Text className='iconfont icon-tongzhituiguang'></Text>
+            {config.label}
+          </View>
+        )} */}
+        {/* {config.direction === 'vertical' ? ( */}
+
+        {/* ) : (
           <View
             style={styleNames({
               background: config.bgcolor,
@@ -114,7 +122,7 @@ export default class WgtMarquees extends Component {
               </View>
             </AtNoticebar>
           </View>
-        )}
+        )} */}
       </View>
     )
   }
