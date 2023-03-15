@@ -118,6 +118,12 @@ function WgtCoupon(props) {
                       <Text class="symbol">折</Text>
                     </View>
                   }
+                  {
+                    item.type == 'new_gift' && <View class="coupon-amount">
+                      <Text class="value">{item.amount / 100}</Text>
+                      <Text class="symbol">元</Text>
+                    </View>
+                  }
                   <View class="coupon-desc">
                     <Text class="name">{item.title}</Text>
                     <Text class="desc">{item.desc}</Text>
