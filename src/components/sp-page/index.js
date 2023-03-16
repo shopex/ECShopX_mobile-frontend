@@ -226,7 +226,8 @@ function SpPage(props, ref) {
         renderTitle = <SpImage src={titleBackgroundImage.url} height={72} mode='heightFix' />
       }
       pageTitleStyle = {
-        'justify-content': titlePosition == 'left' ? 'flex-start' : 'center'
+        'justify-content': titlePosition == 'left' ? 'flex-start' : 'center',
+        'color': titleColor
       }
 
     }
@@ -291,7 +292,7 @@ function SpPage(props, ref) {
       className={classNames('sp-page', className, {
         'has-navbar': hasNavbar && !isTabBarPage && navbar,
         'has-footer': renderFooter,
-        'has-custom-navigation': customNavigation,
+        'has-custom-navigation': customNavigation && pageConfig,
         'ipx': ipx
       })}
       style={styleNames({ ...pageTheme, ...lockStyle, ...pageBackground })}
@@ -303,7 +304,7 @@ function SpPage(props, ref) {
 
       {isDefault && (renderDefault || <SpNote img={defaultImg}  title={defaultMsg} isUrl={true}  />)}
 
-      {customNavigation && CustomNavigation()}
+      {customNavigation && pageConfig && CustomNavigation()}
 
       {/* {loading && <SpNote img='loading.gif' />} */}
       {loading && <SpLoading />}
