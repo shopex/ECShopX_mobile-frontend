@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import { useSelector } from 'react-redux'
-import { pickBy } from '@/utils'
+import { pickBy,styleNames, getThemeStyle } from '@/utils'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import imgUploader from '@/utils/upload'
@@ -912,7 +912,7 @@ function Make(props) {
 
   console.log('file', file_word, file_img)
   return (
-    <View className='makeindex'>
+    <View className='makeindex' style={styleNames(getThemeStyle())}>
       <NavBar
         background='#ffffff'
         color='#000'
