@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, Button, ScrollView, Image } from '@tarojs/components'
-import { Scrollitem, SpImage, SpPage, SpScrollView } from '@/components'
+import {  SpImage, SpPage, SpScrollView } from '@/components'
 import S from '@/spx'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { FilterBar, Popups } from '../../components'
+import { FilterBar, Popups,Scrollitem } from '../../components'
 import { pickBy } from '@/utils'
 
 import api from '@/api'
