@@ -9,18 +9,18 @@
   padding-left: 10px;
   .tag-item {
     display: inline-block;
-    height:47px;
-    line-height: 47px;
+    height:60px;
+    line-height: 60px;
     font-size: 24px;
     background-color: #F5F5F5;
     border-radius: 30px;
     margin-right: 17px;
     color: #222;
-    padding: 10px 40px;
-    font-weight: 500;
+    padding: 0px 40px;
+    font-weight: 400;
     &_active {
-      background: rgba(244,129,31,0.1);
-        color: #F4811F;
+      background: rgba(var(--color-rgb), 0.1);
+        color: var(--color-primary);
     }
   }
 }

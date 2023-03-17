@@ -5,7 +5,7 @@ import Taro, {
   useShareTimeline,
   useDidShow
 } from '@tarojs/taro'
-import { pickBy, navigateTo } from '@/utils'
+import { pickBy, navigateTo, styleNames, getThemeStyle } from '@/utils'
 import { View, Image, Text, Button, ScrollView } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -353,7 +353,7 @@ function MdugcIndex() {
   console.log('---------', state.istag)
   const { val, tagsList, curTagId, istag, oddList, evenList, list } = state
   return (
-    <View className='ugcindex'>
+    <View className='ugcindex' style={styleNames(getThemeStyle())}>
       <View className='ugcindex_search'>
         <SearchBar
           // showDailog={false}

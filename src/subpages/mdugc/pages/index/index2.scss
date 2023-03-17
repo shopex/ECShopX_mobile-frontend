@@ -4,7 +4,7 @@
   .ugcindex_search{
 
     .at-icon-search{
-      color: #F4811F;
+      color: var(--color-primary) !important;
     }
     .at-icon-search::after{
       content: '';
