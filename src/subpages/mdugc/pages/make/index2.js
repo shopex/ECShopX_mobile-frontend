@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import { useSelector } from 'react-redux'
-import { pickBy,styleNames, getThemeStyle } from '@/utils'
+import { pickBy, styleNames, getThemeStyle } from '@/utils'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import imgUploader from '@/utils/upload'
 import { AtInput, AtTextarea, AtActionSheet, AtActionSheetItem } from 'taro-ui'
-import { View, Text, Block } from '@tarojs/components'
+import { View, Text, Block, Textarea } from '@tarojs/components'
 import { SpImg } from '@/components'
 import { TagsBar, NavBar, Popups } from '../../components'
 
@@ -80,6 +80,7 @@ function Make(props) {
   const memberData = useSelector((member) => member.member)
   const colors = useSelector((state) => state.sys)
   const router = useRouter()
+  const [textareaPlace, setTextareaPlace] = useState('&#xe602;添加正文......')
 
   useEffect(() => {
     iniData()
@@ -711,7 +712,7 @@ function Make(props) {
     console.log('这是信息', res)
   }
   // 返回上一页
-  const onugcBack =  async() => {
+  const onugcBack = async () => {
     console.log('返回上一页')
     // setState((draft) => {
     //   draft.isPopups = true
@@ -724,7 +725,7 @@ function Make(props) {
       confirmColor: colors.colorPrimary
     })
 
-    if(confirm){
+    if (confirm) {
       setState((draft) => {
         draft.isback = false
       })
@@ -923,40 +924,7 @@ function Make(props) {
       />
       <View className='makeindexs'>
         <View className='makeindex_upload'>
-          {/* <View className='makeindex_upload_video'>
-              {
-                file_video.url?(
-                  <View className='makeindex_upload_video_i'>
-                    <Video className='makeindex_upload_video_i_video' src={file_video.url} objectFit="contain" controls={false} showCenterPlayBtn={false}></Video>
-                    <View className='makeindex_upload_delete' onClick={this.deletefile.bind(this,0,'video')}>
-                      <Text className='makeindex_upload_delete_i icon-jiahao'></Text>
-                    </View>
-                  </View>
-                ):(
-                  <View onClick={this.chooseVideo.bind(this)} className='makeindex_upload_occupy icon-jiahao'>
-
-                  </View>
-                )
-              }
-            </View> */}
           <View className='makeindex_upload_img'>
-            {/* {(file_img?.length == 0 && file_video?.url) ||
-            (file_video?.video_idx == -1 && file_video?.url) ? (
-              <View className='makeindex_upload_img_i'>
-                <SpImg
-                  img-class='makeindex_upload_img_i_img'
-                  src={'https://bbc-espier-images.amorepacific.com.cn/image/2/2023/02/27/8cb6a339f27aeaeb02669173e9a68fdeHe4tKEonZIuygGC8ZSSCWXdGJXJKeywv'||file_video?.cover}
-                  mode='widthFix'
-                  lazyLoad
-                />
-                <View
-                  className='makeindex_upload_delete'
-                  onClick={deletefile.bind(this, 0, 'video')}
-                >
-                  <Text className='makeindex_upload_delete_i iconfont icon-tianjia1'></Text>
-                </View>
-              </View>
-            ) : null} */}
             {file_img?.map((item, idx) => {
               return (
                 <Block key={idx}>
@@ -978,12 +946,6 @@ function Make(props) {
                     </View>
                   </View>
                   {file_video.video_idx == idx && file_video?.url ? (
-                    // <View className='makeindex_upload_video_i'>
-                    //   <Video className='makeindex_upload_video_i_video' src={file_video.url} objectFit="contain" controls={false} showCenterPlayBtn={false}></Video>
-                    //   <View className='makeindex_upload_delete' onClick={this.deletefile.bind(this,0,'video')}>
-                    //     <Text className='makeindex_upload_delete_i icon-jiahao'></Text>
-                    //   </View>
-                    // </View>
                     <View className='makeindex_upload_img_i'>
                       <SpImg
                         img-class='makeindex_upload_img_i_img'
@@ -1027,12 +989,14 @@ function Make(props) {
           </View>
           <View className='makeindex_input_textarea'>
             <AtTextarea
+              className='iconfont'
               value={file_text?.attextarea}
               onChange={handleChangeattextarea}
               maxLength={1000}
-              height={300}
-              placeholder='添加正文......'
+              height={360}
+              placeholder='&#xe602;添加正文......'
             />
+
           </View>
         </View>
         <View className='makeindex_word'>

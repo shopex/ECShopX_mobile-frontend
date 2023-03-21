@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Image, Text, Block } from '@tarojs/components'
-import { SpImg } from '@/components'
+import { SpImage } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 import { connect } from 'react-redux'
@@ -106,7 +106,7 @@ export default class Scrollitem extends Component {
       <View className='scrollitemlisti' key={item.item_id}>
         <View className='img' onClick={() => this.handleClickItem(item)}>
           {/* <Image className="img_i" mode='widthFix' src={item.image_url} ></Image> */}
-          <SpImg img-class='img_i' src={item.image_url} mode='widthFix' lazyLoad />
+          <SpImage img-class='img_i' src={item.image_url} mode='widthFix' lazyLoad />
         </View>
         <View className='text'>
           <View className='title'>
@@ -114,7 +114,7 @@ export default class Scrollitem extends Component {
           </View>
           <View className='btm'>
             <View className='btm_left'>
-              <SpImg img-class='btm_left_img' src={item.head_portrait} mode='widthFix' lazyLoad />
+              <SpImage className='btm_left_img' src={item.head_portrait} mode='widthFix' lazyLoad />
               <View className='btm_left_text'>{item.author}</View>
             </View>
             {iscollection ? (
