@@ -2,9 +2,14 @@
   font-family: PingFangSC-Semibold, PingFang SC;
 
   .ugcindex_search{
+    .search-input__history-list__btn:nth-child(-n+3){
+      background-color: var(--color-primary);
+    }
 
     .at-icon-search{
       color: var(--color-primary) !important;
+      font-size: 30px;
+      font-weight: bold;
     }
     .at-icon-search::after{
       content: '';
@@ -24,9 +29,10 @@
     padding: 16rpx 24rpx ;
   }
   &_tagsbar{
-    background-color: #fff;
-    padding: 20rpx 0;
-    min-height: 30px;
+    // background-color: red !important;
+    // height: 60px;
+    // padding: 20rpx 0;
+    // min-height: 30px;
   }
   &_list{
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, Button, ScrollView, Image } from '@tarojs/components'
-import {  SpImage, SpPage, SpScrollView } from '@/components'
+import { SpImage, SpPage, SpScrollView } from '@/components'
 import S from '@/spx'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { FilterBar, Popups,Scrollitem } from '../../components'
+import { FilterBar, Popups, Scrollitem } from '../../components'
 import { pickBy } from '@/utils'
 
 import api from '@/api'
@@ -14,7 +14,38 @@ import api from '@/api'
 import './index2.scss'
 
 const initialState = {
-  list: [],
+  list: [
+    {
+      item_id: '1',
+      image_url:
+        'https://ecshopx1.yuanyuanke.cn/image/35/2023/02/17/509930acbe53b6a18061d41d845ff210ufGM8HslZpfeWu5oxSybj4QCH5xlBMdJ',
+      title: '思考i多久啊我i哦大家',
+      head_portrait:
+        'https://ecshopx1.yuanyuanke.cn/image/35/2023/02/17/509930acbe53b6a18061d41d845ff210ufGM8HslZpfeWu5oxSybj4QCH5xlBMdJ',
+      author: '多久a1',
+      status: 1,
+      badges: [
+        { badge_name: '多久啊好玩' },
+        { badge_name: '多久啊好玩' },
+        { badge_name: '多久啊好玩' }
+      ]
+    },
+    {
+      item_id: '1',
+      image_url:
+        'https://ecshopx1.yuanyuanke.cn/image/35/2023/02/17/509930acbe53b6a18061d41d845ff210ufGM8HslZpfeWu5oxSybj4QCH5xlBMdJ',
+      title: '思考i多久啊我i哦大家',
+      head_portrait:
+        'https://ecshopx1.yuanyuanke.cn/image/35/2023/02/17/509930acbe53b6a18061d41d845ff210ufGM8HslZpfeWu5oxSybj4QCH5xlBMdJ',
+      author: '多久啊毫无地位',
+      status: 1,
+      badges: [
+        { badge_name: '多久啊好玩' },
+        { badge_name: '多久啊好玩' },
+        { badge_name: '多久啊好玩' }
+      ]
+    }
+  ],
   oddList: [],
   evenList: [],
   curTagId: 0,
@@ -468,7 +499,7 @@ function mdugcmember(props) {
               ) : null}
               <View className='ugcmember_b_list__scroll_scrolls'>
                 <View className='ugcmember_b_list__scroll_scrolls_left'>
-                  {oddList.map((item, index) => {
+                  {list.map((item, index) => {
                     return (
                       <View className='ugcmember_b_list__scroll_scrolls_item' key={index}>
                         <Scrollitem item={item} type={userinfo.isoneself ? 'member' : ''} />
@@ -477,7 +508,7 @@ function mdugcmember(props) {
                   })}
                 </View>
                 <View className='ugcmember_b_list__scroll_scrolls_right'>
-                  {evenList.map((item, index) => {
+                  {list.map((item, index) => {
                     return (
                       <View className='ugcmember_b_list__scroll_scrolls_item' key={index}>
                         <Scrollitem item={item} type={userinfo.isoneself ? 'member' : ''} />
