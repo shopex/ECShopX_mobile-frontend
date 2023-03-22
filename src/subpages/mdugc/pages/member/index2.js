@@ -456,7 +456,7 @@ function mdugcmember(props) {
               <View className='ugcmember_t_news_l_i_b'>获赞</View>
             </View>
           </View>
-          {userinfo.isoneself ? null : userinfo.follow_status ? (
+          {!userinfo.isoneself ? null : userinfo.follow_status ? (
             <View className='ugcmember_t_news_r' onClick={followercreate.bind(this, 'unfollow')}>
               已关注
             </View>
@@ -465,7 +465,7 @@ function mdugcmember(props) {
               className='ugcmember_t_news_r follow'
               onClick={followercreate.bind(this, 'follow')}
             >
-              关注
+              +关注
             </View>
           )}
         </View>
