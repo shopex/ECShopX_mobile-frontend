@@ -118,7 +118,7 @@ export default class Scrollitem extends Component {
               <SpImage className='btm_left_img' src={item.head_portrait} mode='widthFix' lazyLoad />
               <View className='btm_left_text'>{item.author}</View>
             </View>
-            {'iscollection' ? (
+            {iscollection ? (
               <View
                 onClick={this.oncollection.bind(this, item)}
                 // className='btm_right iconfont icon-dianzanFilled'
