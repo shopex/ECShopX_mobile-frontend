@@ -424,12 +424,8 @@
       }
     }
 
-    .icon-shoucang-shixin {
-      color: #FAD013;
-    }
-
-    .icon-aixin-shixin {
-      color: #df2f2f;
+    .icon-dianzanFilled,.icon-shoucanghover-01 {
+      color: var(--color-primary);
     }
 
     &_btn {
