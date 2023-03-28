@@ -148,8 +148,8 @@ function SpSkuSelect(props) {
   const getImgs = () => {
     let img = info.imgs[0]
     if (curItem) {
-      const { specImgs } = curItem.specItem[curItem.specItem.length - 1]
-      if (specImgs.length > 0) {
+      const { specImgs } = curItem.specItem.find(item => item.specImgs.length > 0) || {}
+      if (specImgs && specImgs.length > 0) {
         img = specImgs[0]
       }
     }
@@ -160,8 +160,8 @@ function SpSkuSelect(props) {
   const handlePreviewImage = () => {
     let imgUrls = info.imgs
     if (curItem) {
-      const { specImgs } = curItem.specItem[curItem.specItem.length - 1]
-      if (specImgs.length > 0) {
+      const { specImgs } = curItem.specItem.find(item => item.specImgs.length > 0) || {}
+      if (specImgs && specImgs.length > 0) {
         imgUrls = specImgs
       }
     }
