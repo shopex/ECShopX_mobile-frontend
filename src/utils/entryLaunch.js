@@ -2,7 +2,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
 import qs from 'qs'
 import S from '@/spx'
-import { showToast, log, isArray, VERSION_STANDARD } from '@/utils'
+import { showToast, log, isArray, VERSION_STANDARD, isWeb } from '@/utils'
 import configStore from '@/store'
 import { SG_ROUTER_PARAMS } from '@/consts/localstorage'
 
@@ -27,7 +27,7 @@ class EntryLaunch {
    */
   async getRouteParams(options) {
     // const { params } = $instance.router;
-    const params = options?.query || $instance.router?.params || {}
+    const params = isWeb ? options : (options?.query || $instance.router?.params || {})
     let _options = {}
     if (params?.scene) {
       console.log(qs.parse(decodeURIComponent(params.scene)))
