@@ -27,7 +27,8 @@ import {
   VERSION_IN_PURCHASE,
   VERSION_B2C,
   classNames,
-  getCurrentPageRouteParams
+  getCurrentPageRouteParams,
+  resolveStringifyParams
 } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
@@ -143,7 +144,7 @@ function Home() {
   useShareAppMessage(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     const params = getCurrentPageRouteParams()
-    const path = `/pages/index${isEmpty(params) ? '' : '?' + qs.stringify(getCurrentPageRouteParams())}`
+    const path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
     console.log('useShareAppMessage path:', path)
     return {
       title: title,
@@ -155,11 +156,11 @@ function Home() {
   useShareTimeline(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     const params = getCurrentPageRouteParams()
-    console.log('useShareAppMessage path:', params)
+    console.log('useShareTimeline params:', params)
     return {
       title: title,
       imageUrl: imageUrl,
-      query: qs.stringify(getCurrentPageRouteParams())
+      query: resolveStringifyParams(params)
     }
   })
 
