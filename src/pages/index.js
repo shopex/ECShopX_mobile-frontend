@@ -20,12 +20,14 @@ import api from '@/api'
 import {
   isWeixin,
   isAPP,
+  isEmpty,
   getDistributorId,
   VERSION_STANDARD,
   VERSION_PLATFORM,
   VERSION_IN_PURCHASE,
   VERSION_B2C,
-  classNames
+  classNames,
+  getCurrentPageRouteParams
 } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
@@ -138,19 +140,24 @@ function Home() {
 
   useShareAppMessage(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
+    const params = getCurrentPageRouteParams()
+    const path = `/pages/index${isEmpty(params) ? '' : '?' + qs.stringify(getCurrentPageRouteParams())}`
+    console.log('useShareAppMessage path:', path)
     return {
       title: title,
       imageUrl: imageUrl,
-      path: '/pages/index'
+      path
     }
   })
 
   useShareTimeline(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
+    const params = getCurrentPageRouteParams()
+    console.log('useShareAppMessage path:', params)
     return {
       title: title,
       imageUrl: imageUrl,
-      query: '/pages/index'
+      query: qs.stringify(getCurrentPageRouteParams())
     }
   })
 
