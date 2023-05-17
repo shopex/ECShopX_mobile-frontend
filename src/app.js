@@ -17,7 +17,7 @@ import {
   SG_GUIDE_PARAMS,
   SG_GUIDE_PARAMS_UPDATETIME
 } from '@/consts'
-import { checkAppVersion, isWeixin, isNavbar, log, entryLaunch } from '@/utils'
+import { checkAppVersion, isWeixin, isWeb, isNavbar, log, entryLaunch } from '@/utils'
 import { requestIntercept } from '@/plugin/requestIntercept'
 import dayjs from 'dayjs'
 
@@ -63,7 +63,9 @@ class App extends Component {
   }
 
   async componentDidShow(options) {
-    entryLaunch.getRouteParams(options).then((params) => {
+    // isWeb环境下，H5启动时，路由携带参数在options
+    // 小程序环境，启动时，路由携带参数在options.query
+    entryLaunch.getRouteParams(isWeb ? { query: options } : options).then((params) => {
       console.log(`app componentDidShow:`, options, params)
       Taro.setStorageSync(SG_ROUTER_PARAMS, params)
 
