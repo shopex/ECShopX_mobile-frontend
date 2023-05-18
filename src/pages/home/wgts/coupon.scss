@@ -106,6 +106,7 @@
       flex: 1;
       margin: 10px 0 10px 10px;
       display: flex;
+      visibility: initial;
       .coupon-amount {
         height: 160px;
         width: 45%;
@@ -115,10 +116,12 @@
         .value {
           font-size: 60px;
           color: var(--color-primary);
+          visibility: initial;
         }
         .package-value {
           font-size: 40px;
           color: var(--color-primary);
+          visibility: initial;
         }
         .symbol {
           font-size: 36px;
@@ -126,6 +129,7 @@
           position: relative;
           top: 8px;
           margin: 0 4px;
+          visibility: initial;
         }
       }
       .coupon-desc {
@@ -138,10 +142,12 @@
         .name {
           font-size: 30px;
           color: var(--color-primary);
+          visibility: initial;
         }
         .desc {
           font-size: 24px;
           color: var(--color-primary);
+          visibility: initial;
         }
       }
     }
@@ -154,6 +160,7 @@
         letter-spacing: 4px;
         color: #ffffff;
         text-align: center;
+        visibility: initial;
       }
     }
   }
