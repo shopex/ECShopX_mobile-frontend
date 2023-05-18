@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text } from '@tarojs/components'
 import { SpImage } from '@/components'
-import { linkPage, classNames } from '@/utils'
+import { linkPage, classNames, isWeb } from '@/utils'
 
 import './navigation.scss'
 
@@ -24,7 +24,9 @@ export default class WgtNavigation extends Component {
     }
 
     const { base, data } = info
-    const { windowWidth } = wx.getSystemInfoSync()
+    const { windowWidth } = isWeb ? {
+      windowWidth: window.innerWidth
+    } : Taro.getSystemInfoSync()
     const itemWidth = Math.floor((windowWidth * 2 - (data.length + 1) * 16) / data.length)
     // const itemWidth = 120
     if (itemWidth == 0) {
