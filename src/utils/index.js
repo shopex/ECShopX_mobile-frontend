@@ -739,22 +739,26 @@ export function getExtConfigData() {
   }
 }
 
-const getDistributorId = (platform_id = 0) => {
+const getDistributorId = (distribution_id) => {
   const { sys, shop } = store.getState()
   const { openStore } = sys
   const {
     shopInfo: { distributor_id, shop_id = 0 }
   } = shop
   if (VERSION_STANDARD) {
-    // 小程序启动后URL是否携带店铺id
-    const { dtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    if (dtid) {
-      return dtid
+    if (typeof distribution_id == 'undefined') {
+      // 小程序启动后URL是否携带店铺id
+      const { dtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
+      if (dtid) {
+        return dtid
+      } else {
+        return openStore ? distributor_id : shop_id
+      }
     } else {
-      return openStore ? distributor_id : shop_id
+      return distribution_id
     }
   } else {
-    return platform_id
+    return distribution_id || 0
   }
 }
 
@@ -838,7 +842,7 @@ const getCurrentPageRouteParams = () => {
   const pages = Taro.getCurrentPages()
   const options = {}
   Object.keys(pages[pages.length - 1].options).forEach(key => {
-    if(key != '$taroTimestamp') {
+    if (key != '$taroTimestamp') {
       options[key] = pages[pages.length - 1].options[key]
     }
   })
@@ -849,6 +853,18 @@ const resolveStringifyParams = (params) => {
   return qs.stringify(params)
 }
 
+const resolveUrlParamsParse = (url) => {
+  const res = {}
+  const n_url = decodeURIComponent(url) || ''
+  const paramArr = n_url.split('&') // 返回类似于 a=10&b=20&c=30
+  paramArr.forEach(item => {
+    const itemArr = item.split('=')
+    const key = itemArr[0]
+    const value = itemArr[1]
+    res[key] = value;
+  })
+  return res
+}
 
 export {
   classNames,
@@ -873,7 +889,8 @@ export {
   requestAlipayminiPayment,
   htmlStringToNodeArray,
   getCurrentPageRouteParams,
-  resolveStringifyParams
+  resolveStringifyParams,
+  resolveUrlParamsParse
 }
 
 export * from './platforms'
