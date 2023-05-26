@@ -9,37 +9,9 @@ import { pickBy } from '@/utils'
 import S from '@/spx'
 import api from '@/api'
 
-import { FilterBar } from '../../components'
 import './follow-fans.scss'
 
 const initialState = {
-  // list: [],
-  // val: '', //搜索框
-  // type: '',
-  // curTagId: 0,
-  // tab: [
-  //   {
-  //     title: '关注',
-  //     t_id: 0
-  //   },
-  //   {
-  //     title: '粉丝',
-  //     t_id: 1
-  //   }
-  // ],
-  // list1: [
-  //   {
-  //     headimgurl:
-  //       'https://bbc-espier-images.amorepacific.com.cn/image/2/2023/02/27/8cb6a339f27aeaeb02669173e9a68fdeHe4tKEonZIuygGC8ZSSCWXdGJXJKeywv',
-  //     nickname: '123'
-  //   },
-  //   {
-  //     headimgurl:
-  //       'https://bbc-espier-images.amorepacific.com.cn/image/2/2023/02/27/8cb6a339f27aeaeb02669173e9a68fdeHe4tKEonZIuygGC8ZSSCWXdGJXJKeywv',
-  //     nickname: '456'
-  //   }
-  // ],
-
   filterList: [
     { tag_id: 1, tag_name: '关注' },
     { tag_id: 2, tag_name: '粉丝' },
@@ -117,10 +89,7 @@ function UgcFollowFans(props) {
       draft.list = list
     })
   }
-  const topages = (url) => {
-    console.log('url', url)
-    Taro.navigateTo({ url })
-  }
+
   // 下拉刷新
   const onPullDownRefresh = () => {
     console.log('下拉')
@@ -153,28 +122,13 @@ function UgcFollowFans(props) {
                 />
               </View>
               <View className="item-bd">
-              {item.nickname}
+                {item.nickname}
               </View>
               <View className="item-ft">
                 <View className="btn-follow">
-                  { type == 'follower' }
+                  {type == 'follower'}
                 </View>
               </View>
-              {/* {type == 'follower' ? (
-                <View
-                  onClick={followercreate.bind(this, i)}
-                  className='follow_list__scroll_scrolls_item_r'
-                >
-                  已关注
-                </View>
-              ) : (
-                <View
-                  className='follow_list__scroll_scrolls_item_r active'
-                  onClick={followercreate.bind(this, i)}
-                >
-                  +关注
-                </View>
-              )} */}
             </View>
           ))}
         </View>

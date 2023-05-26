@@ -333,7 +333,7 @@ function SpPage(props, ref) {
           {renderFloat}
           {showToTop && scrollToTopBtn && (
             <SpFloatMenuItem onClick={scrollToTop}>
-              <Text className='iconfont icon-arrow-up'></Text>
+              <Text className='iconfont icon-zhiding'></Text>
             </SpFloatMenuItem>
           )}
         </View>

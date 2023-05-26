@@ -184,12 +184,11 @@ function UgcIndex() {
       scrollToTopBtn
       renderFloat={
         <View className='float-icon'>
-          <SpFloatMenuItem
-            style={{ fontSize: '38px' }}
-            onClick={onHandleMenuItem.bind(this, '/subpages/mdugc/my')}
-          >
-            <Text className='iconfont icon-huiyuanzhongxin'></Text>
-          </SpFloatMenuItem>
+          <SpLogin onChange={onHandleMenuItem.bind(this, '/subpages/mdugc/my')}>
+            <SpFloatMenuItem>
+              <Text className='iconfont icon-huiyuanzhongxin'></Text>
+            </SpFloatMenuItem>
+          </SpLogin>
           <SpLogin onChange={onHandleMenuItem.bind(this, '/subpages/mdugc/note')}>
             <SpFloatMenuItem>
               <Text className='iconfont icon-tianjia1'></Text>

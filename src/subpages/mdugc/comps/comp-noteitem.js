@@ -78,7 +78,7 @@ function CompNoteItem(props) {
             }}
           >
             <SpImage circle src={info.headimgurl} width={32} height={32} />
-            <View className='author'>{info.nickname || '商派ECshopx-淘宝店'}</View>
+            <View className='author'>{info.username}</View>
           </View>
           <SpLogin className="likes-num" onChange={handleCollection}>
             <Text className={classNames("iconfont", {
