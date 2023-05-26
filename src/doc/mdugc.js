@@ -5,8 +5,8 @@ export const UGC_LIST = {
   head_portrait: 'userInfo.headimgurl',
   postId: 'post_id',
   title: 'title',
-  author: 'userInfo.nickname',
-  user_id: 'userInfo.user_id',
+  headimgurl: 'userInfo.headimgurl',
+  username: 'userInfo.username',
   likes: 'likes',
   likeStatus: ({ like_status }) => {
     return like_status === 1
@@ -23,9 +23,9 @@ export const MDUGC_TOPICLIST = {
 
 export const UGC_DETAIL = {
   imgList: 'images',
-  followStatus: 'follow_status',
   title: 'title',
   content: 'content',
+  cover: 'cover',
   topics: 'topics',
   goods: ({ goods }) => {
     return goods ? goods.map(item => {
@@ -36,13 +36,33 @@ export const UGC_DETAIL = {
       }
     }) : []
   },
+  // 关注
+  followStatus: 'follow_status',
+  // 点赞
   likes: 'likes',
+  likeStatus: 'like_status',
+  // 收藏
   favoriteNums: 'favorite_nums',
   favoriteStatus: 'favorite_status',
-  shareNums: 'share_nums',
+  shareNums: ({ share_nums }) => {
+    return share_nums || 0
+  },
+  userId: 'user_id',
+  headimgurl: ({ userInfo }) => userInfo?.headimgurl,
+  username: ({ userInfo }) => userInfo?.username,
   created: ({ created }) => {
     return formatDateTime(created, 'YYYY-MM-DD')
   }
+}
+
+export const COMMENT_INFO = {
+  headimgurl: "headimgurl",
+  username: "nickname",
+  content: 'content',
+  created: 'created_text',
+  likeStatus: 'like_status',
+  likes: 'likes',
+  commentId: 'comment_id'
 }
 
 export const GOOD_INFO = {
