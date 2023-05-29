@@ -5,7 +5,7 @@ import { classNames } from '@/utils'
 import './index.scss'
 
 function SpTagBar(props) {
-  const { list, value, children, className = '', onChange = () => { } } = props
+  const { list, value, children, className = '', onChange = () => {} } = props
 
   const isChecked = (item) => {
     return (
@@ -31,6 +31,7 @@ function SpTagBar(props) {
               key={`tag-item__${index}`}
             >
               {item.tag_name}
+              {item.num ? `(${item.num})` : ''}
             </View>
           ))}
         </ScrollView>

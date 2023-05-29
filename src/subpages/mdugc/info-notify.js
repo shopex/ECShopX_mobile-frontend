@@ -1,143 +1,129 @@
-import { useSelector } from 'react-redux'
 import React, { useEffect, useRef, useCallback } from 'react'
 import { useImmer } from 'use-immer'
-import Taro, { usePullDownRefresh, useRouter } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import Taro, { usePullDownRefresh } from '@tarojs/taro'
+import { View, Text } from '@tarojs/components'
 import { SpPage, SpTagBar, SpScrollView, SpImage } from '@/components'
+import { infotype } from '@/consts'
 import api from '@/api'
+import dayjs from 'dayjs'
 import './info-notify.scss'
 
 const initialState = {
-  curFilterIndex: -1,
-  followlist: [],
+  curFilterIndex: 0,
+  infoList: [],
   type: '',
-  infoList: []
+  filterList: [
+    { tag_id: 1, tag_name: '系统', tag_type: infotype.SYSTEM, icon: 'icon-logo', num: 0 },
+    { tag_id: 2, tag_name: '回复', tag_type: infotype.REPLY, icon: 'icon-sixin', num: 0 },
+    { tag_id: 3, tag_name: '赞', tag_type: infotype.LIKE, icon: 'icon-aixin', num: 0 },
+    { tag_id: 4, tag_name: '收藏', tag_type: infotype.FAVORITEPOST, icon: 'icon-redu', num: 0 },
+    {
+      tag_id: 5,
+      tag_name: '关注',
+      tag_type: infotype.FOLLOWERUSER,
+      icon: 'icon-gerenzhongxin',
+      num: 0
+    }
+  ]
 }
-const filterList = [
-  { tag_id: 1, tag_name: '系统', tag_type: 'system',icon:'icon-logo' },
-  { tag_id: 2, tag_name: '回复', tag_type: 'reply',icon:'icon-sixin'  },
-  { tag_id: 3, tag_name: '喜欢', tag_type: 'like',icon:'icon-aixin'  },
-  { tag_id: 4, tag_name: '关注', tag_type: 'favoritePost',icon:'icon-redu'  },
-  { tag_id: 5, tag_name: '粉丝', tag_type: 'followerUser',icon:'icon-gerenzhongxin'  }
-]
 function UgcFollowFans() {
   const [state, setState] = useImmer(initialState)
-  const { curFilterIndex, followlist, type, infoList } = state
-  const { user_id } = useSelector((state) => state.user?.userInfo)
-  const router = useRouter()
+  const { curFilterIndex, infoList, filterList, type } = state
   const listRef = useRef('')
 
   useEffect(() => {
-    const { type } = router.params
-    setState((draft) => {
-      draft.curFilterIndex = type === 'user' ? 1 : 0
-      draft.type = type
-    })
+    getInfoList()
   }, [])
 
   useEffect(() => {
+    console.log('----', type)
     listRef.current.reset()
-  }, [curFilterIndex])
+    readInfo()
+  }, [type])
 
-  const onChangeFilter = useCallback((index) => {
-    setState((draft) => {
-      draft.type = filterList[index].tag_type
-      draft.curFilterIndex = index
-      draft.followlist = []
-    })
-  })
-
-  //刷新
   usePullDownRefresh(() => {
     setState((draft) => {
-      draft.followlist = []
+      draft.type = ''
     })
-    listRef.current.reset()
+    getInfoList()
   })
-  const fetch = async ({}) => {
-    let { message_info } = await api.mdugc.messagedashboard()
+
+  const onChangeFilter = useCallback(async (index) => {
     setState((draft) => {
-      draft.infoList = message_info
+      draft.curFilterIndex = index
+      draft.type = filterList[index].tag_type
     })
-    if (!type) return 0
-    const params = {
-      page_no: pageIndex,
-      page_size: pageSize,
-      user_id: user_id,
-      user_type: type
+  })
+  const readInfo = async () => {
+    if (!type) return
+    let data = {
+      type
     }
-    const { list, total_count: total } = await api.mdugc.followerlist(params)
+    await api.mdugc.messagesetTohasRead(data)
+  }
+  const getInfoList = async () => {
+    let { message_info } = await api.mdugc.messagedashboard()
+    let list = JSON.parse(JSON.stringify(filterList))
+    list.map((item) => {
+      message_info.map((ele) => {
+        if (ele.type === item.tag_type) {
+          item.num = ele.unread_nums
+        }
+      })
+      return item
+    })
+    setState((draft) => {
+      draft.filterList = list
+      draft.type = filterList[curFilterIndex].tag_type
+    })
+  }
+
+  const fetch = async ({ pageIndex, pageSize }) => {
+    if (!type) return 0
+    // const { page_no: page, page_size: pageSize } = params
+    const params = {
+      page: pageIndex,
+      pageSize,
+      type
+    }
+    const { list, total_count: total } = await api.mdugc.messagelist(params)
+
+    console.log(list, '----- ')
     Taro.stopPullDownRefresh()
+    setState((draft) => {
+      draft.infoList = list
+    })
     return { total: total || 0 }
   }
+  const goToPage = (item) => {
+    console.log(item)
+    const { type, sub_type, postInfo, from_user_id } = item
+    if (type === infotype.SYSTEM && sub_type === 'refusePost') {
+      Taro.navigateTo({ url: `/subpages/mdugc/note?post_id=${postInfo.post_id}` })
+    } else if (type === infotype.FOLLOWERUSER) {
+      Taro.navigateTo({ url: `/subpages/mdugc/my?user_id=${from_user_id}` })
+    } else {
+      Taro.navigateTo({ url: `/subpages/mdugc/note-detail?post_id=${postInfo.post_id}` })
 
-
-  // 关注|取消关注
-  const followercreate = async (i) => {
-    let item = JSON.parse(JSON.stringify(followlist[i]))
-    let data = {
-      user_id: item.user_id,
-      follower_user_id: user_id
+      // /mdugc/pages/make_details/index?item_id=${item.post_id
     }
-    let res = await api.mdugc.followercreate(data)
-    if (res.action == 'unfollow') {
-      console.log(item.mutal_follow)
-      // 取消关注
-      item.mutal_follow = 0
-      Taro.showToast({
-        icon: 'none',
-        title: '取消关注'
-      })
-    } else if (res.action == 'follow') {
-      console.log(item.mutal_follow)
-      // 关注
-      item.mutal_follow = 1
-      Taro.showToast({
-        icon: 'none',
-        title: '关注成功'
-      })
-    }
-    setState((draft) => {
-      draft.followlist[i] = item
-    })
+    //
   }
-
-  const isicon = (type) => {
-    let icon = ''
-    if (type == 'system') {
-      icon = 'icon-logo'
-    } else if (type == 'reply') {
-      icon = 'icon-sixin'
-    } else if (type == 'like') {
-      icon = 'icon-aixin'
-    } else if (type == 'favoritePost') {
-      icon = 'icon-redu'
-    } else if (type == 'followerUser') {
-      icon = 'icon-gerenzhongxin'
-    }
-    return icon
-  }
-  const topage = (item) => {
-    let { type, unread_nums } = item
-    let url = ''
-    if (type == 'system') {
-      url = 'make_system'
-    } else if (type == 'reply') {
-      url = 'make_comment'
-    } else if (type == 'like') {
-      url = 'make_fabulous'
-    } else if (type == 'favoritePost') {
-      url = 'make_collection'
-    } else if (type == 'followerUser') {
-      url = 'make_follow'
-    }
-    if (!Number(unread_nums)) {
-      unread_nums = ''
-    }
-    Taro.navigateTo({
-      url: `/mdugc/pages/${url}/index?num=${unread_nums}`
-    })
-  }
+  // const isicon = (type) => {
+  //   let icon = ''
+  //   if (type == 'system') {
+  //     icon = 'icon-logo'
+  //   } else if (type == 'reply') {
+  //     icon = 'icon-sixin'
+  //   } else if (type == 'like') {
+  //     icon = 'icon-aixin'
+  //   } else if (type == 'favoritePost') {
+  //     icon = 'icon-redu'
+  //   } else if (type == 'followerUser') {
+  //     icon = 'icon-gerenzhongxin'
+  //   }
+  //   return icon
+  // }
 
   return (
     <SpPage className='page-ugc-info-notify'>
@@ -148,34 +134,57 @@ function UgcFollowFans() {
       />
       <SpScrollView className='scroll-list' auto ref={listRef} fetch={fetch}>
         <View className='info-list'>
-          {followlist.map((item, index) => (
-            <View className='newslist_i' key={`info-item__${index}`}>
-              <View className='newslist_i_icon'>
-                <View className={`newslist_i_icon_icons ${item.type} ${isicon(item.type)}`}></View>
-                {item.unread_nums ? (
-                  <View className='newslist_i_icon_num'>{item.unread_nums}</View>
-                ) : null}
-              </View>
-              <View className='newslist_i_cen'>
-                <View className='newslist_i_cen_title'>
-                  {item.type == 'system' ? '系统通知' : item.recent_message.list[0]?.from_nickname}
+          {
+            infoList &&
+              infoList.map((item, index) => (
+                <View
+                  className='info-item'
+                  key={`info-item__${index}`}
+                  onClick={() => goToPage(item)}
+                >
+                  <View className='info-item-create_time'>
+                    {dayjs(item.created * 1000).format('YYYY-MM-DD HH:MM:ss')}
+                  </View>
+                  <View className='info-item-container'>
+                    <View className='info-item_title'>
+                      {item.title}
+                      {/* {item.from_nickname} */}
+                      {/* {filterList[curFilterIndex]?.tag_name}通知 */}
+                    </View>
+                    <View className='info-item_content'>{item.content}</View>
+                    <View className='info-item_footer'>
+                      <SpImage circle src={item.from_userInfo.avatar} width={32} height={32} />
+                      <Text className='info-item_footer_name'>{item.from_userInfo.nickname}</Text>
+                    </View>
+                  </View>
                 </View>
-                <View className='newslist_i_cen_text'>
-                  {item.recent_message.list.length > 0
-                    ? (item.type == 'system' ? '' : item.recent_message.list[0]?.created_moment) +
-                      '' +
-                      item.recent_message.list[0]?.title
-                    : null}
-                </View>
-              </View>
+              ))
 
-              <View className='newslist_i_time'>
-                {item.recent_message.list.length > 0
-                  ? item.recent_message.list[0]?.created_text
-                  : null}
-              </View>
-            </View>
-          ))}
+            // <View className='newslist_i'>
+            //   <View className='newslist_i_cen'>
+            //     <View className='newslist_i_cen_title'>
+            //       {infoList.type == 'system'
+            //         ? '系统通知'
+            //         : infoList.recent_message.list[0]?.from_nickname}
+            //     </View>
+            //     <View className='newslist_i_cen_text'>
+            //       {infoList.recent_message.list.length > 0
+            //         ? (infoList.type == 'system'
+            //             ? ''
+            //             : infoList.recent_message.list[0]?.created_moment) +
+            //           '' +
+            //           infoList.recent_message.list[0]?.title
+            //         : null}
+            //     </View>
+            //   </View>
+
+            //   <View className='newslist_i_time'>
+            //     {infoList.recent_message.list.length > 0
+            //       ? infoList.recent_message.list[0]?.created_text
+            //       : null}
+            //   </View>
+            // </View>
+          }
         </View>
       </SpScrollView>
     </SpPage>

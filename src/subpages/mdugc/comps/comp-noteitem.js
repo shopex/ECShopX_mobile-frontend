@@ -35,34 +35,11 @@ function CompNoteItem(props) {
   }
 
   const handleCollection = async () => {
-    console.log(likeStatus);
-    if(!likeStatus){
-     changeLike()
-      return
-    }
-    Taro.showModal({
-      title: '提示',
-      content: '确定要取消关注吗？',
-      confirmText: '确定',
-      cancelText: '暂不',
-      success: async (res) => {
-        if (res.confirm) {
-          changeLike()
-        }
-      }
-    })
-  }
-
-  if (!info) {
-    return null
-  }
-  const changeLike = async() =>{
     const { postId } = info
     const { action, likes } = await api.mdugc.postlike({
       user_id: userInfo.user_id,
       post_id: postId
     })
-console.log( action === 'like');
     setState((draft) => {
       draft.likes = likes
       draft.likeStatus = action === 'like'

@@ -260,6 +260,14 @@ export const enumdays = {
   2: '后天'
 }
 
+export const infotype = {
+  SYSTEM: 'system',
+  REPLY: 'reply',
+  LIKE: 'like',
+  FAVORITEPOST: 'favoritePost',
+  FOLLOWERUSER: 'followerUser'
+}
+
 export * from './localstorage'
 
 export default {}
