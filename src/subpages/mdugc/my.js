@@ -58,11 +58,10 @@ const initialState = {
 
 function UgcMember(props) {
   const [state, setState] = useImmer(initialState)
-  const { filterList, curFilterIndex, leftList, rightList, userinfo,isPopups ,popnum} = state
+  const { filterList, curFilterIndex, leftList, rightList, userinfo, isPopups, popnum } = state
   const { params } = useRouter()
   const { userInfo = {} } = useSelector((state) => state.user)
   const user_id = params.user_id ? params.user_id : userInfo.user_id
-  console.log(user_id, '----', userInfo)
   const listRef = useRef()
 
   useEffect(() => {
@@ -216,7 +215,14 @@ function UgcMember(props) {
           <View className='ugcmember_t_data'>
             <Text>{userinfo.nickname}</Text>
             {userinfo.isoneself && (
-              <View className='ugcmember_t_data_r'>
+              <View
+                className='ugcmember_t_data_r'
+                onClick={() => {
+                  Taro.navigateTo({
+                    url: `/subpages/mdugc/info-notify`
+                  })
+                }}
+              >
                 <View className='ugcmember_t_data_r_icon iconfont icon-xiaoxi'></View>
                 {userinfo.unread_nums > 0 ? <View className='ugcmember_t_data_r_num'></View> : null}
               </View>
@@ -232,7 +238,7 @@ function UgcMember(props) {
               className='item-info'
               onClick={() => {
                 Taro.navigateTo({
-                  url: '/subpages/mdugc/follow-fans?type=follower'
+                  url: `/subpages/mdugc/follow-fans?user_id=${user_id}&type=follower`
                 })
               }}
             >
@@ -243,7 +249,7 @@ function UgcMember(props) {
               className='item-info'
               onClick={() => {
                 Taro.navigateTo({
-                  url: '/subpages/mdugc/follow-fans?type=user'
+                  url: `/subpages/mdugc/follow-fans?user_id=${user_id}&type=user`
                 })
               }}
             >
@@ -309,9 +315,7 @@ function UgcMember(props) {
           </View>
         </View>
       </SpScrollView>
-      {isPopups ? (
-          <Popups title='获赞' text={popnum} istext Last={()=>onLast()}></Popups>
-        ) : null}
+      {isPopups ? <Popups title='获赞' text={popnum} istext Last={() => onLast()}></Popups> : null}
     </SpPage>
   )
 }

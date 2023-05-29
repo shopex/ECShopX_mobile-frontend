@@ -21,7 +21,9 @@ const initialState = {
 function UgcFollowFans() {
   const [state, setState] = useImmer(initialState)
   const { filterList, curFilterIndex, followlist, type } = state
-  const { user_id } = useSelector((state) => state.user?.userInfo)
+  const { userInfo = {} } = useSelector((state) => state.user)
+  const { params } = useRouter()
+  const user_id = params.user_id ? params.user_id : userInfo.user_id
   const router = useRouter()
   const listRef = useRef('')
 
@@ -51,7 +53,7 @@ function UgcFollowFans() {
       user_id: user_id,
       user_type: type
     }
-    const { list, total_count: total } = await api.mdugc.followerlist(params)
+    const { list=[], total_count: total } = await api.mdugc.followerlist(params)
     setState(
       (draft) => {
         draft.followlist = [...followlist, ...list]
@@ -70,7 +72,8 @@ function UgcFollowFans() {
   })
 
   // 关注|取消关注
-  const followercreate = async (i) => {
+  const followercreate = async (e,i) => {
+    e&&e.stopPropagation()
     let item = JSON.parse(JSON.stringify(followlist[i]))
     let data = {
       user_id: item.user_id,
@@ -120,7 +123,7 @@ const topages = (url) =>{
                 </View>
                 <View className='item-bd'>{item.nickname}</View>
               </View>
-              <View className='item-ft' onClick={() => followercreate(index)}>
+              <View className='item-ft' onClick={(e) => followercreate(e,index)}>
                 {item.mutal_follow == 0 ? (
                   type == 'user' ? (
                     <View className='item-ft__r active'>+关注</View>
