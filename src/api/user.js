@@ -124,13 +124,13 @@ export function codeAuthConfirm (param = {}) {
 }
 
 // 订阅到货通知
-export function subscribeGoods (item_id) {
-  return req.post(`/member/subscribe/item/${item_id}`)
+export function subscribeGoods (item_id, param) {
+  return req.post(`/member/subscribe/item/${item_id}`, param)
 }
 
 // 检测是否订阅
-export function isSubscribeGoods (item_id) {
-  return req.get(`/member/item/is_subscribe/${item_id}`)
+export function isSubscribeGoods (item_id, param) {
+  return req.get(`/member/item/is_subscribe/${item_id}`, param)
 }
 
 // 检测是否可以分享
