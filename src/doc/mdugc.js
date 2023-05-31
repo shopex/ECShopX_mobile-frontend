@@ -8,6 +8,7 @@ export const UGC_LIST = {
   headimgurl: 'userInfo.headimgurl',
   username: 'userInfo.username',
   likes: 'likes',
+  status: 'status',
   likeStatus: ({ like_status }) => {
     return like_status === 1
   },

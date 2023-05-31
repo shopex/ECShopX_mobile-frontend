@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 869421 */
-  src: url('https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop/iconfont/iconfont.woff2?t=1684762920927') format('woff2'),
-       url('https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop/iconfont/iconfont.woff?t=1684762920927') format('woff'),
-       url('https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop/iconfont/iconfont.ttf?t=1684762920927') format('truetype');
+  src: url('https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop/iconfont/iconfont.woff2?t=1685504593597') format('woff2'),
+       url('https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop/iconfont/iconfont.woff?t=1685504593597') format('woff'),
+       url('https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop/iconfont/iconfont.ttf?t=1685504593597') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shequ:before {
+  content: "\e986";
+}
+
+.icon-shequ-fill:before {
+  content: "\e985";
 }
 
 .icon-peisong:before {
@@ -1160,6 +1168,4 @@
 .icon-arrowRight:before {
   content: "\e726";
 }
-
-
 

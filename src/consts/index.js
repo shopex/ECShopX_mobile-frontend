@@ -111,7 +111,7 @@ export const TABBAR_ICON = {
   article: 'zhongcao',
   liveroom: 'zhibo',
   allGoods: 'quanbushangpin',
-  ugc: 'quanbushangpin'
+  ugc: 'shequ'
 }
 
 export const BUY_TOOL_BTNS = {

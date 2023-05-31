@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
 import { SpImage, SpPoint, SpPrice, SpVipLabel, SpLogin } from '@/components'
 import { classNames } from '@/utils'
 import api from '@/api'
@@ -28,10 +29,16 @@ function CompNoteItem(props) {
   }, [info])
 
   const handleClick = () => {
-    const { postId } = info
-    Taro.navigateTo({
-      url: `/subpages/mdugc/note-detail?post_id=${postId}`
-    })
+    const { postId, status } = info
+    if (status != '4') {
+      Taro.navigateTo({
+        url: `/subpages/mdugc/note-detail?post_id=${postId}`
+      })
+    } else {
+      Taro.navigateTo({
+        url: `/subpages/mdugc/note?post_id=${postId}`
+      })
+    }
   }
 
   const handleCollection = async () => {
@@ -45,6 +52,7 @@ function CompNoteItem(props) {
       draft.likeStatus = action === 'like'
     })
   }
+
   return (
     <View className='comp-note-item'>
       <View className='badges-list'>
@@ -56,13 +64,21 @@ function CompNoteItem(props) {
       </View>
       <View className='note-item__hd' onClick={handleClick}>
         <SpImage lazyLoad src={info.image_url} mode={mode} />
+        {
+          info.status == '4' && <View className="verify-fail">
+            <View className="message">
+              <Text className="iconfont icon-jingshiFilled"></Text>
+              审核未通过</View>
+            <View className="btn-edit" >重新编辑</View>
+          </View>
+        }
       </View>
       <View className='note-item__bd'>
         <View className='note-info'>
           <View className='note-title'>{info.title}</View>
         </View>
         <View className='ugc-author'>
-          <View className='author-info' onClick={() => {}}>
+          <View className='author-info' onClick={() => { }}>
             <SpImage circle src={info.headimgurl} width={32} height={32} />
             <View className='author'>{info.username}</View>
           </View>
