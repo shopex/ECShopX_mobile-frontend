@@ -100,7 +100,7 @@ function UgcIndex() {
     if (tagsList.length > 0) {
       params = {
         ...params,
-        topics: [...tagsList[curTagIndex].tag_id]
+        topics: [tagsList[curTagIndex].tag_id]
       }
     }
 
