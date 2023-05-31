@@ -244,6 +244,7 @@ function UgcNoteDetail(props) {
     }
     const res = await api.mdugc.commentcreate(params)
     showToast(res.message)
+    listRef.current.reset()
     setState(draft => {
       draft.comment = ''
       draft.showCommentInput = false
@@ -453,6 +454,10 @@ function UgcNoteDetail(props) {
               backgroundImg: ''
             },
             data: info.goods
+          }} onClick={({ itemId }) => {
+            Taro.navigateTo({
+              url: `/pages/item/espier-detail?id=${itemId}`
+            })
           }} />
         </View>
         <SpScrollView className="comment-list"
