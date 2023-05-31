@@ -284,7 +284,7 @@ function UgcNoteDetail(props) {
       renderFloat={
         <View className='float-icon'>
           {
-            isMyNote() && <SpLogin onChange={onHandleMenuItem.bind(this, `/subpages/mdugc/note?post_id=${info.postId}`)}>
+            isMyNote() && <SpLogin onChange={onHandleMenuItem.bind(this, `/subpages/mdugc/note?post_id=${info?.postId}`)}>
               <SpFloatMenuItem>
                 <Text className='iconfont icon-bianji'></Text>
               </SpFloatMenuItem>
