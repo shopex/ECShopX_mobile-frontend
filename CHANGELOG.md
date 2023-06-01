@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.13.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.12.4...v3.13.0) (2023-06-01)
+
+
+### Features
+
+* 消息列表 ([c0cce40](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/c0cce4031fbebbef876372a0fa781658fdd35a18))
+* 社区 ([ed669a7](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/ed669a7fb98a421284e8c3668331e270be2a880e))
+* 表单内容里的【区块一标题】编辑内容后不展示 ([ee373f8](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/ee373f836acc9334b47c2d3fa984c6f9d80939f7))
+
 ### [3.12.4](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.12.0...v3.12.4) (2023-05-23)
 
 ## [3.12.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.11.4...v3.12.0) (2023-05-18)
