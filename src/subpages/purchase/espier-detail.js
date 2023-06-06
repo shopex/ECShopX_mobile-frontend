@@ -203,7 +203,7 @@ function EspierDetail(props) {
     if (type == 'pointitem') {
     } else {
       try {
-        const itemDetail = await api.item.detail(id, {
+        const itemDetail = await api.purchase.getPurchaseDetail(id, {
           showError: false,
           distributor_id: dtid,
           activity_id,
@@ -438,9 +438,9 @@ function EspierDetail(props) {
 
             <CompCouponList
               info={
-                info.couponList.list.length > 3
-                  ? info.couponList.list.slice(0, 3)
-                  : info.couponList.list
+                info?.couponList?.list.length > 3
+                  ? info?.couponList?.list.slice(0, 3)
+                  : info?.couponList?.list
               }
               onClick={handleReceiveCoupon}
             />
