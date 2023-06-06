@@ -44,6 +44,10 @@ export function getPurchaseActivityItems(params) { // 获取活动商品列表
   return req.get('/employeepurchase/activity/items', params)
 }
 
+export function getPurchaseDetail(item_id, params) { // 获取活动商品详情
+  return req.get(`/employeepurchase/activity/item/${item_id}`, params)
+}
+
 export function getPurchaseCart(params) { // 获取内购购物车
   return req.get('/employeepurchase/cart', params)
 }
