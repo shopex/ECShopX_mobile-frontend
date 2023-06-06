@@ -210,12 +210,15 @@ function SpSkuSelect(props) {
     }
     Taro.showLoading({ title: '' })
     onClose()
+    const { activity_id, enterprise_id } = purchase_share_info
     const { distributorId, activityType, activityInfo } = info
     const itemId = curItem ? curItem.itemId : info.itemId
-    await api.cart.fastBuy({
+    await api.purchase.addPurchaseCart({
       item_id: curItem ? curItem.itemId : info.itemId,
       num,
-      distributor_id: distributorId
+      distributor_id: distributorId,
+      activity_id,
+      enterprise_id
     }, !!info.point) // info.point 有积分值时是积分商品
     let url = !!info.point ? '/subpages/pointshop/espier-checkout?cart_type=fastbuy&shop_id=0' : `/subpages/purchase/espier-checkout?cart_type=fastbuy&shop_id=${distributorId}`
     if (activityType == 'seckill' || activityType === 'limited_time_sale') {
