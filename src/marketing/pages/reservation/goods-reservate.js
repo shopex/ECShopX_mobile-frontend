@@ -215,7 +215,7 @@ export default class GoodsReservate extends Component {
 
   handleReservate = async () => {
     if (this.count === 1) {
-      return S.toast('请勿重复提交')
+      return showToast('请勿重复提交')
     }
     this.count = 1
 
@@ -260,7 +260,7 @@ export default class GoodsReservate extends Component {
       if (new_subdata.formdata && new_subdata.formdata.content) {
         new_subdata.formdata.content = JSON.parse(new_subdata.formdata.content)
       }
-      S.toast('提交成功')
+      showToast('提交成功')
       setTimeout(() => {
         Taro.navigateBack()
       }, 700)
@@ -346,6 +346,7 @@ export default class GoodsReservate extends Component {
             formdata.content.map((item, index) => {
               return (
                 <View className='goods-reservate__userinfo' key={`${index}1`}>
+                {item.title&&<View className='goods-reservate__userinfo_title'>{item.title}</View>}
                   {item.formdata && item.formdata.length > 0
                     ? item.formdata.map((i_data, i_index) => {
                         return (

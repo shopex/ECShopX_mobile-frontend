@@ -245,7 +245,7 @@ function EspierDetail(props) {
     }
 
     // 是否订阅
-    const { user_id: subscribe = false } = await api.user.isSubscribeGoods(id)
+    const { user_id: subscribe = false } = await api.user.isSubscribeGoods(id, { distributor_id: dtid })
 
     setNavigationBarTitle(data.itemName)
 
@@ -396,6 +396,7 @@ function EspierDetail(props) {
               // current={curImgIdx}
               onChange={onChangeSwiper}
             >
+              {console.log('info',info)}
               {info.imgs.map((img, idx) => (
                 <SwiperItem key={`swiperitem__${idx}`}>
                   <SpImage

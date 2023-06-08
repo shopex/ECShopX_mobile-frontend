@@ -3,7 +3,7 @@ import { View, ScrollView, Input } from '@tarojs/components'
 import { SpNavBar } from '@/components'
 import { debounce } from '@/utils'
 import api from '@/api'
-import entry from '../../../utils/entry'
+import entry from '@/utils/entry'
 import LoadingMore from '../../component/loadingMore'
 import entryLaunchFun from '@/utils/entryLaunch'
 

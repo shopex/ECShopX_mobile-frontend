@@ -53,9 +53,7 @@ class App extends Component {
   // }
 
   componentDidMount() {
-    if (isWeixin) {
-      checkAppVersion()
-    }
+
   }
 
   onLaunch(options) {
@@ -63,6 +61,9 @@ class App extends Component {
   }
 
   async componentDidShow(options) {
+    if (isWeixin) {
+      checkAppVersion()
+    }
     // isWeb环境下，H5启动时，路由携带参数在options
     // 小程序环境，启动时，路由携带参数在options.query
     entryLaunch.getRouteParams(isWeb ? { query: options } : options).then((params) => {

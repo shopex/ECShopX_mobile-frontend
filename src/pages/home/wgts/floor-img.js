@@ -16,7 +16,14 @@ export default class WgtFloorImg extends Component {
   constructor(props) {
     super(props)
   }
-  onRoute = linkPage
+
+  onRoute = (item) => {
+    if (this.props?.onClick) {
+      this.props.onClick(item)
+    } else {
+      return linkPage
+    }
+  }
 
   render() {
     const { info } = this.props
@@ -42,7 +49,8 @@ export default class WgtFloorImg extends Component {
           </View>
         )}
         <View className='wgt-bd'>
-          <ScrollView scrollX className='img-list'>
+          <ScrollView scrollX className='img-list' enhanced
+            show-scrollbar={false}>
             {data &&
               data.map((item, idx) => {
                 return (

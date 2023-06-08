@@ -1,0 +1,51 @@
+.page-ugc-list {
+  .topic-name {
+    padding: 18px 32px;
+    color: #000;
+    font-size: 40px;
+    background: #fff;
+  }
+  .ugc-filter {
+    background-color: #fff;
+    .sp-tag-bar {
+      padding: 24px;
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      background-color: #f5f5f5;
+      .tag-item {
+        margin-right: 40px;
+      }
+    }
+    .at-search-bar__input{
+      padding:0 80px ;
+    }
+  }
+
+  .list-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+
+    .left-container {
+      width: 350px;
+    }
+
+    .right-container {
+      width: 350px;
+      // padding-left: 20px;
+    }
+
+    .note-item-wrap {
+      margin-bottom: 20px;
+      // box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      position: relative;
+    }
+  }
+
+  .icon-huiyuanzhongxin,
+  .icon-tianjia1 {
+    font-size: 36px;
+  }
+
+}

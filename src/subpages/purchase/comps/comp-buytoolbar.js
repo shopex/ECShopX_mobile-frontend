@@ -88,7 +88,7 @@ function CompGoodsBuyToolbar(props) {
         return
       }
 
-      await api.user.subscribeGoods(info.itemId)
+      await api.user.subscribeGoods(info.itemId, info.distributorId)
       const { template_id } = await api.user.newWxaMsgTmpl({
         temp_name: 'yykweishop',
         source_type: 'goods'
