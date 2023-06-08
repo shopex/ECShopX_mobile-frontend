@@ -3,7 +3,8 @@ export const STATUS_TYPES_MAP = {
   PAYED: 'WAIT_SELLER_SEND_GOODS',
   WAIT_BUYER_CONFIRM: 'WAIT_BUYER_CONFIRM_GOODS',
   DONE: 'TRADE_SUCCESS',
-  CANCEL: 'TRADE_CLOSED'
+  CANCEL: 'TRADE_CLOSED',
+  PART_PAYMENT:'WAIT_BUYER_PAY'
 }
 
 export const AFTER_SALE_STATUS = {
@@ -99,7 +100,8 @@ export const TABBAR_PATH = {
   member: '/subpages/member/index',
   article: '/pages/recommend/list',
   liveroom: '/pages/liveroom/index',
-  allGoods: '/pages/item/list?isTabBar=true'
+  allGoods: '/pages/item/list?isTabBar=true',
+  ugc: '/subpages/mdugc/index',
 }
 
 export const TABBAR_ICON = {
@@ -109,7 +111,8 @@ export const TABBAR_ICON = {
   member: 'huiyuan',
   article: 'zhongcao',
   liveroom: 'zhibo',
-  allGoods: 'quanbushangpin'
+  allGoods: 'quanbushangpin',
+  ugc: 'shequ'
 }
 
 export const BUY_TOOL_BTNS = {
@@ -258,6 +261,14 @@ export const enumdays = {
   0: '今天',
   1: '明天',
   2: '后天'
+}
+
+export const infotype = {
+  SYSTEM: 'system',
+  REPLY: 'reply',
+  LIKE: 'like',
+  FAVORITEPOST: 'favoritePost',
+  FOLLOWERUSER: 'followerUser'
 }
 
 export * from './localstorage'
