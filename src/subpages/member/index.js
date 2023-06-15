@@ -140,6 +140,13 @@ function MemberIndex(props) {
     getSettings()
   }, [])
 
+
+  useDidShow(() => {
+    if(isLogin){
+      getMemberCenterData()
+    }
+  })
+
   // useDidShow(() => {
   //   if (isLogin) {
   //     getMemberCenterData()
