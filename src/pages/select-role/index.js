@@ -98,7 +98,7 @@ function SelectRole(props) {
   }
 
   const handleBindPhone = async (e) => {
-    const { encryptedData, iv } = e.detail
+    const { encryptedData, iv, cloudID } = e.detail
     if (encryptedData && iv) {
       const code = codeRef.current
       const params = {
