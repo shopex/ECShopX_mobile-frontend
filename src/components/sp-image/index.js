@@ -20,7 +20,8 @@ function SpImage(props) {
     onError = () => {},
     onLoad = () => {},
     lazyLoad = false,
-    circle = false
+    circle = false,
+    isShowMenuByLongpress = true
   } = props
   const [state, setState] = useImmer(initialState)
   const { loadSuccess } = state
@@ -76,6 +77,7 @@ function SpImage(props) {
         // onError={onError}
         onLoad={handleOnLoad}
         // lazyLoad={lazyLoad}
+        showMenuByLongpress={isShowMenuByLongpress}
       />
     </View>
   )
