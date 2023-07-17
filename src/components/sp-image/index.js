@@ -20,7 +20,8 @@ function SpImage(props) {
     onError = () => {},
     onLoad = () => {},
     lazyLoad = false,
-    circle = false
+    circle = false,
+    isShowMenuByLongpress = true
   } = props
   const [state, setState] = useImmer(initialState)
   const { loadSuccess } = state
@@ -34,7 +35,9 @@ function SpImage(props) {
 
   if (diskDriver === 'qiniu') {
     if (width != 'auto') {
-      imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${height ? '/h/' + Math.floor(height / 2) : ''}`
+      imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${
+        height ? '/h/' + Math.floor(height / 2) : ''
+      }`
     }
   }
 
@@ -76,6 +79,7 @@ function SpImage(props) {
         // onError={onError}
         onLoad={handleOnLoad}
         // lazyLoad={lazyLoad}
+        showMenuByLongpress={isShowMenuByLongpress}
       />
     </View>
   )
