@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.13.6](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.5...v3.13.6) (2023-07-18)
+
+
+### Bug Fixes
+
+* 楼层组件点击bug ([972c643](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/972c643f15b281ad5e34859e370b23e7db5d249a))
+
 ### [3.13.5](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.4...v3.13.5) (2023-07-04)
 
 ### [3.13.4](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.3-live...v3.13.4) (2023-06-29)
