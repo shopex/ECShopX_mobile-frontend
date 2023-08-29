@@ -87,9 +87,6 @@ Component({
         this.setData({
           innerShow: true
         })
-        setTimeout(() => {
-          console.log('this.innerShow popUp:', this.data.innerShow)
-        }, 500)
       }
     },
     disPopUp() {
@@ -97,9 +94,6 @@ Component({
         this.setData({
           innerShow: false
         })
-        setTimeout(() => {
-          console.log('this.innerShow disPopUp:', this.data.innerShow)
-        }, 500)
       }
     },
     openPrivacyContract() {
