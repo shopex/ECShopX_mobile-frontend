@@ -93,7 +93,7 @@ function Home() {
 
   useDidShow(() => {
     // 检查隐私协议是否变更或同意
-    checkPolicyChange()
+    // checkPolicyChange()
   })
 
   const init = async () => {
@@ -248,13 +248,13 @@ function Home() {
       {isWeixin && !showAdv && <SpScreenAd />}
 
       {/* 隐私政策 */}
-      <MSpPrivacyModal
+      {/* <MSpPrivacyModal
         open={policyModal}
         onCancel={() => {
           setPolicyModal(false)
         }}
         onConfirm={handleConfirmModal}
-      />
+      /> */}
 
       {/* 优惠券包 */}
       {VERSION_STANDARD && <SpCouponPackage />}
