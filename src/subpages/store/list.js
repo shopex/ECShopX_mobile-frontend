@@ -15,11 +15,13 @@ import CompShopItem from './comps/comp-shopitem'
 
 import './list.scss'
 
+const defaultChooseValue = ['北京市', '北京市', '昌平区']
+
 const initialState = {
   areaData: [],
   shopList: [],
   locationIng: false,
-  chooseValue: ['北京市', '北京市', '昌平区'],
+  chooseValue: defaultChooseValue,
   keyword: '', // 参数
   type: 0, // 0:正常流程 1:基于省市区过滤 2:基于默认收货地址强制定位
   filterType: 1, // 过滤方式（前端使用）1:省市区过滤 2:经纬度定位 3:收货地址
@@ -84,7 +86,7 @@ function NearlyShop(props) {
   const fetchDefaultShop = async () => {
     const res = await api.shop.getDefaultShop()
     setState((draft) => {
-      draft.chooseValue = shopInfo?.regions
+      draft.chooseValue = shopInfo?.regions || defaultChooseValue
       draft.headquarters = res
       draft.refresh = true
     })
