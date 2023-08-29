@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.13.10](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.9...v3.13.10) (2023-08-29)
+
+
+### Features
+
+* 微信隐私协议 ([fb8a8b9](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/fb8a8b9f8e940ac9ba482c92efe29a0a11cebcd4))
+
 ### [3.13.9](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.8...v3.13.9) (2023-08-17)
 
 
