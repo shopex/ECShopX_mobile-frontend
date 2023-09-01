@@ -2,8 +2,8 @@ import Taro from '@tarojs/taro'
 import req from '@/api/req'
 import S from '@/spx'
 import { isAlipay, getAppId, exceedLimit, isWeixin } from '@/utils'
+import COS from './cos-js-sdk-v5.min.js'
 // import * as qiniu from 'qiniu-js'
-
 const getToken = (params) => {
   return req.get('espier/image_upload_token', params)
 }
@@ -42,7 +42,7 @@ const upload = {
       // fileType: 'image',
       fileType: filetype,
       header: {
-        'Content-Type': 'application/x-www-form-urlencoded', // 只能是这种形式
+        'Content-Type': 'application/x-www-form-urlencoded' // 只能是这种形式
       },
       fail: (err) => {
         // debugger
@@ -102,7 +102,7 @@ const upload = {
     const { filetype, domain } = tokenRes
     const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
     let header = {
-      Authorization: `Bearer ${S.getAuthToken()}`,
+      Authorization: `Bearer ${S.getAuthToken()}`
     }
     if (isWeixin) {
       header['authorizer-appid'] = getAppId()
@@ -175,6 +175,42 @@ const upload = {
     } catch (e) {
       throw new Error(e)
     }
+  },
+  cosv5Upload: async (item, tokenRes) => {
+    const { bucket, region, token, url, filetype } = tokenRes
+    console.log('-1--')
+    try {
+      console.log('-3--')
+      var cos = new COS({
+        getAuthorization: function (options, callback) {
+          callback({ Authorization: token })
+        },
+        SimpleUploadMethod: 'putObject'
+      })
+      const res = await cos.uploadFile({
+        Bucket: bucket /* 填写自己的 bucket，必须字段 */,
+        Region: region /* 存储桶所在地域，必须字段 */,
+        Key: url /* 存储在桶里的对象键（例如:1.jpg，a/b/test.txt，图片.jpg）支持中文，必须字段 */,
+        FilePath: item.url /* 上传文件路径，必须字段 */
+        // SliceSize: 1024 * 1024 * 5,     /* 触发分块上传的阈值，超过5MB使用分块上传，小于5MB使用简单上传。可自行设置，非必须 */
+        // onProgress: function(progressData) {
+        //     console.log(JSON.stringify(progressData));
+        // }
+      })
+      console.log('上传成功')
+      const { Location } = res
+      console.log({ url:'https://'+Location, filetype, thumb: item.thumb })
+      if (!Location) {
+        return false
+      }
+      return {
+        url: 'https://'+Location,
+        filetype,
+        thumb: item.thumb
+      }
+    } catch (e) {
+      throw new Error(e)
+    }
   }
 }
 
@@ -186,6 +222,8 @@ const getUploadFun = (dirver) => {
       return 'localUpload'
     case 'aws':
       return 'awsUpload'
+    case 'cosv5':
+      return 'cosv5Upload'
     default:
       return 'qiNiuUpload'
   }
@@ -211,10 +249,11 @@ const uploadImageFn = async (imgFiles, filetype = 'image') => {
     }
     try {
       const filename = item.url.slice(item.url.lastIndexOf('/') + 1)
-      const { driver, token } = await getToken({ filetype, filename })
+      const { driver, token } = await getToken({ filetype, filename, group: 'PUT' })
       const uploadType = getUploadFun(driver)
       // console.log('----uploadType----', uploadType)
       let img = await upload[uploadType](item, { ...token, filetype: item.fileType || filetype })
+      console.log(uploadType)
       if (filetype == 'videos' && item.thumb) {
         const _thumb = {
           url: item.thumb
@@ -223,8 +262,11 @@ const uploadImageFn = async (imgFiles, filetype = 'image') => {
         const thumbRes = await getToken({ filetype: 'image', filename: thumbFileName })
         const thumbUploadType = getUploadFun(thumbRes.driver)
 
-        const thumbImg = await upload[thumbUploadType]({ url: _thumb.url }, { ...thumbRes.token, filetype: 'image' })
-        if(thumbImg) {
+        const thumbImg = await upload[thumbUploadType](
+          { url: _thumb.url },
+          { ...thumbRes.token, filetype: 'image' }
+        )
+        if (thumbImg) {
           img['thumb'] = thumbImg.url
         }
       }
