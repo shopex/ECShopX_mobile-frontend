@@ -1,10 +1,11 @@
-import { isWeb, isWeixin } from '@/utils'
+const { isWeixin,isWeb } = require('@/utils')
 
 var COS = ''
-if(isWeixin){
-  COS = require('./cos-wx-sdk-v5.min.js')
+if (isWeixin) {
+  COS = require('./cos-wx-sdk-v5.min')
 }
 if(isWeb){
-  COS = require('./cos-js-sdk-v5.min.js')
+  COS = require('./cos-js-sdk-v5.min')
 }
+
 export default COS

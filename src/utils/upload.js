@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 import req from '@/api/req'
 import S from '@/spx'
-import { isAlipay, getAppId, exceedLimit, isWeixin } from '@/utils'
+import { isAlipay, getAppId, exceedLimit, isWeixin, isWeb } from '@/utils'
 import COS from './cos'
 // import * as qiniu from 'qiniu-js'
 
@@ -178,34 +178,36 @@ const upload = {
     }
   },
   cosv5Upload: async (item, tokenRes) => {
-    if(!COS) return
+    if(!COS) return false
     const { bucket, region, token, url, filetype } = tokenRes
     try {
-      var cos = null
-      cos = new COS({
-        getAuthorization: function (options, callback) {
-          callback({ Authorization: token })
-        },
-        SimpleUploadMethod: 'putObject'
-      })
-      const res = await cos.uploadFile({
+      var cos = new COS({
+          getAuthorization: function (options, callback) {
+            callback({ Authorization: token })
+          },
+          SimpleUploadMethod: 'putObject'
+        })
+        console.log(item.file.originalFileObj)
+      var params = {
         Bucket: bucket /* 填写自己的 bucket，必须字段 */,
         Region: region /* 存储桶所在地域，必须字段 */,
         Key: url /* 存储在桶里的对象键（例如:1.jpg，a/b/test.txt，图片.jpg）支持中文，必须字段 */,
-        FilePath: item.url /* 上传文件路径，必须字段 */
-        // SliceSize: 1024 * 1024 * 5,     /* 触发分块上传的阈值，超过5MB使用分块上传，小于5MB使用简单上传。可自行设置，非必须 */
-        // onProgress: function(progressData) {
-        //     console.log(JSON.stringify(progressData));
-        // }
-      })
+      }
+      if(isWeixin){
+        params = {...params,FilePath: item.url /* 上传文件路径，必须字段 */}
+      }
+      if(isWeb){
+        params = {...params,Body: item.file.originalFileObj /* 上传文件路径，必须字段 */}
+      }
+      const res = await cos.uploadFile(params)
       console.log('上传成功')
       const { Location } = res
-      console.log({ url: 'https://' + Location, filetype, thumb: item.thumb })
+      console.log({ url:'https://'+Location, filetype, thumb: item.thumb })
       if (!Location) {
         return false
       }
       return {
-        url: 'https://' + Location,
+        url: 'https://'+Location,
         filetype,
         thumb: item.thumb
       }
