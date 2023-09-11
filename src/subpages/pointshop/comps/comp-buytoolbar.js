@@ -92,6 +92,7 @@ function CompGoodsBuyToolbar(props) {
   RenderBtns()
 
   const onChangeLogin = async ({ key }) => {
+    const { dtid, card_id, user_card_id } = $instance.router.params
     console.log('onChangeLogin:', key)
     if (key == 'notice') {
       const { subscribe } = info
@@ -102,7 +103,7 @@ function CompGoodsBuyToolbar(props) {
         return
       }
 
-      await api.user.subscribeGoods(info.itemId)
+      await api.user.subscribeGoods(info.itemId, { distributor_id: dtid })
       const { template_id } = await api.user.newWxaMsgTmpl({
         temp_name: 'yykweishop',
         source_type: 'goods'
@@ -117,7 +118,6 @@ function CompGoodsBuyToolbar(props) {
         }
       })
     } else if (key == 'exchange') {
-      const { dtid, card_id, user_card_id } = $instance.router.params
       const { itemId } = info
       const { status } = await api.cart.exchangeGood({
         item_id: itemId,

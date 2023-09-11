@@ -65,7 +65,7 @@ function SpGoodsItem(props) {
       return
     }
     let query = { id: itemId }
-    if (distributorId) {
+    if (typeof distributorId != 'undefined') {
       query = {
         ...query,
         dtid: distributorId
@@ -152,7 +152,7 @@ function SpGoodsItem(props) {
                 )}
               </View>
               {!info.activityPrice && (
-                <View>
+                <View className='more-price'>
                   {info.memberPrice < info.price && enMemberPrice && (
                     <View className='vip-price'>
                       <SpPrice value={info.memberPrice} />

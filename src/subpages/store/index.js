@@ -7,7 +7,6 @@ import {
   SpPage,
   SpSearch,
   SpRecommend,
-  SpPrivacyModal,
   SpTabbar
 } from '@/components'
 import api from '@/api'
@@ -105,9 +104,10 @@ function StoreIndex() {
   })
 
   const getAppShareInfo = async () => {
-    const { id } = await entryLaunch.getRouteParams()
+    const data = await entryLaunch.getRouteParams()
+    const dtid = data.id || data.dtid
     const query = {
-      id
+      dtid
     }
     const path = `/subpages/store/index?${qs.stringify(query)}`
     log.debug(`share path: ${path}`)
@@ -186,7 +186,7 @@ function StoreIndex() {
       </View>}
 
       <View className='header-block' style={{ background: `${pageData?.base?.pageBackgroundColor}` }}>
-        <CompShopBrand storeInfo={storeInfo} />
+        <CompShopBrand storeInfo={storeInfo} dtid={distributorId} />
       </View>
       <HomeWgts wgts={filterWgts} dtid={distributorId} onLoad={fetchLikeList}>
         {/* 猜你喜欢 */}

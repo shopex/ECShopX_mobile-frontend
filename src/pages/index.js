@@ -12,7 +12,6 @@ import {
   SpPage,
   SpSearch,
   SpRecommend,
-  SpPrivacyModal,
   SpTabbar,
   SpCouponPackage
 } from '@/components'
@@ -45,12 +44,16 @@ import CompFloatMenu from './home/comps/comp-floatmenu'
 import './home/index.scss'
 
 const MCompAddTip = React.memo(CompAddTip)
-const MSpPrivacyModal = React.memo(SpPrivacyModal)
 
 const initialState = {
   wgts: [],
   showBackToTop: false,
-  loading: true
+  loading: true,
+  searchComp: null,
+  pageData: null,
+  fixedTop: false,
+  filterWgts: [],
+  isShowHomeHeader: false
 }
 
 function Home() {
@@ -60,7 +63,7 @@ function Home() {
   const { initState, openRecommend, openLocation, openStore, appName } = useSelector(
     (state) => state.sys
   )
-  const { isLogin, login, checkPolicyChange } = useLogin({
+  const { isLogin, login } = useLogin({
     policyUpdateHook: (isUpdate) => {
       if (isUpdate && process.env.APP_BUILD_TARGET != 'app') {
         setPolicyModal(true)
@@ -76,7 +79,7 @@ function Home() {
   const { openScanQrcode } = useSelector((state) => state.sys)
   const { setNavigationBarTitle } = useNavigation()
 
-  const { wgts, loading } = state
+  const { wgts, loading, searchComp, pageData, fixedTop, filterWgts, isShowHomeHeader } = state
 
   const dispatch = useDispatch()
 
@@ -93,8 +96,7 @@ function Home() {
   }, [])
 
   useDidShow(() => {
-    // 检查隐私协议是否变更或同意
-    checkPolicyChange()
+    fetchLocation()
   })
 
   const init = async () => {
@@ -107,11 +109,31 @@ function Home() {
     const { config } = await api.shop.getShopTemplate({
       distributor_id: getDistributorId()
     })
+    const searchComp = config.find((wgt) => wgt.name == 'search')
+    const pageData = config.find((wgt) => wgt.name == 'page')
+    let filterWgts = []
+    if (searchComp && searchComp.config.fixTop) {
+      filterWgts = config.filter((wgt) => wgt.name !== 'search' && wgt.name != 'page')
+    } else {
+      filterWgts = config.filter((wgt) => wgt.name != 'page')
+    }
+
+    const fixedTop = searchComp && searchComp.config.fixTop
+    const isShowHomeHeader =
+      VERSION_PLATFORM ||
+      (openScanQrcode == 1 && isWeixin) ||
+      (VERSION_STANDARD && openStore && openLocation == 1) ||
+      fixedTop
+
     setState((draft) => {
       draft.wgts = config
+      draft.searchComp = searchComp
+      draft.pageData = pageData
+      draft.fixedTop = fixedTop
+      draft.isShowHomeHeader = isShowHomeHeader
+      draft.filterWgts = filterWgts
       draft.loading = false
     })
-    // fetchLikeList()
   }
 
   const fetchLikeList = async () => {
@@ -126,11 +148,16 @@ function Home() {
   }
 
   // 定位
-  const fetchLocation = async () => {
+  const fetchLocation = () => {
     if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
       try {
-        const res = await entryLaunch.getCurrentAddressInfo()
-        dispatch(updateLocation(res))
+        entryLaunch.isOpenPosition((res) => {
+          if (res.lat) {
+            dispatch(updateLocation(res))
+          }
+        })
+        // const res = await entryLaunch.isOpenPosition()
+        // dispatch(updateLocation(res))
       } catch (e) {
         // 定位失败，获取默认店铺
         console.error('map location fail:', e)
@@ -142,16 +169,17 @@ function Home() {
     }
   }
 
-  const handleConfirmModal = useCallback(async () => {
-    setPolicyModal(false)
-    fetchLocation()
-  }, [])
-
   useShareAppMessage(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
-    const params = getCurrentPageRouteParams()
-    const path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
-    console.log('useShareAppMessage path:', path)
+    let params = getCurrentPageRouteParams()
+    const dtid = getDistributorId()
+    if (dtid && !('dtid' in params)) {
+      params = Object.assign(params, { dtid })
+    }
+    let path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
+
+    console.log('useShareAppMessage path:', path, params)
+
     return {
       title: title,
       imageUrl: imageUrl,
@@ -161,7 +189,13 @@ function Home() {
 
   useShareTimeline(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
-    const params = getCurrentPageRouteParams()
+    let params = getCurrentPageRouteParams()
+    const dtid = getDistributorId()
+
+    if (dtid && !('dtid' in params)) {
+      params = Object.assign(params, { dtid })
+    }
+
     console.log('useShareTimeline params:', params)
     return {
       title: title,
@@ -186,24 +220,6 @@ function Home() {
     await fetchWgts()
   }
 
-  const searchComp = wgts.find((wgt) => wgt.name == 'search')
-  const pageData = wgts.find((wgt) => wgt.name == 'page')
-  let filterWgts = []
-  if (searchComp && searchComp.config.fixTop) {
-    filterWgts = wgts.filter((wgt) => wgt.name !== 'search' && wgt.name != 'page')
-  } else {
-    filterWgts = wgts.filter((wgt) => wgt.name != 'page')
-  }
-
-  const fixedTop = searchComp && searchComp.config.fixTop
-
-  const isShowHomeHeader =
-    VERSION_PLATFORM ||
-    (openScanQrcode == 1 && isWeixin) ||
-    (VERSION_STANDARD && openStore && openLocation == 1) ||
-    fixedTop
-
-  console.log('pageData:', pageData)
 
   return (
     <SpPage
@@ -232,15 +248,6 @@ function Home() {
 
       {/* 开屏广告 */}
       {isWeixin && !showAdv && <SpScreenAd />}
-
-      {/* 隐私政策 */}
-      <MSpPrivacyModal
-        open={policyModal}
-        onCancel={() => {
-          setPolicyModal(false)
-        }}
-        onConfirm={handleConfirmModal}
-      />
 
       {/* 优惠券包 */}
       {VERSION_STANDARD && <SpCouponPackage />}
