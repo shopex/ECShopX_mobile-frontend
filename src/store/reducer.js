@@ -11,6 +11,7 @@ import tabBar from './slices/tab-bar'
 import communityReducer from './slices/community'
 import dianwuReducer from './slices/dianwu'
 import purchaseReducer from './slices/purchase'
+import memberReducer from './slices/member'
 
 const rootReducer = combineReducers({
   guide: guideReducer,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   community: communityReducer,
   dianwu: dianwuReducer,
   purchase: purchaseReducer
+  member: memberReducer
 })
 
 export default rootReducer

@@ -108,17 +108,16 @@ function MemberIndex(props) {
   const $instance = getCurrentInstance()
   const { isLogin, isNewUser, login, getUserInfoAuth } = useLogin({
     autoLogin: true,
-    policyUpdateHook: (isUpdate) => {
-      // isUpdate && setPolicyModal(true)
-      if (isUpdate) {
-        RefLogin.current._setPolicyModal()
-      }
-    }
+    // policyUpdateHook: (isUpdate) => {
+    //   // isUpdate && setPolicyModal(true)
+    //   if (isUpdate) {
+    //     RefLogin.current._setPolicyModal()
+    //   }
+    // }
   })
   const [config, setConfig] = useImmer(initialConfigState)
   const [state, setState] = useImmer(initialState)
   const [policyModal, setPolicyModal] = useState(false)
-  const RefLogin = useRef()
 
   const { userInfo = {}, vipInfo = {} } = useSelector((state) => state.user)
   const { pointName } = useSelector((state) => state.sys)
@@ -142,6 +141,13 @@ function MemberIndex(props) {
     // 白名单
     getSettings()
   }, [])
+
+
+  useDidShow(() => {
+    if(isLogin){
+      getMemberCenterData()
+    }
+  })
 
   // useDidShow(() => {
   //   if (isLogin) {
@@ -424,7 +430,7 @@ function MemberIndex(props) {
       )
     } else {
       return (
-        <SpLogin newUser={isNewUser} ref={RefLogin}>
+        <SpLogin newUser={isNewUser}>
           <Text className='join-us-txt'>登录查看全部订单</Text>
         </SpLogin>
       )

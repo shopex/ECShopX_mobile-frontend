@@ -177,6 +177,30 @@ const config = {
       ]
     },
     {
+      root: 'subpages/mdugc',
+      pages: [
+        'index',
+        'list',
+        'note',
+        'note-detail',
+        'subject-talk',
+        'item-list',
+        'image-edit',
+        'my',
+        'follow-fans',
+        'info-notify'
+        // "pages/make_label/index",
+        // "pages/make_word/index",
+        // "pages/make_details/index2",
+        // "pages/make_newslist/index2",
+        // "pages/make_fabulous/index",
+        // "pages/make_comment/index",
+        // "pages/make_follow/index",
+        // "pages/make_collection/index",
+        // "pages/make_system/index",
+      ]
+    },
+    {
       root: 'marketing',
       pages: [
         'pages/distribution/index', // 推广管理首页
@@ -357,13 +381,24 @@ const config = {
   requiredPrivateInfos: [
     "getLocation",
     "chooseAddress"
-  ]
+  ],
+  "__usePrivacyCheck__": true
 }
 
 if (process.env.TARO_ENV == 'weapp') {
   Object.assign(config, {
     usingComponents: {
-      'mp-html': './components/sp-html/mp-weixin/index'
+      'mp-html': './components/sp-html/mp-weixin/index',
+      "sp-wx-privacy": "./components/sp-wx-privacy/index"
+    }
+  })
+}
+
+if (process.env.APP_LIVE == 'true') {
+  Object.assign(config.plugins, {
+    'live-player-plugin': {
+      'version': '1.3.0', // 注意填写该直播组件最新版本号，微信开发者工具调试时可获取最新版本号（复制时请去掉注释）
+      'provider': 'wx2b03c6e691cd7370' // 必须填该直播组件appid，该示例值即为直播组件appid（复制时请去掉注释）
     }
   })
 }
