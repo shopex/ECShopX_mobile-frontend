@@ -107,6 +107,8 @@ function SpLogin(props, ref) {
           setLoginModal(false)
           showToast('恭喜您，注册成功')
           onChange && onChange()
+        } else {
+          showToast('注册失败')
         }
       } catch (error) {
         Taro.hideLoading()
