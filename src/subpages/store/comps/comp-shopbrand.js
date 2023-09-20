@@ -33,7 +33,7 @@ function CompShopBrand(props) {
     // })
     let fav = false
 
-    if(S.getAuthToken()) {
+    if (S.getAuthToken()) {
       const { is_fav } = await api.member.storeIsFav(dtid)
       fav = is_fav
     }
@@ -59,19 +59,16 @@ function CompShopBrand(props) {
   }
 
   const handleFocus = async () => {
-    let data = {}
     if (fav) {
       //取消
-      data = await api.member.storeFavDel(dtid)
+      await api.member.storeFavDel(dtid)
     } else {
       //关注
-      data = await api.member.storeFav(dtid)
+      await api.member.storeFav(dtid)
     }
-    if (Object.keys(data).length > 0) {
-      showToast(fav ? '取消关注成功' : '关注成功')
-    }
+    const { is_fav } = await api.member.storeIsFav(dtid)
     setState((draft) => {
-      draft.fav = !fav
+      draft.fav = is_fav
     })
   }
 
