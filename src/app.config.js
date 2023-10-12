@@ -31,7 +31,19 @@ const config = {
         'member',
         'espier-detail',
         'espier-checkout',
-        'index' // 家属分享
+        'share', // 家属分享
+        // 'select-role',
+        'select-company',
+        'select-company-account',
+        'select-company-email',
+        'select-company-phone',
+        'select-company-activity',
+        'select-identity',
+        'neigou-order',
+        'category',
+        'espier-index',
+        'index',
+        'list'
       ]
     },
     // 导购货架 guide
@@ -389,6 +401,12 @@ if (process.env.APP_LIVE == 'true') {
       'provider': 'wx2b03c6e691cd7370' // 必须填该直播组件appid，该示例值即为直播组件appid（复制时请去掉注释）
     }
   })
+}
+
+if (process.env.APP_PLATFORM == 'in_purchase') {
+  config?.pages?.splice(config?.pages[0], 1, 'pages/select-role/index')
+} else {
+  config?.pages?.push('pages/select-role/index')
 }
 
 export default config

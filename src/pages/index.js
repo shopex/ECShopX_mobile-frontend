@@ -32,6 +32,7 @@ import {
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
+import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
 import qs from 'qs'
@@ -88,6 +89,11 @@ function Home() {
       setNavigationBarTitle(appName)
     }
   }, [initState])
+
+  useEffect(() => {
+    dispatch(updatePurchaseShareInfo())
+    dispatch(updateInviteCode())
+  }, [])
 
   useDidShow(() => {
     fetchLocation()
@@ -237,7 +243,7 @@ function Home() {
         </HomeWgts>
       </View>
 
-      {/* 小程序搜藏提示 */}
+      {/* 小程序收藏提示 */}
       {isWeixin && <MCompAddTip />}
 
       {/* 开屏广告 */}
