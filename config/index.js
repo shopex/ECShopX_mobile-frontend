@@ -77,10 +77,10 @@ const config = {
   ],
 
   mini: {
-    webpackChain(chain, webpack) {
-      chain.plugin('analyzer')
-        .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
-    },
+    // webpackChain(chain, webpack) {
+    //   chain.plugin('analyzer')
+    //     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
+    // },
     miniCssExtractPluginOption: {
       ignoreOrder: true
     },
