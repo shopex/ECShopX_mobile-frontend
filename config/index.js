@@ -68,7 +68,7 @@ const config = {
     patterns: copyPatterns
   },
   plugins: [
-    '@shopex/taro-plugin-modules',
+    // '@shopex/taro-plugin-modules',
     // path.join(__dirname, "../src/plugin/test.js")
     // path.join(__dirname, "./modify-taro.js")
   ],
