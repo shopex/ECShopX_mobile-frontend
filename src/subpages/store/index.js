@@ -185,7 +185,7 @@ function StoreIndex() {
         />
       </View>}
 
-      <View className='header-block' style={{ background: `${pageData?.base?.pageBackgroundColor}` }}>
+      <View className='header-block'>
         <CompShopBrand storeInfo={storeInfo} dtid={distributorId} />
       </View>
       <HomeWgts wgts={filterWgts} dtid={distributorId} onLoad={fetchLikeList}>
