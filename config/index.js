@@ -62,7 +62,10 @@ const config = {
 
   defineConstants: getDefineConstants(CONST_ENVS),
   alias: {
-    '@': path.join(__dirname, '../src')
+    'taro-ui$': 'taro-ui/lib/index',
+    '@': path.join(__dirname, '../src'),
+    'lodash': 'lodash-es'
+
   },
   copy: {
     patterns: copyPatterns
@@ -74,8 +77,15 @@ const config = {
   ],
 
   mini: {
+    // webpackChain(chain, webpack) {
+    //   chain.plugin('analyzer')
+    //     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
+    // },
     miniCssExtractPluginOption: {
       ignoreOrder: true
+    },
+    optimizeMainPackage: {
+      enable: true
     },
     // 图片转换base64
     imageUrlLoaderOption: {
