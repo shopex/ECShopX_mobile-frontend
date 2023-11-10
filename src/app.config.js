@@ -400,4 +400,6 @@ if(process.env.APP_ADAPAY == 'true') {
   })
 }
 
+console.log(config.plugins)
+
 export default config
