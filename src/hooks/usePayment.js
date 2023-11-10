@@ -7,7 +7,7 @@ import { TRANSFORM_PAYTYPE } from '@/consts'
 import { isWeixin, isWeb, isWxWeb, requestAlipayminiPayment, isAPP, showToast } from '@/utils'
 import api from '@/api'
 
-const adapayPlugin = requirePlugin("adapay-plugin");
+const adapayPlugin = requirePlugin("Adapay");
 
 const initialState = {
   params: '',
@@ -74,7 +74,7 @@ export default (props = {}) => {
     }
   }
 
-  const payError = () => {
+  const payError = (orderInfo) => {
     const { order_id, trade_source_type } = orderInfo
     // 社区拼团订单
     if (currentPath != '/subpage/pages/trade/detail' && currentPath != '/subpages/community/order') {
@@ -101,9 +101,10 @@ export default (props = {}) => {
 
       // 是否开启adapay小程序插件
       if (process.env.APP_ADAPAY == 'true') {
-        adapayPlugin.requestPay(weappOrderInfo, () => {
+        adapayPlugin.requestPay(weappOrderInfo.expend, () => {
           paySuccess(params, orderInfo)
-        }, () => {
+        }, (e) => {
+          console.error('adapayPlugin:', e)
           payError(orderInfo)
         });
       } else {
@@ -111,6 +112,7 @@ export default (props = {}) => {
         paySuccess(params, orderInfo)
       }
     } catch (e) {
+      console.error(e)
       payError(orderInfo)
     }
   }
