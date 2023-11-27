@@ -136,7 +136,7 @@ function Home() {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
       >
-        {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch />}</WgtHomeHeader>}
+        {/* {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch />}</WgtHomeHeader>} */}
         <HomeWgts wgts={filterWgts} />
       </View>
 
