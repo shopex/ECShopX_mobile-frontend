@@ -338,7 +338,7 @@ function SpPage(props, ref) {
         </View>
       )}
 
-      <sp-wx-privacy />
+
     </View>
   )
 }
