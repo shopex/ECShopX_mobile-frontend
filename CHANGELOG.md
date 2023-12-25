@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.13.23](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.22...v3.13.23) (2023-12-25)
+
+
+### Bug Fixes
+
+* 移除自定义隐私弹窗 ([ccc22cb](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/ccc22cb19641e06ccbfdf118c7a26cef2a06b18a))
+
 ### [3.13.22](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.21...v3.13.22) (2023-12-06)
 
 ### [3.13.21](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.17...v3.13.21) (2023-11-30)
