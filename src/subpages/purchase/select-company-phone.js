@@ -2,9 +2,10 @@ import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { View, Text} from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
+import { SpPage } from '@/components'
 import { useLogin } from '@/hooks'
 import { showToast, VERSION_IN_PURCHASE } from '@/utils'
 
@@ -12,59 +13,55 @@ import CompBottomTip from './comps/comp-bottomTip'
 import './select-company-phone.scss'
 
 const initialState = {
-  login_code: ''
+  wxCode: ''
 }
 
-function SelectComponent(props) {
+function PurchaseAuthPhone(props) {
   const { setToken, isNewUser } = useLogin()
   const [state, setState] = useImmer(initialState)
   const { userInfo = {} } = useSelector((state) => state.user)
   const $instance = getCurrentInstance()
   const { enterprise_id, enterprise_name, auth_code, account, email, vcode } = $instance.router.params
 
-  useDidShow(() => {
+  useEffect(() => {
     getLoginCode()
-  })
+  }, [])
 
   const getLoginCode = async () => {
     const { code } = await Taro.login()
     setState(draft => {
-      draft.login_code = code
+      draft.wxCode = code
     })
   }
 
   const handleBindPhone = async (e) => {
     const { encryptedData, iv, cloudID } = e.detail
     if (encryptedData && iv) {
-      // const { phoneNumber } = await api.wx.decryptPhone({
-      //   encryptedData,
-      //   iv,
-      //   code: state.login_code
-      // })
-      const params = {
-        code: state.login_code,
-        encryptedData,
-        iv,
-        cloudID,
-        user_type: 'wechat',
-        auth_type: 'wxapp',
-        employee_auth: {
-          enterprise_id,
-          account,
-          auth_code,
-          email,
-          vcode
+      try {
+        const params = {
+          code: state.wxCode,
+          encryptedData,
+          iv,
+          cloudID,
+          user_type: 'wechat',
+          auth_type: 'wxapp',
+          employee_auth: {
+            enterprise_id,
+            account,
+            auth_code,
+            email,
+            vcode
+          }
         }
+        const { token } = await api.wx.newlogin(params)
+        setToken(token)
+        showToast('验证成功')
+        setTimeout(() => {
+          Taro.reLaunch({ url: `/pages/purchase/index` })
+        }, 700)
+      } catch(e) {
+        getLoginCode()
       }
-      const { token } = await api.wx.newlogin(params)
-      setToken(token)
-      Taro.showToast({
-        icon: 'success',
-        title: '验证成功'
-      })
-      setTimeout(() => {
-        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
-      }, 2000)
     }
   }
 
@@ -73,19 +70,19 @@ function SelectComponent(props) {
       await api.purchase.setEmployeeAuth({ ...params, showError: false })
       showToast('验证成功')
       setTimeout(() => {
-        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+        Taro.reLaunch({ url: `/pages/purchase/index` })
       }, 2000)
     } catch (e) {
       console.log(e)
       Taro.showModal({
         title: '验证失败',
         content: e,
-        confirmColor:'#F4811F',
+        confirmColor: '#F4811F',
         showCancel: false,
         confirmText: '我知道了',
         success: () => {
           if (e.indexOf('重复绑定') > -1) {
-            Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+            Taro.reLaunch({ url: `/pages/purchase/index` })
           }
         }
       })
@@ -94,7 +91,7 @@ function SelectComponent(props) {
   }
 
   return (
-    <View className='select-component'>
+    <SpPage className='page-purchase-auth-phone select-component'>
       <View className='select-component-title'>{enterprise_name}</View>
       <View className='select-component-prompt'>使用手机号进行验证</View>
       {!VERSION_IN_PURCHASE && // 有商场的到这个页面都已经登录成功不用区分是否是新用户
@@ -139,14 +136,14 @@ function SelectComponent(props) {
         </AtButton>
       }
       <CompBottomTip />
-    </View>
+    </SpPage>
   )
 }
 
-SelectComponent.options = {
+PurchaseAuthPhone.options = {
   addGlobalClass: true
 }
 
-export default SelectComponent
+export default PurchaseAuthPhone
 
 // 有商场和无商场 手机号授权登录

@@ -1,38 +1,42 @@
-page{
-  background-color: #fff;
-  .select-component{
+.page-purchase-auth-phone {
+  &.select-component {
     padding: 56px 50px;
-    .select-component-title{
+
+    .select-component-title {
       font-size: 40px;
       font-weight: 400;
-      color: #222222;
+      color: #222;
     }
-    .select-component-prompt{
+
+    .select-component-prompt {
       font-size: 28px;
-      color: #AAAAAA;
+      color: #aaa;
       margin: 16px 0 100px 0;
     }
-    .phone-box{
+
+    .phone-box {
       font-size: 32px;
-      color: #222222;
+      color: #222;
       font-weight: 400;
-      .phone-number{
+
+      .phone-number {
         font-weight: bold;
       }
     }
-    .btns-phone{
-      background: #F4811F;
+
+    .btns-phone {
+      background: var(--color-primary);
       margin: 70px 0 40px 0;
       font-size: 28px;
-      color: #FFFFFF;
+      color: #fff;
       height: 80px;
       border: none;
     }
-    .btns-other{
+
+    .btns-other {
       font-size: 28px;
-      color: #F4811F;
-      border: #F4811F 1px solid;
+      color: var(--color-primary);
+      border: var(--color-primary) 1PX solid;
     }
   }
 }
-

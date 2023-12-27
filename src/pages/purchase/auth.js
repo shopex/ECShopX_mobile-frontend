@@ -64,7 +64,7 @@ function PurchaseAuth() {
     const data = await api.purchase.getUserEnterprises({ disabled: 0 })
     setUserEnterprises(data)
     if (data?.length > 0) {
-      Taro.reLaunch({ url: '/subpages/purchase/select-company-activity' })
+      Taro.reLaunch({ url: '/pages/purchase/index' })
     }
   }
 
@@ -123,7 +123,7 @@ function PurchaseAuth() {
         title: '验证成功'
       })
       setTimeout(() => {
-        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+        Taro.reLaunch({ url: `/pages/purchase/index` })
       }, 2000)
     }
   }
@@ -133,7 +133,7 @@ function PurchaseAuth() {
       await api.purchase.getEmployeeRelativeBind({ invite_code, showError: false })
       showToast('验证成功')
       setTimeout(() => {
-        Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+        Taro.reLaunch({ url: `/pages/purchase/index` })
       }, 2000)
     } catch (e) {
       console.log(e)
@@ -142,14 +142,14 @@ function PurchaseAuth() {
         confirmText: '我知道了',
         showCancel: false,
         success: () => {
-          Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+          Taro.reLaunch({ url: `/pages/purchase/index` })
         }
       })
     }
   }
 
   const handlePassClick = () => {
-    Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+    Taro.reLaunch({ url: `/pages/purchase/index` })
   }
 
   return (

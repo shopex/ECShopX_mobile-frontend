@@ -6,9 +6,9 @@ import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
 import { useLogin } from '@/hooks'
 import { classNames, showToast, VERSION_IN_PURCHASE} from '@/utils'
+import { SpForm, SpFormItem, SpPage } from '@/components'
 import './select-company-account.scss'
 import CompBottomTip from './comps/comp-bottomTip'
-import { SpForm, SpFormItem } from '@/components'
 
 const initialState = {
   form: {
@@ -24,7 +24,7 @@ const initialState = {
   }
 }
 
-function SelectComponent(props) {
+function PurchaseAuthAccount(props) {
   const { isNewUser } = useLogin()
   const [state, setState] = useImmer(initialState)
   const [isError, setIsError] = useState(false)
@@ -55,8 +55,8 @@ function SelectComponent(props) {
           await api.purchase.setEmployeeAuth({...params, showError: false})
           showToast('验证成功')
           setTimeout(() => {
-            Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
-          }, 2000)
+            Taro.reLaunch({ url: `/pages/purchase/index` })
+          }, 700)
         } catch(e) {
           Taro.showModal({
             title: '验证失败',
@@ -66,7 +66,7 @@ function SelectComponent(props) {
             confirmText: '我知道了',
             success: () => {
               if (e.indexOf('重复绑定') > -1) {
-                Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+                Taro.reLaunch({ url: `/pages/purchase/index` })
               }
             }
           })
@@ -76,7 +76,7 @@ function SelectComponent(props) {
   }
 
   return (
-    <View className='select-component'>
+    <SpPage className='page-purchase-auth-account select-component'>
       <View className='select-component-title'>{enterprise_name}</View>
       <View className='select-component-prompt'>使用已注册账号密码进行验证</View>
       <View className='selecte-box'>
@@ -130,14 +130,14 @@ function SelectComponent(props) {
         验证
       </AtButton>
       <CompBottomTip />
-    </View>
+    </SpPage>
   )
 }
 
-SelectComponent.options = {
+PurchaseAuthAccount.options = {
   addGlobalClass: true
 }
 
-export default SelectComponent
+export default PurchaseAuthAccount
 
 // 账号登录

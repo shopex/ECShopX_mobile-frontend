@@ -258,7 +258,7 @@ function SpPage(props, ref) {
               onClick={() => {
                 if (cusCurrentPage == 1) {
                   Taro.redirectTo({
-                    url: isGoodsShelves() ? '/subpages/guide/index' : VERSION_IN_PURCHASE ? '/subpages/purchase/select-company-activity' : '/pages/index'
+                    url: isGoodsShelves() ? '/subpages/guide/index' : VERSION_IN_PURCHASE ? '/pages/purchase/index' : '/pages/index'
                   })
                 } else {
                   Taro.navigateBack()

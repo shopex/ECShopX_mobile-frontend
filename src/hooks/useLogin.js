@@ -2,7 +2,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import dayjs from 'dayjs'
-import { updateUserInfo, fetchUserFavs, clearUserInfo } from '@/store/slices/user'
+import { updateUserInfo, fetchUserFavs, clearUserInfo, updateIsNewUser } from '@/store/slices/user'
 import { updateCount, clearCart } from '@/store/slices/cart'
 import { purchaseClearCart } from '@/store/slices/purchase'
 import api from '@/api'
@@ -13,9 +13,8 @@ import { SG_POLICY } from '@/consts/localstorage'
 export default (props = {}) => {
   const { autoLogin = false, policyUpdateHook = () => {} } = props
   const [isLogin, setIsLogin] = useState(false)
-  const [isNewUser, setIsNewUser] = useState(false)
   const dispatch = useDispatch()
-  const { userInfo } = useSelector((state) => state.user)
+  const { userInfo, isNewUser } = useSelector((state) => state.user)
   const $instance = getCurrentInstance()
   // const policyTime = useRef(0)
 
@@ -49,7 +48,7 @@ export default (props = {}) => {
           Taro.hideLoading()
           setToken(token)
         } catch (e) {
-          setIsNewUser(true)
+          dispatch(updateIsNewUser(true))
           Taro.hideLoading()
           console.error('[hooks useLogin] auto login is failed: ', e)
           throw new Error(e)
@@ -88,6 +87,7 @@ export default (props = {}) => {
     // 导购UV统计
     entryLaunch.postGuideUV()
     entryLaunch.postGuideTask()
+    dispatch(updateIsNewUser(false))
     dispatch(fetchUserFavs())
     dispatch(updateCount({ shop_type: 'distributor' })) // 获取购物车商品数量
     console.log('useLogin setToken redirect_url:', redirect_url, decodeURIComponent(redirect_url))
@@ -199,6 +199,13 @@ export default (props = {}) => {
         resolve()
       }
     })
+  }
+
+  /**
+   * @function 新用户注册
+   */
+  const registerUser = () => {
+
   }
 
   return {

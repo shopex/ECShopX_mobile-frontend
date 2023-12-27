@@ -393,7 +393,7 @@ function MemberIndex(props) {
     if (key == 'purchase') {
       const data = await api.purchase.getUserEnterprises({ disabled: 0 })
       if (data?.length > 0) {
-        Taro.navigateTo({ url: '/subpages/purchase/select-company-activity' })
+        Taro.navigateTo({ url: '/pages/purchase/index' })
       } else {
         Taro.navigateTo({ url: '/pages/select-role/index' })
       }
