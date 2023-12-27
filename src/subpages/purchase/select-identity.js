@@ -17,7 +17,7 @@ function SelectIdentity(props) {
   useEffect(() => {
     getUserEnterprises()
   }, [])
-  
+
   const getUserEnterprises = async () => {
     const data = await api.purchase.getUserEnterprises()
     setState(draft => {
@@ -28,7 +28,7 @@ function SelectIdentity(props) {
 
   const onAddIdentityChange = () => {
     Taro.navigateTo({
-      url: '/pages/select-role/index?type=addIdentity'
+      url: '/pages/purchase/auth?type=addIdentity'
     })
   }
 

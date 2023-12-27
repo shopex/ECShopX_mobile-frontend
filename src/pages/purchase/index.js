@@ -9,8 +9,8 @@ import { classNames } from '@/utils'
 import { useLogin } from '@/hooks'
 import { updateUserInfo } from '@/store/slices/user'
 import S from '@/spx'
-import { SpPage, SpTabbar, SpScrollView, SpSearchInput } from '@/components'
-import './auth.scss'
+import { SpPage, SpNote, SpScrollView, SpSearchInput } from '@/components'
+import './index.scss'
 
 const initialState = {
   activityList: [],
@@ -31,6 +31,8 @@ function PurchaseActivityList() {
         url: '/pages/purchase/auth'
       })
       return
+    } else {
+      scrollRef.current.reset()
     }
     updataMemberInfo()
   }, [])
@@ -81,7 +83,7 @@ function PurchaseActivityList() {
 
   return (
     <SpPage
-      className='page-purchase-activity'
+      className='page-purchase-index'
       renderFooter={renderFooter()}
     >
       <View className='user-box'>
@@ -92,7 +94,9 @@ function PurchaseActivityList() {
           />
         </View>
       </View>
-      <SpScrollView ref={scrollRef} className='item-list-scroll' auto={false} fetch={fetch}>
+      <SpScrollView ref={scrollRef} className='item-list-scroll' auto={false} fetch={fetch} renderEmpty={
+        <SpNote img='empty_activity.png' title='暂无内购活动' />
+      } >
         {activityList.map((item, index) => (
           <View
             key={item.id}

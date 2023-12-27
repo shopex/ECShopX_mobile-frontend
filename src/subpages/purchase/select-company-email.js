@@ -62,8 +62,8 @@ function SelectComponent(props) {
           await api.purchase.setEmployeeAuth({...params, showError: false})
           showToast('验证成功')
           setTimeout(() => {
-            Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
-          }, 2000)
+            Taro.reLaunch({ url: `/pages/purchase/index` })
+          }, 700)
         } catch (e) {
           console.error(e)
           Taro.showModal({
@@ -74,7 +74,7 @@ function SelectComponent(props) {
             confirmText: '我知道了',
             success: () => {
               if (e.indexOf('重复绑定') > -1) {
-                Taro.reLaunch({ url: `/subpages/purchase/select-company-activity` })
+                Taro.reLaunch({ url: `/pages/purchase/index` })
               }
             }
           })
