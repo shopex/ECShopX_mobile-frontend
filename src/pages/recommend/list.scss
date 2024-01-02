@@ -90,7 +90,7 @@
       }
     }
     &__scroll {
-      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + 10, $tabbar-height + floor(calc($edge-margin / 2)));
+      @include page-scroll($tabs-height + $searchbar-height + $navigate-height + 10, $tabbar-height + floor($edge-margin / 2));
       top: 155px;
     }
     &__type-grid {

@@ -220,7 +220,7 @@
       border: 1PX dashed #eee;
     }
     &__group {
-      padding: floor(calc($edge-size / 2)) 0;
+      padding: floor($edge-size / 2) 0;
       &-hd {
         line-height: 1;
         margin: 0 0 $edge-size;
