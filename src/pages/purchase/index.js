@@ -27,9 +27,9 @@ function PurchaseActivityList() {
 
   useEffect(() => {
     if (!S.getAuthToken()) {
-      Taro.redirectTo({
-        url: '/pages/purchase/auth'
-      })
+      // Taro.redirectTo({
+      //   url: '/pages/purchase/auth'
+      // })
       return
     } else {
       scrollRef.current.reset()

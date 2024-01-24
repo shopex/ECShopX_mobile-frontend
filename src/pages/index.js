@@ -87,8 +87,56 @@ function Home() {
     dispatch(updateInviteCode())
   }, [])
 
-  useDidShow(() => {
-    fetchLocation()
+  useEffect(() => {
+    if(shopInfo && VERSION_STANDARD) {
+      fetchWgts()
+    }
+  }, [shopInfo])
+
+  useEffect(() => {
+    if (location && VERSION_STANDARD) {
+      fetchWgts()
+    }
+  }, [location])
+
+
+  // useDidShow(() => {
+  //   fetchLocation()
+  // })
+
+  useShareAppMessage(async (res) => {
+    const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
+    let params = getCurrentPageRouteParams()
+    const dtid = getDistributorId()
+    if (dtid && !('dtid' in params)) {
+      params = Object.assign(params, { dtid })
+    }
+    let path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
+
+    console.log('useShareAppMessage path:', path, params)
+
+    return {
+      title: title,
+      imageUrl: imageUrl,
+      path
+    }
+  })
+
+  useShareTimeline(async (res) => {
+    const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
+    let params = getCurrentPageRouteParams()
+    const dtid = getDistributorId()
+
+    if (dtid && !('dtid' in params)) {
+      params = Object.assign(params, { dtid })
+    }
+
+    console.log('useShareTimeline params:', params)
+    return {
+      title: title,
+      imageUrl: imageUrl,
+      query: resolveStringifyParams(params)
+    }
   })
 
   const init = async () => {
