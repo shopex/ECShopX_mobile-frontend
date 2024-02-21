@@ -100,18 +100,18 @@ export default (props = {}) => {
       })
 
       // 是否开启adapay小程序插件
-      if (process.env.APP_ADAPAY == 'true') {
-        const adapayPlugin = requirePlugin("Adapay");
-        adapayPlugin.requestPay(weappOrderInfo.expend, () => {
-          paySuccess(params, orderInfo)
-        }, (e) => {
-          console.error('adapayPlugin:', e)
-          payError(orderInfo)
-        });
-      } else {
+      // if (process.env.APP_ADAPAY == 'true') {
+      //   const adapayPlugin = requirePlugin("Adapay");
+      //   adapayPlugin.requestPay(weappOrderInfo.expend, () => {
+      //     paySuccess(params, orderInfo)
+      //   }, (e) => {
+      //     console.error('adapayPlugin:', e)
+      //     payError(orderInfo)
+      //   });
+      // } else {
         await Taro.requestPayment(weappOrderInfo)
         paySuccess(params, orderInfo)
-      }
+      // }
     } catch (e) {
       console.error(e)
       payError(orderInfo)
