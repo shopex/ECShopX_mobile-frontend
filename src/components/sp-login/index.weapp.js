@@ -217,10 +217,16 @@ function SpLogin(props, ref) {
             </View>
           </View> */}
           <View className='login-modal__ft'>
-            {isNewUser && <AtButton type='primary' disabled={!agreeMentChecked} openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone}>
+            {/* {isNewUser && <AtButton type='primary' disabled={!agreeMentChecked} openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone}>
               登录
             </AtButton>}
             {!isNewUser && <AtButton type='primary' disabled={!agreeMentChecked} onClick={handleUserLogin}>
+              登录
+            </AtButton>} */}
+             {isNewUser && <AtButton type='primary' openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone}>
+              登录
+            </AtButton>}
+            {!isNewUser && <AtButton type='primary' onClick={handleUserLogin}>
               登录
             </AtButton>}
           </View>
