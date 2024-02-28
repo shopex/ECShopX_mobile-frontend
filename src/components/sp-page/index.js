@@ -184,7 +184,7 @@ function SpPage(props, ref) {
     const deviceInfo = Taro.getSystemInfoSync()
     // console.log('deviceInfo:', deviceInfo)
     model = deviceInfo.model
-    ipx = model.search(/iPhone\s*X|iPhone\s*11|iPhone\s*12|iPhone\s*13|iPhone\s*14|iPhone\s*10/g) > -1
+    ipx = model.search(/iPhone\s*X|iPhone\s*11|iPhone\s*12|iPhone\s*13|iPhone\s*14|iPhone\s*15|iPhone\s*10/g) > -1
 
     const menuButton = Taro.getMenuButtonBoundingClientRect()
     const { statusBarHeight } = Taro.getSystemInfoSync()
