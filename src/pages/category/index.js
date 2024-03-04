@@ -109,7 +109,9 @@ function StoreItemList(props) {
       v_store: cusIndex
     }
 
-    const { list: _list, total_count } = await api.purchase.getPurchaseActivityItems(params)
+    // const { list: _list, total_count } = await api.purchase.getPurchaseActivityItems(params)
+    const { list: _list, total_count } = await api.item.search(params)
+
     
     let n_list = pickBy(_list, doc.goods.ITEM_LIST_GOODS)
 
