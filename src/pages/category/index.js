@@ -153,7 +153,7 @@ function StoreItemList(props) {
     console.log('handleConfirm', val)
     if (val) {
       Taro.navigateTo({
-        url: `/pages/item/list?keywords1=${val}`
+        url: `/pages/item/list?keywords=${val}`
       })
     }
   }

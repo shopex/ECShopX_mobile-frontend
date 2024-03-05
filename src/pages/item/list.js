@@ -84,16 +84,18 @@ function ItemList() {
   useEffect(() => {
     // card_id, user_card_id: 兑换券参数
     entryLaunch.getRouteParams($instance.router.params).then((params) => {
-      const { cat_id, main_cat_id, tag_id, card_id, user_card_id } = params
+      const { cat_id,keywords, main_cat_id, tag_id, card_id, user_card_id } = params
 
       setState((draft) => {
         draft.routerParams = {
           cat_id,
+          keywords,
           main_cat_id,
           tag_id,
           card_id,
           user_card_id
-        }
+        },
+        draft.keywords=keywords
       })
     })
   }, [])
@@ -149,7 +151,7 @@ function ItemList() {
   const fetch = async ({ pageIndex, pageSize }) => {
     // card_id: 兑换券id
     // const { cat_id, main_cat_id, tag_id, card_id } = $instance.router.params
-    console.log(shopInfo)
+    console.log(routerParams,keywords,'routerParams====routerParams')
     let params = {
       page: pageIndex,
       pageSize,
@@ -176,6 +178,7 @@ function ItemList() {
     if (curTagIdx) {
       params['tag_id'] = curTagIdx
     }
+
 
     if (cat_id) {
       params['category'] = cat_id
