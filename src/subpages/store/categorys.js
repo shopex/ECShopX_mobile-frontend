@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Taro, { useDidShow, getCurrentInstance } from '@tarojs/taro'
-import { Text, View, Image } from '@tarojs/components'
+import { View, Image } from '@tarojs/components'
 import { useImmer } from 'use-immer'
-import { SpScrollView, SpPage, SpTabbar, SpCategorySearch,SpSkuSelect } from '@/components'
+import { SpScrollView, SpCategorySearch,SpSkuSelect } from '@/components'
 import api from '@/api'
 import doc from '@/doc'
 import { useDebounce } from '@/hooks'
@@ -13,7 +13,7 @@ import CompFirstCategory from './comps/comp-first-category'
 import CompSecondCategory from './comps/comp-second-category'
 import CompThirdCategory from './comps/comp-third-category'
 import GoodsItem from './comps/goods-item'
-import './index.scss'
+import './categorys.scss'
 
 const MSpSkuSelect = React.memo(SpSkuSelect)
 
@@ -56,8 +56,12 @@ function StoreItemList(props) {
     selectType
   } = state
 
+
+  const {
+    addPurchases = () => {},
+  } = props
+
   const goodsRef = useRef()
-  const pageRef = useRef()
   const dispatch = useDispatch()
   useEffect(() => {
     getCategoryList()
@@ -70,13 +74,6 @@ function StoreItemList(props) {
     }
   }, [cat_id])
 
-  useEffect(() => {
-    if (skuPanelOpen) {
-      pageRef.current.pageLock()
-    } else {
-      pageRef.current.pageUnLock()
-    }
-  }, [skuPanelOpen])
 
   const getCategoryList = async () => {
     //api.category.getCategory这个接口会导致必要的category_id不存在，根据汪海的建议换了下面的接口获取数据
@@ -239,33 +236,7 @@ function StoreItemList(props) {
 
 
   const addPurchase = async (id) => {
-    let data
-    Taro.showLoading({
-      title: '加载中'
-     })
-    const { dtid } = await entryLaunch.getRouteParams()
-    const itemDetail = await api.item.detail(id, {
-      showError: false,
-      distributor_id: dtid
-    })
-    Taro.hideLoading()
-    data = pickBy(itemDetail, doc.goods.GOODS_INFO)
-    // if (data.approveStatus == 'instock') {
-    //   setState((draft) => {
-    //     draft.isDefault = true
-    //     draft.defaultMsg = '商品已下架'
-    //   })
-    // }
-    setState((draft) => {
-      draft.info = {
-        ...data
-      }
-    })
-    // 获取商品详情的接口
-    setState((draft) => {
-      draft.skuPanelOpen = true
-      draft.selectType = 'addcart'
-    })
+    addPurchases(id)
   }
 
   const changeList = async () => {
@@ -296,15 +267,13 @@ function StoreItemList(props) {
   }
 
   return (
-    <SpPage
+    <View
       scrollToTopBtn
       className={classNames('page-category-item-list')}
-      renderFooter={<SpTabbar />}
-      ref={pageRef}
     >
       <View className='page-category-item-list-head'>
         <View className='category-search'>
-          <SpCategorySearch onConfirm={handleConfirm} />
+          {/* <SpCategorySearch onConfirm={handleConfirm} /> */}
           {/* <View
             className={classNames('type', {
               'disable': cusIndex == 0
@@ -370,25 +339,7 @@ function StoreItemList(props) {
           </View>
         </View>
       </View>
-
-      {/* Sku选择器 */}
-      <MSpSkuSelect
-        open={skuPanelOpen}
-        type={selectType}
-        info={info}
-        onClose={() => {
-          setState((draft) => {
-            draft.skuPanelOpen = false
-          })
-        }}
-        onChange={(skuText, curItem) => {
-          setState((draft) => {
-            draft.skuText = skuText
-            draft.curItem = curItem
-          })
-        }}
-      />
-    </SpPage>
+    </View>
   )
 }
 

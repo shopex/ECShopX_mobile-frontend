@@ -32,4 +32,21 @@
       background: transparent;
     }
   }
+  .switchs{
+    height: 50px;
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 600;
+    font-size: 36px;
+    color: #222222;
+    line-height: 50px;
+    padding: 20px 24px;
+    .switching{
+      font-weight: 500;
+      font-size: 28px;
+      color: #444444;
+    }
+    .switched{
+      margin-left: 60px;
+    }
+  }
 }
