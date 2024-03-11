@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Taro, { getCurrentInstance, useDidShow, useRouter } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { View, Image, ScrollView } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   SpPage,
@@ -24,7 +24,7 @@ import { WgtHomeHeader } from '@/pages/home/wgts'
 import configStore from '@/store'
 import CompTabbar from './comps/comp-tabbar'
 
-import '@/pages/home/index.scss'
+import './index.scss'
 
 const MSpPrivacyModal = React.memo(SpPrivacyModal)
 
@@ -127,21 +127,22 @@ function Home() {
 
   return (
     <SpPage
-      className='page-index'
+      className='page-purchase-index'
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
       pageConfig={pageData?.base}
       renderFooter={<CompTabbar />}
       loading={loading}
     >
-      <View
+      <ScrollView
         className={classNames('home-body', {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
+        scrollY
       >
         {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
         <HomeWgts wgts={filterWgts} />
-      </View>
+      </ScrollView>
 
       {/* 隐私政策 */}
       <MSpPrivacyModal
