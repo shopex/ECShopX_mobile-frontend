@@ -5,11 +5,12 @@ import { useImmer } from 'use-immer'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import { AtButton, AtInput } from 'taro-ui'
 import api from '@/api'
-import { classNames } from '@/utils'
+import { classNames, pickBy } from '@/utils'
 import { useLogin } from '@/hooks'
 import { updateUserInfo } from '@/store/slices/user'
+import doc from '@/doc'
 import S from '@/spx'
-import { SpPage, SpNote, SpScrollView, SpSearchInput, SpFloatMenuItem } from '@/components'
+import { SpPage, SpNote, SpScrollView, SpSearchInput, SpFloatMenuItem, SpImage } from '@/components'
 import './index.scss'
 
 const initialState = {
@@ -27,9 +28,9 @@ function PurchaseActivityList() {
 
   useEffect(() => {
     if (!S.getAuthToken()) {
-      // Taro.redirectTo({
-      //   url: '/pages/purchase/auth'
-      // })
+      Taro.redirectTo({
+        url: '/pages/purchase/auth'
+      })
       return
     } else {
       scrollRef.current.reset()
@@ -44,8 +45,9 @@ function PurchaseActivityList() {
 
   const fetch = async ({ pageIndex, pageSize }) => {
     const { list, total_count } = await api.purchase.getEmployeeActivityList({ page: pageIndex, pageSize, activity_name })
+    const _list = pickBy(list, doc.purchase.ACTIVITY_ITEM)
     setState(draft => {
-      draft.activityList = [...activityList, ...list]
+      draft.activityList = [...activityList, ..._list]
     })
 
     return { total: total_count }
@@ -75,9 +77,9 @@ function PurchaseActivityList() {
 
   const onClickChange = (item) => {
     console.log(item)
-    const { id, enterprise_id, pages_template_id } = item
+    const { id, enterpriseId, pages_template_id } = item
     Taro.navigateTo({
-      url: `/subpages/purchase/index?activity_id=${id}&enterprise_id=${enterprise_id}&pages_template_id=${pages_template_id}`
+      url: `/subpages/purchase/index?activity_id=${id}&enterprise_id=${enterpriseId}&pages_template_id=${pages_template_id}`
     })
   }
 
@@ -105,32 +107,31 @@ function PurchaseActivityList() {
           />
         </View>
       </View>
-      <SpScrollView ref={scrollRef} className='item-list-scroll' auto={false} fetch={fetch} renderEmpty={
-        <SpNote img='empty_activity.png' title='暂无内购活动' />
-      } >
-        {activityList.map((item, index) => (
-          <View
-            key={item.id}
-            className={classNames(
-              'activity-item',
-              `act${(index % 4) + 1}`
-            )}
-            onClick={() => onClickChange(item)}
-          >
-            <View className='activity-item-top user-more'>
-              <View className='activity-item-title'>{item.name}</View>
-              <Text className='iconfont icon-qianwang-01 more'></Text>
-            </View>
-            <View className='activity-item-role'>
-              <View className='activity-item-role-left'>
-                <View className='role'>{item.is_employee == 1 && '员工' || item.is_relative == 1 && '亲友'}</View>
-                <View className='enterise'>{item.rel_enterprise}</View>
+      <ScrollView className="item-list-scroll" scrollY >
+        <SpScrollView ref={scrollRef} className='' auto={false} fetch={fetch} renderEmpty={
+          <SpNote img='empty_activity.png' title='没有查询到内购活动' />
+        } >
+          <View className='scroll-view-container'>
+            {activityList.map((item, index) => (
+              <View
+                key={item.id}
+                className='activity-item'
+                onClick={() => onClickChange(item)}
+              >
+                <View className='activity-item-hd'>
+                  <View className='activity-title'>{item.name}</View>
+                  <View className='role'>{item.role}</View>
+                </View>
+                <View className='activity-time'>
+                  {`活动时间：${item.employeeBeginTime} - ${item.employeeEndTime}`}
+                </View>
+                <SpImage className='activity-pic' circle={36} src={item.pic} />
               </View>
-              <View className='hot'>{item.status_desc}</View>
-            </View>
+            ))}
           </View>
-        ))}
-      </SpScrollView>
+        </SpScrollView>
+      </ScrollView>
+
     </SpPage>
   )
 }
