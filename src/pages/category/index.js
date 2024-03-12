@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import Taro, { useDidShow, getCurrentInstance } from '@tarojs/taro'
 import { Text, View, Image } from '@tarojs/components'
 import { useImmer } from 'use-immer'
-import { SpScrollView, SpPage, SpTabbar, SpCategorySearch,SpSkuSelect } from '@/components'
+import { SpScrollView, SpPage, SpTabbar, SpCategorySearch, SpSkuSelect } from '@/components'
 import api from '@/api'
 import doc from '@/doc'
 import { useDebounce } from '@/hooks'
 
-import { pickBy, classNames, styleNames, showToast,entryLaunch } from '@/utils'
+import { pickBy, classNames, styleNames, showToast, entryLaunch } from '@/utils'
 import CompFirstCategory from './comps/comp-first-category'
 import CompSecondCategory from './comps/comp-second-category'
 import CompThirdCategory from './comps/comp-third-category'
-import GoodsItem from './comps/goods-item'
+import CompGoodsItem from './comps/comp-goods-item'
 import './index.scss'
 
 const MSpSkuSelect = React.memo(SpSkuSelect)
@@ -30,8 +30,8 @@ const initialState = {
   show: false,
   secondList: [],
   thirdList: [],
-  info:null,
-  skuPanelOpen:false,
+  info: null,
+  skuPanelOpen: false,
   selectType: 'picker'
 }
 
@@ -105,26 +105,26 @@ function StoreItemList(props) {
     // })
 
     // if (currentList.length!==0) {
-      const res = await api.category.get()
-      const currentList = pickBy(res, {
-        name: 'category_name',
-        img: 'image_url',
-        id: 'category_id',
-        category_id: 'category_id',
-        children: ({ children }) =>
-          pickBy(children, {
-            name: 'category_name',
-            img: 'image_url',
-            id: 'category_id',
-            category_id: 'category_id',
-            children: ({ children: children_ }) =>
-              pickBy(children_, {
-                name: 'category_name',
-                img: 'image_url',
-                id: 'category_id'
-              })
-          })
-      })
+    const res = await api.category.get()
+    const currentList = pickBy(res, {
+      name: 'category_name',
+      img: 'image_url',
+      id: 'category_id',
+      category_id: 'category_id',
+      children: ({ children }) =>
+        pickBy(children, {
+          name: 'category_name',
+          img: 'image_url',
+          id: 'category_id',
+          category_id: 'category_id',
+          children: ({ children: children_ }) =>
+            pickBy(children_, {
+              name: 'category_name',
+              img: 'image_url',
+              id: 'category_id'
+            })
+        })
+    })
     // }
     setState((draft) => {
       draft.seriesList = currentList
@@ -242,7 +242,7 @@ function StoreItemList(props) {
     let data
     Taro.showLoading({
       title: '加载中'
-     })
+    })
     const { dtid } = await entryLaunch.getRouteParams()
     const itemDetail = await api.item.detail(id, {
       showError: false,
@@ -284,13 +284,13 @@ function StoreItemList(props) {
       draft.thirdList =
         _thirdList.length > 0
           ? [
-              {
-                name: '全部',
-                img: '',
-                id: ''
-              },
-              ..._thirdList
-            ]
+            {
+              name: '全部',
+              img: '',
+              id: ''
+            },
+            ..._thirdList
+          ]
           : []
     })
   }
@@ -305,14 +305,6 @@ function StoreItemList(props) {
       <View className='page-category-item-list-head'>
         <View className='category-search'>
           <SpCategorySearch onConfirm={handleConfirm} />
-          {/* <View
-            className={classNames('type', {
-              'disable': cusIndex == 0
-            })}
-            onClick={onSelectClick}
-          >
-            <Text className='text'>{cusIndex ? '有货' : '无货'}</Text>
-          </View> */}
         </View>
         <CompFirstCategory
           cusIndex={categoryFirstIndex}
@@ -354,16 +346,7 @@ function StoreItemList(props) {
             >
               {allList.map((item, index) => (
                 <View className='goods-item-wrap' key={`goods-item-l__${index}`}>
-                  <GoodsItem onStoreClick={handleClickStore} onAddToCart={addPurchase} hideStore info={item} />
-                  {item.activity_store > 0 && (
-                    <View className='goods-add' onClick={shoppingCart.bind(this, item)}>
-                      <Image
-                        src='https://shangpai-pic.fn-mart.com/miniprograme/gwcsmall.png'
-                        className='ckeck2'
-                      />
-                      {/* <View className='at-icon at-icon-add'></View> */}
-                    </View>
-                  )}
+                  <CompGoodsItem onStoreClick={handleClickStore} onAddToCart={addPurchase} hideStore info={item} />
                 </View>
               ))}
             </SpScrollView>

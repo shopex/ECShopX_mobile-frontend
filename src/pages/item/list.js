@@ -3,7 +3,6 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { AtDrawer, AtTabs } from 'taro-ui'
 import {
   SpFilterBar,
   SpTagBar,
@@ -30,7 +29,6 @@ import {
 import S from '@/spx'
 
 import './list.scss'
-import { defaultsDeep } from 'lodash'
 
 const MSpSkuSelect = React.memo(SpSkuSelect)
 
@@ -53,7 +51,7 @@ const initialState = {
   fixTop: 0,
   routerParams: null,
   skuPanelOpen: false,
-  info:null,
+  info: null,
   selectType: 'picker',
   card_id: null // 兑换券
 }
@@ -98,7 +96,7 @@ function ItemList() {
       const { cat_id, keywords, main_cat_id, tag_id, card_id, user_card_id } = params
 
       setState((draft) => {
-        ;(draft.routerParams = {
+        ; (draft.routerParams = {
           cat_id,
           keywords,
           main_cat_id,
@@ -338,31 +336,15 @@ function ItemList() {
     })
   }
 
-  const addPurchase = async (id) => {
-    let data
-    Taro.showLoading({
-      title: '加载中'
-     })
-    const {dtid } = await entryLaunch.getRouteParams()
-    const itemDetail = await api.item.detail(id, {
+  const handleAddToCart = async ({ itemId, distributorId }) => {
+    Taro.showLoading()
+    const itemDetail = await api.item.detail(itemId, {
       showError: false,
-      distributor_id: dtid
+      distributor_id: distributorId
     })
     Taro.hideLoading()
-    data = pickBy(itemDetail, doc.goods.GOODS_INFO)
-    // if (data.approveStatus == 'instock') {
-    //   setState((draft) => {
-    //     draft.isDefault = true
-    //     draft.defaultMsg = '商品已下架'
-    //   })
-    // }
     setState((draft) => {
-      draft.info = {
-        ...data
-      }
-    })
-    // 获取商品详情的接口
-    setState((draft) => {
+      draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
       draft.skuPanelOpen = true
       draft.selectType = 'addcart'
     })
@@ -431,8 +413,9 @@ function ItemList() {
                 <View className='goods-item-wrap' key={`goods-item-l__${idx}_${sidx}`}>
                   <SpGoodsItem
                     showFav
+                    showAddCart
                     onStoreClick={handleClickStore}
-                    onAddToCart={addPurchase}
+                    onAddToCart={handleAddToCart}
                     info={{
                       ...item,
                       card_id,
@@ -449,8 +432,9 @@ function ItemList() {
                 <View className='goods-item-wrap' key={`goods-item-r__${idx}_${sidx}`}>
                   <SpGoodsItem
                     showFav
+                    showAddCart
                     onStoreClick={handleClickStore}
-                    onAddToCart={addPurchase}
+                    onAddToCart={handleAddToCart}
                     info={{
                       ...item,
                       card_id,

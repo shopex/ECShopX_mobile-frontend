@@ -70,7 +70,7 @@ function StoreItemList(props) {
   const { tabbar = 1 } = $instance.router.params
   const goodsRef = useRef()
 
-  useEffect(() => {}, [])
+  useEffect(() => { }, [])
 
   // useDidShow(() => {
   //   setTimeout(() => {
@@ -121,7 +121,7 @@ function StoreItemList(props) {
       params['category'] = cat_id
     }
 
-    if(main_cat_id){
+    if (main_cat_id) {
       params['category'] = main_cat_id
     }
 
@@ -261,7 +261,7 @@ function StoreItemList(props) {
       className={classNames('page-store-item-list', {
         'has-tagbar': tagList.length > 0
       })}
-      renderFooter={tabbar == 1 && <CompTabbar />}
+    // renderFooter={tabbar == 1 && <CompTabbar />}
     >
       <View className='search-wrap'>
         <SpSearchBar
@@ -304,7 +304,7 @@ function StoreItemList(props) {
             {leftList.map((list, idx) => {
               return list.map((item, sidx) => (
                 <View className='goods-item-wrap' key={`goods-item-l__${idx}_${sidx}`}>
-                  <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
+                  <SpGoodsItem showFav showAddCart onStoreClick={handleClickStore} info={item} />
                 </View>
               ))
             })}
@@ -313,7 +313,7 @@ function StoreItemList(props) {
             {rightList.map((list, idx) => {
               return list.map((item, sidx) => (
                 <View className='goods-item-wrap' key={`goods-item-r__${idx}_${sidx}`}>
-                  <SpGoodsItem showFav onStoreClick={handleClickStore} info={item} />
+                  <SpGoodsItem showFav showAddCart onStoreClick={handleClickStore} info={item} />
                 </View>
               ))
             })}
