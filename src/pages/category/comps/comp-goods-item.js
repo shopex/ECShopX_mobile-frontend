@@ -11,7 +11,7 @@ import S from '@/spx'
 import { classNames, showToast, styleNames, VERSION_PLATFORM } from '@/utils'
 import { PROMOTION_TAG } from '@/consts'
 
-import './goods-item.scss'
+import './comp-goods-item.scss'
 
 function GoodsItem(props) {
   const dispatch = useDispatch()
@@ -186,7 +186,7 @@ function GoodsItem(props) {
                 <SpPoint value={info.point} />
               </View>
             )}
-            
+
 
             {!info.is_point && showPrice && (
               <View className='goods-price'>
@@ -199,7 +199,7 @@ function GoodsItem(props) {
                   {info.price-info.activityPrice>0?<Text className='unit-price'>{info.price}</Text> : ''}
                   {/* <Text className='unit'>{info.item_unit ? `/${info.item_unit}` : ''}</Text> */}
                 </View>
-                
+
                 {/* <View className='mk-price'>
                   {info.marketPrice / 100 > 0 && (
                     <SpPrice lineThrough value={info.marketPrice / 100}></SpPrice>
