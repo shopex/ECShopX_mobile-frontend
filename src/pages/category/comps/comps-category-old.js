@@ -293,7 +293,7 @@ function compsCategoryOld(props) {
   return (
     <SpPage
       scrollToTopBtn
-      className={classNames('page-category-index')}
+      className={classNames('page-category-index-old')}
       renderFooter={<SpTabbar />}
       ref={pageRef}
     >
