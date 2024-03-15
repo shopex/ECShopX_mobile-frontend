@@ -44,6 +44,7 @@ const initState = {
   info: null,
   skuPanelOpen: false,
   selectType: 'picker',
+  statusBarHeight:''
 }
 
 function StoreIndex() {
@@ -64,7 +65,8 @@ function StoreIndex() {
     storeInfo,
     info,
     skuPanelOpen,
-    selectType
+    selectType,
+    statusBarHeight
   } = state
 
   const dispatch = useDispatch()
@@ -72,7 +74,7 @@ function StoreIndex() {
 
   useEffect(() => {
     fetchWgts()
-
+    init()
   }, [])
 
   useEffect(() => {
@@ -82,6 +84,16 @@ function StoreIndex() {
       pageRef.current.pageUnLock()
     }
   }, [skuPanelOpen])
+
+
+  const init = async () => {
+    const { statusBarHeight } = await Taro.getSystemInfoSync()
+    setState((draft) => {
+      draft.statusBarHeight = statusBarHeight
+    })
+    console.log('MenuButton:', statusBarHeight)
+
+  }
 
   const fetchWgts = async () => {
     const { id, dtid } = await entryLaunch.getRouteParams()
@@ -316,7 +328,7 @@ function StoreIndex() {
         <CompShopBrand storeInfo={storeInfo} dtid={distributorId} />
       </View>
 
-      <View className='switchs'>
+      <View className='switchs'  style={{ background: `${pageData?.base?.pageBackgroundColor}` ,top:`${statusBarHeight+40}px`}}>
         <Text
           className={classNames(productSwitching ? null : 'switching')}
           onClick={() => tabbarSwitching(true)}

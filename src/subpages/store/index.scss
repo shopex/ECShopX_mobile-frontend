@@ -37,6 +37,8 @@
     }
   }
   .switchs{
+    position: sticky;
+    z-index: 99;
     height: 50px;
     font-family: PingFangSC, PingFang SC;
     font-weight: 600;
