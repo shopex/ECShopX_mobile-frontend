@@ -1,8 +1,13 @@
 .sp-page.ipx .sp-page-footer {
   height: 160px !important;
 }
+.at-float-layout .layout-body {
+  font-size: 28px;
+  padding:0;
+  height: 556px;
+  border-radius: 20px 20px 0px 0px;
+}
 .page-store-index {
- 
   .search {
     width: 100%;
     position: fixed;
@@ -36,7 +41,7 @@
       background: transparent;
     }
   }
-  .switchs{
+  .switchs {
     position: sticky;
     z-index: 99;
     height: 50px;
@@ -46,12 +51,12 @@
     color: #222222;
     line-height: 50px;
     padding: 20px 24px;
-    .switching{
+    .switching {
       font-weight: 500;
       font-size: 28px;
       color: #444444;
     }
-    .switched{
+    .switched {
       margin-left: 60px;
     }
   }

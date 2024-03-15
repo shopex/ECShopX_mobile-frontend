@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
-import Taro, { useShareAppMessage, useShareTimeline, useDidShow, getCurrentInstance } from '@tarojs/taro'
+import Taro, {
+  useShareAppMessage,
+  useShareTimeline,
+  useDidShow,
+  getCurrentInstance
+} from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import { AtFloatLayout } from 'taro-ui'
 import { useSelector, useDispatch } from 'react-redux'
 import { SpFloatMenuItem, SpPage, SpSearch, SpRecommend, SpTabbar, SpSkuSelect } from '@/components'
 import api from '@/api'
@@ -26,8 +32,8 @@ import CompTabbar from './comps/comp-tabbar'
 import CompShopBrand from './comps/comp-shopbrand'
 import Categorys from './categorys'
 import CompTab from './comps/comp-tab'
+import CompLayout from './comps/comp-layout'
 import { updateShopCartCount } from '@/store/slices/cart'
-
 
 import './index.scss'
 
@@ -44,7 +50,7 @@ const initState = {
   info: null,
   skuPanelOpen: false,
   selectType: 'picker',
-  statusBarHeight:''
+  statusBarHeight: ''
 }
 
 function StoreIndex() {
@@ -85,14 +91,12 @@ function StoreIndex() {
     }
   }, [skuPanelOpen])
 
-
   const init = async () => {
     const { statusBarHeight } = await Taro.getSystemInfoSync()
     setState((draft) => {
       draft.statusBarHeight = statusBarHeight
     })
     console.log('MenuButton:', statusBarHeight)
-
   }
 
   const fetchWgts = async () => {
@@ -133,15 +137,14 @@ function StoreIndex() {
     }
     const { valid_cart } = await api.cart.get(params)
     let shopCats = {
-      shop_id: valid_cart[0]?.shop_id || "",  //下单
-      cart_total_num: valid_cart[0]?.cart_total_num || "",   //数量
-      total_fee: valid_cart[0]?.total_fee || "",   //实付金额
-      discount_fee: valid_cart[0]?.discount_fee || "",   //优惠金额
+      shop_id: valid_cart[0]?.shop_id || '', //下单
+      cart_total_num: valid_cart[0]?.cart_total_num || '', //数量
+      total_fee: valid_cart[0]?.total_fee || '', //实付金额
+      discount_fee: valid_cart[0]?.discount_fee || '', //优惠金额
       storeDetails: valid_cart[0] || {}
     }
     dispatch(updateShopCartCount(shopCats))
   }
-
 
   const fetchLikeList = async () => {
     if (openRecommend == 1) {
@@ -228,7 +231,8 @@ function StoreIndex() {
 
   const settlement = () => {
     const { type = 'distributor' } = router.params
-    const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } = shopCartCount.storeDetails
+    const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } =
+      shopCartCount.storeDetails
     const query = {
       cart_type: 'cart',
       type,
@@ -249,7 +253,6 @@ function StoreIndex() {
       url: `/pages/cart/espier-checkout?${qs.stringify(query)}`
     })
   }
-
 
   let searchComp = wgts.find((wgt) => wgt.name == 'search')
   const pageData = wgts.find((wgt) => wgt.name == 'page')
@@ -328,7 +331,13 @@ function StoreIndex() {
         <CompShopBrand storeInfo={storeInfo} dtid={distributorId} />
       </View>
 
-      <View className='switchs'  style={{ background: `${pageData?.base?.pageBackgroundColor}` ,top:`${statusBarHeight+40}px`}}>
+      <View
+        className='switchs'
+        style={{
+          background: `${pageData?.base?.pageBackgroundColor}`,
+          top: `${statusBarHeight + 40}px`
+        }}
+      >
         <Text
           className={classNames(productSwitching ? null : 'switching')}
           onClick={() => tabbarSwitching(true)}
@@ -344,9 +353,11 @@ function StoreIndex() {
       </View>
 
       {productSwitching && wgts.length > 0 ? (
-        <WgtsContext.Provider value={{
-          onAddToCart
-        }}>
+        <WgtsContext.Provider
+          value={{
+            onAddToCart
+          }}
+        >
           <HomeWgts wgts={filterWgts} dtid={distributorId} onLoad={fetchLikeList}>
             {/* 猜你喜欢 */}
             <SpRecommend className='recommend-block' info={likeList} />
@@ -373,6 +384,11 @@ function StoreIndex() {
           })
         }}
       />
+
+      {/* 购物车弹框 */}
+      <AtFloatLayout isOpened>
+        <CompLayout></CompLayout>
+      </AtFloatLayout>
     </SpPage>
   )
 }
