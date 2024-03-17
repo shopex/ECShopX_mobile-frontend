@@ -14,8 +14,7 @@ function SpFloatLayout(props) {
     hideClose = false,
     renderFooter,
     open = false,
-    onClose = () => {},
-    onMaskCloses=()=>{}
+    onClose = () => {}
   } = props
 
 
@@ -25,7 +24,7 @@ function SpFloatLayout(props) {
         active: open
       })}
     >
-      <View className='sp-float-layout__overlay' onClick={onMaskCloses}></View>
+      <View className='sp-float-layout__overlay' onClick={onClose}></View>
       <View className='sp-float-layout__body'>
         {!hideClose && <Text className='iconfont icon-guanbi' onClick={onClose}></Text>}
         {title && (
