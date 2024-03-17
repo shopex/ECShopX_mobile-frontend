@@ -1,20 +1,21 @@
 import React, { useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Taro, { useDidShow, getCurrentInstance } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { Text, View, Image, ScrollView } from '@tarojs/components'
 import { useImmer } from 'use-immer'
-import { SpScrollView} from '@/components'
+import { SpScrollView, SpPage, SpTabbar, SpCategorySearch, SpSkuSelect, SpLogin } from '@/components'
 import api from '@/api'
 import doc from '@/doc'
 import { useDebounce } from '@/hooks'
+import S from '@/spx'
+import { pickBy, classNames, styleNames, showToast, entryLaunch } from '@/utils'
+import CompFirstCategory from './comp-first-category'
+import CompSecondCategory from './comp-second-category'
+import CompThirdCategory from './comp-third-category'
+import CompGoodsItem from './comp-goods-item'
+import './comps-category-old.scss'
 
-import { pickBy, classNames, styleNames, showToast } from '@/utils'
-import CompFirstCategory from './comps/comp-first-category'
-import CompSecondCategory from './comps/comp-second-category'
-import CompThirdCategory from './comps/comp-third-category'
-import GoodsItem from './comps/goods-item'
-import './categorys.scss'
-
+const MSpSkuSelect = React.memo(SpSkuSelect)
 
 const initialState = {
   cusIndex: 1,
@@ -28,10 +29,13 @@ const initialState = {
   cat_id: undefined,
   show: false,
   secondList: [],
-  thirdList: []
+  thirdList: [],
+  info: null,
+  skuPanelOpen: false,
+  selectType: 'picker'
 }
 
-function StoreItemList(props) {
+function compsCategoryOld(props) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   // const { purchase_share_info = {} } = useSelector((state) => state.purchase)
@@ -46,16 +50,15 @@ function StoreItemList(props) {
     categoryThirdIndex,
     cat_id,
     secondList,
-    thirdList
+    thirdList,
+    info,
+    skuPanelOpen,
+    selectType
   } = state
 
-
-  const {
-    addPurchases = () => {},
-    dtid
-  } = props
-
   const goodsRef = useRef()
+  const pageRef = useRef()
+  const loginRef = useRef()
   const dispatch = useDispatch()
   useEffect(() => {
     getCategoryList()
@@ -68,28 +71,35 @@ function StoreItemList(props) {
     }
   }, [cat_id])
 
+  useEffect(() => {
+    if (skuPanelOpen) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [skuPanelOpen])
 
   const getCategoryList = async () => {
-      const res = await api.category.get({distributor_id:dtid})
-      const currentList = pickBy(res, {
-        name: 'category_name',
-        img: 'image_url',
-        id: 'category_id',
-        category_id: 'category_id',
-        children: ({ children }) =>
-          pickBy(children, {
-            name: 'category_name',
-            img: 'image_url',
-            id: 'category_id',
-            category_id: 'category_id',
-            children: ({ children: children_ }) =>
-              pickBy(children_, {
-                name: 'category_name',
-                img: 'image_url',
-                id: 'category_id'
-              })
-          })
-      })
+    const res = await api.category.get()
+    const currentList = pickBy(res, {
+      name: 'category_name',
+      img: 'image_url',
+      id: 'category_id',
+      category_id: 'category_id',
+      children: ({ children }) =>
+        pickBy(children, {
+          name: 'category_name',
+          img: 'image_url',
+          id: 'category_id',
+          category_id: 'category_id',
+          children: ({ children: children_ }) =>
+            pickBy(children_, {
+              name: 'category_name',
+              img: 'image_url',
+              id: 'category_id'
+            })
+        })
+    })
     setState((draft) => {
       draft.seriesList = currentList
       draft.hasSeries = true
@@ -106,11 +116,10 @@ function StoreItemList(props) {
       approve_status: 'onsale,only_show',
       item_type: 'normal',
       is_point: 'false',
-      distributor_id: dtid,
-      // distributor_id: dis_id || Taro.getStorageSync('distributor_id'),
+      distributor_id: dis_id || Taro.getStorageSync('distributor_id'),
       goodsSort,
       category_id: cat_id,
-      v_store: cusIndex,
+      v_store: cusIndex
     }
 
     const { list: _list, total_count } = await api.item.search(params)
@@ -203,8 +212,28 @@ function StoreItemList(props) {
   }
 
 
-  const addPurchase = async (id) => {
-    addPurchases(id)
+  const handleAddToCart = async ({ itemId, distributorId }) => {
+    if(!S.getAuthToken()) {
+      loginRef.current?.handleToLogin()
+      return
+    }
+
+    Taro.showLoading()
+    try {
+      const itemDetail = await api.item.detail(itemId, {
+        showError: false,
+        distributor_id: distributorId
+      })
+      Taro.hideLoading()
+      setState((draft) => {
+        draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
+        draft.skuPanelOpen = true
+        draft.selectType = 'addcart'
+      })
+    } catch (e) {
+      showToast(e.message)
+      Taro.hideLoading()
+    }
   }
 
   const changeList = async () => {
@@ -223,33 +252,27 @@ function StoreItemList(props) {
       draft.thirdList =
         _thirdList.length > 0
           ? [
-              {
-                name: '全部',
-                img: '',
-                id: ''
-              },
-              ..._thirdList
-            ]
+            {
+              name: '全部',
+              img: '',
+              id: ''
+            },
+            ..._thirdList
+          ]
           : []
     })
   }
 
   return (
-    <View
+    <SpPage
       scrollToTopBtn
-      className={classNames('page-category-item-list')}
+      className={classNames('page-category-index-old')}
+      renderFooter={<SpTabbar />}
+      ref={pageRef}
     >
-      <View className='page-category-item-list-head'>
+      <View className='container-hd'>
         <View className='category-search'>
-          {/* <SpCategorySearch onConfirm={handleConfirm} /> */}
-          {/* <View
-            className={classNames('type', {
-              'disable': cusIndex == 0
-            })}
-            onClick={onSelectClick}
-          >
-            <Text className='text'>{cusIndex ? '有货' : '无货'}</Text>
-          </View> */}
+          <SpCategorySearch onConfirm={handleConfirm} />
         </View>
         <CompFirstCategory
           cusIndex={categoryFirstIndex}
@@ -257,7 +280,8 @@ function StoreItemList(props) {
           onClick={onFirstCategoryClick}
         />
       </View>
-      <View className='page-category-item-list-container'>
+      <View className='container-bd'>
+
         <View className='left-container'>
           <CompSecondCategory
             cusIndex={categorySecondIndex}
@@ -265,6 +289,7 @@ function StoreItemList(props) {
             onClick={onSecondCategoryClick}
           />
         </View>
+
         <View
           className='right-container'
           style={styleNames({
@@ -281,34 +306,45 @@ function StoreItemList(props) {
               />
             </View>
           )}
-          <View className='goods-list goods-list__type-list'>
+          <ScrollView className='goods-list-container' scrollY>
             <SpScrollView
-              className='page-category-item-list-scroll'
-              scrollY
+              className='scroll-view-goods'
               ref={goodsRef}
               fetch={fetch}
               auto={false}
             >
               {allList.map((item, index) => (
                 <View className='goods-item-wrap' key={`goods-item-l__${index}`}>
-                  <GoodsItem onStoreClick={handleClickStore} onAddToCart={addPurchase} hideStore info={item} />
-                  {item.activity_store > 0 && (
-                    <View className='goods-add' onClick={shoppingCart.bind(this, item)}>
-                      <Image
-                        src='https://shangpai-pic.fn-mart.com/miniprograme/gwcsmall.png'
-                        className='ckeck2'
-                      />
-                      {/* <View className='at-icon at-icon-add'></View> */}
-                    </View>
-                  )}
+                  <CompGoodsItem onStoreClick={handleClickStore} onAddToCart={handleAddToCart} hideStore info={item} />
                 </View>
               ))}
             </SpScrollView>
-          </View>
+          </ScrollView>
+
         </View>
       </View>
-    </View>
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
+
+      <SpLogin ref={loginRef} />
+    </SpPage>
   )
 }
 
-export default StoreItemList
+export default compsCategoryOld
