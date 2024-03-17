@@ -19,7 +19,7 @@ const initialState = {
 function CompTab(props) {
   const {shopCartCount} = useSelector((state) => state.cart)
 
-  const { settlement = {} } = props
+  const { settlement = {},popFrame = {} } = props
   const [state, setState] = useImmer(initialState)
   const { fav, couponList, extend } = state
 
@@ -32,11 +32,7 @@ function CompTab(props) {
       <View className='comp-shop-brand-gwc'>
         <View
           className='comp-shop-brand-gwc-num'
-          onClick={() => {
-            Taro.navigateTo({
-              url: '/pages/cart/espier-index'
-            })
-          }}
+          onClick={()=>popFrame()}
         >
           <Text className='iconfont icon-gouwuche2' />
           {shopCartCount.cart_total_num && <View className='nums'>{shopCartCount.cart_total_num}</View>}
