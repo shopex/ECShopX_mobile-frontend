@@ -8,7 +8,14 @@ import Taro, {
 import { View, Text } from '@tarojs/components'
 import { AtFloatLayout } from 'taro-ui'
 import { useSelector, useDispatch } from 'react-redux'
-import { SpFloatMenuItem, SpPage, SpSearch, SpRecommend, SpTabbar, SpSkuSelect } from '@/components'
+import {
+  SpFloatMenuItem,
+  SpPage,
+  SpSearch,
+  SpRecommend,
+  SpFloatLayout,
+  SpSkuSelect
+} from '@/components'
 import api from '@/api'
 import doc from '@/doc'
 import {
@@ -24,7 +31,8 @@ import {
   showToast
 } from '@/utils'
 import { useImmer } from 'use-immer'
-import { useNavigation } from '@/hooks'
+import { useNavigation ,useDebounce} from '@/hooks'
+import _toString from 'lodash/toString'
 import qs from 'qs'
 import HomeWgts from '@/pages/home/comps/home-wgts'
 import { WgtsContext } from '@/pages/home/wgts/wgts-context'
@@ -33,7 +41,8 @@ import CompShopBrand from './comps/comp-shopbrand'
 import Categorys from './categorys'
 import CompTab from './comps/comp-tab'
 import CompLayout from './comps/comp-layout'
-import { updateShopCartCount } from '@/store/slices/cart'
+import { updateShopCartCount ,fetchCartList,updateCount,updateCartItemNum} from '@/store/slices/cart'
+
 
 import './index.scss'
 
@@ -50,7 +59,9 @@ const initState = {
   info: null,
   skuPanelOpen: false,
   selectType: 'picker',
-  statusBarHeight: ''
+  statusBarHeight: '',
+  open: false,
+  hideClose: true
 }
 
 function StoreIndex() {
@@ -72,7 +83,9 @@ function StoreIndex() {
     info,
     skuPanelOpen,
     selectType,
-    statusBarHeight
+    statusBarHeight,
+    open,
+    hideClose
   } = state
 
   const dispatch = useDispatch()
@@ -144,6 +157,50 @@ function StoreIndex() {
       storeDetails: valid_cart[0] || {}
     }
     dispatch(updateShopCartCount(shopCats))
+  }
+
+  const onMaskCloses = () => {
+      setState((draft) => {
+        draft.open = false
+      })
+  }
+
+  const handleClick = useDebounce(async (item, num) => {
+    console.log(`onChangeCartGoodsItem:`, item,num)
+    let { shop_id, cart_id } = item
+    const { type = 'distributor' } = router.params
+    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type }))
+    getCartList()
+  }, 200)
+
+  const onChangeGoodsIsCheck = async (item, type, checked) => {
+    // return
+    Taro.showLoading({ title: '' })
+    let parmas = { is_checked: checked }
+    if (type === 'all') {
+      const cartIds = item.list.map((item) => item.cart_id)
+      parmas['cart_id'] = cartIds
+    } else {
+      parmas['cart_id'] = item.cart_id
+    }
+    try {
+      await api.cart.select(parmas)
+    } catch (e) {
+      console.log(e)
+    }
+    getCartList()
+  }
+
+  const getCartList = async () => {
+    Taro.showLoading({ title: '' })
+    const { type = 'distributor' } = router?.params || {}
+    const params = {
+      shop_type: type
+    }
+    await fetchWgts()
+    await dispatch(fetchCartList(params))
+    await dispatch(updateCount(params))
+    Taro.hideLoading()
   }
 
   const fetchLikeList = async () => {
@@ -254,6 +311,17 @@ function StoreIndex() {
     })
   }
 
+  //显示弹框
+  const popFrame = () => {
+    if(shopCartCount.storeDetails?.list?.length>0){
+      setState((draft) => {
+        draft.open = true
+      })
+    }else{
+      showToast('购物车暂无数据，请先加购')
+    }
+  }
+
   let searchComp = wgts.find((wgt) => wgt.name == 'search')
   const pageData = wgts.find((wgt) => wgt.name == 'page')
   let filterWgts = []
@@ -308,7 +376,7 @@ function StoreIndex() {
           </SpFloatMenuItem>
         </View>
       }
-      renderFooter={<CompTab settlement={settlement} />}
+      renderFooter={<CompTab settlement={settlement} popFrame={popFrame} />}
     >
       {searchComp && (
         <View className='search'>
@@ -339,13 +407,13 @@ function StoreIndex() {
         }}
       >
         <Text
-          className={classNames(productSwitching ? null : 'switching')}
+          className={classNames(productSwitching ? 'switchings' : 'switching')}
           onClick={() => tabbarSwitching(true)}
         >
           首页
         </Text>
         <Text
-          className={classNames('switched', productSwitching ? 'switching' : null)}
+          className={classNames('switched', productSwitching ? 'switching' : 'switchings')}
           onClick={() => tabbarSwitching(false)}
         >
           全部商品
@@ -386,9 +454,14 @@ function StoreIndex() {
       />
 
       {/* 购物车弹框 */}
-      <AtFloatLayout isOpened>
-        <CompLayout></CompLayout>
-      </AtFloatLayout>
+      <SpFloatLayout
+        open={open}
+        hideClose={hideClose}
+        onMaskCloses={onMaskCloses}
+        className='cart-layout'
+      >
+        <CompLayout onChangeGoodsIsCheck={onChangeGoodsIsCheck} handleClick={handleClick} settlement={settlement} />
+      </SpFloatLayout>
     </SpPage>
   )
 }
