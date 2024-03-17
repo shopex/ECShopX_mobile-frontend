@@ -457,7 +457,7 @@ function StoreIndex() {
       <SpFloatLayout
         open={open}
         hideClose={hideClose}
-        onMaskCloses={onMaskCloses}
+        onClose={onMaskCloses}
         className='cart-layout'
       >
         <CompLayout onChangeGoodsIsCheck={onChangeGoodsIsCheck} handleClick={handleClick} settlement={settlement} />
