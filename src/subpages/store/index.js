@@ -99,10 +99,16 @@ function StoreIndex() {
   const pageRef = useRef()
   const loginRef = useRef()
 
-  useEffect(() => {
+
+  useDidShow(() => {
     fetchWgts()
     init()
-  }, [])
+  })
+
+  // useEffect(() => {
+  //   fetchWgts()
+  //   init()
+  // }, [])
 
   useEffect(() => {
     if(S.getAuthToken()){
