@@ -105,6 +105,12 @@ function StoreIndex() {
   }, [])
 
   useEffect(() => {
+    if(S.getAuthToken()){
+      fetchWgts()
+    }
+  }, [S.getAuthToken()])
+
+  useEffect(() => {
     if (skuPanelOpen || open) {
       pageRef.current.pageLock()
     } else {
@@ -277,15 +283,15 @@ function StoreIndex() {
 
   //显示弹框
   const popFrame = () => {
+    if (!S.getAuthToken()) {
+      loginRef.current?.handleToLogin()
+      return
+    }
     if (shopCartCount.storeDetails?.list?.length > 0) {
       setState((draft) => {
         draft.open = true
       })
     } else {
-      if (!S.getAuthToken()) {
-        loginRef.current?.handleToLogin()
-        return
-      }
       showToast('购物车暂无数据，请先加购')
     }
   }
