@@ -33,7 +33,7 @@ import {
   showToast
 } from '@/utils'
 import { useImmer } from 'use-immer'
-import { useNavigation ,useDebounce} from '@/hooks'
+import { useNavigation, useDebounce } from '@/hooks'
 import _toString from 'lodash/toString'
 import qs from 'qs'
 import HomeWgts from '@/pages/home/comps/home-wgts'
@@ -42,9 +42,14 @@ import CompTabbar from './comps/comp-tabbar'
 import CompShopBrand from './comps/comp-shopbrand'
 import Categorys from './categorys'
 import CompTab from './comps/comp-tab'
-import CompLayout from './comps/comp-layout'
-import { updateShopCartCount ,fetchCartList,updateCount,updateCartItemNum,deleteCartItem} from '@/store/slices/cart'
-
+import CompAddCart from './comps/comp-add-cart'
+import {
+  updateShopCartCount,
+  fetchCartList,
+  updateCount,
+  updateCartItemNum,
+  deleteCartItem
+} from '@/store/slices/cart'
 
 import './index.scss'
 
@@ -69,7 +74,7 @@ const initState = {
 function StoreIndex() {
   const [state, setState] = useImmer(initState)
   const [likeList, setLikeList] = useImmer([])
-  const { openRecommend, openLocation, openStore ,colorPrimary} = useSelector((state) => state.sys)
+  const { openRecommend, openLocation, openStore, colorPrimary } = useSelector((state) => state.sys)
   const { shopCartCount } = useSelector((state) => state.cart)
   const { setNavigationBarTitle } = useNavigation()
   const $instance = getCurrentInstance()
@@ -94,19 +99,18 @@ function StoreIndex() {
   const pageRef = useRef()
   const loginRef = useRef()
 
-
   useEffect(() => {
     fetchWgts()
     init()
   }, [])
 
   useEffect(() => {
-    if (skuPanelOpen) {
+    if (skuPanelOpen || open) {
       pageRef.current.pageLock()
     } else {
       pageRef.current.pageUnLock()
     }
-  }, [skuPanelOpen])
+  }, [skuPanelOpen,open])
 
   const init = async () => {
     const { statusBarHeight } = await Taro.getSystemInfoSync()
@@ -161,50 +165,6 @@ function StoreIndex() {
       storeDetails: valid_cart[0] || {}
     }
     dispatch(updateShopCartCount(shopCats))
-  }
-
-  const onMaskCloses = () => {
-      setState((draft) => {
-        draft.open = false
-      })
-  }
-
-  const handleClick = useDebounce(async (item, num) => {
-    console.log(`onChangeCartGoodsItem:`, item,num)
-    let { shop_id, cart_id } = item
-    const { type = 'distributor' } = router.params
-    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type }))
-    getCartList()
-  }, 200)
-
-  const onChangeGoodsIsCheck = async (item, type, checked) => {
-    // return
-    Taro.showLoading({ title: '' })
-    let parmas = { is_checked: checked }
-    if (type === 'all') {
-      const cartIds = item.list.map((item) => item.cart_id)
-      parmas['cart_id'] = cartIds
-    } else {
-      parmas['cart_id'] = item.cart_id
-    }
-    try {
-      await api.cart.select(parmas)
-    } catch (e) {
-      console.log(e)
-    }
-    getCartList()
-  }
-
-  const getCartList = async () => {
-    Taro.showLoading({ title: '' })
-    const { type = 'distributor' } = router?.params || {}
-    const params = {
-      shop_type: type
-    }
-    await fetchWgts()
-    await dispatch(fetchCartList(params))
-    await dispatch(updateCount(params))
-    Taro.hideLoading()
   }
 
   const fetchLikeList = async () => {
@@ -290,58 +250,39 @@ function StoreIndex() {
     }
   }
 
-  const settlement = () => {
-    const { type = 'distributor' } = router.params
-    const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } =
-      shopCartCount.storeDetails
-    const query = {
-      cart_type: 'cart',
-      type,
-      shop_id,
-      is_delivery,
-      is_ziti,
-      name: shop_name,
-      store_address: address,
-      lat,
-      lng,
-      hour,
-      phone: mobile,
-      //购物车默认是0     0:普通商品  1:跨境商品
-      // goodType: current == 0 ? 'normal' : 'cross'
-      goodType: 'normal'
-    }
-    Taro.navigateTo({
-      url: `/pages/cart/espier-checkout?${qs.stringify(query)}`
-    })
-  }
-
-  const onDelete=async()=>{
-    const { id, dtid } = await entryLaunch.getRouteParams()
-    const distributor_id = getDistributorId(id || dtid)
-    const res = await Taro.showModal({
-      title: '提示',
-      content: '将当前商品移出购物车?',
-      showCancel: true,
-      cancel: '取消',
-      cancelText: '取消',
-      confirmText: '确认',
-      confirmColor: colorPrimary
-    })
-    if (!res.confirm) return
-    await dispatch(deleteCartItem({ distributor_id }))
-    getCartList()
-    onMaskCloses()
-  }
+  // const settlement = () => {
+  //   const { type = 'distributor' } = router.params
+  //   const { shop_id, is_delivery, is_ziti, shop_name, address, lat, lng, hour, mobile } =
+  //     shopCartCount.storeDetails
+  //   const query = {
+  //     cart_type: 'cart',
+  //     type,
+  //     shop_id,
+  //     is_delivery,
+  //     is_ziti,
+  //     name: shop_name,
+  //     store_address: address,
+  //     lat,
+  //     lng,
+  //     hour,
+  //     phone: mobile,
+  //     //购物车默认是0     0:普通商品  1:跨境商品
+  //     // goodType: current == 0 ? 'normal' : 'cross'
+  //     goodType: 'normal'
+  //   }
+  //   Taro.navigateTo({
+  //     url: `/pages/cart/espier-checkout?${qs.stringify(query)}`
+  //   })
+  // }
 
   //显示弹框
   const popFrame = () => {
-
-    if(shopCartCount.storeDetails?.list?.length>0){
+    if (shopCartCount.storeDetails?.list?.length > 0) {
       setState((draft) => {
         draft.open = true
       })
-    }else{
-      if(!S.getAuthToken()) {
+    } else {
+      if (!S.getAuthToken()) {
         loginRef.current?.handleToLogin()
         return
       }
@@ -403,7 +344,7 @@ function StoreIndex() {
           </SpFloatMenuItem>
         </View>
       }
-      renderFooter={<CompTab settlement={settlement} popFrame={popFrame} />}
+      renderFooter={<CompTab popFrame={popFrame} />}
     >
       {searchComp && (
         <View className='search'>
@@ -481,14 +422,14 @@ function StoreIndex() {
       />
 
       {/* 购物车弹框 */}
-      <SpFloatLayout
+      <CompAddCart
         open={open}
-        hideClose={hideClose}
-        onClose={onMaskCloses}
-        className='cart-layout'
-      >
-        <CompLayout onChangeGoodsIsCheck={onChangeGoodsIsCheck} handleClick={handleClick} settlement={settlement} onDelete={onDelete} />
-      </SpFloatLayout>
+        onMaskCloses={() =>
+          setState((draft) => {
+            draft.open = false
+          })
+        }
+      />
 
       <SpLogin ref={loginRef} />
     </SpPage>
