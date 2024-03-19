@@ -382,7 +382,7 @@ function StoreIndex() {
       <View
         className='switchs'
         style={{
-          background: `${pageData?.base?.pageBackgroundColor}`,
+          background: `${pageData?.base?.pageBackgroundColor || '#fff'}`,
           top: `${statusBarHeight + 40}px`
         }}
       >

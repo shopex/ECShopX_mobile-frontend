@@ -177,15 +177,18 @@ function GoodsItem(props) {
         </View> */}
 
 {/* 促销活动标签 */}
-          {/* {showPromotion && info.promotion && info.promotion.length > 0 && ( */}
-            <View className='promotions'>
-              {info.promotion.map((item, index) => (
-                <Text className='promotion-tag' key={`promotion-tag__${index}`}>
-                  {PROMOTION_TAG[item.tag_type]}
-                </Text>
-              ))}
-            </View>
-          {/* )} */}
+    <View className='promotions'>
+      {showPromotion && info.promotion && info.promotion.length > 0 && (
+        <View>
+          {info?.promotion.map((item, index) => (
+            <Text className='promotion-tag' key={`promotion-tag__${index}`}>
+              {PROMOTION_TAG[item.tag_type]}
+            </Text>
+          ))}
+        </View>
+      )}
+    </View>
+          
 
 
         {(info.is_point || (!info.is_point && showPrice) || showFav) && (
