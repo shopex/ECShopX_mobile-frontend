@@ -61,6 +61,7 @@
           margin-right: 18px;
         }
         &-text {
+          width: 510px;
           font-family: PingFangSC, PingFang SC;
           .name {
             font-weight: 400;
@@ -71,7 +72,7 @@
           .addition-and-subtraction{
             display: flex;
             justify-content: space-between;
-            width: 516px;
+            width: 100%;
             .details-name {
               &-ml {
                 height: 26px;
