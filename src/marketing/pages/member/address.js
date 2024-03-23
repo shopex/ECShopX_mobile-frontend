@@ -71,7 +71,7 @@ function AddressIndex(props) {
 
     updateChooseAddress(item)
     setTimeout(() => {
-      Taro.eventCenter.trigger('onEventSelectReceivingAddress')
+      Taro.eventCenter.trigger('onEventSelectReceivingAddress', item)
       Taro.navigateBack()
     }, 700)
   }
