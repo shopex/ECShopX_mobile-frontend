@@ -1,13 +1,13 @@
 import Taro from '@tarojs/taro'
 import { View, Text, ScrollView, Button } from '@tarojs/components'
-import React,{ useEffect ,useContext} from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import { useAsyncCallback } from '@/hooks'
 import doc from '@/doc'
 import api from '@/api'
 import { WgtsContext } from './wgts-context'
-import { SpNoShop, SpImage, SpShopCoupon, SpPrice, SpGoodsItem ,SpSkuSelect} from '@/components'
+import { SpNoShop, SpImage, SpShopCoupon, SpPrice, SpGoodsItem, SpSkuSelect } from '@/components'
 import { classNames, styleNames, isEmpty, entryLaunch, showToast, pickBy } from '@/utils'
 import { AtActivityIndicator } from 'taro-ui'
 import './nearby-shop.scss'
@@ -18,8 +18,8 @@ const initialState = {
   scrollLeft: 0,
   listTypes: [],
   isFirstRender: true,
-  indicator:true,
-  noData:false,
+  indicator: true,
+  noData: false,
   page: {
     page: 1,
     pageSize: 4
@@ -34,7 +34,8 @@ function WgtNearbyShop(props) {
   }
 
   const [state, setState] = useAsyncCallback(initialState)
-  const { activeIndex, shopList, listTypes, isFirstRender, page, total_count,indicator,noData} = state
+  const { activeIndex, shopList, listTypes, isFirstRender, page, total_count, indicator, noData } =
+    state
   const { location } = useSelector((state) => state.user)
 
   const { base, seletedTags, productLabel } = info
@@ -61,14 +62,16 @@ function WgtNearbyShop(props) {
     } else {
       init(activeIndex)
     }
-  }, [activeIndex, location,page])
+  }, [activeIndex, location, page])
 
   const listType = () => {
     let modifiedSelectedTags = []
     let modifiedProductLabel = []
-    if (base.navigation_display == 'business') {  //商家
+    if (base.navigation_display == 'business') {
+      //商家
       modifiedSelectedTags = seletedTags.map((obj) => ({ ...obj, types: 'business' }))
-    } else if (base.navigation_display == 'productLabels') {  //商品标签
+    } else if (base.navigation_display == 'productLabels') {
+      //商品标签
       modifiedProductLabel = productLabel.map((obj) => ({ ...obj, types: 'productLabels' }))
     } else {
       modifiedSelectedTags = seletedTags.map((obj) => ({ ...obj, types: 'business' }))
@@ -117,16 +120,16 @@ function WgtNearbyShop(props) {
       approve_status: 'onsale,only_show',
       item_type: 'normal',
       is_point: 'false',
-      distributor_id : res.map(item=>item.distributor_id).join(","),
-      tag_id:val?productLabel[0].tag_id:listTypes[activeIndex].tag_id
+      distributor_id: res.map((item) => item.distributor_id).join(','),
+      tag_id: val ? productLabel[0].tag_id : listTypes[activeIndex].tag_id
     }
     const { total_count, list } = await api.item.search(params)
     const n_list = pickBy(list, doc.goods.ITEM_LIST_GOODS)
     setState((v) => {
       v.shopList = [...v.shopList, ...n_list]
-      v.total_count = total_count,
-      v.indicator = false,
-      v.noData = v.shopList.length>0?false:true
+      ;(v.total_count = total_count),
+        (v.indicator = false),
+        (v.noData = v.shopList.length > 0 ? false : true)
     })
   }
 
@@ -162,10 +165,10 @@ function WgtNearbyShop(props) {
     }
     const { list } = await api.shop.getNearbyShop(params)
     setState((v) => {
-      v.shopList = list,
-      v.indicator = false,
-      v.noData = list.length>0?false:true,
-      v.scrollLeft = 0 + Math.random() //  //在小程序端必须这么写才能回到初始值
+      ;(v.shopList = list),
+        (v.indicator = false),
+        (v.noData = list.length > 0 ? false : true),
+        (v.scrollLeft = 0 + Math.random()) //  //在小程序端必须这么写才能回到初始值
     })
   }
 
@@ -210,7 +213,7 @@ function WgtNearbyShop(props) {
                   {base.show_coupon && (
                     <ScrollView scrollX className='coupon-list' scrollLeft={state.scrollLeft}>
                       {item.discountCardList.map((coupon, cindex) => {
-                        <SpShopCoupon
+                        ;<SpShopCoupon
                           fromStoreIndex
                           className='coupon-index'
                           info={coupon}
@@ -226,37 +229,41 @@ function WgtNearbyShop(props) {
                   )}
                   {item.itemList && (
                     <ScrollView scrollX>
-                      {item.itemList.map((goods, gindex) => {
-                        return (
-                          <View className='coupon-commodity-all' key={gindex}>
-                            <View
-                              className='coupon-commodity-list'
-                              onClick={() => {
-                                handleGoodsClick(goods)
-                              }}
-                            >
-                              <SpImage
-                                className='shop-logo'
-                                src={goods.pics[0] || 'shop_default_logo.png'}
-                                circle={16}
-                                width={150}
-                                height={150}
-                              />
-                              <View className='coupon-commodity-title'>{goods.item_name}</View>
-                              <SpPrice
-                                className='market-price'
-                                size={32}
-                                value={goods.price}
-                              ></SpPrice>
-                              {goods.market_price > 0 && goods.pric > goods.market_price && (
-                                <View className='coupon-commodity-price'>
-                                  ¥{goods.market_price}
+                      <View className='coupon-commodity-all'>
+                        {item.itemList.map((goods, gindex) => {
+                          return (
+                            <View key={gindex}>
+                              <View>
+                                <View
+                                  className='coupon-commodity-list'
+                                  onClick={() => {
+                                    handleGoodsClick(goods)
+                                  }}
+                                >
+                                  <SpImage
+                                    className='shop-logo'
+                                    src={goods.pics[0] || 'shop_default_logo.png'}
+                                    circle={16}
+                                    width={150}
+                                    height={150}
+                                  />
+                                  <View className='coupon-commodity-title'>{goods.item_name}</View>
+                                  <SpPrice
+                                    className='market-price'
+                                    size={32}
+                                    value={goods.price}
+                                  ></SpPrice>
+                                  {goods.market_price > 0 && goods.pric > goods.market_price && (
+                                    <View className='coupon-commodity-price'>
+                                      ¥{goods.market_price}
+                                    </View>
+                                  )}
                                 </View>
-                              )}
+                              </View>
                             </View>
-                          </View>
-                        )
-                      })}
+                          )
+                        })}
+                      </View>
                     </ScrollView>
                   )}
                 </View>
@@ -339,12 +346,11 @@ function WgtNearbyShop(props) {
 
   const seeMore = () => {
     setState((v) => {
-        v.page = {
-          page: v.page.page + 1,
-          pageSize: 4
-        }
+      v.page = {
+        page: v.page.page + 1,
+        pageSize: 4
       }
-    )
+    })
   }
 
   return (
@@ -381,8 +387,7 @@ function WgtNearbyShop(props) {
                 setState((draft) => {
                   draft.activeIndex = index
                   draft.shopList = []
-                  draft.total_count = 0,
-                  draft.indicator = true
+                  ;(draft.total_count = 0), (draft.indicator = true)
                 })
               }
             >
@@ -395,16 +400,15 @@ function WgtNearbyShop(props) {
           ? storeList()
           : storeProducts()}
 
-          { 
-            indicator &&
-            <AtActivityIndicator mode='center' size={32} content='正在拼命加载数据...' />
-          }
+        {indicator && <AtActivityIndicator mode='center' size={32} content='正在拼命加载数据...' />}
 
-        
         {noData && (
           <View className='empty-con'>
             <SpImage src='empty_data.png' width={292} height={224} />
-            <View className='empty-tip'>更多{listTypes.length && listTypes[activeIndex].types == 'business'?"商家":"商品"}接入中，敬请期待</View>
+            <View className='empty-tip'>
+              更多{listTypes.length && listTypes[activeIndex].types == 'business' ? '商家' : '商品'}
+              接入中，敬请期待
+            </View>
           </View>
         )}
 
