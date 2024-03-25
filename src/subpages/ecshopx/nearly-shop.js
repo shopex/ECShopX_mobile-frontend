@@ -7,7 +7,7 @@ import { SpPage, SpScrollView, SpLogin, SpAddress } from '@/components'
 import { updateLocation, updateChooseAddress } from '@/store/slices/user'
 import api from '@/api'
 import CompShopItem from './comps/comp-shopitem'
-import { useLogin } from '@/hooks'
+import { usePage, useLogin } from '@/hooks'
 import doc from '@/doc'
 import { entryLaunch, pickBy, classNames, showToast, log, isArray, isObject } from '@/utils'
 
@@ -18,8 +18,8 @@ const initialState = {
   locationIng: false,
   chooseValue: ['北京市', '北京市', '昌平区'],
   keyword: '', // 参数
-  type: 0, // 0:正常流程 1:基于省市区过滤 2:基于默认收货地址强制定位
-  filterType: 1, // 过滤方式（前端使用）1:省市区过滤 2:经纬度定位 3:收货地址
+  type: 0, // 过滤方式（接口使用）0:经纬度 1:基于省市区过滤 2:基于默认收货地址强制定位
+  filterType: 1, // 过滤方式（前端使用）1:省市区筛选过滤 2:收货地址省市区筛选 3:经纬度定位 4:默认收货地址
   queryProvice: '',
   queryCity: '',
   queryDistrict: '',
@@ -63,11 +63,27 @@ function NearlyShop(props) {
   useEffect(() => {
     const { province, city, district } = location || {}
     setState((draft) => {
-      if (location) { // fix：未授权定位时不设置chooseValue
+      if (address) {
+        draft.filterType = address.is_def ? 4 : 2
+      } else if (location) { // fix：未授权定位时不设置chooseValue
         draft.chooseValue = [province, city, district]
+        draft.filterType = 3
       }
       draft.refresh = true
     })
+
+    Taro.eventCenter.on('onEventSelectReceivingAddress', (addressRes) => {
+      console.log('onEventSelectReceivingAddress...')
+      setState(draft => {
+        draft.filterType = addressRes.is_def ? 4 : 2
+        draft.shopList = []
+        draft.refresh = true
+      })
+    })
+
+    return () => {
+      Taro.eventCenter.off('onEventSelectReceivingAddress')
+    }
   }, [])
 
 
@@ -75,14 +91,15 @@ function NearlyShop(props) {
     let params = {
       page: pageIndex,
       pageSize,
-      type,
       search_type: 2, // 1=搜索商品；2=搜索门店
       sort_type: 1
     }
+    // filterType（1:省市区筛选过滤 2:收货地址省市区筛选 3:经纬度定位 4:默认收货地址）
     if (filterType == 1) {
       const [chooseProvince, chooseCity, chooseDistrict] = chooseValue
       params = {
         ...params,
+        type: 1,
         province: chooseProvince,
         city: chooseCity,
         area: chooseDistrict
@@ -93,14 +110,31 @@ function NearlyShop(props) {
           name: keyword
         }
       }
-    } else if (filterType == 2) {
+    } else if(filterType == 2) {
       params = {
         ...params,
+        type: 1,
+        province: address.province,
+        city: address.city,
+        area: address.county
+      }
+    } else if (filterType == 3) {
+      params = {
+        ...params,
+        type: 0,
         lat: location?.lat,
         lng: location?.lng,
         province: location?.province,
         city: location?.city,
         area: location?.district
+      }
+    } else if (filterType == 4) {
+      params = {
+        ...params,
+        type: 2,
+        // province: address.province,
+        // city: address.city,
+        // area: address.county
       }
     }
 
@@ -112,7 +146,7 @@ function NearlyShop(props) {
       draft.refresh = false
     })
 
-    if (isObject(defualt_address)) {
+    if (isObject(defualt_address) && !address) {
       dispatch(updateChooseAddress(defualt_address))
     }
 
@@ -131,7 +165,6 @@ function NearlyShop(props) {
     await setState((draft) => {
       draft.keyword = detail.value
       draft.shopList = []
-      draft.type = 1
       draft.filterType = 1
       draft.refresh = true
     })
@@ -141,7 +174,6 @@ function NearlyShop(props) {
     await setState((draft) => {
       draft.keyword = ''
       draft.shopList = []
-      draft.type = 1
       draft.filterType = 1
       draft.refresh = true
     })
@@ -160,8 +192,7 @@ function NearlyShop(props) {
         await setState((draft) => {
           draft.chooseValue = [province, city, district] // fix:重新定位到上海，值没有更新，导致picker里面的值还是北京
           draft.shopList = []
-          draft.type = 1
-          draft.filterType = 2
+          draft.filterType = 3
           draft.refresh = true
           draft.locationIng = false
         })
@@ -182,7 +213,7 @@ function NearlyShop(props) {
     Taro.navigateTo({ url: '/marketing/pages/member/edit-address' })
   }
 
-  // 根据收货地址搜索
+  // 根据定位地址或收货地址定位切换地址
   const onLocationChange = async (info) => {
     let local = info.address || info.province + info.city + info.county + info.adrdetail
     const res = await entryLaunch.getLnglatByAddress(local)
@@ -190,9 +221,13 @@ function NearlyShop(props) {
     Taro.navigateBack()
   }
 
+  // 省市区切换
   const onPickerChange = ([{ label: province }, { label: city }, { label: area }]) => {
     setState((draft) => {
       draft.chooseValue = [province, city, area]
+      draft.shopList = []
+      draft.filterType = 1 // 省市区过滤
+      draft.refresh = true
     })
   }
 
