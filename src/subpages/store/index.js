@@ -170,11 +170,11 @@ function StoreIndex() {
     }
     const { valid_cart } = await api.cart.get(params)
     let shopCats = {
-      shop_id: valid_cart[0]?.shop_id || '', //下单
-      cart_total_num: valid_cart[0]?.cart_total_num || '', //数量
-      total_fee: valid_cart[0]?.total_fee || '', //实付金额
-      discount_fee: valid_cart[0]?.discount_fee || '', //优惠金额
-      storeDetails: valid_cart[0] || {}
+      shop_id: valid_cart===undefined?'':valid_cart[0]?.shop_id || '', //下单
+      cart_total_num: valid_cart===undefined?'':valid_cart[0]?.cart_total_num || '', //数量
+      total_fee: valid_cart===undefined?'':valid_cart[0]?.total_fee || '', //实付金额
+      discount_fee: valid_cart===undefined?'':valid_cart[0]?.discount_fee || '', //优惠金额
+      storeDetails: valid_cart===undefined?'':valid_cart[0] || {}
     }
     dispatch(updateShopCartCount(shopCats))
   }
