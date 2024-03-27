@@ -88,25 +88,15 @@ function compsCategoryOld(props) {
   }, [skuPanelOpen])
 
   const getCategoryList = async () => {
-    let currentList = []
+    const currentList = []
 
     const query = { template_name: platformTemplateName, version: 'v1.0.1', page_name: 'category' }
     const { list } = await api.category.getCategory(query)
-    const seriesList = list[0] ? list[0].params.data[0]?.content : []
-    if(seriesList){
-      seriesList.forEach(element => {
-        element?.children.forEach(val => {
-          val.id = val.category_id || val.main_category_id
-          val?.children.forEach(ele => {
-            ele.id = ele.category_id || ele.main_category_id
-          });
-        });
-      });
-    }
-    console.log(seriesList, '.......seriesList......seriesList')
+    const seriesList = list[0] ? list[0].params.data : []
+
     if (!seriesList.length) {
       //不存在数据读取销售分类
-      const res = await api.category.get()
+      const res = await api.category.get({ is_main_category: 1 })
       currentList = pickBy(res, {
         name: 'category_name',
         img: 'image_url',
@@ -128,21 +118,21 @@ function compsCategoryOld(props) {
       })
     } else {
       currentList = pickBy(seriesList, {
-        name: 'name',
-        img: 'img',
-        id: 'id',
-        category_id: 'id',
-        children: ({ children }) =>
-          pickBy(children, {
-            name: 'category_name',
-            img: 'img',
-            id: 'id',
-            category_id: 'id',
+        name: 'title',
+        img: 'image_url',
+        id: 'category_id',
+        category_id: 'category_id',
+        children: ({ children:content }) =>
+          pickBy(content, {
+            name: 'title',
+            img: 'image_url',
+            id: 'category_id',
+            category_id: 'category_id',
             children: ({ children }) =>
               pickBy(children, {
-                name: 'category_name',
-                img: 'img',
-                id: 'id'
+                name: 'title',
+                img: 'image_url',
+                id: 'category_id'
               })
           })
       })
@@ -166,7 +156,8 @@ function compsCategoryOld(props) {
       is_point: 'false',
       distributor_id: dis_id || Taro.getStorageSync('distributor_id'),
       goodsSort,
-      category_id: cat_id,
+      // category_id: cat_id,
+      main_category: cat_id,
       v_store: cusIndex
     }
 
