@@ -32,10 +32,10 @@ function StoreItemList(props) {
 
   return (
     <View>
-      {
+      {/* {
         keywords?<CompsCategoryNew />:<CompsCategoryOld />
-      }
-      {/* <CompsCategoryOld /> */}
+      } */}
+      <CompsCategoryOld />
     </View>
   )
 }
