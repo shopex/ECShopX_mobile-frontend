@@ -34,7 +34,7 @@ function WgtNearbyShop(props) {
   }
 
   const [state, setState] = useAsyncCallback(initialState)
-  const { activeIndex, shopList, listTypes, isFirstRender, page, total_count, indicator, noData } =
+  const { activeIndex, shopList, listTypes, isFirstRender, page, total_count, indicator, noData} =
     state
   const { location } = useSelector((state) => state.user)
 
@@ -115,22 +115,31 @@ function WgtNearbyShop(props) {
 
   const commodity = async (val) => {
     let res = await storeData()
-    let params = {
-      ...page,
-      approve_status: 'onsale,only_show',
-      item_type: 'normal',
-      is_point: 'false',
-      distributor_id: res.map((item) => item.distributor_id).join(','),
-      tag_id: val ? productLabel[0].tag_id : listTypes[activeIndex].tag_id
+    if(res.length){
+      let params = {
+        ...page,
+        approve_status: 'onsale,only_show',
+        item_type: 'normal',
+        is_point: 'false',
+        distributor_id: res.map((item) => item.distributor_id).join(','),
+        tag_id: val ? productLabel[0].tag_id : listTypes[activeIndex].tag_id
+      }
+      const { total_count, list } = await api.item.search(params)
+      const n_list = pickBy(list, doc.goods.ITEM_LIST_GOODS)
+      setState((v) => {
+        v.shopList = [...v.shopList, ...n_list]
+        v.total_count = total_count,
+        v.indicator = false,
+        v.noData = v.shopList.length > 0 ? false : true
+      })
+    }else{
+      setState((v) => {
+        v.shopList = []
+        v.total_count = 0,
+        v.indicator = false,
+        v.noData = true
+      })
     }
-    const { total_count, list } = await api.item.search(params)
-    const n_list = pickBy(list, doc.goods.ITEM_LIST_GOODS)
-    setState((v) => {
-      v.shopList = [...v.shopList, ...n_list]
-      ;(v.total_count = total_count),
-        (v.indicator = false),
-        (v.noData = v.shopList.length > 0 ? false : true)
-    })
   }
 
   const init = async (idx) => {
@@ -182,6 +191,7 @@ function WgtNearbyShop(props) {
     return (
       shopList.length > 0 && (
         <View className='shop-list'>
+          {console.log(base,'base--------------------')}
           {shopList.slice(0, 2).map((item, index) => {
             return (
               <View className='shop-list-del' key={index}>
@@ -209,21 +219,24 @@ function WgtNearbyShop(props) {
                       </View>
                     )}
                   </View>
-
+                      
                   {base.show_coupon && (
                     <ScrollView scrollX className='coupon-list' scrollLeft={state.scrollLeft}>
-                      {item.discountCardList.map((coupon, cindex) => {
-                        ;<SpShopCoupon
-                          fromStoreIndex
-                          className='coupon-index'
-                          info={coupon}
-                          key={`shop-coupon__${cindex}`}
-                          // onClick={() => {
-                          //   Taro.navigateTo({
-                          //     url: `/subpages/marketing/coupon-center?distributor_id=${0}`
-                          //   })
-                          // }}
-                        />
+                      {console.log(item.discountCardList, 'item.discountCardList1')}
+                      {item.discountCardList.slice(0, 3).map((coupon, cindex) => {
+                        return(
+                          <SpShopCoupon
+                            fromStoreIndex
+                            className='coupon-index'
+                            info={coupon}
+                            key={`shop-coupon__${cindex}`}
+                            // onClick={() => {
+                            //   Taro.navigateTo({
+                            //     url: `/subpages/marketing/coupon-center`
+                            //   })
+                            // }}
+                          />
+                        )
                       })}
                     </ScrollView>
                   )}
@@ -251,11 +264,11 @@ function WgtNearbyShop(props) {
                                   <SpPrice
                                     className='market-price'
                                     size={32}
-                                    value={goods.price}
+                                    value={goods.price/100}
                                   ></SpPrice>
                                   {goods.market_price > 0 && goods.pric > goods.market_price && (
                                     <View className='coupon-commodity-price'>
-                                      ¥{goods.market_price}
+                                      ¥{goods.market_price/100}
                                     </View>
                                   )}
                                 </View>
@@ -387,7 +400,9 @@ function WgtNearbyShop(props) {
                 setState((draft) => {
                   draft.activeIndex = index
                   draft.shopList = []
-                  ;(draft.total_count = 0), (draft.indicator = true)
+                  draft.total_count = 0
+                  draft.indicator = true
+                  draft.noData = false
                 })
               }
             >
