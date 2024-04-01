@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro'
-import { View, Text, ScrollView, Button } from '@tarojs/components'
+import { View, Text, ScrollView, Button,Image } from '@tarojs/components'
 import React, { useEffect, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
@@ -253,13 +253,14 @@ function WgtNearbyShop(props) {
                                     handleGoodsClick(goods)
                                   }}
                                 >
-                                  <SpImage
+                                  {/* <SpImage
                                     className='shop-logo'
                                     src={goods.pics[0] || 'shop_default_logo.png'}
                                     circle={16}
                                     width={150}
                                     height={150}
-                                  />
+                                  /> */}
+                                  <Image src={goods.pics[0] || 'shop_default_logo.png'} className='shop-logo'></Image>
                                   <View className='coupon-commodity-title'>{goods.item_name}</View>
                                   <SpPrice
                                     className='market-price'
