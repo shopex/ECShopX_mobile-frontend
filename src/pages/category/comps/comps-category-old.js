@@ -35,6 +35,7 @@ const initialState = {
   goodsSort: 0,
   seriesList: [],
   cat_id: undefined,
+  cat_type:undefined,
   show: false,
   secondList: [],
   thirdList: [],
@@ -57,6 +58,7 @@ function compsCategoryOld(props) {
     categorySecondIndex,
     categoryThirdIndex,
     cat_id,
+    cat_type,
     secondList,
     thirdList,
     info,
@@ -88,30 +90,85 @@ function compsCategoryOld(props) {
   }, [skuPanelOpen])
 
   const getCategoryList = async () => {
-    const res = await api.category.get({is_main_category:1})
-    const currentList = pickBy(res, {
-      name: 'category_name',
-      img: 'image_url',
-      id: 'category_id',
-      category_id: 'category_id',
-      children: ({ children }) =>
-        pickBy(children, {
-          name: 'category_name',
-          img: 'image_url',
-          id: 'category_id',
-          category_id: 'category_id',
-          children: ({ children: children_ }) =>
-            pickBy(children_, {
-              name: 'category_name',
-              img: 'image_url',
-              id: 'category_id'
-            })
-        })
-    })
+    let currentList = []
+
+    const query = { template_name: platformTemplateName, version: 'v1.0.1', page_name: 'category' }
+    const { list } = await api.category.getCategory(query)
+    const seriesList = list[0] ? list[0].params.data[0]?.content : []
+    if(seriesList){
+      //type  false:main_category 管理分类  true:category_id 销售分类
+      seriesList.forEach(element => {
+        element.id = element.category_id || element.main_category_id
+        element.name = element.name || element.category_name
+        element.type = element.category_id?true:false
+        element?.children.forEach(val => {
+          val.id = val.category_id || val.main_category_id
+          val.name = val.name || val.category_name
+          val.type = val.category_id?true:false
+          val?.children.forEach(ele => {
+            ele.id = ele.category_id || ele.main_category_id
+            ele.name = ele.name || ele.category_name
+            ele.type = ele.category_id?true:false
+          });
+        });
+      });
+    }
+    console.log(seriesList, '.......seriesList......seriesList')
+    if (!seriesList.length) {
+      //不存在数据读取销售分类
+      const res = await api.category.get()
+      currentList = pickBy(res, {
+        name: 'category_name',
+        img: 'image_url',
+        id: 'category_id',
+        type:true,
+        category_id: 'category_id',
+        children: ({ children }) =>
+          pickBy(children, {
+            name: 'category_name',
+            img: 'image_url',
+            id: 'category_id',
+            type:true,
+            category_id: 'category_id',
+            children: ({ children: children_ }) =>
+              pickBy(children_, {
+                name: 'category_name',
+                img: 'image_url',
+                type:true,
+                id: 'category_id'
+              })
+          })
+      })
+    } else {
+      currentList = pickBy(seriesList, {
+        name: 'name',
+        img: 'img',
+        id: 'id',
+        type:'type',
+        category_id: 'id',
+        children: ({ children }) =>
+          pickBy(children, {
+            name: 'name',
+            img: 'img',
+            id: 'id',
+            type:'type',
+            category_id: 'id',
+            children: ({ children }) =>
+              pickBy(children, {
+                name: 'name',
+                img: 'img',
+                id: 'id',
+                type:'type'
+              })
+          })
+      })
+    }
+    console.log(currentList,'currentList==========');
     setState((draft) => {
       draft.seriesList = currentList
       draft.hasSeries = true
       draft.cat_id = currentList[0].id
+      draft.cat_type = currentList[0]?.type
     })
   }
 
@@ -127,8 +184,12 @@ function compsCategoryOld(props) {
       distributor_id: dis_id || Taro.getStorageSync('distributor_id'),
       goodsSort,
       // category_id: cat_id,
-      main_category: cat_id,
       v_store: cusIndex
+    }
+    if(cat_type){
+      params.category_id = cat_id
+    }else{
+      params.main_category = cat_id
     }
 
     const { list: _list, total_count } = await api.item.search(params)
@@ -166,6 +227,7 @@ function compsCategoryOld(props) {
       draft.categoryThirdIndex = 0
       draft.allList = []
       draft.cat_id = seriesList[index]?.id
+      draft.cat_type = seriesList[index]?.type
     })
   }, 200)
 
@@ -176,6 +238,7 @@ function compsCategoryOld(props) {
       draft.categoryThirdIndex = 0
       draft.allList = []
       draft.cat_id = index == 0 ? seriesList[categoryFirstIndex]?.id : secondList[index]?.id
+      draft.cat_type = index == 0 ? seriesList[categoryFirstIndex]?.type : secondList[index]?.type
     })
   }, 200)
 
@@ -185,6 +248,7 @@ function compsCategoryOld(props) {
       draft.categoryThirdIndex = index
       draft.allList = []
       draft.cat_id = index == 0 ? secondList[categorySecondIndex]?.id : thirdList[index]?.id
+      draft.cat_type = index == 0 ? secondList[categorySecondIndex]?.type : thirdList[index]?.type
     })
   }, 200)
 
