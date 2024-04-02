@@ -260,7 +260,7 @@ function WgtNearbyShop(props) {
                                     width={150}
                                     height={150}
                                   /> */}
-                                  <Image src={goods.pics[0] || 'shop_default_logo.png'} className='shop-logo'></Image>
+                                  <Image src={goods.pics || 'shop_default_logo.png'} className='shop-logo'></Image>
                                   <View className='coupon-commodity-title'>{goods.item_name}</View>
                                   <SpPrice
                                     className='market-price'
