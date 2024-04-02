@@ -99,12 +99,15 @@ function compsCategoryOld(props) {
       //type  false:main_category 管理分类  true:category_id 销售分类
       seriesList.forEach(element => {
         element.id = element.category_id || element.main_category_id
+        element.name = element.name || element.category_name
         element.type = element.category_id?true:false
         element?.children.forEach(val => {
           val.id = val.category_id || val.main_category_id
+          val.name = val.name || val.category_name
           val.type = val.category_id?true:false
           val?.children.forEach(ele => {
             ele.id = ele.category_id || ele.main_category_id
+            ele.name = ele.name || ele.category_name
             ele.type = ele.category_id?true:false
           });
         });
