@@ -396,7 +396,7 @@ function StoreIndex() {
           className={classNames('switched', productSwitching ? 'switching' : 'switchings')}
           onClick={() => tabbarSwitching(false)}
         >
-          全部商品
+          商品分类
         </Text>
       </View>
 
