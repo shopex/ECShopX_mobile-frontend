@@ -42,6 +42,20 @@ export default (props = {}) => {
           adapayAliH5Pay(params, orderInfo)
         }
         break
+      case 'bspay':
+        if (pay_channel == 'wx_lite') {
+          if (isWeixin) {
+            weappPay(params, orderInfo)
+          } else if (isWeb) {
+            // H5非微信浏览器，跳转小程序发起支付
+            bspayH5Pay(params, orderInfo)
+          }
+        } else if (pay_channel == 'wx_pub') {
+          wxpayjsPay(params, orderInfo)
+        } else if (pay_channel == 'alipay_wap') {
+          bspayAliH5Pay(params, orderInfo)
+        }
+        break
       case 'wxpayh5':
         wxpayh5Pay(params, orderInfo)
         break
@@ -262,6 +276,28 @@ export default (props = {}) => {
     Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
     setTimeout(() => {
       window.location.href = openlink
+    }, 1000)
+  }
+
+  // 汇付斗拱，支付宝H5
+  const bspayAliH5Pay = async (params, orderInfo) => {
+    const { pay_type, pay_channel } = params
+    const { order_id, orderType = 'normal' } = orderInfo
+    const { protocol, host } = window.location
+    let query = {
+      order_id,
+      pay_type,
+      order_type: orderType,
+      return_url: `${protocol}//${host}${cashierResultUrl}?order_id=${order_id}`
+    }
+    if (pay_type == 'bspay' && pay_channel == 'alipay_wap') {
+      query['pay_channel'] = pay_channel
+    }
+
+    const { payment } = await api.cashier.getPayment(query)
+    Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+    setTimeout(() => {
+      window.location.replace(`alipays://platformapi/startapp?saId=10000007&qrcode=${payment}`)
     }, 1000)
   }
 
