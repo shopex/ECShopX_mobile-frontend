@@ -67,7 +67,8 @@ const config = {
       root: 'subpages/ecshopx',
       pages: [
         'nearly-shop', // 店铺选择
-        'shop-list' // 商家列表
+        'shop-list', // 商家列表
+        'navigation-ibs' //lbs图片导航
       ]
     },
     {
