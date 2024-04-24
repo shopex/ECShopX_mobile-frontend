@@ -36,7 +36,7 @@ function WgtNearbyShop(props) {
   const [state, setState] = useAsyncCallback(initialState)
   const { activeIndex, shopList, listTypes, isFirstRender, page, total_count, indicator, noData } =
     state
-  const { location } = useSelector((state) => state.user)
+  const { location, address } = useSelector((state) => state.user)
 
   const { base, seletedTags, productLabel } = info
   const MSpSkuSelect = React.memo(SpSkuSelect)
@@ -88,9 +88,9 @@ function WgtNearbyShop(props) {
     if (location) {
       lat = location?.lat
       lng = location?.lng
-      province = location?.province || '北京市'
-      city = location?.city || '北京市'
-      district = location?.district || '昌平区'
+      province = location?.province || address?.province
+      city = location?.city || address?.city
+      district = location?.district || address?.district
     }
     let params = {
       distributor_tag_id: distributor_tag_id.join(','),
@@ -145,9 +145,9 @@ function WgtNearbyShop(props) {
     if (location) {
       lat = location?.lat
       lng = location?.lng
-      province = location?.province || '北京市'
-      city = location?.city || '北京市'
-      district = location?.district || '昌平区'
+      province = location?.province || address?.province
+      city = location?.city || address?.city
+      district = location?.district || address?.district
     }
     let params = {
       distributor_tag_id: seletedTags[idx]?.tag_id,
@@ -165,17 +165,17 @@ function WgtNearbyShop(props) {
         ...params,
         lat,
         lng,
-        province: province,
-        city: city,
+        province,
+        city,
         area: district
       }
     }
     const { list } = await api.shop.getNearbyShop(params)
     setState((v) => {
-      ;(v.shopList = list),
-        (v.indicator = false),
-        (v.noData = list.length > 0 ? false : true),
-        (v.scrollLeft = 0 + Math.random()) //  //在小程序端必须这么写才能回到初始值
+      v.shopList = list
+      v.indicator = false
+      v.noData = list.length > 0 ? false : true
+      v.scrollLeft = 0 + Math.random() //  //在小程序端必须这么写才能回到初始值
     })
   }
 
