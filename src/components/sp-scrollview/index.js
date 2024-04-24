@@ -14,6 +14,7 @@ function SpScrollView(props, ref) {
     className,
     children,
     fetch,
+    copywriting = true,
     auto = true,
     renderEmpty,
     style,
@@ -109,7 +110,7 @@ function SpScrollView(props, ref) {
       {!page.hasMore &&
         getTotal() == 0 &&
         (renderEmpty ? renderEmpty : <SpNote img='empty_activity.png' title='没有查询到数据' />)}
-      {!page.loading && !page.hasMore && getTotal() > 0 && (
+      {!page.loading && !page.hasMore && getTotal() > 0 && copywriting && (
         <SpNote className='no-more' title='--没有更多数据了--'></SpNote>
       )}
       <View className={classNames('scrollview-bottom', `scrollview-${vid}`)} ></View>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import Taro, { useShareAppMessage, useShareTimeline ,getCurrentInstance} from '@tarojs/taro'
+import Taro, { useShareAppMessage, useShareTimeline, useRouter } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import { SpPage, SpSearch, SpRecommend, SpSkuSelect } from '@/components'
@@ -21,12 +21,12 @@ import { updateLocation } from '@/store/slices/user'
 import { platformTemplateName } from '@/utils/platform'
 import { updateShopInfo } from '@/store/slices/shop'
 import { useImmer } from 'use-immer'
-import { useLogin, useNavigation } from '@/hooks'
+import { useNavigation } from '@/hooks'
 import doc from '@/doc'
 import HomeWgts from '@/pages/home/comps/home-wgts'
 import { WgtHomeHeader } from '@/pages/home/wgts'
 import { WgtsContext } from '@/pages/home/wgts/wgts-context'
-import NavigationClassification from './navigation-classification'
+import NavigationClassification from './comps/comp-navigation-classification'
 
 import './navigation-ibs.scss'
 
@@ -44,28 +44,25 @@ const initialState = {
   info: null,
   skuPanelOpen: false,
   selectType: 'picker',
-  content:null,
-  id:null,
-  seletedTags:[],
-  classifyList:null
+  seletedTags: [],
+  classifyList: null
 }
 
-function navigationIbs() {
-  const $instance = getCurrentInstance()
+function NavigationIbs() {
   const [state, setState] = useImmer(initialState)
   const [likeList, setLikeList] = useImmer([])
   const pageRef = useRef()
+  const router = useRouter()
+  const { initState, openRecommend, openLocation, openStore, openScanQrcode } = useSelector(
+    (state) => state.sys
+  )
+  // const { shopInfo } = useSelector((state) => state.shop)
 
-  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } =
-    useSelector((state) => state.sys)
-  const { shopInfo } = useSelector((state) => state.shop)
-
-  const showAdv = useSelector((member) => member.user.showAdv)
+  // const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
 
   const {
-    wgts,
     loading,
     searchComp,
     pageData,
@@ -75,40 +72,30 @@ function navigationIbs() {
     info,
     skuPanelOpen,
     selectType,
-    content,
-    id,
     seletedTags,
     classifyList
   } = state
 
-
   const dispatch = useDispatch()
 
+  //请求销售分类数据请求接口和设置动态的标题
   useEffect(() => {
-    let {content,id,seletedTags} = $instance.router.params
+    let { content, seletedTags } = router.params
     setState((draft) => {
-        draft.content = content
-        draft.id = id
-        draft.seletedTags = JSON.parse(seletedTags)
-      })
-    if (initState) {
-      goodsCategoryin()
-      setNavigationBarTitle(content)
-    }
-  }, [initState])
+      draft.seletedTags = JSON.parse(seletedTags)
+    })
+    goodsCategoryin()
+    setNavigationBarTitle(content)
+  }, [])
 
-  useEffect(() => {
-    if (shopInfo && VERSION_STANDARD) {
-      fetchWgts()
-    }
-  }, [shopInfo])
-
+  //非云店和地址存在请求挂件接口
   useEffect(() => {
     if (location && VERSION_STANDARD) {
       fetchWgts()
     }
   }, [location])
 
+  //弹窗出来时固定页面
   useEffect(() => {
     if (skuPanelOpen) {
       pageRef.current.pageLock()
@@ -117,30 +104,34 @@ function navigationIbs() {
     }
   }, [skuPanelOpen])
 
+  //基于存在销售分类数据请求接口
   useEffect(() => {
-   if(classifyList){
-    init()
-   }
+    if (classifyList) {
+      init()
+    }
   }, [classifyList])
 
-
-  const goodsCategoryin = async()=>{
-    let res = await api.item.goodsCategoryinfo({category_id:$instance.router.params.id})
-    if($instance.router.params.seletedTags.length > 0){
+  //获销售分类数据，并且处理成页面需要的数据
+  const goodsCategoryin = async () => {
+    let tags = JSON.parse(router.params.seletedTags)
+    let res = await api.item.goodsCategoryinfo({ category_id: router.params.id })
+    //挂件中存在商家第一层加推荐店铺
+    if (tags.length > 0) {
       res.children.unshift({
-        category_name:'推荐'
+        category_name: '推荐店铺',
+        image_url:true,
       })
     }
-    res.children.forEach(element => {
+    //第二层默认是全部，并且那第一层的category_id
+    res.children.forEach((element) => {
       element?.children?.unshift({
-        category_name:'全部',
-        category_id:element.category_id
+        category_name: '全部',
+        category_id: element.category_id
       })
-    });
+    })
     setState((draft) => {
       draft.classifyList = res
     })
-    
   }
 
   // useShareAppMessage(async (res) => {
@@ -188,8 +179,10 @@ function navigationIbs() {
     }
   }
 
+  /**
+   * 获取模版装修数据
+   */
   const fetchWgts = async () => {
-    console.log(classifyList,'ooooclassifyList');
     setState((draft) => {
       draft.wgts = []
       draft.pageData = []
@@ -202,33 +195,29 @@ function navigationIbs() {
       page_name: `custom_${classifyList.customize_page_id}`
     }
     const { config } = await api.category.getCategory(query)
-
-    // const { config } = await api.shop.getShopTemplate({
-    //   distributor_id:classifyList.customize_page_id
-    // })
-    const searchComp = config.find((wgt) => wgt.name == 'search')
-    const pageData = config.find((wgt) => wgt.name == 'page')
-    let filterWgts = []
-    if (searchComp && searchComp.config.fixTop) {
-      filterWgts = config.filter((wgt) => wgt.name !== 'search' && wgt.name != 'page')
+    const searchComps = config.find((wgt) => wgt.name == 'search')
+    const pageDatas = config.find((wgt) => wgt.name == 'page')
+    let filWgts = []
+    if (searchComps && searchComps.config.fixTop) {
+      filWgts = config.filter((wgt) => wgt.name !== 'search' && wgt.name != 'page')
     } else {
-      filterWgts = config.filter((wgt) => wgt.name != 'page')
+      filWgts = config.filter((wgt) => wgt.name != 'page')
     }
 
-    const fixedTop = searchComp && searchComp.config.fixTop
-    const isShowHomeHeader =
+    const fixedTops = searchComps && searchComps.config.fixTop
+    const isShowHomeHeaders =
       VERSION_PLATFORM ||
       (openScanQrcode == 1 && isWeixin) ||
       (VERSION_STANDARD && openStore && openLocation == 1) ||
-      fixedTop
+      fixedTops
 
     setState((draft) => {
       draft.wgts = config
-      draft.searchComp = searchComp
-      draft.pageData = pageData
-      draft.fixedTop = fixedTop
-      draft.isShowHomeHeader = isShowHomeHeader
-      draft.filterWgts = filterWgts
+      draft.searchComp = searchComps
+      draft.pageData = pageDatas
+      draft.fixedTop = fixedTops
+      draft.isShowHomeHeader = isShowHomeHeaders
+      draft.filterWgts = filWgts
       draft.loading = false
     })
   }
@@ -244,7 +233,7 @@ function navigationIbs() {
     }
   }
 
-  // 定位
+  //判断是否开启定位，通过定位获取数据
   const fetchLocation = () => {
     if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
       try {
@@ -259,12 +248,13 @@ function navigationIbs() {
     }
   }
 
-  const fetchStoreInfo = async (location) => {
+  //云店获取数据，并且存在redux中
+  const fetchStoreInfo = async (locations) => {
     let params = {
       distributor_id: getDistributorId() // 如果店铺id和经纬度都传会根据哪个去定位传参
     }
-    if (openLocation == 1 && location) {
-      const { lat, lng } = location
+    if (openLocation == 1 && locations) {
+      const { lat, lng } = locations
       params.lat = lat
       params.lng = lng
       // params.distributor_id = undefined
@@ -274,6 +264,7 @@ function navigationIbs() {
     dispatch(updateShopInfo(res))
   }
 
+  // 加购
   const onAddToCart = async ({ itemId, distributorId }) => {
     Taro.showLoading()
     try {
@@ -301,27 +292,36 @@ function navigationIbs() {
       loading={loading}
       ref={pageRef}
     >
+      {/* 定位 */}
       <View
         className={classNames('home-body', {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
       >
-        {console.log('searchComp:', searchComp,location)}
+        {console.log('searchComp:', searchComp, location)}
         {isShowHomeHeader && (
-          <WgtHomeHeader className='home-header-ibs' jump={1 == 2} >{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>
+          <WgtHomeHeader className='home-header-ibs' jump={1 == 2}>
+            {fixedTop && <SpSearch info={searchComp} />}
+          </WgtHomeHeader>
         )}
+        {/* 模版装修 */}
         {filterWgts.length > 0 && (
           <WgtsContext.Provider
             value={{
               onAddToCart
             }}
           >
-            <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
+            <HomeWgts wgts={filterWgts} onLoad={fetchLikeList} copywriting={false}>
               <SpRecommend className='recommend-block' info={likeList} />
             </HomeWgts>
           </WgtsContext.Provider>
         )}
-        <NavigationClassification seletedTags={seletedTags} classifyList={classifyList} />
+        {/* 定位获取数据页面    onAddToCart加购   classifyList销售分类数据   seletedTags商家 */}
+        <NavigationClassification
+          seletedTags={seletedTags}
+          classifyList={classifyList}
+          onAddToCart={onAddToCart}
+        />
       </View>
 
       {/* Sku选择器 */}
@@ -345,4 +345,4 @@ function navigationIbs() {
   )
 }
 
-export default navigationIbs
+export default NavigationIbs
