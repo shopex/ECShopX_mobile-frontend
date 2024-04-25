@@ -186,15 +186,25 @@ function CartCheckout(props) {
       }
     }
 
+    setState((draft) => {
+      draft.submitLoading = true
+    })
+
     // 判断当前店铺关联商户是否被禁用 isVaild：true有效
     const { status: isValid } = await api.distribution.merchantIsvaild({ distributor_id: shop_id })
     if (!isValid) {
       showToast('该商品已下架')
+      setState((draft) => {
+        draft.submitLoading = false
+      })
       return
     }
 
     if(!payType) {
       showToast('请选择支付方式')
+      setState((draft) => {
+        draft.submitLoading = false
+      })
       return
     }
 
@@ -217,9 +227,6 @@ function CartCheckout(props) {
   }
 
   const handlePay = async () => {
-    setState((draft) => {
-      draft.submitLoading = true
-    })
     const params = await getParamsInfo()
     // 店铺是否开启社区街道
     if (openStreet) {
