@@ -47,7 +47,7 @@ function ConpNavigationClassification(props) {
 
     // 定位后从新获取商品信息
     useEffect(() => {
-      if (location && statusIndex) {
+      if (location) {
         setState((draft) => {
           draft.list = []
         })
