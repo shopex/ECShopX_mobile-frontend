@@ -38,7 +38,8 @@ function SpScrollView(props, ref) {
         observeAll: true
       })
       setTimeout(() => {
-        observer.relativeToViewport({ bottom: 0 }).observe('.scrollview-bottom', (res) => {
+        // observer.relativeToViewport({ bottom: 0 }).observe('.scrollview-bottom', (res) => {
+        observer.relativeToViewport({ bottom: 0 }).observe(`.scrollview-${vid}`, (res) => {
           if (res.intersectionRatio > 0) {
             if (page.hasMore && !page.loading) {
               nextPage()
@@ -124,4 +125,4 @@ SpScrollView.options = {
   addGlobalClass: true
 }
 
-export default React.forwardRef(SpScrollView)
+export default React.memo(React.forwardRef(SpScrollView))

@@ -167,7 +167,7 @@ function ConpNavigationClassification(props) {
       //获取所有的商家 存在商家请求商品数据
       let res = await storeData()
       if (res.length > 0) {
-        let params = {
+        let _params = {
           page: pageIndex,
           pageSize,
           approve_status: 'onsale,only_show',
@@ -176,10 +176,10 @@ function ConpNavigationClassification(props) {
           distributor_id: res.map((item) => item.distributor_id).join(','),
           main_category: mainCategory ? mainCategory : classifyList.children[0].category_id
         }
-        const { total_count, list: lists } = await api.item.search(params)
+        const { total_count, list: lists } = await api.item.search(_params)
         const n_list = pickBy(lists, doc.goods.ITEM_LIST_GOODS)
         setState((draft) => {
-          draft.list = [...draft.list, ...n_list]
+          draft.list = [...list, ...n_list]
         })
         return { total: total_count }
       } else {
@@ -321,7 +321,7 @@ function ConpNavigationClassification(props) {
                       )}
                     </View>
                     <ScrollView scrollX className='coupon-list' scrollLeft={state.scrollLeft}>
-                      {item.discountCardList.slice(0, 3).map((coupon, cindex) => {
+                      {item.discountCardList.map((coupon, cindex) => {
                         return (
                           <SpShopCoupon
                             fromStoreIndex
@@ -433,7 +433,7 @@ function ConpNavigationClassification(props) {
                     navList == index ? 'first-level-item-recommendation-index' : null
                   )}
                 >
-                  {item.category_name}
+                 <View className='first-level-item-recommendation-name'>{item.category_name}</View>
                 </View>
               </View>
             )
