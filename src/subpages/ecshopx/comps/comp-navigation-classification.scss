@@ -4,6 +4,7 @@
     position: sticky;
     top: 0px;
     z-index: 99;
+    background: #fff;
   }
   .first-level {
     padding: 24px 16px;
@@ -43,12 +44,21 @@
         margin-top: 24px;
         color: #666666;
         padding: 10px;
+        width: 116px;
+        &-name{
+          width:200px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          text-align: center;
+        }
       }
       &-recommendation-index {
         color: #fff;
         background: var(--color-primary);
         border-radius: 28px;
         padding: 8px 10px;
+        width: 116px;
       }
       &-recommendation-index-index {
         color: #fff;
@@ -113,7 +123,6 @@
   }
 
   &-scroll {
-    // height: 800px;
     margin: 24px 16px;
     .shop-list {
       &-title {
