@@ -38,7 +38,7 @@ function SpPage(props, ref) {
     onClickLeftIcon = null,
     navigateTheme = 'light',
     navigateMantle = false, // 自定义导航，开启滚动蒙层
-    pageConfig = null,
+    pageConfig,
     fixedTopContainer = null,
     title = '' // 页面导航标题
   } = props
@@ -206,6 +206,8 @@ function SpPage(props, ref) {
   const CustomNavigation = () => {
     const { page, route } = getCurrentInstance()
     let pageStyle = {}, pageTitleStyle = {}
+    let navigationBarTitleText = ''
+    debugger
     if (pageConfig) {
       const { navigateBackgroundColor, navigateStyle, navigateBackgroundImage, titleStyle, titleColor, titleBackgroundImage, titlePosition } = pageConfig
       // 导航颜色背景
@@ -233,10 +235,11 @@ function SpPage(props, ref) {
         'justify-content': titlePosition == 'left' ? 'flex-start' : 'center',
         'color': titleColor
       }
-
+    } else {
+      navigationBarTitleText = getCurrentInstance().page?.config?.navigationBarTitleText
     }
     // console.log('zzz', Taro.getCurrentPages())
-    const navigationBarTitleText = getCurrentInstance().page?.config?.navigationBarTitleText
+
     return (
       <View
         className={classNames('custom-navigation', {

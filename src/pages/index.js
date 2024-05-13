@@ -213,13 +213,13 @@ function Home() {
     console.log('fetchStoreInfo:', res)
     dispatch(updateShopInfo(res))
   }
-
+  console.log('pageData?.base', pageData?.base)
   return (
     <SpPage
       className='page-index'
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
-      pageConfig={pageData?.base}
+      pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
       renderFooter={<SpTabbar />}
       loading={loading}
