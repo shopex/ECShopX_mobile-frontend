@@ -332,6 +332,15 @@ const config = {
         'agreement' //协议页面
       ]
     },
+    //业务员
+    {
+      root: 'subpages/salesman',
+      pages: [
+        'index', //首页
+        'card',//名片
+        'my',//我的
+      ]
+    },
     // 授权
     {
       root: 'subpages/auth',
