@@ -107,7 +107,7 @@ const MENUS_CONST = [
 
 const MENUS_COMMUNITY = [
   {
-    key: 'community',
+    key: 'community_group_enable',
     name: '社区团购',
     icon: 'm_menu_tuangou.png',
     link: '/subpages/community/index'
@@ -134,7 +134,7 @@ function CompMenu(props) {
 
   // 社区团购
   if (!VERSION_IN_PURCHASE && isWeixin) {
-    menus = menus.concat(MENUS_COMMUNITY)
+    menus = menus.concat(MENUS_COMMUNITY.filter(item => accessMenu[item.key]))
   }
 
   if (VERSION_PLATFORM || VERSION_B2C) {
