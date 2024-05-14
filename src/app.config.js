@@ -338,7 +338,10 @@ const config = {
       pages: [
         'index', //首页
         'card',//名片
+        'cart',//购物车
         'my',//我的
+        'selectCustomer',//选客户
+        'selectStore',//选店铺
       ]
     },
     // 授权

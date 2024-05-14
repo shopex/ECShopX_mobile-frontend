@@ -11,15 +11,29 @@ import './index.scss'
 
 const initialConfigState = {
   funcList: [
-    { name: '订单管理', icon: 'present' },
-    { name: '代客下单', icon: 'present' },
-    { name: '业务员推广', icon: 'present' },
-    { name: '商家列表', icon: 'present' },
+    { name: '订单管理', icon: 'present',path:'/subpages/salesman/selectCustomer'},
+    { name: '代客下单', icon: 'present' ,path:'/subpages/salesman/selectCustomer'},
+    { name: '业务员推广', icon: 'present',path:'/subpages/salesman/selectCustomer' },
+    { name: '商家列表', icon: 'present',path:'/subpages/salesman/selectCustomer' },
   ]
 }
 
 const Index = () => {
   const [data, setData] = useImmer(initialConfigState)
+
+
+
+  const handleCardClick = () => {
+    Taro.navigateTo({
+      url: `/subpages/salesman/card`
+    })
+  }
+
+  const handleFuncClick = (path) => {
+    Taro.navigateTo({
+      url: path
+    })
+  }
 
   return (
     <SpPage className={classNames('page-sales-index')}
@@ -27,8 +41,12 @@ const Index = () => {
     >
       <view className='sales-back'></view>
       <view className='sales-header'>
-        <view className='iconfont icon-present sales-header-icon'></view>
-        <view className='sales-header-title'>业务员端</view>
+        <view className='sales-header-left'>
+          <view className='iconfont icon-present sales-header-icon'></view>
+          <view className='sales-header-title'>业务员端</view>
+        </view>
+        <view onClick={handleCardClick}>名片</view>
+
       </view>
       <view className='sales-content'>
         <view className='sales-content-panel'>
@@ -59,11 +77,11 @@ const Index = () => {
               </view>
               <view className='panel-content-btm-item'>
                 <view className='panel-title'>退款（元）</view>
-                <view className='panel-title'>1,999,00</view>
+                <view className='panel-num'>1,999,00</view>
               </view>
               <view className='panel-content-btm-item'>
                 <view className='panel-title'>实付会员（人）</view>
-                <view className='panel-title'>1,999</view>
+                <view className='panel-num'>1,999</view>
               </view>
             </view>
           </view>
@@ -73,7 +91,7 @@ const Index = () => {
           <view className='func-title'>常用功能</view>
           <view className='func-content'>
             {data.funcList.map((item, idx) => (
-              <view className='func-content-item'>
+              <view className='func-content-item' onClick={()=>handleFuncClick(item.path)}>
                 <view
                   className={classNames({
                   'iconfont':true,

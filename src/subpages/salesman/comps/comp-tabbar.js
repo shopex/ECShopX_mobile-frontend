@@ -8,14 +8,14 @@ import './comp-tabbar.scss'
 
 const TABBAR_LIST = [
   {
-    title: '店铺',
+    title: '首页',
     iconType: 'dianpushouye',
     url: '/subpages/salesman/index'
   },
   {
-    title: '名片',
+    title: '购物车',
     iconType: 'dianpushangpinlist',
-    url: '/subpages/salesman/card'
+    url: '/subpages/salesman/cart'
   },
   {
     title: '我的信息',
