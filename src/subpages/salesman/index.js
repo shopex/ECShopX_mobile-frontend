@@ -39,72 +39,72 @@ const Index = () => {
     <SpPage className={classNames('page-sales-index')}
     renderFooter={<CompTabbar/>}
     >
-      <view className='sales-back'></view>
-      <view className='sales-header'>
-        <view className='sales-header-left'>
-          <view className='iconfont icon-present sales-header-icon'></view>
-          <view className='sales-header-title'>业务员端</view>
-        </view>
-        <view onClick={handleCardClick}>名片</view>
+      <View className='sales-back'></View>
+      <View className='sales-header'>
+        <View className='sales-header-left'>
+          <View className='iconfont icon-present sales-header-icon'></View>
+          <View className='sales-header-title'>业务员端</View>
+        </View>
+        <View onClick={handleCardClick}>名片</View>
 
-      </view>
-      <view className='sales-content'>
-        <view className='sales-content-panel'>
-          <view className='panel-header'>
-            <view className='iconfont icon-present panel-header-icon'></view>
-            <view className='panel-header-title'>实时概况</view>
-          </view>
-          <view className='panel-content'>
-            <view className='panel-content-top'>
-              <view className='panel-content-top-title'>
-                <view className='real-monet'>
-                  <view className='panel-title  mb-0'>实付金额</view>
-                  <view className='iconfont icon-present view-icon'></view>
-                </view>
+      </View>
+      <View className='sales-content'>
+        <View className='sales-content-panel'>
+          <View className='panel-header'>
+            <View className='iconfont icon-present panel-header-icon'></View>
+            <View className='panel-header-title'>实时概况</View>
+          </View>
+          <View className='panel-content'>
+            <View className='panel-content-top'>
+              <View className='panel-content-top-title'>
+                <View className='real-monet'>
+                  <View className='panel-title  mb-0'>实付金额</View>
+                  <View className='iconfont icon-present View-icon'></View>
+                </View>
 
-                <view className='look-detail'>查看数据总览&nbsp; &gt;</view>
-              </view>
-              <view className='panel-num mt-12'>9,999,999.88</view>
-            </view>
-            <view className='panel-content-btm'>
-              <view className='panel-content-btm-item'>
-                <view className='panel-title'>支付订单（笔）</view>
-                <view className='panel-num'>1,999</view>
-              </view>
-              <view className='panel-content-btm-item'>
-                <view className='panel-title'>退款订单（笔）</view>
-                <view className='panel-num'>999</view>
-              </view>
-              <view className='panel-content-btm-item'>
-                <view className='panel-title'>退款（元）</view>
-                <view className='panel-num'>1,999,00</view>
-              </view>
-              <view className='panel-content-btm-item'>
-                <view className='panel-title'>实付会员（人）</view>
-                <view className='panel-num'>1,999</view>
-              </view>
-            </view>
-          </view>
-        </view>
+                <View className='look-detail'>查看数据总览&nbsp; &gt;</View>
+              </View>
+              <View className='panel-num mt-12'>9,999,999.88</View>
+            </View>
+            <View className='panel-content-btm'>
+              <View className='panel-content-btm-item'>
+                <View className='panel-title'>支付订单（笔）</View>
+                <View className='panel-num'>1,999</View>
+              </View>
+              <View className='panel-content-btm-item'>
+                <View className='panel-title'>退款订单（笔）</View>
+                <View className='panel-num'>999</View>
+              </View>
+              <View className='panel-content-btm-item'>
+                <View className='panel-title'>退款（元）</View>
+                <View className='panel-num'>1,999,00</View>
+              </View>
+              <View className='panel-content-btm-item'>
+                <View className='panel-title'>实付会员（人）</View>
+                <View className='panel-num'>1,999</View>
+              </View>
+            </View>
+          </View>
+        </View>
 
-        <view className='sales-content-func'>
-          <view className='func-title'>常用功能</view>
-          <view className='func-content'>
+        <View className='sales-content-func'>
+          <View className='func-title'>常用功能</View>
+          <View className='func-content'>
             {data.funcList.map((item, idx) => (
-              <view className='func-content-item' onClick={()=>handleFuncClick(item.path)}>
-                <view
+              <View className='func-content-item' onClick={()=>handleFuncClick(item.path)}>
+                <View
                   className={classNames({
                   'iconfont':true,
                   [`icon-${item.icon}`]: true,
                   'func-item-icon':true
                   })}
-                ></view>
-                <view className='func-item-name'>{item.name}</view>
-              </view>
+                ></View>
+                <View className='func-item-name'>{item.name}</View>
+              </View>
             ))}
-          </view>
-        </view>
-      </view>
+          </View>
+        </View>
+      </View>
     </SpPage>
   )
 }
