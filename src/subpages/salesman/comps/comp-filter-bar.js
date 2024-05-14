@@ -61,24 +61,24 @@ const Index = (props) => {
   }
 
   return (
-   <view className='comp-filter-bar'>
-    <view className='area' onClick={() => {
+   <View className='comp-filter-bar'>
+    <View className='area' onClick={() => {
         setState((draft) => {
           draft.isSpAddressOpened = true
         })
       }}>
-      <view className='area-val'>{selectArea.join('') || '请选择区域'}</view>
-      <view className='iconfont icon-arrowDown area-icon'></view>
-    </view>
-    <view className='search'>
-      <view className='search-condition' onClick={() => {
+      <View className='area-val'>{selectArea.join('') || '请选择区域'}</View>
+      <View className='iconfont icon-arrowDown area-icon'></View>
+    </View>
+    <View className='search'>
+      <View className='search-condition' onClick={() => {
         setState((draft) => {
           draft.searchConditionVis = true
         })
       }}>
         {getSearchConditionLabel()}
-        <view className='iconfont icon-arrowDown search-condition-icon'></view>
-      </view>
+        <View className='iconfont icon-arrowDown search-condition-icon'></View>
+      </View>
       <Input
         className='search-input'
         placeholder='请输入'
@@ -87,23 +87,23 @@ const Index = (props) => {
         onInput={onInputChange}
         onConfirm={onConfirmSearch}
       />
-    </view>
-   {searchConditionVis && <view className='condition-box'>
-      <view className='condition-content'>
+    </View>
+   {searchConditionVis && <View className='condition-box'>
+      <View className='condition-content'>
         {
           searchConditionList.map(item=>(
-            <view className={classNames({
+            <View className={classNames({
               'condition-content-item':true,
               'condition-active':item.value == searchCondition
             })}
             onClick={()=>handleConditionChange(item.value)}
             >
               {item.label}
-            </view>
+            </View>
           ))
         }
-      </view>
-    </view>}
+      </View>
+    </View>}
 
 
     <SpAddress isOpened={isSpAddressOpened} onClose={() => {
@@ -111,7 +111,7 @@ const Index = (props) => {
           draft.isSpAddressOpened = false
         })
       }} onChange={onPickerChange} />
-   </view>
+   </View>
   )
 }
 

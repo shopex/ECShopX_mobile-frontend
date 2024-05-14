@@ -25,15 +25,15 @@ const Card = () => {
     <SpPage className={classNames('page-card-index')}
     navbar={false}
     >
-      <view className='card-box'>
-        <view className='card-content'>
-            <view className='name'>杨建梅</view>
-            <view className='store'>上海太古汇店</view>
-            <view className='qtr-box'>
+      <View className='card-box'>
+        <View className='card-content'>
+            <View className='name'>杨建梅</View>
+            <View className='store'>上海太古汇店</View>
+            <View className='qtr-box'>
               <image className='qtr-img' src='https://img0.baidu.com/it/u=3584759695,3470619884&fm=253&fmt=auto&app=138&f=GIF?w=198&h=198'/>
-            </view>
-        </view>
-      </view>
+            </View>
+        </View>
+      </View>
     </SpPage>
   )
 }
