@@ -7,7 +7,7 @@ import CompTabbar from './comps/comp-tabbar'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
-import './card.scss'
+import './selectStore.scss'
 
 const initialConfigState = {
   funcList: [
@@ -18,24 +18,16 @@ const initialConfigState = {
   ]
 }
 
-const Card = () => {
+const Index = () => {
   const [data, setData] = useImmer(initialConfigState)
 
   return (
-    <SpPage className={classNames('page-card-index')}
-    navbar={false}
+    <SpPage className={classNames('page-selectStore')}
+    renderFooter={<CompTabbar/>}
     >
-      <view className='card-box'>
-        <view className='card-content'>
-            <view className='name'>杨建梅</view>
-            <view className='store'>上海太古汇店</view>
-            <view className='qtr-box'>
-              <image className='qtr-img' src='https://img0.baidu.com/it/u=3584759695,3470619884&fm=253&fmt=auto&app=138&f=GIF?w=198&h=198'/>
-            </view>
-        </view>
-      </view>
+      选店铺
     </SpPage>
   )
 }
 
-export default Card
+export default Index

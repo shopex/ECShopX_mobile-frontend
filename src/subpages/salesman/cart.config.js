@@ -1,4 +1,4 @@
 export default {
-  navigationBarTitleText: '名片',
+  navigationBarTitleText: '我的',
   navigationBarBackgroundColor:'#BFD3FF'
 }

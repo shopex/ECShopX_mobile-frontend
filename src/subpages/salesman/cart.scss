@@ -17,11 +17,6 @@
     padding: 0 23px;
     box-sizing: border-box;
     align-items: center;
-    justify-content: space-between;
-    &-left{
-      display: flex;
-      align-items: center;
-    }
     &-icon{
       font-size: 61px;
     }
@@ -39,8 +34,7 @@
     &-panel{
       width: 100%;
       border-radius: 20px;
-      background: url('https://daogou-public.oss-cn-hangzhou.aliyuncs.com/image/35/2024/05/11/9233a430fdf87ea85f27388c2469ef26s96u4KdVJOZgn7sU07K9k0Q5PWCIcGiW') center no-repeat;
-      background-size: 110% 120%;
+      background: #3E7BF9;
       padding: 32px;
       box-sizing: border-box;
       .panel-header{
