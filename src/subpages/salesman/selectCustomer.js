@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 import { useEffect, useState,useCallback } from 'react'
 import { Text, View } from '@tarojs/components'
 import { classNames, validate, showToast } from '@/utils'
-import { SpImage, SpPage,SpTabs } from '@/components'
+import { SpImage, SpPage,SpTabs,SpSearchInput } from '@/components'
 import CompFilterBar from './comps/comp-filter-bar'
 import { useImmer } from 'use-immer'
 import api from '@/api'
@@ -14,13 +14,14 @@ const initialConfigState = {
     { title: '已购买' },
     { title: '未购买' }
   ],
-  curTabIdx:0
+  curTabIdx:0,
+  keywords:''
 }
 
 const Index = () => {
   const [state, setState] = useImmer(initialConfigState)
 
-  const {curTabIdx,tabList} = state
+  const {curTabIdx,tabList,keywords} = state
 
   const filterBarChange = useCallback((res)=>{
     console.log('filterBarChange',res)
@@ -28,7 +29,23 @@ const Index = () => {
 
   return (
     <SpPage className={classNames('page-selectCustomer')}>
-      <CompFilterBar searchChange={filterBarChange}  />
+      <SpSearchInput placeholder='输入内容'
+      isShowArea
+      isShowSearchCondition
+      onConfirm={(val) => {
+        console.log(666,val)
+        // setState((draft) => {
+        //   draft.keywords = val
+        // })
+      }}
+      onSelectArea={(val) => {
+        console.log('666area',val)
+        // setState((draft) => {
+        //   draft.keywords = val
+        // })
+      }}
+       />
+    <View></View>
       <SpTabs current={curTabIdx} tablist={tabList} onChange={(e) => {
       setState(draft => {
         draft.curTabIdx = e

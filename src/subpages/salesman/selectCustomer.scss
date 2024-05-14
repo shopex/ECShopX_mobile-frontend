@@ -2,9 +2,9 @@
 
 }
 
-.tab-item-active .name:after {
-  background: #4980FF !important;
+.sp-tabs-hd .tab-item-active .name {
+  border-bottom: 4px solid var(--color-dianwu-primary);
 }
 .tab-item-active .name {
-  color: #4980FF !important;
+  color: var(--color-dianwu-primary) !important;
 }
