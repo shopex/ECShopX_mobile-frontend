@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 869421 */
-  src: url('//at.alicdn.com/t/c/font_869421_9u3q4oxqyw.woff2?t=1715681752331') format('woff2'),
-       url('//at.alicdn.com/t/c/font_869421_9u3q4oxqyw.woff?t=1715681752331') format('woff'),
-       url('//at.alicdn.com/t/c/font_869421_9u3q4oxqyw.ttf?t=1715681752331') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_869421_dd7theh6svo.woff2?t=1715767059794') format('woff2'),
+       url('//at.alicdn.com/t/c/font_869421_dd7theh6svo.woff?t=1715767059794') format('woff'),
+       url('//at.alicdn.com/t/c/font_869421_dd7theh6svo.ttf?t=1715767059794') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tongji:before {
+  content: "\e69f";
+}
+
+.icon-guanbi3:before {
+  content: "\e69d";
+}
+
+.icon-baocuntupian:before {
+  content: "\e69e";
+}
+
+.icon-fenxiaoma:before {
+  content: "\e69c";
+}
+
+.icon-yewuyuan:before {
+  content: "\e69a";
+}
+
+.icon-gaikuang:before {
+  content: "\e69b";
 }
 
 .icon-daikexiadan:before {
