@@ -2,11 +2,13 @@ import Taro from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { Text, View } from '@tarojs/components'
 import { classNames, validate, showToast } from '@/utils'
-import { SpImage, SpPage,SpTime } from '@/components'
+import { SpImage, SpPage, SpTime } from '@/components'
 import CompTabbar from './comps/comp-tabbar'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
+import CompInvitationCode from './comps/comp-invitation-code'
+
 import './index.scss'
 
 const initialConfigState = {
@@ -19,15 +21,21 @@ const initialConfigState = {
       path: '/subpages/salesman/selectCustomer'
     },
     { name: '商家列表', icon: 'icon-shangjialiebiao', path: '/subpages/salesman/selectCustomer' }
-  ]
+  ],
+  codeStatus: false,
+  information: { name: 'cx' }
 }
 
 const Index = () => {
-  const [data, setData] = useImmer(initialConfigState)
+  const [state, setState] = useImmer(initialConfigState)
+  const { codeStatus, information, funcList } = state
 
   const handleCardClick = () => {
-    Taro.navigateTo({
-      url: `/subpages/salesman/card`
+    // Taro.navigateTo({
+    //   url: `/subpages/salesman/card`
+    // })
+    setState((draft) => {
+      draft.codeStatus = true
     })
   }
 
@@ -49,11 +57,9 @@ const Index = () => {
           <Text className='iconfont icon-present sales-header-icon'></Text>
           <View className='sales-header-title'>业务员端</View>
         </View>
-        <View className='sales-header-left rigth'>
+        <View className='sales-header-left rigth' onClick={handleCardClick}>
           <Text className='iconfont icon-quanbu'></Text>
-          <View className='sales-header-title' onClick={handleCardClick}>
-            会员码
-          </View>
+          <View className='sales-header-title'>会员码</View>
         </View>
       </View>
       <View className='sales-content'>
@@ -105,7 +111,7 @@ const Index = () => {
         <View className='sales-content-func'>
           <View className='func-title'>常用功能</View>
           <View className='func-content'>
-            {data.funcList.map((item, index) => (
+            {funcList.map((item, index) => (
               <View
                 className='func-content-item'
                 onClick={() => handleFuncClick(item.path)}
@@ -124,6 +130,18 @@ const Index = () => {
           </View>
         </View>
       </View>
+
+      {codeStatus && (
+        <CompInvitationCode
+          status={false}
+          information={information}
+          cancel={() => {
+            setState((draft) => {
+              draft.codeStatus = false
+            })
+          }}
+        />
+      )}
     </SpPage>
   )
 }

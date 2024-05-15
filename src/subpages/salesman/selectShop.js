@@ -11,7 +11,7 @@ import CompShopList from './comps/comp-shop-list'
 import './selectShop.scss'
 
 const initialConfigState = {
-  keywords: '',
+  codeStatus: false,
   searchConditionList: [
     { label: '手机号', value: 'phone' },
     { label: '店铺名称', value: 'distributor_name' }
@@ -21,7 +21,7 @@ const initialConfigState = {
 const selectShop = () => {
   const [state, setState] = useImmer(initialConfigState)
 
-  const { searchConditionList } = state
+  const { searchConditionList ,codeStatus} = state
 
   return (
     <SpPage className={classNames('page-selectShop')}>
@@ -39,6 +39,10 @@ const selectShop = () => {
       />
 
       <CompShopList />
+
+
+      
+
     </SpPage>
   )
 }
