@@ -16,7 +16,8 @@ const initState = {
   cateFirstIndex: 0,
   cateSecondIndex: null,
   cateThirdIndex: null,
-  init: true
+  init: true,
+  offsetHight:140,
 }
 function SpNavFilter(props) {
   const [state, setState] = useImmer(initState)
@@ -31,10 +32,29 @@ function SpNavFilter(props) {
     cateFirstIndex,
     cateSecondIndex,
     cateThirdIndex,
-    init
+    init,
+    offsetHight
   } = state
 
   const { info, onChange, children } = props
+
+
+  useDidShow(() => {
+    //根据元素高度计算mask位置和高度
+    setTimeout(()=>{
+     Taro.createSelectorQuery()
+          .select('.sp-nav-filter')
+          .boundingClientRect((res) => {
+            console.log('boundingClientRect:', res)
+            if (res) {
+              setState(v=>{
+                v.offsetHight = res.top + res.height
+              })
+            }
+          })
+          .exec()
+    },1000)
+  });
 
   useEffect(() => {
     console.log('----', info)
@@ -198,7 +218,7 @@ function SpNavFilter(props) {
   }
 
   return (
-    <View className='sp-nav-filter'>
+    <View className='sp-nav-filter' >
       <View className='sp-nav-filter-content'>
         {typeList.map((item, idx) => (
           <View
@@ -293,7 +313,7 @@ function SpNavFilter(props) {
           )}
         </View>
       )}
-      {visible && <View className='mask'></View>}
+      {visible && <View className='mask' style={{height:`calc(100vh - ${offsetHight}px)`,top:`${offsetHight}px`}}></View>}
     </View>
   )
 }
