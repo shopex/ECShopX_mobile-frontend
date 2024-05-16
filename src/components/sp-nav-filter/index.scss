@@ -41,9 +41,9 @@
 
   .mask {
     width: 100%;
-    height: calc(100vh  - 140px);
+    // height: calc(100vh  - 140px);
     background: rgba(37, 38, 45, 0.6);
-    position: absolute;
+    position: fixed;
     top: 140px;
     left: 0;
     right: 0;
