@@ -1,4 +1,4 @@
 export default {
-  navigationBarTitleText: '首页',
+  navigationBarTitleText: '业务员首页',
   navigationBarBackgroundColor:'#BFD3FF'
 }
