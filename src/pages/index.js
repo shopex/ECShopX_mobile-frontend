@@ -235,9 +235,6 @@ function Home() {
     console.log('fetchStoreInfo:', res)
     dispatch(updateShopInfo(res))
   }
-<<<<<<< HEAD
-  console.log('pageData?.base', pageData?.base)
-=======
 
   const onAddToCart = async ({ itemId, distributorId }) => {
     Taro.showLoading()
@@ -258,7 +255,6 @@ function Home() {
     }
   }
 
->>>>>>> origin/hotfix/3.13.21
   return (
     <SpPage
       className='page-index'
