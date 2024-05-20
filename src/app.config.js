@@ -345,6 +345,7 @@ const config = {
         'selectCustomer',//选客户
         'selectStore',//选店铺
         'selectShop',//选店铺
+        'achievement',//业绩
         'purchasing', //选商品
         'distribution/index', // 推广管理首页
         'distribution/setting', // 推广管理会员资料

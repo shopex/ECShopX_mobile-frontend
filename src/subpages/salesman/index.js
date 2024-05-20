@@ -82,8 +82,16 @@ const Index = () => {
                   <View className='panel-title  mb-0'>实付金额（元）</View>
                   <Text className='iconfont icon-xianshi View-icon'></Text>
                 </View>
-
-                <View className='look-detail'>查看数据总览&nbsp; &gt;</View>
+                <View
+                  className='look-detail'
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: '/subpages/salesman/achievement'
+                    })
+                  }}
+                >
+                  查看数据总览&nbsp; &gt;
+                </View>
               </View>
               <View className='panel-num mt-12'>9,999,999.88</View>
             </View>

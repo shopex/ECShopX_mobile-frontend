@@ -34,9 +34,11 @@ function SpTime(props) {
   return (
     <View className='sp-time'>
       <View className='times-select'>
-        <Picker className='times' mode='selector' range={selector} onChange={onChange}>
-          <Text>{selectorChecked}</Text>
-          <Text className='iconfont icon-xialajiantou'></Text>
+        <Picker mode='selector' range={selector} onChange={onChange}>
+          <View className='times'>
+            <Text>{selectorChecked}</Text>
+            <Text className='iconfont icon-xialajiantou'></Text>
+          </View>
         </Picker>
 
         <Picker
