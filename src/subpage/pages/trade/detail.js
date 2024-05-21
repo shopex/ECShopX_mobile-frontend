@@ -639,11 +639,8 @@ export default class TradeDetail extends Component {
 
   computedPayType = () => {
     const {
-      info: { pay_type, pay_channel }
+      info: { pay_type }
     } = this.state
-    if (pay_type == 'bspay') {
-      pay_type = pay_channel
-    }
     return PAYMENT_TYPE[pay_type]
     // if (isAlipay) {
     //   return '支付宝'
