@@ -51,6 +51,7 @@ export default (props = {}) => {
             bspayH5Pay(params, orderInfo)
           }
         } else if (pay_channel == 'wx_pub') {
+          
           wxpayjsPay(params, orderInfo)
         } else if (pay_channel == 'alipay_wap') {
           bspayAliH5Pay(params, orderInfo)
