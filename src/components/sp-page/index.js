@@ -207,7 +207,7 @@ function SpPage(props, ref) {
     const { page, route } = getCurrentInstance()
     let pageStyle = {}, pageTitleStyle = {}
     let navigationBarTitleText = ''
-    debugger
+
     if (pageConfig) {
       const { navigateBackgroundColor, navigateStyle, navigateBackgroundImage, titleStyle, titleColor, titleBackgroundImage, titlePosition } = pageConfig
       // 导航颜色背景
