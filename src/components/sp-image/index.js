@@ -42,7 +42,7 @@ function SpImage(props) {
       // imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${
       //   height ? '/h/' + Math.floor(height / 2) : ''
       // }`
-      imgUrl = `${imgUrl}?x-oss-process=image/quality,q_80`
+      imgUrl = `${imgUrl}?x-oss-process=image/quality,q_60`
     }
   }
 
