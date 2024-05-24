@@ -2,7 +2,16 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { AtTabBar } from 'taro-ui'
-import { SpToast, Loading, FilterBar, SpNote, SpNavBar, SearchBar, SpPage } from '@/components'
+import {
+  SpToast,
+  Loading,
+  FilterBar,
+  SpNote,
+  SpSearchInput,
+  SpNavBar,
+  SpNavFilter,
+  SpPage
+} from '@/components'
 import S from '@/spx'
 import { getDtidIdUrl } from '@/utils/helper'
 import api from '@/api'
@@ -47,7 +56,66 @@ export default class DistributionGoods extends Component {
       selectParams: [],
       list: [],
       goodsIds: [],
-      top:0
+      top: 0,
+      searchConditionList: [
+        { label: '手机号', value: 'mobile' },
+        { label: '店铺名称', value: 'name' }
+      ],
+      navFilterList: [
+        {
+          key: 'tag_id',
+          name: '标签',
+          label: '标签',
+          activeIndex: null,
+          option: [
+            { label: '最新', value: 1 },
+            { label: '促销', value: 0 },
+            { label: '最新', value: 1 },
+            { label: '热门', value: 2 },
+            { label: '秒杀', value: 3 },
+            { label: 'VIP', value: 4 },
+            { label: '清仓', value: 5 },
+            { label: '儿童', value: 6 },
+            { label: '中老年人', value: 7 },
+            { label: '端午节', value: 8 },
+            { label: '专属最强打工人的无敌福利', value: 9 }
+          ]
+        },
+        {
+          key: 'category',
+          name: '分类',
+          label: '分类',
+          activeIndex: null,
+          option: [
+            { category_name: '全部', category_id: 'all' },
+            {
+              category_name: '男装',
+              category_id: '1',
+              children: [
+                {
+                  category_name: '上衣',
+                  category_id: '3',
+                  children: [{ category_name: '卫衣', category_id: '4' }]
+                }
+              ]
+            },
+            { category_name: '女装', category_id: '2' }
+          ]
+        },
+        {
+          key: 'status',
+          label: '状态',
+          name: '状态',
+          activeIndex: null,
+          option: [
+            { label: '有货', value: 1 },
+            { label: '无货', value: 0 }
+          ]
+        }
+      ],
+      tag_id: '',
+      category: '',
+      statused: ''
     }
   }
 
@@ -246,7 +314,7 @@ export default class DistributionGoods extends Component {
         this.setState(
           {
             goodsIds: [...this.state.goodsIds, id],
-            scrollTop:this.state.top
+            scrollTop: this.state.top
           },
           () => {
             S.toast('上架成功')
@@ -260,7 +328,7 @@ export default class DistributionGoods extends Component {
         this.setState(
           {
             goodsIds,
-            scrollTop:this.state.top
+            scrollTop: this.state.top
           },
           () => {
             S.toast('下架成功')
@@ -311,11 +379,12 @@ export default class DistributionGoods extends Component {
   }
 
   handleConfirm = (val = '') => {
+    console.log(val,'llllllllllll');
     this.setState(
       {
         query: {
           ...this.state.query,
-          keywords: val
+          keywords: val.keywords
         }
       },
       () => {
@@ -356,6 +425,21 @@ export default class DistributionGoods extends Component {
       top: scrollTop
     })
   }
+
+  handleFilterChange = ()=>{
+    const {
+      tag_id,
+      category,
+      statused
+    } = this.state
+    async (key, value) => {
+      console.log(789, key, value)
+      this.setState((v) => {
+        v[key] = value
+      })
+    },
+    [tag_id, category, statused]
+  }
   render() {
     const { status } = this.$instance.router.params
     const {
@@ -367,7 +451,12 @@ export default class DistributionGoods extends Component {
       filterList,
       query,
       tabList,
-      localCurrent
+      localCurrent,
+      searchConditionList,
+      navFilterList,
+      tag_id,
+      category,
+      statused
     } = this.state
     console.log(list)
 
@@ -375,7 +464,7 @@ export default class DistributionGoods extends Component {
       <SpPage className='page-distribution-shop'>
         <View>
           <SpNavBar title='推广商品' leftIconType='chevron-left' fixed='true' />
-          <SearchBar
+          {/* <SearchBar
             showDailog={false}
             keyword={query ? query.keywords : ''}
             onFocus={() => false}
@@ -383,7 +472,17 @@ export default class DistributionGoods extends Component {
             onChange={this.handleSearchChange}
             onClear={this.handleConfirm.bind(this)}
             onConfirm={this.handleConfirm.bind(this)}
+          /> */}
+          <SpSearchInput
+            placeholder='输入内容'
+            // isShowArea
+            isShowSearchCondition
+            searchConditionList={searchConditionList}
+            onConfirm={this.handleConfirm.bind(this)}
           />
+          <SpNavFilter info={navFilterList} onChange={this.handleFilterChange.bind(this)} />
+
+
           <FilterBar
             className='goods-list__tabs'
             custom

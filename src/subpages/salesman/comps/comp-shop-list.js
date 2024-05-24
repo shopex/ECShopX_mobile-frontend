@@ -2,10 +2,10 @@ import React, { useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
 import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import api from '@/api'
-import { View, Text, Image } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { SpImage, SpScrollView } from '@/components'
+import { formatTime } from '@/utils'
 import CompInvitationCode from './comp-invitation-code'
-import { formatTime, log } from '@/utils'
 import './comp-shop-list.scss'
 
 const initialState = {
@@ -63,8 +63,9 @@ function CompShopList(props) {
 
   const storeCode = (item) => {
     let params = {
-      name:item.name,
-      distributor_name:item.name
+      name:item.merchant_name,
+      distributor_name:item.name,
+      distributor_id:item.distributor_id
     }
     setState((draft) => {
       draft.codeStatus = true
@@ -81,9 +82,9 @@ function CompShopList(props) {
                 <View
                   className='comp-customer-list-scroll-list'
                   onClick={() => {
-                    Taro.navigateTo({
-                      url: `/subpages/salesman/purchasing`
-                    })
+                    // Taro.navigateTo({
+                    //   url: `/subpages/salesman/purchasing`
+                    // })
                   }}
                 >
                   <SpImage src={item.logo} />

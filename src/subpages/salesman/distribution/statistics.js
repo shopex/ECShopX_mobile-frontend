@@ -1,24 +1,28 @@
 import React, { Component } from 'react'
 import { View, Text, Navigator } from '@tarojs/components'
 import api from '@/api'
-import { SpNavBar } from '@/components'
+import { SpNavBar, SpSearchInput } from '@/components'
 import { pickBy } from '@/utils'
 
 import './statistics.scss'
 
 export default class DistributionStatistics extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
-      info: {}
+      info: {},
+      searchConditionList: [
+        { label: '手机号', value: 'mobile' },
+        { label: '店铺名称', value: 'name' }
+      ]
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetch()
   }
 
-  async fetch () {
+  async fetch() {
     const res = await api.distribution.statistics()
     const info = pickBy(res, {
       payedRebate: 'payedRebate',
@@ -39,12 +43,23 @@ export default class DistributionStatistics extends Component {
     })
   }
 
-  render () {
-    const { info } = this.state
+  handleConfirm(val) {
+    console.log(val)
+  }
+
+  render() {
+    const { info, searchConditionList } = this.state
 
     return (
       <View className='page-distribution-statistics'>
-        <SpNavBar title='推广费' leftIconType='chevron-left' />
+        <SpNavBar title='推广费' leftIconType='chevron-left' fixed='true' />
+        <SpSearchInput
+          placeholder='输入内容'
+          // isShowArea
+          isShowSearchCondition
+          searchConditionList={searchConditionList}
+          onConfirm={this.handleConfirm.bind(this)}
+        />
         <View className='header content-padded-b'>
           <View className='header-top'>
             <View className='view-flex view-flex-justify'>

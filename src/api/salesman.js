@@ -3,3 +3,17 @@ import req from './req'
 export function getSalespersonSalemanShopList (params = {}) {
   return req.get('/salesperson/salemanShopList', params)
 }
+
+export function promoterIndex (params = {}) {
+  return req.get('/promoter/index', params)
+}
+
+// 业务员首页统计
+export function getSalesmanCount (params = {}) {
+  return req.get('/promoter/getSalesmanCount', params)
+}
+
+// 业务员我的
+export function promoterInfo (params = {}) {
+  return req.get('/promoter/info', params)
+}

@@ -133,8 +133,11 @@ export default class DistributionDashboard extends Component {
   }
 
   handleClick = async () => {
-    this.setState({
-      showPoster: true
+    // this.setState({
+    //   showPoster: true
+    // })
+    Taro.navigateTo({
+      url: '/subpages/salesman/selectShop'
     })
   }
 

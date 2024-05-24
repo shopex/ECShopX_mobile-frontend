@@ -3,28 +3,21 @@ import { useEffect, useState } from 'react'
 import { Text, View } from '@tarojs/components'
 import { classNames, validate, showToast } from '@/utils'
 import { SpImage, SpPage } from '@/components'
-import CompTabbar from './comps/comp-tabbar'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
+import CompTabbar from './comps/comp-tabbar'
+
 import './card.scss'
 
-const initialConfigState = {
-  funcList: [
-    { name: '订单管理', icon: 'present' },
-    { name: '代客下单', icon: 'present' },
-    { name: '业务员推广', icon: 'present' },
-    { name: '商家列表', icon: 'present' },
-  ]
-}
+const initialConfigState = {}
 
 const Index = () => {
-  const [data, setData] = useImmer(initialConfigState)
+  const [state, setState] = useImmer(initialConfigState)
+  const {} = state
 
   return (
-    <SpPage className={classNames('page-sales-index')}
-    renderFooter={<CompTabbar/>}
-    >
+    <SpPage className={classNames('page-sales-index')} renderFooter={<CompTabbar />}>
       购物车
     </SpPage>
   )

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
-import { Loading, SpNote, SpNavBar } from '@/components'
+import { Loading, SpNote, SpNavBar,SpSearchInput } from '@/components'
 import api from '@/api'
 import { withPager } from '@/hocs'
 import { classNames, pickBy } from '@/utils'
@@ -20,6 +20,10 @@ export default class DistributionSubordinate extends Component {
       tabList: [
         { title: '已购买', num: 0, type: 'buy' },
         { title: '未购买', num: 0, type: 'not_buy' }
+      ],
+      searchConditionList: [
+        { label: '手机号', value: 'mobile' },
+        { label: '店铺名称', value: 'name' }
       ]
     }
   }
@@ -80,12 +84,23 @@ export default class DistributionSubordinate extends Component {
     )
   }
 
+  handleConfirm(val){
+    console.log(val);
+  }
+
   render () {
-    const { list, page, curTabIdx, tabList, scrollTop } = this.state
+    const { list, page, curTabIdx, tabList, scrollTop,searchConditionList } = this.state
 
     return (
       <View className='page-distribution-subordinate'>
         <SpNavBar title='我的会员' leftIconType='chevron-left' fixed='true' />
+        <SpSearchInput
+          placeholder='输入内容'
+          // isShowArea
+          isShowSearchCondition
+          searchConditionList={searchConditionList}
+          onConfirm={this.handleConfirm.bind(this)}
+        />
         <AtTabs
           className='client-list__tabs'
           current={curTabIdx}
