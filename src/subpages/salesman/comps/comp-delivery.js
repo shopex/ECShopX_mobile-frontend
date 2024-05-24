@@ -88,14 +88,14 @@ function CompDelivery(props) {
                     <Text>{item.staff_no}</Text>
                   </View>
                   <View className='information'>
-                    <Text className='information-tltle'>每单配送费</Text>
+                    <Text className='information-tltle'>每单业务费</Text>
                     <Text>
                       {item.payment_fee}
                       {item.payment_method === 'order' ? '元/每单' : '%/每单'}
                     </Text>
                   </View>
                   <View className='information'>
-                    <Text className='information-tltle'>配送员属性</Text>
+                    <Text className='information-tltle'>业务员属性</Text>
                     <Text>{item.staff_attribute === 'full_time' ? '全职' : '兼职'}</Text>
                   </View>
                   <View className='information'>
@@ -116,7 +116,7 @@ function CompDelivery(props) {
           })
         }}
       >
-        <View>创建配送员</View>
+        <View>创建业务员</View>
       </View>
     </View>
   )

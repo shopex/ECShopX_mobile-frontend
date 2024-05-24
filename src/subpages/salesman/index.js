@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import Taro,{ useRouter, useDidShow } from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { Text, View } from '@tarojs/components'
 import { classNames, validate, showToast } from '@/utils'
@@ -8,6 +8,8 @@ import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
 import CompInvitationCode from './comps/comp-invitation-code'
+import { useSyncCallback } from '@/hooks'
+
 
 import './index.scss'
 
@@ -20,15 +22,36 @@ const initialConfigState = {
       icon: 'icon-yewuyuantuiguang',
       path: '/subpages/salesman/distribution/index'
     },
-    { name: '商家列表', icon: 'icon-shangjialiebiao', path: '/subpages/salesman/selectCustomer' }
+    { name: '商家列表', icon: 'icon-shangjialiebiao', path: '/subpages/salesman/selectShop' }
   ],
   codeStatus: false,
-  information: { name: 'cx' }
+  information: { },
+  info:{},
+  parameter: {
+    datetype: '',
+    date: '',
+    distributor_id: ''
+  }
 }
 
 const Index = () => {
   const [state, setState] = useImmer(initialConfigState)
-  const { codeStatus, information, funcList } = state
+  const { codeStatus, information, funcList,info,parameter } = state
+
+  useDidShow(() => {
+    fetch()
+  })
+
+  const fetch = async () => {
+    const res = await api.salesman.getSalesmanCount({...parameter})
+    res.total_Fee = S.formatMoney(res.total_Fee / 100)
+    res.refund_Fee = S.formatMoney(res.refund_Fee / 100)
+    setState((draft) => {
+      draft.info = res
+    })
+  }
+
+  
 
   const handleCardClick = () => {
     // Taro.navigateTo({
@@ -45,9 +68,23 @@ const Index = () => {
     })
   }
 
-  const onTimeChange = (time) => {
-    console.log(time)
+  const onTimeChange = (time,val) => {
+    let params = {
+      ...parameter,
+      datetype: time == 0 ? 'y' : time == 1 ? 'm' : 'd',
+      date: val
+    }
+    setState((draft) => {
+      draft.parameter = params
+    })
+    handleRefresh()
+    console.log(params)
   }
+
+  const handleRefresh = useSyncCallback(() => {
+    fetch()
+  })
+
 
   return (
     <SpPage className={classNames('page-sales-index')} renderFooter={<CompTabbar />}>
@@ -93,24 +130,24 @@ const Index = () => {
                   查看数据总览&nbsp; &gt;
                 </View>
               </View>
-              <View className='panel-num mt-12'>9,999,999.88</View>
+              <View className='panel-num mt-12'>{info.total_Fee}</View>
             </View>
             <View className='panel-content-btm'>
               <View className='panel-content-btm-item'>
                 <View className='panel-title'>支付订单（笔）</View>
-                <View className='panel-num'>1,999</View>
+                <View className='panel-num'>{info.order_num}</View>
               </View>
               <View className='panel-content-btm-item'>
                 <View className='panel-title'>退款订单（笔）</View>
-                <View className='panel-num'>999</View>
+                <View className='panel-num'>{info.aftersales_num}</View>
               </View>
               <View className='panel-content-btm-item'>
                 <View className='panel-title'>退款（元）</View>
-                <View className='panel-num'>1,999,00</View>
+                <View className='panel-num'>{info.refund_Fee}</View>
               </View>
               <View className='panel-content-btm-item'>
                 <View className='panel-title'>实付会员（人）</View>
-                <View className='panel-num'>1,999</View>
+                <View className='panel-num'>{info.member_num}</View>
               </View>
             </View>
           </View>

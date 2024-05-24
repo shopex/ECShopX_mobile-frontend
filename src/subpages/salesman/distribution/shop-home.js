@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button, Image, Input } from '@tarojs/components'
 import { AtTabBar } from 'taro-ui'
-import { BackToTop, Loading, SpNavBar, SpImg, SpNote } from '@/components'
+import { BackToTop, Loading, SpNavBar, SpImg, SpNote, SpSearchInput } from '@/components'
 import S from '@/spx'
 import api from '@/api'
 import qs from 'qs'
@@ -65,7 +65,11 @@ export default class DistributionShopHome extends Component {
       statusBarHeight: 44,
       paddindTop: 0,
       // 是否首页
-      isHome: false
+      isHome: false,
+      searchConditionList: [
+        { label: '手机号', value: 'mobile' },
+        { label: '店铺名称', value: 'name' }
+      ]
     }
   }
 
@@ -78,8 +82,8 @@ export default class DistributionShopHome extends Component {
     //     url: `${process.env.APP_AUTH_PAGE}?redirect_url=${redirect}`
     //   })
     // } else {
-      this.getShopInfo()
-      this.init()
+    this.getShopInfo()
+    this.init()
     // }
   }
 
@@ -426,6 +430,10 @@ export default class DistributionShopHome extends Component {
     )
   }
 
+  handleConfirm(val){
+    console.log(val);
+  }
+
   render() {
     const {
       showBackToTop,
@@ -443,7 +451,8 @@ export default class DistributionShopHome extends Component {
       isFocus,
       statusBarHeight,
       paddindTop,
-      isHome
+      isHome,
+      searchConditionList
     } = this.state
 
     // 筛选选项
@@ -507,6 +516,12 @@ export default class DistributionShopHome extends Component {
             paddindTop > 20 ? paddindTop * 3.5 : 300
           }ms linear;`}
         >
+          <SpSearchInput
+            placeholder='输入内容'
+            isShowSearchCondition
+            searchConditionList={searchConditionList}
+            onConfirm={this.handleConfirm.bind(this)}
+          />
           <View className='filterMain'>
             {filterList.map((item) => (
               <View

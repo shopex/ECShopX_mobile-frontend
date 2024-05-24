@@ -8,6 +8,7 @@ import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
 import CompPurchasingList from './comps/comp-purchasing-list'
+import CompCar from './comps/comp-car'
 import './purchasing.scss'
 
 const initialConfigState = {
@@ -85,7 +86,7 @@ const Purchasing = () => {
   )
 
   return (
-    <SpPage className={classNames('page-selectShop')}>
+    <SpPage className={classNames('page-selectShop')} renderFooter={<CompCar />}>
       <SpSearchInput
         placeholder='输入内容'
         onConfirm={(val) => {
@@ -95,7 +96,7 @@ const Purchasing = () => {
           console.log('666area', val)
         }}
       />
-      <SpNavFilter info={navFilterList} onChange={handleFilterChange}></SpNavFilter>
+      <SpNavFilter info={navFilterList} onChange={handleFilterChange} />
 
       <CompPurchasingList />
     </SpPage>

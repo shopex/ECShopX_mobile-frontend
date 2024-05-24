@@ -346,6 +346,8 @@ const config = {
         'selectStore',//选店铺
         'selectShop',//选店铺
         'achievement',//业绩
+        'delivery-personnel',//业务员管理
+        'edit-deliveryman',//创建业务员
         'purchasing', //选商品
         'distribution/index', // 推广管理首页
         'distribution/setting', // 推广管理会员资料
