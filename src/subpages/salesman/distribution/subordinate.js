@@ -44,7 +44,11 @@ export default class DistributionSubordinate extends Component {
     }
     query[parameter.key] = parameter.keywords
 
-    const { list, total_count } = await api.distribution.subordinate(query)
+
+    const res = await api.distribution.subordinate(query)
+
+    const { list, total_count } = res[query.buy_type]
+    
     const total = total_count
 
     const nList = pickBy(list, {
