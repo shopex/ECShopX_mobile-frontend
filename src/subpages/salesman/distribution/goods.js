@@ -444,7 +444,7 @@ export default class DistributionGoods extends Component {
     })
   }
 
-  handleFilterChange = ()=>{
+  handleFilterChanges = ()=>{
     const {
       tag_id,
       category,
@@ -498,7 +498,7 @@ export default class DistributionGoods extends Component {
             searchConditionList={searchConditionList}
             onConfirm={this.handleConfirm.bind(this)}
           />
-          <SpNavFilter info={navFilterList} onChange={this.handleFilterChange.bind(this)} />
+          {/* <SpNavFilter info={navFilterList} onChange={this.handleFilterChanges.bind(this)} /> */}
 
 
           <FilterBar
