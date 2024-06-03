@@ -312,9 +312,9 @@ function SpPage(props, ref) {
 
 
       {!isDefault && !loading && <View className='sp-page-body' style={styleNames({
-        'margin-top': `${customNavigation ? gNavbarH : 0}px`,
-        'height': `${windowHeight - (customNavigation ? gNavbarH : 0)}px`
+        'margin-top': `${customNavigation ? gNavbarH : 0}px`
       })}>{children}</View>}
+
 
       {/* 置底操作区 */}
       {!isDefault && renderFooter && <View className='sp-page-footer'>{renderFooter}</View>}
