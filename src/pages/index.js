@@ -5,7 +5,7 @@ import Taro, {
   useShareTimeline,
   useDidShow
 } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { View, Image, ScrollView } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   SpScreenAd,
@@ -29,12 +29,14 @@ import {
   classNames,
   getCurrentPageRouteParams,
   resolveStringifyParams,
+  getCurrentShopId,
   pickBy,
   showToast
 } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
+import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
 import doc from '@/doc'
@@ -96,7 +98,12 @@ function Home() {
   }, [initState])
 
   useEffect(() => {
-    if (shopInfo && VERSION_STANDARD) {
+    dispatch(updatePurchaseShareInfo())
+    dispatch(updateInviteCode())
+  }, [])
+
+  useEffect(() => {
+    if(shopInfo && VERSION_STANDARD) {
       fetchWgts()
     }
   }, [shopInfo])
@@ -118,9 +125,8 @@ function Home() {
   useShareAppMessage(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     let params = getCurrentPageRouteParams()
-    const dtid = getDistributorId()
-    if (dtid && !('dtid' in params)) {
-      params = Object.assign(params, { dtid })
+    if (VERSION_STANDARD) {
+      params = Object.assign(params, { dtid: getCurrentShopId() })
     }
     let path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
 
@@ -136,10 +142,8 @@ function Home() {
   useShareTimeline(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     let params = getCurrentPageRouteParams()
-    const dtid = getDistributorId()
-
-    if (dtid && !('dtid' in params)) {
-      params = Object.assign(params, { dtid })
+    if (VERSION_STANDARD) {
+      params = Object.assign(params, { dtid: getCurrentShopId() })
     }
 
     console.log('useShareTimeline params:', params)
@@ -262,16 +266,17 @@ function Home() {
       className='page-index'
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
-      pageConfig={pageData?.base}
+      pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
       renderFooter={<SpTabbar />}
       loading={loading}
       ref={pageRef}
     >
-      <View
+      <ScrollView
         className={classNames('home-body', {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
+        scrollY
       >
         {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
         {
@@ -284,9 +289,9 @@ function Home() {
             </HomeWgts>
           </WgtsContext.Provider>
         }
-      </View>
+      </ScrollView>
 
-      {/* 小程序搜藏提示 */}
+      {/* 小程序收藏提示 */}
       {isWeixin && <MCompAddTip />}
 
       {/* 开屏广告 */}
