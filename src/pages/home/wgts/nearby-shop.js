@@ -206,7 +206,7 @@ function WgtNearbyShop(props) {
                   <View className='shop-del'>
                     <View className='shop-names' onClick={() => handleClickItem(item)}>
                       <View className='name'>{item.name}</View>
-                      {/* <View className='deliver'>商家自配</View> */}
+                      {item?.selfDeliveryRule?.is_open && <View className='deliver'>商家自配</View>}
                     </View>
                     <View className='score' onClick={() => handleClickItem(item)}>
                       <View className='sales'>
@@ -220,7 +220,12 @@ function WgtNearbyShop(props) {
                         </View>
                       )}
                     </View>
-
+                    {item?.selfDeliveryRule?.is_open && (
+                      <View className='freight'>
+                        <Text>起送¥20 ｜ 满¥39元免运费</Text>
+                        <Text className='freight-money'>¥5</Text>
+                      </View>
+                    )}
                     {base.show_coupon && (
                       <ScrollView scrollX className='coupon-list' scrollLeft={state.scrollLeft}>
                         {console.log(item.discountCardList, 'item.discountCardList1')}
@@ -410,7 +415,6 @@ function WgtNearbyShop(props) {
           ))}
         </ScrollView>
 
-          
         {listTypes.length && listTypes[activeIndex].types == 'business'
           ? storeList()
           : storeProducts()}
