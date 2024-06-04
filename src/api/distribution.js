@@ -8,8 +8,8 @@ export function update(params = {}) {
   return req.put('/promoter', params)
 }
 
-export function dashboard() {
-  return req.get('/promoter/index')
+export function dashboard(params = {}) {
+  return req.get('/promoter/index',params)
 }
 
 export function info(params = {}) {

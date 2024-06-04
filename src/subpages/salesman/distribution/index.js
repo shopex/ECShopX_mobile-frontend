@@ -42,7 +42,7 @@ export default class DistributionDashboard extends Component {
     const resUser = Taro.getStorageSync('userinfo')
     const { username, avatar } = resUser
 
-    const res = await api.distribution.dashboard()
+    const res = await api.distribution.dashboard({isSalesmanPage:1})
     const base = pickBy(res, {
       itemTotalPrice: 'itemTotalPrice',
       cashWithdrawalRebate: 'cashWithdrawalRebate',

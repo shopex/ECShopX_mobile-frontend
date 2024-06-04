@@ -43,7 +43,8 @@ export default class DistributionTrade extends Component {
     const query = {
       brokerage_source: type,
       page,
-      pageSize
+      pageSize,
+      isSalesmanPage:1
     }
     query[parameter.key] = parameter.keywords
 
