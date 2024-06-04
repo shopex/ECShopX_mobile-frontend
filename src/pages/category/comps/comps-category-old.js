@@ -94,7 +94,7 @@ function compsCategoryOld(props) {
 
     const query = { template_name: platformTemplateName, version: 'v1.0.1', page_name: 'category' }
     const { list } = await api.category.getCategory(query)
-    const seriesList = list[0] ? list[0].params.data[0]?.content : []
+    const seriesList = (list[0] && list[0].params.data[0]?.content) || []
     if(seriesList){
       //type  false:main_category 管理分类  true:category_id 销售分类
       seriesList.forEach(element => {
