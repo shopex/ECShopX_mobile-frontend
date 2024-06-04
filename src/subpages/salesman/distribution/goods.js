@@ -150,7 +150,8 @@ export default class DistributionGoods extends Component {
     const query = {
       ...this.state.query,
       page,
-      pageSize
+      pageSize,
+      isSalesmanPage:1
     }
 
     const { list, total_count: total, item_params_list = [] } = await api.item.search(query)

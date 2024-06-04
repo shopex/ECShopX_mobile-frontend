@@ -51,7 +51,8 @@ export default class DistributionShopGoods extends Component {
     const query = {
       ...this.state.query,
       page,
-      pageSize
+      pageSize,
+      isSalesmanPage:1
     }
 
     const { list, total_count: total } = await api.item.search(query)
@@ -151,7 +152,8 @@ export default class DistributionShopGoods extends Component {
           goods_id: id,
           item_type: 'normal',
           pageSize: 50,
-          page: 1
+          page: 1,
+          isSalesmanPage:1
         }
         const res = await api.item.search(query)
         const details = pickBy(res.list, {

@@ -69,7 +69,7 @@ export default class DistributionWithdraw extends Component {
   // }
 
   async fetch() {
-    const { cashWithdrawalRebate } = await api.distribution.statistics()
+    const { cashWithdrawalRebate } = await api.distribution.statistics({isSalesmanPage:1})
     let res = await api.member.getNewTradePaymentList()
     let { payList } = this.state
     res.forEach((i) => {
