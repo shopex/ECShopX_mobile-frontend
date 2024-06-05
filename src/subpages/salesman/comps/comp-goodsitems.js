@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { View, Text, Image } from '@tarojs/components'
 import { SpPrice, SpInputNumber, SpImage, SpCheckboxNew } from '@/components'
 import { VERSION_IN_PURCHASE } from '@/utils'
+import { AtButton } from 'taro-ui'
 
 import './comp-goodsitems.scss'
 
@@ -18,15 +19,17 @@ function CompGoodsItem(props) {
 
   const onChangeInputNumber = (value) => {}
 
+  const handleCheckout = () => {}
+
+  const onChangeGoodsIsChecks = () => {}
+
   return (
     <View>
       <View className='comp-goodsitems'>
-        <SpCheckboxNew
-          checked={allChecked}
-          label='方方的徐汇点'
-          onChange={onChangeGoodsIsCheck()}
-          className='comp-goodsitems-checkbox'
-        />
+        <View className='comp-goodsitems-checkbox'>
+          <Text className='iconfont icon-shop' />
+          方方的徐汇点
+        </View>
         <View className='comp-goodsitems-item'>
           <View className='comp-goodsitems-item-del'>
             <SpCheckboxNew checked={allChecked} onChange={onChangeGoodsIsCheck()} />
@@ -94,6 +97,32 @@ function CompGoodsItem(props) {
                 <SpPrice className='mkt-price' value='1000' />
                 <SpInputNumber value='7' max='8' min={1} onChange={onChangeInputNumber} />
               </View>
+            </View>
+          </View>
+          <View className='comp-goodsitems-item-ft'>
+            <View className='lf'>
+              <SpCheckboxNew checked={allChecked} label='全选' onChange={onChangeGoodsIsChecks()} />
+            </View>
+            <View className='rg'>
+              <View>
+                <View className='total-price-wrap'>
+                  合计：
+                  <SpPrice className='total-pirce' value={12345 / 100} />
+                </View>
+                <View className='discount-price-wrap'>
+                  共优惠：
+                  <SpPrice className='total-pirce' value={12345 / 100} />
+                </View>
+              </View>
+              <AtButton
+                className='btn-calc'
+                type='primary'
+                circle
+                disabled={false}
+                onClick={() => handleCheckout()}
+              >
+                结算(12)
+              </AtButton>
             </View>
           </View>
         </View>
@@ -123,13 +152,7 @@ function CompGoodsItem(props) {
               width={130}
               height={130}
             /> */}
-            <SpImage
-              className='pimage'
-              circle={16}
-              src='bukeshou.png'
-              width={130}
-              height={130}
-            />
+            <SpImage className='pimage' circle={16} src='bukeshou.png' width={130} height={130} />
             <View className='comp-goodsitems-item-del-info'>
               <View className='name'>
                 <Text>斗罗第100弹六一特别款</Text>
@@ -149,13 +172,7 @@ function CompGoodsItem(props) {
               width={130}
               height={130}
             />
-            <SpImage
-              className='pimage'
-              circle={16}
-              src='buhuozhong.png'
-              width={130}
-              height={130}
-            />
+            <SpImage className='pimage' circle={16} src='buhuozhong.png' width={130} height={130} />
             {/* <SpImage
               className='pimage'
               circle={16}
