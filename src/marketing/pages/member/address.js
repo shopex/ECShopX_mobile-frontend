@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
-import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
+import Taro, { getCurrentInstance, getCurrentPages, useDidShow } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,6 +28,10 @@ function AddressIndex(props) {
   useEffect(() => {
     fetch()
   }, [])
+
+  useDidShow(() => {
+    fetch()
+  })
 
   const updateChooseAddress = (address) => {
     dispatch({ type: 'user/updateChooseAddress', payload: address })
