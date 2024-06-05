@@ -1,7 +1,14 @@
 .comp-goodsitems {
   margin: 36px 24px;
   &-checkbox {
-    margin-bottom: 24px;
+    font-size: 30px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+    .icon-shop {
+      font-size: 24px;
+      margin-right: 10px;
+    }
   }
   &-item {
     border-radius: 20px;
@@ -52,7 +59,22 @@
       }
     }
   }
-
+  &-item-ft {
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .rg {
+      display: flex;
+      align-items: center;
+      .total-pirce {
+        font-size: 40px;
+      }
+      .btn-calc {
+        margin-left: 16px;
+      }
+    }
+  }
   .sp-checkbox-new__label {
     margin-left: 16px;
     font-weight: 600;
@@ -138,4 +160,9 @@
 .pimage {
   position: absolute;
   left: 97px;
+}
+.at-button--primary {
+  background: var(--color-dianwu-primary) !important;
+  border-color: var(--color-dianwu-primary) !important;
+  color: #fff !important;
 }
