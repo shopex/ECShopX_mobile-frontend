@@ -26,23 +26,22 @@ function SpUpload(props) {
   }, [value])
 
   const handleUploadFile = async () => {
-    authSetting('camera', async () => {
-      const { tempFiles, type } = await Taro.chooseMedia({
+    if (process.env.TARO_ENV == 'h5') {
+      const { tempFiles } = await Taro.chooseImage({
         count: max,
-        mediaType: [mediaType],
         sourceType: ['camera', 'album'],
-        camera: 'back',
       })
       console.log('sp-upload handleUploadFile', tempFiles)
-      const resultFiles = tempFiles.map(({ tempFilePath, fileType, thumbTempFilePath }) => ({
-        url: tempFilePath,
-        file: tempFilePath,
-        fileType: fileType,
-        thumb: thumbTempFilePath
-      }))
+      const resultFiles = tempFiles.map((item) => ({
+          url: item.path,
+          file: item
+        }))
+      
       Taro.showLoading()
-      imgUploader.uploadImageFn(resultFiles, mediaType == 'video' ? 'videos' : 'image').then((res) => {
-        console.log('---uploadImageFn res---', res)
+      // console.log("🚀🚀🚀 ~ file: index.js:93 ~ resultFiles ~ resultFiles:", resultFiles)
+
+      imgUploader.uploadImageFn(resultFiles, 'image').then((res) => {
+        // console.log('---uploadImageFn res---', res)
         Taro.hideLoading()
         const _res = mediaType == 'video' ? res : res.map((item) => item.url)
         const _files = [...files, ..._res]
@@ -51,13 +50,36 @@ function SpUpload(props) {
         })
         onChange(_files)
       })
-    })
+    }
 
-    // const { tempFilePaths } = await Taro.chooseImage({
-    //   sourceType: ['camera', 'album'],
-    //   count: 5
-    // })
-
+    if (process.env.TARO_ENV == 'weapp') {
+      authSetting('camera', async () => {
+        const { tempFiles, type } = await Taro.chooseMedia({
+          count: max,
+          mediaType: [mediaType],
+          sourceType: ['camera', 'album'],
+          camera: 'back',
+        })
+        console.log('sp-upload handleUploadFile', tempFiles)
+        const resultFiles = tempFiles.map(({ tempFilePath, fileType, thumbTempFilePath }) => ({
+          url: tempFilePath,
+          file: tempFilePath,
+          fileType: fileType,
+          thumb: thumbTempFilePath
+        }))
+        Taro.showLoading()
+        imgUploader.uploadImageFn(resultFiles, mediaType == 'video' ? 'videos' : 'image').then((res) => {
+          console.log('---uploadImageFn res---', res)
+          Taro.hideLoading()
+          const _res = mediaType == 'video' ? res : res.map((item) => item.url)
+          const _files = [...files, ..._res]
+          setState((draft) => {
+            draft.files = _files
+          })
+          onChange(_files)
+        })
+      })
+    }
   }
 
   const handleDeletePic = (idx) => {
