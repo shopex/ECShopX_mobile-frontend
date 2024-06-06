@@ -337,8 +337,7 @@ function ItemList() {
     })
   }
 
-  const handleAddToCart = async ({ itemId, distributorId } = info,e) => {
-    e.stopPropagation()
+  const handleAddToCart = async ({ itemId, distributorId }) => {
     try {
       Taro.showLoading()
       const itemDetail = await api.item.detail(itemId, {
