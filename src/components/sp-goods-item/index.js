@@ -56,8 +56,8 @@ function SpGoodsItem(props) {
   }
 
 
-  const onChangeToolBar = (e) => {
-    onAddToCart(info,e)
+  const onChangeToolBar = () => {
+    onAddToCart(info)
   }
 
   const handleClick = () => {
