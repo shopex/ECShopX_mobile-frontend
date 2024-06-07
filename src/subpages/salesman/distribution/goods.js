@@ -102,8 +102,8 @@ export default class DistributionGoods extends Component {
       tag_id: '',
       category: '',
       statused: '',
-      isLoading:true,
-      first:true
+      isLoading: true,
+      first: true
     }
   }
 
@@ -143,22 +143,37 @@ export default class DistributionGoods extends Component {
     const { list } = await api.category.getCategory(query)
     let seriesList = list[0] ? list[0].params.data : []
     let nav = JSON.parse(JSON.stringify(this.state.navFilterList))
-    seriesList[0]?.content?.forEach((item) => {
-      item.category_name = item.name  || item.category_name
-      item.category_id = item.category_id || item.main_category_id
-      item.statusNum = item.category_id ? true : false
-      item?.children?.forEach((item1) => {
-        item1.category_name = item1.name|| item1.category_name
-        item1.category_id = item1.category_id || item1.main_category_id
-        item1.statusNum = item1.category_id ? true : false
-        item1?.children?.forEach((item2) => {
-          item2.category_name = item2.name|| item2.category_name
-          item2.category_id = item2.category_id || item2.main_category_id
-          item2.statusNum = item2.category_id ? true : false
-        })
+    // seriesList[0]?.content?.forEach((item) => {
+    //   item.category_name = item.name  || item.category_name
+    //   item.category_id = item.category_id || item.main_category_id
+    //   item.statusNum = item.category_id ? true : false
+    //   item?.children?.forEach((item1) => {
+    //     item1.category_name = item1.name|| item1.category_name
+    //     item1.category_id = item1.category_id || item1.main_category_id
+    //     item1.statusNum = item1.category_id ? true : false
+    //     item1?.children?.forEach((item2) => {
+    //       item2.category_name = item2.name|| item2.category_name
+    //       item2.category_id = item2.category_id || item2.main_category_id
+    //       item2.statusNum = item2.category_id ? true : false
+    //     })
+    //   })
+    // })
+
+    const classification = (item) => {
+      item.forEach((l, i) => {
+        l.category_name = l.name || l.category_name
+        l.category_id = l.category_id || l.main_category_id
+        l.statusNum = l.category_id ? true : false
+        if (l?.children) {
+          classification(l.children)
+        }
       })
-    })
-    nav[1].option = [...nav[1].option, ...(seriesList[0]?.content ?? [])]
+      return item
+    }
+
+    let res = classification(seriesList[0]?.content ?? [])
+
+    nav[1].option = [...nav[1].option, ...(res ?? [])]
     this.setState({
       navFilterList: nav
     })
@@ -167,7 +182,7 @@ export default class DistributionGoods extends Component {
   async fetch(params) {
     const { userId } = Taro.getStorageSync('userinfo')
     const { page_no: page, page_size: pageSize } = params
-    const { selectParams, navFilterList,first } = this.state
+    const { selectParams, navFilterList, first } = this.state
     const query = {
       ...this.state.query,
       page,
@@ -206,7 +221,6 @@ export default class DistributionGoods extends Component {
       })
     })
 
-
     const nList = pickBy(list, {
       img: 'pics[0]',
       item_id: 'item_id',
@@ -237,7 +251,7 @@ export default class DistributionGoods extends Component {
       goodsIds: [...this.state.goodsIds, ...goods_id],
       query,
       isLoading: false,
-      first:false
+      first: false
     })
 
     if (this.firstStatus) {
@@ -247,7 +261,7 @@ export default class DistributionGoods extends Component {
       })
       this.firstStatus = false
     }
-    if(first){
+    if (first) {
       this.setState({
         navFilterList: nav
       })
@@ -491,7 +505,6 @@ export default class DistributionGoods extends Component {
     })
   }
 
-  
   // findDataById = (data, id) => {
   //   let result = null
 
@@ -515,33 +528,33 @@ export default class DistributionGoods extends Component {
 
   //   return result
   // }
-  
+
   // 递归函数用于查找指定ID的数据
   findDataById = (data, id) => {
-    let result = null;
+    let result = null
 
     const searchById = (items) => {
-        for (const item of items) {
-            if (item.category_id === id) {
-                result = item;
-                return;
-            }
-            if (item.children) {
-                searchById(item.children);
-                if (result) return;
-            }
+      for (const item of items) {
+        if (item.category_id === id) {
+          result = item
+          return
         }
-    };
+        if (item.children) {
+          searchById(item.children)
+          if (result) return
+        }
+      }
+    }
 
-    searchById(data);
-    return result;
-};
+    searchById(data)
+    return result
+  }
 
   handleFilterChanges = async (key, value) => {
     console.log(789, key, value)
     let params = {
-      category_id:'',
-      main_category:''
+      category_id: '',
+      main_category: ''
     }
     if (key == 'category') {
       let res = this.findDataById(this.state.navFilterList[1].option, value)
@@ -565,7 +578,7 @@ export default class DistributionGoods extends Component {
         this.resetPage()
         this.setState(
           {
-            list: [],
+            list: []
           },
           () => {
             this.nextPage()
@@ -671,8 +684,8 @@ export default class DistributionGoods extends Component {
                 )
               })}
             </View>
-            {isLoading && <Loading>正在加载...{isLoading}</Loading> }
-            {!isLoading && list.length==0 && (
+            {isLoading && <Loading>正在加载...{isLoading}</Loading>}
+            {!isLoading && list.length == 0 && (
               <SpNote img='trades_empty.png'>暂无数据~{isLoading}</SpNote>
             )}
           </ScrollView>

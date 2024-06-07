@@ -11,9 +11,7 @@ export default class DistributionStatistics extends Component {
     super(props)
     this.state = {
       info: {},
-      searchConditionList: [
-        { label: '全部店铺', value: '' }
-      ],
+      searchConditionList: [{ label: '全部店铺', value: '' }],
       parameter: {
         distributor_id: '',
         keywords: ''
@@ -27,7 +25,7 @@ export default class DistributionStatistics extends Component {
   }
 
   async fetch() {
-    const res = await api.distribution.statistics({ ...this.state.parameter,isSalesmanPage:1 })
+    const res = await api.distribution.statistics({ ...this.state.parameter, isSalesmanPage: 1 })
     const info = pickBy(res, {
       payedRebate: 'payedRebate',
       rebateTotal: 'rebateTotal',
@@ -78,7 +76,7 @@ export default class DistributionStatistics extends Component {
       }
     )
   }
-  onHandleSearch(item){
+  onHandleSearch(item) {
     this.setState(
       {
         parameter: {
@@ -109,7 +107,7 @@ export default class DistributionStatistics extends Component {
         <View className='header content-padded-b'>
           <View className='header-top'>
             <View className='view-flex view-flex-justify'>
-              <View>累计提取金额：{info.payedRebate / 100}元</View>
+              <View>累计提取金额：{info.payedRebate ? info.payedRebate / 100 : '0'}元</View>
               <Navigator
                 url='/subpages/salesman/distribution/withdrawals-record'
                 className='record-btn'
@@ -126,11 +124,11 @@ export default class DistributionStatistics extends Component {
           <View className='header-bottom view-flex'>
             <View className='view-flex-item view-flex view-flex-vertical view-flex-middle view-flex-center with-border'>
               <View className='assets-label'>推广费总额</View>
-              <View>¥ {info.rebateTotal / 100}</View>
+              <View>¥ {info.rebateTotal ? info.rebateTotal / 100 : '0'}</View>
             </View>
             <View className='view-flex-item view-flex view-flex-vertical view-flex-middle view-flex-center'>
               <View className='assets-label'>可提取现金</View>
-              <View>¥ {info.cashWithdrawalRebate / 100}</View>
+              <View>¥ {info.cashWithdrawalRebate ? info.cashWithdrawalRebate / 100 : '0'}</View>
             </View>
           </View>
         </View>
@@ -146,16 +144,22 @@ export default class DistributionStatistics extends Component {
             <View className='content-padded-b'>
               <View>
                 <View className='data-label'>提成</View>
-                <View className='data-amount'>{info.orderRebate / 100}</View>
+                <View className='data-amount'>
+                  {info.orderRebate ? info.orderRebate / 100 : '0'}
+                </View>
               </View>
               <View className='view-flex'>
                 <View className='view-flex-item'>
                   <View className='data-label'>未确认</View>
-                  <View className='data-count'>{info.orderNoCloseRebate / 100}</View>
+                  <View className='data-count'>
+                    {info.orderNoCloseRebate ? info.orderNoCloseRebate / 100 : '0'}
+                  </View>
                 </View>
                 <View className='view-flex-item'>
                   <View className='data-label'>已确认</View>
-                  <View className='data-count'>{info.orderCloseRebate / 100}</View>
+                  <View className='data-count'>
+                    {info.orderCloseRebate ? info.orderNoCloseRebate / 100 : '0'}
+                  </View>
                 </View>
               </View>
             </View>
@@ -164,16 +168,22 @@ export default class DistributionStatistics extends Component {
             <View className='content-padded-b'>
               <View>
                 <View className='data-label'>津贴</View>
-                <View className='data-amount'>{info.orderTeamRebate / 100}</View>
+                <View className='data-amount'>
+                  {info.orderTeamRebate ? info.orderTeamRebate / 100 : '0'}
+                </View>
               </View>
               <View className='view-flex'>
                 <View className='view-flex-item'>
                   <View className='data-label'>未确认</View>
-                  <View className='data-count'>{info.orderTeamNoCloseRebate / 100}</View>
+                  <View className='data-count'>
+                    {info.orderTeamNoCloseRebate ? info.orderTeamNoCloseRebate / 100 : '0'}
+                  </View>
                 </View>
                 <View className='view-flex-item'>
                   <View className='data-label'>已确认</View>
-                  <View className='data-count'>{info.orderTeamCloseRebate / 100}</View>
+                  <View className='data-count'>
+                    {info.orderTeamNoCloseRebate ? info.orderTeamNoCloseRebate / 100 : '0'}
+                  </View>
                 </View>
               </View>
             </View>
@@ -182,7 +192,9 @@ export default class DistributionStatistics extends Component {
             <View className='content-padded-b'>
               <View>
                 <View className='data-label'>小店提成</View>
-                <View className='data-amount'>{info.taskBrokerageItemTotalFee / 100}</View>
+                <View className='data-amount'>
+                  {info.taskBrokerageItemTotalFee ? info.taskBrokerageItemTotalFee / 100 : '0'}
+                </View>
               </View>
             </View>
           </View>
