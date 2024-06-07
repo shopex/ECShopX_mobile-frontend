@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
-import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
+import Taro, { getCurrentInstance, getCurrentPages, useDidShow } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,6 +29,10 @@ function AddressIndex(props) {
   useEffect(() => {
     fetch()
   }, [])
+
+  useDidShow(() => {
+    fetch()
+  })
 
   const updateChooseAddress = (address) => {
     dispatch({ type: 'user/updateChooseAddress', payload: address })
@@ -66,8 +70,7 @@ function AddressIndex(props) {
   }
 
   const handleClickChecked = (e, item) => {
-
-    setState(draft => {
+    setState(draft=>{
       draft.selectedId = item[ADDRESS_ID]
     })
 
@@ -79,6 +82,7 @@ function AddressIndex(props) {
   }
 
   const handleChangeDefault = async (e, item) => {
+
     const nItem = JSON.parse(JSON.stringify(item))
     nItem.is_def = 1
     try {

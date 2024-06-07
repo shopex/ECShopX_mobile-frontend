@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.14.3](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.14.2...v3.14.3) (2024-05-13)
+
+
+### Bug Fixes
+
+* ECX-5456 ECX-5457 ([a03333a](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/a03333af45ec36bde94b6c377d67284e46f289b4))
+
+### [3.14.2](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.14.1...v3.14.2) (2024-04-11)
+
+
+### Bug Fixes
+
+* 修复云店首页分享，打开店铺错误问题 ([0453bba](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/0453bba23089ac5fd56e312fabb3d7153bac2187))
+
+### [3.14.1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.14.0...v3.14.1) (2024-03-28)
+
+## [3.14.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.26...v3.14.0) (2024-03-11)
+
+### [3.13.26](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.25...v3.13.26) (2024-03-10)
+
+
+### Bug Fixes
+
+* 积分商城积分+现金支付 ([d783858](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/d783858e27e6cdceaedfb0692f6f5128b2a89f74))
+* 移除汇付支付插件 ([4f09777](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/4f0977760284ffb1ee2cd6a17a912ba7068f9edd))
+
 ### [3.13.25](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.13.24...v3.13.25) (2024-02-20)
 
 

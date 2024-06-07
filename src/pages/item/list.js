@@ -3,7 +3,6 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
-import { AtDrawer, AtTabs } from 'taro-ui'
 import {
   SpFilterBar,
   SpTagBar,
@@ -12,7 +11,8 @@ import {
   SpPage,
   SpScrollView,
   SpDrawer,
-  SpSelect
+  SpSelect,
+  SpSkuSelect
 } from '@/components'
 import { fetchUserFavs } from '@/store/slices/user'
 import doc from '@/doc'
@@ -24,11 +24,14 @@ import {
   getDistributorId,
   styleNames,
   entryLaunch,
-  VERSION_STANDARD
+  VERSION_STANDARD,
+  showToast
 } from '@/utils'
 import S from '@/spx'
 
 import './list.scss'
+
+const MSpSkuSelect = React.memo(SpSkuSelect)
 
 const initialState = {
   leftList: [],
@@ -48,6 +51,9 @@ const initialState = {
   show: false,
   fixTop: 0,
   routerParams: null,
+  skuPanelOpen: false,
+  info: null,
+  selectType: 'picker',
   card_id: null // 兑换券
 }
 
@@ -58,12 +64,15 @@ function ItemList() {
     keywords,
     leftList,
     rightList,
+    selectType,
     brandList,
+    skuPanelOpen,
     brandSelect,
     curFilterIdx,
     filterList,
     tagList,
     curTagIdx,
+    info,
     show,
     fixTop,
     routerParams
@@ -74,6 +83,7 @@ function ItemList() {
   const dispatch = useDispatch()
 
   const goodsRef = useRef()
+  const pageRef = useRef()
   // console.log('$instance.router.params', $instance.router?.params)
   useEffect(() => {
     if (S.getAuthToken()) {
@@ -84,19 +94,29 @@ function ItemList() {
   useEffect(() => {
     // card_id, user_card_id: 兑换券参数
     entryLaunch.getRouteParams($instance.router.params).then((params) => {
-      const { cat_id, main_cat_id, tag_id, card_id, user_card_id } = params
+      const { cat_id, keywords, main_cat_id, tag_id, card_id, user_card_id } = params
 
       setState((draft) => {
-        draft.routerParams = {
+        ; (draft.routerParams = {
           cat_id,
+          keywords,
           main_cat_id,
           tag_id,
           card_id,
           user_card_id
-        }
+        }),
+          (draft.keywords = keywords)
       })
     })
   }, [])
+
+  useEffect(() => {
+    if (skuPanelOpen) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [skuPanelOpen])
 
   useEffect(() => {
     if (routerParams) {
@@ -149,7 +169,6 @@ function ItemList() {
   const fetch = async ({ pageIndex, pageSize }) => {
     // card_id: 兑换券id
     // const { cat_id, main_cat_id, tag_id, card_id } = $instance.router.params
-    console.log(shopInfo)
     let params = {
       page: pageIndex,
       pageSize,
@@ -226,7 +245,6 @@ function ItemList() {
           v.fixTop = fixTop + 34
         }
       }
-
     })
 
     return { total: total_count }
@@ -318,12 +336,32 @@ function ItemList() {
       url
     })
   }
+
+  const handleAddToCart = async ({ itemId, distributorId }) => {
+    try {
+      Taro.showLoading()
+      const itemDetail = await api.item.detail(itemId, {
+        showError: false,
+        distributor_id: distributorId
+      })
+      Taro.hideLoading()
+      setState((draft) => {
+        draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
+        draft.skuPanelOpen = true
+        draft.selectType = 'addcart'
+      })
+    } catch (e) {
+      showToast(e.message)
+      Taro.hideLoading()
+    }
+  }
   return (
     <SpPage
       scrollToTopBtn
       className={classNames('page-item-list', {
         'has-tagbar': tagList.length > 0
       })}
+      ref={pageRef}
     >
       <View className='search-wrap'>
         {/* 兑换券选择店铺 */}
