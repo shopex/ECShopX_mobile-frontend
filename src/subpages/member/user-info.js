@@ -61,14 +61,14 @@ function MemberUserInfo() {
       ...custom_data
     }
     Object.keys(data).forEach((key) => {
-    const value = custom_data[key] ||userInfo[key]
+    const value = custom_data?.[key] ||userInfo[key]
     if (data[key].is_open) {
         if (key !== 'mobile' && key !== 'username') {
           _formItems.push(data[key])
         }
       }
       if (data[key].element_type == 'checkbox') {
-        _formUserInfo[key] =  value? value.split(',').map(item=>({name:item,ischecked:true})) : [];
+        _formUserInfo[key] =  value&&value.length>0? value.split(',').map(item=>({name:item,ischecked:true})) : [];
       } else {
         _formUserInfo[key] = value || ''
       }
@@ -343,6 +343,7 @@ function MemberUserInfo() {
               placeholder='请输入昵称'
               onInput={onChangeUsername}
               onConfirm={onChangeUsername}
+              onNickNameReview={onChangeUsername}
             />
           }
         ></SpCell>

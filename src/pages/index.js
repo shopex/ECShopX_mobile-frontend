@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import Taro, {
   getCurrentInstance,
   useShareAppMessage,
@@ -13,7 +13,8 @@ import {
   SpSearch,
   SpRecommend,
   SpTabbar,
-  SpCouponPackage
+  SpCouponPackage,
+  SpSkuSelect
 } from '@/components'
 import api from '@/api'
 import {
@@ -27,7 +28,10 @@ import {
   VERSION_B2C,
   classNames,
   getCurrentPageRouteParams,
-  resolveStringifyParams
+  resolveStringifyParams,
+  getCurrentShopId,
+  pickBy,
+  showToast
 } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
@@ -35,15 +39,17 @@ import { updateShopInfo } from '@/store/slices/shop'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
-import qs from 'qs'
+import doc from '@/doc'
 import HomeWgts from './home/comps/home-wgts'
 import { WgtHomeHeader, WgtHomeHeaderShop } from './home/wgts'
+import { WgtsContext } from './home/wgts/wgts-context'
 import CompAddTip from './home/comps/comp-addtip'
 import CompFloatMenu from './home/comps/comp-floatmenu'
 
 import './home/index.scss'
 
 const MCompAddTip = React.memo(CompAddTip)
+const MSpSkuSelect = React.memo(SpSkuSelect)
 
 const initialState = {
   wgts: [],
@@ -53,12 +59,16 @@ const initialState = {
   pageData: null,
   fixedTop: false,
   filterWgts: [],
-  isShowHomeHeader: false
+  isShowHomeHeader: false,
+  info: null,
+  skuPanelOpen: false,
+  selectType: 'picker'
 }
 
 function Home() {
   const [state, setState] = useImmer(initialState)
   const [likeList, setLikeList] = useImmer([])
+  const pageRef = useRef()
 
   const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } = useSelector(
     (state) => state.sys
@@ -71,7 +81,12 @@ function Home() {
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
 
-  const { wgts, loading, searchComp, pageData, fixedTop, filterWgts, isShowHomeHeader } = state
+  const { wgts, loading, searchComp, pageData, fixedTop,
+    filterWgts,
+    isShowHomeHeader,
+    info,
+    skuPanelOpen,
+    selectType } = state
 
   const dispatch = useDispatch()
 
@@ -99,17 +114,19 @@ function Home() {
     }
   }, [location])
 
-
-  // useDidShow(() => {
-  //   fetchLocation()
-  // })
+  useEffect(() => {
+    if (skuPanelOpen) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [skuPanelOpen])
 
   useShareAppMessage(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     let params = getCurrentPageRouteParams()
-    const dtid = getDistributorId()
-    if (dtid && !('dtid' in params)) {
-      params = Object.assign(params, { dtid })
+    if (VERSION_STANDARD) {
+      params = Object.assign(params, { dtid: getCurrentShopId() })
     }
     let path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
 
@@ -125,10 +142,8 @@ function Home() {
   useShareTimeline(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     let params = getCurrentPageRouteParams()
-    const dtid = getDistributorId()
-
-    if (dtid && !('dtid' in params)) {
-      params = Object.assign(params, { dtid })
+    if (VERSION_STANDARD) {
+      params = Object.assign(params, { dtid: getCurrentShopId() })
     }
 
     console.log('useShareTimeline params:', params)
@@ -227,15 +242,35 @@ function Home() {
     dispatch(updateShopInfo(res))
   }
 
+  const onAddToCart = async ({ itemId, distributorId }) => {
+    Taro.showLoading()
+    try {
+      const itemDetail = await api.item.detail(itemId, {
+        showError: false,
+        distributor_id: distributorId
+      })
+      Taro.hideLoading()
+      setState((draft) => {
+        draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
+        draft.skuPanelOpen = true
+        draft.selectType = 'addcart'
+      })
+    } catch (e) {
+      showToast(e.message)
+      Taro.hideLoading()
+    }
+  }
+
   return (
     <SpPage
       className='page-index'
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
-      pageConfig={pageData?.base}
+      pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
       renderFooter={<SpTabbar />}
       loading={loading}
+      ref={pageRef}
     >
       <ScrollView
         className={classNames('home-body', {
@@ -245,10 +280,14 @@ function Home() {
       >
         {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
         {
-          filterWgts.length > 0 && <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
-            {/* 猜你喜欢 */}
-            <SpRecommend className='recommend-block' info={likeList} />
-          </HomeWgts>
+          filterWgts.length > 0 && <WgtsContext.Provider value={{
+            onAddToCart
+          }}>
+            <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
+              {/* 猜你喜欢 */}
+              <SpRecommend className='recommend-block' info={likeList} />
+            </HomeWgts>
+          </WgtsContext.Provider>
         }
       </ScrollView>
 
@@ -260,6 +299,25 @@ function Home() {
 
       {/* 优惠券包 */}
       {VERSION_STANDARD && <SpCouponPackage />}
+
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
     </SpPage>
   )
 }

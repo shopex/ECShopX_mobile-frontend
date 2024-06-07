@@ -93,6 +93,8 @@ import SpAddress from './sp-address'
 import SpSearchInput from './sp-search-input'
 import SpTradeItem from './sp-trade-item'
 import SpModal from './sp-modal'
+import SpCategorySearch from './sp-category-search'
+
 
 export default {}
 
@@ -191,5 +193,6 @@ export {
   SpAddress,
   SpSearchInput,
   SpTradeItem,
-  SpModal
+  SpModal,
+  SpCategorySearch
 }

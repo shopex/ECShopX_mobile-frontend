@@ -60,7 +60,8 @@ const initialConfigState = {
     boost_activity: false, // 助力活动
     boost_order: false, // 助力订单
     complaint: false, // 投诉记录
-    community_order: false, // 社区团购
+    community_order: false, // 社区团购订单
+    community_group_enable: false, // 社区团购
     ext_info: false,
     group: false, // 我的拼团
     member_code: false, // 会员二维码
@@ -106,7 +107,7 @@ function MemberIndex(props) {
   // console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const $instance = getCurrentInstance()
   const { isLogin, isNewUser, login, getUserInfoAuth } = useLogin({
-    // autoLogin: true,
+    autoLogin: true,
     // policyUpdateHook: (isUpdate) => {
     //   // isUpdate && setPolicyModal(true)
     //   if (isUpdate) {
