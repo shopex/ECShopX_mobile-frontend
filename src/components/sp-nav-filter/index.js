@@ -72,8 +72,9 @@ function SpNavFilter(props,ref) {
     const _typeList = JSON.parse(JSON.stringify(info))
     setState((v) => {
       v.cateListFirst = _typeList.find((item) => item.key === 'category')?.option || []
-      _typeList[1]?.option
+      // _typeList[1]?.option
       v.typeList = _typeList
+      v.init = true
     })
   }
 
@@ -223,6 +224,8 @@ function SpNavFilter(props,ref) {
     })
     onChange && onChange('category', categoryId)
   }
+
+  console.log('--------',cateListSecond)
 
   return (
     <View className='sp-nav-filter' >
