@@ -30,5 +30,5 @@ export function shopsProtocolsaleman (params = {}) {
 
 //分类
 export function get (params={}) {
-  return req.get('/goods/category', params)
+  return req.get('/goods/promoter/category', params)
 }
