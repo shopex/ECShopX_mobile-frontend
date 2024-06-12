@@ -586,7 +586,7 @@ export default class DistributionShopHome extends Component {
               </View>
             ))}
 
-            <View
+            {/* <View
               className={`searchContent ${showSearch && 'unfold'}`}
               onClick={this.handleShowSearch.bind(this)}
             >
@@ -611,7 +611,7 @@ export default class DistributionShopHome extends Component {
                   ></View>
                 </View>
               )}
-            </View>
+            </View> */}
           </View>
         </View>
         <View className='main'>
