@@ -93,6 +93,8 @@ import SpSearchInput from './sp-search-input'
 import SpCategorySearch from './sp-category-search'
 import SpTime from './sp-time'
 import SpNavFilter from './sp-nav-filter'
+import SpGoodsInvalidItems from './sp-goods-invalid-items'
+import SpGoodsItems from './sp-goods-items'
 
 
 
@@ -193,5 +195,7 @@ export {
   SpSearchInput,
   SpCategorySearch,
   SpTime,
-  SpNavFilter
+  SpNavFilter,
+  SpGoodsInvalidItems,
+  SpGoodsItems
 }
