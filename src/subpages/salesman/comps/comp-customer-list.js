@@ -26,17 +26,19 @@ function CompCustomerList(props) {
             })
           }}
         >
-          <SpImage src='https://img1.baidu.com/it/u=2258757342,2341804200&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1715792400&t=2c7ab1fef2e148eb141ea60f8e07baf0'></SpImage>
+          <SpImage
+            src={items.headimgurl ? items.headimgurl : `${process.env.APP_IMAGE_CDN}/logo.png`}
+          />
           <View className='details'>
             <View className='customer'>
               <View>
-                <Text>**星</Text>
+                <Text> {items.username || '匿名用户'}</Text>
                 <Text>（客户）</Text>
               </View>
-              <Text>134****6542</Text>
+              <Text>{items.mobile}</Text>
             </View>
-            <View className='source'>来源店铺：永辉超市闵行店</View>
-            <View className='source'>绑定时间：2024-03-09</View>
+            <View className='source'>来源店铺：{items.name}</View>
+            <View className='source'>绑定时间：{items.bind_date}</View>
           </View>
         </View>
       </View>
