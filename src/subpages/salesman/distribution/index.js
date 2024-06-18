@@ -313,7 +313,7 @@ export default class DistributionDashboard extends Component {
           <Navigator
             className='list-item'
             open-type='navigateTo'
-            url='/subpages/marketing/certification'
+            url='/subpages/salesman/distribution/certification'      
           >
             <View className='iconfont item-icon icon-shimingrenzheng' />
             <View className='list-item-txt'>实名认证</View>
