@@ -369,6 +369,7 @@ const config = {
         'distribution/shop-trade', // 小店订单页面
         'distribution/shop-achievement', // 小店业绩页面
         'distribution/point-platform',
+        'distribution/certification',//实名认证
       ]
     },
     // 授权

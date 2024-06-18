@@ -87,14 +87,14 @@ export default class DistributionShopCategory extends Component {
             title: '小店首页',
             iconType: 'home',
             iconPrefixClass: 'iconfont icon',
-            url: `/marketing/pages/distribution/shop-home?featuredshop=${options.featuredshop}`,
+            url: `/subpages/salesman/distribution/shop-home?featuredshop=${options.featuredshop}`,
             urlRedirect: true
           },
           {
             title: '分类',
             iconType: 'category',
             iconPrefixClass: 'iconfont icon',
-            url: `/marketing/pages/distribution/shop-category?featuredshop=${options.featuredshop}`,
+            url: `/subpages/salesman/distribution/shop-category?featuredshop=${options.featuredshop}`,
             urlRedirect: true
           }
         ]
