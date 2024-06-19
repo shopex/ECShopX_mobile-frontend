@@ -165,7 +165,7 @@ export default class DistributionStatistics extends Component {
               </View>
             </View>
           </View>
-          <View className='section section-card analysis'>
+          {/* <View className='section section-card analysis'>
             <View className='content-padded-b'>
               <View>
                 <View className='data-label'>津贴</View>
@@ -188,8 +188,8 @@ export default class DistributionStatistics extends Component {
                 </View>
               </View>
             </View>
-          </View>
-          <View className='section section-card analysis'>
+          </View> */}
+          {/* <View className='section section-card analysis'>
             <View className='content-padded-b'>
               <View>
                 <View className='data-label'>小店提成</View>
@@ -198,7 +198,7 @@ export default class DistributionStatistics extends Component {
                 </View>
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
     )
