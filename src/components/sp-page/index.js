@@ -45,6 +45,7 @@ function SpPage(props, ref) {
     navigateMantle = false, // 自定义导航，开启滚动蒙层
     pageConfig,
     fixedTopContainer = null,
+    showNavition = true,//是否展示Navition
     title = '' // 页面导航标题
   } = props
   let { renderTitle } = props

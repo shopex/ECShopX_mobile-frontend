@@ -95,6 +95,10 @@ import SpCategorySearch from './sp-category-search'
 import SpTradeItem from './sp-trade-item'
 import SpModal from './sp-modal'
 import SpTimePicker from './sp-time-picker'
+import SpTime from './sp-time'
+import SpNavFilter from './sp-nav-filter'
+
+
 
 export default {}
 
@@ -195,5 +199,7 @@ export {
   SpCategorySearch,
   SpTradeItem,
   SpModal,
-  SpTimePicker
+  SpTimePicker,
+  SpTime,
+  SpNavFilter
 }
