@@ -60,8 +60,8 @@ function CompRanking(props) {
       month: datasType == 1 ? datas : '',
       day: datasType == 2 ? datas : '',
       distributor_id: params.distributor_id,
-      username: selectorCheckedIndex == 0 ? deliverylnformation : '',
-      mobile: selectorCheckedIndex == 1 ? deliverylnformation : ''
+      delivery_staff_name: selectorCheckedIndex == 0 ? deliverylnformation : '',
+      delivery_staff_mobile: selectorCheckedIndex == 1 ? deliverylnformation : ''
     }
     const { list: _list, total_count } = await api.dianwu.datacubeDeliverystaffdata(res)
     Taro.hideLoading()
@@ -76,7 +76,7 @@ function CompRanking(props) {
     if(index <= 3){
       return <SpImage  src={index==1?'paiming_1.png':index==2?'paiming_2.png':'paiming_3.png'}></SpImage>
     }else{
-      return <Text>{index+1}</Text> 
+      return <Text>{index+1}</Text>
     }
   }
 
