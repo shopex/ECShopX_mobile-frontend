@@ -5,6 +5,7 @@ import { navigateTo, validate, showToast } from '@/utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { SpPage, SpGoodsInvalidItems, SpGoodsItems, SpDefault } from '@/components'
 import { useImmer } from 'use-immer'
+import { useLogin, useDepChange, useDebounce } from '@/hooks'
 import {
   fetchSalesmanCartList,
   deleteCartItem,
@@ -29,6 +30,7 @@ function Cart() {
   const $instance = getCurrentInstance()
   const router = $instance.router
   const { validSalesmanCart = [], invalidSalesmanCart = [] } = useSelector((state) => state.cart)
+  const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
 
   useEffect(() => {
     getCartList()
@@ -46,20 +48,31 @@ function Cart() {
     Taro.hideLoading()
   }
 
-  //全选
-  const onSelectAll = (val, value) => {
-    console.log(val, value, 'onSelectAll')
-  }
-
-  //单选
-  const onSingleChoice = (value) => {
-    console.log(value, '单选')
+  //全选和单选
+  const onSelectAll = async(item, type, checked) => {
+    Taro.showLoading({ title: '' })
+    let parmas = { is_checked: !checked }
+    if (type === 'all') {
+      const cartIds = item.list.map((items) => items.cart_id)
+      parmas['cart_id'] = cartIds
+    } else {
+      parmas['cart_id'] = item.cart_id
+    }
+    try {
+      await api.cart.select(parmas)
+    } catch (e) {
+      console.log(e)
+    }
+    getCartList()
   }
 
   // 商品数量变化
-  const onChangeInputNumber = (ele, value) => {
-    console.log(ele, value, '商品数量变化1')
-  }
+  const onChangeInputNumber = useDebounce(async (num,item) => {
+    let { shop_id, cart_id } = item
+    const { type = 'distributor' } = router.params
+    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type }))
+    getCartList()
+  }, 200)
 
   //结算
   const balance = () => {
@@ -71,15 +84,21 @@ function Cart() {
     console.log(val, '清除无效商品（失效）')
   }
 
+
   // 删除商品（失效和可下单）
-  const deletesItem = (val) => {
-    console.log(val, '删除商品（失效和可下单）')
-    Taro.showLoading({
-      title: '加载中',
-      icon: 'none'
+  const deletesItem = async ({ cart_id }) => {
+    const res = await Taro.showModal({
+      title: '提示',
+      content: '将当前商品移出购物车?',
+      showCancel: true,
+      cancel: '取消',
+      cancelText: '取消',
+      confirmText: '确认',
+      confirmColor: colorPrimary
     })
-    Taro.hideLoading()
-    S.toast('删除成功')
+    if (!res.confirm) return
+    await dispatch(deleteCartItem({ cart_id,isSalesmanPage: 1 }))
+    getCartList()
   }
 
   return (
@@ -90,11 +109,11 @@ function Cart() {
           <SpGoodsItems
             deletes={deletesItem}
             onSelectAll={onSelectAll}
-            onSingleChoice={onSingleChoice}
+            onSingleChoice={onSelectAll}
             onChangeInputNumber={onChangeInputNumber}
             balance={balance}
             key={index}
-            items={item}
+            lists={item}
           />
         )
       })}

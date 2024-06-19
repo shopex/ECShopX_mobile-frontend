@@ -8,125 +8,92 @@ import { AtButton } from 'taro-ui'
 
 import './index.scss'
 
-const initialState = {
-  allChecked: true
-}
+const initialState = {}
 function CompGoodsItem(props) {
   const [state, setState] = useImmer(initialState)
-  const { allChecked } = state
+  const {} = state
 
   const {
     deletes = () => {},
     onSelectAll = () => {},
     onSingleChoice = () => {},
     onChangeInputNumber = () => {},
-    balance = () => {}
+    balance = () => {},
+    lists = []
   } = props
+
+  const allChecked = lists.cart_total_count == lists.list.length
 
   return (
     <View>
+      {console.log(lists, 'llllist------')}
       <View className='comp-goodsitems'>
         <View className='comp-goodsitems-checkbox'>
           <Text className='iconfont icon-shop' />
-          方方的徐汇点
+          {lists.shop_name || '自营'}
         </View>
         <View className='comp-goodsitems-item'>
-          <View className='comp-goodsitems-item-del'>
-            <SpCheckboxNew checked={allChecked} onChange={() => onSingleChoice()} />
-            <SpImage
-              className='comp-goodsitem-item-del-image'
-              mode='aspectFill'
-              circle={16}
-              src='https://img2.baidu.com/it/u=3976722208,1729629707&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1716915600&t=9ca8874bd9a1a056913a5d41488bf99e'
-              width={130}
-              height={130}
-            />
-            <View className='comp-goodsitems-item-del-info'>
-              <View className='name'>
-                <Text>斗罗第100弹六一特别款</Text>
-                <Text className='iconfont icon-shanchu-01' onClick={() => deletes('1111')} />
-              </View>
-              <View className='new'>新品</View>
-              <View className='money'>
-                <SpPrice className='mkt-price' value='1000' />
-                <SpInputNumber
-                  value='8'
-                  max='8'
-                  min={1}
-                  onChange={(event) => onChangeInputNumber(event, { kk: 'ui' })}
+          {lists.list.map((item, index) => {
+            return (
+              <View className='comp-goodsitems-item-del' key={index}>
+                <SpCheckboxNew checked={item.is_checked} onChange={() => onSingleChoice(item,'item',item.is_checked)} />
+                <SpImage
+                  className='comp-goodsitem-item-del-image'
+                  mode='aspectFill'
+                  circle={16}
+                  src={item.pics}
+                  width={130}
+                  height={130}
                 />
+                <View className='comp-goodsitems-item-del-info'>
+                  <View className='name'>
+                    <Text>{item.item_name}</Text>
+                    <Text className='iconfont icon-shanchu-01' onClick={() => deletes(item)} />
+                  </View>
+                  <View className='new'>新品</View>
+                  <View className='money'>
+                    <View >
+                      <SpPrice className='mkt-price' value={item.price / 100} />
+                      <SpPrice className='mkt-price' lineThrough value={item.market_price / 100} />
+                    </View>
+                    <SpInputNumber
+                      value={item.num}
+                      max={parseInt(item?.limitedBuy ? item?.limitedBuy?.limit_buy : item.store)}
+                      min={1}
+                      onChange={(event) => onChangeInputNumber(event, item)}
+                    />
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
+            )
 
-          <View className='comp-goodsitems-item-del'>
-            <SpCheckboxNew checked={allChecked} onChange={() => onSingleChoice()} />
-            <SpImage
-              className='comp-goodsitem-item-del-image'
-              mode='aspectFill'
-              circle={16}
-              src='https://img2.baidu.com/it/u=3976722208,1729629707&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1716915600&t=9ca8874bd9a1a056913a5d41488bf99e'
-              width={130}
-              height={130}
-            />
-            <View className='comp-goodsitems-item-del-info'>
-              <View className='name'>
-                <Text>斗罗第100弹六一特别款</Text>
-                <Text className='iconfont icon-shanchu-01' onClick={() => deletes('1111')} />
-              </View>
-              <View className='new'>新品</View>
-              <View className='money'>
-                <SpPrice className='mkt-price' value='1000' />
-                <SpInputNumber value='1' max='8' min={1} onChange={() => onChangeInputNumber()} />
-              </View>
-            </View>
-          </View>
+          })}
 
-          <View className='comp-goodsitems-item-del'>
-            <SpCheckboxNew checked={allChecked} onChange={() => onSingleChoice()} />
-            <SpImage
-              className='comp-goodsitem-item-del-image'
-              mode='aspectFill'
-              circle={16}
-              src='https://img2.baidu.com/it/u=3976722208,1729629707&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1716915600&t=9ca8874bd9a1a056913a5d41488bf99e'
-              width={130}
-              height={130}
-            />
-            <View className='comp-goodsitems-item-del-info'>
-              <View className='name'>
-                <Text>斗罗第100弹六一特别款</Text>
-                <Text className='iconfont icon-shanchu-01' onClick={() => deletes('1111')} />
-              </View>
-              <View className='new'>新品</View>
-              <View className='money'>
-                <SpPrice className='mkt-price' value='1000' />
-                <SpInputNumber value='7' max='8' min={1} onChange={() => onChangeInputNumber()} />
-              </View>
-            </View>
-          </View>
           <View className='comp-goodsitems-item-ft'>
             <View className='lf'>
-              <SpCheckboxNew checked={allChecked} label='全选' onChange={() => onSelectAll()} />
+              <SpCheckboxNew checked={allChecked} label='全选' onChange={() => onSelectAll(lists,'all',allChecked)} />
             </View>
             <View className='rg'>
               <View>
                 <View className='total-price-wrap'>
                   合计：
-                  <SpPrice className='total-pirce' value={12345 / 100} />
+                  <SpPrice className='total-pirce' value={lists.total_fee / 100} />
                 </View>
-                <View className='discount-price-wrap'>
-                  共优惠：
-                  <SpPrice className='total-pirce' value={12345 / 100} />
-                </View>
+                {lists.discount_fee > 0 && (
+                  <View className='discount-price-wrap'>
+                    共优惠：
+                    <SpPrice className='total-pirce' value={lists.discount_fee / 100} />
+                  </View>
+                )}
               </View>
               <AtButton
                 className='btn-calc'
                 type='primary'
                 circle
-                disabled={false}
+                disabled={lists.cart_total_num <= 0}
                 onClick={() => balance()}
               >
-                结算(12)
+                结算({lists.cart_total_num})
               </AtButton>
             </View>
           </View>
