@@ -119,7 +119,6 @@ export default class DistributionShopHome extends Component {
     const { info: shopInfo, userId } = this.state
     const title = shopInfo.shop_name || `${shopInfo.username}的小店`
 
-    log.debug(`/subpages/salesman/distribution/shop-home?uid=${userId}`)
     return {
       title: shopInfo.share_title || title,
       imageUrl: shopInfo.applets_share_img || shopInfo.shop_pic,

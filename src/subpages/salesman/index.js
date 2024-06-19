@@ -17,7 +17,7 @@ const initialConfigState = {
     // { name: '订单管理', icon: 'icon-dingdanguanli', path: '/subpages/salesman/selectCustomer' },
     // { name: '代客下单', icon: 'icon-daikexiadan', path: '/subpages/salesman/selectCustomer' },
     {
-      name: '业务员推广',
+      name: '业务员销售',
       icon: 'icon-yewuyuantuiguang',
       path: '/subpages/salesman/distribution/index'
     },

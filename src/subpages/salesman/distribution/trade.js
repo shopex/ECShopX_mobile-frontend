@@ -152,6 +152,14 @@ export default class DistributionTrade extends Component {
                         {item.order_id}
                       </View>
                       <View className='order-no'>
+                        <Text className='key'>来源店铺：</Text>
+                        {item.order_id}
+                      </View>
+                      <View className='order-no'>
+                        <Text className='key'>类型打标：</Text>
+                        {item.order_id}
+                      </View>
+                      <View className='order-no'>
                         <Text className='key'>佣金：</Text>
                         <Text className='mark'>
                           {item.commission_type === 'money' ? (
