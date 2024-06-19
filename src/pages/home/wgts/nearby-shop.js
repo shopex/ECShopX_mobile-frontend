@@ -426,6 +426,7 @@ function WgtNearbyShop(props) {
           ))}
         </ScrollView>
 
+          
         {listTypes.length && listTypes[activeIndex].types == 'business'
           ? storeList()
           : storeProducts()}
