@@ -41,8 +41,8 @@ export const deleteCartItem = createAsyncThunk('cart/deleteCartItem', async (par
 
 export const updateCartItemNum = createAsyncThunk(
   'cart/updateCartItemNum',
-  async ({ shop_id, cart_id, num, shop_type }) => {
-    await api.cart.updateNum(shop_id, cart_id, num, shop_type)
+  async ({ shop_id, cart_id, num, shop_type ,isSalesmanPage}) => {
+    await api.cart.updateNum(shop_id, cart_id, num, shop_type,isSalesmanPage)
   }
 )
 
@@ -116,7 +116,7 @@ const cartSlice = createSlice({
 
     builder.addCase(updateSalesmanCount.fulfilled, (state, action) => {
       const { item_count, cart_count } = action.payload
-      state.cartCount = item_count
+      state.cartSalesman = item_count
     })
   }
 })

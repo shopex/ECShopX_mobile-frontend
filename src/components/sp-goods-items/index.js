@@ -36,7 +36,10 @@ function CompGoodsItem(props) {
           {lists.list.map((item, index) => {
             return (
               <View className='comp-goodsitems-item-del' key={index}>
-                <SpCheckboxNew checked={item.is_checked} onChange={() => onSingleChoice(item,'item',item.is_checked)} />
+                <SpCheckboxNew
+                  checked={item.is_checked}
+                  onChange={() => onSingleChoice(item, 'item', item.is_checked)}
+                />
                 <SpImage
                   className='comp-goodsitem-item-del-image'
                   mode='aspectFill'
@@ -47,14 +50,23 @@ function CompGoodsItem(props) {
                 />
                 <View className='comp-goodsitems-item-del-info'>
                   <View className='name'>
-                    <Text>{item.item_name}</Text>
+                    <Text className='names'>{item.item_name}</Text>
                     <Text className='iconfont icon-shanchu-01' onClick={() => deletes(item)} />
                   </View>
-                  <View className='new'>新品</View>
+                  <View className='details'>
+                   {item.item_spec_desc}
+                  </View>
+                  {/* <View className='new'>新品</View> */}
                   <View className='money'>
-                    <View >
+                    <View>
                       <SpPrice className='mkt-price' value={item.price / 100} />
-                      <SpPrice className='mkt-price' lineThrough value={item.market_price / 100} />
+                      {item.market_price - item.price > 0 && (
+                        <SpPrice
+                          className='mkt-price'
+                          lineThrough
+                          value={item.market_price / 100}
+                        />
+                      )}
                     </View>
                     <SpInputNumber
                       value={item.num}
@@ -66,12 +78,15 @@ function CompGoodsItem(props) {
                 </View>
               </View>
             )
-
           })}
 
           <View className='comp-goodsitems-item-ft'>
             <View className='lf'>
-              <SpCheckboxNew checked={allChecked} label='全选' onChange={() => onSelectAll(lists,'all',allChecked)} />
+              <SpCheckboxNew
+                checked={allChecked}
+                label='全选'
+                onChange={() => onSelectAll(lists, 'all', allChecked)}
+              />
             </View>
             <View className='rg'>
               <View>

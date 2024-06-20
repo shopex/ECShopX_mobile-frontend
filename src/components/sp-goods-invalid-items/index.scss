@@ -48,6 +48,12 @@
             line-height: 28px;
             text-align: left;
             font-style: normal;
+            .names{
+              width:400px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
             .icon-shanchu-01 {
               font-size: 30px;
             }

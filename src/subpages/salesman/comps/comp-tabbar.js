@@ -4,7 +4,7 @@ import { View, Image } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import { AtTabBar } from 'taro-ui'
 import { classNames, entryLaunch, getCurrentRoute, getDistributorId, isWeb } from '@/utils'
-import { updateCartSalesman } from '@/store/slices/cart'
+import { updateCartSalesman,updateSalesmanCount } from '@/store/slices/cart'
 import './comp-tabbar.scss'
 
 const TABBAR_LIST = [
@@ -37,7 +37,7 @@ function CompTabbar(props) {
   })
 
   const cartSalesmanNumber = async () => {
-    await dispatch(updateCartSalesman(11))
+    await dispatch(updateSalesmanCount({ shop_type: 'distributor',isSalesmanPage: 1 }))
   }
 
   const tabList = TABBAR_LIST.map((item) => {
