@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
+import { useSelector, useDispatch } from 'react-redux'
 import { AtButton } from 'taro-ui'
 import api from '@/api'
 import { View, Text } from '@tarojs/components'
@@ -16,6 +17,7 @@ function CompCar(props) {
   const { popFrame = {} } = props
   const [state, setState] = useImmer(initialState)
   const { fav, couponList, extend } = state
+  const { cartSalesman = 0 } = useSelector((state) => state.cart)
 
   return (
     <View className='comp-shop-brand-cart'>
@@ -23,7 +25,7 @@ function CompCar(props) {
         <View className='comp-shop-brand-gwc-num' onClick={() => popFrame()}>
           <SpImage className='car-img' src='cart.png' />
           {/* <Text className='iconfont icon-gouwuche2' /> */}
-          <View className='nums'>9</View>
+          <View className='nums'>{cartSalesman}</View>
         </View>
         <View>
           <SpPrice value='1000' size={36}></SpPrice>

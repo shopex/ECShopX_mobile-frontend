@@ -1,16 +1,27 @@
 import Taro, { getCurrentInstance, useRouter, useDidShow } from '@tarojs/taro'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Text, View } from '@tarojs/components'
 import { classNames, pickBy, showToast } from '@/utils'
-import { SpImage, SpPage, SpTabs, SpSearchInput, SpNavFilter, SpScrollView } from '@/components'
+import {
+  SpImage,
+  SpPage,
+  SpTabs,
+  SpSearchInput,
+  SpNavFilter,
+  SpSkuSelect,
+  SpScrollView
+} from '@/components'
 import CompFilterBar from './comps/comp-filter-bar'
 import { platformTemplateName } from '@/utils/platform'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import S from '@/spx'
+import doc from '@/doc'
 import CompPurchasingList from './comps/comp-purchasing-list'
 import CompCar from './comps/comp-car'
 import './purchasing.scss'
+
+const MSpSkuSelect = React.memo(SpSkuSelect)
 
 const initialConfigState = {
   codeStatus: false,
@@ -59,21 +70,52 @@ const initialConfigState = {
   status: '',
   lists: [],
   first: true,
-  querys: null
+  querys: null,
+  skuPanelOpen: false,
+  info: null,
+  selectType: 'picker',
+  searchConditionList: [
+    { label: '商品名称', value: 'title' },
+    { label: '货号', value: 'item_bn' }
+  ],
+  parameter: {}
 }
 
 const Purchasing = () => {
   const [state, setState] = useImmer(initialConfigState)
-  const { codeStatus, navFilterList, tag_id, category, status, lists, first, querys } = state
+  const {
+    skuPanelOpen,
+    info,
+    selectType,
+    searchConditionList,
+    parameter,
+    codeStatus,
+    navFilterList,
+    tag_id,
+    category,
+    status,
+    lists,
+    first,
+    querys
+  } = state
   const { params } = useRouter()
   const goodsRef = useRef()
+  const pageRef = useRef()
 
   useEffect(() => {
     setState((draft) => {
       draft.lists = []
     })
     goodsRef.current.reset()
-  }, [querys])
+  }, [querys, parameter])
+
+  useEffect(() => {
+    if (skuPanelOpen) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [skuPanelOpen])
 
   useDidShow(() => {
     setState((draft) => {
@@ -93,6 +135,8 @@ const Purchasing = () => {
       distributor_id: params.distributor_id,
       ...querys
     }
+    query[parameter.key] = parameter.keywords
+
     const {
       list,
       total_count,
@@ -108,6 +152,7 @@ const Purchasing = () => {
       desc: 'brief',
       store: 'store',
       itemBn: 'itemBn',
+      distributor_id: 'distributor_id',
       price: ({ price }) => (price / 100).toFixed(2),
       promoter_price: ({ promoter_price }) => (promoter_price / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
@@ -188,13 +233,40 @@ const Purchasing = () => {
     })
   }
 
+  const addCart = async ({ distributor_id, item_id }) => {
+    try {
+      Taro.showLoading()
+      const itemDetail = await api.item.detail(item_id, {
+        showError: false,
+        distributor_id
+      })
+      Taro.hideLoading()
+      setState((draft) => {
+        draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
+        draft.skuPanelOpen = true
+        draft.selectType = 'addcart'
+      })
+    } catch (e) {
+      showToast(e.message)
+      Taro.hideLoading()
+    }
+  }
+
+  const onConfirms = (val) => {
+    setState((draft) => {
+      draft.parameter = val
+    })
+  }
+
   return (
-    <SpPage className={classNames('page-selectShop')} renderFooter={<CompCar />}>
+    <SpPage className={classNames('page-selectShop')} renderFooter={<CompCar />} ref={pageRef}>
       <View className='page-selectShop-header'>
         <SpSearchInput
+          isShowSearchCondition
+          searchConditionList={searchConditionList}
           placeholder='输入内容'
           onConfirm={(val) => {
-            console.log(666, val)
+            onConfirms(val)
           }}
         />
         <SpNavFilter info={navFilterList} onChange={handleFilterChange} />
@@ -202,9 +274,28 @@ const Purchasing = () => {
 
       <SpScrollView auto={false} ref={goodsRef} fetch={fetch}>
         {lists.map((item, index) => {
-          return <CompPurchasingList items={item} key={index} />
+          return <CompPurchasingList items={item} key={index} addCart={addCart} />
         })}
       </SpScrollView>
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        salesman
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
     </SpPage>
   )
 }

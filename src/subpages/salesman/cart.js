@@ -49,7 +49,7 @@ function Cart() {
   }
 
   //全选和单选
-  const onSelectAll = async(item, type, checked) => {
+  const onSelectAll = async (item, type, checked) => {
     Taro.showLoading({ title: '' })
     let parmas = { is_checked: !checked }
     if (type === 'all') {
@@ -59,7 +59,7 @@ function Cart() {
       parmas['cart_id'] = item.cart_id
     }
     try {
-      await api.cart.select(parmas)
+      await api.cart.select({ ...parmas, isSalesmanPage: 1 })
     } catch (e) {
       console.log(e)
     }
@@ -67,10 +67,11 @@ function Cart() {
   }
 
   // 商品数量变化
-  const onChangeInputNumber = useDebounce(async (num,item) => {
+  const onChangeInputNumber = useDebounce(async (num, item) => {
     let { shop_id, cart_id } = item
     const { type = 'distributor' } = router.params
-    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type }))
+    await dispatch(updateCartItemNum({ shop_id, cart_id, num, type, isSalesmanPage: 1 }))
+    await dispatch(updateSalesmanCount({ shop_type: 'distributor', isSalesmanPage: 1 }))
     getCartList()
   }, 200)
 
@@ -84,7 +85,6 @@ function Cart() {
     console.log(val, '清除无效商品（失效）')
   }
 
-
   // 删除商品（失效和可下单）
   const deletesItem = async ({ cart_id }) => {
     const res = await Taro.showModal({
@@ -97,7 +97,8 @@ function Cart() {
       confirmColor: colorPrimary
     })
     if (!res.confirm) return
-    await dispatch(deleteCartItem({ cart_id,isSalesmanPage: 1 }))
+    await dispatch(deleteCartItem({ cart_id, isSalesmanPage: 1 }))
+    await dispatch(updateSalesmanCount({ shop_type: 'distributor', isSalesmanPage: 1 }))
     getCartList()
   }
 
@@ -119,16 +120,7 @@ function Cart() {
       })}
 
       {/* 失效商品 */}
-      {invalidSalesmanCart.map((item, index) => {
-        return (
-          <SpGoodsInvalidItems
-            empty={handleClearInvalidGoods}
-            deletes={deletesItem}
-            key={index}
-            items={item}
-          />
-        )
-      })}
+      <SpGoodsInvalidItems empty={handleClearInvalidGoods} deletes={deletesItem} lists={invalidSalesmanCart} />
 
       {validSalesmanCart.length == 0 && invalidSalesmanCart.length == 0 && (
         <SpDefault type='cart' message='购物车内暂无商品～'>
