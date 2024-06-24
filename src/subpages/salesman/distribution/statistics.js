@@ -124,7 +124,7 @@ export default class DistributionStatistics extends Component {
           </View>
           <View className='header-bottom view-flex'>
             <View className='view-flex-item view-flex view-flex-vertical view-flex-middle view-flex-center with-border'>
-              <View className='assets-label'>推广费总额</View>
+              <View className='assets-label'>业绩总额</View>
               <View>¥ {info.rebateTotal ? info.rebateTotal / 100 : '0'}</View>
             </View>
             <View className='view-flex-item view-flex view-flex-vertical view-flex-middle view-flex-center'>
@@ -134,13 +134,13 @@ export default class DistributionStatistics extends Component {
           </View>
         </View>
         <View>
-          <View className='content-padded'>
+          {/* <View className='content-padded'>
             <View className='tips'>
               提成和津贴订单需要确认收货
               {info.limit_time > 0 && <Text>{info.limit_time}天</Text>}
               后方可提取推广费
             </View>
-          </View>
+          </View> */}
           <View className='section section-card analysis'>
             <View className='content-padded-b'>
               <View>
