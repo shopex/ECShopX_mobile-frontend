@@ -277,6 +277,12 @@ function TradeDetail(props) {
     }
   }
 
+  const handleCallOpreator = () => {
+    Taro.makePhoneCall({
+      phoneNumber: info.selfDeliveryOperatorMobile
+    })
+  }
+
   return (
     <SpPage className='page-trade-detail' loading={loading} scrollToTopBtn
       renderFooter={renderActionButton()}
@@ -285,8 +291,17 @@ function TradeDetail(props) {
         <View className='trade-status'>
           {
             info && <View className='trade-status-desc'>
-              <SpImage src={getTradeStatusIcon()} width={50} height={50} />
-              <Text className="status-desc">{getTradeStatusDesc()}</Text>
+              <View className='trade-status-desc-box'>
+                <SpImage src={getTradeStatusIcon()} width={50} height={50} />
+                <Text className="status-desc">{getTradeStatusDesc()}</Text>
+              </View>
+              { (info?.selfDeliveryOperatorId != '0' ||  !info?.selfDeliveryOperatorId) && <View className='deliver-opreator'>
+                <View>配送员:{info?.selfDeliveryOperatorName}</View>
+                <View >
+                  <Text className='deliver-opreator-phone' onClick={handleCallOpreator}>拨打电话</Text>
+                </View>
+              </View>}
+
             </View>
           }
           {
