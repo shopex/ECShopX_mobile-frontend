@@ -29,8 +29,12 @@
 
     .trade-status-desc {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
+      &-box{
+        display: flex;
+        align-items: center;
+      }
     }
 
     .iconfont {
@@ -44,6 +48,18 @@
       color: #222;
       font-weight: 500;
       margin-left: 16px;
+    }
+
+    .deliver-opreator{
+      display: flex;
+      margin-left: 8px;
+      &-phone{
+        color: #666;
+        font-size: 24px;
+        border: 1px #ccc solid;
+        margin-left: 8px;
+        border-radius: 10px;
+      }
     }
 
     .order-cancel-time {

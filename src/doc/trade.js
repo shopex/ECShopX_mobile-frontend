@@ -53,6 +53,9 @@ export const TRADE_ITEM = {
       showAftersales: ({ show_aftersales }) => show_aftersales == 1
     })
   },
+  selfDeliveryOperatorName:'self_delivery_operator_name',
+  selfDeliveryOperatorMobile:'self_delivery_operator_mobile',
+  selfDeliveryOperatorId:'self_delivery_operator_id',
   invoice: 'invoice',
   isRate: ({ is_rate }) => is_rate == "1",
   // 是否整单发货
