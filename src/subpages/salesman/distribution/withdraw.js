@@ -3,7 +3,7 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Navigator, Button, Picker } from '@tarojs/components'
 import { isArray } from '@/utils'
 import { AtInput } from 'taro-ui'
-import { SpPage } from '@/components'
+import { SpPage, SpSearchInput } from '@/components'
 import api from '@/api'
 
 import './withdraw.scss'
@@ -26,12 +26,18 @@ export default class DistributionWithdraw extends Component {
         'wechat': '微信(<=800)',
         'hfpay': '微信支付',
         'bankcard': '银行卡'
+      },
+      searchConditionList: [{ label: '全部店铺', value: '' }],
+      parameter: {
+        distributor_id: '',
+        keywords: ''
       }
     }
   }
 
   componentDidShow() {
     this.fetch()
+    this.distributor()
     if (this.state.curIdx == 'bankcard') {
       this.ongetCertInfo()
     }
@@ -69,7 +75,10 @@ export default class DistributionWithdraw extends Component {
   // }
 
   async fetch() {
-    const { cashWithdrawalRebate } = await api.distribution.statistics({isSalesmanPage:1})
+    const { cashWithdrawalRebate } = await api.distribution.statistics({
+      isSalesmanPage: 1,
+      ...this.state.parameter
+    })
     let res = await api.member.getNewTradePaymentList()
     let { payList } = this.state
     res.forEach((i) => {
@@ -154,6 +163,52 @@ export default class DistributionWithdraw extends Component {
     }
   }
 
+  handleConfirm = (val) => {
+    this.setState(
+      {
+        parameter: {
+          keywords: val.keywords,
+          distributor_id: val.key
+        }
+      },
+      () => {
+        this.fetch()
+      }
+    )
+  }
+
+  onHandleSearch(item) {
+    this.setState(
+      {
+        parameter: {
+          ...this.state.parameter,
+          distributor_id: item.distributor_id
+        }
+      },
+      () => {
+        this.fetch()
+      }
+    )
+  }
+
+  distributor = async () => {
+    const { list } = await api.salesman.getSalespersonSalemanShopList({
+      page: 1,
+      page_size: 1000
+    })
+    list.forEach((element) => {
+      element.value = element.distributor_id
+      element.label = element.name
+    })
+    list.unshift({
+      value: '',
+      label: '全部店铺'
+    })
+    this.setState({
+      searchConditionList: list
+    })
+  }
+
   render() {
     const {
       cashWithdrawalRebate,
@@ -163,10 +218,20 @@ export default class DistributionWithdraw extends Component {
       payList,
       alipay_account,
       bank_code,
-      payText
+      payText,
+      searchConditionList
     } = this.state
+
     return (
       <SpPage className='page-distribution-withdraw'>
+        <SpSearchInput
+          placeholder='输入内容'
+          // isShowArea
+          isShowSearchCondition
+          searchConditionList={searchConditionList}
+          onConfirm={this.handleConfirm.bind(this)}
+          onHandleSearch={this.onHandleSearch.bind(this)}
+        />
         <View className='withdraw'>
           <View className='withdraw-title'>
             <View className='title'>可提现金额（元）</View>
@@ -206,7 +271,10 @@ export default class DistributionWithdraw extends Component {
             <View className='iconfont item-icon-go icon-arrowRight'></View>
           </View>
           {curIdx === 'alipay' && (
-            <Navigator url='/subpages/salesman/distribution/withdrawals-acount' className='list-item'>
+            <Navigator
+              url='/subpages/salesman/distribution/withdrawals-acount'
+              className='list-item'
+            >
               <View className='label'>提现账户</View>
               <View className='list-item-txt content-right'>
                 {alipay_account ? alipay_account : '去设置'}
