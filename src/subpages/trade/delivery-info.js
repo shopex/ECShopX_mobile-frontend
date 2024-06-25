@@ -15,11 +15,13 @@ const initialState = {
   curIndex: 0,
   deliveryCorpName: '',
   deliveryCode: '',
-  deliverPointList: []
+  deliverPointList: [],
+  selfDeliveryOperatorName:'',
+  selfDeliveryOperatorMobile:''
 }
 function TradeDeliveryInfo(props) {
   const [state, setState] = useImmer(initialState)
-  const { packageList, curIndex, deliveryCorpName, deliveryCode, deliverPointList } = state
+  const { packageList, curIndex, deliveryCorpName, deliveryCode, deliverPointList, selfDeliveryOperatorName, selfDeliveryOperatorMobile } = state
   const router = useRouter()
 
   useEffect(() => {
@@ -29,7 +31,7 @@ function TradeDeliveryInfo(props) {
 
 
   const fetch = async () => {
-    const { order_id, delivery_id, delivery_corp_name, delivery_code } = router.params
+    const { order_id, delivery_id, delivery_corp_name, delivery_code,selfDeliveryOperatorName, selfDeliveryOperatorMobile } = router.params
     // 拆单发货
     if (order_id) {
       const data = await api.trade.deliveryLists({ order_id })
@@ -47,6 +49,8 @@ function TradeDeliveryInfo(props) {
       setState(draft => {
         draft.deliveryCorpName = delivery_corp_name
         draft.deliveryCode = delivery_code
+        draft.selfDeliveryOperatorName = selfDeliveryOperatorName
+        draft.selfDeliveryOperatorMobile = selfDeliveryOperatorMobile
       })
     }
   }
@@ -72,6 +76,12 @@ function TradeDeliveryInfo(props) {
     })
 
     getLogisticsInfo(delivery_id)
+  }
+
+  const handleCallOpreator = () => {
+    Taro.makePhoneCall({
+      phoneNumber: selfDeliveryOperatorMobile
+    })
   }
 
   return <SpPage className="page-trade-delivery-info">
@@ -109,6 +119,15 @@ function TradeDeliveryInfo(props) {
         </View>
 
         {
+          selfDeliveryOperatorName && selfDeliveryOperatorMobile && (
+            <View className="opreator-container">
+              <View className="opreator-name">配送员：{selfDeliveryOperatorName}</View>
+              <View className="opreator-mobile" onClick={handleCallOpreator}>拨打电话</View>
+            </View>
+          )
+        }
+
+        {
           deliverPointList.length > 0 && <View className="block-container">
             <View className="deliver-point-list">
               {
@@ -119,6 +138,19 @@ function TradeDeliveryInfo(props) {
                     </View>
                     <View className="accept-station">{item.AcceptStation}</View>
                     <View className="accept-time">{item.AcceptTime}</View>
+                    {item.delivery_remark && (
+                      <View className='accept-time'>订单备注：{item.delivery_remark}</View>
+                    )}
+                    {(item.pics && item.pics.length > 0) && (
+                      <View className="accept-time">
+                        照片上传：
+                        <View className='accept-pic'>
+                          {item.pics.map((item, idx) => (
+                            <SpImage src={item} className='accept-pic-item'></SpImage>
+                          ))}
+                        </View>
+                      </View>
+                    )}
                   </View>
                 ))
               }

@@ -33,10 +33,10 @@ export default (props) => {
       }
     },
     LOGISTICS: {
-      title: '查看物流', key: 'logistics', btnStatus: 'normal', action: ({ orderId, isAllDelivery, ordersDeliveryId, deliveryCorpName, deliveryCode }) => {
+      title: '查看物流', key: 'logistics', btnStatus: 'normal', action: ({ orderId, isAllDelivery, ordersDeliveryId, deliveryCorpName, deliveryCode,selfDeliveryOperatorName,selfDeliveryOperatorMobile }) => {
         if (isAllDelivery) {
           Taro.navigateTo({
-            url: `/subpages/trade/delivery-info?delivery_corp_name=${deliveryCorpName}&delivery_code=${deliveryCode}&delivery_id=${ordersDeliveryId}`
+            url: `/subpages/trade/delivery-info?delivery_corp_name=${deliveryCorpName}&delivery_code=${deliveryCode}&delivery_id=${ordersDeliveryId}&selfDeliveryOperatorName=${selfDeliveryOperatorName}&selfDeliveryOperatorMobile=${selfDeliveryOperatorMobile}`
           })
         } else {
           Taro.navigateTo({

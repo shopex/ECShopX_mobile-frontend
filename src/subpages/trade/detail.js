@@ -295,13 +295,14 @@ function TradeDetail(props) {
                 <SpImage src={getTradeStatusIcon()} width={50} height={50} />
                 <Text className="status-desc">{getTradeStatusDesc()}</Text>
               </View>
-              { (info?.selfDeliveryOperatorId != '0' ||  !info?.selfDeliveryOperatorId) && <View className='deliver-opreator'>
-                <View>配送员:{info?.selfDeliveryOperatorName}</View>
-                <View >
-                  <Text className='deliver-opreator-phone' onClick={handleCallOpreator}>拨打电话</Text>
+              { (info?.selfDeliveryOperatorName && info?.selfDeliveryOperatorMobile ) && (
+                <View className='deliver-opreator'>
+                  <View>配送员:{info?.selfDeliveryOperatorName}</View>
+                  <View >
+                    <Text className='deliver-opreator-phone' onClick={handleCallOpreator}>拨打电话</Text>
+                  </View>
                 </View>
-              </View>}
-
+              )}
             </View>
           }
           {
