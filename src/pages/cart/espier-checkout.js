@@ -50,7 +50,6 @@ import CompPointUse from './comps/comp-pointuse'
 
 import './espier-checkout.scss'
 
-
 function CartCheckout(props) {
   const $instance = getCurrentInstance()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
@@ -144,7 +143,6 @@ function CartCheckout(props) {
   }, [isNewUser])
 
   useEffect(() => {
-    console.log(`useEffect: payType: ${payType}, address: ${address}, zitiAddress: ${zitiAddress}, receiptType: ${receiptType}`)
     if (receiptType && payType) {
       calcOrder()
     }
@@ -193,7 +191,7 @@ function CartCheckout(props) {
       return
     }
 
-    if(!payType) {
+    if (!payType) {
       showToast('请选择支付方式')
       return
     }
@@ -617,7 +615,7 @@ function CartCheckout(props) {
           ...i_el.activity_rule
         })
       }
-      if(itmesid.indexOf(i_el.item_id)!== -1){
+      if (itmesid.indexOf(i_el.item_id) !== -1) {
         items[itmesid.indexOf(i_el.item_id)].cusActivity = activity_arr
       }
     })
@@ -1031,6 +1029,16 @@ function CartCheckout(props) {
             </View>
           )}
         </View>
+      )}
+
+      {true && (
+        <SpCell
+          isLink
+          title='业务员'
+          className='cart-checkout__invoice'
+          onClick={handleInvoiceClick}
+          value={<View className='invoice-title'>cx</View>}
+        />
       )}
 
       <View className='cart-checkout__total'>

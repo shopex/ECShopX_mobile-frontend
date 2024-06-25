@@ -66,9 +66,7 @@ export default class DistributionShopHome extends Component {
       paddindTop: 0,
       // 是否首页
       isHome: false,
-      searchConditionList: [
-        { label: '全部店铺', value: '' }
-      ],
+      searchConditionList: [{ label: '全部店铺', value: '' }],
       parameter: {
         keywords: '',
         distributor_id: ''
@@ -93,8 +91,20 @@ export default class DistributionShopHome extends Component {
 
   componentDidShow() {
     this.handleCloseSearch()
+    this.salesmanShare()
   }
 
+  async salesmanShare() {
+    let params = this.$instance.router.params
+    if (params?.share) {
+      const { userId } = Taro.getStorageSync('userinfo')
+      let param = {
+        promoter_user_id: params?.featuredshop || userId
+      }
+      await api.salesman.salespersonBindusersalesperson(param)
+      console.log('分享成功，业务员已存储')
+    }
+  }
 
   distributor = async () => {
     const { list } = await api.salesman.getSalespersonSalemanShopList({
@@ -110,7 +120,7 @@ export default class DistributionShopHome extends Component {
       label: '全部店铺'
     })
     this.setState({
-      searchConditionList:list
+      searchConditionList: list
     })
   }
 
@@ -122,7 +132,7 @@ export default class DistributionShopHome extends Component {
     return {
       title: shopInfo.share_title || title,
       imageUrl: shopInfo.applets_share_img || shopInfo.shop_pic,
-      path: `/subpages/salesman/distribution/shop-home?uid=${userId}`
+      path: `/subpages/salesman/distribution/shop-home?uid=${userId}&share=true`
     }
   }
 
@@ -265,7 +275,7 @@ export default class DistributionShopHome extends Component {
 
   // 获取小店商品列表
   fetch = async (params) => {
-    const { userId,parameter } = this.state
+    const { userId, parameter } = this.state
     const { page_no: page, page_size: pageSize } = params
     const query = {
       page,
@@ -273,7 +283,7 @@ export default class DistributionShopHome extends Component {
       ...this.state.params,
       shop_user_id: userId,
       ...parameter,
-      isSalesmanPage:1
+      isSalesmanPage: 1
     }
 
     const { list, total_count: total, goods_total = 0 } = await api.distribution.getShopGoods(query)
@@ -284,7 +294,7 @@ export default class DistributionShopHome extends Component {
       title: 'itemName',
       distributor_id: 'distributor_id',
       type: 'type',
-      distributor_info:'distributor_info',
+      distributor_info: 'distributor_info',
       isOutSale: ({ store }) => !store || store <= 0,
       price: ({ price }) => (price / 100).toFixed(2),
       member_price: ({ member_price }) => (member_price / 100).toFixed(2),
@@ -455,7 +465,7 @@ export default class DistributionShopHome extends Component {
     )
   }
 
-  onConfirms(val){
+  onConfirms(val) {
     this.setState(
       {
         parameter: {
@@ -469,7 +479,7 @@ export default class DistributionShopHome extends Component {
     )
   }
 
-  onHandleSearch(item){
+  onHandleSearch(item) {
     this.setState(
       {
         parameter: {
