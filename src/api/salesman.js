@@ -37,3 +37,8 @@ export function get (params={}) {
 export function tradePaymentListInfo (params={}) {
   return req.get('/trade/payment/listInfo', params)
 }
+
+//实名认证
+export function salespersonBindusersalesperson (data) {
+  return req.post('/salesperson/bindusersalesperson', data)
+}

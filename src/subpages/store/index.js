@@ -79,6 +79,7 @@ function StoreIndex() {
   const { setNavigationBarTitle } = useNavigation()
   const $instance = getCurrentInstance()
   const router = $instance.router
+  console.log('routerqqqq:', router.params)
 
   const {
     wgts,
@@ -103,6 +104,7 @@ function StoreIndex() {
   useDidShow(() => {
     fetchWgts()
     init()
+    salesmanShare()
   })
 
   // useEffect(() => {
@@ -113,6 +115,7 @@ function StoreIndex() {
   useEffect(() => {
     if(S.getAuthToken()){
       fetchWgts()
+      salesmanShare()
     }
   }, [S.getAuthToken()])
 
@@ -123,6 +126,18 @@ function StoreIndex() {
       pageRef.current.pageUnLock()
     }
   }, [skuPanelOpen,open])
+
+  const salesmanShare = async() => {
+    let params = await entryLaunch.getRouteParams()
+    if (params?.share) {
+      let param = {
+        promoter_user_id: params?.uid,
+        promoter_shop_id:params?.dtid || params?.id
+      }
+      await api.salesman.salespersonBindusersalesperson(param)
+      console.log('分享成功，业务员已存储')
+    }
+  }
 
   const init = async () => {
     const { statusBarHeight } = await Taro.getSystemInfoSync()
