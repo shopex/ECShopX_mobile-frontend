@@ -82,8 +82,9 @@ function EditDeliveryman(props) {
     }
     setState((draft) => {
       draft.parent = params
-      draft.propertyIndex= res.staff_attribute == 'part_time' ? 1 : 0
-      draft.mannerIndex= res.payment_method == 'order' ? 1 : 0
+      draft.propertyIndex= res.staff_attribute == 'part_time' ? 0:1
+      draft.mannerIndex= res.payment_method == 'order' ? 0:1
+      draft.paymentTitle = res.payment_method == 'order' ? '（元/每单）' : '（%/每单）'
     })
   }
 
