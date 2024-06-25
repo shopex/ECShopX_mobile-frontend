@@ -2,17 +2,12 @@ import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import api from '@/api'
-import { View, Text,Image } from '@tarojs/components'
-import {
-  SpTime,SpImage
-} from '@/components'
+import { View, Text, Image } from '@tarojs/components'
+import { SpTime, SpImage } from '@/components'
 import { classNames } from '@/utils'
 import { useSyncCallback } from '@/hooks'
 
-
 import './comp-ranking.scss'
-
-
 
 const initialState = {
   list: [],
@@ -73,10 +68,14 @@ function CompRanking(props) {
   }
 
   const ranking = (index) => {
-    if(index <= 3){
-      return <SpImage  src={index==1?'paiming_1.png':index==2?'paiming_2.png':'paiming_3.png'}></SpImage>
-    }else{
-      return <Text>{index+1}</Text>
+    if (index <= 3) {
+      return (
+        <SpImage
+          src={index == 1 ? 'paiming_1.png' : index == 2 ? 'paiming_2.png' : 'paiming_3.png'}
+        ></SpImage>
+      )
+    } else {
+      return <Text>{index + 1}</Text>
     }
   }
 
@@ -101,11 +100,13 @@ function CompRanking(props) {
                 )}
                 key={index}
               >
-                {ranking(index+1)}
+                {ranking(index + 1)}
                 <Text>{item.username}</Text>
-                <Text>{item.total_fee_count}</Text>
+                <Text>{item.total_fee_count / 100}</Text>
                 <Text>{item.order_count}</Text>
-                <Text>{item.self_delivery_fee_count}</Text>
+                <Text>
+                  {item.self_delivery_fee_count / 100}
+                </Text>
               </View>
             )
           })}
