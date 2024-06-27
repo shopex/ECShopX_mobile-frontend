@@ -352,12 +352,22 @@ function CompDeliver(props, ref) {
     return null
   }
 
+  const showSwitchItem = (key,distributorInfo) => {
+    console.log(key,distributorInfo);
+    if(key === 'is_self_delivery'){
+      return distributorInfo?.selfDeliveryRule?.is_open == 'true' && distributorInfo.is_self_delivery
+    }else{
+      return distributorInfo[key]
+    }
+  }
+
+
   return (
     <View className='page-comp-deliver'>
       <View className='switch-box'>
         <View className={classNames(deliveryList.length > 0 && 'switch-tab')}>
           {deliveryList.map((item) => {
-            if (distributorInfo[item.key]) {
+            if (showSwitchItem(item.key,distributorInfo)) {
               return (
                 <View
                   key={item.type}
