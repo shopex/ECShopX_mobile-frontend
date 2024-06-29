@@ -151,7 +151,11 @@ function Home() {
   })
 
   const init = async () => {
-    fetchLocation()
+    //如果存在定位就不再重新定位了
+    if (location === null || Object.keys(location).length === 0){
+      fetchLocation()
+    }
+
     // 非云店
     if (!VERSION_STANDARD) {
       fetchWgts()
