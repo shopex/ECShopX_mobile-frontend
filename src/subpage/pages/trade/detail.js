@@ -952,6 +952,15 @@ export default class TradeDetail extends Component {
                 </View>
               )}
           </View>
+
+        <View className='shopping'>
+          <View className='shopping_guide'>导购员信息:</View>
+          <View className='shopping_guides'>
+            <Text>cx</Text>
+            <Text>13456565678</Text>
+          </View>
+        </View>
+
           {info.remark && (
             <View className='trade-detail-remark'>
               <View className='trade-detail-remark__header'>订单备注</View>
