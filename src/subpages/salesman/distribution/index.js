@@ -217,7 +217,7 @@ export default class DistributionDashboard extends Component {
               <View className='label'>提成订单</View>
               <View>{info.promoter_order_count}</View>
             </Navigator>
-            <Navigator
+            {/* <Navigator
               className='view-flex-item'
               hover-class='none'
               url='/subpages/salesman/distribution/trade?type=order_team'
@@ -225,7 +225,7 @@ export default class DistributionDashboard extends Component {
               <View className='iconfont icon-list2 icon-fontsize' />
               <View className='label'>津贴订单</View>
               <View>{info.promoter_grade_order_count}</View>
-            </Navigator>
+            </Navigator> */}
             <Navigator
               className='view-flex-item'
               hover-class='none'
@@ -235,7 +235,7 @@ export default class DistributionDashboard extends Component {
               <View className='label'>推广费</View>
               <View className='mark'>{info.rebateTotal / 100}</View>
             </Navigator>
-            <Navigator
+            {/* <Navigator
               className='view-flex-item'
               hover-class='none'
               url='/subpages/salesman/distribution/point-platform'
@@ -243,7 +243,7 @@ export default class DistributionDashboard extends Component {
               <View className='iconfont icon-jifen icon-fontsize' />
               <View className='label'>推广积分</View>
               <View className='mark'>{info.pointTotal || 0}</View>
-            </Navigator>
+            </Navigator> */}
           </View>
         </View>
         <View className='section'>
@@ -313,7 +313,7 @@ export default class DistributionDashboard extends Component {
           <Navigator
             className='list-item'
             open-type='navigateTo'
-            url='/subpages/marketing/certification'
+            url='/subpages/salesman/distribution/certification'      
           >
             <View className='iconfont item-icon icon-shimingrenzheng' />
             <View className='list-item-txt'>实名认证</View>

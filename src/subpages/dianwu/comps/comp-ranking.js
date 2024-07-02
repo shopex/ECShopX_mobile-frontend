@@ -2,24 +2,20 @@ import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
 import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import api from '@/api'
-import { View, Text,Image } from '@tarojs/components'
-import {
-  SpTime,SpImage
-} from '@/components'
+import { View, Text, Image } from '@tarojs/components'
+import { SpTime, SpImage } from '@/components'
 import { classNames } from '@/utils'
+import S from '@/spx'
 import { useSyncCallback } from '@/hooks'
 
-
 import './comp-ranking.scss'
-
-
 
 const initialState = {
   list: [],
   valList: [],
   total_count: 0,
-  datas: '',
-  datasType: 0
+  datas: S.getNowDate(),
+  datasType: 2
 }
 
 function CompRanking(props) {
@@ -60,8 +56,8 @@ function CompRanking(props) {
       month: datasType == 1 ? datas : '',
       day: datasType == 2 ? datas : '',
       distributor_id: params.distributor_id,
-      username: selectorCheckedIndex == 0 ? deliverylnformation : '',
-      mobile: selectorCheckedIndex == 1 ? deliverylnformation : ''
+      delivery_staff_name: selectorCheckedIndex == 0 ? deliverylnformation : '',
+      delivery_staff_mobile: selectorCheckedIndex == 1 ? deliverylnformation : ''
     }
     const { list: _list, total_count } = await api.dianwu.datacubeDeliverystaffdata(res)
     Taro.hideLoading()
@@ -73,24 +69,28 @@ function CompRanking(props) {
   }
 
   const ranking = (index) => {
-    if(index <= 3){
-      return <SpImage  src={index==1?'paiming_1.png':index==2?'paiming_2.png':'paiming_3.png'}></SpImage>
-    }else{
-      return <Text>{index+1}</Text> 
+    if (index <= 3) {
+      return (
+        <SpImage
+          src={index == 1 ? 'paiming_1.png' : index == 2 ? 'paiming_2.png' : 'paiming_3.png'}
+        ></SpImage>
+      )
+    } else {
+      return <Text>{index + 1}</Text>
     }
   }
 
   return (
     <View className='page-dianwu-comp-ranking'>
       <View className='comp-ranking'>
-        <SpTime onTimeChange={onTimeChange} />
+        <SpTime onTimeChange={onTimeChange} selects={datasType} nowTimeDa={datas} />
         <View className='comp-ranking-list'>
           <View className='comp-ranking-list-item comp-ranking-list-title'>
             <Text>排名</Text>
             <Text>配送员</Text>
             <Text>订单额(元)</Text>
-            <Text>配送订单量(单)</Text>
-            <Text>配送费用(元)</Text>
+            <Text>配送单量(单)</Text>
+            <Text>配送费(元)</Text>
           </View>
           {list.map((item, index) => {
             return (
@@ -101,11 +101,11 @@ function CompRanking(props) {
                 )}
                 key={index}
               >
-                {ranking(index+1)}
+                {ranking(index + 1)}
                 <Text>{item.username}</Text>
-                <Text>{item.total_fee_count}</Text>
+                <Text>{item.total_fee_count / 100}</Text>
                 <Text>{item.order_count}</Text>
-                <Text>{item.self_delivery_fee_count}</Text>
+                <Text>{item.self_delivery_fee_count / 100}</Text>
               </View>
             )
           })}
