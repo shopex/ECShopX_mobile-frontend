@@ -226,7 +226,7 @@ function EditDeliveryman(props) {
           value={parent.payment_fee}
           onChange={(e) => handleChange('payment_fee', e)}
         >
-          <View className='remarks'>{paymentTitle}</View>
+          <View className='remarks'>{paymentTitle}（费用包含运费）</View>
         </AtInput>
         <AtInput
           name='mobile'
