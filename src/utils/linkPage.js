@@ -1,18 +1,18 @@
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { stringify } from 'qs' 
+import { stringify } from 'qs'
 // import { WGTS_NAV_MAP } from '@/consts'
 
-function linkPage (data) {
-  const { id, title, linkPage, linkType, type, distributor_id ,navigation = false,content,seletedTags = []} = data
+function linkPage(data) {
+  const { id, title, linkPage, linkType, type, distributor_id, navigation = false, content, seletedTags = [] } = data
   const { id: dtid } = getCurrentInstance().router.params
   // h5链接
-  if(linkType == 1) {
+  if (linkType == 1) {
     Taro.navigateTo({
       url: `/pages/webview?url=${encodeURIComponent(data.linkUrl)}`
     })
     return
   }
-  if(navigation){
+  if (navigation) {
     let tags = []
     seletedTags.forEach(item => {
       tags.push({
@@ -60,6 +60,15 @@ function linkPage (data) {
     case 'link':
       if (id == 'vipgrades') {
         url = '/subpage/pages/vip/vipgrades'
+      } else if (id == 'purchase') {
+        url = '/pages/purchase/index'
+      } else if (id == 'recharge') {
+        url = '/others/pages/recharge/index'
+      } else if (id == 'serviceH5Coach') {
+      } else if (id == 'pointShop') {
+        url = '/subpages/pointshop/list'
+      } else if (id == 'levelMemberVip') {
+        url = '/subpage/pages/vip/vipgrades'
       } else if (id == 'serviceH5Coach') {
         url = '/marketing/pages/service/wap-link?tp=o'
       } else if (id == 'serviceH5Sales') {
@@ -105,7 +114,7 @@ function linkPage (data) {
     url = '/subpages/pointshop/list'
   }
 
-  if(id == 'applyChief') {
+  if (id == 'applyChief') {
     url = `/subpages/community/apply-chief?distributor_id=${dtid || distributor_id}`
   }
 
