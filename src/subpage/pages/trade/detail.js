@@ -171,6 +171,7 @@ export default class TradeDetail extends Component {
         console.log(dada)
         return dada
       },
+      salespersonInfo:'salespersonInfo',
       receiver_city: 'receiver_city',
       receiver_district: 'receiver_district',
       receiver_address: 'receiver_address',
@@ -953,13 +954,19 @@ export default class TradeDetail extends Component {
               )}
           </View>
 
-        <View className='shopping'>
-          <View className='shopping_guide'>导购员信息:</View>
-          <View className='shopping_guides'>
-            <Text>cx</Text>
-            <Text>13456565678</Text>
-          </View>
-        </View>
+
+          {
+            info?.salespersonInfo?.user_id && 
+            <View className='shopping'>
+              <View className='shopping_guide'>导购员信息:</View>
+              <View className='shopping_guides'>
+                <Text>{info?.salespersonInfo?.name}</Text>
+                <Text>{info?.salespersonInfo?.mobile}</Text>
+              </View>
+            </View>
+          }
+
+        
 
           {info.remark && (
             <View className='trade-detail-remark'>
