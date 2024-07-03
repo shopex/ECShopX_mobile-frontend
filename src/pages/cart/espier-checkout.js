@@ -1110,6 +1110,7 @@ function CartCheckout(props) {
         isOpened={openCashier}
         // paymentAmount={totalInfo.freight_fee}
         value={payChannel}
+        userPoint={pointInfo?.user_point}
         onClose={() => {
           setState((draft) => {
             draft.openCashier = false
