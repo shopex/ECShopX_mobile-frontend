@@ -92,8 +92,10 @@ function SpCashier(props) {
       draft.list = _list
     })
     if (_list.length > 0) {
-      onChange(_list[0])
-      onChangePayment(_list[0])
+      //默认积分
+      const defaultItem = _list.find(item=>item.paymentChannel ==  "point") ?? _list[0]
+      onChange(defaultItem)
+      onChangePayment(defaultItem)
     }
 
 
