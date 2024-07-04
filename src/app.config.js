@@ -387,6 +387,9 @@ const config = {
         'distribution/point-platform',
         'distribution/certification',//实名认证
         'delivery-info',//查看物流
+        'espier-checkout', // 结算页面
+        'address', // 收货地址
+        'edit-address',//添加收获地址
       ]
     },
     // 授权

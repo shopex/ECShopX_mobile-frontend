@@ -26,8 +26,9 @@ function AddressIndex(props) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const colors = useSelector((state) => state.colors.current)
+  const { customerLnformation } = useSelector((state) => state.cart)
+
   const dispatch = useDispatch()
-  const { setNavigationBarTitle } = useNavigation()
 
   const updateChooseAddress = (address) => {
     dispatch({ type: 'user/updateChooseAddress', payload: address })
@@ -35,60 +36,13 @@ function AddressIndex(props) {
 
   useEffect(() => {
     fetchAddressList()
-    fetch()
-    setNavigationBarTitle(initNavigationBarTitle())
   }, [])
-
-  const initNavigationBarTitle = () => {
-    return $instance.router?.params?.address_id ? '编辑地址' : '新增地址'
-  }
 
   const fetchAddressList = async () => {
     const areaData = await api.member.areaList()
     setState((draft) => {
       draft.areaData = areaData
     })
-  }
-
-  const fetch = async () => {
-    Taro.showLoading({ title: '' })
-    const { list } = await api.member.addressList()
-    setState((draft) => {
-      draft.listLength = list?.length
-    })
-
-    list.map((a_item) => {
-      if (a_item.address_id === $instance.router?.params?.address_id) {
-        setState((draft) => {
-          draft.info = a_item
-          draft.chooseValue = [a_item.province, a_item.city, a_item.county]
-        })
-      }
-    })
-
-    if ($instance.router?.params?.isWechatAddress) {
-      try {
-        const resAddress = await Taro.chooseAddress()
-        const query = {
-          province: resAddress?.provinceName,
-          city: resAddress?.cityName,
-          county: resAddress?.countyName,
-          adrdetail: resAddress?.detailInfo,
-          is_def: 0,
-          postalCode: resAddress?.postalCode,
-          telephone: resAddress?.telNumber,
-          username: resAddress?.userName
-        }
-        setState((draft) => {
-          draft.info = query
-          draft.chooseValue = [query.province, query.city, query.county]
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    Taro.hideLoading()
   }
 
   const onPickerClick = () => {
@@ -139,7 +93,8 @@ function AddressIndex(props) {
     const { chooseValue } = state
     const data = {
       ...state.info,
-      ...value
+      ...value,
+      ...customerLnformation
     }
 
     if (!data.is_def) {
