@@ -390,6 +390,7 @@ const config = {
         'espier-checkout', // 结算页面
         'address', // 收货地址
         'edit-address',//添加收获地址
+        'coupon-picker', //优惠券选择器
       ]
     },
     // 授权
