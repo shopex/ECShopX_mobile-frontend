@@ -58,7 +58,7 @@ import SpShopCoupon from './sp-shop-coupon'
 import SpFilterDrawer from './sp-filter-drawer'
 import SpButton from './sp-button'
 import SpFloatPrivacy from './sp-float-privacy'
-import SpFloatPrivacyShort from './sp-float-privacyshort'
+// import SpFloatPrivacyShort from './sp-float-privacyshort'
 import SpTagBar from './sp-tag-bar'
 import SpDrawer from './sp-drawer'
 import SpSelect from './sp-select'
@@ -91,6 +91,9 @@ import SpFormItem from './sp-form-item'
 import SpVipLabel from './sp-vip-label'
 import SpAddress from './sp-address'
 import SpSearchInput from './sp-search-input'
+import SpTradeItem from './sp-trade-item'
+import SpModal from './sp-modal'
+import SpCategorySearch from './sp-category-search'
 
 export default {}
 
@@ -155,7 +158,7 @@ export {
   SpFilterDrawer,
   SpButton,
   SpFloatPrivacy,
-  SpFloatPrivacyShort,
+  // SpFloatPrivacyShort,
   SpTagBar,
   SpDrawer,
   SpSelect,
@@ -187,5 +190,8 @@ export {
   SpFormItem,
   SpVipLabel,
   SpAddress,
-  SpSearchInput
+  SpSearchInput,
+  SpTradeItem,
+  SpModal,
+  SpCategorySearch,
 }
