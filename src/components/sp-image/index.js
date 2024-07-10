@@ -16,9 +16,9 @@ function SpImage(props) {
     mode = 'widthFix',
     width = 'auto',
     height,
-    onClick = () => {},
-    onError = () => {},
-    onLoad = () => {},
+    onClick = () => { },
+    onError = () => { },
+    onLoad = () => { },
     lazyLoad = false,
     circle = false,
     isShowMenuByLongpress = true
@@ -33,11 +33,16 @@ function SpImage(props) {
 
   let imgUrl = /^http/.test(src) || isBase64(src) ? src : `${process.env.APP_IMAGE_CDN}/${src}`
 
-  if (diskDriver === 'qiniu') {
-    if (width != 'auto') {
-      imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${
-        height ? '/h/' + Math.floor(height / 2) : ''
-      }`
+  if (!isBase64(src)) {
+    if (diskDriver === 'qiniu') {
+      if (width != 'auto') {
+        imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${height ? '/h/' + Math.floor(height / 2) : ''}`
+      }
+    } else {
+      // imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${
+      //   height ? '/h/' + Math.floor(height / 2) : ''
+      // }`
+      imgUrl = `${imgUrl}?x-oss-process=image/quality,q_60`
     }
   }
 
@@ -71,8 +76,8 @@ function SpImage(props) {
           'border-radius': isNumber(circle)
             ? `${circle / 2}px`
             : isBoolean(circle) && circle
-            ? `${width / 2}px`
-            : 0
+              ? `${width / 2}px`
+              : 0
         })}
         src={imgUrl}
         mode={mode}

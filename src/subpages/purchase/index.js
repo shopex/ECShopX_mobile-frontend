@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import Taro, { getCurrentInstance, useDidShow } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import Taro, { getCurrentInstance, useDidShow, useRouter } from '@tarojs/taro'
+import { View, Image, ScrollView } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   SpPage,
   SpSearch,
   SpPrivacyModal,
+  SpTabbar
 } from '@/components'
 import api from '@/api'
 import {
@@ -15,7 +16,7 @@ import {
   VERSION_PLATFORM,
   classNames
 } from '@/utils'
-import { updatePurchaseShareInfo } from '@/store/slices/purchase'
+import { updatePurchaseShareInfo, updatePurchaseTabbar } from '@/store/slices/purchase'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
 import HomeWgts from '@/pages/home/comps/home-wgts'
@@ -23,7 +24,7 @@ import { WgtHomeHeader } from '@/pages/home/wgts'
 import configStore from '@/store'
 import CompTabbar from './comps/comp-tabbar'
 
-import '@/pages/home/index.scss'
+import './index.scss'
 
 const MSpPrivacyModal = React.memo(SpPrivacyModal)
 
@@ -46,7 +47,7 @@ function Home() {
       }
     }
   })
-  const $instance = getCurrentInstance()
+  const router = useRouter()
 
   const [policyModal, setPolicyModal] = useState(false)
   const { openScanQrcode } = useSelector((state) => state.sys)
@@ -69,7 +70,7 @@ function Home() {
   })
 
   useEffect(() => {
-    const { activity_id, enterprise_id, pages_template_id } = $instance.router.params || {}
+    const { activity_id, enterprise_id, pages_template_id } = router.params || {}
     if (activity_id) {
       dispatch(updatePurchaseShareInfo({ activity_id, enterprise_id, pages_template_id }))
     }
@@ -80,23 +81,25 @@ function Home() {
   }
 
   const fetchWgts = async () => {
-    const { pages_template_id } = purchase_share_info
-    console.log(purchase_share_info, pages_template_id, '-----purchase_share_info----')
-    const { config, tab_bar } = await api.shop.getShopTemplate({
-      distributor_id: getDistributorId(),
-      pages_template_id
-    })
-    const tabBar = tab_bar && JSON.parse(tab_bar)
-    store.dispatch({
-      type: 'purchase/updatePurchaseTabbar',
-      payload: {
+    // console.log(purchase_share_info, pages_template_id, '-----purchase_share_info----')
+    try {
+      const { config, tab_bar } = await api.shop.getShopTemplate({
+        distributor_id: getDistributorId(),
+        pages_template_id: router.params?.pages_template_id || purchase_share_info?.pages_template_id
+      })
+      const tabBar = tab_bar && JSON.parse(tab_bar)
+      dispatch(updatePurchaseTabbar({
         tabbar: tabBar
-      }
-    })
-    setState((draft) => {
-      draft.wgts = config
-      draft.loading = false
-    })
+      }))
+      setState((draft) => {
+        draft.wgts = config
+        draft.loading = false
+      })
+    } catch (e) {
+      dispatch(updatePurchaseTabbar({
+        tabbar: null
+      }))
+    }
   }
 
   const handleConfirmModal = useCallback(async () => {
@@ -124,21 +127,22 @@ function Home() {
 
   return (
     <SpPage
-      className='page-index'
+      className='page-purchase-index'
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
       pageConfig={pageData?.base}
       renderFooter={<CompTabbar />}
       loading={loading}
     >
-      <View
+      <ScrollView
         className={classNames('home-body', {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
+        scrollY
       >
-        {/* {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch />}</WgtHomeHeader>} */}
+        {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
         <HomeWgts wgts={filterWgts} />
-      </View>
+      </ScrollView>
 
       {/* 隐私政策 */}
       <MSpPrivacyModal

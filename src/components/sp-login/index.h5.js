@@ -21,9 +21,10 @@ function SpLogin(props) {
    */
   const handleOAuthLogin = () => {}
 
-  const handleOnChange = () => {
+  const handleOnChange = (e) => {
+    e.stopPropagation()
     if (isLogin) {
-      onChange && onChange()
+      onChange && onChange(e)
     } else {
       const { path, params } = $instance.router
       const _path = `${path.split('?')[0]}?${qs.stringify(params)}`

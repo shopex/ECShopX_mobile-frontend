@@ -29,6 +29,7 @@ function SpCashier(props) {
   const {
     isOpened = true,
     value,
+    userPoint,
     onClose = () => { },
     onChange = () => { },
     paymentAmount = 0
@@ -46,7 +47,7 @@ function SpCashier(props) {
     //   fetchPaymentList()
     // }
     fetchPaymentList()
-  }, [ENV])
+  }, [ENV,userPoint])
 
   useEffect(() => {
     if (!isOpened) {
@@ -92,8 +93,10 @@ function SpCashier(props) {
       draft.list = _list
     })
     if (_list.length > 0) {
-      onChange(_list[0])
-      onChangePayment(_list[0])
+      //默认积分
+      const defaultItem = userPoint > 0 ?  _list.find(item=>item.paymentChannel ==  "point") : _list[0]
+      onChange(defaultItem)
+      onChangePayment(defaultItem)
     }
 
 
@@ -129,7 +132,7 @@ function SpCashier(props) {
 
   const onConfirm = () => {
     onClose()
-    onChange(selectItem)
+    onChange(selectItem, 'confirm')
   }
 
   const onCloseFloatLayout = () => {
