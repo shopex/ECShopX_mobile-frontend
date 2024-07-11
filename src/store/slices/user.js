@@ -13,7 +13,6 @@ const initialState = {
   showAdv: false,
   favs: [],
   // 是用户结算的默认地址，也是附近商家的收货地址
-  address: null,
   location: null,
   chiefInfo: {}, // 团长信息
   checkIsChief: true, // 检查是否是团长
