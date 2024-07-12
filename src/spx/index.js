@@ -5,7 +5,7 @@ import { SG_TOKEN, SG_USER_INFO, MERCHANT_TOKEN } from '@/consts/localstorage'
 import qs from 'qs'
 import configStore from '@/store'
 
-const {store} = configStore()
+const { store } = configStore()
 
 const globalData = {}
 export class Spx {
@@ -302,6 +302,25 @@ export class Spx {
 
   closeToast() {
     Taro.eventCenter.trigger('sp-toast:close')
+  }
+
+  calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371 // 地球半径（单位：千米）
+
+    const dLat = (lat2 - lat1) * (Math.PI / 180)
+    const dLon = (lon2 - lon1) * (Math.PI / 180)
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2)
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+    const distance = R * c // 距离（单位：千米）
+    return distance
   }
 }
 

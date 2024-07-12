@@ -36,7 +36,7 @@ import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
 import { useImmer } from 'use-immer'
-import { useLogin, useNavigation } from '@/hooks'
+import { useLogin, useNavigation, useLocation } from '@/hooks'
 import doc from '@/doc'
 import HomeWgts from './home/comps/home-wgts'
 import { WgtHomeHeader, WgtHomeHeaderShop } from './home/wgts'
@@ -68,23 +68,27 @@ function Home() {
   const [likeList, setLikeList] = useImmer([])
   const pageRef = useRef()
 
-  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } = useSelector(
-    (state) => state.sys
-  )
-  const { shopInfo } = useSelector(
-    (state) => state.shop
-  )
+  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } =
+    useSelector((state) => state.sys)
+  const { shopInfo } = useSelector((state) => state.shop)
 
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
+  const { getCode } = useLocation()
 
-  const { wgts, loading, searchComp, pageData, fixedTop,
+  const {
+    wgts,
+    loading,
+    searchComp,
+    pageData,
+    fixedTop,
     filterWgts,
     isShowHomeHeader,
     info,
     skuPanelOpen,
-    selectType } = state
+    selectType
+  } = state
 
   const dispatch = useDispatch()
 
@@ -152,9 +156,9 @@ function Home() {
 
   const init = async () => {
     //如果存在定位就不再重新定位了
-    if (location === null || Object.keys(location).length === 0){
-      fetchLocation()
-    }
+    // if (location === null || Object.keys(location).length === 0) {
+    fetchLocation()
+    // }
 
     // 非云店
     if (!VERSION_STANDARD) {
@@ -214,13 +218,18 @@ function Home() {
 
   // 定位
   const fetchLocation = () => {
-    if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
+    getCode()
+
+    console.log(
+      !location ==true,'lllllll1l3'
+    )
+    if ( ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
       try {
-        entryLaunch.isOpenPosition((res) => {
-          if (res.lat) {
-            dispatch(updateLocation(res))
-          }
-        })
+        // entryLaunch.isOpenPosition((res) => {
+        //   if (res.lat) {
+        //     dispatch(updateLocation(res))
+        //   }
+        // })
       } catch (e) {
         console.error('map location fail:', e)
       }
@@ -277,17 +286,21 @@ function Home() {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
       >
-        {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
-        {
-          filterWgts.length > 0 && <WgtsContext.Provider value={{
-            onAddToCart
-          }}>
+        {isShowHomeHeader && (
+          <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>
+        )}
+        {filterWgts.length > 0 && (
+          <WgtsContext.Provider
+            value={{
+              onAddToCart
+            }}
+          >
             <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
               {/* 猜你喜欢 */}
               <SpRecommend className='recommend-block' info={likeList} />
             </HomeWgts>
           </WgtsContext.Provider>
-        }
+        )}
       </View>
 
       {/* 小程序搜藏提示 */}
@@ -298,7 +311,6 @@ function Home() {
 
       {/* 优惠券包 */}
       {VERSION_STANDARD && <SpCouponPackage />}
-
 
       {/* Sku选择器 */}
       <MSpSkuSelect
