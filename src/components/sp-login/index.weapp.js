@@ -9,9 +9,8 @@ import { isWeixin, isAlipay, classNames, showToast, entryLaunch } from '@/utils'
 import { SG_SHARER_UID, SG_TRACK_PARAMS, SG_ROUTER_PARAMS, SG_GUIDE_PARAMS } from '@/consts'
 import { Tracker } from '@/service'
 import { SpPrivacyModal, SpImage, SpCheckbox } from '@/components'
-import { useLogin } from '@/hooks'
+import { useLogin, useLocation } from '@/hooks'
 import './index.scss'
-
 
 const initialState = {
   logo: '',
@@ -21,9 +20,13 @@ const initialState = {
 }
 function SpLogin(props, ref) {
   const { children, className, onChange, newUser = false } = props
+  const { getCode } = useLocation
   const { isLogin, login, setToken, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       // isUpdate && setPolicyModal(true)
+    },
+    loginSuccess: () => {
+      getCode()
     }
   })
   const [isNewUser, setIsNewUser] = useState(false)
@@ -56,12 +59,11 @@ function SpLogin(props, ref) {
   const fetchPrivacyData = async () => {
     const { logo, protocol } = await api.shop.getStoreBaseInfo()
     const { member_register, privacy } = protocol
-    setState(draft => {
+    setState((draft) => {
       draft.logo = logo
       draft.registerName = member_register
       draft.privacyName = privacy
     })
-
   }
 
   const handleBindPhone = async (e) => {
@@ -185,7 +187,7 @@ function SpLogin(props, ref) {
   }
 
   const onChangePayment = (e) => {
-    setState(draft => {
+    setState((draft) => {
       draft.agreeMentChecked = e
     })
   }
@@ -218,26 +220,39 @@ function SpLogin(props, ref) {
           </View>
           <View className='login-modal__bd'>登录手机号，查看全部订单和优惠券</View>
           <View className='agreement-content'>
-            <SpCheckbox
-              checked={agreeMentChecked}
-              onChange={onChangePayment}
-            />
-            <View className="agreement-list">
-              <Text className='agreement-name' onClick={handleClickPrivacy.bind(this, 'member_register')}>《{registerName}》</Text>和
-              <Text className='agreement-name' onClick={handleClickPrivacy.bind(this, 'privacy')}>《{privacyName}》</Text>
+            <SpCheckbox checked={agreeMentChecked} onChange={onChangePayment} />
+            <View className='agreement-list'>
+              <Text
+                className='agreement-name'
+                onClick={handleClickPrivacy.bind(this, 'member_register')}
+              >
+                《{registerName}》
+              </Text>
+              和
+              <Text className='agreement-name' onClick={handleClickPrivacy.bind(this, 'privacy')}>
+                《{privacyName}》
+              </Text>
             </View>
           </View>
           <View className='login-modal__ft'>
-            {isNewUser && <AtButton type='primary' disabled={!agreeMentChecked} openType='getPhoneNumber' onGetPhoneNumber={handleBindPhone}>
-              登录
-            </AtButton>}
-            {!isNewUser && <AtButton type='primary' disabled={!agreeMentChecked} onClick={handleUserLogin}>
-              登录
-            </AtButton>}
+            {isNewUser && (
+              <AtButton
+                type='primary'
+                disabled={!agreeMentChecked}
+                openType='getPhoneNumber'
+                onGetPhoneNumber={handleBindPhone}
+              >
+                登录
+              </AtButton>
+            )}
+            {!isNewUser && (
+              <AtButton type='primary' disabled={!agreeMentChecked} onClick={handleUserLogin}>
+                登录
+              </AtButton>
+            )}
           </View>
         </View>
       </AtCurtain>
-
     </View>
   )
 }

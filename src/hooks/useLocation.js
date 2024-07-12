@@ -1,80 +1,115 @@
-// 1、经纬度 =》 解析
-// 2. location == 解析  => location
-// 3. location ！= 解析 =》 解析
-// 4、是否登录，如果登录 =》收货地址比较
-// 5、收货地址空 =》 解析
-// 6、收货地址比较距离最短 与 定位的比较
-
 import Taro from '@tarojs/taro'
-import { useState, useRef, useEffect } from 'react'
-import { useImmer } from 'use-immer'
 import api from '@/api'
 import entryLaunch from '@/utils/entryLaunch'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
 import { updateLocation } from '@/store/slices/user'
-import { useLogin } from '@/hooks'
-
-const initialState = {
-  list: []
-}
+import S from '@/spx'
 
 export default (props) => {
-  const [state, setState] = useImmer(initialState)
-  const { list } = state
-  const callbackRef = useRef()
   const dispatch = useDispatch()
-  const { isLogin } = useLogin({
-    autoLogin: false
-  })
-
-  useEffect(() => {
-    getCode()
-  }, [])
-
+  const { location } = useSelector((state) => state.user)
+  /**
+   * 未登录状态 && 授权定位  == 定位
+   * 未登录状态  && 不授权定位  == 默认值
+   */
   const getCode = async () => {
-    console.log('Taro.getStorageSynctoken', Taro.getStorageSync('token'))
     if (Taro.getStorageSync('token')) {
-        console.log('已登录')
       await addressLogic()
     } else {
-        console.log('未登录')
-      /**
-       * 未登录状态且授权定位：直接拿到当前定位存入redux
-       * 未登录状态且不授权定位：控制台报错，redux中存在默认数据
-       */
-      const res = await fetchLocation()
-      dispatch(updateLocation(res))
+      const res1 = await fetchLocation()
+      if (res1 instanceof Object && res1.lat) {
+        dispatch(updateLocation(res1))
+      }
     }
   }
 
   // 获取当前定位
-  const fetchLocation = () => {
-    entryLaunch.isOpenPosition((res) => {
-      try {
-        if (res.lat) {
-          // 处理成功情况
-          console.log(res);
-        } else {
-          // 处理 res.lat 不存在的情况
-          console.error('Latitude not found in response');
-        }
-      } catch (e) {
-        // 捕获处理回调函数中的错误
-        console.error('Error in callback:', e);
-      }
-    });
+  const fetchLocation = async () => {
+    try {
+      const res = await new Promise((resolve) => {
+        entryLaunch.isOpenPosition((res1) => {
+          resolve(res1)
+        })
+      })
+      return res
+    } catch (e) {
+      console.error('获取地图位置信息失败:', e)
+      throw e
+    }
   }
 
-  //登录状态下，地址选择
+  //处理地址
+  const processingAddress = (res) => {
+    if (res.length == 0) {
+      return res
+    } else {
+      let arr = []
+      res.forEach((element) => {
+        arr.push({
+          address: element.province + element.city + element.county + element.adrdetail,
+          city: element.city,
+          district: element.county,
+          lat: element.lat,
+          lng: element.lng,
+          province: element.province
+        })
+      })
+      return arr
+    }
+  }
+
+  // 地址距离比较
+  const addressDistance = (ele, arr) => {
+    let newarr = []
+    let newarrs = []
+
+    arr.forEach((item) => {
+      if (ele.province == item.province && ele.district == item.district && ele.city == item.city) {
+        newarr.push(item)
+      }
+    })
+    if (newarr.length > 0) {
+      newarr.forEach((item) => {
+        let res = S.calculateDistance(ele.lat, ele.lng, item.lat, item.lng)
+        newarrs.push(res)
+      })
+      const minNumber = Math.min(...newarrs)
+      const minIndex = newarrs.indexOf(minNumber)
+      return newarr[minIndex]
+    } else {
+      return ele
+    }
+  }
+
+  /**
+   * 登录状态下 && 打开定位
+   * 1.当地址是空的 == 定位
+   * 2.当地址不为空 && 在同一个城市 == 取最近地址
+   * 3.当地址不为空 && 不在同一个城市 == 定位
+   *
+   * 登录状态下 && 关闭定位
+   * 1.存在地址 == 取地址默认值，无默认值拿第一个
+   * 2.不存在地址 == 默认值
+   *
+   */
   const addressLogic = async () => {
-       //获取收货地址
-       const { list } = await api.member.addressList()
+    const { list } = await api.member.addressList()
+    const arr = await processingAddress(list)
+    const res = await fetchLocation()
 
-       //获取当前定位
-       const res = await fetchLocation()
-
-       console.log('收货地址', res)
-
+    if (res instanceof Object && res.lat) {
+      if (arr.length == 0) {
+        dispatch(updateLocation(res))
+      } else {
+        let res1 = await addressDistance(res, arr)
+        dispatch(updateLocation(res1))
+      }
+    } else {
+      if (arr.length > 0) {
+        const arr1 = await processingAddress([list.find((obj) => obj.is_def === true) || list[0]])
+        dispatch(updateLocation(arr1[0]))
+      }
+    }
   }
 
   return { getCode }

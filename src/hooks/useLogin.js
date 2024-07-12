@@ -10,7 +10,7 @@ import S from '@/spx'
 import { SG_POLICY } from '@/consts/localstorage'
 
 export default (props = {}) => {
-  const { autoLogin = false, policyUpdateHook = () => {} } = props
+  const { autoLogin = false, policyUpdateHook = () => {},loginSuccess=()=>{} } = props
   const [isLogin, setIsLogin] = useState(false)
   const [isNewUser, setIsNewUser] = useState(false)
   const dispatch = useDispatch()
@@ -47,6 +47,7 @@ export default (props = {}) => {
           const { token } = await getToken(code)
           Taro.hideLoading()
           setToken(token)
+          loginSuccess()
         } catch (e) {
           setIsNewUser(true)
           Taro.hideLoading()

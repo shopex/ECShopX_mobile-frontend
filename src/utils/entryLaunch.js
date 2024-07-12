@@ -352,6 +352,8 @@ class EntryLaunch {
                   } else {
                     Taro.showToast({ title: '获取定位权限失败', icon: 'none' })
                   }
+                }else{
+                  if (callback) callback(false)
                 }
               }
             })
