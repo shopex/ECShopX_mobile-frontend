@@ -104,7 +104,7 @@ const initialState = {
 function MemberIndex(props) {
   // console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const $instance = getCurrentInstance()
-  const { getCode } = useLocation()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, login, getUserInfoAuth } = useLogin({
     autoLogin: true,
     // policyUpdateHook: (isUpdate) => {
@@ -114,7 +114,7 @@ function MemberIndex(props) {
     //   }
 
     loginSuccess: () => {
-      getCode()
+      updateAddress()
     }
   })
   const [config, setConfig] = useImmer(initialConfigState)

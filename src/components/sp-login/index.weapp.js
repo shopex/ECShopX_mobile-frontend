@@ -20,13 +20,13 @@ const initialState = {
 }
 function SpLogin(props, ref) {
   const { children, className, onChange, newUser = false } = props
-  const { getCode } = useLocation
+  const { updateAddress } = useLocation
   const { isLogin, login, setToken, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       // isUpdate && setPolicyModal(true)
     },
     loginSuccess: () => {
-      getCode()
+      updateAddress()
     }
   })
   const [isNewUser, setIsNewUser] = useState(false)

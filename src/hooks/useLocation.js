@@ -11,7 +11,7 @@ export default (props) => {
    * 未登录状态 && 授权定位  == 定位
    * 未登录状态  && 不授权定位  == 默认值
    */
-  const getCode = async () => {
+  const updateAddress = async () => {
     if (S.getAuthToken()) {
       await addressLogic()
     } else {
@@ -143,5 +143,5 @@ export default (props) => {
     }
   }
 
-  return { getCode }
+  return { updateAddress }
 }

@@ -75,7 +75,7 @@ function Home() {
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
-  const { getCode } = useLocation()
+  const { updateAddress } = useLocation()
 
   const {
     wgts,
@@ -221,7 +221,7 @@ function Home() {
     console.log(!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM), 'lllllll1l3')
     if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
       try {
-        getCode()
+        updateAddress()
         // entryLaunch.isOpenPosition((res) => {
         //   if (res.lat) {
         //     dispatch(updateLocation(res))

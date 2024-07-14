@@ -7,14 +7,18 @@ import api from '@/api'
 import { classNames, showToast, alipayAutoLogin } from '@/utils'
 
 import { SpPrivacyModal, SpImage } from '@/components'
-import { useLogin } from '@/hooks'
+import { useLogin,useLocation } from '@/hooks'
 import './index.scss'
 
 function SpLogin(props, ref) {
   const { children, className, onChange, newUser = false } = props
+  const { updateAddress } = useLocation()
   const { isLogin, login, setToken, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       // isUpdate && setPolicyModal(true)
+    },
+    loginSuccess: () => {
+      updateAddress()
     }
   })
   const [isNewUser, setIsNewUser] = useState(false)
