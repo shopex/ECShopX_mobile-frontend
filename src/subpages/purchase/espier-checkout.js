@@ -32,7 +32,7 @@ import {
   VERSION_B2C,
   VERSION_PLATFORM
 } from '@/utils'
-import { useAsyncCallback, useLogin, usePayment } from '@/hooks'
+import { useAsyncCallback, useLogin,useLocation, usePayment } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
 import _cloneDeep from 'lodash/cloneDeep'
 import api from '@/api'
@@ -49,8 +49,12 @@ import './espier-checkout.scss'
 
 function PurchaseCheckout(props) {
   const $instance = getCurrentInstance()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
-    autoLogin: true
+    autoLogin: true,
+    loginSuccess: () => {
+      updateAddress()
+    }
   })
 
 

@@ -36,7 +36,7 @@ import {
   VERSION_IN_PURCHASE,
   VERSION_PLATFORM
 } from '@/utils'
-import { useLogin } from '@/hooks'
+import { useLogin,useLocation } from '@/hooks'
 import S from '@/spx'
 import CompVipCard from './comps/comp-vipcard'
 import CompBanner from './comps/comp-banner'
@@ -106,10 +106,14 @@ const initialState = {
 
 function MemberIndex(props) {
   console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
     autoLogin: true,
     policyUpdateHook: () => {
       setPolicyModal(true)
+    },
+    loginSuccess: () => {
+      updateAddress()
     }
   })
   const [config, setConfig] = useImmer(initialConfigState)
