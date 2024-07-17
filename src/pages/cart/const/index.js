@@ -56,7 +56,8 @@ export const initialState = {
   openCashier: false,
   isPointOpenModal: false,
   routerParams: {},
-  pointPayFirst:null
+  pointPayFirst:null,
+  isFirstCalc:true
 }
 
 export const deliveryList = [

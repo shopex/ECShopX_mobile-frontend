@@ -104,7 +104,8 @@ function CartCheckout(props) {
     buildingNumber,
     houseNumber, // 房号
     routerParams, // 路由参数
-    pointPayFirst
+    pointPayFirst,
+    isFirstCalc,//开启优先积分第一次需要填充积分抵扣
   } = state
 
   const {
@@ -653,6 +654,17 @@ function CartCheckout(props) {
         draft.street = street
         draft.community = community
       }
+
+      if(isFirstCalc && !!point_rule?.point_pay_first){
+        let firstPoint = Math.min(max_point,user_point)
+
+        draft.point_use = firstPoint
+        draft.pointInfo = {
+          ...point_info,
+          real_use_point:firstPoint
+        }
+        draft.isFirstCalc = false
+      }
     })
     // calc.current = false
     if (extraTips) {
@@ -1082,10 +1094,10 @@ function CartCheckout(props) {
             )}
         </View>
       </ScrollView>
-
       <CompPointUse
         isOpened={isPointOpenModal}
         info={pointInfo}
+        pointPayFirst={pointPayFirst}
         onClose={() => {
           setState((draft) => {
             draft.isPointOpenModal = false
