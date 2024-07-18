@@ -2,7 +2,8 @@ import Taro, {
   useDidShow,
   useShareAppMessage,
   getCurrentPages,
-  getCurrentInstance
+  getCurrentInstance,
+  useRouter
 } from '@tarojs/taro'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { updateUserInfo, fetchUserFavs, updateCheckChief } from '@/store/slices/user'
@@ -125,6 +126,7 @@ function MemberIndex(props) {
   const { pointName } = useSelector((state) => state.sys)
   log.debug(`store userInfo: ${JSON.stringify(userInfo)}`)
   const dispatch = useDispatch()
+  const router = useRouter()
 
   useEffect(() => {
     if (isLogin) {
@@ -149,6 +151,14 @@ function MemberIndex(props) {
       getMemberCenterData()
     }
   })
+
+  useEffect(() => {
+    if (router.order_id) {
+      Taro.navigateTo({
+        url: `/subpages/trade/detail?order_id=${router.order_id}`
+      })
+    }
+  }, [])
 
   // useDidShow(() => {
   //   if (isLogin) {
