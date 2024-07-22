@@ -9,12 +9,13 @@ const initialState = {
   invalidCart: [],
   validSalesmanCart: [],
   invalidSalesmanCart: [],
-  customerLnformation:{},
-  customerSalesman:{},
+  customerLnformation: {},
+  customerSalesman: {},
   coupon: null,
   zitiAddress: null,
-  shopCartCount:{},
-  shopSalesmanCartCount:{}
+  shopCartCount: {},
+  shopSalesmanCartCount: {},
+  deliveryPersonnel: [] //配送员信息
 }
 
 export const fetchCartList = createAsyncThunk('cart/fetchCartList', async (params) => {
@@ -25,13 +26,16 @@ export const fetchCartList = createAsyncThunk('cart/fetchCartList', async (param
   }
 })
 
-export const fetchSalesmanCartList = createAsyncThunk('cart/fetchSalesmanCartList', async (params) => {
-  const { valid_cart, invalid_cart } = await api.cart.get(params)
-  return {
-    valid_cart,
-    invalid_cart
+export const fetchSalesmanCartList = createAsyncThunk(
+  'cart/fetchSalesmanCartList',
+  async (params) => {
+    const { valid_cart, invalid_cart } = await api.cart.get(params)
+    return {
+      valid_cart,
+      invalid_cart
+    }
   }
-})
+)
 
 export const addCart = createAsyncThunk('cart/addCart', async (params) => {
   await api.cart.add(params)
@@ -42,12 +46,9 @@ export const deleteCartItem = createAsyncThunk('cart/deleteCartItem', async (par
   await api.cart.del(params)
 })
 
-export const updateCartItemNum = createAsyncThunk(
-  'cart/updateCartItemNum',
-  async (params) => {
-    await api.cart.updateNum(params)
-  }
-)
+export const updateCartItemNum = createAsyncThunk('cart/updateCartItemNum', async (params) => {
+  await api.cart.updateNum(params)
+})
 
 export const updateCount = createAsyncThunk('cart/updateCount', async (params) => {
   // 获取购物车数量接口
@@ -91,9 +92,13 @@ const cartSlice = createSlice({
       // 更新业务员顾客信息
       state.customerLnformation = payload
     },
-    updateCustomerSalesman:(state, { payload }) => {
+    updateCustomerSalesman: (state, { payload }) => {
       // 更新下单顾客信息
       state.customerSalesman = payload
+    },
+    updateDeliveryPersonnel: (state, { payload }) => {
+      // 更新配送员信息（存在等多个账号id）
+      state.deliveryPersonnel = payload
     },
     clear: (state, { payload }) => {
       state.coupon = null
@@ -101,7 +106,7 @@ const cartSlice = createSlice({
     changeZitiStore: (state, { payload }) => {
       state.zitiShop = payload
     },
-    clearCart: (state ) => {
+    clearCart: (state) => {
       state.cartCount = 0
       state.validCart = []
       state.invalidCart = []
@@ -111,7 +116,7 @@ const cartSlice = createSlice({
       state.zitiAddress = payload
     }
   },
-  extraReducers: (builder) => { 
+  extraReducers: (builder) => {
     builder.addCase(fetchCartList.fulfilled, (state, action) => {
       const { valid_cart, invalid_cart } = action.payload
       state.validCart = valid_cart
@@ -136,6 +141,19 @@ const cartSlice = createSlice({
   }
 })
 
-export const { deleteCart, updateCart, updateCartNum,updateCartSalesman,updateCustomerLnformation,updateCustomerSalesman, updateShopSalesmanCartCount,changeCoupon, clearCart, changeZitiAddress ,updateShopCartCount} = cartSlice.actions
+export const {
+  deleteCart,
+  updateCart,
+  updateCartNum,
+  updateCartSalesman,
+  updateCustomerLnformation,
+  updateCustomerSalesman,
+  updateShopSalesmanCartCount,
+  changeCoupon,
+  clearCart,
+  changeZitiAddress,
+  updateShopCartCount,
+  updateDeliveryPersonnel
+} = cartSlice.actions
 
 export default cartSlice.reducer
