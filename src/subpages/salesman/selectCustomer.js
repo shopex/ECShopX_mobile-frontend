@@ -5,7 +5,7 @@ import { SpPage, SpTabs, SpSearchInput, SpScrollView } from '@/components'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import CompCustomerList from './comps/comp-customer-list'
-import './SelectCustomer.scss'
+import './selectCustomer.scss'
 
 const initialConfigState = {
   tabList: [
