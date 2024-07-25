@@ -82,7 +82,11 @@ export const TRADE_ITEM = {
   zitiStatus: 'ziti_status',
   zitiInfo: 'ziti_info',
   selfDeliveryFee:({ self_delivery_fee }) => self_delivery_fee / 100,
-  selfDeliveryStatus:'self_delivery_status'
+  selfDeliveryStatus:'self_delivery_status',
+  createTime:'create_time',
+  payDate:'pay_date',
+  deliveryTime:'delivery_time',
+  tradeId:'trade_id'
 }
 
 export const SHOP_INFO = {
