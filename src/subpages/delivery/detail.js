@@ -1,13 +1,19 @@
-import Taro from '@tarojs/taro'
-import { useEffect } from 'react'
+import Taro, { useRouter } from '@tarojs/taro'
+import { useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
-import { View, ScrollView, Text } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { SpPage, SpImage, SpCustomPicker, SpCell } from '@/components'
+import api from '@/api'
+import doc from '@/doc'
+import { View, Text } from '@tarojs/components'
+import { useSelector } from 'react-redux'
+import { SpPage, SpImage, SpScrollView, SpCell } from '@/components'
 import CompShippingInformation from './comps/comp-shipping-information'
+import { pickBy, showToast, classNames, isArray } from '@/utils'
 import { ORDER_STATUS_INFO, PAYMENT_TYPE, ORDER_DADA_STATUS } from '@/consts'
 import { AtButton } from 'taro-ui'
-import api from '@/api'
+import CompTradeItem from './comps/comp-tradeitem'
+import tradeHooks from './hooks'
+import btnHooks from './btn-hooks'
+
 import './detail.scss'
 
 const initialConfigState = {
@@ -21,125 +27,170 @@ const initialConfigState = {
     },
     {
       title: '配送员',
-      selector: [{ label: '张三', value: 'all', status: true }],
-      extraText: '张三',
-      status: 'select'
-    },
-    {
-      title: '配送员编号',
-      selector: [{ label: 'erdh123', value: 'all', status: true }],
-      extraText: 'erdh123',
+      selector: [{ label: '', value: 'all', status: true }],
+      extraText: '',
       status: 'select'
     },
     {
       title: '配送员手机号',
-      selector: [{ label: '13456789009', value: 'all', status: true }],
-      extraText: '13456789009',
+      selector: [{ label: '', value: 'all', status: true }],
+      extraText: '',
       status: 'select'
     },
     {
       title: '配送状态',
-      selector: [
-        { label: '全部业绩排行1', value: 'all', status: true },
-        { label: '直推业绩排行2', value: 'lv1', status: false },
-        { label: '间推业绩排行3', value: 'lv2', status: false }
-      ],
-      extraText: '全部业绩排行1',
+      selector: [{ label: '', value: 'all', status: true }],
+      extraText: '',
       status: 'select'
-    },
-    {
-      title: '配送备注',
-      selector: '',
-      extraText: '全部业绩排行1',
-      status: 'textarea'
-    },
-    {
-      title: '照片上传',
-      selector: [],
-      extraText: '全部业绩排行1',
-      status: 'image'
     }
+    // {
+    //   title: '配送备注',
+    //   selector: '',
+    //   extraText: '',
+    //   status: 'textarea'
+    // },
+    // {
+    //   title: '照片上传',
+    //   selector: [],
+    //   extraText: '',
+    //   status: 'image'
+    // }
   ]
 }
 
 const Detail = () => {
   const [state, setState] = useImmer(initialConfigState)
   const { information, selector, list } = state
+  const goodsRef = useRef()
+  const router = useRouter()
+
+  const { deliveryPersonnel } = useSelector((state) => state.cart)
+  const { tradeActionBtns, getTradeAction } = tradeHooks()
+  const { popUpStatus } = btnHooks()
 
   useEffect(() => {
     // 获取个人信息
-    feach()
+    goodsRef?.current.reset()
   }, [])
 
-  const feach = async () => {
-    Taro.showLoading({
-      title: '加载中',
-      icon: 'none'
-    })
-    const res = await api.salesman.promoterInfo()
+  const fetch = async () => {
+    const { order_id } = router.params
+    const {
+      distributor,
+      orderInfo,
+      total = 1,
+      tradeInfo
+    } = await api.trade.detail(order_id, { ...deliveryPersonnel })
+    orderInfo.pay_date = tradeInfo.payDate
+    orderInfo.trade_id = tradeInfo.tradeId
+    const tempList = pickBy(orderInfo, doc.trade.TRADE_ITEM)
+    const newlist = JSON.parse(JSON.stringify(list))
+    newlist[1].selector[0].label = tempList.selfDeliveryOperatorName
+    newlist[1].extraText = tempList.selfDeliveryOperatorName
+    newlist[2].selector[0].label = tempList.selfDeliveryOperatorMobile
+    newlist[2].extraText = tempList.selfDeliveryOperatorMobile
+    newlist[3].selector[0].label = tempList.orderStatusMsg
+    newlist[3].extraText = tempList.orderStatusMsg
     setState((draft) => {
-      draft.information = res
+      ;(draft.information = tempList), (draft.list = newlist)
     })
-    Taro.hideLoading()
+    return { total }
   }
 
-  const getTradeStatusIcon = () => {
-    // if (info.receiptType == 'dada') { // 达达同城配，订单状态单独处理
-    //   return `${ORDER_DADA_STATUS[info.dada?.dadaStatus]?.icon}.png` || ''
-    // }
-
-    // if (info.cancelStatus == 'WAIT_PROCESS') {
-    //   return 'order_dengdai.png'
-    // }
-    // return `${ORDER_STATUS_INFO[info.orderStatus]?.icon}.png`
-    return 'user_icon.png'
+  const getTradeStatusIcon = (info) => {
+    return `${ORDER_STATUS_INFO[info.orderStatus]?.icon}.png`
   }
-
-  const getTradeStatusDesc = () => {
-    // if (info.receiptType == 'dada') { // 达达同城配，订单状态单独处理
-    //   return ORDER_DADA_STATUS[info.dada?.dadaStatus]?.msg
-    // } else if (info.zitiStatus == 'PENDING') {
-    //   return '等待核销'
-    // } else if (info.deliveryStatus == 'PARTAIL') {
-    //   return '部分商品已发货'
-    // } else if (info.cancelStatus == 'WAIT_PROCESS') {
-    //   return '订单取消，退款处理中'
-    // } else {
-    //   return ORDER_STATUS_INFO[info.orderStatus]?.msg
-    // }
-    return '等待发货'
-  }
-
-  const handleClickToEdit = () => {}
 
   const deliveryItem = (item) => {
     console.log(item, 'hhhhhhhh')
   }
 
+  const butFooter = () => {
+    const btns = getTradeAction(information)
+    return (
+      <View className='trade-item-ft'>
+        {btns.map((item, index) => (
+          <AtButton
+            key={index}
+            circle
+            className={`btn-${item.btnStatus}`}
+            onClick={handleClickItem.bind(this, item)}
+          >
+            {item.title}
+          </AtButton>
+        ))}
+      </View>
+    )
+  }
+
+  const handleClickItem = ({ key, action }) => {
+    if (key == 'update_delivery') {
+      updateDelivery(information)
+    } else if (key == 'cancel_delivery') {
+      butStatus(information, 'cancel_delivery')
+    } else if (key == 'pack') {
+      butStatus(information, 'pack')
+    } else {
+      action(information)
+    }
+  }
+
+  //更新配送状态
+  const updateDelivery = (item) => {
+    console.log(item, 'lllupdateDelivery')
+    setState((draft) => {
+      draft.statusDelivery = true
+    })
+  }
+
+  //打包
+  const butStatus = (item, val) => {
+    if (popUpStatus(item, val)) {
+      goodsRef.current.reset()
+    }
+  }
+
   return (
-    <SpPage className={classNames('page-detail')}>
-      <ScrollView scrollY style='height: 100%;'>
-        <View className='trade-status-desc-box'>
-          <SpImage src={getTradeStatusIcon()} width={50} height={50} />
-          <Text className='status-desc'>{getTradeStatusDesc()}</Text>
-        </View>
-        {/* {information.tradeList.map((item, index) => (
-          <View className='trade-item-wrap' key={index}>
-            <CompTradeItem info={item} />
+    <SpPage className={classNames('page-detail')} renderFooter={information.orderId && butFooter()}>
+      <SpScrollView
+        scrollY
+        style='height: 100%;'
+        className='scroll-view-goods'
+        ref={goodsRef}
+        fetch={fetch}
+        auto={false}
+      >
+        {information.orderId && (
+          <View>
+            <View className='trade-status-desc-box'>
+              <SpImage src={getTradeStatusIcon(information)} width={50} height={50} />
+              <Text className='status-desc'>{information.orderStatusMsg}</Text>
+            </View>
+            <View className='trade-item-wrap'>
+              <CompTradeItem
+                info={information}
+                updateDelivery={updateDelivery}
+                cancelDelivery={(e) => butStatus(e, 'cancelDelivery')}
+                pack={(e) => butStatus(e, 'pack')}
+                butn
+              />
+            </View>
+            <View className='trade-item-wrap'>
+              <SpCell title='下单时间' value={information.createTime} />
+              <SpCell title='付款时间' value={information.payDate} />
+              {information.deliveryTime && (
+                <SpCell title='发货时间' value={information.deliveryTime} />
+              )}
+              <SpCell title='订单编号' value={information.orderId} />
+              <SpCell title='交易单号' value={information.tradeId} />
+              {/* <SpCell title='交易流水号' value={information.createTime} /> */}
+            </View>
+            <View className='trade-item-wrap'>
+              <CompShippingInformation selector={list} deliveryItem={deliveryItem} />
+            </View>
           </View>
-        ))} */}
-        <View className='trade-item-wrap'>
-          <SpCell title='下单时间' value='2023.02.3  1 12:12:12' />
-          <SpCell title='交易时间' value='2023.02.3  1 12:12:12' />
-          <SpCell title='发货时间' value='2023.02.3  1 12:12:12' />
-          <SpCell title='订单编号' value='2023.02.3  1 12:12:12' />
-          <SpCell title='交易单号' value='2023.02.3  1 12:12:12' />
-          <SpCell title='交易流水号' value='2023.02.3  1 12:12:12' />
-        </View>
-        <View className='trade-item-wrap'>
-          <CompShippingInformation selector={list} deliveryItem={deliveryItem} />
-        </View>
-      </ScrollView>
+        )}
+      </SpScrollView>
     </SpPage>
   )
 }

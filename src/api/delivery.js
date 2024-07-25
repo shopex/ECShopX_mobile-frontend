@@ -19,3 +19,18 @@ export function datacubeDeliverystaffdataDetail (params = {}) {
 export function selfdeliveryList (params = {}) {
   return req.get('/selfdelivery/list', params)
 }
+
+//打包
+export function deliverypackagConfirm(params) {
+  return req.post('/order/deliverypackag/confirm', params)
+}
+
+//取消配送
+export function cancelDeliverystaff(params) {
+  return req.post('/order/cancel/deliverystaff', params)
+}
+
+//发货
+export function orderDelivery(params) {
+  return req.post('/order/delivery', params)
+}

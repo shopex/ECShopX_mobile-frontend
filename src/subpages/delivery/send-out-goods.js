@@ -1,6 +1,7 @@
 import Taro from '@tarojs/taro'
 import { useEffect } from 'react'
 import { useImmer } from 'use-immer'
+import { useSelector } from 'react-redux'
 import { View, ScrollView } from '@tarojs/components'
 import { classNames } from '@/utils'
 import { SpPage, SpCustomPicker } from '@/components'
@@ -38,25 +39,21 @@ const initialConfigState = {
     },
     {
       title: '配送状态',
-      selector: [
-        { label: '全部业绩排行1', value: 'all', status: true },
-        { label: '直推业绩排行2', value: 'lv1', status: false },
-        { label: '间推业绩排行3', value: 'lv2', status: false }
-      ],
-      extraText: '全部业绩排行1',
+      selector: [{ label: '商品已打包', value: 'all', status: true }],
+      extraText: '商品已打包',
       status: 'select'
     },
     {
       title: '配送备注',
       selector: '',
-      extraText: '全部业绩排行1',
+      extraText: '请输入配送备注',
       status: 'textarea'
     },
     {
       title: '照片上传',
       selector: [],
-      extraText: '全部业绩排行1',
-      status: 'image'
+      status: 'image',
+      max: 3
     }
   ]
 }
@@ -64,6 +61,8 @@ const initialConfigState = {
 const SendOutGoods = () => {
   const [state, setState] = useImmer(initialConfigState)
   const { information, selector, list } = state
+  const { deliveryPersonnel } = useSelector((state) => state.cart)
+
 
   useEffect(() => {
     // 获取个人信息
@@ -75,7 +74,7 @@ const SendOutGoods = () => {
       title: '加载中',
       icon: 'none'
     })
-    const res = await api.salesman.promoterInfo()
+    const res = await api.salesman.promoterInfo({self_delivery_operator_id:deliveryPersonnel.self_delivery_operator_id})
     setState((draft) => {
       draft.information = res
     })
@@ -85,7 +84,7 @@ const SendOutGoods = () => {
   const handleClickToEdit = () => {}
 
   const deliveryItem = (item) => {
-    console.log(item,'hhhhhhhh')
+    console.log(item, 'hhhhhhhh')
   }
 
   return (

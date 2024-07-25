@@ -46,7 +46,7 @@ const CompShippingInformation = (props) => {
                   value={item.value}
                   onChange={(e) => onChange(item, index, e)}
                   maxLength={item.maxLength || 200}
-                  placeholder={item.placeholder || '请输入...'}
+                  placeholder={item.extraText || '请输入...'}
                 />
               </View>
             )}
@@ -55,8 +55,8 @@ const CompShippingInformation = (props) => {
                 <Text className='title'>{item.title}</Text>
                 <SpUpload
                   value={item.selector}
-                  max={3}
-                  placeholder='添加图片'
+                  max={item.max || 5}
+                  placeholder={item.extraText || '添加图片'}
                   onChange={(e) => onChange(item, index, e)}
                 />
               </View>

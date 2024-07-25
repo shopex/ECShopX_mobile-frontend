@@ -9,7 +9,13 @@ import tradeHooks from '../hooks'
 import './comp-tradeitem.scss'
 
 function CompTradeItem(props) {
-  const { info, updateDelivery = () => {} } = props
+  const {
+    info,
+    butn = false,
+    updateDelivery = () => {},
+    cancelDelivery = () => {},
+    pack = () => {}
+  } = props
   if (!info) {
     return null
   }
@@ -39,15 +45,12 @@ function CompTradeItem(props) {
   const btns = getTradeAction(info)
 
   const handleClickItem = ({ key, action }) => {
-    // if (key == 'evaluate' || key == 'logistics') {
-    //   action(info)
-    // } else {
-    //   Taro.navigateTo({
-    //     url: `/subpages/trade/detail?order_id=${orderId}`
-    //   })
-    // }
     if (key == 'update_delivery') {
       updateDelivery(info)
+    } else if (key == 'cancel_delivery') {
+      cancelDelivery(info)
+    } else if (key == 'pack') {
+      pack(info)
     } else {
       action(info)
     }
@@ -55,7 +58,7 @@ function CompTradeItem(props) {
 
   const onViewTradeDetail = () => {
     Taro.navigateTo({
-      url: `/subpages/trade/detail?order_id=${orderId}`
+      url: `/subpages/delivery/detail?order_id=${orderId}`
     })
   }
 
@@ -81,10 +84,15 @@ function CompTradeItem(props) {
               {!VERSION_STANDARD && <Text className='iconfont icon-qianwang-01'></Text>}
             </View>
           </View>
-          <View className='trade-no'>{`订单编号: ${orderId}`}</View>
-          <View className='trade-time'>{`订单时间: ${createDate}`}</View>
+          
+            {!butn && <View className='trade-no'>{`订单编号: ${orderId}`}</View>
+           }
+
+           {!butn &&  <View className='trade-time'>{`订单时间: ${createDate}`}</View>}
+          
+          
         </View>
-        <View className='trade-state'>{orderStatusMsg}</View>
+        {!butn && <View className='trade-state'>{orderStatusMsg}</View>}
       </View>
       <View className='trade-item-bd' onClick={onViewTradeDetail}>
         {items.map((good, goodIndex) => (
@@ -136,18 +144,20 @@ function CompTradeItem(props) {
         </View>
       </View>
 
-      <View className='trade-item-ft'>
-        {btns.map((item, index) => (
-          <AtButton
-            key={index}
-            circle
-            className={`btn-${item.btnStatus}`}
-            onClick={handleClickItem.bind(this, item)}
-          >
-            {item.title}
-          </AtButton>
-        ))}
-      </View>
+      {!butn && (
+        <View className='trade-item-ft'>
+          {btns.map((item, index) => (
+            <AtButton
+              key={index}
+              circle
+              className={`btn-${item.btnStatus}`}
+              onClick={handleClickItem.bind(this, item)}
+            >
+              {item.title}
+            </AtButton>
+          ))}
+        </View>
+      )}
     </View>
   )
 }

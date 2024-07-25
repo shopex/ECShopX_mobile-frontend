@@ -7,17 +7,20 @@ import { SpPage, SpScrollView, SpTagBar, SpImage, SpTradeItem, SpFloatLayout } f
 import api from '@/api'
 import doc from '@/doc'
 import { AtButton } from 'taro-ui'
-import { pickBy } from '@/utils'
+import { pickBy, showToast } from '@/utils'
 import CompTradeItem from './comps/comp-tradeitem'
 import CompShippingInformation from './comps/comp-shipping-information'
+import btnHooks from './btn-hooks'
+
 import './list.scss'
 
 const initialState = {
   tradeStatus: [
-    { tag_name: '全部订单', value: '0' },
-    { tag_name: '待支付', value: '5' },
-    { tag_name: '待收货', value: '1' },
-    { tag_name: '待评价', value: '7', is_rate: 0 }
+    { tag_name: '全部订单', value: '' },
+    { tag_name: '待打包', value: 'RECEIVEORDER' },
+    { tag_name: '待发货', value: 'PACKAGED' },
+    { tag_name: '配送中', value: 'DELIVERING' },
+    { tag_name: '已送达', value: 'DONE', is_rate: 0 }
   ],
   status: '0',
   tradeList: [],
@@ -80,8 +83,10 @@ function TradeList(props) {
   const router = useRouter()
   const pageRef = useRef()
 
+  const { popUpStatus } = btnHooks()
+
   useEffect(() => {
-    const { status = 0 } = router.params
+    const { status = "" } = router.params
     setState((draft) => {
       draft.status = status
     })
@@ -119,7 +124,7 @@ function TradeList(props) {
       page: pageIndex,
       pageSize,
       order_type: 'normal',
-      status,
+      self_delivery_status:status,
       is_rate,
       ...deliveryPersonnel
     }
@@ -152,6 +157,7 @@ function TradeList(props) {
     tradeRef.current.reset()
   }
 
+  //更新配送状态
   const updateDelivery = (item) => {
     console.log(item, 'lllupdateDelivery')
     setState((draft) => {
@@ -161,6 +167,12 @@ function TradeList(props) {
 
   const deliveryItem = (item) => {
     console.log(item, 'hhhhhhhh')
+  }
+
+  const butStatus = (item, val) => {
+    if(popUpStatus(item, val)){
+      tradeRef.current.reset()
+    }
   }
 
   return (
@@ -183,7 +195,12 @@ function TradeList(props) {
         >
           {tradeList.map((item, index) => (
             <View className='trade-item-wrap' key={index}>
-              <CompTradeItem info={item} updateDelivery={updateDelivery} />
+              <CompTradeItem
+                info={item}
+                updateDelivery={updateDelivery}
+                cancelDelivery={(e) => butStatus(e, 'cancelDelivery')}
+                pack={(e) => butStatus(e, 'pack')}
+              />
             </View>
           ))}
         </SpScrollView>

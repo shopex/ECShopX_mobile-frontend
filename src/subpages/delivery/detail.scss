@@ -20,4 +20,25 @@
     padding: 20px 40px;
     border: transparent 1px solid;
   }
+  .trade-item-wrap {
+    padding: 0;
+  }
+  .trade-item-ft {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 30px 20px 0 20px;
+
+    .at-button {
+      height: 56px;
+      line-height: 54px;
+      margin: 0 0 0 16px;
+      padding: 0 24px;
+    }
+
+    .btn-active {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+  }
 }
