@@ -1,11 +1,11 @@
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import { useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
 import api from '@/api'
 import doc from '@/doc'
 import { View, Text } from '@tarojs/components'
 import { useSelector } from 'react-redux'
-import { SpPage, SpImage, SpScrollView, SpCell } from '@/components'
+import { SpPage, SpImage, SpScrollView, SpCell, SpFloatLayout } from '@/components'
 import CompShippingInformation from './comps/comp-shipping-information'
 import { pickBy, showToast, classNames, isArray } from '@/utils'
 import { ORDER_STATUS_INFO, PAYMENT_TYPE, ORDER_DADA_STATUS } from '@/consts'
@@ -18,65 +18,84 @@ import './detail.scss'
 
 const initialConfigState = {
   information: {},
+  statusDelivery: false,
   list: [
     {
       title: '快递公司',
-      selector: [{ label: '商家自配送', value: 'all', status: true }],
+      selector: [{ label: '商家自配送', status: true }],
       extraText: '商家自配送',
-      status: 'select'
+      status: 'select',
+      value: 'all'
     },
     {
       title: '配送员',
-      selector: [{ label: '', value: 'all', status: true }],
+      selector: [{ label: '', status: true }],
       extraText: '',
-      status: 'select'
+      status: 'select',
+      value: 'self_delivery_operator_name'
     },
     {
       title: '配送员手机号',
-      selector: [{ label: '', value: 'all', status: true }],
+      selector: [{ label: '', status: true }],
       extraText: '',
-      status: 'select'
+      status: 'select',
+      value: 'self_delivery_operator_mobile'
     },
     {
       title: '配送状态',
-      selector: [{ label: '', value: 'all', status: true }],
+      selector: [{ label: '', status: true }],
       extraText: '',
-      status: 'select'
+      status: 'select',
+      value: 'self_delivery_status'
     }
     // {
     //   title: '配送备注',
     //   selector: '',
     //   extraText: '',
-    //   status: 'textarea'
+    //   status: 'textarea',
+    //   value: 'delivery_remark'
     // },
     // {
     //   title: '照片上传',
     //   selector: [],
     //   extraText: '',
-    //   status: 'image'
+    //   status: 'image',
+    //   value: 'delivery_pics'
     // }
   ]
 }
 
 const Detail = () => {
   const [state, setState] = useImmer(initialConfigState)
-  const { information, selector, list } = state
+  const { information, selector, list, statusDelivery } = state
   const goodsRef = useRef()
+  const pageRef = useRef()
   const router = useRouter()
 
   const { deliveryPersonnel } = useSelector((state) => state.cart)
   const { tradeActionBtns, getTradeAction } = tradeHooks()
-  const { popUpStatus } = btnHooks()
+  const { popUpStatus, orderState, deliverySure } = btnHooks()
 
   useEffect(() => {
     // 获取个人信息
     goodsRef?.current.reset()
   }, [])
 
+  useDidShow(() => {
+    goodsRef?.current.reset()
+  })
+
+  useEffect(() => {
+    if (statusDelivery) {
+      pageRef?.current.pageLock()
+    } else {
+      pageRef?.current.pageUnLock()
+    }
+  }, [statusDelivery])
+
   const fetch = async () => {
     const { order_id } = router.params
     const {
-      distributor,
       orderInfo,
       total = 1,
       tradeInfo
@@ -84,15 +103,8 @@ const Detail = () => {
     orderInfo.pay_date = tradeInfo.payDate
     orderInfo.trade_id = tradeInfo.tradeId
     const tempList = pickBy(orderInfo, doc.trade.TRADE_ITEM)
-    const newlist = JSON.parse(JSON.stringify(list))
-    newlist[1].selector[0].label = tempList.selfDeliveryOperatorName
-    newlist[1].extraText = tempList.selfDeliveryOperatorName
-    newlist[2].selector[0].label = tempList.selfDeliveryOperatorMobile
-    newlist[2].extraText = tempList.selfDeliveryOperatorMobile
-    newlist[3].selector[0].label = tempList.orderStatusMsg
-    newlist[3].extraText = tempList.orderStatusMsg
     setState((draft) => {
-      ;(draft.information = tempList), (draft.list = newlist)
+      draft.information = tempList
     })
     return { total }
   }
@@ -102,6 +114,9 @@ const Detail = () => {
   }
 
   const deliveryItem = (item) => {
+    setState((draft) => {
+      draft.list = item
+    })
     console.log(item, 'hhhhhhhh')
   }
 
@@ -138,33 +153,61 @@ const Detail = () => {
   //更新配送状态
   const updateDelivery = (item) => {
     console.log(item, 'lllupdateDelivery')
+    let newList = JSON.parse(JSON.stringify(list))
+    newList.push(
+      {
+        title: '配送备注',
+        selector: '',
+        extraText: '',
+        status: 'textarea',
+        value: 'delivery_remark'
+      },
+      {
+        title: '照片上传',
+        selector: [],
+        extraText: '',
+        status: 'image',
+        value: 'delivery_pics'
+      }
+    )
     setState((draft) => {
       draft.statusDelivery = true
+      draft.list = newList
     })
   }
 
-  //打包
   const butStatus = (item, val) => {
     if (popUpStatus(item, val)) {
       goodsRef.current.reset()
     }
   }
 
+  const updateDeliverySure = async () => {
+    await deliverySure(information, list)
+    onClose()
+    goodsRef.current.reset()
+  }
+
+  const onClose = () => {
+    let newList = JSON.parse(JSON.stringify(list)).slice(0, list.length - 2)
+    setState((draft) => {
+      draft.statusDelivery = false
+      draft.list = newList
+    })
+  }
+
   return (
-    <SpPage className={classNames('page-detail')} renderFooter={information.orderId && butFooter()}>
-      <SpScrollView
-        scrollY
-        style='height: 100%;'
-        className='scroll-view-goods'
-        ref={goodsRef}
-        fetch={fetch}
-        auto={false}
-      >
+    <SpPage
+      className={classNames('page-detail')}
+      renderFooter={information.orderId && butFooter()}
+      ref={pageRef}
+    >
+      <SpScrollView className='scroll-view-goods' ref={goodsRef} fetch={fetch} auto={false} renderMore={()=>{}}>
         {information.orderId && (
           <View>
             <View className='trade-status-desc-box'>
               <SpImage src={getTradeStatusIcon(information)} width={50} height={50} />
-              <Text className='status-desc'>{information.orderStatusMsg}</Text>
+              <Text className='status-desc'>{orderState(information)}</Text>
             </View>
             <View className='trade-item-wrap'>
               <CompTradeItem
@@ -186,11 +229,34 @@ const Detail = () => {
               {/* <SpCell title='交易流水号' value={information.createTime} /> */}
             </View>
             <View className='trade-item-wrap'>
-              <CompShippingInformation selector={list} deliveryItem={deliveryItem} />
+              <CompShippingInformation
+                selector={list}
+                delivery={information}
+                deliveryItem={deliveryItem}
+              />
             </View>
           </View>
         )}
       </SpScrollView>
+
+      <SpFloatLayout
+        title='更新配送状态'
+        open={statusDelivery}
+        onClose={onClose}
+        renderFooter={
+          <AtButton circle type='primary' onClick={updateDeliverySure}>
+            确定
+          </AtButton>
+        }
+      >
+        {statusDelivery && (
+          <CompShippingInformation
+            selector={list}
+            delivery={information}
+            deliveryItem={deliveryItem}
+          />
+        )}
+      </SpFloatLayout>
     </SpPage>
   )
 }

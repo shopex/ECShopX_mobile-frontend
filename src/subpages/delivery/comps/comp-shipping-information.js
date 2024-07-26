@@ -1,30 +1,112 @@
 import Taro from '@tarojs/taro'
 import { View, Picker, Text } from '@tarojs/components'
-import { classNames } from '@/utils'
+import { useEffect, useRef } from 'react'
+import { useImmer } from 'use-immer'
+import doc from '@/doc'
+import { pickBy, showToast, classNames, isArray } from '@/utils'
 import { SpUpload } from '@/components'
 import { AtList, AtListItem, AtTextarea } from 'taro-ui'
+import { useSyncCallback } from '@/hooks'
+
 import './comp-shipping-information.scss'
 
+// list: [
+// {
+//   title: '快递公司',
+//   selector: [{ label: '商家自配送',  status: true }],
+//   extraText: '商家自配送',
+//   status: 'select',
+//   value: 'all'
+// },
+// {
+//   title: '配送备注',
+//   selector: '',
+//   extraText: '',
+//   status: 'textarea',
+//   value: 'delivery_remark'
+// },
+// {
+//   title: '照片上传',
+//   selector: [],
+//   extraText: '',
+//   status: 'image',
+//   value: 'delivery_pics'
+// }
+// ]
+
+const initialConfigState = {
+  list: []
+}
+
 const CompShippingInformation = (props) => {
-  const { selector, deliveryItem = () => {} } = props
+  const [state, setState] = useImmer(initialConfigState)
+  const { list } = state
+
+  const { selector, delivery, deliveryItem = () => {} } = props
+
+  useEffect(() => {
+    const newlist = JSON.parse(JSON.stringify(selector))
+    newlist.forEach((item, index) => {
+      if (item.value == 'self_delivery_operator_name') {
+        item.selector[0].label = delivery.selfDeliveryOperatorName
+        item.extraText = delivery.selfDeliveryOperatorName
+      } else if (item.value == 'self_delivery_operator_mobile') {
+        item.selector[0].label = delivery.selfDeliveryOperatorMobile
+        item.extraText = delivery.selfDeliveryOperatorMobile
+      } else if (item.value == 'self_delivery_status') {
+        if (delivery.orderStatus == 'PAYED' && delivery.selfDeliveryStatus == 'RECEIVEORDER') {
+          item.selector[0].label = '已接单'
+          item.extraText = '已接单'
+        } else if (delivery.orderStatus == 'PAYED' && delivery.selfDeliveryStatus == 'PACKAGED') {
+          item.selector[0].label = '已打包'
+          item.extraText = '已打包'
+        } else if (
+          delivery.orderStatus == 'WAIT_BUYER_CONFIRM' &&
+          delivery.selfDeliveryStatus == 'DELIVERING'
+        ) {
+          item.selector[0].label = '配送中'
+          item.selector[1] = { label: '已送达', status: false }
+          item.extraText = '配送中'
+        } else if (
+          delivery.orderStatus == 'WAIT_BUYER_CONFIRM' &&
+          delivery.selfDeliveryStatus == 'DONE'
+        ) {
+          item.selector[0].label = '已送达'
+          item.extraText = '已送达'
+        }
+      }
+    })
+
+    setState((draft) => {
+      draft.list = newlist
+    })
+    handleRefresh()
+  }, [])
+
+  const handleRefresh = useSyncCallback(() => {
+    deliveryItem(list)
+  })
 
   const onChange = (item, index, e) => {
-    console.log('取消', item, index, e)
-    let newSelector = JSON.parse(JSON.stringify(selector))
-    if(item.status == 'select'){
+    let newSelector = JSON.parse(JSON.stringify(list))
+    if (item.status == 'select') {
       newSelector[index].selector.forEach((element) => {
         element.status = false
       })
       newSelector[index].selector[e.detail.value].status = true
-    }else{
+      newSelector[index].extraText = newSelector[index].selector[e.detail.value].label
+    } else {
       newSelector[index].selector = e
     }
+    setState((draft) => {
+      draft.list = newSelector
+    })
     deliveryItem(newSelector)
   }
 
   return (
     <View className='comp-shipping-information'>
-      {selector.map((item, index) => {
+      {list.map((item, index) => {
         return (
           <View key={index}>
             {item.status == 'select' && (
@@ -43,7 +125,7 @@ const CompShippingInformation = (props) => {
               <View className='textarea-name'>
                 <Text className='title'>{item.title}</Text>
                 <AtTextarea
-                  value={item.value}
+                  value={item.selector}
                   onChange={(e) => onChange(item, index, e)}
                   maxLength={item.maxLength || 200}
                   placeholder={item.extraText || '请输入...'}

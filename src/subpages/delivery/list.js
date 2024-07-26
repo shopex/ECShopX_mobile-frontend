@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { SpPage, SpScrollView, SpTagBar, SpImage, SpTradeItem, SpFloatLayout } from '@/components'
 import api from '@/api'
@@ -15,6 +15,7 @@ import btnHooks from './btn-hooks'
 import './list.scss'
 
 const initialState = {
+  information: {},
   tradeStatus: [
     { tag_name: '全部订单', value: '' },
     { tag_name: '待打包', value: 'RECEIVEORDER' },
@@ -29,64 +30,61 @@ const initialState = {
   list: [
     {
       title: '快递公司',
-      selector: [{ label: '商家自配送', value: 'all', status: true }],
+      selector: [{ label: '商家自配送', status: true }],
       extraText: '商家自配送',
-      status: 'select'
+      status: 'select',
+      value: 'all'
     },
     {
       title: '配送员',
-      selector: [{ label: '张三', value: 'all', status: true }],
-      extraText: '张三',
-      status: 'select'
-    },
-    {
-      title: '配送员编号',
-      selector: [{ label: 'erdh123', value: 'all', status: true }],
-      extraText: 'erdh123',
-      status: 'select'
+      selector: [{ label: '', status: true }],
+      extraText: '',
+      status: 'select',
+      value: 'self_delivery_operator_name'
     },
     {
       title: '配送员手机号',
-      selector: [{ label: '13456789009', value: 'all', status: true }],
-      extraText: '13456789009',
-      status: 'select'
+      selector: [{ label: '', status: true }],
+      extraText: '',
+      status: 'select',
+      value: 'self_delivery_operator_mobile'
     },
     {
       title: '配送状态',
-      selector: [
-        { label: '全部业绩排行1', value: 'all', status: true },
-        { label: '直推业绩排行2', value: 'lv1', status: false },
-        { label: '间推业绩排行3', value: 'lv2', status: false }
-      ],
-      extraText: '全部业绩排行1',
-      status: 'select'
+      selector: [{ label: '', status: true }],
+      extraText: '',
+      status: 'select',
+      value: 'self_delivery_status'
     },
     {
       title: '配送备注',
       selector: '',
-      extraText: '全部业绩排行1',
-      status: 'textarea'
+      extraText: '',
+      status: 'textarea',
+      value: 'delivery_remark'
     },
     {
       title: '照片上传',
       selector: [],
-      extraText: '全部业绩排行1',
-      status: 'image'
+      extraText: '',
+      status: 'image',
+      value: 'delivery_pics'
     }
   ]
 }
 function TradeList(props) {
   const [state, setState] = useImmer(initialState)
-  const { tradeStatus, status, tradeList, refresherTriggered, statusDelivery, list } = state
+  const { tradeStatus, status, tradeList, refresherTriggered, statusDelivery, list, information } =
+    state
   const { deliveryPersonnel } = useSelector((state) => state.cart)
   const tradeRef = useRef()
   const router = useRouter()
   const pageRef = useRef()
 
-  const { popUpStatus } = btnHooks()
+  const { popUpStatus,deliverySure } = btnHooks()
 
   useEffect(() => {
-    const { status = "" } = router.params
+    const { status = '' } = router.params
     setState((draft) => {
       draft.status = status
     })
@@ -118,13 +116,20 @@ function TradeList(props) {
     tradeRef.current.reset()
   }, [status])
 
+  useDidShow(() => {
+    setState((draft) => {
+      draft.tradeList = []
+    })
+    tradeRef.current.reset()
+  })
+
   const fetch = async ({ pageIndex, pageSize }) => {
     const { is_rate } = tradeStatus.find((item) => item.value == status)
     const params = {
       page: pageIndex,
       pageSize,
       order_type: 'normal',
-      self_delivery_status:status,
+      self_delivery_status: status,
       is_rate,
       ...deliveryPersonnel
     }
@@ -134,7 +139,6 @@ function TradeList(props) {
       rate_status
     } = await api.trade.list(params)
     const tempList = pickBy(list, doc.trade.TRADE_ITEM)
-    // console.log('tempList:', tempList)
     setState((draft) => {
       draft.tradeList = [...tradeList, ...tempList]
       draft.refresherTriggered = false
@@ -158,19 +162,41 @@ function TradeList(props) {
   }
 
   //更新配送状态
-  const updateDelivery = (item) => {
-    console.log(item, 'lllupdateDelivery')
+  const updateDelivery = async (item) => {
+    console.log(item, 'item')
+    Taro.showLoading({
+      title: '加载中',
+      icon: 'none'
+    })
+    const { orderInfo, tradeInfo } = await api.trade.detail(item.orderId, { ...deliveryPersonnel })
+    Taro.hideLoading()
+    orderInfo.pay_date = tradeInfo.payDate
+    orderInfo.trade_id = tradeInfo.tradeId
+    const tempList = pickBy(orderInfo, doc.trade.TRADE_ITEM)
     setState((draft) => {
       draft.statusDelivery = true
+      draft.information = tempList
     })
   }
 
+  const updateDeliverySure = async () => {
+    await deliverySure(information, list)
+    setState((draft) => {
+      draft.statusDelivery = false
+      draft.tradeList = []
+    })
+    tradeRef.current.reset()
+  }
+
   const deliveryItem = (item) => {
+    setState((draft) => {
+      draft.list = item
+    })
     console.log(item, 'hhhhhhhh')
   }
 
   const butStatus = (item, val) => {
-    if(popUpStatus(item, val)){
+    if (popUpStatus(item, val)) {
       tradeRef.current.reset()
     }
   }
@@ -206,7 +232,7 @@ function TradeList(props) {
         </SpScrollView>
       </ScrollView>
       <SpFloatLayout
-        title='选择地址'
+        title='更新配送状态'
         open={statusDelivery}
         onClose={() => {
           setState((draft) => {
@@ -214,12 +240,18 @@ function TradeList(props) {
           })
         }}
         renderFooter={
-          <AtButton circle type='primary'>
+          <AtButton circle type='primary' onClick={updateDeliverySure}>
             确定
           </AtButton>
         }
       >
-        <CompShippingInformation selector={list} deliveryItem={deliveryItem} />
+        {statusDelivery && (
+          <CompShippingInformation
+            selector={list}
+            delivery={information}
+            deliveryItem={deliveryItem}
+          />
+        )}
       </SpFloatLayout>
     </SpPage>
   )
