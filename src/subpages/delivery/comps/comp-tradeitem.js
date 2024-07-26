@@ -6,7 +6,9 @@ import { AtButton } from 'taro-ui'
 import { SpImage, SpPrice, SpTradeItem } from '@/components'
 import { VERSION_STANDARD } from '@/utils'
 import tradeHooks from '../hooks'
+import btnHooks from '../btn-hooks'
 import './comp-tradeitem.scss'
+
 
 function CompTradeItem(props) {
   const {
@@ -16,10 +18,13 @@ function CompTradeItem(props) {
     cancelDelivery = () => {},
     pack = () => {}
   } = props
+
   if (!info) {
     return null
   }
   const { tradeActionBtns, getTradeAction } = tradeHooks()
+  const {orderState } = btnHooks()
+
   const {
     distributorInfo,
     orderId,
@@ -92,7 +97,7 @@ function CompTradeItem(props) {
           
           
         </View>
-        {!butn && <View className='trade-state'>{orderStatusMsg}</View>}
+        {!butn && <View className='trade-state'>{orderState(info)}</View>}
       </View>
       <View className='trade-item-bd' onClick={onViewTradeDetail}>
         {items.map((good, goodIndex) => (

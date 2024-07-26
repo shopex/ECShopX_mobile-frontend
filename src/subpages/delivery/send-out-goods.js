@@ -1,13 +1,16 @@
-import Taro from '@tarojs/taro'
-import { useEffect } from 'react'
+import Taro, { useRouter, useDidShow } from '@tarojs/taro'
+import { useEffect, useRef } from 'react'
 import { useImmer } from 'use-immer'
-import { useSelector } from 'react-redux'
-import { View, ScrollView } from '@tarojs/components'
-import { classNames } from '@/utils'
-import { SpPage, SpCustomPicker } from '@/components'
-import CompShippingInformation from './comps/comp-shipping-information'
-import { AtButton } from 'taro-ui'
 import api from '@/api'
+import doc from '@/doc'
+import { AtButton } from 'taro-ui'
+import { pickBy, showToast, classNames } from '@/utils'
+import { View, Text } from '@tarojs/components'
+import { useSelector } from 'react-redux'
+import { SpPage, SpScrollView } from '@/components'
+import CompShippingInformation from './comps/comp-shipping-information'
+import CompTradeItem from './comps/comp-tradeitem'
+
 import './send-out-goods.scss'
 
 const initialConfigState = {
@@ -15,75 +18,111 @@ const initialConfigState = {
   list: [
     {
       title: '快递公司',
-      selector: [{ label: '商家自配送', value: 'all', status: true }],
+      selector: [{ label: '商家自配送', status: true }],
       extraText: '商家自配送',
-      status: 'select'
+      status: 'select',
+      value: 'all'
     },
     {
       title: '配送员',
-      selector: [{ label: '张三', value: 'all', status: true }],
-      extraText: '张三',
-      status: 'select'
-    },
-    {
-      title: '配送员编号',
-      selector: [{ label: 'erdh123', value: 'all', status: true }],
-      extraText: 'erdh123',
-      status: 'select'
+      selector: [{ label: '', status: true }],
+      extraText: '',
+      status: 'select',
+      value: 'self_delivery_operator_name'
     },
     {
       title: '配送员手机号',
-      selector: [{ label: '13456789009', value: 'all', status: true }],
-      extraText: '13456789009',
-      status: 'select'
+      selector: [{ label: '', status: true }],
+      extraText: '',
+      status: 'select',
+      value: 'self_delivery_operator_mobile'
     },
     {
       title: '配送状态',
-      selector: [{ label: '商品已打包', value: 'all', status: true }],
-      extraText: '商品已打包',
-      status: 'select'
+      selector: [{ label: '', status: true }],
+      extraText: '',
+      status: 'select',
+      value: 'self_delivery_status'
     },
     {
       title: '配送备注',
       selector: '',
-      extraText: '请输入配送备注',
-      status: 'textarea'
+      extraText: '',
+      status: 'textarea',
+      value: 'delivery_remark'
     },
     {
       title: '照片上传',
       selector: [],
+      extraText: '',
       status: 'image',
-      max: 3
+      value: 'delivery_pics'
     }
   ]
 }
 
 const SendOutGoods = () => {
   const [state, setState] = useImmer(initialConfigState)
-  const { information, selector, list } = state
-  const { deliveryPersonnel } = useSelector((state) => state.cart)
+  const { information, list } = state
+  const goodsRef = useRef()
+  const router = useRouter()
 
+  const { deliveryPersonnel } = useSelector((state) => state.cart)
 
   useEffect(() => {
     // 获取个人信息
-    feach()
+    goodsRef?.current.reset()
   }, [])
 
-  const feach = async () => {
-    Taro.showLoading({
-      title: '加载中',
-      icon: 'none'
-    })
-    const res = await api.salesman.promoterInfo({self_delivery_operator_id:deliveryPersonnel.self_delivery_operator_id})
+  useDidShow(() => {
+    goodsRef?.current.reset()
+  })
+
+  const fetch = async () => {
+    const { order_id } = router.params
+    const {
+      orderInfo,
+      total = 1,
+      tradeInfo
+    } = await api.trade.detail(order_id, { ...deliveryPersonnel })
+    orderInfo.pay_date = tradeInfo.payDate
+    orderInfo.trade_id = tradeInfo.tradeId
+    const tempList = pickBy(orderInfo, doc.trade.TRADE_ITEM)
     setState((draft) => {
-      draft.information = res
+      draft.information = tempList
     })
-    Taro.hideLoading()
+    return { total }
   }
 
-  const handleClickToEdit = () => {}
+  const handleClickToEdit = async () => {
+    const { order_id } = router.params
+    let params = {
+      order_id,
+      self_delivery_operator_id: information.selfDeliveryOperatorId,
+      self_delivery_status: 'DELIVERING',
+      delivery_type: 'batch',
+      delivery_corp: 'SELF_DELIVERY',
+      type : 'new'
+    }
+    list.forEach((item) => {
+      if (item.status !== 'select') {
+        params[item.value] = item.selector
+      }
+    })
+    console.log(params, 'params')
+    await api.delivery.orderDelivery(params)
+    showToast('发货成功')
+    setTimeout(() => {
+      Taro.navigateBack({
+        delta: 1 // 默认值是1，表示返回的页面层数
+      })
+    }, 2000)
+  }
 
   const deliveryItem = (item) => {
+    setState((draft) => {
+      draft.list = item
+    })
     console.log(item, 'hhhhhhhh')
   }
 
@@ -91,23 +130,31 @@ const SendOutGoods = () => {
     <SpPage
       className={classNames('page-send-out-goods')}
       renderFooter={
-        <View className='btn-wrap'>
-          <AtButton circle type='primary' onClick={handleClickToEdit}>
-            确认发货
-          </AtButton>
-        </View>
+        information.orderId && (
+          <View className='btn-wrap'>
+            <AtButton circle type='primary' onClick={handleClickToEdit}>
+              确认发货
+            </AtButton>
+          </View>
+        )
       }
     >
-      <ScrollView scrollY style='height: 100%;'>
-        {/* {information.tradeList.map((item, index) => (
-          <View className='trade-item-wrap' key={index}>
-            <CompTradeItem info={item} />
+      <SpScrollView className='scroll-view-goods' ref={goodsRef} fetch={fetch} auto={false} renderMore={()=>{}}>
+        {information.orderId && (
+          <View>
+            <View className='trade-item-wrap'>
+              <CompTradeItem info={information} butn />
+            </View>
+            <View className='trade-item-wrap'>
+              <CompShippingInformation
+                selector={list}
+                delivery={information}
+                deliveryItem={deliveryItem}
+              />
+            </View>
           </View>
-        ))} */}
-        <View className='trade-item-wrap'>
-          <CompShippingInformation selector={list} deliveryItem={deliveryItem} />
-        </View>
-      </ScrollView>
+        )}
+      </SpScrollView>
     </SpPage>
   )
 }

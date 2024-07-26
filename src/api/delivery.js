@@ -34,3 +34,8 @@ export function cancelDeliverystaff(params) {
 export function orderDelivery(params) {
   return req.post('/order/delivery', params)
 }
+
+//更新配送状态
+export function orderUpdateDelivery(delivery_id,params) {
+  return req.post(`/order/updateDelivery/${delivery_id}`, params)
+}
