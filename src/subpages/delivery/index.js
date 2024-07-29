@@ -60,6 +60,7 @@ const Index = () => {
     Taro.hideLoading()
     res.self_delivery_fee_count = S.formatMoney(res.self_delivery_fee_count / 100)
     res.refund_fee_count = S.formatMoney(res.refund_fee_count / 100)
+    res.total_fee_count = S.formatMoney(res.total_fee_count / 100)
     setState((draft) => {
       draft.info = res
     })
