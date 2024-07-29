@@ -21,7 +21,7 @@ const initialConfigState = {
       path: '/subpages/delivery/achievement'
     },
     { name: '服务商家', icon: 'icon-shangjialiebiao', path: '/subpages/delivery/selectShop' },
-    { name: '详情', icon: 'icon-shangjialiebiao', path: '/subpages/delivery/detail' }
+    // { name: '详情', icon: 'icon-shangjialiebiao', path: '/subpages/delivery/detail' }
   ],
   codeStatus: false,
   information: { name: 'cx' },

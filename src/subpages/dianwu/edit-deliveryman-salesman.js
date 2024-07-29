@@ -27,18 +27,18 @@ function EditDeliverymanSalesman(props) {
   const { setNavigationBarTitle } = useNavigation()
 
   useEffect(() => {
-    if (params?.operator_id) {
-      edit(params?.operator_id)
+    if (params?.salesperson_id) {
+      edit(params?.salesperson_id)
     }
     setNavigationBarTitle(initNavigationBarTitle())
   }, [])
 
   const initNavigationBarTitle = () => {
-    return params.operator_id ? '编辑业务员' : '创建业务员'
+    return params.salesperson_id ? '编辑业务员' : '创建业务员'
   }
 
-  const edit = async (operator_id) => {
-    let res = await api.dianwu.salespersonadminUpdatesalesperson(operator_id)
+  const edit = async (salesperson_id) => {
+    let res = await api.dianwu.salespersonadminUpdatesalesperson(salesperson_id)
     setState((draft) => {
       draft.parent = {
         mobile: res.mobile,
@@ -78,8 +78,8 @@ function EditDeliverymanSalesman(props) {
       distributor_id: params.distributor_id,
       status: parent.status ? 1 : 0
     }
-    if (params?.operator_id) {
-      await api.salesman.salespersonadminUpdatesalesperson({ id: params.operator_id, ...par })
+    if (params?.salesperson_id) {
+      await api.salesman.salespersonadminUpdatesalesperson({ id: params.salesperson_id, ...par })
       showToast('编辑成功')
     } else {
       await api.salesman.salespersonadminAddsalesperson(par)
