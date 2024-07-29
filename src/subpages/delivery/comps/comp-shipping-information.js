@@ -54,24 +54,25 @@ const CompShippingInformation = (props) => {
         item.selector[0].label = delivery.selfDeliveryOperatorMobile
         item.extraText = delivery.selfDeliveryOperatorMobile
       } else if (item.value == 'self_delivery_status') {
+        let statusSelector = item.selector[0]
         if (delivery.orderStatus == 'PAYED' && delivery.selfDeliveryStatus == 'RECEIVEORDER') {
-          item.selector[0].label = '已接单'
+          statusSelector.label = '已接单'
           item.extraText = '已接单'
         } else if (delivery.orderStatus == 'PAYED' && delivery.selfDeliveryStatus == 'PACKAGED') {
-          item.selector[0].label = '已打包'
+          statusSelector.label = '已打包'
           item.extraText = '已打包'
         } else if (
           delivery.orderStatus == 'WAIT_BUYER_CONFIRM' &&
           delivery.selfDeliveryStatus == 'DELIVERING'
         ) {
-          item.selector[0].label = '配送中'
+          statusSelector.label = '配送中'
           item.selector[1] = { label: '已送达', status: false }
           item.extraText = '配送中'
         } else if (
           delivery.orderStatus == 'WAIT_BUYER_CONFIRM' &&
           delivery.selfDeliveryStatus == 'DONE'
         ) {
-          item.selector[0].label = '已送达'
+          statusSelector.label = '已送达'
           item.extraText = '已送达'
         }
       }

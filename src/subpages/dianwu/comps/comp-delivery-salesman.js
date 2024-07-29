@@ -70,7 +70,7 @@ function CompDeliverySalesman(props) {
                     className='edit'
                     onClick={() => {
                       Taro.navigateTo({
-                        url: `/subpages/dianwu/edit-deliveryman?&distributor_id=${params.distributor_id}&name=${params.name}&operator_id=${item.operator_id}`
+                        url: `/subpages/dianwu/edit-deliveryman-salesman?&salesperson_id=${params.salesperson_id}`
                       })
                     }}
                   >
@@ -83,21 +83,25 @@ function CompDeliverySalesman(props) {
                     <Text className='information-tltle'>手机号</Text>
                     <Text>{item.mobile}</Text>
                   </View>
-                  <View className='information'>
+                  {/* <View className='information'>
                     <Text className='information-tltle'>编码</Text>
                     <Text>{item.staff_no}</Text>
-                  </View>
-                  <View className='information'>
+                  </View> */}
+                  {/* <View className='information'>
                     <Text className='information-tltle'>每单业务费</Text>
                     <Text>
                       {item.payment_fee/100}
                       {item.payment_method === 'order' ? '元/每单' : '%/每单'}
                     </Text>
-                  </View>
+                  </View> */}
                   <View className='information'>
                     <Text className='information-tltle'>业务员属性</Text>
                     {/* <Text>{item.staff_attribute === 'full_time' ? '全职' : '兼职'}</Text> */}
                     <Text>全职</Text>
+                  </View>
+                  <View className='information'>
+                    <Text className='information-tltle'>是否开启</Text>
+                    <Text>{item.status == 1 ? '开启' : '关闭'}</Text>
                   </View>
                   <View className='information'>
                     <Text className='information-tltle'>创建时间</Text>

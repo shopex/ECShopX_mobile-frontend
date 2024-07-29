@@ -81,7 +81,7 @@ function TradeList(props) {
   const router = useRouter()
   const pageRef = useRef()
 
-  const { popUpStatus,deliverySure } = btnHooks()
+  const { popUpStatus, deliverySure } = btnHooks()
 
   useEffect(() => {
     const { status = '' } = router.params
@@ -195,10 +195,9 @@ function TradeList(props) {
     console.log(item, 'hhhhhhhh')
   }
 
-  const butStatus = (item, val) => {
-    if (popUpStatus(item, val)) {
-      tradeRef.current.reset()
-    }
+  const butStatus = async (item, val) => {
+    await popUpStatus(item, val)
+    tradeRef.current.reset()
   }
 
   return (
