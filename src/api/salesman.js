@@ -20,7 +20,7 @@ export function promoterInfo (params = {}) {
 
 // 业务员业绩
 export function promoterGetSalesmanStatic (params = {}) {
-  return req.get('/promoter/getSalesmanStatic', params)
+  return req.get('/salespersonadmin/brokagestaticlist', params)
 }
 
 // 协议
