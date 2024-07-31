@@ -56,7 +56,7 @@ const Achievement = () => {
     }
     const res = await api.delivery.datacubeDeliverystaffdataDetail(params)
     res.forEach((element) => {
-      element.order_count = element.order_count / 100
+      element.self_delivery_fee_count = element.self_delivery_fee_count / 100
       element.total_fee_count = element.total_fee_count / 100
     })
     //生成对应的年月日
