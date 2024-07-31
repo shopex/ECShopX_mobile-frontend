@@ -20,7 +20,7 @@ import {
   isEmpty,
   VERSION_PLATFORM
 } from '@/utils'
-import { useAsyncCallback, useLogin, usePayment } from '@/hooks'
+import { useAsyncCallback, useLogin, usePayment,useLocation } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
 import api from '@/api'
 import doc from '@/doc'
@@ -35,8 +35,12 @@ import './espier-checkout.scss'
 
 function PointShopEspierCheckout() {
   const $instance = getCurrentInstance()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
-    autoLogin: true
+    autoLogin: true,
+    loginSuccess: () => {
+      updateAddress()
+    }
   })
 
   const { cashierPayment } = usePayment()

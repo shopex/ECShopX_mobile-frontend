@@ -10,6 +10,7 @@ import useThrottle from './useThrottle'
 import useDianWuLogin from './useDianWuLogin'
 import useModal from './useModal'
 import useSyncCallback from './useSyncCallback'
+import useLocation from './useLocation'
 
 export default {}
 
@@ -25,5 +26,6 @@ export {
   useThrottle,
   useDianWuLogin,
   useModal,
-  useSyncCallback
+  useSyncCallback,
+  useLocation
 }

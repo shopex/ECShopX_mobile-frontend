@@ -8,7 +8,7 @@ import qs from 'qs'
 import api from '@/api'
 import doc from '@/doc'
 import { navigateTo, pickBy, classNames, throttle } from '@/utils'
-import { useLogin, useDepChange, useDebounce } from '@/hooks'
+import { useLogin, useLocation, useDebounce } from '@/hooks'
 import { fetchCartList, deleteCartItem, updateCartItemNum, updateCount } from '@/store/slices/cart'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import {
@@ -38,10 +38,14 @@ const initialState = {
 }
 
 function CartIndex() {
+  const { updateAddress } = useLocation()
   const { isLogin } = useLogin({
     autoLogin: true,
     policyUpdateHook: (isUpdate) => {
       isUpdate && onPolicyChange(true)
+    },
+    loginSuccess: () => {
+      updateAddress()
     }
   })
 

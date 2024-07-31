@@ -34,9 +34,9 @@ import {
   VERSION_PLATFORM,
   VERSION_STANDARD
 } from '@/utils'
-import { useLogin } from '@/hooks'
 import S from '@/spx'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
+import { useLogin, useLocation } from '@/hooks'
 import CompVipCard from './comps/comp-vipcard'
 import CompBanner from './comps/comp-banner'
 import CompPanel from './comps/comp-panel'
@@ -108,6 +108,7 @@ const initialState = {
 function MemberIndex(props) {
   // console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const $instance = getCurrentInstance()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, login, getUserInfoAuth } = useLogin({
     autoLogin: true,
     // policyUpdateHook: (isUpdate) => {
@@ -115,7 +116,10 @@ function MemberIndex(props) {
     //   if (isUpdate) {
     //     RefLogin.current._setPolicyModal()
     //   }
-    // }
+
+    loginSuccess: () => {
+      updateAddress()
+    }
   })
   const [config, setConfig] = useImmer(initialConfigState)
   const [state, setState] = useImmer(initialState)
@@ -487,13 +491,17 @@ function MemberIndex(props) {
               </SpLogin>
             </View>
           </View>
-          <View className='header-bd'>
+          <View className='header-hd__footer'>
+            {config.menu.member_code && (
+              <SpLogin onChange={handleClickLink.bind(this, '/marketing/pages/member/member-code')}>
+                <Text className='iconfont icon-erweima-01'></Text>
+              </SpLogin>
+            )}
             <SpLogin
-              className='bd-item'
-              onChange={handleClickLink.bind(this, '/subpages/marketing/coupon')}
+              className='user-info__link'
+              onChange={handleClickLink.bind(this, '/subpages/member/user-info')}
             >
-              <View className='bd-item-label'>优惠券(张)</View>
-              <View className='bd-item-value'>{state.couponCount}</View>
+              <Text className='iconfont icon-qianwang-01'></Text>
             </SpLogin>
             <SpLogin
               className='bd-item'
