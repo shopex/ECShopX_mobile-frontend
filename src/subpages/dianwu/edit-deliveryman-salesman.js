@@ -16,8 +16,8 @@ import './edit-deliveryman-salesman.scss'
 const initialState = {
   parent: {
     mobile: '',
-    username: '',
-    status: true
+    name: '',
+    is_valid: true
   }
 }
 
@@ -40,18 +40,19 @@ function EditDeliverymanSalesman(props) {
 
   const edit = async (val) => {
     const { userId } = Taro.getStorageSync(SG_USER_INFO)
-    let params = {
-      page:1,
+    let par = {
+      page: 1,
       pageSize: 10,
       distributor_id: val.distributor_id,
-      user_id:userId,
+      user_id: userId,
+      salesperson_id: val.salesperson_id
     }
-    let res = await api.salesman.salespersonadminSalespersoninfo(params)
+    let { mobile, name, is_valid } = await api.salesman.salespersonadminSalespersoninfo(par)
     setState((draft) => {
       draft.parent = {
-        mobile: res.mobile,
-        username: res.username,
-        status: res.status == 1 ? true : false
+        mobile,
+        name,
+        is_valid
       }
     })
   }
@@ -67,7 +68,7 @@ function EditDeliverymanSalesman(props) {
   const preserve = async () => {
     const validations = [
       { field: 'mobile', regex: /^\d{11}$/, message: '请输入有效的业务员手机号' },
-      { field: 'username', regex: /.+/, message: '请输入业务员姓名' }
+      { field: 'name', regex: /.+/, message: '请输入业务员姓名' }
     ]
     if (parent['mobile'] === '') {
       showToast('请输入业务员手机号')
@@ -84,10 +85,13 @@ function EditDeliverymanSalesman(props) {
     let par = {
       ...parent,
       distributor_id: params.distributor_id,
-      status: parent.status ? 1 : 0
+      is_valid: parent.is_valid
     }
     if (params?.salesperson_id) {
-      await api.salesman.salespersonadminUpdatesalesperson({ id: params.salesperson_id, ...par })
+      await api.salesman.salespersonadminUpdatesalesperson({
+        salesperson_id: params.salesperson_id,
+        ...par
+      })
       showToast('编辑成功')
     } else {
       await api.salesman.salespersonadminAddsalesperson(par)
@@ -114,17 +118,17 @@ function EditDeliverymanSalesman(props) {
           disabled={params?.salesperson_id}
         />
         <AtInput
-          name='username'
+          name='name'
           title='业务员姓名'
           type='text'
           placeholder='请输入业务员姓名'
-          value={parent.username}
-          onChange={(e) => handleChange('username', e)}
+          value={parent.name}
+          onChange={(e) => handleChange('name', e)}
         />
         <AtSwitch
           title='是否开启'
-          checked={parent.status}
-          onChange={(e) => handleChange('status', e)}
+          checked={parent.is_valid}
+          onChange={(e) => handleChange('is_valid', e)}
         />
       </View>
       <View className='page-address-salesman-scroll-establish' onClick={preserve}>
