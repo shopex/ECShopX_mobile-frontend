@@ -3,16 +3,20 @@ import { View, Button } from '@tarojs/components'
 import S from '@/spx'
 import api from '@/api'
 import { showToast, classNames, navigateTo } from '@/utils'
-import { useLogin } from '@/hooks'
+import { useLogin,useLocation } from '@/hooks'
 import qs from 'qs'
 import './index.scss'
 
 function SpLogin(props) {
   console.log('getCurrentInstance:', getCurrentInstance)
   const { className, children, size = 'normal', circle = false, onChange } = props
+  const { updateAddress } = useLocation()
   const { isLogin, login, setToken } = useLogin({
     policyUpdateHook: (isUpdate) => {
       isUpdate && setPolicyModal(true)
+    },
+    loginSuccess: () => {
+      updateAddress()
     }
   })
   const $instance = getCurrentInstance()
