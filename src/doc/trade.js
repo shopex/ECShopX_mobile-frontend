@@ -112,7 +112,8 @@ export const AFTER_TRADE = {
     })
   },
   orderId: 'order_id',
-  refundFee: ({ refund_fee }) => refund_fee / 100
+  refundFee: ({ refund_fee }) => refund_fee / 100,
+  userId:'user_id',
 }
 
 export const TRADE_AFTER_SALES_ITEM = {

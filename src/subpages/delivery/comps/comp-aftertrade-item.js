@@ -13,13 +13,13 @@ function CompTradeItem(props) {
   if (!info) {
     return null
   }
-  const { aftersalesBn, distributorInfo, orderId, createdTime, aftersalesStatus, items, orderStatus, refundFee, orderClass = 'normal', point, distributorId } = info
+  const { aftersalesBn, distributorInfo, orderId, createdTime, aftersalesStatus, items, orderStatus, refundFee, orderClass = 'normal', point, distributorId ,userId} = info
   // const { pointName } = useSelector((state) => state.sys)
 
 
   const onViewTradeDetail = () => {
     Taro.navigateTo({
-      url: `/subpages/trade/after-sale-detail?aftersales_bn=${aftersalesBn}`
+      url: `/subpages/delivery/after-sale-detail?aftersales_bn=${aftersalesBn}&user_id=${userId}`
     })
   }
 
