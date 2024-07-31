@@ -65,7 +65,7 @@ function CompDeliverySalesman(props) {
             return (
               <View className='comp-delivery-scroll-list' key={index}>
                 <View className='name'>
-                  <View>{item.username}</View>
+                  <View>{item.name}</View>
                   <View
                     className='edit'
                     onClick={() => {
@@ -101,7 +101,7 @@ function CompDeliverySalesman(props) {
                   </View>
                   <View className='information'>
                     <Text className='information-tltle'>是否开启</Text>
-                    <Text>{item.status == 1 ? '开启' : '关闭'}</Text>
+                    <Text>{item.is_valid ? '开启' : '关闭'}</Text>
                   </View>
                   <View className='information'>
                     <Text className='information-tltle'>创建时间</Text>
