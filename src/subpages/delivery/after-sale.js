@@ -165,7 +165,8 @@ function TradeAfterSale(props) {
       reason,
       description,
       evidence_pic: pic,
-      self_delivery_operator_id:info.selfDeliveryOperatorId
+      self_delivery_operator_id:info.selfDeliveryOperatorId,
+      user_id:info.userId
     }
     // 退货退款
     if (aftersales_type == 'REFUND_GOODS') {

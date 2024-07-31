@@ -86,7 +86,8 @@ export const TRADE_ITEM = {
   createTime:'create_time',
   payDate:'pay_date',
   deliveryTime:'delivery_time',
-  tradeId:'trade_id'
+  tradeId:'trade_id',
+  userId:'user_id',
 }
 
 export const SHOP_INFO = {
