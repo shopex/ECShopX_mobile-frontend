@@ -14,9 +14,10 @@ function CompShopList(props) {
   const [state, setState] = useImmer(initialState)
   const { codeStatus, information } = state
   const { item } = props
+  const { params } = useRouter()
 
   const storeCode = (val) => {
-    let params = {
+    let par = {
       name: val?.merchant_name || '自营店铺',
       distributor_name: val?.name,
       distributor_id: val?.distributor_id,
@@ -25,7 +26,7 @@ function CompShopList(props) {
     }
     setState((draft) => {
       draft.codeStatus = true
-      draft.information = params
+      draft.information = par
     })
   }
   return (
@@ -35,9 +36,12 @@ function CompShopList(props) {
           <View
             className='comp-customer-list-scroll-list'
             onClick={() => {
-              Taro.navigateTo({
-                url: `/subpages/salesman/purchasing?distributor_id=${item.distributor_id}`
-              })
+              if(!params.status){
+                Taro.navigateTo({
+                  url: `/subpages/salesman/purchasing?distributor_id=${item.distributor_id}`
+                })
+              }
+             
             }}
           >
             <SpImage src={item.logo} />
