@@ -14,10 +14,16 @@ const initialState = {
   showAdv: false,
   favs: [],
   // 是用户结算的默认地址，也是附近商家的收货地址
-  address: null,
   location: null,
   chiefInfo: {}, // 团长信息
-  checkIsChief: true // 检查是否是团长
+  checkIsChief: true, // 检查是否是团长
+  address: {
+    province: '北京市',
+    city: '北京市',
+    area: '昌平区',
+    lat: '40.220415',
+    lng: '116.234890'
+  }
 }
 
 export const fetchUserFavs = createAsyncThunk('user/fetchUserFavs', async (params) => {

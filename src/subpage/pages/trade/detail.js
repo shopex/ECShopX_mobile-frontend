@@ -167,6 +167,7 @@ export default class TradeDetail extends Component {
         console.log(dada)
         return dada
       },
+      salespersonInfo:'salespersonInfo',
       receiver_city: 'receiver_city',
       receiver_district: 'receiver_district',
       receiver_address: 'receiver_address',
@@ -638,10 +639,14 @@ export default class TradeDetail extends Component {
   }
 
   computedPayType = () => {
-    const {
-      info: { pay_type }
+     const {
+      info: { pay_type, pay_channel }
     } = this.state
-    return PAYMENT_TYPE[pay_type]
+    if (pay_type == 'bspay') {
+      return PAYMENT_TYPE[pay_channel]
+    } else {
+      return PAYMENT_TYPE[pay_type]
+    }
     // if (isAlipay) {
     //   return '支付宝'
     // } else if (pay_type === PAYTYPE.ALIH5) {
@@ -963,6 +968,20 @@ export default class TradeDetail extends Component {
                 </View>
               )}
           </View>
+
+          {
+            info?.salespersonInfo?.user_id && 
+            <View className='shopping'>
+              <View className='shopping_guide'>业务员信息:</View>
+              <View className='shopping_guides'>
+                <Text>{info?.salespersonInfo?.name}</Text>
+                <Text>{info?.salespersonInfo?.mobile}</Text>
+              </View>
+            </View>
+          }
+
+        
+
           {info.remark && (
             <View className='trade-detail-remark'>
               <View className='trade-detail-remark__header'>订单备注</View>

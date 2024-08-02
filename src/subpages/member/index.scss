@@ -30,6 +30,7 @@
       /*  #endif  */
     }
     &__footer {
+      flex-direction: column;
       .user-info__link {
         margin-top: 20px;
         display: inline-block;
@@ -38,6 +39,7 @@
         font-size: 28px;
       }
     }
+
     .username-wrap {
     }
     .user-grade-name {
@@ -92,6 +94,23 @@
     .bd-item-value {
       color: #333;
       font-size: 36px;
+    }
+  }
+  .header-hd__footer1 {
+    padding: 32px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .user-info__link {
+      margin-top: 20px;
+      display: inline-block;
+    }
+    .icon-qianwang-01 {
+      font-size: 28px;
+    }
+    .sp-login {
+      display: initial;
+      text-align: center;
     }
   }
   .header-ft {
