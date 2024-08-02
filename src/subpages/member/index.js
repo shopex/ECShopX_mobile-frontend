@@ -34,9 +34,9 @@ import {
   VERSION_PLATFORM,
   VERSION_STANDARD
 } from '@/utils'
-import { useLogin } from '@/hooks'
 import S from '@/spx'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
+import { useLogin, useLocation } from '@/hooks'
 import CompVipCard from './comps/comp-vipcard'
 import CompBanner from './comps/comp-banner'
 import CompPanel from './comps/comp-panel'
@@ -72,7 +72,8 @@ const initialConfigState = {
     tenants: true, //商家入驻
     purchase: true, // 员工内购
     dianwu: false, // 店务,
-    community: false // 社区
+    community: false, // 社区
+    salesman: true
   },
   infoAppId: '',
   infoPage: '',
@@ -100,12 +101,14 @@ const initialState = {
   waitEvaluateNum: 0,
   afterSalesNum: 0,
   zitiNum: 0,
-  deposit: 0
+  deposit: 0,
+  salesPersonList: {}
 }
 
 function MemberIndex(props) {
   // console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const $instance = getCurrentInstance()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, login, getUserInfoAuth } = useLogin({
     autoLogin: true,
     // policyUpdateHook: (isUpdate) => {
@@ -113,7 +116,10 @@ function MemberIndex(props) {
     //   if (isUpdate) {
     //     RefLogin.current._setPolicyModal()
     //   }
-    // }
+
+    loginSuccess: () => {
+      updateAddress()
+    }
   })
   const [config, setConfig] = useImmer(initialConfigState)
   const [state, setState] = useImmer(initialState)
@@ -141,7 +147,6 @@ function MemberIndex(props) {
     // 白名单
     getSettings()
   }, [])
-
 
   useDidShow(() => {
     if (isLogin) {
@@ -195,7 +200,7 @@ function MemberIndex(props) {
 
   const getEmployeeIsOpen = async () => {
     const purchaseRes = await api.purchase.getEmployeeIsOpen()
-    setConfig(draft => {
+    setConfig((draft) => {
       draft.purchaseRes = purchaseRes
     })
   }
@@ -215,7 +220,7 @@ function MemberIndex(props) {
         page_name: 'member_center_redirect_setting'
       }),
       // 积分商城
-      await api.pointitem.getPointitemSetting(),
+      await api.pointitem.getPointitemSetting()
     ])
     let banner,
       menu,
@@ -264,6 +269,7 @@ function MemberIndex(props) {
         pointUrlIsOpen: point_url_is_open
       }
     }
+
     setConfig((draft) => {
       draft.banner = banner
       draft.menu = {
@@ -290,6 +296,7 @@ function MemberIndex(props) {
     })
     setState((draft) => {
       draft.deposit = memberRes.deposit / 100
+      draft.salesPersonList = memberRes?.salesPersonList
     })
     dispatch(updateUserInfo(memberRes))
   }
@@ -302,7 +309,6 @@ function MemberIndex(props) {
     // const resTurntable = await api.wheel.getTurntableconfig()
     const resAssets = await api.member.memberAssets()
     const { discount_total_count, fav_total_count, point_total_count } = resAssets
-
 
     const {
       aftersales, // 待处理售后
@@ -449,7 +455,7 @@ function MemberIndex(props) {
 
   return (
     <SpPage className='pages-member-index' renderFooter={<SpTabbar />}>
-      <ScrollView scrollY style="height: 100%;">
+      <ScrollView scrollY style='height: 100%;'>
         <View
           className='header-block'
           style={styleNames({
@@ -471,16 +477,32 @@ function MemberIndex(props) {
             </View>
             <View className='header-hd__footer'>
               {config.menu.member_code && (
-                <SpLogin onChange={handleClickLink.bind(this, '/marketing/pages/member/member-code')}>
+                <SpLogin
+                  onChange={handleClickLink.bind(this, '/marketing/pages/member/member-code')}
+                >
                   <Text className='iconfont icon-erweima-01'></Text>
                 </SpLogin>
               )}
-              <SpLogin className='user-info__link' onChange={handleClickLink.bind(this, '/subpages/member/user-info')}>
+              <SpLogin
+                className='user-info__link'
+                onChange={handleClickLink.bind(this, '/subpages/member/user-info')}
+              >
                 <Text className='iconfont icon-qianwang-01'></Text>
               </SpLogin>
             </View>
           </View>
-          <View className='header-bd'>
+          <View className='header-hd__footer1'>
+            {/* {config.menu.member_code && (
+              <SpLogin onChange={handleClickLink.bind(this, '/marketing/pages/member/member-code')}>
+                <Text className='iconfont icon-erweima-01'></Text>
+              </SpLogin>
+            )}
+            <SpLogin
+              className='user-info__link'
+              onChange={handleClickLink.bind(this, '/subpages/member/user-info')}
+            >
+              <Text className='iconfont icon-qianwang-01'></Text>
+            </SpLogin> */}
             <SpLogin
               className='bd-item'
               onChange={handleClickLink.bind(this, '/subpages/marketing/coupon')}
@@ -538,9 +560,7 @@ function MemberIndex(props) {
             }
           >
             {config.menu.ziti_order && (
-              <SpLogin
-                onChange={handleClickLink.bind(this, '/subpages/trade/ziti-list')}
-              >
+              <SpLogin onChange={handleClickLink.bind(this, '/subpages/trade/ziti-list')}>
                 <View className='ziti-order'>
                   <View className='ziti-order-info'>
                     <View className='title'>自提订单</View>
@@ -611,7 +631,8 @@ function MemberIndex(props) {
               accessMenu={{
                 ...config.menu,
                 purchase: config.purchaseRes.is_open,
-                popularize: userInfo ? userInfo.popularize : false
+                popularize: userInfo ? userInfo.popularize : false,
+                salesPersonList: state.salesPersonList
               }}
               isPromoter={userInfo ? userInfo.isPromoter : false}
               onLink={handleClickService}

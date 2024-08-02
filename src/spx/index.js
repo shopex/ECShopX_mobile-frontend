@@ -1,11 +1,11 @@
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
-import { isWeixin, isAlipay, log, isGoodsShelves, showToast, isMerchantModule } from '@/utils'
+import { isWeixin, isAlipay, log, isGoodsShelves, showToast, isMerchantModule ,formatDateTime} from '@/utils'
 import { SG_TOKEN, SG_USER_INFO, MERCHANT_TOKEN } from '@/consts/localstorage'
 import qs from 'qs'
 import configStore from '@/store'
 
-const {store} = configStore()
+const { store } = configStore()
 
 const globalData = {}
 export class Spx {
@@ -303,6 +303,7 @@ export class Spx {
   closeToast() {
     Taro.eventCenter.trigger('sp-toast:close')
   }
+
 }
 
 export default new Spx()
