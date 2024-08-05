@@ -8,6 +8,7 @@ import Taro, {
 import { View, Text } from '@tarojs/components'
 import { AtFloatLayout } from 'taro-ui'
 import { useSelector, useDispatch } from 'react-redux'
+import { SG_ROUTER_PARAMS } from '@/consts'
 import S from '@/spx'
 import {
   SpFloatMenuItem,
@@ -68,7 +69,8 @@ const initState = {
   selectType: 'picker',
   statusBarHeight: '',
   open: false,
-  hideClose: true
+  hideClose: true,
+  parameter:Taro.getStorageSync(SG_ROUTER_PARAMS)? Taro.getStorageSync(SG_ROUTER_PARAMS):entryLaunch.getRouteParams()
 }
 
 function StoreIndex() {
@@ -93,7 +95,8 @@ function StoreIndex() {
     selectType,
     statusBarHeight,
     open,
-    hideClose
+    hideClose,
+    parameter
   } = state
 
   const dispatch = useDispatch()
@@ -105,6 +108,8 @@ function StoreIndex() {
     init()
     salesmanShare()
   })
+
+  console.log('xxx22222:', parameter)
 
   // useEffect(() => {
   //   fetchWgts()
@@ -127,7 +132,7 @@ function StoreIndex() {
   }, [skuPanelOpen, open])
 
   const salesmanShare = async () => {
-    let params = await entryLaunch.getRouteParams()
+    let params = await parameter
     if (params?.qr == 'Y') {
       let param = {
         promoter_user_id: params?.uid,
@@ -148,8 +153,9 @@ function StoreIndex() {
   }
 
   const fetchWgts = async () => {
-    const { id, dtid } = await entryLaunch.getRouteParams()
-    const distributor_id = getDistributorId(id || dtid)
+    const { id, dtid ,uid} = await parameter
+    console.log(await parameter,'parameter')
+    const distributor_id = getDistributorId(id || dtid || uid)
     const { status } = await api.distribution.merchantIsvaild({
       distributor_id
     })
@@ -224,7 +230,7 @@ function StoreIndex() {
     Taro.showLoading({
       title: '加载中'
     })
-    const { dtid } = await entryLaunch.getRouteParams()
+    const { dtid } = await parameter
     const itemDetail = await api.item.detail(id, {
       showError: false,
       distributor_id: dtid
@@ -244,7 +250,7 @@ function StoreIndex() {
   }
 
   const getAppShareInfo = async () => {
-    const data = await entryLaunch.getRouteParams()
+    const data = await parameter
     const dtid = data.id || data.dtid
     const query = {
       dtid
