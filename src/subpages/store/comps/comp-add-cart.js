@@ -16,6 +16,7 @@ import S from '@/spx'
 import './comp-add-cart.scss'
 import CompTab from './comp-tab'
 import { useNavigation, useDebounce } from '@/hooks'
+import { SG_ROUTER_PARAMS } from '@/consts'
 import {
   updateShopCartCount,
   fetchCartList,
@@ -25,7 +26,8 @@ import {
 } from '@/store/slices/cart'
 
 const initialState = {
-  hideClose: true
+  hideClose: true,
+  parameter:Taro.getStorageSync(SG_ROUTER_PARAMS)? Taro.getStorageSync(SG_ROUTER_PARAMS):entryLaunch.getRouteParams()
 }
 
 function CompAddCart(props) {
@@ -33,7 +35,7 @@ function CompAddCart(props) {
   const { openRecommend, openLocation, openStore, colorPrimary } = useSelector((state) => state.sys)
   const { open = false, onMaskCloses = {} } = props
   const [state, setState] = useImmer(initialState)
-  const { hideClose } = state
+  const { hideClose,parameter } = state
   const $instance = getCurrentInstance()
   const router = $instance.router
 
@@ -60,7 +62,7 @@ function CompAddCart(props) {
   }
 
   const onDelete = async () => {
-    const { id, dtid } = await entryLaunch.getRouteParams()
+    const { id, dtid } = await parameter
     const distributor_id = getDistributorId(id || dtid)
     const res = await Taro.showModal({
       title: '提示',
@@ -90,7 +92,7 @@ function CompAddCart(props) {
   }
 
   const shopping = async () => {
-    const { id, dtid } = await entryLaunch.getRouteParams()
+    const { id, dtid } = await parameter
     const distributor_id = getDistributorId(id || dtid)
     let params = {
       distributor_id,
