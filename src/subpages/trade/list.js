@@ -101,8 +101,8 @@ function TradeList(props) {
         onRefresherRefresh={onRefresherRefresh}
       >
         <SpScrollView className='trade-list-scroll' auto={false} ref={tradeRef} fetch={fetch} emptyMsg="没有查询到订单">
-          {tradeList.map((item) => (
-            <View className='trade-item-wrap'>
+          {tradeList.map((item,index) => (
+            <View className='trade-item-wrap' key={index}>
               <CompTradeItem info={item} />
             </View>
           ))}
