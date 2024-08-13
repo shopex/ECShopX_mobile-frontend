@@ -26,6 +26,7 @@ function SpTabbar(props) {
       selectedImage: item.selectedIconPath,
       url: item.pagePath,
       urlRedirect: true,
+      customPageId:item?.customPage?.id,
       text: item.text === '购物车' && cartCount > 0 ? cartCount : null,
       max: item.max
     }
@@ -53,7 +54,8 @@ function SpTabbar(props) {
     const { path } = getCurrentRoute()
     if (path != TABBAR_PATH[tabItem.name]) {
       if(TABBAR_PATH[tabItem.name]!==navipage){
-        Taro.redirectTo({ url: TABBAR_PATH[tabItem.name] })
+        let url = tabItem.name == 'customPage' ? `${TABBAR_PATH[tabItem.name]}?isTabBar=true&id=${tabItem.customPageId}` :  TABBAR_PATH[tabItem.name]
+        Taro.redirectTo({ url })
       }else{
         Taro.navigateTo({ url: TABBAR_PATH[tabItem.name] })
       }
