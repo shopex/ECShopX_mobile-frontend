@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
@@ -6,8 +6,9 @@ import api from '@/api'
 import doc from '@/doc'
 import qs from 'qs'
 import { View } from '@tarojs/components'
-import { SpPage, SpSearch } from '@/components'
-import { getDistributorId, log, entryLaunch } from '@/utils'
+import { SpPage, SpSearch, SpSkuSelect } from '@/components'
+import { WgtsContext } from '@/pages/home/wgts/wgts-context'
+import { getDistributorId, log, entryLaunch, pickBy, showToast } from '@/utils'
 import { platformTemplateName, transformPlatformUrl } from '@/utils/platform'
 import { useNavigation } from '@/hooks'
 import req from '@/api/req'
@@ -17,17 +18,30 @@ import './custom-page.scss'
 const initialState = {
   wgts: [],
   loading: true,
-  shareInfo: null
+  shareInfo: null,
+  info: null,
+  skuPanelOpen: false,
+  selectType: 'picker'
 }
 function CustomPage(props) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const { setNavigationBarTitle } = useNavigation()
-  const { wgts, loading, shareInfo } = state
+  const { wgts, loading, shareInfo, skuPanelOpen, selectType, info } = state
+  const MSpSkuSelect = React.memo(SpSkuSelect)
+  const pageRef = useRef()
 
   useEffect(() => {
     fetch()
   }, [])
+
+  useEffect(() => {
+    if (skuPanelOpen) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [skuPanelOpen])
 
   const fetch = async () => {
     const { id } = await entryLaunch.getRouteParams($instance.router.params)
@@ -66,7 +80,26 @@ function CustomPage(props) {
     return getAppShareInfo()
   })
 
-  const getAppShareInfo = async() => {
+  const onAddToCart = async ({ itemId, distributorId }) => {
+    Taro.showLoading()
+    try {
+      const itemDetail = await api.item.detail(itemId, {
+        showError: false,
+        distributor_id: distributorId
+      })
+      Taro.hideLoading()
+      setState((draft) => {
+        draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
+        draft.skuPanelOpen = true
+        draft.selectType = 'addcart'
+      })
+    } catch (e) {
+      showToast(e.message)
+      Taro.hideLoading()
+    }
+  }
+
+  const getAppShareInfo = async () => {
     const { id } = await entryLaunch.getRouteParams($instance.router.params)
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `?uid=${userId}&id=${id}` : `?id=${id}`
@@ -95,9 +128,34 @@ function CustomPage(props) {
       pageConfig={pageData?.base}
       loading={loading}
       title={shareInfo?.page_name}
+      ref={pageRef}
       fixedTopContainer={fixedTop && <SpSearch info={searchComp} />}
+    >
+      <WgtsContext.Provider
+        value={{
+          onAddToCart
+        }}
       >
-      <HomeWgts wgts={filterWgts} />
+        <HomeWgts wgts={filterWgts} />
+      </WgtsContext.Provider>
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
     </SpPage>
   )
 }
