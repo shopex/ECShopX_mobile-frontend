@@ -31,18 +31,22 @@ function SpTime(props) {
   }
 
   useEffect(() => {
+    let time = nowTimeDa.toString().replace(/-/g,'/');
     setState((draft) => {
       draft.seleIndex = selects
       draft.selectorChecked = selector[selects]
-      draft.timeDay = nowTimeDa
+      draft.timeDay = time
     })
+    console.log(time, 'time111')
   }, [])
 
   const onDateChange = (e) => {
+    let time = e.detail.value.toString().replace(/-/g,'/');
     setState((draft) => {
-      draft.timeDay = e.detail.value
+      draft.timeDay = time
     })
     onTimeChange(seleIndex, e.detail.value)
+    console.log(time,'time222')
   }
 
   return (
