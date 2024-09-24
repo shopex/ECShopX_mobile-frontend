@@ -7,7 +7,7 @@ import { AtButton } from 'taro-ui'
 import api from '@/api'
 import { SpPage } from '@/components'
 import { useLogin, useModal } from '@/hooks'
-import { showToast, VERSION_IN_PURCHASE } from '@/utils'
+import { showToast, VERSION_IN_PURCHASE, normalizeQuerys } from '@/utils'
 
 import CompBottomTip from './comps/comp-bottomTip'
 import './select-company-phone.scss'
@@ -21,9 +21,9 @@ function PurchaseAuthPhone(props) {
   const [state, setState] = useImmer(initialState)
   const { userInfo = {} } = useSelector((state) => state.user)
   const { params } = useRouter()
-  const { enterprise_id, enterprise_name, auth_code, account, email, vcode } = params
+  let { enterprise_id, enterprise_name, auth_code, account, email, vcode } = params
   const { showModal } = useModal()
-
+  const $instance = getCurrentInstance()
   useEffect(() => {
     getLoginCode()
   }, [])
@@ -37,6 +37,15 @@ function PurchaseAuthPhone(props) {
 
   const handleBindPhone = async (e) => {
     const { encryptedData, iv, cloudID } = e.detail
+    // 企业二维码扫码登录
+    if ($instance.router.params.scene) {
+      const query = await normalizeQuerys($instance.router.params)
+      const { eid, cid } = query
+      if (eid) {
+        enterprise_id = query.eid
+      }
+    }
+   
     if (encryptedData && iv) {
       try {
         const params = {
