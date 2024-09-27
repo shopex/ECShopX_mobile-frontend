@@ -25,8 +25,9 @@ import TradeItem from './comps/new-item'
 
 import './list.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
+@connect(({ colors, purchase }) => ({
+  colors: colors.current,
+  purchase_share_info: purchase.purchase_share_info
 }))
 @withPager
 export default class TradeList extends Component {
@@ -123,7 +124,7 @@ export default class TradeList extends Component {
         status: tabList[curTabIdx].status,
         is_rate: tabList[curTabIdx].is_rate,
         order_class: 'employee_purchase',
-        activity_id: 20
+        activity_id: this.props.purchase_share_info?.activity_id
       },
       function (val, key) {
         if (key === 'page_no') return 'page'
