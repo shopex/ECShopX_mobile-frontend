@@ -32,7 +32,7 @@ import {
   VERSION_B2C,
   VERSION_PLATFORM
 } from '@/utils'
-import { useAsyncCallback, useLogin, usePayment } from '@/hooks'
+import { useAsyncCallback, useLogin,useLocation, usePayment } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
 import _cloneDeep from 'lodash/cloneDeep'
 import api from '@/api'
@@ -43,14 +43,17 @@ import S from '@/spx'
 import { initialState } from './const'
 
 import CompDeliver from './comps/comp-deliver'
-import CompPaymentPicker from './comps/comp-paymentpicker'
 
 import './espier-checkout.scss'
 
 function PurchaseCheckout(props) {
   const $instance = getCurrentInstance()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
-    autoLogin: true
+    autoLogin: true,
+    loginSuccess: () => {
+      updateAddress()
+    }
   })
 
 
@@ -65,6 +68,7 @@ function PurchaseCheckout(props) {
   const { colorPrimary, pointName, openStore } = useSelector((state) => state.sys)
   const { coupon } = useSelector((state) => state.cart)
   const shop = useSelector((state) => state.shop)
+  const { purchase_share_info = {} } = useSelector((state) => state.purchase)
 
   const {
     detailInfo,
@@ -477,6 +481,7 @@ function PurchaseCheckout(props) {
   }
 
   const getParamsInfo = async (submitLoading = false) => {
+    const { activity_id, enterprise_id } = purchase_share_info
     const { value, activity } = getActivityValue() || {}
 
     let ziti_shopid
@@ -500,7 +505,9 @@ function PurchaseCheckout(props) {
       isNostores: openStore ? 0 : 1, // 这个传参需要和后端在确定一下
       point_use,
       pay_type: point_use > 0 && totalInfo.total_fee == 0 ? 'point' : payType,
-      distributor_id: receiptType === 'ziti' && ziti_shopid ? ziti_shopid : dtid
+      distributor_id: receiptType === 'ziti' && ziti_shopid ? ziti_shopid : dtid,
+      activity_id,
+      enterprise_id
     }
 
     if (receiptType === 'ziti') {
@@ -548,8 +555,12 @@ function PurchaseCheckout(props) {
         value = 'normal_seckill'
         activity = Object.assign(activity, { seckill_id, seckill_ticket })
         break
-      default:
+      case 'normal':
         value = 'normal'
+        activity = {}
+        break
+      default:
+        value = 'normal_employee_purchase'
         activity = {}
     }
     return {

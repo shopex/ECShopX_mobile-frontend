@@ -131,7 +131,7 @@ export const GOODS_INFO = {
   point: 'point',
   isPoint: 'is_point',
   price: ({ price }) => price / 100, // 销售价
-  activityPrice: ({ act_price }) => act_price / 100, // 秒杀价
+  activityPrice: ({ activity_price }) => activity_price / 100, // 秒杀价
   marketPrice: ({ market_price }) => market_price / 100, // 原价
   memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
   vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
@@ -151,6 +151,10 @@ export const GOODS_INFO = {
   isGift: 'is_gift',
   itemParams: ({ regions, item_unit, item_params }) => {
     const res = []
+    if (!Array.isArray(regions)) {
+      // 如果 regions 不是数组，可以将它转换成数组   把 regions 转换成只包含一个元素的数组
+      regions = [regions]
+    }
     if (item_unit) {
       res.push({ attribute_name: '计量单位', attribute_value_name: item_unit })
     }

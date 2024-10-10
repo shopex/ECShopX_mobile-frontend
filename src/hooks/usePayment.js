@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import Taro, { getCurrentInstance, requirePlugin } from '@tarojs/taro'
+import Taro, { getCurrentInstance, requirePlugin, useRouter } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { TRANSFORM_PAYTYPE } from '@/consts'
 import { isWeixin, isWeb, isWxWeb, requestAlipayminiPayment, isAPP, showToast } from '@/utils'
@@ -20,9 +20,12 @@ export default (props = {}) => {
   const cashierResultUrl = `/pages/cart/cashier-result`
   const $instance = getCurrentInstance()
   const currentPath = $instance?.router?.path
+  const router = useRouter()
+  const callbackRef = useRef()
 
-  const cashierPayment = (params, orderInfo) => {
+  const cashierPayment = (params, orderInfo, callbackSuccess) => {
     console.log(`cashierPayment:`, params, orderInfo)
+    callbackRef.current = callbackSuccess
     const { pay_type, pay_channel } = params
     switch (pay_type) {
       case 'wxpay':
@@ -40,6 +43,20 @@ export default (props = {}) => {
           wxpayjsPay(params, orderInfo)
         } else if (pay_channel == 'alipay_wap' || pay_channel == 'alipay') {
           adapayAliH5Pay(params, orderInfo)
+        }
+        break
+      case 'bspay':
+        if (pay_channel == 'wx_lite') {
+          if (isWeixin) {
+            weappPay(params, orderInfo)
+          } else if (isWeb) {
+            // H5非微信浏览器，跳转小程序发起支付
+            bspayH5Pay(params, orderInfo)
+          }
+        } else if (pay_channel == 'wx_pub') {
+          wxpayjsPay(params, orderInfo)
+        } else if (pay_channel == 'alipay_wap') {
+          bspayAliH5Pay(params, orderInfo)
         }
         break
       case 'wxpayh5':
@@ -64,24 +81,33 @@ export default (props = {}) => {
     }
   }
 
+  // 当前路由是订单详情页
+  const isTradeDetaiPage = () => {
+    return router.path == '/subpages/trade/detail'
+  }
+
   const paySuccess = (params, orderInfo) => {
     const { activityType } = params
     const { order_id } = orderInfo
-    if (activityType == 'group') {
-      Taro.redirectTo({ url: `/marketing/pages/item/group-detail?team_id=${orderInfo.team_id}` })
+    if (isTradeDetaiPage()) {
+      callbackRef.current()
     } else {
-      Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+      if (activityType == 'group') {
+        Taro.redirectTo({ url: `/marketing/pages/item/group-detail?team_id=${orderInfo.team_id}` })
+      } else {
+        Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+      }
     }
   }
 
   const payError = (orderInfo) => {
     const { order_id, trade_source_type } = orderInfo
     // 社区拼团订单
-    if (currentPath != '/subpage/pages/trade/detail' && currentPath != '/subpages/community/order') {
+    if (!isTradeDetaiPage() && router.path != '/subpages/community/order') {
       if (trade_source_type == 'normal_community') {
         Taro.redirectTo({ url: `/subpages/community/order` })
       } else {
-        Taro.redirectTo({ url: `/subpage/pages/trade/detail?id=${order_id}` })
+        Taro.redirectTo({ url: `/subpages/trade/detail?order_id=${order_id}` })
       }
     }
   }
@@ -113,7 +139,7 @@ export default (props = {}) => {
         paySuccess(params, orderInfo)
       // }
     } catch (e) {
-      console.error(e)
+      Taro.hideLoading()
       payError(orderInfo)
     }
   }
@@ -130,21 +156,9 @@ export default (props = {}) => {
         order_type: order_type || trade_source_type
       })
       await requestAlipayminiPayment(trade_no)
-      const { activityType } = params
-      if (activityType == 'group') {
-        Taro.redirectTo({ url: `/marketing/pages/item/group-detail?team_id=${orderInfo.team_id}` })
-      } else {
-        Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
-      }
+      paySuccess(params, orderInfo)
     } catch (e) {
-      // 社区拼团订单
-      if (currentPath != '/subpage/pages/trade/detail' && currentPath != '/subpages/community/order') {
-        if (trade_source_type == 'normal_community') {
-          Taro.redirectTo({ url: `/subpages/community/order` })
-        } else {
-          Taro.redirectTo({ url: `/subpage/pages/trade/detail?id=${order_id}` })
-        }
-      }
+      payError(orderInfo)
     }
   }
 
@@ -216,7 +230,7 @@ export default (props = {}) => {
       Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
     } catch (e) {
       console.error(e)
-      Taro.redirectTo({ url: `/subpage/pages/trade/detail?id=${order_id}` })
+      Taro.redirectTo({ url: `/subpages/trade/detail?order_id=${order_id}` })
     }
   }
 
@@ -265,6 +279,28 @@ export default (props = {}) => {
     }, 1000)
   }
 
+  // 汇付斗拱，支付宝H5
+  const bspayAliH5Pay = async (params, orderInfo) => {
+    const { pay_type, pay_channel } = params
+    const { order_id, orderType = 'normal' } = orderInfo
+    const { protocol, host } = window.location
+    let query = {
+      order_id,
+      pay_type,
+      order_type: orderType,
+      return_url: `${protocol}//${host}${cashierResultUrl}?order_id=${order_id}`
+    }
+    if (pay_type == 'bspay' && pay_channel == 'alipay_wap') {
+      query['pay_channel'] = pay_channel
+    }
+
+    const { payment } = await api.cashier.getPayment(query)
+    Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+    setTimeout(() => {
+      window.location.replace(`alipays://platformapi/startapp?saId=10000007&qrcode=${payment}`)
+    }, 1000)
+  }
+
   const adapayAliH5Pay = async (params, orderInfo) => {
     const { pay_type, pay_channel } = params
     const { order_id, order_type = 'normal' } = orderInfo
@@ -291,20 +327,23 @@ export default (props = {}) => {
 
   // 余额/积分支付
   const depositPay = async (params, orderInfo) => {
-    debugger
+
     const { activityType, pay_type } = params
     const { order_id, team_id, order_type } = orderInfo
     if (pay_type == 'deposit') {
-      await api.cashier.getPayment({
-        pay_type,
-        order_id,
-        order_type: order_type
-      })
+      try {
+        await api.cashier.getPayment({
+          pay_type,
+          order_id,
+          order_type: order_type
+        })
+        paySuccess(params, orderInfo)
+      } catch(e) {
+        payError(orderInfo)
+      }
     }
-    if (activityType == 'group') {
-      Taro.redirectTo({ url: `/marketing/pages/item/group-detail?team_id=${team_id}` })
-    } else {
-      Taro.redirectTo({ url: `${cashierResultUrl}?order_id=${order_id}` })
+    if (pay_type == 'point') {
+      paySuccess(params, orderInfo)
     }
   }
 

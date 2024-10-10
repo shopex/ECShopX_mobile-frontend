@@ -2,10 +2,11 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
 import { isWeixin, isAlipay, log, isGoodsShelves, showToast, isMerchantModule } from '@/utils'
 import { SG_TOKEN, SG_USER_INFO, MERCHANT_TOKEN } from '@/consts/localstorage'
+import dayjs from 'dayjs'
 import qs from 'qs'
 import configStore from '@/store'
 
-const {store} = configStore()
+const { store } = configStore()
 
 const globalData = {}
 export class Spx {
@@ -302,6 +303,37 @@ export class Spx {
 
   closeToast() {
     Taro.eventCenter.trigger('sp-toast:close')
+  }
+
+  // 处理价格
+  formatMoney(num) {
+    const numString = String(num)
+    const [integerPart, decimalPart] = numString.split('.')
+
+    let formattedInteger = ''
+    for (let i = integerPart.length - 1, j = 1; i >= 0; i--, j++) {
+      formattedInteger = integerPart[i] + formattedInteger
+      if (j % 3 === 0 && i !== 0) {
+        formattedInteger = ',' + formattedInteger
+      }
+    }
+
+    let result = decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger
+    return result
+  }
+
+  //获取当前年月日
+  getNowDate(val) {
+    const now = dayjs() // 获取当前时间
+    const year = now.year() // 获取年份
+
+    if (val === 'year') {
+      return year.toString()
+    } else if (val === 'month') {
+      return now.format('YYYY-MM')
+    } else {
+      return now.format('YYYY-MM-DD')
+    }
   }
 }
 

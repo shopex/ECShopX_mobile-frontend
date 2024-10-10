@@ -35,14 +35,10 @@ function SpImage(props) {
 
   if (diskDriver === 'qiniu') {
     if (width != 'auto') {
-      imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${height ? '/h/' + Math.floor(height / 2) : ''
-        }`
+      imgUrl = `${imgUrl}?imageView2/2/q/60${width ? '/w/' + Math.floor(width / 2) : ''}${
+        height ? '/h/' + Math.floor(height / 2) : ''
+      }`
     }
-  } else {
-    // imgUrl = `${imgUrl}?imageView2/1${width ? '/w/' + Math.floor(width / 2) : ''}${
-    //   height ? '/h/' + Math.floor(height / 2) : ''
-    // }`
-    imgUrl = `${imgUrl}?x-oss-process=image/quality,q_80`
   }
 
   const handleOnLoad = (e) => {

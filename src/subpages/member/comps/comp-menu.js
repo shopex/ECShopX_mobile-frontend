@@ -68,8 +68,8 @@ const MENUS = [
   {
     key: 'purchase',
     name: '内购',
-    icon: 'm_menu_tuangou.png',
-    link: '/marketing/pages/member/purchase'
+    icon: 'm_menu_jiatingfengxiang.png',
+    link: '/pages/purchase/auth'
   },
   {
     key: 'dianwu',
@@ -107,7 +107,7 @@ const MENUS_CONST = [
 
 const MENUS_COMMUNITY = [
   {
-    key: 'community',
+    key: 'community_group_enable',
     name: '社区团购',
     icon: 'm_menu_tuangou.png',
     link: '/subpages/community/index'
@@ -124,7 +124,7 @@ function CompMenu(props) {
   if (isWeb) {
     menus = menus.filter((m_item) => m_item.key != 'popularize')
   }
-  if (!config.whitelist_status) {
+  if ((VERSION_IN_PURCHASE || VERSION_B2C) && isWeixin) { // 会员中心内购只在ecx和云店展示
     menus = menus.filter((m_item) => m_item.key != 'purchase')
   }
   //商家入驻是否开启
@@ -134,7 +134,7 @@ function CompMenu(props) {
 
   // 社区团购
   if (!VERSION_IN_PURCHASE && isWeixin) {
-    menus = menus.concat(MENUS_COMMUNITY)
+    menus = menus.concat(MENUS_COMMUNITY.filter(item => accessMenu[item.key]))
   }
 
   if (VERSION_PLATFORM || VERSION_B2C) {
@@ -154,6 +154,18 @@ function CompMenu(props) {
   // if (accessMenu.offline_order) {
   //   menus = menus.concat(MENUS_OFFLINE)
   // }
+
+  if(accessMenu.salesPersonList?.total_count>0){
+    menus = menus.concat([
+      {
+        key: 'salesman',
+        name: '业务员',
+        icon: 'salesman.png',
+        link: '/subpages/salesman/index'
+      }
+    ])
+    menus = menus.filter((m_item) => m_item.key != 'popularize')
+  }
 
   return (
     <View className='comp-menu'>

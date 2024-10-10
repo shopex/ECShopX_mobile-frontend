@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import Taro, {
   getCurrentInstance,
   useShareAppMessage,
   useShareTimeline,
   useDidShow
 } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
+import { View, Image, ScrollView } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   SpScreenAd,
@@ -13,7 +13,8 @@ import {
   SpSearch,
   SpRecommend,
   SpTabbar,
-  SpCouponPackage
+  SpCouponPackage,
+  SpSkuSelect
 } from '@/components'
 import api from '@/api'
 import {
@@ -27,22 +28,28 @@ import {
   VERSION_B2C,
   classNames,
   getCurrentPageRouteParams,
-  resolveStringifyParams
+  resolveStringifyParams,
+  getCurrentShopId,
+  pickBy,
+  showToast
 } from '@/utils'
 import entryLaunch from '@/utils/entryLaunch'
 import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
+import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import { useImmer } from 'use-immer'
-import { useLogin, useNavigation } from '@/hooks'
-import qs from 'qs'
+import { useLogin, useNavigation, useLocation } from '@/hooks'
+import doc from '@/doc'
 import HomeWgts from './home/comps/home-wgts'
 import { WgtHomeHeader, WgtHomeHeaderShop } from './home/wgts'
+import { WgtsContext } from './home/wgts/wgts-context'
 import CompAddTip from './home/comps/comp-addtip'
 import CompFloatMenu from './home/comps/comp-floatmenu'
 
 import './home/index.scss'
 
 const MCompAddTip = React.memo(CompAddTip)
+const MSpSkuSelect = React.memo(SpSkuSelect)
 
 const initialState = {
   wgts: [],
@@ -52,25 +59,38 @@ const initialState = {
   pageData: null,
   fixedTop: false,
   filterWgts: [],
-  isShowHomeHeader: false
+  isShowHomeHeader: false,
+  info: null,
+  skuPanelOpen: false,
+  selectType: 'picker'
 }
 
 function Home() {
   const [state, setState] = useImmer(initialState)
   const [likeList, setLikeList] = useImmer([])
+  const pageRef = useRef()
 
-  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } = useSelector(
-    (state) => state.sys
-  )
-  const { shopInfo } = useSelector(
-    (state) => state.shop
-  )
+  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } =
+    useSelector((state) => state.sys)
+  const { shopInfo } = useSelector((state) => state.shop)
 
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
+  const { updateAddress } = useLocation()
 
-  const { wgts, loading, searchComp, pageData, fixedTop, filterWgts, isShowHomeHeader } = state
+  const {
+    wgts,
+    loading,
+    searchComp,
+    pageData,
+    fixedTop,
+    filterWgts,
+    isShowHomeHeader,
+    info,
+    skuPanelOpen,
+    selectType
+  } = state
 
   const dispatch = useDispatch()
 
@@ -82,7 +102,12 @@ function Home() {
   }, [initState])
 
   useEffect(() => {
-    if (shopInfo && VERSION_STANDARD) {
+    dispatch(updatePurchaseShareInfo())
+    dispatch(updateInviteCode())
+  }, [])
+
+  useEffect(() => {
+    if(shopInfo && VERSION_STANDARD) {
       fetchWgts()
     }
   }, [shopInfo])
@@ -93,12 +118,19 @@ function Home() {
     }
   }, [location])
 
+  useEffect(() => {
+    if (skuPanelOpen) {
+      pageRef.current.pageLock()
+    } else {
+      pageRef.current.pageUnLock()
+    }
+  }, [skuPanelOpen])
+
   useShareAppMessage(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     let params = getCurrentPageRouteParams()
-    const dtid = getDistributorId()
-    if (dtid && !('dtid' in params)) {
-      params = Object.assign(params, { dtid })
+    if (VERSION_STANDARD) {
+      params = Object.assign(params, { dtid: getCurrentShopId() })
     }
     let path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
 
@@ -114,10 +146,8 @@ function Home() {
   useShareTimeline(async (res) => {
     const { title, imageUrl } = await api.wx.shareSetting({ shareindex: 'index' })
     let params = getCurrentPageRouteParams()
-    const dtid = getDistributorId()
-
-    if (dtid && !('dtid' in params)) {
-      params = Object.assign(params, { dtid })
+    if (VERSION_STANDARD) {
+      params = Object.assign(params, { dtid: getCurrentShopId() })
     }
 
     console.log('useShareTimeline params:', params)
@@ -129,7 +159,11 @@ function Home() {
   })
 
   const init = async () => {
+    //如果存在定位就不再重新定位了
+    // if (location === null || Object.keys(location).length === 0) {
     fetchLocation()
+    // }
+
     // 非云店
     if (!VERSION_STANDARD) {
       fetchWgts()
@@ -188,13 +222,15 @@ function Home() {
 
   // 定位
   const fetchLocation = () => {
+    console.log(!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM), 'lllllll1l3')
     if (!location && ((VERSION_STANDARD && openLocation == 1) || VERSION_PLATFORM)) {
       try {
-        entryLaunch.isOpenPosition((res) => {
-          if (res.lat) {
-            dispatch(updateLocation(res))
-          }
-        })
+        updateAddress()
+        // entryLaunch.isOpenPosition((res) => {
+        //   if (res.lat) {
+        //     dispatch(updateLocation(res))
+        //   }
+        // })
       } catch (e) {
         console.error('map location fail:', e)
       }
@@ -216,31 +252,60 @@ function Home() {
     dispatch(updateShopInfo(res))
   }
 
+  const onAddToCart = async ({ itemId, distributorId }) => {
+    Taro.showLoading()
+    try {
+      const itemDetail = await api.item.detail(itemId, {
+        showError: false,
+        distributor_id: distributorId
+      })
+      Taro.hideLoading()
+      setState((draft) => {
+        draft.info = pickBy(itemDetail, doc.goods.GOODS_INFO)
+        draft.skuPanelOpen = true
+        draft.selectType = 'addcart'
+      })
+    } catch (e) {
+      showToast(e.message)
+      Taro.hideLoading()
+    }
+  }
+
   return (
     <SpPage
       className='page-index'
       scrollToTopBtn
       // renderNavigation={renderNavigation()}
-      pageConfig={pageData?.base}
+      pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
       renderFooter={<SpTabbar />}
       loading={loading}
+      ref={pageRef}
     >
-      <View
+      <ScrollView
         className={classNames('home-body', {
           'has-home-header': isShowHomeHeader && isWeixin
         })}
+        scrollY
       >
-        {isShowHomeHeader && <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>}
-        {
-          filterWgts.length > 0 && <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
-            {/* 猜你喜欢 */}
-            <SpRecommend className='recommend-block' info={likeList} />
-          </HomeWgts>
-        }
-      </View>
+        {isShowHomeHeader && (
+          <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>
+        )}
+        {filterWgts.length > 0 && (
+          <WgtsContext.Provider
+            value={{
+              onAddToCart
+            }}
+          >
+            <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>
+              {/* 猜你喜欢 */}
+              <SpRecommend className='recommend-block' info={likeList} />
+            </HomeWgts>
+          </WgtsContext.Provider>
+        )}
+      </ScrollView>
 
-      {/* 小程序搜藏提示 */}
+      {/* 小程序收藏提示 */}
       {isWeixin && <MCompAddTip />}
 
       {/* 开屏广告 */}
@@ -248,6 +313,24 @@ function Home() {
 
       {/* 优惠券包 */}
       {VERSION_STANDARD && <SpCouponPackage />}
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
     </SpPage>
   )
 }
