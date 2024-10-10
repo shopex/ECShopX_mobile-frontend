@@ -3,6 +3,7 @@ import api from '@/api'
 
 const initialState = {
   userInfo: null,
+  isNewUser: false,
   cardInfo: {},
   vipInfo: {
     isOpen: false,
@@ -13,10 +14,16 @@ const initialState = {
   showAdv: false,
   favs: [],
   // 是用户结算的默认地址，也是附近商家的收货地址
-  address: null,
   location: null,
   chiefInfo: {}, // 团长信息
-  checkIsChief: true // 检查是否是团长
+  checkIsChief: true, // 检查是否是团长
+  address: {
+    province: '北京市',
+    city: '北京市',
+    area: '昌平区',
+    lat: '40.220415',
+    lng: '116.234890'
+  }
 }
 
 export const fetchUserFavs = createAsyncThunk('user/fetchUserFavs', async (params) => {
@@ -39,10 +46,11 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     updateUserInfo: (state, { payload }) => {
-      const { deposit, memberInfo, cardInfo, vipgrade, is_open_popularize, is_promoter, favs } =
+      const { deposit, memberInfo, cardInfo, vipgrade, is_open_popularize, is_promoter, favs ,salesPersonList} =
         payload
       state.userInfo = {
         ...memberInfo,
+        salesPersonList,
         popularize: is_open_popularize,
         isPromoter: is_promoter,
         deposit: deposit / 100 // 储值余额
@@ -56,6 +64,10 @@ const userSlice = createSlice({
         grade_name: vipgrade.grade_name
       }
       state.favs = favs
+    },
+
+    updateIsNewUser: (state, { payload }) => {
+      state.isNewUser = payload
     },
 
     updateChooseAddress: (state, { payload }) => {
@@ -98,7 +110,7 @@ const userSlice = createSlice({
   }
 })
 
-export const { updateUserInfo, updateChooseAddress, updateLocation, updateCheckChief, clearUserInfo } =
+export const { updateUserInfo, updateChooseAddress, updateLocation, updateCheckChief, clearUserInfo, updateIsNewUser } =
   userSlice.actions
 
 export default userSlice.reducer

@@ -12,7 +12,7 @@ import {
   SpFloatLayout,
   SpNumberKeyBoard
 } from '@/components'
-import { View, Text, Picker } from '@tarojs/components'
+import { View, Text, Picker, ScrollView } from '@tarojs/components'
 import { changeCoupon, changeZitiAddress } from '@/store/slices/cart'
 import { updateChooseAddress } from '@/store/slices/user'
 import { changeZitiStore } from '@/store/slices/shop'
@@ -33,7 +33,7 @@ import {
   VERSION_B2C,
   VERSION_PLATFORM
 } from '@/utils'
-import { useAsyncCallback, useLogin, usePayment, useDebounce } from '@/hooks'
+import { useAsyncCallback, useLogin, usePayment, useLocation } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
 import _cloneDeep from 'lodash/cloneDeep'
 import api from '@/api'
@@ -50,11 +50,14 @@ import CompPointUse from './comps/comp-pointuse'
 
 import './espier-checkout.scss'
 
-
 function CartCheckout(props) {
   const $instance = getCurrentInstance()
+  const { updateAddress } = useLocation()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
-    autoLogin: true
+    autoLogin: true,
+    loginSuccess: () => {
+      updateAddress()
+    }
   })
 
   const { cashierPayment } = usePayment()
@@ -103,7 +106,11 @@ function CartCheckout(props) {
     openCashier,
     buildingNumber,
     houseNumber, // 房号
-    routerParams // 路由参数
+    routerParams, // 路由参数
+    deliveryTimeList, //自配送时间
+    salespersonInfo, // 业务员信息
+    pointPayFirst,
+    isFirstCalc,//开启优先积分第一次需要填充积分抵扣
   } = state
 
   const {
@@ -144,7 +151,6 @@ function CartCheckout(props) {
   }, [isNewUser])
 
   useEffect(() => {
-    console.log(`useEffect: payType: ${payType}, address: ${address}, zitiAddress: ${zitiAddress}, receiptType: ${receiptType}`)
     if (receiptType && payType) {
       calcOrder()
     }
@@ -186,15 +192,25 @@ function CartCheckout(props) {
       }
     }
 
+    setState((draft) => {
+      draft.submitLoading = true
+    })
+
     // 判断当前店铺关联商户是否被禁用 isVaild：true有效
     const { status: isValid } = await api.distribution.merchantIsvaild({ distributor_id: shop_id })
     if (!isValid) {
       showToast('该商品已下架')
+      setState((draft) => {
+        draft.submitLoading = false
+      })
       return
     }
 
-    if(!payType) {
+    if (!payType) {
       showToast('请选择支付方式')
+      setState((draft) => {
+        draft.submitLoading = false
+      })
       return
     }
 
@@ -217,9 +233,6 @@ function CartCheckout(props) {
   }
 
   const handlePay = async () => {
-    setState((draft) => {
-      draft.submitLoading = true
-    })
     const params = await getParamsInfo()
     // 店铺是否开启社区街道
     if (openStreet) {
@@ -484,7 +497,6 @@ function CartCheckout(props) {
     Taro.showLoading({ title: '' })
     // calc.current = true
     const cus_parmas = await getParamsInfo()
-
     const orderRes = await api.cart.total(cus_parmas)
     Taro.hideLoading()
     const {
@@ -525,7 +537,10 @@ function CartCheckout(props) {
       receiver_district,
       item_fee_new,
       market_fee,
-      items_promotion
+      items_promotion,
+      deliveryTimeList,
+      salespersonInfo,
+      point_rule
     } = orderRes
 
     let subdistrictRes
@@ -617,7 +632,9 @@ function CartCheckout(props) {
           ...i_el.activity_rule
         })
       }
-      items[itmesid.indexOf(i_el.item_id)].cusActivity = activity_arr
+      if (itmesid.indexOf(i_el.item_id) !== -1) {
+        items[itmesid.indexOf(i_el.item_id)].cusActivity = activity_arr
+      }
     })
     /*  处理限购活动，添加到对应的items里---结束 */
     setState((draft) => {
@@ -625,8 +642,11 @@ function CartCheckout(props) {
       draft.totalInfo = total_info
       draft.paramsInfo = { ...paramsInfo, ...cus_parmas }
       draft.pointInfo = point_info
+      draft.deliveryTimeList = deliveryTimeList
       draft.openStreet = openStreet
       draft.openBuilding = openBuilding
+      draft.salespersonInfo = salespersonInfo
+      draft.pointPayFirst = !!point_rule?.point_pay_first
       if (openStreet) {
         const {
           multiValue,
@@ -642,6 +662,17 @@ function CartCheckout(props) {
         draft.streetCommunityTxt = streetCommunityTxt
         draft.street = street
         draft.community = community
+      }
+
+      if(isFirstCalc && !!point_rule?.point_pay_first){
+        let firstPoint = Math.min(max_point,user_point)
+
+        draft.point_use = firstPoint
+        draft.pointInfo = {
+          ...point_info,
+          real_use_point:firstPoint
+        }
+        draft.isFirstCalc = false
       }
     })
     // calc.current = false
@@ -691,7 +722,8 @@ function CartCheckout(props) {
       // 云店店铺商铺下单这个参数应该是0
       isNostores: type == 'distributor' ? 0 : 1, // 这个传参需要和后端在确定一下
       point_use,
-      pay_type: point_use > 0 && totalInfo.total_fee == 0 ? 'point' : payType,
+      pay_type:payType,
+      // pay_type: point_use > 0 && totalInfo.total_fee == 0 ? 'point' : payType,
       distributor_id: receiptType === 'ziti' && ziti_shopid ? ziti_shopid : shop_id
     }
 
@@ -701,6 +733,12 @@ function CartCheckout(props) {
       delete cus_parmas.receiver_district
       delete cus_parmas.receiver_address
       delete cus_parmas.receiver_zip
+    }
+
+    //自配送需要传送达时间
+    if (receiptType == 'merchant') {
+      const { selfDeliveryTime } = await deliverRef.current.geSelfDeliveryTime()
+      cus_parmas.self_delivery_time = selfDeliveryTime
     }
 
     // 积分不开票
@@ -871,208 +909,227 @@ function CartCheckout(props) {
 
   return (
     <SpPage ref={pageRef} className='page-cart-checkout' renderFooter={renderFooter()}>
-      {isObjectsValue(shoppingGuideData) && (
-        <View className='shopping-guide__header'>
-          此订单商品来自“{shoppingGuideData.store_name}”导购“ {shoppingGuideData.name}”的推荐
-        </View>
-      )}
-
-      <View className='cart-checkout__address'>
-        <CompDeliver
-          ref={deliverRef}
-          distributor_id={shop_id}
-          address={address}
-          onChange={handleSwitchExpress}
-          onEidtZiti={handleEditZitiClick}
-        />
-      </View>
-
-      {/* 街道、社区信息填写 */}
-      {openStreet && (
-        <View className='cart-checkout__stree'>
-          <SpCell isLink title='街道居委'>
-            <Picker
-              mode='multiSelector'
-              onChange={bindMultiPickerChange}
-              onColumnChange={bindMultiPickerColumnChange}
-              value={multiIndex}
-              range={multiValue}
-            >
-              <View className='picker-value'>{streetCommunityTxt}</View>
-            </Picker>
-          </SpCell>
-          <View className='cart-checkout__stree-desc'>
-            <Text className='required'>*</Text>疫情期间按小区统一配送！
+      <ScrollView className='scroll-view-container' scrollY>
+        {isObjectsValue(shoppingGuideData) && (
+          <View className='shopping-guide__header'>
+            此订单商品来自“{shoppingGuideData.store_name}”导购“ {shoppingGuideData.name}”的推荐
           </View>
+        )}
+
+        <View className='cart-checkout__address'>
+          <CompDeliver
+            ref={deliverRef}
+            distributor_id={shop_id}
+            address={address}
+            deliveryTimeList={deliveryTimeList}
+            onChange={handleSwitchExpress}
+            onEidtZiti={handleEditZitiClick}
+          />
         </View>
-      )}
 
-      {openBuilding && (
-        <View className='cart-checkout__building'>
-          <SpCell border title='楼号'>
-            <AtInput
-              name='buildingNumber'
-              placeholder='请输入楼号'
-              value={buildingNumber}
-              onChange={onChangeBuildInput.bind(this, 'buildingNumber')}
-            >
-              楼/栋
-            </AtInput>
-          </SpCell>
+        {openBuilding && (
+          <View className='cart-checkout__building'>
+            <SpCell border title='楼号'>
+              <AtInput
+                name='buildingNumber'
+                placeholder='请输入楼号'
+                value={buildingNumber}
+                onChange={onChangeBuildInput.bind(this, 'buildingNumber')}
+              >
+                楼/栋
+              </AtInput>
+            </SpCell>
 
-          <SpCell border title='房号'>
-            <AtInput
-              name='houseNumber'
-              placeholder='请输入房号'
-              value={houseNumber}
-              onChange={onChangeBuildInput.bind(this, 'houseNumber')}
-            >
-              号/室
-            </AtInput>
-          </SpCell>
-        </View>
-      )}
+            <SpCell border title='房号'>
+              <AtInput
+                name='houseNumber'
+                placeholder='请输入房号'
+                value={houseNumber}
+                onChange={onChangeBuildInput.bind(this, 'houseNumber')}
+              >
+                号/室
+              </AtInput>
+            </SpCell>
+          </View>
+        )}
 
-      {renderGoodsComp()}
-
-      {type !== 'limited_time_sale' && type !== 'group' && type !== 'seckill' && !bargain_id && (
-        <SpCell
-          isLink
-          className='cart-checkout__coupons'
-          title='优惠券'
-          onClick={handleCouponsClick}
-          value={couponText || '请选择'}
-        />
-      )}
-      {isWeixin && !bargain_id && totalInfo.invoice_status && (
-        <SpCell
-          isLink
-          title='开发票'
-          className='cart-checkout__invoice'
-          onClick={handleInvoiceClick}
-          value={
-            <View className='invoice-title'>
-              {invoiceTitle && (
-                <View
-                  onClick={(e) => resetInvoice(e)}
-                  className='iconfont icon-close invoice-close'
-                />
-              )}
-              {invoiceTitle || '否'}
+        {salespersonInfo?.user_id && (
+          <View className='shopping'>
+            <View className='shopping_guide'>业务员信息:</View>
+            <View className='shopping_guides'>
+              <Text>{salespersonInfo?.name}</Text>
+              <Text>{salespersonInfo?.mobile}</Text>
             </View>
-          }
-        />
-      )}
+          </View>
+        )}
 
-      {packInfo.is_open && (
-        <SpCell
-          isLink
-          className='cart-checkout__pack'
-          title={packInfo.packName}
-          onClick={() => {
-            setState((draft) => {
-              draft.isPackageOpend = true
-            })
-          }}
-          value={<View className='invoice-title'>{isNeedPackage ? '需要' : '不需要'}</View>}
-        />
-      )}
+        {renderGoodsComp()}
 
-      {/* 平台版自营店铺、云店、官方商城支持积分抵扣 */}
-      {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && shop_id == 0)) &&
-        pointInfo?.is_open_deduct_point && (
+        {type !== 'limited_time_sale' && type !== 'group' && type !== 'seckill' && !bargain_id && (
           <SpCell
             isLink
+            className='cart-checkout__coupons'
+            title='优惠券'
+            onClick={handleCouponsClick}
+            value={couponText || '请选择'}
+          />
+        )}
+        {isWeixin && !bargain_id && totalInfo.invoice_status && (
+          <SpCell
+            isLink
+            title='开发票'
             className='cart-checkout__invoice'
-            title={`${pointName}抵扣`}
-            onClick={() => {
-              setState((draft) => {
-                draft.isPointOpenModal = true
-              })
-            }}
+            onClick={handleInvoiceClick}
             value={
               <View className='invoice-title'>
-                {pointInfo.point_use > 0
-                  ? `已使用${pointInfo.real_use_point}${pointName}`
-                  : `使用${pointName}`}
+                {invoiceTitle && (
+                  <View
+                    onClick={(e) => resetInvoice(e)}
+                    className='iconfont icon-close invoice-close'
+                  />
+                )}
+                {invoiceTitle || '否'}
               </View>
             }
           />
         )}
 
-      {!bargain_id && (
-        <View>
+        {openBuilding && (
+          <View className='cart-checkout__building'>
+            <SpCell border title='楼号'>
+              <AtInput
+                name='buildingNumber'
+                placeholder='请输入楼号'
+                value={buildingNumber}
+                onChange={onChangeBuildInput.bind(this, 'buildingNumber')}
+              >
+                楼/栋
+              </AtInput>
+            </SpCell>
+
+            <SpCell border title='房号'>
+              <AtInput
+                name='houseNumber'
+                placeholder='请输入房号'
+                value={houseNumber}
+                onChange={onChangeBuildInput.bind(this, 'houseNumber')}
+              >
+                号/室
+              </AtInput>
+            </SpCell>
+          </View>
+        )}
+
+        {packInfo.is_open && (
           <SpCell
             isLink
-            className='cart-checkout__pay'
-            title='支付方式'
-            onClick={handlePaymentShow}
-            value={
-              <View>
-                {totalInfo.deduction && (
-                  <Text>
-                    {totalInfo.remainpt}
-                    {`${pointName}可用`}
-                  </Text>
-                )}
-                <Text className='invoice-title'>
-                  {payChannel ? PAYMENT_TYPE[payChannel] : '请选择'}
-                </Text>
-              </View>
-            }
+            className='cart-checkout__pack'
+            title={packInfo.packName}
+            onClick={() => {
+              setState((draft) => {
+                draft.isPackageOpend = true
+              })
+            }}
+            value={<View className='invoice-title'>{isNeedPackage ? '需要' : '不需要'}</View>}
           />
-          {totalInfo.deduction && (
-            <View>
-              可用{totalInfo.point}
-              {pointName}，抵扣 <SpPrice unit='cent' value={totalInfo.deduction} />
-              包含运费 <SpPrice unit='cent' value={totalInfo.freight_fee} />
-            </View>
-          )}
-        </View>
-      )}
+        )}
 
-      <View className='cart-checkout__total'>
-        <SpCell
-          className='trade-sub__item'
-          title='原价：'
-          value={<SpPrice unit='cent' value={totalInfo.market_fee} />}
-        />
-        <SpCell
-          className='trade-sub__item'
-          title='总价：'
-          value={<SpPrice unit='cent' value={totalInfo.item_fee_new} />}
-        />
-        <SpCell
-          className='trade-sub__item'
-          title='运费：'
-          value={<SpPrice unit='cent' value={totalInfo.freight_fee} />}
-        />
-        <SpCell
-          className='trade-sub__item'
-          title='促销：'
-          value={<SpPrice unit='cent' primary value={0 - totalInfo.promotion_discount} />}
-        />
-        <SpCell
-          className='trade-sub__item'
-          title='优惠券：'
-          value={<SpPrice unit='cent' primary value={0 - totalInfo.coupon_discount} />}
-        />
-        {/* <SpCell className='trade-sub__item' title='优惠金额：'>
-          <SpPrice unit='cent' primary value={0 - totalInfo.discount_fee} />
-        </SpCell> */}
+        {/* 平台版自营店铺、云店、官方商城支持积分抵扣 */}
         {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && shop_id == 0)) &&
-          pointInfo.is_open_deduct_point && (
+          pointInfo?.is_open_deduct_point && (
             <SpCell
-              className='trade-sub__item'
-              title={`${pointName}抵扣：`}
-              value={<SpPrice unit='cent' primary value={0 - totalInfo.point_fee} />}
+              isLink
+              className='cart-checkout__invoice'
+              title={`${pointName}抵扣`}
+              onClick={() => {
+                setState((draft) => {
+                  draft.isPointOpenModal = true
+                })
+              }}
+              value={
+                <View className='invoice-title'>
+                  {pointInfo.point_use > 0
+                    ? `已使用${pointInfo.real_use_point}${pointName}`
+                    : `使用${pointName}`}
+                </View>
+              }
             />
           )}
-      </View>
 
+        {!bargain_id && (
+          <View>
+            <SpCell
+              isLink
+              className='cart-checkout__pay'
+              title='支付方式'
+              onClick={handlePaymentShow}
+              value={
+                <View>
+                  {totalInfo.deduction && (
+                    <Text>
+                      {totalInfo.remainpt}
+                      {`${pointName}可用`}
+                    </Text>
+                  )}
+                  <Text className='invoice-title'>
+                    {payChannel ? PAYMENT_TYPE[payChannel] : '请选择'}
+                  </Text>
+                </View>
+              }
+            />
+            {totalInfo.deduction && (
+              <View>
+                可用{totalInfo.point}
+                {pointName}，抵扣 <SpPrice unit='cent' value={totalInfo.deduction} />
+                包含运费 <SpPrice unit='cent' value={totalInfo.freight_fee} />
+              </View>
+            )}
+          </View>
+        )}
+
+        <View className='cart-checkout__total'>
+          <SpCell
+            className='trade-sub__item'
+            title='原价：'
+            value={<SpPrice unit='cent' value={totalInfo.market_fee} />}
+          />
+          <SpCell
+            className='trade-sub__item'
+            title='总价：'
+            value={<SpPrice unit='cent' value={totalInfo.item_fee_new} />}
+          />
+          <SpCell
+            className='trade-sub__item'
+            title='运费：'
+            value={<SpPrice unit='cent' value={totalInfo.freight_fee} />}
+          />
+          <SpCell
+            className='trade-sub__item'
+            title='促销：'
+            value={<SpPrice unit='cent' primary value={0 - totalInfo.promotion_discount} />}
+          />
+          <SpCell
+            className='trade-sub__item'
+            title='优惠券：'
+            value={<SpPrice unit='cent' primary value={0 - totalInfo.coupon_discount} />}
+          />
+          {/* <SpCell className='trade-sub__item' title='优惠金额：'>
+          <SpPrice unit='cent' primary value={0 - totalInfo.discount_fee} />
+        </SpCell> */}
+          {(VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && shop_id == 0)) &&
+            pointInfo.is_open_deduct_point && (
+              <SpCell
+                className='trade-sub__item'
+                title={`${pointName}抵扣：`}
+                value={<SpPrice unit='cent' primary value={0 - totalInfo.point_fee} />}
+              />
+            )}
+        </View>
+      </ScrollView>
       <CompPointUse
         isOpened={isPointOpenModal}
         info={pointInfo}
+        pointPayFirst={pointPayFirst}
         onClose={() => {
           setState((draft) => {
             draft.isPointOpenModal = false
@@ -1099,8 +1156,10 @@ function CartCheckout(props) {
 
       <SpCashier
         isOpened={openCashier}
-        paymentAmount={totalInfo.freight_fee}
+        // paymentAmount={totalInfo.freight_fee}
         value={payChannel}
+        userPoint={pointInfo?.user_point}
+        pointPayFirst={pointPayFirst}
         onClose={() => {
           setState((draft) => {
             draft.openCashier = false
