@@ -49,7 +49,7 @@ function TradeEvaluate(props) {
   const onChangeContent = (e, index) => {
     // console.log("🚀🚀🚀 ~ file: trade-evaluate.js:51 ~ onChangeContent ~ e:", e, index)
     setState(draft => {
-      draft.formList[index].content = e.detail.value
+      draft.formList[index].content = e
     })
   }
 
