@@ -201,7 +201,7 @@ function WgtNearbyShop(props) {
     return (
       shopList.length > 0 && (
         <View className='shop-list'>
-          {shopList.slice(0, 2).map((item, index) => {
+          {shopList.slice(0, base.merchantsNumber).map((item, index) => {
             return (
               <View key={index} className='shop-list-item'>
                 <View className='shop-list-item-del'>
@@ -334,7 +334,7 @@ function WgtNearbyShop(props) {
     return (
       <View className='store-products'>
         <View className='store-products-list'>
-          {shopList.map((item, index) => {
+          {shopList.slice(0, base.quantityNumber).map((item, index) => {
             return (
               <View className='del' key={index}>
                 <SpGoodsItem
