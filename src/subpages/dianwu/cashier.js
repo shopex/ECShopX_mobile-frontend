@@ -462,7 +462,7 @@ function DianWuCashier() {
           </View>
         ))}
       </View> */}
-      <ScrollView className='item-list-scroll' scrollY>
+      <ScrollView className='item-list' scrollY>
         {cartList[0]?.list.length == 0 && <SpNote img='empty_data.png' title='暂时还没有商品' />}
         {cartList[0]?.list.length > 0 && (
           <View className='block-goods'>
