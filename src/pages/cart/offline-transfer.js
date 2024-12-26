@@ -372,13 +372,13 @@ function OfflineTransfer(props) {
             </SpCell>
           </View>
 
-          {info?.check_status == 2 && (
+          {info?.check_status && (
             <View className='page-address-edit__form'>
               <View className='head-box'>
                 <View className='head-box-title'>审核信息</View>
               </View>
               <SpCell className='logistics-no border-bottom' title='审核状态'>
-                审核拒绝
+                {info?.check_status == 2 ? '审核拒绝' : '审核通过'}
               </SpCell>
               <SpCell className='logistics-no border-bottom' title='审核备注'>
                 {info?.remark}
