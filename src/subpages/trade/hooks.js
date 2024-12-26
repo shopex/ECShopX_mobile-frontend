@@ -111,7 +111,7 @@ export default (props) => {
     const btns = []
     const isData = receiptType == 'dada'
 
-    if(offlinePayCheckStatus == '2'){
+    if(offlinePayCheckStatus == '2' && orderStatus == 'NOTPAY'){
       //线下转账拒绝时修改付款凭证
       btns.push(tradeActionBtns.CHANGE_OFFLINE)
     }
