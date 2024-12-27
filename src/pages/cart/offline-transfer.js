@@ -6,7 +6,7 @@ import { View, Switch, Text, Button, ScrollView, Picker } from '@tarojs/componen
 import { AtInput, AtButton, AtTextarea } from 'taro-ui'
 import { SpCell, SpPage, SpAddress, SpUpload, SpSearchInput } from '@/components'
 import api from '@/api'
-import { isWxWeb, showToast, formatDateTime } from '@/utils'
+import { isWxWeb, showToast, formatDateTime, classNames } from '@/utils'
 import S from '@/spx'
 import { useNavigation } from '@/hooks'
 
@@ -222,7 +222,7 @@ function OfflineTransfer(props) {
               type='primary'
               loading={submitLoading}
               disabled={submitLoading}
-              className='submit-btn'
+              className={classNames('submit-btn',{'dianwu-primary':params.isDianwu})}
               style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
               onClick={handleSubmit}
             >
