@@ -333,16 +333,27 @@ function DianwuCheckout(props) {
   }
 
   //线下转账
-  const handleClickOfflinePay = async() => {
+  const handleClickOfflinePay = async () => {
+    Taro.showLoading({ title: '正在创建订单中', mask: true })
     const order_id = await createOrder()
-    // await api.dianwu.orderPayment({
-    //   order_id,
-    //   pay_type: 'pos'
-    // })
-    dispatch(selectMember(null))
-    onEventCreateOrder()
-    Taro.navigateTo({url:`/pages/cart/offline-transfer?has_check=false&isDianwu=true&order_id=${order_id}`})
-    // Taro.redirectTo({ url: `/subpages/dianwu/collection-result?order_id=${order_id}&pay_type=pos` })
+    await api.dianwu.orderPayment({
+      order_id,
+      pay_type: 'offline_pay',
+      pay_channel: 'offline_pay'
+    })
+    Taro.hideLoading()
+    Taro.showToast({
+      icon: 'none',
+      title: '订单创建成功'
+    })
+
+    setTimeout(() => {
+      Taro.redirectTo({
+        url: `/pages/cart/offline-transfer?has_check=false&isDianwu=true&order_id=${order_id}`
+      })
+      dispatch(selectMember(null))
+      onEventCreateOrder()
+    }, 400)
   }
 
   const onEventCreateOrder = () => {

@@ -13,6 +13,11 @@
     font-size: 30px;
   }
 
+  .dianwu-primary {
+    border-color: var(--color-dianwu-primary) !important;
+    background: var(--color-dianwu-primary) !important;
+  }
+
   .page-address-edit__form {
     border-radius: 16px;
     padding: 8px 32px;
@@ -140,11 +145,11 @@
     align-items: flex-start !important;
   }
 
-  .placeholder-txt{
+  .placeholder-txt {
     color: #ccc;
   }
 
-  .pic-tips{
+  .pic-tips {
     color: #999;
 
   }
