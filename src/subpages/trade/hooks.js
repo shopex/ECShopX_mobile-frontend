@@ -116,7 +116,7 @@ export default (props) => {
       btns.push(tradeActionBtns.CHANGE_OFFLINE)
     }
 
-    if (orderStatus == 'NOTPAY') { // 未支付
+    if (orderStatus == 'NOTPAY' &&  offlinePayCheckStatus != '0') { // 未支付
       if (canApplyCancel) {
         btns.push(tradeActionBtns.CANCEL)
       }

@@ -11,25 +11,32 @@
 
   .submit-btn {
     font-size: 30px;
+    color: #fff;
   }
 
   .dianwu-primary {
     border-color: var(--color-dianwu-primary) !important;
     background: var(--color-dianwu-primary) !important;
+
+  }
+
+  .normal-primary{
+    border-color: var(--color-primary) !important;
+    background: var(--color-primary) !important;
   }
 
   .page-address-edit__form {
     border-radius: 16px;
-    padding: 8px 32px;
+    padding: 16px;
     margin-top: 24px;
 
     .required .sp-cell__hd::before {
       content: '*';
       display: inline-block;
       color: #b50303;
-      width: 28rpx;
+      width: 28px;
       position: absolute;
-      left: -16rpx;
+      left: -16px;
     }
 
     .sp-cell {
@@ -49,6 +56,17 @@
         color: #666;
         font-size: 28px;
       }
+    }
+  }
+
+  .offline-voucher-pc{
+    display: flex;
+    flex-direction: column;
+    .sp-cell__hd{
+      width: 100%;
+    }
+    .sp-cell__bd{
+      width: 100%;
     }
   }
 
@@ -91,7 +109,7 @@
     border-bottom: 1PX solid #DDDDDD;
   }
 
-  .logistics-no {
+  .offline-item {
     .at-input {
       margin-bottom: 0;
       padding: 0;
@@ -151,12 +169,13 @@
 
   .pic-tips {
     color: #999;
-
+    width: 100%;
+    text-align: left;
+    margin: 8px 0 16px 0;
   }
 
   .head-box {
     width: 100%;
-    padding-top: 16px;
     box-sizing: border-box;
 
     &-title {
@@ -166,20 +185,65 @@
       display: flex;
       align-items: center;
 
-      &::before {
-        content: '';
-        display: block;
-        width: 10px;
-        height: 32px;
-        border-radius: 16px;
-        background: linear-gradient(to bottom, red, #fff);
-        margin-right: 16px;
-      }
+      // &::before {
+      //   content: '';
+      //   display: block;
+      //   width: 10px;
+      //   height: 32px;
+      //   border-radius: 16px;
+      //   background: linear-gradient(to bottom, red, #fff);
+      //   margin-right: 16px;
+      // }
     }
 
     &-subtitle {
-      color: #999;
+      color: #333;
       margin-top: 16px;
+    }
+  }
+
+  .pic-box{
+    display: flex;
+    flex-wrap: wrap;
+    &-item{
+      margin-right: 26px;
+      margin-bottom: 36px;
+    }
+  }
+
+  .account-item{
+    width: 100%;
+    padding: 32px;
+    box-sizing: border-box;
+    border: 1PX solid #ccc ;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+    &-active{
+      border-color:var(--color-primary);
+      background: rgba(var(--color-rgb), 0.2);
+    }
+    &-dianwu-active{
+      border-color:var(--color-dianwu-primary);
+      background: rgba(var(--color-dianwu-rgb), 0.2);
+    }
+    &-content{
+      margin-left: 16px;
+      color: #333;
+      font-size: 16px;
+      &-bank{
+        font-size: 32px;
+        font-weight: 600;
+        color: #000;
+      }
+      &-name{
+        margin: 12px 0;
+        font-size: 26px;
+      }
+      &-no{
+        font-size: 26px;
+      }
     }
   }
 }

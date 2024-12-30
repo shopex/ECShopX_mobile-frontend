@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance, useRouter } from '@tarojs/taro'
-import { View, Switch, Text, Button, ScrollView, Picker } from '@tarojs/components'
-import { AtInput, AtButton, AtTextarea } from 'taro-ui'
-import { SpCell, SpPage, SpAddress, SpUpload, SpSearchInput } from '@/components'
+import { View, ScrollView } from '@tarojs/components'
+import { AtInput, AtButton } from 'taro-ui'
+import { SpCell, SpPage, SpUpload, SpImage } from '@/components'
 import api from '@/api'
-import { isWxWeb, showToast, formatDateTime, classNames } from '@/utils'
-import S from '@/spx'
-import { useNavigation } from '@/hooks'
+import { showToast, formatDateTime, classNames } from '@/utils'
 
 import './offline-transfer.scss'
 
@@ -26,24 +24,21 @@ const initialState = {
     transfer_remark: '',
     voucher_pic: []
   },
+  accountId: '',
   setting: {},
   totalFee: 0,
   submitLoading: false,
   listLength: 0,
-  isOpened: false,
-  accountList: [
-    { label: '手机号', value: 'phone' },
-    { label: '客户名称', value: 'custonmerName' }
-  ]
+  accountList: []
 }
 
-function OfflineTransfer(props) {
+function OfflineTransfer() {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
-  const colors = useSelector((state) => state.colors.current)
+  const colors = useSelector((_state) => _state.colors.current)
   const { params } = useRouter()
 
-  const { info, accountList, submitLoading, totalFee, setting, isOpened } = state
+  const { info, accountList, submitLoading, totalFee, setting, accountId } = state
 
   useEffect(() => {
     if (params.order_id) {
@@ -57,8 +52,8 @@ function OfflineTransfer(props) {
     const { list: _accountList, setting: _setting } = await api.trade.getAackaccountList()
 
     let _info,
+      _accountId,
       accountRes = {}
-    // debugger
     if (params.has_check == 'true') {
       //编辑
       accountRes = await api.trade.getVoucher({ order_id })
@@ -68,6 +63,7 @@ function OfflineTransfer(props) {
         bank_account_no,
         bank_name,
         china_ums_no,
+        bank_account_id,
         pay_account_name,
         pay_account_bank,
         pay_account_no,
@@ -86,6 +82,7 @@ function OfflineTransfer(props) {
         bank_account_no,
         bank_name,
         china_ums_no,
+        bank_account_id,
         pay_account_name,
         pay_account_bank,
         pay_account_no,
@@ -97,14 +94,15 @@ function OfflineTransfer(props) {
         check_status,
         id
       }
+
+      _accountId = bank_account_id
     } else {
-      //新增：取默认收款账户
-      const defaultAccountItem = _accountList.find((item) => item.is_default == '1')
+      //新增：
       _info = JSON.parse(JSON.stringify(info))
-      ;['bank_account_name', 'bank_account_no', 'bank_name', 'china_ums_no'].forEach((item) => {
-        _info[item] = defaultAccountItem[item]
-      })
       _info.order_id = order_id
+      // 取默认收款账户
+      const defaultAccountItem = _accountList.find((item) => item.is_default == '1')
+      _accountId = defaultAccountItem.id
     }
 
     setState((draft) => {
@@ -112,6 +110,7 @@ function OfflineTransfer(props) {
       draft.accountList = _accountList
       draft.info = _info
       draft.setting = _setting
+      draft.accountId = _accountId
     })
   }
 
@@ -120,33 +119,27 @@ function OfflineTransfer(props) {
 
     _info[name] = val
     console.log('---', name, val, e, _info)
-    // debugger
     setState((draft) => {
       draft.info = _info
     })
   }
 
   const handleSubmit = async () => {
+    // const {bank_account_name, bank_account_no, bank_name, china_ums_no } = accountList.find(item=>item.id == accountId) ?? {}
     const data = {
       ...info,
       pay_fee: totalFee
+      // bank_account_name,
+      // bank_account_no,
+      // bank_name,
+      // china_ums_no
     }
 
-    if (!data.bank_account_name) {
-      return showToast('请输入收款户名')
+    if (!accountId) {
+      return showToast('请选择收款账户')
     }
 
-    // if (!data.pay_account_name) {
-    //   return showToast('请输入付款用户名')
-    // }
-
-    // if (!data.pay_account_bank) {
-    //   return showToast('请输入付款银行')
-    // }
-
-    // if (!data.pay_account_no) {
-    //   return showToast('请输入付款卡号')
-    // }
+    data.bank_account_id = accountId
 
     if (!data.voucher_pic.length) {
       return showToast('请上传凭证')
@@ -174,8 +167,10 @@ function OfflineTransfer(props) {
         if (params.isDetail) {
           Taro.eventCenter.trigger('onEventOfflineApply')
           Taro.navigateBack()
-        } else if(params.isDianwu){
-          Taro.redirectTo({ url: `/subpages/dianwu/collection-result?order_id=${params.order_id}&pay_type=offline_pay` })
+        } else if (params.isDianwu) {
+          Taro.redirectTo({
+            url: `/subpages/dianwu/collection-result?order_id=${params.order_id}&pay_type=offline_pay`
+          })
         } else {
           Taro.redirectTo({ url: `/subpages/trade/detail?order_id=${params.order_id}` })
         }
@@ -209,6 +204,32 @@ function OfflineTransfer(props) {
     })
   }
 
+  const handleAccountItemClick = (idx) => {
+    if (params.onlyView) return
+    setState((draft) => {
+      draft.accountId = accountList[idx]?.id
+    })
+  }
+
+  const accountItemRender = (item, idx) => {
+    return (
+      <View
+        key={item.idx}
+        onClick={() => handleAccountItemClick(idx)}
+        className={classNames('account-item', { 'account-item-active': item.id == accountId && !params.isDianwu,
+          'account-item-dianwu-active': item.id == accountId && params.isDianwu,
+        })}
+      >
+        <SpImage src={item.pic} width={90} height={90} mode='aspectFill' circle />
+        <View className='account-item-content'>
+          <View className='account-item-content-bank'>{item.bank_name}</View>
+          <View className='account-item-content-name'>{item.bank_account_name}</View>
+          <View className='account-item-content-no'>{item.bank_account_no}</View>
+        </View>
+      </View>
+    )
+  }
+
   console.log('info', info)
 
   return (
@@ -219,11 +240,9 @@ function OfflineTransfer(props) {
           <View className='btns'>
             <AtButton
               circle
-              type='primary'
               loading={submitLoading}
               disabled={submitLoading}
-              className={classNames('submit-btn',{'dianwu-primary':params.isDianwu})}
-              style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+              className={classNames('submit-btn', { 'dianwu-primary': params.isDianwu,'normal-primary': !params.isDianwu })}
               onClick={handleSubmit}
             >
               提交凭证
@@ -239,55 +258,7 @@ function OfflineTransfer(props) {
               <View className='head-box-title'>收款账号</View>
               <View className='head-box-subtitle'>{setting?.pay_tips}</View>
             </View>
-            <SpCell className='logistics-no border-bottom required' title='收款户名'>
-              <Picker
-                mode='selector'
-                rangeKey='bank_account_name'
-                range={accountList}
-                onChange={handleAccountChange}
-              >
-                <View
-                  className='search-condition'
-                  onClick={() => {
-                    setState((draft) => {
-                      draft.searchConditionVis = true
-                    })
-                  }}
-                >
-                  {info?.bank_account_name || (
-                    <View className='placeholder-txt'>请选择收款户名</View>
-                  )}
-                </View>
-              </Picker>
-            </SpCell>
-
-            <SpCell className='logistics-no border-bottom' title='银行账户'>
-              <AtInput
-                name='bank_account_no'
-                value={info?.bank_account_no}
-                placeholder='请输入银行账户'
-                disabled
-                onChange={(e) => handleChange('bank_account_no', e)}
-              />
-            </SpCell>
-            <SpCell className='logistics-no border-bottom' title='开户银行'>
-              <AtInput
-                name='bank_name'
-                value={info?.bank_name}
-                placeholder='请输入开户银行'
-                disabled
-                onChange={(e) => handleChange('bank_name', e)}
-              />
-            </SpCell>
-            <SpCell className='logistics-no' title='银联号'>
-              <AtInput
-                name='china_ums_no'
-                value={info?.china_ums_no}
-                placeholder='请输入银联号'
-                disabled
-                onChange={(e) => handleChange('china_ums_no', e)}
-              />
-            </SpCell>
+            {accountList.length > 0 && accountList.map((item, idx) => accountItemRender(item, idx))}
           </View>
 
           <View className='page-address-edit__form'>
@@ -295,7 +266,7 @@ function OfflineTransfer(props) {
               <View className='head-box-title'>付款信息</View>
               <View className='head-box-subtitle'>{setting?.pay_desc}</View>
             </View>
-            {/* <SpCell className='logistics-no border-bottom required' title='付款用户名'>
+            {/* <SpCell className='offline-item border-bottom required' title='付款用户名'>
               <AtInput
                 name='pay_account_name'
                 value={info?.pay_account_name}
@@ -304,7 +275,7 @@ function OfflineTransfer(props) {
               />
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom required' title='付款银行'>
+            <SpCell className='offline-item border-bottom required' title='付款银行'>
               <AtInput
                 name='telephone'
                 value={info?.pay_account_bank}
@@ -312,7 +283,7 @@ function OfflineTransfer(props) {
                 onChange={(e) => handleChange('pay_account_bank', e)}
               />
             </SpCell>
-            <SpCell className='logistics-no border-bottom required' title='付款卡号'>
+            <SpCell className='offline-item border-bottom required' title='付款卡号'>
               <AtInput
                 name='pay_account_no'
                 value={info?.pay_account_no}
@@ -321,17 +292,18 @@ function OfflineTransfer(props) {
               />
             </SpCell> */}
 
-            <SpCell className='logistics-no border-bottom' title='订单编号'>
-              <AtInput
+            <SpCell className='offline-item border-bottom' title='订单编号'>
+              {/* <AtInput
                 name='order_id'
                 value={info?.order_id}
                 placeholder='请输入订单编号'
                 disabled
                 onChange={(e) => handleChange('order_id', e)}
-              />
+              /> */}
+              {info?.order_id}
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom' title='交易流水号'>
+            <SpCell className='offline-item border-bottom' title='交易流水号'>
               <AtInput
                 name='pay_sn'
                 value={info?.pay_sn}
@@ -340,29 +312,49 @@ function OfflineTransfer(props) {
               />
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom' title='转账金额'>
-              <AtInput
+            <SpCell className='offline-item border-bottom' title='转账金额'>
+              {/* <AtInput
                 name='totalFee'
                 value={(totalFee / 100).toFixed(2)}
                 placeholder='请输入转账金额'
                 disabled
                 onChange={(e) => handleChange('totalFee', e)}
-              />
+              /> */}
+              {(totalFee / 100).toFixed(2)}
             </SpCell>
-            <SpCell className='logistics-no border-bottom required' title='上传凭证图片'>
+            <SpCell
+              className='offline-item border-bottom offline-voucher-pc required'
+              title='上传凭证图片'
+            >
               <View>
-                <SpUpload
-                  value={info?.voucher_pic}
-                  max={6}
-                  onChange={(val) => {
-                    handleChange('voucher_pic', val)
-                  }}
-                />
                 <View className='pic-tips'>支持png、jpg、gif、jpeg格式</View>
+
+                {!params.onlyView && (
+                  <SpUpload
+                    value={info?.voucher_pic}
+                    max={6}
+                    onChange={(val) => {
+                      handleChange('voucher_pic', val)
+                    }}
+                  />
+                )}
+                {params.onlyView && (
+                  <View className='pic-box'>
+                    {info?.voucher_pic.map((item, idx) => (
+                      <SpImage
+                        src={item}
+                        width={180}
+                        height={180}
+                        key={idx}
+                        className='pic-box-item'
+                      />
+                    ))}
+                  </View>
+                )}
               </View>
             </SpCell>
 
-            <SpCell className='logistics-no' title='转账备注'>
+            <SpCell className='offline-item' title='转账备注'>
               <AtInput
                 name='transfer_remark'
                 value={info?.transfer_remark}
@@ -377,13 +369,13 @@ function OfflineTransfer(props) {
               <View className='head-box'>
                 <View className='head-box-title'>审核信息</View>
               </View>
-              <SpCell className='logistics-no border-bottom' title='审核状态'>
+              <SpCell className='offline-item border-bottom' title='审核状态'>
                 {info?.check_status == 2 ? '审核拒绝' : '审核通过'}
               </SpCell>
-              <SpCell className='logistics-no border-bottom' title='审核备注'>
+              <SpCell className='offline-item border-bottom' title='审核备注'>
                 {info?.remark}
               </SpCell>
-              <SpCell className='logistics-no' title='审核时间'>
+              <SpCell className='offline-item' title='审核时间'>
                 {formatDateTime(info?.update_time * 1000)}
               </SpCell>
             </View>

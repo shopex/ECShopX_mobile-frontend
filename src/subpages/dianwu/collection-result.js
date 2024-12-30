@@ -140,7 +140,7 @@ function DianwuCollectionResult(props) {
                   <Text className='iconfont icon-correct'></Text>收款成功
                 </>
               )}
-              {pay_type == 'offline_pay' && info.offlinePayCheckStatus == 0 && <>待商家确认支付</>}
+              {pay_type == 'offline_pay' && info.offlinePayCheckStatus == 0 && <>待商家确认</>}
             </View>
             {info.username && (
               <View className='user-info'>
