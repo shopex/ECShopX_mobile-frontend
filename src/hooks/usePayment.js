@@ -85,7 +85,7 @@ export default (props = {}) => {
 
   // 当前路由是订单详情页
   const isTradeDetaiPage = () => {
-    return router.path == '/subpages/trade/detail'
+    return router.path?.split('?')[0] == '/subpages/trade/detail'
   }
 
   const paySuccess = (params, orderInfo) => {
