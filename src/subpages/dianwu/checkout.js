@@ -568,10 +568,10 @@ function DianwuCheckout(props) {
             <Text className='iconfont icon-money1'></Text>
             <Text>现金收款</Text>
           </SpCell>
-          <SpCell isLink onClick={handleClickOfflinePay}>
+          {/* <SpCell isLink onClick={handleClickOfflinePay}>
             <Text className='iconfont icon-money1'></Text>
             <Text>线下银行转账</Text>
-          </SpCell>
+          </SpCell> */}
         </AtModalContent>
       </AtModal>
 
