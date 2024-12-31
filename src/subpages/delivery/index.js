@@ -16,7 +16,7 @@ const initialConfigState = {
     { name: '订单管理', icon: 'icon-dingdanguanli', path: '/subpages/delivery/list' },
     { name: '售后跟进', icon: 'icon-daikexiadan', path: '/subpages/delivery/after-sale-list' },
     {
-      name: '配送业绩',
+      name: '配送统计',
       icon: 'icon-yewuyuantuiguang',
       path: '/subpages/delivery/achievement'
     },
@@ -101,15 +101,6 @@ const Index = () => {
     })
   }
 
-  const onFormatChange = ()=>{
-    let params = {
-      ...parameter,
-      date: ''
-    }
-    setState((draft) => {
-      draft.parameter = params
-    })
-  }
 
   const onTimeChange = (time, val) => {
     let params = {
@@ -172,7 +163,6 @@ const Index = () => {
           </View>
           <SpTime
             onTimeChange={onTimeChange}
-            onFormatChange={onFormatChange}
             selects={parameter.datetype}
             nowTimeDa={parameter.date}
           />
