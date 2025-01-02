@@ -154,6 +154,12 @@ function OfflineTransfer() {
       return showToast('请上传凭证')
     }
 
+    if(params.isDianwu){
+      const { userId } = Taro.getStorageSync('userinfo')
+      data.isSalesmanPage = 1
+      data.promoter_user_id = userId
+    }
+
     console.log('参数', data)
 
     Taro.showLoading('正在提交')
