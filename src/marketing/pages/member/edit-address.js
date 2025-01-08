@@ -118,9 +118,9 @@ function AddressIndex(props) {
     } else {
       nInfo[name] = val
     }
-    // setState((draft) => {
-    //   draft.info = nInfo
-    // })
+    setState((draft) => {
+      draft.info = nInfo
+    })
   }
 
   const handleDefChange = (e) => {
@@ -213,6 +213,7 @@ function AddressIndex(props) {
               <AtInput
                 name='username'
                 value={info?.username}
+                cursor={info?.username?.length}
                 placeholder='收件人姓名'
                 onChange={(e) => handleChange('username', e)}
               />
@@ -223,6 +224,7 @@ function AddressIndex(props) {
                 name='telephone'
                 maxLength={11}
                 value={info?.telephone}
+                cursor={info?.telephone?.length}
                 placeholder='收件人手机号'
                 onChange={(e) => handleChange('telephone', e)}
               />
@@ -249,6 +251,7 @@ function AddressIndex(props) {
                 count={false}
                 // name='adrdetail'
                 value={info?.adrdetail}
+                cursor={info?.adrdetail?.length}
                 maxLength={100}
                 placeholder='请填写详细地址（街道、门牌）'
                 onChange={handleChange.bind(this, 'adrdetail')}
