@@ -25,7 +25,8 @@ function SpGoodsPrice(props) {
         <View className='activity'>
           <SpPrice size={32} className='sale-price' value={price} />
           <View className='activity-wrap'>
-            活动价 <SpPrice size={42} className='activity-price' value={activityPrice} />
+            <Text className='activity-label'>活动价</Text>
+            <SpPrice size={42} className='activity-price' value={activityPrice} />
           </View>
         </View>
       )}
