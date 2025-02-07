@@ -56,7 +56,7 @@ export default class DistributionSubordinate extends Component {
     })
 
     return {
-      total
+      total: total_count
     }
   }
 
