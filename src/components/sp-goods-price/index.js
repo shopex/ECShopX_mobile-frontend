@@ -23,10 +23,10 @@ function SpGoodsPrice(props) {
     <View className={classNames('sp-goods-price')}>
       {!isNaN(activityPrice) && (
         <View className='activity'>
-          <SpPrice size={32} className='sale-price' value={price} />
+          <SpPrice size={30} className='sale-price' value={price} />
           <View className='activity-wrap'>
             <Text className='activity-label'>活动价</Text>
-            <SpPrice size={42} className='activity-price' value={activityPrice} />
+            <SpPrice size={36} className='activity-price' value={activityPrice} />
           </View>
         </View>
       )}
