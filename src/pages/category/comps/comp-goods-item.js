@@ -29,7 +29,6 @@ function CompGoodsItem(props) {
     showPrice = true,
     hideStore = false
   } = props
-
    const { isLogin, isNewUser, login, getUserInfoAuth } = useLogin({
       // autoLogin: true,
     })
@@ -192,7 +191,7 @@ function CompGoodsItem(props) {
             {!info.is_point && showPrice && (
               <View className='goods-price'>
                 <View className='gd-price'>
-                  <SpPrice value={info.price} size={36}></SpPrice>
+                  <SpPrice value={info.activityPrice || info.price} size={36}></SpPrice>
                   {info.price - info.activityPrice > 0 ? (
                     <Text className='unit-price'>{info.price}</Text>
                   ) : (
