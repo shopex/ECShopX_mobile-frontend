@@ -47,7 +47,16 @@ function OfflineTransfer() {
   }, [params])
 
   const fetchOrderDetail = async (order_id) => {
-    const { orderInfo } = await api.trade.detail(order_id)
+    let _params = {};
+    if(params.isDianwu){
+      const { userId } = Taro.getStorageSync('userinfo')
+      _params = {
+        isSalesmanPage:1,
+        promoter_user_id:userId
+      }
+    }
+
+    const { orderInfo } = await api.trade.detail(order_id,_params)
     //获取收款账户列表
     const { list: _accountList, setting: _setting } = await api.trade.getAackaccountList()
 
@@ -145,6 +154,12 @@ function OfflineTransfer() {
       return showToast('请上传凭证')
     }
 
+    if(params.isDianwu){
+      const { userId } = Taro.getStorageSync('userinfo')
+      data.isSalesmanPage = 1
+      data.promoter_user_id = userId
+    }
+
     console.log('参数', data)
 
     Taro.showLoading('正在提交')
@@ -166,6 +181,7 @@ function OfflineTransfer() {
       setTimeout(() => {
         if (params.isDetail) {
           Taro.eventCenter.trigger('onEventOfflineApply')
+          Taro.eventCenter.trigger('onEventOrderStatusChange')
           Taro.navigateBack()
         } else if (params.isDianwu) {
           Taro.redirectTo({
@@ -225,6 +241,7 @@ function OfflineTransfer() {
           <View className='account-item-content-bank'>{item.bank_name}</View>
           <View className='account-item-content-name'>{item.bank_account_name}</View>
           <View className='account-item-content-no'>{item.bank_account_no}</View>
+          <View className='account-item-content-no'>{item.china_ums_no}</View>
         </View>
       </View>
     )
@@ -254,7 +271,7 @@ function OfflineTransfer() {
       <ScrollView className='scroll-view-container'>
         <View className='scroll-view-body'>
           <View className='page-address-edit__form'>
-            <View className='head-box'>
+            <View className='head-box '>
               <View className='head-box-title'>收款账号</View>
               <View className='head-box-subtitle'>{setting?.pay_tips}</View>
             </View>
