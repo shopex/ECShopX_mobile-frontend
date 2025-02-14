@@ -188,6 +188,18 @@ function SpLogin(props, ref) {
   // eslint-disable-next-line no-undef
   const { icon, nickname } = __wxConfig.accountInfo
 
+  const handleClick = async () => {
+    if (isLogin) {
+      onChange && onChange()
+    } else {
+      Taro.showLoading()
+      await handleUserLogin()
+      Taro.hideLoading()
+      // 自动
+      setLoginModal(true)
+    }
+  }
+
   return (
     <View className={classNames('sp-login', className)}>
       <View onClick={handleClickLogin}>{children}</View>

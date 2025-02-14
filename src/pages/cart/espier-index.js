@@ -345,7 +345,10 @@ function CartIndex() {
                                     onChange={onChangeGoodsIsCheck.bind(this, c_sitem, 'single')}
                                   />
                                   <CompGoodsItem
-                                    info={c_sitem}
+                                    info={{
+                                      ...c_sitem,
+                                      promotions: c_sitem.activity_info?.map(c_sitem_item => ({promotion_tag: c_sitem_item.info})),
+                                    }}
                                     onDelete={onDeleteCartGoodsItem.bind(this, c_sitem)}
                                     onChange={onChangeCartGoodsItem.bind(this, c_sitem)}
                                     onClickImgAndTitle={onClickImgAndTitle.bind(this, c_sitem)}
