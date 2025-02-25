@@ -52,7 +52,8 @@ export const TRADE_ITEM = {
       refundNum: 1,
       point: 'point',
       checked: () => false,
-      showAftersales: ({ show_aftersales }) => show_aftersales == 1
+      showAftersales: ({ show_aftersales }) => show_aftersales == 1,
+      isPrescription: 'is_prescription',
     })
   },
   selfDeliveryOperatorName:'self_delivery_operator_name',

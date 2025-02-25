@@ -18,6 +18,14 @@
       font-weight: 600;
       margin-bottom: 16px;
     }
+
+    &-link{
+      display: flex;
+      align-items: center;
+      .icon-qianwang-01{
+        margin-left: 4px;
+      }
+    }
   }
 
   .padding-view {
