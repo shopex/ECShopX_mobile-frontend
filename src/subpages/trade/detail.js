@@ -210,7 +210,7 @@ function TradeDetail(props) {
       order_id: orderId,
       order_type: orderType,
       pay_type: payType,
-      has_check: ![null,undefined].includes(offlinePayCheckStatus)
+      has_check: ![null, undefined].includes(offlinePayCheckStatus)
     }
     cashierPayment(params, orderInfo, () => {
       fetch()
@@ -363,13 +363,13 @@ function TradeDetail(props) {
   }
 
   const isShowCancleTime = () => {
-    if(info?.orderStatus == 'NOTPAY' ){
-      if(info.offlinePayCheckStatus == '0' && info?.orderStatus == 'NOTPAY' ){
+    if (info?.orderStatus == 'NOTPAY') {
+      if (info.offlinePayCheckStatus == '0' && info?.orderStatus == 'NOTPAY') {
         return false
-      }else{
+      } else {
         return true
       }
-    }else{
+    } else {
       return false
     }
   }
@@ -612,6 +612,44 @@ function TradeDetail(props) {
         </View>
         {/* <View className='block-container'>
         </View> */}
+        <View className='block-container order-info'>
+          <View className='block-container-label'>处方信息</View>
+          <SpCell
+            title='开方医生'
+            value={(() => {
+              return (
+                <View>
+                  陈鑫
+                </View>
+              )
+            })()}
+          />
+          <SpCell title='开方记录' value={(() => {
+            return (
+              <View className='block-container-link'>
+                查看 <Text className='iconfont icon-qianwang-01' />
+              </View>
+            )
+          })()}
+          />
+          <SpCell title='审方药师' value={(() => {
+            return (
+              <View>
+                陈鑫
+              </View>
+            )
+          })()}
+          />
+          <SpCell title='电子处方' value={(() => {
+            return (
+              <View className='block-container-link'>
+                查看 <Text className='iconfont icon-qianwang-01' />
+              </View>
+            )
+          })()}
+          />
+        </View>
+
         <View className='block-container order-info'>
           <View className='block-container-label'>订单信息</View>
           <SpCell
