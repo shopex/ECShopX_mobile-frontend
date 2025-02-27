@@ -210,7 +210,7 @@ function SpGoodsItem(props) {
 
             {showAddCart && (
               <View onClick={(e) => onChangeToolBar(e)}>
-                <Text className='iconfont icon-gouwuche2' />
+                <Text className='iconfont icon-peisongguanli' />
               </View>
             )}
           </View>
