@@ -132,9 +132,6 @@ export default (props) => {
       if (deliveryStatus != 'PENDING' && !isData) {
         btns.push(tradeActionBtns.LOGISTICS)
       }
-      if(isMerchant){
-        btns.push(tradeActionBtns.TRACK)
-      }
       if (canApplyAftersales) {
         btns.push(tradeActionBtns.AFTER_SALES)
       }
