@@ -15,6 +15,7 @@ const TABBAR_LIST = [
   },
   {
     title: '身份切换',
+    key:'identity',
     iconType: 'dianpushangpinlist',
     url: '/subpages/purchase/select-identity',
     text: true
@@ -31,6 +32,7 @@ function CompTabbar(props) {
   const dispatch = useDispatch()
   const { colorPrimary } = useSelector((state) => state.sys)
   const { cartSalesman = 0 } = useSelector((state) => state.cart)
+  const { hasValidIdentity } = useSelector((state) => state.purchase)
 
 
   useEffect(() => {
@@ -42,7 +44,12 @@ function CompTabbar(props) {
     await dispatch(updateSalesmanCount({ shop_type: 'distributor',isSalesmanPage: 1 }))
   }
 
-  const tabList = TABBAR_LIST.map((item) => {
+  let tabbarList = JSON.parse(JSON.stringify(TABBAR_LIST))
+  if(!hasValidIdentity){
+    tabbarList = tabbarList.filter(item=>item.key != 'identity')
+  }
+
+  const tabList = tabbarList.map((item) => {
     return {
       title: item.title,
       name: item.title,
@@ -59,7 +66,7 @@ function CompTabbar(props) {
   if (pages.length > 0) {
     let currentPage = pages[pages.length - 1].route
     currentPage = isWeb ? currentPage.split('?')[0] : `/${currentPage}`
-    currentIndex = TABBAR_LIST.findIndex((tab) => {
+    currentIndex = tabbarList.findIndex((tab) => {
       return tab.url.split('?')[0] == currentPage
     })
   }

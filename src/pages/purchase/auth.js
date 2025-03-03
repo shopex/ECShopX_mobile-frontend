@@ -15,7 +15,7 @@ import './auth.scss'
 
 function PurchaseAuth() {
   const { isLogin, checkPolicyChange, isNewUser, setToken, login } = useLogin({
-    autoLogin: true,
+    autoLogin: false,
     policyUpdateHook: (isUpdate) => {
       isUpdate && setPolicyModal(true)
     }

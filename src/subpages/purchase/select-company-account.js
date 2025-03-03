@@ -8,8 +8,11 @@ import { useLogin, useModal } from '@/hooks'
 import { classNames, showToast, VERSION_IN_PURCHASE } from '@/utils'
 import qs from 'qs'
 import { SpForm, SpFormItem, SpPage, SpInput as AtInput } from '@/components'
+import { updateEnterpriseId } from '@/store/slices/purchase'
 import CompBottomTip from './comps/comp-bottomTip'
+import CompSelectCompany from './comps/comp-select-company'
 import './select-company-account.scss'
+import { useDispatch } from 'react-redux'
 
 
 function PurchaseAuthAccount() {
@@ -24,13 +27,17 @@ function PurchaseAuthAccount() {
         { required: true, message: '账号不能为空' }
       ],
       auth_code: [{ required: true, message: '请输入登录密码' }]
-    }
+    },
+    isOpened:false,
+    companyList:[],
+    curActiveIndex:undefined
   })
   const formRef = useRef()
-  const { form, rules } = state
+  const { form, rules, isOpened, companyList,curActiveIndex } = state
   const { params } = useRouter()
   const { enterprise_id, enterprise_name, enterprise_sn } = params
   const { showModal } = useModal()
+  const dispatch = useDispatch()
 
   const onInputChange = (key, value) => {
     setState((draft) => {
@@ -52,15 +59,29 @@ function PurchaseAuthAccount() {
         })}`
       })
     } else {
-      const params = {
+      const _params = {
         enterprise_id,
         account,
         auth_code,
+        auth_type:'account',
         showError: false
       }
       try {
-        await api.purchase.setEmployeeAuth(params)
+        const {list} = await api.purchase.employeeCheck(_params)
+        if(list.length > 1){
+          //选择企业
+          setState(draft=>{
+            draft.isOpened = true
+            draft.companyList = list
+          })
+          return
+        }
+
+        _params.enterprise_id = list[0]?.enterprise_id
+        _params.employee_id = list[0]?.id
+        await api.purchase.setEmployeeAuth(_params)
         showToast('验证成功')
+        dispatch(updateEnterpriseId(_params.enterprise_id))
         setTimeout(() => {
           Taro.reLaunch({ url: `/pages/purchase/index` })
         }, 700)
@@ -79,6 +100,47 @@ function PurchaseAuthAccount() {
         }
       }
     }
+  }
+
+  const handleSelctCompany = async() => {
+    const { account, auth_code } = form
+    const { enterprise_id :_enterprise_id, id : employee_id} = companyList[curActiveIndex] || {}
+    const _params = {
+      enterprise_id:_enterprise_id,
+      employee_id,
+      account,
+      auth_code,
+      auth_type:'account',
+      showError: false
+    }
+
+    try {
+      await api.purchase.setEmployeeAuth(_params)
+      showToast('验证成功')
+      dispatch(updateEnterpriseId(_params,enterprise_id))
+      setState(draft=>{
+        draft.isOpened = false
+      })
+      setTimeout(() => {
+        Taro.reLaunch({ url: `/pages/purchase/index` })
+      }, 700)
+
+    } catch (e) {
+      if (e.message.indexOf('重复绑定') > -1) {
+        await showModal({
+          title: '验证失败',
+          content: e.message,
+          showCancel: false,
+          confirmText: '我知道了',
+          contentAlign: 'center'
+        })
+        Taro.reLaunch({ url: `/pages/purchase/index` })
+      } else {
+        showToast(e.message)
+      }
+    }
+
+
   }
 
   return (
@@ -118,6 +180,23 @@ function PurchaseAuthAccount() {
         验证
       </AtButton>
       <CompBottomTip />
+
+      <CompSelectCompany
+        isOpened={isOpened}
+        list={companyList}
+        curIndex={curActiveIndex}
+        handleItemClick={(idx)=>{
+          setState(draft=>{
+            draft.curActiveIndex = idx
+          })
+        }}
+        onClose={()=>{
+          setState(draft=>{
+            draft.isOpened = false
+          })
+        }}
+        onConfirm={handleSelctCompany}
+       />
     </SpPage>
   )
 }

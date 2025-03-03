@@ -444,7 +444,7 @@ function MemberIndex(props) {
           </View> */}
           </View>
         }
-        <View className='header-ft'>
+        {router.params?.from != 'purchase_home' && <View className='header-ft'>
           {/* 会员卡等级 */}
           {vipInfo.isOpen && (
             <CompVipCard
@@ -454,7 +454,7 @@ function MemberIndex(props) {
               memberConfig={memberConfig}
             />
           )}
-        </View>
+        </View>}
       </View>
 
       <View className='body-block'>

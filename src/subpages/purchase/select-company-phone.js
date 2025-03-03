@@ -69,7 +69,7 @@ function PurchaseAuthPhone(props) {
       await login()
     }
   }
-  
+
 
   const getLoginCode = async () => {
     const { code } = await Taro.login()
@@ -80,7 +80,7 @@ function PurchaseAuthPhone(props) {
 
   const handleBindPhone = async (e) => {
     const { encryptedData, iv, cloudID } = e.detail
-   
+
     if (encryptedData && iv) {
       try {
         const params = {
@@ -112,7 +112,10 @@ function PurchaseAuthPhone(props) {
   }
 
   const validatePhone = async (params) => {
+
+
     try {
+      // const res = await api.purchase.employeeCheck({auth_type:'mobile'})
       await api.purchase.setEmployeeAuth({ ...params, showError: false })
       showToast('验证成功')
       setTimeout(() => {

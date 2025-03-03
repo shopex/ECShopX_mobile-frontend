@@ -9,6 +9,7 @@ import { classNames, pickBy } from '@/utils'
 import { useLogin } from '@/hooks'
 import { updateUserInfo } from '@/store/slices/user'
 import { updatePurchaseShareInfo, updatePurchaseTabbar } from '@/store/slices/purchase'
+import { updateValidIdentity } from '@/store/slices/purchase'
 
 import doc from '@/doc'
 import S from '@/spx'
@@ -39,6 +40,7 @@ const initialState = {
 function PurchaseActivityList() {
   const [state, setState] = useImmer(initialState)
   const { activityList, activity_name, tabList, currentIndex } = state
+  const { curEnterpriseId } = useSelector((_state) => _state.purchase)
 
   const scrollRef = useRef()
   const dispatch = useDispatch()
@@ -52,8 +54,18 @@ function PurchaseActivityList() {
     } else {
       scrollRef.current.reset()
     }
+    //更新底部tabbar是否有身份切换
+    updateIdentity()
     updataMemberInfo()
   }, [])
+
+
+  const updateIdentity = async() => {
+    const data = await api.purchase.getUserEnterprises()
+    const hasValidIdentity = data.filter(item => item.disabled == 0).length > 1
+    //多个企业展示身份切换tab
+    dispatch(updateValidIdentity(hasValidIdentity));
+  }
 
   const updataMemberInfo = async () => {
     const _userInfo = await api.member.memberInfo()
@@ -66,7 +78,8 @@ function PurchaseActivityList() {
       page: pageIndex,
       pageSize,
       activity_name,
-      type
+      type,
+      enterprise_id:curEnterpriseId
     })
     const _list = pickBy(list, doc.purchase.ACTIVITY_ITEM)
     setState((draft) => {
@@ -132,15 +145,15 @@ function PurchaseActivityList() {
       // renderFooter={renderFooter()}
       renderFooter={<CompTabbar />}
     >
-      {/* <View className='user-box'>
+      <View className='user-box'>
         <View className='user-serach'>
           <SpSearchInput
             placeholder='活动名称'
             onConfirm={onConfirm}
           />
         </View>
-      </View> */}
-      <SpTabs current={currentIndex} tablist={tabList} onChange={handleTypeChange} />
+      </View>
+      {/* <SpTabs current={currentIndex} tablist={tabList} onChange={handleTypeChange} /> */}
       <ScrollView className='item-list-scroll' scrollY>
         <SpScrollView
           ref={scrollRef}
@@ -175,4 +188,3 @@ PurchaseActivityList.options = {
 
 export default PurchaseActivityList
 
-// 内购活动列表

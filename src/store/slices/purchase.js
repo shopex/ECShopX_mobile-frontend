@@ -9,6 +9,8 @@ const initialState = {
   validCart: [],
   invalidCart: [],
   cartCount: 0,
+  hasValidIdentity:false,
+  curEnterpriseId:null
 }
 
 export const fetchCartList = createAsyncThunk('purchase/fetchCartList', async (params) => {
@@ -57,6 +59,13 @@ const purchaseSlice = createSlice({
       state.invalidCart = []
       state.coupon = null
     },
+    updateValidIdentity:(state, { payload = '' }) => {
+      state.hasValidIdentity = payload
+    },
+    updateEnterpriseId:(state, { payload = '' }) => {
+      state.curEnterpriseId = payload
+    },
+
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCartList.fulfilled, (state, action) => {
@@ -72,6 +81,6 @@ const purchaseSlice = createSlice({
   }
 })
 
-export const { updatePurchaseTabbar, updatePurchaseShareInfo, updateInviteCode, purchaseClearCart } = purchaseSlice.actions
+export const { updatePurchaseTabbar, updatePurchaseShareInfo, updateInviteCode, purchaseClearCart,updateValidIdentity,updateEnterpriseId } = purchaseSlice.actions
 
 export default purchaseSlice.reducer
