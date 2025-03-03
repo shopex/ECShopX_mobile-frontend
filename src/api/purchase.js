@@ -71,3 +71,7 @@ export function updatePurchaseCartcount(params) { // 内购购物车数量
 export function purchaseSelect(params) {
   return req.put('/employeepurchase/cart/checkstatus', params)
 }
+
+export function employeeCheck(params) { // 员工验证
+  return req.post('/employee/check', params)
+}
