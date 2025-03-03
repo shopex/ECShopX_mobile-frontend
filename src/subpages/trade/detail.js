@@ -187,8 +187,6 @@ function TradeDetail(props) {
       setState((draft) => {
         draft.openWriteOffCode = true
       })
-    } else if (key == 'track') {
-      handleTrackDetail()
     } else {
       action(info)
     }
@@ -401,11 +399,11 @@ function TradeDetail(props) {
                       拨打电话
                     </Text>
                   </View>
-                {/* <View>
+                 { info?.receiptType !== 'merchant'&&<View>
                     <Text className='deliver-opreator-phone' onClick={handleTrackDetail}>
                       订单跟踪
                     </Text>
-                  </View> */}
+                  </View>}
                 </View>
               )}
             </View>
