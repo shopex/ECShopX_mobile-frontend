@@ -1,11 +1,14 @@
 import React, { useEffect, useRef } from 'react'
-import Taro from '@tarojs/taro'
-import { View, ScrollView, Text, Picker } from '@tarojs/components'
+import Taro, { useRouter, useDidShow } from '@tarojs/taro'
+import { View, ScrollView, Text, Picker, WebView } from '@tarojs/components'
 import api from '@/api'
-import { SpImage, SpPage, SpCheckbox } from '@/components'
+import doc from '@/doc'
+import { SpImage, SpPage, SpCheckbox, SpTradeItem } from '@/components'
 import { useImmer } from 'use-immer'
+import { relationship } from '@/consts'
 import { AtTag, AtList, AtListItem, AtTextarea, AtButton } from 'taro-ui'
 import CompMedicationPersonnel from './comps/comp-medication-personnel'
+import { classNames, isWeixin, showToast, pickBy } from '@/utils'
 
 import './prescription-information.scss'
 
@@ -77,7 +80,17 @@ const initialState = {
       value: null
     }
   ],
-  isOpened: false
+  isOpened: false,
+  param: {
+    page: 1,
+    pageSize: 10
+  },
+  medicationList: [],
+  selector: relationship,
+  risk: true,
+  listProduct: [],
+  before_ai_result_allergy_history: "",
+  orderInfo: null
 }
 
 
@@ -86,15 +99,123 @@ function PrescriptionPnformation() {
 
   const {
     notesList,
-    isOpened
+    isOpened,
+    param,
+    medicationList,
+    selector,
+    risk,
+    listProduct,
+    before_ai_result_allergy_history,
+    orderInfo
   } = state
 
+  const router = useRouter()
 
-  useEffect(() => {
 
-  }, [])
 
-  const handleClickToEdit = () => {
+  // useDidShow(() => {
+  //   //获取列表
+  //   medicationPersonnel()
+  // }, [])
+
+  //获取列表
+  useDidShow(() => {
+    medicationPersonnel()
+    fetch()
+  })
+
+  const fetch = async () => {
+    const { order_id } = router.params
+    const { orderInfo } = await api.trade.detail(order_id)
+    const _orderInfo = pickBy(orderInfo, doc.trade.TRADE_ITEM)
+    let list = _orderInfo.items.filter(item => item.isPrescription == 1);
+    console.log(list, 'lllllllllfetch');
+
+    setState(draft => {
+      draft.listProduct = list,
+        draft.orderInfo = _orderInfo
+    })
+  }
+
+  const handleClickToEdit = async () => {
+    const { order_id } = router.params
+
+    //判断确诊疾病是否为空
+    const haslistProduct = listProduct.some(item => {
+      const medicineSymptomSetNew = item.medicineSymptomSetNew;
+      console.log(medicineSymptomSetNew, 'medicineSymptomSetNew');
+
+      if (medicineSymptomSetNew == undefined || medicineSymptomSetNew.length === 0) {
+        showToast(`${item.itemName}请选择线下已确诊的疾病`);
+        return true;
+      }
+      return false;
+    });
+
+    if (haslistProduct) {
+      return;
+    }
+
+    //判断自身情况
+    const hasEmptyValue = notesList.some(item => {
+      if (item.value === null) {
+        showToast(`请选择${item.title}`);
+        return true;
+      }
+      return false;
+    });
+
+    // 如果有空的 value，则不执行下面的代码
+    if (hasEmptyValue) {
+      return;
+    }
+
+    let param = {
+      order_id,
+      medication_personnel_id: medicationList.filter(item => item.isShow == true)[0].id,
+      third_return_url: `/subpages/trade/detail?order_id=${order_id}`,
+      souce_from: isWeixin ? 0 : 2,
+      before_ai_result_symptom: [],
+      distributor_id: orderInfo.distributorId
+    }
+    listProduct.forEach(item => {
+      param.before_ai_result_symptom.push({
+        id: item.id,
+        value: item.medicineSymptomSetNew
+      })
+    })
+    notesList.forEach(item => {
+      param[item.key] = item.value
+    })
+
+    if (param.before_ai_result_allergy_history == 1) {
+      if (before_ai_result_allergy_history == '') {
+        showToast(`请填写药物过敏说明`);
+        return
+      }
+    }
+    param.before_ai_result_allergy_history = param.before_ai_result_allergy_history == 1 ? before_ai_result_allergy_history : ""
+
+    let res = await api.prescriptionDrug.prescriptionDiagnosis(param)
+    showToast(`提交成功`)
+    const webviewSrc = encodeURIComponent(res.url)
+    Taro.redirectTo({
+      url: `/pages/webview?url=${webviewSrc}`
+    })
+  }
+
+  const medicationPersonnel = async () => {
+    const res = await api.prescriptionDrug.medicationPersonnelList({ ...param })
+    res.list.forEach(element => {
+      element.relationship = Number(element.relationship) - 1
+    });
+    res.list[0].isShow = true
+    res.list.forEach((item, index) => {
+      item.isShow = index == 0
+    })
+    setState(draft => {
+      draft.medicationList = res.list
+    })
   }
 
   const pickerChange = (e, index) => {
@@ -112,11 +233,45 @@ function PrescriptionPnformation() {
     })
   }
 
+  const listChangge = (val) => {
+    setState(draft => {
+      draft.medicationList = val
+    })
+  }
+
+  const pitchOn = (index) => {
+    let list = JSON.parse(JSON.stringify(medicationList))
+    list.forEach((item, i) => {
+      item.isShow = i == index
+    })
+    setState(draft => {
+      draft.medicationList = list
+    })
+  }
+
+  const onClickItem = ({ itemId, distributorId }) => {
+    Taro.navigateTo({
+      url: `/pages/item/espier-detail?id=${itemId}&dtid=${distributorId}`
+    })
+  }
+
+  const onClickTag = (item1, index, index1) => {
+    let listProduct1 = JSON.parse(JSON.stringify(listProduct))
+    listProduct1[index].medicineSymptomSet[index1].show = !listProduct1[index].medicineSymptomSet[index1].show
+    // 筛选出 show 为 true 的元素
+    let filteredItems = listProduct1[index].medicineSymptomSet.filter(item => item.show === true);
+    //提取这些元素的 value
+    listProduct1[index].medicineSymptomSetNew = filteredItems.map(item => item.value);
+    setState(draft => {
+      draft.listProduct = listProduct1
+    })
+  }
+
   return (
     <SpPage className='prescription-information'
       renderFooter={
         <View className='btn-wrap'>
-          <AtButton circle type='primary' onClick={handleClickToEdit}>
+          <AtButton circle type='primary' onClick={handleClickToEdit} disabled={!risk} >
             提交并开药
           </AtButton>
         </View>
@@ -152,25 +307,26 @@ function PrescriptionPnformation() {
         <View className='prompt'>请选择实际用药人，医生可能会电话联系用药人了解病情</View>
         <ScrollView scrollX>
           <View className='relationship'>
-            <View className='relationship-wrap'>
-              <SpImage src={'https://img2.baidu.com/it/u=2288767807,3468141490&fm=253&fmt=auto&app=138&f=JPEG?w=579&h=500'} width={80} />
-              <View className='relationship-wrap-right'>
-                <View className='name'>陈鑫</View>
-                <View className='age'>女 18</View>
-              </View>
-              <View className='label'>本人</View>
-            </View>
-            <View className='relationship-wrap'>
-              <SpImage src={'https://img2.baidu.com/it/u=2288767807,3468141490&fm=253&fmt=auto&app=138&f=JPEG?w=579&h=500'} width={80} />
-              <View className='relationship-wrap-right'>
-                <View className='name'>陈鑫</View>
-                <View className='age'>女 18</View>
-              </View>
-              <View className='label'>本人</View>
-            </View>
+            {
+              medicationList.map((item, index) => {
+                return (
+                  <View className={classNames(
+                    'relationship-wrap',
+                    item.isShow ? 'relationship-wraps' : null
+                  )} key={index} onClick={() => pitchOn(index)}>
+                    <SpImage src={item.user_family_gender == 1 ? item.user_family_age >= 18 ? 'men.png' : 'children_1.png' : item.user_family_age >= 18 ? 'women.png' : 'children_2.png'} width={80} />
+                    <View className='relationship-wrap-right'>
+                      <View className='name'>{item.user_family_name}</View>
+                      <View className='age'>{item.user_family_gender == 1 ? '男' : '女'} {item.user_family_age}</View>
+                    </View>
+                    <View className='label'>{selector[item.relationship].value}</View>
+                  </View>
+                )
+              })
+            }
           </View>
         </ScrollView>
-        <View className='prompt'>* 用药人体重为50.0kg，如有变化请及时修改已便医生诊断</View>
+        {/* <View className='prompt'>* 用药人体重为50.0kg，如有变化请及时修改已便医生诊断</View> */}
       </View>
 
       <View className='medication1'>
@@ -178,15 +334,35 @@ function PrescriptionPnformation() {
           <Text>请选择线下已确诊疾病</Text>
           <Text className='personnel-title'>（每个药品至少选择一种）</Text>
         </View>
-        <View className='medicine'>
-          <View className='medicine-top'>
-            <SpImage src={'https://img1.baidu.com/it/u=2828841796,3433654732&fm=253&fmt=auto&app=120&f=JPEG'} width={90} />
-            <View className='medicine-top-right'>就感觉可飒的哈电视观看拉屎的几个克拉的厚爱水电工i啊哥猴卡上就够啦结果哦评价狗啊就尬聊卡就是格林卡结果</View>
-          </View>
-          <View className='medicine-bot'>
-            <AtTag type='primary' circle active className='medicine-bot-name'>标签</AtTag>
-          </View>
-        </View>
+        {
+          listProduct.map((item, index) => {
+            return (
+              <View className='medicine' key={index}>
+                {/* <View className='medicine-top'>
+                  <SpImage src={item.pic} width={90} />
+                  <View className='medicine-top-right'>{item.item_name}</View>
+                </View> */}
+                <SpTradeItem
+                  info={{
+                    ...item
+                  }}
+                  onClick={onClickItem}
+                />
+                <View className='medicine-bot'>
+                  {
+                    item.medicineSymptomSet.map((item1, index1) => {
+                      return (
+                        <AtTag type='primary' circle active={item1.show} className='medicine-bot-name'
+                          key={index1} onClick={() => onClickTag(item1, index, index1)}>{item1.value}</AtTag>
+                      )
+                    })
+                  }
+                </View>
+              </View>
+            )
+          })
+        }
+
       </View>
 
       <View className='notes'>
@@ -204,32 +380,50 @@ function PrescriptionPnformation() {
             )
           })
         }
-        <View className='notes-textarea'>
-          <Text className='allergy'>药物过敏说明：</Text>
-          <AtTextarea
-            value='oooooo'
-            maxLength={200}
-            placeholder='你的问题是...'
-          />
-        </View>
+        {
+          notesList[4].value == 1 &&
+          <View className='notes-textarea'>
+            <Text className='allergy'>药物过敏说明：</Text>
+            <AtTextarea
+              value={before_ai_result_allergy_history}
+              maxLength={200}
+              placeholder='请填写药物过敏说明...'
+              onChange={(e) => {
+                setState(draft => {
+                  draft.before_ai_result_allergy_history = e
+                })
+              }}
+            />
+          </View>
+        }
       </View>
 
       <View className='informed'>
         <SpCheckbox
-          checked='true'
-        // onChange={onChangePayment.bind(this, item)}
-        // onChange={this.handleChange.bind(this)}
+          checked={risk}
+          onChange={() => {
+            setState(draft => {
+              draft.risk = !risk
+            })
+          }}
         />
         <View>
           确认已在线下就诊，使用过所购买药品且无过敏或不良反应，当前病情稳定
           ，确认监护人已知晓病情及购药行为。我已阅读并同意
-          <Text className='informed-title'>
+          <Text className='informed-title' onClick={() => {
+            Taro.navigateTo({
+              url: '/subpages/auth/reg-rule?type=ehospital_risk_informed'
+            })
+          }}>
             《互联网诊疗风险告知及知情同意书》
           </Text>
         </View>
       </View>
 
-      <CompMedicationPersonnel isOpened={isOpened} colsePersonnel={colsePersonnel} />
+      {
+        isOpened &&
+        <CompMedicationPersonnel isOpened={isOpened} colsePersonnel={colsePersonnel} listChangge={listChangge} />
+      }
 
     </SpPage>
   )

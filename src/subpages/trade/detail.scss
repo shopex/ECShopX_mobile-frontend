@@ -28,6 +28,41 @@
     }
   }
 
+  .information {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    .title {
+      font-size: 24px;
+      &-num {
+        margin-right: 8px;
+        background-color: var(--color-primary);
+        padding: 0 14px;
+        border-radius: 50%;
+        color: #fff;
+      }
+      &-text {
+        font-size: 26px;
+      }
+    }
+    .titled {
+      font-size: 26px;
+      color: #999;
+      &-num {
+        margin-right: 8px;
+        background-color: #999;
+        padding: 0 12px;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 24px;
+      }
+    }
+  }
+
   .padding-view {
     height: 1PX;
   }
