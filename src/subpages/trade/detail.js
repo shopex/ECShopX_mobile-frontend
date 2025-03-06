@@ -426,6 +426,22 @@ function TradeDetail(props) {
             </View>
           )}
         </View>
+        <View className='information'>
+          <View className='title'>
+            <Text className='title-num'>1</Text>
+            <Text className='title-text'>填写信息</Text>
+          </View>
+          <View className='titled'>-----</View>
+          <View className='titled'>
+            <Text className='titled-num'>2</Text>
+            <Text>医生开方</Text>
+          </View>
+          <View className='titled'>-----</View>
+          <View className='titled'>
+            <Text className='titled-num'>3</Text>
+            <Text>支付订单</Text>
+          </View>
+        </View>
         {
           // 普通快递
           info?.receiptType == 'logistics' && (
@@ -551,8 +567,8 @@ function TradeDetail(props) {
             </View>
           </View> */}
           <View className='trade-goods'>
-            {info?.items.map((goods) => (
-              <View className='trade-goods-item'>
+            {info?.items.map((goods, goodsIndex) => (
+              <View className='trade-goods-item' key={goodsIndex}>
                 <SpTradeItem
                   info={{
                     ...goods,
@@ -612,42 +628,58 @@ function TradeDetail(props) {
         </View>
         {/* <View className='block-container'>
         </View> */}
+        {
+          console.log(info, 'info------')
+        }
         <View className='block-container order-info'>
           <View className='block-container-label'>处方信息</View>
-          <SpCell
-            title='开方医生'
-            value={(() => {
+          {
+            info?.diagnosisData?.doctor_name &&
+            <SpCell
+              title='开方医生'
+              value={(() => {
+                return (
+                  <View>
+                    {info?.diagnosisData?.doctor_name}
+                  </View>
+                )
+              })()}
+            />
+          }
+          {
+            info?.diagnosisData?.location_url &&
+            <SpCell title='开方记录' value={(() => {
               return (
-                <View>
-                  陈鑫
+                <View className='block-container-link' onClick={() => {
+                  const webviewSrc = encodeURIComponent(info?.diagnosisData?.location_url)
+                  Taro.redirectTo({
+                    url: `/pages/webview?url=${webviewSrc}`
+                  })
+                }}>
+                  查看 <Text className='iconfont icon-qianwang-01' />
                 </View>
               )
             })()}
-          />
-          <SpCell title='开方记录' value={(() => {
+            />
+          }
+          {info?.prescriptionData?.audit_apothecary_name &&
+            <SpCell title='审方药师' value={(() => {
+              return (
+                <View>
+                  {info?.prescriptionData?.audit_apothecary_name}
+                </View>
+              )
+            })()}
+            />
+          }
+          {info?.prescriptionData?.dst_file_path && <SpCell title='电子处方' value={(() => {
             return (
               <View className='block-container-link'>
                 查看 <Text className='iconfont icon-qianwang-01' />
               </View>
             )
           })()}
-          />
-          <SpCell title='审方药师' value={(() => {
-            return (
-              <View>
-                陈鑫
-              </View>
-            )
-          })()}
-          />
-          <SpCell title='电子处方' value={(() => {
-            return (
-              <View className='block-container-link'>
-                查看 <Text className='iconfont icon-qianwang-01' />
-              </View>
-            )
-          })()}
-          />
+          />}
         </View>
 
         <View className='block-container order-info'>

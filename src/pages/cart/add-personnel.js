@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react'
-import Taro from '@tarojs/taro'
-import { View, ScrollView, Text, Picker } from '@tarojs/components'
-import api from '@/api'
+import React, { useEffect } from 'react'
+import { View, Text, Picker } from '@tarojs/components'
 import { SpCell, SpPage, SpCheckbox, SpInput as AtInput } from '@/components'
 import { useImmer } from 'use-immer'
-import { AtTag, AtList, AtListItem, AtTextarea, AtButton } from 'taro-ui'
+import { relationship } from '@/consts'
+import { AtButton } from 'taro-ui'
+import { showToast, validate } from '@/utils'
+import Taro, { useRouter } from '@tarojs/taro'
+import api from '@/api'
 
 import './add-personnel.scss'
 
@@ -15,31 +17,11 @@ const initialState = {
     user_family_id_card: '',
     user_family_phone: '',
     user_family_age: '',
-    user_family_gender: '1',
+    user_family_gender: '',
     relationship: ''
   },
-  selector: [{
-    key: 1,
-    value: '本人'
-  },
-  {
-    key: 2,
-    value: '父母'
-  },
-  {
-    key: 3,
-    value: '配偶'
-  },
-  {
-    key: 4,
-    value: '子女'
-  },
-  {
-    key: 5,
-    value: '其他'
-  }
-  ],
-  handlechecked: true
+  selector: relationship,
+  handlechecked: null
 }
 
 
@@ -51,13 +33,64 @@ function AddPersonnel() {
     selector,
     handlechecked
   } = state
+  const router = useRouter()
 
   useEffect(() => {
-
+    medicationPersonnel()
   }, [])
 
-  const handleClickToEdit = () => {
-
+  const medicationPersonnel = async () => {
+    const { id } = router.params
+    if (id) {
+      let res = await api.prescriptionDrug.medicationPersonnelDetail({ id })
+      res.relationship = res.relationship - 1
+      setState((draft) => {
+        draft.info = res,
+          draft.handlechecked = res.user_family_gender
+      })
+    }
+  }
+  const handleClickToEdit = async () => {
+    if (info.user_family_name == '') {
+      showToast('请输入用药人姓名')
+      return
+    }
+    if (info.user_family_id_card == '') {
+      showToast('请输入用药人身份证号码')
+      return
+    }
+    if (!/^\d{17}[\dXx]$/.test(info.user_family_id_card)) {
+      showToast('请输入正确的身份证号码');
+    }
+    if (info.user_family_phone == '') {
+      showToast('请输入联系人手机号')
+      return
+    }
+    if (!validate.isMobileNum(info.user_family_phone)) {
+      showToast('请输入正确的手机号')
+      return
+    }
+    if (info.user_family_gender == '') {
+      showToast('请输入就诊人性别')
+      return
+    }
+    if (info.relationship == '') {
+      showToast('请输入就诊人与认诊人关系')
+      return
+    }
+    let params = {
+      ...info,
+      relationship: Number(info.relationship) + 1
+    }
+    if (router.params.id) {
+      await api.prescriptionDrug.putMedicationPersonnel(params)
+    } else {
+      await api.prescriptionDrug.medicationPersonnel(params)
+    }
+    showToast(`${router.params.id ? '编辑' : '添加'}成功`)
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 300)
   }
 
   const onPickerClick = (e) => {
@@ -66,13 +99,13 @@ function AddPersonnel() {
 
   const handleChange = (name, val) => {
     const nInfo = JSON.parse(JSON.stringify(state.info || {}))
-    if(name == 'user_family_id_card' && val.length == 18){
-      calculateAgeByIdCard()
+    if (name == 'user_family_id_card' && val.length == 18) {
+      nInfo.user_family_age = calculateAgeByIdCard(val)
     }
     nInfo[name] = val
     setState((draft) => {
       draft.info = nInfo
-      draft.handlechecked = name === 'user_family_gender' ? val == 1 : handlechecked
+      draft.handlechecked = name === 'user_family_gender' ? val : handlechecked
     })
   }
 
@@ -112,17 +145,9 @@ function AddPersonnel() {
     if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
       age--;
     }
-
     return age;
   }
 
-  // 示例使用
-  try {
-    const age = calculateAgeByIdCard('你的身份证号码');
-    console.log('年龄:', age);
-  } catch (error) {
-    console.error(error.message);
-  }
 
   return (
     <SpPage className='add-personnel'
@@ -189,13 +214,13 @@ function AddPersonnel() {
             <SpCell className='logistics-no border-bottom' title='就诊人性别'>
               <View className='gender'>
                 <SpCheckbox
-                  checked={handlechecked}
+                  checked={handlechecked == 1}
                   label='男'
                   onChange={handleChange.bind(this, 'user_family_gender', 1)}
                 />
 
                 <SpCheckbox
-                  checked={!handlechecked}
+                  checked={handlechecked == 2}
                   label='女'
                   className='genders'
                   onChange={handleChange.bind(this, 'user_family_gender', 2)}
