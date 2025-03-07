@@ -536,8 +536,9 @@ function EspierDetail(props) {
               <View className='item-pre-content'>
                 <View className='title'>用药提示</View>
                 <View className='content'>
-                  <Text>功能主治：</Text>
-                  <Text className='content-title'>根据法规要求，请咨询药师了解处方药详细信息</Text>
+                  {/* <Text>功能主治：</Text> */}
+                  {/* <Text className='content-title'>根据法规要求，请咨询药师了解处方药详细信息</Text> */}
+                  <Text className='content-title'>{info?.medicineData?.use_tip}</Text>
                 </View>
               </View>
             </View>
