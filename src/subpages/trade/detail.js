@@ -223,6 +223,7 @@ function TradeDetail(props) {
       setTimeout(() => {
         Taro.eventCenter.trigger('onEventOrderStatusChange')
       }, 200)
+      Taro.hideLoading()
     })
   }
 
