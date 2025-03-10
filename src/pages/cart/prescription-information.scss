@@ -79,7 +79,7 @@
             color: #999;
           }
         }
-        .label{
+        .label {
           position: absolute;
           top: 0;
           left: 0;
@@ -90,7 +90,7 @@
           font-size: 16px;
         }
       }
-      .relationship-wraps{
+      .relationship-wraps {
         border: 1px solid var(--color-primary);
       }
     }
@@ -154,8 +154,12 @@
     margin-top: 24px;
     padding: 30px 24px;
     border-radius: 8px;
-    &-title {
-      color: var(--color-accent);
+    &-notice {
+      font-size: 24px;
+      .informed-title {
+        color: var(--color-accent);
+        font-size: 24px;
+      }
     }
   }
   .btn-wrap {
