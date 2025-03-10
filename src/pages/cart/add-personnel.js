@@ -5,8 +5,10 @@ import { useImmer } from 'use-immer'
 import { relationship } from '@/consts'
 import { AtButton } from 'taro-ui'
 import { showToast, validate } from '@/utils'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter,getCurrentInstance } from '@tarojs/taro'
 import api from '@/api'
+import { useNavigation } from '@/hooks'
+
 
 import './add-personnel.scss'
 
@@ -26,7 +28,9 @@ const initialState = {
 
 
 function AddPersonnel() {
+  const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
+  const { setNavigationBarTitle } = useNavigation()
 
   const {
     info,
@@ -37,7 +41,13 @@ function AddPersonnel() {
 
   useEffect(() => {
     medicationPersonnel()
+    setNavigationBarTitle(initNavigationBarTitle())
   }, [])
+
+  const initNavigationBarTitle = () => {
+    const { id } = router.params
+    return id ? '编辑用药人' : '添加用药人'
+  }
 
   const medicationPersonnel = async () => {
     const { id } = router.params

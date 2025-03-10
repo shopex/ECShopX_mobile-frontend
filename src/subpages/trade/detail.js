@@ -672,7 +672,7 @@ function TradeDetail(props) {
         }
 
         {
-          info?.prescriptionStatus > 0 &&
+          info?.prescriptionStatus > 0 && !supplement &&
           <View className='block-container order-info'>
             <View className='block-container-label'>处方信息</View>
             {
