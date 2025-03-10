@@ -412,7 +412,7 @@ function PrescriptionPnformation() {
             })
           }}
         />
-        <View>
+        <View className='informed-notice'>
           确认已在线下就诊，使用过所购买药品且无过敏或不良反应，当前病情稳定
           ，确认监护人已知晓病情及购药行为。我已阅读并同意
           <Text className='informed-title' onClick={() => {

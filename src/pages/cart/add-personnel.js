@@ -20,7 +20,7 @@ const initialState = {
     user_family_phone: '',
     user_family_age: '',
     user_family_gender: '',
-    relationship: ''
+    relationship: 0
   },
   selector: relationship,
   handlechecked: null
@@ -61,31 +61,32 @@ function AddPersonnel() {
     }
   }
   const handleClickToEdit = async () => {
+
     if (info.user_family_name == '') {
-      showToast('请输入用药人姓名')
+      showToast('请填写姓名')
       return
     }
     if (info.user_family_id_card == '') {
-      showToast('请输入用药人身份证号码')
+      showToast('请填写身份证号')
       return
     }
     if (!/^\d{17}[\dXx]$/.test(info.user_family_id_card)) {
-      showToast('请输入正确的身份证号码');
+      showToast('请填写正确的身份证号');
     }
     if (info.user_family_phone == '') {
-      showToast('请输入联系人手机号')
+      showToast('请填写手机号码')
       return
     }
     if (!validate.isMobileNum(info.user_family_phone)) {
-      showToast('请输入正确的手机号')
+      showToast('请填写正确手机号码')
       return
     }
     if (info.user_family_gender == '') {
-      showToast('请输入就诊人性别')
+      showToast('请选择用药人性别')
       return
     }
-    if (info.relationship == '') {
-      showToast('请输入就诊人与认诊人关系')
+    if (!(selector?.[info.relationship]?.key)){
+      showToast('请选择与您关系')
       return
     }
     let params = {
@@ -103,9 +104,6 @@ function AddPersonnel() {
     }, 300)
   }
 
-  const onPickerClick = (e) => {
-
-  }
 
   const handleChange = (name, val) => {
     const nInfo = JSON.parse(JSON.stringify(state.info || {}))
@@ -178,38 +176,38 @@ function AddPersonnel() {
       <View className='scroll-view-container'>
         <View className='scroll-view-body'>
           <View className='page-address-edit__form'>
-            <SpCell className='logistics-no border-bottom' title='用药人姓名'>
+            <SpCell className='logistics-no border-bottom' certainly title='用药人姓名'>
               <AtInput
                 name='user_family_name'
                 value={info?.user_family_name}
                 cursor={info?.user_family_name?.length}
-                placeholder='请输入用药人姓名'
+                placeholder='请填写正确姓名'
                 onChange={(e) => handleChange('user_family_name', e)}
               />
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom' title='用药人身份证号'>
+            <SpCell className='logistics-no border-bottom' certainly title='身份证号'>
               <AtInput
                 name='user_family_id_card'
                 value={info?.user_family_id_card}
                 cursor={info?.user_family_id_card?.length}
-                placeholder='请输入用药人证件号'
+                placeholder='请填写正确身份证号'
                 onChange={(e) => handleChange('user_family_id_card', e)}
               />
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom' title='手机号码'>
+            <SpCell className='logistics-no border-bottom' certainly title='手机号码'>
               <AtInput
                 name='user_family_phone'
                 maxLength={11}
                 value={info?.user_family_phone}
                 cursor={info?.user_family_phone?.length}
-                placeholder='请输入联系人手机号'
+                placeholder='请填写正确手机号'
                 onChange={(e) => handleChange('user_family_phone', e)}
               />
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom' title='就诊人年纪'>
+            <SpCell className='logistics-no border-bottom' certainly title='用药人年龄'>
               {/* <AtInput
                 name='user_family_age'
                 maxLength={11}
@@ -221,7 +219,7 @@ function AddPersonnel() {
               <View className='ages'>{info?.user_family_age ? info?.user_family_age : '根据证件号自动识别'}</View>
             </SpCell>
 
-            <SpCell className='logistics-no border-bottom' title='就诊人性别'>
+            <SpCell className='logistics-no border-bottom' certainly title='用药人性别'>
               <View className='gender'>
                 <SpCheckbox
                   checked={handlechecked == 1}
@@ -241,14 +239,14 @@ function AddPersonnel() {
             <Picker mode='selector' range={selector} rangeKey='value' onChange={pickerChange}>
               <SpCell
                 className='logistics-no province border-bottom'
-                title='就诊人与认诊人关系'
+                title='与您关系'
                 isLink
                 arrow
-                onClick={onPickerClick}
+                certainly
               >
                 <View className='picker'>
                   {
-                    selector?.[info.relationship]?.value ? selector[info.relationship].value : '请选择就诊人与认诊人关系'
+                    selector?.[info.relationship]?.value
                   }
                 </View>
               </SpCell>
