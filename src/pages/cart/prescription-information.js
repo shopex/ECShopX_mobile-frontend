@@ -87,7 +87,7 @@ const initialState = {
   },
   medicationList: [],
   selector: relationship,
-  risk: true,
+  risk: false,
   listProduct: [],
   before_ai_result_allergy_history: "",
   orderInfo: null
@@ -172,7 +172,7 @@ function PrescriptionPnformation() {
 
     let param = {
       order_id,
-      medication_personnel_id: medicationList.filter(item => item.isShow == true)[0].id,
+      medication_personnel_id: medicationList.filter(item => item.isShow == true)?.[0]?.id,
       third_return_url: `/subpages/trade/detail?order_id=${order_id}`,
       souce_from: isWeixin ? 0 : 2,
       before_ai_result_symptom: [],
@@ -187,6 +187,11 @@ function PrescriptionPnformation() {
     notesList.forEach(item => {
       param[item.key] = item.value
     })
+
+    if (!param.medication_personnel_id) {
+        showToast(`请填写用药人`);
+        return
+    }
 
     if (param.before_ai_result_allergy_history == 1) {
       if (before_ai_result_allergy_history == '') {
