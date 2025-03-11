@@ -92,7 +92,7 @@ function TradeDetail(props) {
   }, [])
 
   const fetch = async () => {
-    const { order_id } = await parameter()
+    const { order_id  } = await parameter()
     const { distributor, orderInfo, tradeInfo, cancelData } = await api.trade.detail(order_id)
     const _orderInfo = pickBy(orderInfo, doc.trade.TRADE_ITEM)
     // 自提订单未核销，开启websocket监听核销状态
@@ -187,6 +187,8 @@ function TradeDetail(props) {
       setState((draft) => {
         draft.openWriteOffCode = true
       })
+    } else if (key == 'track') {
+      handleTrackDetail()
     } else {
       action(info)
     }
@@ -399,7 +401,7 @@ function TradeDetail(props) {
                       拨打电话
                     </Text>
                   </View>
-                  <View>
+                <View>
                     <Text className='deliver-opreator-phone' onClick={handleTrackDetail}>
                       订单跟踪
                     </Text>
