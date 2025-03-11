@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.17.1](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.17.0...v3.17.1) (2025-03-11)
+
+
+### Bug Fixes
+
+* 斗拱兼容 ([0edc041](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/0edc04128a19ca5b17d6ac4f3d9109f3fef43084))
+* 光标 ([c0256a0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/c0256a0449bc63d1472f6dd94c3d4617771b8102))
+* ECX-5810 ([2026481](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/20264811c8e84896899a09805c729be87ec4a33f))
+* ECX-6129 ([4492922](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/4492922492089a3b0797be93015f9667b30126de))
+* ECX-6129 ([02b63dd](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/02b63dded36cff12b1049294abe84062977e9ddc))
+
 ## [3.17.0](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.16.0...v3.17.0) (2025-02-14)
 
 
