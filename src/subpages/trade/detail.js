@@ -287,6 +287,10 @@ function TradeDetail(props) {
     if (info.receiptType == 'dada') {
       // 达达同城配，订单状态单独处理
       return ORDER_DADA_STATUS[info.dada?.dadaStatus]?.msg
+    }else if (squareRoot) {
+      return '待医生开方'
+    } else if (supplement) {
+      return '待补充处方信息'
     } else if (info.zitiStatus == 'PENDING') {
       return '等待核销'
     } else if (info.deliveryStatus == 'PARTAIL') {
@@ -300,11 +304,6 @@ function TradeDetail(props) {
     ) {
       //展示线下审核的一些状态 0 待处理;1 已审核;2 已拒绝;9 已取消
       return '待商家确认'
-    } else if (squareRoot) {
-      return '待医生开方'
-    } else if (supplement) {
-      //展示线下审核的一些状态 0 待处理;1 已审核;2 已拒绝;9 已取消
-      return '待补充处方信息'
     } else {
       return ORDER_STATUS_INFO[info.orderStatus]?.msg
     }
