@@ -166,8 +166,8 @@ export default (props = {}) => {
 
   // 微信H5 JSDK
   const wxpayjsPay = async (params, orderInfo) => {
-    const $instance = getCurrentInstance()
-    const { order_id, code } = $instance.router.params
+    // const $instance = getCurrentInstance()
+    const { order_id, code } = router.params
     const { open_id } = await api.wx.getOpenid({ code })
     const { pay_channel } = params
     const { pay_type, order_type = 'normal' } = orderInfo
