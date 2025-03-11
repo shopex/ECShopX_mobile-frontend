@@ -51,7 +51,7 @@ export default (props = {}) => {
             weappPay(params, orderInfo)
           } else if (isWeb) {
             // H5非微信浏览器，跳转小程序发起支付
-            bspayH5Pay(params, orderInfo)
+            adapayH5Pay(params, orderInfo)
           }
         } else if (pay_channel == 'wx_pub') {
           wxpayjsPay(params, orderInfo)
