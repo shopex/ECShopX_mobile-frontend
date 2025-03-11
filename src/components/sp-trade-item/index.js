@@ -24,7 +24,7 @@ function SpTradeItem(props) {
         <View className='goods-info-hd'>
           <View className='name'>
             {
-              isPrescription &&
+              isPrescription == 1 &&
               <Text className='prescription-drug'>
                 处方药
               </Text>

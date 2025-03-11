@@ -4,7 +4,7 @@ import { useImmer } from 'use-immer'
 import Taro, { useRouter } from '@tarojs/taro'
 import api from '@/api'
 import doc from '@/doc'
-import { AtButton, AtCountdown } from 'taro-ui'
+import { AtButton, AtCountdown, AtFloatLayout } from 'taro-ui'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { SpPage, SpCell, SpPrice, SpTradeItem, SpImage, SpCashier } from '@/components'
 import { ORDER_STATUS_INFO, PAYMENT_TYPE, ORDER_DADA_STATUS, SG_ROUTER_PARAMS } from '@/consts'
@@ -40,6 +40,8 @@ const initialState = {
   trackDetailList: [],
   squareRoot: false,  //待开方
   supplement: false,  //待补充
+  prescriptionUrl: '',
+  prescriptionStatus: false
 }
 function TradeDetail(props) {
   const [state, setState] = useImmer(initialState)
@@ -56,7 +58,9 @@ function TradeDetail(props) {
     openTrackDetail,
     trackDetailList,
     squareRoot,
-    supplement
+    supplement,
+    prescriptionUrl,
+    prescriptionStatus
   } = state
   const { priceSetting, pointName } = useSelector((state) => state.sys)
 
@@ -400,6 +404,20 @@ function TradeDetail(props) {
     })
   }
 
+  const dstFilePath = (url) => {
+    setState((v) => {
+      v.prescriptionStatus = true
+      v.prescriptionUrl = url
+    })
+  }
+
+  const handleClose = () => {
+    setState((v) => {
+      v.prescriptionStatus = false
+    })
+  }
+
+
   return (
     <SpPage
       className='page-trade-detail'
@@ -716,7 +734,7 @@ function TradeDetail(props) {
             }
             {info?.prescriptionData?.dst_file_path && <SpCell title='电子处方' value={(() => {
               return (
-                <View className='block-container-link'>
+                <View className='block-container-link' onClick={() => dstFilePath(info?.prescriptionData?.dst_file_path)}>
                   查看 <Text className='iconfont icon-qianwang-01' />
                 </View>
               )
@@ -809,6 +827,15 @@ function TradeDetail(props) {
           })
         }}
       />
+
+      <AtFloatLayout title="电子处方" isOpened={prescriptionStatus} onClose={handleClose}>
+        <View className='long-press'>长按可保存处方图片</View>
+        <SpImage src={prescriptionUrl} onClick={() => {
+          Taro.previewImage({
+            urls: prescriptionUrl
+          })
+        }}></SpImage>
+      </AtFloatLayout>
     </SpPage>
   )
 }

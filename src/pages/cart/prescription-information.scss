@@ -48,7 +48,7 @@
       align-items: center;
       font-size: 40px;
       &-title {
-        font-size: 36px;
+        font-size: 34px;
       }
       &-name {
         .icon-bianji1 {
@@ -103,7 +103,7 @@
     .personnel {
       display: flex;
       align-items: center;
-      font-size: 36px;
+      font-size: 34px;
       &-title {
         font-size: 26px;
       }
@@ -170,5 +170,11 @@
     color: #fff;
     border-color: var(--color-accent);
     background-color: var(--color-accent);
+  }
+  .sp-cell {
+    padding: 30px;
+  }
+  .sp-cell__bd {
+    text-align: end;
   }
 }
