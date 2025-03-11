@@ -3,7 +3,7 @@ import Taro, { useRouter, useDidShow } from '@tarojs/taro'
 import { View, ScrollView, Text, Picker, WebView } from '@tarojs/components'
 import api from '@/api'
 import doc from '@/doc'
-import { SpImage, SpPage, SpCheckbox, SpTradeItem } from '@/components'
+import { SpImage, SpPage, SpCheckbox, SpTradeItem, SpCell } from '@/components'
 import { useImmer } from 'use-immer'
 import { relationship } from '@/consts'
 import { AtTag, AtList, AtListItem, AtTextarea, AtButton } from 'taro-ui'
@@ -189,8 +189,8 @@ function PrescriptionPnformation() {
     })
 
     if (!param.medication_personnel_id) {
-        showToast(`请填写用药人`);
-        return
+      showToast(`请填写用药人`);
+      return
     }
 
     if (param.before_ai_result_allergy_history == 1) {
@@ -303,7 +303,9 @@ function PrescriptionPnformation() {
 
       <View className='medication'>
         <View className='personnel'>
-          <View className='personnel-title'>用药人</View>
+          <View className='personnel-title'>
+            <Text className='sp-cell__xin'>* </Text>
+            用药人</View>
           <View className='personnel-name' onClick={colsePersonnel}>
             <Text className='iconfont icon-bianji1'></Text>
             添加/修改
@@ -336,7 +338,7 @@ function PrescriptionPnformation() {
 
       <View className='medication1'>
         <View className='personnel'>
-          <Text>请选择线下已确诊疾病</Text>
+          <Text> <Text className='sp-cell__xin'>* </Text>请选择线下已确诊疾病</Text>
           <Text className='personnel-title'>（每个药品至少选择一种）</Text>
         </View>
         {
@@ -375,12 +377,24 @@ function PrescriptionPnformation() {
           notesList.map((item, index) => {
             return (
               <Picker mode='selector' range={item.selector} rangeKey='value' key={index} onChange={(e) => pickerChange(e, index)}>
-                <AtList>
+                {/* <AtList>
                   <AtListItem
+                  iconInfo = {'iconfont icon-arrow-up'}
                     title={item.title}
                     extraText={item.selectorChecked}
                   />
-                </AtList>
+                </AtList> */}
+                <SpCell
+                  className='logistics-no province border-bottom'
+                  title={item.title}
+                  isLink
+                  arrow
+                  certainly
+                >
+                  <View className='picker'>
+                    {item.selectorChecked}
+                  </View>
+                </SpCell>
               </Picker>
             )
           })
@@ -388,7 +402,7 @@ function PrescriptionPnformation() {
         {
           notesList[4].value == 1 &&
           <View className='notes-textarea'>
-            <Text className='allergy'>药物过敏说明：</Text>
+            <Text className='allergy'><Text className='sp-cell__xin'>* </Text>药物过敏说明：</Text>
             <AtTextarea
               value={before_ai_result_allergy_history}
               maxLength={200}
