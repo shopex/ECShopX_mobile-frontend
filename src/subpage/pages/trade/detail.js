@@ -80,7 +80,7 @@ export default class TradeDetail extends Component {
       cancelData: {},
       tradeInfo: {},
       showQRcode: false,
-      distributor: {}
+      distributor: {},
     }
   }
 
@@ -140,6 +140,8 @@ export default class TradeDetail extends Component {
       price: ({ total_fee }) => (total_fee / 100).toFixed(2),
       total_fee_new: ({ total_fee_new }) => (total_fee_new / 100).toFixed(2),
       market_price: ({ market_price }) => (market_price / 100).toFixed(2),
+      salePrice:({ sale_price }) => (sale_price / 100).toFixed(2),
+      activityPrice:({ price }) => (price / 100).toFixed(2),
       point: 'item_point',
       item_point: 'item_point',
       num: 'num',
@@ -631,7 +633,7 @@ export default class TradeDetail extends Component {
       tradeInfo,
       showQRcode,
       pickup_code,
-      distributor
+      distributor,
     } = this.state
 
     if (!info) {
@@ -869,7 +871,7 @@ export default class TradeDetail extends Component {
                 </Text>
               </View>
             </View>
-            <DetailItem info={info} isPointitem={this.isPointitemGood()} />
+            <DetailItem info={info} isPurchase={info.order_class == 'employee_purchase'} isPointitem={this.isPointitemGood()} />
           </View>
           {info.is_logistics && (
             <View className='logConfirm'>
@@ -993,13 +995,13 @@ export default class TradeDetail extends Component {
             )}
             {enMarketPrice && info.market_fee > 0 && (
               <View className='line'>
-                <View className='left'>原价</View>
+                <View className='left'>商品总金额</View>
                 <View className='right'>{`¥${info.market_fee}`}</View>
               </View>
             )}
 
             <View className='line'>
-              <View className='left'>总价</View>
+              <View className='left'>实付</View>
               <View className='right'>
                 {transformTextByPoint(this.isPointitemGood(), info.item_fee_new, info.item_point)}
               </View>
