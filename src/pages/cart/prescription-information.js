@@ -90,7 +90,8 @@ const initialState = {
   risk: false,
   listProduct: [],
   before_ai_result_allergy_history: "",
-  orderInfo: null
+  orderInfo: null,
+  medicationIindex:0
 }
 
 
@@ -106,7 +107,8 @@ function PrescriptionPnformation() {
     risk,
     listProduct,
     before_ai_result_allergy_history,
-    orderInfo
+    orderInfo,
+    medicationIindex
   } = state
 
   const router = useRouter()
@@ -132,8 +134,8 @@ function PrescriptionPnformation() {
     console.log(list, 'lllllllllfetch');
 
     setState(draft => {
-      draft.listProduct = list,
-        draft.orderInfo = _orderInfo
+      draft.listProduct = list
+      draft.orderInfo = _orderInfo
     })
   }
 
@@ -239,8 +241,10 @@ function PrescriptionPnformation() {
   }
 
   const listChangge = (val) => {
+    let res = JSON.parse(JSON.stringify(val))
+    res[medicationIindex].isShow = true
     setState(draft => {
-      draft.medicationList = val
+      draft.medicationList = res
     })
   }
 
@@ -251,6 +255,7 @@ function PrescriptionPnformation() {
     })
     setState(draft => {
       draft.medicationList = list
+      draft.medicationIindex = index
     })
   }
 
