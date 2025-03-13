@@ -6,6 +6,7 @@
     align-items: center;
     padding: 0 36px;
     box-sizing: border-box;
+    background: #fff;
   }
 
   .item-list-scroll {
@@ -97,5 +98,18 @@
     font-size: 30px;
     color: var(--color-primary);
     padding-top: 30px;
+  }
+
+  .sp-tabs-hd .tab-item:not(:last-child):after{
+    display: none !important;
+  }
+
+  .sp-tabs-hd .tab-item-active .name{
+    color: var(--color-primary) !important;
+    border-bottom: 8px solid var(--color-primary) !important;
+  }
+
+  .sp-tabs-hd .tab-item{
+    color: #333333 !important;
   }
 }

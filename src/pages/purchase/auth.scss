@@ -1,29 +1,29 @@
 .purchase-auth {
-  padding-top: 90px;
+  padding-top: 80px;
   position: relative;
   height: 100vh;
-  background-color: #fff;
+  background-color: #f5f5f5;
   box-sizing: border-box;
 
   .header {
     margin: 0 auto;
-    width: 369px;
-    height: 369px;
+    width: 569px;
+    // height: 369px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
     &-avatar {
-      width: 150rpx;
-      height: 150rpx;
+      width: 250px;
+      height: 250px;
       border-radius: 50%;
     }
 
     .welcome {
       color: #666;
-      font-size: 28px;
-      margin: 72px 0 35px 0;
+      font-size: 32px;
+      margin: 32px 0 32px 0;
     }
 
     .title {
@@ -34,14 +34,16 @@
   }
 
   .btns {
-    margin-top: 80px;
+    margin-top: 120px;
+    padding: 0 64px;
+    box-sizing: border-box;
 
     &-account {
       font-size: 32px;
       font-weight: 400;
       color: #222;
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 0 !important;
 
       .account {
         font-weight: 600;
@@ -51,6 +53,19 @@
     .button {
       font-weight: 600;
       border: none;
+      height: 88px;
+      line-height: 88px;
+      border-radius: 50px;
+      .at-button__text{
+        font-weight: 500 ;
+        font-size: 32px ;
+        display: flex;
+        align-items: center;
+        .icon-shuangjiantou {
+          font-size: 18px;
+          margin-left: 8px;
+        }
+      }
     }
 
     .login {
@@ -59,24 +74,37 @@
 
     .icon {
       display: inline-block;
-      margin-bottom: 10rpx;
+      margin-bottom: 10px;
     }
 
-    &-staff {
-      margin-bottom: 48rpx;
+    &-phone {
+      margin-bottom: 48px;
       background-color: var(--color-primary);
       color: #fff;
     }
 
-    &-friend {
+    &-account {
       background-color: #fff;
       color: var(--color-primary);
     }
 
+    &-email {
+      background-color: #f5f5f5;
+      color: #222222;
+      margin-top: 12px;
+      .at-button__text{
+        font-size: 32px !important;
+        font-weight: 400 !important;
+      }
+
+
+    }
+
     &-weixin {
       background: #07C160;
-      font-size: 32rpx;
+      font-size: 32px;
       font-weight: 400 !important;
+
     }
   }
 
@@ -102,4 +130,56 @@
     transition: all .2s ease-in;
     pointer-events: auto;
   }
+
+  .auth--footer{
+    position: fixed;
+    left: 50%;
+    transform:translateX(-50%);
+    width: 100%;
+    bottom: 210px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #222222;
+    line-height: 46px;
+    margin-bottom: 24px;
+    .auth--footer-text{
+
+      .content{
+        font-weight: bolder;
+        text-decoration:underline;
+      }
+    }
+  }
+  .service-footer{
+    border-top: 1px solid #DDDDDD;
+    justify-content: center;
+    width: 100%;
+    padding-top: 31px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 57px;
+    left: 0;
+    .icon-lianxi{
+      color: #666666;
+      font-size: 32px;
+      margin-right: 6px;
+    }
+    .toolbar-item{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &-txt{
+        color: #666666;
+      }
+      &-content{
+        color: #007AFF;
+      }
+    }
+  }
+
 }
