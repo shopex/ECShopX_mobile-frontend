@@ -39,6 +39,7 @@ function CompMedicationPersonnel(props) {
     const { total_count: total, list: list1 } = await api.prescriptionDrug.medicationPersonnelList(params)
     list1.forEach(element => {
       element.relationship = Number(element.relationship) - 1
+      element.isShow = false
     });
     listChangge([...list, ...list1])
     setState((draft) => {

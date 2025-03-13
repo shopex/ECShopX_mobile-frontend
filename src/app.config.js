@@ -46,7 +46,7 @@ const config = {
         'category',
         'espier-index',
         'index',
-        'list'
+        'list' //商品列表
       ]
     },
     // 导购货架 guide
