@@ -262,12 +262,7 @@ function PurchaseAuth() {
               onClick={() => handleConfirmClick('mobile')}
             >
               手机号登录&nbsp;
-              <AtIcon
-                size={16}
-                prefixClass='icon-drf'
-                value='denglujiantou'
-                className='icondrf btns-icon sp--allown'
-              ></AtIcon>
+              <Text className='iconfont icon-shuangjiantou'></Text>
             </AtButton>
             <AtButton
               circle
@@ -276,12 +271,7 @@ function PurchaseAuth() {
               onClick={() => handleConfirmClick('account')}
             >
               账号密码登录&nbsp;
-              <AtIcon
-                size={16}
-                prefixClass='icon-drf'
-                value='denglujiantou'
-                className='icondrf btns-icon sp--allown'
-              ></AtIcon>
+              <Text className='iconfont icon-shuangjiantou'></Text>
             </AtButton>
             <AtButton
               circle
