@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.17.4](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.17.3...v3.17.4) (2025-03-17)
+
+
+### Bug Fixes
+
+* Input光标问题 ([dae2c39](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/dae2c394c87c4118c49225a59427ba609194acdf))
+
 ### [3.17.3](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.17.2...v3.17.3) (2025-03-14)
 
 
