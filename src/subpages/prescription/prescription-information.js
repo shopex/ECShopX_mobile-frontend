@@ -91,7 +91,7 @@ const initialState = {
   listProduct: [],
   before_ai_result_allergy_history: "",
   orderInfo: null,
-  medicationIindex:0
+  medicationIindex: 0
 }
 
 
@@ -242,7 +242,13 @@ function PrescriptionPnformation() {
 
   const listChangge = (val) => {
     let res = JSON.parse(JSON.stringify(val))
-    res[medicationIindex].isShow = true
+    if (res[medicationIindex] !== undefined && res[medicationIindex] !== null) {
+      res[medicationIindex].isShow = true;
+    } else {
+      if (val.length > 0) {
+        res[0].isShow = true;
+      }
+    }
     setState(draft => {
       draft.medicationList = res
     })
