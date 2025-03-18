@@ -51,7 +51,7 @@ export default (props = {}) => {
             weappPay(params, orderInfo)
           } else if (isWeb) {
             // H5非微信浏览器，跳转小程序发起支付
-            bspayH5Pay(params, orderInfo)
+            adapayH5Pay(params, orderInfo)
           }
         } else if (pay_channel == 'wx_pub') {
           wxpayjsPay(params, orderInfo)
@@ -166,8 +166,8 @@ export default (props = {}) => {
 
   // 微信H5 JSDK
   const wxpayjsPay = async (params, orderInfo) => {
-    const $instance = getCurrentInstance()
-    const { order_id, code } = $instance.router.params
+    // const $instance = getCurrentInstance()
+    const { order_id, code } = router.params
     const { open_id } = await api.wx.getOpenid({ code })
     const { pay_channel } = params
     const { pay_type, order_type = 'normal' } = orderInfo
