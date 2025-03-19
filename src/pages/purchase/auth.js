@@ -27,7 +27,7 @@ function PurchaseAuth() {
   const [checked, setChecked] = useState(false)
   const [userEnterprises, setUserEnterprises] = useState([])
   const { params } = useRouter()
-  const { code: invite_code, type = '' } = params
+  const { code: invite_code, type = '', activity_id = '' } = params
   const dispatch = useDispatch()
   const codeRef = useRef()
   const { showModal } = useModal()
@@ -154,6 +154,9 @@ function PurchaseAuth() {
         url: redirectUrl
       })
     }else{
+      if(activity_id){
+        redirectUrl = `${redirectUrl}?activity_id=${activity_id}`
+      }
       Taro.navigateTo({
         url: redirectUrl
       })

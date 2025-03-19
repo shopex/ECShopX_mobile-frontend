@@ -8,7 +8,7 @@ import { useLogin, useModal } from '@/hooks'
 import { classNames, showToast, VERSION_IN_PURCHASE, getDistributorId } from '@/utils'
 import qs from 'qs'
 import { SpForm, SpFormItem, SpPage, SpInput as AtInput, SpPrivacyModal } from '@/components'
-import { updateEnterpriseId } from '@/store/slices/purchase'
+import { updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import CompBottomTip from './comps/comp-bottomTip'
 import CompSelectCompany from './comps/comp-select-company'
 import './select-company-account.scss'
@@ -38,7 +38,7 @@ function PurchaseAuthAccount() {
   const formRef = useRef()
   const { form, rules, isOpened, companyList, curActiveIndex } = state
   const { params } = useRouter()
-  const { enterprise_id, enterprise_name, enterprise_sn } = params
+  const { enterprise_id, enterprise_name, enterprise_sn, activity_id } = params
   const { showModal } = useModal()
   const dispatch = useDispatch()
 
@@ -70,8 +70,21 @@ function PurchaseAuthAccount() {
       auth_code,
       auth_type: 'account'
     }
+    let curDistributorId = null;
 
-    const { list } = await api.purchase.employeeCheck({..._params,distributor_id: getDistributorId()})
+    // 如果扫码进来存在企业ID则需要绑定拿到店铺ID
+    if (enterprise_id) {
+      const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id})
+      curDistributorId = distributor_id
+      //后续身份切换需要用
+      dispatch(updateCurDistributorId(distributor_id))
+    }
+
+    const checkParams = {..._params,distributor_id: curDistributorId ?? getDistributorId()}
+    if(activity_id){
+      checkParams.activity_id = activity_id
+    }
+    const { list } = await api.purchase.employeeCheck(checkParams)
     if (list.length > 1) {
       //选择企业
       setState((draft) => {

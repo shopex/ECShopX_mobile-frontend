@@ -11,7 +11,7 @@ import qs from 'qs'
 
 import './select-company-email.scss'
 import CompBottomTip from './comps/comp-bottomTip'
-import { updateEnterpriseId } from '@/store/slices/purchase'
+import { updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import { SpForm, SpFormItem, SpTimer, SpPage, SpPrivacyModal, SpInput as AtInput } from '@/components'
 
 function PurchaseAuthEmail(props) {
@@ -51,7 +51,7 @@ function PurchaseAuthEmail(props) {
   })
   const { form, rules } = state
   const formRef = useRef()
-  const { enterprise_id, enterprise_name, enterprise_sn } = router.params
+  const { enterprise_id, enterprise_name, enterprise_sn,activity_id } = router.params
 
   const onInputChange = (key, value) => {
     setState((draft) => {
@@ -84,11 +84,21 @@ function PurchaseAuthEmail(props) {
       showError: false,
       auth_type: 'email'
     }
+    let curDistributorId = null;
+
+    // 如果扫码进来存在企业ID则需要绑定拿到店铺ID
+    if (enterprise_id) {
+      const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id})
+      curDistributorId = distributor_id
+      //后续身份切换需要用
+      dispatch(updateCurDistributorId(distributor_id))
+    }
     try {
-      const { list } = await api.purchase.employeeCheck({
-        ...params,
-        distributor_id: getDistributorId()
-      })
+      const checkParams = {..._params,distributor_id: curDistributorId ?? getDistributorId()}
+      if(activity_id){
+        checkParams.activity_id = activity_id
+      }
+      const { list } = await api.purchase.employeeCheck(checkParams)
       //一个邮箱后缀只有一个企业
       params.enterprise_id = list[0].enterprise_id
 
