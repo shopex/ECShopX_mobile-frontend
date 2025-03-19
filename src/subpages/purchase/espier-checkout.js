@@ -32,7 +32,7 @@ import {
   VERSION_B2C,
   VERSION_PLATFORM
 } from '@/utils'
-import { useAsyncCallback, useLogin,useLocation, usePayment } from '@/hooks'
+import { useAsyncCallback, useLogin, useLocation, usePayment } from '@/hooks'
 import { PAYMENT_TYPE, TRANSFORM_PAYTYPE } from '@/consts'
 import _cloneDeep from 'lodash/cloneDeep'
 import api from '@/api'
@@ -280,6 +280,14 @@ function PurchaseCheckout(props) {
       draft.submitLoading = false
     })
 
+    if (!totalInfo?.prescription_status == 0) {
+      Taro.redirectTo({
+        url: `/subpages/prescription/prescription-information?order_id=${orderId}`
+      })
+      console.log('我要跳转到新的页面啦:', payType)
+      return
+    }
+
     // 储值支付 或者 积分抵扣
     if (payType === 'deposit' || params.pay_type == 'point') {
       Taro.redirectTo({ url: `/pages/cart/cashier-result?order_id=${orderId}` })
@@ -317,11 +325,11 @@ function PurchaseCheckout(props) {
     })
 
     // 收货地址为空时，需要触发calcOrder
-    if(receipt_type == 'logistics' && !address_info) {
+    if (receipt_type == 'logistics' && !address_info) {
       calcOrder()
     }
     // if (address_info) {
-      dispatch(updateChooseAddress(address_info))
+    dispatch(updateChooseAddress(address_info))
     // }
   }
 
@@ -350,7 +358,7 @@ function PurchaseCheckout(props) {
 
   // 商家留言
   const handleRemarkChange = (val) => {
-    if(val.length > 50) val = val.slice(0,50)
+    if (val.length > 50) val = val.slice(0, 50)
     console.log('handleRemarkChange:remark', remark)
     setState((draft) => {
       draft.remark = val
@@ -401,7 +409,8 @@ function PurchaseCheckout(props) {
       receiver_city,
       receiver_district,
       item_fee_new,
-      market_fee
+      market_fee,
+      prescription_status
     } = orderRes
 
     if (coupon_info) {
@@ -445,7 +454,8 @@ function PurchaseCheckout(props) {
       point_fee, //积分抵扣金额,
       item_point,
       freight_type,
-      promotion_discount
+      promotion_discount,
+      prescription_status
     }
 
     const point_info = {
@@ -701,6 +711,14 @@ function PurchaseCheckout(props) {
             </SpCell>
           )}
       </View>
+
+
+      {
+        !totalInfo?.prescription_status == 0 &&
+        <View className='cart-checkout__title'>
+          订单中包含处方药，提交订单后请补充处方信息
+        </View>
+      }
 
       <SpCashier
         isOpened={openCashier}
