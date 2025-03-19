@@ -9,7 +9,7 @@ import { SpPage, SpPrivacyModal } from '@/components'
 import { useLogin, useModal } from '@/hooks'
 import { showToast, VERSION_IN_PURCHASE, normalizeQuerys,getDistributorId } from '@/utils'
 import CompSelectCompany from './comps/comp-select-company'
-import { updateEnterpriseId } from '@/store/slices/purchase'
+import { updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import CompBottomTip from './comps/comp-bottomTip'
 import './select-company-phone.scss'
 
@@ -33,7 +33,7 @@ function PurchaseAuthPhone(props) {
   const { isOpened, companyList, curActiveIndex } = state
   const { userInfo = {} } = useSelector((state) => state.user)
   const { params } = useRouter()
-  let { enterprise_name, auth_code, account, email, vcode, auth_type = 'mobile', employee_id, enterprise_id, is_verify } = params
+  let { enterprise_name, auth_code, account, email, vcode, auth_type = 'mobile', employee_id, enterprise_id, is_verify,activity_id } = params
   const { showModal } = useModal()
   const $instance = getCurrentInstance()
 
@@ -128,14 +128,22 @@ function PurchaseAuthPhone(props) {
 
   const validatePhone = async (para) => {
     const _params = { ...para }
+    let curDistributorId = null;
 
     // 如果扫码进来存在企业ID则需要绑定拿到店铺ID
     if (enterprise_id) {
-      const res = await api.purchase.getPurchaseDistributor({enterprise_id})
+      const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id})
+      curDistributorId = distributor_id
+      //后续身份切换需要用
+      dispatch(updateCurDistributorId(distributor_id))
     }
     //二维码不需要验证则不需要check接口
     if(!(auth_type == 'qr_code' && !is_verify)){
-      const { list } = await api.purchase.employeeCheck({..._params,distributor_id: getDistributorId()})
+      const checkParams = {..._params,distributor_id: curDistributorId ?? getDistributorId()}
+      if(activity_id){
+        checkParams.activity_id = activity_id
+      }
+      const { list } = await api.purchase.employeeCheck(checkParams)
       if (list.length > 1) {
         //选择企业
         setState((draft) => {
