@@ -7,7 +7,7 @@ import { useImmer } from 'use-immer'
 import qs from 'qs'
 import api from '@/api'
 import doc from '@/doc'
-import { navigateTo, pickBy, classNames, throttle } from '@/utils'
+import { navigateTo, pickBy, classNames, throttle, getDistributorId } from '@/utils'
 import { useLogin, useDepChange, useDebounce } from '@/hooks'
 import { fetchCartList, deleteCartItem, updateCartItemNum, updateCount } from '@/store/slices/purchase'
 import {
@@ -45,7 +45,7 @@ function CartIndex() {
   const { current, policyModal } = state
 
   const { colorPrimary } = useSelector((state) => state.sys)
-  const { validCart = [], invalidCart = [], purchase_share_info = {} } = useSelector((state) => state.purchase)
+  const { validCart = [], invalidCart = [], purchase_share_info = {},curDistributorId } = useSelector((state) => state.purchase)
   const { tabbar = 1 } = router?.params || {}
 
 
@@ -73,7 +73,7 @@ function CartIndex() {
       enterprise_id,
       activity_id
     }
-    await dispatch(fetchCartList(params))
+    await dispatch(fetchCartList({...params,distributor_id: curDistributorId ?? getDistributorId()}))
     await dispatch(updateCount(params))
     Taro.hideLoading()
   }
