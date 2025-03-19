@@ -94,7 +94,7 @@ function PurchaseAuthEmail(props) {
       dispatch(updateCurDistributorId(distributor_id))
     }
     try {
-      const checkParams = {..._params,distributor_id: curDistributorId ?? getDistributorId()}
+      const checkParams = {...params,distributor_id: curDistributorId ?? getDistributorId()}
       if(activity_id){
         checkParams.activity_id = activity_id
       }
