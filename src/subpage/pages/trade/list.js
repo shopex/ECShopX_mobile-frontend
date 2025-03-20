@@ -171,6 +171,7 @@ export default class TradeList extends Component {
       orders_delivery_id: 'orders_delivery_id',
       order_type: 'order_type',
       can_apply_cancel: 'can_apply_cancel',
+      prescription_status:'prescription_status',
       order: ({ items }) =>
         pickBy(items, {
           order_id: 'order_id',
@@ -187,7 +188,8 @@ export default class TradeList extends Component {
           item_fee: 'item_fee',
           point: 'item_point',
           num: 'num',
-          order_item_type: 'order_item_type'
+          order_item_type: 'order_item_type',
+          isPrescription: 'is_prescription',
         })
     })
 
