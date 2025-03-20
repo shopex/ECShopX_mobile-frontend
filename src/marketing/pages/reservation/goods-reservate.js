@@ -1,543 +1,287 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { View, Image, Text, ScrollView, Picker } from '@tarojs/components'
-import { connect } from 'react-redux'
-import { withPager, withBackToTop } from '@/hocs'
-import { AtInput, AtCheckbox, AtFloatLayout, AtTextarea } from 'taro-ui'
-import { SpToast, SpCheckbox } from '@/components'
+import { View, Switch, Text, Button, ScrollView } from '@tarojs/components'
+import { AtButton, AtTextarea } from 'taro-ui'
+import { SpCell, SpPage, SpAddress , SpInput as AtInput } from '@/components'
 import api from '@/api'
-import { pickBy, classNames, showToast } from '@/utils'
-import _cloneDeep from 'lodash/cloneDeep'
+import { isWxWeb, showToast } from '@/utils'
 import S from '@/spx'
+import { useNavigation } from '@/hooks'
 
 import './goods-reservate.scss'
 
-@connect(({ colors }) => ({
-  colors: colors.current
-}))
-@withPager
-@withBackToTop
-export default class GoodsReservate extends Component {
-  $instance = getCurrentInstance()
-  constructor(props) {
-    super(props)
+const initialState = {
+  info: {},
+  listLength: 0,
+  areaArray: [[], [], []],
+  areaIndexArray: [0, 0, 0],
+  areaData: [],
+  chooseValue: ['', '', ''],
+  isOpened: false
+}
 
-    this.state = {
-      cur_activity_info: '',
-      isHasActivityInfo: true,
-      option_list: [],
-      showCheckboxPanel: false,
-      checkedList: [],
-      confirm_list: [],
-      areaList: [],
-      multiIndex: [],
-      isShowSubTips: false
-    }
+function GoodReservate(props) {
+  const $instance = getCurrentInstance()
+  const [state, setState] = useImmer(initialState)
+  const colors = useSelector((state) => state.colors.current)
+  const dispatch = useDispatch()
+  const { setNavigationBarTitle } = useNavigation()
+
+  useEffect(() => {
+    fetchAddressList()
+    fetch()
+    setNavigationBarTitle(initNavigationBarTitle())
+  }, [])
+
+  const initNavigationBarTitle = () => {
+    return '啊我的好季节啊我喝点酒哈我的卡'
   }
 
-  componentDidShow() {
-    this.count = 0
-    this.fetch()
-  }
-
-  async fetch() {
-    const { activity_info } = await api.user.registrationActivity({
-      activity_id: this.$instance.router.params.activity_id
+  const fetchAddressList = async () => {
+    const areaData = await api.member.areaList()
+    setState((draft) => {
+      draft.areaData = areaData
     })
-    if (!activity_info) {
-      showToast('您已经超出活动次数')
-      setTimeout(() => {
-        Taro.navigateBack()
-      }, 700)
-      this.setState({
-        isHasActivityInfo: false
-      })
+  }
+
+  const fetch = async () => {
+    Taro.showLoading({ title: '' })
+    const { list } = await api.member.addressList()
+    setState((draft) => {
+      draft.listLength = list?.length
+    })
+
+    list.map((a_item) => {
+      if (a_item.address_id === $instance.router?.params?.address_id) {
+        setState((draft) => {
+          draft.info = a_item
+          draft.chooseValue = [a_item.province, a_item.city, a_item.county]
+        })
+      }
+    })
+
+    if ($instance.router?.params?.isWechatAddress) {
+      try {
+        const resAddress = await Taro.chooseAddress()
+        const query = {
+          province: resAddress?.provinceName,
+          city: resAddress?.cityName,
+          county: resAddress?.countyName,
+          adrdetail: resAddress?.detailInfo,
+          is_def: 0,
+          postalCode: resAddress?.postalCode,
+          telephone: resAddress?.telNumber,
+          username: resAddress?.userName
+        }
+        setState((draft) => {
+          draft.info = query
+          draft.chooseValue = [query.province, query.city, query.county]
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    Taro.hideLoading()
+  }
+
+  const onPickerClick = () => {
+    setState((draft) => {
+      draft.isOpened = true
+    })
+  }
+
+  const handleClickClose = () => {
+    setState((draft) => {
+      draft.isOpened = false
+    })
+  }
+
+  const onPickerChange = (selectValue) => {
+    const chooseValue = [selectValue[0]?.label, selectValue[1]?.label, selectValue[2]?.label]
+    setState((draft) => {
+      draft.chooseValue = chooseValue
+    })
+  }
+
+  const handleChange = (name, val, e) => {
+    console.log('---', name, val, e)
+    const nInfo = JSON.parse(JSON.stringify(state.info || {}))
+    if (name === 'adrdetail') {
+      nInfo[name] = e.detail.value
     } else {
-      this.setState({
-        cur_activity_info: activity_info
-      })
-      this.getAreaData()
+      nInfo[name] = val
     }
+    setState((draft) => {
+      draft.info = nInfo
+    })
   }
 
-  getAreaData = async () => {
-    let res = await api.member.areaList()
-    const nList = pickBy(res, {
-      label: 'label',
-      children: 'children'
+  const handleDefChange = (e) => {
+    const info = {
+      ...state.info,
+      is_def: e.detail.value ? 1 : 0
+    }
+
+    setState((draft) => {
+      draft.info = info
     })
-    this.nList = nList
-    let arrProvice = []
-    let arrCity = []
-    let arrCounty = []
-    nList.map((item, index) => {
-      arrProvice.push(item.label)
-      if (index === 0) {
-        item.children.map((c_item, c_index) => {
-          arrCity.push(c_item.label)
-          if (c_index === 0) {
-            c_item.children.map((cny_item) => {
-              arrCounty.push(cny_item.label)
-            })
-          }
-        })
-      }
-    })
-    this.setState(
-      {
-        areaList: [arrProvice, arrCity, arrCounty]
-      },
-      () => {
-        this.setState({
-          multiIndex: [0, 0, 0]
-        })
-      }
-    )
   }
 
-  // 选定开户地区
-  bindMultiPickerChange = async (name, e) => {
-    let selectd_area = []
-    this.nList.map((item, index) => {
-      if (index === e.detail.value[0]) {
-        selectd_area[0] = item.label
-        item.children.map((s_item, sIndex) => {
-          if (sIndex === e.detail.value[1]) {
-            selectd_area[1] = s_item.label
-            s_item.children.map((th_item, thIndex) => {
-              if (thIndex === e.detail.value[2]) {
-                selectd_area[2] = th_item.label
-              }
-            })
-          }
-        })
-      }
-    })
+  const handleSubmit = async (e) => {
+    const { value } = e.detail || {}
+    const { chooseValue } = state
+    const data = {
+      ...state.info,
+      ...value
+    }
 
-    this.handleCell(name, selectd_area)
-  }
-
-  bindMultiPickerColumnChange = ({ detail }) => {
-    const { column, value } = detail
-    const { areaList, multiIndex } = this.state
-    let arrCity = []
-    let arrCounty = []
-    let areaIndex = []
-    if (column === 0) {
-      this.setState(
-        {
-          multiIndex: [value, 0, 0]
-        },
-        () => {
-          this.nList.map((item, index) => {
-            if (index === value) {
-              item.children.map((c_item, c_index) => {
-                arrCity.push(c_item.label)
-                if (c_index === 0) {
-                  c_item.children.map((cny_item) => {
-                    arrCounty.push(cny_item.label)
-                  })
-                }
-              })
-              areaList[1] = arrCity
-              areaList[2] = arrCounty
-              areaIndex = [areaList[0], arrCity, arrCounty]
-              this.setState({ areaList: areaIndex })
-            }
-          })
-        }
-      )
-    } else if (column === 1) {
-      multiIndex[1] = value
-      multiIndex[2] = 0
-      this.setState(
-        {
-          multiIndex
-        },
-        () => {
-          this.nList[multiIndex[0]].children.map((c_item, c_index) => {
-            if (c_index === value) {
-              c_item.children.map((cny_item) => {
-                arrCounty.push(cny_item.label)
-              })
-              areaIndex = [areaList[0], areaList[1], arrCounty]
-              this.setState({ areaList: areaIndex })
-            }
-          })
-        }
-      )
+    if (!data.is_def) {
+      data.is_def = '0'
     } else {
-      multiIndex[2] = value
-      this.setState({
-        multiIndex
-      })
+      data.is_def = '1'
     }
-  }
-
-  handleCell = (name, e) => {
-    const { cur_activity_info } = this.state
-    const eValue = e.detail ? e.detail.value : e
-    cur_activity_info &&
-      cur_activity_info.formdata.content.map((item) => {
-        if (item.formdata && item.formdata.length > 0) {
-          item.formdata.map((sec_item) => {
-            if (sec_item.field_name === name) {
-              if (sec_item.options) {
-                if (sec_item.form_element === 'checkbox') {
-                  let new_answer = [].concat(e)
-                  sec_item.answer = new_answer
-                } else if (
-                  sec_item.form_element === 'select' ||
-                  sec_item.form_element === 'radio'
-                ) {
-                  sec_item.answer = sec_item.options[eValue].value
-                }
-              } else {
-                if (
-                  sec_item.form_element === 'date' ||
-                  sec_item.form_element === 'time' ||
-                  sec_item.form_element === 'textarea'
-                ) {
-                  sec_item.answer = eValue
-                } else if (sec_item.form_element === 'area') {
-                  sec_item.answer = e
-                } else if (sec_item.form_element === 'text' || sec_item.form_element === 'number') {
-                  sec_item.answer = e
-                }
-              }
-            }
-          })
-        }
-      })
-    this.setState({
-      cur_activity_info: cur_activity_info
-    })
-  }
-
-  handleReservate = async () => {
-    if (this.count === 1) {
-      return showToast('请勿重复提交')
+    if (state.listLength === 0) {
+      data.is_def = '1'
     }
 
-    let _this = this
-    let templeparams = {
-      'temp_name': 'yykweishop',
-      'source_type': 'activity'
+    if (!data.username) {
+      return showToast('请输入收件人')
     }
-    api.user.newWxaMsgTmpl(templeparams).then(
-      (tmlres) => {
-        console.log('templeparams---1', tmlres)
-        if (tmlres.template_id && tmlres.template_id.length > 0) {
-          wx.requestSubscribeMessage({
-            tmplIds: tmlres.template_id,
-            success() {
-              _this.handleSubmit()
-            },
-            fail() {
-              _this.handleSubmit()
-            }
-          })
-        } else {
-          _this.handleSubmit()
-        }
-      },
-      () => {
-        _this.handleSubmit()
-      }
-    )
-  }
 
-  handleSubmit = async () => {
-    let new_subdata = _cloneDeep(this.state.cur_activity_info)
-    if (new_subdata.formdata && new_subdata.formdata.content) {
-      new_subdata.formdata.content = JSON.stringify(new_subdata.formdata.content)
+    if (!data.telephone) {
+      return showToast('请输入手机号')
     }
+
+    data.province = chooseValue[0]
+    data.city = chooseValue[1]
+    data.county = chooseValue[2]
+
+    if (!data.adrdetail) {
+      return showToast('请输入详细地址')
+    }
+
+    Taro.showLoading('正在提交')
+
     try {
-      this.count = 1
-      await api.user.registrationSubmit(new_subdata)
-      this.setState({
-        isShowSubTips: true
-      })
-      if (new_subdata.formdata && new_subdata.formdata.content) {
-        new_subdata.formdata.content = JSON.parse(new_subdata.formdata.content)
+      await api.member.addressCreateOrUpdate(data)
+      if (data.address_id) {
+        showToast('修改成功')
+      } else {
+        showToast('创建成功')
       }
-      this.count = 0
-      showToast('提交成功')
       setTimeout(() => {
         Taro.navigateBack()
       }, 700)
-    } catch (e) {
-      console.log(e, 53)
-      this.count = 0
+    } catch (error) {
+      Taro.hideLoading()
+      return false
     }
+    Taro.hideLoading()
   }
 
-  handleToList = () => {
-    Taro.redirectTo({
-      url: '/marketing/pages/member/item-activity'
-    })
-  }
+  const { info, chooseValue, isOpened } = state
 
-  handleback = () => {
-    Taro.navigateBack()
-  }
-
-  showCheckbox = (options, type) => {
-    options.map((item) => {
-      item.label = item.value
-    })
-    this.setState({
-      option_list: options,
-      showCheckboxPanel: true
-    })
-    this.type = type
-  }
-
-  handleSelectionChange = (value) => {
-    this.setState({
-      checkedList: value
-    })
-  }
-
-  // 多选结果确认
-  btnClick = (btn_type) => {
-    if (btn_type === 'cancel') {
-      this.setState({
-        checkedList: this.state.confirm_list
-      })
-    } else {
-      this.setState({
-        confirm_list: this.state.checkedList
-      })
-
-      this.handleCell(this.type, this.state.checkedList)
-    }
-    this.setState({
-      showCheckboxPanel: false
-    })
-  }
-
-  render() {
-    const { colors } = this.props
-    const {
-      cur_activity_info = {},
-      isHasActivityInfo,
-      option_list,
-      showCheckboxPanel,
-      checkedList,
-      multiIndex,
-      areaList,
-      isShowSubTips
-    } = this.state
-    // let new_activity_info = JSON.parse(cur_activity_info)
-    const { formdata } =
-      cur_activity_info &&
-      (typeof cur_activity_info == 'string' ? JSON.parse(cur_activity_info) : cur_activity_info)
-
-    if (!formdata) {
-      return null
-    }
-    console.log(formdata, 255)
-    return (
-      <View className='goods-reservate'>
-        <View className='goods-reservate__storeinfo'>
-          {isHasActivityInfo && formdata.header_title ? (
-            <Text className='goods-reservate__tip'>{formdata.header_title}</Text>
-          ) : null}
-          {formdata &&
-            formdata.content &&
-            formdata.content.map((item, index) => {
-              return (
-                <View className='goods-reservate__userinfo' key={`${index}1`}>
-                {item.title&&<View className='goods-reservate__userinfo_title'>{item.title}</View>}
-                  {item.formdata && item.formdata.length > 0
-                    ? item.formdata.map((i_data, i_index) => {
-                        return (
-                          // eslint-disable-next-line react/jsx-key
-                          <View key={`${i_index}1`}>
-                            {i_data.form_element === 'select' || i_data.form_element === 'radio' ? (
-                              <Picker
-                                mode='selector'
-                                range={i_data.options}
-                                rangeKey='value'
-                                onChange={this.handleCell.bind(this, i_data.field_name)}
-                              >
-                                <View className='picker'>
-                                  <View className='picker__title'>
-                                    <Text className='picker__title_name'>{i_data.field_title}</Text>
-                                    {i_data.answer ? (
-                                      <Text className='picker__title_value'>{i_data.answer}</Text>
-                                    ) : (
-                                      <Text className='picker__title_value gray'>请选择</Text>
-                                    )}
-                                  </View>
-                                  <View className='pick-value'>
-                                    <View className='sp-cell__ft-icon iconfont at-icon at-icon-chevron-right'></View>
-                                  </View>
-                                </View>
-                              </Picker>
-                            ) : null}
-                            {i_data.form_element === 'textarea' ? (
-                              <AtTextarea
-                                value={i_data.answer}
-                                onChange={this.handleCell.bind(this, i_data.field_name)}
-                                maxLength={200}
-                                placeholder={i_data.field_title}
-                              />
-                            ) : null}
-                            {i_data.form_element === 'date' ? (
-                              <Picker
-                                mode='date'
-                                onChange={this.handleCell.bind(this, i_data.field_name)}
-                              >
-                                <View className='picker'>
-                                  <View className='picker__title'>
-                                    <Text className='picker__title_name'>{i_data.field_title}</Text>
-                                    {i_data.answer ? (
-                                      <Text className='picker__title_value'>{i_data.answer}</Text>
-                                    ) : (
-                                      <Text className='picker__title_value gray'>请选择</Text>
-                                    )}
-                                  </View>
-                                  <View className='pick-value'>
-                                    <View className='sp-cell__ft-icon at-icon iconfont at-icon-chevron-right'></View>
-                                  </View>
-                                </View>
-                              </Picker>
-                            ) : null}
-                            {i_data.form_element === 'area' ? (
-                              <Picker
-                                className='address-picker'
-                                mode='multiSelector'
-                                onChange={this.bindMultiPickerChange.bind(this, i_data.field_name)}
-                                onColumnChange={this.bindMultiPickerColumnChange.bind(this)}
-                                value={multiIndex}
-                                range={areaList}
-                              >
-                                <View className='picker'>
-                                  <View className='picker__title'>{i_data.field_title}</View>
-                                  {i_data.answer && i_data.answer.length === 3 ? (
-                                    <Text className='picker__text'>
-                                      {areaList[0][multiIndex[0]]}
-                                      {areaList[1][multiIndex[1]]}
-                                      {areaList[2][multiIndex[2]]}
-                                    </Text>
-                                  ) : (
-                                    <Text className='picker__text gray'>请选择</Text>
-                                  )}
-                                </View>
-                              </Picker>
-                            ) : null}
-                            {i_data.form_element === 'number' ? (
-                              <AtInput
-                                className='goods-input'
-                                name={i_data.field_name}
-                                title={i_data.field_title}
-                                type='number'
-                                placeholder={`请输入${i_data.field_title}`}
-                                value={i_data.answer}
-                                onChange={this.handleCell.bind(this, i_data.field_name)}
-                              />
-                            ) : null}
-                            {i_data.form_element === 'text' ? (
-                              <AtInput
-                                className='goods-input'
-                                name={i_data.field_name}
-                                title={i_data.field_title}
-                                type='text'
-                                placeholder={`请输入${i_data.field_title}`}
-                                value={i_data.answer}
-                                onChange={this.handleCell.bind(this, i_data.field_name)}
-                              />
-                            ) : null}
-                            {i_data.form_element === 'checkbox' ? (
-                              <View
-                                className='checkbox-input'
-                                onClick={this.showCheckbox.bind(
-                                  this,
-                                  i_data.options,
-                                  i_data.field_name
-                                )}
-                              >
-                                <Text className='checkbox-input__title'>{i_data.field_title}</Text>
-                                <Text>
-                                  {i_data.answer && i_data.answer.length > 0
-                                    ? i_data.answer.join(',')
-                                    : ''}
-                                </Text>
-                              </View>
-                            ) : null}
-                          </View>
-                        )
-                      })
-                    : null}
-                </View>
-              )
-            })}
-        </View>
-
-        {isHasActivityInfo ? (
-          <View className='goods-reservate__statement'>
-            <Text className='goods-reservate__statement_title'>声明：</Text>
-            <Text>*{formdata.bottom_title}</Text>
-          </View>
-        ) : (
-          <View className='success-view'>
-            <View className='success-view__content'>
-              <View className='success-view__title'>您已报名成功</View>
-              <View>
-                您已报名成功，我们将对所有报名用户进行筛选，报名结果将在2个工作日内通过短信及微信服务消息通知您，请注意查收！
-              </View>
-              <View className='success-view__btn' onClick={this.handleback.bind(this)}>
-                我知道了
-              </View>
-            </View>
-          </View>
-        )}
-        {isHasActivityInfo ? (
-          <View
-            className='goods-reservate__btn'
-            onClick={this.handleReservate.bind(this)}
-            style={`background: ${colors.data[0].primary}`}
+  return (
+    <SpPage
+      className='page-good-reservate'
+      renderFooter={
+        <View className='btns'>
+          <AtButton
+            circle
+            type='primary'
+            className='submit-btn'
+            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+            onClick={handleSubmit}
           >
             提交
-          </View>
-        ) : null}
-        {isShowSubTips ? (
-          <View className='success-view'>
-            <View className='success-view__content'>
-              <Image
-                src='/assets/imgs/ic_successed.png'
-                mode='widthFix'
-                className='success-view__img'
-              ></Image>
-              <View className='success-view__title'>您已报名成功</View>
-              <View>
-                您已报名成功，我们将对所有报名用户进行筛选，报名结果将在2个工作日内通过短信及微信服务消息通知您，请注意查收！
+          </AtButton>
+        </View>
+      }
+    >
+      <ScrollView className='scroll-view-container'>
+        <View className='scroll-view-body'>
+          <View className='page-good-reservate__welcome'>欢迎来到达仁堂2025年年度股东大会</View>
+          <View className='page-good-reservate__title'>S股股东出席天津会场</View>
+          <View className='page-good-reservate__tips'>提示：欲在天津会场出席的s大家看我喝点酒哈我觉得回家啊我活动空间啊我和贷记卡文化科技大会。</View>
+
+
+          <View className='page-good-reservate__form'>
+            <SpCell className='logistics-no border-bottom' title='收件人'>
+              <AtInput
+                name='username'
+                value={info?.username}
+                cursor={info?.username?.length}
+                placeholder='收件人姓名'
+                onChange={(e) => handleChange('username', e)}
+              />
+            </SpCell>
+
+            <SpCell className='logistics-no border-bottom' title='手机号码'>
+              <AtInput
+                name='telephone'
+                maxLength={11}
+                value={info?.telephone}
+                cursor={info?.telephone?.length}
+                placeholder='收件人手机号'
+                onChange={(e) => handleChange('telephone', e)}
+              />
+            </SpCell>
+
+            <SpCell
+              className='logistics-no province border-bottom'
+              title='所在区域'
+              isLink
+              arrow
+              onClick={onPickerClick}
+            >
+              <View className='picker'>
+                {chooseValue?.join('') === '' ? (
+                  <Text>选择省/市/区</Text>
+                ) : (
+                  <Text style={{ color: '#222' }}>{chooseValue?.join('/')}</Text>
+                )}
               </View>
-              <View className='success-view__btn' onClick={this.handleToList.bind(this)}>
-                我知道了
-              </View>
-            </View>
+            </SpCell>
+
+            <SpCell className='logistics-no detail-address' title='详细地址'>
+              <AtTextarea
+                count={false}
+                // name='adrdetail'
+                value={info?.adrdetail}
+                cursor={info?.adrdetail?.length}
+                maxLength={100}
+                placeholder='请填写详细地址（街道、门牌）'
+                onChange={handleChange.bind(this, 'adrdetail')}
+              />
+            </SpCell>
           </View>
-        ) : null}
-        <AtFloatLayout isOpened={showCheckboxPanel}>
-          <AtCheckbox
-            options={option_list}
-            selectedList={checkedList}
-            onChange={this.handleSelectionChange.bind(this)}
+
+          <SpCell
+            title='设为默认收货地址'
+            iisLink
+            className='default_address'
+            value={
+              <Switch
+                checked={info?.is_def}
+                className='def-switch'
+                onChange={handleDefChange}
+                color={colors.data[0].primary}
+              />
+            }
           />
-          <View className='panel-btns'>
-            <View className='panel-btn cancel-btn' onClick={this.btnClick.bind(this, 'cancel')}>
-              取消
-            </View>
-            <View className='panel-btn require-btn' onClick={this.btnClick.bind(this, 'require')}>
-              确定
-            </View>
-          </View>
-        </AtFloatLayout>
-        <SpToast />
-      </View>
-    )
-  }
+        </View>
+      </ScrollView>
+
+      <SpAddress isOpened={isOpened} onClose={handleClickClose} onChange={onPickerChange} />
+    </SpPage>
+  )
 }
+
+GoodReservate.options = {
+  addGlobalClass: true
+}
+
+export default GoodReservate

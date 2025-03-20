@@ -1,163 +1,160 @@
-@import '@/style/imports';
+.page-good-reservate {
+  padding: 56px 24px;
+  box-sizing: border-box;
+  background: red;
+  min-height: 100vh;
 
-.goods-reservate {
-  &__tip {
-    background: #ffffff;
-    color: #7b7c7e;
-    font-size: 24px;
-    display: block;
-    padding: 40px 30px;
+  .scroll-view-container {
+    height: 100%;
+    .scroll-view-body {
+      overflow: hidden;
+    }
   }
-  &__tips {
-    width: 80%;
+
+  &__welcome{
+    font-weight: 400;
+    font-size: 32px;
+    color: #FFFFFF;
     text-align: center;
+    margin-bottom: 16px;
+  }
+
+  &__title{
+    font-weight: 600;
+    font-size: 60px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  &__tips{
+    padding: 24px;
+    box-sizing: border-box;
+    font-weight: 400;
     font-size: 24px;
-    margin: 30px auto;
+    color: #FFEEB6;
+    background: rgba($color: #fff, $alpha: 0.5);
+    text-align: center;
+    margin-bottom: 62px;
   }
-  .success-view {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    z-index: 999;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    &__content {
-      width: 70%;
-      padding: 40px 30px;
-      text-align: center;
-      background: #ffffff;
+
+
+  .submit-btn {
+    font-size: 30px;
+  }
+
+  .page-good-reservate__form {
+    border-radius: 16px;
+    padding: 8px 32px;
+
+    .sp-cell {
+      padding: 26px 0;
+
+      &__hd {
+        width: 176px;
+      }
+
+      &__bd {
+        padding-top: 4px;
+      }
+
+      &__title {
+        color: #666;
+        font-size: 24px;
+      }
     }
-    &__img {
-      width: 100px;
+  }
+
+  .sp-cell__ft {
+    color: #ccc;
+  }
+
+  &__form {
+    background: #fff;
+    padding: $edge-size;
+    margin: 0 0 $edge-margin;
+  }
+
+  .picker {
+
+    text {
+      font-size: 28px;
     }
+
     &__title {
-      font-weight: 700;
+      font-size: $font-size;
+      margin-right: 16px;
+      width: 172px;
     }
-    &__btn {
-      width: 60%;
-      padding: 10px 20px;
-      margin: 30px auto;
-      border: 1px solid #ccc;
+
+    .pick-value {
+      color: #333;
+    }
+
+    span.pick-value-null {
+      color: #ccc;
+    }
+
+    text.pick-value-null {
+      color: #808080;
     }
   }
-  &__storeinfo {
+
+  .border-bottom {
+    border-bottom: 1PX solid #DDDDDD;
+  }
+
+  .logistics-no {
     .at-input {
-      margin: 0 30px 10px;
-      border-bottom: 1px solid #f5f5f5;
+      margin-bottom: 0;
+      padding: 0;
+
       &:after {
         border-color: transparent;
       }
-    }
-    .checkbox-input {
-      margin: 0 30px 10px;
-      padding: 20px 0;
-      border-bottom: 1px solid #f5f5f5;
-      &__title {
-        display: inline-block;
-        width: 172px;
-        margin-right: 16px;
+
+      &__input {
+        padding-right: 0;
       }
     }
-    .picker {
-      padding: 20px 0;
-      margin: 0 30px;
-      display: flex;
-      border-bottom: 1px solid #f5f5f5;
-      justify-content: space-between;
-      &__title {
-        font-size: $font-size;
-        margin-right: 16px;
-        &_name {
-          display: inline-block;
-          width: 172px;
-          margin-right: 16px;
-        }
-      }
-      .pick-value {
+
+    .at-textarea {
+      overflow: hidden;
+      border: none;
+      width: 100%;
+      height: 100px;
+      padding: 0 18px 12px 0;
+
+      &__textarea {
         color: #333;
+        font-size: 28px;
+        height: 100%;
       }
-      span.pick-value-null {
-        color: #ccc;
-      }
-      text.pick-value-null {
-        color: #808080;
-      }
+    }
+
+    .taro-textarea {
+      font-size: 30px !important;
+      font-family: PingFangSC-Regular, PingFang SC;
     }
   }
-  &__userinfo {
-    background: #ffffff;
-    margin-bottom: 20px;
-    &_title{
-    background: #f5f5f5;
-    box-sizing: border-box;
-    color: #737475;
-    padding:20px 30px 20px;
-    }
-    &:first-child{
-        margin-top: 20px;
-    }
-  }
-  &__statement {
-    padding: 30px;
-    color: #737475;
-    font-size: 24px;
-    &_title {
-      display: block;
+
+  .default_address {
+    border-radius: 16px;
+    margin: 22px 0;
+    padding-right: 0px;
+
+    .sp-cell__title {
       font-size: 28px;
-      color: #000000;
-      font-weight: 700;
     }
+
   }
-  &__btn {
-    width: 92%;
-    margin: 40px auto;
-    height: 80px;
-    border-radius: 10px;
-    line-height: 80px;
-    color: #ffffff;
-    text-align: center;
-    background: $color-brand-primary;
+
+  .at-input input {
+    font-size: 28px;
   }
-  .panel-btns {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    box-shadow: 0 2px 2px 2px #808080;
-    .panel-btn {
-      height: 80px;
-      line-height: 80px;
-      display: inline-block;
-      text-align: center;
-      width: 50%;
-    }
-    .require-btn {
-      background: $color-brand-primary;
-      color: #ffffff;
-    }
-  }
-  .at-checkbox__option--selected .at-checkbox__icon-cnt {
-    color: #fff;
-    border: none;
-    background-color: $color-brand-primary;
-  }
-  .at-textarea {
-    width: auto;
-    margin: 0 30px;
-  }
-  .address-picker {
-    .picker {
-      justify-content: flex-start;
-    }
-    .picker__text {
-      margin-left: 115px;
-    }
-  }
-  .gray {
-    color: #ccc;
+
+  .detail-address {
+    padding-bottom: 0 !important;
+    align-items: flex-start !important;
   }
 }
