@@ -130,13 +130,17 @@ export default class TradeItem extends Component {
                   取消订单
                 </Button>
               ) : null}
-              <Button
-                className='btn-action'
-                style={`background: ${colors.data[0].primary}`}
-                onClick={this.handleClickBtn.bind(this, 'pay')}
-              >
-                立即支付
-              </Button>
+              {
+                (info.prescription_status == 0 || info.prescription_status == 2) &&
+                <Button
+                  className='btn-action'
+                  style={`background: ${colors.data[0].primary}`}
+                  onClick={this.handleClickBtn.bind(this, 'pay')}
+                >
+                  立即支付
+                </Button>
+              }
+
             </View>
           </View>
         )}
