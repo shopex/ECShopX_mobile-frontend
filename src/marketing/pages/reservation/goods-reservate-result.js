@@ -186,9 +186,13 @@ function GoodReservateResult(props) {
 
   return (
     <SpPage className='good-reservate-result'>
-      <View>股东您，报名已填报完成</View>
-      <View>最终登记结果，按您提交信息与股权登记日股东和嗲我和i的海外皇帝活动外</View>
-      <View>djakwjdk的狂欢节卡我还得看哈我看到好看好哇好的哈我好好的海外看哈回电话客户瓦哈卡</View>
+      <View className='good-reservate-result__title-box'>
+        <View className='good-reservate-result__title'>股东您，报名已填报完成</View>
+        <View className='good-reservate-result__subtitle'>最终登记结果，按您提交信息与股权登记日股东和嗲我和i的海外皇帝活动外</View>
+      </View>
+
+      <View className='good-reservate-result__tips'>djakwjdk的狂欢节卡我还得看哈我看到好看好哇好的哈我好好的海外看哈回电话客户瓦哈卡</View>
+      <View className='good-reservate-result__btn'>查看报名记录</View>
     </SpPage>
   )
 }
