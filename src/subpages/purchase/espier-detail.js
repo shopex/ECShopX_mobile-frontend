@@ -23,7 +23,8 @@ import {
   pickBy,
   classNames,
   VERSION_PLATFORM,
-  isAPP
+  isAPP,
+  getDistributorId
 } from '@/utils'
 
 import doc from '@/doc'
@@ -85,7 +86,7 @@ function EspierDetail(props) {
   const pageRef = useRef()
   const { userInfo } = useSelector((state) => state.user)
   const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
-  const { purchase_share_info = {} } = useSelector((state) => state.purchase)
+  const { purchase_share_info = {}, curDistributorId } = useSelector((state) => state.purchase)
   const { setNavigationBarTitle } = useNavigation()
 
   const [state, setState] = useImmer(initialState)
@@ -193,7 +194,8 @@ function EspierDetail(props) {
     setState((draft) => {
       draft.id = id
       draft.type = type
-      draft.dtid = dtid
+      // draft.dtid = dtid
+      draft.dtid = curDistributorId ?? getDistributorId()
     })
   }
 
