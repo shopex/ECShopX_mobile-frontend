@@ -10,7 +10,7 @@ import { isWxWeb, showToast } from '@/utils'
 import S from '@/spx'
 import { useNavigation } from '@/hooks'
 
-import './goods-reservate.scss'
+import './goods-reservate-result.scss'
 
 const initialState = {
   info: {},
@@ -22,7 +22,7 @@ const initialState = {
   isOpened: false
 }
 
-function GoodReservate(props) {
+function GoodReservateResult(props) {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
   const colors = useSelector((state) => state.colors.current)
@@ -185,102 +185,16 @@ function GoodReservate(props) {
   const { info, chooseValue, isOpened } = state
 
   return (
-    <SpPage
-      className='page-good-reservate'
-      renderFooter={
-        <View className='btns'>
-          <AtButton
-            circle
-            type='primary'
-            className='submit-btn'
-            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-            onClick={handleSubmit}
-          >
-            提交
-          </AtButton>
-        </View>
-      }
-    >
-      <ScrollView className='scroll-view-container'>
-        <View className='scroll-view-body'>
-          <View className='page-good-reservate__welcome'>欢迎来到达仁堂2025年年度股东大会</View>
-          <View className='page-good-reservate__title'>S股股东出席天津会场</View>
-          <View className='page-good-reservate__tips'>提示：欲在天津会场出席的s大家看我喝点酒哈我觉得回家啊我活动空间啊我和贷记卡文化科技大会。</View>
-
-          <View className='page-good-reservate__form'>
-            <SpCell className='logistics-no border-bottom' title='收件人'>
-              <AtInput
-                name='username'
-                value={info?.username}
-                cursor={info?.username?.length}
-                placeholder='收件人姓名'
-                onChange={(e) => handleChange('username', e)}
-              />
-            </SpCell>
-
-            <SpCell className='logistics-no border-bottom' title='手机号码'>
-              <AtInput
-                name='telephone'
-                maxLength={11}
-                value={info?.telephone}
-                cursor={info?.telephone?.length}
-                placeholder='收件人手机号'
-                onChange={(e) => handleChange('telephone', e)}
-              />
-            </SpCell>
-
-            <SpCell
-              className='logistics-no province border-bottom'
-              title='所在区域'
-              isLink
-              arrow
-              onClick={onPickerClick}
-            >
-              <View className='picker'>
-                {chooseValue?.join('') === '' ? (
-                  <Text>选择省/市/区</Text>
-                ) : (
-                  <Text style={{ color: '#222' }}>{chooseValue?.join('/')}</Text>
-                )}
-              </View>
-            </SpCell>
-
-            <SpCell className='logistics-no detail-address' title='详细地址'>
-              <AtTextarea
-                count={false}
-                // name='adrdetail'
-                value={info?.adrdetail}
-                cursor={info?.adrdetail?.length}
-                maxLength={100}
-                placeholder='请填写详细地址（街道、门牌）'
-                onChange={handleChange.bind(this, 'adrdetail')}
-              />
-            </SpCell>
-          </View>
-
-          <SpCell
-            title='设为默认收货地址'
-            iisLink
-            className='default_address'
-            value={
-              <Switch
-                checked={info?.is_def}
-                className='def-switch'
-                onChange={handleDefChange}
-                color={colors.data[0].primary}
-              />
-            }
-          />
-        </View>
-      </ScrollView>
-
-      <SpAddress isOpened={isOpened} onClose={handleClickClose} onChange={onPickerChange} />
+    <SpPage className='good-reservate-result'>
+      <View>股东您，报名已填报完成</View>
+      <View>最终登记结果，按您提交信息与股权登记日股东和嗲我和i的海外皇帝活动外</View>
+      <View>djakwjdk的狂欢节卡我还得看哈我看到好看好哇好的哈我好好的海外看哈回电话客户瓦哈卡</View>
     </SpPage>
   )
 }
 
-GoodReservate.options = {
+GoodReservateResult.options = {
   addGlobalClass: true
 }
 
-export default GoodReservate
+export default GoodReservateResult
