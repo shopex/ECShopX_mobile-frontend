@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, { getCurrentInstance, useRouter } from '@tarojs/taro'
-import { View, Switch, Text, Button, ScrollView } from '@tarojs/components'
+import { View, Switch, Text, Button, ScrollView, Picker } from '@tarojs/components'
 import { AtButton, AtTextarea } from 'taro-ui'
 import { SpCell, SpPage, SpAddress, SpInput as AtInput, SpForm, SpFormItem } from '@/components'
 import api from '@/api'
@@ -31,8 +31,11 @@ const initialState = {
     'checkbox': AtInput,
     'textarea': AtInput,
     'address': AtInput,
-    'birthday': AtInput
-  }
+    'birthday': AtInput,
+    'idcard': 1,
+    'otherfile': 2
+  },
+  currentField:''
 }
 
 function GoodReservate(props) {
@@ -41,7 +44,7 @@ function GoodReservate(props) {
   const colors = useSelector((state) => state.colors.current)
   const dispatch = useDispatch()
   const router = useRouter()
-  const { formList, form, rules, formElementMap } = state
+  const { formList, form, rules, formElementMap, currentField } = state
   const { setNavigationBarTitle } = useNavigation()
   const formRef = useRef()
 
@@ -68,37 +71,68 @@ function GoodReservate(props) {
       activity_id: router.params.activity_id
     })
     console.log(111, activity_info)
+    const _formList = activity_info?.formdata?.content?.[0]?.formdata ?? []
+    let _form = {}
+    let _rules = []
+    if (_formList.length) {
+      _formList.forEach((item) => {
+
+        _form[item.field_name] = item.form_element == 'area' ? [] : ''
+        if (item.is_required) {
+          _rules[item.field_name] = [{ required: true, message: `${item.field_title}不能为空` }]
+        }
+      })
+    }
+
     setState((draft) => {
-      // draft.formList = activity_info?.formdata?.content?.[0]?.formdata ?? []
+      draft.formList = _formList
+      draft.form = _form
+      draft.rules = _rules
     })
   }
 
-  const onChange = () => {}
+  const onChange = (e, key) => {
+    console.log(e, key)
+    const _form = JSON.parse(JSON.stringify(form))
+    _form[key] = e
+    setState((draft) => {
+      draft.form = _form
+    })
+  }
+
+  const handleSelectChange = (e, key, options,form_element) => {
+    console.log(e, key, options,form_element)
+    let value;
+    if(form_element == 'date'){
+      value = e.detail?.value
+    }else{
+      value = options[e.target.value]?.value
+    }
+    onChange(value, key)
+  }
+
+
+  const onPickerChange = (selectValue) => {
+    const chooseValue = [selectValue[0]?.label, selectValue[1]?.label, selectValue[2]?.label]
+    if(currentField){
+      onChange(chooseValue, currentField)
+    }
+  }
+
+  console.log('form', form, 'rules', rules)
 
   const renderFormItem = (item) => {
-    const { field_title, field_name, form_element } = item
+    const { field_title, field_name, form_element, options } = item
     switch (form_element) {
       case 'text':
       case 'number':
         return (
           <AtInput
             name={field_name}
-            value={form.field_name}
+            value={form[field_name]}
             type={form_element}
             placeholder={`请填写${field_title}`}
-            onChange={onChange}
-          />
-        )
-        break
-      case 'radio':
-      case 'select':
-        return (
-          <AtInput
-            name={field_name}
-            value={form.field_name}
-            type={form_element}
-            placeholder={`请填写${field_title}`}
-            onChange={onChange}
+            onChange={(e) => onChange(e, field_name)}
           />
         )
         break
@@ -107,11 +141,44 @@ function GoodReservate(props) {
           <AtTextarea
             count={false}
             name={field_name}
-            value={form.field_name}
+            value={form[field_name]}
             cursor={form?.field_name?.length}
             placeholder={`请填写${field_title}`}
-            onChange={onChange}
+            onChange={(e) => onChange(e, field_name)}
           />
+        )
+        break
+      case 'radio':
+      case 'select':
+        case 'date':
+        return (
+          <Picker
+            mode={form_element == 'date' ? 'date' : 'selector'}
+            rangeKey='value'
+            range={options}
+            onChange={(e) => handleSelectChange(e, field_name, options,form_element)}
+          >
+            <View className='search-condition'>
+              {form[field_name] || <Text className='search-condition-empty'>请选择</Text>}
+              <View className='iconfont icon-arrowDown search-condition-icon'></View>
+            </View>
+          </Picker>
+        )
+        break
+        case 'area':
+        return (
+          <View
+         className='search-condition'
+          onClick={() => {
+            setState((draft) => {
+              draft.isOpened = true
+              draft.currentField = field_name
+            })
+          }}
+        >
+          {form[field_name]?.join('') || <Text className='search-condition-empty'>请选择</Text>}
+          <View className='iconfont icon-arrowDown area-icon'></View>
+        </View>
         )
         break
 
@@ -126,46 +193,11 @@ function GoodReservate(props) {
     return (
       <>
         <SpForm ref={formRef} className='form-list' formData={form} rules={rules}>
-          {/* {list.map((item, idx) => (
-            <SpFormItem label={item.field_title} prop={item.field_name}>
+          {list.map((item, idx) => (
+            <SpFormItem label={item.field_title} prop={item.field_name} key={idx}>
               {renderFormItem(item)}
             </SpFormItem>
-          ))} */}
-          {/* <SpFormItem label='提货时间' prop='pickerTime'>
-            <SpCell
-              className='picker-time'
-              isLink
-              onClick={() => {
-                setState((draft) => {
-                  draft.showTimePicker = true
-                })
-              }}
-            >
-              <Text
-                className={classNames({
-                  'placeholder': !form.pickerTime
-                })}
-              >
-                {getPickerTime()}
-              </Text>
-            </SpCell>
-          </SpFormItem>
-          <SpFormItem label='提货人' prop='pickerName'>
-            <AtInput
-              name='pickerName'
-              value={form.pickerName}
-              placeholder='请输入提货人姓名'
-              onChange={onInputChange.bind(this, 'pickerName')}
-            />
-          </SpFormItem>
-          <SpFormItem label='手机号码' prop='pickerPhone'>
-            <AtInput
-              name='pickerPhone'
-              value={form.pickerPhone}
-              placeholder='请输入提货人手机号码'
-              onChange={onInputChange.bind(this, 'pickerPhone')}
-            />
-          </SpFormItem> */}
+          ))}
         </SpForm>
       </>
     )
@@ -224,12 +256,7 @@ function GoodReservate(props) {
     })
   }
 
-  const onPickerChange = (selectValue) => {
-    const chooseValue = [selectValue[0]?.label, selectValue[1]?.label, selectValue[2]?.label]
-    setState((draft) => {
-      draft.chooseValue = chooseValue
-    })
-  }
+
 
   const handleChange = (name, val, e) => {
     console.log('---', name, val, e)
