@@ -207,7 +207,7 @@ function EspierDetail(props) {
       try {
         const itemDetail = await api.purchase.getPurchaseDetail(id, {
           showError: false,
-          distributor_id: dtid,
+          // distributor_id: dtid,
           activity_id,
           enterprise_id
         })
