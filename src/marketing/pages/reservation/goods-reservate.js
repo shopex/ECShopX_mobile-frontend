@@ -124,9 +124,31 @@ function GoodReservate(props) {
     let _rules = []
     if (_formList.length) {
       _formList.forEach((item) => {
-        _form[item.field_name] = ['checkbox', 'area','idcard','otherfile'].includes(item.form_element) ? [] : ''
+        _form[item.field_name] = ['checkbox', 'area', 'idcard', 'otherfile'].includes(
+          item.form_element
+        )
+          ? []
+          : ''
         if (item.is_required) {
+          if (['idcard', 'otherfile'].includes(item.form_element)) {
+            _rules[item.field_name] = [
+              {
+                validate: async (value) => {
+                  console.log('value', value, flatArray(value))
+                  const _flatArray = flatArray(value)
+                  if (!_flatArray.length) {
+                    return Promise.reject(`请上传${item.field_title}`)
+                  }
+
+                  if (item.form_element == 'idcard' && _flatArray.length != 2) {
+                    return Promise.reject(`${item.field_title}请上传完整`)
+                  }
+                }
+              }
+            ]
+          } else {
             _rules[item.field_name] = [{ required: true, message: `${item.field_title}不能为空` }]
+          }
         }
       })
     }
@@ -136,6 +158,12 @@ function GoodReservate(props) {
       draft.form = _form
       draft.rules = _rules
     })
+  }
+
+  const flatArray = (arr) => {
+    return arr.reduce((prev, curr) => {
+      return prev.concat(curr)
+    }, [])
   }
 
   const onChange = (e, key) => {
@@ -286,13 +314,15 @@ function GoodReservate(props) {
   const renderFormList = (list = []) => {
     return (
       <>
-        <SpForm ref={formRef} className='form-list' formData={form} rules={rules}>
-          {list.map((item, idx) => (
-            <SpFormItem label={item.field_title} prop={item.field_name} key={idx}>
-              {renderFormItem(item)}
-            </SpFormItem>
-          ))}
-        </SpForm>
+        {list.length > 0 && (
+          <SpForm ref={formRef} className='form-list' formData={form} rules={rules}>
+            {list.map((item, idx) => (
+              <SpFormItem label={item.field_title} prop={item.field_name} key={idx}>
+                {renderFormItem(item)}
+              </SpFormItem>
+            ))}
+          </SpForm>
+        )}
       </>
     )
   }

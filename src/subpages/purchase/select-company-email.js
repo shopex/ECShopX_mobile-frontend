@@ -29,6 +29,7 @@ function PurchaseAuthEmail(props) {
         {
           validate: async (value) => {
             const { enterprise_id } = router.params
+            debugger
             const { status } = await api.purchase.getEmailCode({ email: value, enterprise_id, showError: false })
             showToast(status ? '发送成功' : '发送失败')
           }
