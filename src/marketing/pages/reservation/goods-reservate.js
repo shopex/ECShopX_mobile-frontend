@@ -258,6 +258,7 @@ function GoodReservate(props) {
             mode={form_element == 'date' ? 'date' : 'selector'}
             rangeKey='value'
             range={options}
+            value={form_element == 'date' ? form[field_name] :[options.findIndex((item) => item.value == form[field_name])]}
             onChange={(e) => handleSelectChange(e, field_name, options, form_element)}
           >
             <View className='search-condition'>
