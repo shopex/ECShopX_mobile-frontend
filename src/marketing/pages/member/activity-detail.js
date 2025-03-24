@@ -12,12 +12,9 @@ import './activity-detail.scss'
 
 const initialState = {
   tradeStatus: [
-    { tag_name: '全部', value: '0' },
-    { tag_name: '待审核', value: '1' },
-    { tag_name: '已报名', value: '2' },
-    { tag_name: '已拒绝', value: '3' },
-    { tag_name: '已取消', value: '4' },
-    { tag_name: '已审核', value: '5' }
+    { tag_name: '玩的', value: '0' },
+    { tag_name: '他人1', value: '1' },
+    { tag_name: '他人2', value: '2' }
   ],
   status: '0',
   tradeList: [],
@@ -64,26 +61,10 @@ function ActivityDetail(props) {
     })
   }, [])
 
-  const fetch = async ({ pageIndex, pageSize }) => {
-    const { is_rate } = tradeStatus.find((item) => item.value == status)
-    const params = {
-      page: pageIndex,
-      pageSize,
-      order_type: 'normal',
-      status,
-      is_rate
-    }
-    const {
-      list,
-      pager: { count: total },
-      rate_status
-    } = await api.trade.list(params)
-    const tempList = pickBy(list, doc.trade.TRADE_ITEM)
-    // console.log('tempList:', tempList)
-    setState((draft) => {
-      draft.tradeList = [...tradeList, ...tempList]
+  const fetch = async () => {
+    const { content } = await api.user.registrationRecordInfo({
+      record_id: this.$instance.router.params.record_id
     })
-    return { total }
   }
 
   const onChangeTradeState = (e) => {
