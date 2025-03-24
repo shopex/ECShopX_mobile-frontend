@@ -219,7 +219,9 @@ export default class TradeDetail extends Component {
       market_fee: ({ market_fee }) => market_fee / 100,
       item_fee_new: ({ item_fee_new }) => item_fee_new / 100,
       promotion_discount: ({ promotion_discount }) => promotion_discount / 100,
-      ziti_info: 'ziti_info'
+      ziti_info: 'ziti_info',
+      enterprise_id:'enterprise_id',
+      activity_id:'activity_id'
     })
 
     const ziti = pickBy(data.distributor, {
