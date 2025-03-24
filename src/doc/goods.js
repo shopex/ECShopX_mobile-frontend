@@ -58,6 +58,7 @@ export const WGT_GOODS_SCROLL = {
   memberPrice: ({ member_price }) => member_price / 100, // 当前会员等级价
   vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
   svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
+  isPrescription:'isPrescription',
 }
 
 export const WGT_GOODS_GRID_TAB = {

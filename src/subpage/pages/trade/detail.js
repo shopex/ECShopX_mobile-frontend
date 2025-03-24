@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, Button, Image, ScrollView } from '@tarojs/components'
 import { connect } from 'react-redux'
-import { AtCountdown , AtFloatLayout } from 'taro-ui'
-import { Loading, SpNavBar, FloatMenuMeiQia, SpNewShopItem, SpCell ,SpImage} from '@/components'
+import { AtCountdown, AtFloatLayout } from 'taro-ui'
+import { Loading, SpNavBar, FloatMenuMeiQia, SpNewShopItem, SpCell, SpImage } from '@/components'
 import {
   pickBy,
   formatDateTime,
@@ -18,7 +18,9 @@ import {
   VERSION_IN_PURCHASE,
   isWxWeb,
   isWeixin,
-  isArray
+  isArray,
+  styleNames,
+  getThemeStyle
 } from '@/utils'
 import { transformTextByPoint } from '@/utils/helper'
 import { PAYTYPE, PAYMENT_TYPE } from '@/consts'
@@ -444,7 +446,7 @@ export default class TradeDetail extends Component {
     })
   }
 
-  handleClose () {
+  handleClose() {
     this.setState({
       prescriptionStatus: false
     })
@@ -702,6 +704,7 @@ export default class TradeDetail extends Component {
           'trade-close': info.status == 'TRADE_CLOSED',
           'has-navbar': isNavbar()
         })}
+        style={styleNames(getThemeStyle())}
       >
         <SpNavBar title='订单详情' leftIconType='chevron-left' fixed='true' />
 
@@ -1052,7 +1055,7 @@ export default class TradeDetail extends Component {
               }
               {info?.prescriptionData?.dst_file_path && <SpCell title='电子处方' value={(() => {
                 return (
-                  <View className='block-container-link' onClick={this.dstFilePath.bind(this,info?.prescriptionData?.dst_file_path)}>
+                  <View className='block-container-link' onClick={this.dstFilePath.bind(this, info?.prescriptionData?.dst_file_path)}>
                     查看 <Text className='iconfont icon-qianwang-01' />
                   </View>
                 )
