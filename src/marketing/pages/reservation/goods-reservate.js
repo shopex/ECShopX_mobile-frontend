@@ -18,6 +18,7 @@ import { isWxWeb, showToast } from '@/utils'
 import S from '@/spx'
 import { useNavigation } from '@/hooks'
 import CompImgPicker from './comps/comp-img-picker'
+import _cloneDeep from 'lodash/cloneDeep'
 import './goods-reservate.scss'
 
 const initialState = {
@@ -25,30 +26,18 @@ const initialState = {
   listLength: 0,
   areaArray: [[], [], []],
   areaIndexArray: [0, 0, 0],
-  areaData: [],
   chooseValue: ['', '', ''],
   isOpened: false,
   formList: [],
   form: {},
   rules: [],
-  formElementMap: {
-    'text': AtInput,
-    'number': AtInput,
-    'radio': AtInput,
-    'select': AtInput,
-    'checkbox': AtInput,
-    'textarea': AtInput,
-    'address': AtInput,
-    'birthday': AtInput,
-    'idcard': 1,
-    'otherfile': 2
-  },
   currentField: '',
   showCheckboxPanel: false,
   optionList: [],
   checkedList: [],
   currentFieldTitle: '',
-  backUrl: ''
+  backUrl: '',
+  submitLoading:false,
 }
 
 function GoodReservate(props) {
@@ -61,20 +50,20 @@ function GoodReservate(props) {
     formList,
     form,
     rules,
-    formElementMap,
     currentField,
     showCheckboxPanel,
     optionList,
     checkedList,
     currentFieldTitle,
-    backUrl
+    backUrl,
+    submitLoading,
+    isOpened,
+    info
   } = state
   const { setNavigationBarTitle } = useNavigation()
   const formRef = useRef()
 
   useEffect(() => {
-    fetchAddressList()
-    fetch()
     fetchActivity()
     setNavigationBarTitle(initNavigationBarTitle())
   }, [])
@@ -83,12 +72,6 @@ function GoodReservate(props) {
     return '啊我的好季节啊我喝点酒哈我的卡'
   }
 
-  const fetchAddressList = async () => {
-    const areaData = await api.member.areaList()
-    setState((draft) => {
-      draft.areaData = areaData
-    })
-  }
 
   const fetchActivity = async () => {
     const { activity_info } = await api.user.registrationActivity({
@@ -96,32 +79,6 @@ function GoodReservate(props) {
     })
     console.log(111, activity_info)
     let _formList = activity_info?.formdata?.content?.[0]?.formdata ?? []
-    _formList = _formList.concat([
-      {
-        company_id: '34',
-        field_name: 'idcard',
-        field_title: '身份证',
-        form_element: 'idcard',
-        id: '222',
-        image_url: '',
-        is_required: true,
-        options: null,
-        sort: 1,
-        status: 1
-      },
-      {
-        company_id: '34',
-        field_name: 'otherfile',
-        field_title: '其他文件',
-        form_element: 'otherfile',
-        id: '212',
-        image_url: '',
-        is_required: true,
-        options: null,
-        sort: 1,
-        status: 1
-      }
-    ])
     let _form = {}
     let _rules = []
     if (_formList.length) {
@@ -155,10 +112,13 @@ function GoodReservate(props) {
       })
     }
 
+    const _info = activity_info
+
     setState((draft) => {
       draft.formList = _formList
       draft.form = _form
       draft.rules = _rules
+      draft.info = _info
       draft.backUrl =
         'https://daogou-public.oss-cn-hangzhou.aliyuncs.com/image/34/2025/03/06/0692a3466aebad18311e1ee1ff844fae1741246377016.企业微信截图_8a0f14af-d310-4bbc-9a49-addd5a0fb883.png'
     })
@@ -336,120 +296,79 @@ function GoodReservate(props) {
     )
   }
 
-  const fetch = async () => {
-    Taro.showLoading({ title: '' })
-    const { list } = await api.member.addressList()
-    setState((draft) => {
-      draft.listLength = list?.length
-    })
-
-    list.map((a_item) => {
-      if (a_item.address_id === $instance.router?.params?.address_id) {
-        setState((draft) => {
-          draft.info = a_item
-          draft.chooseValue = [a_item.province, a_item.city, a_item.county]
-        })
-      }
-    })
-
-    if ($instance.router?.params?.isWechatAddress) {
-      try {
-        const resAddress = await Taro.chooseAddress()
-        const query = {
-          province: resAddress?.provinceName,
-          city: resAddress?.cityName,
-          county: resAddress?.countyName,
-          adrdetail: resAddress?.detailInfo,
-          is_def: 0,
-          postalCode: resAddress?.postalCode,
-          telephone: resAddress?.telNumber,
-          username: resAddress?.userName
-        }
-        setState((draft) => {
-          draft.info = query
-          draft.chooseValue = [query.province, query.city, query.county]
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    Taro.hideLoading()
-  }
-
   const handleClickClose = () => {
     setState((draft) => {
       draft.isOpened = false
     })
   }
 
-  const handleChange = (name, val, e) => {
-    console.log('---', name, val, e)
-    const nInfo = JSON.parse(JSON.stringify(state.info || {}))
-    if (name === 'adrdetail') {
-      nInfo[name] = e.detail.value
-    } else {
-      nInfo[name] = val
-    }
+
+  const handleSubmit = async() => {
+    const {activity_id} = info
+    let new_subdata = {activity_id,formdata:{content:[]}}
+    const _content = formList.map((item) => ({
+      ...item,
+      answer:['idcard', 'otherfile'].includes(item.form_element) ? flatArray(form[item.field_name]) : form[item.field_name]
+    }))
+    let formDatacontent = _cloneDeep(info.formdata?.content);
+
+    formDatacontent[0].formdata = _content
+    new_subdata.formdata.content = JSON.stringify(formDatacontent)
+    console.log('new_subdata',new_subdata,_content)
     setState((draft) => {
-      draft.info = nInfo
+      draft.submitLoading = true
     })
-  }
-
-  const handleSubmit = async (e) => {
-    await formRef.current.onSubmitAsync()
-    const { value } = e.detail || {}
-    const { chooseValue } = state
-    const data = {
-      ...state.info,
-      ...value
-    }
-
-    if (!data.is_def) {
-      data.is_def = '0'
-    } else {
-      data.is_def = '1'
-    }
-    if (state.listLength === 0) {
-      data.is_def = '1'
-    }
-
-    if (!data.username) {
-      return showToast('请输入收件人')
-    }
-
-    if (!data.telephone) {
-      return showToast('请输入手机号')
-    }
-
-    data.province = chooseValue[0]
-    data.city = chooseValue[1]
-    data.county = chooseValue[2]
-
-    if (!data.adrdetail) {
-      return showToast('请输入详细地址')
-    }
-
-    Taro.showLoading('正在提交')
-
     try {
-      await api.member.addressCreateOrUpdate(data)
-      if (data.address_id) {
-        showToast('修改成功')
-      } else {
-        showToast('创建成功')
-      }
-      setTimeout(() => {
-        Taro.navigateBack()
-      }, 700)
+      const res = await api.user.registrationSubmit(new_subdata)
+      console.log(res)
+      showToast('提交成功')
+      // Taro.navigateTo({url:`/marketing/pages/reservation/goods-reservate-result?id=`})
+      setState((draft) => {
+        draft.submitLoading = false
+      })
     } catch (error) {
-      Taro.hideLoading()
-      return false
+      setState((draft) => {
+        draft.submitLoading = false
+      })
     }
-    Taro.hideLoading()
   }
 
-  const { info, chooseValue, isOpened } = state
+  const handleReservate = async (e) => {
+    try {
+      await formRef.current.onSubmitAsync()
+      let templeparams = {
+        'temp_name': 'yykweishop',
+        'source_type': 'activity'
+      }
+      api.user.newWxaMsgTmpl(templeparams).then(
+        (tmlres) => {
+          console.log('templeparams---1', tmlres)
+          if (tmlres.template_id && tmlres.template_id.length > 0) {
+            wx.requestSubscribeMessage({
+              tmplIds: tmlres.template_id,
+              success() {
+                handleSubmit()
+              },
+              fail() {
+                handleSubmit()
+              }
+            })
+          } else {
+            handleSubmit()
+          }
+        },
+        () => {
+          handleSubmit()
+        }
+      )
+    } catch (error) {
+      console.log('error', error)
+      if (error.length) {
+        showToast(error[0]?.message)
+      }
+    }
+  }
+
 
   return (
     <SpPage
@@ -460,21 +379,22 @@ function GoodReservate(props) {
             type='primary'
             className='submit-btn'
             style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-            onClick={handleSubmit}
+            loading={submitLoading}
+            onClick={handleReservate}
           >
             提交
           </AtButton>
         </View>
       }
     >
-      <View className='page-good-reservate' style={{ 'backgroundImage': `url(${backUrl})` }}>
+      <View className='page-good-reservate' style={{ 'backgroundImage': `url(${backUrl})`,paddingTop: '200px' }}>
         <ScrollView className='scroll-view-container'>
           <View className='scroll-view-body'>
-            <View className='page-good-reservate__welcome'>欢迎来到达仁堂2025年年度股东大会</View>
+            {/* <View className='page-good-reservate__welcome'>欢迎来到达仁堂2025年年度股东大会</View>
             <View className='page-good-reservate__title'>S股股东出席天津会场</View>
             <View className='page-good-reservate__tips'>
               提示：欲在天津会场出席的s大家看我喝点酒哈我觉得回家啊我活动空间啊我和贷记卡文化科技大会。
-            </View>
+            </View> */}
 
             <View className='page-good-reservate__form'>{renderFormList(formList)}</View>
           </View>

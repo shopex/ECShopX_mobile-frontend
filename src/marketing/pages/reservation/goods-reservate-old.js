@@ -249,9 +249,11 @@ export default class GoodsReservate extends Component {
 
   handleSubmit = async () => {
     let new_subdata = _cloneDeep(this.state.cur_activity_info)
+    console.log('new_subdata',new_subdata)
     if (new_subdata.formdata && new_subdata.formdata.content) {
       new_subdata.formdata.content = JSON.stringify(new_subdata.formdata.content)
     }
+
     try {
       this.count = 1
       await api.user.registrationSubmit(new_subdata)
