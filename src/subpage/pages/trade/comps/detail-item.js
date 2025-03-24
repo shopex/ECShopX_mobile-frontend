@@ -12,7 +12,7 @@ export default class DetailItem extends Component {
     // customHeader: false
     customFooter: false,
     showType: 'orders',
-    isPurchase:false,
+    isPurchase: false,
     // customRender: false,
     // noHeader: false,
     // showActions: false,
@@ -114,12 +114,12 @@ export default class DetailItem extends Component {
                 isShowNational
                 isPointitemGood={isPointitem}
                 onClick={() => {
-                  if(info.order_class == 'pointsmall') {
+                  if (info.order_class == 'pointsmall') {
                     Taro.navigateTo({
                       url: `/subpages/pointshop/espier-detail?id=${item.good_id}`
                     })
                   } else {
-                    JumpGoodDetail(item.good_id, item.distributor_id)
+                    JumpGoodDetail(item.good_id, item.distributor_id, info?.activity_id, info?.enterprise_id)
                   }
                 }}
               />
