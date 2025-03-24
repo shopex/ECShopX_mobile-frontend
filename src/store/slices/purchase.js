@@ -13,7 +13,9 @@ const initialState = {
   curEnterpriseId:null,
   priceDisplayConfig:{},
   isDiscountDescriptionEnabled:false,
-  discountDescription:''
+  discountDescription:'',
+  curDistributorId:null
+
 }
 
 export const fetchCartList = createAsyncThunk('purchase/fetchCartList', async (params) => {
@@ -74,6 +76,9 @@ const purchaseSlice = createSlice({
       state.isDiscountDescriptionEnabled = isDiscountDescriptionEnabled
       state.discountDescription = discountDescription
     },
+    updateCurDistributorId:(state, { payload = '' }) => {
+      state.curDistributorId = payload
+    },
 
   },
   extraReducers: (builder) => {
@@ -90,6 +95,6 @@ const purchaseSlice = createSlice({
   }
 })
 
-export const { updatePurchaseTabbar, updatePurchaseShareInfo, updateInviteCode, purchaseClearCart,updateValidIdentity,updateEnterpriseId,updateActivityInfo } = purchaseSlice.actions
+export const { updatePurchaseTabbar, updatePurchaseShareInfo, updateInviteCode, purchaseClearCart,updateValidIdentity,updateEnterpriseId,updateActivityInfo, updateCurDistributorId } = purchaseSlice.actions
 
 export default purchaseSlice.reducer

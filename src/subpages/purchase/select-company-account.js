@@ -8,7 +8,7 @@ import { useLogin, useModal } from '@/hooks'
 import { classNames, showToast, VERSION_IN_PURCHASE, getDistributorId } from '@/utils'
 import qs from 'qs'
 import { SpForm, SpFormItem, SpPage, SpInput as AtInput, SpPrivacyModal } from '@/components'
-import { updateEnterpriseId } from '@/store/slices/purchase'
+import { updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import CompBottomTip from './comps/comp-bottomTip'
 import CompSelectCompany from './comps/comp-select-company'
 import './select-company-account.scss'
@@ -38,7 +38,7 @@ function PurchaseAuthAccount() {
   const formRef = useRef()
   const { form, rules, isOpened, companyList, curActiveIndex } = state
   const { params } = useRouter()
-  const { enterprise_id, enterprise_name, enterprise_sn } = params
+  const { enterprise_id, enterprise_name, enterprise_sn, activity_id } = params
   const { showModal } = useModal()
   const dispatch = useDispatch()
 
@@ -71,7 +71,16 @@ function PurchaseAuthAccount() {
       auth_type: 'account'
     }
 
-    const { list } = await api.purchase.employeeCheck({..._params,distributor_id: getDistributorId()})
+    const checkParams = {..._params}
+    if(activity_id){
+      checkParams.activity_id = activity_id
+    }
+
+    if(!enterprise_id){
+      //不是扫码进来，check接口要传当前店铺ID
+      checkParams.distributor_id = getDistributorId()
+    }
+    const { list } = await api.purchase.employeeCheck(checkParams)
     if (list.length > 1) {
       //选择企业
       setState((draft) => {
@@ -117,6 +126,7 @@ function PurchaseAuthAccount() {
   const employeeAuthFetch = async (_params) => {
     try {
       await api.purchase.setEmployeeAuth({..._params,showError:false})
+      await getQrCodeDtid()
       showToast('验证成功')
       dispatch(updateEnterpriseId(_params.enterprise_id))
       if (isOpened) {
@@ -130,6 +140,7 @@ function PurchaseAuthAccount() {
     } catch (e) {
       if (e.message.indexOf('重复绑定') > -1) {
         dispatch(updateEnterpriseId(_params.enterprise_id))
+        await getQrCodeDtid()
         await showModal({
           title: '验证失败',
           content: e.message,
@@ -142,6 +153,14 @@ function PurchaseAuthAccount() {
         showToast(e.message)
       }
     }
+  }
+
+  const getQrCodeDtid = async() => {
+    if(!enterprise_id)return
+    // 如果扫码进来存在企业ID则需要绑定拿到店铺ID
+    const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id})
+    //后续身份切换需要用
+    dispatch(updateCurDistributorId(distributor_id))
   }
 
   // 同意隐私协议

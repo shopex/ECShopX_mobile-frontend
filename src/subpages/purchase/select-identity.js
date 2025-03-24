@@ -7,7 +7,7 @@ import { classNames, getDistributorId } from '@/utils'
 import CompTabbarActivity from '@/pages/purchase/comps/comp-tabbar'
 import './select-identity.scss'
 import { SpPage } from '@/components'
-import { updateValidIdentity, updateEnterpriseId } from '@/store/slices/purchase'
+import { updateValidIdentity, updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import { useDispatch, useSelector } from 'react-redux'
 
 const initialState = {
@@ -20,11 +20,11 @@ function SelectIdentity(props) {
   const [state, setState] = useImmer(initialState)
 
   const { identity, invalidIdentity, loading } = state
-  const { curEnterpriseId } = useSelector((_state) => _state.purchase)
+  const { curEnterpriseId, curDistributorId } = useSelector((_state) => _state.purchase)
   const dispatch = useDispatch()
 
   const { params } = useRouter()
-  let { activity_id, is_select } = params
+  let { activity_id = '', is_select } = params
 
   useEffect(() => {
     getUserEnterprises()
@@ -33,13 +33,13 @@ function SelectIdentity(props) {
   const getUserEnterprises = async () => {
     const data = await api.purchase.getUserEnterprises({
       activity_id,
-      distributor_id: getDistributorId()
+      distributor_id: curDistributorId ?? getDistributorId()
     })
     const _identity = data.filter((item) => item.disabled == 0)
     // 没有企业跳认证首页
     if (_identity.length == 0 && !is_select) {
       Taro.redirectTo({
-        url: '/pages/purchase/auth?type=addIdentity'
+        url: `/pages/purchase/auth?type=addIdentity&activity_id=${activity_id}`
       })
       return
     }

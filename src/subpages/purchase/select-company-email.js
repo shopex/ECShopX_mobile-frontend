@@ -11,7 +11,7 @@ import qs from 'qs'
 
 import './select-company-email.scss'
 import CompBottomTip from './comps/comp-bottomTip'
-import { updateEnterpriseId } from '@/store/slices/purchase'
+import { updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import { SpForm, SpFormItem, SpTimer, SpPage, SpPrivacyModal, SpInput as AtInput } from '@/components'
 
 function PurchaseAuthEmail(props) {
@@ -51,7 +51,7 @@ function PurchaseAuthEmail(props) {
   })
   const { form, rules } = state
   const formRef = useRef()
-  const { enterprise_id, enterprise_name, enterprise_sn } = router.params
+  const { enterprise_id, enterprise_name, enterprise_sn,activity_id } = router.params
 
   const onInputChange = (key, value) => {
     setState((draft) => {
@@ -84,11 +84,17 @@ function PurchaseAuthEmail(props) {
       showError: false,
       auth_type: 'email'
     }
+
     try {
-      const { list } = await api.purchase.employeeCheck({
-        ...params,
-        distributor_id: getDistributorId()
-      })
+      const checkParams = {...params}
+      if(!enterprise_id){
+        //不是扫码进来，check接口要传当前店铺ID
+        checkParams.distributor_id = getDistributorId()
+      }
+      if(activity_id){
+        checkParams.activity_id = activity_id
+      }
+      const { list } = await api.purchase.employeeCheck(checkParams)
       //一个邮箱后缀只有一个企业
       params.enterprise_id = list[0].enterprise_id
 
@@ -103,14 +109,17 @@ function PurchaseAuthEmail(props) {
       }
 
       await api.purchase.setEmployeeAuth(params)
+      await getQrCodeDtid()
       dispatch(updateEnterpriseId(params.enterprise_id))
       showToast('验证成功')
+
       setTimeout(() => {
         Taro.reLaunch({ url: `/pages/purchase/index` })
       }, 700)
     } catch (e) {
       if (e.message.indexOf('重复绑定') > -1) {
         dispatch(updateEnterpriseId(params.enterprise_id))
+        await getQrCodeDtid()
         await showModal({
           title: '验证失败',
           content: e.message,
@@ -123,6 +132,14 @@ function PurchaseAuthEmail(props) {
         formRef.current.setMessage({ prop: 'vcode', message: e.message })
       }
     }
+  }
+
+  const getQrCodeDtid = async() => {
+    if(!enterprise_id)return
+    // 如果扫码进来存在企业ID则需要绑定拿到店铺ID
+    const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id})
+    //后续身份切换需要用
+    dispatch(updateCurDistributorId(distributor_id))
   }
 
   // 获取验证码

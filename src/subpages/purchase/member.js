@@ -456,8 +456,8 @@ function MemberIndex(props) {
           </View> */}
           </View>
         }
-        {!isPurchaseHome && <View className='header-ft'>
-          {/* 会员卡等级 */}
+        {/* {!isPurchaseHome && <View className='header-ft'>
+          会员卡等级
           {vipInfo.isOpen && (
             <CompVipCard
               info={vipInfo}
@@ -466,7 +466,7 @@ function MemberIndex(props) {
               memberConfig={memberConfig}
             />
           )}
-        </View>}
+        </View>} */}
       </View>
 
       <View className='body-block'>
