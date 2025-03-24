@@ -9,7 +9,7 @@ import { SpPage, SpPrivacyModal } from '@/components'
 import { useLogin, useModal } from '@/hooks'
 import { showToast, VERSION_IN_PURCHASE, normalizeQuerys,getDistributorId } from '@/utils'
 import CompSelectCompany from './comps/comp-select-company'
-import { updateEnterpriseId } from '@/store/slices/purchase'
+import { updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 import CompBottomTip from './comps/comp-bottomTip'
 import './select-company-phone.scss'
 
@@ -33,7 +33,7 @@ function PurchaseAuthPhone(props) {
   const { isOpened, companyList, curActiveIndex } = state
   const { userInfo = {} } = useSelector((state) => state.user)
   const { params } = useRouter()
-  let { enterprise_name, auth_code, account, email, vcode, auth_type = 'mobile', employee_id, enterprise_id, is_verify } = params
+  let { enterprise_name, auth_code, account, email, vcode, auth_type = 'mobile', employee_id, enterprise_id, is_verify,activity_id } = params
   const { showModal } = useModal()
   const $instance = getCurrentInstance()
 
@@ -116,6 +116,7 @@ function PurchaseAuthPhone(props) {
           })
         }else{
           showToast('验证成功')
+          await getQrCodeDtid()
           setTimeout(() => {
             Taro.reLaunch({ url: `/pages/purchase/index` })
           }, 700)
@@ -128,9 +129,18 @@ function PurchaseAuthPhone(props) {
 
   const validatePhone = async (para) => {
     const _params = { ...para }
+
     //二维码不需要验证则不需要check接口
     if(!(auth_type == 'qr_code' && !is_verify)){
-      const { list } = await api.purchase.employeeCheck({..._params,distributor_id: getDistributorId()})
+      const checkParams = {..._params}
+      if(activity_id){
+        checkParams.activity_id = activity_id
+      }
+      if(!enterprise_id){
+        //不是扫码进来，check接口要传当前店铺ID
+        checkParams.distributor_id = getDistributorId()
+      }
+      const { list } = await api.purchase.employeeCheck(checkParams)
       if (list.length > 1) {
         //选择企业
         setState((draft) => {
@@ -149,6 +159,7 @@ function PurchaseAuthPhone(props) {
   const employeeAuthFetch = async (_params) => {
     try {
       await api.purchase.setEmployeeAuth({ ..._params, showError: false })
+      await getQrCodeDtid()
       dispatch(updateEnterpriseId(_params.enterprise_id))
       showToast('验证成功')
       if (isOpened) {
@@ -163,6 +174,7 @@ function PurchaseAuthPhone(props) {
       console.log('🚀🚀🚀 ~ file: select-company-phone.js:102 ~ validatePhone ~ e:', e)
       if (e.message.indexOf('重复绑定') > -1) {
         dispatch(updateEnterpriseId(_params.enterprise_id))
+        await getQrCodeDtid()
       }
       await showModal({
         title: '验证失败',
@@ -174,6 +186,14 @@ function PurchaseAuthPhone(props) {
       Taro.reLaunch({ url: `/pages/purchase/index` })
       getLoginCode()
     }
+  }
+
+  const getQrCodeDtid = async() => {
+    if(!enterprise_id)return
+    // 如果扫码进来存在企业ID则需要绑定拿到店铺ID
+    const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id})
+    //后续身份切换需要用
+    dispatch(updateCurDistributorId(distributor_id))
   }
 
   const handleSelctCompany = async () => {

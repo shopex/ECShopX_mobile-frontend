@@ -35,7 +35,7 @@ import {
   VERSION_STANDARD
 } from '@/utils'
 import S from '@/spx'
-import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
+import { updatePurchaseShareInfo, updateInviteCode, updateCurDistributorId } from '@/store/slices/purchase'
 import { useLogin, useLocation } from '@/hooks'
 import { updateDeliveryPersonnel } from '@/store/slices/cart'
 import CompVipCard from './comps/comp-vipcard'
@@ -412,6 +412,7 @@ function MemberIndex(props) {
       }
       dispatch(updatePurchaseShareInfo())
       dispatch(updateInviteCode())
+      dispatch(updateCurDistributorId(null))
     }
 
     if (link) {

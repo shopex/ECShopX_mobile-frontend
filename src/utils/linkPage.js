@@ -1,6 +1,9 @@
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { stringify } from 'qs'
+import configStore from '@/store'
 // import { WGTS_NAV_MAP } from '@/consts'
+
+const { store } = configStore()
 
 function linkPage(data) {
   const { id, title, linkPage, linkType, type, distributor_id, navigation = false, content, seletedTags = [] } = data
@@ -59,13 +62,14 @@ function linkPage(data) {
       break
     case "purchase_activity":
       url = '/subpages/purchase/select-identity?activity_id='+id
+      clearPurchaseDtid()
       break
     case 'link':
       if (id == 'vipgrades') {
         url = '/subpage/pages/vip/vipgrades'
       } else if (id == 'purchase') {
         url = '/subpages/purchase/select-identity'
-
+        clearPurchaseDtid()
       } else if (id == 'recharge') {
         url = '/others/pages/recharge/index'
       } else if (id == 'serviceH5Coach') {
@@ -132,6 +136,12 @@ function linkPage(data) {
       url
     })
   }
+}
+
+function clearPurchaseDtid(){
+  store.dispatch({
+    type: 'purchase/updateCurDistributorId', payload: null
+  })
 }
 
 export default linkPage

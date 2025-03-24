@@ -107,7 +107,7 @@ function CompTabbar(props) {
       if (['/subpages/purchase/select-identity', '/pages/purchase/index'].includes(tabItem.url)) {
         url = `${tabItem.url}?is_select=1`
       }
-      Taro.redirectTo({ url })
+      Taro.reLaunch({ url })
     }
   }
 
