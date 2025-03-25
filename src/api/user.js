@@ -180,3 +180,11 @@ export function uniquevisito (params) {
 export function getIsMustOauth (params) {
   return req.get('/espier/config/request_field_setting', params)
 }
+
+
+//取消活动记录
+export function cancelRecord (params) {
+  return req.post('/cancelRecord', {
+    ...params
+  })
+}

@@ -29,8 +29,8 @@ const initialState = {
   isOpened: false,
   formList: [],
   form: {},
-  rules: [],
-  currentField: '',
+  rules: {},
+  currentFieldId: '',
   showCheckboxPanel: false,
   optionList: [],
   checkedList: [],
@@ -50,7 +50,7 @@ function GoodReservate(props) {
     formList,
     form,
     rules,
-    currentField,
+    currentFieldId,
     showCheckboxPanel,
     optionList,
     checkedList,
@@ -66,9 +66,7 @@ function GoodReservate(props) {
 
   useEffect(() => {
     fetchActivity()
-
   }, [])
-
 
   const fetchActivity = async () => {
     let activity_info = {}
@@ -97,7 +95,7 @@ function GoodReservate(props) {
       _formList = activity_info?.formdata?.content?.[0]?.formdata ?? []
     }
     let _form = {}
-    let _rules = []
+    let _rules = {}
     if (_formList.length) {
       _formList.forEach((item) => {
         if (item.options && !router.params.record_id) {
@@ -107,28 +105,28 @@ function GoodReservate(props) {
 
         if (router.params.record_id) {
           //编辑
-          if(item.form_element == 'otherfile'){
-            _form[item.field_name] = []
-          }else if(item.form_element == 'idcard'){
-            _form[item.field_name] = []
-          }else if(['checkbox', 'area'].includes(item.form_element)){
-            _form[item.field_name] = item?.answer.split(',')
-          }else{
-            _form[item.field_name] =item?.answer
+          if (['otherfile', 'idcard'].includes(item.form_element)) {
+            //需要转换成 [1,2] => [[1],[2]]
+            _form[item.id] =
+              typeof item?.answer == 'string'
+                ? item?.answer.split(',').map((item) => [item])
+                : item?.answer
+          } else if (['checkbox', 'area'].includes(item.form_element)) {
+            _form[item.id] =
+              typeof item?.answer == 'string' ? item?.answer?.split(',') : item?.answer
+          } else {
+            _form[item.id] = item?.answer
           }
-
         } else {
           //新增
-          _form[item.field_name] = ['checkbox', 'area', 'idcard', 'otherfile'].includes(
-            item.form_element
-          )
+          _form[item.id] = ['checkbox', 'area', 'idcard', 'otherfile'].includes(item.form_element)
             ? []
             : ''
         }
 
         if (item.is_required) {
           if (['idcard', 'otherfile'].includes(item.form_element)) {
-            _rules[item.field_name] = [
+            _rules[item.id] = [
               {
                 validate: async (value) => {
                   console.log('value', value, flatArray(value))
@@ -144,7 +142,7 @@ function GoodReservate(props) {
               }
             ]
           } else {
-            _rules[item.field_name] = [{ required: true, message: `${item.field_title}不能为空` }]
+            _rules[item.id] = [{ required: true, message: `${item.field_title}不能为空` }]
           }
         }
       })
@@ -192,12 +190,12 @@ function GoodReservate(props) {
 
   const onPickerChange = (selectValue) => {
     const chooseValue = [selectValue[0]?.label, selectValue[1]?.label, selectValue[2]?.label]
-    if (currentField) {
-      onChange(chooseValue, currentField)
+    if (currentFieldId) {
+      onChange(chooseValue, currentFieldId)
     }
   }
 
-  const handleShowCheckbox = (options, field_name, field_title) => {
+  const handleShowCheckbox = (options, id, field_title) => {
     console.log('options', options)
     const _options = JSON.parse(JSON.stringify(options))
     _options.forEach((item) => {
@@ -205,9 +203,9 @@ function GoodReservate(props) {
     })
     setState((draft) => {
       draft.optionList = _options
-      draft.currentField = field_name
+      draft.currentFieldId = id
       draft.showCheckboxPanel = true
-      draft.checkedList = form[field_name]
+      draft.checkedList = form[id]
       draft.currentFieldTitle = field_title
     })
   }
@@ -220,7 +218,7 @@ function GoodReservate(props) {
 
   const handleCheckboxBtnClick = (isCancle) => {
     if (!isCancle) {
-      onChange(checkedList, currentField)
+      onChange(checkedList, currentFieldId)
     }
     setState((draft) => {
       draft.showCheckboxPanel = false
@@ -230,28 +228,28 @@ function GoodReservate(props) {
   console.log('form', form, 'rules', rules)
 
   const renderFormItem = (item) => {
-    const { field_title, field_name, form_element, options = [] } = item
+    const { field_title, field_name, id, form_element, options = [] } = item
     switch (form_element) {
       case 'text':
       case 'number':
         return (
           <AtInput
-            name={field_name}
-            value={form[field_name]}
+            name={id}
+            value={form[id]}
             type={form_element}
             placeholder={`请填写${field_title}`}
-            onChange={(e) => onChange(e, field_name)}
+            onChange={(e) => onChange(e, id)}
           />
         )
       case 'textarea':
         return (
           <AtTextarea
             count={false}
-            name={field_name}
-            value={form[field_name]}
-            cursor={form?.field_name?.length}
+            name={id}
+            value={form[id]}
+            cursor={form?.id?.length}
             placeholder={`请填写${field_title}`}
-            onChange={(e) => onChange(e, field_name)}
+            onChange={(e) => onChange(e, id)}
           />
         )
       case 'radio':
@@ -264,13 +262,19 @@ function GoodReservate(props) {
             range={options}
             value={
               form_element == 'date'
-                ? form[field_name]
-                : [options?.findIndex((item) => item.value == form[field_name]) ?? 0]
+                ? form[id]
+                : [options?.findIndex((item) => item.value == form[id]) != -1 ?options?.findIndex((item) => item.value == form[id])  : 0]
             }
-            onChange={(e) => handleSelectChange(e, field_name, options, form_element)}
+            onChange={(e) => handleSelectChange(e, id, options, form_element)}
           >
             <View className='search-condition'>
-              {form[field_name] || <Text className='search-condition-empty'>请选择</Text>}
+              {
+                console.log(999,
+                form_element == 'date'
+                  ? form[id]
+                  : [options?.findIndex((item) => item.value == form[id]) ?? 0])
+              }
+              {form[id] || <Text className='search-condition-empty'>请选择</Text>}
               <View className='iconfont icon-arrowDown search-condition-icon'></View>
             </View>
           </Picker>
@@ -282,11 +286,11 @@ function GoodReservate(props) {
             onClick={() => {
               setState((draft) => {
                 draft.isOpened = true
-                draft.currentField = field_name
+                draft.currentFieldId = id
               })
             }}
           >
-            {form[field_name]?.join('') || <Text className='search-condition-empty'>请选择</Text>}
+            {form[id]?.join('') || <Text className='search-condition-empty'>请选择</Text>}
             <View className='iconfont icon-arrowDown area-icon'></View>
           </View>
         )
@@ -294,9 +298,9 @@ function GoodReservate(props) {
         return (
           <View
             className='search-condition'
-            onClick={() => handleShowCheckbox(options, field_name, field_title)}
+            onClick={() => handleShowCheckbox(options, id, field_title)}
           >
-            {form[field_name]?.join('、') || <Text className='search-condition-empty'>请选择</Text>}
+            {form[id]?.join('、') || <Text className='search-condition-empty'>请选择</Text>}
             <View className='iconfont icon-arrowDown area-icon'></View>
           </View>
         )
@@ -310,8 +314,8 @@ function GoodReservate(props) {
                 : [`上传${field_title}`]
             }
             mode={form_element == 'idcard' ? 'idCard' : 'shareholderCertificate'}
-            value={form[field_name]}
-            onChange={(e) => onChange(e, field_name)}
+            value={form[id]}
+            onChange={(e) => onChange(e, id)}
           />
         )
       default:
@@ -327,7 +331,7 @@ function GoodReservate(props) {
         {list.length > 0 && (
           <SpForm ref={formRef} className='form-list' formData={form} rules={rules}>
             {list.map((item, idx) => (
-              <SpFormItem label={item.field_title} prop={item.field_name} key={idx}>
+              <SpFormItem label={item.field_title} prop={item.id} key={idx}>
                 {renderFormItem(item)}
               </SpFormItem>
             ))}
@@ -345,21 +349,19 @@ function GoodReservate(props) {
 
   const handleSubmit = async () => {
     const { activity_id } = info
-    let new_subdata = { activity_id, formdata: { content: [] },distributor_id:getDistributorId() }
+    let new_subdata = { activity_id, formdata: { content: [] }, distributor_id: getDistributorId() }
     const _content = formList.map((item) => ({
       ...item,
       answer: ['idcard', 'otherfile'].includes(item.form_element)
-        ? flatArray(form[item.field_name])
-        : form[item.field_name]
+        ? flatArray(form[item.id])
+        : form[item.id]
     }))
     let formDatacontent = _cloneDeep(info.formdata?.content)
 
     formDatacontent[0].formdata = _content
     new_subdata.formdata.content = JSON.stringify(formDatacontent)
     console.log('new_subdata', new_subdata, _content)
-    setState((draft) => {
-      draft.submitLoading = true
-    })
+
     if (router.params.record_id) {
       //编辑
       new_subdata.record_id = router.params.record_id
@@ -368,7 +370,12 @@ function GoodReservate(props) {
       const res = await api.user.registrationSubmit(new_subdata)
       console.log(res)
       showToast('提交成功')
-      Taro.redirectTo({url:`/marketing/pages/reservation/goods-reservate-result?activity_id=${activity_id}`})
+      Taro.redirectTo({
+        url: `/marketing/pages/reservation/goods-reservate-result?activity_id=${activity_id}`
+      })
+      setTimeout(() => {
+        Taro.eventCenter.trigger('onEventRecordStatusChange')
+      }, 200)
       setState((draft) => {
         draft.submitLoading = false
       })
@@ -386,6 +393,9 @@ function GoodReservate(props) {
         'temp_name': 'yykweishop',
         'source_type': 'activity'
       }
+      setState((draft) => {
+        draft.submitLoading = true
+      })
       api.user.newWxaMsgTmpl(templeparams).then(
         (tmlres) => {
           console.log('templeparams---1', tmlres)

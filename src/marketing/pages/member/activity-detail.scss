@@ -106,6 +106,31 @@
     .no-margin {
       margin: 0;
     }
+
+    &-code {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 48px;
+      &-box{
+        background: #F5F5F5;
+        border-radius: 16px;
+        padding: 53px 48px;
+        box-sizing: border-box;
+      }
+      &-title {
+        font-weight: 400;
+        font-size: 28px;
+        color: #333333;
+        margin-bottom: 24px;
+       text-align: center;
+      }
+      &-img{
+        padding: 14px;
+        background: #fff;
+      }
+
+    }
   }
 
   &__form {
@@ -172,5 +197,9 @@
       color: #fff;
       background: #D8D8D8;
     }
+  }
+
+  .sp-image-img {
+    border: 1PX solid #C2C2C2;
   }
 }

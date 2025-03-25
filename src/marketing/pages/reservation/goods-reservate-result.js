@@ -54,10 +54,12 @@ function GoodReservateResult(props) {
           <Text className='icon-wancheng iconfont'> </Text>
           股东您好，报名已填报完成！
         </View>
-        <View className='good-reservate-result__subtitle'>{info?.joinTips}</View>
+        {info?.joinTips && <View className='good-reservate-result__subtitle'>{info.joinTips}</View>}
       </View>
 
-      <View className='good-reservate-result__tips'>{info?.submitFormTips}</View>
+      {info?.submitFormTips && (
+        <View className='good-reservate-result__tips'>{info.submitFormTips}</View>
+      )}
       <View className='good-reservate-result__btn' onClick={handleRecord}>
         查看报名记录
       </View>
