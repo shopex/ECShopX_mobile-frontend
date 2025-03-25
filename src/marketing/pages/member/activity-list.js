@@ -164,7 +164,7 @@ function ItemActivity(props) {
   }
 
   return (
-    <SpPage scrollToTopBtn className='page-trade-list'>
+    <SpPage scrollToTopBtn className='page-activity-list'>
       <SpSearchBar
         keyword={keyword}
         placeholder='搜索活动'

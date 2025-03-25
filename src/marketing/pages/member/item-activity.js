@@ -166,7 +166,7 @@ function ItemActivity(props) {
   }
 
   return (
-    <SpPage scrollToTopBtn className='page-trade-list'>
+    <SpPage scrollToTopBtn className='page-item-activity'>
       <SpTagBar list={tradeStatus} value={status} onChange={onChangeTradeState} />
       <ScrollView className='list-scroll-container' scrollY>
         <SpScrollView

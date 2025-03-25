@@ -1,6 +1,6 @@
 $tag-bar-height: 90px;
 
-.page-trade-list {
+.page-item-activity {
   .sp-tag-bar {
     background: #fff;
     height: $tag-bar-height;
@@ -21,7 +21,12 @@ $tag-bar-height: 90px;
       margin: 0 20px 24px;
     }
   }
+
   .comp-tradeitem .shop-info {
     width: 530px;
-}
+  }
+
+  .activity-item__content-btns {
+    justify-content: flex-end;
+  }
 }
