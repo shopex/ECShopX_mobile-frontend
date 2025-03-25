@@ -19,8 +19,8 @@ const initialState = {
   agreeMentChecked: false
 }
 function SpLogin(props, ref) {
-  const { children, className, onChange, newUser = false } = props
-  const { updateAddress } = useLocation
+  const { children, className, onChange, newUser = false, onPolicyClose } = props
+  const { updateAddress } = useLocation()
   const { isLogin, login, setToken, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
       // isUpdate && setPolicyModal(true)
@@ -67,7 +67,6 @@ function SpLogin(props, ref) {
   }
 
   const handleBindPhone = async (e) => {
-    debugger
     const { encryptedData, iv, cloudID } = e.detail
     if (encryptedData && iv) {
       const code = codeRef.current
@@ -116,6 +115,7 @@ function SpLogin(props, ref) {
 
   const handleCloseModal = useCallback(() => {
     setPolicyModal(false)
+    onPolicyClose && onPolicyClose()
   }, [])
 
   // 同意隐私协议
@@ -247,12 +247,12 @@ function SpLogin(props, ref) {
                 openType='getPhoneNumber'
                 onGetPhoneNumber={handleBindPhone}
               >
-                登录
+                登录1
               </AtButton>
             )}
             {!isNewUser && (
               <AtButton type='primary' disabled={!agreeMentChecked} onClick={handleUserLogin}>
-                登录
+                登录2
               </AtButton>
             )}
           </View>

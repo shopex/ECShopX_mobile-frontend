@@ -1,10 +1,9 @@
 import Taro from '@tarojs/taro'
 import api from '@/api'
 import entryLaunch from '@/utils/entryLaunch'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { updateLocation } from '@/store/slices/user'
 import S from '@/spx'
-
 export default (props) => {
   const dispatch = useDispatch()
   /**
@@ -143,5 +142,60 @@ export default (props) => {
     }
   }
 
-  return { updateAddress }
+
+  // 找到最近的白名单店铺
+  const findNearestWhiteListShop = (shopList, currentLocation) => {
+    if (!shopList || !shopList.length || !currentLocation) return null;
+
+    // 先筛选同城市的店铺
+    let filteredShops = shopList.filter(shop => 
+      shop.regions && 
+      shop.regions[0] === currentLocation.province && 
+      shop.regions[1] === currentLocation.city && 
+      shop.regions[2] === currentLocation.district
+    );
+
+    // 如果没有同城市的店铺，返回所有店铺中最近的
+    if (filteredShops.length === 0) {
+      filteredShops = shopList;
+    }
+
+    // 计算每个店铺的距离
+    const shopsWithDistance = filteredShops.map(shop => {
+      const distance = calculateDistance(
+        parseFloat(currentLocation.lat),
+        parseFloat(currentLocation.lng),
+        parseFloat(shop.lat),
+        parseFloat(shop.lng)
+      );
+      return {
+        ...shop,
+        distance
+      };
+    });
+
+    // 按距离排序
+    shopsWithDistance.sort((a, b) => a.distance - b.distance);
+
+    return shopsWithDistance[0];
+  };
+
+  // 找到创建时间最晚的白名单店铺
+  const findLatestCreatedShop = (shopList) => {
+    if (!shopList || !shopList.length) return null;
+    
+    // 复制数组以避免修改原数组
+    const sortedShops = [...shopList].sort((a, b) => {
+      // 确保 created 存在，如果不存在则设置为 0
+      const timeA = a.created || 0;
+      const timeB = b.created || 0;
+      // 降序排序，最新的在前
+      return timeB - timeA;
+    });
+  
+    return sortedShops[0];
+  };
+    
+    
+  return { updateAddress, findNearestWhiteListShop, findLatestCreatedShop }
 }
