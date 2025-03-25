@@ -1,25 +1,21 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useImmer } from 'use-immer'
-import Taro, { useDidShow, useRouter } from '@tarojs/taro'
+import Taro, { useRouter } from '@tarojs/taro'
 import { View, ScrollView, Button } from '@tarojs/components'
-import { SpPage, SpScrollView, SpTagBar, SpImage, SpSelectModal } from '@/components'
+import { SpPage, SpScrollView, SpTagBar, SpSearchBar, SpSelectModal } from '@/components'
 import api from '@/api'
 import doc from '@/doc'
 import { pickBy } from '@/utils'
 import CompActivityItem from './comps/comp-activity-item'
-import './item-activity.scss'
+import './activity-list.scss'
 
 const initialState = {
   tradeStatus: [
-    { tag_name: '全部', value: '' },
-    { tag_name: '待审核', value: 'pending' },
-    { tag_name: '已报名', value: 'passed' },
-    { tag_name: '已拒绝', value: 'rejected' },
-    { tag_name: '已取消', value: 'canceled' },
-    { tag_name: '已核销', value: 'verified' }
+    { tag_name: '当前活动', value: '0' },
+    { tag_name: '精彩回顾', value: '1' }
   ],
-  status: '',
+  status: '0',
   recordList: [],
   trackDetailList: [],
   openTrackDetail: false,
@@ -30,7 +26,7 @@ const initialState = {
     { label: '代他人报名', value: '1' }
   ],
   activityInfo: {},
-  hasReFreash:false
+  keyword:''
 }
 function ItemActivity(props) {
   const [state, setState] = useImmer(initialState)
@@ -44,7 +40,7 @@ function ItemActivity(props) {
     isOpened,
     selectOptions,
     activityInfo,
-    hasReFreash
+    keyword
   } = state
   const recordRef = useRef()
   const router = useRouter()
@@ -53,8 +49,7 @@ function ItemActivity(props) {
     Taro.eventCenter.on('onEventRecordStatusChange', () => {
       setState((draft) => {
         draft.recordList = []
-        draft.hasReFreash = true
-      });
+      })
 
       recordRef.current.reset()
     })
@@ -64,29 +59,20 @@ function ItemActivity(props) {
     }
   }, [])
 
-  useDidShow(()=>{
-    if(hasReFreash){
-      setState((draft) => {
-        draft.recordList = []
-        draft.hasReFreash = false
-      });
-      recordRef.current.reset()
-    }
-  })
-
   useEffect(() => {
     setState((draft) => {
       draft.recordList = []
     })
     recordRef.current.reset()
-  }, [status])
+  }, [status,keyword])
 
   const fetch = async ({ pageIndex, pageSize }) => {
     const params = {
       page: pageIndex,
       pageSize,
       order_type: 'normal',
-      status
+      status,
+      keyword
     }
     const { list, total_count: total } = await api.user.registrationRecordList(params)
     const nList = pickBy(list, {
@@ -95,17 +81,17 @@ function ItemActivity(props) {
       activityName: 'activity_name',
       status: 'status',
       startDate: 'start_date',
-      createDate:'create_date',
+      createDate: 'create_date',
       endDate: 'end_date',
       reason: 'reason',
-      statusName:'status_name',
-      pics:({activity_info})=>activity_info?.pics,
-      areaName:({activity_info})=>activity_info?.area_name,
-      actionCancel:({action})=>action?.cancel == 1,
-      actionEdit:({action})=>action?.edit == 1,
-      actionApply:({action})=>action?.apply == 1,
-      activityStatus:({activity_info})=>activity_info?.status_name,
-      activityStartTime:({activity_info})=>activity_info?.start_time,
+      statusName: ({ activity_info }) => activity_info?.status_name,
+      pics: ({ activity_info }) => activity_info?.pics,
+      area: 'area',
+      actionCancel: ({ action }) => action?.cancel == 1,
+      actionEdit: ({ action }) => action?.edit == 1,
+      actionApply: ({ action }) => action?.apply == 1,
+      activityStatus: ({ activity_info }) => activity_info?.status_name,
+      activityStartTime: ({ activity_info }) => activity_info?.start_time
     })
     setState((draft) => {
       draft.recordList = [...recordList, ...nList]
@@ -153,7 +139,7 @@ function ItemActivity(props) {
   }
 
   const handleSlectConfirm = (value) => {
-    const { activityId,recordId } = activityInfo
+    const { activityId, recordId } = activityInfo
     let url = `/marketing/pages/reservation/goods-reservate?activity_id=${activityId}`
     if (value == '0') {
       // 编辑
@@ -165,8 +151,30 @@ function ItemActivity(props) {
     handleSelectClose()
   }
 
+  const handleOnClear = async () => {
+    await setState((draft) => {
+      draft.keyword = ''
+    })
+  }
+
+  const handleConfirm = async (val) => {
+    await setState((draft) => {
+      draft.keyword = val
+    })
+  }
+
   return (
     <SpPage scrollToTopBtn className='page-trade-list'>
+      <SpSearchBar
+        keyword={keyword}
+        placeholder='搜索活动'
+        showDailog={false}
+        onFocus={() => {}}
+        onChange={() => {}}
+        onClear={handleOnClear}
+        onCancel={handleOnClear}
+        onConfirm={handleConfirm}
+      />
       <SpTagBar list={tradeStatus} value={status} onChange={onChangeTradeState} />
       <ScrollView className='list-scroll-container' scrollY>
         <SpScrollView
@@ -175,11 +183,10 @@ function ItemActivity(props) {
           ref={recordRef}
           fetch={fetch}
           emptyMsg='没有查询到订单'
-
         >
           {recordList.map((item, index) => (
             <View className='trade-item-wrap' key={index}>
-              <CompActivityItem info={item} onClick={handleItemClick} onBtnAction={onBtnAction} />
+              <CompActivityItem isActivity info={item} onClick={handleItemClick} onBtnAction={onBtnAction} />
             </View>
           ))}
         </SpScrollView>

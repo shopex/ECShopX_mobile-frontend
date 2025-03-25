@@ -4,65 +4,69 @@ import Taro from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { SpImage, SpPrice, SpTradeItem } from '@/components'
-import {ACTIVITY_STATUS_MAP} from '@/consts'
+import { ACTIVITY_STATUS_MAP } from '@/consts'
 import './comp-activity-item.scss'
+import classNames from 'classnames'
 
 function CompActivityItem(props) {
-  const { info, onClick = () => {}, onBtnAction = () => {} } = props
+  const { info, isActivity = false, onClick = () => {}, onBtnAction = () => {} } = props
   if (!info) {
     return null
   }
 
-  const handleClickItem = ({ key, action }) => {}
-
-
-  const handleBtnClick = (e, item, type) => {
+  const handleBtnClick = (e, type) => {
     e.stopPropagation()
-    onBtnAction(item, type)
+    onBtnAction(info, type)
   }
 
   console.log('info', info)
-  const { activityName, startDate, status, reason,area, statusName,createDate, pics, activityId } = info
+  const {
+    activityName,
+    reason,
+    areaName,
+    statusName,
+    activityStatus,
+    pics,
+    actionCancel,
+    actionEdit,
+    actionApply,
+    activityStartTime
+  } = info
+
   return (
-    <View className='activity-item' onClick={() => onClick(info)}>
-      <SpImage className='activity-item__pic' src={pics} />
-      <View className='activity-item__status'>{statusName}</View>
+    <View className={classNames('activity-item',{'has-end':false})} onClick={() => onClick(info)}>
+      <SpImage className='activity-item__pic' src={pics?.[0]} />
+      <View className='activity-item__status'>{activityStatus}</View>
       <View className='activity-item__content'>
         <View className='flex-between-center'>
           <View className='activity-item__content-title'>{activityName}</View>
-          <View className='activity-item__content-status'>{ACTIVITY_STATUS_MAP[status]}</View>
+          {!isActivity && <View className='activity-item__content-status'>{statusName}</View>}
         </View>
         <View className='flex-between-center'>
-          <View className='activity-item__content-time'>{createDate}</View>
-          <View className='activity-item__content-address'>{area}</View>
+          <View className='activity-item__content-time'>{activityStartTime}</View>
+          <View className='activity-item__content-address'>{areaName}</View>
         </View>
-        {reason && (
+        {reason && !isActivity && (
           <View className='activity-item__content-reject'>
             拒绝原因：
-            <Text className='activity-item__content-reject-reson'>{reason}</Text>
+            <Text className='activity-item__content-reject-reason'>{reason}</Text>
           </View>
         )}
         <View className='activity-item__content-btns'>
-          {/* 拒绝状态下展示 */}
-          {status == 'rejected' && <View
-            className='activity-item__content-btn'
-            onClick={(e) => handleBtnClick(e, info, 'reFill')}
-          >
-            重新填写
-          </View>}
-          {/* 开启重复报名，且状态不能为已取消、已核销 */}
-          <View
-            className='activity-item__content-btn'
-            onClick={(e) => handleBtnClick(e, info, 'sign')}
-          >
-            立即报名
-          </View>
-          {/* 未开启报名，状态为已报名 */}
-          <View
-            className='activity-item__content-btn disabled-btn'
-          >
-            已报名
-          </View>
+          {isActivity && <View className='activity-item__content-btn activity-btn'>会员免费</View>}
+          {actionEdit && !isActivity && (
+            <View
+              className='activity-item__content-btn'
+              onClick={(e) => handleBtnClick(e, 'reFill')}
+            >
+              重新填写
+            </View>
+          )}
+          {actionApply && (
+            <View className='activity-item__content-btn' onClick={(e) => handleBtnClick(e, 'sign')}>
+              立即报名
+            </View>
+          )}
         </View>
       </View>
     </View>
