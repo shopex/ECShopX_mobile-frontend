@@ -32,7 +32,8 @@ export const SHOP_ITEM = {
   lat: 'lat',
   lng: 'lng',
   selfDeliveryRule:'selfDeliveryRule',
-  is_self_delivery:"is_self_delivery"
+  is_self_delivery:"is_self_delivery",
+  created: 'created' // 创建时间
 }
 
 export const BUSINESS_SORT = {

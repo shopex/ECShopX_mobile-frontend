@@ -14,7 +14,9 @@ import {
   SpRecommend,
   SpTabbar,
   SpCouponPackage,
-  SpSkuSelect
+  SpSkuSelect,
+  SpPrivacyModal,
+  SpLogin
 } from '@/components'
 import api from '@/api'
 import {
@@ -33,18 +35,18 @@ import {
   pickBy,
   showToast
 } from '@/utils'
-import entryLaunch from '@/utils/entryLaunch'
-import { updateLocation } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
+import S from '@/spx'
 import { useImmer } from 'use-immer'
-import { useLogin, useNavigation, useLocation } from '@/hooks'
+import { useLogin, useNavigation, useLocation, useModal } from '@/hooks'
 import doc from '@/doc'
 import HomeWgts from './home/comps/home-wgts'
 import { WgtHomeHeader, WgtHomeHeaderShop } from './home/wgts'
 import { WgtsContext } from './home/wgts/wgts-context'
 import CompAddTip from './home/comps/comp-addtip'
 import CompFloatMenu from './home/comps/comp-floatmenu'
+
 
 import './home/index.scss'
 
@@ -62,23 +64,45 @@ const initialState = {
   isShowHomeHeader: false,
   info: null,
   skuPanelOpen: false,
-  selectType: 'picker'
+  selectType: 'picker',
+  policyModal: false,
+  whiteShop: 0, // 1 没有白名单店铺 2 有白名单店铺
+  shopList: []
 }
 
 function Home() {
+  const { isLogin, checkPolicyChange, isNewUser, updatePolicyTime, setToken, login } = useLogin({
+    autoLogin: false,
+    // 隐私协议变更
+    policyUpdateHook: (isUpdate) => {
+
+      console.log("🚀🚀🚀 ~ Home ~ policyUpdateHook:")
+
+      isUpdate && onPolicyChange(true)
+    },
+    // // 登录成功后获取店铺信息
+    loginSuccess: () => {
+      // 老用户登录成功
+      console.log("🚀🚀🚀 ~ Home ~ loginSuccess:")
+      // 登录成功后获取店铺信息
+      updateAddress()
+      fetchStoreInfo(location)
+    }
+  })
+  const { showModal } = useModal()
   const [state, setState] = useImmer(initialState)
   const [likeList, setLikeList] = useImmer([])
   const pageRef = useRef()
+  const loginRef = useRef()
 
-  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode } =
+  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, storeIsolation } =
     useSelector((state) => state.sys)
   const { shopInfo } = useSelector((state) => state.shop)
 
   const showAdv = useSelector((member) => member.user.showAdv)
-  const { location } = useSelector((state) => state.user)
+  const { location, whiteList } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
-  const { updateAddress } = useLocation()
-
+  const { findNearestWhiteListShop,findLatestCreatedShop, updateAddress } = useLocation()
   const {
     wgts,
     loading,
@@ -89,7 +113,9 @@ function Home() {
     isShowHomeHeader,
     info,
     skuPanelOpen,
-    selectType
+    selectType,
+    policyModal,
+    whiteShop
   } = state
 
   const dispatch = useDispatch()
@@ -237,9 +263,12 @@ function Home() {
     }
   }
 
-  const fetchStoreInfo = async (location) => {
+  const fetchStoreInfo = async (location, showWhiteStore = false) => {
+    const distributorId = getDistributorId() || 0
+
+
     let params = {
-      distributor_id: getDistributorId() || 0 // 如果店铺id和经纬度都传会根据哪个去定位传参
+      distributor_id: distributorId// 如果店铺id和经纬度都传会根据哪个去定位传参
     }
     if (openLocation == 1 && location) {
       const { lat, lng } = location
@@ -247,10 +276,351 @@ function Home() {
       params.lng = lng
       // params.distributor_id = undefined
     }
-    const res = await api.shop.getShop(params)
-    console.log('fetchStoreInfo:', res)
-    dispatch(updateShopInfo(res))
+    // 开启了店铺隔离并且登录，直接获取白名单店铺
+    let res, whiteShop
+    
+    if (storeIsolation) {
+      // 开启店铺隔离
+      if (S.getAuthToken()) {
+        // updateAddress()
+        params.show_type = 'self'
+        // 带self，返回店铺内容store_name => 是绑定的店铺
+        whiteShop = await api.shop.getShop(params) 
+        /**
+         * 店铺隔离逻辑
+         * is_valid 接口逻辑
+         * show_type = 'self' && distributor_id=0 && location，返回最近的且开启白名单的店铺
+         * show_type = 'self' && distributor_id=0 && !location，不能返回店铺，因为不知道最近的店铺
+         * show_type = 'self' && distributor_id>0 ，如果有返回店铺信息，表示这个店铺已经有绑定白名单，没有则没有绑定白名单
+         * 没有 show_type  && distributor_id=0 && location，返回没有开启白名单的店铺
+         * 没有 show_type  && distributor_id=0 && !location，返回没有开启白名单的店 或者 不能返回店铺，因为没有location？
+         * 
+         * 找合适店铺的逻辑
+         * 1、开启定位，找最近的
+         * 2、没有开启定位，找创建时间最晚的
+         * 3、店铺列表没有，表示都没有绑定白名单
+         */
+        if (!whiteShop.store_name) {
+          // 没有找到店铺
+          
+          if (distributorId) {
+            // 有店铺码 但是这个店铺不是在白名单里, 找其他店铺
+            const shop = await getWhiteShop() // 已经加入的最优店铺
+            if (shop) {
+              params.distributor_id = shop.distributor_id
+              Taro.showModal({
+                content: '抱歉，本店会员才可以访问，如有需要可联系店铺',
+                confirmText: '联系店铺',  
+                cancelText: '回我的店',
+                success: async (res) => {
+                  if (res.confirm) {
+                    Taro.makePhoneCall({
+                      phoneNumber: shopInfo.phone
+                    })
+                  }
+                  if (res.cancel) {
+                    res = await api.shop.getShop(params)
+                    dispatch(updateShopInfo(res))
+                  }
+                }
+              })
+
+              return
+            } else {
+              // 没有绑定的店铺
+              Taro.showModal({
+                content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
+                confirmText: '联系店铺',
+                cancelText: '关闭',
+                success: async (res) => {
+                  if (res.confirm) {
+                    // 联系店铺
+                    Taro.makePhoneCall({
+                      phoneNumber: shopInfo.phone
+                    })
+                  }
+
+                  if (res.cancel) {
+                    // 关闭退出小程序
+                    Taro.exitMiniProgram()
+                  }
+                }
+              })
+            }
+            return
+          }
+
+          if (!distributorId && params.lat) {
+            // 已定位
+
+            delete params.show_type
+            
+            // 未开启白名单的店铺
+            const defalutShop = await api.shop.getShop(params)
+            if (!defalutShop.store_name) {
+              Taro.showModal({
+                content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
+                confirmText: '联系店铺',
+                cancelText: '关闭',
+                success: async (res) => {
+                  console.log("🚀🚀🚀 ~ success: ~ res:", res)
+                  if (res.confirm) {
+                    // 联系店铺
+                    Taro.makePhoneCall({
+                      // phoneNumber: res.phoneNumber todozm 对接接口
+                      phoneNumber: shopInfo.phone
+                    })
+                  }
+  
+                  if (res.cancel) {
+                    // 关闭退出小程序
+                    Taro.exitMiniProgram()
+                  }
+                }
+              })
+            } else {
+              // 有定位，存在没有开启白名单的店铺
+              dispatch(updateShopInfo(defalutShop))
+            }
+            
+            return
+          }
+
+          if (!params.lat) {
+            // 未定位
+            const shop = await getWhiteShop()
+            if (!shop) {
+              // 未加入店铺
+              delete params.show_type
+              res = await api.shop.getShop(params)
+              if (res.store_name) {
+                // 部分门店未开启白名单
+                dispatch(updateShopInfo(res))
+              } else {
+                // 全部开启白名单
+                Taro.showModal({
+                  content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
+                  confirmText: '联系店铺',
+                  cancelText: '关闭',
+                  success: async (res) => {
+                    if (res.confirm) {
+                      Taro.makePhoneCall({
+                        phoneNumber: shopInfo.phone
+                      })
+                    }
+    
+                    if (res.cancel) {
+                      // 关闭退出小程序
+                      Taro.exitMiniProgram()
+                    }
+                  }
+                })
+              }
+              return
+            } else {
+              // 加入最近时间的店铺
+              params.distributor_id = shop.distributor_id
+              res = await api.shop.getShop(params)
+              dispatch(updateShopInfo(res))
+            }
+          }
+        } else {
+          // 找到店铺了
+          dispatch(updateShopInfo(whiteShop))
+        }
+      } else {
+        // 店铺隔离未登录，先用默认店铺，进行登录弹窗的展示, 这个拿到的应该是没开启白名单的店铺 todozm，应该要改成后台的模版id
+        res = await api.shop.getShop(params)
+        dispatch(updateShopInfo(res))
+        showWhiteLogin()
+      }
+    } else {
+      res = await api.shop.getShop(params)
+      dispatch(updateShopInfo(res))
+    }
+    // showWhiteLogin()
   }
+
+
+  const getWhiteShop = async () => {
+    // 获取用户已经加入的白名单店铺，筛选合适的店铺
+    const shopList = await fetchShop()
+    // 找到最近的白名单店铺
+    if (location) {
+      const nearestShop = findNearestWhiteListShop(shopList, location);
+      if (nearestShop) {
+        setState((draft) => {
+          draft.whiteShop = 2
+        });
+        // 使用最近的白名单店铺信息
+        return nearestShop;
+      }
+    } else {
+      // 找到创建时间最晚的白名单店铺
+      const latestShop = findLatestCreatedShop(shopList);
+      if (latestShop) {
+        setState((draft) => {
+          draft.whiteShop = 2
+        });
+      }
+      return latestShop;
+    }
+  }
+  /***
+   * 未注册，开启店铺隔离后需要登录
+   * 
+   *  */ 
+  const showWhiteLogin = async () => {
+    if(!storeIsolation) return
+    // 开启了店铺隔离 && 未登录，提示用户登录
+    console.log("🚀🚀🚀 ~ showWhiteLogin ~ S.getAuthToken():", S.getAuthToken())
+
+    if (storeIsolation && !S.getAuthToken()) {
+        Taro.showModal({
+          content: '你还未登录，请先登录',
+          confirmText: '立即登录',
+          showCancel: false,
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await login()
+                console.log('login 下面')
+              } catch {
+                console.log("登录失败，走新用户注册")
+                if (loginRef.current && loginRef.current.handleToLogin) {
+                  loginRef.current.handleToLogin()
+                }
+              }
+            }
+          }
+        })
+    }
+    // 未登录，未开启定位，进入默认店铺，需要弹窗提示用户登录
+    // if (storeIsolation == 1 && whiteList.length == 0) {
+    //   showToast('店铺未开启白名单，请联系管理员开通')
+    // }
+  }
+
+  // 关闭隐私协议弹窗
+  const onPolicyChange = async(isShow = false) => {
+    setState((draft) => {
+      draft.policyModal = isShow
+    })
+    
+    // 如果用户取消隐私协议，仍然需要显示登录提示
+    if (!isShow) {
+      Taro.showModal({
+        content: '你还未登录，请先登录',
+        confirmText: '立即登录',
+        showCancel: false,
+        success: async (res) => {
+          if (res.confirm) {
+            try {
+              await login()
+            } catch {
+              console.log("登录失败，走新用户注册")
+              if (loginRef.current && loginRef.current.handleToLogin) {
+                loginRef.current.handleToLogin()
+              }
+            }
+          }
+        }
+      })
+    }
+  }
+
+  // 处理隐私协议确认
+  const handlePolicyConfirm = async () => {
+    // 更新隐私协议同意时间
+    updatePolicyTime()
+    // 关闭隐私协议弹窗
+    setState((draft) => {
+      draft.policyModal = false
+    })
+    // 继续登录流程
+    try {
+      await login()
+    } catch {
+      console.log("登录失败，走新用户注册")
+      if (loginRef.current && loginRef.current.handleToLogin) {
+        loginRef.current.handleToLogin()
+      }
+    }
+  }
+
+
+  // 判断是否还有其他白名单店铺 
+  const fetchShop = async () => {
+    // const filterType = 1
+    let params = {
+      page: 1,
+      pageSize: 50,
+      type: 0,
+      search_type: 2, // 1=搜索商品；2=搜索门店
+      sort_type: 1,
+      show_type: 'self' // 白名单店铺
+    }
+    // if (filterType == 1) {
+      // const [chooseProvince, chooseCity, chooseDistrict] = chooseValue
+      // todozm 确定这个省市区是否有影响？
+      const [chooseProvince, chooseCity, chooseDistrict] =  ['北京市', '北京市', '昌平区']
+      params = {
+        ...params,
+        province: chooseProvince,
+        city: chooseCity,
+        area: chooseDistrict
+      }
+      // if (keyword) {
+      //   params = {
+      //     ...params,
+      //     name: keyword
+      //   }
+      // }
+      // const locationRes = await entryLaunch.getLnglatByAddress(`${chooseProvince}${chooseCity}${chooseDistrict}`)
+      // const { lng, lat, error } = locationRes
+      // if (!error) {
+      //   params = {
+      //     ...params,
+      //     lng,
+      //     lat
+      //   }
+      // }
+    // } else if (filterType == 2) {
+    //   params = {
+    //     ...params,
+    //     lat: location?.lat,
+    //     lng: location?.lng,
+    //     province: location?.province,
+    //     city: location?.city,
+    //     area: location?.district
+    //   }
+    // } else if (filterType == 3) {
+    //   params = {
+    //     ...params,
+    //     province: queryProvice,
+    //     city: queryCity,
+    //     area: queryDistrict
+    //   }
+    //   const locationRes = await entryLaunch.getLnglatByAddress(`${queryProvice}${queryCity}${queryDistrict}${queryAddress}`)
+    //   const { lng, lat, error } = locationRes
+    //   if (!error) {
+    //     params = {
+    //       ...params,
+    //       lng,
+    //       lat
+    //     }
+    //   }
+    // }
+
+    console.log(`fetchShop query: ${JSON.stringify(params)}`)
+    const { list, total_count: total, defualt_address, is_recommend } = await api.shop.list(params)
+    const shopList = pickBy(list, doc.shop.SHOP_ITEM)
+
+    console.log("🚀🚀🚀 ~ fetchShop ~ list:", shopList)
+    return shopList
+  }
+
+
 
   const onAddToCart = async ({ itemId, distributorId }) => {
     Taro.showLoading()
@@ -331,6 +701,30 @@ function Home() {
           })
         }}
       />
+      {/* 恢复隐私协议弹窗 */}
+      <SpPrivacyModal 
+        open={policyModal} 
+        onCancel={() => onPolicyChange(false)} 
+        onConfirm={handlePolicyConfirm} 
+      />
+      
+      {/* 登录组件 */}
+      <SpLogin 
+        ref={loginRef}
+        newUser={true}
+        onChange={() => {
+          // 新注册会员登录成功
+          // 登录成功后需要获取店铺信息，然后查看店铺
+          updateAddress()
+          console.log("🚀🚀🚀 ~ onChange: ~ location:", location)
+          fetchStoreInfo(location,true)
+        }}
+        onPolicyClose={() => {
+          onPolicyChange(false)
+        }}
+      >
+      </SpLogin>
+
     </SpPage>
   )
 }
