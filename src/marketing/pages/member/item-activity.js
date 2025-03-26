@@ -104,7 +104,7 @@ function ItemActivity(props) {
   }
 
   const onBtnAction = (item, type) => {
-    const { activityId, recordId } = item
+    const { activityId, recordId, status } = item
     switch (type) {
       case 'reFill':
         //重新填写
@@ -114,10 +114,18 @@ function ItemActivity(props) {
         break
       case 'sign':
         //立即报名
-        setState((draft) => {
-          draft.isOpened = true
-          draft.activityInfo = item
-        })
+        if(['passed','canceled','verified'].includes(status)){
+          Taro.navigateTo({
+            url:`/marketing/pages/reservation/goods-reservate?activity_id=${activityId}`
+          })
+        } else{
+          //有编辑
+          setState((draft) => {
+            draft.isOpened = true
+            draft.activityInfo = item
+          })
+        }
+
         break
       default:
         break

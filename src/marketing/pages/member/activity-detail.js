@@ -40,7 +40,7 @@ function ActivityDetail(props) {
       record_id: router.params.record_id
     })
     console.log(res)
-    const _info = pickBy(res,doc.activity.RECORD_DETAIL)
+    const _info = pickBy(res, doc.activity.RECORD_DETAIL)
     setState((draft) => {
       draft.info = _info
     })
@@ -106,7 +106,7 @@ function ActivityDetail(props) {
   }
 
   const onBtnAction = (type) => {
-    const { activityId, recordId } = info
+    const { activityId, recordId, status } = info
     switch (type) {
       case 'reFill':
         //重新填写
@@ -116,9 +116,16 @@ function ActivityDetail(props) {
         break
       case 'sign':
         //立即报名
-        setState((draft) => {
-          draft.isOpened = true
-        })
+        if (['passed', 'canceled', 'verified'].includes(status)) {
+          Taro.navigateTo({
+            url: `/marketing/pages/reservation/goods-reservate?activity_id=${activityId}`
+          })
+        } else {
+          //有编辑
+          setState((draft) => {
+            draft.isOpened = true
+          })
+        }
         break
       default:
         break
@@ -205,7 +212,6 @@ function ActivityDetail(props) {
 
             </View>
           </View> */}
-
         </View>
 
         {info?.formData?.length > 0 && (
