@@ -75,7 +75,9 @@ const initialState = {
   evaluationTotal: 0,
   // 多规格商品选中的规格
   curItem: null,
-  recommendList: []
+  recommendList: [],
+  activityId:'',
+  enterpriseId:''
 }
 
 function EspierDetail(props) {
@@ -112,7 +114,9 @@ function EspierDetail(props) {
     type,
     dtid,
     curItem,
-    recommendList
+    recommendList,
+    activityId,
+    enterpriseId
   } = state
 
   useEffect(() => {
@@ -190,17 +194,27 @@ function EspierDetail(props) {
   // }
 
   const init = async () => {
-    const { type, id, dtid } = await entryLaunch.getRouteParams()
+    const { type, id, dtid,activity_id,enterprise_id } = await entryLaunch.getRouteParams()
     setState((draft) => {
       draft.id = id
       draft.type = type
       // draft.dtid = dtid
       draft.dtid = curDistributorId ?? getDistributorId()
+      draft.activityId = activity_id
+      draft.enterpriseId = enterprise_id
+
     })
   }
 
   const fetch = async () => {
-    const { activity_id, enterprise_id } = purchase_share_info
+    let { activity_id, enterprise_id } = purchase_share_info
+
+    //参数传来
+    if(activityId && enterpriseId){
+      activity_id = activityId
+      enterprise_id = enterpriseId
+    }
+
     let data
     if (type == 'pointitem') {
     } else {

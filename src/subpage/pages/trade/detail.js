@@ -232,7 +232,9 @@ export default class TradeDetail extends Component {
       diagnosisData: 'diagnosis_data',
       orderStatus: 'order_status',
       prescriptionStatus: 'prescription_status',
-      prescriptionData: 'prescription_data'
+      prescriptionData: 'prescription_data',
+      enterprise_id:'enterprise_id',
+      activity_id:'activity_id'
     })
 
     const ziti = pickBy(data.distributor, {
