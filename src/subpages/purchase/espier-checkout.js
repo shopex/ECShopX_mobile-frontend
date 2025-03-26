@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Taro, { getCurrentInstance } from '@tarojs/taro'
+import Taro, { getCurrentInstance, useRouter } from '@tarojs/taro'
 import { AtButton, AtInput } from 'taro-ui'
 import {
   SpPage,
@@ -55,6 +55,8 @@ function PurchaseCheckout(props) {
       updateAddress()
     }
   })
+
+  const router = useRouter()
 
 
   const { cashierPayment } = usePayment()
@@ -483,6 +485,15 @@ function PurchaseCheckout(props) {
     const { activity_id, enterprise_id } = purchase_share_info
     const { value, activity } = getActivityValue() || {}
 
+    let _activity_id = activity_id;
+    let _enterprise_id = enterprise_id;
+    // 订单详情点进来的商品
+    if(router.params.activity_id && router.params.enterprise_id){
+      _activity_id = router.params.activity_id
+      _enterprise_id = router.params.enterprise_id
+    }
+
+
     let ziti_shopid
     let receiver = pickBy(address, doc.checkout.RECEIVER_ADDRESS)
     if (receiptType === 'ziti') {
@@ -505,8 +516,8 @@ function PurchaseCheckout(props) {
       point_use,
       pay_type: point_use > 0 && totalInfo.total_fee == 0 ? 'point' : payType,
       distributor_id: receiptType === 'ziti' && ziti_shopid ? ziti_shopid : dtid,
-      activity_id,
-      enterprise_id
+      activity_id: _activity_id,
+      enterprise_id: _enterprise_id
     }
 
     if (receiptType === 'ziti') {
