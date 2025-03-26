@@ -32,7 +32,7 @@ function SpSelectModal(props) {
 
   return (
     <View className={classNames('sp-select-modal', props.className)}>
-      <AtModal isOpened={isOpened}>
+      <AtModal isOpened={isOpened} onClose={onClose}>
         <AtModalHeader>{title}</AtModalHeader>
         <AtModalContent>
           <AtRadio options={options} value={value} onClick={handleChange} />
