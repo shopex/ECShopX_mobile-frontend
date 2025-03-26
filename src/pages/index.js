@@ -95,6 +95,7 @@ function Home() {
   const [likeList, setLikeList] = useImmer([])
   const pageRef = useRef()
   const loginRef = useRef()
+  const requestIdRef = useRef(0);
 
   const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, open_divided, open_divided_templateId } =
     useSelector((state) => state.sys)
@@ -203,64 +204,78 @@ function Home() {
   }
 
   const fetchWgts = async () => {
+    const currentRequestId = ++requestIdRef.current;
+    
     setState((draft) => {
       draft.wgts = []
       draft.pageData = []
       draft.filterWgts = []
       draft.loading = true
     })
-    // 如果开启了店铺隔离并且配置了店铺隔离模版，则先获取店铺隔离模版
-    let config = {}
-    console.log("🚀🚀🚀 ~ fetchWgts ~ whiteShop:", whiteShop)
-    if (open_divided && open_divided_templateId && VERSION_STANDARD && whiteShop === 0)  {
-      const pathparams = qs.stringify({
-        template_name: platformTemplateName,
-        version: 'v1.0.1',
-        page_name: `custom_${open_divided_templateId}`,
-        distributor_id: getDistributorId()
+
+    try {
+      let config = {}
+      if (open_divided && open_divided_templateId && VERSION_STANDARD && whiteShop === 0) {
+        const pathparams = qs.stringify({
+          template_name: platformTemplateName,
+          version: 'v1.0.1',
+          page_name: `custom_${open_divided_templateId}`,
+          distributor_id: getDistributorId()
+        })
+        const url = `/pageparams/setting?${pathparams}`
+        
+        const { config: dividedConfig } = await req.get(url)
+        
+        // 如果这不是最新的请求,直接返回
+        if (currentRequestId !== requestIdRef.current) {
+          return;
+        }
+        
+        config = dividedConfig
+      } else {
+        const { config: defaultConfig } = await api.shop.getShopTemplate({
+          distributor_id: getDistributorId()
+        })
+        
+        // 如果这不是最新的请求,直接返回
+        if (currentRequestId !== requestIdRef.current) {
+          return;
+        }
+        
+        config = defaultConfig
+      }
+
+      const searchComp = config.find((wgt) => wgt.name == 'search')
+      const pageData = config.find((wgt) => wgt.name == 'page')
+      let filterWgts = []
+      if (searchComp && searchComp.config.fixTop) {
+        filterWgts = config.filter((wgt) => wgt.name !== 'search' && wgt.name != 'page')
+      } else {
+        filterWgts = config.filter((wgt) => wgt.name != 'page')
+      }
+
+      const fixedTop = searchComp && searchComp.config.fixTop
+      const isShowHomeHeader =
+        VERSION_PLATFORM ||
+        (openScanQrcode == 1 && isWeixin) ||
+        (VERSION_STANDARD && openStore && openLocation == 1) ||
+        fixedTop
+
+      setState((draft) => {
+        draft.wgts = config
+        draft.searchComp = searchComp
+        draft.pageData = pageData
+        draft.fixedTop = fixedTop
+        draft.isShowHomeHeader = isShowHomeHeader
+        draft.filterWgts = filterWgts
+        draft.loading = false
       })
-      const url = `/pageparams/setting?${pathparams}`
-  
-      console.log("🚀🚀🚀 ~ fetchWgtsDivided ~ pathparams:", pathparams)
-  
-      const { config: dividedConfig } = await req.get(url)
-      config = dividedConfig
-    } else {
-      console.log("🚀🚀🚀 ~ fetchWgts ~ defaultConfig:")
-      const { config: defaultConfig } = await api.shop.getShopTemplate({
-        distributor_id: getDistributorId()
-      })
-      config = defaultConfig
-
-
+    } catch (err) {
+      if (currentRequestId === requestIdRef.current) {
+        // 只处理最新请求的错误
+        throw err;
+      }
     }
-    console.log("🚀🚀🚀 ~ fetchWgts ~ config:", config)
-
-    const searchComp = config.find((wgt) => wgt.name == 'search')
-    const pageData = config.find((wgt) => wgt.name == 'page')
-    let filterWgts = []
-    if (searchComp && searchComp.config.fixTop) {
-      filterWgts = config.filter((wgt) => wgt.name !== 'search' && wgt.name != 'page')
-    } else {
-      filterWgts = config.filter((wgt) => wgt.name != 'page')
-    }
-
-    const fixedTop = searchComp && searchComp.config.fixTop
-    const isShowHomeHeader =
-      VERSION_PLATFORM ||
-      (openScanQrcode == 1 && isWeixin) ||
-      (VERSION_STANDARD && openStore && openLocation == 1) ||
-      fixedTop
-
-    setState((draft) => {
-      draft.wgts = config
-      draft.searchComp = searchComp
-      draft.pageData = pageData
-      draft.fixedTop = fixedTop
-      draft.isShowHomeHeader = isShowHomeHeader
-      draft.filterWgts = filterWgts
-      draft.loading = false
-    })
   }
 
   const fetchLikeList = async () => {
