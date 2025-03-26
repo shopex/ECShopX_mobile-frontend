@@ -74,6 +74,7 @@ function ItemActivity(props) {
       status,
       keyword
     }
+    // registrationActivityList
     const { list, total_count: total } = await api.user.registrationRecordList(params)
     const nList = pickBy(list, {
       activityId: 'activity_id',
