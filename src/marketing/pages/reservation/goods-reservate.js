@@ -73,18 +73,19 @@ function GoodReservate(props) {
   const fetchActivity = async () => {
     let activity_info = {}
     let recordInfo = {}
+    let isEdit = router.params.record_id
     const res = await api.user.registrationActivity({
       activity_id: router.params.activity_id
     })
     activity_info = res.activity_info
 
-    // if (activity_info.join_limit == res.total_join_num && res.total_join_num != 0) {
-    //   showToast('您已经超出活动次数')
-    //   setTimeout(() => {
-    //     Taro.navigateBack()
-    //   }, 700)
-    //   return
-    // }
+    if (activity_info.join_limit == res.total_join_num && res.total_join_num != 0 && !isEdit) {
+      showToast('您已经超出活动次数')
+      setTimeout(() => {
+        Taro.navigateBack()
+      }, 700)
+      return
+    }
 
     if (router.params.record_id) {
       //编辑
@@ -97,7 +98,7 @@ function GoodReservate(props) {
 
     let _formList = []
 
-    if (router.params.record_id) {
+    if (isEdit) {
       //编辑
       _formList = recordInfo?.content?.[0]?.formdata ?? []
     } else {
@@ -108,12 +109,12 @@ function GoodReservate(props) {
     let _rules = {}
     if (_formList.length) {
       _formList.forEach((item) => {
-        if (item.options && !router.params.record_id) {
+        if (item.options && !isEdit) {
           //新增才需要转换
           item.options = JSON.parse(item.options)
         }
 
-        if (router.params.record_id) {
+        if (isEdit) {
           //编辑
           if (['otherfile', 'idcard'].includes(item.form_element)) {
             //需要转换成 [1,2] => [[1],[2]]
