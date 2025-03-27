@@ -35,7 +35,7 @@ import {
   pickBy,
   showToast
 } from '@/utils'
-import { updateShopInfo } from '@/store/slices/shop'
+import { updateShopInfo, changeInWhite } from '@/store/slices/shop'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import S from '@/spx'
 import { useImmer } from 'use-immer'
@@ -375,6 +375,7 @@ function Home() {
                     draft.whiteShop = 1
                   })
                   dispatch(updateShopInfo(res))
+                  dispatch(changeInWhite(true))
                 }
               }
             })
@@ -388,6 +389,7 @@ function Home() {
             const defalutShop = await api.shop.getShop(params)
             params.distributor_id = shop.distributor_id
             if (defalutShop.store_name) {
+              // 部分门店未开启白名单
               Taro.showModal({
                 content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
                 confirmText: '联系店铺',  
@@ -404,6 +406,7 @@ function Home() {
                       draft.whiteShop = 1
                     })
                     dispatch(updateShopInfo(res))
+                    dispatch(changeInWhite(true))
                   }
                 }
               })
@@ -459,6 +462,7 @@ function Home() {
               draft.whiteShop = 1
             })
             dispatch(updateShopInfo(defalutShop))
+            dispatch(changeInWhite(true))
           }
           
           return
@@ -472,8 +476,10 @@ function Home() {
             delete params.show_type
             res = await api.shop.getShop(params)
             if (res.store_name) {
-              // 部分门店未开启白名单
+              // 有部分门店未开启白名单
               dispatch(updateShopInfo(res))
+              dispatch(changeInWhite(true))
+              return
             } else {
               // 全部开启白名单
               Taro.showModal({
@@ -501,6 +507,7 @@ function Home() {
               draft.whiteShop = 1
             })
             dispatch(updateShopInfo(res))
+            dispatch(changeInWhite(true))
           }
         }
       } else {
@@ -509,6 +516,7 @@ function Home() {
           draft.whiteShop = 1
         });
         dispatch(updateShopInfo(shopDetail))
+        dispatch(changeInWhite(true))
       }
     } else {
       // 店铺隔离未登录，先用默认店铺，进行登录弹窗的展示, 这个拿到的应该是没开启白名单的店铺 todozm，应该要改成后台的模版id

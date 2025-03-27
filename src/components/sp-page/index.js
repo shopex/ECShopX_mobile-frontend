@@ -229,6 +229,7 @@ function SpPage(props, ref) {
         distributor_id: distributorId// 如果店铺id和经纬度都传会根据哪个去定位传参
       }
       let inWhite;
+      // 在其他页面有进了白名单店铺的话，需要changeInWhite = true
       if (shopInWhite === undefined) {
         const { status } = await api.shop.checkUserInWhite(params)
         inWhite = status

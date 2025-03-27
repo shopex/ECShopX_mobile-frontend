@@ -66,7 +66,7 @@ import CompShare from './comps/comp-share'
 import CompPromation from './comps/comp-promation'
 import CompGroup from './comps/comp-group'
 import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading, WgtHeadline } from '../home/wgts'
-import { updateShopInfo } from '@/store/slices/shop'
+import { updateShopInfo, changeInWhite} from '@/store/slices/shop'
 import './espier-detail.scss'
 
 const MSpSkuSelect = React.memo(SpSkuSelect)
@@ -328,6 +328,7 @@ function EspierDetail(props) {
                   Taro.setStorageSync(SG_ROUTER_PARAMS, {})
                   res = await api.shop.getShop(params)
                   dispatch(updateShopInfo(res))
+                  dispatch(changeInWhite(true))
                   Taro.navigateTo({
                     url: `/pages/index`
                   })
@@ -344,6 +345,7 @@ function EspierDetail(props) {
             const defalutShop = await api.shop.getShop(params)
             params.distributor_id = shop.distributor_id
             if (defalutShop.store_name) {
+              // 有部分门店未开启白名单
               Taro.showModal({
                 content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
                 confirmText: '联系店铺',  
@@ -357,6 +359,7 @@ function EspierDetail(props) {
                     Taro.setStorageSync(SG_ROUTER_PARAMS, {})
                     res = await api.shop.getShop(params)
                     dispatch(updateShopInfo(res))
+                    dispatch(changeInWhite(true))
                   }
                 }
               })
@@ -410,6 +413,7 @@ function EspierDetail(props) {
           } else {
             // 有定位，存在没有开启白名单的店铺
             dispatch(updateShopInfo(defalutShop))
+            dispatch(changeInWhite(true))
           }
           
           return
@@ -425,6 +429,7 @@ function EspierDetail(props) {
             if (res.store_name) {
               // 部分门店未开启白名单
               dispatch(updateShopInfo(res))
+              dispatch(changeInWhite(true))
             } else {
               // 全部开启白名单
               Taro.showModal({
@@ -449,6 +454,7 @@ function EspierDetail(props) {
             params.distributor_id = shop.distributor_id
             res = await api.shop.getShop(params)
             dispatch(updateShopInfo(res))
+            dispatch(changeInWhite(true))
           }
         }
       } else {
@@ -457,6 +463,7 @@ function EspierDetail(props) {
           draft.whiteShop = 1
         });
         dispatch(updateShopInfo(shopDetail))
+        dispatch(changeInWhite(true))
       }
     } else {
       // 店铺隔离未登录，先用默认店铺，进行登录弹窗的展示, 这个拿到的应该是没开启白名单的店铺 todozm，应该要改成后台的模版id
