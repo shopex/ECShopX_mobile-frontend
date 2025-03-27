@@ -37,7 +37,8 @@ const initialState = {
   currentFieldTitle: '',
   headerBgPic: '',
   headerHeight: 0,
-  submitLoading: false
+  submitLoading: false,
+  isShow: false
 }
 
 function GoodReservate(props) {
@@ -59,7 +60,8 @@ function GoodReservate(props) {
     headerHeight,
     submitLoading,
     isOpened,
-    info
+    info,
+    isShow
   } = state
   const { setNavigationBarTitle } = useNavigation()
   const formRef = useRef()
@@ -75,6 +77,14 @@ function GoodReservate(props) {
       activity_id: router.params.activity_id
     })
     activity_info = res.activity_info
+
+    // if (activity_info.join_limit == res.total_join_num && res.total_join_num != 0) {
+    //   showToast('您已经超出活动次数')
+    //   setTimeout(() => {
+    //     Taro.navigateBack()
+    //   }, 700)
+    //   return
+    // }
 
     if (router.params.record_id) {
       //编辑
@@ -124,6 +134,7 @@ function GoodReservate(props) {
             : ''
         }
 
+        // 校验rule
         if (item.is_required) {
           if (['idcard', 'otherfile'].includes(item.form_element)) {
             _rules[item.id] = [
@@ -159,6 +170,7 @@ function GoodReservate(props) {
       draft.info = _info
       draft.headerBgPic = _info.formdata?.header_bg_pic
       draft.headerHeight = _info.formdata?.header_height
+      draft.isShow = true
     })
   }
 
@@ -263,17 +275,21 @@ function GoodReservate(props) {
             value={
               form_element == 'date'
                 ? form[id]
-                : [options?.findIndex((item) => item.value == form[id]) != -1 ?options?.findIndex((item) => item.value == form[id])  : 0]
+                : [
+                    options?.findIndex((item) => item.value == form[id]) != -1
+                      ? options?.findIndex((item) => item.value == form[id])
+                      : 0
+                  ]
             }
             onChange={(e) => handleSelectChange(e, id, options, form_element)}
           >
             <View className='search-condition'>
-              {
-                console.log(999,
+              {console.log(
+                999,
                 form_element == 'date'
                   ? form[id]
-                  : [options?.findIndex((item) => item.value == form[id]) ?? 0])
-              }
+                  : [options?.findIndex((item) => item.value == form[id]) ?? 0]
+              )}
               {form[id] || <Text className='search-condition-empty'>请选择</Text>}
               <View className='iconfont icon-arrowDown search-condition-icon'></View>
             </View>
@@ -428,18 +444,20 @@ function GoodReservate(props) {
   return (
     <SpPage
       renderFooter={
-        <View className='btns'>
-          <AtButton
-            circle
-            type='primary'
-            className='submit-btn'
-            style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
-            loading={submitLoading}
-            onClick={handleReservate}
-          >
-            提交
-          </AtButton>
-        </View>
+        isShow && (
+          <View className='btns'>
+            <AtButton
+              circle
+              type='primary'
+              className='submit-btn'
+              style={`background: ${colors.data[0].primary}; border-color: ${colors.data[0].primary}`}
+              loading={submitLoading}
+              onClick={handleReservate}
+            >
+              提交
+            </AtButton>
+          </View>
+        )
       }
     >
       <View
