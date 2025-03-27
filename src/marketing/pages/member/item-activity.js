@@ -44,29 +44,34 @@ function ItemActivity(props) {
   const recordRef = useRef()
   const router = useRouter()
 
-  useEffect(() => {
-    Taro.eventCenter.on('onEventRecordStatusChange', () => {
-      setState((draft) => {
-        draft.recordList = []
-        draft.hasReFreash = true
-      });
+  // useEffect(() => {
+  //   Taro.eventCenter.on('onEventRecordStatusChange', () => {
+  //     setState((draft) => {
+  //       draft.recordList = []
+  //       draft.hasReFreash = true
+  //     });
 
-      recordRef.current.reset()
-    })
+  //     recordRef.current.reset()
+  //   })
 
-    return () => {
-      Taro.eventCenter.off('onEventRecordStatusChange')
-    }
-  }, [])
+  //   return () => {
+  //     Taro.eventCenter.off('onEventRecordStatusChange')
+  //   }
+  // }, [])
 
   useDidShow(()=>{
-    if(hasReFreash){
-      setState((draft) => {
-        draft.recordList = []
-        draft.hasReFreash = false
-      });
-      recordRef.current.reset()
-    }
+    // if(hasReFreash){
+    //   setState((draft) => {
+    //     draft.recordList = []
+    //     draft.hasReFreash = false
+    //   });
+    //   recordRef.current.reset()
+    // }
+
+    setState((draft) => {
+      draft.recordList = []
+    });
+    recordRef.current.reset()
   })
 
   useEffect(() => {
