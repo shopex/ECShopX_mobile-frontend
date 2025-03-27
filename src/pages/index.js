@@ -39,7 +39,7 @@ import { updateShopInfo, changeInWhite } from '@/store/slices/shop'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
 import S from '@/spx'
 import { useImmer } from 'use-immer'
-import { useLogin, useNavigation, useLocation, useModal } from '@/hooks'
+import { useLogin, useNavigation, useLocation, useModal, useWhiteShop } from '@/hooks'
 import doc from '@/doc'
 import { SG_ROUTER_PARAMS } from '@/consts/localstorage'
 import HomeWgts from './home/comps/home-wgts'
@@ -104,7 +104,8 @@ function Home() {
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
-  const { findNearestWhiteListShop,findLatestCreatedShop, updateAddress } = useLocation()
+  const { updateAddress } = useLocation()
+  const { getWhiteShop } = useWhiteShop()
   const {
     wgts,
     loading,
@@ -541,24 +542,7 @@ function Home() {
     }
   }
 
-  const getWhiteShop = async () => {
-    // 获取用户已经加入的白名单店铺，筛选合适的店铺
-    const shopList = await fetchShop()
-    // 找到最近的白名单店铺
-    if (location) {
-      const nearestShop = findNearestWhiteListShop(shopList, location);
-      if (nearestShop) {
-        // 使用最近的白名单店铺信息
-        return nearestShop;
-      }
-    } else {
-      // 找到创建时间最晚的白名单店铺
-      const latestShop = findLatestCreatedShop(shopList);
-      if (latestShop) {
-      }
-      return latestShop;
-    }
-  }
+
   /***
    * 未注册，开启店铺隔离后需要登录
    * 
@@ -636,37 +620,6 @@ function Home() {
       }
     }
   }
-
-
-  // 获取店铺列表，主要用于查找白名单店铺
-  const fetchShop = async () => {
-    let params = {
-      page: 1,
-      pageSize: 50,
-      type: 0,           // 店铺类型，0表示所有类型
-      search_type: 2,    // 1=搜索商品；2=搜索门店
-      sort_type: 1,      // 排序方式
-      show_type: 'self'  // 'self'表示只获取白名单店铺
-    }
-
-    console.log(`fetchShop query: ${JSON.stringify(params)}`)
-    
-    // 调用店铺列表API
-    const { 
-      list,              // 店铺列表
-      total_count: total,// 总数
-      defualt_address,   // 默认地址
-      is_recommend       // 是否推荐
-    } = await api.shop.list(params)
-
-    // 使用 pickBy 函数按照 doc.shop.SHOP_ITEM 的格式处理店铺数据
-    const shopList = pickBy(list, doc.shop.SHOP_ITEM)
-
-    console.log("🚀🚀🚀 ~ fetchShop ~ list:", shopList)
-    return shopList
-  }
-
-
 
   const onAddToCart = async ({ itemId, distributorId }) => {
     Taro.showLoading()
