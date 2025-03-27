@@ -43,7 +43,8 @@ import {
   VERSION_PLATFORM,
   isAPP,
   showToast,
-  getDistributorId
+  getDistributorId,
+  VERSION_STANDARD
 } from '@/utils'
 import { fetchUserFavs } from '@/store/slices/user'
 
@@ -109,6 +110,7 @@ function EspierDetail(props) {
   const pageRef = useRef()
   const { userInfo } = useSelector((state) => state.user)
   const { colorPrimary, openRecommend, open_divided, openLocation, open_divided_templateId } = useSelector((state) => state.sys)
+  const { shopInWhite } = useSelector((state) => state.shop)
   const { getWhiteShop, showNoShopModal, connectWhiteShop } = useWhiteShop()
 
   const { setNavigationBarTitle } = useNavigation()
@@ -269,6 +271,19 @@ function EspierDetail(props) {
     })
     if (S.getAuthToken()) {
       await dispatch(fetchUserFavs())
+    }
+    fetchLocation()
+  }
+
+  // 店铺隔离需要 定位
+  const fetchLocation = () => {
+    // 开启了店铺隔离，且还没有进入过店铺，说明是第一次进店，需要定位
+    if (!location && (VERSION_STANDARD && openLocation == 1) && shopInWhite === undefined) {
+      try {
+        updateAddress()
+      } catch (e) {
+        console.error('map location fail:', e)
+      }
     }
   }
 
