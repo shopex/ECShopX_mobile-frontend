@@ -5,6 +5,7 @@ import Taro, { useDidShow, useRouter } from '@tarojs/taro'
 import { View, ScrollView, Text } from '@tarojs/components'
 import { SpPage, SpScrollView, SpTagBar, SpImage, SpSelectModal } from '@/components'
 import api from '@/api'
+import QRCode from 'qrcode'
 import doc from '@/doc'
 import { pickBy } from '@/utils'
 import './activity-detail.scss'
@@ -15,12 +16,13 @@ const initialState = {
   selectOptions: [
     { label: '编辑报名信息', value: '0' },
     { label: '代他人报名', value: '1' }
-  ]
+  ],
+  qrcode: ''
 }
 function ActivityDetail(props) {
   const colors = useSelector((state) => state.sys)
   const [state, setState] = useImmer(initialState)
-  const { info, isOpened, selectOptions } = state
+  const { info, isOpened, selectOptions, qrcode } = state
   const router = useRouter()
 
   const statusMap = {
@@ -35,12 +37,25 @@ function ActivityDetail(props) {
     fetch()
   })
 
+  const getQrCode = ({ verifyCode }) => {
+    if (!verifyCode) return
+    QRCode.toDataURL(verifyCode).then((res) => {
+      console.log('getQrCode', res)
+      setState((draft) => {
+        draft.qrcode = res
+      })
+    })
+  }
+
   const fetch = async () => {
     const res = await api.user.registrationRecordInfo({
       record_id: router.params.record_id
     })
     console.log(res)
     const _info = pickBy(res, doc.activity.RECORD_DETAIL)
+    if (_info.isOfflineVerify && _info.status == 'passed') {
+      getQrCode(_info)
+    }
     setState((draft) => {
       draft.info = _info
     })
@@ -198,20 +213,16 @@ function ActivityDetail(props) {
             <View className='activity-detail__info-area-content'>{info?.activityAddress}</View>
           </View>
 
-          {/* <View className='activity-detail__info-code'>
-            <View className='activity-detail__info-code-box'>
-              <View className='activity-detail__info-code-title'>请凭二维码进行签到</View>
-              <View className='activity-detail__info-code-img'>
-              <SpImage
-                src={
-                  'https://daogou-public.oss-cn-hangzhou.aliyuncs.com/image/34/2025/03/25/b567aaef7e0c232aea996e17f779d47f1742886204580.平台验证白名单.png'
-                }
-                width={270}
-              />
+          {qrcode && (
+            <View className='activity-detail__info-code'>
+              <View className='activity-detail__info-code-box'>
+                <View className='activity-detail__info-code-title'>请凭二维码进行签到</View>
+                <View className='activity-detail__info-code-img'>
+                  <SpImage src={qrcode} width={270} />
+                </View>
               </View>
-
             </View>
-          </View> */}
+          )}
         </View>
 
         {info?.formData?.length > 0 && (
