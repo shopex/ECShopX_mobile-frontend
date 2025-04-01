@@ -231,7 +231,7 @@ function SpPage(props, ref) {
       let inWhite;
       // 在其他页面有进了白名单店铺的话，需要changeInWhite = true
       console.log("🚀🚀🚀 ~ spPage checkInWhite ~ shopInWhite:", shopInWhite)
-      if (shopInWhite === undefined) {
+      if (shopInWhite === undefined || !shopInWhite) {
         const { status } = await api.shop.checkUserInWhite(params)
         inWhite = status
         if (status) { 
