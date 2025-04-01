@@ -372,7 +372,6 @@ function EspierDetail(props) {
             delete params.distributor_id
           
             const defalutShop = await api.shop.getShop(params)
-            params.distributor_id = shop.distributor_id
             if (defalutShop.store_name) {
               // 有部分门店未开启白名单
               Taro.showModal({
@@ -386,8 +385,8 @@ function EspierDetail(props) {
                   if (res.cancel) {
                     // 清空小程序启动时携带的参数
                     Taro.setStorageSync(SG_ROUTER_PARAMS, {})
-                    res = await api.shop.getShop(params)
-                    dispatch(updateShopInfo(res))
+                    // res = await api.shop.getShop(params)
+                    dispatch(updateShopInfo(defalutShop))
                     dispatch(changeInWhite(true))
                   }
                 }

@@ -33,7 +33,8 @@ import {
   resolveStringifyParams,
   getCurrentShopId,
   pickBy,
-  showToast
+  showToast,
+  entryLaunch
 } from '@/utils'
 import { updateShopInfo, changeInWhite } from '@/store/slices/shop'
 import { updatePurchaseShareInfo, updateInviteCode } from '@/store/slices/purchase'
@@ -70,6 +71,7 @@ const initialState = {
 }
 
 function Home() {
+  const $instance = getCurrentInstance()
   const { isLogin, checkPolicyChange, isNewUser, updatePolicyTime, setToken, login } = useLogin({
     autoLogin: false,
     // 隐私协议变更
@@ -84,7 +86,6 @@ function Home() {
       // 老用户登录成功
       console.log("🚀🚀🚀 ~ Home ~ loginSuccess:")
       // 登录成功后获取店铺信息
-      updateAddress()
       checkStoreIsolation()
     }
   })
@@ -158,6 +159,7 @@ function Home() {
 
   useEffect(() => {
     if (open_divided && VERSION_STANDARD) {
+      // console.log("🚀🚀🚀 ~ useEffect ~ useEffect:")
       checkStoreIsolation();
     }
   }, [open_divided]);
@@ -165,6 +167,7 @@ function Home() {
   // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
   useDidShow(() => {
     if (VERSION_STANDARD && openLocation == 1 && !isFirstRender.current) {
+      // console.log("🚀🚀🚀 ~ useDidShow ~ useDidShow:")
       checkStoreIsolation()
     }
     // 标记第一次渲染已完成
@@ -317,10 +320,13 @@ function Home() {
 
   const checkStoreIsolation = async () => {
     console.log("🚀🚀🚀 ~ useDidShow ~ checkStoreIsolation:")
-    const distributorId = getDistributorId() || 0
+    const { dtid } = await entryLaunch.getRouteParams($instance.router.params)
+    const distributorId = dtid || getDistributorId() || 0
+    // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ 分享进来的 dtid:", dtid)
     let params = {
       distributor_id: distributorId// 如果店铺id和经纬度都传会根据哪个去定位传参
     }
+    // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ location:", location)
     if (openLocation == 1 && location) {
       const { lat, lng } = location
       params.lat = lat
@@ -345,7 +351,7 @@ function Home() {
        * 店铺隔离逻辑
        * is_valid 接口逻辑
        * show_type = 'self' && distributor_id=0 && location，返回最近的且开启白名单的店铺
-       * show_type = 'self' && distributor_id=0 && !location，不能返回店铺，因为不知道最近的店铺
+       * show_type = 'self' && distributor_id=0 && !location，返回默认店铺，是否是白名单店铺
        * show_type = 'self' && distributor_id>0 ，如果有返回店铺信息，表示这个店铺已经有绑定白名单，没有则没有绑定白名单
        * 没有 show_type  && distributor_id=0 && location，返回没有开启白名单的店铺
        * 没有 show_type  && distributor_id=0 && !location，返回没有开启白名单的店 或者 不能返回店铺，因为没有location？
@@ -397,7 +403,7 @@ function Home() {
             delete params.distributor_id
           
             const defalutShop = await api.shop.getShop(params)
-            params.distributor_id = shop.distributor_id
+            // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ defalutShop:", defalutShop)
             if(!defalutShop.store_name) {
               // 没任何绑定的店铺
               showNoShopModal()
@@ -415,8 +421,8 @@ function Home() {
                   if (res.cancel) {
                     // 清空小程序启动时携带的参数
                     Taro.setStorageSync(SG_ROUTER_PARAMS, {})
-                    res = await api.shop.getShop(params)
-                    dispatch(updateShopInfo(res))
+                    // res = await api.shop.getShop(params)
+                    dispatch(updateShopInfo(defalutShop))
                     dispatch(changeInWhite(true))
                   }
                 }
@@ -649,8 +655,6 @@ function Home() {
         onChange={() => {
           // 新注册会员登录成功
           // 登录成功后需要获取店铺信息，然后查看店铺
-          updateAddress()
-          console.log("🚀🚀🚀 ~ onChange: ~ location:", location)
           checkStoreIsolation()
         }}
         onPolicyClose={() => {
