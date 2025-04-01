@@ -44,5 +44,7 @@ export const RECORD_DETAIL = {
   actionCancel: ({ action }) => action?.cancel == 1,
   actionEdit: ({ action }) => action?.edit == 1,
   actionApply: ({ action }) => action?.apply == 1,
-  getPoints:'get_points'
+  getPoints:'get_points',
+  verifyCode:'verify_code',
+  isOfflineVerify: ({ activity_info }) => activity_info?.is_offline_verify == 1 ,
 }
