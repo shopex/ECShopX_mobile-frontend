@@ -67,7 +67,6 @@ function ActivityDetail(props) {
       typeof answer == 'string' &&
       ['Attachment upload', 'Attendance IDCard'].includes(field_name)
     ) {
-      console.log(123, answer?.split(','))
       return (
         <View className='pic-item'>
           {answer?.split(',')?.map((item, idx) => (
