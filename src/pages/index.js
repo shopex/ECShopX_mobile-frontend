@@ -158,7 +158,7 @@ function Home() {
   }, [skuPanelOpen])
 
   useEffect(() => {
-    if (open_divided && VERSION_STANDARD) {
+    if (open_divided) {
       // console.log("🚀🚀🚀 ~ useEffect ~ useEffect:")
       checkStoreIsolation();
     }
@@ -312,7 +312,7 @@ function Home() {
       // params.distributor_id = undefined
     }
     // 非店铺隔离，获取店铺信息
-    if ((!open_divided && VERSION_STANDARD) || !VERSION_STANDARD) {
+    if (!open_divided) {
       const res = await api.shop.getShop(params)
       dispatch(updateShopInfo(res))
     }

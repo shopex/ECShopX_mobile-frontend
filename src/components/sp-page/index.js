@@ -208,7 +208,7 @@ function SpPage(props, ref) {
       })
     }
     console.log("🚀🚀🚀 ~ sppage useDidShow ~ open_divided:", open_divided)
-    if (open_divided && VERSION_STANDARD) {
+    if (open_divided) {
       checkInWhite()
     }
   })
