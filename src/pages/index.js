@@ -335,12 +335,12 @@ function Home() {
     }
     // 开启了店铺隔离并且登录，获取白名单店铺
     let res, shopDetail
-    if (!S.getAuthToken()) { 
+      // 渲染默认的模版和联系店铺的手机号
+      // 没有带id，就返回默认店铺或者之前存的店铺 作为背景和手机号
+      // 有带id，就用带id的店铺作为背景和手机号
       res = await api.shop.getShop(params)
       dispatch(updateShopInfo(res))
       showWhiteLogin()
-      return
-    }
 
     if (S.getAuthToken()) {
       // updateAddress()
@@ -360,18 +360,19 @@ function Home() {
        * 1、开启定位，找最近的
        * 2、没有开启定位，找创建时间最晚的
        * 3、店铺列表没有，表示都没有绑定白名单
+       * 
+       * 返回 white_hidden ==1  说明是默认店铺 ，不进店，但是需要取店铺信息作为模版背景和手机号
        */
 
-      if (shopDetail.store_name) { 
+      if (shopDetail.store_name && shopDetail.white_hidden != 1) { 
         // 找到店铺了
         dispatch(updateShopInfo(shopDetail))
         dispatch(changeInWhite(true))
         return
       }
 
-      if (!shopDetail.store_name) {
+      if (!shopDetail.store_name || defalutShop.white_hidden == 1) {
         // 没有找到店铺
-        
         if (distributorId) {
           // 有店铺码 但是这个店铺不是在白名单里, 找其他店铺
           const shop = await getWhiteShop() // 已经加入的最优店铺
@@ -401,11 +402,10 @@ function Home() {
           } else {
             // 找附近未开启白名单的店铺
             delete params.show_type
-            delete params.distributor_id
-          
+            params.distributor_id = 0
             const defalutShop = await api.shop.getShop(params)
             // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ defalutShop:", defalutShop)
-            if(!defalutShop.store_name) {
+            if(defalutShop.white_hidden == 1) {
               // 没任何绑定的店铺
               showNoShopModal()
               return
@@ -432,7 +432,6 @@ function Home() {
               return
             }
           }
-          return
         }
 
         if (!distributorId) {
@@ -442,7 +441,7 @@ function Home() {
           
             // 未开启白名单的店铺
             const defalutShop = await api.shop.getShop(params)
-            if (!defalutShop.store_name) {
+            if (defalutShop.white_hidden == 1) {
               showNoShopModal()
             } else {
               // 有定位，存在没有开启白名单的店铺
@@ -453,14 +452,14 @@ function Home() {
             return
           }
 
+          // 未定位
           if (!params.lat) {
-            // 未定位
             const shop = await getWhiteShop()
             if (!shop) {
               // 未加入店铺
               delete params.show_type
               res = await api.shop.getShop(params)
-              if (!res.store_name) {
+              if (res.white_hidden == 1) {
                 // 全部开启白名单
                 showNoShopModal()
               } else {
@@ -474,9 +473,6 @@ function Home() {
               // 加入最近时间的店铺
               params.distributor_id = shop.distributor_id
               res = await api.shop.getShop(params)
-              setState((draft) => {
-                draft.whiteShop = 1
-              })
               dispatch(updateShopInfo(res))
               dispatch(changeInWhite(true))
             }

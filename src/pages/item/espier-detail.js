@@ -329,14 +329,14 @@ function EspierDetail(props) {
        * 3、店铺列表没有，表示都没有绑定白名单
        */
 
-      if (shopDetail.store_name) {
+      if (shopDetail.store_name && shopDetail.white_hidden != 1) {
         // 找到店铺了
         dispatch(updateShopInfo(shopDetail))
         dispatch(changeInWhite(true))
         return
       }
 
-      if (!shopDetail.store_name) {
+      if (!shopDetail.store_name || defalutShop.white_hidden == 1) {
         // 没有找到店铺
         
         if (distributorId) {
@@ -370,11 +370,14 @@ function EspierDetail(props) {
           } else {
             // 找附近未开启白名单的店铺
             delete params.show_type
-            delete params.distributor_id
+            params.distributor_id = 0
           
             const defalutShop = await api.shop.getShop(params)
-            if (defalutShop.store_name) {
-              // 有部分门店未开启白名单
+            if ( defalutShop.white_hidden == 1) {
+              // 没任何店铺可以进
+              showNoShopModal()
+              return
+            } else { 
               Taro.showModal({
                 content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
                 confirmText: '去其他店',  
@@ -395,10 +398,7 @@ function EspierDetail(props) {
               })
               return
             }
-            // 没任何店铺可以进
-            showNoShopModal()
           }
-          return
         }
 
         if (!distributorId) {
@@ -409,7 +409,7 @@ function EspierDetail(props) {
             
             // 未开启白名单的店铺
             const defalutShop = await api.shop.getShop(params)
-            if (!defalutShop.store_name) {
+            if (defalutShop.white_hidden == 1) {
               // 没任何店铺可以进
               showNoShopModal()
             } else {
@@ -428,13 +428,14 @@ function EspierDetail(props) {
               // 没有找到加入的店铺，找没有开白名单的店铺
               delete params.show_type
               res = await api.shop.getShop(params) // ?todozm这里是不是应该取不到？因为没有定位信息
-              if (res.store_name) {
-                // 部分门店未开启白名单
+              if (res.white_hidden == 1) {
+                // 全部开启白名单
+                showNoShopModal()
+              } else {
+                // 有部分门店未开启白名单
                 dispatch(updateShopInfo(res))
                 dispatch(changeInWhite(true))
-              } else {
-                // 没任何店铺可以进
-                showNoShopModal()
+                return
               }
               return
             } else {
