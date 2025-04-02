@@ -109,7 +109,7 @@ export default (props) => {
   }
 
   // 联系店铺
-  const connectWhiteShop = () => { 
+  const connectWhiteShop = (phone) => { 
     if (open_divided_templateId) {
       const query = `?id=${open_divided_templateId}`
       const path = `/pages/custom/custom-page${query}`
@@ -118,21 +118,21 @@ export default (props) => {
       })
     } else {
       Taro.makePhoneCall({
-        phoneNumber: shopInfo.phone
+        phoneNumber: phone
       })
     }
   }
 
   // 没有店铺
-  const showNoShopModal = () => {
+  const showNoShopModal = (phone) => {
     Taro.showModal({
       content: '抱歉，本店会员才可以访问，如有需要可电话联系店铺',
       confirmText: '关闭',
       cancelText: '联系店铺',
-      showCancel: !!(open_divided_templateId || shopInfo?.phone),
+      showCancel: !!(open_divided_templateId || phone),
       success: async (res) => {
         if (res.cancel) {
-          connectWhiteShop()
+          connectWhiteShop(phone)
         }
 
         if (res.confirm) {
