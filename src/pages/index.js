@@ -99,7 +99,7 @@ function Home() {
 
   const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, open_divided, open_divided_templateId } =
     useSelector((state) => state.sys)
-  const { shopInfo } = useSelector((state) => state.shop)
+  const { shopInfo, shopInWhite } = useSelector((state) => state.shop)
 
   const showAdv = useSelector((member) => member.user.showAdv)
   const { location } = useSelector((state) => state.user)
@@ -319,8 +319,9 @@ function Home() {
   }
 
   const checkStoreIsolation = async () => {
+    if(shopInWhite) return // 已经在白名单店铺了
     console.log("🚀🚀🚀 ~ useDidShow ~ checkStoreIsolation:")
-    const { dtid } = await entryLaunch.getRouteParams($instance.router.params)
+    const { dtid } = Taro.getStorageSync(SG_ROUTER_PARAMS) 
     const distributorId = dtid || getDistributorId() || 0
     // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ 分享进来的 dtid:", dtid)
     let params = {
@@ -335,11 +336,14 @@ function Home() {
     }
     // 开启了店铺隔离并且登录，获取白名单店铺
     let res, shopDetail
-      // 渲染默认的模版和联系店铺的手机号
-      // 没有带id，就返回默认店铺或者之前存的店铺 作为背景和手机号
+    // 渲染默认的模版和联系店铺的手机号
+    // 没有带id，就返回默认店铺 作为背景和手机号
     // 有带id，就用带id的店铺作为背景和手机号
-      // res = await api.shop.getShop(params)
-      // dispatch(updateShopInfo(res))
+    if (distributorId) {
+      res = await api.shop.getShop(params)
+      dispatch(updateShopInfo(res))
+    }
+
     if (!S.getAuthToken()) { 
       showWhiteLogin()
       return
@@ -388,7 +392,7 @@ function Home() {
               showCancel: !!(open_divided_templateId || shopInfo?.phone),
               success: async (res) => {
                 if (res.cancel) {
-                  connectWhiteShop()
+                  connectWhiteShop(shopInfo?.phone)
                 }
                 if (res.confirm) {
                   console.log("🚀🚀🚀 ~ res.cancel ~ res.cancel:")
@@ -409,9 +413,9 @@ function Home() {
             const defalutShop = await api.shop.getShop(params)
             // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ defalutShop:", defalutShop)
             if(defalutShop.white_hidden == 1) {
-              // 没匹配到任何店铺，取默认的模版渲染背景和电话
+              // 没匹配到任何店铺，带有id还是用之前的店铺模版和电话
               // dispatch(updateShopInfo(defalutShop))
-              showNoShopModal()
+              showNoShopModal(shopInfo?.phone)
               return
             } else {
               // 部分门店未开启白名单
@@ -422,7 +426,7 @@ function Home() {
                 showCancel: !!(open_divided_templateId || shopInfo?.phone),
                 success: async (res) => {
                   if (res.cancel) {
-                    connectWhiteShop()
+                    connectWhiteShop(shopInfo?.phone)
                   }
                   if (res.confirm) {
                     // 清空小程序启动时携带的参数
@@ -447,7 +451,7 @@ function Home() {
             const defalutShop = await api.shop.getShop(params)
             if (defalutShop.white_hidden == 1) {
               dispatch(updateShopInfo(defalutShop))
-              showNoShopModal()
+              showNoShopModal(defalutShop.phone)
             } else {
               // 有定位，存在没有开启白名单的店铺
               dispatch(updateShopInfo(defalutShop))
@@ -467,7 +471,7 @@ function Home() {
               if (res.white_hidden == 1) {
                 // 全部开启白名单
                 dispatch(updateShopInfo(res))
-                showNoShopModal()
+                showNoShopModal(res.phone)
               } else {
                 // 有部分门店未开启白名单
                 dispatch(updateShopInfo(res))
