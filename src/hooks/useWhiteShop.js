@@ -6,7 +6,7 @@ import { pickBy } from '@/utils'
 import doc from '@/doc'
 import { useLocation, useShopInfo } from '@/hooks'
 
-export default (props) => {
+export default ({ onPhoneCallComplete } = {}) => {
   const dispatch = useDispatch()
   const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, open_divided, open_divided_templateId } =
     useSelector((state) => state.sys)
@@ -118,7 +118,13 @@ export default (props) => {
       })
     } else {
       Taro.makePhoneCall({
-        phoneNumber: phone
+        phoneNumber: phone,
+        complete: () => {
+          // 在电话操作完成后（无论成功或失败）执行
+          if (onPhoneCallComplete) {
+            onPhoneCallComplete()
+          }
+        }
       })
     }
   }

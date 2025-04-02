@@ -105,7 +105,11 @@ function Home() {
   const { location } = useSelector((state) => state.user)
   const { setNavigationBarTitle } = useNavigation()
   const { updateAddress } = useLocation()
-  const { getWhiteShop, showNoShopModal, connectWhiteShop } = useWhiteShop()
+  const { getWhiteShop, showNoShopModal, connectWhiteShop } = useWhiteShop({
+    onPhoneCallComplete: () => {
+      checkStoreIsolation()
+    }
+  })
   const {
     wgts,
     loading,
