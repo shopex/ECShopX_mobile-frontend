@@ -65,9 +65,11 @@
   .shop-tag {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     margin-top: 8px;
     overflow: auto;
     white-space: nowrap;
+    flex-grow: 1;
     .tag {
       /* prettier-ignore */
       border: 1PX solid var(--color-primary);
