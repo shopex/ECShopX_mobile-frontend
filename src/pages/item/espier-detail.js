@@ -329,7 +329,7 @@ function EspierDetail(props) {
   // 店铺隔离start
   const checkStoreIsolation = async () => { 
     console.log("🚀🚀🚀 ~ checkStoreIsolation ~ checkStoreIsolation:")
-
+    const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     const distributorId = getDistributorId() || 0
     let params = {
       distributor_id: distributorId
@@ -384,9 +384,9 @@ function EspierDetail(props) {
           // 有店铺码 但是这个店铺不是在白名单里, 找其他店铺
           const shop = await getWhiteShop() // 已经加入的最优店铺
           if (shop) {
-            if (shop.distributor_id == shopInfo.distributor_id) {
+            if (!routerDtid && shop.distributor_id == shopInfo.distributor_id) {
               Taro.setStorageSync(SG_ROUTER_PARAMS, {})
-              dispatch(updateShopInfo(shop))
+              dispatch(updateShopInfo(shopInfo))
               dispatch(changeInWhite(true))
               // 从其他页面返回到首页的时候,已经在当前店铺了
               return
@@ -426,9 +426,9 @@ function EspierDetail(props) {
               showNoShopModal(distributorPhone)
               return
             } else { 
-              if (defalutShop.distributor_id == shopInfo.distributor_id) {
+              if (!routerDtid && defalutShop.distributor_id == shopInfo.distributor_id) {
                 Taro.setStorageSync(SG_ROUTER_PARAMS, {})
-                dispatch(updateShopInfo(defalutShop))
+                dispatch(updateShopInfo(shopInfo))
                 dispatch(changeInWhite(true))
                 // 从其他页面返回到首页的时候,已经在当前店铺了
                 return
