@@ -341,14 +341,10 @@ function EspierDetail(props) {
       // params.distributor_id = undefined
     }
     // 开启了店铺隔离并且登录，获取白名单店铺
-    let res, shopDetail, distributorPhone;
-    // 渲染默认联系店铺的手机号
-    // 没有带id，就返回默认店铺 作为背景和手机号
-    // 有带id，就用带id的店铺作为背景和手机号
+    let res, distributorPhone;
+    // 渲染路由携带的店铺id的手机号
     if (distributorId) {
       res = await api.shop.getShop(params)
-      // dispatch(updateShopInfo(res)) // 
-      // 只存手机，避免多次调用接口
       distributorPhone = res.phone
     }
 
@@ -361,13 +357,7 @@ function EspierDetail(props) {
       // updateAddress()
       params.show_type = 'self'
       // 带self，返回店铺内容store_name => 是绑定的店铺
-      try {
-        shopDetail = await api.shop.getShop(params) 
-      } catch (e) {
-        console.log("🚀🚀🚀 ~ checkStoreIsolation ~ shopDetail:", e)
-        shopDetail = []
-      }
-
+      const shopDetail = await api.shop.getShop(params) 
       console.log("🚀🚀🚀 ~ checkStoreIsolation ~ shopDetail:", shopDetail)
 
       if (shopDetail.store_name && shopDetail.white_hidden != 1) {
@@ -381,10 +371,11 @@ function EspierDetail(props) {
         // 没有找到店铺
         
         if (distributorId) {
-          // 有店铺码 但是这个店铺不是在白名单里, 找其他店铺
+          // 有店铺码 这个码一定是商品页的路由参数店铺ID） 但是这个店铺不是在白名单里, 找其他店铺
           const shop = await getWhiteShop() // 已经加入的最优店铺
           if (shop) {
             if (!routerDtid && shop.distributor_id == shopInfo.distributor_id) {
+              // 必须有，重新渲染商品信息
               Taro.setStorageSync(SG_ROUTER_PARAMS, {})
               dispatch(updateShopInfo(shopInfo))
               dispatch(changeInWhite(true))
