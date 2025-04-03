@@ -4,7 +4,7 @@ import Taro, {
   getCurrentInstance,
   useShareAppMessage,
   useShareTimeline,
-  useReady
+  useDidShow
 } from '@tarojs/taro'
 import { View, Text, Swiper, SwiperItem, Video, ScrollView } from '@tarojs/components'
 import { useImmer } from 'use-immer'
@@ -139,7 +139,7 @@ function EspierDetail(props) {
   const { location } = useSelector((state) => state.user)
 
   const loginRef = useRef()
-
+  
   const [state, setState] = useImmer(initialState)
   const {
     info,
@@ -236,9 +236,11 @@ function EspierDetail(props) {
 
   // 修改监听 shopInfo 的 useEffect
   useEffect(() => {
+    if (!VERSION_STANDARD && !open_divided) {
+      return
+    }
     // 跳过首次渲染时的 shopInfo
     if (isFirstRender.current) {
-      isFirstRender.current = false
       return
     }
 
@@ -248,6 +250,16 @@ function EspierDetail(props) {
       })
     }
   }, [shopInfo])
+
+
+  // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
+  useDidShow(() => {
+    if (VERSION_STANDARD && open_divided && !isFirstRender.current) {
+      checkStoreIsolation()
+    }
+    // 标记第一次渲染已完成
+    isFirstRender.current = false;
+  })
 
   useShareAppMessage(async (res) => {
     return getAppShareInfo()
