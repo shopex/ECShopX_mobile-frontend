@@ -8,7 +8,7 @@ import { useLocation, useShopInfo } from '@/hooks'
 
 export default ({ onPhoneCallComplete } = {}) => {
   const dispatch = useDispatch()
-  const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, open_divided, open_divided_templateId } =
+  const { open_divided_templateId } =
     useSelector((state) => state.sys)
   const { shopInfo } = useSelector((state) => state.shop)
   const { calculateDistance } = useLocation()

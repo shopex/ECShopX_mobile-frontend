@@ -750,7 +750,7 @@ const getDistributorId = (_dtid) => {
   const { sys, shop } = store.getState()
   const { openStore } = sys
 
-  console.log("🚀🚀🚀 ~ getDistributorId ~ shop:", shop)
+  // console.log("🚀🚀🚀 ~ getDistributorId ~ shop:", shop)
 
   const {
     shopInfo: { distributor_id, shop_id = 0 }
