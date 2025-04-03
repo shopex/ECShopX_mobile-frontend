@@ -96,6 +96,7 @@ function Home() {
   const loginRef = useRef()
   const requestIdRef = useRef(0);
   const isFirstRender = useRef(true);
+  const prevShopIdRef = useRef(null);
 
   const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, open_divided, open_divided_templateId } =
     useSelector((state) => state.sys)
@@ -138,11 +139,14 @@ function Home() {
     dispatch(updateInviteCode())
   }, [])
 
-  useEffect( () => {
-    
+  useEffect(() => {
     if (shopInfo && VERSION_STANDARD) {
-      console.log("🚀🚀🚀 ~ Home ~ shopInfo useEffect:", shopInfo)
-      fetchWgts()
+      // 比较当前店铺ID与上一次的是否相同
+      const currentShopId = shopInfo.distributor_id;
+      if (currentShopId !== prevShopIdRef.current) {
+        fetchWgts();
+        prevShopIdRef.current = currentShopId;
+      }
     }
   }, [shopInfo])
 
