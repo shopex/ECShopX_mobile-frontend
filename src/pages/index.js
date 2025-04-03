@@ -325,6 +325,7 @@ function Home() {
   const checkStoreIsolation = async () => {
     console.log("🚀🚀🚀 ~ useDidShow ~ checkStoreIsolation:")
     const distributorId = getDistributorId() || 0
+    const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ 分享进来的 dtid:", dtid)
     let params = {
       distributor_id: distributorId// 如果店铺id和经纬度都传会根据哪个去定位传参
@@ -393,8 +394,13 @@ function Home() {
           // 有店铺码 但是这个店铺不是在白名单里, 找其他店铺
           const shop = await getWhiteShop() // 已经加入的最优店铺
           if (shop) {
-            if (shop.distributor_id == shopInfo.distributor_id) {
+            // 首次进小程序，必须弹窗
+            if (!routerDtid && shop.distributor_id == shopInfo.distributor_id) {
               // 从其他页面返回到首页的时候,已经在当前店铺了
+              Taro.setStorageSync(SG_ROUTER_PARAMS, {})
+              res = await api.shop.getShop(shopInfo)
+              dispatch(updateShopInfo(res))
+              dispatch(changeInWhite(true))
               return
             }
             params.distributor_id = shop.distributor_id
@@ -431,8 +437,13 @@ function Home() {
               showNoShopModal(shopInfo?.phone)
               return
             } else {
-              if (defalutShop.distributor_id == shopInfo.distributor_id) {
+              // 首次进小程序，必须弹窗
+              if (!routerDtid && defalutShop.distributor_id == shopInfo.distributor_id) {
                 // 从其他页面返回到首页的时候,已经在当前店铺了
+                Taro.setStorageSync(SG_ROUTER_PARAMS, {})
+                res = await api.shop.getShop(params)
+                dispatch(updateShopInfo(shopInfo))
+                dispatch(changeInWhite(true))
                 return
               }
               // 部分门店未开启白名单
