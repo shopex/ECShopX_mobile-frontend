@@ -10,7 +10,7 @@ import Taro, {
 import { View, Text, ScrollView } from '@tarojs/components'
 import { useImmer } from 'use-immer'
 import { SpNavBar, SpFloatMenuItem, SpNote, SpLoading, SpImage } from '@/components'
-import { useSyncCallback } from '@/hooks'
+import { useSyncCallback, useWhiteShop } from '@/hooks'
 import { TABBAR_PATH } from '@/consts'
 import api from '@/api'
 import S from '@/spx'
@@ -95,6 +95,11 @@ function SpPage(props, ref) {
   const [mantle, setMantle] = useState(false)
   const { colorPrimary, colorMarketing, colorAccent, rgb, appName, open_divided, open_divided_templateId } = sys
   const dispatch = useDispatch()
+  const { connectWhiteShop } = useWhiteShop({
+    onPhoneCallComplete: () => {
+      checkInWhite()
+    }
+  })
   useReady(() => {
     // 导购货架数据上报
     // const router = $instance.router
@@ -230,7 +235,6 @@ function SpPage(props, ref) {
       }
       let inWhite;
       // 在其他页面有进了白名单店铺的话，需要changeInWhite = true
-      console.log("🚀🚀🚀 ~ spPage checkInWhite ~ shopInWhite:", shopInWhite)
       if (shopInWhite === undefined || !shopInWhite) {
         const { status } = await api.shop.checkUserInWhite(params)
         inWhite = status
@@ -269,8 +273,6 @@ function SpPage(props, ref) {
 
       }
     } else {
-      console.log("🚀🚀🚀 ~ checkInWhite ~ open_divided_templateId || shopInfo?.phone,:",!!(open_divided_templateId || shopInfo?.phone))
-
       // 未登录，跳首页登录
       Taro.showModal({
         content: '抱歉，本店会员才可以访问，如有需要可联系店铺',
@@ -289,20 +291,6 @@ function SpPage(props, ref) {
             })
           }
         }
-      })
-    }
-  }
-  // 联系店铺
-  const connectWhiteShop = () => { 
-    if (open_divided_templateId) {
-      const query = `?id=${open_divided_templateId}`
-      const path = `/pages/custom/custom-page${query}`
-      Taro.navigateTo({
-        url: path
-      })
-    } else {
-      Taro.makePhoneCall({
-        phoneNumber: shopInfo.phone
       })
     }
   }
