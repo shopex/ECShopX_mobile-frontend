@@ -107,13 +107,16 @@ function EspierDetail(props) {
   // const { type, id, dtid } = await entryLaunch.getRouteParams()
   const { getUserInfoAuth } = useLogin()
   const pageRef = useRef()
+  const isFromPhoneCallBack = useRef(false);     // 防止苹果手机返回不展示弹窗，但是安卓展示多次弹窗
+
   const { userInfo } = useSelector((state) => state.user)
   const { colorPrimary, openRecommend, open_divided, openLocation, open_divided_templateId } = useSelector((state) => state.sys)
   const { shopInWhite , shopInfo} = useSelector((state) => state.shop)
   const { getWhiteShop, showNoShopModal, connectWhiteShop } = useWhiteShop({
-    // onPhoneCallComplete: () => {
-      // checkStoreIsolation()
-    // }
+    onPhoneCallComplete: () => {
+      isFromPhoneCallBack.current = true
+      checkStoreIsolation()
+    }
   })
   const { setNavigationBarTitle } = useNavigation()
   const dispatch = useDispatch()
@@ -254,11 +257,12 @@ function EspierDetail(props) {
 
   // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
   useDidShow(() => {
-    if (VERSION_STANDARD && open_divided && !isFirstRender.current) {
+    if (VERSION_STANDARD && open_divided && !isFirstRender.current && !isFromPhoneCallBack) {
       checkStoreIsolation()
     }
     // 标记第一次渲染已完成
     isFirstRender.current = false;
+    isFromPhoneCallBack.current = false
   })
 
   useShareAppMessage(async (res) => {

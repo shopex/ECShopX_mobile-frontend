@@ -97,6 +97,7 @@ function Home() {
   const requestIdRef = useRef(0);
   const isFirstRender = useRef(true);
   const prevShopIdRef = useRef(null);
+  const isFromPhoneCallBack = useRef(false);     // 防止苹果手机返回不展示弹窗，但是安卓展示多次弹窗
 
   const { initState, openRecommend, openLocation, openStore, appName, openScanQrcode, open_divided, open_divided_templateId } =
     useSelector((state) => state.sys)
@@ -107,9 +108,10 @@ function Home() {
   const { setNavigationBarTitle } = useNavigation()
   const { updateAddress } = useLocation()
   const { getWhiteShop, showNoShopModal, connectWhiteShop } = useWhiteShop({
-    // onPhoneCallComplete: () => {
-      // checkStoreIsolation()
-    // }
+    onPhoneCallComplete: () => {
+      isFromPhoneCallBack.current = true
+      checkStoreIsolation()
+    }
   })
   const {
     wgts,
@@ -173,12 +175,14 @@ function Home() {
   
   // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
   useDidShow(() => {
-    if (VERSION_STANDARD && open_divided && !isFirstRender.current) {
+    if (VERSION_STANDARD && open_divided && !isFirstRender.current && !isFromPhoneCallBack) {
       // console.log("🚀🚀🚀 ~ useDidShow ~ useDidShow:")
       checkStoreIsolation()
     }
     // 标记第一次渲染已完成
     isFirstRender.current = false;
+    // 防止苹果手机返回不展示弹窗，但是安卓展示多次弹窗
+    isFromPhoneCallBack.current = false
   })
 
   useShareAppMessage(async (res) => {
@@ -326,7 +330,6 @@ function Home() {
   }
 
   const checkStoreIsolation = async () => {
-    console.log("🚀🚀🚀 ~ useDidShow ~ checkStoreIsolation:")
     const distributorId = getDistributorId() || 0
     const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ 分享进来的 dtid:", dtid)

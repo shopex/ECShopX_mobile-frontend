@@ -89,6 +89,7 @@ function SpPage(props, ref) {
   let { renderTitle } = props
   const wrapRef = useRef(null)
   const scrollTopRef = useRef(0)
+  const isFromPhoneCallBack = useRef(false);
   const sys = useSelector((state) => state.sys)
   const { shopInfo, shopInWhite } = useSelector((state) => state.shop)
   const [showToTop, setShowToTop] = useState(false)
@@ -96,9 +97,10 @@ function SpPage(props, ref) {
   const { colorPrimary, colorMarketing, colorAccent, rgb, appName, open_divided, open_divided_templateId } = sys
   const dispatch = useDispatch()
   const { connectWhiteShop } = useWhiteShop({
-    // onPhoneCallComplete: () => {
-    //   checkInWhite()
-    // }
+    onPhoneCallComplete: () => {
+      isFromPhoneCallBack.current = true
+      checkInWhite()
+    }
   })
   useReady(() => {
     // 导购货架数据上报
@@ -213,9 +215,10 @@ function SpPage(props, ref) {
       })
     }
     console.log("🚀🚀🚀 ~ sppage useDidShow ~ open_divided:", open_divided)
-    if (open_divided) {
+    if (open_divided && !isFromPhoneCallBack) {
       checkInWhite()
     }
+    isFromPhoneCallBack.current = false
   })
 
   const checkInWhite = async () => {
