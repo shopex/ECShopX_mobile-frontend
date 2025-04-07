@@ -111,7 +111,7 @@ export default ({ onPhoneCallComplete } = {}) => {
   // 打店铺电话
   const connectWhiteShop = (phone) => { 
     if (open_divided_templateId) {
-      const query = `?id=${open_divided_templateId}`
+      const query = `?id=${open_divided_templateId}&fromConnect=1`
       const path = `/pages/custom/custom-page${query}`
       Taro.navigateTo({
         url: path
