@@ -256,7 +256,7 @@ function SpPage(props, ref) {
               confirmText: '关闭',
               showCancel: !!(open_divided_templateId || shopInfo?.phone),
               onCancel: () => { 
-                connectWhiteShop()
+                connectWhiteShop(shopInfo?.phone)
                 setState((draft) => {
                   draft.modalDivided = {
                     isShow: false
@@ -287,7 +287,7 @@ function SpPage(props, ref) {
           confirmText: '去登录',
           showCancel: !!(open_divided_templateId || shopInfo?.phone),
           onCancel: () => { 
-            connectWhiteShop()
+            connectWhiteShop(shopInfo?.phone)
             setState((draft) => {
               draft.modalDivided = {
                 isShow: false
