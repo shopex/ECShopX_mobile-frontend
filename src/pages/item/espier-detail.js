@@ -496,6 +496,8 @@ function EspierDetail(props) {
           }
         }
 
+        // 下面的逻辑正常是走不到的
+        console.error('没有 distributorId')
         if (!distributorId) {
           if (params.lat) {
             // 已定位 但是还是没返回店铺信息，说明没有绑定过任何一家店铺白名单
