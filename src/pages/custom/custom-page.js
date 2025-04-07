@@ -210,6 +210,8 @@ function CustomPage(props) {
   }
 
   const checkStoreIsolation = async () => {
+    const { fromConnect } = await entryLaunch.getRouteParams($instance.router.params)
+    if (fromConnect) return;
     const distributorId = getDistributorId() || 0
     const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ 分享进来的 dtid:", dtid)
