@@ -180,7 +180,11 @@ function CustomPage(props) {
     const { id } = await entryLaunch.getRouteParams($instance.router.params)
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `?uid=${userId}&id=${id}` : `?id=${id}`
-    const path = `/pages/custom/custom-page${query}`
+    
+    let path = `/pages/custom/custom-page${query}`
+    if (open_divided) {
+      path += `&tdid=${getDistributorId() || 0}`
+    }
     log.debug(`getAppShareInfo: ${path}`)
     return {
       title: shareInfo.page_share_title,
