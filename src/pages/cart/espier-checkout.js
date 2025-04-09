@@ -345,6 +345,12 @@ function CartCheckout(props) {
     setState((draft) => {
       draft.receiptType = receipt_type
       draft.distributorInfo = distributor_info
+      if (pointPayFirst) { // 后端打开默认积分开关
+        draft.point_use = receipt_type == 'ziti' ? pointInfo?.max_point_ziti : pointInfo.max_point
+        draft.isFirstCalc = true
+      } else {
+        draft.point_use = 0
+      }
     })
 
     setTimeout(() => {
@@ -539,6 +545,7 @@ function CartCheckout(props) {
       point_use,
       user_point = 0,
       max_point = 0,
+      max_point_ziti=0,
       is_open_deduct_point,
       deduct_point_rule,
       real_use_point,
@@ -627,7 +634,9 @@ function CartCheckout(props) {
       user_point, //用户现有积分
       max_point, //最大可使用积分
       real_use_point,
-      point_use
+      point_use,
+      max_point_ziti,
+      receiptType
     }
 
     if (real_use_point && real_use_point < point_use) {
@@ -664,7 +673,7 @@ function CartCheckout(props) {
       draft.openStreet = openStreet
       draft.openBuilding = openBuilding
       draft.salespersonInfo = salespersonInfo
-      draft.pointPayFirst = !!point_rule?.point_pay_first
+      draft.pointPayFirst = Number(point_rule?.point_pay_first) > 0
       if (openStreet) {
         const {
           multiValue,
@@ -682,8 +691,9 @@ function CartCheckout(props) {
         draft.community = community
       }
 
-      if(isFirstCalc && !!point_rule?.point_pay_first){
-        let firstPoint = Math.min(max_point,user_point)
+      if(isFirstCalc && Number(point_rule?.point_pay_first) > 0){
+        const maxpoint = receiptType == 'ziti' ? max_point_ziti : max_point
+        let firstPoint = Math.min(maxpoint,user_point)
 
         draft.point_use = firstPoint
         draft.pointInfo = {
