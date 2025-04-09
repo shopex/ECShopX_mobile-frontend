@@ -23,7 +23,7 @@ function SpNumberKeyBoard(props) {
     setState((draft) => {
       draft.currentValue = isShowDefault ? Math.min(maxValue,value) : 0
     })
-  },[value])
+  },[value, maxValue])
 
   const handleClickItem = (key) => {
     let _currentValue = currentValue
