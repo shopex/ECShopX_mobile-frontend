@@ -85,9 +85,10 @@ function TradeList(props) {
 
   const onChangeTradeState = (e) => {
     setState((draft) => {
-      draft.status = e
+      draft.status = tradeStatus[e].value
     })
   }
+
 
   const onChangeTradeType = (e) => {
     setState((draft) => {
