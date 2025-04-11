@@ -161,9 +161,15 @@ function TradeAfterSale(props) {
       const { items } = info
       rPoint = items
         .filter((item) => item.checked)
-        .reduce((sum, { point, num, refundNum }) => sum + (point / num) * refundNum, 0)
+        .reduce((sum, { point, num, refundNum }) => {
+          console.log(sum + (point / num) * refundNum, '---')
+          if (num > refundNum) {
+            return Math.floor(sum + (point / num) * refundNum)
+          }
+          return sum + (point / num) * refundNum
+        }, 0)
     }
-    return rPoint.toFixed(2)
+    return rPoint
   }
 
   const onChangeRefundType = ({ value }) => {
@@ -234,13 +240,14 @@ function TradeAfterSale(props) {
         }
       }
     }
-    await api.aftersales.apply(params)
-    showToast('提交成功')
-    Taro.eventCenter.trigger('onEventOrderStatusChange')
-    Taro.eventCenter.trigger('onEventAfterSalesApply')
-    setTimeout(() => {
-      Taro.navigateBack()
-    }, 200)
+    console.log(params)
+    // await api.aftersales.apply(params)
+    // showToast('提交成功')
+    // Taro.eventCenter.trigger('onEventOrderStatusChange')
+    // Taro.eventCenter.trigger('onEventAfterSalesApply')
+    // setTimeout(() => {
+    //   Taro.navigateBack()
+    // }, 200)
   }
 
   return (
