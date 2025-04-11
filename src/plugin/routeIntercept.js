@@ -35,6 +35,14 @@ class RouteIntercept {
     const _navigateTo = Taro.navigateTo
     const _redirectTo = Taro.redirectTo
     Taro.navigateTo = (params) => {
+      //不路由代理
+      if(params.original){
+        const _params = JSON.parse(JSON.stringify(params))
+        delete _params.original
+        _navigateTo(_params)
+        return
+      }
+
       const _params = this.formartParams(params)
       _navigateTo(_params)
     }
