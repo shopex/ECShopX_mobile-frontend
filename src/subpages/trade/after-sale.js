@@ -161,9 +161,12 @@ function TradeAfterSale(props) {
       const { items } = info
       rPoint = items
         .filter((item) => item.checked)
-        .reduce((sum, { point, num, refundNum }) => {
+        .reduce((sum, { point, num, refundNum, leftAftersalesNum }) => {
           console.log(sum + (point / num) * refundNum, '---')
-          if (num > refundNum) {
+          console.log(refundNum, leftAftersalesNum, '---')
+          if (leftAftersalesNum == refundNum) { // 可申请数量=退货数量时，向上取整 积分47 总数2件 可申请为1件 申请1件 退24积分
+            return Math.ceil(sum + (point / num) * refundNum)
+          } else if (num > refundNum) { // 总数大于退货数量时，向下取整 积分47 总数2件 可申请2件 申请1件 退23积分
             return Math.floor(sum + (point / num) * refundNum)
           }
           return sum + (point / num) * refundNum
