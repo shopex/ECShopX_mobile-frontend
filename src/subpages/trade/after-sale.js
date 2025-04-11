@@ -244,13 +244,13 @@ function TradeAfterSale(props) {
       }
     }
     console.log(params)
-    // await api.aftersales.apply(params)
-    // showToast('提交成功')
-    // Taro.eventCenter.trigger('onEventOrderStatusChange')
-    // Taro.eventCenter.trigger('onEventAfterSalesApply')
-    // setTimeout(() => {
-    //   Taro.navigateBack()
-    // }, 200)
+    await api.aftersales.apply(params)
+    showToast('提交成功')
+    Taro.eventCenter.trigger('onEventOrderStatusChange')
+    Taro.eventCenter.trigger('onEventAfterSalesApply')
+    setTimeout(() => {
+      Taro.navigateBack()
+    }, 200)
   }
 
   return (
