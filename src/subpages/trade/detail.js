@@ -799,6 +799,7 @@ function TradeDetail(props) {
 
       {info?.orderStatus === 'NOTPAY' && (
         <SpCashier
+          isPurchase={info.orderClass == 'employee_purchase'}
           defaultVal={info?.payChannel}
           isOpened={openCashier}
           value={info?.payChannel}
