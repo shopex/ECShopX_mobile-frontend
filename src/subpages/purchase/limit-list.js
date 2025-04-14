@@ -20,70 +20,67 @@ import {
   CouponModal,
   SpPrivacyModal,
   SpTabbar,
+  SpNote,
   SpPage
 } from '@/components'
 import api from '@/api'
-import {
-  navigateTo,
-  getThemeStyle,
-  styleNames,
-  classNames,
-  showToast,
-  showModal,
-  isWeixin,
-  normalizeQuerys,
-  log,
-  isEmpty,
-  VERSION_IN_PURCHASE
-} from '@/utils'
-
+import {} from '@/utils'
 
 import './limit-list.scss'
 
 const initialState = {
-  list:[]
+  list: []
 }
 
-function MemberIndex(props) {
-
-
+function LimitList(props) {
   const [state, setState] = useImmer(initialState)
   const router = useRouter()
 
   const { list } = state
 
-
-
   useEffect(() => {
-   fetch()
+    fetch()
   }, [])
 
   const fetch = () => {
-    setState(darft=>{
-      darft.list = [1,2,3]
+    setState((darft) => {
+      darft.list = [1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7]
     })
   }
 
-  const limitNode = ({},idx) => {
+  const limitNode = ({}, idx) => {
     return (
-      <View key={idx}>
-        123
+      <View key={idx} className='list-item'>
+        <View className='list-item__title'>欢迎新春大吉我和道加瓦河的</View>
+        <View className='list-item__time'>欢迎新春大吉我和道加瓦河的</View>
+        <View className='list-item__content'>
+          <View className='list-item__content-item'>
+            <View className='list-item__content-item-key'>总额度</View>
+            <View className='list-item__content-item-val'>1000.00</View>
+          </View>
+          <View className='list-item__content-item'>
+            <View className='list-item__content-item-key'>已使用额度</View>
+            <View className='list-item__content-item-val'>1000.00</View>
+          </View>
+          <View className='list-item__content-item'>
+            <View className='list-item__content-item-key'>剩余额度</View>
+            <View className='list-item__content-item-val'>1000.00</View>
+          </View>
+        </View>
       </View>
     )
   }
 
-
   return (
-    <SpPage className='page-limit-list' >
-       <View className='limit-list__hd'></View>
-     {
-      list.length > 0 && list.map((item,idx)=>(
-        limitNode(item,idx)
-      ))
-     }
-
+    <SpPage className='page-limit-list' scrollToTopBtn>
+      {list.length > 0 && <View className='limit-list__hd'></View>}
+      {list.length > 0 ? (
+        list.map((item, idx) => limitNode(item, idx))
+      ) : (
+        <SpNote img='empty_activity.png' title='没有查询到数据' />
+      )}
     </SpPage>
   )
 }
 
-export default MemberIndex
+export default LimitList

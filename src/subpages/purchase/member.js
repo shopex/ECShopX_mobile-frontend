@@ -394,6 +394,12 @@ function MemberIndex(props) {
     })
   }
 
+  const hanleLimitListCheck = () => {
+    Taro.navigateTo({
+      url:'/subpages/purchase/limit-list'
+    })
+  }
+
   if (!config) {
     return null
   }
@@ -430,12 +436,12 @@ function MemberIndex(props) {
           </View>}
         </View>
 
-        {
-          true && <View className='header-limit'>
+        {/* {
+          true && <View className='header-limit' onClick={hanleLimitListCheck}>
             查看额度列表
             <Text className='iconfont icon-qianwang-01'></Text>
           </View>
-        }
+        } */}
 
         {
           '!isPurchaseHome' && <View className='header-bd'>
