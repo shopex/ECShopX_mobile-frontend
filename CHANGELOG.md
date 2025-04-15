@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.19.9](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.8...v3.19.9) (2025-04-15)
+
+
+### Bug Fixes
+
+* 店铺隔离在h5 关闭 ([56a6ed2](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/56a6ed2fa2bb88df82e496cf9e2dc490695f9a59))
+
 ### [3.19.8](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.7...v3.19.8) (2025-04-11)
 
 
