@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.19.9](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.8...v3.19.9) (2025-04-15)
+
+
+### Bug Fixes
+
+* 店铺隔离在h5 关闭 ([56a6ed2](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/56a6ed2fa2bb88df82e496cf9e2dc490695f9a59))
+
+### [3.19.8](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.7...v3.19.8) (2025-04-11)
+
+
+### Bug Fixes
+
+* 积分商城首页商品添加积分加价格，去兑换 ([f9969f2](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/f9969f22680a9fc6cc2b5881ebd7eb706d181e31))
+
+### [3.19.6](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.5...v3.19.6) (2025-04-10)
+
+### [3.19.5](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.4...v3.19.5) (2025-04-09)
+
 ### [3.19.4](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.3...v3.19.4) (2025-04-09)
 
 ### [3.19.2](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.19.1...v3.19.2) (2025-04-08)
