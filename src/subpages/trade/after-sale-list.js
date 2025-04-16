@@ -59,7 +59,7 @@ function TradeAfterSaleList(props) {
       order_type: 'normal',
       aftersales_status: status
     }
-    params.order_type = typeVal == '1' ? 'employee_purchase' : 'normal'
+    params.order_class = typeVal == '1' ? 'employee_purchase' : 'normal'
     const { list, total_count } = await api.aftersales.list(params)
     const tempList = pickBy(list, doc.trade.AFTER_TRADE)
     setState((draft) => {
@@ -92,7 +92,7 @@ function TradeAfterSaleList(props) {
 
   return (
     <SpPage className='page-trade-aftersale-list'>
-    <CompTrackType value={typeVal} onChange={onChangeTradeType} />
+      <CompTrackType value={typeVal} onChange={onChangeTradeType} />
       <SpTagBar list={tradeStatus} value={status} onChange={onChangeTradeState} />
       <ScrollView
         className='list-scroll-container'
