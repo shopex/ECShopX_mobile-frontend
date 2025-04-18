@@ -16,7 +16,7 @@ function CompTrackType(props) {
   const list = useMemo(()=>{
     onChange(router.params.is_purchase == '1' ? '1' : '0')
     //内购+商城 开启内购模块则展示
-    if(!VERSION_IN_PURCHASE && !isPurchaseOpen){
+    if(!VERSION_IN_PURCHASE && isPurchaseOpen){
       return [
         { tag_name: '商城', value: '0' },
         { tag_name: '内购', value: '1' }
