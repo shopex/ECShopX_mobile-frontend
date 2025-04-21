@@ -41,7 +41,7 @@ export const TRADE_ITEM = {
       deliveryStatus: 'delivery_status',
       distributorId: 'distributor_id',
       pic: 'pic',
-      price: ({ total_fee }) => total_fee / 100,
+      price: ({ total_fee }) => (total_fee) / 100,
       id: 'id',
       itemId: 'item_id',
       itemName: 'item_name',
@@ -107,6 +107,7 @@ export const TRADE_ITEM = {
     return prescription_status || 0
   },
   diagnosisData: 'diagnosis_data',
+  pointFee: ({ point_fee }) => point_fee / 100,
 }
 
 export const SHOP_INFO = {

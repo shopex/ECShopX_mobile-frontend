@@ -158,6 +158,7 @@ function PurchaseActivityList() {
   }
 
   const handlePriceConfig = (val) => {
+    if(!val)return {}
     const priceConfig = JSON.parse(JSON.stringify(val))
     Object.keys(priceConfig).forEach(key=>{
       const c_config = priceConfig[key]

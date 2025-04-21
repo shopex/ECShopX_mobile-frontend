@@ -693,6 +693,14 @@ function TradeDetail(props) {
                 )
               })()}
             />
+            {info?.pointFee > 0 &&
+              <SpCell
+                title='积分抵扣'
+                value={(() => {
+                  return <SpPrice value={info?.pointFee} size={28} />
+              })()}
+              />
+            }
             <SpCell
               title='实付'
               value={(() => {
