@@ -138,7 +138,6 @@ function PurchaseActivityList() {
   }
 
   const onClickChange = async(item,isRedirectTo) => {
-    console.log(item)
     const { id, enterpriseId, pages_template_id, priceDisplayConfig = {}, isDiscountDescriptionEnabled, discountDescription } = item
     const url = `/subpages/purchase/index?activity_id=${id}&enterprise_id=${enterpriseId}&pages_template_id=${pages_template_id}`
     const _priceDisplayConfig = handlePriceConfig(priceDisplayConfig)

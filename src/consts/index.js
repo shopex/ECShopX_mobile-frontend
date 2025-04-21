@@ -453,6 +453,8 @@ export const DELIVERY_LIST = [
   }
 ]
 
+export const INVITE_ACTIVITY_ID = 'INVITE_ACTIVITY_ID'
+
 
 export * from './localstorage'
 
