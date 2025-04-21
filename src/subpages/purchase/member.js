@@ -266,11 +266,13 @@ function MemberIndex(props) {
 
   const setMemberBackground = async () => {
     let params = {}
-    const activity_id = S.get(INVITE_ACTIVITY_ID, true)
+    const activity_id =  purchase_share_info?.activity_id || S.get(INVITE_ACTIVITY_ID, true)
+
     if (activity_id) {
       params = { activity_id }
     }
     let memberRes = await api.member.memberInfo(params)
+
     setConfig((draft) => {
       draft.memberConfig = {
         defaultImg: memberRes?.cardInfo?.background_pic_url,
