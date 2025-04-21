@@ -10,7 +10,7 @@ import './share.scss'
 
 @connect(({ user, purchase }) => ({
   userInfo: user.userInfo,
-  purchase_share_info: purchase.purchase_share_info
+  purchase_share_info: purchase.persist_purchase_share_info
 }))
 @withPager
 export default class PurchaseIndex extends Component {
@@ -45,7 +45,7 @@ export default class PurchaseIndex extends Component {
       resolve({
         title: info.name,
         imageUrl: info.share_pic,
-        path: `/pages/purchase/auth?code=${data.invite_code}`
+        path: `/pages/purchase/auth?code=${data.invite_code}&enterprise_id=${enterprise_id}&activity_id=${activity_id}`
       })
     })
   }

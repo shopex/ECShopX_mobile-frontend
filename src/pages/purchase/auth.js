@@ -7,14 +7,15 @@ import { showToast, normalizeQuerys, getCurrentPageRouteParams } from '@/utils'
 import { useLogin, useModal } from '@/hooks'
 import S from '@/spx'
 import api from '@/api'
+import { INVITE_ACTIVITY_ID } from '@/consts'
 import { useSelector, useDispatch } from 'react-redux'
 import CompBottomTip from '@/subpages/purchase/comps/comp-bottomTip'
-import { updateInviteCode } from '@/store/slices/purchase'
+import { updateInviteCode,updateEnterpriseId, updateCurDistributorId } from '@/store/slices/purchase'
 
 import './auth.scss'
 
 function PurchaseAuth() {
-  const { isLogin, checkPolicyChange, isNewUser,updatePolicyTime, setToken, login } = useLogin({
+  const { isLogin, checkPolicyChange, isNewUser,updatePolicyTime, getUserInfo, setToken, login } = useLogin({
     autoLogin: false,
     // policyUpdateHook: (isUpdate) => {
     //   isUpdate && setPolicyModal(true)
@@ -27,7 +28,7 @@ function PurchaseAuth() {
   const [checked, setChecked] = useState(false)
   const [userEnterprises, setUserEnterprises] = useState([])
   const { params } = useRouter()
-  const { code: invite_code, type = '', activity_id = '' } = params
+  const { code: invite_code, type = '', activity_id = '', enterprise_id = '' } = params
   const dispatch = useDispatch()
   const codeRef = useRef()
   const { showModal } = useModal()
@@ -37,6 +38,12 @@ function PurchaseAuth() {
     dispatch(updateInviteCode(invite_code))
     getQrcodeEid()
     checkPolicyChangeFunc()
+    if(invite_code && activity_id){
+      S.set(INVITE_ACTIVITY_ID,activity_id, true)
+    }
+    if(S.getAuthToken()){
+      getUserInfo(true)
+    }
   }, [])
 
   useEffect(() => {
@@ -76,6 +83,10 @@ function PurchaseAuth() {
   const checkPolicyChangeFunc =  async()=>{
     const res = await checkPolicyChange()
     setChecked(res)
+    //如果是亲友分享且没有同意隐私协议，则弹
+    if(!res && invite_code){
+      setPolicyModal(true)
+    }
   }
 
   // 企业二维码扫码登录
@@ -117,6 +128,7 @@ function PurchaseAuth() {
   // 同意隐私协议
   const onResolvePolicy = async () => {
     setPolicyModal(false)
+    setChecked(true)
     if (!isNewUser) {
       await login()
     }
@@ -177,6 +189,7 @@ function PurchaseAuth() {
         invite_code
       }
       const { token } = await api.wx.newlogin(params)
+      getDtidToEnterid(enterprise_id)
       setToken(token)
       showToast('验证成功')
       setTimeout(() => {
@@ -189,6 +202,7 @@ function PurchaseAuth() {
     try {
       await api.purchase.getEmployeeRelativeBind({ invite_code, showError: false })
       showToast('验证成功')
+      getDtidToEnterid(enterprise_id)
       setTimeout(() => {
         Taro.reLaunch({ url: `/pages/purchase/index` })
       }, 700)
@@ -199,13 +213,23 @@ function PurchaseAuth() {
         confirmText: '我知道了',
         showCancel: false,
         success: () => {
+          getDtidToEnterid(enterprise_id)
           Taro.reLaunch({ url: `/pages/purchase/index` })
         }
       })
     }
   }
 
+  const getDtidToEnterid = async(eid) => {
+     // 亲友分享需要拿到企业id和店铺ID
+     const {distributor_id} = await api.purchase.getPurchaseDistributor({enterprise_id:eid})
+     //后续身份切换需要用
+     dispatch(updateCurDistributorId(distributor_id))
+     dispatch(updateEnterpriseId(eid))
+  }
+
   const handlePassClick = () => {
+    getDtidToEnterid(enterprise_id)
     Taro.reLaunch({ url: `/pages/purchase/index` })
   }
 
@@ -273,14 +297,14 @@ function PurchaseAuth() {
           userInfo?.is_relative && ( // 有/无商城，已登录亲友验证、绑定
             <>
               <View className='validate-pass'>验证通过</View>
-              <AtButton circle className='btns-staff button login' onClick={handlePassClick}>
+              <AtButton circle className='button btns-phone' onClick={handlePassClick}>
                 继续
               </AtButton>
             </>
           )}
 
         {invite_code && isLogin && !userInfo?.is_relative && (
-          <AtButton circle className='btns-weixin button' onClick={validatePhone}>
+          <AtButton circle className='button btns-phone' onClick={validatePhone}>
             手机号授权登录
           </AtButton>
         )}
@@ -291,7 +315,7 @@ function PurchaseAuth() {
               openType='getPhoneNumber'
               onGetPhoneNumber={handleBindPhone}
               circle
-              className='btns-weixin button'
+              className='button btns-phone'
             >
               手机号授权登录
             </AtButton>

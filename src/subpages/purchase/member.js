@@ -7,7 +7,7 @@ import Taro, {
 } from '@tarojs/taro'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { View, ScrollView, Text, Image, Button } from '@tarojs/components'
-import { SG_ROUTER_PARAMS, SG_APP_CONFIG, MERCHANT_TOKEN, SG_TOKEN } from '@/consts'
+import { SG_ROUTER_PARAMS, SG_APP_CONFIG, MERCHANT_TOKEN, SG_TOKEN, INVITE_ACTIVITY_ID } from '@/consts'
 import { updateUserInfo } from '@/store/slices/user'
 import { updateIsOpenPurchase } from '@/store/slices/purchase'
 import { useSelector, useDispatch } from 'react-redux'
@@ -36,7 +36,7 @@ import {
   isEmpty,
   VERSION_IN_PURCHASE
 } from '@/utils'
-import { useLogin,useLocation } from '@/hooks'
+import { useLogin, useLocation } from '@/hooks'
 import S from '@/spx'
 import CompVipCard from './comps/comp-vipcard'
 import CompBanner from './comps/comp-banner'
@@ -85,7 +85,7 @@ const initialConfigState = {
   memberConfig: {
     defaultImg: false,
     vipImg: false
-  },
+  }
 }
 
 const initialState = {
@@ -123,13 +123,15 @@ function MemberIndex(props) {
   const router = useRouter()
 
   const { userInfo = {}, vipInfo = {} } = useSelector((state) => state.user)
-  const { purchase_share_info = {} } = useSelector((state) => state.purchase)
+  const { persist_purchase_share_info: purchase_share_info = {} } = useSelector(
+    (state) => state.purchase
+  )
   log.debug(`store userInfo: ${JSON.stringify(userInfo)}`)
   const { purchaseInfo, whitelist_status } = state
   const dispatch = useDispatch()
   const isPurchaseHome = router.params?.from == 'purchase_home'
 
-  useDidShow(()=>{
+  useDidShow(() => {
     getMemberCenterData()
   })
 
@@ -169,7 +171,6 @@ function MemberIndex(props) {
       draft.purchaseInfo = data
     })
   }
-
 
   // 分享
   useShareAppMessage(async (res) => {
@@ -264,7 +265,12 @@ function MemberIndex(props) {
   }
 
   const setMemberBackground = async () => {
-    let memberRes = await api.member.memberInfo()
+    let params = {}
+    const activity_id = S.get(INVITE_ACTIVITY_ID, true)
+    if (activity_id) {
+      params = { activity_id }
+    }
+    let memberRes = await api.member.memberInfo(params)
     setConfig((draft) => {
       draft.memberConfig = {
         defaultImg: memberRes?.cardInfo?.background_pic_url,
@@ -288,7 +294,7 @@ function MemberIndex(props) {
   }
 
   const getMemberCenterData = async () => {
-    const params = {order_class:'employee_purchase',order_type:'normal'}
+    const params = { order_class: 'employee_purchase', order_type: 'normal' }
     // if(!isPurchaseHome){
     //   params.activity_id = purchase_share_info.activity_id
     // }
@@ -374,8 +380,11 @@ function MemberIndex(props) {
           </View>
           <View className='gradename'>
             {userInfo?.is_employee && '员工'}
-            {userInfo?.is_dependent && '员工亲友'}
-            <Text className='identity-change' onClick={handleIdentityChange}>切换身份</Text>
+            {/* {userInfo?.is_dependent && '员工亲友'} */}
+            {userInfo?.is_relative && '员工亲友'}
+            <Text className='identity-change' onClick={handleIdentityChange}>
+              切换身份
+            </Text>
           </View>
         </View>
       )
@@ -390,13 +399,13 @@ function MemberIndex(props) {
 
   const handleIdentityChange = () => {
     Taro.reLaunch({
-      url:'/subpages/purchase/select-identity?is_select=1'
+      url: '/subpages/purchase/select-identity?is_select=1'
     })
   }
 
   const hanleLimitListCheck = () => {
     Taro.navigateTo({
-      url:'/subpages/purchase/limit-list'
+      url: '/subpages/purchase/limit-list'
     })
   }
 
@@ -411,7 +420,10 @@ function MemberIndex(props) {
   console.log('====config===', config.menu)
 
   return (
-    <SpPage className='page-purchase-member' renderFooter={isPurchaseHome ? <CompTabbarActivity /> : <CompTabbar />}>
+    <SpPage
+      className='page-purchase-member'
+      renderFooter={isPurchaseHome ? <CompTabbarActivity /> : <CompTabbar />}
+    >
       <View
         className='header-block'
         style={styleNames({
@@ -431,56 +443,60 @@ function MemberIndex(props) {
               <View className='join-us'>{VipGradeDom()}</View>
             </View>
           </View>
-          {isLogin && <View className='header-hd__footer'>
-            <Text className='iconfont icon-qianwang-01' onClick={handleClickLink.bind(this, '/subpages/member/user-info')}></Text>
-          </View>}
+          {isLogin && (
+            <View className='header-hd__footer'>
+              <Text
+                className='iconfont icon-qianwang-01'
+                onClick={handleClickLink.bind(this, '/subpages/member/user-info')}
+              ></Text>
+            </View>
+          )}
         </View>
 
-        {/* {
-          true && <View className='header-limit' onClick={hanleLimitListCheck}>
-            查看额度列表
-            <Text className='iconfont icon-qianwang-01'></Text>
-          </View>
-        } */}
-
-        {
-          '!isPurchaseHome' && <View className='header-bd'>
-            <View className='bd-item'>
-              <View className='bd-item-label'>总额度</View>
-              <View className='bd-item-value'>
-                {isLogin
-                  ? purchaseInfo.limit_fee
-                    ? (purchaseInfo.limit_fee / 100).toFixed(2)
-                    : '0.00'
-                  : '****'}
-              </View>
+        {Object.keys(purchase_share_info).length > 0 && (
+          <>
+            <View className='header-limit' onClick={hanleLimitListCheck}>
+              查看额度列表
+              <Text className='iconfont icon-qianwang-01'></Text>
             </View>
-            <View className='bd-item'>
-              <View className='bd-item-label'>已使用额度</View>
-              <View className='bd-item-value'>
-                {isLogin
-                  ? purchaseInfo.aggregate_fee
-                    ? (purchaseInfo.aggregate_fee / 100).toFixed(2)
-                    : '0.00'
-                  : '****'}
+            <View className='header-bd'>
+              <View className='bd-item'>
+                <View className='bd-item-label'>总额度</View>
+                <View className='bd-item-value'>
+                  {isLogin
+                    ? purchaseInfo.limit_fee
+                      ? (purchaseInfo.limit_fee / 100).toFixed(2)
+                      : '0.00'
+                    : '****'}
+                </View>
               </View>
-            </View>
-            <View className='bd-item deposit-item'>
-              <View className='bd-item-label'>剩余额度</View>
-              <View className='bd-item-value'>
-                {isLogin
-                  ? purchaseInfo.left_fee
-                    ? (purchaseInfo.left_fee / 100).toFixed(2)
-                    : '0.00'
-                  : '****'}
+              <View className='bd-item'>
+                <View className='bd-item-label'>已使用额度</View>
+                <View className='bd-item-value'>
+                  {isLogin
+                    ? purchaseInfo.aggregate_fee
+                      ? (purchaseInfo.aggregate_fee / 100).toFixed(2)
+                      : '0.00'
+                    : '****'}
+                </View>
               </View>
-            </View>
-            {/* <View className='bd-item' onClick={handleClickLink.bind(this, '/pages/member/item-fav')}>
+              <View className='bd-item deposit-item'>
+                <View className='bd-item-label'>剩余额度</View>
+                <View className='bd-item-value'>
+                  {isLogin
+                    ? purchaseInfo.left_fee
+                      ? (purchaseInfo.left_fee / 100).toFixed(2)
+                      : '0.00'
+                    : '****'}
+                </View>
+              </View>
+              {/* <View className='bd-item' onClick={handleClickLink.bind(this, '/pages/member/item-fav')}>
             <View className='bd-item-label'>收藏(个)</View>
             <View className='bd-item-value'>{state.favCount}</View>
           </View> */}
-          </View>
-        }
+            </View>
+          </>
+        )}
         {/* {!isPurchaseHome && <View className='header-ft'>
           会员卡等级
           {vipInfo.isOpen && (
@@ -569,18 +585,15 @@ function MemberIndex(props) {
           </View>
         </CompPanel>
 
-
-        {
-          !isPurchaseHome && <CompMenu
-            accessMenu={{
-              ...config.menu,
-              purchase: purchaseInfo?.is_employee && purchaseInfo?.if_relative_join,
-              popularize: userInfo ? userInfo.popularize : false
-            }}
-            isPromoter={userInfo ? userInfo.isPromoter : false}
-            onLink={handleClickService}
-          />
-        }
+        <CompMenu
+          accessMenu={{
+            ...config.menu,
+            purchase: purchaseInfo?.is_employee && purchaseInfo?.if_relative_join,
+            popularize: userInfo ? userInfo.popularize : false
+          }}
+          isPromoter={userInfo ? userInfo.isPromoter : false}
+          onLink={handleClickService}
+        />
       </View>
       {/* <View className="dibiao-block">
         <SpImage className="dibiao-image" src="dibiao.png" />
@@ -596,8 +609,6 @@ function MemberIndex(props) {
           setPolicyModal(false)
         }}
       />
-
-
     </SpPage>
   )
 }

@@ -19,7 +19,7 @@ import {
   pickBy,
   showToast
 } from '@/utils'
-import { updatePurchaseShareInfo, updatePurchaseTabbar } from '@/store/slices/purchase'
+import { updatePurchaseShareInfo, updatePurchaseTabbar, updatePersistPurchaseShareInfo } from '@/store/slices/purchase'
 import doc from '@/doc'
 import { useImmer } from 'use-immer'
 import { useLogin, useNavigation } from '@/hooks'
@@ -69,6 +69,7 @@ function Home() {
     const { activity_id, enterprise_id, pages_template_id } = router.params || {}
     if (activity_id) {
       dispatch(updatePurchaseShareInfo({ activity_id, enterprise_id, pages_template_id }))
+      dispatch(updatePersistPurchaseShareInfo({ activity_id, enterprise_id, pages_template_id }))
     }
   }, [])
 
