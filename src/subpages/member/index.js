@@ -415,6 +415,7 @@ function MemberIndex(props) {
       dispatch(updatePurchaseShareInfo())
       dispatch(updateInviteCode())
       dispatch(updateCurDistributorId(null))
+      return
     }
 
     if (link) {

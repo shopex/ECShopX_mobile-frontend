@@ -104,6 +104,7 @@ import SpCustomPicker from './sp-custom-picker'
 import SpTable from './sp-table'
 import SpInput from './sp-input'
 import SpSelectModal from './sp-select-modal'
+import SpModalDivided from './sp-modal-divided'
 import SpDeliver from './sp-deliver'
 
 
@@ -217,5 +218,6 @@ export {
   SpTable,
   SpInput,
   SpSelectModal,
+  SpModalDivided,
   SpDeliver
 }
