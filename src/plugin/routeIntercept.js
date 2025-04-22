@@ -32,24 +32,54 @@ class RouteIntercept {
   }
 
   init() {
-    const _navigateTo = Taro.navigateTo
-    const _redirectTo = Taro.redirectTo
-    Taro.navigateTo = (params) => {
-      //不路由代理
-      if(params.original){
-        const _params = JSON.parse(JSON.stringify(params))
-        delete _params.original
+
+    if (process.env.TARO_ENV === 'h5') {
+      // H5 环境
+      const _pushState = window.history.pushState;
+      const _replaceState = window.history.replaceState;
+      const self = this;
+
+      // 重写 pushState
+      window.history.pushState = function(state, title, url) {
+        if (url) {
+          const newPath = self.formartParams({ url });
+          _pushState.call(window.history, state, title, newPath.url);
+        } else {
+          _pushState.call(window.history, state, title, url);
+        }
+      };
+
+      // 重写 replaceState
+      window.history.replaceState = function(state, title, url) {
+        if (url) {
+          const newPath = self.formartParams({ url });
+          _replaceState.call(window.history, state, title, newPath.url);
+        } else {
+          _replaceState.call(window.history, state, title, url);
+        }
+      };
+
+      // // 监听 popstate 事件
+      // window.addEventListener('popstate', (e) => {
+      //   const url = window.location.pathname + window.location.search;
+      //   const newPath = this.formartParams({ url });
+      //   if (newPath.url !== url) {
+      //     window.history.replaceState(null, '', newPath.url);
+      //   }
+      // });
+
+    } else {
+      const _navigateTo = Taro.navigateTo
+      const _redirectTo = Taro.redirectTo
+      Taro.navigateTo = (params) => {
+        const _params = this.formartParams(params)
         _navigateTo(_params)
-        return
       }
 
-      const _params = this.formartParams(params)
-      _navigateTo(_params)
-    }
-
-    Taro.redirectTo = (params) => {
-      const _params = this.formartParams(params)
-      _redirectTo(_params)
+      Taro.redirectTo = (params) => {
+        const _params = this.formartParams(params)
+        _redirectTo(_params)
+      }
     }
   }
 
