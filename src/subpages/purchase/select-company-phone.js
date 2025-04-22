@@ -213,43 +213,39 @@ function PurchaseAuthPhone(props) {
     <SpPage className='page-purchase-auth-phone select-component'>
       {enterprise_name && <View className='select-component-title'>{decodeURIComponent(enterprise_name)}</View>}
       {(auth_type == 'mobile' || auth_type == 'qr_code') && <View className='select-component-prompt'>使用手机号进行验证</View>}
-      {!VERSION_IN_PURCHASE && (
+      {!isNewUser && (
         <>
-          {!isNewUser && (
-            <>
-              <View className='phone-box'>
-                <Text>已授权手机号：</Text>
-                <Text className='phone-number'>{userInfo?.mobile}</Text>
-              </View>
-              <AtButton
-                circle
-                className='btns-phone'
-                onClick={() =>
-                  validatePhone({
-                    auth_type,
-                    enterprise_id,
-                    mobile: 'member_mobile'
-                  })
-                }
-              >
-                使用该号码验证
-              </AtButton>
-            </>
-          )}
-
-          {isNewUser && (
-            <AtButton
-              circle
-              className='btns-phone new-in-btns'
-              openType='getPhoneNumber'
-              onGetPhoneNumber={handleBindPhone}
-            >
-              手机号授权登录
-            </AtButton>
-          )}
+          <View className='phone-box'>
+            <Text>已授权手机号：</Text>
+            <Text className='phone-number'>{userInfo?.mobile}</Text>
+          </View>
+          <AtButton
+            circle
+            className='btns-phone'
+            onClick={() =>
+              validatePhone({
+                auth_type,
+                enterprise_id,
+                mobile: 'member_mobile'
+              })
+            }
+          >
+            使用该号码验证
+          </AtButton>
         </>
       )}
-      {VERSION_IN_PURCHASE &&
+
+      {isNewUser && (
+        <AtButton
+          circle
+          className='btns-phone new-in-btns'
+          openType='getPhoneNumber'
+          onGetPhoneNumber={handleBindPhone}
+        >
+          手机号授权登录
+        </AtButton>
+      )}
+      {/* {VERSION_IN_PURCHASE &&
         isNewUser && ( // 无商城&新用户需要手机号授权登录（调new_login接口 不需要绑定）
           <AtButton
             openType='getPhoneNumber'
@@ -277,7 +273,7 @@ function PurchaseAuthPhone(props) {
           >
             手机号授权登录
           </AtButton>
-        )}
+        )} */}
       <CompBottomTip />
 
       <CompSelectCompany
