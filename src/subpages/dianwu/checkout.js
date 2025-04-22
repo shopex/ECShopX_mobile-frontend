@@ -14,7 +14,8 @@ import {
   SpCell,
   SpButton,
   SpFloatLayout,
-  SpCheckbox
+  SpCheckbox,
+  SpPoster
 } from '@/components'
 import qs from 'qs'
 import { PROMOTION_TAG } from '@/consts'
@@ -42,7 +43,10 @@ const initialState = {
   isOpened: false,
   couponLayout: false,
   markdown: null,
-  distributor_id: null
+  distributor_id: null,
+  prescriptionStatus: 0,
+  codeStatus: false,
+  information: { name: 'cx', distributor_name: 'cx的店铺' }
 }
 function DianwuCheckout(props) {
   const [state, setState] = useImmer(initialState)
@@ -63,7 +67,10 @@ function DianwuCheckout(props) {
     couponInfo,
     selectCoupon,
     markdown,
-    distributor_id
+    distributor_id,
+    prescriptionStatus,
+    codeStatus,
+    information
   } = state
   const pageRef = useRef()
   const $instance = getCurrentInstance()
@@ -110,6 +117,13 @@ function DianwuCheckout(props) {
 
   // 收款
   const onCollection = async () => {
+    if(!prescriptionStatus == 0){
+       console.log('我要跳转到新的页面啦dianwu:')
+       setState((draft) => {
+        draft.codeStatus = true
+       })
+      return
+    }
     setState((draft) => {
       draft.isOpened = true
       // draft.orderId = order_id
@@ -212,7 +226,8 @@ function DianwuCheckout(props) {
       memberDiscount: _memberDiscount,
       couponDiscount: _couponDiscount,
       promotionDiscount: _promotionDiscount,
-      couponInfo: _couponInfo
+      couponInfo: _couponInfo,
+      prescriptionStatus: _prescriptionStatus
     } = pickBy(res, doc.dianwu.CHECKOUT_GOODS_ITEM)
     setState((draft) => {
       draft.itemList = items.filter((item) => item.orderItemType != 'gift')
@@ -226,7 +241,8 @@ function DianwuCheckout(props) {
       draft.promotionDiscount = _promotionDiscount
       draft.couponInfo = _couponInfo
       draft.selectCoupon = _couponInfo ? _couponInfo.coupon_code : null
-      draft.markdown = markdown
+      draft.markdown = markdown,
+      draft.prescriptionStatus = _prescriptionStatus
     })
   }
 
@@ -432,7 +448,14 @@ function DianwuCheckout(props) {
               <SpImage src={item.pic} width={110} height={110} />
             </View>
             <View className='item-bd'>
-              <View className='title'>{item.name}</View>
+              <View className='title'>
+                {
+                  item?.isMedicine == 1 && item?.isPrescription == 1 &&
+                  <Text className='prescription-drug'>
+                    处方药
+                  </Text>
+                }
+                {item.name}</View>
               {item.itemSpecDesc && <View className='sku'>{item.itemSpecDesc}</View>}
               <View className='ft-info'>
                 <CompGoodsPrice info={item} />
@@ -541,6 +564,13 @@ function DianwuCheckout(props) {
         ></AtTextarea>
       </View>
 
+      {
+        !prescriptionStatus == 0 &&
+        <View className='cart-checkout__title'>
+          订单中包含处方药，提交订单后请补充处方信息
+        </View>
+      }
+
       <AtModal
         className='collection-modal'
         isOpened={isOpened}
@@ -608,6 +638,18 @@ function DianwuCheckout(props) {
           ))}
         </View>
       </SpFloatLayout>
+
+      {codeStatus && (
+        <SpPoster
+          info={information}
+          type='prescriptionCode'
+          onClose={() => {
+            setState((draft) => {
+              draft.codeStatus = false
+            })
+          }}
+        />
+      )}
     </SpPage>
   )
 }
