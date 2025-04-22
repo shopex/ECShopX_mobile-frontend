@@ -3,7 +3,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { View, Text, Image, RootPortal } from '@tarojs/components'
 import { SpPrivacyModal, SpPage, SpLogin, SpModal,SpCheckbox, SpImage } from '@/components'
 import { AtButton,AtIcon } from 'taro-ui'
-import { showToast, normalizeQuerys, getCurrentPageRouteParams } from '@/utils'
+import { showToast, normalizeQuerys, getCurrentPageRouteParams, VERSION_IN_PURCHASE } from '@/utils'
 import { useLogin, useModal } from '@/hooks'
 import S from '@/spx'
 import api from '@/api'
@@ -84,7 +84,7 @@ function PurchaseAuth() {
     const res = await checkPolicyChange()
     setChecked(res)
     //如果是亲友分享且没有同意隐私协议，则弹
-    if(!res && invite_code){
+    if(!res && (invite_code || VERSION_IN_PURCHASE)){
       setPolicyModal(true)
     }
   }
