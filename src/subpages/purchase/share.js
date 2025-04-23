@@ -90,7 +90,7 @@ export default class PurchaseIndex extends Component {
     // })
   }
 
-  onCreatePoster() {
+  onCreatePoster = () => {
     this.setState({
       isOpened: false,
       posterModalOpen: true
