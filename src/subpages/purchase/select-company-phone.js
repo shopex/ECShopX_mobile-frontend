@@ -117,6 +117,7 @@ function PurchaseAuthPhone(props) {
         }else{
           showToast('验证成功')
           await getQrCodeDtid()
+          dispatch(updateEnterpriseId(enterprise_id))
           setTimeout(() => {
             Taro.reLaunch({ url: `/pages/purchase/index` })
           }, 700)

@@ -313,7 +313,7 @@ function PurchaseAuth() {
             </>
           )}
 
-        {invite_code && isLogin && !userInfo?.is_relative && (
+        {invite_code && isLogin && !isNewUser && !userInfo?.is_relative && (
           <AtButton circle className='button btns-phone' onClick={validatePhone}>
             手机号授权登录
           </AtButton>

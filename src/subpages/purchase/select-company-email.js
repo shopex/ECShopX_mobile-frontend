@@ -37,12 +37,20 @@ function PurchaseAuthEmail(props) {
         { validate: 'email', message: '请输入正确的邮箱' },
         {
           validate: async (value) => {
-            // const { enterprise_id } = router.params
-            const { status } = await api.purchase.getEmailCode({
-              email: value,
-              distributor_id: getDistributorId()
-            })
-            showToast(status ? '发送成功' : '发送失败')
+            const { enterprise_id } = router.params
+            try {
+              const params = {
+                email: value
+              }
+              if(!enterprise_id){
+                //不是扫码进来，接口要传当前店铺ID
+                params.distributor_id =  getDistributorId()
+              }
+              const { status } = await api.purchase.getEmailCode(params)
+              showToast(status ? '发送成功' : '发送失败')
+            } catch (error) {
+              return Promise.reject(error.message)
+            }
           }
         }
       ],
@@ -144,8 +152,12 @@ function PurchaseAuthEmail(props) {
 
   // 获取验证码
   const getSmsCode = async (resolve) => {
-    await formRef.current.onSubmitAsync(['email'])
-    resolve()
+    try {
+      await formRef.current.onSubmitAsync(['email'])
+      resolve()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // 同意隐私协议
