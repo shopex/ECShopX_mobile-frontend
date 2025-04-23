@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Text, ScrollView, Button } from '@tarojs/components'
-import { SpPage, SpImage } from '@/components'
+import { SpPage, SpImage, SharePurchase, SpPoster } from '@/components'
 import api from '@/api'
 import { connect } from 'react-redux'
 import { withPager } from '@/hocs'
@@ -24,7 +24,9 @@ export default class PurchaseIndex extends Component {
         invite_limit: 0,
         invited_num: 0
       },
-      relative_list: []
+      relative_list: [],
+      isOpened: false,
+      posterModalOpen: false
     }
   }
 
@@ -58,10 +60,15 @@ export default class PurchaseIndex extends Component {
     })
   }
 
-  async fetch ({ pageIndex, pageSize }) {
+  async fetch({ pageIndex, pageSize }) {
     const { relative_list } = this.state
     const { activity_id, enterprise_id } = this.props.purchase_share_info || {}
-    const { list, total_count } = await api.purchase.getEmployeeInvitelist({ activity_id, enterprise_id, page: pageIndex, pageSize })
+    const { list, total_count } = await api.purchase.getEmployeeInvitelist({
+      activity_id,
+      enterprise_id,
+      page: pageIndex,
+      pageSize
+    })
     this.setState({
       relative_list: [...relative_list, ...list]
     })
@@ -77,11 +84,22 @@ export default class PurchaseIndex extends Component {
       })
       return
     }
+
+    // this.setState({
+    //   isOpened: true
+    // })
+  }
+
+  onCreatePoster() {
+    this.setState({
+      isOpened: false,
+      posterModalOpen: true
+    })
   }
 
   render() {
-    const { info, relative_list } = this.state
-    const { userInfo } = this.props
+    const { info, relative_list, isOpened, posterModalOpen } = this.state
+    const { userInfo, purchase_share_info } = this.props
 
     return (
       <SpPage className='page-purchase-index'>
@@ -97,18 +115,14 @@ export default class PurchaseIndex extends Component {
               <View className='username-wrap'>
                 <View className='left-wrap'>
                   <View className='username'>{userInfo.username}</View>
-                  <View className='userRole'>
-                    { info.is_employee == 1 ? '员工' : '家属' }
-                  </View>
+                  <View className='userRole'>{info.is_employee == 1 ? '员工' : '家属'}</View>
                 </View>
                 {info.is_employee == 1 && (
                   <Button
                     open-type='share'
                     size='mini'
                     className='shareBtn'
-                    disabled={
-                      info.invite_limit == info.invited_num
-                    }
+                    disabled={info.invite_limit == info.invited_num}
                   >
                     <Text onClick={this.showInfo.bind(this)}>分享</Text>
                   </Button>
@@ -116,9 +130,11 @@ export default class PurchaseIndex extends Component {
               </View>
             </View>
           </View>
-          <View className="share-info">
-            <View className="title">分享额度</View>
-            <View className='limitnum'>{`共计：${info.invite_limit}；已使用：${info.invited_num}；可分享：${info.invite_limit - info.invited_num}`}</View>
+          <View className='share-info'>
+            <View className='title'>分享额度</View>
+            <View className='limitnum'>{`共计：${info.invite_limit}；已使用：${
+              info.invited_num
+            }；可分享：${info.invite_limit - info.invited_num}`}</View>
           </View>
           {/* <View className='header-bd'>
             <View className='bd-item'>
@@ -184,6 +200,29 @@ export default class PurchaseIndex extends Component {
               </View>
             </ScrollView>
             {relative_list.length === 0 && <View className='centerText'>暂无数据</View>}
+
+            <SharePurchase
+              open={isOpened}
+              onCreatePoster={this.onCreatePoster}
+              onClose={() => {
+                this.setState({
+                  isOpened: false
+                })
+              }}
+            ></SharePurchase>
+
+            {/* 海报 */}
+            {posterModalOpen && (
+              <SpPoster
+                info={purchase_share_info}
+                type='invite'
+                onClose={() => {
+                  this.setState({
+                    posterModalOpen: false
+                  })
+                }}
+              />
+            )}
           </View>
         )}
       </SpPage>
