@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import Taro, { getCurrentInstance, useDidShow, useRouter } from '@tarojs/taro'
+import Taro, { getCurrentInstance, useDidShow, useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { View, Image, ScrollView, Button } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -21,7 +21,8 @@ import {
   VERSION_PLATFORM,
   classNames,
   pickBy,
-  showToast
+  showToast,
+  log
 } from '@/utils'
 import {
   updatePurchaseShareInfo,
@@ -48,7 +49,8 @@ const initialState = {
   skuPanelOpen: false,
   selectType: 'picker',
   isOpened: false,
-  posterModalOpen: false
+  posterModalOpen: false,
+  activityInfo: {}
 }
 
 const { store } = configStore()
@@ -71,11 +73,15 @@ function Home() {
   const { openScanQrcode } = useSelector((state) => state.sys)
   const { setNavigationBarTitle } = useNavigation()
 
-  const { wgts, loading, info, skuPanelOpen, selectType, isOpened, posterModalOpen } = state
+  const { wgts, loading, info, skuPanelOpen, selectType, isOpened, posterModalOpen, activityInfo } =
+    state
 
   const dispatch = useDispatch()
 
   useEffect(() => {
+    Taro.hideShareMenu({
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
     const { activity_id, enterprise_id, pages_template_id } = router.params || {}
     if (activity_id) {
       dispatch(updatePurchaseShareInfo({ activity_id, enterprise_id, pages_template_id }))
@@ -97,6 +103,7 @@ function Home() {
 
   const init = async () => {
     await fetchWgts()
+    await fetchActivity()
   }
 
   const fetchWgts = async () => {
@@ -125,6 +132,44 @@ function Home() {
       )
     }
   }
+
+  const fetchActivity = async () => {
+    const activity_id = router.params?.activity_id || purchase_share_info?.activity_id
+    const enterprise_id = router.params?.enterprise_id || purchase_share_info?.enterprise_id
+    const data = await api.purchase.getEmployeeActivitydata({activity_id,enterprise_id})
+   setState(draft=>{
+    draft.activityInfo = data
+    })
+  }
+
+  useShareAppMessage(async () => {
+    return new Promise(async function (resolve,reject) {
+      return reject()
+      const activity_id = router.params?.activity_id || purchase_share_info?.activity_id
+      const enterprise_id = router.params?.enterprise_id || purchase_share_info?.enterprise_id
+      const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
+      log.debug(`/pages/purchase/auth?code=${data.invite_code}`)
+      resolve({
+        title: activityInfo.name,
+        imageUrl: activityInfo.share_pic,
+        path: `/pages/purchase/auth?code=${data.invite_code}&enterprise_id=${enterprise_id}&activity_id=${activity_id}`
+      })
+    })
+  })
+
+  // useShareTimeline(async (res) => {
+  //   return new Promise(async function (resolve,reject) {
+  //     const activity_id = router.params?.activity_id || purchase_share_info?.activity_id
+  //     const enterprise_id = router.params?.enterprise_id || purchase_share_info?.enterprise_id
+  //     const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
+  //     log.debug(`/pages/purchase/auth?code=${data.invite_code}`)
+  //     resolve({
+  //       title: activityInfo.name,
+  //       imageUrl: activityInfo.share_pic,
+  //       path: `/pages/purchase/auth?code=${data.invite_code}&enterprise_id=${enterprise_id}&activity_id=${activity_id}`
+  //     })
+  //   })
+  // })
 
   const handleConfirmModal = useCallback(async () => {
     setPolicyModal(false)
@@ -195,11 +240,13 @@ function Home() {
       // renderNavigation={renderNavigation()}
       pageConfig={pageData?.base}
       renderFooter={<CompTabbar />}
-      renderFloat={false && (
-        <View className='float-share' onClick={showInfo}>
-          <SpImage src="share.png" className='share-btn' mode='aspectFit'></SpImage>
-        </View>
-      )}
+      renderFloat={
+        false && (
+          <View className='float-share' onClick={showInfo}>
+            <SpImage src='share.png' className='share-btn' mode='aspectFit'></SpImage>
+          </View>
+        )
+      }
       loading={loading}
     >
       <ScrollView
