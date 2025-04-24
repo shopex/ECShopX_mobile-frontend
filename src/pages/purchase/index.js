@@ -47,12 +47,12 @@ function PurchaseActivityList() {
   const dispatch = useDispatch()
 
   const { params } = useRouter()
-  let { activity_id, is_select } = params
+  let { activity_id, is_redirt } = params
 
   useEffect(() => {
     if (!S.getAuthToken()) {
       Taro.redirectTo({
-        url: '/pages/purchase/auth'
+        url: '/subpages/purchase/member?from=purchase_home'
       })
       return
     } else {
@@ -61,6 +61,18 @@ function PurchaseActivityList() {
   }, [])
 
   const verfiyActivityNums = async() => {
+    if(VERSION_IN_PURCHASE){
+      // 纯内购没有企业进入认证首页
+      const data = await api.purchase.getUserEnterprises({disabled: 0,distributor_id: getDistributorId()})
+      const validIdentityLen = data.filter(item => item.disabled == 0).length
+      if(!validIdentityLen){
+        Taro.redirectTo({
+          url: '/pages/purchase/auth'
+        })
+        return
+      }
+    }
+
     const { list, total_count } = await api.purchase.getEmployeeActivityList({
       page: 1,
       pageSize:1,
@@ -68,16 +80,8 @@ function PurchaseActivityList() {
       activity_id
     })
 
-    // 纯内购没有企业进入认证首页
-    if(VERSION_IN_PURCHASE && total_count == 0){
-      Taro.redirectTo({
-        url: '/pages/purchase/auth'
-      })
-      return
-    }
-
      // 如果只有一条数据，直接进入活动首页
-    if(total_count == 1 && !is_select){
+    if(total_count == 1 && is_redirt){
       const _list = pickBy(list, doc.purchase.ACTIVITY_ITEM)
       onClickChange(_list[0],'redirectTo')
     }else{

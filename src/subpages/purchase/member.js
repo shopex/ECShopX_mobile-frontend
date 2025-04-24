@@ -111,7 +111,7 @@ function MemberIndex(props) {
   console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const { updateAddress } = useLocation()
   const { isLogin, isNewUser, getUserInfoAuth } = useLogin({
-    autoLogin: true,
+    autoLogin: false,
     policyUpdateHook: () => {
       setPolicyModal(true)
     },
@@ -403,7 +403,7 @@ function MemberIndex(props) {
 
   const handleIdentityChange = () => {
     Taro.reLaunch({
-      url: '/subpages/purchase/select-identity?is_select=1'
+      url: '/subpages/purchase/select-identity'
     })
   }
 
@@ -426,7 +426,7 @@ function MemberIndex(props) {
   return (
     <SpPage
       className='page-purchase-member'
-      renderFooter={isPurchaseHome ? <CompTabbarActivity /> : <CompTabbar />}
+      renderFooter={isPurchaseHome || !S.getAuthToken() ? <CompTabbarActivity /> : <CompTabbar />}
     >
       <View
         className='header-block'
