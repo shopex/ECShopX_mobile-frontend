@@ -408,7 +408,7 @@ function MemberIndex(props) {
     if (key == 'purchase') {
       const data = await api.purchase.getUserEnterprises({ disabled: 0,distributor_id: getDistributorId() })
       if (data?.length > 0) {
-        Taro.navigateTo({ url: '/subpages/purchase/select-identity' })
+        Taro.navigateTo({ url: '/subpages/purchase/select-identity?is_redirt=1' })
       } else {
         Taro.navigateTo({ url: '/pages/purchase/auth' })
       }

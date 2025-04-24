@@ -169,7 +169,7 @@ export const TABBAR_PATH = {
   allGoods: '/pages/item/list?isTabBar=true',
   ugc: '/subpages/mdugc/index',
   customPage:'/pages/custom/custom-page',
-  purchase:'/subpages/purchase/select-identity'
+  purchase:'/subpages/purchase/select-identity?is_redirt=1'
 }
 
 export const TABBAR_ICON = {

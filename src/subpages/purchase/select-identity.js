@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useImmer } from 'use-immer'
 import { View, Text, Image } from '@tarojs/components'
 import api from '@/api'
-import { classNames, getDistributorId } from '@/utils'
+import { classNames, getDistributorId, VERSION_IN_PURCHASE } from '@/utils'
 import CompTabbarActivity from '@/pages/purchase/comps/comp-tabbar'
 import './select-identity.scss'
 import { SpPage } from '@/components'
@@ -24,7 +24,7 @@ function SelectIdentity(props) {
   const dispatch = useDispatch()
 
   const { params } = useRouter()
-  let { activity_id = '', is_select } = params
+  let { activity_id = '', is_redirt } = params
 
   useEffect(() => {
     getUserEnterprises()
@@ -37,7 +37,7 @@ function SelectIdentity(props) {
     })
     const _identity = data.filter((item) => item.disabled == 0)
     // 没有企业跳认证首页
-    if (_identity.length == 0 && !is_select) {
+    if (_identity.length == 0 && (is_redirt || VERSION_IN_PURCHASE)) {
       Taro.redirectTo({
         url: `/pages/purchase/auth?type=addIdentity&activity_id=${activity_id}`
       })
@@ -45,10 +45,10 @@ function SelectIdentity(props) {
     }
 
     //一个选择这个跳活动列表
-    if (_identity.length == 1 && !is_select) {
+    if (_identity.length == 1 && is_redirt) {
       dispatch(updateEnterpriseId(_identity[0]?.enterprise_id))
       Taro.redirectTo({
-        url: `/pages/purchase/index?activity_id=${activity_id}`
+        url: `/pages/purchase/index?activity_id=${activity_id}&is_redirt=1`
       })
       return
     }
@@ -73,7 +73,7 @@ function SelectIdentity(props) {
   const handleItemClick = ({ enterprise_id }) => {
     dispatch(updateEnterpriseId(enterprise_id))
     Taro.navigateTo({
-      url: `/pages/purchase/index?activity_id=${activity_id}`
+      url: `/pages/purchase/index?activity_id=${activity_id}&is_redirt=1`
     })
   }
 

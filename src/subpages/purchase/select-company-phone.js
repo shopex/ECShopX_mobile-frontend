@@ -119,7 +119,7 @@ function PurchaseAuthPhone(props) {
           await getQrCodeDtid()
           dispatch(updateEnterpriseId(enterprise_id))
           setTimeout(() => {
-            Taro.reLaunch({ url: `/pages/purchase/index` })
+            Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
           }, 700)
         }
       } catch (e) {
@@ -169,7 +169,7 @@ function PurchaseAuthPhone(props) {
         })
       }
       setTimeout(() => {
-        Taro.reLaunch({ url: `/pages/purchase/index` })
+        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
       }, 2000)
     } catch (e) {
       console.log('🚀🚀🚀 ~ file: select-company-phone.js:102 ~ validatePhone ~ e:', e)
@@ -184,7 +184,7 @@ function PurchaseAuthPhone(props) {
         confirmText: '我知道了',
         contentAlign: 'center'
       })
-      Taro.reLaunch({ url: `/pages/purchase/index` })
+      Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
       getLoginCode()
     }
   }
