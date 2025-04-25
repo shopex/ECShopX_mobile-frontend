@@ -334,9 +334,9 @@ function DianWuCashier() {
     if (_num > item.store) {
       return
     }
-    setState((draft) => {
-      draft.cartList[idx].list[index].num = _num
-    })
+    // setState((draft) => {
+    //   draft.cartList[idx].list[index].num = _num
+    // })
     onChangeInputNumber(item, _num)
   }
 
@@ -345,9 +345,9 @@ function DianWuCashier() {
     if (_num == 0) {
       return
     }
-    setState((draft) => {
-      draft.cartList[idx].list[index].num = _num
-    })
+    // setState((draft) => {
+    //   draft.cartList[idx].list[index].num = _num
+    // })
     onChangeInputNumber(item, _num)
   }
 
