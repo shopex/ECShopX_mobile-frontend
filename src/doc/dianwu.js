@@ -177,7 +177,8 @@ export const ORDER_INFO = {
       leftAftersalesNum: 'left_aftersales_num',
       checked: false,
       discountFee: ({ discount_fee }) => discount_fee / 100,
-      point: ({ point_fee }) => point_fee / 100
+      point: ({ point_fee }) => point_fee / 100,
+      isPrescription: 'is_prescription',
     })
   },
   refundFee: ({ items }) => {
