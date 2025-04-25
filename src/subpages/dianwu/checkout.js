@@ -46,7 +46,7 @@ const initialState = {
   distributor_id: null,
   prescriptionStatus: 0,
   codeStatus: false,
-  information: { name: 'cx', distributor_name: 'cx的店铺' }
+  checkout_order_id: null
 }
 function DianwuCheckout(props) {
   const [state, setState] = useImmer(initialState)
@@ -70,7 +70,7 @@ function DianwuCheckout(props) {
     distributor_id,
     prescriptionStatus,
     codeStatus,
-    information
+    checkout_order_id
   } = state
   const pageRef = useRef()
   const $instance = getCurrentInstance()
@@ -122,6 +122,10 @@ function DianwuCheckout(props) {
        setState((draft) => {
         draft.codeStatus = true
        })
+       if(!checkout_order_id){
+        await createOrder()
+        dispatch(selectMember(null))
+       }
       return
     }
     setState((draft) => {
@@ -304,6 +308,13 @@ function DianwuCheckout(props) {
       }
     }
     const { order_id } = await api.dianwu.createOrder(params)
+
+    //存在处方药要把order_id存起来
+    if(!prescriptionStatus == 0){
+      setState((draft) => {
+        draft.checkout_order_id = order_id
+      })
+    }
     return order_id
   }
 
@@ -641,7 +652,7 @@ function DianwuCheckout(props) {
 
       {codeStatus && (
         <SpPoster
-          info={information}
+          info={checkout_order_id}
           type='prescriptionCode'
           onClose={() => {
             setState((draft) => {
