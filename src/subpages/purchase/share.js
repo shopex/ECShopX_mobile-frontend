@@ -137,7 +137,9 @@ export default class PurchaseIndex extends Component {
               info.invited_num
             }；可分享：${info.invite_limit - info.invited_num}`}</View>
           </View>
-          <View className='relative-time'>亲友参与时间：{dayjs(info?.employee_created * 1000).format('YYYY.MM.DD HH:mm:ss')}</View>
+          <View className='relative-time'>
+            亲友参与时间：{formatDateTime(info?.relative_begin_time * 1000)} - {formatDateTime(info?.relative_end_time * 1000)}
+          </View>
           {/* <View className='header-bd'>
             <View className='bd-item'>
               <View className='bd-item-label'>总额度</View>

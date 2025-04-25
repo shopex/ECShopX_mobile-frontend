@@ -24,7 +24,8 @@ import './auth.scss'
 const initialState = {
   invite_code: '',
   activity_id: '',
-  enterprise_id: ''
+  enterprise_id: '',
+  is_activity:''
 }
 
 function PurchaseAuth() {
@@ -47,7 +48,7 @@ function PurchaseAuth() {
   const $instance = getCurrentInstance()
   const [state, setState] = useImmer(initialState)
 
-  const { invite_code, activity_id, enterprise_id } = state
+  const { invite_code, activity_id, enterprise_id, is_activity } = state
 
   useEffect(() => {
     if (!S.getAuthToken()) {
@@ -91,6 +92,7 @@ function PurchaseAuth() {
         draft.invite_code = params?.code
         draft.activity_id = params?.activity_id
         draft.enterprise_id = params?.enterprise_id
+        draft.is_activity = params?.is_activity
       })
     }
     //检查隐私协议
@@ -185,6 +187,10 @@ function PurchaseAuth() {
       //首页模板活动入口跳转进来，带活动ID
       if (activity_id) {
         redirectUrl = `${redirectUrl}?activity_id=${activity_id}`
+        if(is_activity){
+          //首页跳转进来需要带上标识认证成功直接进入活动
+          redirectUrl +=  '&is_activity=1'
+        }
       }
       Taro.navigateTo({
         url: redirectUrl
@@ -206,11 +212,11 @@ function PurchaseAuth() {
         invite_code
       }
       const { token } = await api.wx.newlogin(sparams)
-      getDtidToEnterid(enterprise_id)
       setToken(token)
       showToast('验证成功')
+      await getDtidToEnterid(enterprise_id)
       setTimeout(() => {
-        Taro.reLaunch({ url: `/pages/purchase/index` })
+        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
       }, 700)
     }
   }
@@ -219,9 +225,9 @@ function PurchaseAuth() {
     try {
       await api.purchase.getEmployeeRelativeBind({ invite_code, showError: false })
       showToast('验证成功')
-      getDtidToEnterid(enterprise_id)
+      await getDtidToEnterid(enterprise_id)
       setTimeout(() => {
-        Taro.reLaunch({ url: `/pages/purchase/index` })
+        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
       }, 700)
     } catch (e) {
       console.log(e)
@@ -229,9 +235,9 @@ function PurchaseAuth() {
         content: e.message || e,
         confirmText: '我知道了',
         showCancel: false,
-        success: () => {
-          getDtidToEnterid(enterprise_id)
-          Taro.reLaunch({ url: `/pages/purchase/index` })
+        success: async() => {
+          await getDtidToEnterid(enterprise_id)
+          Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
         }
       })
     }
@@ -245,9 +251,9 @@ function PurchaseAuth() {
     dispatch(updateEnterpriseId(eid))
   }
 
-  const handlePassClick = () => {
-    getDtidToEnterid(enterprise_id)
-    Taro.reLaunch({ url: `/pages/purchase/index` })
+  const handlePassClick = async() => {
+    await getDtidToEnterid(enterprise_id)
+    Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
   }
 
   const handleClickPrivacy = (type) => {

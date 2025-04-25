@@ -33,7 +33,7 @@ function PurchaseAuthPhone(props) {
   const { isOpened, companyList, curActiveIndex } = state
   const { userInfo = {} } = useSelector((state) => state.user)
   const { params } = useRouter()
-  let { enterprise_name, auth_code, account, email, vcode, auth_type = 'mobile', employee_id, enterprise_id, is_verify,activity_id } = params
+  let { enterprise_name, auth_code, account, email, vcode, auth_type = 'mobile', employee_id, enterprise_id, is_verify,activity_id,is_activity='' } = params
   const { showModal } = useModal()
   const $instance = getCurrentInstance()
 
@@ -119,7 +119,7 @@ function PurchaseAuthPhone(props) {
           await getQrCodeDtid()
           dispatch(updateEnterpriseId(enterprise_id))
           setTimeout(() => {
-            Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
+            Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1${is_activity && activity_id? `&activity_id=${activity_id}` : ''}` })
           }, 700)
         }
       } catch (e) {
@@ -169,7 +169,7 @@ function PurchaseAuthPhone(props) {
         })
       }
       setTimeout(() => {
-        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
+        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1${is_activity && activity_id? `&activity_id=${activity_id}` : ''}` })
       }, 2000)
     } catch (e) {
       console.log('🚀🚀🚀 ~ file: select-company-phone.js:102 ~ validatePhone ~ e:', e)
@@ -184,7 +184,7 @@ function PurchaseAuthPhone(props) {
         confirmText: '我知道了',
         contentAlign: 'center'
       })
-      Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
+      Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1${is_activity && activity_id? `&activity_id=${activity_id}` : ''}` })
       getLoginCode()
     }
   }
