@@ -59,7 +59,7 @@ function PurchaseAuthEmail(props) {
   })
   const { form, rules } = state
   const formRef = useRef()
-  const { enterprise_id, enterprise_name, enterprise_sn,activity_id } = router.params
+  const { enterprise_id, enterprise_name, enterprise_sn,activity_id,is_activity='' } = router.params
 
   const onInputChange = (key, value) => {
     setState((draft) => {
@@ -122,7 +122,7 @@ function PurchaseAuthEmail(props) {
       showToast('验证成功')
 
       setTimeout(() => {
-        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
+        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1${is_activity && activity_id? `&activity_id=${activity_id}` : ''}` })
       }, 700)
     } catch (e) {
       if (e.message.indexOf('重复绑定') > -1) {
@@ -135,7 +135,7 @@ function PurchaseAuthEmail(props) {
           confirmText: '我知道了',
           contentAlign: 'center'
         })
-        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1` })
+        Taro.reLaunch({ url: `/pages/purchase/index?is_redirt=1${is_activity && activity_id? `&activity_id=${activity_id}` : ''}` })
       } else {
         formRef.current.setMessage({ prop: 'vcode', message: e.message })
       }

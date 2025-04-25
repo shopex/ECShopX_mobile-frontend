@@ -39,7 +39,7 @@ function SelectIdentity(props) {
     // 没有企业跳认证首页
     if (_identity.length == 0 && (is_redirt || VERSION_IN_PURCHASE)) {
       Taro.redirectTo({
-        url: `/pages/purchase/auth?type=addIdentity&activity_id=${activity_id}`
+        url: `/pages/purchase/auth?activity_id=${activity_id}&is_activity=1`
       })
       return
     }
