@@ -119,13 +119,13 @@ function DianwuCheckout(props) {
   const onCollection = async () => {
     if(!prescriptionStatus == 0){
        console.log('我要跳转到新的页面啦dianwu:')
-       setState((draft) => {
-        draft.codeStatus = true
-       })
        if(!checkout_order_id){
         await createOrder()
         dispatch(selectMember(null))
        }
+       setState((draft) => {
+        draft.codeStatus = true
+       })
       return
     }
     setState((draft) => {
@@ -649,6 +649,8 @@ function DianwuCheckout(props) {
           ))}
         </View>
       </SpFloatLayout>
+
+      {console.log(checkout_order_id,'checkout_order_id0000')}
 
       {codeStatus && (
         <SpPoster

@@ -128,7 +128,7 @@ function PrescriptionPnformation() {
 
   const fetch = async () => {
     const { order_id , prescription_order_random } = router.params
-    const { orderInfo } = await api.trade.detail(order_id,{prescription_order_random:"1223344"})
+    const { orderInfo } = await api.trade.detail(order_id,{prescription_order_random})
     const _orderInfo = pickBy(orderInfo, doc.trade.TRADE_ITEM)
     let list = _orderInfo.items.filter(item => item.isPrescription == 1);
     console.log(list, 'lllllllllfetch');
@@ -140,7 +140,8 @@ function PrescriptionPnformation() {
   }
 
   const handleClickToEdit = async () => {
-    const { order_id } = router.params
+    const { order_id , prescription_order_random } = router.params
+
 
     //判断确诊疾病是否为空
     const haslistProduct = listProduct.some(item => {
@@ -179,7 +180,7 @@ function PrescriptionPnformation() {
       souce_from: isWeixin ? 0 : 2,
       before_ai_result_symptom: [],
       distributor_id: orderInfo.distributorId,
-      prescription_order_random:"1223344"
+      prescription_order_random
     }
     listProduct.forEach(item => {
       param.before_ai_result_symptom.push({

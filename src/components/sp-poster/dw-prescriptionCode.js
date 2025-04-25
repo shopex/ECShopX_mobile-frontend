@@ -25,8 +25,8 @@ class PrescriptionCode {
 
   async drawPoster() {
     const { appid, company_id } = getExtConfigData()
-    const path = `subpages/prescription/prescription-information`
-    const wxappCode = `${process.env.APP_BASE_URL}/promoter/qrcode.png?path=${path}&appid=${appid}&company_id=${company_id}prescription_order_id=123456`
+    const path = `pages/share-land`
+    const wxappCode = `${process.env.APP_BASE_URL}/promoter/qrcode.png?path=${path}&appid=${appid}&company_id=${company_id}&prescription_order_id=${this.info}`
 
     const pic = `${process.env.APP_IMAGE_CDN}/bg_fxhb.png`
     console.log('goods pic:', pic)

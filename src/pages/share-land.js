@@ -23,7 +23,18 @@ function ShareIand() {
   const fetch = async () => {
     // const storedData = Taro.getStorageSync(SG_ROUTER_PARAMS)
     const routeParams = await entryLaunch.getRouteParams()
-    const { path, ...queryParams } = routeParams;
+    let { path, ...queryParams } = routeParams;
+
+    //可以处理特殊情况
+    if(queryParams.t == 1){
+      path = '/subpages/prescription/prescription-information'
+      queryParams.order_id = queryParams.oi
+      queryParams.prescription_order_random = queryParams.r
+      delete queryParams.oi
+      delete queryParams.r
+      delete queryParams.t
+    }
+
     const queryString = Object.entries(queryParams)
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
