@@ -18,11 +18,12 @@ const initialState = {
     {
       title: '是否使用过此类药物',
       selector: [{
-        key: 0,
-        value: '否'
-      }, {
         key: 1,
         value: '是'
+      },
+      {
+        key: 0,
+        value: '否'
       }],
       selectorChecked: '请选择',
       key: 'before_ai_result_used_medicine',
