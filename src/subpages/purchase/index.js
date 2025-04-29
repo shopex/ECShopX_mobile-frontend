@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import Taro, { getCurrentInstance, useDidShow, useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { View, Image, ScrollView, Button } from '@tarojs/components'
 import { useSelector, useDispatch } from 'react-redux'
@@ -101,6 +101,11 @@ function Home() {
     checkPolicyChange()
   })
 
+  //是否可以分享亲友
+  const isPurchaseShare = useMemo(() => {
+    return !!(activityInfo?.is_employee && activityInfo?.if_relative_join)
+  },[activityInfo])
+
   const init = async () => {
     await fetchWgts()
     await fetchActivity()
@@ -137,23 +142,24 @@ function Home() {
     const activity_id = router.params?.activity_id || purchase_share_info?.activity_id
     const enterprise_id = router.params?.enterprise_id || purchase_share_info?.enterprise_id
     const data = await api.purchase.getEmployeeActivitydata({activity_id,enterprise_id})
-   setState(draft=>{
-    draft.activityInfo = data
+    setState(draft=>{
+      draft.activityInfo = data
     })
   }
 
   useShareAppMessage(async () => {
     return new Promise(async function (resolve,reject) {
-      return reject()
-      const activity_id = router.params?.activity_id || purchase_share_info?.activity_id
-      const enterprise_id = router.params?.enterprise_id || purchase_share_info?.enterprise_id
-      const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
-      log.debug(`/pages/purchase/auth?code=${data.invite_code}`)
-      resolve({
-        title: activityInfo.name,
-        imageUrl: activityInfo.share_pic,
-        path: `/pages/purchase/auth?code=${data.invite_code}&enterprise_id=${enterprise_id}&activity_id=${activity_id}`
-      })
+      if(isPurchaseShare){
+        const activity_id = router.params?.activity_id || purchase_share_info?.activity_id
+        const enterprise_id = router.params?.enterprise_id || purchase_share_info?.enterprise_id
+        const data = await api.purchase.getEmployeeInviteCode({ enterprise_id, activity_id })
+        log.debug(`/pages/purchase/auth?code=${data.invite_code}`)
+        resolve({
+          title: activityInfo.name,
+          imageUrl: activityInfo.share_pic,
+          path: `/pages/purchase/auth?code=${data.invite_code}&enterprise_id=${enterprise_id}&activity_id=${activity_id}`
+        })
+      }
     })
   })
 
@@ -218,11 +224,13 @@ function Home() {
         icon: 'none'
       })
       return
-    } else {
-      setState((draft) => {
-        draft.isOpened = true
-      })
     }
+    // else {
+    //   //选择分享海报还是卡片
+    //   setState((draft) => {
+    //     draft.isOpened = true
+    //   })
+    // }
   }
 
   const onCreatePoster = () => {
@@ -241,10 +249,10 @@ function Home() {
       pageConfig={pageData?.base}
       renderFooter={<CompTabbar />}
       renderFloat={
-        false && (
-          <View className='float-share' onClick={showInfo}>
+        isPurchaseShare && (
+          <Button open-type='share' size='mini' className='float-share' onClick={showInfo}>
             <SpImage src='share.png' className='share-btn' mode='aspectFit'></SpImage>
-          </View>
+          </Button>
         )
       }
       loading={loading}
