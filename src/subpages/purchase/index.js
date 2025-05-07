@@ -265,6 +265,7 @@ function Home() {
       pageConfig={pageData?.base}
       renderFooter={<CompTabbar />}
       renderFloat={
+        false &&
         isPurchaseShare && (
           <Button open-type='share' size='mini' className='float-share' onClick={showInfo}>
             <SpImage src='share.png' className='share-btn' mode='aspectFit'></SpImage>
