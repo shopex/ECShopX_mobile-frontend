@@ -229,10 +229,10 @@ function Home() {
   })
 
   const init = async () => {
-    //如果存在定位就不再重新定位了
-    // if (location === null || Object.keys(location).length === 0) {
-    fetchLocation()
-    // }
+    // 非店铺隔离，获取定位
+    if (!open_divided) {
+      fetchLocation()
+    }
 
     // 非云店
     if (!VERSION_STANDARD) {
@@ -343,11 +343,9 @@ function Home() {
   const checkStoreIsolation = async () => {
     const distributorId = getDistributorId() || 0
     const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ 分享进来的 dtid:", dtid)
     let params = {
       distributor_id: distributorId// 如果店铺id和经纬度都传会根据哪个去定位传参
     }
-    // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ location:", location)
     if (openLocation == 1 && location) {
       const { lat, lng } = location
       params.lat = lat
@@ -475,7 +473,6 @@ function Home() {
             delete params.show_type
             params.distributor_id = 0
             const reslut = await api.shop.getShop(params)
-            // console.log("🚀🚀🚀 ~ checkStoreIsolation ~ reslut:", reslut)
             if(reslut.white_hidden == 1) {
               // 没匹配到任何店铺，带有id还是用之前的店铺模版和电话
               // dispatch(updateShopInfo(reslut))
@@ -531,10 +528,12 @@ function Home() {
           }
 
 
-          const shop = await getWhiteShop()
+          const shop = await getWhiteShop()  // 找白名单店铺
           if (!shop) {
-            // 未加入店铺，找没开启白名单的店
-            delete params.show_type
+            // 老逻辑 未加入店铺，找没开启白名单的店
+            // 第二个版本 新的逻辑 不去找 没有开启白名单的店，如果当前店铺是未开启白名单的店铺，还是可以进去的
+            // todozm  这里要直接跳引导页，不用找没开白名单的店铺了
+            delete params.show_type  // 删除了 show_type 参数，去找未开启白名单的店铺
             params.distributor_id = 0
             const res = await api.shop.getShop(params)
             if (res.white_hidden == 1) {

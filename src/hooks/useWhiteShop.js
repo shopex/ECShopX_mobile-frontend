@@ -109,6 +109,7 @@ export default ({ onPhoneCallComplete } = {}) => {
   }
 
   // 打店铺电话
+  // todozm 修改逻辑，如果没落地页模版id，弹窗打电话，有模版id的话，没有携带店铺id，自动跳，带了 店铺id ，还是需要弹窗
   const connectWhiteShop = (phone) => { 
     if (open_divided_templateId) {
       const query = `?id=${open_divided_templateId}&fromConnect=1`
