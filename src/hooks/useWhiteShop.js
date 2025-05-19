@@ -56,9 +56,9 @@ export default ({ onPhoneCallComplete } = {}) => {
 
     // 复制数组以避免修改原数组
     const sortedShops = [...shopList].sort((a, b) => {
-      // 确保 created 存在，如果不存在则设置为 0
-      const timeA = a.created || 0;
-      const timeB = b.created || 0;
+      // 确保 sort_id 存在，如果不存在则设置为 0
+      const timeA = a.sort_id || 0;
+      const timeB = b.sort_id || 0;
       // 降序排序，最新的在前
       return timeB - timeA;
     });
