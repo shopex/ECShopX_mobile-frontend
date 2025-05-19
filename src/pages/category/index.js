@@ -10,15 +10,11 @@ import CompsCategoryNew from './comps/comps-category-tile'
 import './index.scss'
 
 const initialState = {
-  keywords: ''
+  layout: 0 // 0: 默认, 1: 带购物车布局, 2: 平铺布局
 }
 
 function StoreItemList(props) {
   const [state, setState] = useImmer(initialState)
-  const {
-    keywords,
-  } = state
-
   useEffect(() => {
     getCategoryList()
   }, [])
@@ -31,16 +27,26 @@ function StoreItemList(props) {
     // })
     const query = { template_name: platformTemplateName, version: 'v1.0.1', page_name: 'category' }
     const { list } = await api.category.getCategory(query)
-    let seriesList = list[0].params
+    const { addCar, classify } = list?.[0]?.params || {}
+    // TODO:后端字段反了，需要调整 addCar=平铺，classify=加购
     setState((draft) => {
-      draft.keywords = seriesList.addCar && !seriesList.classify
+      // draft.keywords = seriesList.addCar && !seriesList.classify
+      if (classify) {
+        draft.layout = 1
+      } else {
+        draft.layout = 2
+      }
     })
   }
 
   return (
     <View>
       {
-        keywords?<CompsCategoryNew />:<CompsAddPurchase />
+        state.layout === 1 && <CompsAddPurchase />
+      }
+
+      {
+        state.layout === 2 && <CompsCategoryNew />
       }
       {/* <CompsCategoryNew /> */}
     </View>
