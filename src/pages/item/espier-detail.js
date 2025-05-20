@@ -266,7 +266,7 @@ function EspierDetail(props) {
 
   // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
   useDidShow(() => {
-    if (VERSION_STANDARD && open_divided && !isFirstRender.current && !isFromPhoneCallBack.current) {
+    if (!isFirstRender.current && !isFromPhoneCallBack.current) {
       checkStoreIsolation()
     }
     // 标记第一次渲染已完成
@@ -329,6 +329,9 @@ function EspierDetail(props) {
 
   // 店铺隔离start
   const checkStoreIsolation = async () => {
+    if(!open_divided) {
+      return
+    }
     const distributorId = getDistributorId() || 0
     const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     // let params = {

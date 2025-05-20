@@ -198,8 +198,6 @@ function Home() {
   // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
   useDidShow(() => {
     if (
-      VERSION_STANDARD &&
-      open_divided &&
       !isFirstRender.current &&
       !isFromPhoneCallBack.current
     ) {
@@ -363,6 +361,9 @@ function Home() {
   }
 
   const checkStoreIsolation = async () => {
+    if(!open_divided) {
+      return
+    }
     const distributorId = getDistributorId() || 0 // 启动携带店铺id 或者 之前记录的 店铺信息
     const { dtid: routerDtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     let defalutShop  // 当前店铺的手机号
@@ -423,14 +424,12 @@ function Home() {
         // checkUserInWhite 取代上面2个接口的作用, 判断能否直接进店
         const { status } = await api.shop.checkUserInWhite({ distributor_id: distributorId })
         dispatch(changeInWhite(status))
-        console.log('🚀🚀🚀 ~ checkStoreIsolation ~ status:', status)
         if (status) {
           return
         }
 
         // 不能进店，找最新的店铺，必须用这个方法，测试过其他方法会有问题
         const shop = await getWhiteShop() // 已经加入的最优店铺
-        console.log('🚀🚀🚀 ~ checkStoreIsolation ~ shop:', shop)
 
         if (shop) {
           setState((draft) => {

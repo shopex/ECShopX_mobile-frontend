@@ -140,8 +140,6 @@ function CustomPage(props) {
   // 需要在页面返回到首页的时候执行，第一次页面渲染的时候不执行
   useDidShow(() => {
     if (
-      VERSION_STANDARD &&
-      open_divided &&
       !isFirstRender.current &&
       !isFromPhoneCallBack.current
     ) {
@@ -245,6 +243,9 @@ function CustomPage(props) {
   // }
 
   const checkStoreIsolation = async () => {
+    if(!open_divided) {
+      return
+    }
     const { fromConnect } = await entryLaunch.getRouteParams($instance.router.params)
     if (fromConnect) return // 店铺隔离引导页
     const distributorId = getDistributorId() || 0
