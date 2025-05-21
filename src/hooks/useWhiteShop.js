@@ -50,8 +50,7 @@ export default ({ onPhoneCallComplete } = {}) => {
     return shopsWithDistance[0];
   };
 
-  // 找到创建时间最晚的白名单店铺
-  const findLatestCreatedShop = (shopList) => {
+  const handleSortShopList = (shopList) => {
     if (!shopList || !shopList.length) return null;
 
     // 复制数组以避免修改原数组
@@ -63,7 +62,19 @@ export default ({ onPhoneCallComplete } = {}) => {
       return timeB - timeA;
     });
 
-    return sortedShops[0];
+    return sortedShops;
+  }
+  
+  // 找到创建时间最晚的白名单店铺
+  const findLatestCreatedShop = (shopList) => {
+    if (!shopList || !shopList.length) return null;
+    return handleSortShopList(shopList)[0];
+  };
+
+  // 排序店铺
+  const sortShopList = (shopList) => {
+    if (!shopList || !shopList.length) return null;
+    return handleSortShopList(shopList);
   };
 
   const getWhiteShop = async () => {
@@ -99,8 +110,6 @@ export default ({ onPhoneCallComplete } = {}) => {
     // } else {
       // 找到创建时间最晚的白名单店铺
       const latestShop = findLatestCreatedShop(shopList);
-      if (latestShop) {
-      }
       return latestShop;
     // }
 
@@ -163,5 +172,5 @@ export default ({ onPhoneCallComplete } = {}) => {
   // }
 
 
-  return { findNearestWhiteListShop, findLatestCreatedShop, getWhiteShop, connectWhiteShop, phoneCall }
+  return { findNearestWhiteListShop, findLatestCreatedShop, getWhiteShop, connectWhiteShop, phoneCall, sortShopList }
 }

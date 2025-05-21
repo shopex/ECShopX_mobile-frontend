@@ -7,7 +7,7 @@ import { SpPage, SpScrollView, SpAddress } from '@/components'
 import { updateLocation, updateChooseAddress } from '@/store/slices/user'
 import { updateShopInfo } from '@/store/slices/shop'
 import api from '@/api'
-import { useLogin } from '@/hooks'
+import { useLogin, useWhiteShop } from '@/hooks'
 import { SG_ROUTER_PARAMS } from '@/consts/localstorage'
 import doc from '@/doc'
 import { entryLaunch, pickBy, classNames, showToast, log, isArray, isObject } from '@/utils'
@@ -62,7 +62,7 @@ function NearlyShop(props) {
   const { location = {}, address } = useSelector((state) => state.user)
   const { shopInfo } = useSelector((state) => state.shop)
   const { open_divided } = useSelector((state) => state.sys)
-
+  const { sortShopList } = useWhiteShop()
   const shopRef = useRef()
   const pageRef = useRef()
   const dispatch = useDispatch()
@@ -159,6 +159,8 @@ function NearlyShop(props) {
         item.isOpenDivided = true  // 标识绑定的店铺
         return item
       })
+
+      list = sortShopList(list)
       setState((draft) => {
         draft.shopList = draft.shopList.concat(pickBy(list, doc.shop.SHOP_ITEM))
         draft.refresh = false
