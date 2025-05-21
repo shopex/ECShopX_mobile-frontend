@@ -484,7 +484,7 @@ function MemberIndex(props) {
                 })
               }}
             >
-              <View className='shop-name'>我的店铺 {store_name || '暂无店铺信息'}</View>
+              <View className='shop-name'><Text className='shop-name-text'>我的店铺</Text> {store_name || '暂无店铺信息'}</View>
               <Text className='iconfont icon-qianwang-01'></Text>
             </View>
           )}

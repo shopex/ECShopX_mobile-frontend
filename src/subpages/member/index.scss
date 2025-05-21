@@ -11,6 +11,9 @@
     max-width: 420px;
     @include text-overflow();
     font-weight: bold;
+    &-text {
+      color: #666;
+    }
   }
   .icon-qianwang-01 {
     font-size: 24px;
