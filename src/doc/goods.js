@@ -270,6 +270,8 @@ export const GOODS_INFO = {
       vipPrice: ({ vip_price }) => vip_price / 100, // vip价格
       svipPrice: ({ svip_price }) => svip_price / 100, // svip价格
       packagePrice: ({ package_price }) => package_price / 100, // 组合价
+      startNum: 'start_num',// 起订量
+      customSpecId:'custom_spec_id' //拼接规格id
     })
   },
   intro: 'intro',
@@ -284,6 +286,7 @@ export const GOODS_INFO = {
   video: 'videos',
   medicineData: 'medicine_data',
   isMedicine: 'is_medicine',
+  startNum: 'start_num',// 起订量
 }
 
 export const ESPIER_DETAIL_GOODS_INFO = {
