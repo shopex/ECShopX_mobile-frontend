@@ -343,7 +343,7 @@ function Home() {
   }
 
   const fetchStoreInfo = async (location, showWhiteStore = false) => {
-    const distributorId = getDistributorId() || 0
+    const distributorId = getDistributorId()
     let params = {
       distributor_id: distributorId // 如果店铺id和经纬度都传会根据哪个去定位传参
     }
@@ -369,7 +369,7 @@ function Home() {
     let defalutShop  // 当前店铺的手机号
     // console.log('🚀🚀🚀 ~ checkStoreIsolation ~ shopInfo:', shopInfo.distributor_id)
     // console.log('🚀🚀🚀 ~ checkStoreIsolation ~ distributorId:', distributorId)
-    
+
 
     // distributorId的取值，如果SG_ROUTER_PARAMS存在，则取SG_ROUTER_PARAMS存的tdid，否则取shopInfo.distributor_id
     // 所以在切换店铺后，即使把 SG_ROUTER_PARAMS 清空，distributorId 就会取 shopInfo.distributor_id。
@@ -461,7 +461,7 @@ function Home() {
           })
           return
         } else {
-          // dispatch(updateShopInfo(shopInfo)) 
+          // dispatch(updateShopInfo(shopInfo))
           showNoShopModal(defalutShop?.phone || shopInfo?.phone)
         }
       }
