@@ -8,7 +8,7 @@ import Taro, {
 } from '@tarojs/taro'
 import { View, Text, Swiper, SwiperItem, Video, ScrollView } from '@tarojs/components'
 import { useImmer } from 'use-immer'
-import { AtCountdown } from 'taro-ui'
+import { AtFloatLayout , AtButton } from 'taro-ui'
 import {
   SpPrice,
   SpCell,
@@ -107,7 +107,8 @@ const initialState = {
     showCancel: true,
     onCancel: null,
     onConfirm: null
-  }
+  },
+  isParameter: false
 }
 
 function EspierDetail(props) {
@@ -177,7 +178,8 @@ function EspierDetail(props) {
     curItem,
     recommendList,
     policyModal,
-    modalDivided
+    modalDivided,
+    isParameter
   } = state
 
   // 添加一个 ref 来追踪是否是首次渲染
@@ -232,12 +234,12 @@ function EspierDetail(props) {
   }, [play])
 
   useEffect(() => {
-    if (packageOpen || skuPanelOpen || sharePanelOpen || posterModalOpen || promotionOpen) {
+    if (packageOpen || skuPanelOpen || sharePanelOpen || posterModalOpen || promotionOpen || isParameter) {
       pageRef.current.pageLock()
     } else {
       pageRef.current.pageUnLock()
     }
-  }, [packageOpen, skuPanelOpen, sharePanelOpen, posterModalOpen, promotionOpen])
+  }, [packageOpen, skuPanelOpen, sharePanelOpen, posterModalOpen, promotionOpen,isParameter])
 
   // 添加一个新的 useEffect 来监听 dtid 变化
   useEffect(() => {
@@ -763,6 +765,12 @@ function EspierDetail(props) {
     })
   }
 
+  const handleClose = () => {
+    setState((draft) => {
+      draft.isParameter = !isParameter
+    })
+  }
+
   // 领券
   const handleReceiveCoupon = () => {
     const { itemId, distributorId } = info
@@ -1042,6 +1050,23 @@ function EspierDetail(props) {
             </View>
           </View>}
 
+          <View className='goods-params-flat'>
+            <View className='parameter'>
+              参数
+            </View>
+            <View className='parameter-content'>
+              <View className='parameter-item'>
+                <View>
+                  60瓦
+                </View>
+                <View className='configuration'>
+                  近光功率
+                </View>
+              </View>
+            </View>
+            <Text className='iconfont icon-arrowRight' onClick={handleClose} />
+          </View>
+
           {/* 商品评价 */}
           <CompEvaluation list={evaluationList} itemId={info.itemId}></CompEvaluation>
 
@@ -1179,6 +1204,18 @@ function EspierDetail(props) {
         onCancel={modalDivided.onCancel}
         onConfirm={modalDivided.onConfirm}
       />}
+
+      <AtFloatLayout isOpened ={isParameter} title="商品参数" onClose={handleClose}>
+         <View className='product-parameter'>
+         <View className='product-parameter-all'>
+            <View className='product-parameter-item'>
+              <Text className='title'>近光功率</Text>
+              <Text className='content'>60瓦</Text>
+            </View>
+          </View>
+          <AtButton type='primary' circle onClick={handleClose}>确认</AtButton>
+         </View>
+      </AtFloatLayout>
     </SpPage>
   )
 }
