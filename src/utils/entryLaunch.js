@@ -26,7 +26,7 @@ class EntryLaunch {
    */
   async getRouteParams(options) {
     // const { params } = $instance.router;
-    const params = options?.query || $instance.router?.params || {}
+    const params = options?.query || options?.params || $instance.router?.params || {}
     let _options = {}
     console.log('$instance.router?.params', $instance.router?.params)
     if (params?.scene) {
