@@ -48,7 +48,8 @@ function SpGoodsItem(props) {
     hideStore = false,
     renderBrand,
     isPurchase = false,
-    mode = 'widthFix'
+    mode = 'widthFix',
+    goodsType = 'normal',
   } = props
 
   const handleFavClick = async (e) => {
@@ -94,7 +95,7 @@ function SpGoodsItem(props) {
       }
     }
 
-    const url = `${!!point ? '/subpages/pointshop/espier-detail' : '/pages/item/espier-detail'
+    const url = `${(!!point || goodsType == 'point') ? '/subpages/pointshop/espier-detail' : '/pages/item/espier-detail'
       }?${qs.stringify(query)}`
     Taro.navigateTo({
       url
