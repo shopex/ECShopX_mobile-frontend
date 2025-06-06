@@ -47,6 +47,7 @@ function ShareIand() {
         showToast('未匹配到参数')
       }
 
+<<<<<<< HEAD
       // 欢迎语携带用户编号
       Taro.setStorageSync(SG_GUIDE_PARAMS, routeParams)
       Taro.setStorageSync(SG_GUIDE_PARAMS_UPDATETIME, dayjs().unix())
@@ -63,6 +64,16 @@ function ShareIand() {
         _tempParams.prescription_order_random = routeParams.r
         Taro.redirectTo({ url: `/subpages/prescription/prescription-information?${qs.stringify(_tempParams)}` })
       }
+=======
+    //可以处理特殊情况
+    if(queryParams.t == 1){
+      path = '/subpages/prescription/prescription-information'
+      queryParams.order_id = queryParams.oi
+      queryParams.prescription_order_random = queryParams.r
+      delete queryParams.oi  //order_id   
+      delete queryParams.r   //rd   随机默认参数
+      delete queryParams.t   //type  1是处方药
+>>>>>>> e7ea848ea544bea1b6ebfb04ce53be3580de5e69
     }
   }
 
