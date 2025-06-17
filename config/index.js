@@ -1,9 +1,19 @@
 import path from 'path'
+const webpackPluginsAutoI18n = require('webpack-auto-i18n-plugin')
+const { YoudaoTranslator } = require('webpack-auto-i18n-plugin')
 import pkg from '../package.json'
 const chalk = require("chalk")
 const { getEnvs, getDefineConstants, getCacheIdentifier } = require('./utils')
 
 require('dotenv-flow').config()
+
+
+// const i18nPlugin = new webpackPluginsAutoI18n.default({
+//   translator: new YoudaoTranslator({
+//       appId: '4cdb9baea8066fef',
+//       appKey: 'ONI6AerZnGRyDqr3w7UM730mPuF8mB3j'
+//   })
+// })
 
 const DIST_PATH = `dist/${process.env.TARO_ENV}`
 const APP_ENVS = getEnvs()
@@ -39,7 +49,7 @@ if (process.env.TARO_ENV == 'weapp') {
 if (process.env.TARO_ENV == 'h5') {
   copyPatterns.push({ from: 'src/files', to: `${DIST_PATH}` })
 }
-if(process.env.TARO_ENV == 'alipay') {
+if (process.env.TARO_ENV == 'alipay') {
   copyPatterns.push({ from: 'mini.project.json', to: `${DIST_PATH}/mini.project.json` })
 }
 
@@ -71,16 +81,27 @@ const config = {
     patterns: copyPatterns
   },
   plugins: [
+    // i18nPlugin
     // '@shopex/taro-plugin-modules',
     // path.join(__dirname, "../src/plugin/test.js")
     // path.join(__dirname, "./modify-taro.js")
   ],
 
   mini: {
-    // webpackChain(chain, webpack) {
-    //   chain.plugin('analyzer')
-    //     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
-    // },
+    webpackChain(chain) {
+      chain.plugin('auto-i18n').use(webpackPluginsAutoI18n.default, [{
+        rewriteConfig:false,
+        targetLangList: ['en', 'ja'],   // 目标语言
+        originLang: 'zh-cn',            // 源语言
+        translator: new YoudaoTranslator({
+          appId: '3f97d3d47bc88a7f',
+          appKey: 'nbJLE1OoIj8Lt9E0NUhOgstIrCVIs22m'
+        }),
+        excludedPath: ['node_modules'], // 排除目录
+        includePath: [/src/]             // 仅扫描 src 目录
+      }]);
+    },
+
     miniCssExtractPluginOption: {
       ignoreOrder: true
     },
