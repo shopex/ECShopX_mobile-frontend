@@ -13,6 +13,7 @@ import {
   VERSION_B2C
 } from '@/utils'
 import { SG_APP_CONFIG } from '@/consts'
+import CompPanel from './comp-panel'
 
 import './comp-menu.scss'
 
@@ -179,21 +180,25 @@ function CompMenu(props) {
     ])
   }
 
+  if (menus.length == 0) return null
+
   return (
-    <View className='comp-menu'>
-      {menus.map((item, index) => (
-        <SpLogin
-          className='menu-item'
-          key={`menu-item__${index}`}
-          onChange={onLink.bind(this, item)}
-        >
-          <SpImage className='menu-image' src={item.icon} width={100} height={100} />
-          <Text className='menu-name'>
-            {item.key == 'popularize' ? (isPromoter ? item.name : '我要推广') : item.name}
-          </Text>
-        </SpLogin>
-      ))}
-    </View>
+    <CompPanel>
+      <View className='comp-menu'>
+        {menus.map((item, index) => (
+          <SpLogin
+            className='menu-item'
+            key={`menu-item__${index}`}
+            onChange={onLink.bind(this, item)}
+          >
+            <SpImage className='menu-image' src={item.icon} width={100} height={100} />
+            <Text className='menu-name'>
+              {item.key == 'popularize' ? (isPromoter ? item.name : '我要推广') : item.name}
+            </Text>
+          </SpLogin>
+        ))}
+      </View>
+    </CompPanel>
   )
 }
 

@@ -651,19 +651,17 @@ function MemberIndex(props) {
               </SpLogin>
             </View>
           </CompPanel>
-          <CompPanel>
-            <CompMenu
-              accessMenu={{
-                ...config.menu,
-                purchase: config.purchaseRes.is_open,
-                popularize: userInfo ? userInfo.popularize : false,
-                salesPersonList: state.salesPersonList,
-                deliveryStaffList:state.deliveryStaffList
-              }}
-              isPromoter={userInfo ? userInfo.isPromoter : false}
-              onLink={handleClickService}
-            />
-          </CompPanel>
+          <CompMenu
+            accessMenu={{
+              ...config.menu,
+              purchase: config.purchaseRes.is_open,
+              popularize: userInfo ? userInfo.popularize : false,
+              salesPersonList: state.salesPersonList,
+              deliveryStaffList:state.deliveryStaffList
+            }}
+            isPromoter={userInfo ? userInfo.isPromoter : false}
+            onLink={handleClickService}
+          />
 
           <CompPanel>
             <CompHelpCenter onLink={handleClickService} />
