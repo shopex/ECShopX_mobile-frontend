@@ -31,7 +31,7 @@ const initialState = {
   searchMethod: null
 }
 function HomeWgts(props) {
-  const { wgts, dtid, onLoad = () => { }, children ,copywriting = true} = props
+  const { wgts, dtid, onLoad = () => { }, children ,copywriting = false} = props
   const [state, setState] = useImmer(initialState)
   const { localWgts, searchMethod } = state
   const wgtsRef = useRef()
