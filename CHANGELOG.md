@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.21.4](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.21.3...v3.21.4) (2025-06-19)
+
+
+### Bug Fixes
+
+* 修复购物车猜你喜欢列表不展示 ([57ac99a](https://git.ishopex.cn/ecshopx/ecshopx-vshop/commit/57ac99a82017189838f6599872757801d8e8ed59))
+
 ### [3.21.3](https://git.ishopex.cn/ecshopx/ecshopx-vshop/compare/v3.21.0...v3.21.3) (2025-06-09)
 
 
