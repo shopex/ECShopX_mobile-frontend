@@ -455,6 +455,8 @@ export const DELIVERY_LIST = [
 
 export const INVITE_ACTIVITY_ID = 'INVITE_ACTIVITY_ID'
 
+export const needLoginPage = ['purchase_activity', 'regactivity']
+
 export const TAB_PAGES = [
   '/pages/index',
   '/pages/category/index',
