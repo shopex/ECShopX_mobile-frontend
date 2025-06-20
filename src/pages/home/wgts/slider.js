@@ -1,9 +1,10 @@
 import React, { Component, useEffect } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
-import { SpImage } from '@/components'
+import { SpImage, SpLogin } from '@/components'
 import { useImmer } from 'use-immer'
 import { classNames, linkPage ,VERSION_STANDARD ,getDistributorId } from '@/utils'
+import { needLoginPageType, needLoginPage } from '@/consts'
 
 import './slider.scss'
 
@@ -93,6 +94,19 @@ function WgtSlider(props) {
             {data.map((item, idx) => {
               return (
                 <SwiperItem key={`slider-item__${idx}`} className='slider-item'>
+                {needLoginPageType.includes(item.id) || needLoginPage.includes(item.linkPage) ? (
+                  <SpLogin onChange={() => handleClickItem(item)}>
+                      <View
+                        // style={`padding: 0 ${config.padded ? Taro.pxTransform(20) : 0}`}
+                        className={classNames('wrapper-img', {
+                          'rounded': config.rounded
+                        })}
+                        onClick={() => handleClickItem(item)}
+                      >
+                        <SpImage src={item.imgUrl} lazyLoad />
+                      </View>
+                    </SpLogin>
+                ) : (
                   <View
                     className={classNames('wrapper-img', {
                       'rounded': config.rounded
@@ -101,6 +115,7 @@ function WgtSlider(props) {
                   >
                     <SpImage src={item.imgUrl} className='slider-item__img' lazyLoad />
                   </View>
+                )}
                 </SwiperItem>
               )
             })}
