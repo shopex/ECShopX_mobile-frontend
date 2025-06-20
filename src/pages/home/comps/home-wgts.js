@@ -23,7 +23,8 @@ import {
   WgtHotTopic,
   WgtFloorImg,
   WgtNearbyShop,
-  WgtFullSlider
+  WgtFullSlider,
+  WgtOrderNavigation
 } from '../wgts'
 import './home-wgts.scss'
 
@@ -101,7 +102,8 @@ function HomeWgts(props) {
             data-name={item.name}
           >
             {/* {item.name === "search" && <WgtSearchHome info={item} />} */}
-            {item.name === 'search' && <SpSearch info={item} onClick={searchMethod} />} {/** 搜索 */}
+            {item.name === 'search' && <SpSearch info={item} onClick={searchMethod} />}{' '}
+            {/** 搜索 */}
             {item.name === 'film' && <WgtFilm info={item} />} {/** 视频 */}
             {item.name === 'marquees' && <WgtMarquees info={item} />} {/** 文字轮播 */}
             {item.name === 'slider' && <WgtSlider isHomeSearch info={item} />} {/** 轮播 */}
@@ -126,6 +128,7 @@ function HomeWgts(props) {
             {item.name === 'store' && <WgtStore info={item} />} {/** 推荐商铺 */}
             {item.name === 'nearbyShop' && <WgtNearbyShop info={item} />} {/** 附近商家 */}
             {item.name === 'fullSlider' && <WgtFullSlider info={item} index={idx} />} {/** 全屏轮播 */}
+            {item.name === 'orderNavigation' && <WgtOrderNavigation info={item} />} {/** 订单导航 */}
           </View>
         ))
       })}
