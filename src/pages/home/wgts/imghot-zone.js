@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { View, Text } from '@tarojs/components'
 import { SpImage, SpLogin } from '@/components'
 import { linkPage, classNames, styleNames, isString, isArray, pxToUnitRpx } from '@/utils'
-import { needLoginPage } from '@/consts'
+import { needLoginPage, needLoginPageType } from '@/consts'
 import './imghot-zone.scss'
 
 function WgtImgHotZone(props) {
@@ -29,7 +29,7 @@ function WgtImgHotZone(props) {
       <View className={`slider-wra wgt-body img-hotzone ${config.padded ? 'padded' : ''}`}>
         <SpImage img-class='img-hotzone_img' src={config.imgUrl} lazyLoad />
         {isArray(data) && data.map((item, index) => {
-          if (item.id == 'purchase' || needLoginPage.includes(item.linkPage)) {
+          if (item.id == 'purchase' || needLoginPageType.includes(item.id) || needLoginPage.includes(item.linkPage)) {
             return (
               <SpLogin onChange={handleClickItem.bind(this, {
                 ...item,
