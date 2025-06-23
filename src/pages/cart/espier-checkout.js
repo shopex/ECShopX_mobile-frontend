@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
-import { AtButton, AtInput } from 'taro-ui'
+import { AtButton } from 'taro-ui'
 import {
   SpPage,
   SpPrice,
@@ -11,7 +11,7 @@ import {
   SpGoodsCell,
   SpFloatLayout,
   SpNumberKeyBoard,
-  SpDeliver
+  SpDeliver, SpInput as AtInput
 } from '@/components'
 import { View, Text, Picker, ScrollView } from '@tarojs/components'
 import { changeCoupon, changeZitiAddress } from '@/store/slices/cart'
@@ -673,7 +673,6 @@ function CartCheckout(props) {
       draft.openStreet = openStreet
       draft.openBuilding = openBuilding
       draft.salespersonInfo = salespersonInfo
-      draft.pointPayFirst = Number(point_rule?.point_pay_first) > 0
       if (openStreet) {
         const {
           multiValue,
@@ -691,16 +690,19 @@ function CartCheckout(props) {
         draft.community = community
       }
 
-      if(isFirstCalc && Number(point_rule?.point_pay_first) > 0){
-        const maxpoint = receiptType == 'ziti' ? max_point_ziti : max_point
-        let firstPoint = Math.min(maxpoint,user_point)
-
-        draft.point_use = firstPoint
-        draft.pointInfo = {
-          ...point_info,
-          real_use_point:firstPoint
+      {/* 平台版自营店铺、云店、官方商城支持积分抵扣 */}
+      if ((VERSION_STANDARD || VERSION_B2C || (VERSION_PLATFORM && shop_id == 0))) {
+        if(isFirstCalc && Number(point_rule?.point_pay_first) > 0) {
+          const maxpoint = receiptType == 'ziti' ? max_point_ziti : max_point
+          let firstPoint = Math.min(maxpoint,user_point)
+          draft.point_use = firstPoint
+          draft.pointInfo = {
+            ...point_info,
+            real_use_point:firstPoint
+          }
+          draft.isFirstCalc = false
         }
-        draft.isFirstCalc = false
+        draft.pointPayFirst = Number(point_rule?.point_pay_first) > 0
       }
     })
     // calc.current = false
