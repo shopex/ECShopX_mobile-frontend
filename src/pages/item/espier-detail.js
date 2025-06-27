@@ -791,6 +791,16 @@ function EspierDetail(props) {
     })
   }
 
+  const setSwiperCss = (item) => {
+    return {
+      height: '100%',
+      width: '100%',
+      backgroundSize: '100% auto',
+      backgroundImage: `url(${item})`,
+      backgroundRepeat: 'no-repeat'
+    }
+  }
+
   const { windowWidth } = Taro.getSystemInfoSync()
 
   let sessionFrom = {}
@@ -847,13 +857,15 @@ function EspierDetail(props) {
               onChange={onChangeSwiper}
               style={{ height: (imgHeightRef.current[curImgIdx] || 350) + 'px' }}
             >
-              {console.log('info', info)}
               {info.imgs.map((img, idx) => (
                 <SwiperItem key={`swiperitem__${idx}`}>
-                  <SpImage
-                    mode='scaleToFill'
-                    src={img}
-                  ></SpImage>
+                  <View style={setSwiperCss(img)}>
+                    <SpImage
+                      mode='scaleToFill'
+                      src={img}
+                      className='swiperitem__img'
+                    />
+                  </View>
                 </SwiperItem>
               ))}
             </Swiper>
