@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Input } from '@tarojs/components'
 import { classNames } from '@/utils'
-import { SpInput as AtInput } from '@/components'
+// import { SpInput as AtInput } from '@/components'
 import throttle from 'lodash/throttle'
 import './index.scss'
 
@@ -39,7 +39,7 @@ function SpInput(props) {
             {title}
           </View>
         )}
-        <AtInput
+        <Input
           clear={props.clear}
           value={props.value}
           type={type}
