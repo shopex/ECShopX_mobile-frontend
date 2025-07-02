@@ -57,7 +57,7 @@ import S from '@/spx'
 import { Tracker } from '@/service'
 import { useNavigation, useLogin, useLocation, useWhiteShop } from '@/hooks'
 import { ACTIVITY_LIST } from '@/consts'
-import { SG_ROUTER_PARAMS } from '@/consts/localstorage'
+import { SG_ROUTER_PARAMS, SG_GUIDE_PARAMS } from '@/consts/localstorage'
 import CompActivityBar from './comps/comp-activitybar'
 import CompVipGuide from './comps/comp-vipguide'
 import CompCouponList from './comps/comp-couponlist'
@@ -322,7 +322,8 @@ function EspierDetail(props) {
   }
 
   const init = async (newDtid) => {
-    const { type, id, dtid:routerDtid } = await entryLaunch.getRouteParams()
+    const routerParams = await entryLaunch.getRouteParams()
+    const { type, id, dtid:routerDtid, gu } = routerParams
     const dtid = newDtid || routerDtid
     setState((draft) => {
       draft.id = id
@@ -331,6 +332,9 @@ function EspierDetail(props) {
     })
     if (S.getAuthToken()) {
       await dispatch(fetchUserFavs({distributor_id:dtid}))
+    }
+    if (!newDtid && gu) { // 初次进入pdp页有gu参数时，将导购信息存起来
+      Taro.setStorageSync(SG_GUIDE_PARAMS, routerParams)
     }
   }
 

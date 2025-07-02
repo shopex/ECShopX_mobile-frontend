@@ -482,7 +482,12 @@ export const TAB_PAGES = [
   '/pages/index',
   '/pages/category/index',
   '/pages/cart/espier-index',
-  '/subpages/member/index'
+  '/subpages/member/index',
+  '/subpages/guide/index',
+  '/subpages/guide/category/index',
+  '/subpages/guide/coupon-home/index',
+  '/subpages/guide/recommend/list',
+  '/subpages/guide/cart/espier-index',
 ]
 
 export * from './localstorage'

@@ -4,7 +4,7 @@ import qs from 'qs'
 import S from '@/spx'
 import { showToast, log, isArray, VERSION_STANDARD, resolveUrlParamsParse } from '@/utils'
 import configStore from '@/store'
-import { SG_ROUTER_PARAMS } from '@/consts/localstorage'
+import { SG_ROUTER_PARAMS, SG_GUIDE_PARAMS } from '@/consts/localstorage'
 
 
 const geocodeUrl = 'https://apis.map.qq.com/ws/geocoder/v1'
@@ -357,11 +357,16 @@ class EntryLaunch {
    * 导购UV统计
    */
   async postGuideUV() {
-    const routerParams = Taro.getStorageSync(SG_ROUTER_PARAMS)
-    const { gu_user_id } = routerParams || {}
-    debugger
+    const routerParams = Taro.getStorageSync(SG_ROUTER_PARAMS) || Taro.getStorageSync(SG_GUIDE_PARAMS)
+    const { gu, gu_user_id } = routerParams || {}
+    let work_userid = ''
+    if (gu) {
+      work_userid = gu.split('_')[0]
+    }
     if (gu_user_id) {
-      const [work_userid] = gu_user_id.split('_')
+      work_userid = gu_user_id
+    }
+    if (work_userid) {
       await api.user.uniquevisito({
         work_userid
       })
@@ -389,10 +394,19 @@ class EntryLaunch {
     }
     // gu_user_id: 欢迎语上带过来的员工编号, 同work_user_id
     const { gu, subtask_id, item_id, dtid, smid, gu_user_id, id } = params
-    if (gu_user_id && S.getAuthToken()) {
-      const [employee_number, shop_code] = gu.split('_')
+    let work_userid = ''
+    let shop_code = ''
+    if (gu) {
+      const [employeenumber, shopcode] = gu.split('_')
+      work_userid = employeenumber
+      shop_code = shopcode
+    }
+    if (gu_user_id) {
+      work_userid = gu_user_id
+    }
+    if (work_userid && S.getAuthToken()) {
       const _params = {
-        employee_number,
+        employee_number: work_userid,
         subtask_id,
         distributor_id: dtid,
         shop_code,
