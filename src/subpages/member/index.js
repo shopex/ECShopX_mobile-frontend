@@ -494,6 +494,7 @@ function MemberIndex(props) {
                     Taro.navigateTo({ url: '/subpages/member/user-info' })
                   }
                 }}
+                style={{ width: '72px', height: '72px' }}
               >
                 <SpImage
                   className='avatar-img'

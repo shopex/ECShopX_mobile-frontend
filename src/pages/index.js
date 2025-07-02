@@ -81,7 +81,8 @@ const initialState = {
     onCancel: null,
     onConfirm: null
   },
-  navigateMantle: false
+  navigateMantle: false,
+  footerHeight: 0
 }
 
 function Home() {
@@ -147,7 +148,8 @@ function Home() {
     selectType,
     policyModal,
     modalDivided,
-    navigateMantle
+    navigateMantle,
+    footerHeight
   } = state
 
   const dispatch = useDispatch()
@@ -660,10 +662,15 @@ function Home() {
       // renderNavigation={renderNavigation()}
       pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
-      renderFooter={<SpTabbar />}
+      renderFooter={<SpTabbar height={footerHeight} />}
       loading={loading}
       ref={pageRef}
       navigateMantle={navigateMantle}
+      onReady={({ footerHeight }) => {
+        setState((draft) => {
+          draft.footerHeight = footerHeight
+        })
+      }}
     >
       <ScrollView
         className={classNames('home-body', {
@@ -681,7 +688,8 @@ function Home() {
               onAddToCart,
               isTab: true,
               immersive: pageData?.base?.isImmersive,
-              isShowHomeHeader: isShowHomeHeader && isWeixin
+              isShowHomeHeader: isShowHomeHeader && isWeixin,
+              footerHeight: state.footerHeight
             }}
           >
             <HomeWgts wgts={filterWgts} onLoad={fetchLikeList}>

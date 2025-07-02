@@ -47,7 +47,8 @@ const initialState = {
     showCancel: true,
     onCancel: null,
     onConfirm: null
-  }
+  },
+  footerHeight: 0
 }
 function CustomPage(props) {
   const $instance = getCurrentInstance()
@@ -505,8 +506,13 @@ function CustomPage(props) {
       loading={loading}
       title={shareInfo?.page_name}
       ref={pageRef}
-      renderFooter={isShowTabBar && <SpTabbar />}
+      renderFooter={isShowTabBar && <SpTabbar  height={state.footerHeight} />}
       fixedTopContainer={fixedTop && <SpSearch info={searchComp} />}
+      onReady={({ footerHeight }) => {
+        setState((draft) => {
+          draft.footerHeight = footerHeight
+        })
+      }}
     >
       <WgtsContext.Provider
         value={{

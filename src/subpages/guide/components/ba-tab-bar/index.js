@@ -186,6 +186,7 @@ export default class TabBar extends Component {
       <AtTabBar
         fixed
         color={color}
+        customStyle={{ height: this.props.height }}
         backgroundColor={backgroundColor}
         selectedColor={selectedColor}
         tabList={tabList}
