@@ -509,9 +509,7 @@ const SpPage = memo(
               // 'height': `${state.height}px`,
               'margin-top': `${state.customNavigation && !props.immersive ? state.gNavbarH : 0}px`,
               'padding-bottom': props.renderFooter
-                ? Taro.pxTransform(
-                    props.footerHeight + (isIphoneX() ? DEFAULT_SAFE_AREA_HEIGHT : 0)
-                  )
+                ? Taro.pxTransform(props.footerHeight + (isIphoneX() ? DEFAULT_SAFE_AREA_HEIGHT : 0))
                 : 0
             })}
           >
@@ -524,11 +522,11 @@ const SpPage = memo(
           <View
             className='sp-page-footer'
             style={styleNames({
-              'height': `${Taro.pxTransform(props.footerHeight)}`,
+              'height': props.renderFooter ?`${Taro.pxTransform(props.footerHeight)}` : 0,
               'padding-bottom': `${isIphoneX() ? Taro.pxTransform(DEFAULT_SAFE_AREA_HEIGHT) : 0}`
             })}
           >
-            <context.Provider value={{ footerHeight: `${Taro.pxTransform(props.footerHeight)}` }}>
+            <context.Provider>
               {props.renderFooter}
             </context.Provider>
           </View>
