@@ -139,40 +139,18 @@ export function isObjectValueEqual(a, b) {
 
 export const isIphoneX = () => {
   if (isWeixin) {
-    try {
-      const {
-        model,
-        system,
-        windowWidth,
-        windowHeight,
-        screenHeight,
-        screenWidth,
-        pixelRatio,
-        brand
-      } = Taro.getSystemInfoSync()
-      const { networkType } = Taro.getNetworkType()
-
-      let px = screenWidth / 750 //rpx换算px iphone5：1rpx=0.42px
-
-      Taro.$systemSize = {
-        windowWidth,
-        windowHeight,
-        screenHeight,
-        screenWidth,
-        model,
-        px,
-        pixelRatio,
-        brand,
-        system,
-        networkType
-      }
-      if (system.indexOf('iOS') !== -1) {
-        Taro.$system = 'iOS'
-      }
-      S.set('ipxClass', model.toLowerCase().indexOf('iphone x') >= 0 ? 'is-ipx' : '')
-    } catch (e) {
-      console.log(e)
-    }
+    const { model } = Taro.getSystemInfoSync()
+    return (
+      model.search(
+        /iPhone\s*X|iPhone\s*11|iPhone\s*12|iPhone\s*13|iPhone\s*14|iPhone\s*15|iPhone\s*17|iPhone\s*16|iPhone\s*10/g
+      ) > -1
+    )
+  } else if (isAPP()) {
+    return /iphone/gi.test(window.navigator.userAgent) && window.screen.height >= 812
+  } else if (isWxWeb && getBrowserEnv().ios) {
+    return true
+  } else if (isWeb) {
+    return false
   }
 }
 

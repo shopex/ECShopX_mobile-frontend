@@ -37,7 +37,7 @@ function WgtFullSlider(porps) {
     show,
     height
   } = state
-  const { isTab = false, immersive = false, isShowHomeHeader = false } = useContext(WgtsContext)
+  const { isTab = false, immersive = false, isShowHomeHeader = false, footerHeight } = useContext(WgtsContext)
 
   useEffect(() => {
     if (info) {
@@ -100,9 +100,9 @@ function WgtFullSlider(porps) {
   const setHeight = useCallback(async () => {
     const heightS = immersive ? 0 : 89
     const homeHeight = isShowHomeHeader ? 90 : 0
-    const tabHeight = isTab ? 64 : 0
+    const tabHeight = isTab ? footerHeight : 0
     setState((draft) => {
-      draft.height = isTab ? `calc(100vh - ${homeHeight}rpx - ${heightS}px - ${tabHeight}px)` : `calc(100vh - ${homeHeight}rpx  - ${heightS}px)`
+      draft.height = isTab ? `calc(100vh - ${homeHeight}rpx - ${heightS}px - ${tabHeight})` : `calc(100vh - ${homeHeight}rpx  - ${heightS}px)`
     })
   }, [config, show])
 
