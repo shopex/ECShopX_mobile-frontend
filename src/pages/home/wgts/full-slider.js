@@ -140,6 +140,17 @@ function WgtFullSlider(props) {
         <View className='indicator-text' style={{ fontSize: indicatorFontSize + 'px' }}>
           {indicatorText}
         </View>
+        <View className='indicator-arrow' style={{
+          marginRight: 4,
+          width: 0,
+          height: 0,
+          borderTop: '8px solid transparent',
+          borderBottom: '8px solid transparent',
+          borderLeft: `12px solid ${indicatorColor}`,
+          position: 'absolute',
+          right: '-22px',
+          top: indicatorText ? '40%' : '30%'
+        }} />
       </View>
     )
   }
@@ -311,8 +322,8 @@ function WgtFullSlider(props) {
           cacheExtent={1}
           current={curIdx}
         >
-          {renderOverlay}
           {renderItem}
+          {renderOverlay}
         </Swiper>
         {localData.length > 1 && (
           <View className='wgt_full_slider_indicator'>
