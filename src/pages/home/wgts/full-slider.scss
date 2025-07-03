@@ -151,10 +151,7 @@
       .indicator-item {
         margin: 0 4px;
         position: absolute;
-        right: 20px;
-        .indicator-current {
-          // font-weight: bold;
-        }
+        right: 45px;
       }
     }
   }
@@ -162,5 +159,9 @@
   .slider-caption {
     padding: 20px 30px;
     color: #999;
+  }
+  .indicator-arrow {
+    display: inline-block;
+    vertical-align: middle;
   }
 }
