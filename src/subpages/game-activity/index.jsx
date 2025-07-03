@@ -6,13 +6,13 @@ import { getGameConfig, drawPrize } from '@/api/game'
 import { GAME_TYPES } from '@/consts/game'
 import { pickBy } from '@/utils'
 import { GAME_CONFIG } from '@/doc/game'
+import {SpPage} from '@/components'
 import SpWheel from './components/sp-wheel'
 import SpGrid from './components/sp-grid'
 import SpSlot from './components/sp-slot'
 import SpRuleLayout from './components/sp-rule-layout'
 import SpDrawResult from './components/sp-draw-result'
 import ActiveTotalControl from './components/sp-active-header'
-
 import './index.scss'
 
 const GameActivity = () => {
@@ -171,7 +171,7 @@ const GameActivity = () => {
   }
 
   return (
-    <View className='sp-game-activity'>
+    <SpPage className='sp-game-activity'>
       <View className='sp-game-activity__ad-area' style={getPageStyle()}>
         {/* 加载状态 */}
         {loading && (
@@ -230,7 +230,7 @@ const GameActivity = () => {
           currentFV={resultData.currentFV}
         />
       </View>
-    </View>
+    </SpPage>
   )
 }
 
