@@ -49,6 +49,7 @@ function SpInput(props) {
           onInput={handleInput}
           placeholderClass={props.placeholderClass}
           className={classNames('at-input__input', props.className)}
+          onConfirm={props.onConfirm}
         />
         {/* <Input
           type={type}
@@ -80,7 +81,8 @@ SpInput.defaultProps = {
   clear: false,
   placeholder: '',
   maxLength: null,
-  onChange: () => {}
+  onChange: () => {},
+  onConfirm:() => {}
 }
 
 export default SpInput
