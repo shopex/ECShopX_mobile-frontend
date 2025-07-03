@@ -211,8 +211,10 @@ function CompDeliver(props, ref) {
   }
 
   const onInputChange = (key, value) => {
+    const _form = { ...form }
+    _form[key] = value
     setState((draft) => {
-      draft.form[key] = value
+      draft.form = _form
     })
   }
 
@@ -291,6 +293,7 @@ function CompDeliver(props, ref) {
                   name='pickerName'
                   value={form.pickerName}
                   placeholder='请输入提货人姓名'
+                  cursor={form.pickerName.length}
                   onChange={onInputChange.bind(this, 'pickerName')}
                 />
               </SpFormItem>
@@ -298,6 +301,7 @@ function CompDeliver(props, ref) {
                 <AtInput
                   name='pickerPhone'
                   value={form.pickerPhone}
+                  cursor={form.pickerPhone.length}
                   placeholder='请输入提货人手机号码'
                   onChange={onInputChange.bind(this, 'pickerPhone')}
                 />

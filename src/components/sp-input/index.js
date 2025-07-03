@@ -10,9 +10,9 @@ function SpInput(props) {
   const { required, title, type = 'text' } = props
   const [cursor, setCursor] = useState(-1)
 
-  const handleInput = async (e, event) => {
-    console.log('sp-input', e.length, event)
-    if (props.maxLength && e.length > props.maxLength) {
+  const handleInput = async (event) => {
+    console.log('sp-input', event,event.detail.value)
+    if (props.maxLength && event.detail.value?.length > props.maxLength) {
       return
     }
     await props.onChange(event.detail.value)
@@ -46,7 +46,7 @@ function SpInput(props) {
           maxLength={props.maxLength}
           placeholder={props.placeholder}
           cursor={cursor}
-          onChange={handleInput}
+          onInput={handleInput}
           placeholderClass={props.placeholderClass}
           className={classNames('at-input__input', props.className)}
         />
