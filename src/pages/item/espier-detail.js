@@ -797,7 +797,7 @@ const getMultipleImageInfo = async (imageUrls) => {
       isDefault={isDefault}
       defaultMsg={defaultMsg}
       immersive={true}
-      title={info?.itemName}
+      // title={info?.itemName}
       ref={pageRef}
       renderFloat={
         <View>
