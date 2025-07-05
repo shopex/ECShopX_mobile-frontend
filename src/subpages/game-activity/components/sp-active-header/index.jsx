@@ -8,7 +8,7 @@ const ActiveTotalControl = (props) => {
   return (
     <View className='sp-active-control'>
       <View className='sp-active-control__title'>
-        <Text>我的互动分</Text>
+        <Text>我的积分</Text>
         <Text className='sp-active-control__title-score'>{point || 0}</Text>
       </View>
       <SpImage
@@ -19,7 +19,7 @@ const ActiveTotalControl = (props) => {
       <View className='sp-active-control__desc'>
         <Text>每次抽奖消耗</Text>
         <Text style={{ marginLeft: '6rpx' }}>{cost_value}</Text>
-        <Text>互动分</Text>
+        <Text>积分</Text>
       </View>
     </View>
   )
