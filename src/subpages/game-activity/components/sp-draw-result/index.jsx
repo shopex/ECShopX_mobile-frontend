@@ -32,8 +32,8 @@ const SpDrawResult = ({
         })
       } else if (insufficientFV) {
         showModal({
-          title: 'FV不足',
-          content: `您当前的FV为 ${currentFV}，需要 ${requiredFV} 积分才能抽奖`,
+          title: '积分不足',
+          content: `您当前的积分为 ${currentFV}，需要 ${requiredFV} 积分才能抽奖`,
           showCancel: false,
           confirmText: '我知道了',
           contentAlign: 'center'
