@@ -47,11 +47,11 @@ const SpRecordLayout = () => {
                   +{record.prize_value}
                 </Text>
               )}
-              {record.prize_type === 'coupon' && (
+              {/* {record.prize_type === 'coupon' && (
                 <Text className='sp-record-layout__amount sp-record-layout__amount--coupon'>
                   ¥{record.prize_value}
                 </Text>
-              )}
+              )} */}
             </View>
           ))}
         </View>
