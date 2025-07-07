@@ -16,8 +16,8 @@ const SpDrawResult = ({
   currentFV = 0
 }) => {
   // 判断是否是未中奖情况
-  console.log('prizeInfo----', prizeInfo)
-  const isEmptyPrize = prizeInfo?.data?.prize_type === 'thanks'
+  const resData = prizeInfo?.data || {}
+  const isEmptyPrize = resData?.prize_type === 'thanks'
   const { showModal } = useModal()
   useEffect(() => {
     if (visible) {
@@ -52,17 +52,17 @@ const SpDrawResult = ({
       return (
         <View className='sp-draw-result__prize'>
           <View className='sp-draw-result__title'>恭喜中奖</View>
-          {prizeInfo.prizeImage && (
-            <Image className='sp-draw-result__image' src={prizeInfo.prizeImage} mode='aspectFit' />
+          {resData?.prizeImage && (
+            <Image className='sp-draw-result__image' src={resData?.prizeImage} mode='aspectFit' />
           )}
-          <View className='sp-draw-result__prize-name'>{prizeInfo.prize_title}</View>
-          {prizeInfo.prize_value && (
+          <View className='sp-draw-result__prize-name'>{resData?.prize_title}</View>
+          {resData?.prize_value && (
             <View className='sp-draw-result__prize-amount'>
-              {prizeInfo.prize_value}
-              {prizeInfo.prize_type === 'points' ? '积分' : '元'}
+              {resData?.prize_value}
+              {resData?.prize_type === 'points' ? '积分' : '元'}
             </View>
           )}
-          <View className='sp-draw-result__message'>{prizeInfo.message || '恭喜您获得奖品！'}</View>
+          <View className='sp-draw-result__message'>{resData?.message || '恭喜您获得奖品！'}</View>
           <View className='sp-draw-result-btn__wrap'>
             <AtButton className='sp-draw-result__btn sp-draw-result__btn_left' onClick={onClose}>
               取消
