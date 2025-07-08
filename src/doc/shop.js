@@ -34,8 +34,7 @@ export const SHOP_ITEM = {
   selfDeliveryRule:'selfDeliveryRule',
   is_self_delivery:"is_self_delivery",
   created: 'created', // 创建时间
-  isOpenDivided: 'isOpenDivided', // 是否开启店铺隔离  
-  sort_id: 'sort_id' // 店铺隔离最新排序id
+  isOpenDivided: 'isOpenDivided' // 是否开启店铺隔离  
 }
 
 export const BUSINESS_SORT = {

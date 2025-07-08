@@ -1,7 +1,4 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import {
-  getDistributorId,
-} from '@/utils'
 import api from '@/api'
 
 const initialState = {
@@ -30,7 +27,7 @@ const initialState = {
 }
 
 export const fetchUserFavs = createAsyncThunk('user/fetchUserFavs', async (params) => {
-  const { list } = await api.member.favsList({ ...params , distributor_id: params?.distributor_id || getDistributorId()})
+  const { list } = await api.member.favsList(params)
   return {
     list
   }
