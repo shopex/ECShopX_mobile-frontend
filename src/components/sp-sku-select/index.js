@@ -93,7 +93,6 @@ function SpSkuSelect(props) {
   //起订量
   const specItemed = (val=[]) =>{
     if(info.startNum > 0){
-      //多规格
       if(info.specItems.length > 0 && val.length > 0){ //多规格动态获取起订量
         const newval = val.length == 1 ? val[0] : val.join('-')
         info.specItems.forEach((item) => {
@@ -105,7 +104,6 @@ function SpSkuSelect(props) {
           }
         })
       }
-      //单规格
       return info.startNum 
     }else{
       return 1
