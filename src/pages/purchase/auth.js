@@ -363,7 +363,7 @@ function PurchaseAuth() {
         </Text>
       </View>
 
-      <View className='service-footer'>
+      {/* <View className='service-footer'>
         <View
           className='toolbar-item'
           onClick={() => {
@@ -374,7 +374,7 @@ function PurchaseAuth() {
           <Text className='toolbar-item-txt'>客服电话：</Text>
           <Text className='toolbar-item-content'>021-60662088</Text>
         </View>
-      </View>
+      </View> */}
 
       <CompBottomTip />
     </SpPage>
