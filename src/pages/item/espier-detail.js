@@ -68,7 +68,7 @@ import CompBuytoolbar from './comps/comp-buytoolbar'
 import CompShare from './comps/comp-share'
 import CompPromation from './comps/comp-promation'
 import CompGroup from './comps/comp-group'
-import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading, WgtHeadline } from '../home/wgts'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading, WgtHeadline,WgtImgHotZone } from '../home/wgts'
 import { updateShopInfo, changeInWhite } from '@/store/slices/shop'
 import './espier-detail.scss'
 
@@ -1090,6 +1090,9 @@ const getMultipleImageInfo = async (imageUrls) => {
                     {/* {item.name === 'heading' && <WgtHeading info={item} />} */}
                     {item.name === 'headline' && <WgtHeadline info={item} />}
                     {item.name === 'goods' && <WgtGoods info={item} />}
+                    {
+                      item.name === 'imgHotzone' && <WgtImgHotZone info={item} />
+                    }
                   </View>
                 ))}
               </View>
