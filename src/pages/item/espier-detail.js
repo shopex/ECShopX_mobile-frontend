@@ -45,7 +45,8 @@ import {
   isAPP,
   showToast,
   getDistributorId,
-  VERSION_STANDARD
+  VERSION_STANDARD,
+  pxToRpx
 } from '@/utils'
 import { fetchUserFavs } from '@/store/slices/user'
 
@@ -56,7 +57,7 @@ import S from '@/spx'
 import { Tracker } from '@/service'
 import { useNavigation, useLogin, useLocation, useWhiteShop } from '@/hooks'
 import { ACTIVITY_LIST } from '@/consts'
-import { SG_ROUTER_PARAMS } from '@/consts/localstorage'
+import { SG_ROUTER_PARAMS, SG_GUIDE_PARAMS } from '@/consts/localstorage'
 import CompActivityBar from './comps/comp-activitybar'
 import CompVipGuide from './comps/comp-vipguide'
 import CompCouponList from './comps/comp-couponlist'
@@ -67,7 +68,7 @@ import CompBuytoolbar from './comps/comp-buytoolbar'
 import CompShare from './comps/comp-share'
 import CompPromation from './comps/comp-promation'
 import CompGroup from './comps/comp-group'
-import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading, WgtHeadline } from '../home/wgts'
+import { WgtFilm, WgtSlider, WgtWriting, WgtGoods, WgtHeading, WgtHeadline,WgtImgHotZone } from '../home/wgts'
 import { updateShopInfo, changeInWhite } from '@/store/slices/shop'
 import './espier-detail.scss'
 
@@ -108,7 +109,8 @@ const initialState = {
     onCancel: null,
     onConfirm: null
   },
-  isParameter: false
+  isParameter: false,
+  imgHeightList: [], // 用于存储banner高度
 }
 
 function EspierDetail(props) {
@@ -179,7 +181,8 @@ function EspierDetail(props) {
     recommendList,
     policyModal,
     modalDivided,
-    isParameter
+    isParameter,
+    imgHeightList,
   } = state
 
   // 添加一个 ref 来追踪是否是首次渲染
@@ -187,7 +190,14 @@ function EspierDetail(props) {
 
   useEffect(() => {
     init()
+    entryLaunch.postGuideTask()
   }, [])
+
+  useEffect(() => {
+    if (isLogin && id) { // 导购浏览记录
+      api.member.itemHistorySave(id)
+    }
+  },[isLogin, id])
 
   useEffect(() => {
     if (open_divided) {
@@ -320,7 +330,8 @@ function EspierDetail(props) {
   }
 
   const init = async (newDtid) => {
-    const { type, id, dtid:routerDtid } = await entryLaunch.getRouteParams()
+    const routerParams = await entryLaunch.getRouteParams()
+    const { type, id, dtid:routerDtid } = routerParams
     const dtid = newDtid || routerDtid
     setState((draft) => {
       draft.id = id
@@ -656,11 +667,14 @@ function EspierDetail(props) {
         }
       })
     }
+    const banner = await getMultipleImageInfo(data.imgs)
     setState((draft) => {
       draft.info = {
         ...data,
         subscribe
       }
+      draft.play = data.video ? true : false // 辉绮需求
+      draft.imgHeightList = banner
       draft.promotionActivity = data.promotionActivity
     })
 
@@ -686,6 +700,19 @@ function EspierDetail(props) {
       getRecommendList() // 猜你喜欢
     }
   }
+const getMultipleImageInfo = async (imageUrls) => {
+  const promises = imageUrls.map(url =>
+    Taro.getImageInfo({ src: url })
+      .then(info => info)
+      .catch(error => {
+        console.log('获取图片信息失败:', url, error)
+        // 返回一个默认高度或 null
+        return { width: 0, height: 750 }
+      })
+  )
+  const results = await Promise.all(promises)
+  return results.map(info => info.height / 2)
+}
 
   const getRecommendList = async () => {
     const { list } = await api.cart.likeList({
@@ -732,8 +759,8 @@ function EspierDetail(props) {
     })
   }
 
-  const onChangeSwiper = (e) => {
-    setState((draft) => {
+  const onChangeSwiper = async (e) => {
+    await setState((draft) => {
       draft.curImgIdx = e.detail.current
     })
   }
@@ -743,6 +770,16 @@ function EspierDetail(props) {
       draft.skuPanelOpen = true
       draft.selectType = key
     })
+  }
+
+  const setSwiperCss = (item) => {
+    return {
+      height: '100%',
+      width: '100%',
+      backgroundSize: '100% auto',
+      backgroundImage: `url(${item})`,
+      backgroundRepeat: 'no-repeat'
+    }
   }
 
   const { windowWidth } = Taro.getSystemInfoSync()
@@ -761,6 +798,8 @@ function EspierDetail(props) {
       scrollToTopBtn
       isDefault={isDefault}
       defaultMsg={defaultMsg}
+      immersive={true}
+      title={info?.itemName}
       ref={pageRef}
       renderFloat={
         <View>
@@ -797,16 +836,17 @@ function EspierDetail(props) {
               className='goods-swiper'
               // current={curImgIdx}
               onChange={onChangeSwiper}
+              style={{ height: (imgHeightList[curImgIdx]) + 'px' }}
             >
-              {console.log('info', info)}
               {info.imgs.map((img, idx) => (
                 <SwiperItem key={`swiperitem__${idx}`}>
-                  <SpImage
-                    mode='widthFix'
-                    src={img}
-                    width={windowWidth * 2}
-                  // height={windowWidth * 2}
-                  ></SpImage>
+                  <View style={setSwiperCss(img)}>
+                    <SpImage
+                      mode='scaleToFill'
+                      src={img}
+                      className='swiperitem__img'
+                    />
+                  </View>
                 </SwiperItem>
               ))}
             </Swiper>
@@ -1051,6 +1091,9 @@ function EspierDetail(props) {
                     {/* {item.name === 'heading' && <WgtHeading info={item} />} */}
                     {item.name === 'headline' && <WgtHeadline info={item} />}
                     {item.name === 'goods' && <WgtGoods info={item} />}
+                    {
+                      item.name === 'imgHotzone' && <WgtImgHotZone info={item} />
+                    }
                   </View>
                 ))}
               </View>
