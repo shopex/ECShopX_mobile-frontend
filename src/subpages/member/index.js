@@ -500,7 +500,7 @@ function MemberIndex(props) {
               >
                 <SpImage
                   className='avatar-img'
-                  src={isLogin ? (userInfo && userInfo.avatar) : 'user_icon.png'}
+                  src={(userInfo && userInfo.avatar) || 'user_icon.png'}
                   width={144}
                   height={144}
                 />
