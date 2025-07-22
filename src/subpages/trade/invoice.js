@@ -96,7 +96,9 @@ function Invoice(props) {
         let nInfo = {
           invoice_type: type == 0 ? 'enterprise' : 'individual',
           invoice_type_code: info.invoice_type_code,
-          company_title: title
+          company_title: title,
+          email: info?.email,
+          mobile: info?.mobile
         }
         if (type == 0) {
           nInfo = {
