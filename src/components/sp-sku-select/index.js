@@ -12,7 +12,13 @@ import {
   SpInputNumber,
   SpGoodsPrice
 } from '@/components'
-import { addCart, updateCount, updateSalesmanCount, updateShopCartCount, updateShopSalesmanCartCount } from '@/store/slices/cart'
+import {
+  addCart,
+  updateCount,
+  updateSalesmanCount,
+  updateShopCartCount,
+  updateShopSalesmanCartCount
+} from '@/store/slices/cart'
 import { BUY_TOOL_BTNS } from '@/consts'
 import api from '@/api'
 import { useAsyncCallback } from '@/hooks'
@@ -42,8 +48,8 @@ function SpSkuSelect(props) {
   const {
     info,
     open = false,
-    onClose = () => { },
-    onChange = () => { },
+    onClose = () => {},
+    onChange = () => {},
     type,
     hideInputNumber = false,
     salesman = false
@@ -91,13 +97,14 @@ function SpSkuSelect(props) {
   }
 
   //起订量
-  const specItemed = (val=[]) =>{
-    if(info.startNum > 0){
+  const specItemed = (val = []) => {
+    if (info.startNum > 0) {
       //多规格
-      if(info.specItems.length > 0 && val.length > 0){ //多规格动态获取起订量
+      if (info.specItems.length > 0 && val.length > 0) {
+        //多规格动态获取起订量
         const newval = val.length == 1 ? val[0] : val.join('-')
         info.specItems.forEach((item) => {
-          if(item.customSpecId == newval){
+          if (item.customSpecId == newval) {
             setState((draft) => {
               draft.num = item.startNum
             })
@@ -106,14 +113,13 @@ function SpSkuSelect(props) {
         })
       }
       //单规格
-      return info.startNum 
-    }else{
+      return info.startNum
+    } else {
       return 1
     }
-    
   }
 
-  const calcDisabled =async (selection) => {
+  const calcDisabled = async (selection) => {
     const disabledSet = new Set()
     const makeReg = (sel, row, val) => {
       const tSel = sel.slice()
@@ -149,7 +155,7 @@ function SpSkuSelect(props) {
       'selection:',
       selection,
       'disabledSet:',
-      disabledSet 
+      disabledSet
     )
 
     const curItem = skuDictRef.current[selection.join('_')]
@@ -272,7 +278,7 @@ function SpSkuSelect(props) {
       discount_fee: valid_cart[0]?.discount_fee || '', //优惠金额
       storeDetails: valid_cart[0] || {}
     }
-    dispatch(updateCount({ shop_type: 'distributor'}))
+    dispatch(updateCount({ shop_type: 'distributor' }))
     dispatch(updateShopCartCount(shopCats))
   }
 
@@ -382,7 +388,7 @@ function SpSkuSelect(props) {
     let limitNum = null
     let limitTxt = ''
     let max = null
-   
+
     // 商品限购
     if (activityType) {
       if (activityType == 'limited_buy') {
@@ -427,7 +433,7 @@ function SpSkuSelect(props) {
       <View className='buy-count'>
         <View className='label'>
           购买数量 {limitNum && <Text className='limit-count'>{limitTxt}</Text>}
-          {info.startNum > 0 &&  <Text className='limit-count'>(起订量{num}件)</Text>}
+          {info.startNum > 0 && <Text className='limit-count'>(起订量{num}件)</Text>}
         </View>
 
         <SpInputNumber

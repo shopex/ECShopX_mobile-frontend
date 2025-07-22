@@ -96,18 +96,19 @@ export default class WgtImgHotZone extends Component {
             <Image src={config.imgUrl} mode='widthFix' className='img-hotzone_img' />
           )}
 
-          {isArray(data) && data.map((item, index) => {
-            return (
-              <View
-                key={index}
-                className='img-hotzone_zone'
-                style={`width: ${item.widthPer * 100}%; height: ${item.heightPer * 100}%; top: ${
-                  item.topPer * 100
-                }%; left: ${item.leftPer * 100}%`}
-                onClick={this.handleClickItem.bind(this, item, index)}
-              ></View>
-            )
-          })}
+          {isArray(data) &&
+            data.map((item, index) => {
+              return (
+                <View
+                  key={index}
+                  className='img-hotzone_zone'
+                  style={`width: ${item.widthPer * 100}%; height: ${item.heightPer * 100}%; top: ${
+                    item.topPer * 100
+                  }%; left: ${item.leftPer * 100}%`}
+                  onClick={this.handleClickItem.bind(this, item, index)}
+                ></View>
+              )
+            })}
         </View>
       </View>
     )
