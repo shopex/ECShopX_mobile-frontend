@@ -8,7 +8,7 @@ import { pickBy } from '@/utils'
 import { withPager, withBackToTop } from '@/hocs'
 
 import api from '@/api'
-import { SearchBar, TagsBar, Scrollitem, TabBar } from '../../components'
+import { TagsBar, Scrollitem, TabBar } from '../../components'
 
 import './index.scss'
 

@@ -6,7 +6,17 @@ import configStore from '@/store'
 const { store } = configStore()
 
 function linkPage(data) {
-  const { id, title, linkPage, linkType, type, distributor_id, navigation = false, content, seletedTags = [] } = data
+  const {
+    id,
+    title,
+    linkPage,
+    linkType,
+    type,
+    distributor_id,
+    navigation = false,
+    content,
+    seletedTags = []
+  } = data
   const { id: dtid } = getCurrentInstance().router.params
   // h5链接
   if (linkType == 1) {
@@ -17,15 +27,17 @@ function linkPage(data) {
   }
   if (navigation) {
     let tags = []
-    seletedTags.forEach(item => {
+    seletedTags.forEach((item) => {
       tags.push({
         tag_id: item.tag_id,
         tag_name: item.tag_name
       })
     })
-    let seleted = stringify(tags);
+    let seleted = stringify(tags)
     Taro.navigateTo({
-      url: `/subpages/ecshopx/navigation-ibs?content=${content}&id=${id}&seletedTags=${encodeURIComponent(seleted)}`
+      url: `/subpages/ecshopx/navigation-ibs?content=${content}&id=${id}&seletedTags=${encodeURIComponent(
+        seleted
+      )}`
     })
     return
   }
@@ -64,8 +76,8 @@ function linkPage(data) {
     case 'seckill':
       url = '/marketing/pages/item/seckill-goods-list?seckill_id=' + id
       break
-    case "purchase_activity":
-      url = '/subpages/purchase/select-identity?is_redirt=1&activity_id='+id
+    case 'purchase_activity':
+      url = '/subpages/purchase/select-identity?is_redirt=1&activity_id=' + id
       clearPurchaseDtid()
       break
     case 'link':
@@ -97,7 +109,7 @@ function linkPage(data) {
         url = '/pages/floorguide/index'
       } else if (id === 'grouppurchase') {
         url = '/groupBy/pages/home/index'
-      } else if(id === 'registActivity'){
+      } else if (id === 'registActivity') {
         url = '/marketing/pages/member/activity-list'
       } else {
         url = ''
@@ -144,9 +156,10 @@ function linkPage(data) {
   }
 }
 
-function clearPurchaseDtid(){
+function clearPurchaseDtid() {
   store.dispatch({
-    type: 'purchase/updateCurDistributorId', payload: null
+    type: 'purchase/updateCurDistributorId',
+    payload: null
   })
 }
 

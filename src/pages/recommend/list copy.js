@@ -6,7 +6,7 @@ import {
   BackToTop,
   Loading,
   RecommendItem,
-  SearchBar,
+  SpSearchBar,
   SpNote,
   FilterBar,
   SpTabbar,
@@ -561,7 +561,7 @@ export default class RecommendList extends Component {
                 query && query.title && isShowSearch ? 'on-search' : null
               }`}
             >
-              <SearchBar
+              <SpSearchBar
                 showDailog={false}
                 keyword={query ? query.title : ''}
                 onFocus={this.handleSearchOn}

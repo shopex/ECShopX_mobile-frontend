@@ -96,11 +96,7 @@ function Home() {
   // })
 
   return (
-    <SpPage
-      className='page-guide-index'
-      scrollToTopBtn
-      renderFooter={<BaTabBar />}
-    >
+    <SpPage className='page-guide-index' scrollToTopBtn renderFooter={<BaTabBar />}>
       {userInfo && <BaStore guideInfo={userInfo} />}
 
       <View className='home-body'>

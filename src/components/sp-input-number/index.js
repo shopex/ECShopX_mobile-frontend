@@ -107,7 +107,6 @@ class AtInputNumber extends AtComponent {
     //   localValue: value
     // })
 
-
     // this.props.onChange(newValue, e, ...arg)
     // return newValue
   }
@@ -137,7 +136,16 @@ class AtInputNumber extends AtComponent {
       width: width ? `${Taro.pxTransform(width)}` : ''
     }
     const inputValue = this.handleValue(this.state.localValue)
-    console.log('inputValue', inputValue, 'localValue', this.state.localValue, 'max', max, 'inputValue >= parseInt(max)', inputValue >= parseInt(max))
+    console.log(
+      'inputValue',
+      inputValue,
+      'localValue',
+      this.state.localValue,
+      'max',
+      max,
+      'inputValue >= parseInt(max)',
+      inputValue >= parseInt(max)
+    )
     const rootCls = classNames(
       'sp-input-number',
       'at-input-number',
@@ -187,8 +195,8 @@ AtInputNumber.defaultProps = {
   max: 100,
   step: 1,
   size: '',
-  onChange: () => { },
-  onBlur: () => { }
+  onChange: () => {},
+  onBlur: () => {}
 }
 
 export default AtInputNumber

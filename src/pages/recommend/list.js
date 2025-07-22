@@ -9,7 +9,6 @@ import {
   BackToTop,
   Loading,
   RecommendItem,
-  SearchBar,
   SpNote,
   FilterBar,
   SpTabbar,

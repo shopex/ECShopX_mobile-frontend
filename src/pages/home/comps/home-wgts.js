@@ -31,7 +31,7 @@ const initialState = {
   searchMethod: null
 }
 function HomeWgts(props) {
-  const { wgts, dtid, onLoad = () => { }, children ,copywriting = false} = props
+  const { wgts, dtid, onLoad = () => {}, children, copywriting = false } = props
   const [state, setState] = useImmer(initialState)
   const { localWgts, searchMethod } = state
   const wgtsRef = useRef()
@@ -41,8 +41,6 @@ function HomeWgts(props) {
   //     refreshWgtsList()
   //   }
   // }, [wgts])
-
-
 
   // const refreshWgtsList = () => {
   //   setState(draft => {
@@ -58,7 +56,8 @@ function HomeWgts(props) {
     const x = pageSize * pageIndex
     const twgt = wgts.slice(x - pageSize, x > wgts.length ? wgts.length : x)
     log.debug(
-      `${pageIndex}; ${pageSize}; ${wgts.length}; ${x - pageSize}; ${x > wgts.length ? wgts.length : x
+      `${pageIndex}; ${pageSize}; ${wgts.length}; ${x - pageSize}; ${
+        x > wgts.length ? wgts.length : x
       }`
     )
 
@@ -67,7 +66,7 @@ function HomeWgts(props) {
         url: `/subpages/store/item-list?dtid=${dtid}`
       })
     }
-    let searchMethod = dtid && storeClick;
+    let searchMethod = dtid && storeClick
 
     setState((draft) => {
       draft.localWgts[pageIndex - 1] = twgt
@@ -80,7 +79,14 @@ function HomeWgts(props) {
   }
 
   return (
-    <SpScrollView className='home-wgts' ref={wgtsRef} fetch={fetch} pageSize={5} onLoad={onLoad} renderMore={copywriting?null:()=>{}}>
+    <SpScrollView
+      className='home-wgts'
+      ref={wgtsRef}
+      fetch={fetch}
+      pageSize={5}
+      onLoad={onLoad}
+      renderMore={copywriting ? null : () => {}}
+    >
       {localWgts.map((list) => {
         return list.map((item, idx) => (
           <View
@@ -90,7 +96,8 @@ function HomeWgts(props) {
             data-name={item.name}
           >
             {/* {item.name === "search" && <WgtSearchHome info={item} />} */}
-            {item.name === 'search' && <SpSearch info={item} onClick={searchMethod} />} {/** 搜索 */}
+            {item.name === 'search' && <SpSearch info={item} onClick={searchMethod} />}{' '}
+            {/** 搜索 */}
             {item.name === 'film' && <WgtFilm info={item} />} {/** 视频 */}
             {item.name === 'marquees' && <WgtMarquees info={item} />} {/** 文字轮播 */}
             {item.name === 'slider' && <WgtSlider isHomeSearch info={item} />} {/** 轮播 */}

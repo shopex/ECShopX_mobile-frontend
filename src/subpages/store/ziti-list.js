@@ -3,7 +3,6 @@ import Taro, { getCurrentInstance } from '@tarojs/taro'
 import { View, ScrollView, Text, Picker } from '@tarojs/components'
 import {
   SpToast,
-  SearchBar,
   BackToTop,
   SpNavBar,
   SpCheckbox,
@@ -422,17 +421,6 @@ export default class StoreZitiList extends Component {
     return (
       <View className='page-store-list'>
         <SpAddress />
-        {/* <View className='store-list__search'>
-          <SearchBar
-            showDailog={false}
-            keyword={query ? query.name : ''}
-            onFocus={this.handleSearchOn}
-            onChange={this.handleSearchChange}
-            onClear={this.handleSearchClear}
-            onCancel={this.handleSearchOff}
-            onConfirm={this.handleConfirm.bind(this)}
-          />
-        </View> */}
         <Picker
           mode='multiSelector'
           onClick={this.handleClickPicker}
