@@ -175,14 +175,14 @@ function Invoice(props) {
   const handleChange = (name, val) => {
     const nInfo = JSON.parse(JSON.stringify(state.info || {}))
     nInfo[name] = val
-    if (name === 'invoice_type') {
-      nInfo.company_title = ''
-      nInfo.company_tax_number = ''
-      nInfo.company_address = ''
-      nInfo.company_telephone = ''
-      nInfo.bank_name = ''
-      nInfo.bank_account = ''
-    }
+    // if (name === 'invoice_type') {
+    //   nInfo.company_title = ''
+    //   nInfo.company_tax_number = ''
+    //   nInfo.company_address = ''
+    //   nInfo.company_telephone = ''
+    //   nInfo.bank_name = ''
+    //   nInfo.bank_account = ''
+    // }
     if (name === 'invoice_type_code' && val === '01') {
       nInfo.invoice_type = 'enterprise'
     }
