@@ -30,10 +30,10 @@ function WgtImgHotZone(props) {
         <SpImage img-class='img-hotzone_img' src={config.imgUrl} lazyLoad />
         {isArray(data) &&
           data.map((item, index) => {
+            //TODO 后期可以使用provider 将事件上报给根组件进行登录后跳转的动作
             if (
               item.id == 'purchase' ||
-              needLoginPageType.includes(item.id) ||
-              needLoginPage.includes(item.linkPage)
+              ['purchase_activity', 'regactivity', 'lottery'].includes(item.linkPage)
             ) {
               return (
                 <SpLogin
