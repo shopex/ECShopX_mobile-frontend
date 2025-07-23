@@ -8,7 +8,6 @@ release.*
 dist_iwa.zip
 sitemap.json
 dist/
-.app_modules.*
 .history
 .swc
 .vscode
