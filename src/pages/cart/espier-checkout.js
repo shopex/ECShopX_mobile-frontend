@@ -1082,7 +1082,7 @@ function CartCheckout(props) {
             value={couponText || '请选择'}
           />
         )}
-        {!bargain_id && totalInfo.invoice_status && (
+        {(!bargain_id && totalInfo.invoice_status) ? (
           <SpCell
             isLink
             title='开发票'
@@ -1100,7 +1100,7 @@ function CartCheckout(props) {
               </View>
             }
           />
-        )}
+        ) : null}
 
         {openBuilding && (
           <View className='cart-checkout__building'>
