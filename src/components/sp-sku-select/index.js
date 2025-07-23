@@ -71,6 +71,14 @@ function SpSkuSelect(props) {
     }
   }, [info])
 
+  useEffect(() => {
+    if(open){
+      setState((draft) => {
+        draft.num = 1
+      })
+    }
+  }, [open])
+
   const init = () => {
     const { skuList, specItems } = info
     console.log('skuList:', skuList)
@@ -367,7 +375,7 @@ function SpSkuSelect(props) {
     } else if (type == 'addcart') {
       return (
         <AtButton circle loading={loading} type='primary' onClick={addToCart}>
-          {btnTxt}
+          {btnTxt}问我
         </AtButton>
       )
     } else {
