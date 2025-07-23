@@ -41,7 +41,8 @@ const initialState = {
   curItem: null,
   skuText: '',
   num: 1,
-  loading: false
+  loading: false,
+  minNum: 1
 }
 
 function SpSkuSelect(props) {
@@ -57,7 +58,7 @@ function SpSkuSelect(props) {
   console.log('SpSkuSelect:info', info)
   // const [state, setState] = useImmer(initialState)
   const [state, setState] = useAsyncCallback(initialState)
-  const { selection, curImage, disabledSet, curItem, skuText, num, loading } = state
+  const { selection, curImage, disabledSet, curItem, skuText, num, loading, minNum } = state
   const { customerLnformation } = useSelector((state) => state.cart)
   const dispatch = useDispatch()
   const skuDictRef = useRef({})
@@ -71,10 +72,18 @@ function SpSkuSelect(props) {
       setState((draft) => {
         draft.curItem = null
         draft.skuText = ''
-        draft.num = specItemed()
+        draft.minNum = specItemed()
       })
     }
   }, [info])
+
+  useEffect(() => {
+    if (open) {
+      setState((draft) => {
+        draft.num = 1
+      })
+    }
+  }, [open])
 
   const init = () => {
     const { skuList, specItems } = info
@@ -106,6 +115,7 @@ function SpSkuSelect(props) {
         info.specItems.forEach((item) => {
           if (item.customSpecId == newval) {
             setState((draft) => {
+              draft.minNum = item.startNum
               draft.num = item.startNum
             })
             return item.startNum
@@ -433,12 +443,12 @@ function SpSkuSelect(props) {
       <View className='buy-count'>
         <View className='label'>
           购买数量 {limitNum && <Text className='limit-count'>{limitTxt}</Text>}
-          {info.startNum > 0 && <Text className='limit-count'>(起订量{num}件)</Text>}
+          {info.startNum > 0 && <Text className='limit-count'>(起订量{minNum}件)</Text>}
         </View>
 
         <SpInputNumber
           value={num}
-          min={num}
+          min={minNum}
           max={max}
           onChange={(n) => {
             setState((draft) => {
