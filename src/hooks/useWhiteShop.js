@@ -124,60 +124,6 @@ export default () => {
         await checkStoreWhiteList()
       }
     }
-
-    // if (!S.getAuthToken()) {
-    //   if (gu_user_id) {
-    //     await api.shop.checkStoreEnterRule()
-    //   } else if (typeof dtid === 'undefined') {
-    //     let params = {}
-    //     if (entryStoreByLBS) {
-    //       params.lat = location?.lat
-    //       params.lng = location?.lng
-    //     }
-
-    //     const shopInfo = await api.shop.getShop(params)
-    //     console.log("🚀🚀🚀 ~ checkEnterStoreRule ~ shopInfo:", shopInfo)
-    //     dispatch(updateShopInfo(shopInfo))
-    //     // 获取店铺默认店铺，返回店铺id=0，则是虚拟店铺，店铺id!=0，则是真实店铺
-    //     // 如果店铺id!=0，且店铺隔离开启，则跳转登录授权
-    //     if (shopInfo.distributor_id !== 0 && shopInfo.open_divided == '1') {
-    //       throw new Error('AUTH_REQUIRED')
-    //     }
-
-    //     // // 路由上没有店铺id，重定向到店铺引导页
-    //     // Taro.redirectTo({
-    //     //   url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=1`
-    //     // })
-    //   } else {
-    //     // 有店铺id
-    //     const currentShopInfo = await api.shop.getShop({ distributor_id: dtid })
-    //     if (currentShopInfo.open_divided == '1') {
-    //       throw new Error('AUTH_REQUIRED')
-    //     } else {
-    //       dispatch(updateShopInfo(currentShopInfo))
-    //     }
-    //   }
-    // } else {
-    //   // 导购参数存在，则检查导购进店规则
-    //   if (gu_user_id) {
-    //     await api.shop.checkStoreEnterRule({
-    //       type: 2,
-    //       distributor_id: dtid,
-    //       salesperson_id: gu_user_id
-    //     })
-    //   } else if (typeof dtid === 'undefined') {
-    //     if (shopInfo.open_divided == '1') { // 店铺开启了白名单
-    //       throw new Error('CHECK_WHITE_LIST')
-    //     }
-    //   } else {
-    //     const currentShopInfo = await api.shop.getShop({ distributor_id: dtid })
-    //     if (currentShopInfo.open_divided == '1') {
-    //       throw new Error('CHECK_WHITE_LIST')
-    //     } else {
-    //       dispatch(updateShopInfo(currentShopInfo))
-    //     }
-    //   }
-    // }
   }
 
   // 检查用户是否在白名单店铺
