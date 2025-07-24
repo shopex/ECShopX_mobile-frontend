@@ -64,8 +64,20 @@ function Invoice(props) {
     const params = Taro.getStorageSync('invoice_params')
     console.log('params:', params)
     if (params && Object.keys(params).length > 0) {
+      const invoiceParams = {
+        invoice_type_code: params?.invoice_type_code || '02',
+        invoice_type: params?.invoice_type || 'individual',
+        company_title: params?.company_title || '',
+        company_tax_number: params?.company_tax_number || '',
+        company_address: params?.company_address || '',
+        company_telephone: params?.company_telephone || '',
+        bank_name: params?.bank_name || '',
+        bank_account: params?.bank_account || '',
+        email: params?.email || '',
+        mobile: params?.mobile || ''
+      }
       setState((draft) => {
-        draft.info = params
+        draft.info = invoiceParams
       })
     }
     getInvoiceSetting()
