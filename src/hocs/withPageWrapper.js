@@ -15,8 +15,13 @@ const { store } = configStore()
 function withPageWrapper(Component) {
   return function EnhancedComponent(props) {
     const dispatch = useDispatch()
-    const { initState } = useSelector((state) => state.sys)
-    const { checkEnterStoreRule, checkUserInStoreWhiteList, getUserWhiteShop } = useWhiteShop()
+    const { initState, entryDefalutStore, guidderTemplateId } = useSelector((state) => state.sys)
+    const {
+      checkEnterStoreRule,
+      checkStoreWhiteList,
+      checkUserInStoreWhiteList,
+      getUserWhiteShop
+    } = useWhiteShop()
     const { showModal } = useModal()
     const { showLoinModal } = useModalLogin()
     const [state, setState] = useState(false)
@@ -75,12 +80,19 @@ function withPageWrapper(Component) {
             title: '提示',
             content: '抱歉，没有可访问的店铺',
             showCancel: false,
-            confirmText: '关闭',
+            confirmText: entryDefalutStore == '1' ? '返回首页' : '返回',
             contentAlign: 'center'
           })
           if (res.confirm) {
-            Taro.exitMiniProgram()
-            throw new Error('EXIT_MINI_PROGRAM')
+            if (entryDefalutStore == '1') {
+              await checkStoreWhiteList()
+            } else {
+              Taro.redirectTo({
+                url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=1`
+              })
+            }
+            // Taro.exitMiniProgram()
+            // throw new Error('EXIT_MINI_PROGRAM')
           }
         } else {
           await handlePhoneCallToStore(myShopInfo)
