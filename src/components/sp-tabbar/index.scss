@@ -79,6 +79,9 @@
     }
     &-image-wrapper {
       position: relative;
+      .iconfont {
+        font-size: 56px;
+      }
     }
     &-image {
       // position: relative;

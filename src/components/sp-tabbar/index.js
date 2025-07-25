@@ -80,52 +80,59 @@ function SpTabbar() {
 
   return (
     <View className='sp-tabbar' style={{ backgroundColor: backgroundColor }}>
-      {tabList?.map((item, index) => (
-        <View className='sp-tabbar__item' key={index} onClick={() => handleTabbarClick(index)}>
-          {/* {index == 0 &&
-            (index !== currentIndex ? (
-              <>
-                <SpImage src={item.iconPath} className='sp-tabbar__item-image' mode='aspectFill' />
-                <View
-                  className='sp-tabbar__item-text'
-                  style={{ color: index == currentIndex ? selectedColor : color }}
-                >
-                  {item.text}
+      {tabList?.map((item, index) => {
+        const iconPath = index == currentIndex ? item.selectedIconPath : item.iconPath
+        return (
+          <View className='sp-tabbar__item' key={index} onClick={() => handleTabbarClick(index)}>
+            {/* {index == 0 &&
+              (index !== currentIndex ? (
+                <>
+                  <SpImage src={item.iconPath} className='sp-tabbar__item-image' mode='aspectFill' />
+                  <View
+                    className='sp-tabbar__item-text'
+                    style={{ color: index == currentIndex ? selectedColor : color }}
+                  >
+                    {item.text}
+                  </View>
+                </>
+              ) : (
+                <SpImage
+                  src={item.selectedIconPath}
+                  className='sp-tabbar__item-cover-image'
+                  mode='aspectFill'
+                />
+              ))} */}
+
+            <View className='sp-tabbar__item-image-wrapper'>
+              {/^http/.test(iconPath) ? (
+                <SpImage
+                  src={iconPath}
+                  className='sp-tabbar__item-image'
+                  mode='aspectFill'
+                />
+              ) : (
+                <Text className={`iconfont ${index == currentIndex ? `icon-${TABBAR_ICON[item.name]}-fill` : `icon-${TABBAR_ICON[item.name]}`}`}></Text>
+              )}
+
+              {item.name == 'cart' && cartCount > 0 && (
+                <View className={`sp-tabbar__item-badge${cartCount > 99 ? '1' : ''}`}>
+                  {cartCount > 0 && cartCount <= 99 && (
+                    <Text className='cart-count'>{cartCount}</Text>
+                  )}
+                  {cartCount > 99 && <Text className='cart-count1'>99+</Text>}
                 </View>
-              </>
-            ) : (
-              <SpImage
-                src={item.selectedIconPath}
-                className='sp-tabbar__item-cover-image'
-                mode='aspectFill'
-              />
-            ))} */}
+              )}
+            </View>
 
-          <View className='sp-tabbar__item-image-wrapper'>
-            <SpImage
-              src={index == currentIndex ? item.selectedIconPath : item.iconPath}
-              className='sp-tabbar__item-image'
-              mode='aspectFill'
-            />
-
-            {item.name == 'cart' && cartCount > 0 && (
-              <View className={`sp-tabbar__item-badge${cartCount > 99 ? '1' : ''}`}>
-                {cartCount > 0 && cartCount <= 99 && (
-                  <Text className='cart-count'>{cartCount}</Text>
-                )}
-                {cartCount > 99 && <Text className='cart-count1'>99+</Text>}
-              </View>
-            )}
+            <View
+              className='sp-tabbar__item-text'
+              style={{ color: index == currentIndex ? selectedColor : color }}
+            >
+              {item.text}
+            </View>
           </View>
-
-          <View
-            className='sp-tabbar__item-text'
-            style={{ color: index == currentIndex ? selectedColor : color }}
-          >
-            {item.text}
-          </View>
-        </View>
-      ))}
+        )
+      })}
     </View>
   )
 }
