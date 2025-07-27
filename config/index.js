@@ -94,8 +94,8 @@ const config = {
         targetLangList: ['en', 'ja'],   // 目标语言
         originLang: 'zh-cn',            // 源语言
         translator: new YoudaoTranslator({
-          appId: '769559dde46e7041',
-          appKey: '2we6CWMpNb2a7TrCRpdE3s5MVYtcvLy9'
+          appId: process.env.YD_APP_ID,
+          appKey: process.env.YD_APP_KEY
         }),
         excludedPath: ['node_modules'], // 排除目录
         includePath: [/src/]             // 仅扫描 src 目录
