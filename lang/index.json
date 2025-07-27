@@ -11973,5 +11973,900 @@
 		"zh-cn": "切换后语言后自动重启应用",
 		"en": "The application will automatically restart after switching languages",
 		"ja": "言語を切り替えると自動的にアプリを再起動します。"
+	},
+	"fd4ia44": {
+		"zh-cn": "申请开票",
+		"en": "Apply for invoicing",
+		"ja": "開票を申請します"
+	},
+	"chteyv4": {
+		"zh-cn": "开票详情",
+		"en": "Invoice details",
+		"ja": "開票の詳細です"
+	},
+	"ebcp9g4": {
+		"zh-cn": "游戏活动",
+		"en": "Game event",
+		"ja": "ゲームイベントです"
+	},
+	"al77cb5": {
+		"zh-cn": "商品清单 ",
+		"en": "List of goods",
+		"ja": "商品リストです"
+	},
+	"4bhn5a5": {
+		"zh-cn": "”导购“ ",
+		"en": "\"Salesperson",
+		"ja": "「お買い物ガイドです」"
+	},
+	"wkzrba4": {
+		"zh-cn": "，抵扣 ",
+		"en": "Deduction",
+		"ja": "差し引きます"
+	},
+	"jbw8fj5": {
+		"zh-cn": "包含运费 ",
+		"en": "Including freight",
+		"ja": "送料込みです"
+	},
+	"unoe766": {
+		"zh-cn": "手机号登录 ",
+		"en": "Login with mobile phone number",
+		"ja": "携帯電話番号を登録します"
+	},
+	"f0kw627": {
+		"zh-cn": "账号密码登录 ",
+		"en": "Account and password login",
+		"ja": "パスワードを登録します"
+	},
+	"6ijst66": {
+		"zh-cn": "订单编号： ",
+		"en": "Order Number",
+		"ja": "ご註文番号です。"
+	},
+	"cpem304": {
+		"zh-cn": "总计:　",
+		"en": "Total:",
+		"ja": "合計します:"
+	},
+	"cdhjrs4": {
+		"zh-cn": "当前等级",
+		"en": "Current level",
+		"ja": "現在のレベルです"
+	},
+	"eeasy3": {
+		"zh-cn": "已获得",
+		"en": "Has been obtained",
+		"ja": "獲得しました"
+	},
+	"eej5x3": {
+		"zh-cn": "待升级",
+		"en": "To be upgraded",
+		"ja": "進級待ちです"
+	},
+	"6hcfzu6": {
+		"zh-cn": "订单编号: ",
+		"en": "Order Number",
+		"ja": "ご註文番号です。"
+	},
+	"cg4u0e4": {
+		"zh-cn": "已选择 ",
+		"en": "Selected",
+		"ja": "選択しました"
+	},
+	"cjrf54": {
+		"zh-cn": " 件商品",
+		"en": "Piece of goods",
+		"ja": "一つの商品です"
+	},
+	"ekeuxo4": {
+		"zh-cn": "点击登录",
+		"en": "Click to log in",
+		"ja": "ログインをクリックします。"
+	},
+	"j2h76m5": {
+		"zh-cn": " 选择会员",
+		"en": "Select membership",
+		"ja": "会員を選ぶ"
+	},
+	"cyug73": {
+		"zh-cn": "合计 ",
+		"en": "Total",
+		"ja": "合計です"
+	},
+	"c6m1wm4": {
+		"zh-cn": "已优惠 ",
+		"en": "Discounted",
+		"ja": "割引しました"
+	},
+	"ebxa63": {
+		"zh-cn": "应收 ",
+		"en": "Receivable",
+		"ja": "受取します"
+	},
+	"9uxdzr6": {
+		"zh-cn": "查询内容: ",
+		"en": "Query content",
+		"ja": "問い合わせ内容です。"
+	},
+	"c6f6rd5": {
+		"zh-cn": "收起明细 ",
+		"en": "\"Collapse details",
+		"ja": "明細をしまいます"
+	},
+	"i9x9j15": {
+		"zh-cn": "展开明细 ",
+		"en": "Expand the details",
+		"ja": "明細を展開します"
+	},
+	"p6djw4d": {
+		"zh-cn": "\n      订单编号：",
+		"en": "Order Number",
+		"ja": "ご註文番号です。"
+	},
+	"i5sewsd": {
+		"zh-cn": "\n      实收金额：",
+		"en": "Actual received amount",
+		"ja": "実収金額です。"
+	},
+	"by2sm3b": {
+		"zh-cn": "\n      名称：",
+		"en": "Name:",
+		"ja": "名前です:"
+	},
+	"bsouypb": {
+		"zh-cn": "\n      税号：",
+		"en": "Tax Number",
+		"ja": "税金番号です。"
+	},
+	"hgq9i8d": {
+		"zh-cn": "\n      单位地址：",
+		"en": "Unit Address",
+		"ja": "住所:単位です。"
+	},
+	"fhe8nqd": {
+		"zh-cn": "\n      电话号码：",
+		"en": "Telephone number",
+		"ja": "電話番号です。"
+	},
+	"5auizpd": {
+		"zh-cn": "\n      开户银行：",
+		"en": "Opening bank:",
+		"ja": "口座開設銀行です。"
+	},
+	"2n3ha7d": {
+		"zh-cn": "\n      银行账户：",
+		"en": "Bank account",
+		"ja": "銀行口座です。"
+	},
+	"abf72n4": {
+		"zh-cn": "件商品 ",
+		"en": "Piece of goods",
+		"ja": "一つの商品です"
+	},
+	"fpo38d4": {
+		"zh-cn": "积分: ",
+		"en": "Points",
+		"ja": "積分です:"
+	},
+	"j7m7176": {
+		"zh-cn": "支付金额: ",
+		"en": "Payment amount",
+		"ja": "支払い金額です。"
+	},
+	"mfwnhs5": {
+		"zh-cn": "实际支付 ",
+		"en": "Actual payment",
+		"ja": "実際に支払います。"
+	},
+	"ffjm3": {
+		"zh-cn": " 发布",
+		"en": "\"Publish",
+		"ja": "頒布します"
+	},
+	"bl62rm5": {
+		"zh-cn": " 售后提醒",
+		"en": "After-sales reminder",
+		"ja": "アフターリマインダーです"
+	},
+	"x5qn1s6": {
+		"zh-cn": "寄回地址: ",
+		"en": "Return address",
+		"ja": "返送先:ご連絡します。"
+	},
+	"k68r345": {
+		"zh-cn": "收件人: ",
+		"en": "Recipient:",
+		"ja": "宛先です。"
+	},
+	"3gq30j6": {
+		"zh-cn": "联系方式: ",
+		"en": "Contact Information",
+		"ja": "連絡先です。"
+	},
+	"ugyj6h7": {
+		"zh-cn": "\n收货地址：",
+		"en": "Delivery address",
+		"ja": "お届け先です。"
+	},
+	"tfnwy47": {
+		"zh-cn": "\n订单编号：",
+		"en": "Order Number",
+		"ja": "ご註文番号です。"
+	},
+	"v4sf1n7": {
+		"zh-cn": "\n创建时间：",
+		"en": "Creation time",
+		"ja": "作成時間です:"
+	},
+	"kw88kk5": {
+		"zh-cn": "申请提现 ",
+		"en": "Apply for withdrawal",
+		"ja": "キャッシュを申請します"
+	},
+	"gtf2": {
+		"zh-cn": " 元",
+		"en": "yuan",
+		"ja": "元です"
+	},
+	"fs2ze3": {
+		"zh-cn": "查看 ",
+		"en": "View",
+		"ja": "調べます"
+	},
+	"tr1g195": {
+		"zh-cn": "营业时间 ",
+		"en": "Business hours",
+		"ja": "営業時間です"
+	},
+	"bk7xqm7": {
+		"zh-cn": "专票使用确认书",
+		"en": "Confirmation of Special Ticket Usage",
+		"ja": "専票使用確認書です"
+	},
+	"72ac6ma": {
+		"zh-cn": "请输入正确的电子邮箱",
+		"en": "Please enter the correct email address",
+		"ja": "正しいeメールの入力をお願いします。"
+	},
+	"kwuyi3": {
+		"zh-cn": "请同意",
+		"en": "Please agree",
+		"ja": "同意願います"
+	},
+	"xhwvcy7": {
+		"zh-cn": "我已阅读并同意",
+		"en": "I have read and agreed",
+		"ja": "読んで同意しました"
+	},
+	"v62qo98": {
+		"zh-cn": "选择微信开票信息",
+		"en": "Select the wechat invoicing information",
+		"ja": "wechatの開票情報を選択します"
+	},
+	"cx566j4": {
+		"zh-cn": "提交发票",
+		"en": "Submit the invoice",
+		"ja": "インボイスを提出します"
+	},
+	"chuq8k4": {
+		"zh-cn": "开票金额",
+		"en": "Invoice amount",
+		"ja": "開票金額です"
+	},
+	"b2ynaf4": {
+		"zh-cn": "发票类型",
+		"en": "Invoice type",
+		"ja": "インボイスタイプです"
+	},
+	"dim5nn4": {
+		"zh-cn": "普通发票",
+		"en": "Ordinary invoice",
+		"ja": "普通の領収書です"
+	},
+	"ac2vho4": {
+		"zh-cn": "专用发票",
+		"en": "Special invoice",
+		"ja": "専用インボイスです"
+	},
+	"ctp5dk4": {
+		"zh-cn": "抬头类型",
+		"en": "Head type",
+		"ja": "頭上げタイプです"
+	},
+	"dq6o2": {
+		"zh-cn": "个人",
+		"en": "\"Personal",
+		"ja": "個人です"
+	},
+	"ctigln4": {
+		"zh-cn": "抬头名称",
+		"en": "Header name",
+		"ja": "名前をあげます"
+	},
+	"grwm2": {
+		"zh-cn": "必填",
+		"en": "Required field",
+		"ja": "必ず記入します"
+	},
+	"amf4wf4": {
+		"zh-cn": "公司名称",
+		"en": "Company Name",
+		"ja": "会社の名前です"
+	},
+	"amle454": {
+		"zh-cn": "公司税号",
+		"en": "Company tax number",
+		"ja": "会社の税金番号です"
+	},
+	"amfh984": {
+		"zh-cn": "公司地址",
+		"en": "Company Address",
+		"ja": "会社の住所です"
+	},
+	"ozgi2": {
+		"zh-cn": "选填",
+		"en": "Optional Filling",
+		"ja": "埋めます"
+	},
+	"amkvh04": {
+		"zh-cn": "公司电话",
+		"en": "Company telephone number",
+		"ja": "会社の電話です"
+	},
+	"amq97m4": {
+		"zh-cn": "公司银行",
+		"en": "Corporate bank",
+		"ja": "コーポレートバンク"
+	},
+	"amon194": {
+		"zh-cn": "公司账号",
+		"en": "Company account",
+		"ja": "会社のアカウントです"
+	},
+	"h84h5b6": {
+		"zh-cn": "收起选填信息",
+		"en": "Collapse the optional information",
+		"ja": "入力情報をしまいます。"
+	},
+	"goto589": {
+		"zh-cn": "更多填写项（选填）",
+		"en": "More items to fill in (optional",
+		"ja": "より多くの項目を記入します。"
+	},
+	"czrmnb4": {
+		"zh-cn": "接收方式",
+		"en": "Receiving method",
+		"ja": "受け取り方です"
+	},
+	"f69pdq4": {
+		"zh-cn": "电子邮箱",
+		"en": "Email address",
+		"ja": "eメールです"
+	},
+	"4jevop6": {
+		"zh-cn": "发票类型类型",
+		"en": "Invoice type",
+		"ja": "インボイスタイプタイプです"
+	},
+	"kfqz2": {
+		"zh-cn": "电子",
+		"en": "\"Electronic\"",
+		"ja": "電子です"
+	},
+	"4jv8y0r": {
+		"zh-cn": "增值税普通发票和数电发票均可作为交易凭证，用于企业报销",
+		"en": "Both ordinary value-added tax invoices and digital electronic invoices can be used as transaction vouchers for enterprise reimbursement",
+		"ja": "増値税普通インボイスと数電インボイスはいずれも取引の証拠として、企業の清算に用いることができます"
+	},
+	"9ee3u7t": {
+		"zh-cn": "购买方为一般纳税人时，可申请增值税专用发票用于抵扣进项税额",
+		"en": "When the purchaser is a general taxpayer, they can apply for a special VAT invoice to offset the input tax amount",
+		"ja": "購入者が一般納税者である場合,付加価値税専用インボイスを申請して所得税額を相殺することができます"
+	},
+	"vpva401g": {
+		"zh-cn": "您可结合需求选择普通/专用发票，专用发票在支付成功后可申请电子，纸质发票具备同等法律效力，电子更低碳环保",
+		"en": "You can choose between a regular invoice and a special invoice based on your needs. After a successful payment, a special invoice can be applied for in electronic form. Paper invoices have the same legal effect, while electronic ones are more low-carbon and environmentally friendly",
+		"ja": "あなたは需要と組み合わせて普通/専用インボイスを選ぶことができて、専用インボイスは支払いに成功した後に電子を申請することができて、紙のインボイスは同等の法律の効力を備えて、電子の更に低い炭素の環境保護"
+	},
+	"iqs0tv4": {
+		"zh-cn": "重发成功",
+		"en": "Resend successful",
+		"ja": "再送信成功です"
+	},
+	"w3xn9": {
+		"zh-cn": "请打开保存图片权限",
+		"en": "Please enable the permission to save images",
+		"ja": "画像保存権限をお願いします。"
+	},
+	"eghwt3": {
+		"zh-cn": "待开票",
+		"en": "Pending invoice",
+		"ja": "開票待ちです"
+	},
+	"ei0g53": {
+		"zh-cn": "开票中",
+		"en": "Invoicing in progress",
+		"ja": "開票中です"
+	},
+	"e5e0l3": {
+		"zh-cn": "已作废",
+		"en": "Invalidated",
+		"ja": "廃棄済みです"
+	},
+	"cy7nbm5": {
+		"zh-cn": "重发至邮箱",
+		"en": "Resend to the email address",
+		"ja": "メールに再送します。"
+	},
+	"aibxpr4": {
+		"zh-cn": "修改申请",
+		"en": "Application for Modification",
+		"ja": "修正申請です"
+	},
+	"dllgxp4": {
+		"zh-cn": "查看发票",
+		"en": "View the invoice",
+		"ja": "領収書を見ます"
+	},
+	"b2u9kv4": {
+		"zh-cn": "发票抬头",
+		"en": "Invoice title",
+		"ja": "領収書の請求額です"
+	},
+	"b2v1pr4": {
+		"zh-cn": "发票明细",
+		"en": "Invoice details",
+		"ja": "領収書の明細です"
+	},
+	"hprj0x8": {
+		"zh-cn": "开票申请提交成功",
+		"en": "The invoice application has been submitted successfully",
+		"ja": "開票申請の提出に成功しました"
+	},
+	"nbgm9e13": {
+		"zh-cn": "您的开票申请已成功提交，我们将在72小时内发送至您的邮箱或手机号，请注意查收。",
+		"en": "Your invoicing application has been successfully submitted. We will send it to your email or mobile phone number within 72 hours. Please check your email in time.",
+		"ja": "開票申し込みは成功しました。72時間以内にメールアドレスまたは携帯番号に送信いたしますので、ご注意ください。"
+	},
+	"18vf7x6": {
+		"zh-cn": "查看开票详情",
+		"en": "Check the invoicing details",
+		"ja": "開票の詳細を見ます"
+	},
+	"qay8jb6": {
+		"zh-cn": "返回发票中心",
+		"en": "Return to the Invoice Center",
+		"ja": "インボイスセンターに戻ります"
+	},
+	"va8nrz8": {
+		"zh-cn": "获取活动配置失败",
+		"en": "Failed to obtain the activity configuration",
+		"ja": "獲得活動構成に失敗しました"
+	},
+	"r7nyyh8": {
+		"zh-cn": "加载活动数据出错",
+		"en": "Error occurred while loading the active data",
+		"ja": "アクティブデータの読み込みエラーです"
+	},
+	"6x17fw8": {
+		"zh-cn": "不支持的游戏类型",
+		"en": "Unsupported game types",
+		"ja": "対応していないジャンルのゲームです"
+	},
+	"pkfc2": {
+		"zh-cn": "重试",
+		"en": "Retry",
+		"ja": "再試行します"
+	},
+	"cu3c0u4": {
+		"zh-cn": "抽奖记录",
+		"en": "Lottery draw record",
+		"ja": "抽選記録です"
+	},
+	"g2msbx6": {
+		"zh-cn": "已购买会员 ",
+		"en": "Purchased membership",
+		"ja": "ご購入済み会員です"
+	},
+	"gbe2": {
+		"zh-cn": " 人",
+		"en": "people",
+		"ja": "人です"
+	},
+	"30u0qz6": {
+		"zh-cn": "未购买会员 ",
+		"en": "Not purchased a membership",
+		"ja": "未購入会員です"
+	},
+	"kj23lw6": {
+		"zh-cn": "暂无抽奖记录",
+		"en": "There is no record of the draw for the time being",
+		"ja": "抽選の記録はありません"
+	},
+	"kqy2f95": {
+		"zh-cn": "提现记录 ",
+		"en": "Withdrawal record",
+		"ja": "キャッシュバック記録です"
+	},
+	"nn1rds8": {
+		"zh-cn": "小店任务返佣额 ",
+		"en": "The rebate amount for the small store task",
+		"ja": "小店任務返家政婦額"
+	},
+	"pungsi7": {
+		"zh-cn": " 查看指标明细",
+		"en": "View the details of the indicators",
+		"ja": "指標の内訳を見ます"
+	},
+	"jve8rj6": {
+		"zh-cn": " 从小店下架",
+		"en": "Taken off the shelves from small stores",
+		"ja": "小さな店から棚を下ろしました"
+	},
+	"lg09h06": {
+		"zh-cn": " 上架到小店",
+		"en": "Put it on the shelves of the small store",
+		"ja": "売店に出します"
+	},
+	"8ucpb26": {
+		"zh-cn": " 分享给好友",
+		"en": "Share with friends",
+		"ja": "親友に分け与えるのです"
+	},
+	"nxl3gwc": {
+		"zh-cn": "查看历史业绩请选择日期 ",
+		"en": "To view historical performance, please select a date",
+		"ja": "過去の実績を見て日付を選択します。"
+	},
+	"mrhp3": {
+		"zh-cn": " 至 ",
+		"en": "to",
+		"ja": "至ります"
+	},
+	"cqmfug4": {
+		"zh-cn": "您获得 ",
+		"en": "You obtain",
+		"ja": "ご獲得です"
+	},
+	"b4q4ul5": {
+		"zh-cn": " 余额支付",
+		"en": "Balance payment",
+		"ja": "残額支払いです"
+	},
+	"duav897": {
+		"zh-cn": " : 有效期至",
+		"en": "Valid until",
+		"ja": ":有効期限です"
+	},
+	"afytv37": {
+		"zh-cn": " 货币汇率：1",
+		"en": "Currency exchange rate: 1",
+		"ja": "為替レート:1です。"
+	},
+	"avlivf5": {
+		"zh-cn": " 优惠购买",
+		"en": "Purchase at a discounted price",
+		"ja": "お買い上げです"
+	},
+	"dg3t0q5": {
+		"zh-cn": "实付款: ",
+		"en": "Actual payment",
+		"ja": "実払いです:"
+	},
+	"x3u5bj6": {
+		"zh-cn": "当前门店: ",
+		"en": "Current store",
+		"ja": "現在の店舗です:"
+	},
+	"yvwvtm6": {
+		"zh-cn": "额外奖励: ",
+		"en": "Additional rewards",
+		"ja": "ボーナスです。"
+	},
+	"1ul1gt5": {
+		"zh-cn": "\n密码：",
+		"en": "Password:",
+		"ja": "パスワードです。"
+	},
+	"cfm9uz4": {
+		"zh-cn": "已购买 ",
+		"en": "Purchased",
+		"ja": "購入済みです"
+	},
+	"dlh6wj4": {
+		"zh-cn": "未购买 ",
+		"en": "Not purchased",
+		"ja": "未購入です"
+	},
+	"dhn386b": {
+		"zh-cn": "你还未登录，请先登录！",
+		"en": "You haven't logged in yet. Please log in first!",
+		"ja": "あなたはまだ登録していません、先に登録してください!"
+	},
+	"oxyy2": {
+		"zh-cn": "退出",
+		"en": "Exit",
+		"ja": "脱退します"
+	},
+	"gjdp5s4": {
+		"zh-cn": "继续登录",
+		"en": "Continue logging in",
+		"ja": "引き続きログインします"
+	},
+	"1kri3fb": {
+		"zh-cn": "抱歉，没有可访问的店铺",
+		"en": "Sorry, there are no accessible stores",
+		"ja": "申し訳ありませんが、訪問できる店舗がありません。"
+	},
+	"5ywdfjp": {
+		"zh-cn": "抱歉，本店会员才可以访问，如有需要可电话联系店铺!",
+		"en": "Sorry, only members of our store can access. If necessary, you can contact the store by phone!",
+		"ja": "申し訳ありませんが、当店会員のみ訪問可能ですので、ご希望の場合はお店までお電話でご連絡ください。"
+	},
+	"pxx93": {
+		"zh-cn": " 送达",
+		"en": "Delivery",
+		"ja": "お届けします"
+	},
+	"a8k2uh6": {
+		"zh-cn": "配送门店: ",
+		"en": "Delivery store",
+		"ja": "配送店舗です:"
+	},
+	"685hql5": {
+		"zh-cn": "立即加入 ",
+		"en": "Join now",
+		"ja": "すぐに参加します"
+	},
+	"a3xlub5": {
+		"zh-cn": "有效期至 ",
+		"en": "Valid until",
+		"ja": "有効期限です"
+	},
+	"drtlpk6": {
+		"zh-cn": "活动规则： ",
+		"en": "Activity Rules",
+		"ja": "イベントルールです。"
+	},
+	"5xetya5": {
+		"zh-cn": "购买数量 ",
+		"en": "Purchase quantity",
+		"ja": "購入数です"
+	},
+	"hymyco4": {
+		"zh-cn": "评分: ",
+		"en": "Rating",
+		"ja": "採点します:"
+	},
+	"a4jo6y5": {
+		"zh-cn": "有效期: ",
+		"en": "Validity period",
+		"ja": "有効期間です。"
+	},
+	"cfrdkb4": {
+		"zh-cn": "已跟团 ",
+		"en": "I have joined a tour group.",
+		"ja": "ツアーに参加しました"
+	},
+	"jyevxo6": {
+		"zh-cn": "已跟团数量 ",
+		"en": "The number of groups already joined",
+		"ja": "ツアーに参加しました"
+	},
+	"nsj4c95": {
+		"zh-cn": "自提点: ",
+		"en": "Self-pickup point",
+		"ja": "自提点です:"
+	},
+	"4qa4bh6": {
+		"zh-cn": "团员备注: ",
+		"en": "Member Notes",
+		"ja": "メンバー備考:"
+	},
+	"b31biu4": {
+		"zh-cn": "发票详情",
+		"en": "Invoice details",
+		"ja": "インボイスの詳細です"
+	},
+	"3kxeqf6": {
+		"zh-cn": "订单时间: ",
+		"en": "Order time",
+		"ja": "ご註文期間はこちらです。"
+	},
+	"fhe1226": {
+		"zh-cn": "退款单号: ",
+		"en": "Refund tracking number",
+		"ja": "払い戻し番号です。"
+	},
+	"82azy06": {
+		"zh-cn": "申请时间: ",
+		"en": "Application time",
+		"ja": "申し込み期間です。"
+	},
+	"z9bdv07": {
+		"zh-cn": "请确认重发邮箱",
+		"en": "Please confirm and resend to the email address",
+		"ja": "再送メールの確認をお願いします。"
+	},
+	"ictbh57": {
+		"zh-cn": "请输入电子邮箱",
+		"en": "Please enter your email address",
+		"ja": "eメールをお願いします。"
+	},
+	"ooeln0q": {
+		"zh-cn": "电子发票需要一定的时间才能发送到您的邮箱，请耐心等待",
+		"en": "The electronic invoice will take some time to be sent to your email. Please wait patiently",
+		"ja": "電子インボイスの発送には時間がかかりますので、お待ちください"
+	},
+	"bnpbjk5": {
+		"zh-cn": "活动不存在",
+		"en": "The activity does not exist.",
+		"ja": "活動はありません"
+	},
+	"fhroz3": {
+		"zh-cn": "未中奖",
+		"en": "Not won",
+		"ja": "ハズレです"
+	},
+	"5mhet6d": {
+		"zh-cn": "再接再厉，下次一定会中奖！",
+		"en": "Keep up the good work and you will surely win next time!",
+		"ja": "また頑張って、次は必ず当たります!"
+	},
+	"fq23r14": {
+		"zh-cn": "积分不足",
+		"en": "Insufficient points",
+		"ja": "ポイントが足りません。"
+	},
+	"rep4wv8": {
+		"zh-cn": "您当前的积分为 ",
+		"en": "Your current points are",
+		"ja": "あなたの現在のポイントは、です。"
+	},
+	"wsu5gz4": {
+		"zh-cn": "，需要 ",
+		"en": "Needed",
+		"ja": "必要です"
+	},
+	"r1rkf47": {
+		"zh-cn": " 积分才能抽奖",
+		"en": "Points are required for the lottery draw",
+		"ja": "ポイントが貯まれば抽選になります"
+	},
+	"cir6jc4": {
+		"zh-cn": "恭喜中奖",
+		"en": "Congratulations on winning the prize",
+		"ja": "当選おめでとうございます"
+	},
+	"ke880z8": {
+		"zh-cn": "恭喜您获得奖品！",
+		"en": "Congratulations on winning the prize!",
+		"ja": "賞品獲得おめでとうございます!"
+	},
+	"dlm7354": {
+		"zh-cn": "查看奖励",
+		"en": "View rewards",
+		"ja": "ご褒美をチェックします"
+	},
+	"38gvju6": {
+		"zh-cn": "每次抽奖消耗",
+		"en": "Consumption for each lottery draw",
+		"ja": "くじごとに消費します"
+	},
+	"lul33": {
+		"zh-cn": " 积分",
+		"en": "Points",
+		"ja": "積分します"
+	},
+	"cat0cr4": {
+		"zh-cn": "库存: ",
+		"en": "Inventory",
+		"ja": "在庫です:"
+	},
+	"i57v864": {
+		"zh-cn": "货号: ",
+		"en": "Item Number:",
+		"ja": "貨物番号です"
+	},
+	"geghu4": {
+		"zh-cn": " 月销：",
+		"en": "Monthly sales",
+		"ja": "月販です:"
+	},
+	"qe2sgi6": {
+		"zh-cn": " (余额: ",
+		"en": "(Balance:",
+		"ja": "(残高です:"
+	},
+	"abztaw4": {
+		"zh-cn": "会员开通",
+		"en": "Membership activation",
+		"ja": "会員が開通します"
+	},
+	"pviglf6": {
+		"zh-cn": "社区团长申请",
+		"en": "Application for Community Team Leader",
+		"ja": "コミュニティリーダーが申請します"
+	},
+	"c7ej13": {
+		"zh-cn": "储值卡",
+		"en": "Stored-value card",
+		"ja": "預金値カード"
+	},
+	"csqw2d4": {
+		"zh-cn": "报名活动",
+		"en": "Sign up for the event",
+		"ja": "エントリーキャンペーン"
+	},
+	"cv51d84": {
+		"zh-cn": "我的收藏",
+		"en": "My collection",
+		"ja": "私のコレクションです"
+	},
+	"fwot3h4": {
+		"zh-cn": "种草列表",
+		"en": "\"Recommendation list\"",
+		"ja": "草の一覧です"
+	},
+	"gvy42": {
+		"zh-cn": "总店",
+		"en": "Head store",
+		"ja": "本店です"
+	},
+	"edo6j3": {
+		"zh-cn": "待付款",
+		"en": "Pending payment",
+		"ja": "支払い待ちです"
+	},
+	"hi183e5": {
+		"zh-cn": " 获得了 ",
+		"en": "Obtained",
+		"ja": "獲得しました"
+	},
+	"qlq44cd": {
+		"zh-cn": " 护肤/彩妆/面膜/指甲油",
+		"en": "Skin care/Makeup/mask/nail polish",
+		"ja": "スキンケア/メイク/マスク/マニキュアです"
+	},
+	"b608lb4": {
+		"zh-cn": "合计: ",
+		"en": "Total:",
+		"ja": "合計です:"
+	},
+	"adbpbi4": {
+		"zh-cn": "优惠: ",
+		"en": "Offer",
+		"ja": "特典です。"
+	},
+	"bvjqg04": {
+		"zh-cn": "实付: ",
+		"en": "Actual payment",
+		"ja": "実付です:"
+	},
+	"h77ipv5": {
+		"zh-cn": "原价：¥ ",
+		"en": "Original price: ¥",
+		"ja": "定価:¥です。"
+	},
+	"w3ocnt5": {
+		"zh-cn": "总价：¥ ",
+		"en": "Total price: ¥",
+		"ja": "お値段:¥です"
+	},
+	"cwmvfw5": {
+		"zh-cn": "运费：¥ ",
+		"en": "Freight: ¥",
+		"ja": "送料:¥です。"
+	},
+	"ngg5545": {
+		"zh-cn": "促销：¥ ",
+		"en": "Promotion: ¥",
+		"ja": "セール:¥です"
+	},
+	"wrafk56": {
+		"zh-cn": "优惠券：¥ ",
+		"en": "Coupon: ¥",
+		"ja": "クーポン:¥です。"
 	}
 }

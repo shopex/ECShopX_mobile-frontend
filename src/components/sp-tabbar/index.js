@@ -105,13 +105,15 @@ function SpTabbar() {
 
             <View className='sp-tabbar__item-image-wrapper'>
               {/^http/.test(iconPath) ? (
-                <SpImage
-                  src={iconPath}
-                  className='sp-tabbar__item-image'
-                  mode='aspectFill'
-                />
+                <SpImage src={iconPath} className='sp-tabbar__item-image' mode='aspectFill' />
               ) : (
-                <Text className={`iconfont ${index == currentIndex ? `icon-${TABBAR_ICON[item.name]}-fill` : `icon-${TABBAR_ICON[item.name]}`}`}></Text>
+                <Text
+                  className={`iconfont ${
+                    index == currentIndex
+                      ? `icon-${TABBAR_ICON[item.name]}-fill`
+                      : `icon-${TABBAR_ICON[item.name]}`
+                  }`}
+                ></Text>
               )}
 
               {item.name == 'cart' && cartCount > 0 && (

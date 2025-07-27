@@ -1,10 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import '@lang/index.js' // 📍 必须在入口文件中第一行引入，文件会在运行插件时自动生成，默认位于打包配置目录同层的lang文件夹中，其中的index.js就是配置文件
-import Taro, { getCurrentInstance, getCurrentPages } from '@tarojs/taro'
+import Taro, {
+  getCurrentInstance,
+  getCurrentPages,
+  useDidShow,
+  useLaunch,
+  useReady,
+  useRouter
+} from '@tarojs/taro'
+
 import S from '@/spx'
 import { Provider } from 'react-redux'
 import configStore from '@/store'
-
 import api from '@/api'
 
 // import { Tracker } from "@/service";
