@@ -31,7 +31,13 @@ function CompTradeItem(props) {
   const btns = getTradeAction(info)
 
   const handleClickItem = ({ key, action }) => {
-    if (key == 'evaluate' || key == 'logistics' || key == 'changeOffline' || key == 'invoice_apply' || key == 'invoice_detail') {
+    if (
+      key == 'evaluate' ||
+      key == 'logistics' ||
+      key == 'changeOffline' ||
+      key == 'invoice_apply' ||
+      key == 'invoice_detail'
+    ) {
       action(info)
     } else if (key == 'track') {
       onClick(info)

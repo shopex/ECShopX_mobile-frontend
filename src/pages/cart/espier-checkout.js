@@ -116,7 +116,6 @@ function CartCheckout(props) {
     isFirstCalc //开启优先积分第一次需要填充积分抵扣
   } = state
 
-
   const {
     type = routerParams.type,
     order_type = 'normal',
@@ -1081,7 +1080,7 @@ function CartCheckout(props) {
             value={couponText || '请选择'}
           />
         )}
-        {(!bargain_id && totalInfo.invoice_status) ? (
+        {!bargain_id && totalInfo.invoice_status ? (
           <SpCell
             isLink
             title='开发票'

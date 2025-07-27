@@ -162,7 +162,7 @@ export default (props) => {
     if (invoiceAble && !invoiceId) {
       btns.push(tradeActionBtns.INVOICE_APPLY)
     }
-    
+
     if (invoiceId) {
       btns.push(tradeActionBtns.INVOICE_DETAIL)
     }
