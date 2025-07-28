@@ -398,7 +398,7 @@ function MemberIndex(props) {
           title: '邀请推广',
           content: '确定申请成为推广员？',
           showCancel: true,
-          cancel: '取消',
+          cancelText: '取消',
           confirmText: '确认',
           confirmColor: '#0b4137'
         })

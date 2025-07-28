@@ -92,7 +92,6 @@ function RecommendList() {
         <SpSearchInput
           placeholder='搜索'
           onConfirm={(val) => {
-            debugger
             setState((draft) => {
               draft.keywords = val
             })
