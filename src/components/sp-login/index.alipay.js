@@ -18,7 +18,6 @@ function SpLogin(props, ref) {
       // isUpdate && setPolicyModal(true)
     },
     loginSuccess: () => {
-      debugger
       updateAddress()
     }
   })

@@ -8,7 +8,8 @@ const initialState = {
   userInfo: null,
   isNewUser: false,
   cardInfo: {},
-  lang: defaultLang,
+  // lang: defaultLang,
+  lang: 'zhcn',
   vipInfo: {
     isOpen: false,
     isVip: false,

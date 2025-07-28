@@ -11,3 +11,5 @@ dist/
 .history
 .swc
 .vscode
+.env
+.env.local

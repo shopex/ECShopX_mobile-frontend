@@ -1,7 +1,4 @@
 // 导入国际化JSON文件
-import Taro from '@tarojs/taro'
-import { defaultLang } from '@/utils/lang'
-// import { updateLang } from '@/store/slices/user'
 import langJSON from './index.json'
 
 ;(function () {
@@ -26,7 +23,7 @@ import langJSON from './index.json'
     }
     try {
       // 使用更安全的正则表达式替换方式
-      return val.replace(/\$\{(\d+)\}/g, (match, index) => {
+      return val.replace(/\$(?:\{|\｛)(\d+)(?:\}|\｝)/g, (match, index) => {
         // 将index转换为数字
         const position = parseInt(index, 10)
         // 如果args[position]存在则替换，否则保留原占位符
@@ -67,10 +64,10 @@ const langMap = {
     globalThis && globalThis.lang && globalThis.lang.en
       ? globalThis.lang.en
       : globalThis._getJSONKey('en', langJSON),
-  'ja':
-    globalThis && globalThis.lang && globalThis.lang.ja
-      ? globalThis.lang.ja
-      : globalThis._getJSONKey('ja', langJSON),
+  'zhtw':
+    globalThis && globalThis.lang && globalThis.lang.zhtw
+      ? globalThis.lang.zhtw
+      : globalThis._getJSONKey('zh-tw', langJSON),
   'zhcn':
     globalThis && globalThis.lang && globalThis.lang.zhcn
       ? globalThis.lang.zhcn
@@ -81,17 +78,6 @@ globalThis.langMap = langMap
 // 判断 globalThis.localStorage.getItem 是否为函数
 const isFunction = (fn) => {
   return typeof fn === 'function'
-}
-globalThis.localStorage = {
-  getItem: (key) => {
-    return Taro.getStorageSync(key)
-  },
-  setItem: (key, value) => {
-    Taro.setStorageSync(key, value)
-  },
-  removeItem: (key) => {
-    Taro.removeStorageSync(key)
-  }
 }
 
 const withStorageLang =
@@ -109,17 +95,10 @@ const withStorageCommonLang =
 // 从本地存储中获取通用语言，如果不存在则使用空字符串
 const commonLang = withStorageCommonLang ? globalThis.localStorage.getItem('') : ''
 // 从本地存储中获取当前语言，如果不存在则使用源语言
-const baseLang = withStorageLang ? globalThis.localStorage.getItem('lang') : defaultLang
+const baseLang = withStorageLang ? globalThis.localStorage.getItem('lang') : 'zhcn'
 const lang = commonLang ? commonLang : baseLang
 // 根据当前语言设置翻译函数的语言包
 globalThis.$t.locale(globalThis.langMap[lang], 'lang')
-
 globalThis.$changeLang = (lang) => {
-  const configStore = require('@/store').default
-  const updateLang = require('@/store/slices/user').updateLang
-  globalThis.localStorage.setItem('lang', lang)
-  const { store } = configStore()
-  store.dispatch(updateLang(lang))
   globalThis.$t.locale(globalThis.langMap[lang], 'lang')
 }
-Taro.$changeLang = globalThis.$changeLang
