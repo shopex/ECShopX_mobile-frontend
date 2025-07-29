@@ -96,21 +96,21 @@ const config = {
   ],
 
   mini: {
-    webpackChain(chain) {
-      chain.plugin('auto-i18n').use(webpackPluginsAutoI18n.default, [
-        {
-          rewriteConfig: false, // 是否重写配置js ， 小程序需要魔改配置文件，所以不要重新生成，以现在的为准
-          targetLangList: ['en', 'ja'], // 目标语言
-          originLang: 'zh-cn', // 源语言
-          translator: new YoudaoTranslator({
-            appId: process.env.YD_APP_ID,
-            appKey: process.env.YD_APP_KEY
-          }),
-          excludedPath: ['node_modules'], // 排除目录
-          includePath: [/src/] // 仅扫描 src 目录
-        }
-      ])
-    },
+    // webpackChain(chain) {
+    //   chain.plugin('auto-i18n').use(webpackPluginsAutoI18n.default, [
+    //     {
+    //       rewriteConfig: false, // 是否重写配置js ， 小程序需要魔改配置文件，所以不要重新生成，以现在的为准
+    //       targetLangList: ['en', 'ja'], // 目标语言
+    //       originLang: 'zh-cn', // 源语言
+    //       translator: new YoudaoTranslator({
+    //         appId: process.env.YD_APP_ID,
+    //         appKey: process.env.YD_APP_KEY
+    //       }),
+    //       excludedPath: ['node_modules'], // 排除目录
+    //       includePath: [/src/] // 仅扫描 src 目录
+    //     }
+    //   ])
+    // },
 
     miniCssExtractPluginOption: {
       ignoreOrder: true
