@@ -93,12 +93,12 @@ function App({ children }) {
 
   useLaunch((options) => {
     console.log('useLaunch ***********', options)
-    __non_webpack_require__ &&
-      __non_webpack_require__('subpages/i18n/index', (res) => {
-        const langJSON = Taro['langJSON']
-        console.log('langJSON--------', langJSON)
-        langObj.setLanguagePackage(langJSON)
-      })
+    // __non_webpack_require__ &&
+    //   __non_webpack_require__('subpages/i18n/index', (res) => {
+    //     const langJSON = Taro['langJSON']
+    //     console.log('langJSON--------', langJSON)
+    //     langObj.setLanguagePackage(langJSON)
+    //   })
   })
 
   useDidShow(async (options) => {

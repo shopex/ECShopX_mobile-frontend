@@ -45,7 +45,7 @@ export default () => {
       entryDefalutStore === '2'
     ) {
       Taro.redirectTo({
-        url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=1`
+        url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
       })
     }
 
@@ -90,7 +90,7 @@ export default () => {
             await checkStoreWhiteList()
           } else if (entryDefalutStore === '2') {
             Taro.redirectTo({
-              url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=1`
+              url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
             })
           }
         }
@@ -109,7 +109,7 @@ export default () => {
             await checkStoreWhiteList()
           } else if (entryDefalutStore === '2') {
             Taro.redirectTo({
-              url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=1`
+              url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
             })
           }
         }
