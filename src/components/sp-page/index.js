@@ -131,7 +131,7 @@ const SpPage = memo(
       const custom_navigation = isWeixin ? navigationStyle === 'custom' : false
       setState((draft) => {
         draft.btnReturn = _btnReturn
-        draft.btnHome = _btnHome
+        draft.btnHome = _btnHome && props.btnHomeEnable
         draft.customNavigation = custom_navigation
         draft.cusCurrentPage = pages.length
         draft.ipx = isIphoneX()
@@ -499,6 +499,7 @@ const SpPage = memo(
 
 SpPage.defaultProps = {
   onReady: () => {},
+  btnHomeEnable: true,
   className: '',
   children: null,
   defaultMsg: '',

@@ -88,7 +88,7 @@ function withPageWrapper(Component) {
               await checkStoreWhiteList()
             } else {
               Taro.redirectTo({
-                url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=1`
+                url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
               })
             }
             // Taro.exitMiniProgram()
