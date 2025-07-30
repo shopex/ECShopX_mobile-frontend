@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useImmer } from 'use-immer'
 import Taro, {
+  useRouter,
   getCurrentInstance,
   useShareAppMessage,
   useShareTimeline,
@@ -41,7 +42,7 @@ function CustomPage(props) {
   const MSpSkuSelect = React.memo(SpSkuSelect)
   const pageRef = useRef()
   const loginRef = useRef()
-  const { open_divided } = useSelector((state) => state.sys)
+  const router = useRouter()
 
   useEffect(() => {
     fetch()
@@ -66,6 +67,7 @@ function CustomPage(props) {
     })
     const url = `/pageparams/setting?${pathparams}`
     const { config, share } = await req.get(url)
+
     setState((draft) => {
       draft.wgts = config
       draft.loading = false
@@ -107,9 +109,7 @@ function CustomPage(props) {
     const query = userId ? `?uid=${userId}&id=${id}` : `?id=${id}`
 
     let path = `/pages/custom/custom-page${query}`
-    if (open_divided) {
-      path += `&tdid=${getDistributorId() || 0}`
-    }
+
     log.debug(`getAppShareInfo: ${path}`)
     return {
       title: shareInfo.page_share_title,
@@ -129,6 +129,7 @@ function CustomPage(props) {
   const pageData = wgts.find((wgt) => wgt.name == 'page')
   return (
     <SpPage
+      btnHomeEnable={router.params.fromConnect !== 'davild'}
       immersive={pageData?.base?.isImmersive}
       scrollToTopBtn
       className='page-custom-page'

@@ -8,15 +8,13 @@ import S from '@/spx'
 export default (props) => {
   const dispatch = useDispatch()
   const { location } = useSelector((state) => state.user)
-  const { open_divided } = useSelector((state) => state.sys)
 
   /**
    * 未登录状态 && 授权定位  == 定位
    * 未登录状态  && 不授权定位  == 默认值
    */
   const updateAddress = async () => {
-    // open_divided店铺隔离，只取定位地址
-    if (S.getAuthToken() && !open_divided) {
+    if (S.getAuthToken()) {
       await addressLogic()
     } else {
       const res1 = await fetchLocation()
