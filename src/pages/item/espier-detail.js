@@ -166,8 +166,11 @@ function EspierDetail(props) {
       fetch()
       getPackageList()
       getEvaluationList()
-      // 导购浏览记录
-      api.member.itemHistorySave(id)
+
+      if (S.getAuthToken()) {
+        // 导购浏览记录
+        api.member.itemHistorySave(id)
+      }
     }
   }, [id])
 

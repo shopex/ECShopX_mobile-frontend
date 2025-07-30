@@ -2,7 +2,7 @@ import path from 'path'
 import pkg from '../package.json'
 
 const webpackPluginsAutoI18n = require('webpack-auto-i18n-plugin')
-const { YoudaoTranslator } = require('webpack-auto-i18n-plugin')
+const { YoudaoTranslator, EmptyTranslator } = require('webpack-auto-i18n-plugin')
 
 const chalk = require('chalk')
 const { getEnvs, getDefineConstants, getCacheIdentifier } = require('./utils')
@@ -99,10 +99,12 @@ const config = {
           globalPath: path.resolve(__dirname, './../src/subpages/i18n/lang'),
           targetLangList: ['en', 'zh-tw'], // 目标语言
           originLang: 'zh-cn', // 源语言
-          translator: new YoudaoTranslator({
-            appId: process.env.APP_I18N_APP_ID,
-            appKey: process.env.APP_I18N_APP_KEY
-          }),
+          translator: process.env.APP_I18N_APP_KEY
+            ? new YoudaoTranslator({
+                appId: process.env.APP_I18N_APP_ID,
+                appKey: process.env.APP_I18N_APP_KEY
+              })
+            : new EmptyTranslator(),
           includePath: [/src/] // 仅扫描 src 目录
         }
       ])
