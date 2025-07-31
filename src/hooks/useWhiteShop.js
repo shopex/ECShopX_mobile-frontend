@@ -26,11 +26,11 @@ export default () => {
 
   const shopInfoRef = useRef(null)
 
-  const checkStoreWhiteList = async (dtid) => {
+  const checkStoreWhiteList = async (dtid, isLocation = true) => {
     const params = {}
     if (dtid) {
       params['distributor_id'] = dtid
-    } else if (entryStoreByLBS) {
+    } else if (entryStoreByLBS && isLocation) {
       if (isEmpty(location)) {
         const locationInfo = await entryLaunch.getLocationInfo()
         dispatch(updateLocation(locationInfo))
@@ -94,7 +94,7 @@ export default () => {
           // 兜底策略
           if (entryDefalutStore == '1') {
             // 当前导购未绑定店铺
-            await checkStoreWhiteList()
+            await checkStoreWhiteList(null, false)
           } else if (entryDefalutStore == '2') {
             Taro.redirectTo({
               url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
@@ -115,7 +115,7 @@ export default () => {
           // 兜底策略
           if (entryDefalutStore == '1') {
             // 当前导购未绑定店铺
-            await checkStoreWhiteList()
+            await checkStoreWhiteList(null, false)
           } else if (entryDefalutStore == '2') {
             Taro.redirectTo({
               url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`

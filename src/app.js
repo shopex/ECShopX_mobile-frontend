@@ -116,9 +116,11 @@ function App({ children }) {
           Taro.removeStorageSync(SG_GUIDE_PARAMS_UPDATETIME)
         }
       }
-
       if (params.gu || params.gu_user_id) {
-        Taro.setStorageSync(SG_GUIDE_PARAMS, params)
+        Taro.setStorageSync(SG_GUIDE_PARAMS, {
+          ...params,
+          gu_user_id: params.gu_user_id || params.gu.split('_')[0]
+        })
         Taro.setStorageSync(SG_GUIDE_PARAMS_UPDATETIME, dayjs().unix())
       }
     })
