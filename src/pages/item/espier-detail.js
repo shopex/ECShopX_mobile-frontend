@@ -845,5 +845,4 @@ function EspierDetail(props) {
   )
 }
 
-export default EspierDetail
-// export default withPageWrapper(EspierDetail)
+export default withPageWrapper(EspierDetail)

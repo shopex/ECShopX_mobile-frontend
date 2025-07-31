@@ -84,7 +84,7 @@ function withPageWrapper(Component) {
           // 返回兜底店铺逻辑
           if (entryDefalutStore == '1') {
             try {
-              await checkStoreWhiteList()
+              await checkStoreWhiteList(null, false)
             } catch (err) {
               await handleToLogin()
             }
@@ -114,7 +114,7 @@ function withPageWrapper(Component) {
           if (res.confirm) {
             if (entryDefalutStore == '1') {
               try {
-                await checkStoreWhiteList()
+                await checkStoreWhiteList(null, false)
               } catch (err) {
                 await handleStoreWhiteList()
               }
@@ -154,7 +154,6 @@ function withPageWrapper(Component) {
         dispatch(updateShopInfo(myShopInfo))
       }
     }
-
     if (state) {
       return <Component {...props} />
     } else {
