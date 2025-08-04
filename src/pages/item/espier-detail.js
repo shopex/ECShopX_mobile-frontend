@@ -166,8 +166,11 @@ function EspierDetail(props) {
       fetch()
       getPackageList()
       getEvaluationList()
-      // 导购浏览记录
-      api.member.itemHistorySave(id)
+
+      if (S.getAuthToken()) {
+        // 导购浏览记录
+        api.member.itemHistorySave(id)
+      }
     }
   }, [id])
 
@@ -301,7 +304,7 @@ function EspierDetail(props) {
       distributor_id: dtid
     })
 
-    setNavigationBarTitle(data.itemName)
+    // setNavigationBarTitle(data.itemName)
 
     console.log(ACTIVITY_LIST[data.activityType])
     if (ACTIVITY_LIST[data.activityType]) {
@@ -354,11 +357,11 @@ function EspierDetail(props) {
         .catch((error) => {
           console.log('获取图片信息失败:', url, error)
           // 返回一个默认高度或 null
-          return { width: 0, height: 750 }
+          return { width: 0, height: 650 }
         })
     )
     const results = await Promise.all(promises)
-    return results.map((info) => info.height / 2)
+    return results.map((info) => (info.height / 2 > 650 ? 650 : info.height / 2))
   }
 
   const getRecommendList = async () => {
@@ -427,9 +430,10 @@ function EspierDetail(props) {
     return {
       height: '100%',
       width: '100%',
-      backgroundSize: '100% auto',
+      backgroundSize: 'cover',
       backgroundImage: `url(${item})`,
-      backgroundRepeat: 'no-repeat'
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center'
     }
   }
 

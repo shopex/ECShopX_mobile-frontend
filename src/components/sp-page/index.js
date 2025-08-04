@@ -395,6 +395,25 @@ const SpPage = memo(
                           />
                         )
                       }
+                      if (citem.id == 'homeSearch') {
+                        return (
+                          <View
+                            key={citem.id}
+                            className='img-hotzone_zone'
+                            style={styleNames({
+                              width: `${citem.widthPer * 100}%`,
+                              height: `${citem.heightPer * 100}%`,
+                              top: `${citem.topPer * 100}%`,
+                              left: `${citem.leftPer * 100}%`
+                            })}
+                            onClick={() => {
+                              Taro.navigateTo({
+                                url: '/pages/item/list'
+                              })
+                            }}
+                          />
+                        )
+                      }
                       return (
                         <View
                           key={citem.id}
@@ -436,6 +455,8 @@ const SpPage = memo(
         </View>
       )
     }
+
+    console.log('customNavigation:', state.customNavigation)
 
     return (
       <View

@@ -16,6 +16,7 @@ function withPageWrapper(Component) {
   return function EnhancedComponent(props) {
     const dispatch = useDispatch()
     const { initState, entryDefalutStore, guidderTemplateId } = useSelector((state) => state.sys)
+    const { shopInfo } = useSelector((state) => state.shop)
     const {
       checkEnterStoreRule,
       checkStoreWhiteList,
@@ -28,29 +29,43 @@ function withPageWrapper(Component) {
 
     useEffectAsync(async () => {
       if (initState) {
-        // 启动时（冷启动+热启动）执行云店进店规则
-        if (VERSION_STANDARD && Taro.getStorageSync(SG_CHECK_STORE_RULE) == 0) {
-          // 云店进店规则
-          try {
-            Taro.setStorageSync(SG_CHECK_STORE_RULE, 1)
-            await checkEnterStoreRule()
-            setState(true)
-          } catch (error) {
-            // 检查店铺开启了白名单，需要登录授权
-            if (error.message == 'AUTH_REQUIRED') {
-              await handleToLogin()
-              await handleStoreWhiteList()
-              setState(true)
-            } else if (error.message == 'CHECK_WHITE_LIST') {
-              await handleStoreWhiteList()
-              setState(true)
-            }
-          }
-        } else {
-          setState(true)
-        }
+        resolveInStoreRule()
       }
     }, [initState])
+
+    useEffect(() => {
+      if (state) {
+        setState(false)
+
+        setTimeout(() => {
+          resolveInStoreRule()
+        }, 1000)
+      }
+    }, [shopInfo])
+
+    const resolveInStoreRule = async () => {
+      // 启动时（冷启动+热启动）执行云店进店规则
+      if (VERSION_STANDARD && Taro.getStorageSync(SG_CHECK_STORE_RULE) == 0) {
+        // 云店进店规则
+        try {
+          Taro.setStorageSync(SG_CHECK_STORE_RULE, 1)
+          await checkEnterStoreRule()
+          setState(true)
+        } catch (error) {
+          // 检查店铺开启了白名单，需要登录授权
+          if (error.message == 'AUTH_REQUIRED') {
+            await handleToLogin()
+            await handleStoreWhiteList()
+            setState(true)
+          } else if (error.message == 'CHECK_WHITE_LIST') {
+            await handleStoreWhiteList()
+            setState(true)
+          }
+        }
+      } else {
+        setState(true)
+      }
+    }
 
     const handleToLogin = async () => {
       try {
@@ -59,14 +74,27 @@ function withPageWrapper(Component) {
         const res = await showModal({
           title: '提示',
           content: '你还未登录，请先登录！',
-          cancelText: '退出',
+          cancelText: '返回',
           confirmText: '继续登录',
           contentAlign: 'center'
         })
         if (res.confirm) {
           await handleToLogin()
         } else {
-          Taro.exitMiniProgram()
+          // 返回兜底店铺逻辑
+          if (entryDefalutStore == '1') {
+            try {
+              await checkStoreWhiteList(null, false)
+            } catch (err) {
+              await handleToLogin()
+            }
+          } else {
+            Taro.redirectTo({
+              url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
+            })
+            throw new Error('TO_STORE_GUIDE_PAGE')
+          }
+          // Taro.exitMiniProgram()
         }
       }
     }
@@ -85,11 +113,16 @@ function withPageWrapper(Component) {
           })
           if (res.confirm) {
             if (entryDefalutStore == '1') {
-              await checkStoreWhiteList()
+              try {
+                await checkStoreWhiteList(null, false)
+              } catch (err) {
+                await handleStoreWhiteList()
+              }
             } else {
               Taro.redirectTo({
                 url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
               })
+              throw new Error('TO_STORE_GUIDE_PAGE')
             }
             // Taro.exitMiniProgram()
             // throw new Error('EXIT_MINI_PROGRAM')
@@ -121,7 +154,6 @@ function withPageWrapper(Component) {
         dispatch(updateShopInfo(myShopInfo))
       }
     }
-
     if (state) {
       return <Component {...props} />
     } else {

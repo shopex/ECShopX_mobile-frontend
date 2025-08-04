@@ -3,10 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import Taro from '@tarojs/taro'
 import api from '@/api'
 import S from '@/spx'
-import { pickBy, getDistributorId } from '@/utils'
+import { pickBy, getDistributorId, entryLaunch, isEmpty } from '@/utils'
 import doc from '@/doc'
 import { useShopInfo } from '@/hooks'
 import { updateShopInfo } from '@/store/slices/shop'
+import { updateLocation } from '@/store/slices/user'
 import { SG_ROUTER_PARAMS, SG_GUIDE_PARAMS } from '@/consts/localstorage'
 import configStore from '@/store'
 
@@ -25,28 +26,35 @@ export default () => {
 
   const shopInfoRef = useRef(null)
 
-  const checkStoreWhiteList = async (dtid) => {
+  const checkStoreWhiteList = async (dtid, isLocation = true) => {
     const params = {}
     if (dtid) {
       params['distributor_id'] = dtid
-    } else if (entryStoreByLBS) {
-      params['lat'] = location?.lat
-      params['lng'] = location?.lng
+    } else if (entryStoreByLBS && isLocation) {
+      if (isEmpty(location)) {
+        const locationInfo = await entryLaunch.getLocationInfo()
+        dispatch(updateLocation(locationInfo))
+        params['lat'] = locationInfo?.lat
+        params['lng'] = locationInfo?.lng
+      } else {
+        params['lat'] = location?.lat
+        params['lng'] = location?.lng
+      }
     }
     // 开启店铺码进店
     const currentShopInfo = await api.shop.getShop(params)
     shopInfoRef.current = currentShopInfo
-
     // 如果请求的店铺ID和接口返回的店铺ID不一致（店铺可能关闭或禁用），此时需要根据兜底策略来决定跳转到引导页和默认店铺页
     if (
       dtid > 0 &&
       currentShopInfo.distributor_id !== 0 &&
       currentShopInfo.distributor_id !== dtid &&
-      entryDefalutStore === '2'
+      entryDefalutStore == '2'
     ) {
       Taro.redirectTo({
         url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
       })
+      throw new Error('TO_STORE_GUIDE_PAGE')
     }
 
     if (currentShopInfo.distributor_id !== 0 && currentShopInfo.open_divided == '1') {
@@ -65,7 +73,6 @@ export default () => {
   const checkEnterStoreRule = async () => {
     const { dtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
     const { gu_user_id } = Taro.getStorageSync(SG_GUIDE_PARAMS) // gu_user_id = 导购工号
-
     // 路由带参
     if (dtid) {
       if (entryStoreByStoreCode) {
@@ -82,38 +89,42 @@ export default () => {
           work_userid: gu_user_id
         })
         if (guideStoreInfo?.distributor_id) {
-          await checkStoreWhiteList(guideStoreInfo?.distributor_id)
+          await checkStoreWhiteList(guideStoreInfo?.distributor_id, false)
         } else {
           // 兜底策略
-          if (entryDefalutStore === '1') {
+          if (entryDefalutStore == '1') {
             // 当前导购未绑定店铺
-            await checkStoreWhiteList()
-          } else if (entryDefalutStore === '2') {
+            await checkStoreWhiteList(null, false)
+          } else if (entryDefalutStore == '2') {
             Taro.redirectTo({
               url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
             })
+            throw new Error('TO_STORE_GUIDE_PAGE')
           }
         }
       } else {
         await checkStoreWhiteList()
       }
     } else {
+      // 进入专属导购所属店
       if (entryStoreByGuide && S.getAuthToken()) {
         const guideStoreInfo = await api.shop.checkStoreEnterRule()
         if (guideStoreInfo?.distributor_id) {
           await checkStoreWhiteList(guideStoreInfo?.distributor_id)
         } else {
           // 兜底策略
-          if (entryDefalutStore === '1') {
+          if (entryDefalutStore == '1') {
             // 当前导购未绑定店铺
-            await checkStoreWhiteList()
-          } else if (entryDefalutStore === '2') {
+            await checkStoreWhiteList(null, false)
+          } else if (entryDefalutStore == '2') {
             Taro.redirectTo({
               url: `/pages/custom/custom-page?id=${guidderTemplateId}&fromConnect=davild`
             })
+            throw new Error('TO_STORE_GUIDE_PAGE')
           }
         }
       } else if (enterStoreWhiteList && S.getAuthToken()) {
+        // 进入白名单会员店
         const myShopInfo = await getUserWhiteShop()
         if (myShopInfo) {
           dispatch(updateShopInfo(myShopInfo))
@@ -143,6 +154,7 @@ export default () => {
 
   return {
     checkEnterStoreRule,
+    checkStoreWhiteList,
     checkUserInStoreWhiteList,
     getUserWhiteShop
   }
