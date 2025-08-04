@@ -10,7 +10,6 @@ import { SG_POLICY } from '@/consts'
 import { classNames, showToast, formatTime, isWeixin, isWeb, VERSION_SHUYUN } from '@/utils'
 import imgUploader from '@/utils/upload'
 import { View, Input, Picker, Button } from '@tarojs/components'
-import { updateLang } from '@/store/slices/user'
 import i18n from '@/lang/consts'
 import './user-info.scss'
 

@@ -42,7 +42,6 @@ function CustomPage(props) {
   const MSpSkuSelect = React.memo(SpSkuSelect)
   const pageRef = useRef()
   const loginRef = useRef()
-  const { open_divided } = useSelector((state) => state.sys)
   const router = useRouter()
 
   useEffect(() => {
@@ -108,11 +107,8 @@ function CustomPage(props) {
     const { id } = await entryLaunch.getRouteParams($instance.router.params)
     const { userId } = Taro.getStorageSync('userinfo')
     const query = userId ? `?uid=${userId}&id=${id}` : `?id=${id}`
-
     let path = `/pages/custom/custom-page${query}`
-    if (open_divided) {
-      path += `&tdid=${getDistributorId() || 0}`
-    }
+
     log.debug(`getAppShareInfo: ${path}`)
     return {
       title: shareInfo.page_share_title,

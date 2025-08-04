@@ -379,7 +379,6 @@ class EntryLaunch {
   async postGuideUV() {
     const routerParams =
       Taro.getStorageSync(SG_ROUTER_PARAMS) || Taro.getStorageSync(SG_GUIDE_PARAMS)
-
     const { gu, gu_user_id } = routerParams || {}
     let work_userid = ''
     if (gu) {
