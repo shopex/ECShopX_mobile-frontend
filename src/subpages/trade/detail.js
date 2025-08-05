@@ -698,7 +698,7 @@ function TradeDetail(props) {
               title='总价'
               value={(() => {
                 if (info?.orderClass === 'pointsmall') {
-                  return `${pointName} ${info?.itemPoint}`
+                  return `${pointName} ${info?.itemPoint}${info?.itemFee ? `+¥${Number(info?.itemFee).toFixed(2)}` : ''}`
                 } else {
                   return <SpPrice value={info?.itemFee} size={28} />
                 }
@@ -736,7 +736,7 @@ function TradeDetail(props) {
               title='实付'
               value={(() => {
                 if (info?.orderClass === 'pointsmall') {
-                  return `${pointName} ${info?.point}`
+                  return `${pointName} ${info?.point}${info?.itemFee ? `+¥${Number(info?.itemFee).toFixed(2)}` : ''}`
                 } else {
                   return <SpPrice value={info?.totalFee} size={28} />
                 }
