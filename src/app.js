@@ -37,6 +37,7 @@ import {
   entryLaunch,
   VERSION_STANDARD
 } from '@/utils'
+import { useEffectAsync } from '@/hooks'
 import { requestIntercept } from '@/plugin/requestIntercept'
 import dayjs from 'dayjs'
 
@@ -64,7 +65,7 @@ if (process.env.APP_BUILD_TARGET == 'app') {
 requestIntercept()
 
 function App({ children }) {
-  useEffect(async (options) => {
+  useEffectAsync(async (options) => {
     console.log('useEffect %%%%%%%%%%%%%', options)
     if (isWeixin) {
       checkAppVersion()
@@ -95,13 +96,15 @@ function App({ children }) {
   useLaunch((options) => {
     console.log('useLaunch ***********', options)
 
-    // 分包异步加载语言包
-    __non_webpack_require__ &&
-      __non_webpack_require__('subpages/i18n/index', (res) => {
-        const langJSON = Taro['langJSON']
-        console.log('langJSON--------', langJSON)
-        langObj.setLanguagePackage(langJSON)
-      })
+    //分包异步加载语言包
+    if (isWeixin) {
+      __non_webpack_require__ &&
+        __non_webpack_require__('subpages/i18n/index', (res) => {
+          const langJSON = Taro['langJSON']
+          console.log('langJSON--------', langJSON)
+          langObj.setLanguagePackage(langJSON)
+        })
+    }
   })
 
   useDidShow(async (options) => {
