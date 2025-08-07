@@ -153,8 +153,8 @@ function MemberIndex(props) {
   }, [])
 
   useDidShow(() => {
-    getUserInfo()
     if (isLogin) {
+      getUserInfo()
       getMemberCenterData()
     }
   })

@@ -12,6 +12,8 @@ import {
   SG_GUIDE_PARAMS
 } from '@/consts/localstorage'
 
+import MapLoader from '@/utils/lbs'
+
 const geocodeUrl = 'https://apis.map.qq.com/ws/geocoder/v1'
 const $instance = getCurrentInstance()
 const { store } = configStore()
@@ -94,7 +96,39 @@ class EntryLaunch {
    */
   async initAMap() {
     // 初始化地图对象
-    this.geolocation = new qq.maps.Geolocation()
+    // this.geolocation = new qq.maps.Geolocation()
+    return new Promise((resolve, reject) => {
+      MapLoader()
+        .then((qq) => {
+          debugger
+          // 初始化地图对象
+          this.geolocation = new qq.maps.Geolocation({
+            key: process.env.APP_MAP_KEY,
+            complete: function (result) {
+              console.log('complete', result)
+            },
+            error: function (error) {
+              console.error('error', error)
+            }
+          })
+
+          // 初始化地址解析对象
+          this.geocoder = new qq.maps.Geocoder({
+            complete: function (result) {
+              console.log('complete', result)
+            },
+            error: function (error) {
+              console.error('error', error)
+            }
+          })
+
+          console.log('entryLaunch', this)
+          resolve('ok')
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
   }
 
   /**
@@ -190,7 +224,7 @@ class EntryLaunch {
       })
     } else {
       return new Promise(async (reslove, reject) => {
-        this.geolocation.getLocation(
+        this.geolocation?.getLocation(
           (res) => {
             reslove({
               lng: res.lng,

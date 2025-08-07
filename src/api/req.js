@@ -185,9 +185,9 @@ class API {
 
     // 处理版本区分
     if (isWeb) {
-      if (process.env.APP_VUE_SAAS) {
-        header['origin'] = global.location.host
-      }
+      // if (process.env.APP_VUE_SAAS) {
+      //   header['origin'] = global.location.host
+      // }
     }
 
     if ((isWeixin || isAlipay) && appid) {
