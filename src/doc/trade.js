@@ -178,5 +178,6 @@ export const TRADE_AFTER_SALES_ITEM = {
   evidencePic: 'evidence_pic',
   createTime: ({ create_time }) => formatDateTime(create_time * 1000),
   returnType: 'return_type',
-  freight: ({ freight }) => freight / 100
+  freight: ({ freight }) => freight / 100,
+  refund_freight_amount: ({ refund_freight_amount }) => refund_freight_amount / 100
 }
