@@ -149,6 +149,10 @@ function Invoice(props) {
       showToast(`请同意${protocolTitle}`)
       return
     }
+    if (info?.invoice_type == 'enterprise' && info?.company_tax_number?.length != 18) {
+      showToast('纳税人识别号应为18位')
+      return
+    }
     let params = {
       invoice_type_code: info?.invoice_type_code,
       invoice_type: info?.invoice_type,
