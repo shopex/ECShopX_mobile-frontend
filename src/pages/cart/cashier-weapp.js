@@ -30,7 +30,7 @@ function CashierWeApp(props) {
   const { cashierPayment } = usePayment()
 
   useEffect(() => {
-    const { order_id } = $instance.router.params
+    const { order_id ,source} = $instance.router.params
     if (order_id) {
       fetch()
     }
@@ -80,6 +80,9 @@ function CashierWeApp(props) {
   }
 
   const handlePay = async () => {
+    if(source){
+      params.source = source
+    }
     cashierPayment(params, orderInfo)
   }
   return (
