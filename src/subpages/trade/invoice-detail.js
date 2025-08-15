@@ -52,7 +52,7 @@ function InvoiceDetail() {
       showToast('请输入正确的电子邮箱')
       return
     }
-    api.trade.resendInvoice({
+    await api.trade.resendInvoice({
       id: data.id,
       confirm_email: data.email
     })
@@ -92,7 +92,7 @@ function InvoiceDetail() {
       confirmText: '确认'
     })
     if (confirm) {
-      api.trade.updateInvoice({
+      await api.trade.updateInvoice({
         invoice_id: info?.id,
         invoice_status: 'cancel'
       })
