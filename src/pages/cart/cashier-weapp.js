@@ -28,7 +28,7 @@ function CashierWeApp(props) {
   const { price, order_id, create_time, params, orderInfo } = state
 
   const { cashierPayment } = usePayment()
-
+  const { source} = $instance.router.params
   useEffect(() => {
     const { order_id ,source} = $instance.router.params
     if (order_id) {
