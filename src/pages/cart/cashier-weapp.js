@@ -80,10 +80,12 @@ function CashierWeApp(props) {
   }
 
   const handlePay = async () => {
-    if(source){
-      params.source = source
+    const { source } = $instance.router.params
+    let _params = { ...params }
+    if (source) {
+      _params.source = source
     }
-    cashierPayment(params, orderInfo)
+    cashierPayment(_params, orderInfo)
   }
   return (
     <View className='cashier-weapp'>
