@@ -66,6 +66,7 @@ export default (props = {}) => {
         alipayh5Pay(params, orderInfo)
         break
       case 'wxpayjs':
+        case 'wx_qr':
         wxpayjsPay(params, orderInfo)
         break
       case 'wxpayapp':
