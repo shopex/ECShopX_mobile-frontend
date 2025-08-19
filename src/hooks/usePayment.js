@@ -176,7 +176,7 @@ export default (props = {}) => {
   // 微信H5 JSDK
   const wxpayjsPay = async (params, orderInfo) => {
     // const $instance = getCurrentInstance()
-    const { order_id, code,source} = router.params
+    const { order_id, code} = router.params
     if (!code) {
       // 微信客户端code授权
       const loc = window.location
@@ -188,13 +188,17 @@ export default (props = {}) => {
     const { open_id } = await api.wx.getOpenid({ code })
     const { pay_channel } = params
     const { pay_type, order_type = 'normal' } = orderInfo
-    const config = await api.cashier.getPayment({
+    let query = {
       pay_type,
       pay_channel,
       order_id,
       order_type,
       open_id
-    })
+    }
+    if(params.source){
+      query.source = params.source
+    }
+    const config = await api.cashier.getPayment(query)
     const { appId, timeStamp, nonceStr, signType, paySign } = config
     WeixinJSBridge.invoke(
       'getBrandWCPayRequest',
