@@ -1086,7 +1086,7 @@ function CartCheckout(props) {
             value={couponText || '请选择'}
           />
         )}
-        {(!bargain_id && totalInfo.invoice_status) ? (
+        {(totalInfo.invoice_status) ? (
           <SpCell
             isLink
             title='开发票'
