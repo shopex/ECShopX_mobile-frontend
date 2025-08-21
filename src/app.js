@@ -97,7 +97,7 @@ function App({ children }) {
     console.log('useLaunch ***********', options)
 
     //分包异步加载语言包
-    if (isWeixin) {
+    if (process.env.TARO_ENV === 'weapp') {
       __non_webpack_require__ &&
         __non_webpack_require__('subpages/i18n/index', (res) => {
           const langJSON = Taro['langJSON']
