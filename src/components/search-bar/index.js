@@ -128,44 +128,6 @@ export default class SearchBar extends Component {
           !showDailog && 'without-dialog'
         )}
       >
-        {/*<View*/}
-        {/*className={classNames('search-input', className === 'category-top' ? className : '', showSearchDailog ? 'search-input__focus' : null, isFixed ? 'search-input-fixed' : null)}*/}
-        {/*ref='container'*/}
-        {/*>*/}
-        {/*<Form className={classNames('search-input__form', className === 'home-index-search' ? `${className} login-width` : '')} onSubmit={this.handleConfirm.bind(this)}>*/}
-        {/*<View className='search-input__form-cont'>*/}
-        {/*{*/}
-        {/*showSearchDailog === false && className === 'home-index-search' ? <View className='search-logo'>PJJ</View> : null*/}
-        {/*}*/}
-        {/*<View className='search-input__inner'>*/}
-        {/*<AtSearchBar*/}
-        {/*className={classNames('search-input__bar', className === 'home-index-search' ? className : '')}*/}
-        {/*value={searchValue}*/}
-        {/*actionName='取消'*/}
-        {/*showActionButton={isShowAction}*/}
-        {/*onFocus={this.handleFocusSearchHistory.bind(this, true)}*/}
-        {/*onChange={this.handleChangeSearch.bind(this)}*/}
-        {/*onConfirm={this.handleConfirm.bind(this)}*/}
-        {/*onActionClick={this.handleClickCancel.bind(this, false)}*/}
-        {/*/>*/}
-        {/*</View>*/}
-        {/*</View>*/}
-        {/*</Form>*/}
-        {/*<View className={classNames(showSearchDailog ? 'search-input__history' : 'search-input__history-none')}>*/}
-        {/*<View className='search-input__history-title'>*/}
-        {/*<Text>最近搜索</Text>*/}
-        {/*<Text className='sp-icon sp-icon-shanchu icon-del' onClick={this.handleClickDelete.bind(this)}></Text>*/}
-        {/*</View>*/}
-        {/*<View className='search-input__history-list'>*/}
-        {/*{*/}
-        {/*historyList.map((item, index) => <View className='search-input__history-list__btn' key={index} onClick={this.handleClickTag.bind(this, item)}>{item}</View> )*/}
-        {/*}*/}
-        {/*</View>*/}
-        {/*</View>*/}
-        {/*</View>*/}
-        {/* <View className='search-input__form'>
-
-        </View> */}
         {/* {微信浏览器form enter自动刷新页面} */}
         <View className='search-input__form'>
           <AtSearchBar
@@ -182,6 +144,7 @@ export default class SearchBar extends Component {
             onActionClick={this.handleClickCancel.bind(this, false)}
           />
         </View>
+        {/* 历史搜索 */}
         {showDailog && (
           <View
             className={classNames(

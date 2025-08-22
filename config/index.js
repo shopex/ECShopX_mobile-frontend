@@ -145,33 +145,33 @@ const config = {
   },
 
   h5: {
-    // publicPath: IS_PROD ? './' : '/',
-    // publicPath: '/',
-    publicPath: IS_APP && IS_PROD && !IS_APP_SERVER ? './' : '/',
-    // publicPath: process.env.APP_PUBLIC_PATH || '/',
-    staticDirectory: 'static',
+    publicPath: IS_APP ? (IS_APP_SERVER ? '/' : './') : '/',
+
     router: {
-      mode: IS_APP ? 'hash' : 'browser'
-      // mode: "browser"
+      // mode: 'browser'
+      // mode: 'hash',
+      mode: IS_APP ? (IS_APP_SERVER ? 'browser' : 'hash') : 'browser'
     },
-    devServer: {
-      // https: true,
-      // overlay: {
-      //   warnings: false,
-      //   errors: false
-      // }
-      // https: {
-      //   key: "../cert/ecshopx-server.key",
-      //   cert: "../cert/ecshopx-server.crt",
-      //   // passphrase: "webpack-dev-server",
-      //   requestCert: true
-      // }
+    staticDirectory: 'static',
+    output: {
+      filename: 'js/[name].[chunkhash:8].js',
+      chunkFilename: 'js/[name].[chunkhash:8].js'
+    },
+    miniCssExtractPluginOption: {
+      ignoreOrder: true,
+      filename: 'css/[name].[chunkhash].css',
+      chunkFilename: 'css/[name].[chunkhash].css'
     },
     postcss: {
       autoprefixer: {
         enable: true,
+        config: {}
+      },
+      cssModules: {
+        enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
         config: {
-          browsers: ['last 3 versions', 'Android >= 4.1', 'ios >= 8']
+          namingPattern: 'module', // 转换模式，取值为 global/module
+          generateScopedName: '[name]__[local]___[hash:base64:5]'
         }
       }
     },

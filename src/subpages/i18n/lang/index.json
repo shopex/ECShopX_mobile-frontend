@@ -12893,5 +12893,10 @@
 		"zh-cn": "创建订单失败,请稍后再试",
 		"en": "The order creation failed. Please try again later",
 		"zh-tw": "創建訂單失敗,請稍後再試"
+	},
+	"5ipxx55": {
+		"zh-cn": "退出小程序",
+		"en": "Exit the mini-program",
+		"zh-tw": "退出小程序"
 	}
 }
