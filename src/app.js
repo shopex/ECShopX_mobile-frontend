@@ -5,7 +5,8 @@ import Taro, {
   useDidShow,
   useLaunch,
   useReady,
-  useRouter
+  useRouter,
+  useError
 } from '@tarojs/taro'
 
 import React, { Component } from 'react'
@@ -27,6 +28,7 @@ import {
   SG_CHECK_STORE_RULE
 } from '@/consts'
 import { checkAppVersion, isWeixin, isWeb, isNavbar, log, entryLaunch, VERSION_STANDARD,tokenParse } from '@/utils'
+import { useEffectAsync } from '@/hooks'
 import { requestIntercept } from '@/plugin/requestIntercept'
 import dayjs from 'dayjs'
 
@@ -54,7 +56,7 @@ if (process.env.APP_BUILD_TARGET == 'app') {
 requestIntercept()
 
 function App({ children }) {
-  useEffect(async (options) => {
+  useEffectAsync(async (options) => {
     console.log('useEffect %%%%%%%%%%%%%', options)
     if (isWeixin) {
       checkAppVersion()
@@ -125,13 +127,21 @@ function App({ children }) {
   useLaunch((options) => {
     console.log('useLaunch ***********', options)
 
-    // 分包异步加载语言包
-    __non_webpack_require__ &&
-      __non_webpack_require__('subpages/i18n/index', (res) => {
+    //分包异步加载语言包
+    if (process.env.TARO_ENV === 'weapp') {
+      __non_webpack_require__ &&
+        __non_webpack_require__('subpages/i18n/index', (res) => {
+          const langJSON = Taro['langJSON']
+          console.log('langJSON--------', langJSON)
+          langObj.setLanguagePackage(langJSON)
+        })
+    } else {
+      import('@/subpages/i18n/index').then((res) => {
         const langJSON = Taro['langJSON']
-        console.log('langJSON--------', langJSON)
+        console.log('langJSON--------', langJSON, langObj.setLanguagePackage)
         langObj.setLanguagePackage(langJSON)
       })
+    }
   })
 
   useDidShow(async (options) => {
@@ -161,6 +171,10 @@ function App({ children }) {
         getSystemConfig()
       }
     })
+  })
+
+  useError((error) => {
+    log.error('useError', error)
   })
 
   const getSystemConfig = async () => {

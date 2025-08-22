@@ -85,18 +85,27 @@ const SpPage = memo(
 
     useEffect(() => {
       if (state.lock) {
+        // 保存当前滚动位置
+        const currentScrollTop = scrollTopRef.current || 0
+
         setState((draft) => {
           draft.lockStyle = {
-            position: 'fixed',
-            top: `-${scrollTopRef.current}px`,
-            left: '0px',
-            width: '100%',
-            bottom: '0px'
+            overflow: 'hidden'
           }
         })
+
+        // 设置滚动位置，防止回到顶部
+        setTimeout(() => {
+          Taro.pageScrollTo({
+            scrollTop: currentScrollTop,
+            duration: 0
+          })
+        }, 0)
       } else {
         setState((draft) => {
-          draft.lockStyle = {}
+          draft.lockStyle = {
+            overflow: 'auto'
+          }
         })
       }
     }, [state.lock])
@@ -126,6 +135,9 @@ const SpPage = memo(
         _menuWidth = menuButton.width
         _navigationLSpace = windowWidth - menuButton.right
         _navigationRSpace = menuButton.width + (windowWidth - menuButton.right)
+      } else if (hasNavbar) {
+        _gNavbarH = props.navigateHeight
+        _gStatusBarHeight = 0
       }
 
       const custom_navigation = isWeixin ? navigationStyle === 'custom' : false
@@ -260,13 +272,6 @@ const SpPage = memo(
         setState((draft) => {
           draft.lock = false
         })
-
-        setTimeout(() => {
-          Taro.pageScrollTo({
-            scrollTop: scrollTopRef.current,
-            duration: 0
-          })
-        }, 0)
       }
     }))
     const computedNavigationStyle = () => {
@@ -418,7 +423,7 @@ const SpPage = memo(
                 style={styleNames(pageCenterStyle)}
               >
                 {props.renderNavigation ? (
-                  <context.Provider>{props.renderNavigation}</context.Provider>
+                  <context.Provider value={store}>{props.renderNavigation}</context.Provider>
                 ) : (
                   <View className='title-container' style={styleNames(pageTitleStyle)}>
                     {renderTitle || props.title || navigationBarTitleText}
@@ -458,9 +463,11 @@ const SpPage = memo(
           <View
             className='sp-page__body'
             style={styleNames({
-              'height': props.immersive
-                ? `${state.height + state.gNavbarH}px`
-                : `${state.height}px`,
+              'height':
+                props.immersive || hasNavbar
+                  ? `${state.height + state.gNavbarH}px`
+                  : `${state.height}px`,
+              'padding-top': `${hasNavbar ? state.gNavbarH : 0}px`,
               'margin-top': `${state.customNavigation && !props.immersive ? state.gNavbarH : 0}px`,
               'padding-bottom': props.renderFooter
                 ? Taro.pxTransform(
