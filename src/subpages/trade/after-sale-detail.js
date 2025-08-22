@@ -83,7 +83,11 @@ function TradeAfterSaleDetail(props) {
       order_id
     })
     console.log(pickBy(resInfo, doc.trade.TRADE_AFTER_SALES_ITEM))
-    setState((draft) => {
+    resInfo?.detail?.forEach(item => {
+      item.orderItem.refundNum = item.num
+      item.orderItem.refundFee = item.refund_fee / 100
+    })
+    setState(draft => {
       draft.info = pickBy(resInfo, doc.trade.TRADE_AFTER_SALES_ITEM)
       draft.reasons = reasons
     })
@@ -268,8 +272,22 @@ function TradeAfterSaleDetail(props) {
                   </View>
                 </View>
               ))}
-            </View>
           </View>
+        </View>
+
+        <View className='refund-detail'>
+          <View className='refund-amount'>
+            <SpCell title='退款金额' value={<SpPrice value={info?.refund_info?.refundFee ||  info?.refundFee} />}></SpCell>
+          </View>
+          <View className='refund-point'>
+            <SpCell title='退积分' value={<SpPrice value={info?.refund_info?.refundPoint || info?.refundPoint} />}></SpCell>
+          </View>
+          {
+            info?.refund_freight_amount > 0 &&
+            <View className='refund-point'>
+              <SpCell title='退运费' value={info?.refund_freight_amount}></SpCell>
+            </View>
+          }
 
           <View className='refund-detail'>
             <View className='refund-amount'>
@@ -337,6 +355,7 @@ function TradeAfterSaleDetail(props) {
               </View>
             </SpCell>
           </View>
+        </View>
         </View>
       </ScrollView>
     </SpPage>
