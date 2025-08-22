@@ -1,4 +1,3 @@
-import React, { Component, useEffect } from 'react'
 import langObj from '@/lang/index.js' // 📍 必须在入口文件中第一行引入，文件会在运行插件时自动生成，默认位于打包配置目录同层的lang文件夹中，其中的index.js就是配置文件
 import Taro, {
   getCurrentInstance,
@@ -9,6 +8,7 @@ import Taro, {
   useRouter
 } from '@tarojs/taro'
 
+import React, { Component } from 'react'
 import S from '@/spx'
 import { Provider } from 'react-redux'
 import configStore from '@/store'
@@ -16,7 +16,6 @@ import api from '@/api'
 
 // import { Tracker } from "@/service";
 // import { youshuLogin } from '@/utils/youshu'
-import { fetchUserFavs } from '@/store/slices/user'
 import {
   DEFAULT_TABS,
   DEFAULT_THEME,
@@ -27,15 +26,7 @@ import {
   SG_GUIDE_PARAMS_UPDATETIME,
   SG_CHECK_STORE_RULE
 } from '@/consts'
-import {
-  checkAppVersion,
-  isWeixin,
-  isWeb,
-  isNavbar,
-  log,
-  entryLaunch,
-  VERSION_STANDARD
-} from '@/utils'
+import { checkAppVersion, isWeixin, isWeb, isNavbar, log, entryLaunch, VERSION_STANDARD,tokenParse } from '@/utils'
 import { requestIntercept } from '@/plugin/requestIntercept'
 import dayjs from 'dayjs'
 
@@ -79,7 +70,47 @@ function App({ children }) {
         Taro.removeStorageSync(SG_GUIDE_PARAMS_UPDATETIME)
       }
     }
+ // isWeb环境下，H5启动时，路由携带参数在options
+    // 小程序环境，启动时，路由携带参数在options.query
+    entryLaunch.getRouteParams(isWeb ? { query: options } : options).then(async (params) => {
+      console.log(`app componentDidShow:`, options, params)
+      Taro.setStorageSync(SG_ROUTER_PARAMS, params)
+      let _ucd = ''
+      //crmcode 区域code, ucd 用户会员 card,source_id, monitor_id, latest_source_id, latest_monitor_id
+      const {
+        crmcode,
+        ucd = '',
+        s = '',
+        m = '',
+        latest_source_id = '',
+        latest_monitor_id = '',
+      } = params || {}
 
+      Taro.setStorageSync('user_card_code', ucd) //对方打开本小程序会传的参数
+      Taro.setStorageSync('sourceInfo', {
+        source_id: s,
+        monitor_id: m,
+        latest_source_id,
+        latest_monitor_id
+      })
+      if (m && s) {
+        await entryLaunch.trackViewNum(m, s)
+      }
+      if (crmcode) {
+        this.getSystemConfig()
+      }
+      if (ucd) {
+        const token = S.getAuthToken()
+        const userInfo = token ? tokenParse(token) : {}
+        _ucd = userInfo?.user_card_code
+        if (ucd !== _ucd) {
+          //如果有ucd 并且 与本地用户的_ucd相等说明是mob拉起 需要走自动登录
+          S.setAuthToken('')
+          Taro.removeStorageSync('userinfo')
+          return
+        }
+      }
+    })
     const { show_time } = await api.promotion.getScreenAd()
     let showAdv
     if (show_time === 'always') {
