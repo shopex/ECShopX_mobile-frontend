@@ -724,11 +724,11 @@ const getCurrentShopId = () => {
   return distributor_id
 }
 
-const getDistributorId = (_dtid) => {
-  const { sys, shop } = store.getState()
 
+const getDistributorId = (_dtid) => {
+  const { shop } = store.getState()
   const {
-    shopInfo: { distributor_id, shop_id }
+    shopInfo: { distributor_id }
   } = shop
   if (VERSION_STANDARD) {
     if (typeof _dtid == 'undefined') {
@@ -737,7 +737,7 @@ const getDistributorId = (_dtid) => {
       if (dtid) {
         return dtid
       } else {
-        return distributor_id
+        return distributor_id 
       }
     } else {
       return _dtid
@@ -746,6 +746,7 @@ const getDistributorId = (_dtid) => {
     return _dtid || 0
   }
 }
+
 
 /**
  * 保留两个位小数，不足补0
