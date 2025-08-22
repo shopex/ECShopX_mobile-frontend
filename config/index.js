@@ -154,6 +154,27 @@ const config = {
       mode: IS_APP ? 'hash' : 'browser'
       // mode: "browser"
     },
+    webpackChain(chain) {
+      chain.plugin('auto-i18n').use(webpackPluginsAutoI18n.default, [
+        {
+          rewriteConfig: false, // 是否重写配置js ， 小程序需要魔改配置文件，所以不要重新生成，以现在的为准
+          excludedPath: [
+            path.resolve(__dirname, './../src/lang/index.js'),
+            path.resolve(__dirname, './../src/lang/consts.js')
+          ],
+          globalPath: path.resolve(__dirname, './../src/subpages/i18n/lang'),
+          targetLangList: ['en', 'zh-tw'], // 目标语言
+          originLang: 'zh-cn', // 源语言
+          translator: process.env.APP_I18N_APP_KEY
+            ? new YoudaoTranslator({
+                appId: process.env.APP_I18N_APP_ID,
+                appKey: process.env.APP_I18N_APP_KEY
+              })
+            : new EmptyTranslator(),
+          includePath: [/src/] // 仅扫描 src 目录
+        }
+      ])
+    },
     devServer: {
       // https: true,
       // overlay: {

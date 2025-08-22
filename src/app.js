@@ -101,20 +101,17 @@ function App({ children }) {
       __non_webpack_require__ &&
         __non_webpack_require__('subpages/i18n/index', (res) => {
           const langJSON = Taro['langJSON']
-          console.log('langJSON--------', langJSON)
           langObj.setLanguagePackage(langJSON)
         })
     } else {
       import('@/subpages/i18n/index').then((res) => {
         const langJSON = Taro['langJSON']
-        console.log('langJSON--------', langJSON, langObj.setLanguagePackage)
         langObj.setLanguagePackage(langJSON)
       })
     }
   })
 
   useDidShow(async (options) => {
-    console.log('useDidShow &&&&&&&&&&&&', options)
     entryLaunch.getRouteParams(isWeb ? { query: options } : options).then((params) => {
       Taro.setStorageSync(SG_ROUTER_PARAMS, params)
 
