@@ -67,6 +67,10 @@ function SpCategorySearch(props) {
     onClear()
   }
   const handleChangeSearch = async (value) => {
+    console.log('handleChangeSearch', value)
+    setState((draft) => {
+      draft.keyword = value
+    })
     onChange(value)
   }
   const handleConfirm = async (e) => {
