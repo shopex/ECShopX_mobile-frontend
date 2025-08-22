@@ -63,16 +63,16 @@ function MemberUserInfo() {
     })
     const {
       other_params: { custom_data }
-    } = userInfo
+    } = userInfo || { other_params: { custom_data: {} } }
     const _formItems = []
     const _formUserInfo = {
-      language: userInfo.language || 'zh',
-      avatar: userInfo.avatar,
-      username: userInfo.username,
+      language: userInfo?.language || 'zh',
+      avatar: userInfo?.avatar,
+      username: userInfo?.username,
       ...custom_data
     }
     Object.keys(data).forEach((key) => {
-      const value = custom_data?.[key] || userInfo[key]
+      const value = custom_data?.[key] || userInfo?.[key]
       if (data[key].is_open) {
         if (key !== 'mobile' && key !== 'username') {
           _formItems.push(data[key])
@@ -507,9 +507,13 @@ function MemberUserInfo() {
             onClick={() => {
               // Taro.setStorageSync('lang', state.selectLang)
               Taro.$changeLang(state.selectLang)
-              Taro.reLaunch({
-                url: '/subpages/member/index'
-              })
+              if (isWeb) {
+                window.location.href = `${window.location.origin}/subpages/member/user-info`
+              } else {
+                Taro.reLaunch({
+                  url: '/subpages/member/index'
+                })
+              }
             }}
           >
             确定
