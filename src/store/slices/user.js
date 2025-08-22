@@ -8,7 +8,7 @@ const initialState = {
   userInfo: null,
   isNewUser: false,
   cardInfo: {},
-  lang: defaultLang,
+  lang: 'zhcn',
   vipInfo: {
     isOpen: false,
     isVip: false,
@@ -95,9 +95,9 @@ const userSlice = createSlice({
     closeAdv: (state, { payload }) => {
       state.showAdv = payload
     },
-    updateLang: (state, { payload }) => {
-      state.lang = payload
-    },
+    // updateLang: (state, { payload }) => {
+    //   state.lang = payload
+    // },
     clearUserInfo: (state, { payload }) => {
       state.userInfo = null
       state.cardInfo = {}
@@ -134,8 +134,8 @@ export const {
   updateLocation,
   updateCheckChief,
   clearUserInfo,
-  updateIsNewUser,
-  updateLang
+  updateIsNewUser
+  // updateLang
 } = userSlice.actions
 
 export default userSlice.reducer

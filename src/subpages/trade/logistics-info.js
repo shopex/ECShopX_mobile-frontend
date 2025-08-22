@@ -50,7 +50,7 @@ function TradeLogisticsInfo(props) {
         aftersales_bn,
         logi_no,
         corp_code,
-        showError:false
+        showError: false
       })
       showToast('操作成功')
       setTimeout(() => {
@@ -114,8 +114,7 @@ function TradeLogisticsInfo(props) {
           />
         }
       ></SpCell>
-        <SpToast />
-
+      <SpToast />
     </SpPage>
   )
 }

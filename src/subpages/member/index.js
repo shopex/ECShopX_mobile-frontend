@@ -153,8 +153,8 @@ function MemberIndex(props) {
   }, [])
 
   useDidShow(() => {
-    getUserInfo()
     if (isLogin) {
+      getUserInfo()
       getMemberCenterData()
     }
   })
@@ -398,7 +398,7 @@ function MemberIndex(props) {
           title: '邀请推广',
           content: '确定申请成为推广员？',
           showCancel: true,
-          cancel: '取消',
+          cancelText: '取消',
           confirmText: '确认',
           confirmColor: '#0b4137'
         })
@@ -607,7 +607,7 @@ function MemberIndex(props) {
           {/* <View className='header-block__ft'></View> */}
         </View>
 
-        <WgtsContext.Provider>
+        <WgtsContext.Provider value={{}}>
           <HomeWgts wgts={state.wgts} />
         </WgtsContext.Provider>
 

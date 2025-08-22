@@ -12888,5 +12888,10 @@
 		"zh-cn": "取消1",
 		"en": "Cancel 1",
 		"zh-tw": "取消1"
+	},
+	"dai4x2c": {
+		"zh-cn": "创建订单失败,请稍后再试",
+		"en": "The order creation failed. Please try again later",
+		"zh-tw": "創建訂單失敗,請稍後再試"
 	}
 }

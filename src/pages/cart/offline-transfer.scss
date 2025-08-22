@@ -1,4 +1,7 @@
-.page-address-edit {
+.page-offline-transfer {
+  .sp-page__body {
+    height: 100% !important;
+  }
 
   .scroll-view-container {
     height: 100%;
@@ -25,7 +28,7 @@
     background: var(--color-primary) !important;
   }
 
-  .page-address-edit__form {
+  .page-offline-transfer__form {
     border-radius: 16px;
     padding: 24px 24px 36px 24px;
     box-sizing: border-box;

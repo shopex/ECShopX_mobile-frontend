@@ -173,7 +173,15 @@ class API {
     if (company_id) {
       query['company_id'] = company_id
     }
-
+    const lang = Taro.getStorageSync('lang')
+    if (lang) {
+      const langMap = {
+        zhcn: 'zh-CN',
+        en: 'en-CN',
+        zhtw: 'zh-TW'
+      }
+      query['country_code'] = langMap[lang]
+    }
     if (!methodIsGet) {
       header['content-type'] = header['content-type'] || 'application/x-www-form-urlencoded'
     }
@@ -185,9 +193,9 @@ class API {
 
     // 处理版本区分
     if (isWeb) {
-      if (process.env.APP_VUE_SAAS) {
-        header['origin'] = global.location.host
-      }
+      // if (process.env.APP_VUE_SAAS) {
+      //   header['origin'] = global.location.host
+      // }
     }
 
     if ((isWeixin || isAlipay) && appid) {

@@ -252,7 +252,7 @@ function OfflineTransfer() {
 
   return (
     <SpPage
-      className='page-address-edit'
+      className='page-offline-transfer'
       renderFooter={
         !params.onlyView && (
           <View className='btns'>
@@ -274,7 +274,7 @@ function OfflineTransfer() {
     >
       <ScrollView className='scroll-view-container'>
         <View className='scroll-view-body'>
-          <View className='page-address-edit__form'>
+          <View className='page-offline-transfer__form'>
             <View className='head-box '>
               <View className='head-box-title'>收款账号</View>
               <View className='head-box-subtitle'>{setting?.pay_tips}</View>
@@ -282,7 +282,7 @@ function OfflineTransfer() {
             {accountList.length > 0 && accountList.map((item, idx) => accountItemRender(item, idx))}
           </View>
 
-          <View className='page-address-edit__form'>
+          <View className='page-offline-transfer__form'>
             <View className='head-box'>
               <View className='head-box-title'>付款信息</View>
               <View className='head-box-subtitle'>{setting?.pay_desc}</View>
@@ -386,7 +386,7 @@ function OfflineTransfer() {
           </View>
 
           {info?.check_status && (
-            <View className='page-address-edit__form'>
+            <View className='page-offline-transfer__form'>
               <View className='head-box'>
                 <View className='head-box-title'>审核信息</View>
               </View>

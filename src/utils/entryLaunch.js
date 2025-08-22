@@ -264,7 +264,7 @@ class EntryLaunch {
     } else {
       console.log('getLocationInfo')
       return new Promise(async (reslove, reject) => {
-        this.geolocation.getLocation(
+        this.geolocation?.getLocation(
           (res) => {
             reslove({
               lng: res.lng,

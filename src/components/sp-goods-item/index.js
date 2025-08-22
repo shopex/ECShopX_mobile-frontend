@@ -158,7 +158,9 @@ function SpGoodsItem(props) {
               {info.price > 0 ? <Text style='margin: 0 4px;'>+</Text> : ''}
               {info.price > 0 ? <SpPrice primary size={32} value={info.price} /> : ''}
             </View>
-          ) :""}
+          ) : (
+            ''
+          )}
 
           {!info.point && showPrice && (
             <View className='goods-price'>
@@ -235,9 +237,11 @@ function SpGoodsItem(props) {
               <View onClick={(e) => onChangeToolBar(e)}>
                 <Text className='iconfont icon-gouwuche2' />
               </View>
-            ) : ""}
+            ) : (
+              ''
+            )}
 
-            {info.point && info.point > 0 ? <View className='btn-exchange'>兑换</View> : ""}
+            {info.point && info.point > 0 ? <View className='btn-exchange'>兑换</View> : ''}
           </View>
         </View>
 

@@ -350,19 +350,19 @@ function EspierDetail(props) {
       getRecommendList() // 猜你喜欢
     }
   }
-const getMultipleImageInfo = async (imageUrls) => {
-  const promises = imageUrls.map(url =>
-    Taro.getImageInfo({ src: url })
-      .then(info => info)
-      .catch(error => {
-        console.log('获取图片信息失败:', url, error)
-        // 返回一个默认高度或 null
-        return { width: 0, height: 650 }
-      })
-  )
-  const results = await Promise.all(promises)
-  return results.map(info => (info.height) / 2 > 650 ? 650 : info.height / 2)
-}
+  const getMultipleImageInfo = async (imageUrls) => {
+    const promises = imageUrls.map((url) =>
+      Taro.getImageInfo({ src: url })
+        .then((info) => info)
+        .catch((error) => {
+          console.log('获取图片信息失败:', url, error)
+          // 返回一个默认高度或 null
+          return { width: 0, height: 650 }
+        })
+    )
+    const results = await Promise.all(promises)
+    return results.map((info) => (info.height / 2 > 650 ? 650 : info.height / 2))
+  }
 
   const getRecommendList = async () => {
     const { list } = await api.cart.likeList({
