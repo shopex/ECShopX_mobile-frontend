@@ -77,15 +77,21 @@ function SpSkuSelect(props) {
         draft.num = specItemed()
       })
     }
-  }, [info])
 
-  useEffect(() => {
-    if (!open) {
+    return () => {
       setState((draft) => {
         draft.num = 1
       })
     }
-  }, [open])
+  }, [info])
+
+  // useEffect(() => {
+  //   if (!open) {
+  //     setState((draft) => {
+  //       draft.num = 1
+  //     })
+  //   }
+  // }, [open])
 
   const init = () => {
     const { skuList, specItems } = info
