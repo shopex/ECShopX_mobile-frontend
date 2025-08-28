@@ -269,6 +269,8 @@ function withPageWrapper(Component) {
             }
           }
         }
+      } else {
+        dispatch(updateShopInfo(currentShopInfo))
       }
     }
 
