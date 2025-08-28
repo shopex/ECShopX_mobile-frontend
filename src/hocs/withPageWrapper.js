@@ -135,8 +135,10 @@ function withPageWrapper(Component) {
 
     // 获取当前用户白名单店铺
     const getUserWhiteShop = async () => {
+      const { dtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
       const list = await api.shop.getMyStoreWhiteList()
-      return list.length > 0 ? list[0] : null
+      const store = dtid.find((item) => item.distributor_id == dtid)
+      return store || (list.length > 0 ? list[0] : null)
     }
 
     const checkStoreWhiteList = async (dtid, isLocation = true) => {
