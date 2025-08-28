@@ -137,7 +137,7 @@ function withPageWrapper(Component) {
     const getUserWhiteShop = async () => {
       const { dtid } = Taro.getStorageSync(SG_ROUTER_PARAMS)
       const list = await api.shop.getMyStoreWhiteList()
-      const store = dtid.find((item) => item.distributor_id == dtid)
+      const store = list.find((item) => item.distributor_id == dtid)
       return store || (list.length > 0 ? list[0] : null)
     }
 
