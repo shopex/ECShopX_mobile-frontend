@@ -71,6 +71,7 @@ function withPageWrapper(Component) {
           if (rule.key === 'distributor_code') {
             if (dtid) {
               await checkStoreWhiteList(dtid)
+              resolve()
             } else {
               return nextRule()
             }
