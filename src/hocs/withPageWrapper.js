@@ -235,7 +235,9 @@ function withPageWrapper(Component) {
         } else {
           const resModalAccessStore = await showModal({
             title: '提示',
-            content: '抱歉，没有可访问的店铺',
+            content: currentShopInfo?.is_default
+              ? '抱歉，没有可访问的店铺'
+              : '抱歉，本店会员才可以访问',
             showCancel: false,
             confirmText:
               entryDefalutStore == 1
