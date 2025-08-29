@@ -12898,5 +12898,10 @@
 		"zh-cn": "退出小程序",
 		"en": "Exit the mini-program",
 		"zh-tw": "退出小程序"
+	},
+	"9vbdm3c": {
+		"zh-cn": "抱歉，本店会员才可以访问",
+		"en": "Sorry, only members of this store can access",
+		"zh-tw": "抱歉，本店會員纔可以訪問"
 	}
 }
