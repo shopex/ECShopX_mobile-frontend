@@ -10,18 +10,15 @@ const initialState = {
   showBar: false,
   showSearchDailog: false,
   isShowAction: false,
-  historyList: []
+  historyList: [],
+  keyword: ''
 }
 function SpCategorySearch(props) {
   const [state, setState] = useImmer(initialState)
-  const { showBar, showSearchDailog, isShowAction, historyList } = state
+  const { showBar, showSearchDailog, isShowAction, historyList, keyword } = state
   const {
     placeholder = '搜索',
-    onChange = () => {},
-    onClear = () => {},
-    onConfirm = () => {},
-    onCancel = () => {},
-    keyword
+    onConfirm = () => {}
   } = props
   useEffect(() => {
     console.log(showBar, '----')
@@ -64,10 +61,14 @@ function SpCategorySearch(props) {
     })
   }
   const handleClear = async () => {
-    onClear()
+    setState(draft => {
+      draft.keyword = ''
+    })
   }
   const handleChangeSearch = async (value) => {
-    onChange(value)
+    setState(draft => {
+      draft.keyword = value
+    })
   }
   const handleConfirm = async (e) => {
     e.preventDefault && e.preventDefault()
@@ -89,6 +90,7 @@ function SpCategorySearch(props) {
     }
     setState((draft) => {
       draft.showBar = false
+      draft.keyword = ''
     })
     onConfirm(e.detail.value)
   }
@@ -96,7 +98,6 @@ function SpCategorySearch(props) {
     setState((draft) => {
       draft.showBar = false
     })
-    onCancel()
   }
   const handleClickTag = (item) => {
     onConfirm(item)
