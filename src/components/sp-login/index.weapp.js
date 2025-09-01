@@ -241,7 +241,7 @@ const SpLogin = forwardRef((props, ref) => {
       >
         <View className='login-modal'>
           <View className='login-modal__hd'>
-            <SpImage circle src={icon} width={120} height={120} />
+            <SpImage circle src={icon.replace(/^http:/, 'https:')} width={120} height={120} />
             <View className='nick-name'>{nickname}</View>
           </View>
           <View className='login-modal__bd'>登录手机号，查看全部订单和优惠券</View>
