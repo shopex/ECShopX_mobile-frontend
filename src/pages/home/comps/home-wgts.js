@@ -36,57 +36,48 @@ function HomeWgts(props) {
   const { wgts, dtid, onLoad = () => {}, children, copywriting = false } = props
   const [state, setState] = useImmer(initialState)
   const { localWgts, searchMethod } = state
-  const wgtsRef = useRef()
+  // const wgtsRef = useRef()
 
-  useEffect(() => {
-    // if (wgts.length > 0) {
-    wgtsRef.current.reset()
-    // }
-  }, [wgts])
+  // useEffect(() => {
+  //   wgtsRef.current.reset()
+  // }, [wgts])
 
-  const fetch = ({ pageIndex, pageSize }) => {
-    const x = pageSize * pageIndex
-    const twgt = wgts.slice(x - pageSize, x > wgts.length ? wgts.length : x)
-    log.debug(
-      `${pageIndex}; ${pageSize}; ${wgts.length}; ${x - pageSize}; ${
-        x > wgts.length ? wgts.length : x
-      }`
-    )
+  // const fetch = ({ pageIndex, pageSize }) => {
+  //   const x = pageSize * pageIndex
+  //   const twgt = wgts.slice(x - pageSize, x > wgts.length ? wgts.length : x)
+  //   log.debug(
+  //     `${pageIndex}; ${pageSize}; ${wgts.length}; ${x - pageSize}; ${
+  //       x > wgts.length ? wgts.length : x
+  //     }`
+  //   )
 
-    const storeClick = () => {
-      Taro.navigateTo({
-        url: `/subpages/store/item-list?dtid=${dtid}`
-      })
-    }
-    let searchMethod = dtid && storeClick
+  //   const storeClick = () => {
+  //     Taro.navigateTo({
+  //       url: `/subpages/store/item-list?dtid=${dtid}`
+  //     })
+  //   }
+  //   let searchMethod = dtid && storeClick
 
-    setState((draft) => {
-      draft.localWgts[pageIndex - 1] = twgt
-      draft.searchMethod = searchMethod
+  //   setState((draft) => {
+  //     draft.localWgts[pageIndex - 1] = twgt
+  //     draft.searchMethod = searchMethod
+  //   })
+
+  //   return {
+  //     total: wgts.length
+  //   }
+  // }
+
+  const storeClick = () => {
+    Taro.navigateTo({
+      url: `/subpages/store/item-list?dtid=${dtid}`
     })
-
-    return {
-      total: wgts.length
-    }
   }
 
   return (
-    <SpScrollView
-      className='home-wgts'
-      ref={wgtsRef}
-      fetch={fetch}
-      pageSize={5}
-      onLoad={onLoad}
-      renderMore={() => {
-        return <></>
-      }}
-      renderEmpty={() => {
-        return <></>
-      }}
-      // renderMore={copywriting ? null : () => {}}
-    >
-      {localWgts.map((list) => {
-        return list.map((item, idx) => (
+    <View className='home-wgts'>
+      {wgts.map((item, idx) => {
+        return (
           <View
             className='wgt-wrap'
             key={`${item.name}${idx}`}
@@ -94,8 +85,7 @@ function HomeWgts(props) {
             data-name={item.name}
           >
             {/* {item.name === "search" && <WgtSearchHome info={item} />} */}
-            {item.name === 'search' && <SpSearch info={item} onClick={searchMethod} />}{' '}
-            {/** 搜索 */}
+            {item.name === 'search' && <SpSearch info={item} onClick={storeClick} />} {/** 搜索 */}
             {item.name === 'film' && <WgtFilm info={item} />} {/** 视频 */}
             {item.name === 'marquees' && <WgtMarquees info={item} />} {/** 文字轮播 */}
             {item.name === 'slider' && <WgtSlider isHomeSearch info={item} />} {/** 轮播 */}
@@ -124,15 +114,20 @@ function HomeWgts(props) {
             {item.name === 'orderNavigation' && <WgtOrderNavigation info={item} />}{' '}
             {/** 订单导航 */}
           </View>
-        ))
+        )
       })}
       {children}
-    </SpScrollView>
+    </View>
   )
 }
 
 HomeWgts.options = {
   addGlobalClass: true
+}
+
+HomeWgts.defaultProps = {
+  wgts: [],
+  dtid: ''
 }
 
 export default HomeWgts
