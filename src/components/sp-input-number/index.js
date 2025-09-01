@@ -47,12 +47,6 @@ class AtInputNumber extends AtComponent {
     })
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.state.localValue) {
-      this.setState({ localValue: this.props.value })
-    }
-  }
-
   handleClick(clickType) {
     const { disabled, value, min, max, step } = this.props
     const lowThanMin = clickType === 'minus' && value <= min
@@ -71,7 +65,7 @@ class AtInputNumber extends AtComponent {
           errorValue
         })
       }
-      // return
+      return
     }
     const deltaValue = clickType === 'minus' ? -step : step
     let newValue = addNum(value, deltaValue)
@@ -85,6 +79,7 @@ class AtInputNumber extends AtComponent {
   handleValue = (value) => {
     const { max, min } = this.props
     let resultValue = value === '' ? min : value
+    console.log(`handleValue`, `value: ${value}, resultValue: ${resultValue}`)
     // 此处不能使用 Math.max，会是字符串变数字，并丢失 .
     if (Number(resultValue) > max) {
       resultValue = max
@@ -108,25 +103,21 @@ class AtInputNumber extends AtComponent {
     const { value } = e.target
     const { disabled } = this.props
     if (disabled) return
-    // console.log('handleInput', value)
-    // this.setState({
-    //   localValue: value
-    // })
-
-    // this.props.onChange(newValue, e, ...arg)
-    // return newValue
+    console.log(`handleInput`, `value: ${value}, localValue: ${this.state.localValue}`)
+    this.setState({
+      localValue: value
+    })
   }
 
   handleBlur = (e, ...arg) => {
     const { value } = e.target
     const newValue = this.handleValue(value)
-    console.log('handleInput', newValue)
+    console.log(`handleBlur newValue: ${newValue}, value: ${value}`)
     this.setState({
       localValue: newValue
     })
     this.props.onChange(newValue, e, ...arg)
   }
-  // handleBlur = (...arg) => this.props.onBlur(...arg)
 
   handleError = (errorValue) => {
     if (!this.props.onErrorInput) {
@@ -138,20 +129,8 @@ class AtInputNumber extends AtComponent {
   render() {
     const { customStyle, className, width, disabled, value, type, min, max, size } = this.props
 
-    const inputStyle = {
-      width: width ? `${Taro.pxTransform(width)}` : ''
-    }
     const inputValue = this.handleValue(this.state.localValue)
-    console.log(
-      'inputValue',
-      inputValue,
-      'localValue',
-      this.state.localValue,
-      'max',
-      max,
-      'inputValue >= parseInt(max)',
-      inputValue >= parseInt(max)
-    )
+
     const rootCls = classNames(
       'sp-input-number',
       'at-input-number',
@@ -161,12 +140,16 @@ class AtInputNumber extends AtComponent {
       },
       className
     )
+
     const minusBtnCls = classNames('at-input-number__btn', {
       'at-input-number--disabled': Number(inputValue) <= min || disabled
     })
+
     const plusBtnCls = classNames('at-input-number__btn', {
       'at-input-number--disabled': Number(inputValue) >= max || disabled
     })
+
+    console.log(`sp-input-number min: ${min}, max: ${max}, inputValue: ${inputValue}`)
 
     return (
       <View className={rootCls} style={customStyle}>
@@ -175,9 +158,11 @@ class AtInputNumber extends AtComponent {
         </View>
         <Input
           className='at-input-number__input'
-          style={inputStyle}
+          style={{
+            width: width ? `${Taro.pxTransform(width)}` : ''
+          }}
           type={type}
-          value={inputValue}
+          value={this.state.localValue}
           disabled={disabled}
           onInput={this.handleInput}
           onBlur={this.handleBlur}

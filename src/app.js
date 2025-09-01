@@ -25,6 +25,7 @@ import {
   SG_ROUTER_PARAMS,
   SG_GUIDE_PARAMS,
   SG_GUIDE_PARAMS_UPDATETIME,
+  SG_GUIDE_PARAMS_EXPRESSTIME,
   SG_CHECK_STORE_RULE
 } from '@/consts'
 import {
@@ -73,10 +74,11 @@ function App({ children }) {
 
     // 导购参数缓存处理
     const guideUpdateTime = Taro.getStorageSync(SG_GUIDE_PARAMS_UPDATETIME) || 0
+    const guideExpressTime = Taro.getStorageSync(SG_GUIDE_PARAMS_EXPRESSTIME) || 0
     if (guideUpdateTime != 0) {
       const diffMilliseconds = dayjs().diff(dayjs(guideUpdateTime))
       // 参数保存超过3天，清除导购参数
-      if (diffMilliseconds > 3 * 86400000) {
+      if (diffMilliseconds > guideExpressTime * 86400000) {
         Taro.removeStorageSync(SG_GUIDE_PARAMS)
         Taro.removeStorageSync(SG_GUIDE_PARAMS_UPDATETIME)
       }
@@ -168,9 +170,25 @@ function App({ children }) {
 
     const appSettingInfo = await api.groupBy.getCompanySetting() // 获取小程序头像
 
-    let enterStoreRule = null
+    let enterStoreRule = null,
+      entryStoreRules = []
     if (VERSION_STANDARD) {
       enterStoreRule = await api.shop.getStoreEnterRule()
+      entryStoreRules = Object.entries({
+        distributor_code: enterStoreRule.distributor_code,
+        shop_assistant: enterStoreRule.shop_assistant,
+        shop_white: enterStoreRule.shop_white,
+        shop_assistant_pro: enterStoreRule.shop_assistant_pro
+      })
+        .map(([key, value]) => ({
+          key,
+          ...value
+        }))
+        .sort((a, b) => a.sort - b.sort)
+
+      if (enterStoreRule.shop_assistant?.status) {
+        Taro.setStorageSync(SG_GUIDE_PARAMS_EXPRESSTIME, enterStoreRule.shop_assistant.express_time) // 时间单位是天
+      }
     }
 
     Taro.setStorageSync('distributor_param_status', distributor_param_status)
@@ -196,10 +214,12 @@ function App({ children }) {
           priceSetting,
           appLogo: appSettingInfo?.logo,
 
-          entryStoreByStoreCode: enterStoreRule?.distributor_code,
-          entryStoreByGuideMaterial: enterStoreRule?.shop_assistant,
-          enterStoreWhiteList: enterStoreRule?.shop_white,
-          entryStoreByGuide: enterStoreRule?.shop_assistant_pro,
+          // entryStoreByStoreCode: enterStoreRule?.distributor_code,
+          // entryStoreByGuideMaterial: enterStoreRule?.shop_assistant,
+          // enterStoreWhiteList: enterStoreRule?.shop_white,
+          // entryStoreByGuide: enterStoreRule?.shop_assistant_pro,
+
+          entryStoreRules: entryStoreRules,
           entryStoreByLBS: enterStoreRule?.shop_lbs,
           entryDefalutStore: enterStoreRule?.radio_type,
           guidderTemplateId: enterStoreRule?.intro_page
