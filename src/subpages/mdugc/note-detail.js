@@ -441,7 +441,11 @@ function UgcNoteDetail(props) {
                   key={`topic-item__${index}`}
                   onClick={() => {
                     Taro.navigateTo({
-                      url: `/subpages/mdugc/list?topic_id=${item.topic_id}&topic_name=${item.topic_name}`
+                      // 处理 topic_name 的转义问题，使用 encodeURIComponent、
+
+                      url: `/subpages/mdugc/list?topic_id=${
+                        item.topic_id
+                      }&topic_name=${encodeURIComponent(item.topic_name)}`
                     })
                   }}
                 >

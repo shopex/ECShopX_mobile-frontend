@@ -500,7 +500,7 @@ SpPage.defaultProps = {
   isSticky: false, // 是否粘性吸顶
   immersive: false, // 沉浸式导航
   loading: false,
-  navbar: true,
+  navbar: false,
   navigateMantle: false, // 页面向下滚动，沉浸式导航开启蒙层背景色
   navigationLeftBlockWidthFull: false,
   navigateBackgroundColor: '#fff', // 导航背景色

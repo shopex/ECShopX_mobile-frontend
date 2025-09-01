@@ -85,7 +85,7 @@ function UgcTopicList() {
     setState((draft) => {
       draft.leftList[pageIndex - 1] = resLeftList
       draft.rightList[pageIndex - 1] = resRightList
-      draft.topicName = topic_name
+      draft.topicName = decodeURIComponent(topic_name)
     })
 
     return { total: total || 0 }
