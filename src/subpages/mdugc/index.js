@@ -219,7 +219,11 @@ function UgcIndex() {
         placeholder='搜索'
         showDailog={false}
         onFocus={() => {}}
-        onChange={() => {}}
+        onChange={(e) => {
+          setState((draft) => {
+            draft.keyword = e
+          })
+        }}
         onClear={handleOnClear}
         onCancel={handleSearchCancel}
         onConfirm={handleConfirm}

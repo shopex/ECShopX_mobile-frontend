@@ -230,17 +230,7 @@ function StoreItemList(props) {
   return (
     <View scrollToTopBtn className={classNames('page-category-item-list')}>
       <View className='page-category-item-list-head'>
-        <View className='category-search'>
-          {/* <SpCategorySearch onConfirm={handleConfirm} /> */}
-          {/* <View
-            className={classNames('type', {
-              'disable': cusIndex == 0
-            })}
-            onClick={onSelectClick}
-          >
-            <Text className='text'>{cusIndex ? '有货' : '无货'}</Text>
-          </View> */}
-        </View>
+        <View className='category-search'></View>
         <CompFirstCategory
           cusIndex={categoryFirstIndex}
           list={seriesList}

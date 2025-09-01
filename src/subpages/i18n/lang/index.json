@@ -12885,9 +12885,9 @@
 		"zh-tw": "繁體中文"
 	},
 	"csp333": {
-		"zh-cn": "取消1",
-		"en": "Cancel 1",
-		"zh-tw": "取消1"
+		"zh-cn": "取消",
+		"en": "Cancel",
+		"zh-tw": "取消"
 	},
 	"dai4x2c": {
 		"zh-cn": "创建订单失败,请稍后再试",
@@ -12918,5 +12918,15 @@
 		"zh-cn": "专票",
 		"en": "",
 		"zh-tw": ""
+  },
+	"5ipxx55": {
+		"zh-cn": "退出小程序",
+		"en": "Exit the mini-program",
+		"zh-tw": "退出小程序"
+	},
+	"9vbdm3c": {
+		"zh-cn": "抱歉，本店会员才可以访问",
+		"en": "Sorry, only members of this store can access",
+		"zh-tw": "抱歉，本店會員纔可以訪問"
 	}
 }
