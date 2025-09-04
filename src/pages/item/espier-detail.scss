@@ -1,4 +1,14 @@
 .page-item-espierdetail {
+  &__header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 250px !important;
+    z-index: 999;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+  }
   .goods-pic-container {
     position: relative;
   }
