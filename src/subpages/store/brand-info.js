@@ -99,7 +99,7 @@ const PageBrandInfo = () => {
         </View>
         <View className='margin good'>
           <View className='title' onClick={() => Taro.navigateBack()}>
-            {'去看看全部商品 >'}
+            去看看全部商品
           </View>
         </View>
       </ScrollView>
