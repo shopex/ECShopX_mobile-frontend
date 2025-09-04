@@ -283,12 +283,12 @@ function EspierDetail(props) {
           distributor_id: getDistributorId()
         })
         data = pickBy(itemDetail, doc.goods.ESPIER_DETAIL_GOODS_INFO)
-        if (data.approveStatus == 'instock') {
-          setState((draft) => {
-            draft.isDefault = true
-            draft.defaultMsg = '商品已下架'
-          })
-        }
+        // if (data.approveStatus == 'instock') {
+        //   setState((draft) => {
+        //     draft.isDefault = true
+        //     draft.defaultMsg = '商品已下架'
+        //   })
+        // }
       } catch (e) {
         setState((draft) => {
           draft.isDefault = true
@@ -479,6 +479,8 @@ function EspierDetail(props) {
         />
       }
     >
+
+      <View className='page-item-espierdetail__header-bg'></View>
       {/* <Canvas id="canvas2" type="2d" onReady={onCanvasReady} /> */}
       {!info && <SpLoading />}
       {info && (

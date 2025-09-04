@@ -404,7 +404,7 @@ const SpPage = memo(
                 style={styleNames(pageCenterStyle)}
               >
                 {props.renderNavigation ? (
-                  <context.Provider value={store}>{props.renderNavigation}</context.Provider>
+                  <context.Provider value={{}}>{props.renderNavigation}</context.Provider>
                 ) : (
                   <View className='title-container' style={styleNames(pageTitleStyle)}>
                     {renderTitle || props.title || navigationBarTitleText}
@@ -446,7 +446,7 @@ const SpPage = memo(
             className='sp-page__body'
             style={styleNames({
               'height': `${state.bodyHeight}px`,
-              'padding-top': `${state.customNavigation && !props.immerse ? state.gNavbarH : 0}px`,
+              'padding-top': `${state.customNavigation && !props.immersive ? state.gNavbarH : 0}px`,
               'padding-bottom': props.renderFooter
                 ? Taro.pxTransform(
                     props.footerHeight + (isIphoneX() ? DEFAULT_SAFE_AREA_HEIGHT : 0)
