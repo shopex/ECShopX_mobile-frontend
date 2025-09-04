@@ -378,7 +378,7 @@ function EspierDetail(props) {
     const { list } = await api.item.packageList({
       item_id: id,
       showError: false,
-      distributor_id: dtid
+      distributor_id: getDistributorId()
     })
     setState((draft) => {
       draft.promotionPackage = list
