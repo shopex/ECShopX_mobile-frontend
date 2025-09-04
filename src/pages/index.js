@@ -253,9 +253,11 @@ function Home() {
   }
 
   const handleScroll = (e) => {
-    setState((draft) => {
-      draft.navigateMantle = e.detail.scrollTop >= 20
-    })
+    if(pageData?.base?.isImmersive){
+      setState((draft) => {
+        draft.navigateMantle = e.detail.scrollTop >= 20
+      })
+    }
   }
 
   return (
