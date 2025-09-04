@@ -180,7 +180,7 @@ class API {
         en: 'en-CN',
         zhtw: 'zh-TW'
       }
-      query['country_code'] = langMap[lang]
+      query['country_code'] = langMap[lang || process.env.APP_COUNTRY_CODE]
     }
     if (!methodIsGet) {
       header['content-type'] = header['content-type'] || 'application/x-www-form-urlencoded'

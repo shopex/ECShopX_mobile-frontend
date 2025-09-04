@@ -44,4 +44,50 @@
 
     color: #333;
   }
+
+  .recommend-detail__bar {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .recommend-detail__bar-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 0;
+    .iconfont {
+      margin-right: 6px;
+      color: #666;
+    }
+    .icon-like {
+      font-size: 38px;
+      &.active {
+        color: var(--color-primary);
+      }
+    }
+    .icon-star_on {
+      font-size: 38px;
+      &.active {
+        color: var(--color-primary);
+      }
+    }
+    .icon-share1 {
+      font-size: 36px;
+    }
+
+    .bar-item-text {
+      font-size: 28px;
+      color: #666;
+    }
+
+    &:after {
+      content: '';
+      display: block;
+      background: transparent;
+      border: 0;
+    }
+  }
 }
