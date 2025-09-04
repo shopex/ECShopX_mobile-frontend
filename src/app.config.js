@@ -95,7 +95,8 @@ const config = {
         'point-detail', // 积分明细
         'point-rule', // 积分规则
         'member-level', // 会员等级
-        'user-info' // 个人信息
+        'user-info', // 个人信息
+        'settings' // 设置
       ]
     },
     {

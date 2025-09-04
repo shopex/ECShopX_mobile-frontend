@@ -20,9 +20,7 @@ const initialState = {
   showCheckboxPicker: false,
   checkboxKey: '',
   checkboxList: [],
-  showSwitchLanguage: false,
-  selectLang: '',
-  languageList: []
+  dmcrm_is_open: false
 }
 
 function MemberUserInfo() {
@@ -107,13 +105,6 @@ function MemberUserInfo() {
     setState((draft) => {
       draft.formItems = _formItems
       draft.formUserInfo = _formUserInfo
-      draft.languageList = Object.keys(i18n).map((key) => {
-        return {
-          name: i18n[key],
-          key,
-          ischecked: key === lang
-        }
-      })
     })
   }
 
@@ -420,20 +411,6 @@ function MemberUserInfo() {
       <View className='block-container'>
         <SpCell
           isLink
-          title='切换语言'
-          value={i18n[lang]}
-          onClick={() => {
-            setState((draft) => {
-              draft.selectLang = lang
-              draft.showSwitchLanguage = true
-            })
-          }}
-        ></SpCell>
-      </View>
-
-      <View className='block-container'>
-        <SpCell
-          isLink
           title='隐私政策和用户协议'
           value={policyAgreeText}
           onClick={() => {
@@ -497,53 +474,6 @@ function MemberUserInfo() {
             </SpCheckbox>
           </View>
         ))}
-      </SpFloatLayout>
-
-      {/* 切换语言 */}
-      <SpFloatLayout
-        title='切换语言'
-        open={state.showSwitchLanguage}
-        onClose={() => {
-          setState((draft) => {
-            draft.showSwitchLanguage = false
-          })
-        }}
-        renderFooter={
-          <AtButton
-            circle
-            type='primary'
-            onClick={() => {
-              // Taro.setStorageSync('lang', state.selectLang)
-              Taro.$changeLang(state.selectLang)
-              if (isWeb) {
-                window.location.href = `${window.location.origin}/subpages/member/user-info`
-              } else {
-                Taro.reLaunch({
-                  url: '/subpages/member/index'
-                })
-              }
-            }}
-          >
-            确定
-          </AtButton>
-        }
-      >
-        <View className='lang-list'>
-          {state.languageList.map((item, index) => (
-            <View className='lang-item' key={`lang-item__${index}`}>
-              <SpCheckbox
-                checked={item.key == state.selectLang}
-                onChange={(e) => {
-                  setState((draft) => {
-                    draft.selectLang = item.key
-                  })
-                }}
-              >
-                {item.name}
-              </SpCheckbox>
-            </View>
-          ))}
-        </View>
       </SpFloatLayout>
     </SpPage>
   )
