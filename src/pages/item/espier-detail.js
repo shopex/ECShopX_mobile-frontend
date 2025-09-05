@@ -112,12 +112,7 @@ function EspierDetail(props) {
 
   const { userInfo } = useSelector((state) => state.user)
   const { colorPrimary, openRecommend } = useSelector((state) => state.sys)
-  const { shopInfo } = useSelector((state) => state.shop)
-  const { setNavigationBarTitle } = useNavigation()
   const dispatch = useDispatch()
-  const { updateAddress } = useLocation()
-
-  const loginRef = useRef()
 
   const [state, setState] = useImmer(initialState)
   const {
@@ -451,7 +446,7 @@ function EspierDetail(props) {
       navigateBackgroundColor='#fff'
       navigateMantle={navigateMantle}
       immersive
-      title={navigateMantle?info?.itemName:''}
+      title={navigateMantle?info?.itemName:' '}
       ref={pageRef}
       renderFloat={
         <View>
