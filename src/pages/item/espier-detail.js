@@ -479,7 +479,6 @@ function EspierDetail(props) {
         />
       }
     >
-
       <View className='page-item-espierdetail__header-bg'></View>
       {/* <Canvas id="canvas2" type="2d" onReady={onCanvasReady} /> */}
       {!info && <SpLoading />}
