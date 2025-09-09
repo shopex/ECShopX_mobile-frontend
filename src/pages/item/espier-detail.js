@@ -459,7 +459,7 @@ function EspierDetail(props) {
       navigateBackgroundColor='#fff'
       navigateMantle={navigateMantle}
       immersive
-      title={navigateMantle?info?.itemName:' '}
+      title={navigateMantle ? info?.itemName : ' '}
       ref={pageRef}
       renderFloat={
         <View>
@@ -487,10 +487,8 @@ function EspierDetail(props) {
         />
       }
     >
-        <View className='page-item-espierdetail__header-bg'></View>
+      <View className='page-item-espierdetail__header-bg'></View>
       <ScrollView scrollY className='page-item-espierdetail-goods-contents' style='height: 100%;' onScroll={handleScroll}>
-
-        {/* <Canvas id="canvas2" type="2d" onReady={onCanvasReady} /> */}
         {!info && <SpLoading />}
         {info && (
           <View className='goods-contents' style='height: 100%;'>
@@ -756,104 +754,103 @@ function EspierDetail(props) {
         )}
 
         <SpRecommend info={recommendList} />
-
-        {/* 组合优惠 */}
-        <CompPackageList
-          open={packageOpen}
-          onClose={() => {
-            setState((draft) => {
-              draft.packageOpen = false
-            })
-          }}
-          info={{
-            mainGoods,
-            makeUpGoods
-          }}
-        />
-
-        {/* 促销优惠活动 */}
-        <CompPromation
-          open={promotionOpen}
-          info={promotionActivity}
-          onClose={() => {
-            setState((draft) => {
-              draft.promotionOpen = false
-            })
-          }}
-        />
-
-        {/* Sku选择器 */}
-        <MSpSkuSelect
-          open={skuPanelOpen}
-          type={selectType}
-          info={info}
-          onClose={() => {
-            setState((draft) => {
-              draft.skuPanelOpen = false
-            })
-          }}
-          refreshs={false}
-          onChange={(skuText, curItem) => {
-            setState((draft) => {
-              draft.skuText = skuText
-              draft.curItem = curItem
-            })
-          }}
-        />
-
-        {/* 分享 */}
-        <CompShare
-          open={sharePanelOpen}
-          onClose={() => {
-            setState((draft) => {
-              draft.sharePanelOpen = false
-            })
-          }}
-          onCreatePoster={() => {
-            setState((draft) => {
-              draft.sharePanelOpen = false
-              draft.posterModalOpen = true
-            })
-          }}
-          onShareEdit={() => {
-            const { itemId, companyId, distributorId } = info
-            Taro.navigateTo({
-              url: `/subpage/pages/editShare/index?id=${itemId}&dtid=${distributorId}&company_id=${companyId}`
-            })
-          }}
-        />
-
-        {/* 海报 */}
-        {posterModalOpen && (
-          <SpPoster
-            info={info}
-            type='goodsDetial'
-            onClose={() => {
-              setState((draft) => {
-                draft.posterModalOpen = false
-              })
-            }}
-          />
-        )}
-
-        <AtFloatLayout isOpened={isParameter} title='商品参数' onClose={handleClose}>
-          <View className='product-parameter'>
-            <View className='product-parameter-all'>
-              {info?.itemParams?.map((item, index) => {
-                return (
-                  <View className='product-parameter-item'>
-                    <Text className='title'>{item.attribute_name}</Text>
-                    <Text className='content'>{item.attribute_value_name}</Text>
-                  </View>
-                )
-              })}
-            </View>
-            <AtButton type='primary' circle onClick={handleClose}>
-              确认
-            </AtButton>
-          </View>
-        </AtFloatLayout>
       </ScrollView>
+      {/* 组合优惠 */}
+      <CompPackageList
+        open={packageOpen}
+        onClose={() => {
+          setState((draft) => {
+            draft.packageOpen = false
+          })
+        }}
+        info={{
+          mainGoods,
+          makeUpGoods
+        }}
+      />
+
+      {/* 促销优惠活动 */}
+      <CompPromation
+        open={promotionOpen}
+        info={promotionActivity}
+        onClose={() => {
+          setState((draft) => {
+            draft.promotionOpen = false
+          })
+        }}
+      />
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        refreshs={false}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
+
+      {/* 分享 */}
+      <CompShare
+        open={sharePanelOpen}
+        onClose={() => {
+          setState((draft) => {
+            draft.sharePanelOpen = false
+          })
+        }}
+        onCreatePoster={() => {
+          setState((draft) => {
+            draft.sharePanelOpen = false
+            draft.posterModalOpen = true
+          })
+        }}
+        onShareEdit={() => {
+          const { itemId, companyId, distributorId } = info
+          Taro.navigateTo({
+            url: `/subpage/pages/editShare/index?id=${itemId}&dtid=${distributorId}&company_id=${companyId}`
+          })
+        }}
+      />
+
+      {/* 海报 */}
+      {posterModalOpen && (
+        <SpPoster
+          info={info}
+          type='goodsDetial'
+          onClose={() => {
+            setState((draft) => {
+              draft.posterModalOpen = false
+            })
+          }}
+        />
+      )}
+
+      <AtFloatLayout isOpened={isParameter} title='商品参数' onClose={handleClose}>
+        <View className='product-parameter'>
+          <View className='product-parameter-all'>
+            {info?.itemParams?.map((item, index) => {
+              return (
+                <View className='product-parameter-item'>
+                  <Text className='title'>{item.attribute_name}</Text>
+                  <Text className='content'>{item.attribute_value_name}</Text>
+                </View>
+              )
+            })}
+          </View>
+          <AtButton type='primary' circle onClick={handleClose}>
+            确认
+          </AtButton>
+        </View>
+      </AtFloatLayout>
     </SpPage>
   )
 }
