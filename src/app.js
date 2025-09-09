@@ -147,6 +147,14 @@ function App({ children }) {
   })
 
   const getSystemConfig = async () => {
+    const [homeRes, appBaseRes, priceSetting, appSettingInfo, enterStoreRule] = await Promise.all([
+      api.shop.homeSetting(),
+      api.shop.getAppBaseInfo(),
+      api.shop.getAppGoodsPriceSetting(),
+      api.groupBy.getCompanySetting(),
+      VERSION_STANDARD ? api.shop.getStoreEnterRule() : Promise.resolve(null)
+    ])
+
     const {
       echat,
       meiqia,
@@ -155,7 +163,7 @@ function App({ children }) {
       nostores_status = false,
       distributor_param_status = false,
       point_rule_name = '积分'
-    } = await api.shop.homeSetting()
+    } = homeRes
 
     const {
       tab_bar,
@@ -164,16 +172,10 @@ function App({ children }) {
       is_open_official_account: openOfficialAccount,
       color_style: { primary, accent, marketing },
       title // 商城应用名称
-    } = await api.shop.getAppBaseInfo()
+    } = appBaseRes
 
-    const priceSetting = await api.shop.getAppGoodsPriceSetting()
-
-    const appSettingInfo = await api.groupBy.getCompanySetting() // 获取小程序头像
-
-    let enterStoreRule = null,
-      entryStoreRules = []
-    if (VERSION_STANDARD) {
-      enterStoreRule = await api.shop.getStoreEnterRule()
+    let entryStoreRules = []
+    if (VERSION_STANDARD && enterStoreRule) {
       entryStoreRules = Object.entries({
         distributor_code: enterStoreRule.distributor_code,
         shop_assistant: enterStoreRule.shop_assistant,

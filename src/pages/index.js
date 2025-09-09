@@ -16,7 +16,8 @@ import {
   SpCouponPackage,
   SpSkuSelect,
   SpPrivacyModal,
-  SpLogin
+  SpLogin,
+  SpLoading
 } from '@/components'
 import api from '@/api'
 import {
@@ -269,7 +270,6 @@ function Home() {
       pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
       renderFooter={<SpTabbar />}
-      loading={loading}
       ref={pageRef}
       navigateMantle={navigateMantle}
       onReady={({ footerHeight }) => {
@@ -285,6 +285,7 @@ function Home() {
         scrollY
         onScroll={handleScroll}
       >
+        {loading && <SpLoading />}
         {isShowHomeHeader && (
           <WgtHomeHeader>{fixedTop && <SpSearch info={searchComp} />}</WgtHomeHeader>
         )}
