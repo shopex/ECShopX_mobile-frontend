@@ -439,9 +439,7 @@ const SpPage = memo(
         {/* 没有页面自动义头部配置样式，自动生成自定义导航 */}
         {state.customNavigation && RenderCustomNavigation()}
 
-        {props.loading && <SpLoading />}
-
-        {!props.isDefault && !props.loading && (
+        {!props.isDefault && (
           <View
             className='sp-page__body'
             style={styleNames({
@@ -499,7 +497,6 @@ SpPage.defaultProps = {
   isDefault: false,
   isSticky: false, // 是否粘性吸顶
   immersive: false, // 沉浸式导航
-  loading: false,
   navbar: false,
   navigateMantle: false, // 页面向下滚动，沉浸式导航开启蒙层背景色
   navigationLeftBlockWidthFull: false,

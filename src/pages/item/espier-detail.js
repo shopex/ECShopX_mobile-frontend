@@ -337,18 +337,31 @@ function EspierDetail(props) {
       getRecommendList() // 猜你喜欢
     }
   }
-  const getMultipleImageInfo = async (imageUrls) => {
-    const promises = imageUrls.map((url) =>
-      Taro.getImageInfo({ src: url })
-        .then((info) => info)
-        .catch((error) => {
-          console.log('获取图片信息失败:', url, error)
-          // 返回一个默认高度或 null
-          return { width: 0, height: 650 }
-        })
-    )
-    const results = await Promise.all(promises)
-    return results.map((info) => (info.height / 2 > 650 ? 650 : info.height / 2))
+  const getMultipleImageInfo = async (imageUrls = []) => {
+    let windowWidth = 375
+    try {
+      const sys = Taro.getSystemInfoSync()
+      if (sys && sys.windowWidth) windowWidth = sys.windowWidth
+    } catch (e) {
+      console.log('获取系统信息失败，使用默认宽度:', e)
+    }
+
+    const promises = imageUrls.map(async (url) => {
+      try {
+        const info = await Taro.getImageInfo({ src: url })
+        const imgWidth = Number(info?.width) || 0
+        const imgHeight = Number(info?.height) || 0
+        if (imgWidth > 0 && imgHeight > 0) {
+          return Math.round((windowWidth * imgHeight) / imgWidth)
+        }
+        return Math.round(windowWidth)
+      } catch (error) {
+        console.log('获取图片信息失败:', url, error)
+        return Math.round(windowWidth)
+      }
+    })
+
+    return Promise.all(promises)
   }
 
   const getRecommendList = async () => {
@@ -481,7 +494,6 @@ function EspierDetail(props) {
         style='height: 100%;'
         onScroll={handleScroll}
       >
-        {/* <Canvas id="canvas2" type="2d" onReady={onCanvasReady} /> */}
         {!info && <SpLoading />}
         {info && (
           <View className='goods-contents' style='height: 100%;'>
@@ -749,104 +761,103 @@ function EspierDetail(props) {
         )}
 
         <SpRecommend info={recommendList} />
-
-        {/* 组合优惠 */}
-        <CompPackageList
-          open={packageOpen}
-          onClose={() => {
-            setState((draft) => {
-              draft.packageOpen = false
-            })
-          }}
-          info={{
-            mainGoods,
-            makeUpGoods
-          }}
-        />
-
-        {/* 促销优惠活动 */}
-        <CompPromation
-          open={promotionOpen}
-          info={promotionActivity}
-          onClose={() => {
-            setState((draft) => {
-              draft.promotionOpen = false
-            })
-          }}
-        />
-
-        {/* Sku选择器 */}
-        <MSpSkuSelect
-          open={skuPanelOpen}
-          type={selectType}
-          info={info}
-          onClose={() => {
-            setState((draft) => {
-              draft.skuPanelOpen = false
-            })
-          }}
-          refreshs={false}
-          onChange={(skuText, curItem) => {
-            setState((draft) => {
-              draft.skuText = skuText
-              draft.curItem = curItem
-            })
-          }}
-        />
-
-        {/* 分享 */}
-        <CompShare
-          open={sharePanelOpen}
-          onClose={() => {
-            setState((draft) => {
-              draft.sharePanelOpen = false
-            })
-          }}
-          onCreatePoster={() => {
-            setState((draft) => {
-              draft.sharePanelOpen = false
-              draft.posterModalOpen = true
-            })
-          }}
-          onShareEdit={() => {
-            const { itemId, companyId, distributorId } = info
-            Taro.navigateTo({
-              url: `/subpage/pages/editShare/index?id=${itemId}&dtid=${distributorId}&company_id=${companyId}`
-            })
-          }}
-        />
-
-        {/* 海报 */}
-        {posterModalOpen && (
-          <SpPoster
-            info={info}
-            type='goodsDetial'
-            onClose={() => {
-              setState((draft) => {
-                draft.posterModalOpen = false
-              })
-            }}
-          />
-        )}
-
-        <AtFloatLayout isOpened={isParameter} title='商品参数' onClose={handleClose}>
-          <View className='product-parameter'>
-            <View className='product-parameter-all'>
-              {info?.itemParams?.map((item, index) => {
-                return (
-                  <View className='product-parameter-item'>
-                    <Text className='title'>{item.attribute_name}</Text>
-                    <Text className='content'>{item.attribute_value_name}</Text>
-                  </View>
-                )
-              })}
-            </View>
-            <AtButton type='primary' circle onClick={handleClose}>
-              确认
-            </AtButton>
-          </View>
-        </AtFloatLayout>
       </ScrollView>
+      {/* 组合优惠 */}
+      <CompPackageList
+        open={packageOpen}
+        onClose={() => {
+          setState((draft) => {
+            draft.packageOpen = false
+          })
+        }}
+        info={{
+          mainGoods,
+          makeUpGoods
+        }}
+      />
+
+      {/* 促销优惠活动 */}
+      <CompPromation
+        open={promotionOpen}
+        info={promotionActivity}
+        onClose={() => {
+          setState((draft) => {
+            draft.promotionOpen = false
+          })
+        }}
+      />
+
+      {/* Sku选择器 */}
+      <MSpSkuSelect
+        open={skuPanelOpen}
+        type={selectType}
+        info={info}
+        onClose={() => {
+          setState((draft) => {
+            draft.skuPanelOpen = false
+          })
+        }}
+        refreshs={false}
+        onChange={(skuText, curItem) => {
+          setState((draft) => {
+            draft.skuText = skuText
+            draft.curItem = curItem
+          })
+        }}
+      />
+
+      {/* 分享 */}
+      <CompShare
+        open={sharePanelOpen}
+        onClose={() => {
+          setState((draft) => {
+            draft.sharePanelOpen = false
+          })
+        }}
+        onCreatePoster={() => {
+          setState((draft) => {
+            draft.sharePanelOpen = false
+            draft.posterModalOpen = true
+          })
+        }}
+        onShareEdit={() => {
+          const { itemId, companyId, distributorId } = info
+          Taro.navigateTo({
+            url: `/subpage/pages/editShare/index?id=${itemId}&dtid=${distributorId}&company_id=${companyId}`
+          })
+        }}
+      />
+
+      {/* 海报 */}
+      {posterModalOpen && (
+        <SpPoster
+          info={info}
+          type='goodsDetial'
+          onClose={() => {
+            setState((draft) => {
+              draft.posterModalOpen = false
+            })
+          }}
+        />
+      )}
+
+      <AtFloatLayout isOpened={isParameter} title='商品参数' onClose={handleClose}>
+        <View className='product-parameter'>
+          <View className='product-parameter-all'>
+            {info?.itemParams?.map((item, index) => {
+              return (
+                <View className='product-parameter-item'>
+                  <Text className='title'>{item.attribute_name}</Text>
+                  <Text className='content'>{item.attribute_value_name}</Text>
+                </View>
+              )
+            })}
+          </View>
+          <AtButton type='primary' circle onClick={handleClose}>
+            确认
+          </AtButton>
+        </View>
+      </AtFloatLayout>
     </SpPage>
   )
 }
