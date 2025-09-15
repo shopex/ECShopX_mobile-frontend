@@ -69,7 +69,7 @@ function CompTradeItem(props) {
     }
   }
 
-  const totalNum = items.reduce((preVal, item) => preVal + item.num, 0)
+  const totalNum = items.reduce((preVal, item) => Number(preVal) + Number(item.num), 0)
 
   return (
     <View className='comp-tradeitem'>
