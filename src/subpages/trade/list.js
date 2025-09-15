@@ -83,7 +83,8 @@ function TradeList(props) {
       pageSize,
       order_type: 'normal',
       status,
-      is_rate
+      is_rate,
+      order_class: typeVal == '1' ? 'employee_purchase' : 'normal'
     }
     // params.order_class = typeVal == '1' ? 'employee_purchase' : 'normal'
 
