@@ -13,6 +13,7 @@ import S from '@/spx'
 
 function withPageWrapper(Component) {
   return function EnhancedComponent(props) {
+    console.log('withPageWrapper', props)
     const dispatch = useDispatch()
     const { initState, entryStoreRules, entryStoreByLBS, entryDefalutStore, guidderTemplateId } =
       useSelector((state) => state.sys)
@@ -38,6 +39,19 @@ function withPageWrapper(Component) {
         }, 1000)
       }
     }, [shopInfo])
+
+    // 监听语言切换，刷新店铺信息
+    useEffect(() => {
+      const onLangChanged = async () => {
+        try {
+          await checkStoreWhiteList(shopInfo?.distributor_id)
+        } catch (e) {}
+      }
+      Taro.eventCenter && Taro.eventCenter.on('languageChanged', onLangChanged)
+      return () => {
+        Taro.eventCenter && Taro.eventCenter.off('languageChanged', onLangChanged)
+      }
+    }, [])
 
     const resolveInStoreRule = async () => {
       // 启动时（冷启动+热启动）执行云店进店规则
