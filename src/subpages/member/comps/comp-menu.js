@@ -16,7 +16,7 @@ function CompMenu(props) {
       link: '/marketing/pages/distribution/index'
     })
   }
-  if (accessMenu.dianwu) {
+  if (isWeixin && accessMenu.dianwu) {
     menus = menus.concat({
       key: 'dianwu',
       name: '店务管理',
@@ -44,7 +44,7 @@ function CompMenu(props) {
   //   ])
   // }
 
-  if (accessMenu.deliveryStaffList?.total_count > 0) {
+  if (isWeixin && accessMenu.deliveryStaffList?.total_count > 0) {
     menus = menus.concat([
       {
         key: 'delivery',
