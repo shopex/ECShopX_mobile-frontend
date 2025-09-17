@@ -4,8 +4,8 @@ import Taro from '@tarojs/taro'
 import { AtButton } from 'taro-ui'
 import { SpPage, SpCell, SpFloatLayout, SpCheckbox } from '@/components'
 import { isWeb } from '@/utils'
+import { SG_CHECK_STORE_RULE } from '@/consts'
 import { View } from '@tarojs/components'
-import withPageWrapper from '@/hocs/withPageWrapper'
 import i18n from '@/lang/consts'
 import './settings.scss'
 
@@ -65,6 +65,7 @@ const Settings = () => {
             type='primary'
             onClick={() => {
               Taro.$changeLang(state.selectLang)
+              Taro.setStorageSync(SG_CHECK_STORE_RULE, 0)
               if (isWeb) {
                 window.location.href = `${window.location.origin}/subpages/member/index`
               } else {
@@ -99,4 +100,4 @@ const Settings = () => {
   )
 }
 
-export default withPageWrapper(Settings)
+export default Settings

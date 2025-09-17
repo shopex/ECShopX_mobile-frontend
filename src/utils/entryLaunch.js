@@ -223,22 +223,26 @@ class EntryLaunch {
       })
     } else {
       return new Promise(async (reslove, reject) => {
-        this.geolocation?.getLocation(
-          (res) => {
-            reslove({
-              lng: res.lng,
-              lat: res.lat,
-              province: res.province,
-              city: res.city,
-              district: res.district,
-              address: res.addr
-            })
-          },
-          (err) => {
-            console.error('getLocationInfo error', err)
-          },
-          { timeout: 8000 }
-        )
+        try {
+          this.geolocation.getLocation(
+            (res) => {
+              reslove({
+                lng: res.lng,
+                lat: res.lat,
+                province: res.province,
+                city: res.city,
+                district: res.district,
+                address: res.addr
+              })
+            },
+            (err) => {
+              console.error('getLocationInfo error', err)
+            },
+            { timeout: 8000 }
+          )
+        } catch (error) {
+          reject({ message: '定位失败' })
+        }
       })
     }
   }
