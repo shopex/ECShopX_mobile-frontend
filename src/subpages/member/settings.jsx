@@ -5,6 +5,7 @@ import { AtButton } from 'taro-ui'
 import { SpPage, SpCell, SpFloatLayout, SpCheckbox } from '@/components'
 import { isWeb } from '@/utils'
 import { View } from '@tarojs/components'
+import withPageWrapper from '@/hocs/withPageWrapper'
 import i18n from '@/lang/consts'
 import './settings.scss'
 
@@ -98,4 +99,4 @@ const Settings = () => {
   )
 }
 
-export default Settings
+export default withPageWrapper(Settings)
