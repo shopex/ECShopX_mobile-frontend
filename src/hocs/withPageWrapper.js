@@ -40,19 +40,6 @@ function withPageWrapper(Component) {
       }
     }, [shopInfo])
 
-    // 监听语言切换，刷新店铺信息
-    useEffect(() => {
-      const onLangChanged = async () => {
-        try {
-          await checkStoreWhiteList(shopInfo?.distributor_id)
-        } catch (e) {}
-      }
-      Taro.eventCenter && Taro.eventCenter.on('languageChanged', onLangChanged)
-      return () => {
-        Taro.eventCenter && Taro.eventCenter.off('languageChanged', onLangChanged)
-      }
-    }, [])
-
     const resolveInStoreRule = async () => {
       // 启动时（冷启动+热启动）执行云店进店规则
       if (VERSION_STANDARD && Taro.getStorageSync(SG_CHECK_STORE_RULE) == 0) {
@@ -170,10 +157,14 @@ function withPageWrapper(Component) {
         params['distributor_id'] = shopInfo?.distributor_id
       } else if (entryStoreByLBS && isLocation) {
         if (isEmpty(location)) {
-          const locationInfo = await entryLaunch.getLocationInfo()
-          dispatch(updateLocation(locationInfo))
-          params['lat'] = locationInfo?.lat
-          params['lng'] = locationInfo?.lng
+          try {
+            const locationInfo = await entryLaunch.getLocationInfo()
+            dispatch(updateLocation(locationInfo))
+            params['lat'] = locationInfo?.lat
+            params['lng'] = locationInfo?.lng
+          } catch (error) {
+            console.error('checkStoreWhiteList error', error)
+          }
         } else {
           params['lat'] = location?.lat
           params['lng'] = location?.lng
