@@ -252,4 +252,15 @@
       color: #fff !important;
     }
   }
+  .btn-item {
+    width: 100%;
+    border-radius: 40px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    font-size: 26px;
+    border: 1PX solid var(--color-primary);
+    background: var(--color-primary);
+    color: #fff;
+  }
 }
