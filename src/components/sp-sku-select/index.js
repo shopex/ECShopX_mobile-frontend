@@ -11,7 +11,8 @@ import {
   SpImage,
   SpPrice,
   SpInputNumber,
-  SpGoodsPrice
+  SpGoodsPrice,
+  SpLogin
 } from '@/components'
 import {
   addCart,
@@ -23,7 +24,7 @@ import {
 import { BUY_TOOL_BTNS } from '@/consts'
 import api from '@/api'
 import { useAsyncCallback } from '@/hooks'
-import { classNames, showToast, entryLaunch, getDistributorId, VERSION_STANDARD } from '@/utils'
+import { classNames, showToast, entryLaunch, getDistributorId, VERSION_STANDARD, isWeb } from '@/utils'
 import './index.scss'
 
 // 数据类型
@@ -45,22 +46,23 @@ const initialState = {
   loading: false,
   minNum: 1
 }
+const $instance = Taro.getCurrentInstance()
 
 function SpSkuSelect(props) {
   const {
     info,
     open = false,
-    onClose = () => {},
-    onChange = () => {},
-    refreshs = true,
+    onClose = () => { },
+    onChange = () => { },
     type,
     hideInputNumber = false,
-    salesman = false
+    salesman = false,
+    onSubscribe = () => { }
   } = props
   console.log('SpSkuSelect:info', info)
   // const [state, setState] = useImmer(initialState)
   const [state, setState] = useAsyncCallback(initialState)
-  const { selection, curImage, disabledSet, curItem, skuText, num, loading, minNum } = state
+  const { selection, disabledSet, curItem, skuText, num, loading, minNum } = state
   const { customerLnformation } = useSelector((state) => state.cart)
   const dispatch = useDispatch()
   const skuDictRef = useRef({})
@@ -162,7 +164,6 @@ function SpSkuSelect(props) {
       return Object.keys(skuDictRef.current).some((key) => {
         return (
           key.match(reg) &&
-          skuDictRef.current[key].store > 0 &&
           ['onsale'].includes(skuDictRef.current[key].approveStatus)
         )
       })
@@ -390,14 +391,48 @@ function SpSkuSelect(props) {
     })
   }
 
+  const handleSubscribe = async() => {
+    const { subscribe } = info
+    const { dtid } = $instance.router.params
+    console.log('onSubscribe:subscribe', subscribe)
+    if (subscribe) return false
+
+    if (isWeb) {
+      showToast('请在小程序完成商品到货通知')
+      return
+    }
+
+    await api.user.subscribeGoods(info.itemId, { distributor_id: dtid })
+    const { template_id } = await api.user.newWxaMsgTmpl({
+      temp_name: 'yykweishop',
+      source_type: 'goods'
+    })
+    Taro.requestSubscribeMessage({
+      tmplIds: template_id,
+      success: () => {
+        onSubscribe()
+      },
+      fail: () => {
+        onSubscribe()
+      }
+    })
+  }
+
   const renderFooter = () => {
+    console.log('curItem111:', curItem)
     let btnTxt = ''
     Object.keys(BUY_TOOL_BTNS()).forEach((key) => {
       if (BUY_TOOL_BTNS()[key].key == type) {
         btnTxt = BUY_TOOL_BTNS()[key].title
       }
     })
-    if (type == 'picker') {
+    if (curItem?.store <= 0) {
+     return (
+      <AtButton circle type='primary'  onChange={handleSubscribe}>
+        {BUY_TOOL_BTNS().NOTICE.title}
+      </AtButton>
+     )
+    } else if (type == 'picker') {
       return (
         <AtButton circle type='primary' onClick={onClose}>
           确定
@@ -464,6 +499,8 @@ function SpSkuSelect(props) {
       max = parseInt(curItem ? curItem.store : info.store)
     }
 
+    console.log('curItem:', curItem)
+
     return (
       <View className='buy-count'>
         <View className='label'>
@@ -472,6 +509,7 @@ function SpSkuSelect(props) {
         </View>
 
         <SpInputNumber
+          disabled={curItem?.store <= 0}
           value={num}
           min={minNum}
           max={max}

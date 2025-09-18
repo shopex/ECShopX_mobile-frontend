@@ -645,18 +645,21 @@ function EspierDetail(props) {
 
             {!info.nospec && (
               <View className='sku-block'>
-                <SpCell
-                  title='规格'
-                  isLink
-                  onClick={() => {
+                <SpLogin
+                  onChange={() => {
                     setState((draft) => {
                       draft.skuPanelOpen = true
                       draft.selectType = 'picker'
                     })
                   }}
                 >
+                <SpCell
+                  title='规格'
+                  isLink
+                >
                   <Text className='cell-value'>{skuText}</Text>
                 </SpCell>
+                </SpLogin>
               </View>
             )}
 
@@ -803,6 +806,9 @@ function EspierDetail(props) {
             draft.skuText = skuText
             draft.curItem = curItem
           })
+        }}
+        onSubscribe={() => {
+          fetch()
         }}
       />
 
