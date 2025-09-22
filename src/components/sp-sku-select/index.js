@@ -408,6 +408,7 @@ function SpSkuSelect(props) {
     Taro.requestSubscribeMessage({
       tmplIds: template_id,
       success: () => {
+        showToast('订阅成功')
         onSubscribe()
       },
       fail: () => {
