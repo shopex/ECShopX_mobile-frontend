@@ -112,7 +112,7 @@ function MemberIndex(props) {
   // console.log('===>getCurrentPages==>', getCurrentPages(), getCurrentInstance())
   const $instance = getCurrentInstance()
   const { updateAddress } = useLocation()
-  const { isLogin, isNewUser, getUserInfo } = useLogin({
+  const { isLogin, getUserInfo } = useLogin({
     autoLogin: false,
     // policyUpdateHook: (isUpdate) => {
     //   // isUpdate && setPolicyModal(true)
@@ -541,7 +541,7 @@ function MemberIndex(props) {
                     </View>
                   </>
                 ) : (
-                  <SpLogin newUser={isNewUser}>
+                  <SpLogin>
                     <Text className='login-text font-medium text-34'>点击登录</Text>
                   </SpLogin>
                 )}
