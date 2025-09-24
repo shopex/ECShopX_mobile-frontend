@@ -28,9 +28,10 @@ const initialState = {
 }
 
 const SpLogin = forwardRef((props, ref) => {
-  const { children, className, newUser = false, visible, onPolicyClose, onChange, onClose } = props
+  const { children, className, visible, onPolicyClose, onChange, onClose } = props
   const { updateAddress } = useLocation()
   const { shopInfo } = useSelector((state) => state.shop)
+  const { isNewUser } = useSelector((state) => state.user)
 
   const { isLogin, login, setToken, checkPolicyChange } = useLogin({
     policyUpdateHook: (isUpdate) => {
@@ -41,7 +42,6 @@ const SpLogin = forwardRef((props, ref) => {
       !visible && updateAddress && updateAddress()
     }
   })
-  const [isNewUser, setIsNewUser] = useState(false)
   const [policyModal, setPolicyModal] = useState(false)
   const [loginModal, setLoginModal] = useState(false)
   const [state, setState] = useImmer(initialState)
@@ -54,12 +54,7 @@ const SpLogin = forwardRef((props, ref) => {
     }
   }, [visible])
 
-  useEffect(() => {
-    if (newUser) {
-      setIsNewUser(true)
-    }
-  }, [newUser])
-
+ 
   useEffect(() => {
     if (loginModal) {
       fetchPrivacyData()
