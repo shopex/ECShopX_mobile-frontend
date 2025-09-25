@@ -34,10 +34,8 @@ function MemberLevel(props) {
       list = pickBy(member_card_list, doc.member.MEMBER_CARD_ITEM)
     }
     const grade_index = list.findIndex((item) => item.grade_id == grade_id)
-    console.log(grade_index, 'grade_index')
-    console.log(list, 'list')
     setState((draft) => {
-      ;(draft.list = list?.map((item, index) => {
+      draft.list = list?.map((item, index) => {
         if (item.grade_id == grade_id) {
           item.type = 'active'
         } else if (index < grade_index) {
@@ -46,8 +44,8 @@ function MemberLevel(props) {
           item.type = 'next'
         }
         return item
-      })),
-        (draft.total_consumption = total_consumption)
+      })
+      draft.total_consumption = total_consumption
     })
   }
 
@@ -55,6 +53,17 @@ function MemberLevel(props) {
     setState((draft) => {
       draft.activeIndex = e.detail.current
     })
+  }
+  const renderBackgroundImage = (item) => {
+    if (!item.grade_background) {
+      return {}
+    }
+    return {
+      backgroundImage: `url(${item.grade_background})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }
   }
 
   return (
@@ -69,7 +78,7 @@ function MemberLevel(props) {
         >
           {list.map((item, idx) => (
             <SwiperItem key={`swiperitem__${idx}`}>
-              <View className='member-card'>
+              <View className='member-card' style={renderBackgroundImage(item)}>
                 <SpImage src={item.pic || 'fufei_bg.png'} width={600} height={375} />
                 <View className='grade-name'>{item.grade_name}</View>
                 {/* <View className='grade-discount'>{`已消费${total_consumption / 100}元`}</View> */}

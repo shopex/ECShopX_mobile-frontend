@@ -1,3 +1,5 @@
+
+
 export const VIP_GRADE_ITEM = {
   grade_name: 'grade_name',
   description: 'description',
@@ -8,7 +10,8 @@ export const VIP_GRADE_ITEM = {
   },
   discount_desc: ({ privileges }) => {
     return privileges.discount_desc
-  }
+  },
+  grade_background: 'grade_background'
 }
 
 export const MEMBER_CARD_ITEM = {
@@ -21,5 +24,6 @@ export const MEMBER_CARD_ITEM = {
   },
   discount_desc: ({ privileges }) => {
     return privileges.discount_desc
-  }
+  },
+  grade_background: 'grade_background'
 }
