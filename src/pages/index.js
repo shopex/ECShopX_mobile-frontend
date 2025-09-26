@@ -248,8 +248,11 @@ function Home() {
         draft.selectType = 'addcart'
       })
     } catch (e) {
-      showToast(e.message)
-      Taro.hideLoading()
+      Taro.hideLoading({
+        success: () => {
+          showToast(e.message)
+        }
+      })
     }
   }
 
