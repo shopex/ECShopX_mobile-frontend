@@ -235,7 +235,7 @@ function TradeDetail(props) {
           distributorId || 0
         }&activity_id=${activityId}&enterprise_id=${info.enterpriseId}`
       })
-    } else if (point > 0) {
+    } else if (orderClass == 'pointsmall') {
       Taro.navigateTo({
         url: `/subpages/pointshop/espier-detail?id=${itemId}&dtid=${
           distributorId || 0
