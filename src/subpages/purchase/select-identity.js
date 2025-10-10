@@ -101,7 +101,7 @@ function SelectIdentity(props) {
       </View>
       <View className='content'>
         <View className='identity'>
-          {[1,2,3,4,5,6,7,8,9,10].map((item, index) => {
+          {identity.map((item, index) => {
             return (
               <View key={index} className='identity-item' onClick={() => handleItemClick(item)}>
                 <View className='identity-item-avatar'>
@@ -109,16 +109,16 @@ function SelectIdentity(props) {
                 </View>
                 <View className='identity-item-content'>
                   <View className='content-top'>
-                    <View className='company'>{item?.name}</View>
+                    <View className='company'>{item.name}</View>
                   </View>
                   <View className='content-bottom'>
-                    <View className={classNames('role', item?.is_relative == 1 ? 'friend' : '')}>
-                      {(item?.is_employee == 1 && '员工') || (item?.is_relative == 1 && '亲友')}
+                    <View className={classNames('role', item.is_relative == 1 ? 'friend' : '')}>
+                      {(item.is_employee == 1 && '员工') || (item.is_relative == 1 && '亲友')}
                     </View>
-                    <View className='account'>{item?.login_account}</View>
+                    <View className='account'>{item.login_account}</View>
                   </View>
                 </View>
-                {curEnterpriseId == item?.enterprise_id && (
+                {curEnterpriseId == item.enterprise_id && (
                   <View className='identity-item-right'>当前选中</View>
                 )}
               </View>
