@@ -438,8 +438,7 @@ const SpPage = memo(
 
         {/* 没有页面自动义头部配置样式，自动生成自定义导航 */}
         {state.customNavigation && RenderCustomNavigation()}
-
-        {!props.isDefault &&!props.loading&& (
+        {!props.isDefault && (
           <View
             className='sp-page__body'
             style={styleNames({
@@ -456,7 +455,6 @@ const SpPage = memo(
           </View>
         )}
         {props.loading && <SpLoading />}
-
         {props.renderFooter && (
           <View
             key={lang}

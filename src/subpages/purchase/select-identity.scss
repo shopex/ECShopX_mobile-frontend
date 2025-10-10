@@ -1,8 +1,12 @@
 
   .select-identity{
     font-family: PingFangSC-Regular, PingFang SC;
-    padding: 0 32px;
-    padding-top: 32px;
+    .identity-content{
+      padding: 0 32px;
+      padding-top: 32px;
+      box-sizing: border-box;
+      height: 100%;
+    }
     .identity-item{
       width: 686px;
       height: 154px;
