@@ -230,7 +230,6 @@ function PurchaseActivityList() {
       //   </View>
       // }
       // renderFooter={renderFooter()}
-      loading={loading}
       renderFooter={!loading && <CompTabbar />}
     >
       <View className='user-box'>
