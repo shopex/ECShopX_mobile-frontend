@@ -169,16 +169,23 @@ function OfflineTransfer() {
     try {
       if (params.has_check == 'true') {
         await api.trade.updateVoucher(data)
-        showToast('修改成功')
+        Taro.hideLoading({
+          success: () => {
+            showToast('修改成功')
+          }
+        })
       } else {
         await api.trade.uploadVoucher(data)
-        showToast('上传成功')
+        Taro.hideLoading({
+          success: () => {
+            showToast('上传成功')
+          }
+        })
       }
-      setState((draft) => {
-        draft.submitLoading = false
-      })
-      Taro.hideLoading()
       setTimeout(() => {
+        setState((draft) => {
+          draft.submitLoading = false
+        })
         if (params.isDetail) {
           Taro.eventCenter.trigger('onEventOfflineApply')
           Taro.eventCenter.trigger('onEventOrderStatusChange')
@@ -190,7 +197,7 @@ function OfflineTransfer() {
         } else {
           Taro.redirectTo({ url: `/subpages/trade/detail?order_id=${params.order_id}` })
         }
-      }, 1500)
+      }, 2000)
     } catch (error) {
       if (!params.isDetail) {
         Taro.redirectTo({ url: `/subpages/trade/detail?order_id=${params.order_id}` })
@@ -211,9 +218,9 @@ function OfflineTransfer() {
   const handleBatchAccount = (accountItem = {}) => {
     const nInfo = JSON.parse(JSON.stringify(info || {}))
 
-    ;['bank_account_name', 'bank_account_no', 'bank_name', 'china_ums_no'].forEach((item) => {
-      nInfo[item] = accountItem[item]
-    })
+      ;['bank_account_name', 'bank_account_no', 'bank_name', 'china_ums_no'].forEach((item) => {
+        nInfo[item] = accountItem[item]
+      })
 
     setState((draft) => {
       draft.info = nInfo
