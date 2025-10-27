@@ -62,13 +62,13 @@ function StoreItemList() {
 
   useEffect(() => {}, [])
 
-  useEffect(() => {
-    if (skuPanelOpen) {
-      pageRef.current.pageLock()
-    } else {
-      pageRef.current.pageUnLock()
-    }
-  }, [skuPanelOpen])
+  // useEffect(() => {
+  //   if (skuPanelOpen) {
+  //     pageRef.current.pageLock()
+  //   } else {
+  //     pageRef.current.pageUnLock()
+  //   }
+  // }, [skuPanelOpen])
 
   const fetch = async ({ pageIndex, pageSize }) => {
     const { cat_id, main_cat_id, dtid } = $instance.router.params
