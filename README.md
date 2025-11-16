@@ -27,7 +27,7 @@ APP_PLATFORM=b2c
 # Mobile Web App Payment Callback Domain，used for payment result notifications.
 APP_CUSTOM_SERVER=
 
-# Default home page path
+# App Homepage Path
 APP_HOME_PAGE=/pages/index
 
 APP_TRACK=
