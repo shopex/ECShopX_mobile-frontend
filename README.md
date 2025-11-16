@@ -13,26 +13,39 @@ npm i
 ### Configure the .env file
 ```shell
 # Backend API Base URL
-APP_BASE_URL=https://demo-ecshopx.ishopex.cn/api/h5app/wxapp
+APP_BASE_URL=
   
 # WebSocket Endpoint
-APP_WEBSOCKET=wss://demo-ecshopx.ishopex.cn/ws
+APP_WEBSOCKET=
 
 # System Tenant ID
 APP_COMPANY_ID=1
 
 # System Business Model (b2c/bbc)
-APP_PLATFORM=standard
+APP_PLATFORM=b2c
 
-APP_CUSTOM_SERVER=https://ecshopx-h5.ex-sandbox.com/
+APP_CUSTOM_SERVER=
+
+# Default home page path
 APP_HOME_PAGE=/pages/index
-APP_TRACK=youshu
-APP_YOUSHU_TOKEN=bi281e87ab2424481a
+
+APP_TRACK=
+APP_YOUSHU_TOKEN=
+
+# WeChat Mini Program AppID，required for compiling the mini program
 APP_ID=wx1e25e45145b70faa
-APP_MAP_KEY=PSPBZ-KQ5CW-CSGRF-ON2S4-K2HQJ-XEBQG
-APP_MAP_NAME=oneX新零售门店定位
-APP_IMAGE_CDN=https://b-img-cdn.yuanyuanke.cn/ecshopx-vshop
-APP_DIANWU_URL=https://demo-ecshopx-dianwu.shopex123.com
+
+# Map Service API Key, used for geocoding user LBS coordinates and providing location-based offline store recommendations.
+APP_MAP_KEY=
+
+# Mapping Service Provider Name
+APP_MAP_NAME=
+
+# Media files OSS Server URL
+APP_IMAGE_CDN=
+
+APP_DIANWU_URL=
+
 APP_MERCHANT_URL=
 APP_ADAPAY=
 ```
