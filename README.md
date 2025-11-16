@@ -63,7 +63,7 @@ npm run dev:weapp
 ### Build packages 
 ```shell
 # Compile Mobile Web App
-npm run build:weapp
+npm run build:h5
 ```
 ```shell
 # Compile WeChat Mini Program
