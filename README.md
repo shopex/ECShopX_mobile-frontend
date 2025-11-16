@@ -11,7 +11,7 @@ cd ecshopx-vshop
 npm i
 ```
 ### Configure the .env file
-```
+```shell
 # Backend API Base URL
 APP_BASE_URL=https://demo-ecshopx.ishopex.cn/api/h5app/wxapp
   
