@@ -1,20 +1,7 @@
-// +----------------------------------------------------------------------
-// | ECShopX open source E-commerce
-// | ECShopX 开源商城系统 
-// +----------------------------------------------------------------------
-// | Copyright (c) 2003-2025 ShopeX,Inc.All rights reserved.
-// +----------------------------------------------------------------------
-// | Corporate Website:  https://www.shopex.cn 
-// +----------------------------------------------------------------------
-// | Licensed under the Apache License, Version 2.0
-// | http://www.apache.org/licenses/LICENSE-2.0
-// +----------------------------------------------------------------------
-// | The removal of shopeX copyright information without authorization is prohibited.
-// | 未经授权不可去除shopeX商派相关版权
-// +----------------------------------------------------------------------
-// | Author: shopeX Team <mkt@shopex.cn>
-// | Contact: 400-821-3106
-// +----------------------------------------------------------------------
+/**
+ * Copyright © ShopeX （http://www.shopex.cn）. All rights reserved.
+ * See LICENSE file for license details.
+ */
 import React, { useRef, useEffect, useState } from 'react'
 import { View } from '@tarojs/components'
 import Taro, { getCurrentInstance } from '@tarojs/taro'
@@ -123,12 +110,7 @@ function StoreItemList() {
       params['category'] = main_cat_id
     }
 
-    const {
-      list,
-      total_count,
-      select_tags_list = [],
-      brand_list
-    } = await api.item.search(params)
+    const { list, total_count, select_tags_list = [], brand_list } = await api.item.search(params)
     console.time('list render')
     const n_list = pickBy(list, doc.goods.ITEM_LIST_GOODS)
     const resLeftList = n_list.filter((item, index) => {
@@ -218,9 +200,6 @@ function StoreItemList() {
     goodsRef.current.reset()
   }
 
-
-
-
   const handleClickStore = (item) => {
     const url = `/subpages/store/index?id=${item.distributor_info.distributor_id}`
     Taro.navigateTo({
@@ -284,11 +263,7 @@ function StoreItemList() {
           onChange={handleFilterChange}
         />
       </View>
-      <SpScrollView
-        className='item-list-scroll'
-        ref={goodsRef}
-        fetch={fetch}
-      >
+      <SpScrollView className='item-list-scroll' ref={goodsRef} fetch={fetch}>
         <View className='goods-list'>
           <View className='left-container'>
             {leftList.map((list, idx) => {

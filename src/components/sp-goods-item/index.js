@@ -1,21 +1,8 @@
-// +----------------------------------------------------------------------
-// | ECShopX open source E-commerce
-// | ECShopX 开源商城系统 
-// +----------------------------------------------------------------------
-// | Copyright (c) 2003-2025 ShopeX,Inc.All rights reserved.
-// +----------------------------------------------------------------------
-// | Corporate Website:  https://www.shopex.cn 
-// +----------------------------------------------------------------------
-// | Licensed under the Apache License, Version 2.0
-// | http://www.apache.org/licenses/LICENSE-2.0
-// +----------------------------------------------------------------------
-// | The removal of shopeX copyright information without authorization is prohibited.
-// | 未经授权不可去除shopeX商派相关版权
-// +----------------------------------------------------------------------
-// | Author: shopeX Team <mkt@shopex.cn>
-// | Contact: 400-821-3106
-// +----------------------------------------------------------------------
-import React, {  } from 'react'
+/**
+ * Copyright © ShopeX （http://www.shopex.cn）. All rights reserved.
+ * See LICENSE file for license details.
+ */
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Taro from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
@@ -65,7 +52,7 @@ function SpGoodsItem(props) {
     goodsType,
     lazyLoad
   } = props
-  const {isLogin} = useLogin()
+  const { isLogin } = useLogin()
 
   const handleFavClick = async (e) => {
     e.stopPropagation()
@@ -214,7 +201,8 @@ function SpGoodsItem(props) {
                     </View>
                   )}
 
-                  {info.vipPrice > 0 && isLogin &&
+                  {info.vipPrice > 0 &&
+                    isLogin &&
                     info.vipPrice < info.memberPrice &&
                     (!info.svipPrice || info.vipPrice > info.svipPrice) &&
                     enSvipPrice && (
@@ -224,7 +212,8 @@ function SpGoodsItem(props) {
                       </View>
                     )}
 
-                  {info.svipPrice > 0 && isLogin &&
+                  {info.svipPrice > 0 &&
+                    isLogin &&
                     info.svipPrice < info.vipPrice &&
                     info.svipPrice < info.memberPrice &&
                     enSvipPrice && (
