@@ -1,4 +1,4 @@
-<p align="center"><img width="500" height="auto" alt="logo1" src="https://github.com/user-attachments/assets/40938223-61b2-4af7-8e9f-fb59ed4c408a" /></p>
+<p align="center"><img width="500" height="auto" alt="logo1" src="https://github.com/user-attachments/assets/097cbde6-cedd-42d0-a2d8-a0a0430289b5" /></p>
 
 ### <p align="center">Mobile Frontend</p>
 
