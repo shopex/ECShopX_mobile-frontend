@@ -1,4 +1,4 @@
-<p align="center"><img width="300" height="auto" alt="ECShopX" src="https://github.com/user-attachments/assets/64db28c5-ce48-43aa-887f-1c926498f55b" /></p>
+<p align="center"><img width="500" height="auto" alt="logo1" src="https://github.com/user-attachments/assets/40938223-61b2-4af7-8e9f-fb59ed4c408a" /></p>
 
 ### <p align="center">Mobile Frontend</p>
 
