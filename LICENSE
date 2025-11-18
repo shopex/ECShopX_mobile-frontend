@@ -199,3 +199,47 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+English Version：
+EcshopX  Open Source License
+EcshopX is licensed under the Apache License 2.0, with the following additional conditions:Notwithstanding the foregoing, the Additional Terms set forth herein shall prevail in the event of any conflict between the Additional Terms and the Apache License 2.0 terms.
+
+--------------------------------------------------------------------------------
+ADDITIONAL TERMS PURSUANT TO SECTION 7 OF APACHE LICENSE 2.0:  
+1. Branding Retention Requirement
+You must retain all Shopex brand identifiers visible in:  User interfaces (e.g., Front-end Interface, admin consoles, login pages);  This includes logos, copyright notices, and "Powered by Shopex" labels.  
+2. Commercial License for Branding Removal
+If you remove or alter Shopex brand identifiers, you must obtain a branding removal license from Shopex.  Contact us at:  http://www.shopex.cn to purchase a branding removal license.  
+3.You shall not in any manner violate any applicable national or international laws or regulations or infringe upon the lawful rights and interests of any third party;
+4. Enforcement
+Failure to comply with these additional terms terminates your rights under this license.  
+
+Copyright (c) 2025 Shopex  
+--------------------------------------------------------------------------------  
+Licensed under the Apache License, Version 2.0 (the "License");  
+you may not use this software except in compliance with the License.  
+You may obtain a copy of the License at:  
+http://www.apache.org/licenses/LICENSE-2.0  
+
+Unless required by applicable law or agreed to in writing, software  
+distributed under the License is distributed on an "AS IS" BASIS,  
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
+See the License for the specific language governing permissions and  
+limitations under the License.  
+The above content is established in both English and Chinese, and both language versions  shall be equally authentic.  In case of any discrepancies between the two language versions,  the English version of the Apache License 2.0 (as published at http://www.apache.org/licenses/LICENSE-2.0) shall govern the interpretation of the License terms, and the Chinese version shall prevail only for the interpretation of the Additional Terms set forth herein..
+------------------------------------------------------------------------------------------------
+中文版：
+EcshopX 开源许可证
+EcshopX 遵循 Apache 许可证 2.0 版，并附加以下条款：尽管有前述规定，若本附加条款与Apache许可证2.0条款存在冲突，应以本附加条款为准。
+依据 Apache 许可证 2.0 第 7 节规定的附加条款：
+1.品牌标识保留要求
+您必须保留所有可见的 Shopex 品牌标识，包括但不限于：用户界面（例如：前端界面、管理控制台、登录页面），具体涵盖LOGO、版权声明及“Powered by Shopex”标识等。若用户为境外用户且因当地法律规定（如数据隐私法、消费者权益保护法）需修改品牌标识的，可凭当地律师出具的合规意见书申请豁免部分保留要求，但需在修改处标注"基于Shopex技术构建"等替代性声明。
+2.移除品牌标识需获取商业许可
+若需移除或修改 Shopex 品牌标识，必须从 Shopex 获取前端版权移除商业许可。请联系：http://www.shopex.cn 购买前端版权移除商业许可证。
+3.本条款重申Apache许可证2.0版下的合规义务：您不得以任何方式违反任何适用的国家或国际法律或法规或侵犯任何第三方的合法权益；
+4.执行条款
+若未能遵守上述附加条款，您在本许可证下的权利将自动终止。
+以上内容以英文和中文两种语言订立，两种语言版本具有同等效力。如果这两种语言版本之间有任何差异，Apache 许可证2.0官方英文版本（发布于http://www.apache.org/licenses/LICENSE-2.0）应作为许可证条款的解释依据，本协议附加条款的解释应以中文版本为准。
+
+版权所有 (c) 2025 Shopex
+
