@@ -37,9 +37,6 @@ APP_CUSTOM_SERVER=
 # App Homepage Path
 APP_HOME_PAGE=/pages/index
 
-APP_TRACK=
-APP_YOUSHU_TOKEN=
-
 # WeChat Mini Program AppID，required for compiling the mini program
 APP_ID=wx1e25e45145b70faa
 
