@@ -49,9 +49,13 @@ APP_MAP_NAME=
 # Media files OSS Server URL
 APP_IMAGE_CDN=
 
+# Store Operations Tool Domain Address
 APP_DIANWU_URL=
 
+# Merchant Portal Domain Address
 APP_MERCHANT_URL=
+
+# Payment Callback URL for Third-Party Payment Platforms
 APP_ADAPAY=
 ```
 
