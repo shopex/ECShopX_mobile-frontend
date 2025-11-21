@@ -1,22 +1,8 @@
-/* +----------------------------------------------------------------------
- | ECShopX open source E-commerce
- | ECShopX 开源商城系统 
- +----------------------------------------------------------------------
- | Copyright (c) 2003-2025 ShopeX,Inc.All rights reserved.
- +----------------------------------------------------------------------
- | Corporate Website:  https://www.shopex.cn 
- +----------------------------------------------------------------------
- | Licensed under the Apache License, Version 2.0
- | http://www.apache.org/licenses/LICENSE-2.0
- +----------------------------------------------------------------------
- | The removal of shopeX copyright information without authorization is prohibited.
- | 未经授权不可去除shopeX商派相关版权
- +----------------------------------------------------------------------
- | Author: shopeX Team <mkt@shopex.cn>
- | Contact: 400-821-3106
- +----------------------------------------------------------------------
+/**
+ * Copyright © ShopeX （http://www.shopex.cn）. All rights reserved.
+ * See LICENSE file for license details.
  */
-@import "@/style/imports";
+@import '@/style/imports';
 
 $good-img-width: 100px;
 $active-good-img-width: 80px;
@@ -24,7 +10,7 @@ $active-good-img-width: 80px;
 .comp-first-category {
   width: 100%;
   // height: 150px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -39,13 +25,14 @@ $active-good-img-width: 80px;
     padding: 10px 0;
   }
 
-  &-scrollX {}
+  &-scrollX {
+  }
 
   &-scroll-item {
     width: 18%;
     // min-width: 110px;
     // max-width: 110px;
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -63,18 +50,18 @@ $active-good-img-width: 80px;
   &-goods-imgbox {
     width: $good-img-width;
     height: $good-img-width;
-    border: 5px solid #F5F5F5;
+    border: 5px solid #f5f5f5;
     border-radius: 50%;
     overflow: hidden;
     position: relative;
     margin: 0 auto;
     box-sizing: border-box;
-    background: #FFFFFF;
+    background: #ffffff;
     text {
       font-size: 18rpx;
       text-align: center;
       font-weight: 400;
-      color: #BBBBBB;
+      color: #bbbbbb;
       line-height: $good-img-width;
     }
 
@@ -107,7 +94,7 @@ $active-good-img-width: 80px;
       background: var(--color-primary);
       font-size: 22px;
       border-radius: 35px;
-      color: #FFFFFF;
+      color: #ffffff;
       margin-left: 14px;
     }
 
@@ -180,7 +167,7 @@ $active-good-img-width: 80px;
 
       .comp-first-category-goods-imgbox {
         width: $good-img-width;
-        height: $good-img-width; 
+        height: $good-img-width;
         transform: scale(1);
       }
 
