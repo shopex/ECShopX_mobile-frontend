@@ -28,8 +28,8 @@ APP_WEBSOCKET=
 # System Tenant ID
 APP_COMPANY_ID=1
 
-# System Business Model (b2c/bbc)
-APP_PLATFORM=b2c
+# System Business Model (b2c:standard/b2b2c:platform)
+APP_PLATFORM=standard
   
 # Mobile Web App Payment Callback Domain，used for payment result notifications.
 APP_CUSTOM_SERVER=
