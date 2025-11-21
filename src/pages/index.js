@@ -40,7 +40,8 @@ import {
   pickBy,
   log,
   showToast,
-  entryLaunch
+  entryLaunch,
+  buildSharePath
 } from '@/utils'
 import { updateShopInfo } from '@/store/slices/shop'
 import {
@@ -150,7 +151,7 @@ function Home() {
     if (VERSION_STANDARD) {
       params = Object.assign(params, { dtid: getCurrentShopId() })
     }
-    let path = `/pages/index${isEmpty(params) ? '' : '?' + resolveStringifyParams(params)}`
+    const path = buildSharePath('poster_home', params)
 
     console.log('useShareAppMessage path:', path, params)
 
@@ -276,7 +277,7 @@ function Home() {
       // renderNavigation={renderNavigation()}
       pageConfig={pageData?.base || {}}
       renderFloat={wgts.length > 0 && <CompFloatMenu />}
-      renderFooter={<SpTabbar />}
+      renderFooter={<SpTabbar height={state.footerHeight} />}
       ref={pageRef}
       navigateMantle={navigateMantle}
       onReady={({ footerHeight }) => {

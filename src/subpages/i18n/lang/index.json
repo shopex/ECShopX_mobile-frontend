@@ -12623,5 +12623,15 @@
 		"zh-cn": "订阅成功",
 		"en": "",
 		"zh-tw": ""
+	},
+	"hp8xmu6": {
+		"zh-cn": "页面跳转失败",
+		"en": "Page redirection failed",
+		"zh-tw": "頁面跳轉失敗"
+	},
+	"er67o3": {
+		"zh-cn": "总计:",
+		"en": "Total:",
+		"zh-tw": "總計:"
 	}
 }
